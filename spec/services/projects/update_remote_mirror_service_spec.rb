@@ -16,7 +16,7 @@ describe Projects::UpdateRemoteMirrorService do
     end
 
     it "ensures the remote exists" do
-      stub_fetch_remote(project, remote_name: remote_name)
+      stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
 
       expect(remote_mirror).to receive(:ensure_remote!)
 
@@ -26,13 +26,13 @@ describe Projects::UpdateRemoteMirrorService do
     it "fetches the remote repository" do
       expect(project.repository)
         .to receive(:fetch_remote)
-        .with(remote_mirror.remote_name, no_tags: true)
+        .with(remote_mirror.remote_name, no_tags: true, ssh_auth: remote_mirror)
 
       service.execute(remote_mirror)
     end
 
     it "returns success when updated succeeds" do
-      stub_fetch_remote(project, remote_name: remote_name)
+      stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
 
       result = service.execute(remote_mirror)
 
@@ -41,7 +41,7 @@ describe Projects::UpdateRemoteMirrorService do
 
     context 'when syncing all branches' do
       it "push all the branches the first time" do
-        stub_fetch_remote(project, remote_name: remote_name)
+        stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
 
         expect(remote_mirror).to receive(:update_repository).with({})
 
@@ -51,7 +51,7 @@ describe Projects::UpdateRemoteMirrorService do
 
     context 'when only syncing protected branches' do
       it "sync updated protected branches" do
-        stub_fetch_remote(project, remote_name: remote_name)
+        stub_fetch_remote(project, remote_name: remote_name, ssh_auth: remote_mirror)
         protected_branch = create_protected_branch(project)
         remote_mirror.only_protected_branches = true
 
@@ -69,10 +69,10 @@ describe Projects::UpdateRemoteMirrorService do
     end
   end
 
-  def stub_fetch_remote(project, remote_name:)
+  def stub_fetch_remote(project, remote_name:, ssh_auth:)
     allow(project.repository)
       .to receive(:fetch_remote)
-      .with(remote_name, no_tags: true) { fetch_remote(project.repository, remote_name) }
+      .with(remote_name, no_tags: true, ssh_auth: ssh_auth) { fetch_remote(project.repository, remote_name) }
   end
 
   def fetch_remote(repository, remote_name)

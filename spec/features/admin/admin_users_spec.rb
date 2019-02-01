@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Admin::Users" do
+  include Spec::Support::Helpers::Features::ListRowsHelpers
+
   let!(:user) do
     create(:omniauth_user, provider: 'twitter', extern_uid: '123456')
   end
@@ -28,6 +30,51 @@ describe "Admin::Users" do
       expect(page).to have_link('Block', href: block_admin_user_path(user))
       expect(page).to have_button('Delete user')
       expect(page).to have_button('Delete user and contributions')
+    end
+
+    describe 'search and sort' do
+      before do
+        create(:user, name: 'Foo Bar')
+        create(:user, name: 'Foo Baz')
+        create(:user, name: 'Dmitriy')
+      end
+
+      it 'searches users by name' do
+        visit admin_users_path(search_query: 'Foo')
+
+        expect(page).to have_content('Foo Bar')
+        expect(page).to have_content('Foo Baz')
+        expect(page).not_to have_content('Dmitriy')
+      end
+
+      it 'sorts users by name' do
+        visit admin_users_path
+
+        sort_by('Name')
+
+        expect(first_row.text).to include('Dmitriy')
+        expect(second_row.text).to include('Foo Bar')
+      end
+
+      it 'sorts search results only' do
+        visit admin_users_path(search_query: 'Foo')
+
+        sort_by('Name')
+
+        expect(page).not_to have_content('Dmitriy')
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
+
+      it 'searches with respect of sorting' do
+        visit admin_users_path(sort: 'Name')
+
+        fill_in :search_query, with: 'Foo'
+        click_button('Search users')
+
+        expect(first_row.text).to include('Foo Bar')
+        expect(second_row.text).to include('Foo Baz')
+      end
     end
 
     describe 'Two-factor Authentication filters' do
@@ -130,7 +177,7 @@ describe "Admin::Users" do
       context 'with regex to match internal user email address set', :js do
         before do
           stub_application_setting(user_default_external: true)
-          stub_application_setting(user_default_internal_regex: '.internal@')
+          stub_application_setting(user_default_internal_regex: '\.internal@')
 
           visit new_admin_user_path
         end
@@ -169,6 +216,22 @@ describe "Admin::Users" do
 
           expects_warning_to_be_hidden
         end
+
+        it 'creates an internal user' do
+          user_name = 'tester1'
+          fill_in 'user_email', with: 'test.internal@domain.ch'
+          fill_in 'user_name', with: 'tester1 name'
+          fill_in 'user_username', with: user_name
+
+          expects_external_to_be_unchecked
+          expects_warning_to_be_shown
+
+          click_button 'Create user'
+
+          new_user = User.find_by(username: user_name)
+
+          expect(new_user.external).to be_falsy
+        end
       end
     end
   end
@@ -189,74 +252,117 @@ describe "Admin::Users" do
     describe 'Impersonation' do
       let(:another_user) { create(:user) }
 
-      before do
-        visit admin_user_path(another_user)
-      end
-
       context 'before impersonating' do
-        it 'shows impersonate button for other users' do
-          expect(page).to have_content('Impersonate')
+        subject { visit admin_user_path(user_to_visit) }
+
+        let(:user_to_visit) { another_user }
+
+        context 'for other users' do
+          it 'shows impersonate button for other users' do
+            subject
+
+            expect(page).to have_content('Impersonate')
+          end
         end
 
-        it 'does not show impersonate button for admin itself' do
-          visit admin_user_path(current_user)
+        context 'for admin itself' do
+          let(:user_to_visit) { current_user }
 
-          expect(page).not_to have_content('Impersonate')
+          it 'does not show impersonate button for admin itself' do
+            subject
+
+            expect(page).not_to have_content('Impersonate')
+          end
         end
 
-        it 'does not show impersonate button for blocked user' do
-          another_user.block
+        context 'for blocked user' do
+          before do
+            another_user.block
+          end
 
-          visit admin_user_path(another_user)
+          it 'does not show impersonate button for blocked user' do
+            subject
 
-          expect(page).not_to have_content('Impersonate')
+            expect(page).not_to have_content('Impersonate')
+          end
+        end
 
-          another_user.activate
+        context 'when impersonation is disabled' do
+          before do
+            stub_config_setting(impersonation_enabled: false)
+          end
+
+          it 'does not show impersonate button' do
+            subject
+
+            expect(page).not_to have_content('Impersonate')
+          end
         end
       end
 
       context 'when impersonating' do
+        subject { click_link 'Impersonate' }
+
         before do
-          click_link 'Impersonate'
+          visit admin_user_path(another_user)
         end
 
         it 'logs in as the user when impersonate is clicked' do
+          subject
+
           expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(another_user.username)
         end
 
         it 'sees impersonation log out icon' do
-          icon = first('.fa.fa-user-secret')
+          subject
 
+          icon = first('.fa.fa-user-secret')
           expect(icon).not_to be nil
         end
 
+        context 'a user with an expired password' do
+          before do
+            another_user.update(password_expires_at: Time.now - 5.minutes)
+          end
+
+          it 'does not redirect to password change page' do
+            subject
+
+            expect(current_path).to eq('/')
+          end
+        end
+      end
+
+      context 'ending impersonation' do
+        subject { find(:css, 'li.impersonation a').click }
+
+        before do
+          visit admin_user_path(another_user)
+          click_link 'Impersonate'
+        end
+
         it 'logs out of impersonated user back to original user' do
-          find(:css, 'li.impersonation a').click
+          subject
 
           expect(page.find(:css, '.header-user .profile-link')['data-user']).to eq(current_user.username)
         end
 
         it 'is redirected back to the impersonated users page in the admin after stopping' do
-          find(:css, 'li.impersonation a').click
+          subject
 
           expect(current_path).to eq("/admin/users/#{another_user.username}")
         end
-      end
 
-      context 'when impersonating a user with an expired password' do
-        before do
-          another_user.update(password_expires_at: Time.now - 5.minutes)
-          click_link 'Impersonate'
-        end
+        context 'a user with an expired password' do
+          before do
+            another_user.update(password_expires_at: Time.now - 5.minutes)
+          end
 
-        it 'does not redirect to password change page' do
-          expect(current_path).to eq('/')
-        end
+          it 'is redirected back to the impersonated users page in the admin after stopping' do
+            subject
 
-        it 'is redirected back to the impersonated users page in the admin after stopping' do
-          find(:css, 'li.impersonation a').click
-
-          expect(current_path).to eq("/admin/users/#{another_user.username}")
+            expect(current_path).to eq("/admin/users/#{another_user.username}")
+          end
         end
       end
     end
@@ -506,5 +612,11 @@ describe "Admin::Users" do
 
   def check_breadcrumb(content)
     expect(find('.breadcrumbs-sub-title')).to have_content(content)
+  end
+
+  def sort_by(text)
+    page.within('.user-sort-dropdown') do
+      click_link text
+    end
   end
 end

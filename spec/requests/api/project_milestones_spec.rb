@@ -10,7 +10,7 @@ describe API::ProjectMilestones do
     project.add_developer(user)
   end
 
-  it_behaves_like 'group and project milestones', "/projects/:id/milestones"  do
+  it_behaves_like 'group and project milestones', "/projects/:id/milestones" do
     let(:route) { "/projects/#{project.id}/milestones" }
   end
 
@@ -46,7 +46,7 @@ describe API::ProjectMilestones do
       expect(Event).to receive(:create!)
 
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
-          state_event: 'close'
+          params: { state_event: 'close' }
     end
   end
 end

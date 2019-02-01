@@ -6,7 +6,7 @@ describe SubmoduleHelper do
   describe 'submodule links' do
     let(:submodule_item) { double(id: 'hash', path: 'rack') }
     let(:config) { Gitlab.config.gitlab }
-    let(:repo) { double() }
+    let(:repo) { double }
 
     before do
       self.instance_variable_set(:@repository, repo)

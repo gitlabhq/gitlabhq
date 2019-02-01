@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Gitlab
   class WikiFileFinder < FileFinder
+    BATCH_SIZE = 100
+
     attr_reader :repository
 
     def initialize(project, ref)
@@ -10,12 +14,10 @@ module Gitlab
 
     private
 
-    def search_filenames(query, except)
+    def search_filenames(query)
       safe_query = Regexp.escape(query.tr(' ', '-'))
       safe_query = Regexp.new(safe_query, Regexp::IGNORECASE)
       filenames = repository.ls_files(ref)
-
-      filenames.delete_if { |filename| except.include?(filename) } unless except.empty?
 
       filenames.grep(safe_query).first(BATCH_SIZE)
     end

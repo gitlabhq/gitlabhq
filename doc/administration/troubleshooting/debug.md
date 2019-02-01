@@ -20,7 +20,7 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
     bundle exec rails console production
     ```
 
-2. Look at the ActionMailer `delivery_method` to make sure it matches what you
+1. Look at the ActionMailer `delivery_method` to make sure it matches what you
    intended. If you configured SMTP, it should say `:smtp`. If you're using
    Sendmail, it should say `:sendmail`:
 
@@ -29,7 +29,7 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
     => :smtp
     ```
 
-3. If you're using SMTP, check the mail settings:
+1. If you're using SMTP, check the mail settings:
 
     ```ruby
     irb(main):002:0> ActionMailer::Base.smtp_settings
@@ -39,7 +39,7 @@ an SMTP server, but you're not seeing mail delivered. Here's how to check the se
     In the example above, the SMTP server is configured for the local machine. If this is intended, you may need to check your local mail
     logs (e.g. `/var/log/mail.log`) for more details.
 
-4.  Send a test message via the console.
+1.  Send a test message via the console.
 
     ```ruby
     irb(main):003:0> Notify.test_email('youremail@email.com', 'Hello World', 'This is a test message').deliver_now
@@ -158,7 +158,7 @@ are concerned about affecting others during a production system, you can run a
 separate Rails process to debug the issue:
 
 1. Log in to your GitLab account.
-1. Copy the URL that is causing problems (e.g. https://gitlab.com/ABC).
+1. Copy the URL that is causing problems (e.g. `https://gitlab.com/ABC`).
 1. Create a Personal Access Token for your user (Profile Settings -> Access Tokens).
 1. Bring up the GitLab Rails console. For omnibus users, run:
 
@@ -211,5 +211,5 @@ The output in `/tmp/unicorn.txt` may help diagnose the root cause.
 
 # More information
 
-* [Debugging Stuck Ruby Processes](https://blog.newrelic.com/2013/04/29/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
-* [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)
+- [Debugging Stuck Ruby Processes](https://blog.newrelic.com/2013/04/29/debugging-stuck-ruby-processes-what-to-do-before-you-kill-9/)
+- [Cheatsheet of using gdb and ruby processes](gdb-stuck-ruby.txt)

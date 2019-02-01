@@ -16,6 +16,7 @@ describe('ItemCaretComponent', () => {
   describe('template', () => {
     it('should render component template correctly', () => {
       const vm = createComponent();
+
       expect(vm.$el.classList.contains('folder-caret')).toBeTruthy();
       expect(vm.$el.querySelectorAll('svg').length).toBe(1);
       vm.$destroy();
@@ -23,12 +24,14 @@ describe('ItemCaretComponent', () => {
 
     it('should render caret down icon if `isGroupOpen` prop is `true`', () => {
       const vm = createComponent(true);
+
       expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('angle-down');
       vm.$destroy();
     });
 
     it('should render caret right icon if `isGroupOpen` prop is `false`', () => {
       const vm = createComponent();
+
       expect(vm.$el.querySelector('svg use').getAttribute('xlink:href')).toContain('angle-right');
       vm.$destroy();
     });

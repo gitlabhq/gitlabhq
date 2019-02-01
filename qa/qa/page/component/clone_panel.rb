@@ -5,26 +5,20 @@ module QA
     module Component
       module ClonePanel
         def self.included(base)
-          base.view 'app/views/shared/_clone_panel.html.haml' do
+          base.view 'app/views/projects/buttons/_clone.html.haml' do
             element :clone_dropdown
-            element :clone_options_dropdown, '.clone-options-dropdown' # rubocop:disable QA/ElementWithPattern
-            element :project_repository_location, 'text_field_tag :project_clone' # rubocop:disable QA/ElementWithPattern
+            element :clone_options
+            element :ssh_clone_url
+            element :http_clone_url
           end
         end
 
-        def choose_repository_clone_http
-          choose_repository_clone('HTTP', 'http')
+        def repository_clone_http_location
+          repository_clone_location(:http_clone_url)
         end
 
-        def choose_repository_clone_ssh
-          # It's not always beginning with ssh:// so detecting with @
-          # would be more reliable because ssh would always contain it.
-          # We can't use .git because HTTP also contain that part.
-          choose_repository_clone('SSH', '@')
-        end
-
-        def repository_location
-          Git::Location.new(find('#project_clone').value)
+        def repository_clone_ssh_location
+          repository_clone_location(:ssh_clone_url)
         end
 
         def wait_for_push
@@ -34,16 +28,13 @@ module QA
 
         private
 
-        def choose_repository_clone(kind, detect_text)
+        def repository_clone_location(kind)
           wait(reload: false) do
             click_element :clone_dropdown
 
-            page.within('.clone-options-dropdown') do
-              click_link(kind)
+            within_element :clone_options do
+              Git::Location.new(find_element(kind).value)
             end
-
-            # Ensure git clone textbox was updated
-            repository_location.git_uri.include?(detect_text)
           end
         end
       end

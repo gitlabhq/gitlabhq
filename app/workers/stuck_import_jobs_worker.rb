@@ -7,64 +7,62 @@ class StuckImportJobsWorker
   IMPORT_JOBS_EXPIRATION = 15.hours.to_i
 
   def perform
-    projects_without_jid_count = mark_projects_without_jid_as_failed!
-    projects_with_jid_count = mark_projects_with_jid_as_failed!
+    import_state_without_jid_count = mark_import_states_without_jid_as_failed!
+    import_state_with_jid_count = mark_import_states_with_jid_as_failed!
 
     Gitlab::Metrics.add_event(:stuck_import_jobs,
-                             projects_without_jid_count: projects_without_jid_count,
-                             projects_with_jid_count: projects_with_jid_count)
+                             projects_without_jid_count: import_state_without_jid_count,
+                             projects_with_jid_count: import_state_with_jid_count)
   end
 
   private
 
-  def mark_projects_without_jid_as_failed!
-    enqueued_projects_without_jid.each do |project|
-      project.mark_import_as_failed(error_message)
+  def mark_import_states_without_jid_as_failed!
+    enqueued_import_states_without_jid.each do |import_state|
+      import_state.mark_as_failed(error_message)
     end.count
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def mark_projects_with_jid_as_failed!
-    # TODO: Rollback this change to use SQL through #pluck
-    jids_and_ids = enqueued_projects_with_jid.map { |project| [project.import_jid, project.id] }.to_h
+  def mark_import_states_with_jid_as_failed!
+    jids_and_ids = enqueued_import_states_with_jid.pluck(:jid, :id).to_h
 
     # Find the jobs that aren't currently running or that exceeded the threshold.
     completed_jids = Gitlab::SidekiqStatus.completed_jids(jids_and_ids.keys)
     return unless completed_jids.any?
 
-    completed_project_ids = jids_and_ids.values_at(*completed_jids)
+    completed_import_state_ids = jids_and_ids.values_at(*completed_jids)
 
-    # We select the projects again, because they may have transitioned from
+    # We select the import states again, because they may have transitioned from
     # scheduled/started to finished/failed while we were looking up their Sidekiq status.
-    completed_projects = enqueued_projects_with_jid.where(id: completed_project_ids)
+    completed_import_states = enqueued_import_states_with_jid.where(id: completed_import_state_ids)
 
-    Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_projects.map(&:import_jid).join(', ')}")
+    completed_import_state_jids = completed_import_states.map { |import_state| import_state.jid }.join(', ')
+    Rails.logger.info("Marked stuck import jobs as failed. JIDs: #{completed_import_state_jids}")
 
-    completed_projects.each do |project|
-      project.mark_import_as_failed(error_message)
+    completed_import_states.each do |import_state|
+      import_state.mark_as_failed(error_message)
     end.count
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def enqueued_import_states
+    ProjectImportState.with_status([:scheduled, :started])
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
-  def enqueued_projects
-    Project.joins_import_state.where("(import_state.status = 'scheduled' OR import_state.status = 'started') OR (projects.import_status = 'scheduled' OR projects.import_status = 'started')")
+  def enqueued_import_states_with_jid
+    enqueued_import_states.where.not(jid: nil)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def enqueued_projects_with_jid
-    enqueued_projects.where.not("import_state.jid IS NULL AND projects.import_jid IS NULL")
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
-  # rubocop: disable CodeReuse/ActiveRecord
-  def enqueued_projects_without_jid
-    enqueued_projects.where("import_state.jid IS NULL AND projects.import_jid IS NULL")
+  def enqueued_import_states_without_jid
+    enqueued_import_states.where(jid: nil)
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   def error_message
-    "Import timed out. Import took longer than #{IMPORT_JOBS_EXPIRATION} seconds"
+    _("Import timed out. Import took longer than %{import_jobs_expiration} seconds") % { import_jobs_expiration: IMPORT_JOBS_EXPIRATION }
   end
 end

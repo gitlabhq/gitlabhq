@@ -11,17 +11,14 @@ export default {
     },
     message: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
 };
 </script>
 <template>
-  <div
-    :class="`bs-callout bs-callout-${category}`"
-    role="alert"
-    aria-live="assertive"
-  >
-    {{ message }}
+  <div :class="`bs-callout bs-callout-${category}`" role="alert" aria-live="assertive">
+    {{ message }} <slot></slot>
   </div>
 </template>

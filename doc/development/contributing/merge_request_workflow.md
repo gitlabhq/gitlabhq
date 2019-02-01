@@ -2,10 +2,9 @@
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
 and/or documentation. The issues that are specifically suitable for
-community contributions are listed with the
-[`Backlog (Accepting merge requests)` milestone in the CE issue tracker][accepting-mrs-ce]
-and [EE issue tracker][accepting-mrs-ee], but you are free to contribute to any other issue
-you want.
+community contributions are listed with
+[the `Accepting merge requests` label](issue_workflow.md#label-for-community-contributors),
+but you are free to contribute to any other issue you want.
 
 Please note that if an issue is marked for the current milestone either before
 or while you are working on it, a team member may take over the merge request
@@ -25,8 +24,6 @@ some potentially easy issues.
 To start with GitLab development download the [GitLab Development Kit][gdk] and
 see the [Development section](../../README.md) for some guidelines.
 
-[accepting-mrs-ce]: https://gitlab.com/gitlab-org/gitlab-ce/issues?milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;
-[accepting-mrs-ee]: https://gitlab.com/gitlab-org/gitlab-ee/issues?milestone_title=Backlog%20&#40;Accepting%20merge%20requests&#41;
 [gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
 [gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
 
@@ -174,18 +171,18 @@ the feature you contribute through all of these steps.
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/), if relevant
 1. Community questions answered
 1. Answers to questions radiated (in docs/wiki/support etc.)
+1. [Black-box tests/end-to-end tests](../testing_guide/testing_levels.md#black-box-tests-or-end-to-end-tests) added if required. Please contact [the quality team](https://about.gitlab.com/handbook/engineering/quality/#teams) with any questions
 
 If you add a dependency in GitLab (such as an operating system package) please
 consider updating the following and note the applicability of each in your
 merge request:
 
-1. Note the addition in the release blog post (create one if it doesn't exist yet) https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/
-1. Upgrade guide, for example https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.5-to-7.6.md
-1. Upgrader https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/upgrader.md#2-run-gitlab-upgrade-tool
-1. Installation guide https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies
-1. GitLab Development Kit https://gitlab.com/gitlab-org/gitlab-development-kit
-1. Test suite https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh
-1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
+1. Note the addition in the release blog post (create one if it doesn't exist yet) <https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/>
+1. Upgrade guide, for example <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.5-to-7.6.md>
+1. Installation guide <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies>
+1. GitLab Development Kit <https://gitlab.com/gitlab-org/gitlab-development-kit>
+1. Test suite <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh>
+1. Omnibus package creator <https://gitlab.com/gitlab-org/omnibus-gitlab>
 
 [definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
 [testing]: ../testing_guide/index.md

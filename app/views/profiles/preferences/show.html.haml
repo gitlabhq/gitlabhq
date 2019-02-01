@@ -46,7 +46,7 @@
         Layout width
       = f.select :layout, layout_choices, {}, class: 'form-control'
       .form-text.text-muted
-        Choose between fixed (max. 1200px) and fluid (100%) application layout.
+        Choose between fixed (max. 1280px) and fluid (100%) application layout.
     .form-group
       = f.label :dashboard, class: 'label-bold' do
         Default dashboard
@@ -56,6 +56,6 @@
         Project overview content
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .form-text.text-muted
-        Choose what content you want to see on a project’s overview page
+        Choose what content you want to see on a project’s overview page.
     .form-group
       = f.submit 'Save changes', class: 'btn btn-success'

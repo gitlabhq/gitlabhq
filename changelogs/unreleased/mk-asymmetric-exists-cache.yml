@@ -1,6 +1,0 @@
----
-title: 'Resolve "Geo: Does not mark repositories as missing on primary due to stale
-  cache"'
-merge_request: 21789
-author:
-type: fixed

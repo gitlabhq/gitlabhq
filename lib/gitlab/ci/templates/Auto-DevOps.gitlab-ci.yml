@@ -27,7 +27,7 @@
 # Continuous deployment to production is enabled by default.
 # If you want to deploy to staging first, set STAGING_ENABLED environment variable.
 # If you want to enable incremental rollout, either manual or time based,
-# set INCREMENTAL_ROLLOUT_TYPE environment variable to "manual" or "timed".
+# set INCREMENTAL_ROLLOUT_MODE environment variable to "manual" or "timed".
 # If you want to use canary deployments, set CANARY_ENABLED environment variable.
 #
 # If Auto DevOps fails to detect the proper buildpack, or if you want to
@@ -49,8 +49,8 @@ variables:
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
-  KUBERNETES_VERSION: 1.8.6
-  HELM_VERSION: 2.11.0
+  KUBERNETES_VERSION: 1.11.6
+  HELM_VERSION: 2.12.2
 
   DOCKER_DRIVER: overlay2
 
@@ -116,12 +116,11 @@ code_quality:
 
 license_management:
   stage: test
-  image: docker:stable
+  image:
+    name: "registry.gitlab.com/gitlab-org/security-products/license-management:$CI_SERVER_VERSION_MAJOR-$CI_SERVER_VERSION_MINOR-stable"
+    entrypoint: [""]
   allow_failure: true
-  services:
-    - docker:stable-dind
   script:
-    - setup_docker
     - license_management
   artifacts:
     paths: [gl-license-management-report.json]
@@ -165,7 +164,8 @@ sast:
     - setup_docker
     - sast
   artifacts:
-    paths: [gl-sast-report.json]
+    reports:
+      sast: gl-sast-report.json
   only:
     refs:
       - branches
@@ -185,7 +185,8 @@ dependency_scanning:
     - setup_docker
     - dependency_scanning
   artifacts:
-    paths: [gl-dependency-scanning-report.json]
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
   only:
     refs:
       - branches
@@ -210,7 +211,7 @@ container_scanning:
     refs:
       - branches
     variables:
-      - $GITLAB_FEATURES =~ /\bsast_container\b/
+      - $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
   except:
     variables:
       - $CONTAINER_SCANNING_DISABLED
@@ -525,11 +526,7 @@ rollout 100%:
   }
 
   function license_management() {
-    # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
-    LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-
-    docker run --volume "$PWD:/code" \
-                                    "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
+    /run.sh analyze .
   }
 
   function sast() {
@@ -599,10 +596,55 @@ rollout 100%:
     fi
   }
 
+  # Extracts variables prefixed with K8S_SECRET_
+  # and creates a Kubernetes secret.
+  #
+  # e.g. If we have the following environment variables:
+  #   K8S_SECRET_A=value1
+  #   K8S_SECRET_B=multi\ word\ value
+  #
+  # Then we will create a secret with the following key-value pairs:
+  #   data:
+  #     A: dmFsdWUxCg==
+  #     B: bXVsdGkgd29yZCB2YWx1ZQo=
+  function create_application_secret() {
+    track="${1-stable}"
+    export APPLICATION_SECRET_NAME=$(application_secret_name "$track")
+
+    env | sed -n "s/^K8S_SECRET_\(.*\)$/\1/p" > k8s_prefixed_variables
+
+    kubectl create secret \
+      -n "$KUBE_NAMESPACE" generic "$APPLICATION_SECRET_NAME" \
+      --from-env-file k8s_prefixed_variables -o yaml --dry-run |
+      kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+
+    export APPLICATION_SECRET_CHECKSUM=$(cat k8s_prefixed_variables | sha256sum | cut -d ' ' -f 1)
+
+    rm k8s_prefixed_variables
+  }
+
+  function deploy_name() {
+    name="$CI_ENVIRONMENT_SLUG"
+    track="${1-stable}"
+
+    if [[ "$track" != "stable" ]]; then
+      name="$name-$track"
+    fi
+
+    echo $name
+  }
+
+  function application_secret_name() {
+    track="${1-stable}"
+    name=$(deploy_name "$track")
+
+    echo "${name}-secret"
+  }
+
   function deploy() {
     track="${1-stable}"
     percentage="${2:-100}"
-    name="$CI_ENVIRONMENT_SLUG"
+    name=$(deploy_name "$track")
 
     replicas="1"
     service_enabled="true"
@@ -611,7 +653,6 @@ rollout 100%:
     # if track is different than stable,
     # re-use all attached resources
     if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
       service_enabled="false"
       postgres_enabled="false"
     fi
@@ -624,7 +665,18 @@ rollout 100%:
       secret_name=''
     fi
 
+    create_application_secret "$track"
+
+    env_slug=$(echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s '[:lower:]' '[:upper:]')
+    eval env_ADDITIONAL_HOSTS=\$${env_slug}_ADDITIONAL_HOSTS
+    if [ -n "$env_ADDITIONAL_HOSTS" ]; then
+      additional_hosts="{$env_ADDITIONAL_HOSTS}"
+    elif [ -n "$ADDITIONAL_HOSTS" ]; then
+      additional_hosts="{$ADDITIONAL_HOSTS}"
+    fi
+
     if [[ -n "$DB_INITIALIZE" && -z "$(helm ls -q "^$name$")" ]]; then
+      echo "Deploying first release with database initialization..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
@@ -635,7 +687,11 @@ rollout 100%:
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
+        --set application.secretName="$APPLICATION_SECRET_NAME" \
+        --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
+        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
+        --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
         --set postgresql.nameOverride="postgres" \
@@ -647,6 +703,7 @@ rollout 100%:
         "$name" \
         chart/
 
+      echo "Deploying second release..."
       helm upgrade --reuse-values \
         --wait \
         --set application.initializeCommand="" \
@@ -655,6 +712,7 @@ rollout 100%:
         "$name" \
         chart/
     else
+      echo "Deploying new release..."
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
@@ -665,7 +723,11 @@ rollout 100%:
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
         --set application.database_url="$DATABASE_URL" \
+        --set application.secretName="$APPLICATION_SECRET_NAME" \
+        --set application.secretChecksum="$APPLICATION_SECRET_CHECKSUM" \
+        --set service.commonName="le.$AUTO_DEVOPS_DOMAIN" \
         --set service.url="$CI_ENVIRONMENT_URL" \
+        --set service.additionalHosts="$additional_hosts" \
         --set replicaCount="$replicas" \
         --set postgresql.enabled="$postgres_enabled" \
         --set postgresql.nameOverride="postgres" \
@@ -684,11 +746,7 @@ rollout 100%:
   function scale() {
     track="${1-stable}"
     percentage="${2-100}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
+    name=$(deploy_name "$track")
 
     replicas=$(get_replicas "$track" "$percentage")
 
@@ -749,7 +807,7 @@ rollout 100%:
     fi
 
     helm init --client-only
-    helm repo add gitlab https://charts.gitlab.io
+    helm repo add gitlab ${AUTO_DEVOPS_CHART_REPOSITORY:-https://charts.gitlab.io}
     if [[ ! -d "$auto_chart" ]]; then
       helm fetch ${auto_chart} --untar
     fi
@@ -823,7 +881,7 @@ rollout 100%:
   function initialize_tiller() {
     echo "Checking Tiller..."
 
-    export HELM_HOST=":44134"
+    export HELM_HOST="localhost:44134"
     tiller -listen ${HELM_HOST} -alsologtostderr > /dev/null 2>&1 &
     echo "Tiller is listening on ${HELM_HOST}"
 
@@ -882,15 +940,14 @@ rollout 100%:
 
   function delete() {
     track="${1-stable}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
+    name=$(deploy_name "$track")
 
     if [[ -n "$(helm ls -q "^$name$")" ]]; then
       helm delete --purge "$name"
     fi
+
+    secret_name=$(application_secret_name "$track")
+    kubectl delete secret --ignore-not-found -n "$KUBE_NAMESPACE" "$secret_name"
   }
 
 before_script:

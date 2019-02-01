@@ -80,7 +80,7 @@ module Gitlab
         end
 
         def fail_import(message)
-          project.mark_import_as_failed(message)
+          project.import_state.mark_as_failed(message)
           false
         end
       end

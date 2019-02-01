@@ -36,31 +36,47 @@ module StubGitlabCalls
       .to receive(:full_access_token).and_return('token')
   end
 
-  def stub_container_registry_tags(repository: :any, tags:)
+  def stub_container_registry_tags(repository: :any, tags: [], with_manifest: false)
     repository = any_args if repository == :any
 
     allow_any_instance_of(ContainerRegistry::Client)
       .to receive(:repository_tags).with(repository)
       .and_return({ 'tags' => tags })
 
-    allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:repository_manifest).with(repository, anything)
-      .and_return(stub_container_registry_tag_manifest)
+    if with_manifest
+      tags.each do |tag|
+        allow_any_instance_of(ContainerRegistry::Client)
+          .to receive(:repository_tag_digest)
+          .with(repository, tag)
+          .and_return('sha256:4c8e63ca4cb663ce6c688cb06f1c3' \
+                      '72b088dac5b6d7ad7d49cd620d85cf72a15')
+      end
 
-    allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:blob).with(repository, anything, 'application/octet-stream')
-      .and_return(stub_container_registry_blob)
+      allow_any_instance_of(ContainerRegistry::Client)
+        .to receive(:repository_manifest).with(repository, anything)
+        .and_return(stub_container_registry_tag_manifest_content)
+
+      allow_any_instance_of(ContainerRegistry::Client)
+        .to receive(:blob).with(repository, anything, 'application/octet-stream')
+        .and_return(stub_container_registry_blob_content)
+    end
+  end
+
+  def stub_commonmark_sourcepos_disabled
+    allow_any_instance_of(Banzai::Filter::MarkdownEngines::CommonMark)
+      .to receive(:render_options)
+      .and_return(Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS)
   end
 
   private
 
-  def stub_container_registry_tag_manifest
+  def stub_container_registry_tag_manifest_content
     fixture_path = 'spec/fixtures/container_registry/tag_manifest.json'
 
     JSON.parse(File.read(Rails.root + fixture_path))
   end
 
-  def stub_container_registry_blob
+  def stub_container_registry_blob_content
     fixture_path = 'spec/fixtures/container_registry/config_blob.json'
 
     File.read(Rails.root + fixture_path)

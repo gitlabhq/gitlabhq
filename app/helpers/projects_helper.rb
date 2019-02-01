@@ -2,7 +2,7 @@
 
 module ProjectsHelper
   def link_to_project(project)
-    link_to [project.namespace.becomes(Namespace), project], title: h(project.name) do
+    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name) do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
@@ -50,6 +50,12 @@ module ProjectsHelper
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
+    data_attrs = {
+      user_id: author.id,
+      username: author.username,
+      name: author.name
+    }
+
     return "(deleted)" unless author
 
     author_html = []
@@ -65,7 +71,7 @@ module ProjectsHelper
     author_html = author_html.join.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
+      link_to(author_html, user_path(author), class: "author-link js-user-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}", data: data_attrs).html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
       link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body' }).html_safe
@@ -198,12 +204,10 @@ module ProjectsHelper
       current_user.require_extra_setup_for_git_auth?
   end
 
-  def show_auto_devops_implicitly_enabled_banner?(project)
-    cookie_key = "hide_auto_devops_implicitly_enabled_banner_#{project.id}"
+  def show_auto_devops_implicitly_enabled_banner?(project, user)
+    return false unless user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
 
-    project.has_auto_devops_implicitly_enabled? &&
-      cookies[cookie_key.to_sym].blank? &&
-      (project.owner == current_user || project.team.maintainer?(current_user))
+    cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
   end
 
   def link_to_set_password
@@ -257,8 +261,31 @@ module ProjectsHelper
     "xcode://clone?repo=#{CGI.escape(default_url_to_repo(project))}"
   end
 
+  def link_to_bfg
+    link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
+  end
+
   def legacy_render_context(params)
     params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
+  end
+
+  def explore_projects_tab?
+    current_page?(explore_projects_path) ||
+      current_page?(trending_explore_projects_path) ||
+      current_page?(starred_explore_projects_path)
+  end
+
+  def show_merge_request_count?(disabled: false, compact_mode: false)
+    !disabled && !compact_mode && Feature.enabled?(:project_list_show_mr_count, default_enabled: true)
+  end
+
+  def show_issue_count?(disabled: false, compact_mode: false)
+    !disabled && !compact_mode && Feature.enabled?(:project_list_show_issue_count, default_enabled: true)
+  end
+
+  # overridden in EE
+  def settings_operations_available?
+    can?(current_user, :read_environment, @project)
   end
 
   private
@@ -267,7 +294,7 @@ module ProjectsHelper
     nav_tabs = [:home]
 
     if !project.empty_repo? && can?(current_user, :download_code, project)
-      nav_tabs << [:files, :commits, :network, :graphs, :forks]
+      nav_tabs << [:files, :commits, :network, :graphs, :forks, :releases]
     end
 
     if project.repo_exists? && can?(current_user, :read_merge_request, project)
@@ -278,16 +305,13 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
-    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+    # Pipelines feature is tied to presence of builds
+    if can?(current_user, :read_build, project)
       nav_tabs << :pipelines
     end
 
     if can?(current_user, :read_environment, project) || can?(current_user, :read_cluster, project)
       nav_tabs << :operations
-    end
-
-    if project.external_issue_tracker
-      nav_tabs << :external_issue_tracker
     end
 
     tab_ability_map.each do |tab, ability|
@@ -296,7 +320,16 @@ module ProjectsHelper
       end
     end
 
+    nav_tabs << external_nav_tabs(project)
+
     nav_tabs.flatten
+  end
+
+  def external_nav_tabs(project)
+    [].tap do |tabs|
+      tabs << :external_issue_tracker if project.external_issue_tracker
+      tabs << :external_wiki if project.has_external_wiki?
+    end
   end
 
   def tab_ability_map
@@ -307,6 +340,8 @@ module ProjectsHelper
       settings:         :admin_project,
       builds:           :read_build,
       clusters:         :read_cluster,
+      serverless:       :read_cluster,
+      error_tracking:   :read_sentry_issue,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,
@@ -378,6 +413,10 @@ module ProjectsHelper
     else
       'ssh'
     end
+  end
+
+  def sidebar_operations_link_path(project = @project)
+    metrics_project_environments_path(project) if can?(current_user, :read_environment, project)
   end
 
   def project_last_activity(project)
@@ -456,7 +495,7 @@ module ProjectsHelper
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesHelpPath: help_page_path('user/project/pages/index.md')
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control-core-only')
     }
   end
 
@@ -504,6 +543,7 @@ module ProjectsHelper
     %w[
       projects#show
       projects#activity
+      releases#index
       cycle_analytics#show
     ]
   end
@@ -516,6 +556,7 @@ module ProjectsHelper
       services#edit
       repository#show
       ci_cd#show
+      operations#show
       badges#index
       pages#show
     ]
@@ -535,9 +576,26 @@ module ProjectsHelper
       projects/repositories
       tags
       branches
-      releases
       graphs
       network
     ]
+  end
+
+  def sidebar_operations_paths
+    %w[
+      environments
+      clusters
+      functions
+      error_tracking
+      user
+      gcp
+    ]
+  end
+
+  def user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
+    Ability.allowed?(user, :admin_project, project) &&
+      project.has_auto_devops_implicitly_enabled? &&
+      project.builds_enabled? &&
+      !project.repository.gitlab_ci_yml
   end
 end

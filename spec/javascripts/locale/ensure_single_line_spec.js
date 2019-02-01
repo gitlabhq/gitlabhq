@@ -4,6 +4,7 @@ describe('locale', () => {
   describe('ensureSingleLine', () => {
     it('should remove newlines at the start of the string', () => {
       const result = 'Test';
+
       expect(ensureSingleLine(`\n${result}`)).toBe(result);
       expect(ensureSingleLine(`\t\n\t${result}`)).toBe(result);
       expect(ensureSingleLine(`\r\n${result}`)).toBe(result);
@@ -14,6 +15,7 @@ describe('locale', () => {
 
     it('should remove newlines at the end of the string', () => {
       const result = 'Test';
+
       expect(ensureSingleLine(`${result}\n`)).toBe(result);
       expect(ensureSingleLine(`${result}\t\n\t`)).toBe(result);
       expect(ensureSingleLine(`${result}\r\n`)).toBe(result);
@@ -24,6 +26,7 @@ describe('locale', () => {
 
     it('should replace newlines in the middle of the string with a single space', () => {
       const result = 'Test';
+
       expect(ensureSingleLine(`${result}\n${result}`)).toBe(`${result} ${result}`);
       expect(ensureSingleLine(`${result}\t\n\t${result}`)).toBe(`${result} ${result}`);
       expect(ensureSingleLine(`${result}\r\n${result}`)).toBe(`${result} ${result}`);

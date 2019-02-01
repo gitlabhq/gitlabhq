@@ -114,19 +114,21 @@ When a request is made we often want to show a loading state to the user.
 
 Instead of creating an action to toggle the loading state and dispatch it in the component,
 create:
+
 1. An action `requestSomething`, to toggle the loading state
 1. An action `receiveSomethingSuccess`, to handle the success callback
 1. An action `receiveSomethingError`, to handle the error callback
 1. An action `fetchSomething` to make the request.
     1. In case your application does more than a `GET` request you can use these as examples:
-        1. `PUT`: `createSomething`
-        2. `POST`: `updateSomething`
-        3. `DELETE`: `deleteSomething`
+        - `POST`: `createSomething`
+        - `PUT`: `updateSomething`
+        - `DELETE`: `deleteSomething`
 
 The component MUST only dispatch the `fetchNamespace` action. Actions namespaced with `request` or `receive` should not be called from the component
 The `fetch` action will be responsible to dispatch `requestNamespace`, `receiveNamespaceSuccess` and `receiveNamespaceError`
 
 By following this pattern we guarantee:
+
 1. All applications follow the same pattern, making it easier for anyone to maintain the code
 1. All data in the application follows the same lifecycle pattern
 1. Actions are contained and human friendly
@@ -135,6 +137,7 @@ By following this pattern we guarantee:
 
 #### Dispatching actions
 To dispatch an action from a component, use the `mapActions` helper:
+
 ```javascript
 import { mapActions } from 'vuex';
 
@@ -202,6 +205,7 @@ export const getUsersWithPets = (state, getters) => {
 ```
 
 To access a getter from a component, use the `mapGetters` helper:
+
 ```javascript
 import { mapGetters } from 'vuex';
 
@@ -224,6 +228,7 @@ export const ADD_USER = 'ADD_USER';
 
 ### How to include the store in your application
 The store should be included in the main component of your application:
+
 ```javascript
   // app.vue
   import store from 'store'; // it will include the index.js file
@@ -297,12 +302,12 @@ export default {
 
     ```javascript
       // component.vue
-  
+
       // bad
       created() {
         this.$store.commit('mutation');
       }
-  
+
       // good
       created() {
         this.$store.dispatch('action');
@@ -362,7 +367,8 @@ Because we're currently using [`babel-plugin-rewire`](https://github.com/speedsk
 `[vuex] actions should be function or object with "handler" function`
 
 To prevent this error from happening, you need to export an empty function as `default`:
-```
+
+```javascript
 // getters.js or actions.js
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

@@ -133,10 +133,10 @@ module API
 
       desc "Get the status of a user"
       params do
-        requires :id_or_username, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'The ID or username of the user'
       end
-      get ":id_or_username/status" do
-        user = find_user(params[:id_or_username])
+      get ":user_id/status", requirements: API::USER_REQUIREMENTS do
+        user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         present user.status || {}, with: Entities::UserStatus
@@ -155,7 +155,6 @@ module API
         requires :username, type: String, desc: 'The username of the user'
         use :optional_attributes
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       post do
         authenticated_as_admin!
 
@@ -166,17 +165,16 @@ module API
           present user, with: Entities::UserPublic, current_user: current_user
         else
           conflict!('Email has already been taken') if User
-              .where(email: user.email)
-              .count > 0
+            .by_any_email(user.email.downcase)
+            .any?
 
           conflict!('Username has already been taken') if User
-              .where(username: user.username)
-              .count > 0
+            .by_username(user.username)
+            .any?
 
           render_validation_error!(user)
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Update a user. Available only for admins.' do
         success Entities::UserPublic
@@ -198,11 +196,11 @@ module API
         not_found!('User') unless user
 
         conflict!('Email has already been taken') if params[:email] &&
-            User.where(email: params[:email])
+            User.by_any_email(params[:email].downcase)
                 .where.not(id: user.id).count > 0
 
         conflict!('Username has already been taken') if params[:username] &&
-            User.where(username: params[:username])
+            User.by_username(params[:username])
                 .where.not(id: user.id).count > 0
 
         user_params = declared_params(include_missing: false)
@@ -514,11 +512,9 @@ module API
               PersonalAccessTokensFinder.new({ user: user, impersonation: true }.merge(options))
             end
 
-            # rubocop: disable CodeReuse/ActiveRecord
             def find_impersonation_token
-              finder.find_by(id: declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
+              finder.find_by_id(declared_params[:impersonation_token_id]) || not_found!('Impersonation Token')
             end
-            # rubocop: enable CodeReuse/ActiveRecord
           end
 
           before { authenticated_as_admin! }
@@ -535,7 +531,7 @@ module API
 
           desc 'Create a impersonation token. Available only for admins.' do
             detail 'This feature was introduced in GitLab 9.0'
-            success Entities::ImpersonationToken
+            success Entities::ImpersonationTokenWithToken
           end
           params do
             requires :name, type: String, desc: 'The name of the impersonation token'
@@ -546,7 +542,7 @@ module API
             impersonation_token = finder.build(declared_params(include_missing: false))
 
             if impersonation_token.save
-              present impersonation_token, with: Entities::ImpersonationToken
+              present impersonation_token, with: Entities::ImpersonationTokenWithToken
             else
               render_validation_error!(impersonation_token)
             end

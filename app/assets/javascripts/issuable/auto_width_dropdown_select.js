@@ -11,10 +11,14 @@ class AutoWidthDropdownSelect {
 
   init() {
     const { dropdownClass } = this;
-    this.$selectElement.select2({
-      dropdownCssClass: dropdownClass,
-      ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),
-    });
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(() => {
+        this.$selectElement.select2({
+          dropdownCssClass: dropdownClass,
+          ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),
+        });
+      })
+      .catch(() => {});
 
     return this;
   }
@@ -27,7 +31,10 @@ class AutoWidthDropdownSelect {
 
         // We have to look at the parent because
         // `offsetParent` on a `display: none;` is `null`
-        const offsetParentWidth = $(this).parent().offsetParent().width();
+        const offsetParentWidth = $(this)
+          .parent()
+          .offsetParent()
+          .width();
         // Reset any width to let it naturally flow
         $dropdown.css('width', 'auto');
         if ($dropdown.outerWidth(false) > offsetParentWidth) {

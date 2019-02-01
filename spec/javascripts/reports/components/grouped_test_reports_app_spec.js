@@ -42,6 +42,7 @@ describe('Grouped Test Reports App', () => {
         expect(vm.$el.textContent).toContain(
           'rspec:pg found no changed test results out of 8 total tests',
         );
+
         expect(vm.$el.textContent).toContain(
           'java ant found no changed test results out of 3 total tests',
         );
@@ -88,6 +89,7 @@ describe('Grouped Test Reports App', () => {
         expect(vm.$el.textContent).toContain(
           'rspec:pg found 2 failed test results out of 8 total tests',
         );
+
         expect(vm.$el.textContent).toContain('New');
         expect(vm.$el.textContent).toContain(
           'java ant found no changed test results out of 3 total tests',
@@ -115,6 +117,7 @@ describe('Grouped Test Reports App', () => {
         expect(vm.$el.textContent).toContain(
           'rspec:pg found 1 failed test result and 2 fixed test results out of 8 total tests',
         );
+
         expect(vm.$el.textContent).toContain('New');
         expect(vm.$el.textContent).toContain(
           ' java ant found 1 failed test result out of 3 total tests',
@@ -148,10 +151,11 @@ describe('Grouped Test Reports App', () => {
 
     it('renders resolved failures', done => {
       setTimeout(() => {
-        expect(vm.$el.querySelector('.js-mr-code-resolved-issues').textContent).toContain(
+        expect(vm.$el.querySelector('.report-block-container').textContent).toContain(
           resolvedFailures.suites[0].resolved_failures[0].name,
         );
-        expect(vm.$el.querySelector('.js-mr-code-resolved-issues').textContent).toContain(
+
+        expect(vm.$el.querySelector('.report-block-container').textContent).toContain(
           resolvedFailures.suites[0].resolved_failures[1].name,
         );
         done();

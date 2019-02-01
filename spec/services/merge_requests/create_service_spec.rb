@@ -128,9 +128,9 @@ describe MergeRequests::CreateService do
       end
 
       context 'when head pipelines already exist for merge request source branch' do
-        let(:sha) { project.commit(opts[:source_branch]).id }
-        let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: sha) }
-        let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: sha) }
+        let(:shas) { project.repository.commits(opts[:source_branch], limit: 2).map(&:id) }
+        let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
+        let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[0]) }
         let!(:pipeline_3) { create(:ci_pipeline, project: project, ref: "other_branch", project_id: project.id) }
 
         before do
@@ -144,18 +144,103 @@ describe MergeRequests::CreateService do
         it 'sets head pipeline' do
           merge_request = service.execute
 
-          expect(merge_request.head_pipeline).to eq(pipeline_2)
+          expect(merge_request.reload.head_pipeline).to eq(pipeline_2)
           expect(merge_request).to be_persisted
         end
 
-        context 'when merge request head commit sha does not match pipeline sha' do
-          it 'sets the head pipeline correctly' do
-            pipeline_2.update(sha: 1234)
+        context 'when the new pipeline is associated with an old sha' do
+          let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[0]) }
+          let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
 
+          it 'sets an old pipeline with associated with the latest sha as the head pipeline' do
             merge_request = service.execute
 
-            expect(merge_request.head_pipeline).to eq(pipeline_1)
+            expect(merge_request.reload.head_pipeline).to eq(pipeline_1)
             expect(merge_request).to be_persisted
+          end
+        end
+
+        context 'when there are no pipelines with the diff head sha' do
+          let!(:pipeline_1) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
+          let!(:pipeline_2) { create(:ci_pipeline, project: project, ref: opts[:source_branch], project_id: project.id, sha: shas[1]) }
+
+          it 'does not set the head pipeline' do
+            merge_request = service.execute
+
+            expect(merge_request.reload.head_pipeline).to be_nil
+            expect(merge_request).to be_persisted
+          end
+        end
+      end
+
+      describe 'Merge request pipelines' do
+        before do
+          stub_ci_pipeline_yaml_file(YAML.dump(config))
+        end
+
+        context "when .gitlab-ci.yml has merge_requests keywords" do
+          let(:config) do
+            {
+              test: {
+                stage: 'test',
+                script: 'echo',
+                only: ['merge_requests']
+              }
+            }
+          end
+
+          it 'creates a merge request pipeline and sets it as a head pipeline' do
+            expect(merge_request).to be_persisted
+
+            merge_request.reload
+            expect(merge_request.merge_request_pipelines.count).to eq(1)
+            expect(merge_request.actual_head_pipeline).to be_merge_request
+          end
+
+          context "when branch pipeline was created before a merge request pipline has been created" do
+            before do
+              create(:ci_pipeline, project: merge_request.source_project,
+                                   sha: merge_request.diff_head_sha,
+                                   ref: merge_request.source_branch,
+                                   tag: false)
+
+              merge_request
+            end
+
+            it 'sets the latest merge request pipeline as the head pipeline' do
+              expect(merge_request.actual_head_pipeline).to be_merge_request
+            end
+          end
+
+          context "when the 'ci_merge_request_pipeline' feature flag is disabled" do
+            before do
+              stub_feature_flags(ci_merge_request_pipeline: false)
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(merge_request).to be_persisted
+
+              merge_request.reload
+              expect(merge_request.merge_request_pipelines.count).to eq(0)
+            end
+          end
+        end
+
+        context "when .gitlab-ci.yml does not have merge_requests keywords" do
+          let(:config) do
+            {
+              test: {
+                stage: 'test',
+                script: 'echo'
+              }
+            }
+          end
+
+          it 'does not create a merge request pipeline' do
+            expect(merge_request).to be_persisted
+
+            merge_request.reload
+            expect(merge_request.merge_request_pipelines.count).to eq(0)
           end
         end
       end
@@ -216,7 +301,7 @@ describe MergeRequests::CreateService do
         end
 
         it 'removes assignee_id when user id is 0' do
-          opts = { title: 'Title', description: 'Description',  assignee_id: 0 }
+          opts = { title: 'Title', description: 'Description', assignee_id: 0 }
 
           merge_request = described_class.new(project, user, opts).execute
 

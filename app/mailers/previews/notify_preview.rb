@@ -68,6 +68,18 @@ class NotifyPreview < ActionMailer::Preview
     Notify.issue_status_changed_email(user.id, issue.id, 'closed', user.id).message
   end
 
+  def removed_milestone_issue_email
+    Notify.removed_milestone_issue_email(user.id, issue.id, user.id)
+  end
+
+  def changed_milestone_issue_email
+    Notify.changed_milestone_issue_email(user.id, issue.id, milestone, user.id)
+  end
+
+  def import_issues_csv_email
+    Notify.import_issues_csv_email(user, project, { success: 3, errors: [5, 6, 7], valid_file: true })
+  end
+
   def closed_merge_request_email
     Notify.closed_merge_request_email(user.id, issue.id, user.id).message
   end
@@ -78,6 +90,14 @@ class NotifyPreview < ActionMailer::Preview
 
   def merged_merge_request_email
     Notify.merged_merge_request_email(user.id, merge_request.id, user.id).message
+  end
+
+  def removed_milestone_merge_request_email
+    Notify.removed_milestone_merge_request_email(user.id, merge_request.id, user.id)
+  end
+
+  def changed_milestone_merge_request_email
+    Notify.changed_milestone_merge_request_email(user.id, merge_request.id, milestone, user.id)
   end
 
   def member_access_denied_email
@@ -129,6 +149,10 @@ class NotifyPreview < ActionMailer::Preview
     Notify.autodevops_disabled_email(pipeline, user.email).message
   end
 
+  def remote_mirror_update_failed_email
+    Notify.remote_mirror_update_failed_email(remote_mirror.id, user.id).message
+  end
+
   private
 
   def project
@@ -143,8 +167,16 @@ class NotifyPreview < ActionMailer::Preview
     @merge_request ||= project.merge_requests.first
   end
 
+  def milestone
+    @milestone ||= issue.milestone
+  end
+
   def pipeline
     @pipeline = Ci::Pipeline.last
+  end
+
+  def remote_mirror
+    @remote_mirror ||= RemoteMirror.last
   end
 
   def user

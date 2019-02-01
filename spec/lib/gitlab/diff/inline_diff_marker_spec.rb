@@ -16,7 +16,7 @@ describe Gitlab::Diff::InlineDiffMarker do
       end
     end
 
-    context "when the text text is not html safe" do
+    context "when the text is not html safe" do
       let(:rich) { "abc 'def' differs" }
 
       it 'marks the range' do

@@ -9,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
         params :optional_scope do
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
@@ -38,6 +38,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/jobs' do
+        authorize_read_builds!
+
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
@@ -50,13 +52,16 @@ module API
         success Entities::Job
       end
       params do
-        requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         use :optional_scope
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/pipelines/:pipeline_id/jobs' do
-        pipeline = user_project.pipelines.find(params[:pipeline_id])
+        authorize!(:read_pipeline, user_project)
+        pipeline = user_project.ci_pipelines.find(params[:pipeline_id])
+        authorize!(:read_build, pipeline)
+
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
         builds = builds.preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])
@@ -151,7 +156,7 @@ module API
         present build, with: Entities::Job
       end
 
-      desc 'Trigger a actionable job (manual, scheduled, etc)' do
+      desc 'Trigger a actionable job (manual, delayed, etc)' do
         success Entities::Job
         detail 'This feature was added in GitLab 8.11'
       end

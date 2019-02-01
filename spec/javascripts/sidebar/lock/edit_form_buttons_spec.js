@@ -8,8 +8,8 @@ describe('EditFormButtons', () => {
 
   beforeEach(() => {
     const Component = Vue.extend(editFormButtons);
-    const toggleForm = () => { };
-    const updateLockedAttribute = () => { };
+    const toggleForm = () => {};
+    const updateLockedAttribute = () => {};
 
     vm1 = mountComponent(Component, {
       isLocked: true,
@@ -25,12 +25,8 @@ describe('EditFormButtons', () => {
   });
 
   it('renders unlock or lock text based on locked state', () => {
-    expect(
-      vm1.$el.innerHTML.includes('Unlock'),
-    ).toBe(true);
+    expect(vm1.$el.innerHTML.includes('Unlock')).toBe(true);
 
-    expect(
-      vm2.$el.innerHTML.includes('Lock'),
-    ).toBe(true);
+    expect(vm2.$el.innerHTML.includes('Lock')).toBe(true);
   });
 });

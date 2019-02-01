@@ -1,4 +1,4 @@
-class FillFileStore < ActiveRecord::Migration
+class FillFileStore < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

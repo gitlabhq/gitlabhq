@@ -4,15 +4,14 @@ import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
 import MonitoringService from '../services/monitoring_service';
+import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
-import Graph from './graph.vue';
 import EmptyState from './empty_state.vue';
 import MonitoringStore from '../stores/monitoring_store';
-import eventHub from '../event_hub';
 
 export default {
   components: {
-    Graph,
+    MonitorAreaChart,
     GraphGroup,
     EmptyState,
     Icon,
@@ -23,20 +22,10 @@ export default {
       required: false,
       default: true,
     },
-    showLegend: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     showPanels: {
       type: Boolean,
       required: false,
       default: true,
-    },
-    forceSmallGraph: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     documentationPath: {
       type: String,
@@ -97,7 +86,6 @@ export default {
       store: new MonitoringStore(),
       state: 'gettingStarted',
       showEmptyState: true,
-      hoverData: {},
       elWidth: 0,
     };
   },
@@ -117,10 +105,8 @@ export default {
       childList: false,
       subtree: false,
     };
-    eventHub.$on('hoverChanged', this.hoverChanged);
   },
   beforeDestroy() {
-    eventHub.$off('hoverChanged', this.hoverChanged);
     window.removeEventListener('resize', this.resizeThrottled, false);
     this.sidebarMutationObserver.disconnect();
   },
@@ -139,6 +125,9 @@ export default {
     }
   },
   methods: {
+    getGraphAlerts(graphId) {
+      return this.alertData ? this.alertData[graphId] || {} : {};
+    },
     getGraphsData() {
       this.state = 'loading';
       Promise.all([
@@ -149,7 +138,7 @@ export default {
           .catch(() => Flash(s__('Metrics|There was an error getting deployment information.'))),
         this.service
           .getEnvironmentsData()
-          .then((data) => this.store.storeEnvironmentsData(data))
+          .then(data => this.store.storeEnvironmentsData(data))
           .catch(() => Flash(s__('Metrics|There was an error getting environments information.'))),
       ])
         .then(() => {
@@ -157,6 +146,7 @@ export default {
             this.state = 'noData';
             return;
           }
+
           this.showEmptyState = false;
         })
         .then(this.resize)
@@ -167,46 +157,30 @@ export default {
     resize() {
       this.elWidth = this.$el.clientWidth;
     },
-    hoverChanged(data) {
-      this.hoverData = data;
-    },
   },
 };
 </script>
 
 <template>
-  <div
-    v-if="!showEmptyState"
-    :key="forceRedraw"
-    class="prometheus-graphs prepend-top-default"
-  >
+  <div v-if="!showEmptyState" :key="forceRedraw" class="prometheus-graphs prepend-top-default">
     <div class="environments d-flex align-items-center">
       {{ s__('Metrics|Environment') }}
       <div class="dropdown prepend-left-10">
-        <button
-          class="dropdown-menu-toggle"
-          data-toggle="dropdown"
-          type="button"
-        >
-          <span>
-            {{ currentEnvironmentName }}
-          </span>
-          <icon
-            name="chevron-down"
-          />
+        <button class="dropdown-menu-toggle" data-toggle="dropdown" type="button">
+          <span> {{ currentEnvironmentName }} </span> <icon name="chevron-down" />
         </button>
-        <div class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up">
+        <div
+          v-if="store.environmentsData.length > 0"
+          class="dropdown-menu dropdown-menu-selectable dropdown-menu-drop-up"
+        >
           <ul>
-            <li
-              v-for="environment in store.environmentsData"
-              :key="environment.latest.id"
-            >
+            <li v-for="environment in store.environmentsData" :key="environment.id">
               <a
-                :href="environment.latest.metrics_path"
-                :class="{ 'is-active': environment.latest.name == currentEnvironmentName }"
+                :href="environment.metrics_path"
+                :class="{ 'is-active': environment.name == currentEnvironmentName }"
                 class="dropdown-item"
               >
-                {{ environment.latest.name }}
+                {{ environment.name }}
               </a>
             </li>
           </ul>
@@ -219,20 +193,13 @@ export default {
       :name="groupData.group"
       :show-panels="showPanels"
     >
-      <graph
+      <monitor-area-chart
         v-for="(graphData, graphIndex) in groupData.metrics"
         :key="graphIndex"
         :graph-data="graphData"
-        :hover-data="hoverData"
-        :deployment-data="store.deploymentData"
-        :project-path="projectPath"
-        :tags-path="tagsPath"
-        :show-legend="showLegend"
-        :small-graph="forceSmallGraph"
-      >
-        <!-- EE content -->
-        {{ null }}
-      </graph>
+        :alert-data="getGraphAlerts(graphData.id)"
+        group-id="monitor-area-chart"
+      />
     </graph-group>
   </div>
   <empty-state

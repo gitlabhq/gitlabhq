@@ -1,4 +1,4 @@
-class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration
+class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   class GcpCluster < ActiveRecord::Base

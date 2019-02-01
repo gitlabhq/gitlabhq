@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Style/ClassVars
 
 module Gitlab
@@ -35,7 +37,7 @@ module Gitlab
         request_headers = env_http_headers(env)
         status, headers, body = @app.call(env)
 
-        full_body = ''
+        full_body = +''
         body.each { |b| full_body << b }
 
         request = OpenStruct.new(

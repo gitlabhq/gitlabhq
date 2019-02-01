@@ -23,6 +23,7 @@ describe('DiffGutterAvatars', () => {
 
       it('should return false when all discussions are not expanded', () => {
         component.discussions[0].expanded = false;
+
         expect(component.discussionsExpanded).toEqual(false);
       });
     });
@@ -56,6 +57,7 @@ describe('DiffGutterAvatars', () => {
 
       it('should return empty string if there is no discussion', () => {
         component.discussions = [];
+
         expect(component.moreText).toEqual('');
       });
     });
@@ -86,6 +88,35 @@ describe('DiffGutterAvatars', () => {
 
         expect(component.discussions[0].expanded).toEqual(false);
         component.$store.dispatch('setInitialNotes', []);
+      });
+
+      it('forces expansion of all discussions', () => {
+        spyOn(component.$store, 'dispatch');
+
+        component.discussions[0].expanded = true;
+        component.discussions.push({
+          ...component.discussions[0],
+          id: '123test',
+          expanded: false,
+        });
+
+        component.toggleDiscussions();
+
+        expect(component.$store.dispatch.calls.argsFor(0)).toEqual([
+          'toggleDiscussion',
+          {
+            discussionId: component.discussions[0].id,
+            forceExpanded: true,
+          },
+        ]);
+
+        expect(component.$store.dispatch.calls.argsFor(1)).toEqual([
+          'toggleDiscussion',
+          {
+            discussionId: component.discussions[1].id,
+            forceExpanded: true,
+          },
+        ]);
       });
     });
   });

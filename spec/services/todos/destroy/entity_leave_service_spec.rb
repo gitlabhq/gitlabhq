@@ -173,10 +173,10 @@ describe Todos::Destroy::EntityLeaveService do
           let(:subproject) { create(:project, group: subgroup) }
           let(:subproject2) { create(:project, group: subgroup2) }
 
-          let!(:todo_subproject_user)  { create(:todo, user: user, project: subproject) }
-          let!(:todo_subproject2_user)  { create(:todo, user: user, project: subproject2) }
-          let!(:todo_subgroup_user)    { create(:todo, user: user, group: subgroup) }
-          let!(:todo_subgroup2_user)    { create(:todo, user: user, group: subgroup2) }
+          let!(:todo_subproject_user) { create(:todo, user: user, project: subproject) }
+          let!(:todo_subproject2_user) { create(:todo, user: user, project: subproject2) }
+          let!(:todo_subgroup_user) { create(:todo, user: user, group: subgroup) }
+          let!(:todo_subgroup2_user) { create(:todo, user: user, group: subgroup2) }
           let!(:todo_subproject_user2) { create(:todo, user: user2, project: subproject) }
           let!(:todo_subpgroup_user2)  { create(:todo, user: user2, group: subgroup) }
 

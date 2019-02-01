@@ -27,10 +27,10 @@ export default {
       'unusedSeal',
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
-    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
+    ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommittedChanges', 'activeFile']),
     ...mapGetters('commit', ['discardDraftButtonDisabled']),
     showStageUnstageArea() {
-      return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
+      return !!(this.someUncommittedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
     activeFileKey() {
       return this.activeFile ? this.activeFile.key : null;
@@ -71,9 +71,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="multi-file-commit-panel-section"
-  >
+  <div class="multi-file-commit-panel-section">
     <deprecated-modal
       id="ide-create-branch-modal"
       :primary-button-label="__('Create new branch')"
@@ -82,13 +80,13 @@ export default {
       @submit="forceCreateNewBranch"
     >
       <template slot="body">
-        {{ __(`This branch has changed since you started editing.
-          Would you like to create a new branch?`) }}
+        {{
+          __(`This branch has changed since you started editing.
+          Would you like to create a new branch?`)
+        }}
       </template>
     </deprecated-modal>
-    <template
-      v-if="showStageUnstageArea"
-    >
+    <template v-if="showStageUnstageArea">
       <commit-files-list
         :title="__('Unstaged')"
         :key-prefix="$options.stageKeys.unstaged"
@@ -116,8 +114,6 @@ export default {
         icon-name="staged"
       />
     </template>
-    <empty-state
-      v-if="unusedSeal"
-    />
+    <empty-state v-if="unusedSeal" />
   </div>
 </template>

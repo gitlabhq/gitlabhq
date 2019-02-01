@@ -80,25 +80,44 @@ class BambooService < CiService
 
   private
 
+  def get_build_result(response)
+    return if response.code != 200
+
+    # May be nil if no result, a single result hash, or an array if multiple results for a given changeset.
+    result = response.dig('results', 'results', 'result')
+
+    # In case of multiple results, arbitrarily assume the last one is the most relevant.
+    return result.last if result.is_a?(Array)
+
+    result
+  end
+
   def read_build_page(response)
-    if response.code != 200 || response['results']['results']['size'] == '0'
-      # If actual build link can't be determined, send user to build summary page.
-      URI.join("#{bamboo_url}/", "browse/#{build_key}").to_s
-    else
-      # If actual build link is available, go to build result page.
-      result_key = response['results']['results']['result']['planResultKey']['key']
-      URI.join("#{bamboo_url}/", "browse/#{result_key}").to_s
-    end
+    result = get_build_result(response)
+    key =
+      if result.blank?
+        # If actual build link can't be determined, send user to build summary page.
+        build_key
+      else
+        # If actual build link is available, go to build result page.
+        result.dig('planResultKey', 'key')
+      end
+
+    build_url("browse/#{key}")
   end
 
   def read_commit_status(response)
     return :error unless response.code == 200 || response.code == 404
 
-    status = if response.code == 404 || response['results']['results']['size'] == '0'
-               'Pending'
-             else
-               response['results']['results']['result']['buildState']
-             end
+    result = get_build_result(response)
+    status =
+      if result.blank?
+        'Pending'
+      else
+        result.dig('buildState')
+      end
+
+    return :error unless status.present?
 
     if status.include?('Success')
       'success'
@@ -112,7 +131,7 @@ class BambooService < CiService
   end
 
   def build_url(path)
-    URI.join("#{bamboo_url}/", path).to_s
+    Gitlab::Utils.append_path(bamboo_url, path)
   end
 
   def get_path(path, query_params = {})

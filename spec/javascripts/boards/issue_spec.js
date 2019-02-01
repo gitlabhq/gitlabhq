@@ -21,18 +21,22 @@ describe('Issue model', () => {
       id: 1,
       iid: 1,
       confidential: false,
-      labels: [{
-        id: 1,
-        title: 'test',
-        color: 'red',
-        description: 'testing'
-      }],
-      assignees: [{
-        id: 1,
-        name: 'name',
-        username: 'username',
-        avatar_url: 'http://avatar_url',
-      }],
+      labels: [
+        {
+          id: 1,
+          title: 'test',
+          color: 'red',
+          description: 'testing',
+        },
+      ],
+      assignees: [
+        {
+          id: 1,
+          name: 'name',
+          username: 'username',
+          avatar_url: 'http://avatar_url',
+        },
+      ],
     });
   });
 
@@ -45,30 +49,45 @@ describe('Issue model', () => {
       id: 2,
       title: 'bug',
       color: 'blue',
-      description: 'bugs!'
+      description: 'bugs!',
     });
+
     expect(issue.labels.length).toBe(2);
   });
 
-  it('does not add existing label', () => {
+  it('does not add label if label id exists', () => {
+    issue.addLabel({
+      id: 1,
+      title: 'test 2',
+      color: 'blue',
+      description: 'testing',
+    });
+
+    expect(issue.labels.length).toBe(1);
+    expect(issue.labels[0].color).toBe('red');
+  });
+
+  it('adds other label with same title', () => {
     issue.addLabel({
       id: 2,
       title: 'test',
       color: 'blue',
-      description: 'bugs!'
+      description: 'other test',
     });
 
-    expect(issue.labels.length).toBe(1);
+    expect(issue.labels.length).toBe(2);
   });
 
   it('finds label', () => {
     const label = issue.findLabel(issue.labels[0]);
+
     expect(label).toBeDefined();
   });
 
   it('removes label', () => {
     const label = issue.findLabel(issue.labels[0]);
     issue.removeLabel(label);
+
     expect(issue.labels.length).toBe(0);
   });
 
@@ -77,11 +96,13 @@ describe('Issue model', () => {
       id: 2,
       title: 'bug',
       color: 'blue',
-      description: 'bugs!'
+      description: 'bugs!',
     });
+
     expect(issue.labels.length).toBe(2);
 
     issue.removeLabels([issue.labels[0], issue.labels[1]]);
+
     expect(issue.labels.length).toBe(0);
   });
 
@@ -98,17 +119,20 @@ describe('Issue model', () => {
 
   it('finds assignee', () => {
     const assignee = issue.findAssignee(issue.assignees[0]);
+
     expect(assignee).toBeDefined();
   });
 
   it('removes assignee', () => {
     const assignee = issue.findAssignee(issue.assignees[0]);
     issue.removeAssignee(assignee);
+
     expect(issue.assignees.length).toBe(0);
   });
 
   it('removes all assignees', () => {
     issue.removeAllAssignees();
+
     expect(issue.assignees.length).toBe(0);
   });
 
@@ -131,6 +155,7 @@ describe('Issue model', () => {
 
   it('updates data', () => {
     issue.updateData({ subscribed: true });
+
     expect(issue.subscribed).toBe(true);
   });
 
@@ -149,7 +174,7 @@ describe('Issue model', () => {
   });
 
   describe('update', () => {
-    it('passes assignee ids when there are assignees', (done) => {
+    it('passes assignee ids when there are assignees', done => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([1]);
         done();
@@ -158,7 +183,7 @@ describe('Issue model', () => {
       issue.update('url');
     });
 
-    it('passes assignee ids of [0] when there are no assignees', (done) => {
+    it('passes assignee ids of [0] when there are no assignees', done => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {
         expect(data.issue.assignee_ids).toEqual([0]);
         done();

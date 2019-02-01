@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 # Gitlab::Git::Commit is a wrapper around Gitaly::GitCommit
 module Gitlab
   module Git
     class Commit
       include Gitlab::EncodingHelper
+      extend Gitlab::Git::WrapsGitalyErrors
 
       attr_accessor :raw_commit, :head
 
@@ -59,7 +62,7 @@ module Gitlab
           # This saves us an RPC round trip.
           return nil if commit_id.include?(':')
 
-          commit = repo.wrapped_gitaly_errors do
+          commit = wrapped_gitaly_errors do
             repo.gitaly_commit_client.find_commit(commit_id)
           end
 
@@ -100,7 +103,7 @@ module Gitlab
         #   Commit.between(repo, '29eda46b', 'master')
         #
         def between(repo, base, head)
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repo.gitaly_commit_client.between(base, head)
           end
         end
@@ -125,7 +128,7 @@ module Gitlab
         #        are documented here:
         #        http://www.rubydoc.info/github/libgit2/rugged/Rugged#SORT_NONE-constant)
         def find_all(repo, options = {})
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
           end
         end
@@ -142,7 +145,7 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.wrapped_gitaly_errors do
+          wrapped_gitaly_errors do
             repo.gitaly_commit_client.list_commits_by_oid(oids)
           end
         end
@@ -152,17 +155,9 @@ module Gitlab
         end
 
         def extract_signature_lazily(repository, commit_id)
-          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
-            items_by_repo = items.group_by { |i| i[:repository] }
-
-            items_by_repo.each do |repo, items|
-              commit_ids = items.map { |i| i[:commit_id] }
-
-              signatures = batch_signature_extraction(repository, commit_ids)
-
-              signatures.each do |commit_sha, signature_data|
-                loader.call({ repository: repository, commit_id: commit_sha }, signature_data)
-              end
+          BatchLoader.for(commit_id).batch(key: repository) do |commit_ids, loader, args|
+            batch_signature_extraction(args[:key], commit_ids).each do |commit_id, signature_data|
+              loader.call(commit_id, signature_data)
             end
           end
         end
@@ -172,17 +167,9 @@ module Gitlab
         end
 
         def get_message(repository, commit_id)
-          BatchLoader.for({ repository: repository, commit_id: commit_id }).batch do |items, loader|
-            items_by_repo = items.group_by { |i| i[:repository] }
-
-            items_by_repo.each do |repo, items|
-              commit_ids = items.map { |i| i[:commit_id] }
-
-              messages = get_messages(repository, commit_ids)
-
-              messages.each do |commit_sha, message|
-                loader.call({ repository: repository, commit_id: commit_sha }, message)
-              end
+          BatchLoader.for(commit_id).batch(key: repository) do |commit_ids, loader, args|
+            get_messages(args[:key], commit_ids).each do |commit_id, message|
+              loader.call(commit_id, message)
             end
           end
         end

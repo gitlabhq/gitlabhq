@@ -1,1 +1,4 @@
-= render partial: 'events/event', collection: @events
+- if @events.present?
+  = render partial: 'events/event', collection: @events
+- else
+  .nothing-here-block= _("No activities found")

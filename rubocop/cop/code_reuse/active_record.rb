@@ -49,7 +49,6 @@ module RuboCop
           limit: true,
           lock: false,
           many?: false,
-          none: false,
           offset: true,
           order: true,
           pluck: true,

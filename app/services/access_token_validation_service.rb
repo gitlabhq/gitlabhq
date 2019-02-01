@@ -6,6 +6,7 @@ class AccessTokenValidationService
   EXPIRED = :expired
   REVOKED = :revoked
   INSUFFICIENT_SCOPE = :insufficient_scope
+  IMPERSONATION_DISABLED = :impersonation_disabled
 
   attr_reader :token, :request
 
@@ -23,6 +24,11 @@ class AccessTokenValidationService
 
     elsif !self.include_any_scope?(scopes)
       return INSUFFICIENT_SCOPE
+
+    elsif token.respond_to?(:impersonation) &&
+        token.impersonation &&
+        !Gitlab.config.gitlab.impersonation_enabled
+      return IMPERSONATION_DISABLED
 
     else
       return VALID

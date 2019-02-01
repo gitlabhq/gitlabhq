@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -5,9 +7,9 @@ module Gitlab
         ##
         # Entry that represents a cache configuration
         #
-        class Cache < Node
-          include Configurable
-          include Attributable
+        class Cache < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Configurable
+          include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[key untracked paths policy].freeze
           DEFAULT_POLICY = 'pull-push'.freeze
@@ -20,7 +22,7 @@ module Gitlab
           entry :key, Entry::Key,
             description: 'Cache key used to define a cache affinity.'
 
-          entry :untracked, Entry::Boolean,
+          entry :untracked, ::Gitlab::Config::Entry::Boolean,
             description: 'Cache all untracked files.'
 
           entry :paths, Entry::Paths,

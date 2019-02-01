@@ -1,10 +1,6 @@
-import {
-  Matrix4,
-  MeshLambertMaterial,
-  Mesh,
-} from 'three/build/three.module';
+import { Matrix4, MeshLambertMaterial, Mesh } from 'three/build/three.module';
 
-const defaultColor = 0xE24329;
+const defaultColor = 0xe24329;
 const materials = {
   default: new MeshLambertMaterial({
     color: defaultColor,
@@ -17,10 +13,7 @@ const materials = {
 
 export default class MeshObject extends Mesh {
   constructor(geo) {
-    super(
-      geo,
-      materials.default,
-    );
+    super(geo, materials.default);
 
     this.geometry.computeBoundingSphere();
 
@@ -29,13 +22,7 @@ export default class MeshObject extends Mesh {
     if (this.geometry.boundingSphere.radius > 4) {
       const scale = 4 / this.geometry.boundingSphere.radius;
 
-      this.geometry.applyMatrix(
-        new Matrix4().makeScale(
-          scale,
-          scale,
-          scale,
-        ),
-      );
+      this.geometry.applyMatrix(new Matrix4().makeScale(scale, scale, scale));
       this.geometry.computeBoundingSphere();
 
       this.position.x = -this.geometry.boundingSphere.center.x;

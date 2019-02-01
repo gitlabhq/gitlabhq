@@ -1,114 +1,119 @@
 <script>
-  import _ from 'underscore';
-  import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
-  import { s__, sprintf } from '~/locale';
+import _ from 'underscore';
+import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
+import { s__, sprintf } from '~/locale';
 
-  export default {
-    components: {
-      DeprecatedModal,
+export default {
+  components: {
+    DeprecatedModal,
+  },
+  props: {
+    deleteUserUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
-    props: {
-      deleteUserUrl: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      blockUserUrl: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      deleteContributions: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      username: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      csrfToken: {
-        type: String,
-        required: false,
-        default: '',
-      },
+    blockUserUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
-    data() {
-      return {
-        enteredUsername: '',
-      };
+    deleteContributions: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    computed: {
-      title() {
-        const keepContributionsTitle = s__('AdminUsers|Delete User %{username}?');
-        const deleteContributionsTitle = s__('AdminUsers|Delete User %{username} and contributions?');
+    username: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    csrfToken: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  data() {
+    return {
+      enteredUsername: '',
+    };
+  },
+  computed: {
+    title() {
+      const keepContributionsTitle = s__('AdminUsers|Delete User %{username}?');
+      const deleteContributionsTitle = s__('AdminUsers|Delete User %{username} and contributions?');
 
-        return sprintf(
-          this.deleteContributions ? deleteContributionsTitle : keepContributionsTitle, {
-            username: `'${_.escape(this.username)}'`,
-          }, false);
-      },
-      text() {
-        const keepContributionsText = s__(`AdminArea|
+      return sprintf(
+        this.deleteContributions ? deleteContributionsTitle : keepContributionsTitle,
+        {
+          username: `'${_.escape(this.username)}'`,
+        },
+        false,
+      );
+    },
+    text() {
+      const keepContributionsText = s__(`AdminArea|
           You are about to permanently delete the user %{username}.
           Issues, merge requests, and groups linked to them will be transferred to a system-wide "Ghost-user".
           To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead.
           Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered.`);
 
-        const deleteContributionsText = s__(`AdminArea|
+      const deleteContributionsText = s__(`AdminArea|
           You are about to permanently delete the user %{username}.
           This will delete all of the issues, merge requests, and groups linked to them.
           To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead.
           Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered.`);
-        return sprintf(this.deleteContributions ? deleteContributionsText : keepContributionsText,
-          {
-            username: `<strong>${_.escape(this.username)}</strong>`,
-            strong_start: '<strong>',
-            strong_end: '</strong>',
-          },
-          false,
-        );
-      },
-      confirmationTextLabel() {
-        return sprintf(s__('AdminUsers|To confirm, type %{username}'),
-          {
-            username: `<code>${_.escape(this.username)}</code>`,
-          },
-          false,
-        );
-      },
-      primaryButtonLabel() {
-        const keepContributionsLabel = s__('AdminUsers|Delete user');
-        const deleteContributionsLabel = s__('AdminUsers|Delete user and contributions');
-
-        return this.deleteContributions ? deleteContributionsLabel : keepContributionsLabel;
-      },
-      secondaryButtonLabel() {
-        return s__('AdminUsers|Block user');
-      },
-      canSubmit() {
-        return this.enteredUsername === this.username;
-      },
+      return sprintf(
+        this.deleteContributions ? deleteContributionsText : keepContributionsText,
+        {
+          username: `<strong>${_.escape(this.username)}</strong>`,
+          strong_start: '<strong>',
+          strong_end: '</strong>',
+        },
+        false,
+      );
     },
-    methods: {
-      onCancel() {
-        this.enteredUsername = '';
-      },
-      onSecondaryAction() {
-        const { form } = this.$refs;
-
-        form.action = this.blockUserUrl;
-        this.$refs.method.value = 'put';
-
-        form.submit();
-      },
-      onSubmit() {
-        this.$refs.form.submit();
-        this.enteredUsername = '';
-      },
+    confirmationTextLabel() {
+      return sprintf(
+        s__('AdminUsers|To confirm, type %{username}'),
+        {
+          username: `<code>${_.escape(this.username)}</code>`,
+        },
+        false,
+      );
     },
-  };
+    primaryButtonLabel() {
+      const keepContributionsLabel = s__('AdminUsers|Delete user');
+      const deleteContributionsLabel = s__('AdminUsers|Delete user and contributions');
+
+      return this.deleteContributions ? deleteContributionsLabel : keepContributionsLabel;
+    },
+    secondaryButtonLabel() {
+      return s__('AdminUsers|Block user');
+    },
+    canSubmit() {
+      return this.enteredUsername === this.username;
+    },
+  },
+  methods: {
+    onCancel() {
+      this.enteredUsername = '';
+    },
+    onSecondaryAction() {
+      const { form } = this.$refs;
+
+      form.action = this.blockUserUrl;
+      this.$refs.method.value = 'put';
+
+      form.submit();
+    },
+    onSubmit() {
+      this.$refs.form.submit();
+      this.enteredUsername = '';
+    },
+  },
+};
 </script>
 
 <template>
@@ -123,28 +128,12 @@
     @submit="onSubmit"
     @cancel="onCancel"
   >
-    <template
-      slot="body"
-      slot-scope="props"
-    >
+    <template slot="body" slot-scope="props">
       <p v-html="props.text"></p>
       <p v-html="confirmationTextLabel"></p>
-      <form
-        ref="form"
-        :action="deleteUserUrl"
-        method="post"
-      >
-        <input
-          ref="method"
-          type="hidden"
-          name="_method"
-          value="delete"
-        />
-        <input
-          :value="csrfToken"
-          type="hidden"
-          name="authenticity_token"
-        />
+      <form ref="form" :action="deleteUserUrl" method="post">
+        <input ref="method" type="hidden" name="_method" value="delete" />
+        <input :value="csrfToken" type="hidden" name="authenticity_token" />
         <input
           v-model="enteredUsername"
           type="text"

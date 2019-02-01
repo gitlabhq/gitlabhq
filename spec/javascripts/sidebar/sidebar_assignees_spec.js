@@ -24,10 +24,14 @@ describe('sidebar assignees', () => {
 
     const SidebarAssigneeComponent = Vue.extend(SidebarAssignees);
     sidebarAssigneesEl = document.querySelector('#js-vue-sidebar-assignees');
-    vm = mountComponent(SidebarAssigneeComponent, {
-      mediator,
-      field: sidebarAssigneesEl.dataset.field,
-    }, sidebarAssigneesEl);
+    vm = mountComponent(
+      SidebarAssigneeComponent,
+      {
+        mediator,
+        field: sidebarAssigneesEl.dataset.field,
+      },
+      sidebarAssigneesEl,
+    );
   });
 
   afterEach(() => {
@@ -39,6 +43,7 @@ describe('sidebar assignees', () => {
 
   it('calls the mediator when saves the assignees', () => {
     vm.saveAssignees();
+
     expect(mediator.saveAssignees).toHaveBeenCalled();
   });
 
@@ -49,8 +54,9 @@ describe('sidebar assignees', () => {
     expect(mediator.store.assignees.length).toEqual(1);
   });
 
-  it('hides assignees until fetched', (done) => {
+  it('hides assignees until fetched', done => {
     const currentAssignee = sidebarAssigneesEl.querySelector('.value');
+
     expect(currentAssignee).toBe(null);
 
     vm.store.isFetching.assignees = false;

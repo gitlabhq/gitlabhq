@@ -1,4 +1,4 @@
-class CreateInternalIdsTable < ActiveRecord::Migration
+class CreateInternalIdsTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

@@ -7,26 +7,29 @@ const options = {
   maintainAspectRatio: false,
 };
 
-const buildChart = (chartScope) => {
+const buildChart = chartScope => {
   const data = {
     labels: chartScope.labels,
-    datasets: [{
-      fillColor: '#707070',
-      strokeColor: '#707070',
-      pointColor: '#707070',
-      pointStrokeColor: '#EEE',
-      data: chartScope.totalValues,
-    },
-    {
-      fillColor: '#1aaa55',
-      strokeColor: '#1aaa55',
-      pointColor: '#1aaa55',
-      pointStrokeColor: '#fff',
-      data: chartScope.successValues,
-    },
+    datasets: [
+      {
+        fillColor: '#707070',
+        strokeColor: '#707070',
+        pointColor: '#707070',
+        pointStrokeColor: '#EEE',
+        data: chartScope.totalValues,
+      },
+      {
+        fillColor: '#1aaa55',
+        strokeColor: '#1aaa55',
+        pointColor: '#1aaa55',
+        pointStrokeColor: '#fff',
+        data: chartScope.successValues,
+      },
     ],
   };
-  const ctx = $(`#${chartScope.scope}Chart`).get(0).getContext('2d');
+  const ctx = $(`#${chartScope.scope}Chart`)
+    .get(0)
+    .getContext('2d');
 
   new Chart(ctx).Line(data, options);
 };
@@ -36,14 +39,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const chartsData = JSON.parse(document.getElementById('pipelinesChartsData').innerHTML);
   const data = {
     labels: chartTimesData.labels,
-    datasets: [{
-      fillColor: 'rgba(220,220,220,0.5)',
-      strokeColor: 'rgba(220,220,220,1)',
-      barStrokeWidth: 1,
-      barValueSpacing: 1,
-      barDatasetSpacing: 1,
-      data: chartTimesData.values,
-    }],
+    datasets: [
+      {
+        fillColor: 'rgba(220,220,220,0.5)',
+        strokeColor: 'rgba(220,220,220,1)',
+        barStrokeWidth: 1,
+        barValueSpacing: 1,
+        barDatasetSpacing: 1,
+        data: chartTimesData.values,
+      },
+    ],
   };
 
   if (window.innerWidth < 768) {
@@ -51,7 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
     options.scaleFontSize = 8;
   }
 
-  new Chart($('#build_timesChart').get(0).getContext('2d')).Bar(data, options);
+  new Chart(
+    $('#build_timesChart')
+      .get(0)
+      .getContext('2d'),
+  ).Bar(data, options);
 
   chartsData.forEach(scope => buildChart(scope));
 });

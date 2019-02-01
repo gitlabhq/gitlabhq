@@ -1,4 +1,4 @@
-class CreateGpgSignatures < ActiveRecord::Migration
+class CreateGpgSignatures < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

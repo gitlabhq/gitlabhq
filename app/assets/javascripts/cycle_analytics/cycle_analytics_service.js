@@ -18,10 +18,7 @@ export default class CycleAnalyticsService {
   }
 
   fetchStageData(options) {
-    const {
-      stage,
-      startDate,
-    } = options;
+    const { stage, startDate } = options;
 
     return this.axios
       .get(`events/${stage.name}.json`, {

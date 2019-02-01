@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class RequestContext
     class << self
@@ -11,7 +13,7 @@ module Gitlab
     end
 
     def call(env)
-      req = Rack::Request.new(env)
+      req = ActionDispatch::Request.new(env)
 
       Gitlab::SafeRequestStore[:client_ip] = req.ip
 

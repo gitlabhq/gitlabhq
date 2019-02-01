@@ -1,5 +1,0 @@
----
-title: Enable the ability to use the force env for rebuilding authorized_keys during a restore
-merge_request: 21896
-author:
-type: fixed

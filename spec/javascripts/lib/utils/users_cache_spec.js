@@ -3,15 +3,17 @@ import UsersCache from '~/lib/utils/users_cache';
 
 describe('UsersCache', () => {
   const dummyUsername = 'win';
-  const dummyUser = 'has a farm';
+  const dummyUserId = 123;
+  const dummyUser = { name: 'has a farm', username: 'farmer' };
+  const dummyUserStatus = 'my status';
 
   beforeEach(() => {
-    UsersCache.internalStorage = { };
+    UsersCache.internalStorage = {};
   });
 
   describe('get', () => {
     it('returns undefined for empty cache', () => {
-      expect(UsersCache.internalStorage).toEqual({ });
+      expect(UsersCache.internalStorage).toEqual({});
 
       const user = UsersCache.get(dummyUsername);
 
@@ -37,7 +39,7 @@ describe('UsersCache', () => {
 
   describe('hasData', () => {
     it('returns false for empty cache', () => {
-      expect(UsersCache.internalStorage).toEqual({ });
+      expect(UsersCache.internalStorage).toEqual({});
 
       expect(UsersCache.hasData(dummyUsername)).toBe(false);
     });
@@ -57,11 +59,11 @@ describe('UsersCache', () => {
 
   describe('remove', () => {
     it('does nothing if cache is empty', () => {
-      expect(UsersCache.internalStorage).toEqual({ });
+      expect(UsersCache.internalStorage).toEqual({});
 
       UsersCache.remove(dummyUsername);
 
-      expect(UsersCache.internalStorage).toEqual({ });
+      expect(UsersCache.internalStorage).toEqual({});
     });
 
     it('does nothing if cache contains no matching data', () => {
@@ -77,7 +79,7 @@ describe('UsersCache', () => {
 
       UsersCache.remove(dummyUsername);
 
-      expect(UsersCache.internalStorage).toEqual({ });
+      expect(UsersCache.internalStorage).toEqual({});
     });
   });
 
@@ -88,7 +90,7 @@ describe('UsersCache', () => {
       spyOn(Api, 'users').and.callFake((query, options) => apiSpy(query, options));
     });
 
-    it('stores and returns data from API call if cache is empty', (done) => {
+    it('stores and returns data from API call if cache is empty', done => {
       apiSpy = (query, options) => {
         expect(query).toBe('');
         expect(options).toEqual({ username: dummyUsername });
@@ -98,15 +100,15 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieve(dummyUsername)
-      .then((user) => {
-        expect(user).toBe(dummyUser);
-        expect(UsersCache.internalStorage[dummyUsername]).toBe(dummyUser);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(user => {
+          expect(user).toBe(dummyUser);
+          expect(UsersCache.internalStorage[dummyUsername]).toBe(dummyUser);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
-    it('returns undefined if Ajax call fails and cache is empty', (done) => {
+    it('returns undefined if Ajax call fails and cache is empty', done => {
       const dummyError = new Error('server exploded');
       apiSpy = (query, options) => {
         expect(query).toBe('');
@@ -115,24 +117,130 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieve(dummyUsername)
-      .then(user => fail(`Received unexpected user: ${JSON.stringify(user)}`))
-      .catch((error) => {
-        expect(error).toBe(dummyError);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(user => fail(`Received unexpected user: ${JSON.stringify(user)}`))
+        .catch(error => {
+          expect(error).toBe(dummyError);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
-    it('makes no Ajax call if matching data exists', (done) => {
+    it('makes no Ajax call if matching data exists', done => {
       UsersCache.internalStorage[dummyUsername] = dummyUser;
       apiSpy = () => fail(new Error('expected no Ajax call!'));
 
       UsersCache.retrieve(dummyUsername)
-      .then((user) => {
-        expect(user).toBe(dummyUser);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(user => {
+          expect(user).toBe(dummyUser);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('retrieveById', () => {
+    let apiSpy;
+
+    beforeEach(() => {
+      spyOn(Api, 'user').and.callFake(id => apiSpy(id));
+    });
+
+    it('stores and returns data from API call if cache is empty', done => {
+      apiSpy = id => {
+        expect(id).toBe(dummyUserId);
+        return Promise.resolve({
+          data: dummyUser,
+        });
+      };
+
+      UsersCache.retrieveById(dummyUserId)
+        .then(user => {
+          expect(user).toBe(dummyUser);
+          expect(UsersCache.internalStorage[dummyUserId]).toBe(dummyUser);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('returns undefined if Ajax call fails and cache is empty', done => {
+      const dummyError = new Error('server exploded');
+      apiSpy = id => {
+        expect(id).toBe(dummyUserId);
+        return Promise.reject(dummyError);
+      };
+
+      UsersCache.retrieveById(dummyUserId)
+        .then(user => fail(`Received unexpected user: ${JSON.stringify(user)}`))
+        .catch(error => {
+          expect(error).toBe(dummyError);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('makes no Ajax call if matching data exists', done => {
+      UsersCache.internalStorage[dummyUserId] = dummyUser;
+      apiSpy = () => fail(new Error('expected no Ajax call!'));
+
+      UsersCache.retrieveById(dummyUserId)
+        .then(user => {
+          expect(user).toBe(dummyUser);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('retrieveStatusById', () => {
+    let apiSpy;
+
+    beforeEach(() => {
+      spyOn(Api, 'userStatus').and.callFake(id => apiSpy(id));
+    });
+
+    it('stores and returns data from API call if cache is empty', done => {
+      apiSpy = id => {
+        expect(id).toBe(dummyUserId);
+        return Promise.resolve({
+          data: dummyUserStatus,
+        });
+      };
+
+      UsersCache.retrieveStatusById(dummyUserId)
+        .then(userStatus => {
+          expect(userStatus).toBe(dummyUserStatus);
+          expect(UsersCache.internalStorage[dummyUserId].status).toBe(dummyUserStatus);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('returns undefined if Ajax call fails and cache is empty', done => {
+      const dummyError = new Error('server exploded');
+      apiSpy = id => {
+        expect(id).toBe(dummyUserId);
+        return Promise.reject(dummyError);
+      };
+
+      UsersCache.retrieveStatusById(dummyUserId)
+        .then(userStatus => fail(`Received unexpected user: ${JSON.stringify(userStatus)}`))
+        .catch(error => {
+          expect(error).toBe(dummyError);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('makes no Ajax call if matching data exists', done => {
+      UsersCache.internalStorage[dummyUserId] = { status: dummyUserStatus };
+      apiSpy = () => fail(new Error('expected no Ajax call!'));
+
+      UsersCache.retrieveStatusById(dummyUserId)
+        .then(userStatus => {
+          expect(userStatus).toBe(dummyUserStatus);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

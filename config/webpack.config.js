@@ -8,7 +8,7 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const ROOT_PATH = path.resolve(__dirname, '..');
-const CACHE_PATH = path.join(ROOT_PATH, 'tmp/cache');
+const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
@@ -84,7 +84,7 @@ module.exports = {
   },
 
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js', '.gql', '.graphql'],
     alias: {
       '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
       emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
@@ -94,12 +94,20 @@ module.exports = {
       vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
       vue$: 'vue/dist/vue.esm.js',
       spec: path.join(ROOT_PATH, 'spec/javascripts'),
+
+      // the following resolves files which are different between CE and EE
+      ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
     },
   },
 
   module: {
     strictExportPresence: true,
     rules: [
+      {
+        type: 'javascript/auto',
+        test: /\.mjs$/,
+        use: [],
+      },
       {
         test: /\.js$/,
         exclude: path => /node_modules|vendor[\\/]assets/.test(path) && !/\.vue\.js/.test(path),
@@ -120,6 +128,11 @@ module.exports = {
             VUE_LOADER_VERSION,
           ].join('|'),
         },
+      },
+      {
+        test: /\.(graphql|gql)$/,
+        exclude: /node_modules/,
+        loader: 'graphql-tag/loader',
       },
       {
         test: /\.svg$/,

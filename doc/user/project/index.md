@@ -65,19 +65,22 @@ common actions on issues or merge requests
      browse, and download job artifacts
      - [Pipeline settings](pipelines/settings.md): Set up Git strategy (choose the default way your repository is fetched from GitLab in a job),
      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
-  - [GKE cluster integration](clusters/index.md): Connecting your GitLab project
-    with Google Kubernetes Engine
+  - [Kubernetes cluster integration](clusters/index.md): Connecting your GitLab project
+    with a Kubernetes cluster
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
 website with GitLab Pages
 
 **Other features:**
 
-- [Wiki](wiki/index.md): Document your GitLab project in an integrated Wiki
-- [Snippets](../snippets.md): Store, share and collaborate on code snippets
-- [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
-- [Syntax highlighting](highlighting.md): An alternative to customize
-your code blocks, overriding GitLab's default choice of language
-- [Badges](badges.md): Badges for the project overview
+- [Wiki](wiki/index.md): document your GitLab project in an integrated Wiki.
+- [Snippets](../snippets.md): store, share and collaborate on code snippets.
+- [Cycle Analytics](cycle_analytics.md): review your development lifecycle.
+- [Syntax highlighting](highlighting.md): an alternative to customize
+your code blocks, overriding GitLab's default choice of language.
+- [Badges](badges.md): badges for the project overview.
+- [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
+the source, build output, and other metadata or artifacts
+associated with a released version of your code.
 
 ### Project's integrations
 
@@ -146,3 +149,24 @@ When [renaming a user](../profile/index.md#changing-your-username),
   work after a rename, making any transition a lot smoother.
 - The redirects will be available as long as the original path is not claimed by
   another group, user or project.
+
+## Use your project as a Go package
+
+Any project can be used as a Go package including private projects in subgroups. To use packages
+hosted in private projects with the `go get` command, use a [`.netrc` file](https://ec.haxx.se/usingcurl-netrc.html)
+and a [personal access token](../profile/personal_access_tokens.md) in the password field.
+
+For example:
+
+```text
+machine example.gitlab.com
+login <gitlab_user_name>
+password <personal_access_token>
+```
+
+## Access project page with project ID
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53671) in GitLab 11.8.
+
+To quickly access a project from the GitLab UI using the project ID,
+visit the `/projects/:id` URL in your browser or other tool accessing the project.

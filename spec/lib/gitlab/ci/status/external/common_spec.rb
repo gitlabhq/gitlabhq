@@ -11,7 +11,7 @@ describe Gitlab::Ci::Status::External::Common do
   end
 
   subject do
-    Gitlab::Ci::Status::Core
+    Gitlab::Ci::Status::Success
       .new(external_status, user)
       .extend(described_class)
   end
@@ -19,6 +19,22 @@ describe Gitlab::Ci::Status::External::Common do
   describe '#label' do
     it 'returns description' do
       expect(subject.label).to eq external_description
+    end
+
+    context 'when description is nil' do
+      let(:external_description) { nil }
+
+      it 'uses core status label' do
+        expect(subject.label).to eq('passed')
+      end
+    end
+
+    context 'when description is empty string' do
+      let(:external_description) { '' }
+
+      it 'uses core status label' do
+        expect(subject.label).to eq('passed')
+      end
     end
   end
 

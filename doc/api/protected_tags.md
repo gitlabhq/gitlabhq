@@ -25,7 +25,7 @@ GET /projects/:id/protected_tags
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_tags'
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_tags'
 ```
 
 Example response:
@@ -60,7 +60,7 @@ GET /projects/:id/protected_tags/:name
 | `name` | string | yes | The name of the tag or wildcard |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_tags/release-1-0'
+curl --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_tags/release-1-0'
 ```
 
 Example response:
@@ -87,7 +87,7 @@ POST /projects/:id/protected_tags
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_tags?name=*-stable&create_access_level=30'
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_tags?name=*-stable&create_access_level=30'
 ```
 
 | Attribute | Type | Required | Description |
@@ -119,7 +119,7 @@ DELETE /projects/:id/protected_tags/:name
 ```
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" 'https://gitlab.example.com/api/v4/projects/5/protected_tags/*-stable'
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" 'https://gitlab.example.com/api/v4/projects/5/protected_tags/*-stable'
 ```
 
 | Attribute | Type | Required | Description |

@@ -42,7 +42,7 @@ module CiStatusHelper
     when 'manual'
       s_('CiStatusText|blocked')
     when 'scheduled'
-      s_('CiStatusText|scheduled')
+      s_('CiStatusText|delayed')
     else
       # All states are already being translated inside the detailed statuses:
       # :running => Gitlab::Ci::Status::Running

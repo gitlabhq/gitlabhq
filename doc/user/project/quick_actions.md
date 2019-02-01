@@ -24,6 +24,7 @@ discussions, and descriptions:
 | `/reopen`                  | Reopen                         | ✓     | ✓             |
 | `/title <New title>`       | Change title                   | ✓     |  ✓            |
 | `/award :emoji:`           | Toggle emoji award             | ✓     | ✓             |
+| `/assign me`               | Assign yourself                | ✓     | ✓             |
 | `/assign @user`            | Assign one user                | ✓     | ✓             |
 | `/assign @user1 @user2`    | Assign multiple users **[STARTER]** | ✓ |              |
 | `/unassign`                | Remove assignee(s)             | ✓     | ✓             |
@@ -52,6 +53,7 @@ discussions, and descriptions:
 | `/target_branch <Local branch Name>` | Set target branch    |       | ✓             |
 | `/wip`                     | Toggle the Work In Progress status |   | ✓             |
 | `/merge`                   | Merge (when pipeline succeeds) |       | ✓             |
+| `/create_merge_request <branch name>` | Create a new merge request starting from the current issue | ✓ | |
 
 
 ## Quick actions for commit messages

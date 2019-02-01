@@ -2,11 +2,16 @@
 
 module AppearancesHelper
   def brand_title
-    current_appearance&.title.presence || 'GitLab Community Edition'
+    current_appearance&.title.presence || default_brand_title
+  end
+
+  def default_brand_title
+    # This resides in a separate method so that EE can easily redefine it.
+    'GitLab Community Edition'
   end
 
   def brand_image
-    image_tag(current_appearance.logo) if current_appearance&.logo?
+    image_tag(current_appearance.logo_path) if current_appearance&.logo?
   end
 
   def brand_text
@@ -23,7 +28,7 @@ module AppearancesHelper
 
   def brand_header_logo
     if current_appearance&.header_logo?
-      image_tag current_appearance.header_logo
+      image_tag current_appearance.header_logo_path
     else
       render 'shared/logo.svg'
     end

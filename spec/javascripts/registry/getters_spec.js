@@ -7,25 +7,28 @@ describe('Getters Registry Store', () => {
     state = {
       isLoading: false,
       endpoint: '/root/empty-project/container_registry.json',
-      repos: [{
-        canDelete: true,
-        destroyPath: 'bar',
-        id: '134',
-        isLoading: false,
-        list: [],
-        location: 'foo',
-        name: 'gitlab-org/omnibus-gitlab/foo',
-        tagsPath: 'foo',
-      }, {
-        canDelete: true,
-        destroyPath: 'bar',
-        id: '123',
-        isLoading: false,
-        list: [],
-        location: 'foo',
-        name: 'gitlab-org/omnibus-gitlab',
-        tagsPath: 'foo',
-      }],
+      repos: [
+        {
+          canDelete: true,
+          destroyPath: 'bar',
+          id: '134',
+          isLoading: false,
+          list: [],
+          location: 'foo',
+          name: 'gitlab-org/omnibus-gitlab/foo',
+          tagsPath: 'foo',
+        },
+        {
+          canDelete: true,
+          destroyPath: 'bar',
+          id: '123',
+          isLoading: false,
+          list: [],
+          location: 'foo',
+          name: 'gitlab-org/omnibus-gitlab',
+          tagsPath: 'foo',
+        },
+      ],
     };
   });
 

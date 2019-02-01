@@ -142,16 +142,29 @@ to find out more about this feature.
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can also
 create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
 
+### Import Issues from CSV
+
+You can import a CSV file containing issue titles and descriptions to create
+a batch of issues simultaneously.
+
+When you navigate to the Issues list page, an import button is displayed.
+
+For further details, see [Importing issues from CSV](csv_import.md)
+
 ### External Issue Tracker
 
 Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
 tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
 or Bugzilla.
 
-### Issue's API
+### Issue API
 
-Read through the [API documentation](../../../api/issues.md).
+See the [API documentation](../../../api/issues.md).
 
 ### Bulk editing issues
 
-Find out about [bulk editing issues](../../project/bulk_editing.md).
+See the [bulk editing issues](../../project/bulk_editing.md) page.
+
+### Similar issues
+
+See the [similar issues](similar_issues.md) page.

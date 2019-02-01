@@ -27,7 +27,9 @@ project_tree:
     - :award_emoji
     - notes:
         :author
-  - :releases
+  - releases:
+    - :author
+    - :links
   - project_members:
     - :user
   - merge_requests:
@@ -51,7 +53,7 @@ project_tree:
     - resource_label_events:
       - label:
           :priorities
-  - pipelines:
+  - ci_pipelines:
     - notes:
       - :author
       - events:
@@ -62,7 +64,6 @@ project_tree:
   - :triggers
   - :pipeline_schedules
   - :services
-  - :hooks
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
@@ -73,6 +74,7 @@ project_tree:
   - :prometheus_metrics
   - :project_badges
   - :ci_cd_settings
+  - :error_tracking_setting
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -92,18 +94,18 @@ excluded_attributes:
     - :path
     - :namespace_id
     - :creator_id
+    - :pool_repository_id
     - :import_url
     - :import_status
     - :avatar
     - :import_type
     - :import_source
-    - :import_error
     - :mirror
     - :runners_token
+    - :runners_token_encrypted
     - :repository_storage
     - :repository_read_only
     - :lfs_enabled
-    - :import_jid
     - :created_at
     - :updated_at
     - :id
@@ -115,6 +117,13 @@ excluded_attributes:
     - :remote_mirror_available_overridden
     - :description_html
     - :repository_languages
+    - :bfg_object_map
+  namespaces:
+    - :runners_token
+    - :runners_token_encrypted
+  project_import_state:
+    - :last_error
+    - :jid
   prometheus_metrics:
     - :common
     - :identifier
@@ -136,9 +145,11 @@ excluded_attributes:
   statuses:
     - :trace
     - :token
+    - :token_encrypted
     - :when
     - :artifacts_file
     - :artifacts_metadata
+    - :commands
   push_event_payload:
     - :event_id
   project_badges:
@@ -147,12 +158,14 @@ excluded_attributes:
     - :reference
     - :reference_html
     - :epic_id
-  hooks:
+  runners:
     - :token
+    - :token_encrypted
+  services:
+    - :template
+  error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv
-    - :encrypted_url
-    - :encrypted_url_iv
 
 methods:
   labels:

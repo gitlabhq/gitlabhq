@@ -1,6 +1,0 @@
----
-title: Set a header for custom error pages to prevent them from being intercepted
-  by gitlab-workhorse
-merge_request: 21870
-author: David Piegza
-type: fixed

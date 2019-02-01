@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Gitlab
   class UsageData
+    APPROXIMATE_COUNT_MODELS = [Label, MergeRequest, Note, Todo].freeze
+
     class << self
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
@@ -53,35 +57,40 @@ module Gitlab
             environments: count(::Environment),
             clusters: count(::Clusters::Cluster),
             clusters_enabled: count(::Clusters::Cluster.enabled),
+            project_clusters_enabled: count(::Clusters::Cluster.enabled.project_type),
+            group_clusters_enabled: count(::Clusters::Cluster.enabled.group_type),
             clusters_disabled: count(::Clusters::Cluster.disabled),
+            project_clusters_disabled: count(::Clusters::Cluster.disabled.project_type),
+            group_clusters_disabled: count(::Clusters::Cluster.disabled.group_type),
             clusters_platforms_gke: count(::Clusters::Cluster.gcp_installed.enabled),
             clusters_platforms_user: count(::Clusters::Cluster.user_provided.enabled),
             clusters_applications_helm: count(::Clusters::Applications::Helm.installed),
             clusters_applications_ingress: count(::Clusters::Applications::Ingress.installed),
+            clusters_applications_cert_managers: count(::Clusters::Applications::CertManager.installed),
             clusters_applications_prometheus: count(::Clusters::Applications::Prometheus.installed),
             clusters_applications_runner: count(::Clusters::Applications::Runner.installed),
+            clusters_applications_knative: count(::Clusters::Applications::Knative.installed),
             in_review_folder: count(::Environment.in_review_folder),
             groups: count(Group),
             issues: count(Issue),
             keys: count(Key),
             label_lists: count(List.label),
-            labels: count(Label),
             lfs_objects: count(LfsObject),
-            merge_requests: count(MergeRequest),
             milestone_lists: count(List.milestone),
             milestones: count(Milestone),
-            notes: count(Note),
             pages_domains: count(PagesDomain),
             projects: count(Project),
             projects_imported_from_github: count(Project.where(import_type: 'github')),
+            projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             protected_branches: count(ProtectedBranch),
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),
             snippets: count(Snippet),
+            suggestions: count(Suggestion),
             todos: count(Todo),
             uploads: count(Upload),
             web_hooks: count(WebHook)
-          }.merge(services_usage)
+          }.merge(services_usage).merge(approximate_counts)
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -124,7 +133,6 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def services_usage
         types = {
-          JiraService: :projects_jira_active,
           SlackService: :projects_slack_notifications_active,
           SlackSlashCommandsService: :projects_slack_slash_active,
           PrometheusService: :projects_prometheus_active
@@ -132,6 +140,23 @@ module Gitlab
 
         results = count(Service.unscoped.where(type: types.keys, active: true).group(:type), fallback: Hash.new(-1))
         types.each_with_object({}) { |(klass, key), response| response[key] = results[klass.to_s] || 0 }
+          .merge(jira_usage)
+      end
+
+      def jira_usage
+        # Jira Cloud does not support custom domains as per https://jira.atlassian.com/browse/CLOUD-6999
+        # so we can just check for subdomains of atlassian.net
+        services = count(
+          Service.unscoped.where(type: :JiraService, active: true)
+            .group("CASE WHEN properties LIKE '%.atlassian.net%' THEN 'cloud' ELSE 'server' END"),
+          fallback: Hash.new(-1)
+        )
+
+        {
+          projects_jira_server_active: services['server'] || 0,
+          projects_jira_cloud_active: services['cloud'] || 0,
+          projects_jira_active: services['server'] == -1 ? -1 : services.values.sum
+        }
       end
 
       def count(relation, fallback: -1)
@@ -140,6 +165,16 @@ module Gitlab
         fallback
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def approximate_counts
+        approx_counts = Gitlab::Database::Count.approximate_counts(APPROXIMATE_COUNT_MODELS)
+
+        APPROXIMATE_COUNT_MODELS.each_with_object({}) do |model, result|
+          key = model.name.underscore.pluralize.to_sym
+
+          result[key] = approx_counts[model] || -1
+        end
+      end
     end
   end
 end

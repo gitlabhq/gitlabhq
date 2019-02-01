@@ -242,6 +242,35 @@ verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
 **Require users to prove ownership of custom domains** in the Pages section.
 This setting is enabled by default.
 
+### Access control
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/33422) in GitLab 11.5.
+
+GitLab Pages access control can be configured per-project, and allows access to a Pages
+site to be controlled based on a user's membership to that project.
+
+Access control works by registering the Pages daemon as an OAuth application
+with GitLab. Whenever a request to access a private Pages site is made by an
+unauthenticated user, the Pages daemon redirects the user to GitLab. If
+authentication is successful, the user is redirected back to Pages with a token,
+which is persisted in a cookie. The cookies are signed with a secret key, so
+tampering can be detected.
+
+Each request to view a resource in a private site is authenticated by Pages
+using that token. For each request it receives, it makes a request to the GitLab
+API to check that the user is authorized to read that site.
+
+Pages access control is disabled by default. To enable it:
+
+1. Enable it in `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_pages['access_control'] = true
+    ```
+
+1. [Reconfigure GitLab][reconfigure].
+1. Users can now configure it in their [projects' settings](../../user/project/pages/introduction.md#gitlab-pages-access-control-core-only).
+
 ## Activate verbose logging for daemon
 
 Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
@@ -302,6 +331,42 @@ Omnibus GitLab 11.1.
 The maximum size of the unpacked archive per project can be configured in the
 Admin area under the Application settings in the **Maximum size of pages (MB)**.
 The default is 100MB.
+
+## Running GitLab Pages in a separate server
+
+You may want to run GitLab Pages daemon on a separate server in order to decrease the load on your main application server.
+Follow the steps below to configure GitLab Pages in a separate server.
+
+1. Suppose you have the main GitLab application server named `app1`. Prepare 
+new Linux server (let's call it `app2`), create NFS share there and configure access to 
+this share from `app1`. Let's use the default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages` 
+as the shared folder on `app2` and mount it to `/mnt/pages` on `app1`.
+
+1. On `app2` install GitLab omnibus and modify `/etc/gitlab/gitlab.rb` this way:
+
+    ```shell
+    external_url 'http://<ip-address-of-the-server>'
+    pages_external_url "http://<your-pages-domain>"
+    postgresql['enable'] = false
+    redis['enable'] = false
+    prometheus['enable'] = false
+    unicorn['enable'] = false
+    sidekiq['enable'] = false
+    gitlab_workhorse['enable'] = false
+    gitaly['enable'] = false
+    alertmanager['enable'] = false
+    node_exporter['enable'] = false
+    ```
+1. Run `sudo gitlab-ctl reconfigure`.
+1. On `app1` apply the following changes to `/etc/gitlab/gitlab.rb`:
+
+    ```shell
+    gitlab_pages['enable'] = false
+    pages_external_url "http://<your-pages-domain>"
+    gitlab_rails['pages_path'] = "/mnt/pages"
+    ```
+    
+1. Run `sudo gitlab-ctl reconfigure`.
 
 ## Backup
 

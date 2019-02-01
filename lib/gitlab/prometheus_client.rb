@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # Helper methods to interact with Prometheus network services & resources
   class PrometheusClient

@@ -10,7 +10,7 @@ module Members
     end
 
     def after_execute(args)
-      # overriden in EE::Members modules
+      # overridden in EE::Members modules
     end
 
     private
@@ -46,6 +46,12 @@ module Members
       else
         raise "Unknown action '#{action}' on #{member}!"
       end
+    end
+
+    def enqueue_delete_todos(member)
+      type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+      # don't enqueue immediately to prevent todos removal in case of a mistake
+      TodosDestroyer::EntityLeaveWorker.perform_in(Todo::WAIT_FOR_DELETE, member.user_id, member.source_id, type)
     end
   end
 end

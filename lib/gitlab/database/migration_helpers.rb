@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Database
     module MigrationHelpers
-      include Gitlab::Database::ArelMethods
-
       BACKGROUND_MIGRATION_BATCH_SIZE = 1000 # Number of rows to process per job
       BACKGROUND_MIGRATION_JOB_BUFFER_SIZE = 1000 # Number of jobs to bulk queue at a time
 
@@ -359,7 +359,7 @@ module Gitlab
           stop_arel = yield table, stop_arel if block_given?
           stop_row = exec_query(stop_arel.to_sql).to_hash.first
 
-          update_arel = arel_update_manager
+          update_arel = Arel::UpdateManager.new
             .table(table)
             .set([[table[column], value]])
             .where(table[:id].gteq(start_id))
@@ -879,7 +879,7 @@ module Gitlab
         columns(table).find { |column| column.name == name }
       end
 
-      # This will replace the first occurance of a string in a column with
+      # This will replace the first occurrence of a string in a column with
       # the replacement
       # On postgresql we can use `regexp_replace` for that.
       # On mysql we find the location of the pattern, and overwrite it
@@ -937,7 +937,7 @@ database (#{dbname}) using a super user and running:
 
 For MySQL you instead need to run:
 
-    GRANT ALL PRIVILEGES ON *.* TO #{user}@'%'
+    GRANT ALL PRIVILEGES ON #{dbname}.* TO #{user}@'%'
 
 Both queries will grant the user super user permissions, ensuring you don't run
 into similar problems in the future (e.g. when new tables are created).
@@ -973,9 +973,10 @@ into similar problems in the future (e.g. when new tables are created).
         raise "#{model_class} does not have an ID to use for batch ranges" unless model_class.column_names.include?('id')
 
         jobs = []
+        table_name = model_class.quoted_table_name
 
         model_class.each_batch(of: batch_size) do |relation|
-          start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
+          start_id, end_id = relation.pluck("MIN(#{table_name}.id), MAX(#{table_name}.id)").first
 
           if jobs.length >= BACKGROUND_MIGRATION_JOB_BUFFER_SIZE
             # Note: This code path generally only helps with many millions of rows

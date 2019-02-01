@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class UrlSanitizer
     ALLOWED_SCHEMES = %w[http https ssh git].freeze
@@ -12,6 +14,7 @@ module Gitlab
 
     def self.valid?(url)
       return false unless url.present?
+      return false unless url.is_a?(String)
 
       uri = Addressable::URI.parse(url.strip)
 

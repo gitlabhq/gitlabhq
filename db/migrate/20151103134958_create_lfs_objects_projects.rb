@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateLfsObjectsProjects < ActiveRecord::Migration
+class CreateLfsObjectsProjects < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

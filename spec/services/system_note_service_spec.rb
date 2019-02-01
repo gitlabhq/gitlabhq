@@ -432,6 +432,20 @@ describe SystemNoteService do
     end
   end
 
+  describe '.new_merge_request' do
+    subject { described_class.new_merge_request(noteable, project, author, merge_request) }
+
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'merge' }
+    end
+
+    it 'sets the new merge request note text' do
+      expect(subject.note).to eq("created merge request #{merge_request.to_reference} to address this issue")
+    end
+  end
+
   describe '.cross_reference' do
     subject { described_class.cross_reference(noteable, mentioner, author) }
 
@@ -805,7 +819,7 @@ describe SystemNoteService do
       end
 
       context 'for issues' do
-        let(:issue)           { create(:issue, project: project) }
+        let(:issue) { create(:issue, project: project) }
 
         it "creates comment" do
           result = described_class.cross_reference(jira_issue, issue, author)
@@ -1117,7 +1131,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:project) }
+      let(:other_project) { create(:project) }
       let(:canonical_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1142,7 +1156,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:project) }
+      let(:other_project) { create(:project) }
       let(:duplicate_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1154,7 +1168,7 @@ describe SystemNoteService do
   end
 
   describe '.discussion_lock' do
-    subject { described_class.discussion_lock(noteable, author)  }
+    subject { described_class.discussion_lock(noteable, author) }
 
     context 'discussion unlocked' do
       it_behaves_like 'a system note' do

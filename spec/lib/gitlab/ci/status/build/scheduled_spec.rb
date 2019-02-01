@@ -13,24 +13,10 @@ describe Gitlab::Ci::Status::Build::Scheduled do
   end
 
   describe '#status_tooltip' do
-    context 'when scheduled_at is not expired' do
-      let(:build) { create(:ci_build, scheduled_at: 1.minute.since, project: project) }
+    let(:build) { create(:ci_build, scheduled_at: 1.minute.since, project: project) }
 
-      it 'shows execute_in of the scheduled job' do
-        Timecop.freeze(Time.now.change(usec: 0)) do
-          expect(subject.status_tooltip).to include('00:01:00')
-        end
-      end
-    end
-
-    context 'when scheduled_at is expired' do
-      let(:build) { create(:ci_build, :expired_scheduled, project: project) }
-
-      it 'shows 00:00:00' do
-        Timecop.freeze do
-          expect(subject.status_tooltip).to include('00:00:00')
-        end
-      end
+    it 'has a placeholder for the remaining time' do
+      expect(subject.status_tooltip).to include('%{remainingTime}')
     end
   end
 

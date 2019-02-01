@@ -24,6 +24,12 @@ describe Groups::UpdateService do
 
           expect(TodosDestroyer::GroupPrivateWorker).not_to receive(:perform_in)
         end
+
+        it "returns false if save failed" do
+          allow(public_group).to receive(:save).and_return(false)
+
+          expect(service.execute).to be_falsey
+        end
       end
 
       context "internal group with internal project" do
@@ -50,7 +56,7 @@ describe Groups::UpdateService do
           create(:project, :private, group: internal_group)
 
           expect(TodosDestroyer::GroupPrivateWorker).to receive(:perform_in)
-            .with(1.hour, internal_group.id)
+            .with(Todo::WAIT_FOR_DELETE, internal_group.id)
         end
 
         it "changes permission level to private" do

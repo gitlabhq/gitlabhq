@@ -33,6 +33,8 @@ describe 'Overview tab on a user profile', :js do
 
       it 'does not show any entries in the list of activities' do
         page.within('.activities-block') do
+          expect(page).to have_selector('.loading', visible: false)
+          expect(page).to have_content('No activities found')
           expect(page).not_to have_selector('.event-item')
         end
       end
@@ -54,15 +56,15 @@ describe 'Overview tab on a user profile', :js do
       end
     end
 
-    describe 'user has 10 activities' do
+    describe 'user has 11 activities' do
       before do
-        10.times { push_code_contribution }
+        11.times { push_code_contribution }
       end
 
       include_context 'visit overview tab'
 
-      it 'displays 5 entries in the list of activities' do
-        expect(find('#js-overview')).to have_selector('.event-item', count: 5)
+      it 'displays 10 entries in the list of activities' do
+        expect(find('#js-overview')).to have_selector('.event-item', count: 10)
       end
 
       it 'shows a link to the activity list' do
@@ -93,7 +95,8 @@ describe 'Overview tab on a user profile', :js do
 
       it 'it shows an empty project list with an info message' do
         page.within('.projects-block') do
-          expect(page).to have_content('No projects found')
+          expect(page).to have_selector('.loading', visible: false)
+          expect(page).to have_content('This user doesn\'t have any personal projects')
           expect(page).not_to have_selector('.project-row')
         end
       end
@@ -118,6 +121,12 @@ describe 'Overview tab on a user profile', :js do
 
       it 'shows a link to the project list' do
         expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
+      end
+
+      it 'shows projects in "compact mode"' do
+        page.within('#js-overview .projects-block') do
+          expect(find('.js-projects-list-holder')).to have_selector('.compact')
+        end
       end
     end
 

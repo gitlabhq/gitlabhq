@@ -11,21 +11,27 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
+    include HasRef
 
-    belongs_to :project, inverse_of: :pipelines
+    belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline'
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
+    belongs_to :merge_request, class_name: 'MergeRequest'
 
     has_internal_id :iid, scope: :project, presence: false, init: ->(s) do
-      s&.project&.pipelines&.maximum(:iid) || s&.project&.pipelines&.count
+      s&.project&.all_pipelines&.maximum(:iid) || s&.project&.all_pipelines&.count
     end
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :processables, -> { processables },
+             class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
+    has_many :deployments, through: :builds
+    has_many :environments, -> { distinct }, through: :deployments
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
@@ -48,36 +54,24 @@ module Ci
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
+    validates :merge_request, presence: { if: :merge_request? }
+    validates :merge_request, absence: { unless: :merge_request? }
+    validates :tag, inclusion: { in: [false], if: :merge_request? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
-
-    # Replace validator below with
-    # `validates :source, presence: { unless: :importing? }, on: :create`
-    # when removing Gitlab.rails5? code.
-    validate :valid_source, unless: :importing?, on: :create
+    validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
 
     after_create :keep_around_commits, unless: :importing?
 
-    enum_with_nil source: {
-      unknown: nil,
-      push: 1,
-      web: 2,
-      trigger: 3,
-      schedule: 4,
-      api: 5,
-      external: 6
-    }
+    # We use `Ci::PipelineEnums.sources` here so that EE can more easily extend
+    # this `Hash` with new values.
+    enum_with_nil source: ::Ci::PipelineEnums.sources
 
-    enum_with_nil config_source: {
-      unknown_source: nil,
-      repository_source: 1,
-      auto_devops_source: 2
-    }
+    enum_with_nil config_source: ::Ci::PipelineEnums.config_sources
 
-    enum failure_reason: {
-      unknown_failure: 0,
-      config_error: 1
-    }
+    # We use `Ci::PipelineEnums.failure_reasons` here so that EE can more easily
+    # extend this `Hash` with new values.
+    enum failure_reason: ::Ci::PipelineEnums.failure_reasons
 
     state_machine :status, initial: :created do
       event :enqueue do
@@ -175,28 +169,56 @@ module Ci
     end
 
     scope :internal, -> { where(source: internal_sources) }
+    scope :ci_sources, -> { where(config_source: ci_sources_values) }
+
+    scope :sort_by_merge_request_pipelines, -> do
+      sql = 'CASE ci_pipelines.source WHEN (?) THEN 0 ELSE 1 END, ci_pipelines.id DESC'
+      query = ActiveRecord::Base.send(:sanitize_sql_array, [sql, sources[:merge_request]]) # rubocop:disable GitlabSecurity/PublicSend
+
+      order(query)
+    end
+
+    scope :for_user, -> (user) { where(user: user) }
+
+    scope :for_merge_request, -> (merge_request, ref, sha) do
+      ##
+      # We have to filter out unrelated MR pipelines.
+      # When merge request is empty, it selects general pipelines, such as push sourced pipelines.
+      # When merge request is matched, it selects MR pipelines.
+      where(merge_request: [nil, merge_request], ref: ref, sha: sha)
+        .sort_by_merge_request_pipelines
+    end
 
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
     #
     # ref - The name (or names) of the branch(es)/tag(s) to limit the list of
     #       pipelines to.
-    def self.newest_first(ref = nil)
+    # limit - This limits a backlog search, default to 100.
+    def self.newest_first(ref: nil, limit: 100)
       relation = order(id: :desc)
+      relation = relation.where(ref: ref) if ref
 
-      ref ? relation.where(ref: ref) : relation
+      if limit
+        ids = relation.limit(limit).select(:id)
+        # MySQL does not support limit in subquery
+        ids = ids.pluck(:id) if Gitlab::Database.mysql?
+        relation = relation.where(id: ids)
+      end
+
+      relation
     end
 
     def self.latest_status(ref = nil)
-      newest_first(ref).pluck(:status).first
+      newest_first(ref: ref).pluck(:status).first
     end
 
     def self.latest_successful_for(ref)
-      newest_first(ref).success.take
+      newest_first(ref: ref).success.take
     end
 
     def self.latest_successful_for_refs(refs)
-      relation = newest_first(refs).success
+      relation = newest_first(ref: refs).success
 
       relation.each_with_object({}) do |pipeline, hash|
         hash[pipeline.ref] ||= pipeline
@@ -238,6 +260,10 @@ module Ci
       end
     end
 
+    def self.latest_successful_ids_per_project
+      success.group(:project_id).select('max(id) as id')
+    end
+
     def self.truncate_sha(sha)
       sha[0...8]
     end
@@ -248,6 +274,14 @@ module Ci
 
     def self.internal_sources
       sources.reject { |source| source == "external" }.values
+    end
+
+    def self.latest_for_merge_request(merge_request, ref, sha)
+      for_merge_request(merge_request, ref, sha).first
+    end
+
+    def self.ci_sources_values
+      config_sources.values_at(:repository_source, :auto_devops_source, :unknown_source)
     end
 
     def stages_count
@@ -266,6 +300,12 @@ module Ci
     def legacy_stage(name)
       stage = Ci::LegacyStage.new(self, name: name)
       stage unless stage.statuses_count.zero?
+    end
+
+    def ref_exists?
+      project.repository.ref_exists?(git_ref)
+    rescue Gitlab::Git::Repository::NoRepository
+      false
     end
 
     ##
@@ -356,7 +396,7 @@ module Ci
     end
 
     def branch?
-      !tag?
+      super && !merge_request?
     end
 
     def stuck?
@@ -471,7 +511,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha, user: user })
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
@@ -482,6 +522,8 @@ module Ci
     end
 
     def ci_yaml_file_path
+      return unless repository_source? || unknown_source?
+
       if project.ci_config_path.blank?
         '.gitlab-ci.yml'
       else
@@ -509,10 +551,6 @@ module Ci
 
     def has_yaml_errors?
       yaml_errors.present?
-    end
-
-    def environments
-      builds.where.not(environment: nil).success.pluck(:environment).uniq
     end
 
     # Manually set the notes for a Ci::Pipeline
@@ -558,7 +596,7 @@ module Ci
     end
 
     def protected_ref?
-      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+      strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
 
     def legacy_trigger
@@ -575,13 +613,18 @@ module Ci
     end
 
     def predefined_variables
-      Gitlab::Ci::Variables::Collection.new
-        .append(key: 'CI_PIPELINE_IID', value: iid.to_s)
-        .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
-        .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
-        .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
-        .append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
-        .append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        variables.append(key: 'CI_PIPELINE_IID', value: iid.to_s)
+        variables.append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
+        variables.append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
+        variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
+        variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
+        variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+
+        if merge_request? && merge_request
+          variables.concat(merge_request.predefined_variables)
+        end
+      end
     end
 
     def queued_duration
@@ -605,7 +648,12 @@ module Ci
 
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
-      @all_merge_requests ||= project.merge_requests.where(source_branch: ref)
+      @all_merge_requests ||=
+        if merge_request?
+          project.merge_requests.where(id: merge_request_id)
+        else
+          project.merge_requests.where(source_branch: ref)
+        end
     end
 
     def detailed_status(current_user)
@@ -654,6 +702,7 @@ module Ci
     def ci_yaml_from_repo
       return unless project
       return unless sha
+      return unless ci_yaml_file_path
 
       project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
     rescue GRPC::NotFound, GRPC::Internal
@@ -674,17 +723,21 @@ module Ci
 
     def push_details
       strong_memoize(:push_details) do
-        Gitlab::Git::Push.new(project, before_sha, sha, push_ref)
+        Gitlab::Git::Push.new(project, before_sha, sha, git_ref)
       end
     end
 
-    def push_ref
-      if branch?
+    def git_ref
+      if merge_request?
+        ##
+        # In the future, we're going to change this ref to
+        # merge request's merged reference, such as "refs/merge-requests/:iid/merge".
+        # In order to do that, we have to update GitLab-Runner's source pulling
+        # logic.
+        # See https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1092
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif tag?
-        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
       else
-        raise ArgumentError, 'Invalid pipeline type!'
+        super
       end
     end
 
@@ -698,12 +751,6 @@ module Ci
       return unless project
 
       project.repository.keep_around(self.sha, self.before_sha)
-    end
-
-    def valid_source
-      if source.nil? || source == "unknown"
-        errors.add(:source, "invalid source")
-      end
     end
   end
 end

@@ -16,8 +16,8 @@ describe API::CommitStatuses do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
     context 'ci commit exists' do
-      let!(:master) { project.pipelines.create(source: :push, sha: commit.id, ref: 'master', protected: false) }
-      let!(:develop) { project.pipelines.create(source: :push, sha: commit.id, ref: 'develop', protected: false) }
+      let!(:master) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'master', protected: false) }
+      let!(:develop) { project.ci_pipelines.create(source: :push, sha: commit.id, ref: 'develop', protected: false) }
 
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
@@ -51,7 +51,7 @@ describe API::CommitStatuses do
 
         context 'all commit statuses' do
           before do
-            get api(get_url, reporter), all: 1
+            get api(get_url, reporter), params: { all: 1 }
           end
 
           it 'returns all commit statuses' do
@@ -66,7 +66,7 @@ describe API::CommitStatuses do
 
         context 'latest commit statuses for specific ref' do
           before do
-            get api(get_url, reporter), ref: 'develop'
+            get api(get_url, reporter), params: { ref: 'develop' }
           end
 
           it 'returns latest commit statuses for specific ref' do
@@ -79,7 +79,7 @@ describe API::CommitStatuses do
 
         context 'latest commit statues for specific name' do
           before do
-            get api(get_url, reporter), name: 'coverage'
+            get api(get_url, reporter), params: { name: 'coverage' }
           end
 
           it 'return latest commit statuses for specific name' do
@@ -133,7 +133,7 @@ describe API::CommitStatuses do
         context "for #{status}" do
           context 'uses only required parameters' do
             it 'creates commit status' do
-              post api(post_url, developer), state: status
+              post api(post_url, developer), params: { state: status }
 
               expect(response).to have_gitlab_http_status(201)
               expect(json_response['sha']).to eq(commit.id)
@@ -153,12 +153,12 @@ describe API::CommitStatuses do
 
       context 'transitions status from pending' do
         before do
-          post api(post_url, developer), state: 'pending'
+          post api(post_url, developer), params: { state: 'pending' }
         end
 
         %w[running success failed canceled].each do |status|
           it "to #{status}" do
-            expect { post api(post_url, developer), state: status }.not_to change { CommitStatus.count }
+            expect { post api(post_url, developer), params: { state: status } }.not_to change { CommitStatus.count }
 
             expect(response).to have_gitlab_http_status(201)
             expect(json_response['status']).to eq(status)
@@ -169,7 +169,7 @@ describe API::CommitStatuses do
       context 'with all optional parameters' do
         context 'when creating a commit status' do
           subject do
-            post api(post_url, developer), {
+            post api(post_url, developer), params: {
               state: 'success',
               context: 'coverage',
               ref: 'master',
@@ -206,7 +206,7 @@ describe API::CommitStatuses do
 
         context 'when updatig a commit status' do
           before do
-            post api(post_url, developer), {
+            post api(post_url, developer), params: {
               state: 'running',
               context: 'coverage',
               ref: 'master',
@@ -215,7 +215,7 @@ describe API::CommitStatuses do
               target_url: 'http://gitlab.com/status'
             }
 
-            post api(post_url, developer), {
+            post api(post_url, developer), params: {
               state: 'success',
               name: 'coverage',
               ref: 'master',
@@ -244,10 +244,10 @@ describe API::CommitStatuses do
       context 'when retrying a commit status' do
         before do
           post api(post_url, developer),
-            { state: 'failed', name: 'test', ref: 'master' }
+            params: { state: 'failed', name: 'test', ref: 'master' }
 
           post api(post_url, developer),
-            { state: 'success', name: 'test', ref: 'master' }
+            params: { state: 'success', name: 'test', ref: 'master' }
         end
 
         it 'correctly posts a new commit status' do
@@ -265,7 +265,7 @@ describe API::CommitStatuses do
 
       context 'when status is invalid' do
         before do
-          post api(post_url, developer), state: 'invalid'
+          post api(post_url, developer), params: { state: 'invalid' }
         end
 
         it 'does not create commit status' do
@@ -287,7 +287,7 @@ describe API::CommitStatuses do
         let(:sha) { 'invalid_sha' }
 
         before do
-          post api(post_url, developer), state: 'running'
+          post api(post_url, developer), params: { state: 'running' }
         end
 
         it 'returns not found error' do
@@ -297,8 +297,10 @@ describe API::CommitStatuses do
 
       context 'when target URL is an invalid address' do
         before do
-          post api(post_url, developer), state: 'pending',
-                                         target_url: 'invalid url'
+          post api(post_url, developer), params: {
+                                           state: 'pending',
+                                           target_url: 'invalid url'
+                                         }
         end
 
         it 'responds with bad request status and validation errors' do
@@ -311,7 +313,7 @@ describe API::CommitStatuses do
 
     context 'reporter user' do
       before do
-        post api(post_url, reporter), state: 'running'
+        post api(post_url, reporter), params: { state: 'running' }
       end
 
       it 'does not create commit status' do
@@ -321,7 +323,7 @@ describe API::CommitStatuses do
 
     context 'guest user' do
       before do
-        post api(post_url, guest), state: 'running'
+        post api(post_url, guest), params: { state: 'running' }
       end
 
       it 'does not create commit status' do

@@ -1,6 +1,0 @@
----
-title: Adds support for Gitaly ListLastCommitsForTree RPC in order to make bulk-fetch
-  of commits more performant
-merge_request: 21921
-author:
-type: performance

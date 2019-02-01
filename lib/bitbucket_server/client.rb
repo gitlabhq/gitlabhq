@@ -4,18 +4,6 @@ module BitbucketServer
   class Client
     attr_reader :connection
 
-    ServerError = Class.new(StandardError)
-
-    SERVER_ERRORS = [SocketError,
-                     OpenSSL::SSL::SSLError,
-                     Errno::ECONNRESET,
-                     Errno::ECONNREFUSED,
-                     Errno::EHOSTUNREACH,
-                     Net::OpenTimeout,
-                     Net::ReadTimeout,
-                     Gitlab::HTTP::BlockedUrlError,
-                     BitbucketServer::Connection::ConnectionError].freeze
-
     def initialize(options = {})
       @connection = Connection.new(options)
     end
@@ -35,9 +23,9 @@ module BitbucketServer
       BitbucketServer::Representation::Repo.new(parsed_response)
     end
 
-    def repos
+    def repos(page_offset: 0, limit: nil)
       path = "/repos"
-      get_collection(path, :repo)
+      get_collection(path, :repo, page_offset: page_offset, limit: limit)
     end
 
     def create_branch(project_key, repo, branch_name, sha)
@@ -61,11 +49,9 @@ module BitbucketServer
 
     private
 
-    def get_collection(path, type)
-      paginator = BitbucketServer::Paginator.new(connection, Addressable::URI.escape(path), type)
+    def get_collection(path, type, page_offset: 0, limit: nil)
+      paginator = BitbucketServer::Paginator.new(connection, Addressable::URI.escape(path), type, page_offset: page_offset, limit: limit)
       BitbucketServer::Collection.new(paginator)
-    rescue *SERVER_ERRORS => e
-      raise ServerError, e
     end
   end
 end

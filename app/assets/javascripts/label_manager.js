@@ -47,7 +47,10 @@ export default class LabelManager {
   }
 
   toggleEmptyState($label, $btn, action) {
-    this.emptyState.classList.toggle('hidden', !!this.prioritizedLabels[0].querySelector(':scope > li'));
+    this.emptyState.classList.toggle(
+      'hidden',
+      !!this.prioritizedLabels[0].querySelector(':scope > li'),
+    );
   }
 
   toggleLabelPriority($label, action, persistState) {
@@ -67,7 +70,18 @@ export default class LabelManager {
 
     const $detachedLabel = $label.detach();
     this.toggleLabelPriorityBadge($detachedLabel, action);
-    $detachedLabel.appendTo($target);
+
+    const $labelEls = $target.find('li.label-list-item');
+
+    /*
+     * If there is a label element in the target, we'd want to
+     * append the new label just right next to it.
+     */
+    if ($labelEls.length) {
+      $labelEls.last().after($detachedLabel);
+    } else {
+      $detachedLabel.appendTo($target);
+    }
 
     if ($from.find('li').length) {
       $from.find('.empty-message').removeClass('hidden');
@@ -80,16 +94,14 @@ export default class LabelManager {
       return;
     }
     if (action === 'remove') {
-      axios.delete(url)
-        .catch(rollbackLabelPosition);
+      axios.delete(url).catch(rollbackLabelPosition);
 
       // Restore empty message
       if (!$from.find('li').length) {
         $from.find('.empty-message').removeClass('hidden');
       }
     } else {
-      this.savePrioritySort($label, action)
-        .catch(rollbackLabelPosition);
+      this.savePrioritySort($label, action).catch(rollbackLabelPosition);
     }
   }
 
@@ -102,8 +114,7 @@ export default class LabelManager {
   }
 
   onPrioritySortUpdate() {
-    this.savePrioritySort()
-      .catch(() => flash(this.errorMessage));
+    this.savePrioritySort().catch(() => flash(this.errorMessage));
   }
 
   savePrioritySort() {

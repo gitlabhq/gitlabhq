@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class OperationService
@@ -230,6 +232,32 @@ module Gitlab
         response.squash_sha
       end
 
+      def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:)
+        request = Gitaly::UserUpdateSubmoduleRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit_sha: commit_sha,
+          branch: encode_binary(branch),
+          submodule: encode_binary(submodule),
+          commit_message: encode_binary(message)
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_update_submodule,
+          request
+        )
+
+        if response.pre_receive_error.present?
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
+        elsif response.commit_error.present?
+          raise Gitlab::Git::CommitError, response.commit_error
+        else
+          Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+        end
+      end
+
       def user_commit_files(
         user, branch_name, commit_message, actions, author_email, author_name,
         start_branch_name, start_repository)
@@ -269,6 +297,29 @@ module Gitlab
         if (index_error = response.index_error.presence)
           raise Gitlab::Git::Index::IndexError, index_error
         end
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+      end
+
+      def user_commit_patches(user, branch_name, patches)
+        header = Gitaly::UserApplyPatchRequest::Header.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          target_branch: encode_binary(branch_name)
+        )
+        reader = binary_stringio(patches)
+
+        chunks = Enumerator.new do |chunk|
+          chunk.yield Gitaly::UserApplyPatchRequest.new(header: header)
+
+          until reader.eof?
+            patch_chunk = reader.read(MAX_MSG_SIZE)
+
+            chunk.yield(Gitaly::UserApplyPatchRequest.new(patches: patch_chunk))
+          end
+        end
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_apply_patch, chunks)
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
@@ -334,7 +385,8 @@ module Gitlab
           file_path: encode_binary(action[:file_path]),
           previous_path: encode_binary(action[:previous_path]),
           base64_content: action[:encoding] == 'base64',
-          execute_filemode: !!action[:execute_filemode]
+          execute_filemode: !!action[:execute_filemode],
+          infer_content: !!action[:infer_content]
         )
       rescue RangeError
         raise ArgumentError, "Unknown action '#{action[:action]}'"

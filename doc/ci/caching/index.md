@@ -29,8 +29,8 @@ needed to compile the project:
   Cache was designed to be used to speed up invocations of subsequent runs of a
   given job, by keeping things like dependencies (e.g., npm packages, Go vendor
   packages, etc.) so they don't have to be re-fetched from the public internet.
-  While the cache can be abused to pass intermediate build results between stages,
-  there may be cases where artifacts are a better fit.
+  While the cache can be abused to pass intermediate build results between
+  stages, there may be cases where artifacts are a better fit.
 - `artifacts`: **Use for stage results that will be passed between stages.**
   Artifacts were designed to upload some compiled/generated bits of the build,
   and they can be fetched by any number of concurrent Runners. They are
@@ -39,11 +39,13 @@ needed to compile the project:
   directories relative to the build directory** and specifying paths which don't
   comply to this rule trigger an unintuitive and illogical error message (an
   enhancement is discussed at
-  https://gitlab.com/gitlab-org/gitlab-ce/issues/15530). Artifacts need to be
-  uploaded to the GitLab instance (not only the GitLab runner) before the next
-  stage job(s) can start, so you need to evaluate carefully whether your
-  bandwidth allows you to profit from parallelization with stages and shared
-  artifacts before investing time in changes to the setup.
+  [https://gitlab.com/gitlab-org/gitlab-ce/issues/15530](https://gitlab.com/gitlab-org/gitlab-ce/issues/15530)
+  ). Artifacts need to be uploaded to the GitLab instance (not only the GitLab
+  runner) before the next stage job(s) can start, so you need to evaluate
+  carefully whether your bandwidth allows you to profit from parallelization
+  with stages and shared artifacts before investing time in changes to the
+  setup.
+
 
 It's sometimes confusing because the name artifact sounds like something that
 is only useful outside of the job, like for downloading a final image. But
@@ -88,7 +90,7 @@ cache, when declaring `cache` in your jobs, use one or a mix of the following:
   that will be only available to a particular project.
 - [Use a `key`](../yaml/README.md#cache-key) that fits your workflow (e.g.,
   different caches on each branch). For that, you can take advantage of the
-  [CI/CD predefined variables](../variables/README.md#predefined-variables-environment-variables).
+  [CI/CD predefined variables](../variables/README.md#predefined-environment-variables).
 
 TIP: **Tip:**
 Using the same Runner for your pipeline, is the most simple and efficient way to
@@ -298,7 +300,6 @@ cache:
 
 before_script:
   - ruby -v                                   # Print out ruby version for debugging
-  - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
   - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
 
 rspec:

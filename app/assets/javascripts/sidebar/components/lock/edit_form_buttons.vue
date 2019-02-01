@@ -41,19 +41,11 @@ export default {
 
 <template>
   <div class="sidebar-item-warning-message-actions">
-    <button
-      type="button"
-      class="btn btn-default append-right-10"
-      @click="closeForm"
-    >
+    <button type="button" class="btn btn-default append-right-10" @click="closeForm">
       {{ __('Cancel') }}
     </button>
 
-    <button
-      type="button"
-      class="btn btn-close"
-      @click.prevent="submitForm"
-    >
+    <button type="button" class="btn btn-close" @click.prevent="submitForm">
       {{ buttonText }}
     </button>
   </div>

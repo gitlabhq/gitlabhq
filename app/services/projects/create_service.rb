@@ -9,23 +9,18 @@ module Projects
     end
 
     def execute
-      if @params[:template_name]&.present?
+      if @params[:template_name].present?
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
       end
 
-      forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
+      relations_block = params.delete(:relations_block)
 
       @project = Project.new(params)
 
       # Make sure that the user is allowed to use the specified visibility level
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, @project.visibility_level)
         deny_visibility_level(@project)
-        return @project
-      end
-
-      unless allowed_fork?(forked_from_project_id)
-        @project.errors.add(:forked_from_project_id, 'is forbidden')
         return @project
       end
 
@@ -47,16 +42,13 @@ module Projects
         @project.namespace_id = current_user.namespace_id
       end
 
+      relations_block&.call(@project)
       yield(@project) if block_given?
 
       # If the block added errors, don't try to save the project
       return @project if @project.errors.any?
 
       @project.creator = current_user
-
-      if forked_from_project_id
-        @project.build_forked_project_link(forked_from_project_id: forked_from_project_id)
-      end
 
       save_project_and_import_data(import_data)
 
@@ -80,15 +72,6 @@ module Projects
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def allowed_fork?(source_project_id)
-      return true if source_project_id.nil?
-
-      source_project = Project.find_by(id: source_project_id)
-      current_user.can?(:fork_project, source_project)
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    # rubocop: disable CodeReuse/ActiveRecord
     def allowed_namespace?(user, namespace_id)
       namespace = Namespace.find_by(id: namespace_id)
       current_user.can?(:create_projects, namespace)
@@ -103,6 +86,8 @@ module Projects
         @project.create_wiki unless skip_wiki?
       end
 
+      @project.track_project_repository
+
       event_service.create_project(@project, current_user)
       system_hook_service.execute_hooks_for(@project, :create)
 
@@ -111,6 +96,8 @@ module Projects
       current_user.invalidate_personal_projects_count
 
       create_readme if @initialize_with_readme
+
+      configure_group_clusters_for_project
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -134,6 +121,10 @@ module Projects
       }
 
       Files::CreateService.new(@project, current_user, commit_attrs).execute
+    end
+
+    def configure_group_clusters_for_project
+      ClusterProjectConfigureWorker.perform_async(@project.id)
     end
 
     def skip_wiki?
@@ -165,7 +156,7 @@ module Projects
       Rails.logger.error(log_message)
 
       if @project
-        @project.mark_import_as_failed(message) if @project.persisted? && @project.import?
+        @project.import_state.mark_as_failed(message) if @project.persisted? && @project.import?
       end
 
       @project
@@ -198,7 +189,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_schedule if @project.import? && !@project.bare_repository_import?
+        @project.import_state.schedule if @project.import? && !@project.bare_repository_import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end

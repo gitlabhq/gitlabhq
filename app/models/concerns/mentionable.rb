@@ -97,9 +97,9 @@ module Mentionable
   # Allows heavy processing to be skipped
   def matches_cross_reference_regex?
     reference_pattern = if !project || project.default_issues_tracker?
-                          ReferenceRegexes::DEFAULT_PATTERN
+                          ReferenceRegexes.default_pattern
                         else
-                          ReferenceRegexes::EXTERNAL_PATTERN
+                          ReferenceRegexes.external_pattern
                         end
 
     self.class.mentionable_attrs.any? do |attr, _|

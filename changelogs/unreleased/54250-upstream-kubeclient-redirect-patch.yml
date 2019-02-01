@@ -1,0 +1,5 @@
+---
+title: Upgrade kubeclient to 4.2.2 and swap out monkey-patch to disallow redirects
+merge_request: 24284
+author:
+type: other

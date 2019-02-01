@@ -48,7 +48,7 @@
       - if generic_commit_status.pipeline.user
         = user_avatar(user: generic_commit_status.pipeline.user, size: 20)
       - else
-        %span.api API
+        %span.monospace API
 
   - if admin
     %td

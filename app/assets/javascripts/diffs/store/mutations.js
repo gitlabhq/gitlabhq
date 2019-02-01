@@ -1,6 +1,4 @@
-import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { sortTree } from '~/ide/stores/utils';
 import {
   findDiffFile,
   addLineReferences,
@@ -8,7 +6,6 @@ import {
   addContextLines,
   prepareDiffData,
   isDiscussionApplicableToLine,
-  generateTreeList,
 } from './utils';
 import * as types from './mutation_types';
 
@@ -23,14 +20,10 @@ export default {
   },
 
   [types.SET_DIFF_DATA](state, data) {
-    const diffData = convertObjectPropsToCamelCase(data, { deep: true });
-    prepareDiffData(diffData);
-    const { tree, treeEntries } = generateTreeList(diffData.diffFiles);
+    prepareDiffData(data);
 
     Object.assign(state, {
-      ...diffData,
-      tree: sortTree(tree),
-      treeEntries,
+      ...convertObjectPropsToCamelCase(data),
     });
   },
 
@@ -42,7 +35,7 @@ export default {
 
   [types.SET_MERGE_REQUEST_DIFFS](state, mergeRequestDiffs) {
     Object.assign(state, {
-      mergeRequestDiffs: convertObjectPropsToCamelCase(mergeRequestDiffs, { deep: true }),
+      mergeRequestDiffs,
     });
   },
 
@@ -50,25 +43,49 @@ export default {
     Object.assign(state, { diffViewType });
   },
 
-  [types.ADD_COMMENT_FORM_LINE](state, { lineCode }) {
-    Vue.set(state.diffLineCommentForms, lineCode, true);
-  },
+  [types.TOGGLE_LINE_HAS_FORM](state, { lineCode, fileHash, hasForm }) {
+    const diffFile = state.diffFiles.find(f => f.file_hash === fileHash);
 
-  [types.REMOVE_COMMENT_FORM_LINE](state, { lineCode }) {
-    Vue.delete(state.diffLineCommentForms, lineCode);
+    if (!diffFile) return;
+
+    if (diffFile.highlighted_diff_lines) {
+      diffFile.highlighted_diff_lines.find(l => l.line_code === lineCode).hasForm = hasForm;
+    }
+
+    if (diffFile.parallel_diff_lines) {
+      const line = diffFile.parallel_diff_lines.find(l => {
+        const { left, right } = l;
+
+        return (left && left.line_code === lineCode) || (right && right.line_code === lineCode);
+      });
+
+      if (line.left && line.left.line_code === lineCode) {
+        line.left.hasForm = hasForm;
+      }
+
+      if (line.right && line.right.line_code === lineCode) {
+        line.right.hasForm = hasForm;
+      }
+    }
   },
 
   [types.ADD_CONTEXT_LINES](state, options) {
     const { lineNumbers, contextLines, fileHash } = options;
     const { bottom } = options.params;
     const diffFile = findDiffFile(state.diffFiles, fileHash);
-    const { highlightedDiffLines, parallelDiffLines } = diffFile;
 
     removeMatchLine(diffFile, lineNumbers, bottom);
-    const lines = addLineReferences(contextLines, lineNumbers, bottom);
+
+    const lines = addLineReferences(contextLines, lineNumbers, bottom).map(line => ({
+      ...line,
+      line_code: line.line_code || `${fileHash}_${line.old_line}_${line.new_line}`,
+      discussions: line.discussions || [],
+      hasForm: false,
+    }));
+
     addContextLines({
-      inlineLines: highlightedDiffLines,
-      parallelLines: parallelDiffLines,
+      inlineLines: diffFile.highlighted_diff_lines,
+      parallelLines: diffFile.parallel_diff_lines,
       contextLines: lines,
       bottom,
       lineNumbers,
@@ -76,10 +93,9 @@ export default {
   },
 
   [types.ADD_COLLAPSED_DIFFS](state, { file, data }) {
-    const normalizedData = convertObjectPropsToCamelCase(data, { deep: true });
-    prepareDiffData(normalizedData);
-    const [newFileData] = normalizedData.diffFiles.filter(f => f.fileHash === file.fileHash);
-    const selectedFile = state.diffFiles.find(f => f.fileHash === file.fileHash);
+    prepareDiffData(data);
+    const [newFileData] = data.diff_files.filter(f => f.file_hash === file.file_hash);
+    const selectedFile = state.diffFiles.find(f => f.file_hash === file.file_hash);
     Object.assign(selectedFile, { ...newFileData });
   },
 
@@ -90,81 +106,98 @@ export default {
     }));
   },
 
-  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, discussions, diffPositionByLineCode }) {
-    const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
-    const firstDiscussion = discussions[0];
-    const isDiffDiscussion = firstDiscussion.diff_discussion;
-    const hasLineCode = firstDiscussion.line_code;
-    const diffPosition = diffPositionByLineCode[firstDiscussion.line_code];
+  [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode }) {
+    const { latestDiff } = state;
 
-    if (
-      selectedFile &&
-      isDiffDiscussion &&
-      hasLineCode &&
-      diffPosition &&
+    const discussionLineCode = discussion.line_code;
+    const fileHash = discussion.diff_file.file_hash;
+    const lineCheck = line =>
+      line.line_code === discussionLineCode &&
       isDiscussionApplicableToLine({
-        discussion: firstDiscussion,
-        diffPosition,
-        latestDiff: state.latestDiff,
-      })
-    ) {
-      const targetLine = selectedFile.parallelDiffLines.find(
-        line =>
-          (line.left && line.left.lineCode === firstDiscussion.line_code) ||
-          (line.right && line.right.lineCode === firstDiscussion.line_code),
-      );
-      if (targetLine) {
-        if (targetLine.left && targetLine.left.lineCode === firstDiscussion.line_code) {
-          Object.assign(targetLine.left, {
-            discussions,
-          });
-        } else {
-          Object.assign(targetLine.right, {
-            discussions,
+        discussion,
+        diffPosition: diffPositionByLineCode[line.line_code],
+        latestDiff,
+      });
+    const mapDiscussions = (line, extraCheck = () => true) => ({
+      ...line,
+      discussions: extraCheck()
+        ? line.discussions
+            .filter(() => !line.discussions.some(({ id }) => discussion.id === id))
+            .concat(lineCheck(line) ? discussion : line.discussions)
+        : [],
+    });
+
+    state.diffFiles = state.diffFiles.map(diffFile => {
+      if (diffFile.file_hash === fileHash) {
+        const file = { ...diffFile };
+
+        if (file.highlighted_diff_lines) {
+          file.highlighted_diff_lines = file.highlighted_diff_lines.map(line =>
+            lineCheck(line) ? mapDiscussions(line) : line,
+          );
+        }
+
+        if (file.parallel_diff_lines) {
+          file.parallel_diff_lines = file.parallel_diff_lines.map(line => {
+            const left = line.left && lineCheck(line.left);
+            const right = line.right && lineCheck(line.right);
+
+            if (left || right) {
+              return {
+                left: line.left ? mapDiscussions(line.left) : null,
+                right: line.right ? mapDiscussions(line.right, () => !left) : null,
+              };
+            }
+
+            return line;
           });
         }
-      }
 
-      if (selectedFile.highlightedDiffLines) {
-        const targetInlineLine = selectedFile.highlightedDiffLines.find(
-          line => line.lineCode === firstDiscussion.line_code,
-        );
-
-        if (targetInlineLine) {
-          Object.assign(targetInlineLine, {
-            discussions,
-          });
+        if (!file.parallel_diff_lines || !file.highlighted_diff_lines) {
+          file.discussions = (file.discussions || []).concat(discussion);
         }
+
+        return file;
       }
-    }
+
+      return diffFile;
+    });
   },
 
   [types.REMOVE_LINE_DISCUSSIONS_FOR_FILE](state, { fileHash, lineCode }) {
-    const selectedFile = state.diffFiles.find(f => f.fileHash === fileHash);
+    const selectedFile = state.diffFiles.find(f => f.file_hash === fileHash);
     if (selectedFile) {
-      const targetLine = selectedFile.parallelDiffLines.find(
-        line =>
-          (line.left && line.left.lineCode === lineCode) ||
-          (line.right && line.right.lineCode === lineCode),
-      );
-      if (targetLine) {
-        const side = targetLine.left && targetLine.left.lineCode === lineCode ? 'left' : 'right';
+      if (selectedFile.parallel_diff_lines) {
+        const targetLine = selectedFile.parallel_diff_lines.find(
+          line =>
+            (line.left && line.left.line_code === lineCode) ||
+            (line.right && line.right.line_code === lineCode),
+        );
+        if (targetLine) {
+          const side = targetLine.left && targetLine.left.line_code === lineCode ? 'left' : 'right';
 
-        Object.assign(targetLine[side], {
-          discussions: [],
-        });
+          Object.assign(targetLine[side], {
+            discussions: targetLine[side].discussions.filter(discussion => discussion.notes.length),
+          });
+        }
       }
 
-      if (selectedFile.highlightedDiffLines) {
-        const targetInlineLine = selectedFile.highlightedDiffLines.find(
-          line => line.lineCode === lineCode,
+      if (selectedFile.highlighted_diff_lines) {
+        const targetInlineLine = selectedFile.highlighted_diff_lines.find(
+          line => line.line_code === lineCode,
         );
 
         if (targetInlineLine) {
           Object.assign(targetInlineLine, {
-            discussions: [],
+            discussions: targetInlineLine.discussions.filter(discussion => discussion.notes.length),
           });
         }
+      }
+
+      if (selectedFile.discussions && selectedFile.discussions.length) {
+        selectedFile.discussions = selectedFile.discussions.filter(
+          discussion => discussion.notes.length,
+        );
       }
     }
   },
@@ -176,5 +209,39 @@ export default {
   },
   [types.UPDATE_CURRENT_DIFF_FILE_ID](state, fileId) {
     state.currentDiffFileId = fileId;
+  },
+  [types.OPEN_DIFF_FILE_COMMENT_FORM](state, formData) {
+    state.commentForms.push({
+      ...formData,
+    });
+  },
+  [types.UPDATE_DIFF_FILE_COMMENT_FORM](state, formData) {
+    const { fileHash } = formData;
+
+    state.commentForms = state.commentForms.map(form => {
+      if (form.fileHash === fileHash) {
+        return {
+          ...formData,
+        };
+      }
+
+      return form;
+    });
+  },
+  [types.CLOSE_DIFF_FILE_COMMENT_FORM](state, fileHash) {
+    state.commentForms = state.commentForms.filter(form => form.fileHash !== fileHash);
+  },
+  [types.SET_HIGHLIGHTED_ROW](state, lineCode) {
+    state.highlightedRow = lineCode;
+  },
+  [types.SET_TREE_DATA](state, { treeEntries, tree }) {
+    state.treeEntries = treeEntries;
+    state.tree = tree;
+  },
+  [types.SET_RENDER_TREE_LIST](state, renderTreeList) {
+    state.renderTreeList = renderTreeList;
+  },
+  [types.SET_SHOW_WHITESPACE](state, showWhitespace) {
+    state.showWhitespace = showWhitespace;
   },
 };

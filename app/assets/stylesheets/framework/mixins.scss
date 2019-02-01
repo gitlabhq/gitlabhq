@@ -250,6 +250,101 @@
   max-width: 100%;
 }
 
+/*
+* Mixin that handles the container for the job logs (CI/CD and kubernetes pod logs)
+*/
+@mixin build-trace {
+  background: $black;
+  color: $gray-darkest;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 12px;
+  border-radius: 0;
+  border: 0;
+  padding: $grid-size;
+
+  .bash {
+    display: block;
+  }
+
+  &.build-trace-rounded {
+    border-radius: $border-radius-base;
+  }
+}
+
+@mixin build-trace-top-bar($height) {
+  height: $height;
+  min-height: $height;
+  background: $gray-light;
+  border: 1px solid $border-color;
+  color: $gl-text-color;
+  position: sticky;
+  position: -webkit-sticky;
+  top: $header-height;
+  padding: $grid-size;
+
+  .with-performance-bar & {
+    top: $header-height + $performance-bar-height;
+  }
+}
+
+/*
+* Mixin that handles the position of the controls placed on the top bar
+*/
+@mixin build-controllers($control-font-size, $flex-direction, $with-grow, $flex-grow-size, $svg-display: 'block', $svg-top: '2px') {
+  display: flex;
+  font-size: $control-font-size;
+  justify-content: $flex-direction;
+  align-items: center;
+  align-self: baseline;
+  @if $with-grow {
+    flex-grow: $flex-grow-size;
+  }
+
+  svg {
+    width: 15px;
+    height: 15px;
+    display: $svg-display;
+    fill: $gl-text-color;
+    top: $svg-top;
+  }
+
+  .controllers-buttons {
+    color: $gl-text-color;
+    margin: 0 $grid-size;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .btn-scroll.animate {
+    .first-triangle {
+      animation: blinking-scroll-button 1s ease infinite;
+      animation-delay: 0.3s;
+    }
+
+    .second-triangle {
+      animation: blinking-scroll-button 1s ease infinite;
+      animation-delay: 0.2s;
+    }
+
+    .third-triangle {
+      animation: blinking-scroll-button 1s ease infinite;
+    }
+
+    &:disabled {
+      opacity: 1;
+    }
+  }
+
+  .btn-scroll:disabled,
+  .btn-refresh:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
 @mixin build-loader-animation {
   position: relative;
   white-space: initial;

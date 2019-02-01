@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe UrlValidator do
@@ -5,6 +7,30 @@ describe UrlValidator do
   subject { validator.validate_each(badge, :link_url, badge.link_url) }
 
   include_examples 'url validator examples', described_class::DEFAULT_PROTOCOLS
+
+  describe 'validations' do
+    include_context 'invalid urls'
+
+    let(:validator) { described_class.new(attributes: [:link_url]) }
+
+    it 'returns error when url is nil' do
+      expect(validator.validate_each(badge, :link_url, nil)).to be_nil
+      expect(badge.errors.first[1]).to eq 'must be a valid URL'
+    end
+
+    it 'returns error when url is empty' do
+      expect(validator.validate_each(badge, :link_url, '')).to be_nil
+      expect(badge.errors.first[1]).to eq 'must be a valid URL'
+    end
+
+    it 'does not allow urls with CR or LF characters' do
+      aggregate_failures do
+        urls_with_CRLF.each do |url|
+          expect(validator.validate_each(badge, :link_url, url)[0]).to eq 'is blocked: URI is invalid'
+        end
+      end
+    end
+  end
 
   context 'by default' do
     let(:validator) { described_class.new(attributes: [:link_url]) }
@@ -110,6 +136,86 @@ describe UrlValidator do
 
       it 'does not check user format' do
         badge.link_url = url
+
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
+    end
+  end
+
+  context 'when ascii_only is' do
+    let(:url) { 'https://𝕘itⅼαƄ.com/foo/foo.bar'}
+    let(:validator) { described_class.new(attributes: [:link_url], ascii_only: ascii_only) }
+
+    context 'true' do
+      let(:ascii_only) { true }
+
+      it 'prevents unicode characters' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+    end
+
+    context 'false (default)' do
+      let(:ascii_only) { false }
+
+      it 'does not prevent unicode characters' do
+        badge.link_url = url
+
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
+    end
+  end
+
+  context 'when enforce_sanitization is' do
+    let(:validator) { described_class.new(attributes: [:link_url], enforce_sanitization: enforce_sanitization) }
+    let(:unsafe_url) { "https://replaceme.com/'><script>alert(document.cookie)</script>" }
+    let(:safe_url) { 'https://replaceme.com/path/to/somewhere' }
+
+    let(:unsafe_internal_url) do
+      Gitlab.config.gitlab.protocol + '://' + Gitlab.config.gitlab.host +
+        "/'><script>alert(document.cookie)</script>"
+    end
+
+    context 'true' do
+      let(:enforce_sanitization) { true }
+
+      it 'prevents unsafe urls' do
+        badge.link_url = unsafe_url
+
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+
+      it 'prevents unsafe internal urls' do
+        badge.link_url = unsafe_internal_url
+
+        subject
+
+        expect(badge.errors.empty?).to be false
+      end
+
+      it 'allows safe urls' do
+        badge.link_url = safe_url
+
+        subject
+
+        expect(badge.errors.empty?).to be true
+      end
+    end
+
+    context 'false' do
+      let(:enforce_sanitization) { false }
+
+      it 'allows unsafe urls' do
+        badge.link_url = unsafe_url
 
         subject
 

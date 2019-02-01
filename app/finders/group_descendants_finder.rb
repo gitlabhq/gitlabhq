@@ -112,7 +112,7 @@ class GroupDescendantsFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_groups(base_for_ancestors)
     group_ids = base_for_ancestors.except(:select, :sort).select(:id)
-    Gitlab::GroupHierarchy.new(Group.where(id: group_ids))
+    Gitlab::ObjectHierarchy.new(Group.where(id: group_ids))
       .base_and_ancestors(upto: parent_group.id)
   end
   # rubocop: enable CodeReuse/ActiveRecord
@@ -131,9 +131,8 @@ class GroupDescendantsFinder
       .with_selects_for_list(archived: params[:archived])
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def subgroups
-    return Group.none unless Group.supports_nested_groups?
+    return Group.none unless Group.supports_nested_objects?
 
     # When filtering subgroups, we want to find all matches withing the tree of
     # descendants to show to the user
@@ -145,7 +144,6 @@ class GroupDescendantsFinder
 
     groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # rubocop: disable CodeReuse/Finder
   def direct_child_projects
@@ -180,12 +178,12 @@ class GroupDescendantsFinder
   end
 
   def sort
-    params.fetch(:sort, 'id_asc')
+    params.fetch(:sort, 'created_desc')
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def hierarchy_for_parent
-    @hierarchy ||= Gitlab::GroupHierarchy.new(Group.where(id: parent_group.id))
+    @hierarchy ||= Gitlab::ObjectHierarchy.new(Group.where(id: parent_group.id))
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

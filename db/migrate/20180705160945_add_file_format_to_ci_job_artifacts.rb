@@ -1,4 +1,4 @@
-class AddFileFormatToCiJobArtifacts < ActiveRecord::Migration
+class AddFileFormatToCiJobArtifacts < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

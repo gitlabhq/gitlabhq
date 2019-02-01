@@ -4,12 +4,12 @@ class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
   include ContinueParams
 
-  before_action :build, except: [:index, :cancel_all]
+  before_action :build, except: [:index]
   before_action :authorize_read_build!
   before_action :authorize_update_build!,
-    except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
+    except: [:index, :show, :status, :raw, :trace, :erase]
   before_action :authorize_erase_build!, only: [:erase]
-  before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_workhorse_authorize]
+  before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_websocket_authorize]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   layout 'project'
@@ -38,16 +38,6 @@ class Projects::JobsController < Projects::ApplicationController
     @builds = @builds.page(params[:page]).per(30).without_count
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def cancel_all
-    return access_denied! unless can?(current_user, :update_build, project)
-
-    @project.builds.running_or_pending.each do |build|
-      build.cancel if can?(current_user, :update_build, build)
-    end
-
-    redirect_to project_jobs_path(project)
-  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show
@@ -140,15 +130,22 @@ class Projects::JobsController < Projects::ApplicationController
 
   def raw
     if trace_artifact_file
+      workhorse_set_content_type!
       send_upload(trace_artifact_file,
                   send_params: raw_send_params,
                   redirect_params: raw_redirect_params)
     else
       build.trace.read do |stream|
         if stream.file?
+          workhorse_set_content_type!
           send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
         else
-          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
+          # In this case we can't use workhorse_set_content_type! and let
+          # Workhorse handle the response because the data is streamed directly
+          # to the user but, because we have the trace content, we can calculate
+          # the proper content type and disposition here.
+          raw_data = stream.raw
+          send_data raw_data, type: 'text/plain; charset=utf-8', disposition: raw_trace_content_disposition(raw_data), filename: 'job.log'
         end
       end
     end
@@ -200,5 +197,14 @@ class Projects::JobsController < Projects::ApplicationController
 
   def build_path(build)
     project_job_path(build.project, build)
+  end
+
+  def raw_trace_content_disposition(raw_data)
+    mime_type = MimeMagic.by_magic(raw_data)
+
+    # if mime_type is nil can also represent 'text/plain'
+    return 'inline' if mime_type.nil? || mime_type.type == 'text/plain'
+
+    'attachment'
   end
 end

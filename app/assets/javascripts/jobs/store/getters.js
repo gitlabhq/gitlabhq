@@ -1,20 +1,5 @@
 import _ from 'underscore';
-import { __ } from '~/locale';
-
-export const headerActions = state => {
-  if (state.job.new_issue_path) {
-    return [
-      {
-        label: __('New issue'),
-        path: state.job.new_issue_path,
-        cssClass:
-          'js-new-issue btn btn-success btn-inverted d-none d-md-block d-lg-block d-xl-block',
-        type: 'link',
-      },
-    ];
-  }
-  return [];
-};
+import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
 export const headerTime = state => (state.job.started ? state.job.started : state.job.created_at);
 
@@ -34,20 +19,19 @@ export const hasEnvironment = state => !_.isEmpty(state.job.deployment_status);
  * Used to check if it should render the job log or the empty state
  * @returns {Boolean}
  */
-export const hasTrace = state => state.job.has_trace || state.job.status.group === 'running';
+export const hasTrace = state =>
+  state.job.has_trace || (!_.isEmpty(state.job.status) && state.job.status.group === 'running');
 
 export const emptyStateIllustration = state =>
   (state.job && state.job.status && state.job.status.illustration) || {};
 
-/**
- * When the job is pending and there are no available runners
- * we need to render the stuck block;
- *
- * @returns {Boolean}
- */
-export const isJobStuck = state =>
-  state.job.status.group === 'pending' &&
-  (!_.isEmpty(state.job.runners) && state.job.runners.available === false);
+export const emptyStateAction = state =>
+  (state.job && state.job.status && state.job.status.action) || null;
+
+export const isScrollingDown = state => isScrolledToBottom() && !state.isTraceComplete;
+
+export const hasRunnersForProject = state =>
+  state.job.runners.available && !state.job.runners.online;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

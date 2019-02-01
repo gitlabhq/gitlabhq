@@ -114,7 +114,8 @@ module API
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
-          current_user: current_user
+          current_user: current_user,
+          license: false
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
@@ -127,7 +128,7 @@ module API
       end
     end
 
-    resource :users, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :users, requirements: API::USER_REQUIREMENTS do
       desc 'Get a user projects' do
         success Entities::BasicProjectDetails
       end
@@ -223,20 +224,24 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a single project' do
         success Entities::ProjectWithAccess
       end
       params do
         use :statistics_params
         use :with_custom_attributes
+
+        optional :license, type: Boolean, default: false,
+                           desc: 'Include project license data'
       end
       get ":id" do
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,
           user_can_admin_project: can?(current_user, :admin_project, user_project),
-          statistics: params[:statistics]
+          statistics: params[:statistics],
+          license: params[:license]
         }
 
         project, options = with_custom_attributes(user_project, options)
@@ -470,7 +475,7 @@ module API
         requires :file, type: File, desc: 'The file to be uploaded'
       end
       post ":id/uploads" do
-        UploadService.new(user_project, params[:file]).execute
+        UploadService.new(user_project, params[:file]).execute.to_h
       end
 
       desc 'Get the users list of a project' do

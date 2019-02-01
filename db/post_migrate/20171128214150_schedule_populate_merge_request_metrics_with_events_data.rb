@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SchedulePopulateMergeRequestMetricsWithEventsData < ActiveRecord::Migration
+class SchedulePopulateMergeRequestMetricsWithEventsData < ActiveRecord::Migration[4.2]
   DOWNTIME = false
   BATCH_SIZE = 10_000
   MIGRATION = 'PopulateMergeRequestMetricsWithEventsData'

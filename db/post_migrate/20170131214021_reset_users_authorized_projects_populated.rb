@@ -1,6 +1,6 @@
 # rubocop:disable Migration/UpdateLargeTable
 # rubocop:disable Migration/UpdateColumnInBatches
-class ResetUsersAuthorizedProjectsPopulated < ActiveRecord::Migration
+class ResetUsersAuthorizedProjectsPopulated < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

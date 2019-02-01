@@ -1,32 +1,30 @@
 .row
+  .col-12
+    .calendar-block.prepend-top-default.append-bottom-default
+      .user-calendar.d-none.d-sm-block{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
+        %h4.center.light
+          = spinner nil, true
+      .user-calendar-activities.d-none.d-sm-block
+.row
   .col-md-12.col-lg-6
-    .calendar-block
-      .content-block.hide-bottom-border
-        %h4
-          = s_('UserProfile|Activity')
-        .user-calendar.d-none.d-sm-block.text-left{ data: { calendar_path: user_calendar_path(@user, :json), calendar_activities_path: user_calendar_activities_path, utc_offset: Time.zone.utc_offset } }
-          %h4.center.light
-            %i.fa.fa-spinner.fa-spin
-        .user-calendar-activities.d-none.d-sm-block
-
     - if can?(current_user, :read_cross_project)
       .activities-block
-        .content-block
-          %h5.prepend-top-10
-            = s_('UserProfile|Recent contributions')
+        .prepend-top-16
+          .d-flex.align-items-center.border-bottom
+            %h4.flex-grow
+              = s_('UserProfile|Activity')
+            = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
           .overview-content-list{ data: { href: user_path } }
             .center.light.loading
-              %i.fa.fa-spinner.fa-spin
-        .prepend-top-10
-          = link_to s_('UserProfile|View all'), user_activity_path, class: "hide js-view-all"
+              = spinner nil, true
 
   .col-md-12.col-lg-6
     .projects-block
-      .content-block
-        %h4
-          = s_('UserProfile|Personal projects')
+      .prepend-top-16
+        .d-flex.align-items-center.border-bottom
+          %h4.flex-grow
+            = s_('UserProfile|Personal projects')
+          = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
         .overview-content-list{ data: { href: user_projects_path } }
           .center.light.loading
-            %i.fa.fa-spinner.fa-spin
-      .prepend-top-10
-        = link_to s_('UserProfile|View all'), user_projects_path, class: "hide js-view-all"
+            = spinner nil, true

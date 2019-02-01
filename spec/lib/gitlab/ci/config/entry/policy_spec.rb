@@ -58,7 +58,7 @@ describe Gitlab::Ci::Config::Entry::Policy do
   end
 
   context 'when using complex policy' do
-    context 'when specifiying refs policy' do
+    context 'when specifying refs policy' do
       let(:config) { { refs: ['master'] } }
 
       it 'is a correct configuraton' do
@@ -168,8 +168,33 @@ describe Gitlab::Ci::Config::Entry::Policy do
     end
   end
 
+  describe '#value' do
+    context 'when default value has been provided' do
+      before do
+        entry.default = { refs: %w[branches tags] }
+      end
+
+      context 'when user overrides default values' do
+        let(:config) { { refs: %w[feature], variables: %w[$VARIABLE] } }
+
+        it 'does not include default values' do
+          expect(entry.value).to eq config
+        end
+      end
+
+      context 'when default value has not been defined' do
+        let(:config) { { variables: %w[$VARIABLE] } }
+
+        it 'includes default values' do
+          expect(entry.value).to eq(refs: %w[branches tags],
+                                    variables: %w[$VARIABLE])
+        end
+      end
+    end
+  end
+
   describe '.default' do
-    it 'does not have a default value' do
+    it 'does not have default policy' do
       expect(described_class.default).to be_nil
     end
   end

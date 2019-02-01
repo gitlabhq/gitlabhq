@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class extends an OpenStruct object by adding predicate methods to mimic
 # ActiveRecord access. We rely on the initial values being true or false to
 # determine whether to define a predicate method because for a newly-added
@@ -34,6 +36,10 @@ module Gitlab
 
     def pick_repository_storage
       repository_storages.sample
+    end
+
+    def commit_email_hostname
+      super.presence || ApplicationSetting.default_commit_email_hostname
     end
   end
 end

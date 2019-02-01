@@ -19,17 +19,12 @@
       justify-content: space-between;
       line-height: $line-height-base;
 
-      .card-title {
+      .logo-text {
+        width: 55px;
+        height: 24px;
         display: flex;
-        align-items: center;
-
-        .logo-text {
-          width: 55px;
-          height: 24px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
+        flex-direction: column;
+        justify-content: center;
       }
 
       .navbar-collapse {

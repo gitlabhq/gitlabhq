@@ -1,7 +1,14 @@
 # GitLab Helm Chart
 
-This is the official and recommended way to install GitLab on a cloud native environment.
-For more information on other available GitLab Helm Charts, see the [charts overview](index.md#chart-overview).
+This is the official way to install GitLab on a cloud native environment.
+
+NOTE: **Kubernetes experience required:**
+Our Helm charts are recommended for those who are familiar with Kubernetes.
+If you're not sure if Kubernetes is for you, our
+[Omnibus GitLab packages](../README.md#install-gitlab-using-the-omnibus-gitlab-package-recommended)
+are mature, scalable, support [high availability](../../administration/high_availability/README.md)
+and are used today on GitLab.com.
+It is not necessary to have GitLab installed on Kubernetes in order to use [GitLab Kubernetes integration](https://docs.gitlab.com/ee/user/project/clusters/index.html). 
 
 ## Introduction
 
@@ -31,7 +38,7 @@ to deploy.
 
 TIP: **Tip:**
 For production deployments, we strongly recommend using the
-[detailed installation instructions](https://gitlab.com/charts/gitlab/blob/master/doc/installation/README.md)
+[detailed installation instructions](https://gitlab.com/charts/gitlab/blob/master/doc/installation/index.md)
 utilizing [external Postgres, Redis, and object storage](https://gitlab.com/charts/gitlab/tree/master/doc/advanced) services.
 
 ### Requirements
@@ -40,8 +47,9 @@ In order to deploy GitLab on Kubernetes, the following are required:
 
 1. `helm` and `kubectl` [installed on your computer](preparation/tools_installation.md).
 1. A Kubernetes cluster, version 1.8 or higher. 6vCPU and 16GB of RAM is recommended.
-   - [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
    - [Amazon EKS](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+   - [Google GKE](https://cloud.google.com/kubernetes-engine/docs/how-to/creating-a-container-cluster)
+   - [IBM IKS](https://console.bluemix.net/docs/tutorials/scalable-webapp-kubernetes.html#create_kube_cluster)
    - [Microsoft AKS](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough-portal)
 1. A [wildcard DNS entry and external IP address](preparation/networking.md)
 1. [Authenticate and connect](preparation/connect.md) to the cluster
@@ -112,8 +120,7 @@ If your SMTP server requires authentication make sure to read the section on pro
 your password in the [secrets documentation](https://gitlab.com/charts/gitlab/blob/master/doc/installation/secrets.md#smtp-password).
 You can disable authentication settings with `--set global.smtp.authentication=""`.
 
-If your Kubernetes cluster is on GKE, be aware that SMTP ports [25, 465, and 587
-are blocked](https://cloud.google.com/compute/docs/tutorials/sending-mail/#using_standard_email_ports).
+If your Kubernetes cluster is on GKE, be aware that SMTP port [25 is blocked](https://cloud.google.com/compute/docs/tutorials/sending-mail/#using_standard_email_ports).
 
 ### Deploying the Community Edition
 

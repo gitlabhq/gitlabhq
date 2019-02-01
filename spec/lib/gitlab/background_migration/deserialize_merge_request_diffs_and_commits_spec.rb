@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :migration, schema: 20171114162227 do
   include GitHelpers
 
@@ -324,3 +325,4 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

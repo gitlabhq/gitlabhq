@@ -15,14 +15,14 @@
 
 */
 
+import { GlTooltip } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
-import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarImage',
-  directives: {
-    tooltip,
+  components: {
+    GlTooltip,
   },
   props: {
     lazy: {
@@ -67,14 +67,13 @@ export default {
     // In both cases we should render the defaultAvatarUrl
     sanitizedSource() {
       let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
-      if (baseSrc.indexOf('?') === -1) baseSrc += `?width=${this.size}`;
+      // Only adds the width to the URL if its not a base64 data image
+      if (!(baseSrc.indexOf('data:') === 0) && !baseSrc.includes('?'))
+        baseSrc += `?width=${this.size}`;
       return baseSrc;
     },
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;
-    },
-    tooltipContainer() {
-      return this.tooltipText ? 'body' : null;
     },
     avatarSizeClass() {
       return `s${this.size}`;
@@ -84,22 +83,29 @@ export default {
 </script>
 
 <template>
-  <img
-    v-tooltip
-    :class="{
-      lazy: lazy,
-      [avatarSizeClass]: true,
-      [cssClasses]: true
-    }"
-    :src="resultantSrcAttribute"
-    :width="size"
-    :height="size"
-    :alt="imgAlt"
-    :data-src="sanitizedSource"
-    :data-container="tooltipContainer"
-    :data-placement="tooltipPlacement"
-    :title="tooltipText"
-    class="avatar"
-    data-boundary="window"
-  />
+  <span>
+    <img
+      ref="userAvatarImage"
+      :class="{
+        lazy: lazy,
+        [avatarSizeClass]: true,
+        [cssClasses]: true,
+      }"
+      :src="resultantSrcAttribute"
+      :width="size"
+      :height="size"
+      :alt="imgAlt"
+      :data-src="sanitizedSource"
+      class="avatar"
+    />
+    <gl-tooltip
+      v-if="tooltipText || $slots.default"
+      :target="() => $refs.userAvatarImage"
+      :placement="tooltipPlacement"
+      boundary="window"
+      class="js-user-avatar-image-toolip"
+    >
+      <slot> {{ tooltipText }} </slot>
+    </gl-tooltip>
+  </span>
 </template>

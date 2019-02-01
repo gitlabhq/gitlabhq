@@ -4,6 +4,16 @@
 
 **Create, read, update and delete repository files using this API**
 
+The different scopes available using [personal access tokens](../user/profile/personal_access_tokens.md) are depicted
+in the following table.
+
+| Scope | Description |
+| ----- | ----------- |
+| `read_repository` | Allows read-access to the repository files. |
+| `api` | Allows read-write access to the repository files. |
+
+> `read_repository` scope was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23534) in GitLab 11.6.
+
 ## Get file from repository
 
 Allows you to receive information about file in repository like name, size,
@@ -15,7 +25,7 @@ GET /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
+curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
 ```
 
 Example response:
@@ -50,7 +60,7 @@ HEAD /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --head --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
+curl --head --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
 ```
 
 Example response:
@@ -77,7 +87,7 @@ GET /projects/:id/repository/files/:file_path/raw
 ```
 
 ```bash
-curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master'
+curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master'
 ```
 
 Parameters:
@@ -97,7 +107,7 @@ POST /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' --header "Content-Type: application/json" \
+curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "content": "some content", "commit_message": "create a new file"}' \
   'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'
@@ -132,7 +142,7 @@ PUT /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' --header "Content-Type: application/json" \
+curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "content": "some content", "commit_message": "update file"}' \
   'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'
@@ -177,7 +187,7 @@ DELETE /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' --header "Content-Type: application/json" \
+curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
   --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
     "commit_message": "delete file"}' \
   'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'

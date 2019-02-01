@@ -30,12 +30,12 @@ module Ci
     def create_reports(reports, expire_in:)
       return unless reports&.any?
 
-      reports.map do |k, v|
+      reports.map do |report_type, report_paths|
         {
-          artifact_type: k.to_sym,
-          artifact_format: :gzip,
-          name: ::Ci::JobArtifact::DEFAULT_FILE_NAMES[k.to_sym],
-          paths: v,
+          artifact_type: report_type.to_sym,
+          artifact_format: ::Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(report_type.to_sym),
+          name: ::Ci::JobArtifact::DEFAULT_FILE_NAMES.fetch(report_type.to_sym),
+          paths: report_paths,
           when: 'always',
           expire_in: expire_in
         }

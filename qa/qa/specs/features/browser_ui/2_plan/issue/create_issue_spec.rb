@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :plan, :smoke do
+  context 'Plan', :smoke do
     describe 'Issue creation' do
       let(:issue_title) { 'issue title' }
 
@@ -9,7 +9,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::Issue.fabricate! do |issue|
+        Resource::Issue.fabricate! do |issue|
           issue.title = issue_title
         end
       end
@@ -31,6 +31,7 @@ module QA
           create_issue
 
           Page::Project::Issue::Show.perform do |show|
+            show.select_all_activities_filter
             show.comment('See attached banana for scale', attachment: file_to_attach)
 
             show.refresh

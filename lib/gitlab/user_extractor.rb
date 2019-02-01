@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # This class extracts all users found in a piece of text by the username or the
-# email adress
+# email address
 
 module Gitlab
   class UserExtractor
@@ -14,13 +14,11 @@ module Gitlab
       @text = text
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def users
       return User.none unless @text.present?
 
       @users ||= User.from_union(union_relations)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def usernames
       matches[:usernames]

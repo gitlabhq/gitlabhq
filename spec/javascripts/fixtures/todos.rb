@@ -42,12 +42,12 @@ describe 'Todos (JavaScript fixtures)' do
     end
 
     it 'todos/todos.json' do |example|
-      post :create,
+      post :create, params: {
         namespace_id: namespace,
         project_id: project,
         issuable_type: 'issue',
-        issuable_id: issue_2.id,
-        format: 'json'
+        issuable_id: issue_2.id
+      }, format: 'json'
 
       expect(response).to be_success
       store_frontend_fixture(response, example.description)

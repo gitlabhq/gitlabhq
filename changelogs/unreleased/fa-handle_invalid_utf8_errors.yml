@@ -1,5 +1,0 @@
----
-title: Render 412 when invalid UTF-8 parameters are passed to controller
-merge_request:
-author:
-type: other

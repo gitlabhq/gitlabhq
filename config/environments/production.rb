@@ -9,11 +9,7 @@ Rails.application.configure do
   config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  if Gitlab.rails5?
-    config.public_file_server.enabled = false
-  else
-    config.serve_static_files = false
-  end
+  config.public_file_server.enabled = false
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
@@ -65,10 +61,6 @@ Rails.application.configure do
   # Enable threaded mode
   # config.threadsafe! unless $rails_rake_task
 
-  # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
-  # the I18n.default_locale when a translation can not be found)
-  config.i18n.fallbacks = true
-
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
 
@@ -83,5 +75,5 @@ Rails.application.configure do
 
   config.eager_load = true
 
-  config.allow_concurrency = false
+  config.allow_concurrency = defined?(::Puma)
 end

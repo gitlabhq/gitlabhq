@@ -25,9 +25,12 @@ describe('toolbar', () => {
 
   describe('user cannot attach file', () => {
     beforeEach(() => {
-      vm = mountComponent(Toolbar, Object.assign({}, props, {
-        canAttachFile: false,
-      }));
+      vm = mountComponent(
+        Toolbar,
+        Object.assign({}, props, {
+          canAttachFile: false,
+        }),
+      );
     });
 
     it('should not render uploading-container', () => {

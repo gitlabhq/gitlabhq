@@ -9,7 +9,10 @@ import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 import ModalStore from './boards/stores/modal_store';
-import boardsStore, { boardStoreIssueSet, boardStoreIssueDelete } from './boards/stores/boards_store';
+import boardsStore, {
+  boardStoreIssueSet,
+  boardStoreIssueDelete,
+} from './boards/stores/boards_store';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {
@@ -152,7 +155,7 @@ export default class MilestoneSelect {
           const { $el, e } = clickEvent;
           let selected = clickEvent.selectedObj;
 
-          let data, boardsStore;
+          let data, modalStoreFilter;
           if (!selected) return;
 
           if (options.handleClick) {
@@ -176,11 +179,11 @@ export default class MilestoneSelect {
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsStore = ModalStore.store.filter;
+            modalStoreFilter = ModalStore.store.filter;
           }
 
-          if (boardsStore) {
-            boardsStore[$dropdown.data('fieldName')] = selected.name;
+          if (modalStoreFilter) {
+            modalStoreFilter[$dropdown.data('fieldName')] = selected.name;
             e.preventDefault();
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));

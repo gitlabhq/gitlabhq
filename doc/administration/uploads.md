@@ -48,11 +48,12 @@ _The uploads are stored by default in
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
-### Using object storage
+### Using object storage **[CORE ONLY]**
 
 > **Notes:**
 >
-> - [Introduced][ee-3867] in [GitLab Enterprise Edition Premium][eep] 10.5.
+> - [Introduced][ee-3867] in [GitLab Premium][eep] 10.5.
+> - [Introduced][ce17358] in [GitLab Core][ce] 10.7.
 > - Since version 11.1, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -119,30 +120,7 @@ _The uploads are stored by default in
     ```
 
 1. Save the file and [reconfigure GitLab][] for the changes to take effect.
-1. Migrate any existing local uploads to the object storage:
-
-    > **Notes:**
-    > These task complies with the `BATCH` environment variable to process uploads in batch (200 by default). All of the processing will be done in a background worker and requires **no downtime**.
-
-    ```bash
-    # gitlab-rake gitlab:uploads:migrate[uploader_class, model_class, mount_point]
- 	
-    # Avatars
-    gitlab-rake "gitlab:uploads:migrate[AvatarUploader, Project, :avatar]"
-    gitlab-rake "gitlab:uploads:migrate[AvatarUploader, Group, :avatar]"
-    gitlab-rake "gitlab:uploads:migrate[AvatarUploader, User, :avatar]"
- 
-    # Attachments
-    gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Note, :attachment]"
-    gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :logo]"
-    gitlab-rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :header_logo]"
- 
-    # Markdown
-    gitlab-rake "gitlab:uploads:migrate[FileUploader, Project]"
-    gitlab-rake "gitlab:uploads:migrate[PersonalFileUploader, Snippet]"
-    gitlab-rake "gitlab:uploads:migrate[NamespaceFileUploader, Snippet]"
-    gitlab-rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
-    ```
+1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
 
 ---
 
@@ -167,34 +145,11 @@ _The uploads are stored by default in
     ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
-1. Migrate any existing local uploads to the object storage:
-
-    > **Notes:**
-    > - These task comply with the `BATCH` environment variable to process uploads in batch (200 by default). All of the processing will be done in a background worker and requires **no downtime**.
-    > - To migrate in production use `RAILS_ENV=production` environment variable.
-
-    ```bash
-    # sudo -u git -H bundle exec rake gitlab:uploads:migrate
-   
-    # Avatars
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AvatarUploader, Project, :avatar]"
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AvatarUploader, Group, :avatar]"
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AvatarUploader, User, :avatar]"
- 
-    # Attachments
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Note, :attachment]"
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :logo]"
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[AttachmentUploader, Appearance, :header_logo]"
- 
-    # Markdown
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, Project]"
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[PersonalFileUploader, Snippet]"
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[NamespaceFileUploader, Snippet]"
-    sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
-   
-    ```
+1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate` rake task](raketasks/uploads/migrate.md).
 
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [eep]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition Premium"
+[ce]: https://about.gitlab.com/gitlab-ce/ "GitLab Community Edition"
 [ee-3867]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3867
+[ce-17358]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17358

@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module GroupsHelper
+  def group_overview_nav_link_paths
+    %w[
+      groups#show
+      groups#activity
+      groups#subgroups
+      analytics#show
+    ]
+  end
+
   def group_nav_link_paths
     %w[groups#projects groups#edit badges#index ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
   end
@@ -117,7 +126,7 @@ module GroupsHelper
   end
 
   def supports_nested_groups?
-    Group.supports_nested_groups?
+    Group.supports_nested_objects?
   end
 
   private
@@ -129,6 +138,10 @@ module GroupsHelper
                  :merge_requests]
     links += resources.select do |resource|
       can?(current_user, "read_group_#{resource}".to_sym, @group)
+    end
+
+    if can?(current_user, :read_cluster, @group) && @group.group_clusters_enabled?
+      links << :kubernetes
     end
 
     if can?(current_user, :admin_group, @group)

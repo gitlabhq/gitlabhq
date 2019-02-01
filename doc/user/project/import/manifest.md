@@ -29,7 +29,7 @@ Below is a valid example of a manifest file:
 
 ```xml
 <manifest>
-  <remote review="https://android-review.googlesource.com/" />
+  <remote review="https://android.googlesource.com/" />
 
   <project path="build/make" name="platform/build" />
   <project path="build/blueprint" name="platform/build/blueprint" />
@@ -38,10 +38,10 @@ Below is a valid example of a manifest file:
 
 As a result, the following projects will be created:
 
-| GitLab | Import URL |
-|---|---|
-| https://gitlab.com/YOUR_GROUP/build/make | https://android-review.googlesource.com/platform/build |
-| https://gitlab.com/YOUR_GROUP/build/blueprint | https://android-review.googlesource.com/platform/build/blueprint |
+| GitLab                                          | Import URL                                                  |
+|:------------------------------------------------|:------------------------------------------------------------|
+| `https://gitlab.com/YOUR_GROUP/build/make`      | <https://android.googlesource.com/platform/build>           |
+| `https://gitlab.com/YOUR_GROUP/build/blueprint` | <https://android.googlesource.com/platform/build/blueprint> |
 
 ## Importing the repositories
 

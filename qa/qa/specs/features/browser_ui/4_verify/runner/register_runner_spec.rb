@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :verify, :docker do
+  context 'Verify', :docker do
     describe 'Runner registration' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
 
@@ -13,7 +13,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Factory::Resource::Runner.fabricate! do |runner|
+        Resource::Runner.fabricate! do |runner|
           runner.name = executor
         end
 

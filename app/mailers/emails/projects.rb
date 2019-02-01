@@ -24,6 +24,21 @@ module Emails
            subject: subject("Project export error"))
     end
 
+    def repository_cleanup_success_email(project, user)
+      @project = project
+      @user = user
+
+      mail(to: user.notification_email, subject: subject("Project cleanup has completed"))
+    end
+
+    def repository_cleanup_failure_email(project, user, error)
+      @project = project
+      @user = user
+      @error = error
+
+      mail(to: user.notification_email, subject: subject("Project cleanup failure"))
+    end
+
     def repository_push_email(project_id, opts = {})
       @message =
         Gitlab::Email::Message::RepositoryPush.new(self, project_id, opts)

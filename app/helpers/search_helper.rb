@@ -24,10 +24,10 @@ module SearchHelper
   end
 
   def search_entries_info(collection, scope, term)
-    return unless collection.count > 0
+    return if collection.to_a.empty?
 
     from = collection.offset_value + 1
-    to = collection.offset_value + collection.count
+    to = collection.offset_value + collection.to_a.size
     count = collection.total_count
 
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
@@ -163,13 +163,24 @@ module SearchHelper
     if @project.present?
       opts[:data]['project-id'] = @project.id
       opts[:data]['base-endpoint'] = project_path(@project)
-    else
-      # Group context
+    elsif @group.present?
       opts[:data]['group-id'] = @group.id
       opts[:data]['base-endpoint'] = group_canonical_path(@group)
+    else
+      opts[:data]['base-endpoint'] = root_dashboard_path
     end
 
     opts
+  end
+
+  def search_history_storage_prefix
+    if @project.present?
+      @project.full_path
+    elsif @group.present?
+      @group.full_path
+    else
+      'dashboard'
+    end
   end
 
   # Sanitize a HTML field for search display. Most tags are stripped out and the

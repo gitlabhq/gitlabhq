@@ -1,5 +1,0 @@
----
-title: Includes commit stats in POST project commits API
-merge_request: 21968
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

@@ -315,7 +315,7 @@ describe QuickActions::InterpretService do
     end
 
     shared_examples 'award command' do
-      it 'toggle award 100 emoji if content containts /award :100:' do
+      it 'toggle award 100 emoji if content contains /award :100:' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(emoji_award: "100")
@@ -377,6 +377,14 @@ describe QuickActions::InterpretService do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(tag_name: tag_name, tag_message: tag_message)
+      end
+    end
+
+    shared_examples 'assign command' do
+      it 'assigns to a single user' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(assignee_ids: [developer.id])
       end
     end
 
@@ -474,67 +482,56 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-    context 'assign command' do
-      let(:content) { "/assign @#{developer.username}" }
-
-      context 'Issue' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, issue)
-
-          expect(updates[:assignee_ids]).to match_array([developer.id])
-        end
+    context 'assign command with one user' do
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username}" }
+        let(:issuable) { issue }
       end
 
-      context 'Merge Request' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, merge_request)
-
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username}" }
+        let(:issuable) { merge_request }
       end
     end
 
+    # CE does not have multiple assignees
     context 'assign command with multiple assignees' do
-      let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
-
       before do
         project.add_developer(developer2)
       end
 
-      context 'Issue' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, issue)
-
-          expect(updates[:assignee_ids]).to match_array([developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
+        let(:issuable) { issue }
       end
 
-      context 'Merge Request' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, merge_request)
-
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
+        let(:issuable) { merge_request }
       end
     end
 
     context 'assign command with me alias' do
-      let(:content) { "/assign me" }
-
-      context 'Issue' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, issue)
-
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign me' }
+        let(:issuable) { issue }
       end
 
-      context 'Merge Request' do
-        it 'fetches assignee and populates assignee_ids if content contains /assign' do
-          _, updates = service.execute(content, merge_request)
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign me' }
+        let(:issuable) { merge_request }
+      end
+    end
 
-          expect(updates).to eq(assignee_ids: [developer.id])
-        end
+    context 'assign command with me alias and whitespace' do
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign  me ' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'assign command' do
+        let(:content) { '/assign  me ' }
+        let(:issuable) { merge_request }
       end
     end
 
@@ -1216,6 +1213,46 @@ describe QuickActions::InterpretService do
         end
       end
     end
+
+    it 'limits to commands passed ' do
+      content = "/shrug\n/close"
+
+      text, commands = service.execute(content, issue, only: [:shrug])
+
+      expect(commands).to be_empty
+      expect(text).to eq("#{described_class::SHRUG}\n/close")
+    end
+
+    context '/create_merge_request command' do
+      let(:branch_name) { '1-feature' }
+      let(:content) { "/create_merge_request #{branch_name}" }
+      let(:issuable) { issue }
+
+      context 'if issuable is not an Issue' do
+        let(:issuable) { merge_request }
+
+        it_behaves_like 'empty command'
+      end
+
+      context "when logged user cannot create_merge_requests in the project" do
+        let(:project) { create(:project, :archived) }
+
+        it_behaves_like 'empty command'
+      end
+
+      context 'when logged user cannot push code to the project' do
+        let(:project) { create(:project, :private) }
+        let(:service) { described_class.new(project, create(:user)) }
+
+        it_behaves_like 'empty command'
+      end
+
+      it 'populates create_merge_request with branch_name and issue iid' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(create_merge_request: { branch_name: branch_name, issue_iid: issuable.iid })
+      end
+    end
   end
 
   describe '#explain' do
@@ -1398,7 +1435,7 @@ describe QuickActions::InterpretService do
       it 'includes the formatted duration and proper verb' do
         _, explanations = service.explain(content, issue)
 
-        expect(explanations).to eq(['Substracts 2h spent time.'])
+        expect(explanations).to eq(['Subtracts 2h spent time.'])
       end
     end
 
@@ -1464,6 +1501,28 @@ describe QuickActions::InterpretService do
           _, explanations = service.explain(content, commit)
 
           expect(explanations).to eq(["Tags this commit to v1.2.3 with \"Stable release\"."])
+        end
+      end
+    end
+
+    describe 'create a merge request' do
+      context 'with no branch name' do
+        let(:content) { '/create_merge_request' }
+
+        it 'uses the default branch name' do
+          _, explanations = service.explain(content, issue)
+
+          expect(explanations).to eq(['Creates a branch and a merge request to resolve this issue'])
+        end
+      end
+
+      context 'with a branch name' do
+        let(:content) { '/create_merge_request foo' }
+
+        it 'uses the given branch name' do
+          _, explanations = service.explain(content, issue)
+
+          expect(explanations).to eq(["Creates branch 'foo' and a merge request to resolve this issue"])
         end
       end
     end

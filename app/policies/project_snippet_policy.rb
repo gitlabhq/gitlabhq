@@ -5,12 +5,11 @@ class ProjectSnippetPolicy < BasePolicy
 
   desc "Snippet is public"
   condition(:public_snippet, scope: :subject) { @subject.public? }
+  condition(:internal_snippet, scope: :subject) { @subject.internal? }
   condition(:private_snippet, scope: :subject) { @subject.private? }
   condition(:public_project, scope: :subject) { @subject.project.public? }
 
   condition(:is_author) { @user && @subject.author == @user }
-
-  condition(:internal, scope: :subject) { @subject.internal? }
 
   # We have to check both project feature visibility and a snippet visibility and take the stricter one
   # This will be simplified - check https://gitlab.com/gitlab-org/gitlab-ce/issues/27573
@@ -26,13 +25,13 @@ class ProjectSnippetPolicy < BasePolicy
   # is used to hide/show various snippet-related controls, so we can't just move
   # all of the handling here.
   rule do
-    all?(private_snippet | (internal & external_user),
+    all?(private_snippet | (internal_snippet & external_user),
          ~project.guest,
-         ~admin,
-         ~is_author)
+         ~is_author,
+         ~full_private_access)
   end.prevent :read_project_snippet
 
-  rule { internal & ~is_author & ~admin }.policy do
+  rule { internal_snippet & ~is_author & ~admin }.policy do
     prevent :update_project_snippet
     prevent :admin_project_snippet
   end
@@ -44,4 +43,6 @@ class ProjectSnippetPolicy < BasePolicy
     enable :update_project_snippet
     enable :admin_project_snippet
   end
+
+  rule { ~can?(:read_project_snippet) }.prevent :create_note
 end

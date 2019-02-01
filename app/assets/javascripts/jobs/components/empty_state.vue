@@ -1,5 +1,10 @@
 <script>
+import { GlLink } from '@gitlab/ui';
+
 export default {
+  components: {
+    GlLink,
+  },
   props: {
     illustrationPath: {
       type: String,
@@ -37,38 +42,23 @@ export default {
 <template>
   <div class="row empty-state">
     <div class="col-12">
-      <div
-        :class="illustrationSizeClass"
-        class="svg-content"
-      >
-        <img :src="illustrationPath" />
-      </div>
+      <div :class="illustrationSizeClass" class="svg-content"><img :src="illustrationPath" /></div>
     </div>
 
     <div class="col-12">
       <div class="text-content">
-        <h4 class="js-job-empty-state-title text-center">
-          {{ title }}
-        </h4>
+        <h4 class="js-job-empty-state-title text-center">{{ title }}</h4>
 
-        <p
-          v-if="content"
-          class="js-job-empty-state-content"
-        >
-          {{ content }}
-        </p>
+        <p v-if="content" class="js-job-empty-state-content">{{ content }}</p>
 
-        <div
-          v-if="action"
-          class="text-center"
-        >
-          <a
+        <div v-if="action" class="text-center">
+          <gl-link
             :href="action.path"
             :data-method="action.method"
             class="js-job-empty-state-action btn btn-primary"
           >
             {{ action.button_title }}
-          </a>
+          </gl-link>
         </div>
       </div>
     </div>

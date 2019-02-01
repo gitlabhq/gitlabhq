@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Metrics
     module InfluxDb
@@ -86,7 +88,7 @@ module Gitlab
         # Example:
         #
         #     Gitlab::Metrics.measure(:find_by_username_duration) do
-        #       User.find_by_username(some_username)
+        #       UserFinder.new(some_username).find_by_username
         #     end
         #
         # name - The name of the field to store the execution time in.
@@ -145,9 +147,7 @@ module Gitlab
         #
         # See `Gitlab::Metrics::Transaction#add_event` for more details.
         def add_event(*args)
-          trans = current_transaction
-
-          trans&.add_event(*args)
+          current_transaction&.add_event(*args)
         end
 
         # Returns the prefix to use for the name of a series.

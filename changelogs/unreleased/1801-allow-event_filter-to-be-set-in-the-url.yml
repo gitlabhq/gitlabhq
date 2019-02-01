@@ -1,5 +1,0 @@
----
-title: "Allow events filter to be set in the URL in addition to cookie"
-merge_request: 21557
-author: Igor @igas
-type: added

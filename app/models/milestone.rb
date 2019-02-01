@@ -28,7 +28,7 @@ class Milestone < ActiveRecord::Base
   has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.milestones&.maximum(:iid) }
 
   has_many :issues
-  has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
+  has_many :labels, -> { distinct.reorder('labels.title') }, through: :issues
   has_many :merge_requests
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -38,12 +38,14 @@ class Milestone < ActiveRecord::Base
   scope :closed, -> { with_state(:closed) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
 
-  scope :for_projects_and_groups, -> (project_ids, group_ids) do
-    conditions = []
-    conditions << arel_table[:project_id].in(project_ids) if project_ids&.compact&.any?
-    conditions << arel_table[:group_id].in(group_ids) if group_ids&.compact&.any?
+  scope :for_projects_and_groups, -> (projects, groups) do
+    projects = projects.compact if projects.is_a? Array
+    projects = [] if projects.nil?
 
-    where(conditions.reduce(:or))
+    groups = groups.compact if groups.is_a? Array
+    groups = [] if groups.nil?
+
+    where(project_id: projects).or(where(group_id: groups))
   end
 
   scope :order_by_name_asc, -> { order(Arel::Nodes::Ascending.new(arel_table[:title].lower)) }
@@ -75,7 +77,7 @@ class Milestone < ActiveRecord::Base
   alias_attribute :name, :title
 
   class << self
-    # Searches for milestones matching the given query.
+    # Searches for milestones with a matching title or description.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
@@ -86,12 +88,27 @@ class Milestone < ActiveRecord::Base
       fuzzy_search(query, [:title, :description])
     end
 
+    # Searches for milestones with a matching title.
+    #
+    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+    #
+    # query - The search query as a String
+    #
+    # Returns an ActiveRecord::Relation.
+    def search_title(query)
+      fuzzy_search(query, [:title])
+    end
+
     def filter_by_state(milestones, state)
       case state
       when 'closed' then milestones.closed
       when 'all' then milestones
       else milestones.active
       end
+    end
+
+    def count_by_state
+      reorder(nil).group(:state).count
     end
 
     def predefined?(milestone)
@@ -129,23 +146,34 @@ class Milestone < ActiveRecord::Base
     @link_reference_pattern ||= super("milestones", /(?<milestone>\d+)/)
   end
 
-  def self.upcoming_ids_by_projects(projects)
-    rel = unscoped.of_projects(projects).active.where('due_date > ?', Time.now)
+  def self.upcoming_ids(projects, groups)
+    rel = unscoped
+            .for_projects_and_groups(projects, groups)
+            .active.where('milestones.due_date > NOW()')
 
     if Gitlab::Database.postgresql?
-      rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
+      rel.order(:project_id, :group_id, :due_date).select('DISTINCT ON (project_id, group_id) id')
     else
+      # We need to use MySQL's NULL-safe comparison operator `<=>` here
+      # because one of `project_id` or `group_id` is always NULL
+      join_clause = <<~HEREDOC
+        LEFT OUTER JOIN milestones earlier_milestones
+          ON milestones.project_id <=> earlier_milestones.project_id
+            AND milestones.group_id <=> earlier_milestones.group_id
+            AND milestones.due_date > earlier_milestones.due_date
+            AND earlier_milestones.due_date > NOW()
+            AND earlier_milestones.state = 'active'
+      HEREDOC
+
       rel
-        .group(:project_id, :due_date, :id)
-        .having('due_date = MIN(due_date)')
-        .pluck(:id, :project_id, :due_date)
-        .uniq(&:second)
-        .map(&:first)
+        .joins(join_clause)
+        .where('earlier_milestones.id IS NULL')
+        .select(:id)
     end
   end
 
   def participants
-    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
+    User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).distinct
   end
 
   def self.sort_by_attribute(method)
@@ -168,6 +196,22 @@ class Milestone < ActiveRecord::Base
       end
 
     sorted.with_order_id_desc
+  end
+
+  def self.states_count(projects, groups = nil)
+    return STATE_COUNT_HASH unless projects || groups
+
+    counts = Milestone
+               .for_projects_and_groups(projects, groups)
+               .reorder(nil)
+               .group(:state)
+               .count
+
+    {
+        opened: counts['active'] || 0,
+        closed: counts['closed'] || 0,
+        all: counts.values.sum
+    }
   end
 
   ##
@@ -196,10 +240,10 @@ class Milestone < ActiveRecord::Base
   end
 
   def reference_link_text(from = nil)
-    self.title
+    self.class.reference_prefix + self.title
   end
 
-  def milestoneish_ids
+  def milestoneish_id
     id
   end
 
@@ -242,8 +286,7 @@ class Milestone < ActiveRecord::Base
     if project
       relation = Milestone.for_projects_and_groups([project_id], [project.group&.id])
     elsif group
-      project_ids = group.projects.map(&:id)
-      relation = Milestone.for_projects_and_groups(project_ids, [group.id])
+      relation = Milestone.for_projects_and_groups(group.projects.select(:id), [group.id])
     end
 
     title_exists = relation.find_by_title(title)

@@ -8,30 +8,6 @@ describe('Job Store Getters', () => {
     localState = state();
   });
 
-  describe('headerActions', () => {
-    describe('with new issue path', () => {
-      it('returns an array with action to create a new issue', () => {
-        localState.job.new_issue_path = 'issues/new';
-
-        expect(getters.headerActions(localState)).toEqual([
-          {
-            label: 'New issue',
-            path: localState.job.new_issue_path,
-            cssClass:
-              'js-new-issue btn btn-success btn-inverted d-none d-md-block d-lg-block d-xl-block',
-            type: 'link',
-          },
-        ]);
-      });
-    });
-
-    describe('without new issue path', () => {
-      it('returns an empty array', () => {
-        expect(getters.headerActions(localState)).toEqual([]);
-      });
-    });
-  });
-
   describe('headerTime', () => {
     describe('when the job has started key', () => {
       it('returns started key', () => {
@@ -46,6 +22,7 @@ describe('Job Store Getters', () => {
       it('returns created_at key', () => {
         const created = '2018-08-31T16:20:49.023Z';
         localState.job.created_at = created;
+
         expect(getters.headerTime(localState)).toEqual(created);
       });
     });
@@ -64,6 +41,7 @@ describe('Job Store Getters', () => {
     describe('without status & with callout message', () => {
       it('returns false', () => {
         localState.job.callout_message = 'Callout message';
+
         expect(getters.shouldRenderCalloutMessage(localState)).toEqual(false);
       });
     });
@@ -81,6 +59,7 @@ describe('Job Store Getters', () => {
     describe('when started equals null', () => {
       it('returns false', () => {
         localState.job.started = null;
+
         expect(getters.shouldRenderTriggeredLabel(localState)).toEqual(false);
       });
     });
@@ -88,6 +67,7 @@ describe('Job Store Getters', () => {
     describe('when started equals string', () => {
       it('returns true', () => {
         localState.job.started = '2018-08-31T16:20:49.023Z';
+
         expect(getters.shouldRenderTriggeredLabel(localState)).toEqual(true);
       });
     });
@@ -103,6 +83,7 @@ describe('Job Store Getters', () => {
     describe('with an empty object for `deployment_status`', () => {
       it('returns false', () => {
         localState.job.deployment_status = {};
+
         expect(getters.hasEnvironment(localState)).toEqual(false);
       });
     });
@@ -170,43 +151,37 @@ describe('Job Store Getters', () => {
     });
   });
 
-  describe('isJobStuck', () => {
-    describe('when job is pending and runners are not available', () => {
+  describe('hasRunnersForProject', () => {
+    describe('with available and offline runners', () => {
       it('returns true', () => {
-        localState.job.status = {
-          group: 'pending',
-        };
-        localState.job.runners = {
-          available: false,
-        };
-
-        expect(getters.isJobStuck(localState)).toEqual(true);
-      });
-    });
-
-    describe('when job is not pending', () => {
-      it('returns false', () => {
-        localState.job.status = {
-          group: 'running',
-        };
-        localState.job.runners = {
-          available: false,
-        };
-
-        expect(getters.isJobStuck(localState)).toEqual(false);
-      });
-    });
-
-    describe('when runners are available', () => {
-      it('returns false', () => {
-        localState.job.status = {
-          group: 'pending',
-        };
         localState.job.runners = {
           available: true,
+          online: false,
         };
 
-        expect(getters.isJobStuck(localState)).toEqual(false);
+        expect(getters.hasRunnersForProject(localState)).toEqual(true);
+      });
+    });
+
+    describe('with non available runners', () => {
+      it('returns false', () => {
+        localState.job.runners = {
+          available: false,
+          online: false,
+        };
+
+        expect(getters.hasRunnersForProject(localState)).toEqual(false);
+      });
+    });
+
+    describe('with online runners', () => {
+      it('returns false', () => {
+        localState.job.runners = {
+          available: false,
+          online: true,
+        };
+
+        expect(getters.hasRunnersForProject(localState)).toEqual(false);
       });
     });
   });

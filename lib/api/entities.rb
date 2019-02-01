@@ -115,6 +115,9 @@ module API
       expose :group_name do |group_link, options|
         group_link.group.name
       end
+      expose :group_full_path do |group_link, options|
+        group_link.group.full_path
+      end
       expose :group_access, as: :group_access_level
       expose :expires_at
     end
@@ -145,7 +148,9 @@ module API
       expose :import_status
 
       # TODO: Use `expose_nil` once we upgrade the grape-entity gem
-      expose :import_error, if: lambda { |status, _ops| status.import_error }
+      expose :import_error, if: lambda { |project, _ops| project.import_state&.last_error } do |project|
+        project.import_state.last_error
+      end
     end
 
     class BasicProjectDetails < ProjectIdentity
@@ -160,18 +165,32 @@ module API
         # (fixed in https://github.com/rails/rails/pull/25976).
         project.tags.map(&:name).sort
       end
+
       expose :ssh_url_to_repo, :http_url_to_repo, :web_url, :readme_url
+
+      expose :license_url, if: :license do |project|
+        license = project.repository.license_blob
+
+        if license
+          Gitlab::Routing.url_helpers.project_blob_url(project, File.join(project.default_branch, license.path))
+        end
+      end
+
+      expose :license, with: 'API::Entities::LicenseBasic', if: :license do |project|
+        project.repository.license
+      end
+
       expose :avatar_url do |project, options|
         project.avatar_url(only_path: false)
       end
+
       expose :star_count, :forks_count
       expose :last_activity_at
-
       expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def self.preload_relation(projects_relation, options =  {})
+      def self.preload_relation(projects_relation, options = {})
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
@@ -234,7 +253,10 @@ module API
       expose :creator_id
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
-      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
+
+      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
+        project.import_state&.last_error
+      end
 
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -252,15 +274,15 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def self.preload_relation(projects_relation, options =  {})
+      def self.preload_relation(projects_relation, options = {})
         # Preloading tags, should be done with using only `:tags`,
         # as `:tags` are defined as: `has_many :tags, through: :taggings`
         # N+1 is solved then by using `subject.tags.map(&:name)`
         # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         super(projects_relation).preload(:group)
-                                .preload(project_group_links: :group,
+                                .preload(project_group_links: { group: :route },
                                          fork_network: :root_project,
-                                         forked_project_link: :forked_from_project,
+                                         fork_network_member: :forked_from_project,
                                          forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -304,7 +326,7 @@ module API
       expose :request_access_enabled
       expose :full_name, :full_path
 
-      if ::Group.supports_nested_groups?
+      if ::Group.supports_nested_objects?
         expose :parent_id
       end
 
@@ -322,19 +344,23 @@ module API
 
     class GroupDetail < Group
       expose :projects, using: Entities::Project do |group, options|
-        GroupProjectsFinder.new(
+        projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
           options: { only_owned: true }
         ).execute
+
+        Entities::Project.prepare_relation(projects)
       end
 
       expose :shared_projects, using: Entities::Project do |group, options|
-        GroupProjectsFinder.new(
+        projects = GroupProjectsFinder.new(
           group: group,
           current_user: options[:current_user],
           options: { only_shared: true }
         ).execute
+
+        Entities::Project.prepare_relation(projects)
       end
     end
 
@@ -593,6 +619,22 @@ module API
     end
 
     class MergeRequestBasic < ProjectEntity
+      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.merged_by
+      end
+
+      expose :merged_at do |merge_request, _options|
+        merge_request.metrics&.merged_at
+      end
+
+      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
+        merge_request.metrics&.latest_closed_by
+      end
+
+      expose :closed_at do |merge_request, _options|
+        merge_request.metrics&.latest_closed_at
+      end
+
       expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
         MarkupHelper.markdown_field(entity, :title)
       end
@@ -662,22 +704,6 @@ module API
         merge_request.merge_request_diff.real_size
       end
 
-      expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
-        merge_request.metrics&.merged_by
-      end
-
-      expose :merged_at do |merge_request, _options|
-        merge_request.metrics&.merged_at
-      end
-
-      expose :closed_by, using: Entities::UserBasic do |merge_request, _options|
-        merge_request.metrics&.latest_closed_by
-      end
-
-      expose :closed_at do |merge_request, _options|
-        merge_request.metrics&.latest_closed_at
-      end
-
       expose :latest_build_started_at, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
         merge_request.metrics&.latest_build_started_at
       end
@@ -695,6 +721,10 @@ module API
       end
 
       expose :diff_refs, using: Entities::DiffRefs
+
+      # Allow the status of a rebase to be determined
+      expose :merge_error
+      expose :rebase_in_progress?, as: :rebase_in_progress, if: -> (_, options) { options[:include_rebase_in_progress] }
 
       expose :diverged_commits_count, as: :diverged_commits_count, if: -> (_, options) { options[:include_diverged_commits_count] }
 
@@ -938,7 +968,7 @@ module API
             if options[:group_members]
               options[:group_members].find { |member| member.source_id == project.namespace_id }
             else
-              project.group.group_member(options[:current_user])
+              project.group.highest_group_member(options[:current_user])
             end
           end
         end
@@ -1064,9 +1094,40 @@ module API
       expose :password_authentication_enabled_for_web, as: :signin_enabled
     end
 
-    class Release < Grape::Entity
+    # deprecated old Release representation
+    class TagRelease < Grape::Entity
       expose :tag, as: :tag_name
       expose :description
+    end
+
+    module Releases
+      class Link < Grape::Entity
+        expose :id
+        expose :name
+        expose :url
+        expose :external?, as: :external
+      end
+
+      class Source < Grape::Entity
+        expose :format
+        expose :url
+      end
+    end
+
+    class Release < TagRelease
+      expose :name
+      expose :description_html
+      expose :created_at
+      expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
+      expose :commit, using: Entities::Commit
+
+      expose :assets do
+        expose :assets_count, as: :count
+        expose :sources, using: Entities::Releases::Source
+        expose :links, using: Entities::Releases::Link do |release, options|
+          release.links.sorted
+        end
+      end
     end
 
     class Tag < Grape::Entity
@@ -1077,7 +1138,7 @@ module API
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      expose :release, using: Entities::Release do |repo_tag, options|
+      expose :release, using: Entities::TagRelease do |repo_tag, options|
         options[:project].releases.find_by(tag: repo_tag.name)
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -1128,7 +1189,8 @@ module API
     end
 
     class JobArtifactFile < Grape::Entity
-      expose :filename, :size
+      expose :filename
+      expose :cached_size, as: :size
     end
 
     class JobArtifact < Grape::Entity
@@ -1161,8 +1223,11 @@ module API
     end
 
     class Trigger < Grape::Entity
+      include ::API::Helpers::Presentable
+
       expose :id
-      expose :token, :description
+      expose :token
+      expose :description
       expose :created_at, :updated_at, :last_used
       expose :owner, using: Entities::UserBasic
     end
@@ -1208,11 +1273,14 @@ module API
       expose :deployable,  using: Entities::Job
     end
 
-    class License < Grape::Entity
+    class LicenseBasic < Grape::Entity
       expose :key, :name, :nickname
-      expose :popular?, as: :popular
       expose :url, as: :html_url
       expose(:source_url) { |license| license.meta['source'] }
+    end
+
+    class License < LicenseBasic
+      expose :popular?, as: :popular
       expose(:description) { |license| license.meta['description'] }
       expose(:conditions) { |license| license.meta['conditions'] }
       expose(:permissions) { |license| license.meta['permissions'] }
@@ -1246,7 +1314,11 @@ module API
       expose :token
     end
 
-    class ImpersonationToken < PersonalAccessTokenWithToken
+    class ImpersonationToken < PersonalAccessToken
+      expose :impersonation
+    end
+
+    class ImpersonationTokenWithToken < PersonalAccessTokenWithToken
       expose :impersonation
     end
 
@@ -1412,7 +1484,9 @@ module API
     end
 
     class Application < Grape::Entity
+      expose :id
       expose :uid, as: :application_id
+      expose :name, as: :application_name
       expose :redirect_uri, as: :callback_url
     end
 
@@ -1461,6 +1535,51 @@ module API
       end
       expose :label, using: Entities::LabelBasic
       expose :action
+    end
+
+    class Suggestion < Grape::Entity
+      expose :id
+      expose :from_original_line
+      expose :to_original_line
+      expose :from_line
+      expose :to_line
+      expose :appliable?, as: :appliable
+      expose :applied
+      expose :from_content
+      expose :to_content
+    end
+
+    module Platform
+      class Kubernetes < Grape::Entity
+        expose :api_url
+        expose :namespace
+        expose :authorization_type
+        expose :ca_cert
+      end
+    end
+
+    module Provider
+      class Gcp < Grape::Entity
+        expose :cluster_id
+        expose :status_name
+        expose :gcp_project_id
+        expose :zone
+        expose :machine_type
+        expose :num_nodes
+        expose :endpoint
+      end
+    end
+
+    class Cluster < Grape::Entity
+      expose :id, :name, :created_at
+      expose :provider_type, :platform_type, :environment_scope, :cluster_type
+      expose :user, using: Entities::UserBasic
+      expose :platform_kubernetes, using: Entities::Platform::Kubernetes
+      expose :provider_gcp, using: Entities::Provider::Gcp
+    end
+
+    class ClusterProject < Cluster
+      expose :project, using: Entities::BasicProjectDetails
     end
   end
 end

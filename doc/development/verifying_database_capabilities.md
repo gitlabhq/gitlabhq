@@ -6,9 +6,9 @@ necessary to add database (version) specific behaviour.
 
 To facilitate this we have the following methods that you can use:
 
-* `Gitlab::Database.postgresql?`: returns `true` if PostgreSQL is being used
-* `Gitlab::Database.mysql?`: returns `true` if MySQL is being used
-* `Gitlab::Database.version`: returns the PostgreSQL version number as a string
+- `Gitlab::Database.postgresql?`: returns `true` if PostgreSQL is being used
+- `Gitlab::Database.mysql?`: returns `true` if MySQL is being used
+- `Gitlab::Database.version`: returns the PostgreSQL version number as a string
   in the format `X.Y.Z`. This method does not work for MySQL
 
 This allows you to write code such as:

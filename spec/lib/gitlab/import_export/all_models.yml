@@ -37,6 +37,7 @@ notes:
 - events
 - system_note_metadata
 - note_diff_file
+- suggestions
 label_links:
 - target
 - label
@@ -63,7 +64,11 @@ snippets:
 - award_emoji
 - user_agent_detail
 releases:
+- author
 - project
+- links
+links:
+- release
 project_members:
 - created_by
 - user
@@ -94,6 +99,7 @@ merge_requests:
 - timelogs
 - head_pipeline
 - latest_merge_request_diff
+- merge_request_pipelines
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -102,12 +108,13 @@ merge_request_diff_commits:
 - merge_request_diff
 merge_request_diff_files:
 - merge_request_diff
-pipelines:
+ci_pipelines:
 - project
 - user
 - stages
 - statuses
 - builds
+- processables
 - trigger_requests
 - variables
 - auto_canceled_by
@@ -121,6 +128,9 @@ pipelines:
 - artifacts
 - pipeline_schedule
 - merge_requests
+- merge_request
+- deployments
+- environments
 pipeline_variables:
 - pipeline
 stages:
@@ -128,6 +138,7 @@ stages:
 - pipeline
 - statuses
 - builds
+- bridges
 statuses:
 - project
 - pipeline
@@ -198,6 +209,7 @@ project:
 - last_event
 - services
 - campfire_service
+- discord_service
 - drone_ci_service
 - emails_on_push_service
 - pipelines_email_service
@@ -229,9 +241,8 @@ project:
 - mock_ci_service
 - mock_deployment_service
 - mock_monitoring_service
-- forked_project_link
+- forked_to_members
 - forked_from_project
-- forked_project_links
 - forks
 - merge_requests
 - fork_merge_requests
@@ -245,6 +256,7 @@ project:
 - protected_branches
 - protected_tags
 - project_members
+- project_repository
 - users
 - requesters
 - deploy_keys_projects
@@ -260,7 +272,8 @@ project:
 - notification_settings
 - import_data
 - commit_statuses
-- pipelines
+- ci_pipelines
+- all_pipelines
 - stages
 - builds
 - runner_projects
@@ -281,6 +294,7 @@ project:
 - statistics
 - container_repositories
 - uploads
+- file_uploads
 - import_state
 - members_and_requesters
 - build_trace_section_names
@@ -300,6 +314,9 @@ project:
 - ci_cd_settings
 - import_export_upload
 - repository_languages
+- pool_repository
+- kubernetes_namespaces
+- error_tracking_setting
 award_emoji:
 - awardable
 - user
@@ -331,3 +348,5 @@ resource_label_events:
 - merge_request
 - epic
 - label
+error_tracking_setting:
+- project

@@ -59,7 +59,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.data[0..10]).to eq("*.rbc\n*.sas") }
       it { expect(blob.size).to eq(241) }
       it { expect(blob.mode).to eq("100644") }
-      it { expect(blob).not_to be_binary }
+      it { expect(blob).not_to be_binary_in_repo }
     end
 
     context 'file in root with leading slash' do
@@ -92,7 +92,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       end
 
       it 'does not mark the blob as binary' do
-        expect(blob).not_to be_binary
+        expect(blob).not_to be_binary_in_repo
       end
     end
 
@@ -123,12 +123,12 @@ describe Gitlab::Git::Blob, :seed_helper do
           .with(hash_including(binary: true))
           .and_call_original
 
-        expect(blob).to be_binary
+        expect(blob).to be_binary_in_repo
       end
     end
   end
 
-  shared_examples 'finding blobs by ID' do
+  describe '.raw' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
     let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
 
@@ -166,16 +166,6 @@ describe Gitlab::Git::Blob, :seed_helper do
     end
   end
 
-  describe '.raw' do
-    context 'when the blob_raw Gitaly feature is enabled' do
-      it_behaves_like 'finding blobs by ID'
-    end
-
-    context 'when the blob_raw Gitaly feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'finding blobs by ID'
-    end
-  end
-
   describe '.batch' do
     let(:blob_references) do
       [
@@ -206,7 +196,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.id).to eq('409f37c4f05865e4fb208c771485f211a22c4c2d') }
       it { expect(blob.data).to eq('') }
       it 'does not mark the blob as binary' do
-        expect(blob).not_to be_binary
+        expect(blob).not_to be_binary_in_repo
       end
     end
 

@@ -171,19 +171,8 @@ module ApplicationHelper
 
   def page_filter_path(options = {})
     without = options.delete(:without)
-    add_label = options.delete(:label)
 
-    exist_opts = {
-      state: params[:state],
-      scope: params[:scope],
-      milestone_title: params[:milestone_title],
-      assignee_id: params[:assignee_id],
-      author_id: params[:author_id],
-      search: params[:search],
-      label_name: params[:label_name]
-    }
-
-    options = exist_opts.merge(options)
+    options = request.query_parameters.merge(options)
 
     if without.present?
       without.each do |key|
@@ -191,11 +180,7 @@ module ApplicationHelper
       end
     end
 
-    params = options.compact
-
-    params.delete(:label_name) unless add_label
-
-    "#{request.path}?#{params.to_param}"
+    "#{request.path}?#{options.compact.to_param}"
   end
 
   def outdated_browser?
@@ -281,6 +266,17 @@ module ApplicationHelper
     return unless Gitlab::Database.read_only?
 
     _('You are on a read-only GitLab instance.')
+  end
+
+  def client_class_list
+    "gl-browser-#{browser.id} gl-platform-#{browser.platform.id}"
+  end
+
+  def client_js_flags
+    {
+      "is#{browser.id.to_s.titlecase}": true,
+      "is#{browser.platform.id.to_s.titlecase}": true
+    }
   end
 
   def autocomplete_data_sources(object, noteable_type)

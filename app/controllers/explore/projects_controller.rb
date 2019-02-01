@@ -15,7 +15,7 @@ class Explore::ProjectsController < Explore::ApplicationController
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+          html: view_to_html_string("explore/projects/_projects", locals: { projects: @projects })
         }
       end
     end
@@ -30,7 +30,7 @@ class Explore::ProjectsController < Explore::ApplicationController
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+          html: view_to_html_string("explore/projects/_projects", locals: { projects: @projects })
         }
       end
     end
@@ -44,7 +44,7 @@ class Explore::ProjectsController < Explore::ApplicationController
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
+          html: view_to_html_string("explore/projects/_projects", locals: { projects: @projects })
         }
       end
     end
@@ -55,9 +55,12 @@ class Explore::ProjectsController < Explore::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def load_projects
+    @total_user_projects_count = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
+    @total_starred_projects_count = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
+
     projects = ProjectsFinder.new(current_user: current_user, params: params)
                  .execute
-                 .includes(:route, namespace: :route)
+                 .includes(:route, :creator, :group, namespace: [:route, :owner])
                  .page(params[:page])
                  .without_count
 

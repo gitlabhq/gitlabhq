@@ -15,11 +15,6 @@ export default {
       type: String,
       required: true,
     },
-    projectPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   data() {
     return {
@@ -105,53 +100,48 @@ export default {
   <div class="onion-skin view">
     <div
       :style="{
-        'width': onionMaxPixelWidth,
-        'height': onionMaxPixelHeight,
+        width: onionMaxPixelWidth,
+        height: onionMaxPixelHeight,
         'user-select': dragging === true ? 'none' : '',
       }"
-      class="onion-skin-frame">
+      class="onion-skin-frame"
+    >
       <div
         :style="{
-          'width': onionMaxPixelWidth,
-          'height': onionMaxPixelHeight,
+          width: onionMaxPixelWidth,
+          height: onionMaxPixelHeight,
         }"
-        class="frame deleted">
+        class="frame deleted"
+      >
         <image-viewer
           key="onionOldImg"
           :render-info="false"
           :path="oldPath"
-          :project-path="projectPath"
           @imgLoaded="onionOldImgLoaded"
         />
       </div>
       <div
         ref="addedFrame"
         :style="{
-          'opacity': onionOpacity,
-          'width': onionMaxPixelWidth,
-          'height': onionMaxPixelHeight,
+          opacity: onionOpacity,
+          width: onionMaxPixelWidth,
+          height: onionMaxPixelHeight,
         }"
-        class="added frame">
+        class="added frame"
+      >
         <image-viewer
           key="onionNewImg"
           :render-info="false"
           :path="newPath"
-          :project-path="projectPath"
           @imgLoaded="onionNewImgLoaded"
-        />
+        >
+          <slot slot="image-overlay" name="image-overlay"> </slot>
+        </image-viewer>
       </div>
       <div class="controls">
         <div class="transparent"></div>
-        <div
-          ref="dragTrack"
-          class="drag-track"
-          @mousedown="startDrag"
-          @mouseup="stopDrag">
-          <div
-            ref="dragger"
-            :style="{ 'left': onionDraggerPixelPos }"
-            class="dragger">
-          </div>
+        <div ref="dragTrack" class="drag-track" @mousedown="startDrag" @mouseup="stopDrag">
+          <div ref="dragger" :style="{ left: onionDraggerPixelPos }" class="dragger"></div>
         </div>
         <div class="opaque"></div>
       </div>

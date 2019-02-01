@@ -41,7 +41,7 @@ describe 'User views an open merge request' do
         find('.gfm-form').fill_in(:merge_request_description, with: '')
 
         page.within('.gfm-form') do
-          click_link('Preview')
+          click_button('Preview')
 
           expect(find('.js-md-preview')).to have_content('Nothing to preview.')
         end
@@ -51,12 +51,12 @@ describe 'User views an open merge request' do
         find('.gfm-form').fill_in(:merge_request_description, with: ':+1: Nice')
 
         page.within('.gfm-form') do
-          click_link('Preview')
+          click_button('Preview')
 
           expect(find('.js-md-preview')).to have_css('gl-emoji')
         end
 
-        expect(find('.gfm-form')).to have_css('.js-md-preview').and have_link('Write')
+        expect(find('.gfm-form')).to have_css('.js-md-preview').and have_button('Write')
         expect(find('#merge_request_description', visible: false)).not_to be_visible
       end
     end

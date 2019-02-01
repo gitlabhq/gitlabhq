@@ -1,45 +1,46 @@
 <script>
-  import tablePagination from '../../vue_shared/components/table_pagination.vue';
-  import environmentTable from '../components/environments_table.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
+import tablePagination from '../../vue_shared/components/table_pagination.vue';
+import environmentTable from '../components/environments_table.vue';
 
-  export default {
-    components: {
-      environmentTable,
-      tablePagination,
+export default {
+  components: {
+    environmentTable,
+    tablePagination,
+    GlLoadingIcon,
+  },
+  props: {
+    isLoading: {
+      type: Boolean,
+      required: true,
     },
-    props: {
-      isLoading: {
-        type: Boolean,
-        required: true,
-      },
-      environments: {
-        type: Array,
-        required: true,
-      },
-      pagination: {
-        type: Object,
-        required: true,
-      },
-      canCreateDeployment: {
-        type: Boolean,
-        required: true,
-      },
-      canReadEnvironment: {
-        type: Boolean,
-        required: true,
-      },
+    environments: {
+      type: Array,
+      required: true,
     },
-    methods: {
-      onChangePage(page) {
-        this.$emit('onChangePage', page);
-      },
+    pagination: {
+      type: Object,
+      required: true,
     },
-  };
+    canCreateDeployment: {
+      type: Boolean,
+      required: true,
+    },
+    canReadEnvironment: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    onChangePage(page) {
+      this.$emit('onChangePage', page);
+    },
+  },
+};
 </script>
 
 <template>
   <div class="environments-container">
-
     <gl-loading-icon
       v-if="isLoading"
       :size="3"
@@ -49,10 +50,7 @@
 
     <slot name="emptyState"></slot>
 
-    <div
-      v-if="!isLoading && environments.length > 0"
-      class="table-holder">
-
+    <div v-if="!isLoading && environments.length > 0" class="table-holder">
       <environment-table
         :environments="environments"
         :can-create-deployment="canCreateDeployment"

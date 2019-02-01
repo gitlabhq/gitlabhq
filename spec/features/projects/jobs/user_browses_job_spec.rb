@@ -20,7 +20,7 @@ describe 'User browses a job', :js do
     wait_for_requests
 
     expect(page).to have_content("Job ##{build.id}")
-    expect(page).to have_css('#build-trace')
+    expect(page).to have_css('.js-build-trace')
 
     # scroll to the top of the page first
     execute_script "window.scrollTo(0,0)"

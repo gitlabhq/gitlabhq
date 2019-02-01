@@ -53,10 +53,7 @@ export const slugify = str => str.trim().toLowerCase();
  * @param {String} str
  * @returns {String}
  */
-export const slugifyWithHyphens = str => {
-  const regex = new RegExp(/\s+/, 'g');
-  return str.toLowerCase().replace(regex, '-');
-};
+export const slugifyWithHyphens = str => str.toLowerCase().replace(/\s+/g, '-');
 
 /**
  * Truncates given text
@@ -74,6 +71,29 @@ export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3
  * @returns {String}
  */
 export const truncateSha = sha => sha.substr(0, 8);
+
+const ELLIPSIS_CHAR = '…';
+export const truncatePathMiddleToLength = (text, maxWidth) => {
+  let returnText = text;
+  let ellipsisCount = 0;
+
+  while (returnText.length >= maxWidth) {
+    const textSplit = returnText.split('/').filter(s => s !== ELLIPSIS_CHAR);
+    const middleIndex = Math.floor(textSplit.length / 2);
+
+    returnText = textSplit
+      .slice(0, middleIndex)
+      .concat(
+        new Array(ellipsisCount + 1).fill().map(() => ELLIPSIS_CHAR),
+        textSplit.slice(middleIndex + 1),
+      )
+      .join('/');
+
+    ellipsisCount += 1;
+  }
+
+  return returnText;
+};
 
 /**
  * Capitalizes first character

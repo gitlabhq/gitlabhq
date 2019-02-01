@@ -101,6 +101,20 @@ FactoryBot.define do
       end
     end
 
+    trait :deployed_review_app do
+      target_branch 'pages-deploy-target'
+
+      transient do
+        deployment { create(:deployment, :review_app) }
+      end
+
+      after(:build) do |merge_request, evaluator|
+        merge_request.source_branch = evaluator.deployment.ref
+        merge_request.source_project = evaluator.deployment.project
+        merge_request.target_project = evaluator.deployment.project
+      end
+    end
+
     after(:build) do |merge_request|
       target_project = merge_request.target_project
       source_project = merge_request.source_project

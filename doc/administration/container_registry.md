@@ -11,7 +11,7 @@ With the Container Registry integrated into GitLab, every project can have its
 own space to store its Docker images.
 
 You can read more about the Container Registry at
-https://docs.docker.com/registry/introduction/.
+<https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry
 
@@ -71,7 +71,7 @@ A Registry init file is not shipped with GitLab if you install it from source.
 Hence, [restarting GitLab][restart gitlab] will not restart the Registry should
 you modify its settings. Read the upstream documentation on how to achieve that.
 
-At the absolute minimum, make sure your [Registry configuration][registry-auth]
+At the **absolute** minimum, make sure your [Registry configuration][registry-auth]
 has `container_registry` as the service and `https://gitlab.example.com/jwt/auth`
 as the realm:
 
@@ -83,6 +83,9 @@ auth:
     issuer: gitlab-issuer
     rootcertbundle: /root/certs/certbundle
 ```
+
+CAUTION: **Caution:**
+If `auth` is not set up, users will be able to pull docker images without authentication.
 
 ## Container Registry domain configuration
 
@@ -375,7 +378,7 @@ Read more about the individual driver's config options in the
 > **Warning** GitLab will not backup Docker images that are not stored on the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
-> 
+>
 > **Important** Enabling storage driver other than `filesystem` would mean
 that your Docker client needs to be able to access the storage backend directly.
 So you must use an address that resolves and is accessible outside GitLab server.
@@ -600,6 +603,52 @@ While GitLab doesn't support using self-signed certificates with Container
 Registry out of the box, it is possible to make it work if you follow
 [Docker's documentation][docker-insecure-self-signed]. You may find some additional
 information in [issue 18239][ce-18239].
+
+## Troubleshooting
+
+When using AWS S3 with the GitLab registry, an error may occur when pushing
+large images. Look in the Registry log for the following error:
+
+```
+level=error msg="response completed with error" err.code=unknown err.detail="unexpected EOF" err.message="unknown error"
+```
+
+To resolve the error specify a `chunksize` value in the Registry configuration.
+Start with a value between `25000000` (25MB) and `50000000` (50MB).
+
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    registry['storage'] = {
+      's3' => {
+        'accesskey' => 'AKIAKIAKI',
+        'secretkey' => 'secret123',
+        'bucket'    => 'gitlab-registry-bucket-AKIAKIAKI',
+        'chunksize' => 25000000
+      }
+    }
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**For installations from source**
+
+1. Edit `config/gitlab.yml`:
+
+    ```yaml
+    storage:
+      s3:
+        accesskey: 'AKIAKIAKI'
+        secretkey: 'secret123'
+        bucket:    'gitlab-registry-bucket-AKIAKIAKI'
+        chunksize: 25000000
+    ```
+
+1. Save the file and [restart GitLab][] for the changes to take effect.
 
 [ce-18239]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18239
 [docker-insecure-self-signed]: https://docs.docker.com/registry/insecure/#use-self-signed-certificates

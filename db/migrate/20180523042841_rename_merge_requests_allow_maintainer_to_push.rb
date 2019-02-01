@@ -1,4 +1,4 @@
-class RenameMergeRequestsAllowMaintainerToPush < ActiveRecord::Migration
+class RenameMergeRequestsAllowMaintainerToPush < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

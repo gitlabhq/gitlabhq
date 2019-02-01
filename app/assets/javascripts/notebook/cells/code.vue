@@ -1,11 +1,12 @@
 <script>
-import CodeCell from './code/index.vue';
+import CodeOutput from './code/index.vue';
 import OutputCell from './output/index.vue';
 
 export default {
+  name: 'CodeCell',
   components: {
-    'code-cell': CodeCell,
-    'output-cell': OutputCell,
+    CodeOutput,
+    OutputCell,
   },
   props: {
     cell: {
@@ -29,8 +30,8 @@ export default {
     hasOutput() {
       return this.cell.outputs.length;
     },
-    output() {
-      return this.cell.outputs[0];
+    outputs() {
+      return this.cell.outputs;
     },
   },
 };
@@ -38,16 +39,18 @@ export default {
 
 <template>
   <div class="cell">
-    <code-cell
+    <code-output
       :raw-code="rawInputCode"
       :count="cell.execution_count"
       :code-css-class="codeCssClass"
-      type="input" />
+      type="input"
+    />
     <output-cell
       v-if="hasOutput"
       :count="cell.execution_count"
-      :output="output"
-      :code-css-class="codeCssClass" />
+      :outputs="outputs"
+      :code-css-class="codeCssClass"
+    />
   </div>
 </template>
 

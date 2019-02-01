@@ -47,13 +47,48 @@ The source of these Yarn scripts can be found in `/scripts/frontend/prettier.js`
 ### Scripts during Conversion period
 
 ```
-node ./scripts/frontend/prettier.js check ./vendor/
+node ./scripts/frontend/prettier.js check-all ./vendor/
 ```
 
 This will go over all files in a specific folder check it.
 
 ```
-node ./scripts/frontend/prettier.js save ./vendor/
+node ./scripts/frontend/prettier.js save-all ./vendor/
 ```
 
 This will go over all files in a specific folder and save it.
+
+## VSCode Settings
+
+### Format on Save
+
+To automatically format your files with Prettier, add the following properties to your User or Workspace Settings:
+
+```javascript
+{
+  "[javascript]": {
+      "editor.formatOnSave": true
+  },
+  "[vue]": {
+      "editor.formatOnSave": true
+  },
+}
+```
+
+### Conflicts with Vetur Extension
+
+There are some [runtime issues](https://github.com/vuejs/vetur/issues/950) with [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and [the Vetur extension](https://marketplace.visualstudio.com/items?itemName=octref.vetur) for VSCode. To fix this, try adding the following properties to your User or Workspace Settings:
+
+```javascript
+{
+  "prettier.disableLanguages": [],
+  "vetur.format.defaultFormatter.html": "none",
+  "vetur.format.defaultFormatter.js": "none",
+  "vetur.format.defaultFormatter.css": "none",
+  "vetur.format.defaultFormatter.less": "none",
+  "vetur.format.defaultFormatter.postcss": "none",
+  "vetur.format.defaultFormatter.scss": "none",
+  "vetur.format.defaultFormatter.stylus": "none",
+  "vetur.format.defaultFormatter.ts": "none",
+}
+```

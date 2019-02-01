@@ -27,7 +27,7 @@ GitLab capitalizes the stages' names when shown in the [pipeline graphs](#pipeli
 
 There are three types of pipelines that often use the single shorthand of "pipeline". People often talk about them as if each one is "the" pipeline, but really, they're just pieces of a single, comprehensive pipeline.
 
-![Types of Pipelines](img/types-of-pipelines.svg)
+![Types of Pipelines](img/types-of-pipelines.png)
 
 1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`.
 1. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production.
@@ -43,7 +43,7 @@ Pipelines accommodate several development workflows:
 
 Example continuous delivery flow:
 
-![CD Flow](img/pipelines-goal.svg)
+![CD Flow](img/pipelines-goal.png)
 
 ## Jobs
 
@@ -241,9 +241,9 @@ So each job would be represented as a `Period`, which consists of
 `Period#first` as when the job started and `Period#last` as when the
 job was finished. A simple example here would be:
 
-* A (1, 3)
-* B (2, 4)
-* C (6, 7)
+- A (1, 3)
+- B (2, 4)
+- C (6, 7)
 
 Here A begins from 1, and ends to 3. B begins from 2, and ends to 4.
 C begins from 6, and ends to 7. Visually it could be viewed as:
@@ -294,7 +294,7 @@ runners will not use regular runners, they must be tagged accordingly.
 
 [jobs]: #jobs
 [jobs-yaml]: yaml/README.md#jobs
-[manual]: yaml/README.md#manual
+[manual]: yaml/README.md#whenmanual
 [env-manual]: environments.md#manually-deploying-to-environments
 [stages]: yaml/README.md#stages
 [runners]: runners/README.html

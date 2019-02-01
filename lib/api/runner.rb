@@ -19,7 +19,6 @@ module API
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
         optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
       end
-      # rubocop: disable CodeReuse/ActiveRecord
       post '/' do
         attributes = attributes_for_keys([:description, :active, :locked, :run_untagged, :tag_list, :maximum_timeout])
           .merge(get_runner_details_from_request)
@@ -28,10 +27,10 @@ module API
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
             attributes.merge(runner_type: :instance_type)
-          elsif project = Project.find_by(runners_token: params[:token])
+          elsif project = Project.find_by_runners_token(params[:token])
             # Create a specific runner for the project
             attributes.merge(runner_type: :project_type, projects: [project])
-          elsif group = Group.find_by(runners_token: params[:token])
+          elsif group = Group.find_by_runners_token(params[:token])
             # Create a specific runner for the group
             attributes.merge(runner_type: :group_type, groups: [group])
           else
@@ -46,7 +45,6 @@ module API
           render_validation_error!(runner)
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Deletes a registered Runner' do
         http_codes [[204, 'Runner was deleted'], [403, 'Forbidden']]
@@ -142,8 +140,7 @@ module API
         requires :id, type: Integer, desc: %q(Job's ID)
         optional :trace, type: String, desc: %q(Job's full trace)
         optional :state, type: String, desc: %q(Job's status: success, failed)
-        optional :failure_reason, type: String, values: CommitStatus.failure_reasons.keys,
-                                  desc: %q(Job's failure_reason)
+        optional :failure_reason, type: String, desc: %q(Job's failure_reason)
       end
       put '/:id' do
         job = authenticate_job!

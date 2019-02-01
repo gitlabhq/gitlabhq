@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 require 'json'
 require 'securerandom'
@@ -11,6 +13,7 @@ module Gitlab
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
     NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
+    DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'.freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
@@ -28,7 +31,6 @@ module Gitlab
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           Repository: repository.gitaly_repository.to_h,
-          RepoPath: 'ignored but not allowed to be empty in gitlab-workhorse',
           GitConfigOptions: [],
           GitalyServer: {
             address: Gitlab::GitalyClient.address(project.repository_storage),
@@ -63,7 +65,7 @@ module Gitlab
 
       def send_git_archive(repository, ref:, format:, append_sha:)
         format ||= 'tar.gz'
-        format.downcase!
+        format = format.downcase
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha: append_sha)
         raise "Repository or ref not found" if params.empty?
 

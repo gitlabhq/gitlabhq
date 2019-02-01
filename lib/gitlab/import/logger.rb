@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Import
     class Logger < ::Gitlab::JsonLogger

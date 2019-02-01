@@ -96,7 +96,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :index, params.merge(extra_params)
+      get :index, params: params.merge(extra_params)
     end
   end
 
@@ -152,8 +152,30 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['raw_path']).to match(%r{jobs/\d+/raw\z})
-          expect(json_response.dig('merge_request', 'path')).to match(%r{merge_requests/\d+\z})
+          expect(json_response['merge_request']['path']).to match(%r{merge_requests/\d+\z})
           expect(json_response['new_issue_path']).to include('/issues/new')
+        end
+      end
+
+      context 'when job is running' do
+        context 'job is cancelable' do
+          let(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+          it 'cancel_path is present with correct redirect' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['cancel_path']).to include(CGI.escape(json_response['build_path']))
+          end
+        end
+
+        context 'with web terminal' do
+          let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+
+          it 'exposes the terminal path' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+            expect(json_response['terminal_path']).to match(%r{/terminal})
+          end
         end
       end
 
@@ -185,16 +207,6 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         end
       end
 
-      context 'when job has terminal' do
-        let(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
-
-        it 'exposes the terminal path' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('job/job_details')
-          expect(json_response['terminal_path']).to match(%r{/terminal})
-        end
-      end
-
       context 'when job passed with no trace' do
         let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
@@ -219,7 +231,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       context 'with deployment' do
         let(:merge_request) { create(:merge_request, source_project: project) }
         let(:environment) { create(:environment, project: project, name: 'staging', state: :available) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :running, environment: environment.name, pipeline: pipeline) }
 
         it 'exposes the deployment information' do
           expect(response).to have_gitlab_http_status(:ok)
@@ -297,6 +309,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['runners']['online']).to be false
           expect(json_response['runners']['available']).to be false
+          expect(json_response['stuck']).to be true
         end
       end
 
@@ -309,6 +322,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
           expect(response).to match_response_schema('job/job_details')
           expect(json_response['runners']['online']).to be false
           expect(json_response['runners']['available']).to be true
+          expect(json_response['stuck']).to be true
         end
       end
 
@@ -387,18 +401,56 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       context 'with variables' do
         before do
           create(:ci_pipeline_variable, pipeline: pipeline, key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1')
-
-          get_show(id: job.id, format: :json)
         end
 
-        it 'exposes trigger information and variables' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to match_response_schema('job/job_details')
-          expect(json_response['trigger']['short_token']).to eq 'toke'
-          expect(json_response['trigger']['variables'].length).to eq 1
-          expect(json_response['trigger']['variables'].first['key']).to eq "TRIGGER_KEY_1"
-          expect(json_response['trigger']['variables'].first['value']).to eq "TRIGGER_VALUE_1"
-          expect(json_response['trigger']['variables'].first['public']).to eq false
+        context 'user is a maintainer' do
+          before do
+            project.add_maintainer(user)
+
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'returns a job_detail' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+          end
+
+          it 'exposes trigger information and variables' do
+            expect(json_response['trigger']['short_token']).to eq 'toke'
+            expect(json_response['trigger']['variables'].length).to eq 1
+          end
+
+          it 'exposes correct variable properties' do
+            first_variable = json_response['trigger']['variables'].first
+
+            expect(first_variable['key']).to eq "TRIGGER_KEY_1"
+            expect(first_variable['value']).to eq "TRIGGER_VALUE_1"
+            expect(first_variable['public']).to eq false
+          end
+        end
+
+        context 'user is not a mantainer' do
+          before do
+            get_show(id: job.id, format: :json)
+          end
+
+          it 'returns a job_detail' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to match_response_schema('job/job_details')
+          end
+
+          it 'exposes trigger information and variables' do
+            expect(json_response['trigger']['short_token']).to eq 'toke'
+            expect(json_response['trigger']['variables'].length).to eq 1
+          end
+
+          it 'exposes correct variable properties' do
+            first_variable = json_response['trigger']['variables'].first
+
+            expect(first_variable['key']).to eq "TRIGGER_KEY_1"
+            expect(first_variable['value']).to be_nil
+            expect(first_variable['public']).to eq false
+          end
         end
       end
     end
@@ -409,7 +461,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :show, params.merge(extra_params)
+      get :show, params: params.merge(extra_params)
     end
   end
 
@@ -500,9 +552,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def get_trace
-      get :trace, namespace_id: project.namespace,
-                  project_id: project,
-                  id: job.id,
+      get :trace, params: {
+                    namespace_id: project.namespace,
+                    project_id: project,
+                    id: job.id
+                  },
                   format: :json
     end
   end
@@ -512,9 +566,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     let(:status) { job.detailed_status(double('user')) }
 
     before do
-      get :status, namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id,
+      get :status, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: job.id
+                   },
                    format: :json
     end
 
@@ -553,9 +609,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_retry
-      post :retry, namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id
+      post :retry, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: job.id
+                   }
     end
   end
 
@@ -593,9 +651,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_play
-      post :play, namespace_id: project.namespace,
-                  project_id: project,
-                  id: job.id
+      post :play, params: {
+                    namespace_id: project.namespace,
+                    project_id: project,
+                    id: job.id
+                  }
     end
   end
 
@@ -662,9 +722,9 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_cancel(additional_params = {})
-      post :cancel, { namespace_id: project.namespace,
-                      project_id: project,
-                      id: job.id }.merge(additional_params)
+      post :cancel, params: { namespace_id: project.namespace,
+                              project_id: project,
+                              id: job.id }.merge(additional_params)
     end
   end
 
@@ -702,51 +762,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_unschedule
-      post :unschedule, namespace_id: project.namespace,
-                        project_id: project,
-                        id: job.id
-    end
-  end
-
-  describe 'POST cancel_all' do
-    before do
-      project.add_developer(user)
-      sign_in(user)
-    end
-
-    context 'when jobs are cancelable' do
-      before do
-        create_list(:ci_build, 2, :cancelable, pipeline: pipeline)
-
-        post_cancel_all
-      end
-
-      it 'redirects to a index page' do
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_jobs_path)
-      end
-
-      it 'transits to canceled' do
-        expect(Ci::Build.all).to all(be_canceled)
-      end
-    end
-
-    context 'when jobs are not cancelable' do
-      before do
-        create_list(:ci_build, 2, :canceled, pipeline: pipeline)
-
-        post_cancel_all
-      end
-
-      it 'redirects to a index page' do
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(namespace_project_jobs_path)
-      end
-    end
-
-    def post_cancel_all
-      post :cancel_all, namespace_id: project.namespace,
-                        project_id: project
+      post :unschedule, params: {
+                          namespace_id: project.namespace,
+                          project_id: project,
+                          id: job.id
+                        }
     end
   end
 
@@ -808,39 +828,45 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     def post_erase
-      post :erase, namespace_id: project.namespace,
-                   project_id: project,
-                   id: job.id
+      post :erase, params: {
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: job.id
+                   }
     end
   end
 
   describe 'GET raw' do
     subject do
-      post :raw, namespace_id: project.namespace,
-                 project_id: project,
-                 id: job.id
+      post :raw, params: {
+                   namespace_id: project.namespace,
+                   project_id: project,
+                   id: job.id
+                 }
     end
 
     context "when job has a trace artifact" do
       let(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
 
-      it 'returns a trace' do
+      it "sets #{Gitlab::Workhorse::DETECT_HEADER} header" do
         response = subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
         expect(response.body).to eq(job.job_artifacts_trace.open.read)
+        expect(response.header[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
       end
     end
 
     context "when job has a trace file" do
       let(:job) { create(:ci_build, :trace_live, pipeline: pipeline) }
 
-      it "send a trace file" do
+      it 'sends a trace file' do
         response = subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
+        expect(response.headers["Content-Disposition"]).to match(/^inline/)
         expect(response.body).to eq("BUILD TRACE")
       end
     end
@@ -852,12 +878,27 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         job.update_column(:trace, "Sample trace")
       end
 
-      it "send a trace file" do
+      it 'sends a trace file' do
         response = subject
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.headers["Content-Type"]).to eq("text/plain; charset=utf-8")
-        expect(response.body).to eq("Sample trace")
+        expect(response.headers['Content-Type']).to eq('text/plain; charset=utf-8')
+        expect(response.headers['Content-Disposition']).to match(/^inline/)
+        expect(response.body).to eq('Sample trace')
+      end
+
+      context 'when trace format is not text/plain' do
+        before do
+          job.update_column(:trace, '<html></html>')
+        end
+
+        it 'sets content disposition to attachment' do
+          response = subject
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(response.headers['Content-Disposition']).to match(/^attachment/)
+        end
       end
     end
 
@@ -928,7 +969,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :terminal, params.merge(extra_params)
+      get :terminal, params: params.merge(extra_params)
     end
   end
 
@@ -982,7 +1023,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         project_id: project
       }
 
-      get :terminal_websocket_authorize, params.merge(extra_params)
+      get :terminal_websocket_authorize, params: params.merge(extra_params)
     end
   end
 end

@@ -1,9 +1,11 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 export default {
   components: {
     ClipboardButton,
+    GlLink,
   },
   props: {
     commit: {
@@ -26,15 +28,15 @@ export default {
   <div
     :class="{
       'block-last': isLastBlock,
-      block: !isLastBlock
-  }">
-    <p>
-      {{ __('Commit') }}
+      block: !isLastBlock,
+    }"
+  >
+    <p class="append-bottom-5">
+      <span class="font-weight-bold">{{ __('Commit') }}</span>
 
-      <a
-        :href="commit.commit_path"
-        class="js-commit-sha commit-sha link-commit"
-      >{{ commit.short_id }}</a>
+      <gl-link :href="commit.commit_path" class="js-commit-sha commit-sha link-commit">
+        {{ commit.short_id }}
+      </gl-link>
 
       <clipboard-button
         :text="commit.short_id"
@@ -42,15 +44,14 @@ export default {
         css-class="btn btn-clipboard btn-transparent"
       />
 
-      <a
-        v-if="mergeRequest"
-        :href="mergeRequest.path"
-        class="js-link-commit link-commit"
-      >!{{ mergeRequest.iid }}</a>
+      <span v-if="mergeRequest">
+        in
+        <gl-link :href="mergeRequest.path" class="js-link-commit link-commit"
+          >!{{ mergeRequest.iid }}</gl-link
+        >
+      </span>
     </p>
 
-    <p class="build-light-text append-bottom-0">
-      {{ commit.title }}
-    </p>
+    <p class="append-bottom-0">{{ commit.title }}</p>
   </div>
 </template>

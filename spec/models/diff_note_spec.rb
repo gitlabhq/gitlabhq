@@ -318,25 +318,28 @@ describe DiffNote do
     end
   end
 
-  describe "image diff notes" do
-    let(:path) { "files/images/any_image.png" }
+  describe '#supports_suggestion?' do
+    context 'when noteable does not support suggestions' do
+      it 'returns false' do
+        allow(subject.noteable).to receive(:supports_suggestion?) { false }
 
-    let!(:position) do
-      Gitlab::Diff::Position.new(
-        old_path: path,
-        new_path: path,
-        width: 10,
-        height: 10,
-        x: 1,
-        y: 1,
-        diff_refs: merge_request.diff_refs,
-        position_type: "image"
-      )
+        expect(subject.supports_suggestion?).to be(false)
+      end
     end
 
-    describe "validations" do
-      subject { build(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
+    context 'when line is not suggestible' do
+      it 'returns false' do
+        allow_any_instance_of(Gitlab::Diff::Line).to receive(:suggestible?) { false }
 
+        expect(subject.supports_suggestion?).to be(false)
+      end
+    end
+  end
+
+  describe "image diff notes" do
+    subject { build(:image_diff_note_on_merge_request, project: project, noteable: merge_request) }
+
+    describe "validations" do
       it { is_expected.not_to validate_presence_of(:line_code) }
 
       it "does not validate diff line" do

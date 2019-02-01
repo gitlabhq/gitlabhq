@@ -63,10 +63,9 @@
 
     .card
       .card-header
-        %h3.card-title
-          = _('Projects')
-          %span.badge.badge-pill
-            #{@group.projects.count}
+        = _('Projects')
+        %span.badge.badge-pill
+          #{@group.projects.count}
       %ul.content-list
         - @projects.each do |project|
           %li
@@ -102,10 +101,10 @@
           = _('Add user(s) to the group:')
         .card-body.form-holder
           %p.light
-            - link_to_help = link_to(_("here"), help_page_path("user/permissions"), class: "vlink")
+            - link_to_help = link_to(_("here"), help_page_path("user/permissions"))
             = _('Read more about project permissions <strong>%{link_to_help}</strong>').html_safe % { link_to_help: link_to_help }
 
-          = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
+          = form_tag admin_group_members_update_path(@group), id: "new_project_member", class: "bulk_import", method: :put do
             %div
               = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
             .prepend-top-10
@@ -119,7 +118,7 @@
         = _("<strong>%{group_name}</strong> group members").html_safe % { group_name: @group.name }
         %span.badge.badge-pill= @group.members.size
         .float-right
-          = link_to icon('pencil-square-o', text: _('Manage access')), polymorphic_url([@group, :members]), class: "btn btn-sm"
+          = link_to icon('pencil-square-o', text: _('Manage access')), group_group_members_path(@group), class: "btn btn-sm"
       %ul.content-list.group-users-list.content-list.members-list
         = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .card-footer

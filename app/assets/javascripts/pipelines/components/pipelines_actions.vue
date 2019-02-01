@@ -1,16 +1,19 @@
 <script>
+import { GlButton, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
-import { formatTime } from '~/lib/utils/datetime_utility';
+import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import eventHub from '../event_hub';
-import icon from '../../vue_shared/components/icon.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
-    icon,
+    Icon,
+    GlCountdown,
+    GlButton,
+    GlLoadingIcon,
   },
   props: {
     actions: {
@@ -28,7 +31,7 @@ export default {
       if (action.scheduled_at) {
         const confirmationMessage = sprintf(
           s__(
-            "DelayedJobs|Are you sure you want to run %{jobName} immediately? This job will run automatically after it's timer finishes.",
+            "DelayedJobs|Are you sure you want to run %{jobName} immediately? Otherwise this job will run automatically after it's timer finishes.",
           ),
           { jobName: action.name },
         );
@@ -51,58 +54,37 @@ export default {
 
       return !action.playable;
     },
-
-    remainingTime(action) {
-      const remainingMilliseconds = new Date(action.scheduled_at).getTime() - Date.now();
-      return formatTime(Math.max(0, remainingMilliseconds));
-    },
   },
 };
 </script>
 <template>
   <div class="btn-group">
-    <button
-      v-tooltip
+    <gl-button
+      v-gl-tooltip
       :disabled="isLoading"
-      type="button"
       class="dropdown-new btn btn-default js-pipeline-dropdown-manual-actions"
       title="Manual job"
       data-toggle="dropdown"
-      data-placement="top"
       aria-label="Manual job"
     >
-      <icon
-        name="play"
-        class="icon-play"
-      />
-      <i
-        class="fa fa-caret-down"
-        aria-hidden="true">
-      </i>
+      <icon name="play" class="icon-play" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
       <gl-loading-icon v-if="isLoading" />
-    </button>
+    </gl-button>
 
     <ul class="dropdown-menu dropdown-menu-right">
-      <li
-        v-for="action in actions"
-        :key="action.path"
-      >
-        <button
+      <li v-for="action in actions" :key="action.path">
+        <gl-button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
-          type="button"
           class="js-pipeline-action-link no-btn btn"
           @click="onClickAction(action)"
         >
           {{ action.name }}
-          <span
-            v-if="action.scheduled_at"
-            class="pull-right"
-          >
+          <span v-if="action.scheduled_at" class="pull-right">
             <icon name="clock" />
-            {{ remainingTime(action) }}
+            <gl-countdown :end-date-string="action.scheduled_at" />
           </span>
-        </button>
+        </gl-button>
       </li>
     </ul>
   </div>

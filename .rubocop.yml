@@ -8,7 +8,7 @@ require:
   - rubocop-rspec
 
 AllCops:
-  TargetRailsVersion: 4.2
+  TargetRailsVersion: 5.0
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
@@ -50,7 +50,6 @@ Style/FrozenStringLiteralComment:
     - 'danger/**/*'
     - 'db/**/*'
     - 'ee/**/*'
-    - 'lib/gitlab/**/*'
     - 'lib/tasks/**/*'
     - 'qa/**/*'
     - 'rubocop/**/*'
@@ -76,10 +75,14 @@ Naming/FileName:
     - 'qa/qa/specs/**/*'
     - 'qa/bin/*'
     - 'config/**/*'
+    - 'ee/config/**/*'
     - 'lib/generators/**/*'
     - 'locale/unfound_translations.rb'
     - 'ee/locale/unfound_translations.rb'
     - 'ee/lib/generators/**/*'
+    - 'qa/qa/scenario/test/integration/ldap_no_tls.rb'
+    - 'qa/qa/scenario/test/integration/ldap_tls.rb'
+
   IgnoreExecutableScripts: true
   AllowedAcronyms:
     - EE
@@ -140,6 +143,7 @@ Naming/FileName:
     - XMPP
     - XSRF
     - XSS
+    - GRPC
 
 # GitLab ###################################################################
 
@@ -170,4 +174,10 @@ GitlabSecurity/PublicSend:
     - 'spec/**/*'
     - 'ee/db/**/*'
     - 'ee/lib/**/*.rake'
+    - 'ee/spec/**/*'
+
+Cop/InjectEnterpriseEditionModule:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
     - 'ee/spec/**/*'

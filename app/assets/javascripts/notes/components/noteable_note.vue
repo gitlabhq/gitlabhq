@@ -2,6 +2,9 @@
 import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { escape } from 'underscore';
+import { truncateSha } from '~/lib/utils/text_utility';
+import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
+import { s__, sprintf } from '../../locale';
 import Flash from '../../flash';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteHeader from './note_header.vue';
@@ -18,12 +21,28 @@ export default {
     noteHeader,
     noteActions,
     noteBody,
+    TimelineEntryItem,
   },
   mixins: [noteable, resolvable],
   props: {
     note: {
       type: Object,
       required: true,
+    },
+    line: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    commit: {
+      type: Object,
+      required: false,
+      default: () => null,
     },
   },
   data() {
@@ -46,6 +65,7 @@ export default {
         'is-requesting being-posted': this.isRequesting,
         'disabled-content': this.isDeleting,
         target: this.isTarget,
+        'is-editable': this.note.current_user.can_edit,
       };
     },
     canResolve() {
@@ -59,6 +79,21 @@ export default {
     },
     isTarget() {
       return this.targetNoteHash === this.noteAnchorId;
+    },
+    actionText() {
+      if (!this.commit) {
+        return '';
+      }
+
+      // We need to do this to ensure we have the currect sentence order
+      // when translating this as the sentence order may change from one
+      // language to the next. See:
+      // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24427#note_133713771
+      const { id, url } = this.commit;
+      const commitLink = `<a class="commit-sha monospace" href="${escape(url)}">${truncateSha(
+        id,
+      )}</a>`;
+      return sprintf(s__('MergeRequests|commented on commit %{commitLink}'), { commitLink }, false);
     },
   },
 
@@ -168,58 +203,62 @@ export default {
 </script>
 
 <template>
-  <li
+  <timeline-entry-item
     :id="noteAnchorId"
     :class="classNameBindings"
     :data-award-url="note.toggle_award_path"
     :data-note-id="note.id"
-    class="note timeline-entry"
+    class="note note-wrapper"
   >
-    <div class="timeline-entry-inner">
-      <div class="timeline-icon">
-        <user-avatar-link
-          :link-href="author.path"
-          :img-src="author.avatar_url"
-          :img-alt="author.name"
-          :img-size="40"
+    <div v-once class="timeline-icon">
+      <user-avatar-link
+        :link-href="author.path"
+        :img-src="author.avatar_url"
+        :img-alt="author.name"
+        :img-size="40"
+      >
+        <slot slot="avatar-badge" name="avatar-badge"></slot>
+      </user-avatar-link>
+    </div>
+    <div class="timeline-content">
+      <div class="note-header">
+        <note-header v-once :author="author" :created-at="note.created_at" :note-id="note.id">
+          <span v-if="commit" v-html="actionText"></span>
+          <span v-else class="d-none d-sm-inline">&middot;</span>
+        </note-header>
+        <note-actions
+          :author-id="author.id"
+          :note-id="note.id"
+          :note-url="note.noteable_note_url"
+          :access-level="note.human_access"
+          :can-edit="note.current_user.can_edit"
+          :can-award-emoji="note.current_user.can_award_emoji"
+          :can-delete="note.current_user.can_edit"
+          :can-report-as-abuse="canReportAsAbuse"
+          :can-resolve="note.current_user.can_resolve"
+          :report-abuse-path="note.report_abuse_path"
+          :resolvable="note.resolvable"
+          :is-resolved="note.resolved"
+          :is-resolving="isResolving"
+          :resolved-by="note.resolved_by"
+          @handleEdit="editHandler"
+          @handleDelete="deleteHandler"
+          @handleResolve="resolveHandler"
         />
       </div>
-      <div class="timeline-content">
-        <div class="note-header">
-          <note-header
-            :author="author"
-            :created-at="note.created_at"
-            :note-id="note.id"
-          />
-          <note-actions
-            :author-id="author.id"
-            :note-id="note.id"
-            :note-url="note.noteable_note_url"
-            :access-level="note.human_access"
-            :can-edit="note.current_user.can_edit"
-            :can-award-emoji="note.current_user.can_award_emoji"
-            :can-delete="note.current_user.can_edit"
-            :can-report-as-abuse="canReportAsAbuse"
-            :can-resolve="note.current_user.can_resolve"
-            :report-abuse-path="note.report_abuse_path"
-            :resolvable="note.resolvable"
-            :is-resolved="note.resolved"
-            :is-resolving="isResolving"
-            :resolved-by="note.resolved_by"
-            @handleEdit="editHandler"
-            @handleDelete="deleteHandler"
-            @handleResolve="resolveHandler"
-          />
-        </div>
+      <div class="timeline-discussion-body">
+        <slot name="discussion-resolved-text"></slot>
         <note-body
           ref="noteBody"
           :note="note"
+          :line="line"
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
+          :help-page-path="helpPagePath"
           @handleFormUpdate="formUpdateHandler"
           @cancelForm="formCancelHandler"
         />
       </div>
     </div>
-  </li>
+  </timeline-entry-item>
 </template>

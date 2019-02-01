@@ -6,7 +6,7 @@ module Keys
       key.destroy if destroy_possible?(key)
     end
 
-    # overriden in EE::Keys::DestroyService
+    # overridden in EE::Keys::DestroyService
     def destroy_possible?(key)
       true
     end

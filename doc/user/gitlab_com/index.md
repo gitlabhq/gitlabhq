@@ -46,7 +46,7 @@ Below are the settings for [GitLab Pages].
 | Setting                 | GitLab.com        | Default       |
 | ----------------------- | ----------------  | ------------- |
 | Domain name             | `gitlab.io`       | -             |
-| IP address              | `52.167.214.135`  | -             |
+| IP address              | `35.185.44.232`   | -             |
 | Custom domains support  | yes               | no            |
 | TLS certificates support| yes               | no            |
 
@@ -281,12 +281,14 @@ of proposed changes can be found at
 GitLab.com adjusts the memory limits for the [unicorn-worker-killer][unicorn-worker-killer] gem.
 
 Base default:
-* `memory_limit_min` = 750MiB
-* `memory_limit_max` = 1024MiB
+
+- `memory_limit_min` = 750MiB
+- `memory_limit_max` = 1024MiB
 
 Web front-ends:
-* `memory_limit_min` = 1024MiB
-* `memory_limit_max` = 1280MiB
+
+- `memory_limit_min` = 1024MiB
+- `memory_limit_max` = 1280MiB
 
 ## GitLab.com at scale
 

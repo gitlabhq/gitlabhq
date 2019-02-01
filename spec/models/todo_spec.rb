@@ -226,7 +226,7 @@ describe Todo do
 
       create(:todo, target: create(:merge_request))
 
-      expect(described_class.for_type(Issue)).to eq([todo])
+      expect(described_class.for_type(Issue.name)).to eq([todo])
     end
   end
 
@@ -236,7 +236,8 @@ describe Todo do
 
       create(:todo, target: create(:merge_request))
 
-      expect(described_class.for_target(todo.target)).to eq([todo])
+      expect(described_class.for_type(Issue.name).for_target(todo.target))
+        .to contain_exactly(todo)
     end
   end
 

@@ -11,213 +11,107 @@ describe Ci::ProcessBuildService, '#execute' do
     project.add_maintainer(user)
   end
 
-  shared_examples_for 'Enqueuing properly' do |valid_statuses_for_when|
-    valid_statuses_for_when.each do |status_for_prior_stages|
-      context "when status for prior stages is #{status_for_prior_stages}" do
-        let(:current_status) { status_for_prior_stages }
-
-        %w[created skipped manual scheduled].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, when: when_option, user: user, project: project) }
-
-            it 'enqueues the build' do
-              expect { subject }.to change { build.status }.to('pending')
-            end
-          end
-        end
-
-        %w[pending running success failed canceled].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, when: when_option, user: user, project: project) }
-
-            it 'does not change the build status' do
-              expect { subject }.not_to change { build.status }
-            end
-          end
-        end
-      end
-    end
-
-    (HasStatus::AVAILABLE_STATUSES - valid_statuses_for_when).each do |status_for_prior_stages|
-      let(:current_status) { status_for_prior_stages }
-
-      context "when status for prior stages is #{status_for_prior_stages}" do
-        %w[created pending].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, when: when_option, user: user, project: project) }
-
-            it 'skips the build' do
-              expect { subject }.to change { build.status }.to('skipped')
-            end
-          end
-        end
-
-        (HasStatus::AVAILABLE_STATUSES - %w[created pending]).each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, when: when_option, user: user, project: project) }
-
-            it 'does not change build status' do
-              expect { subject }.not_to change { build.status }
-            end
-          end
-        end
-      end
-    end
-  end
-
-  shared_examples_for 'Actionizing properly' do |valid_statuses_for_when|
-    valid_statuses_for_when.each do |status_for_prior_stages|
-      context "when status for prior stages is #{status_for_prior_stages}" do
-        let(:current_status) { status_for_prior_stages }
-
-        %w[created].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :actionable, user: user, project: project) }
-
-            it 'enqueues the build' do
-              expect { subject }.to change { build.status }.to('manual')
-            end
-          end
-        end
-
-        %w[manual skipped pending running success failed canceled scheduled].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :actionable, user: user, project: project) }
-
-            it 'does not change the build status' do
-              expect { subject }.not_to change { build.status }
-            end
-          end
-        end
-      end
-    end
-
-    (HasStatus::AVAILABLE_STATUSES - valid_statuses_for_when).each do |status_for_prior_stages|
-      let(:current_status) { status_for_prior_stages }
-
-      context "when status for prior stages is #{status_for_prior_stages}" do
-        %w[created pending].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :actionable, user: user, project: project) }
-
-            it 'skips the build' do
-              expect { subject }.to change { build.status }.to('skipped')
-            end
-          end
-        end
-
-        (HasStatus::AVAILABLE_STATUSES - %w[created pending]).each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :actionable, user: user, project: project) }
-
-            it 'does not change build status' do
-              expect { subject }.not_to change { build.status }
-            end
-          end
-        end
-      end
-    end
-  end
-
-  shared_examples_for 'Scheduling properly' do |valid_statuses_for_when|
-    valid_statuses_for_when.each do |status_for_prior_stages|
-      context "when status for prior stages is #{status_for_prior_stages}" do
-        let(:current_status) { status_for_prior_stages }
-
-        %w[created].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :schedulable, user: user, project: project) }
-
-            it 'enqueues the build' do
-              expect { subject }.to change { build.status }.to('scheduled')
-            end
-          end
-        end
-
-        %w[manual skipped pending running success failed canceled scheduled].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :schedulable, user: user, project: project) }
-
-            it 'does not change the build status' do
-              expect { subject }.not_to change { build.status }
-            end
-          end
-        end
-      end
-    end
-
-    (HasStatus::AVAILABLE_STATUSES - valid_statuses_for_when).each do |status_for_prior_stages|
-      let(:current_status) { status_for_prior_stages }
-
-      context "when status for prior stages is #{status_for_prior_stages}" do
-        %w[created pending].each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :schedulable, user: user, project: project) }
-
-            it 'skips the build' do
-              expect { subject }.to change { build.status }.to('skipped')
-            end
-          end
-        end
-
-        (HasStatus::AVAILABLE_STATUSES - %w[created pending]).each do |status|
-          context "when build status is #{status}" do
-            let(:build) { create(:ci_build, status.to_sym, :schedulable, user: user, project: project) }
-
-            it 'does not change build status' do
-              expect { subject }.not_to change { build.status }
-            end
-          end
-        end
-      end
-    end
-  end
-
   context 'when build has on_success option' do
-    let(:when_option) { :on_success }
+    let(:build) { create(:ci_build, :created, when: :on_success, user: user, project: project) }
 
-    it_behaves_like 'Enqueuing properly', %w[success skipped]
+    context 'when current status is success' do
+      let(:current_status) { 'success' }
+
+      it 'changes the build status' do
+        expect { subject }.to change { build.status }.to('pending')
+      end
+    end
+
+    context 'when current status is failed' do
+      let(:current_status) { 'failed' }
+
+      it 'does not change the build status' do
+        expect { subject }.to change { build.status }.to('skipped')
+      end
+    end
   end
 
   context 'when build has on_failure option' do
-    let(:when_option) { :on_failure }
+    let(:build) { create(:ci_build, :created, when: :on_failure, user: user, project: project) }
 
-    it_behaves_like 'Enqueuing properly', %w[failed]
+    context 'when current status is success' do
+      let(:current_status) { 'success' }
+
+      it 'changes the build status' do
+        expect { subject }.to change { build.status }.to('skipped')
+      end
+    end
+
+    context 'when current status is failed' do
+      let(:current_status) { 'failed' }
+
+      it 'does not change the build status' do
+        expect { subject }.to change { build.status }.to('pending')
+      end
+    end
   end
 
   context 'when build has always option' do
-    let(:when_option) { :always }
+    let(:build) { create(:ci_build, :created, when: :always, user: user, project: project) }
 
-    it_behaves_like 'Enqueuing properly', %w[success failed skipped]
+    context 'when current status is success' do
+      let(:current_status) { 'success' }
+
+      it 'changes the build status' do
+        expect { subject }.to change { build.status }.to('pending')
+      end
+    end
+
+    context 'when current status is failed' do
+      let(:current_status) { 'failed' }
+
+      it 'does not change the build status' do
+        expect { subject }.to change { build.status }.to('pending')
+      end
+    end
   end
 
   context 'when build has manual option' do
-    let(:when_option) { :manual }
+    let(:build) { create(:ci_build, :created, :actionable, user: user, project: project) }
 
-    it_behaves_like 'Actionizing properly', %w[success skipped]
+    context 'when current status is success' do
+      let(:current_status) { 'success' }
+
+      it 'changes the build status' do
+        expect { subject }.to change { build.status }.to('manual')
+      end
+    end
+
+    context 'when current status is failed' do
+      let(:current_status) { 'failed' }
+
+      it 'does not change the build status' do
+        expect { subject }.to change { build.status }.to('skipped')
+      end
+    end
   end
 
   context 'when build has delayed option' do
-    let(:when_option) { :delayed }
-
     before do
       allow(Ci::BuildScheduleWorker).to receive(:perform_at) { }
     end
 
-    context 'when ci_enable_scheduled_build is enabled' do
-      before do
-        stub_feature_flags(ci_enable_scheduled_build: true)
-      end
+    let(:build) { create(:ci_build, :created, :schedulable, user: user, project: project) }
 
-      it_behaves_like 'Scheduling properly', %w[success skipped]
+    context 'when current status is success' do
+      let(:current_status) { 'success' }
+
+      it 'changes the build status' do
+        expect { subject }.to change { build.status }.to('scheduled')
+      end
     end
 
-    context 'when ci_enable_scheduled_build is enabled' do
-      before do
-        stub_feature_flags(ci_enable_scheduled_build: false)
-      end
+    context 'when current status is failed' do
+      let(:current_status) { 'failed' }
 
-      it_behaves_like 'Actionizing properly', %w[success skipped]
+      it 'does not change the build status' do
+        expect { subject }.to change { build.status }.to('skipped')
+      end
     end
   end
 end

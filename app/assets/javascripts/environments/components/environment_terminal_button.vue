@@ -3,21 +3,26 @@
  * Renders a terminal button to open a web terminal.
  * Used in environments table.
  */
+import { GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   components: {
     Icon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     terminalPath: {
       type: String,
       required: false,
       default: '',
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -29,12 +34,12 @@ export default {
 </script>
 <template>
   <a
-    v-tooltip
+    v-gl-tooltip
     :title="title"
     :aria-label="title"
     :href="terminalPath"
+    :class="{ disabled: disabled }"
     class="btn terminal-button d-none d-sm-none d-md-block"
-    data-container="body"
   >
     <icon name="terminal" />
   </a>

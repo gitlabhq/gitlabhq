@@ -1,15 +1,17 @@
 <script>
 import { mapState, mapActions } from 'vuex';
-import imageDiffHelper from '~/image_diff/helpers/index';
-import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
-import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
-import { trimFirstCharOfLineContent } from '~/diffs/store/utils';
+import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
+import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
+import { GlSkeletonLoading } from '@gitlab/ui';
+import { getDiffMode } from '~/diffs/store/utils';
 
 export default {
   components: {
     DiffFileHeader,
-    SkeletonLoading,
+    GlSkeletonLoading,
+    DiffViewer,
+    ImageDiffOverlay,
   },
   props: {
     discussion: {
@@ -24,57 +26,24 @@ export default {
   },
   computed: {
     ...mapState({
-      noteableData: state => state.notes.noteableData,
+      projectPath: state => state.diffs.projectPath,
     }),
+    diffMode() {
+      return getDiffMode(this.discussion.diff_file);
+    },
     hasTruncatedDiffLines() {
-      return this.discussion.truncatedDiffLines && this.discussion.truncatedDiffLines.length !== 0;
-    },
-    isDiscussionsExpanded() {
-      return true; // TODO: @fatihacet - Fix this.
-    },
-    isCollapsed() {
-      return this.diffFile.collapsed || false;
-    },
-    isImageDiff() {
-      return !this.diffFile.text;
-    },
-    diffFileClass() {
-      const { text } = this.diffFile;
-      return text ? 'text-file' : 'js-image-file';
-    },
-    diffFile() {
-      return convertObjectPropsToCamelCase(this.discussion.diffFile, { deep: true });
-    },
-    imageDiffHtml() {
-      return this.discussion.imageDiffHtml;
-    },
-    userColorScheme() {
-      return window.gon.user_color_scheme;
-    },
-    normalizedDiffLines() {
-      if (this.discussion.truncatedDiffLines) {
-        return this.discussion.truncatedDiffLines.map(line =>
-          trimFirstCharOfLineContent(convertObjectPropsToCamelCase(line)),
-        );
-      }
-
-      return [];
+      return (
+        this.discussion.truncated_diff_lines && this.discussion.truncated_diff_lines.length !== 0
+      );
     },
   },
   mounted() {
-    if (this.isImageDiff) {
-      const canCreateNote = false;
-      const renderCommentBadge = true;
-      imageDiffHelper.initImageDiff(this.$refs.fileHolder, canCreateNote, renderCommentBadge);
-    } else if (!this.hasTruncatedDiffLines) {
+    if (!this.hasTruncatedDiffLines) {
       this.fetchDiff();
     }
   },
   methods: {
     ...mapActions(['fetchDiscussionDiffLines']),
-    rowTag(html) {
-      return html.outerHTML ? 'tr' : 'template';
-    },
     fetchDiff() {
       this.error = false;
       this.fetchDiscussionDiffLines(this.discussion)
@@ -84,53 +53,41 @@ export default {
         });
     },
   },
+  userColorSchemeClass: window.gon.user_color_scheme,
 };
 </script>
 
 <template>
-  <div
-    ref="fileHolder"
-    :class="diffFileClass"
-    class="diff-file file-holder"
-  >
+  <div :class="{ 'text-file': discussion.diff_file.text }" class="diff-file file-holder">
     <diff-file-header
-      :discussion-path="discussion.discussionPath"
-      :diff-file="diffFile"
+      :discussion-path="discussion.discussion_path"
+      :diff-file="discussion.diff_file"
       :can-current-user-fork="false"
-      :discussions-expanded="isDiscussionsExpanded"
-      :expanded="!isCollapsed"
+      :expanded="!discussion.diff_file.collapsed"
     />
     <div
-      v-if="diffFile.text"
-      :class="userColorScheme"
+      v-if="discussion.diff_file.text"
+      :class="$options.userColorSchemeClass"
       class="diff-content code"
     >
       <table>
-        <tr
-          v-for="line in normalizedDiffLines"
-          :key="line.lineCode"
-          class="line_holder"
-        >
-          <td class="diff-line-num old_line">{{ line.oldLine }}</td>
-          <td class="diff-line-num new_line">{{ line.newLine }}</td>
-          <td
-            :class="line.type"
-            class="line_content"
-            v-html="line.richText"
+        <template v-if="hasTruncatedDiffLines">
+          <tr
+            v-for="line in discussion.truncated_diff_lines"
+            v-once
+            :key="line.line_code"
+            class="line_holder"
           >
-          </td>
-        </tr>
-        <tr
-          v-if="!hasTruncatedDiffLines"
-          class="line_holder line-holder-placeholder"
-        >
+            <td class="diff-line-num old_line">{{ line.old_line }}</td>
+            <td class="diff-line-num new_line">{{ line.new_line }}</td>
+            <td :class="line.type" class="line_content" v-html="line.rich_text"></td>
+          </tr>
+        </template>
+        <tr v-if="!hasTruncatedDiffLines" class="line_holder line-holder-placeholder">
           <td class="old_line diff-line-num"></td>
           <td class="new_line diff-line-num"></td>
-          <td
-            v-if="error"
-            class="js-error-lazy-load-diff diff-loading-error-block"
-          >
-            Unable to load the diff
+          <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
+            {{ error }} Unable to load the diff
             <button
               class="btn-link btn-link-retry btn-no-padding js-toggle-lazy-diff-retry-button"
               @click="fetchDiff"
@@ -138,29 +95,36 @@ export default {
               Try again
             </button>
           </td>
-          <td
-            v-else
-            class="line_content js-success-lazy-load"
-          >
+          <td v-else class="line_content js-success-lazy-load">
             <span></span>
-            <skeleton-loading />
+            <gl-skeleton-loading />
             <span></span>
           </td>
         </tr>
         <tr class="notes_holder">
-          <td
-            class="notes_content"
-            colspan="3"
-          >
-            <slot></slot>
-          </td>
+          <td class="notes_content" colspan="3"><slot></slot></td>
         </tr>
       </table>
     </div>
-    <div
-      v-else
-    >
-      <div v-html="imageDiffHtml"></div>
+    <div v-else>
+      <diff-viewer
+        :diff-mode="diffMode"
+        :new-path="discussion.diff_file.new_path"
+        :new-sha="discussion.diff_file.diff_refs.head_sha"
+        :old-path="discussion.diff_file.old_path"
+        :old-sha="discussion.diff_file.diff_refs.base_sha"
+        :file-hash="discussion.diff_file.file_hash"
+        :project-path="projectPath"
+      >
+        <image-diff-overlay
+          slot="image-overlay"
+          :discussions="discussion"
+          :file-hash="discussion.diff_file.file_hash"
+          :show-comment-icon="true"
+          :should-toggle-discussion="false"
+          badge-class="image-comment-badge"
+        />
+      </diff-viewer>
       <slot></slot>
     </div>
   </div>

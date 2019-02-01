@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module QA
-  context :create do
-    describe 'Protected branch support', :ldap do
+  context 'Create' do
+    describe 'Protected branch support', :ldap_no_tls do
       let(:branch_name) { 'protected-branch' }
       let(:commit_message) { 'Protected push commit message' }
       let(:project) do
-        Factory::Resource::Project.fabricate! do |resource|
+        Resource::Project.fabricate! do |resource|
           resource.name = 'protected-branch-project'
         end
       end
@@ -47,7 +47,7 @@ module QA
       end
 
       def create_protected_branch(allow_to_push:)
-        Factory::Resource::Branch.fabricate! do |resource|
+        Resource::Branch.fabricate! do |resource|
           resource.branch_name = branch_name
           resource.project = project
           resource.allow_to_push = allow_to_push
@@ -56,7 +56,7 @@ module QA
       end
 
       def push_new_file(branch)
-        Factory::Repository::ProjectPush.fabricate! do |resource|
+        Resource::Repository::ProjectPush.fabricate! do |resource|
           resource.project = project
           resource.file_name = 'new_file.md'
           resource.file_content = '# This is a new file'

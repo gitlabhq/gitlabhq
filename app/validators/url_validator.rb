@@ -26,6 +26,7 @@
 # - allow_local_network: Allow urls pointing to private network addresses. Default: true
 # - ports: Allowed ports. Default: all.
 # - enforce_user: Validate user format. Default: false
+# - enforce_sanitization: Validate that there are no html/css/js tags. Default: false
 #
 # Example:
 #   class User < ActiveRecord::Base
@@ -69,7 +70,9 @@ class UrlValidator < ActiveModel::EachValidator
       ports: [],
       allow_localhost: true,
       allow_local_network: true,
-      enforce_user: false
+      ascii_only: false,
+      enforce_user: false,
+      enforce_sanitization: false
     }
   end
 

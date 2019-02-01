@@ -136,7 +136,7 @@ export default function dropzoneInput(form) {
 
   // removeAllFiles(true) stops uploading files (if any)
   // and remove them from dropzone files queue.
-  $cancelButton.on('click', (e) => {
+  $cancelButton.on('click', e => {
     e.preventDefault();
     e.stopPropagation();
     Dropzone.forElement($formDropzone.get(0)).removeAllFiles(true);
@@ -146,8 +146,10 @@ export default function dropzoneInput(form) {
   // clear dropzone files queue, change status of failed files to undefined,
   // and add that files to the dropzone files queue again.
   // addFile() adds file to dropzone files queue and upload it.
-  $retryLink.on('click', (e) => {
-    const dropzoneInstance = Dropzone.forElement(e.target.closest('.js-main-target-form').querySelector('.div-dropzone'));
+  $retryLink.on('click', e => {
+    const dropzoneInstance = Dropzone.forElement(
+      e.target.closest('.js-main-target-form').querySelector('.div-dropzone'),
+    );
     const failedFiles = dropzoneInstance.files;
 
     e.preventDefault();
@@ -156,7 +158,7 @@ export default function dropzoneInput(form) {
     // uploading of files that are being uploaded at the moment.
     dropzoneInstance.removeAllFiles(true);
 
-    failedFiles.map((failedFile) => {
+    failedFiles.map(failedFile => {
       const file = failedFile;
 
       if (file.status === Dropzone.ERROR) {
@@ -168,7 +170,7 @@ export default function dropzoneInput(form) {
     });
   });
   // eslint-disable-next-line consistent-return
-  handlePaste = (event) => {
+  handlePaste = event => {
     const pasteEvent = event.originalEvent;
     if (pasteEvent.clipboardData && pasteEvent.clipboardData.items) {
       const image = isImage(pasteEvent);
@@ -182,7 +184,7 @@ export default function dropzoneInput(form) {
     }
   };
 
-  isImage = (data) => {
+  isImage = data => {
     let i = 0;
     while (i < data.clipboardData.items.length) {
       const item = data.clipboardData.items[i];
@@ -203,8 +205,12 @@ export default function dropzoneInput(form) {
     const caretStart = textarea.selectionStart;
     const caretEnd = textarea.selectionEnd;
     const textEnd = $(child).val().length;
-    const beforeSelection = $(child).val().substring(0, caretStart);
-    const afterSelection = $(child).val().substring(caretEnd, textEnd);
+    const beforeSelection = $(child)
+      .val()
+      .substring(0, caretStart);
+    const afterSelection = $(child)
+      .val()
+      .substring(caretEnd, textEnd);
     $(child).val(beforeSelection + formattedText + afterSelection);
     textarea.setSelectionRange(caretStart + formattedText.length, caretEnd + formattedText.length);
     textarea.style.height = `${textarea.scrollHeight}px`;
@@ -212,11 +218,11 @@ export default function dropzoneInput(form) {
     return formTextarea.trigger('input');
   };
 
-  addFileToForm = (path) => {
+  addFileToForm = path => {
     $(form).append(`<input type="hidden" name="files[]" value="${_.escape(path)}">`);
   };
 
-  getFilename = (e) => {
+  getFilename = e => {
     let value;
     if (window.clipboardData && window.clipboardData.getData) {
       value = window.clipboardData.getData('Text');
@@ -231,7 +237,7 @@ export default function dropzoneInput(form) {
 
   const closeSpinner = () => $uploadingProgressContainer.addClass('hide');
 
-  const showError = (message) => {
+  const showError = message => {
     $uploadingErrorContainer.removeClass('hide');
     $uploadingErrorMessage.html(message);
   };
@@ -252,14 +258,15 @@ export default function dropzoneInput(form) {
     showSpinner();
     closeAlertMessage();
 
-    axios.post(uploadsPath, formData)
+    axios
+      .post(uploadsPath, formData)
       .then(({ data }) => {
         const md = data.link.markdown;
 
         insertToTextArea(filename, md);
         closeSpinner();
       })
-      .catch((e) => {
+      .catch(e => {
         showError(e.response.data.message);
         closeSpinner();
       });
@@ -267,7 +274,8 @@ export default function dropzoneInput(form) {
 
   updateAttachingMessage = (files, messageContainer) => {
     let attachingMessage;
-    const filesCount = files.filter(file => file.status === 'uploading' || file.status === 'queued').length;
+    const filesCount = files.filter(file => file.status === 'uploading' || file.status === 'queued')
+      .length;
 
     // Dinamycally change uploading files text depending on files number in
     // dropzone files queue.
@@ -282,7 +290,10 @@ export default function dropzoneInput(form) {
 
   form.find('.markdown-selector').click(function onMarkdownClick(e) {
     e.preventDefault();
-    $(this).closest('.gfm-form').find('.div-dropzone').click();
+    $(this)
+      .closest('.gfm-form')
+      .find('.div-dropzone')
+      .click();
     formTextarea.focus();
   });
 

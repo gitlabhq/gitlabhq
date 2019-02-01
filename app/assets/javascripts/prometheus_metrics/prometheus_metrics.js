@@ -65,10 +65,14 @@ export default class PrometheusMetrics {
     let totalMissingEnvVarMetrics = 0;
     let totalExporters = 0;
 
-    metrics.forEach((metric) => {
+    metrics.forEach(metric => {
       if (metric.active_metrics > 0) {
         totalExporters += 1;
-        this.$monitoredMetricsList.append(`<li>${_.escape(metric.group)}<span class="badge">${_.escape(metric.active_metrics)}</span></li>`);
+        this.$monitoredMetricsList.append(
+          `<li>${_.escape(metric.group)}<span class="badge">${_.escape(
+            metric.active_metrics,
+          )}</span></li>`,
+        );
         totalMonitoredMetrics += metric.active_metrics;
         if (metric.metrics_missing_requirements > 0) {
           this.$missingEnvVarMetricsList.append(`<li>${_.escape(metric.group)}</li>`);
@@ -78,17 +82,26 @@ export default class PrometheusMetrics {
     });
 
     if (totalMonitoredMetrics === 0) {
-      const emptyCommonMetricsText = sprintf(s__('PrometheusService|<p class="text-tertiary">No <a href="%{docsUrl}">common metrics</a> were found</p>'), {
-        docsUrl: this.helpMetricsPath,
-      }, false);
+      const emptyCommonMetricsText = sprintf(
+        s__(
+          'PrometheusService|<p class="text-tertiary">No <a href="%{docsUrl}">common metrics</a> were found</p>',
+        ),
+        {
+          docsUrl: this.helpMetricsPath,
+        },
+        false,
+      );
       this.$monitoredMetricsEmpty.empty();
       this.$monitoredMetricsEmpty.append(emptyCommonMetricsText);
       this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
     } else {
-      const metricsCountText = sprintf(s__('PrometheusService|%{exporters} with %{metrics} were found'), {
-        exporters: n__('%d exporter', '%d exporters', totalExporters),
-        metrics: n__('%d metric', '%d metrics', totalMonitoredMetrics),
-      });
+      const metricsCountText = sprintf(
+        s__('PrometheusService|%{exporters} with %{metrics} were found'),
+        {
+          exporters: n__('%d exporter', '%d exporters', totalExporters),
+          metrics: n__('%d metric', '%d metrics', totalMonitoredMetrics),
+        },
+      );
       this.$monitoredMetricsCount.text(metricsCountText);
       this.showMonitoringMetricsPanelState(PANEL_STATE.LIST);
 
@@ -102,7 +115,8 @@ export default class PrometheusMetrics {
   loadActiveMetrics() {
     this.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
     backOff((next, stop) => {
-      axios.get(this.activeMetricsEndpoint)
+      axios
+        .get(this.activeMetricsEndpoint)
         .then(({ data }) => {
           if (data && data.success) {
             stop(data);
@@ -117,7 +131,7 @@ export default class PrometheusMetrics {
         })
         .catch(stop);
     })
-      .then((res) => {
+      .then(res => {
         if (res && res.data && res.data.length) {
           this.populateActiveMetrics(res.data);
         } else {

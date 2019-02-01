@@ -1,4 +1,4 @@
-/* eslint-disable no-var, one-var, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, object-shorthand, prefer-template, vars-on-top */
+/* eslint-disable no-var, one-var, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, object-shorthand, vars-on-top */
 
 import $ from 'jquery';
 import '~/gl_dropdown';
@@ -109,15 +109,17 @@ describe('Search autocomplete dropdown', () => {
 
   assertLinks = function(list, issuesPath, mrsPath) {
     if (issuesPath) {
-      const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_id=${userId}"]`;
-      const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_id=${userId}"]`;
+      const issuesAssignedToMeLink = `a[href="${issuesPath}/?assignee_username=${userName}"]`;
+      const issuesIHaveCreatedLink = `a[href="${issuesPath}/?author_username=${userName}"]`;
+
       expect(list.find(issuesAssignedToMeLink).length).toBe(1);
       expect(list.find(issuesAssignedToMeLink).text()).toBe('Issues assigned to me');
       expect(list.find(issuesIHaveCreatedLink).length).toBe(1);
       expect(list.find(issuesIHaveCreatedLink).text()).toBe("Issues I've created");
     }
-    const mrsAssignedToMeLink = `a[href="${mrsPath}/?assignee_id=${userId}"]`;
-    const mrsIHaveCreatedLink = `a[href="${mrsPath}/?author_id=${userId}"]`;
+    const mrsAssignedToMeLink = `a[href="${mrsPath}/?assignee_username=${userName}"]`;
+    const mrsIHaveCreatedLink = `a[href="${mrsPath}/?author_username=${userName}"]`;
+
     expect(list.find(mrsAssignedToMeLink).length).toBe(1);
     expect(list.find(mrsAssignedToMeLink).text()).toBe('Merge requests assigned to me');
     expect(list.find(mrsIHaveCreatedLink).length).toBe(1);
@@ -184,8 +186,9 @@ describe('Search autocomplete dropdown', () => {
     widget.searchInput.val('help');
     widget.searchInput.triggerHandler('focus');
     list = widget.wrap.find('.dropdown-menu').find('ul');
-    link = "a[href='" + projectIssuesPath + '/?assignee_id=' + userId + "']";
-    return expect(list.find(link).length).toBe(0);
+    link = `a[href='${projectIssuesPath}/?assignee_username=${userName}']`;
+
+    expect(list.find(link).length).toBe(0);
   });
 
   it('should not submit the search form when selecting an autocomplete row with the keyboard', function() {

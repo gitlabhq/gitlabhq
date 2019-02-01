@@ -40,21 +40,23 @@ describe Ci::BuildRunnerPresenter do
 
     context "with reports" do
       Ci::JobArtifact::DEFAULT_FILE_NAMES.each do |file_type, filename|
-        let(:report) { { "#{file_type}": [filename] } }
-        let(:build) { create(:ci_build, options: { artifacts: { reports: report } } ) }
+        context file_type.to_s do
+          let(:report) { { "#{file_type}": [filename] } }
+          let(:build) { create(:ci_build, options: { artifacts: { reports: report } } ) }
 
-        let(:report_expectation) do
-          {
-             name: filename,
-             artifact_type: :"#{file_type}",
-             artifact_format: :gzip,
-             paths: [filename],
-             when: 'always'
-          }
-        end
+          let(:report_expectation) do
+            {
+              name: filename,
+              artifact_type: :"#{file_type}",
+              artifact_format: Ci::JobArtifact::TYPE_AND_FORMAT_PAIRS.fetch(file_type),
+              paths: [filename],
+              when: 'always'
+            }
+          end
 
-        it 'presents correct hash' do
-          expect(presenter.artifacts.first).to include(report_expectation)
+          it 'presents correct hash' do
+            expect(presenter.artifacts.first).to include(report_expectation)
+          end
         end
       end
     end

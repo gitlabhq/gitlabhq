@@ -1,4 +1,4 @@
-class FakeRenameReservedPathMigrationV1 < ActiveRecord::Migration
+class FakeRenameReservedPathMigrationV1 < ActiveRecord::Migration[4.2]
   include Gitlab::Database::RenameReservedPathsMigration::V1
 
   def version

@@ -57,10 +57,36 @@ describe IssuesFinder do
       end
 
       context 'filtering by no assignee' do
-        let(:params) { { assignee_id: 0 } }
+        let(:params) { { assignee_id: 'None' } }
 
-        it 'returns issues not assign to any assignee' do
+        it 'returns issues not assigned to any assignee' do
           expect(issues).to contain_exactly(issue4)
+        end
+
+        it 'returns issues not assigned to any assignee' do
+          params[:assignee_id] = 0
+
+          expect(issues).to contain_exactly(issue4)
+        end
+
+        it 'returns issues not assigned to any assignee' do
+          params[:assignee_id] = 'none'
+
+          expect(issues).to contain_exactly(issue4)
+        end
+      end
+
+      context 'filtering by any assignee' do
+        let(:params) { { assignee_id: 'Any' } }
+
+        it 'returns issues assigned to any assignee' do
+          expect(issues).to contain_exactly(issue1, issue2, issue3)
+        end
+
+        it 'returns issues assigned to any assignee' do
+          params[:assignee_id] = 'any'
+
+          expect(issues).to contain_exactly(issue1, issue2, issue3)
         end
       end
 
@@ -118,17 +144,29 @@ describe IssuesFinder do
       end
 
       context 'filtering by no milestone' do
-        let(:params) { { milestone_title: Milestone::None.title } }
+        let(:params) { { milestone_title: 'None' } }
 
         it 'returns issues with no milestone' do
+          expect(issues).to contain_exactly(issue2, issue3, issue4)
+        end
+
+        it 'returns issues with no milestone (deprecated)' do
+          params[:milestone_title] = Milestone::None.title
+
           expect(issues).to contain_exactly(issue2, issue3, issue4)
         end
       end
 
       context 'filtering by any milestone' do
-        let(:params) { { milestone_title: Milestone::Any.title } }
+        let(:params) { { milestone_title: 'Any' } }
 
         it 'returns issues with any assigned milestone' do
+          expect(issues).to contain_exactly(issue1)
+        end
+
+        it 'returns issues with any assigned milestone (deprecated)' do
+          params[:milestone_title] = Milestone::Any.title
+
           expect(issues).to contain_exactly(issue1)
         end
       end
@@ -136,9 +174,13 @@ describe IssuesFinder do
       context 'filtering by upcoming milestone' do
         let(:params) { { milestone_title: Milestone::Upcoming.name } }
 
+        let!(:group) { create(:group, :public) }
+        let!(:group_member) { create(:group_member, group: group, user: user) }
+
         let(:project_no_upcoming_milestones) { create(:project, :public) }
         let(:project_next_1_1) { create(:project, :public) }
         let(:project_next_8_8) { create(:project, :public) }
+        let(:project_in_group) { create(:project, :public, namespace: group) }
 
         let(:yesterday) { Date.today - 1.day }
         let(:tomorrow) { Date.today + 1.day }
@@ -149,21 +191,22 @@ describe IssuesFinder do
           [
             create(:milestone, :closed, project: project_no_upcoming_milestones),
             create(:milestone, project: project_next_1_1, title: '1.1', due_date: two_days_from_now),
-            create(:milestone, project: project_next_1_1, title: '8.8', due_date: ten_days_from_now),
-            create(:milestone, project: project_next_8_8, title: '1.1', due_date: yesterday),
-            create(:milestone, project: project_next_8_8, title: '8.8', due_date: tomorrow)
+            create(:milestone, project: project_next_1_1, title: '8.9', due_date: ten_days_from_now),
+            create(:milestone, project: project_next_8_8, title: '1.2', due_date: yesterday),
+            create(:milestone, project: project_next_8_8, title: '8.8', due_date: tomorrow),
+            create(:milestone, group: group, title: '9.9', due_date: tomorrow)
           ]
         end
 
         before do
           milestones.each do |milestone|
-            create(:issue, project: milestone.project, milestone: milestone, author: user, assignees: [user])
+            create(:issue, project: milestone.project || project_in_group, milestone: milestone, author: user, assignees: [user])
           end
         end
 
-        it 'returns issues in the upcoming milestone for each project' do
-          expect(issues.map { |issue| issue.milestone.title }).to contain_exactly('1.1', '8.8')
-          expect(issues.map { |issue| issue.milestone.due_date }).to contain_exactly(tomorrow, two_days_from_now)
+        it 'returns issues in the upcoming milestone for each project or group' do
+          expect(issues.map { |issue| issue.milestone.title }).to contain_exactly('1.1', '8.8', '9.9')
+          expect(issues.map { |issue| issue.milestone.due_date }).to contain_exactly(tomorrow, two_days_from_now, tomorrow)
         end
       end
 
@@ -218,16 +261,48 @@ describe IssuesFinder do
           create(:label_link, label: label2, target: issue2)
         end
 
-        it 'returns the unique issues with any of those labels' do
+        it 'returns the unique issues with all those labels' do
+          expect(issues).to contain_exactly(issue2)
+        end
+      end
+
+      context 'filtering by a label that includes any or none in the title' do
+        let(:params) { { label_name: [label.title, label2.title].join(',') } }
+        let(:label) { create(:label, title: 'any foo', project: project2) }
+        let(:label2) { create(:label, title: 'bar none', project: project2) }
+
+        it 'returns the unique issues with all those labels' do
+          create(:label_link, label: label2, target: issue2)
+
           expect(issues).to contain_exactly(issue2)
         end
       end
 
       context 'filtering by no label' do
-        let(:params) { { label_name: Label::None.title } }
+        let(:params) { { label_name: described_class::FILTER_NONE } }
 
         it 'returns issues with no labels' do
           expect(issues).to contain_exactly(issue1, issue3, issue4)
+        end
+      end
+
+      context 'filtering by legacy No+Label' do
+        let(:params) { { label_name: Label::NONE } }
+
+        it 'returns issues with no labels' do
+          expect(issues).to contain_exactly(issue1, issue3, issue4)
+        end
+      end
+
+      context 'filtering by any label' do
+        let(:params) { { label_name: described_class::FILTER_ANY } }
+
+        it 'returns issues that have one or more label' do
+          2.times do
+            create(:label_link, label: create(:label, project: project2), target: issue3)
+          end
+
+          expect(issues).to contain_exactly(issue2, issue3)
         end
       end
 
@@ -334,6 +409,22 @@ describe IssuesFinder do
       end
 
       context 'filtering by reaction name' do
+        context 'user searches by no reaction' do
+          let(:params) { { my_reaction_emoji: 'None' } }
+
+          it 'returns issues that the user did not react to' do
+            expect(issues).to contain_exactly(issue2, issue4)
+          end
+        end
+
+        context 'user searches by any reaction' do
+          let(:params) { { my_reaction_emoji: 'Any' } }
+
+          it 'returns issues that the user reacted to' do
+            expect(issues).to contain_exactly(issue1, issue3)
+          end
+        end
+
         context 'user searches by "thumbsup" reaction' do
           let(:params) { { my_reaction_emoji: 'thumbsup' } }
 
@@ -551,6 +642,133 @@ describe IssuesFinder do
 
           subject
         end
+      end
+    end
+  end
+
+  describe '#use_subquery_for_search?' do
+    let(:finder) { described_class.new(nil, params) }
+
+    before do
+      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+      stub_feature_flags(use_subquery_for_group_issues_search: true)
+    end
+
+    context 'when there is no search param' do
+      let(:params) { { attempt_group_search_optimizations: true } }
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the database is not Postgres' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the attempt_group_search_optimizations param is falsey' do
+      let(:params) { { search: 'foo' } }
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the use_subquery_for_group_issues_search flag is disabled' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        stub_feature_flags(use_subquery_for_group_issues_search: false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when all conditions are met' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      it 'returns true' do
+        expect(finder.use_subquery_for_search?).to be_truthy
+      end
+    end
+  end
+
+  describe '#use_cte_for_search?' do
+    let(:finder) { described_class.new(nil, params) }
+
+    before do
+      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+      stub_feature_flags(use_cte_for_group_issues_search: true)
+      stub_feature_flags(use_subquery_for_group_issues_search: false)
+    end
+
+    context 'when there is no search param' do
+      let(:params) { { attempt_group_search_optimizations: true } }
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the database is not Postgres' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the attempt_group_search_optimizations param is falsey' do
+      let(:params) { { search: 'foo' } }
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when the use_cte_for_group_issues_search flag is disabled' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        stub_feature_flags(use_cte_for_group_issues_search: false)
+      end
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when use_subquery_for_search? is true' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      before do
+        stub_feature_flags(use_subquery_for_group_issues_search: true)
+      end
+
+      it 'returns false' do
+        expect(finder.use_cte_for_search?).to be_falsey
+      end
+    end
+
+    context 'when all conditions are met' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+
+      it 'returns true' do
+        expect(finder.use_cte_for_search?).to be_truthy
       end
     end
   end

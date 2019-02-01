@@ -6,22 +6,22 @@ import Vue from 'vue';
 import { localTimeAgo } from '../../lib/utils/datetime_utility';
 
 class DiscussionModel {
-  constructor (discussionId) {
+  constructor(discussionId) {
     this.id = discussionId;
     this.notes = {};
     this.loading = false;
     this.canResolve = false;
   }
 
-  createNote (noteObj) {
+  createNote(noteObj) {
     Vue.set(this.notes, noteObj.noteId, new NoteModel(this.id, noteObj));
   }
 
-  deleteNote (noteId) {
+  deleteNote(noteId) {
     Vue.delete(this.notes, noteId);
   }
 
-  getNote (noteId) {
+  getNote(noteId) {
     return this.notes[noteId];
   }
 
@@ -29,7 +29,7 @@ class DiscussionModel {
     return Object.keys(this.notes).length;
   }
 
-  isResolved () {
+  isResolved() {
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
@@ -40,7 +40,7 @@ class DiscussionModel {
     return true;
   }
 
-  resolveAllNotes (resolved_by) {
+  resolveAllNotes(resolved_by) {
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
@@ -51,7 +51,7 @@ class DiscussionModel {
     }
   }
 
-  unResolveAllNotes () {
+  unResolveAllNotes() {
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
@@ -62,7 +62,7 @@ class DiscussionModel {
     }
   }
 
-  updateHeadline (data) {
+  updateHeadline(data) {
     const discussionSelector = `.discussion[data-discussion-id="${this.id}"]`;
     const $discussionHeadline = $(`${discussionSelector} .js-discussion-headline`);
 
@@ -79,7 +79,7 @@ class DiscussionModel {
     }
   }
 
-  isResolvable () {
+  isResolvable() {
     if (!this.canResolve) {
       return false;
     }

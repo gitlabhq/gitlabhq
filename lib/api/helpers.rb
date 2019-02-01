@@ -96,15 +96,9 @@ module API
       LabelsFinder.new(current_user, search_params).execute
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def find_user(id)
-      if id =~ /^\d+$/
-        User.find_by(id: id)
-      else
-        User.find_by(username: id)
-      end
+      UserFinder.new(id).find_by_id_or_username
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
@@ -169,9 +163,11 @@ module API
     end
 
     def find_branch!(branch_name)
-      user_project.repository.find_branch(branch_name) || not_found!('Branch')
-    rescue Gitlab::Git::CommandError
-      render_api_error!('The branch refname is invalid', 400)
+      if Gitlab::GitRefValidator.validate(branch_name)
+        user_project.repository.find_branch(branch_name) || not_found!('Branch')
+      else
+        render_api_error!('The branch refname is invalid', 400)
+      end
     end
 
     def find_project_label(id)
@@ -239,8 +235,8 @@ module API
       forbidden! unless current_user.admin?
     end
 
-    def authorize!(action, subject = :global)
-      forbidden! unless can?(current_user, action, subject)
+    def authorize!(action, subject = :global, reason = nil)
+      forbidden!(reason) unless can?(current_user, action, subject)
     end
 
     def authorize_push_project
@@ -297,7 +293,7 @@ module API
         end
       end
       permitted_attrs = ActionController::Parameters.new(attrs).permit!
-      Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
+      permitted_attrs.to_h
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
@@ -374,10 +370,10 @@ module API
     end
 
     def handle_api_exception(exception)
-      if sentry_enabled? && report_exception?(exception)
+      if report_exception?(exception)
         define_params_for_grape_middleware
-        sentry_context
-        Raven.capture_exception(exception, extra: params)
+        Gitlab::Sentry.context(current_user)
+        Gitlab::Sentry.track_acceptable_exception(exception, extra: params)
       end
 
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
@@ -500,6 +496,11 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
+      header['Content-Disposition'] = content_disposition('inline', blob.name)
+
+      # Let Workhorse examine the content and determine the better content disposition
+      header[Gitlab::Workhorse::DETECT_HEADER] = "true"
+
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
@@ -515,7 +516,7 @@ module API
     # `request`. We workaround this by defining methods that returns the right
     # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:request) { ActionDispatch::Request.new(env) }
       self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 
@@ -531,6 +532,12 @@ module API
       return 'only' if params[:archived]
 
       params[:archived]
+    end
+
+    def content_disposition(disposition, filename)
+      disposition += %(; filename=#{filename.inspect}) if filename.present?
+
+      disposition
     end
   end
 end

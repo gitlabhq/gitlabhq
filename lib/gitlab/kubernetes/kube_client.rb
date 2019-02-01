@@ -13,11 +13,22 @@ module Gitlab
     class KubeClient
       include Gitlab::Utils::StrongMemoize
 
-      SUPPORTED_API_GROUPS = [
-        'api',
-        'apis/rbac.authorization.k8s.io',
-        'apis/extensions'
-      ].freeze
+      SUPPORTED_API_GROUPS = {
+        core: { group: 'api', version: 'v1' },
+        rbac: { group: 'apis/rbac.authorization.k8s.io', version: 'v1' },
+        extensions: { group: 'apis/extensions', version: 'v1beta1' },
+        knative: { group: 'apis/serving.knative.dev', version: 'v1alpha1' }
+      }.freeze
+
+      SUPPORTED_API_GROUPS.each do |name, params|
+        client_method_name = "#{name}_client".to_sym
+
+        define_method(client_method_name) do
+          strong_memoize(client_method_name) do
+            build_kubeclient(params[:group], params[:version])
+          end
+        end
+      end
 
       # Core API methods delegates to the core api group client
       delegate :get_pods,
@@ -35,6 +46,7 @@ module Gitlab
         :create_secret,
         :create_service_account,
         :update_config_map,
+        :update_secret,
         :update_service_account,
         to: :core_client
 
@@ -43,6 +55,13 @@ module Gitlab
       delegate :create_cluster_role_binding,
         :get_cluster_role_binding,
         :update_cluster_role_binding,
+        to: :rbac_client
+
+      # RBAC methods delegates to the apis/rbac.authorization.k8s.io api
+      # group client
+      delegate :create_role_binding,
+        :get_role_binding,
+        :update_role_binding,
         to: :rbac_client
 
       # Deployments resource is currently on the apis/extensions api group
@@ -55,48 +74,80 @@ module Gitlab
         :watch_pod_log,
         to: :core_client
 
-      def initialize(api_prefix, api_groups = ['api'], api_version = 'v1', **kubeclient_options)
-        raise ArgumentError unless check_api_groups_supported?(api_groups)
+      attr_reader :api_prefix, :kubeclient_options
 
+      # We disable redirects through 'http_max_redirects: 0',
+      # so that KubeClient does not follow redirects and
+      # expose internal services.
+      def initialize(api_prefix, **kubeclient_options)
         @api_prefix = api_prefix
-        @api_groups = api_groups
-        @api_version = api_version
-        @kubeclient_options = kubeclient_options
+        @kubeclient_options = kubeclient_options.merge(http_max_redirects: 0)
       end
 
-      def discover!
-        clients.each(&:discover)
+      def create_or_update_cluster_role_binding(resource)
+        if cluster_role_binding_exists?(resource)
+          update_cluster_role_binding(resource)
+        else
+          create_cluster_role_binding(resource)
+        end
       end
 
-      def clients
-        hashed_clients.values
+      def create_or_update_role_binding(resource)
+        if role_binding_exists?(resource)
+          update_role_binding(resource)
+        else
+          create_role_binding(resource)
+        end
       end
 
-      def core_client
-        hashed_clients['api']
+      def create_or_update_service_account(resource)
+        if service_account_exists?(resource)
+          update_service_account(resource)
+        else
+          create_service_account(resource)
+        end
       end
 
-      def rbac_client
-        hashed_clients['apis/rbac.authorization.k8s.io']
-      end
-
-      def extensions_client
-        hashed_clients['apis/extensions']
-      end
-
-      def hashed_clients
-        strong_memoize(:hashed_clients) do
-          @api_groups.map do |api_group|
-            api_url = join_api_url(@api_prefix, api_group)
-            [api_group, ::Kubeclient::Client.new(api_url, @api_version, **@kubeclient_options)]
-          end.to_h
+      def create_or_update_secret(resource)
+        if secret_exists?(resource)
+          update_secret(resource)
+        else
+          create_secret(resource)
         end
       end
 
       private
 
-      def check_api_groups_supported?(api_groups)
-        api_groups.all? {|api_group| SUPPORTED_API_GROUPS.include?(api_group) }
+      def cluster_role_binding_exists?(resource)
+        get_cluster_role_binding(resource.metadata.name)
+      rescue ::Kubeclient::ResourceNotFoundError
+        false
+      end
+
+      def role_binding_exists?(resource)
+        get_role_binding(resource.metadata.name, resource.metadata.namespace)
+      rescue ::Kubeclient::ResourceNotFoundError
+        false
+      end
+
+      def service_account_exists?(resource)
+        get_service_account(resource.metadata.name, resource.metadata.namespace)
+      rescue ::Kubeclient::ResourceNotFoundError
+        false
+      end
+
+      def secret_exists?(resource)
+        get_secret(resource.metadata.name, resource.metadata.namespace)
+      rescue ::Kubeclient::ResourceNotFoundError
+        false
+      end
+
+      def build_kubeclient(api_group, api_version)
+        ::Kubeclient::Client.new(
+          join_api_url(api_prefix, api_group),
+          api_version,
+          **kubeclient_options
+        )
       end
 
       def join_api_url(api_prefix, api_path)

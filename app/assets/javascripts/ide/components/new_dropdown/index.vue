@@ -75,17 +75,9 @@ export default {
         class="rounded border-0 d-flex ide-entry-dropdown-toggle"
         @click.stop="openDropdown()"
       >
-        <icon
-          name="ellipsis_v"
-        />
-        <icon
-          name="arrow-down"
-        />
+        <icon name="ellipsis_v" /> <icon name="arrow-down" />
       </button>
-      <ul
-        ref="dropdownMenu"
-        class="dropdown-menu dropdown-menu-right"
-      >
+      <ul ref="dropdownMenu" class="dropdown-menu dropdown-menu-right">
         <template v-if="type === 'tree'">
           <li>
             <item-button
@@ -96,12 +88,7 @@ export default {
               @click="createNewItem('blob')"
             />
           </li>
-          <li>
-            <upload
-              :path="path"
-              @create="createTempEntry"
-            />
-          </li>
+          <li><upload :path="path" @create="createTempEntry" /></li>
           <li>
             <item-button
               :label="__('New directory')"

@@ -38,6 +38,7 @@ describe('BadgeSettings component', () => {
     $(modal).on('shown.bs.modal', () => {
       expect(modal).toContainText('Delete badge?');
       const badgeElement = modal.querySelector('img.project-badge');
+
       expect(badgeElement).not.toBe(null);
       expect(badgeElement.getAttribute('src')).toBe(badge.renderedImageUrl);
 
@@ -53,14 +54,17 @@ describe('BadgeSettings component', () => {
 
   it('displays a form to add a badge', () => {
     const form = vm.$el.querySelector('form:nth-of-type(2)');
+
     expect(form).not.toBe(null);
     const button = form.querySelector('.btn-success');
+
     expect(button).not.toBe(null);
     expect(button).toHaveText(/Add badge/);
   });
 
   it('displays badge list', () => {
     const badgeListElement = vm.$el.querySelector('.card');
+
     expect(badgeListElement).not.toBe(null);
     expect(badgeListElement).toBeVisible();
     expect(badgeListElement).toContainText('Your badges');
@@ -77,17 +81,21 @@ describe('BadgeSettings component', () => {
 
     it('displays a form to edit a badge', () => {
       const form = vm.$el.querySelector('form:nth-of-type(1)');
+
       expect(form).not.toBe(null);
       const submitButton = form.querySelector('.btn-success');
+
       expect(submitButton).not.toBe(null);
       expect(submitButton).toHaveText(/Save changes/);
       const cancelButton = form.querySelector('.btn-cancel');
+
       expect(cancelButton).not.toBe(null);
       expect(cancelButton).toHaveText(/Cancel/);
     });
 
     it('displays no badge list', () => {
       const badgeListElement = vm.$el.querySelector('.card');
+
       expect(badgeListElement).toBeHidden();
     });
   });
@@ -102,6 +110,7 @@ describe('BadgeSettings component', () => {
         deleteButton.click();
 
         const badge = store.state.badgeInModal;
+
         expect(vm.deleteBadge).toHaveBeenCalledWith(badge);
       });
     });

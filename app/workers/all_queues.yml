@@ -10,7 +10,6 @@
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
 - cronjob:remove_expired_members
-- cronjob:remove_old_web_hook_logs
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
@@ -28,6 +27,8 @@
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
+- gcp_cluster:cluster_configure
+- gcp_cluster:cluster_project_configure
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
@@ -43,6 +44,8 @@
 - github_importer:github_import_stage_import_lfs_objects
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
+
+- hashed_storage:hashed_storage_migrator
 
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
@@ -72,15 +75,25 @@
 - pipeline_processing:update_head_pipeline_for_merge_request
 - pipeline_processing:ci_build_schedule
 
+- deployment:deployments_success
+
 - repository_check:repository_check_clear
 - repository_check:repository_check_batch
 - repository_check:repository_check_single_repository
 
 - todos_destroyer:todos_destroyer_confidential_issue
 - todos_destroyer:todos_destroyer_entity_leave
+- todos_destroyer:todos_destroyer_group_private
 - todos_destroyer:todos_destroyer_project_private
 - todos_destroyer:todos_destroyer_private_features
-- todos_destroyer:todos_destroyer_group_private
+
+- object_pool:object_pool_create
+- object_pool:object_pool_schedule_join
+- object_pool:object_pool_join
+- object_pool:object_pool_destroy
+
+- container_repository:delete_container_repository
+- container_repository:cleanup_container_repository
 
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
@@ -88,7 +101,6 @@
 - authorized_projects
 - background_migration
 - create_gpg_signature
-- delete_container_repository
 - delete_merged_branches
 - delete_user
 - email_receiver
@@ -117,10 +129,10 @@
 - propagate_service_template
 - reactive_caching
 - rebase
+- remote_mirror_notification
 - repository_fork
 - repository_import
 - repository_remove_remote
-- storage_migrator
 - system_hook_push
 - update_merge_requests
 - upload_checksum
@@ -129,3 +141,6 @@
 - create_note_diff_file
 - delete_diff_files
 - detect_repository_languages
+- repository_cleanup
+- delete_stored_files
+- import_issues_csv

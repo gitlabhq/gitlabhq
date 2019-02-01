@@ -57,19 +57,19 @@ depends on this column being present while it's running. Normally you'd follow
 these steps in such a case:
 
 1. Stop the GitLab instance
-2. Run the migration removing the column
-3. Start the GitLab instance again
+1. Run the migration removing the column
+1. Start the GitLab instance again
 
 Using post deployment migrations we can instead follow these steps:
 
 1. Deploy a new version of GitLab while ignoring post deployment migrations
-2. Re-run `rake db:migrate` but without the environment variable set
+1. Re-run `rake db:migrate` but without the environment variable set
 
 Here we don't need any downtime as the migration takes place _after_ a new
 version (which doesn't depend on the column anymore) has been deployed.
 
 Some other examples where these migrations are useful:
 
-* Cleaning up data generated due to a bug in GitLab
-* Removing tables
-* Migrating jobs from one Sidekiq queue to another
+- Cleaning up data generated due to a bug in GitLab
+- Removing tables
+- Migrating jobs from one Sidekiq queue to another

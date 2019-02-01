@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
@@ -23,6 +25,8 @@ module Gitlab
         end
 
         @project_members = @tree_hash.delete('project_members')
+
+        RelationRenameService.rename(@tree_hash)
 
         ActiveRecord::Base.uncached do
           ActiveRecord::Base.no_touching do
@@ -103,7 +107,7 @@ module Gitlab
 
       def project_params
         @project_params ||= begin
-          attrs = json_params.merge(override_params)
+          attrs = json_params.merge(override_params).merge(visibility_level)
 
           # Cleaning all imported and overridden params
           Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
@@ -121,6 +125,13 @@ module Gitlab
           # return params that are not 1 to many or 1 to 1 relations
           value.respond_to?(:each) && !Project.column_names.include?(key)
         end
+      end
+
+      def visibility_level
+        level = override_params['visibility_level'] || json_params['visibility_level'] || @project.visibility_level
+        level = @project.group.visibility_level if @project.group && level > @project.group.visibility_level
+
+        { 'visibility_level' => level }
       end
 
       # Given a relation hash containing one or more models and its relationships,
@@ -154,7 +165,7 @@ module Gitlab
           Project.transaction do
             process_sub_relation(relation, relation_item)
 
-            # For every subrelation that hangs from Project, save the associated records alltogether
+            # For every subrelation that hangs from Project, save the associated records altogether
             # This effectively batches all records per subrelation item, only keeping those in memory
             # We have to keep in mind that more batch granularity << Memory, but >> Slowness
             if save
@@ -212,7 +223,7 @@ module Gitlab
       end
 
       def nil_iid_pipeline?(relation_key, relation_item)
-        relation_key == 'pipelines' && relation_item['iid'].nil?
+        relation_key == 'ci_pipelines' && relation_item['iid'].nil?
       end
     end
   end

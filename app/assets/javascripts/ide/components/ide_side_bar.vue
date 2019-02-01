@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters } from 'vuex';
-import { SkeletonLoading } from '@gitlab-org/gitlab-ui';
+import { GlSkeletonLoading } from '@gitlab/ui';
 import IdeTree from './ide_tree.vue';
 import ResizablePanel from './resizable_panel.vue';
 import ActivityBar from './activity_bar.vue';
@@ -13,7 +13,7 @@ import { activityBarViews } from '../constants';
 
 export default {
   components: {
-    SkeletonLoading,
+    GlSkeletonLoading,
     ResizablePanel,
     ActivityBar,
     CommitSection,
@@ -25,11 +25,11 @@ export default {
   },
   computed: {
     ...mapState(['loading', 'currentActivityView', 'changedFiles', 'stagedFiles', 'lastCommitMsg']),
-    ...mapGetters(['currentProject', 'someUncommitedChanges']),
+    ...mapGetters(['currentProject', 'someUncommittedChanges']),
     showSuccessMessage() {
       return (
         this.currentActivityView === activityBarViews.edit &&
-        (this.lastCommitMsg && !this.someUncommitedChanges)
+        (this.lastCommitMsg && !this.someUncommittedChanges)
       );
     },
   },
@@ -37,34 +37,21 @@ export default {
 </script>
 
 <template>
-  <resizable-panel
-    :collapsible="false"
-    :initial-width="340"
-    side="left"
-    class="flex-column"
-  >
+  <resizable-panel :collapsible="false" :initial-width="340" side="left" class="flex-column">
     <template v-if="loading">
       <div class="multi-file-commit-panel-inner">
-        <div
-          v-for="n in 3"
-          :key="n"
-          class="multi-file-loading-container"
-        >
-          <skeleton-loading />
+        <div v-for="n in 3" :key="n" class="multi-file-loading-container">
+          <gl-skeleton-loading />
         </div>
       </div>
     </template>
     <template v-else>
-      <ide-project-header
-        :project="currentProject"
-      />
+      <ide-project-header :project="currentProject" />
       <div class="ide-context-body d-flex flex-fill">
         <activity-bar />
         <div class="multi-file-commit-panel-inner">
           <div class="multi-file-commit-panel-inner-content">
-            <component
-              :is="currentActivityView"
-            />
+            <component :is="currentActivityView" />
           </div>
           <commit-form />
         </div>

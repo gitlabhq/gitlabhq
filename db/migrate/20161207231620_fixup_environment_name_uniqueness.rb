@@ -1,5 +1,4 @@
-class FixupEnvironmentNameUniqueness < ActiveRecord::Migration
-  include Gitlab::Database::ArelMethods
+class FixupEnvironmentNameUniqueness < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true
@@ -42,7 +41,7 @@ class FixupEnvironmentNameUniqueness < ActiveRecord::Migration
 
     conflicts.each do |id, name|
       update_sql =
-        arel_update_manager
+        Arel::UpdateManager.new
           .table(environments)
           .set(environments[:name] => name + "-" + id.to_s)
           .where(environments[:id].eq(id))

@@ -17,6 +17,9 @@ module Banzai
     # This is a small extension to the CommonMark spec.  If they start allowing
     # spaces in urls, we could then remove this filter.
     #
+    # Note: Filter::SanitizationFilter should always be run sometime after this filter
+    # to prevent XSS attacks
+    #
     class SpacedLinkFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
 
@@ -70,7 +73,8 @@ module Banzai
         html = Banzai::Filter::MarkdownFilter.call(transform_markdown(match), context)
 
         # link is wrapped in a <p>, so strip that off
-        html.sub('<p>', '').chomp('</p>')
+        p_node = Nokogiri::HTML.fragment(html).at_css('p')
+        p_node ? p_node.children.to_html : html
       end
 
       def spaced_link_filter(text)

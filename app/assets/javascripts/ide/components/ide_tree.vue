@@ -34,12 +34,8 @@ export default {
 </script>
 
 <template>
-  <ide-tree-list
-    viewer-type="editor"
-  >
-    <template
-      slot="header"
-    >
+  <ide-tree-list viewer-type="editor">
+    <template slot="header">
       {{ __('Edit') }}
       <div class="ide-tree-actions ml-auto d-flex">
         <new-entry-button

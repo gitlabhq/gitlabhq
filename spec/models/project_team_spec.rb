@@ -178,6 +178,21 @@ describe ProjectTeam do
     end
   end
 
+  describe '#members_in_project_and_ancestors' do
+    context 'group project' do
+      it 'filters out users who are not members of the project' do
+        group = create(:group)
+        project = create(:project, group: group)
+        group_member = create(:group_member, group: group)
+        old_user = create(:user)
+
+        ProjectAuthorization.create!(project: project, user: old_user, access_level: Gitlab::Access::GUEST)
+
+        expect(project.team.members_in_project_and_ancestors).to contain_exactly(group_member.user)
+      end
+    end
+  end
+
   describe "#human_max_access" do
     it 'returns Maintainer role' do
       user = create(:user)

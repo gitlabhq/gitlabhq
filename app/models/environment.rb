@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Environment < ActiveRecord::Base
+  include Gitlab::Utils::StrongMemoize
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'
   NUMBERS = '0'..'9'
@@ -8,9 +9,9 @@ class Environment < ActiveRecord::Base
 
   belongs_to :project, required: true
 
-  has_many :deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :deployments, -> { success }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
-  has_one :last_deployment, -> { order('deployments.id DESC') }, class_name: 'Deployment'
+  has_one :last_deployment, -> { success.order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -50,6 +51,7 @@ class Environment < ActiveRecord::Base
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
   scope :for_project, -> (project) { where(project_id: project) }
+  scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
 
   state_machine :state, initial: :available do
     event :start do
@@ -149,7 +151,7 @@ class Environment < ActiveRecord::Base
   end
 
   def has_metrics?
-    prometheus_adapter&.can_query? && available? && last_deployment.present?
+    prometheus_adapter&.can_query? && available?
   end
 
   def metrics
@@ -230,7 +232,9 @@ class Environment < ActiveRecord::Base
   end
 
   def deployment_platform
-    project.deployment_platform(environment: self.name)
+    strong_memoize(:deployment_platform) do
+      project.deployment_platform(environment: self.name)
+    end
   end
 
   private

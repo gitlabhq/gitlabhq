@@ -24,7 +24,7 @@ module ProjectForksHelper
       allow(service).to receive(:gitlab_shell).and_return(shell)
     end
 
-    forked_project = service.execute
+    forked_project = service.execute(params[:target_project])
 
     # Reload the both projects so they know about their newly created fork_network
     if forked_project.persisted?
@@ -35,7 +35,7 @@ module ProjectForksHelper
     if create_repository
       # The call to project.repository.after_import in RepositoryForkWorker does
       # not reset the @exists variable of this forked_project.repository
-      # so we have to explicitely call this method to clear the @exists variable.
+      # so we have to explicitly call this method to clear the @exists variable.
       # of the instance we're returning here.
       forked_project.repository.after_import
     end

@@ -1,30 +1,7 @@
+# frozen_string_literal: true
+
 module Gitlab
   class SearchResults
-    class FoundBlob
-      include EncodingHelper
-
-      attr_reader :id, :filename, :basename, :ref, :startline, :data, :project_id
-
-      def initialize(opts = {})
-        @id = opts.fetch(:id, nil)
-        @filename = encode_utf8(opts.fetch(:filename, nil))
-        @basename = encode_utf8(opts.fetch(:basename, nil))
-        @ref = opts.fetch(:ref, nil)
-        @startline = opts.fetch(:startline, nil)
-        @data = encode_utf8(opts.fetch(:data, nil))
-        @per_page = opts.fetch(:per_page, 20)
-        @project_id = opts.fetch(:project_id, nil)
-      end
-
-      def path
-        filename
-      end
-
-      def no_highlighting?
-        false
-      end
-    end
-
     attr_reader :current_user, :query, :per_page
 
     # Limit search results by passed projects

@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
-class Namespace < ActiveRecord::Base
+class Namespace < ApplicationRecord
   include CacheMarkdownField
   include Sortable
-  include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   include Routable
   include AfterCommitQueue
@@ -83,7 +82,7 @@ class Namespace < ActiveRecord::Base
       find_by('lower(path) = :value', value: path.downcase)
     end
 
-    # Case insensetive search for namespace by path or name
+    # Case insensitive search for namespace by path or name
     def find_by_path_or_name(path)
       find_by("lower(path) = :path OR lower(name) = :path", path: path.downcase)
     end
@@ -176,44 +175,44 @@ class Namespace < ActiveRecord::Base
 
   # Returns all ancestors, self, and descendants of the current namespace.
   def self_and_hierarchy
-    Gitlab::GroupHierarchy
+    Gitlab::ObjectHierarchy
       .new(self.class.where(id: id))
-      .all_groups
+      .all_objects
   end
 
   # Returns all the ancestors of the current namespaces.
   def ancestors
     return self.class.none unless parent_id
 
-    Gitlab::GroupHierarchy
+    Gitlab::ObjectHierarchy
       .new(self.class.where(id: parent_id))
       .base_and_ancestors
   end
 
-  # returns all ancestors upto but excluding the the given namespace
+  # returns all ancestors upto but excluding the given namespace
   # when no namespace is given, all ancestors upto the top are returned
-  def ancestors_upto(top = nil)
-    Gitlab::GroupHierarchy.new(self.class.where(id: id))
-      .ancestors(upto: top)
+  def ancestors_upto(top = nil, hierarchy_order: nil)
+    Gitlab::ObjectHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
 
   def self_and_ancestors
     return self.class.where(id: id) unless parent_id
 
-    Gitlab::GroupHierarchy
+    Gitlab::ObjectHierarchy
       .new(self.class.where(id: id))
       .base_and_ancestors
   end
 
   # Returns all the descendants of the current namespace.
   def descendants
-    Gitlab::GroupHierarchy
+    Gitlab::ObjectHierarchy
       .new(self.class.where(parent_id: id))
       .base_and_descendants
   end
 
   def self_and_descendants
-    Gitlab::GroupHierarchy
+    Gitlab::ObjectHierarchy
       .new(self.class.where(id: id))
       .base_and_descendants
   end
@@ -232,12 +231,18 @@ class Namespace < ActiveRecord::Base
     Project.inside_path(full_path)
   end
 
+  # Includes pipelines from this namespace and pipelines from all subgroups
+  # that belongs to this namespace
+  def all_pipelines
+    Ci::Pipeline.where(project: all_projects)
+  end
+
   def has_parent?
     parent.present?
   end
 
   def root_ancestor
-    ancestors.reorder(nil).find_by(parent_id: nil)
+    self_and_ancestors.reorder(nil).find_by(parent_id: nil)
   end
 
   def subgroup?
@@ -288,7 +293,7 @@ class Namespace < ActiveRecord::Base
   end
 
   def force_share_with_group_lock_on_descendants
-    return unless Group.supports_nested_groups?
+    return unless Group.supports_nested_objects?
 
     # We can't use `descendants.update_all` since Rails will throw away the WITH
     # RECURSIVE statement. We also can't use WHERE EXISTS since we can't use
@@ -301,6 +306,7 @@ class Namespace < ActiveRecord::Base
   def write_projects_repository_config
     all_projects.find_each do |project|
       project.write_repository_config
+      project.track_project_repository
     end
   end
 end

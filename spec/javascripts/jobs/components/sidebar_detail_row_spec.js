@@ -33,9 +33,9 @@ describe('Sidebar detail row', () => {
   });
 
   it('should render provided title and value', () => {
-    expect(
-      vm.$el.textContent.replace(/\s+/g, ' ').trim(),
-    ).toEqual('this is the title: this is the value');
+    expect(vm.$el.textContent.replace(/\s+/g, ' ').trim()).toEqual(
+      'this is the title: this is the value',
+    );
   });
 
   describe('when helpUrl not provided', () => {

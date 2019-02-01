@@ -60,7 +60,7 @@ Let's consider the following scenario:
    hosted in private repositories and you have multiple CI jobs that make use
    of these repositories.
 
-2. You invite a new [external user][ext]. CI jobs created by that user do not
+1. You invite a new [external user][ext]. CI jobs created by that user do not
    have access to internal repositories, because the user also doesn't have the
    access from within GitLab. You as an employee have to grant explicit access
    for this user. This allows us to prevent from accidental data leakage.
@@ -238,6 +238,6 @@ test:
 [triggers]: ../../ci/triggers/README.md
 [update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
-[jobenv]: ../../ci/variables/README.md#predefined-variables-environment-variables
+[jobenv]: ../../ci/variables/README.md#predefined-environment-variables
 [2fa]: ../profile/account/two_factor_authentication.md
 [pat]: ../profile/personal_access_tokens.md

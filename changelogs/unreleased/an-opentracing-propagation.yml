@@ -1,0 +1,5 @@
+---
+title: Adds inter-service OpenTracing propagation
+merge_request: 24239
+author:
+type: other

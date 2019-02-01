@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class Blame
     attr_accessor :blob, :commit
@@ -41,8 +43,7 @@ module Gitlab
 
     def highlighted_lines
       @blob.load_all_data!
-      @highlighted_lines ||=
-        Gitlab::Highlight.highlight(@blob.path, @blob.data, repository: repository).lines
+      @highlighted_lines ||= @blob.present.highlight.lines
     end
 
     def project

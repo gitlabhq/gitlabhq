@@ -22,8 +22,10 @@ export default {
       if (isDiscussion && isInMRPage()) {
         noteData.resolvable = note.resolvable;
         noteData.resolved = false;
+        noteData.active = true;
         noteData.resolve_path = note.resolve_path;
         noteData.resolve_with_issue_path = note.resolve_with_issue_path;
+        noteData.diff_discussion = false;
       }
 
       state.discussions.push(noteData);
@@ -97,33 +99,39 @@ export default {
   },
 
   [types.SET_INITIAL_DISCUSSIONS](state, discussionsData) {
-    const discussions = [];
+    const discussions = discussionsData.reduce((acc, d) => {
+      const discussion = { ...d };
+      const diffData = {};
 
-    discussionsData.forEach(discussion => {
       if (discussion.diff_file) {
-        Object.assign(discussion, {
-          fileHash: discussion.diff_file.file_hash,
-          truncated_diff_lines: discussion.truncated_diff_lines || [],
-        });
+        diffData.file_hash = discussion.diff_file.file_hash;
+
+        diffData.truncated_diff_lines = utils.prepareDiffLines(
+          discussion.truncated_diff_lines || [],
+        );
       }
 
       // To support legacy notes, should be very rare case.
       if (discussion.individual_note && discussion.notes.length > 1) {
         discussion.notes.forEach(n => {
-          discussions.push({
+          acc.push({
             ...discussion,
+            ...diffData,
             notes: [n], // override notes array to only have one item to mimick individual_note
           });
         });
       } else {
         const oldNote = utils.findNoteObjectById(state.discussions, discussion.id);
 
-        discussions.push({
+        acc.push({
           ...discussion,
+          ...diffData,
           expanded: oldNote ? oldNote.expanded : discussion.expanded,
         });
       }
-    });
+
+      return acc;
+    }, []);
 
     Object.assign(state, { discussions });
   },
@@ -174,9 +182,11 @@ export default {
     }
   },
 
-  [types.TOGGLE_DISCUSSION](state, { discussionId }) {
+  [types.TOGGLE_DISCUSSION](state, { discussionId, forceExpanded = null }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-    Object.assign(discussion, { expanded: !discussion.expanded });
+    Object.assign(discussion, {
+      expanded: forceExpanded === null ? !discussion.expanded : forceExpanded,
+    });
   },
 
   [types.UPDATE_NOTE](state, note) {
@@ -190,12 +200,25 @@ export default {
     }
   },
 
+  [types.APPLY_SUGGESTION](state, { noteId, discussionId, suggestionId }) {
+    const noteObj = utils.findNoteObjectById(state.discussions, discussionId);
+    const comment = utils.findNoteObjectById(noteObj.notes, noteId);
+
+    comment.suggestions = comment.suggestions.map(suggestion => ({
+      ...suggestion,
+      applied: suggestion.applied || suggestion.id === suggestionId,
+      appliable: false,
+    }));
+  },
+
   [types.UPDATE_DISCUSSION](state, noteData) {
     const note = noteData;
     const selectedDiscussion = state.discussions.find(disc => disc.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
     if (note.diff_file) {
-      Object.assign(note, { fileHash: note.diff_file.file_hash });
+      Object.assign(note, {
+        file_hash: note.diff_file.file_hash,
+      });
     }
     Object.assign(selectedDiscussion, { ...note });
   },
@@ -216,9 +239,29 @@ export default {
     Object.assign(state, { isNotesFetched: value });
   },
 
+  [types.SET_NOTES_LOADING_STATE](state, value) {
+    state.isLoading = value;
+  },
+
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
 
-    discussion.truncated_diff_lines = diffLines;
+    discussion.truncated_diff_lines = utils.prepareDiffLines(diffLines);
+  },
+
+  [types.DISABLE_COMMENTS](state, value) {
+    state.commentsDisabled = value;
+  },
+  [types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS](state) {
+    state.resolvableDiscussionsCount = state.discussions.filter(
+      discussion => !discussion.individual_note && discussion.resolvable,
+    ).length;
+    state.unresolvedDiscussionsCount = state.discussions.filter(
+      discussion =>
+        !discussion.individual_note &&
+        discussion.resolvable &&
+        discussion.notes.some(note => note.resolvable && !note.resolved),
+    ).length;
+    state.hasUnresolvedDiscussions = state.unresolvedDiscussionsCount > 1;
   },
 };

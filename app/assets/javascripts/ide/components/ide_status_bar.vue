@@ -79,14 +79,8 @@ export default {
 
 <template>
   <footer class="ide-status-bar">
-    <div
-      v-if="lastCommit"
-      class="ide-status-branch"
-    >
-      <span
-        v-if="latestPipeline && latestPipeline.details"
-        class="ide-status-pipeline"
-      >
+    <div v-if="lastCommit" class="ide-status-branch">
+      <span v-if="latestPipeline && latestPipeline.details" class="ide-status-pipeline">
         <button
           type="button"
           class="p-0 border-0 h-50"
@@ -99,23 +93,28 @@ export default {
           />
         </button>
         Pipeline
-        <a
-          :href="latestPipeline.details.status.details_path"
-          class="monospace">#{{ latestPipeline.id }}</a>
-        {{ latestPipeline.details.status.text }}
-        for
+        <a :href="latestPipeline.details.status.details_path" class="monospace"
+          >#{{ latestPipeline.id }}</a
+        >
+        {{ latestPipeline.details.status.text }} for
       </span>
 
-      <icon
-        name="commit"
-      />
+      <icon name="commit" />
       <a
         v-tooltip
         :title="lastCommit.message"
         :href="getCommitPath(lastCommit.short_id)"
         class="commit-sha"
-      >{{ lastCommit.short_id }}</a>
+        >{{ lastCommit.short_id }}</a
+      >
       by
+      <user-avatar-image
+        css-classes="ide-status-avatar"
+        :size="18"
+        :img-src="latestPipeline && latestPipeline.commit.author_gravatar_url"
+        :img-alt="lastCommit.author_name"
+        :tooltip-text="lastCommit.author_name"
+      />
       {{ lastCommit.author_name }}
       <time
         v-tooltip
@@ -123,32 +122,14 @@ export default {
         :title="tooltipTitle(lastCommit.committed_date)"
         data-placement="top"
         data-container="body"
+        >{{ lastCommitFormatedAge }}</time
       >
-        {{ lastCommitFormatedAge }}
-      </time>
     </div>
-    <div
-      v-if="file"
-      class="ide-status-file"
-    >
-      {{ file.name }}
-    </div>
-    <div
-      v-if="file"
-      class="ide-status-file"
-    >
-      {{ file.eol }}
-    </div>
-    <div
-      v-if="file && !file.binary"
-      class="ide-status-file">
+    <div v-if="file" class="ide-status-file">{{ file.name }}</div>
+    <div v-if="file" class="ide-status-file">{{ file.eol }}</div>
+    <div v-if="file && !file.binary" class="ide-status-file">
       {{ file.editorRow }}:{{ file.editorColumn }}
     </div>
-    <div
-      v-if="file"
-      class="ide-status-file"
-    >
-      {{ file.fileLanguage }}
-    </div>
+    <div v-if="file" class="ide-status-file">{{ file.fileLanguage }}</div>
   </footer>
 </template>

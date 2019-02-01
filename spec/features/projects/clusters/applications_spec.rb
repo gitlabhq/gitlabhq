@@ -48,9 +48,9 @@ describe 'Clusters Applications', :js do
 
         it 'they see status transition' do
           page.within('.js-cluster-application-row-helm') do
-            # FE sends request and gets the response, then the buttons is "Install"
+            # FE sends request and gets the response, then the buttons is "Installing"
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
             wait_until_helm_created!
 
@@ -67,6 +67,72 @@ describe 'Clusters Applications', :js do
           end
 
           expect(page).to have_content('Helm Tiller was successfully installed on your Kubernetes cluster')
+        end
+      end
+
+      context 'when user installs Knative' do
+        before do
+          create(:clusters_applications_helm, :installed, cluster: cluster)
+        end
+
+        context 'on an abac cluster' do
+          let(:cluster) { create(:cluster, :provided_by_gcp, :rbac_disabled, projects: [project])}
+
+          it 'should show info block and not be installable' do
+            page.within('.js-cluster-application-row-knative') do
+              expect(page).to have_css('.bs-callout-info')
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+            end
+          end
+        end
+
+        context 'on an rbac cluster' do
+          let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project])}
+
+          it 'should not show callout block and be installable' do
+            page.within('.js-cluster-application-row-knative') do
+              expect(page).not_to have_css('.bs-callout-info')
+              expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
+            end
+          end
+        end
+      end
+
+      context 'when user installs Cert Manager' do
+        before do
+          allow(ClusterInstallAppWorker).to receive(:perform_async)
+          allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+          allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+
+          create(:clusters_applications_helm, :installed, cluster: cluster)
+
+          page.within('.js-cluster-application-row-cert_manager') do
+            click_button 'Install'
+          end
+        end
+
+        it 'shows status transition' do
+          def email_form_value
+            page.find('.js-email').value
+          end
+
+          page.within('.js-cluster-application-row-cert_manager') do
+            expect(email_form_value).to eq(cluster.user.email)
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+            page.find('.js-email').set("new_email@example.org")
+            Clusters::Cluster.last.application_cert_manager.make_installing!
+
+            expect(email_form_value).to eq('new_email@example.org')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+            Clusters::Cluster.last.application_cert_manager.make_installed!
+
+            expect(email_form_value).to eq('new_email@example.org')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
+          end
+
+          expect(page).to have_content('Cert-Manager was successfully installed on your Kubernetes cluster')
         end
       end
 
@@ -87,9 +153,9 @@ describe 'Clusters Applications', :js do
 
           it 'they see status transition' do
             page.within('.js-cluster-application-row-ingress') do
-              # FE sends request and gets the response, then the buttons is "Install"
+              # FE sends request and gets the response, then the buttons is "Installing"
               expect(page).to have_css('.js-cluster-application-install-button[disabled]')
-              expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
+              expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
               Clusters::Cluster.last.application_ingress.make_installing!
 

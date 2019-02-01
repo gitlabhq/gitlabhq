@@ -42,7 +42,7 @@ export default Vue.extend({
       required: true,
     },
   },
-  data () {
+  data() {
     return {
       detailIssue: boardsStore.detail,
       filter: boardsStore.filter,
@@ -53,26 +53,28 @@ export default Vue.extend({
       const { issuesSize } = this.list;
       return `${n__('%d issue', '%d issues', issuesSize)}`;
     },
+    isNewIssueShown() {
+      return this.list.type === 'backlog' || (!this.disabled && this.list.type !== 'closed');
+    },
   },
   watch: {
     filter: {
       handler() {
         this.list.page = 1;
-        this.list.getIssues(true)
-          .catch(() => {
-            // TODO: handle request error
-          });
+        this.list.getIssues(true).catch(() => {
+          // TODO: handle request error
+        });
       },
       deep: true,
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.sortableOptions = getBoardSortableDefaultOptions({
       disabled: this.disabled,
       group: 'boards',
       draggable: '.is-draggable',
       handle: '.js-board-handle',
-      onEnd: (e) => {
+      onEnd: e => {
         sortableEnd();
 
         if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
@@ -83,14 +85,15 @@ export default Vue.extend({
             boardsStore.moveList(list, order);
           });
         }
-      }
+      },
     });
 
     this.sortable = Sortable.create(this.$el.parentNode, this.sortableOptions);
   },
   created() {
     if (this.list.isExpandable && AccessorUtilities.isLocalStorageAccessSafe()) {
-      const isCollapsed = localStorage.getItem(`boards.${this.boardId}.${this.list.type}.expanded`) === 'false';
+      const isCollapsed =
+        localStorage.getItem(`boards.${this.boardId}.${this.list.type}.expanded`) === 'false';
 
       this.list.isExpanded = !isCollapsed;
     }
@@ -104,7 +107,10 @@ export default Vue.extend({
         this.list.isExpanded = !this.list.isExpanded;
 
         if (AccessorUtilities.isLocalStorageAccessSafe()) {
-          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+          localStorage.setItem(
+            `boards.${this.boardId}.${this.list.type}.expanded`,
+            this.list.isExpanded,
+          );
         }
       }
     },

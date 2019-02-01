@@ -19,13 +19,15 @@ module MergeRequests
       result = CreateBranchService.new(project, current_user).execute(branch_name, ref)
       return result if result[:status] == :error
 
-      SystemNoteService.new_issue_branch(issue, project, current_user, branch_name)
-
       new_merge_request = create(merge_request)
 
       if new_merge_request.valid?
+        SystemNoteService.new_merge_request(issue, project, current_user, new_merge_request)
+
         success(new_merge_request)
       else
+        SystemNoteService.new_issue_branch(issue, project, current_user, branch_name)
+
         error(new_merge_request.errors)
       end
     end

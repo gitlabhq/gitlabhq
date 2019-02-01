@@ -3,7 +3,7 @@ import _ from 'underscore';
 import SmartInterval from '~/smart_interval';
 import waitForPromises from 'spec/helpers/wait_for_promises';
 
-describe('SmartInterval', function () {
+describe('SmartInterval', function() {
   const DEFAULT_MAX_INTERVAL = 100;
   const DEFAULT_STARTING_INTERVAL = 5;
   const DEFAULT_SHORT_TIMEOUT = 75;
@@ -35,8 +35,8 @@ describe('SmartInterval', function () {
     jasmine.clock().uninstall();
   });
 
-  describe('Increment Interval', function () {
-    it('should increment the interval delay', (done) => {
+  describe('Increment Interval', function() {
+    it('should increment the interval delay', done => {
       const smartInterval = createDefaultSmartInterval();
 
       jasmine.clock().tick(DEFAULT_SHORT_TIMEOUT);
@@ -45,8 +45,8 @@ describe('SmartInterval', function () {
         .then(() => {
           const intervalConfig = smartInterval.cfg;
           const iterationCount = 4;
-          const maxIntervalAfterIterations = intervalConfig.startingInterval *
-            (intervalConfig.incrementByFactorOf ** iterationCount);
+          const maxIntervalAfterIterations =
+            intervalConfig.startingInterval * intervalConfig.incrementByFactorOf ** iterationCount;
           const currentInterval = smartInterval.getCurrentInterval();
 
           // Provide some flexibility for performance of testing environment
@@ -57,7 +57,7 @@ describe('SmartInterval', function () {
         .catch(done.fail);
     });
 
-    it('should not increment past maxInterval', (done) => {
+    it('should not increment past maxInterval', done => {
       const smartInterval = createDefaultSmartInterval({ maxInterval: DEFAULT_STARTING_INTERVAL });
 
       jasmine.clock().tick(DEFAULT_STARTING_INTERVAL);
@@ -66,6 +66,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           const currentInterval = smartInterval.getCurrentInterval();
+
           expect(currentInterval).toBe(smartInterval.cfg.maxInterval);
         })
         .then(done)
@@ -82,6 +83,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           const oneInterval = smartInterval.cfg.startingInterval * DEFAULT_INCREMENT_FACTOR;
+
           expect(smartInterval.getCurrentInterval()).toEqual(oneInterval);
         })
         .then(done)
@@ -89,12 +91,12 @@ describe('SmartInterval', function () {
     });
   });
 
-  describe('Public methods', function () {
-    beforeEach(function () {
+  describe('Public methods', function() {
+    beforeEach(function() {
       this.smartInterval = createDefaultSmartInterval();
     });
 
-    it('should cancel an interval', function (done) {
+    it('should cancel an interval', function(done) {
       const interval = this.smartInterval;
 
       jasmine.clock().tick(DEFAULT_SHORT_TIMEOUT);
@@ -114,7 +116,7 @@ describe('SmartInterval', function () {
         .catch(done.fail);
     });
 
-    it('should resume an interval', function (done) {
+    it('should resume an interval', function(done) {
       const interval = this.smartInterval;
 
       jasmine.clock().tick(DEFAULT_SHORT_TIMEOUT);
@@ -126,6 +128,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           const { intervalId } = interval.state;
+
           expect(intervalId).toBeTruthy();
         })
         .then(done)
@@ -133,15 +136,15 @@ describe('SmartInterval', function () {
     });
   });
 
-  describe('DOM Events', function () {
-    beforeEach(function () {
+  describe('DOM Events', function() {
+    beforeEach(function() {
       // This ensures DOM and DOM events are initialized for these specs.
       setFixtures('<div></div>');
 
       this.smartInterval = createDefaultSmartInterval();
     });
 
-    it('should pause when page is not visible', function (done) {
+    it('should pause when page is not visible', function(done) {
       const interval = this.smartInterval;
 
       jasmine.clock().tick(DEFAULT_SHORT_TIMEOUT);
@@ -168,8 +171,10 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           expect(interval.state.intervalId).toBeTruthy();
-          expect(interval.getCurrentInterval() >= DEFAULT_STARTING_INTERVAL &&
-            interval.getCurrentInterval() <= DEFAULT_MAX_INTERVAL).toBeTruthy();
+          expect(
+            interval.getCurrentInterval() >= DEFAULT_STARTING_INTERVAL &&
+              interval.getCurrentInterval() <= DEFAULT_MAX_INTERVAL,
+          ).toBeTruthy();
 
           // simulates triggering of visibilitychange event
           interval.handleVisibilityChange({ target: { visibilityState: 'hidden' } });
@@ -181,7 +186,7 @@ describe('SmartInterval', function () {
         .catch(done.fail);
     });
 
-    it('should resume when page is becomes visible at the previous interval', function (done) {
+    it('should resume when page is becomes visible at the previous interval', function(done) {
       const interval = this.smartInterval;
 
       jasmine.clock().tick(DEFAULT_SHORT_TIMEOUT);
@@ -204,7 +209,7 @@ describe('SmartInterval', function () {
         .catch(done.fail);
     });
 
-    it('should cancel on page unload', function (done) {
+    it('should cancel on page unload', function(done) {
       const interval = this.smartInterval;
 
       jasmine.clock().tick(DEFAULT_SHORT_TIMEOUT);
@@ -212,6 +217,7 @@ describe('SmartInterval', function () {
       waitForPromises()
         .then(() => {
           $(document).triggerHandler('beforeunload');
+
           expect(interval.state.intervalId).toBeUndefined();
           expect(interval.getCurrentInterval()).toBe(interval.cfg.startingInterval);
         })
@@ -219,8 +225,9 @@ describe('SmartInterval', function () {
         .catch(done.fail);
     });
 
-    it('should execute callback before first interval', function () {
+    it('should execute callback before first interval', function() {
       const interval = createDefaultSmartInterval({ immediateExecution: true });
+
       expect(interval.cfg.immediateExecution).toBeFalsy();
     });
   });

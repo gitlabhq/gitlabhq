@@ -74,6 +74,7 @@ describe 'gitlab:app namespace rake task' do
       it 'invokes restoration on match' do
         allow(YAML).to receive(:load_file)
           .and_return({ gitlab_version: gitlab_version })
+
         expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:db:restore']).to receive(:invoke)
         expect(Rake::Task['gitlab:backup:repo:restore']).to receive(:invoke)
@@ -251,7 +252,7 @@ describe 'gitlab:app namespace rake task' do
 
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
-        # Avoid asking gitaly about the root ref (which will fail beacuse of the
+        # Avoid asking gitaly about the root ref (which will fail because of the
         # mocked storages)
         allow_any_instance_of(Repository).to receive(:empty?).and_return(false)
       end

@@ -13,15 +13,9 @@ describe BitbucketServer::Client do
     let(:path) { "/projects/#{project}/repos/#{repo_slug}/pull-requests?state=ALL" }
 
     it 'requests a collection' do
-      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :pull_request)
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :pull_request, page_offset: 0, limit: nil)
 
       subject.pull_requests(project, repo_slug)
-    end
-
-    it 'throws an exception when connection fails' do
-      allow(BitbucketServer::Collection).to receive(:new).and_raise(OpenSSL::SSL::SSLError)
-
-      expect { subject.pull_requests(project, repo_slug) }.to raise_error(described_class::ServerError)
     end
   end
 
@@ -29,7 +23,7 @@ describe BitbucketServer::Client do
     let(:path) { "/projects/#{project}/repos/#{repo_slug}/pull-requests/1/activities" }
 
     it 'requests a collection' do
-      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :activity)
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :activity, page_offset: 0, limit: nil)
 
       subject.activities(project, repo_slug, 1)
     end
@@ -52,9 +46,15 @@ describe BitbucketServer::Client do
     let(:path) { "/repos" }
 
     it 'requests a collection' do
-      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :repo)
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :repo, page_offset: 0, limit: nil)
 
       subject.repos
+    end
+
+    it 'requests a collection with an offset and limit' do
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :repo, page_offset: 10, limit: 25)
+
+      subject.repos(page_offset: 10, limit: 25)
     end
   end
 

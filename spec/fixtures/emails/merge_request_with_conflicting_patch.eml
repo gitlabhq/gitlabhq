@@ -1,0 +1,45 @@
+From: "Jake the Dog" <jake@adventuretime.ooo>
+To: incoming+gitlabhq-gitlabhq-project_id-auth_token-merge-request@appmail.adventuretime.ooo
+Subject: feature
+Date: Wed, 31 Oct 2018 17:27:52 +0100
+X-Mailer: MailMate (1.12r5523)
+Message-ID: <7BE7C2E6-F0D9-4C85-9F55-B2A4BA01BFEC@gitlab.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="=_MailMate_D2C4B06A-4F8D-4AAB-B247-C507E35AAED6_="
+
+--=_MailMate_D2C4B06A-4F8D-4AAB-B247-C507E35AAED6_=
+
+This does not apply
+
+--=_MailMate_D2C4B06A-4F8D-4AAB-B247-C507E35AAED6_=
+Content-Disposition: attachment;
+ filename=0002-This-does-not-apply-to-the-feature-branch.patch
+Content-Transfer-Encoding: quoted-printable
+
+=46rom 00c68c2b4f954370ce82a1162bc29c13f524897e Mon Sep 17 00:00:00 2001
+From: Patch user <patchuser@gitlab.org>
+Date: Mon, 22 Oct 2018 11:05:48 +0200
+Subject: [PATCH] This does not apply to the `feature` branch
+
+---
+ files/ruby/feature.rb | 5 +++++
+ 1 file changed, 5 insertions(+)
+ create mode 100644 files/ruby/feature.rb
+
+diff --git a/files/ruby/feature.rb b/files/ruby/feature.rb
+new file mode 100644
+index 0000000..fef26e4
+--- /dev/null
++++ b/files/ruby/feature.rb
+@@ -0,0 +1,5 @@
++class Feature
++  def bar
++    puts 'foo'
++  end
++end
+-- =
+
+2.19.1
+
+--=_MailMate_D2C4B06A-4F8D-4AAB-B247-C507E35AAED6_=--

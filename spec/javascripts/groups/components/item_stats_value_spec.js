@@ -29,11 +29,13 @@ describe('ItemStatsValueComponent', () => {
     describe('isValuePresent', () => {
       it('returns true if non-empty `value` is present', () => {
         vm = createComponent(Object.assign({}, itemConfig, { value: 10 }));
+
         expect(vm.isValuePresent).toBeTruthy();
       });
 
       it('returns false if empty `value` is present', () => {
         vm = createComponent(itemConfig);
+
         expect(vm.isValuePresent).toBeFalsy();
       });
 

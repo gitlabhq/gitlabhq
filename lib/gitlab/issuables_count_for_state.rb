@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # Class for counting and caching the number of issuables per state.
   class IssuablesCountForState

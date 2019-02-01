@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -6,8 +8,8 @@ module Gitlab
         # This class represents a global entry - root Entry for entire
         # GitLab CI Configuration file.
         #
-        class Global < Node
-          include Configurable
+        class Global < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Configurable
 
           entry :before_script, Entry::Script,
             description: 'Script that will be executed before each job.'
@@ -47,7 +49,7 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def compose_jobs!
-            factory = Entry::Factory.new(Entry::Jobs)
+            factory = ::Gitlab::Config::Entry::Factory.new(Entry::Jobs)
               .value(@config.except(*self.class.nodes.keys))
               .with(key: :jobs, parent: self,
                     description: 'Jobs definition for this pipeline')

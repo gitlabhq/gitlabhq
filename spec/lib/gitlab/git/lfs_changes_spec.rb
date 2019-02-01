@@ -15,5 +15,9 @@ describe Gitlab::Git::LfsChanges do
     it 'limits new_objects using object_limit' do
       expect(subject.new_pointers(object_limit: 1)).to eq([])
     end
+
+    it 'times out if given a small dynamic timeout' do
+      expect { subject.new_pointers(dynamic_timeout: 0.001) }.to raise_error(GRPC::DeadlineExceeded)
+    end
   end
 end

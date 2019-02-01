@@ -1,5 +1,0 @@
----
-title: Fix caching issue with pipelines URL
-merge_request: 22293
-author:
-type: fixed

@@ -14,7 +14,9 @@
 #     project_id: integer
 #     milestone_title: string
 #     author_id: integer
-#     assignee_id: integer
+#     author_username: string
+#     assignee_id: integer or 'None' or 'Any'
+#     assignee_username: string
 #     search: string
 #     label_name: string
 #     sort: string
@@ -25,15 +27,21 @@
 #     created_before: datetime
 #     updated_after: datetime
 #     updated_before: datetime
-#     use_cte_for_search: boolean
+#     attempt_group_search_optimizations: boolean
 #
 class IssuableFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
   include CreatedAtFilter
+  include Gitlab::Utils::StrongMemoize
 
   requires_cross_project_access unless: -> { project? }
 
+  # This is used as a common filter for None / Any
+  FILTER_NONE = 'none'.freeze
+  FILTER_ANY = 'any'.freeze
+
+  # This is accepted as a deprecated filter and is also used in unassigning users
   NONE = '0'.freeze
 
   attr_accessor :current_user, :params
@@ -44,25 +52,15 @@ class IssuableFinder
       assignee_username
       author_id
       author_username
-      authorized_only
-      group_id
-      iids
       label_name
       milestone_title
       my_reaction_emoji
-      non_archived
-      project_id
-      scope
       search
-      sort
-      state
-      include_subgroups
-      use_cte_for_search
     ]
   end
 
   def self.array_params
-    @array_params ||= { label_name: [], iids: [], assignee_username: [] }
+    @array_params ||= { label_name: [], assignee_username: [] }
   end
 
   def self.valid_params
@@ -78,8 +76,9 @@ class IssuableFinder
     items = init_collection
     items = filter_items(items)
 
-    # This has to be last as we may use a CTE as an optimization fence by
-    # passing the use_cte_for_search param
+    # This has to be last as we may use a CTE as an optimization fence
+    # by passing the attempt_group_search_optimizations param and
+    # enabling the use_cte_for_group_issues_search feature flag
     # https://www.postgresql.org/docs/current/static/queries-with.html
     items = by_search(items)
 
@@ -88,6 +87,8 @@ class IssuableFinder
 
   def filter_items(items)
     items = by_project(items)
+    items = by_group(items)
+    items = by_subquery(items)
     items = by_scope(items)
     items = by_created_at(items)
     items = by_updated_at(items)
@@ -148,6 +149,18 @@ class IssuableFinder
       end
   end
 
+  def related_groups
+    if project? && project && project.group && Ability.allowed?(current_user, :read_group, project.group)
+      project.group.self_and_ancestors
+    elsif group
+      [group]
+    elsif current_user
+      Gitlab::ObjectHierarchy.new(current_user.authorized_groups, current_user.groups).all_objects
+    else
+      []
+    end
+  end
+
   def project?
     params[:project_id].present?
   end
@@ -162,8 +175,10 @@ class IssuableFinder
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
-  def projects(items = nil)
-    return @projects = project if project?
+  def projects
+    return @projects if defined?(@projects)
+
+    return @projects = [project] if project?
 
     projects =
       if current_user && params[:authorized_only].presence && !current_user_related?
@@ -187,11 +202,6 @@ class IssuableFinder
     params[:milestone_title].present?
   end
 
-  def filter_by_no_milestone?
-    milestones? && params[:milestone_title] == Milestone::None.title
-  end
-
-  # rubocop: disable CodeReuse/ActiveRecord
   def milestones
     return @milestones if defined?(@milestones)
 
@@ -212,17 +222,22 @@ class IssuableFinder
         Milestone.none
       end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def labels?
     params[:label_name].present?
   end
 
   def filter_by_no_label?
-    labels? && params[:label_name].include?(Label::None.title)
+    downcased = label_names.map(&:downcase)
+
+    # Label::NONE is deprecated and should be removed in 12.0
+    downcased.include?(FILTER_NONE) || downcased.include?(Label::NONE)
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
+  def filter_by_any_label?
+    label_names.map(&:downcase).include?(FILTER_ANY)
+  end
+
   def labels
     return @labels if defined?(@labels)
 
@@ -233,19 +248,13 @@ class IssuableFinder
         Label.none
       end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def assignee_id?
-    params[:assignee_id].present? && params[:assignee_id].to_s != NONE
+    params[:assignee_id].present?
   end
 
   def assignee_username?
-    params[:assignee_username].present? && params[:assignee_username].to_s != NONE
-  end
-
-  def no_assignee?
-    # Assignee_id takes precedence over assignee_username
-    params[:assignee_id].to_s == NONE || params[:assignee_username].to_s == NONE
+    params[:assignee_username].present?
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -256,7 +265,7 @@ class IssuableFinder
       if assignee_id?
         User.find_by(id: params[:assignee_id])
       elsif assignee_username?
-        User.find_by(username: params[:assignee_username])
+        User.find_by_username(params[:assignee_username])
       else
         nil
       end
@@ -284,17 +293,36 @@ class IssuableFinder
       if author_id?
         User.find_by(id: params[:author_id])
       elsif author_username?
-        User.find_by(username: params[:author_username])
+        User.find_by_username(params[:author_username])
       else
         nil
       end
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def use_subquery_for_search?
+    strong_memoize(:use_subquery_for_search) do
+      attempt_group_search_optimizations? &&
+        Feature.enabled?(:use_subquery_for_group_issues_search, default_enabled: false)
+    end
+  end
+
+  def use_cte_for_search?
+    strong_memoize(:use_cte_for_search) do
+      attempt_group_search_optimizations? &&
+        !use_subquery_for_search? &&
+        Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
+    end
+  end
+
   private
 
   def init_collection
     klass.all
+  end
+
+  def attempt_group_search_optimizations?
+    search && Gitlab::Database.postgresql? && params[:attempt_group_search_optimizations]
   end
 
   def count_key(value)
@@ -360,12 +388,13 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def use_cte_for_search?
-    return false unless search
-    return false unless Gitlab::Database.postgresql?
-    return false unless Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
-
-    params[:use_cte_for_search]
+  # Wrap projects and groups in a subquery if the conditions are met.
+  def by_subquery(items)
+    if use_subquery_for_search?
+      klass.where(id: items.select(:id)) # rubocop: disable CodeReuse/ActiveRecord
+    else
+      items
+    end
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -399,17 +428,28 @@ class IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_assignee(items)
-    if assignee
-      items = items.where(assignee_id: assignee.id)
-    elsif no_assignee?
-      items = items.where(assignee_id: nil)
+    if filter_by_no_assignee?
+      items.where(assignee_id: nil)
+    elsif filter_by_any_assignee?
+      items.where('assignee_id IS NOT NULL')
+    elsif assignee
+      items.where(assignee_id: assignee.id)
     elsif assignee_id? || assignee_username? # assignee not found
-      items = items.none
+      items.none
+    else
+      items
     end
-
-    items
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def filter_by_no_assignee?
+    # Assignee_id takes precedence over assignee_username
+    [NONE, FILTER_NONE].include?(params[:assignee_id].to_s.downcase) || params[:assignee_username].to_s == NONE
+  end
+
+  def filter_by_any_assignee?
+    params[:assignee_id].to_s.downcase == FILTER_ANY
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_author(items)
@@ -425,18 +465,6 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def filter_by_upcoming_milestone?
-    params[:milestone_title] == Milestone::Upcoming.name
-  end
-
-  def filter_by_any_milestone?
-    params[:milestone_title] == Milestone::Any.title
-  end
-
-  def filter_by_started_milestone?
-    params[:milestone_title] == Milestone::Started.name
-  end
-
   # rubocop: disable CodeReuse/ActiveRecord
   def by_milestone(items)
     if milestones?
@@ -445,7 +473,7 @@ class IssuableFinder
       elsif filter_by_any_milestone?
         items = items.any_milestone
       elsif filter_by_upcoming_milestone?
-        upcoming_ids = Milestone.upcoming_ids_by_projects(projects(items))
+        upcoming_ids = Milestone.upcoming_ids(projects, related_groups)
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
       elsif filter_by_started_milestone?
         items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
@@ -458,12 +486,32 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  def filter_by_no_milestone?
+    # Accepts `No Milestone` for compatibility
+    params[:milestone_title].to_s.downcase == FILTER_NONE || params[:milestone_title] == Milestone::None.title
+  end
+
+  def filter_by_any_milestone?
+    # Accepts `Any Milestone` for compatibility
+    params[:milestone_title].to_s.downcase == FILTER_ANY || params[:milestone_title] == Milestone::Any.title
+  end
+
+  def filter_by_upcoming_milestone?
+    params[:milestone_title] == Milestone::Upcoming.name
+  end
+
+  def filter_by_started_milestone?
+    params[:milestone_title] == Milestone::Started.name
+  end
+
   def by_label(items)
     return items unless labels?
 
     items =
       if filter_by_no_label?
         items.without_label
+      elsif filter_by_any_label?
+        items.any_label
       else
         items.with_label(label_names, params[:sort])
       end
@@ -473,10 +521,25 @@ class IssuableFinder
 
   def by_my_reaction_emoji(items)
     if params[:my_reaction_emoji].present? && current_user
-      items = items.awarded(current_user, params[:my_reaction_emoji])
+      items =
+        if filter_by_no_reaction?
+          items.not_awarded(current_user)
+        elsif filter_by_any_reaction?
+          items.awarded(current_user)
+        else
+          items.awarded(current_user, params[:my_reaction_emoji])
+        end
     end
 
     items
+  end
+
+  def filter_by_no_reaction?
+    params[:my_reaction_emoji].to_s.downcase == FILTER_NONE
+  end
+
+  def filter_by_any_reaction?
+    params[:my_reaction_emoji].to_s.downcase == FILTER_ANY
   end
 
   def label_names

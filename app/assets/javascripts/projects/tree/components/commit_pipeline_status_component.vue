@@ -5,6 +5,7 @@ import Poll from '~/lib/utils/poll';
 import Flash from '~/flash';
 import { s__, sprintf } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
+import { GlLoadingIcon } from '@gitlab/ui';
 import CommitPipelineService from '../services/commit_pipeline_service';
 
 export default {
@@ -13,6 +14,7 @@ export default {
   },
   components: {
     ciIcon,
+    GlLoadingIcon,
   },
   props: {
     endpoint: {
@@ -98,15 +100,8 @@ export default {
 </script>
 <template>
   <div class="ci-status-link">
-    <gl-loading-icon
-      v-if="isLoading"
-      :size="3"
-      label="Loading pipeline status"
-    />
-    <a
-      v-else
-      :href="ciStatus.details_path"
-    >
+    <gl-loading-icon v-if="isLoading" :size="3" label="Loading pipeline status" />
+    <a v-else :href="ciStatus.details_path">
       <ci-icon
         v-tooltip
         :title="statusTitle"

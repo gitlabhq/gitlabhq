@@ -3,6 +3,7 @@
 require 'rouge/plugins/common_mark'
 require 'rouge/plugins/redcarpet'
 
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/code_block.js
 module Banzai
   module Filter
     # HTML Filter to highlight fenced code blocks
@@ -69,7 +70,7 @@ module Banzai
       end
 
       def use_rouge?(language)
-        %w(math mermaid plantuml).exclude?(language)
+        %w(math mermaid plantuml suggestion).exclude?(language)
       end
     end
   end

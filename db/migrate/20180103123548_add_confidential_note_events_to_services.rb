@@ -1,4 +1,4 @@
-class AddConfidentialNoteEventsToServices < ActiveRecord::Migration
+class AddConfidentialNoteEventsToServices < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

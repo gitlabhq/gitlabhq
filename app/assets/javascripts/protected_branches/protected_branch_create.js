@@ -46,8 +46,12 @@ export default class ProtectedBranchCreate {
   onSelect() {
     // Enable submit button
     const $branchInput = this.$form.find('input[name="protected_branch[name]"]');
-    const $allowedToMergeInput = this.$form.find('input[name="protected_branch[merge_access_levels_attributes][0][access_level]"]');
-    const $allowedToPushInput = this.$form.find('input[name="protected_branch[push_access_levels_attributes][0][access_level]"]');
+    const $allowedToMergeInput = this.$form.find(
+      'input[name="protected_branch[merge_access_levels_attributes][0][access_level]"]',
+    );
+    const $allowedToPushInput = this.$form.find(
+      'input[name="protected_branch[push_access_levels_attributes][0][access_level]"]',
+    );
     const completedForm = !(
       $branchInput.val() &&
       $allowedToMergeInput.length &&

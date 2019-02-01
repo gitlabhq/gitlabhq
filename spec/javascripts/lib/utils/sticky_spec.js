@@ -22,25 +22,19 @@ describe('sticky', () => {
       isSticky(el, 0, el.offsetTop);
       isSticky(el, 0, el.offsetTop);
 
-      expect(
-        el.classList.contains('is-stuck'),
-      ).toBeTruthy();
+      expect(el.classList.contains('is-stuck')).toBeTruthy();
     });
 
     it('adds is-stuck class', () => {
       isSticky(el, 0, el.offsetTop);
 
-      expect(
-        el.classList.contains('is-stuck'),
-      ).toBeTruthy();
+      expect(el.classList.contains('is-stuck')).toBeTruthy();
     });
 
     it('inserts placeholder element', () => {
       isSticky(el, 0, el.offsetTop, true);
 
-      expect(
-        document.querySelector('.sticky-placeholder'),
-      ).not.toBeNull();
+      expect(document.querySelector('.sticky-placeholder')).not.toBeNull();
     });
   });
 
@@ -51,29 +45,22 @@ describe('sticky', () => {
       isSticky(el, 0, el.offsetTop);
       isSticky(el, 0, 0);
 
-      expect(
-        el.classList.remove,
-      ).toHaveBeenCalledWith('is-stuck');
-      expect(
-        el.classList.contains('is-stuck'),
-      ).toBeFalsy();
+      expect(el.classList.remove).toHaveBeenCalledWith('is-stuck');
+
+      expect(el.classList.contains('is-stuck')).toBeFalsy();
     });
 
     it('does not add is-stuck class', () => {
       isSticky(el, 0, 0);
 
-      expect(
-        el.classList.contains('is-stuck'),
-      ).toBeFalsy();
+      expect(el.classList.contains('is-stuck')).toBeFalsy();
     });
 
     it('removes placeholder', () => {
       isSticky(el, 0, el.offsetTop, true);
       isSticky(el, 0, 0, true);
 
-      expect(
-        document.querySelector('.sticky-placeholder'),
-      ).toBeNull();
+      expect(document.querySelector('.sticky-placeholder')).toBeNull();
     });
   });
 });

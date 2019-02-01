@@ -85,6 +85,12 @@ class WikiPage
 
   alias_method :to_param, :slug
 
+  def human_title
+    return 'Home' if title == 'home'
+
+    title
+  end
+
   # The formatted title of this page.
   def title
     if @attributes[:title]
@@ -151,16 +157,12 @@ class WikiPage
     last_version&.sha
   end
 
-  # Returns the Date that this latest version was
-  # created on.
-  def created_at
-    @page.version.date
-  end
-
   # Returns boolean True or False if this instance
   # is an old version of the page.
   def historical?
-    @page.historical? && last_version.sha != version.sha
+    return false unless last_commit_sha && version
+
+    @page.historical? && last_commit_sha != version.sha
   end
 
   # Returns boolean True or False if this instance
@@ -193,7 +195,7 @@ class WikiPage
     update_attributes(attrs)
 
     save(page_details: title) do
-      wiki.create_page(title, content, format, message)
+      wiki.create_page(title, content, format, attrs[:message])
     end
   end
 

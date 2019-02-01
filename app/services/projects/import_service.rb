@@ -24,8 +24,16 @@ module Projects
       import_data
 
       success
-    rescue => e
+    rescue Gitlab::UrlBlocker::BlockedUrlError => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { project_path: project.full_path, importer: project.import_type })
+
       error("Error importing repository #{project.safe_import_url} into #{project.full_path} - #{e.message}")
+    rescue => e
+      message = Projects::ImportErrorFilter.filter_message(e.message)
+
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { project_path: project.full_path, importer: project.import_type })
+
+      error("Error importing repository #{project.safe_import_url} into #{project.full_path} - #{message}")
     end
 
     private
@@ -35,7 +43,7 @@ module Projects
         begin
           Gitlab::UrlBlocker.validate!(project.import_url, ports: Project::VALID_IMPORT_PORTS)
         rescue Gitlab::UrlBlocker::BlockedUrlError => e
-          raise Error, "Blocked import URL: #{e.message}"
+          raise e, "Blocked import URL: #{e.message}"
         end
       end
 
@@ -86,11 +94,11 @@ module Projects
 
       return unless project.lfs_enabled?
 
-      oids_to_download = Projects::LfsPointers::LfsImportService.new(project).execute
-      download_service = Projects::LfsPointers::LfsDownloadService.new(project)
+      lfs_objects_to_download = Projects::LfsPointers::LfsImportService.new(project).execute
 
-      oids_to_download.each do |oid, link|
-        download_service.execute(oid, link)
+      lfs_objects_to_download.each do |lfs_download_object|
+        Projects::LfsPointers::LfsDownloadService.new(project, lfs_download_object)
+                                                 .execute
       end
     rescue => e
       # Right now, to avoid aborting the importing process, we silently fail

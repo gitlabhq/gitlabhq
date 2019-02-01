@@ -30,7 +30,12 @@ describe('ItemActionsComponent', () => {
       it('emits `showLeaveGroupModal` event with `group` and `parentGroup` props', () => {
         spyOn(eventHub, '$emit');
         vm.onLeaveGroup();
-        expect(eventHub.$emit).toHaveBeenCalledWith('showLeaveGroupModal', vm.group, vm.parentGroup);
+
+        expect(eventHub.$emit).toHaveBeenCalledWith(
+          'showLeaveGroupModal',
+          vm.group,
+          vm.parentGroup,
+        );
       });
     });
   });
@@ -46,6 +51,7 @@ describe('ItemActionsComponent', () => {
       const newVm = createComponent(group);
 
       const editBtn = newVm.$el.querySelector('a.edit-group');
+
       expect(editBtn).toBeDefined();
       expect(editBtn.classList.contains('no-expand')).toBeTruthy();
       expect(editBtn.getAttribute('href')).toBe(group.editPath);
@@ -63,6 +69,7 @@ describe('ItemActionsComponent', () => {
       const newVm = createComponent(group);
 
       const leaveBtn = newVm.$el.querySelector('a.leave-group');
+
       expect(leaveBtn).toBeDefined();
       expect(leaveBtn.classList.contains('no-expand')).toBeTruthy();
       expect(leaveBtn.getAttribute('href')).toBe(group.leavePath);

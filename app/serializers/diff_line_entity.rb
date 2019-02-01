@@ -11,4 +11,6 @@ class DiffLineEntity < Grape::Entity
   expose :rich_text do |line|
     ERB::Util.html_escape(line.rich_text || line.text)
   end
+
+  expose :suggestible?, as: :can_receive_suggestion
 end

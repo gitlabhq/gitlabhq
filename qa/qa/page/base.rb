@@ -5,6 +5,7 @@ require 'capybara/dsl'
 module QA
   module Page
     class Base
+      prepend Support::Page::Logging if Runtime::Env.debug?
       include Capybara::DSL
       include Scenario::Actable
       extend SingleForwardable
@@ -14,7 +15,7 @@ module QA
       def_delegators :evaluator, :view, :views
 
       def refresh
-        visit current_url
+        page.refresh
       end
 
       def wait(max: 60, time: 0.1, reload: true)
@@ -79,8 +80,8 @@ module QA
         page.evaluate_script('xhr.status') == 200
       end
 
-      def find_element(name)
-        find(element_selector_css(name))
+      def find_element(name, text_filter = nil, wait: Capybara.default_max_wait_time)
+        find(element_selector_css(name), wait: wait, text: text_filter)
       end
 
       def all_elements(name)
@@ -91,6 +92,10 @@ module QA
         find_element(name).set(true)
       end
 
+      def uncheck_element(name)
+        find_element(name).set(false)
+      end
+
       def click_element(name)
         find_element(name).click
       end
@@ -99,12 +104,42 @@ module QA
         find_element(name).set(content)
       end
 
-      def has_element?(name)
-        has_css?(element_selector_css(name))
+      def select_element(name, value)
+        element = find_element(name)
+
+        return if element.text.downcase.to_s == value.to_s
+
+        element.select value.to_s.capitalize
+      end
+
+      def has_element?(name, wait: Capybara.default_max_wait_time)
+        has_css?(element_selector_css(name), wait: wait)
+      end
+
+      def has_no_element?(name, wait: Capybara.default_max_wait_time)
+        has_no_css?(element_selector_css(name), wait: wait)
+      end
+
+      def has_text?(text)
+        page.has_text? text
+      end
+
+      def has_no_text?(text)
+        page.has_no_text? text
+      end
+
+      def finished_loading?
+        has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
       end
 
       def within_element(name)
         page.within(element_selector_css(name)) do
+          yield
+        end
+      end
+
+      def within_element_by_index(name, index)
+        page.within all_elements(name)[index] do
           yield
         end
       end
@@ -115,6 +150,10 @@ module QA
 
       def element_selector_css(name)
         Page::Element.new(name).selector_css
+      end
+
+      def click_link_with_text(text)
+        click_link text
       end
 
       def self.path

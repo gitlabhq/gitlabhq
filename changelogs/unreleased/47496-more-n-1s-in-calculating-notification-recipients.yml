@@ -1,5 +1,0 @@
----
-title: Reduce queries needed to compute notification recipients
-merge_request: 22050
-author:
-type: performance

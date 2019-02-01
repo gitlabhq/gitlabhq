@@ -36,14 +36,23 @@ describe Gitlab::Kubernetes::Helm::Api do
   describe '#install' do
     before do
       allow(client).to receive(:create_pod).and_return(nil)
+      allow(client).to receive(:get_config_map).and_return(nil)
       allow(client).to receive(:create_config_map).and_return(nil)
       allow(client).to receive(:create_service_account).and_return(nil)
       allow(client).to receive(:create_cluster_role_binding).and_return(nil)
+      allow(client).to receive(:delete_pod).and_return(nil)
       allow(namespace).to receive(:ensure_exists!).once
     end
 
     it 'ensures the namespace exists before creating the POD' do
       expect(namespace).to receive(:ensure_exists!).once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.install(command)
+    end
+
+    it 'removes an existing pod before installing' do
+      expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps').once.ordered
       expect(client).to receive(:create_pod).once.ordered
 
       subject.install(command)
@@ -56,6 +65,18 @@ describe Gitlab::Kubernetes::Helm::Api do
         expect(client).to receive(:create_config_map).with(resource).once
 
         subject.install(command)
+      end
+
+      context 'config map already exists' do
+        before do
+          expect(client).to receive(:get_config_map).with("values-content-configuration-#{application_name}", gitlab_namespace).and_return(resource)
+        end
+
+        it 'updates the config map' do
+          expect(client).to receive(:update_config_map).with(resource).once
+
+          subject.install(command)
+        end
       end
     end
 
@@ -88,8 +109,8 @@ describe Gitlab::Kubernetes::Helm::Api do
 
         context 'service account and cluster role binding does not exist' do
           before do
-            expect(client).to receive('get_service_account').with('tiller', 'gitlab-managed-apps').and_raise(Kubeclient::HttpError.new(404, 'Not found', nil))
-            expect(client).to receive('get_cluster_role_binding').with('tiller-admin').and_raise(Kubeclient::HttpError.new(404, 'Not found', nil))
+            expect(client).to receive(:get_service_account).with('tiller', 'gitlab-managed-apps').and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
+            expect(client).to receive(:get_cluster_role_binding).with('tiller-admin').and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
           end
 
           it 'creates a service account, followed the cluster role binding on kubeclient' do
@@ -102,8 +123,8 @@ describe Gitlab::Kubernetes::Helm::Api do
 
         context 'service account already exists' do
           before do
-            expect(client).to receive('get_service_account').with('tiller', 'gitlab-managed-apps').and_return(service_account_resource)
-            expect(client).to receive('get_cluster_role_binding').with('tiller-admin').and_raise(Kubeclient::HttpError.new(404, 'Not found', nil))
+            expect(client).to receive(:get_service_account).with('tiller', 'gitlab-managed-apps').and_return(service_account_resource)
+            expect(client).to receive(:get_cluster_role_binding).with('tiller-admin').and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
           end
 
           it 'updates the service account, followed by creating the cluster role binding' do
@@ -116,8 +137,8 @@ describe Gitlab::Kubernetes::Helm::Api do
 
         context 'service account and cluster role binding already exists' do
           before do
-            expect(client).to receive('get_service_account').with('tiller', 'gitlab-managed-apps').and_return(service_account_resource)
-            expect(client).to receive('get_cluster_role_binding').with('tiller-admin').and_return(cluster_role_binding_resource)
+            expect(client).to receive(:get_service_account).with('tiller', 'gitlab-managed-apps').and_return(service_account_resource)
+            expect(client).to receive(:get_cluster_role_binding).with('tiller-admin').and_return(cluster_role_binding_resource)
           end
 
           it 'updates the service account, followed by creating the cluster role binding' do
@@ -130,7 +151,7 @@ describe Gitlab::Kubernetes::Helm::Api do
 
         context 'a non-404 error is thrown' do
           before do
-            expect(client).to receive('get_service_account').with('tiller', 'gitlab-managed-apps').and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+            expect(client).to receive(:get_service_account).with('tiller', 'gitlab-managed-apps').and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
           end
 
           it 'raises an error' do
@@ -167,10 +188,18 @@ describe Gitlab::Kubernetes::Helm::Api do
 
       allow(client).to receive(:update_config_map).and_return(nil)
       allow(client).to receive(:create_pod).and_return(nil)
+      allow(client).to receive(:delete_pod).and_return(nil)
     end
 
     it 'ensures the namespace exists before creating the pod' do
       expect(namespace).to receive(:ensure_exists!).once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.update(command)
+    end
+
+    it 'removes an existing pod before updating' do
+      expect(client).to receive(:delete_pod).with('upgrade-app-name', 'gitlab-managed-apps').once.ordered
       expect(client).to receive(:create_pod).once.ordered
 
       subject.update(command)
@@ -211,9 +240,18 @@ describe Gitlab::Kubernetes::Helm::Api do
 
   describe '#delete_pod!' do
     it 'deletes the POD from kubernetes cluster' do
-      expect(client).to receive(:delete_pod).with(command.pod_name, gitlab_namespace).once
+      expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps').once
 
-      subject.delete_pod!(command.pod_name)
+      subject.delete_pod!('install-app-name')
+    end
+
+    context 'when the resource being deleted does not exist' do
+      it 'catches the error' do
+        expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps')
+          .and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
+
+        subject.delete_pod!('install-app-name')
+      end
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Fix duplicate project disk path in BackfillLegacyProjectRepositories
+merge_request: 24213
+author:
+type: changed

@@ -1,5 +1,6 @@
-- page_title "Edit", "#{@snippet.title} (#{@snippet.to_reference})", "Snippets"
+- page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
+
 %h3.page-title
-  Edit Snippet
+  = _("Edit Snippet")
 %hr
 = render 'shared/snippets/form', url: snippet_path(@snippet)

@@ -15,15 +15,16 @@ export default class SidebarMilestone {
       components: {
         timeTracker,
       },
-      render: createElement => createElement('timeTracker', {
-        props: {
-          timeEstimate: parseInt(timeEstimate, 10),
-          timeSpent: parseInt(timeSpent, 10),
-          humanTimeEstimate,
-          humanTimeSpent,
-          rootPath: '/',
-        },
-      }),
+      render: createElement =>
+        createElement('timeTracker', {
+          props: {
+            timeEstimate: parseInt(timeEstimate, 10),
+            timeSpent: parseInt(timeSpent, 10),
+            humanTimeEstimate,
+            humanTimeSpent,
+            rootPath: '/',
+          },
+        }),
     });
   }
 }

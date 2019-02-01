@@ -10,7 +10,7 @@ module API
     params do
       requires :id, type: String, desc: 'The project ID'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all deployments of the project' do
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Deployment
@@ -33,7 +33,7 @@ module API
         success Entities::Deployment
       end
       params do
-        requires :deployment_id, type: Integer,  desc: 'The deployment ID'
+        requires :deployment_id, type: Integer, desc: 'The deployment ID'
       end
       get ':id/deployments/:deployment_id' do
         authorize! :read_deployment, user_project

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 NO_SPECS_LABELS = %w[backstage Documentation QA].freeze
 NO_NEW_SPEC_MESSAGE = <<~MSG.freeze
 You've made some app changes, but didn't add any tests.
@@ -9,8 +11,8 @@ def presented_no_changelog_labels
   NO_SPECS_LABELS.map { |label| "~#{label}" }.join(', ')
 end
 
-has_app_changes = !git.modified_files.grep(%r{\A(ee/)?(app|lib|db/(geo/)?(post_)?migrate)/}).empty?
-has_spec_changes = !git.modified_files.grep(%r{\A(ee/)?spec/}).empty?
+has_app_changes = !helper.all_changed_files.grep(%r{\A(ee/)?(app|lib|db/(geo/)?(post_)?migrate)/}).empty?
+has_spec_changes = !helper.all_changed_files.grep(%r{\A(ee/)?spec/}).empty?
 new_specs_needed = (gitlab.mr_labels & NO_SPECS_LABELS).empty?
 
 if has_app_changes && !has_spec_changes && new_specs_needed

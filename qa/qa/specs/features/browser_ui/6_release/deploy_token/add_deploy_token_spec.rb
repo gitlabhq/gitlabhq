@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :release do
+  context 'Release' do
     describe 'Deploy token creation' do
       it 'user adds a deploy token' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -10,7 +10,7 @@ module QA
         deploy_token_name = 'deploy token name'
         deploy_token_expires_at = Date.today + 7 # 1 Week from now
 
-        deploy_token = Factory::Resource::DeployToken.fabricate! do |resource|
+        deploy_token = Resource::DeployToken.fabricate! do |resource|
           resource.name = deploy_token_name
           resource.expires_at = deploy_token_expires_at
         end

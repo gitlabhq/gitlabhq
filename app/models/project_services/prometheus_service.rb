@@ -56,7 +56,6 @@ class PrometheusService < MonitoringService
         name: 'api_url',
         title: 'API URL',
         placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
-        help: s_('PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.'),
         required: true
       }
     ]
@@ -72,7 +71,7 @@ class PrometheusService < MonitoringService
   end
 
   def prometheus_client
-    RestClient::Resource.new(api_url) if api_url && manual_configuration? && active?
+    RestClient::Resource.new(api_url, max_redirects: 0) if api_url && manual_configuration? && active?
   end
 
   def prometheus_available?

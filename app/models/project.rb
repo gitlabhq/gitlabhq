@@ -30,6 +30,7 @@ class Project < ActiveRecord::Base
   include FeatureGate
   include OptionallySearch
   include FromUnion
+  include IgnorableColumn
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -55,6 +56,8 @@ class Project < ActiveRecord::Base
   VALID_MIRROR_PORTS = [22, 80, 443].freeze
   VALID_MIRROR_PROTOCOLS = %w(http https ssh git).freeze
 
+  ignore_column :import_status, :import_jid, :import_error
+
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
@@ -63,8 +66,14 @@ class Project < ActiveRecord::Base
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
+  delegate :scheduled?, :started?, :in_progress?,
+    :failed?, :finished?,
+    prefix: :import, to: :import_state, allow_nil: true
+
+  delegate :no_import?, to: :import_state, allow_nil: true
+
   default_value_for :archived, false
-  default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for(:visibility_level) { Gitlab::CurrentSettings.default_project_visibility }
   default_value_for :resolve_outdated_diff_discussions, false
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { Gitlab::CurrentSettings.pick_repository_storage }
@@ -76,7 +85,7 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  add_authentication_token_field :runners_token
+  add_authentication_token_field :runners_token, encrypted: true, migrating: true
 
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
@@ -88,15 +97,11 @@ class Project < ActiveRecord::Base
 
   after_create :create_project_feature, unless: :project_feature
 
-  after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
-
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
     if: proc { ProjectCiCdSetting.available? }
 
-  after_create :set_last_activity_at
-  after_create :set_last_repository_updated_at
+  after_create :set_timestamps_for_create
   after_update :update_forks_visibility_level
 
   before_destroy :remove_private_deploy_keys
@@ -124,6 +129,7 @@ class Project < ActiveRecord::Base
   alias_attribute :title, :name
 
   # Relations
+  belongs_to :pool_repository
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
@@ -135,6 +141,7 @@ class Project < ActiveRecord::Base
 
   # Project services
   has_one :campfire_service
+  has_one :discord_service
   has_one :drone_ci_service
   has_one :emails_on_push_service
   has_one :pipelines_email_service
@@ -167,26 +174,23 @@ class Project < ActiveRecord::Base
   has_one :packagist_service
   has_one :hangouts_chat_service
 
-  # TODO: replace these relations with the fork network versions
-  has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
-  has_one  :forked_from_project,  through:   :forked_project_link
-
-  has_many :forked_project_links, foreign_key: "forked_from_project_id"
-  has_many :forks,                through:     :forked_project_links, source: :forked_to_project
-  # TODO: replace these relations with the fork network versions
-
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
           inverse_of: :root_project,
           class_name: 'ForkNetwork'
   has_one :fork_network_member
   has_one :fork_network, through: :fork_network_member
+  has_one :forked_from_project, through: :fork_network_member
+  has_many :forked_to_members, class_name: 'ForkNetworkMember', foreign_key: 'forked_from_project_id'
+  has_many :forks, through: :forked_to_members, source: :project, inverse_of: :forked_from_project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
   has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_one :project_repository, inverse_of: :project
+  has_one :error_tracking_setting, inverse_of: :project, class_name: 'ErrorTracking::ProjectErrorTrackingSetting'
 
   # Merge Requests for target project should be removed with it
-  has_many :merge_requests, foreign_key: 'target_project_id'
+  has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
   has_many :issues
   has_many :labels, class_name: 'ProjectLabel'
@@ -235,6 +239,7 @@ class Project < ActiveRecord::Base
   has_one :cluster_project, class_name: 'Clusters::Project'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :cluster_ingresses, through: :clusters, source: :application_ingress, class_name: 'Clusters::Applications::Ingress'
+  has_many :kubernetes_namespaces, class_name: 'Clusters::KubernetesNamespace'
 
   has_many :prometheus_metrics
 
@@ -244,7 +249,17 @@ class Project < ActiveRecord::Base
   has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :commit_statuses
-  has_many :pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
+  # The relation :all_pipelines is intented to be used when we want to get the
+  # whole list of pipelines associated to the project
+  has_many :all_pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
+  # The relation :ci_pipelines is intented to be used when we want to get only
+  # those pipeline which are directly related to CI. There are
+  # other pipelines, like webide ones, that we won't retrieve
+  # if we use this relation.
+  has_many :ci_pipelines,
+          -> { ci_sources },
+          class_name: 'Ci::Pipeline',
+          inverse_of: :project
   has_many :stages, class_name: 'Ci::Stage', inverse_of: :project
 
   # Ci::Build objects store data on the file system such as artifact files and
@@ -259,7 +274,7 @@ class Project < ActiveRecord::Base
   has_many :variables, class_name: 'Ci::Variable'
   has_many :triggers, class_name: 'Ci::Trigger'
   has_many :environments
-  has_many :deployments
+  has_many :deployments, -> { success }
   has_many :pipeline_schedules, class_name: 'Ci::PipelineSchedule'
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
@@ -281,12 +296,16 @@ class Project < ActiveRecord::Base
                                 allow_destroy: true,
                                 reject_if: ->(attrs) { attrs[:id].blank? && attrs[:url].blank? }
 
+  accepts_nested_attributes_for :error_tracking_setting, update_only: true
+
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
   delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
+  delegate :group_clusters_enabled?, to: :group, allow_nil: true
+  delegate :root_ancestor, to: :namespace, allow_nil: true
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -308,21 +327,21 @@ class Project < ActiveRecord::Base
 
   validates :namespace, presence: true
   validates :name, uniqueness: { scope: :namespace_id }
-  validates :import_url, url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
-                                ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
-                                allow_localhost: false,
-                                enforce_user: true }, if: [:external_import?, :import_url_changed?]
+  validates :import_url, public_url: { protocols: ->(project) { project.persisted? ? VALID_MIRROR_PROTOCOLS : VALID_IMPORT_PROTOCOLS },
+                                       ports: ->(project) { project.persisted? ? VALID_MIRROR_PORTS : VALID_IMPORT_PORTS },
+                                       enforce_user: true }, if: [:external_import?, :import_url_changed?]
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
-  validate :check_limit, on: :create
+  validate :check_personal_projects_limit, on: :create
   validate :check_repository_path_availability, on: :update, if: ->(project) { project.renamed? }
-  validate :visibility_level_allowed_by_group
-  validate :visibility_level_allowed_as_fork
+  validate :visibility_level_allowed_by_group, if: -> { changes.has_key?(:visibility_level) }
+  validate :visibility_level_allowed_as_fork, if: -> { changes.has_key?(:visibility_level) }
   validate :check_wiki_path_conflict
   validate :validate_pages_https_only, if: -> { changes.has_key?(:pages_https_only) }
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
   validates :variables, variable_duplicates: { scope: :environment_scope }
+  validates :bfg_object_map, file_size: { maximum: :max_attachment_size }
 
   # Scopes
   scope :pending_delete, -> { where(pending_delete: true) }
@@ -358,8 +377,10 @@ class Project < ActiveRecord::Base
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
-    access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED, ProjectFeature::PUBLIC] })
+    access_level_attribute = ProjectFeature.arel_table[ProjectFeature.access_level_attribute(feature)]
+    enabled_feature = access_level_attribute.gt(ProjectFeature::DISABLED).or(access_level_attribute.eq(nil))
+
+    with_project_feature.where(enabled_feature)
   }
 
   # Picks a feature where the level is exactly that given.
@@ -379,15 +400,25 @@ class Project < ActiveRecord::Base
     .where(project_ci_cd_settings: { group_runners_enabled: true })
   end
 
+  scope :missing_kubernetes_namespace, -> (kubernetes_namespaces) do
+    subquery = kubernetes_namespaces.select('1').where('clusters_kubernetes_namespaces.project_id = projects.id')
+
+    where('NOT EXISTS (?)', subquery)
+  end
+
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
-  chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
+  chronic_duration_attr :build_timeout_human_readable, :build_timeout,
+    default: 3600, error_message: 'Maximum job timeout has a value which could not be accepted'
 
   validates :build_timeout, allow_nil: true,
                             numericality: { greater_than_or_equal_to: 10.minutes,
                                             less_than: 1.month,
                                             only_integer: true,
                                             message: 'needs to be beetween 10 minutes and 1 month' }
+
+  # Used by Projects::CleanupService to hold a map of rewritten object IDs
+  mount_uploader :bfg_object_map, AttachmentUploader
 
   # Returns a project, if it is not about to be removed.
   #
@@ -436,7 +467,8 @@ class Project < ActiveRecord::Base
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [nil, ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
+    visible = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
+    min_access_level = ProjectFeature.required_minimum_access_level(feature)
 
     if user&.admin?
       with_feature_enabled(feature)
@@ -444,10 +476,15 @@ class Project < ActiveRecord::Base
       column = ProjectFeature.quoted_access_level_column(feature)
 
       with_project_feature
-        .where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
-              visible,
-              ProjectFeature::PRIVATE,
-              user.authorizations_for_projects)
+        .where(
+          "(projects.visibility_level > :private AND (#{column} IS NULL OR #{column} >= (:public_visible) OR (#{column} = :private_visible AND EXISTS(:authorizations))))"\
+          " OR (projects.visibility_level = :private AND (#{column} IS NULL OR #{column} >= :private_visible) AND EXISTS(:authorizations))",
+          {
+            private: Gitlab::VisibilityLevel::PRIVATE,
+            public_visible: ProjectFeature::ENABLED,
+            private_visible: ProjectFeature::PRIVATE,
+            authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
+          })
     else
       with_feature_access_level(feature, visible)
     end
@@ -458,8 +495,8 @@ class Project < ActiveRecord::Base
 
   scope :excluding_project, ->(project) { where.not(id: project) }
 
-  scope :joins_import_state, -> { joins("LEFT JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
-  scope :import_started, -> { joins_import_state.where("import_state.status = 'started' OR projects.import_status = 'started'") }
+  # We require an alias to the project_mirror_data_table in order to use import_state in our queries
+  scope :joins_import_state, -> { joins("INNER JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
   scope :for_group, -> (group) { where(group: group) }
 
   class << self
@@ -501,6 +538,7 @@ class Project < ActiveRecord::Base
 
     def reference_pattern
       %r{
+        (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
         ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})\/)?
         (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
       }x
@@ -540,18 +578,30 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def all_pipelines
+    if builds_enabled?
+      super
+    else
+      super.external
+    end
+  end
+
   # returns all ancestor-groups upto but excluding the given namespace
   # when no namespace is given, all ancestors upto the top are returned
-  def ancestors_upto(top = nil)
-    Gitlab::GroupHierarchy.new(Group.where(id: namespace_id))
-      .base_and_ancestors(upto: top)
+  def ancestors_upto(top = nil, hierarchy_order: nil)
+    Gitlab::ObjectHierarchy.new(Group.where(id: namespace_id))
+      .base_and_ancestors(upto: top, hierarchy_order: hierarchy_order)
   end
+
+  alias_method :ancestors, :ancestors_upto
 
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
     self[:lfs_enabled] && Gitlab.config.lfs.enabled
   end
+
+  alias_method :lfs_enabled, :lfs_enabled?
 
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
@@ -614,14 +664,15 @@ class Project < ActiveRecord::Base
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA
-  def latest_successful_builds_for(ref = default_branch)
-    latest_pipeline = pipelines.latest_successful_for(ref)
+  def latest_successful_build_for(job_name, ref = default_branch)
+    latest_pipeline = ci_pipelines.latest_successful_for(ref)
+    return unless latest_pipeline
 
-    if latest_pipeline
-      latest_pipeline.builds.latest.with_artifacts_archive
-    else
-      builds.none
-    end
+    latest_pipeline.builds.latest.with_artifacts_archive.find_by(name: job_name)
+  end
+
+  def latest_successful_build_for!(job_name, ref = default_branch)
+    latest_successful_build_for(job_name, ref) || raise(ActiveRecord::RecordNotFound.new("Couldn't find job #{job_name}"))
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -631,6 +682,14 @@ class Project < ActiveRecord::Base
 
   def saved?
     id && persisted?
+  end
+
+  def import_status
+    import_state&.status || 'none'
+  end
+
+  def human_import_status_name
+    import_state&.human_status_name || 'none'
   end
 
   def add_import_job
@@ -664,11 +723,11 @@ class Project < ActiveRecord::Base
       ProjectCacheWorker.perform_async(self.id)
     end
 
-    update(import_error: nil)
+    import_state.update(last_error: nil)
     remove_import_data
   end
 
-  # This method is overriden in EE::Project model
+  # This method is overridden in EE::Project model
   def remove_import_data
     import_data&.destroy
   end
@@ -693,6 +752,8 @@ class Project < ActiveRecord::Base
     else
       super
     end
+  rescue
+    super
   end
 
   def valid_import_url?
@@ -703,15 +764,9 @@ class Project < ActiveRecord::Base
     return if data.nil? && credentials.nil?
 
     project_import_data = import_data || build_import_data
-    if data
-      project_import_data.data ||= {}
-      project_import_data.data = project_import_data.data.merge(data)
-    end
 
-    if credentials
-      project_import_data.credentials ||= {}
-      project_import_data.credentials = project_import_data.credentials.merge(credentials)
-    end
+    project_import_data.merge_data(data.to_h)
+    project_import_data.merge_credentials(credentials.to_h)
 
     project_import_data
   end
@@ -722,130 +777,6 @@ class Project < ActiveRecord::Base
 
   def external_import?
     import_url.present?
-  end
-
-  def imported?
-    import_finished?
-  end
-
-  def import_in_progress?
-    import_started? || import_scheduled?
-  end
-
-  def import_state_args
-    {
-      status: self[:import_status],
-      jid: self[:import_jid],
-      last_error: self[:import_error]
-    }
-  end
-
-  def ensure_import_state(force: false)
-    return if !force && (self[:import_status] == 'none' || self[:import_status].nil?)
-    return unless import_state.nil?
-
-    if persisted?
-      create_import_state(import_state_args)
-
-      update_column(:import_status, 'none')
-    else
-      build_import_state(import_state_args)
-
-      self[:import_status] = 'none'
-    end
-  end
-
-  def human_import_status_name
-    ensure_import_state
-
-    import_state.human_status_name
-  end
-
-  def import_schedule
-    ensure_import_state(force: true)
-
-    import_state.schedule
-  end
-
-  def force_import_start
-    ensure_import_state(force: true)
-
-    import_state.force_start
-  end
-
-  def import_start
-    ensure_import_state(force: true)
-
-    import_state.start
-  end
-
-  def import_fail
-    ensure_import_state(force: true)
-
-    import_state.fail_op
-  end
-
-  def import_finish
-    ensure_import_state(force: true)
-
-    import_state.finish
-  end
-
-  def import_jid=(new_jid)
-    ensure_import_state(force: true)
-
-    import_state.jid = new_jid
-  end
-
-  def import_jid
-    ensure_import_state
-
-    import_state&.jid
-  end
-
-  def import_error=(new_error)
-    ensure_import_state(force: true)
-
-    import_state.last_error = new_error
-  end
-
-  def import_error
-    ensure_import_state
-
-    import_state&.last_error
-  end
-
-  def import_status=(new_status)
-    ensure_import_state(force: true)
-
-    import_state.status = new_status
-  end
-
-  def import_status
-    ensure_import_state
-
-    import_state&.status || 'none'
-  end
-
-  def no_import?
-    import_status == 'none'
-  end
-
-  def import_started?
-    # import? does SQL work so only run it if it looks like there's an import running
-    import_status == 'started' && import?
-  end
-
-  def import_scheduled?
-    import_status == 'scheduled'
-  end
-
-  def import_failed?
-    import_status == 'failed'
-  end
-
-  def import_finished?
-    import_status == 'finished'
   end
 
   def safe_import_url
@@ -895,18 +826,22 @@ class Project < ActiveRecord::Base
       ::Gitlab::CurrentSettings.mirror_available
   end
 
-  def check_limit
-    unless creator.can_create_project? || namespace.kind == 'group'
-      projects_limit = creator.projects_limit
+  def check_personal_projects_limit
+    # Since this method is called as validation hook, `creator` might not be
+    # present. Since the validation for that will fail, we can just return
+    # early.
+    return if !creator || creator.can_create_project? ||
+        namespace.kind == 'group'
 
-      if projects_limit == 0
-        self.errors.add(:limit_reached, "Personal project creation is not allowed. Please contact your administrator with questions")
+    limit = creator.projects_limit
+    error =
+      if limit.zero?
+        _('Personal project creation is not allowed. Please contact your administrator with questions')
       else
-        self.errors.add(:limit_reached, "Your project limit is #{projects_limit} projects! Please contact your administrator to increase it")
+        _('Your project limit is %{limit} projects! Please contact your administrator to increase it')
       end
-    end
-  rescue
-    self.errors.add(:base, "Can't check your ability to create project")
+
+    self.errors.add(:limit_reached, error % { limit: limit })
   end
 
   def visibility_level_allowed_by_group
@@ -988,20 +923,25 @@ class Project < ActiveRecord::Base
   end
 
   def readme_url
-    readme = repository.readme
-    if readme
-      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme.path))
+    readme_path = repository.readme_path
+    if readme_path
+      Gitlab::Routing.url_helpers.project_blob_url(self, File.join(default_branch, readme_path))
     end
   end
 
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
+    # check since this can come from a request parameter
+    return unless %w(issue merge_request).include?(address_type)
+
     author.ensure_incoming_email_token!
 
-    suffix = address_type == 'merge_request' ? '+merge-request' : ''
-    Gitlab::IncomingEmail.reply_address(
-      "#{full_path}#{suffix}+#{author.incoming_email_token}")
+    suffix = address_type.dasherize
+
+    # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-issue@localhost.com
+    # example: incoming+h5bp-html5-boilerplate-8-1234567890abcdef123456789-merge-request@localhost.com
+    Gitlab::IncomingEmail.reply_address("#{full_path_slug}-#{project_id}-#{author.incoming_email_token}-#{suffix}")
   end
 
   def build_commit_note(commit)
@@ -1169,6 +1109,12 @@ class Project < ActiveRecord::Base
     path
   end
 
+  def all_clusters
+    group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto } )
+
+    Clusters::Cluster.from_union([clusters, group_clusters])
+  end
+
   def items_for(entity)
     case entity
     when 'issue' then
@@ -1249,13 +1195,13 @@ class Project < ActiveRecord::Base
     "#{web_url}.git"
   end
 
-  def forked?
-    return true if fork_network && fork_network.root_project != self
+  # Is overriden in EE
+  def lfs_http_url_to_repo(_)
+    http_url_to_repo
+  end
 
-    # TODO: Use only the above conditional using the `fork_network`
-    # This is the old conditional that looks at the `forked_project_link`, we
-    # fall back to this while we're migrating the new models
-    !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+  def forked?
+    fork_network && fork_network.root_project != self
   end
 
   def fork_source
@@ -1319,6 +1265,11 @@ class Project < ActiveRecord::Base
     true
   rescue GRPC::Internal # if the path is too long
     false
+  end
+
+  def track_project_repository
+    repository = project_repository || build_project_repository
+    repository.update!(shard_name: repository_storage, disk_path: disk_path)
   end
 
   def create_repository(force: false)
@@ -1399,7 +1350,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}", shell: false)
+      repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}")
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch
@@ -1477,7 +1428,7 @@ class Project < ActiveRecord::Base
 
     return unless sha
 
-    pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
+    ci_pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
   def latest_successful_pipeline_for_default_branch
@@ -1486,12 +1437,12 @@ class Project < ActiveRecord::Base
     end
 
     @latest_successful_pipeline_for_default_branch =
-      pipelines.latest_successful_for(default_branch)
+      ci_pipelines.latest_successful_for(default_branch)
   end
 
   def latest_successful_pipeline_for(ref = nil)
     if ref && ref != default_branch
-      pipelines.latest_successful_for(ref)
+      ci_pipelines.latest_successful_for(ref)
     else
       latest_successful_pipeline_for_default_branch
     end
@@ -1546,9 +1497,7 @@ class Project < ActiveRecord::Base
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
 
-    # self.forked_from_project will be nil before the project is saved, so
-    # we need to go through the relation
-    original_project = forked_project_link&.forked_from_project
+    original_project = fork_source
     return true unless original_project
 
     level <= original_project.visibility_level
@@ -1603,7 +1552,7 @@ class Project < ActiveRecord::Base
   end
 
   def pages_available?
-    Gitlab.config.pages.enabled && !namespace.subgroup?
+    Gitlab.config.pages.enabled
   end
 
   def remove_private_deploy_keys
@@ -1640,34 +1589,6 @@ class Project < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def rename_repo
-    path_before      = previous_changes['path'].first
-    full_path_before = full_path_was
-    full_path_after  = build_full_path
-
-    Gitlab::AppLogger.info("Attempting to rename #{full_path_was} -> #{full_path_after}")
-
-    if has_container_registry_tags?
-      Gitlab::AppLogger.info("Project #{full_path_was} cannot be renamed because container registry tags are present!")
-
-      # we currently don't support renaming repository if it contains images in container registry
-      raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
-    end
-
-    expire_caches_before_rename(full_path_before)
-
-    if rename_or_migrate_repository!
-      Gitlab::AppLogger.info("Project was renamed: #{full_path_before} -> #{full_path_after}")
-      after_rename_repository(full_path_before, path_before)
-    else
-      Gitlab::AppLogger.info("Repository could not be renamed: #{full_path_before} -> #{full_path_after}")
-
-      # if we cannot move namespace directory we should rollback
-      # db changes in order to prevent out of sync between db and fs
-      raise StandardError.new('Repository cannot be renamed')
-    end
-  end
-
   def write_repository_config(gl_full_path: full_path)
     # We'd need to keep track of project full path otherwise directory tree
     # created with hashed storage enabled cannot be usefully imported using
@@ -1681,10 +1602,18 @@ class Project < ActiveRecord::Base
   def after_import
     repository.after_import
     wiki.repository.after_import
-    import_finish
-    remove_import_jid
+
+    # The import assigns iid values on its own, e.g. by re-using GitHub ids.
+    # Flush existing InternalId records for this project for consistency reasons.
+    # Those records are going to be recreated with the next normal creation
+    # of a model instance (e.g. an Issue).
+    InternalId.flush_records!(project: self)
+
+    import_state.finish
+    import_state.remove_jid
     update_project_counter_caches
     after_create_default_branch
+    join_pool_repository
     refresh_markdown_cache!
   end
 
@@ -1701,51 +1630,13 @@ class Project < ActiveRecord::Base
 
   # rubocop: disable CodeReuse/ServiceClass
   def after_create_default_branch
-    return unless default_branch
-
-    # Ensure HEAD points to the default branch in case it is not master
-    change_head(default_branch)
-
-    if Gitlab::CurrentSettings.default_branch_protection != Gitlab::Access::PROTECTION_NONE && !ProtectedBranch.protected?(self, default_branch)
-      params = {
-        name: default_branch,
-        push_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
-        }],
-        merge_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
-        }]
-      }
-
-      ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
-    end
+    Projects::ProtectDefaultBranchService.new(self).execute
   end
   # rubocop: enable CodeReuse/ServiceClass
-
-  def remove_import_jid
-    return unless import_jid
-
-    Gitlab::SidekiqStatus.unset(import_jid)
-
-    import_state.update_column(:jid, nil)
-  end
 
   # Lazy loading of the `pipeline_status` attribute
   def pipeline_status
     @pipeline_status ||= Gitlab::Cache::Ci::ProjectPipelineStatus.load_for_project(self)
-  end
-
-  def mark_import_as_failed(error_message)
-    original_errors = errors.dup
-    sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)
-
-    import_fail
-
-    import_state.update_column(:last_error, sanitized_message)
-  rescue ActiveRecord::ActiveRecordError => e
-    Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
-  ensure
-    @errors = original_errors
   end
 
   def add_export_job(current_user:, after_export_strategy: nil, params: {})
@@ -1822,8 +1713,23 @@ class Project < ActiveRecord::Base
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
       .append(key: 'CI_PROJECT_URL', value: web_url)
       .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .concat(pages_variables)
       .concat(container_registry_variables)
       .concat(auto_devops_variables)
+      .concat(api_variables)
+  end
+
+  def pages_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
+      variables.append(key: 'CI_PAGES_URL', value: pages_url)
+    end
+  end
+
+  def api_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_API_V4_URL', value: API::Helpers::Version.new('v4').root_url)
+    end
   end
 
   def container_registry_variables
@@ -1847,7 +1753,7 @@ class Project < ActiveRecord::Base
       .first
   end
 
-  def secret_variables_for(ref:, environment: nil)
+  def ci_variables_for(ref:, environment: nil)
     # EE would use the environment
     if protected_for?(ref)
       variables
@@ -1857,15 +1763,26 @@ class Project < ActiveRecord::Base
   end
 
   def protected_for?(ref)
-    if repository.branch_exists?(ref)
-      ProtectedBranch.protected?(self, ref)
-    elsif repository.tag_exists?(ref)
-      ProtectedTag.protected?(self, ref)
+    raise Repository::AmbiguousRefError if repository.ambiguous_ref?(ref)
+
+    resolved_ref = repository.expand_ref(ref) || ref
+    return false unless Gitlab::Git.tag_ref?(resolved_ref) || Gitlab::Git.branch_ref?(resolved_ref)
+
+    ref_name = if resolved_ref == ref
+                 Gitlab::Git.ref_name(resolved_ref)
+               else
+                 ref
+               end
+
+    if Gitlab::Git.branch_ref?(resolved_ref)
+      ProtectedBranch.protected?(self, ref_name)
+    elsif Gitlab::Git.tag_ref?(resolved_ref)
+      ProtectedTag.protected?(self, ref_name)
     end
   end
 
   def deployment_variables(environment: nil)
-    deployment_platform(environment: environment)&.predefined_variables || []
+    deployment_platform(environment: environment)&.predefined_variables(project: self) || []
   end
 
   def auto_devops_variables
@@ -1885,6 +1802,24 @@ class Project < ActiveRecord::Base
 
   rescue ActiveRecord::RecordNotSaved => e
     handle_update_attribute_error(e, value)
+  end
+
+  # Tries to set repository as read_only, checking for existing Git transfers in progress beforehand
+  #
+  # @return [Boolean] true when set to read_only or false when an existing git transfer is in progress
+  def set_repository_read_only!
+    with_lock do
+      break false if git_transfer_in_progress?
+
+      update_column(:repository_read_only, true)
+    end
+  end
+
+  # Set repository as writable again
+  def set_repository_writable!
+    with_lock do
+      update_column(repository_read_only, false)
+    end
   end
 
   def pushes_since_gc
@@ -1936,10 +1871,6 @@ class Project < ActiveRecord::Base
   # Overridden on EE module
   def multiple_issue_boards_available?
     false
-  end
-
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
   end
 
   def full_path_was
@@ -2003,15 +1934,17 @@ class Project < ActiveRecord::Base
   end
 
   def migrate_to_hashed_storage!
-    return if hashed_storage?(:repository)
+    return unless storage_upgradable?
 
-    update!(repository_read_only: true)
-
-    if repo_reference_count > 0 || wiki_reference_count > 0
+    if git_transfer_in_progress?
       ProjectMigrateHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
     else
       ProjectMigrateHashedStorageWorker.perform_async(id)
     end
+  end
+
+  def git_transfer_in_progress?
+    repo_reference_count > 0 || wiki_reference_count > 0
   end
 
   def storage_version=(value)
@@ -2026,17 +1959,6 @@ class Project < ActiveRecord::Base
 
   def reference_counter(wiki: false)
     Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
-  end
-
-  # Refreshes the expiration time of the associated import job ID.
-  #
-  # This method can be used by asynchronous importers to refresh the status,
-  # preventing the StuckImportJobsWorker from marking the import as failed.
-  def refresh_import_jid_expiration
-    return unless import_jid
-
-    Gitlab::SidekiqStatus
-      .set(import_jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
   end
 
   def badges
@@ -2056,23 +1978,15 @@ class Project < ActiveRecord::Base
                                 .where('project_authorizations.project_id = merge_requests.target_project_id')
                                 .limit(1)
                                 .select(1)
-    source_of_merge_requests.opened
-      .where(allow_collaboration: true)
-      .where('EXISTS (?)', developer_access_exists)
+    merge_requests_allowing_collaboration.where('EXISTS (?)', developer_access_exists)
+  end
+
+  def any_branch_allows_collaboration?(user)
+    fetch_branch_allows_collaboration(user)
   end
 
   def branch_allows_collaboration?(user, branch_name)
-    return false unless user
-
-    cache_key = "user:#{user.id}:#{branch_name}:branch_allows_push"
-
-    memoized_results = strong_memoize(:branch_allows_collaboration) do
-      Hash.new do |result, cache_key|
-        result[cache_key] = fetch_branch_allows_collaboration?(user, branch_name)
-      end
-    end
-
-    memoized_results[cache_key]
+    fetch_branch_allows_collaboration(user, branch_name)
   end
 
   def licensed_features
@@ -2096,51 +2010,6 @@ class Project < ActiveRecord::Base
     auto_cancel_pending_pipelines == 'enabled'
   end
 
-  private
-
-  # rubocop: disable CodeReuse/ServiceClass
-  def rename_or_migrate_repository!
-    if Gitlab::CurrentSettings.hashed_storage_enabled? &&
-        storage_upgradable? &&
-        Feature.disabled?(:skip_hashed_storage_upgrade) # kill switch in case we need to disable upgrade behavior
-      ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
-    else
-      storage.rename_repo
-    end
-  end
-  # rubocop: enable CodeReuse/ServiceClass
-
-  def storage_upgradable?
-    storage_version != LATEST_STORAGE_VERSION
-  end
-
-  def after_rename_repository(full_path_before, path_before)
-    execute_rename_repository_hooks!(full_path_before)
-
-    write_repository_config
-
-    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
-    # if we need execute any take action or no-op.
-    unless hashed_storage?(:attachments)
-      Gitlab::UploadsTransfer.new.rename_project(path_before, self.path, namespace.full_path)
-    end
-
-    Gitlab::PagesTransfer.new.rename_project(path_before, self.path, namespace.full_path)
-  end
-
-  # rubocop: disable CodeReuse/ServiceClass
-  def execute_rename_repository_hooks!(full_path_before)
-    # When we import a project overwriting the original project, there
-    # is a move operation. In that case we don't want to send the instructions.
-    send_move_instructions(full_path_before) unless import_started?
-
-    self.old_path_with_namespace = full_path_before
-    SystemHooksService.new.execute_hooks_for(self, :rename)
-
-    reload_repository!
-  end
-  # rubocop: enable CodeReuse/ServiceClass
-
   def storage
     @storage ||=
       if hashed_storage?(:repository)
@@ -2148,6 +2017,74 @@ class Project < ActiveRecord::Base
       else
         Storage::LegacyProject.new(self)
       end
+  end
+
+  def storage_upgradable?
+    storage_version != LATEST_STORAGE_VERSION
+  end
+
+  def snippets_visible?(user = nil)
+    Ability.allowed?(user, :read_project_snippet, self)
+  end
+
+  def max_attachment_size
+    Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i
+  end
+
+  def object_pool_params
+    return {} unless !forked? && git_objects_poolable?
+
+    {
+      repository_storage: repository_storage,
+      pool_repository:    pool_repository || create_new_pool_repository
+    }
+  end
+
+  # Git objects are only poolable when the project is or has:
+  # - Hashed storage -> The object pool will have a remote to its members, using relative paths.
+  #                     If the repository path changes we would have to update the remote.
+  # - Public         -> User will be able to fetch Git objects that might not exist
+  #                     in their own repository.
+  # - Repository     -> Else the disk path will be empty, and there's nothing to pool
+  def git_objects_poolable?
+    hashed_storage?(:repository) &&
+      public? &&
+      repository_exists? &&
+      Gitlab::CurrentSettings.hashed_storage_enabled &&
+      Feature.enabled?(:object_pools, self)
+  end
+
+  def leave_pool_repository
+    pool_repository&.unlink_repository(repository) && update_column(:pool_repository_id, nil)
+  end
+
+  def link_pool_repository
+    pool_repository&.link_repository(repository)
+  end
+
+  private
+
+  def merge_requests_allowing_collaboration(source_branch = nil)
+    relation = source_of_merge_requests.opened.where(allow_collaboration: true)
+    relation = relation.where(source_branch: source_branch) if source_branch
+    relation
+  end
+
+  def create_new_pool_repository
+    pool = begin
+             create_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
+           rescue ActiveRecord::RecordNotUnique
+             pool_repository(true)
+           end
+
+    pool.schedule unless pool.scheduled?
+    pool
+  end
+
+  def join_pool_repository
+    return unless pool_repository
+
+    ObjectPool::JoinWorker.perform_async(pool_repository.id, self.id)
   end
 
   def use_hashed_storage
@@ -2177,13 +2114,8 @@ class Project < ActiveRecord::Base
     gitlab_shell.exists?(repository_storage, "#{disk_path}.git")
   end
 
-  # set last_activity_at to the same as created_at
-  def set_last_activity_at
-    update_column(:last_activity_at, self.created_at)
-  end
-
-  def set_last_repository_updated_at
-    update_column(:last_repository_updated_at, self.created_at)
+  def set_timestamps_for_create
+    update_columns(last_activity_at: self.created_at, last_repository_updated_at: self.created_at)
   end
 
   def cross_namespace_reference?(from)
@@ -2262,25 +2194,18 @@ class Project < ActiveRecord::Base
     raise ex
   end
 
-  def fetch_branch_allows_collaboration?(user, branch_name)
-    check_access = -> do
-      next false if empty_repo?
+  def fetch_branch_allows_collaboration(user, branch_name = nil)
+    return false unless user
 
-      merge_requests = source_of_merge_requests.opened
-                         .where(allow_collaboration: true)
+    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
+      next false if empty_repo?
 
       # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
       Gitlab::GitalyClient.allow_n_plus_1_calls do
-        if branch_name
-          merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
-        else
-          merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+        merge_requests_allowing_collaboration(branch_name).any? do |merge_request|
+          merge_request.can_be_merged_by?(user)
         end
       end
-    end
-
-    Gitlab::SafeRequestStore.fetch("project-#{id}:branch-#{branch_name}:user-#{user.id}:branch_allows_collaboration") do
-      check_access.call
     end
   end
 

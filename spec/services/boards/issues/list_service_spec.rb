@@ -12,7 +12,7 @@ describe Boards::Issues::ListService do
 
       let(:bug) { create(:label, project: project, name: 'Bug') }
       let(:development) { create(:label, project: project, name: 'Development') }
-      let(:testing)  { create(:label, project: project, name: 'Testing') }
+      let(:testing) { create(:label, project: project, name: 'Testing') }
       let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
       let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
       let(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
@@ -63,7 +63,7 @@ describe Boards::Issues::ListService do
 
       let(:bug) { create(:group_label, group: group, name: 'Bug') }
       let(:development) { create(:group_label, group: group, name: 'Development') }
-      let(:testing)  { create(:group_label, group: group, name: 'Testing') }
+      let(:testing) { create(:group_label, group: group, name: 'Testing') }
 
       let(:p1) { create(:group_label, title: 'P1', group: group) }
       let(:p2) { create(:group_label, title: 'P2', group: group) }

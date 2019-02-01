@@ -41,8 +41,10 @@ const AjaxFilter = {
     if (config.searchValueFunction) {
       searchValue = config.searchValueFunction();
     }
-    if (config.loadingTemplate && this.hook.list.data === undefined ||
-      this.hook.list.data.length === 0) {
+    if (
+      (config.loadingTemplate && this.hook.list.data === undefined) ||
+      this.hook.list.data.length === 0
+    ) {
       var dynamicList = this.hook.list.list.querySelector('[data-dynamic]');
       var loadingTemplate = document.createElement('div');
       loadingTemplate.innerHTML = config.loadingTemplate;
@@ -61,7 +63,7 @@ const AjaxFilter = {
     params[config.searchKey] = searchValue;
     var url = config.endpoint + this.buildParams(params);
     return AjaxCache.retrieve(url)
-      .then((data) => {
+      .then(data => {
         this._loadData(data, config);
         if (config.onLoadingFinished) {
           config.onLoadingFinished(data);
@@ -72,8 +74,7 @@ const AjaxFilter = {
 
   _loadData(data, config) {
     const list = this.hook.list;
-    if (config.loadingTemplate && list.data === undefined ||
-      list.data.length === 0) {
+    if ((config.loadingTemplate && list.data === undefined) || list.data.length === 0) {
       const dataLoadingTemplate = list.list.querySelector('[data-loading-template]');
       if (dataLoadingTemplate) {
         dataLoadingTemplate.outerHTML = this.listTemplate;
@@ -81,7 +82,8 @@ const AjaxFilter = {
     }
     if (!this.destroyed) {
       var hookListChildren = list.list.children;
-      var onlyDynamicList = hookListChildren.length === 1 && hookListChildren[0].hasAttribute('data-dynamic');
+      var onlyDynamicList =
+        hookListChildren.length === 1 && hookListChildren[0].hasAttribute('data-dynamic');
       if (onlyDynamicList && data.length === 0) {
         list.hide();
       }
@@ -100,12 +102,12 @@ const AjaxFilter = {
   },
 
   destroy: function destroy() {
-    if (this.timeout)clearTimeout(this.timeout);
+    if (this.timeout) clearTimeout(this.timeout);
     this.destroyed = true;
 
     this.hook.trigger.removeEventListener('keydown.dl', this.eventWrapper.debounceTrigger);
     this.hook.trigger.removeEventListener('focus', this.eventWrapper.debounceTrigger);
-  }
+  },
 };
 
 export default AjaxFilter;

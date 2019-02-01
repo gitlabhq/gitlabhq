@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Inspired by https://github.com/peek/peek-pg/blob/master/lib/peek/views/pg.rb
 # PEEK_DB_CLIENT is a constant set in config/initializers/peek.rb
 module Gitlab

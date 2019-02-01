@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Diff
     class Highlight
@@ -79,7 +81,7 @@ module Gitlab
         return [] unless blob
 
         blob.load_all_data!
-        Gitlab::Highlight.highlight(blob.path, blob.data, repository: repository).lines
+        blob.present.highlight.lines
       end
     end
   end

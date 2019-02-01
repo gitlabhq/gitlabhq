@@ -33,7 +33,7 @@ Test Connection to ensure the configuration is correct.
 - **Name**: InfluxDB
 - **Default**: Checked
 - **Type**: InfluxDB 0.9.x (Even if you're using InfluxDB 0.10.x)
-- **Url**: https://localhost:8086 (Or the remote URL if you've installed InfluxDB
+- **Url**: `https://localhost:8086` (Or the remote URL if you've installed InfluxDB
 on a separate server)
 - **Access**: proxy
 - **Database**: gitlab

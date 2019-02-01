@@ -38,12 +38,12 @@ Starting with GitLab 9.1.0 it's possible to upgrade to a newer major, minor, or
 patch version of GitLab without having to take your GitLab instance offline.
 However, for this to work there are the following requirements:
 
-1. You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to
+- You can only upgrade 1 minor release at a time. So from 9.1 to 9.2, not to
    9.3.
-2. You have to use [post-deployment
+- You have to use [post-deployment
    migrations](../development/post_deployment_migrations.md) (included in
-   zero downtime update steps below)
-3. You are using PostgreSQL. If you are using MySQL please look at the release
+   zero downtime update steps below).
+- You are using PostgreSQL. If you are using MySQL please look at the release
    post to see if downtime is required.
 
 Most of the time you can safely upgrade from a patch release to the next minor

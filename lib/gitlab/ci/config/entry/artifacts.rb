@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -5,10 +7,10 @@ module Gitlab
         ##
         # Entry that represents a configuration of job artifacts.
         #
-        class Artifacts < Node
-          include Configurable
-          include Validatable
-          include Attributable
+        class Artifacts < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Configurable
+          include ::Gitlab::Config::Entry::Validatable
+          include ::Gitlab::Config::Entry::Attributable
 
           ALLOWED_KEYS = %i[name untracked paths reports when expire_in].freeze
 

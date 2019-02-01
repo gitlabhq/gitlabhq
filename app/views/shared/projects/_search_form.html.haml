@@ -21,3 +21,5 @@
 
   - if params[:visibility_level].present?
     = hidden_field_tag :visibility_level, params[:visibility_level]
+
+  = render_if_exists 'shared/projects/search_fields'

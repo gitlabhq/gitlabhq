@@ -20,14 +20,26 @@ describe API::Branches do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
     shared_examples_for 'repository branches' do
+      RSpec::Matchers.define :has_merged_branch_names_count do |expected|
+        match do |actual|
+          actual[:merged_branch_names].count == expected
+        end
+      end
+
       it 'returns the repository branches' do
-        get api(route, current_user), per_page: 100
+        get api(route, current_user), params: { per_page: 100 }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/branches')
         expect(response).to include_pagination_headers
         branch_names = json_response.map { |x| x['name'] }
         expect(branch_names).to match_array(project.repository.branch_names)
+      end
+
+      it 'determines only a limited number of merged branch names' do
+        expect(API::Entities::Branch).to receive(:represent).with(anything, has_merged_branch_names_count(2))
+
+        get api(route, current_user), params: { per_page: 2 }
       end
 
       context 'when repository is disabled' do
@@ -42,7 +54,7 @@ describe API::Branches do
     context 'when search parameter is passed' do
       context 'and branch exists' do
         it 'returns correct branches' do
-          get api(route, user), per_page: 100, search: branch_name
+          get api(route, user), params: { per_page: 100, search: branch_name }
 
           searched_branch_names = json_response.map { |branch| branch['name'] }
           project_branch_names = project.repository.branch_names.grep(/#{branch_name}/)
@@ -53,7 +65,7 @@ describe API::Branches do
 
       context 'and branch does not exist' do
         it 'returns an empty array' do
-          get api(route, user), per_page: 100, search: 'no_such_branch_name_entropy_of_jabadabadu'
+          get api(route, user), params: { per_page: 100, search: 'no_such_branch_name_entropy_of_jabadabadu' }
 
           expect(json_response).to eq []
         end
@@ -252,7 +264,7 @@ describe API::Branches do
       end
 
       it 'protects a single branch and developers can push' do
-        put api(route, current_user), developers_can_push: true
+        put api(route, current_user), params: { developers_can_push: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/branch')
@@ -263,7 +275,7 @@ describe API::Branches do
       end
 
       it 'protects a single branch and developers can merge' do
-        put api(route, current_user), developers_can_merge: true
+        put api(route, current_user), params: { developers_can_merge: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/branch')
@@ -274,7 +286,7 @@ describe API::Branches do
       end
 
       it 'protects a single branch and developers can push and merge' do
-        put api(route, current_user), developers_can_push: true, developers_can_merge: true
+        put api(route, current_user), params: { developers_can_push: true, developers_can_merge: true }
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/branch')
@@ -373,7 +385,7 @@ describe API::Branches do
 
           it 'updates that a developer cannot push or merge' do
             put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
-                developers_can_push: false, developers_can_merge: false
+                params: { developers_can_push: false, developers_can_merge: false }
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to match_response_schema('public_api/v4/branch')
@@ -391,7 +403,7 @@ describe API::Branches do
 
           it 'updates that a developer can push and merge' do
             put api("/projects/#{project.id}/repository/branches/#{protected_branch.name}/protect", user),
-                developers_can_push: true, developers_can_merge: true
+                params: { developers_can_push: true, developers_can_merge: true }
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to match_response_schema('public_api/v4/branch')
@@ -504,7 +516,7 @@ describe API::Branches do
 
     shared_examples_for 'repository new branch' do
       it 'creates a new branch' do
-        post api(route, current_user), branch: 'feature1', ref: branch_sha
+        post api(route, current_user), params: { branch: 'feature1', ref: branch_sha }
 
         expect(response).to have_gitlab_http_status(201)
         expect(response).to match_response_schema('public_api/v4/branch')
@@ -549,25 +561,25 @@ describe API::Branches do
     end
 
     it 'returns 400 if branch name is invalid' do
-      post api(route, user), branch: 'new design', ref: branch_sha
+      post api(route, user), params: { branch: 'new design', ref: branch_sha }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq('Branch name is invalid')
     end
 
     it 'returns 400 if branch already exists' do
-      post api(route, user), branch: 'new_design1', ref: branch_sha
+      post api(route, user), params: { branch: 'new_design1', ref: branch_sha }
 
       expect(response).to have_gitlab_http_status(201)
 
-      post api(route, user), branch: 'new_design1', ref: branch_sha
+      post api(route, user), params: { branch: 'new_design1', ref: branch_sha }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq('Branch already exists')
     end
 
     it 'returns 400 if ref name is invalid' do
-      post api(route, user), branch: 'new_design3', ref: 'foo'
+      post api(route, user), params: { branch: 'new_design3', ref: 'foo' }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']).to eq('Invalid reference name')

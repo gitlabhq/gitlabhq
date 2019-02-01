@@ -26,6 +26,8 @@ describe('Diffs tree list component', () => {
     store.state.diffs.removedLines = 20;
     store.state.diffs.diffFiles.push('test');
 
+    localStorage.removeItem('mr_diff_tree_list');
+
     vm = mountComponentWithStore(Component, { store });
   });
 
@@ -53,10 +55,11 @@ describe('Diffs tree list component', () => {
           fileHash: 'test',
           key: 'index.js',
           name: 'index.js',
-          path: 'index.js',
+          path: 'app/index.js',
           removedLines: 0,
           tempFile: true,
           type: 'blob',
+          parentPath: 'app',
         },
         app: {
           key: 'app',
@@ -81,7 +84,7 @@ describe('Diffs tree list component', () => {
     });
 
     it('filters tree list to blobs matching search', done => {
-      vm.search = 'index';
+      vm.search = 'app/index';
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelectorAll('.file-row').length).toBe(1);
@@ -104,7 +107,27 @@ describe('Diffs tree list component', () => {
 
       vm.$el.querySelector('.file-row').click();
 
-      expect(vm.$store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', 'index.js');
+      expect(vm.$store.dispatch).toHaveBeenCalledWith('diffs/scrollToFile', 'app/index.js');
+    });
+
+    it('renders as file list when renderTreeList is false', done => {
+      vm.$store.state.diffs.renderTreeList = false;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelectorAll('.file-row').length).toBe(1);
+
+        done();
+      });
+    });
+
+    it('renders file paths when renderTreeList is false', done => {
+      vm.$store.state.diffs.renderTreeList = false;
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.file-row').textContent).toContain('index.js');
+
+        done();
+      });
     });
   });
 

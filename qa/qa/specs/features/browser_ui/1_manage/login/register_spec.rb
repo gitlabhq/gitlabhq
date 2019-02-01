@@ -5,7 +5,7 @@ module QA
     it 'user registers and logs in' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
 
-      Factory::Resource::User.fabricate!
+      Resource::User.fabricate_via_browser_ui!
 
       # TODO, since `Signed in successfully` message was removed
       # this is the only way to tell if user is signed in correctly.
@@ -16,13 +16,13 @@ module QA
     end
   end
 
-  context :manage, :skip_signup_disabled do
+  context 'Manage', :skip_signup_disabled do
     describe 'standard' do
       it_behaves_like 'registration and login'
     end
   end
 
-  context :manage, :orchestrated, :ldap, :skip_signup_disabled do
+  context 'Manage', :orchestrated, :ldap_no_tls, :skip_signup_disabled do
     describe 'while LDAP is enabled' do
       it_behaves_like 'registration and login'
     end

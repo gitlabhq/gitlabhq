@@ -36,6 +36,15 @@ label {
   }
 }
 
+.label-wrapper {
+  display: block;
+  margin: 0;
+}
+
+.form-label {
+  @extend label;
+}
+
 .form-control-label {
   @extend .col-md-2;
 }
@@ -252,11 +261,16 @@ label {
     right: 0.8em;
     top: 50%;
     transform: translateY(-50%);
-    color: $theme-gray-600;
+    color: $gray-600;
   }
 }
 
+.input-md {
+  max-width: $input-md-width;
+  width: 100%;
+}
+
 .input-lg {
-  max-width: 320px;
+  max-width: $input-lg-width;
   width: 100%;
 }

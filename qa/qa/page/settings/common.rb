@@ -11,7 +11,7 @@ module QA
             wait(reload: false) do
               click_button 'Expand' unless first('button', text: 'Collapse')
 
-              page.has_content?('Collapse')
+              has_content?('Collapse')
             end
 
             yield if block_given?

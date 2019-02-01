@@ -1,5 +1,0 @@
----
-title: Fix resolved discussions being unresolved when commented on
-merge_request: 21881
-author:
-type: fixed

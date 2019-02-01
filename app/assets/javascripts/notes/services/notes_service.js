@@ -1,12 +1,14 @@
 import Vue from 'vue';
+import Api from '~/api';
 import VueResource from 'vue-resource';
 import * as constants from '../constants';
 
 Vue.use(VueResource);
 
 export default {
-  fetchDiscussions(endpoint) {
-    return Vue.http.get(endpoint);
+  fetchDiscussions(endpoint, filter) {
+    const config = filter !== undefined ? { params: { notes_filter: filter } } : null;
+    return Vue.http.get(endpoint, config);
   },
   deleteNote(endpoint) {
     return Vue.http.delete(endpoint);
@@ -42,5 +44,8 @@ export default {
   },
   toggleIssueState(endpoint, data) {
     return Vue.http.put(endpoint, data);
+  },
+  applySuggestion(id) {
+    return Api.applySuggestion(id);
   },
 };

@@ -3,6 +3,14 @@
 class IssuableBaseService < BaseService
   private
 
+  attr_accessor :params, :skip_milestone_email
+
+  def initialize(project, user = nil, params = {})
+    super
+
+    @skip_milestone_email = @params.delete(:skip_milestone_email)
+  end
+
   def filter_params(issuable)
     ability_name = :"admin_#{issuable.to_ability_name}"
 
@@ -53,10 +61,10 @@ class IssuableBaseService < BaseService
     return unless milestone_id
 
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
-    group_ids = project.group&.self_and_ancestors&.pluck(:id)
+    groups = project.group&.self_and_ancestors&.select(:id)
 
     milestone =
-      Milestone.for_projects_and_groups([project.id], group_ids).find_by_id(milestone_id)
+      Milestone.for_projects_and_groups([project.id], groups).find_by_id(milestone_id)
 
     params[:milestone_id] = '' unless milestone
   end
@@ -118,12 +126,12 @@ class IssuableBaseService < BaseService
     merge_quick_actions_into_params!(issuable)
   end
 
-  def merge_quick_actions_into_params!(issuable)
+  def merge_quick_actions_into_params!(issuable, only: nil)
     original_description = params.fetch(:description, issuable.description)
 
     description, command_params =
       QuickActions::InterpretService.new(project, current_user)
-        .execute(original_description, issuable)
+        .execute(original_description, issuable, only: only)
 
     # Avoid a description already set on an issuable to be overwritten by a nil
     params[:description] = description if description
@@ -144,6 +152,10 @@ class IssuableBaseService < BaseService
     before_create(issuable)
 
     if issuable.save
+      ActiveRecord::Base.no_touching do
+        Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, is_update: false)
+      end
+
       after_create(issuable)
       execute_hooks(issuable)
       invalidate_cache_counts(issuable, users: issuable.assignees)
@@ -199,7 +211,7 @@ class IssuableBaseService < BaseService
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
-          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_associations[:labels])
+          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: old_associations[:labels])
         end
 
         handle_changes(issuable, old_associations: old_associations)

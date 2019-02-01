@@ -14,7 +14,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Download the artifacts archive from a job' do
         detail 'This feature was introduced in GitLab 8.10'
       end
@@ -23,17 +23,37 @@ module API
         requires :job,      type: String, desc: 'The name for the job'
       end
       route_setting :authentication, job_token_allowed: true
-      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/jobs/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         authorize_download_artifacts!
 
-        builds = user_project.latest_successful_builds_for(params[:ref_name])
-        latest_build = builds.find_by!(name: params[:job])
+        latest_build = user_project.latest_successful_build_for!(params[:job], params[:ref_name])
 
         present_carrierwave_file!(latest_build.artifacts_file)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Download a specific file from artifacts archive from a ref' do
+        detail 'This feature was introduced in GitLab 11.5'
+      end
+      params do
+        requires :ref_name, type: String, desc: 'The ref from repository'
+        requires :job, type: String, desc: 'The name for the job'
+        requires :artifact_path, type: String, desc: 'Artifact path'
+      end
+      get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
+          format: false,
+          requirements: { ref_name: /.+/ } do
+        authorize_download_artifacts!
+
+        build = user_project.latest_successful_build_for!(params[:job], params[:ref_name])
+
+        path = Gitlab::Ci::Build::Artifacts::Path
+                 .new(params[:artifact_path])
+
+        bad_request! unless path.valid?
+
+        send_artifacts_entry(build, path)
+      end
 
       desc 'Download the artifacts archive from a job' do
         detail 'This feature was introduced in GitLab 8.5'
@@ -65,6 +85,7 @@ module API
 
         path = Gitlab::Ci::Build::Artifacts::Path
           .new(params[:artifact_path])
+
         bad_request! unless path.valid?
 
         send_artifacts_entry(build, path)

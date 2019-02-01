@@ -1,11 +1,10 @@
-# We only need Gollum::Page so let's not load all of gollum-lib.
-require 'gollum-lib/pagination'
-require 'gollum-lib/wiki'
-require 'gollum-lib/page'
+# frozen_string_literal: true
 
 module Gitlab
   module Git
     class Wiki
+      include Gitlab::Git::WrapsGitalyErrors
+
       DuplicatePageError = Class.new(StandardError)
       OperationError = Class.new(StandardError)
 
@@ -16,7 +15,43 @@ module Gitlab
           { user_id: user_id, username: username, name: name, email: email, message: message }
         end
       end
-      PageBlob = Struct.new(:name)
+
+      # GollumSlug inlines just enough knowledge from Gollum::Page to generate a
+      # slug, which is used when previewing pages that haven't been persisted
+      class GollumSlug
+        class << self
+          def cname(name, char_white_sub = '-', char_other_sub = '-')
+            if name.respond_to?(:gsub)
+              name.gsub(/\s/, char_white_sub).gsub(/[<>+]/, char_other_sub)
+            else
+              ''
+            end
+          end
+
+          def format_to_ext(format)
+            format == :markdown ? "md" : format.to_s
+          end
+
+          def canonicalize_filename(filename)
+            ::File.basename(filename, ::File.extname(filename)).tr('-', ' ')
+          end
+
+          def generate(title, format)
+            ext = format_to_ext(format.to_sym)
+            name = cname(title) + '.' + ext
+            canonical_name = canonicalize_filename(name)
+
+            path =
+              if name.include?('/')
+                name.sub(%r{/[^/]+$}, '/')
+              else
+                ''
+              end
+
+            path + cname(canonical_name, '-', '-')
+          end
+        end
+      end
 
       attr_reader :repository
 
@@ -34,37 +69,37 @@ module Gitlab
       end
 
       def write_page(name, format, content, commit_details)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_write_page(name, format, content, commit_details)
         end
       end
 
       def delete_page(page_path, commit_details)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_delete_page(page_path, commit_details)
         end
       end
 
       def update_page(page_path, title, format, content, commit_details)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_update_page(page_path, title, format, content, commit_details)
         end
       end
 
       def pages(limit: 0)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_get_all_pages(limit: limit)
         end
       end
 
       def page(title:, version: nil, dir: nil)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_find_page(title: title, version: version, dir: dir)
         end
       end
 
       def file(name, version)
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_find_file(name, version)
         end
       end
@@ -74,7 +109,7 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def page_versions(page_path, options = {})
-        versions = @repository.wrapped_gitaly_errors do
+        versions = wrapped_gitaly_errors do
           gitaly_wiki_client.page_versions(page_path, options)
         end
 
@@ -90,21 +125,13 @@ module Gitlab
       end
 
       def preview_slug(title, format)
-        # Adapted from gollum gem (Gollum::Wiki#preview_page) to avoid
-        # using Rugged through a Gollum::Wiki instance
-        page_class = Gollum::Page
-        page = page_class.new(nil)
-        ext = page_class.format_to_ext(format.to_sym)
-        name = page_class.cname(title) + '.' + ext
-        blob = PageBlob.new(name)
-        page.populate(blob)
-        page.url_path
+        GollumSlug.generate(title, format)
       end
 
       def page_formatted_data(title:, dir: nil, version: nil)
         version = version&.id
 
-        @repository.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_wiki_client.get_formatted_data(title: title, dir: dir, version: version)
         end
       end

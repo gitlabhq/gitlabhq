@@ -1,3 +1,5 @@
+import { TEST_HOST } from 'spec/test_constants';
+
 const threeWeeksAgo = new Date();
 threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
 
@@ -19,7 +21,7 @@ export default {
     label: 'passed',
     group: 'success',
     has_details: true,
-    details_path: '/root/ci-mock/-/jobs/4757',
+    details_path: `${TEST_HOST}/root/ci-mock/-/jobs/4757`,
     favicon:
       '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
     action: {
@@ -31,6 +33,7 @@ export default {
   },
   coverage: 20,
   erased_at: threeWeeksAgo.toISOString(),
+  erased: false,
   duration: 6.785563,
   tags: ['tag'],
   user: {
@@ -131,6 +134,7 @@ export default {
     path: '/root/ci-mock/merge_requests/2',
   },
   raw_path: '/root/ci-mock/builds/4757/raw',
+  has_trace: true,
 };
 
 export const stages = [

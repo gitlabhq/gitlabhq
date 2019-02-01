@@ -2,6 +2,7 @@
 
 module QuickActions
   class InterpretService < BaseService
+    include Gitlab::Utils::StrongMemoize
     include Gitlab::QuickActions::Dsl
 
     attr_reader :issuable
@@ -23,13 +24,13 @@ module QuickActions
 
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, and hash of changes to be applied to a record.
-    def execute(content, issuable)
+    def execute(content, issuable, only: nil)
       return [content, {}] unless current_user.can?(:use_quick_actions)
 
       @issuable = issuable
       @updates = {}
 
-      content, commands = extractor.extract_commands(content)
+      content, commands = extractor.extract_commands(content, only: only)
       extract_updates(commands)
 
       [content, @updates]
@@ -210,15 +211,9 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      if project
-        available_labels = LabelsFinder
-          .new(current_user, project_id: project.id, include_ancestor_groups: true)
-          .execute
-      end
-
-      project &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
-        available_labels.any?
+      parent &&
+        current_user.can?(:"admin_#{issuable.to_ability_name}", parent) &&
+        find_labels.any?
     end
     command :label do |labels_param|
       label_ids = find_label_ids(labels_param)
@@ -245,7 +240,7 @@ module QuickActions
       issuable.is_a?(Issuable) &&
         issuable.persisted? &&
         issuable.labels.any? &&
-        current_user.can?(:"admin_#{issuable.to_ability_name}", project)
+        current_user.can?(:"admin_#{issuable.to_ability_name}", parent)
     end
     command :unlabel do |labels_param = nil|
       if labels_param.present?
@@ -433,14 +428,14 @@ module QuickActions
       end
     end
 
-    desc 'Add or substract spent time'
+    desc 'Add or subtract spent time'
     explanation do |time_spent, time_spent_date|
       if time_spent
         if time_spent > 0
           verb = 'Adds'
           value = time_spent
         else
-          verb = 'Substracts'
+          verb = 'Subtracts'
           value = -time_spent
         end
 
@@ -635,6 +630,22 @@ module QuickActions
       @updates[:tag_message] = message
     end
 
+    desc 'Create a merge request.'
+    explanation do |branch_name = nil|
+      branch_text = branch_name ? "branch '#{branch_name}'" : 'a branch'
+      "Creates #{branch_text} and a merge request to resolve this issue"
+    end
+    params "<branch name>"
+    condition do
+      issuable.is_a?(Issue) && current_user.can?(:create_merge_request_in, project) && current_user.can?(:push_code, project)
+    end
+    command :create_merge_request do |branch_name = nil|
+      @updates[:create_merge_request] = {
+        branch_name: branch_name,
+        issue_iid: issuable.iid
+      }
+    end
+
     # rubocop: disable CodeReuse/ActiveRecord
     def extract_users(params)
       return [] if params.nil?
@@ -643,7 +654,7 @@ module QuickActions
 
       if users.empty?
         users =
-          if params == 'me'
+          if params.strip == 'me'
             [current_user]
           else
             User.where(username: params.split(' ').map(&:strip))
@@ -658,9 +669,25 @@ module QuickActions
       MilestonesFinder.new(params.merge(project_ids: [project.id], group_ids: [project.group&.id])).execute
     end
 
-    def find_labels(labels_param)
-      extract_references(labels_param, :label) |
-        LabelsFinder.new(current_user, project_id: project.id, name: labels_param.split, include_ancestor_groups: true).execute
+    def parent
+      project || group
+    end
+
+    def group
+      strong_memoize(:group) do
+        issuable.group if issuable.respond_to?(:group)
+      end
+    end
+
+    def find_labels(labels_params = nil)
+      finder_params = { include_ancestor_groups: true }
+      finder_params[:project_id] = project.id if project
+      finder_params[:group_id] = group.id if group
+      finder_params[:name] = labels_params.split if labels_params
+
+      result = LabelsFinder.new(current_user, finder_params).execute
+
+      extract_references(labels_params, :label) | result
     end
 
     def find_label_references(labels_param)
@@ -691,9 +718,11 @@ module QuickActions
 
     # rubocop: disable CodeReuse/ActiveRecord
     def extract_references(arg, type)
+      return [] unless arg
+
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
 
-      ext.analyze(arg, author: current_user)
+      ext.analyze(arg, author: current_user, group: group)
 
       ext.references(type)
     end

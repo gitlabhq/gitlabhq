@@ -1,9 +1,9 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
-import _ from 'underscore';
 import Sidebar from '../../right_sidebar';
 import Shortcuts from './shortcuts';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
+import { getSelectedFragment } from '~/lib/utils/common_utils';
 
 export default class ShortcutsIssuable extends Shortcuts {
   constructor(isMergeRequest) {
@@ -24,30 +24,56 @@ export default class ShortcutsIssuable extends Shortcuts {
 
   static replyWithSelectedText() {
     const $replyField = $('.js-main-target-form .js-vue-comment-form');
-    const documentFragment = window.gl.utils.getSelectedFragment();
 
-    if (!$replyField.length) {
+    if (!$replyField.length || $replyField.is(':hidden') /* Other tab selected in MR */) {
       return false;
     }
+
+    const documentFragment = getSelectedFragment(document.querySelector('#content-body'));
 
     if (!documentFragment) {
       $replyField.focus();
       return false;
     }
 
-    const el = CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
-    const selected = CopyAsGFM.nodeToGFM(el);
+    // Sanity check: Make sure the selected text comes from a discussion : it can either contain a message...
+    let foundMessage = !!documentFragment.querySelector('.md, .wiki');
 
-    if (selected.trim() === '') {
-      return false;
+    // ... Or come from a message
+    if (!foundMessage) {
+      if (documentFragment.originalNodes) {
+        documentFragment.originalNodes.forEach(e => {
+          let node = e;
+          do {
+            // Text nodes don't define the `matches` method
+            if (node.matches && node.matches('.md, .wiki')) {
+              foundMessage = true;
+            }
+            node = node.parentNode;
+          } while (node && !foundMessage);
+        });
+      }
+
+      // If there is no message, just select the reply field
+      if (!foundMessage) {
+        $replyField.focus();
+        return false;
+      }
     }
 
-    const quote = _.map(selected.split('\n'), val => `${`> ${val}`.trim()}\n`);
+    const el = CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
+    const blockquoteEl = document.createElement('blockquote');
+    blockquoteEl.appendChild(el);
+    const text = CopyAsGFM.nodeToGFM(blockquoteEl);
+
+    if (text.trim() === '') {
+      return false;
+    }
 
     // If replyField already has some content, add a newline before our quote
     const separator = ($replyField.val().trim() !== '' && '\n\n') || '';
     $replyField
-      .val((a, current) => `${current}${separator}${quote.join('')}\n`)
+      .val((a, current) => `${current}${separator}${text}\n\n`)
       .trigger('input')
       .trigger('change');
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # This class implements a simple rate limiter that can be used to throttle
   # certain actions. Unlike Rack Attack and Rack::Throttle, which operate at

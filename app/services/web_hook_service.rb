@@ -22,7 +22,7 @@ class WebHookService
   end
 
   def execute
-    start_time = Time.now
+    start_time = Gitlab::Metrics::System.monotonic_time
 
     response = if parsed_url.userinfo.blank?
                  make_request(hook.url)
@@ -35,7 +35,7 @@ class WebHookService
       url: hook.url,
       request_data: data,
       response: response,
-      execution_duration: Time.now - start_time
+      execution_duration: Gitlab::Metrics::System.monotonic_time - start_time
     )
 
     {
@@ -43,13 +43,13 @@ class WebHookService
       http_status: response.code,
       message: response.to_s
     }
-  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError => e
+  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep => e
     log_execution(
       trigger: hook_name,
       url: hook.url,
       request_data: data,
       response: InternalErrorResponse.new,
-      execution_duration: Time.now - start_time,
+      execution_duration: Gitlab::Metrics::System.monotonic_time - start_time,
       error_message: e.to_s
     )
 

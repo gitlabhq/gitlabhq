@@ -1,25 +1,33 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Quality::KubernetesClient do
-  subject { described_class.new(namespace: 'review-apps-ee') }
+  let(:namespace) { 'review-apps-ee' }
+  let(:release_name) { 'my-release' }
+
+  subject { described_class.new(namespace: namespace) }
 
   describe '#cleanup' do
+    it 'raises an error if the Kubernetes command fails' do
+      expect(Gitlab::Popen).to receive(:popen_with_detail)
+        .with([%(kubectl --namespace "#{namespace}" delete ) \
+          'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa ' \
+          "--now -l release=\"#{release_name}\""])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
+
+      expect { subject.cleanup(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
+    end
+
     it 'calls kubectl with the correct arguments' do
-      # popen_with_detail will receive an array with a bunch of arguments; we're
-      # only concerned with it having the correct namespace and release name
-      expect(Gitlab::Popen).to receive(:popen_with_detail) do |args|
-        expect(args)
-          .to satisfy_one { |arg| arg.start_with?('-n "review-apps-ee" get') }
-        expect(args)
-          .to satisfy_one { |arg| arg == 'grep "my-release"' }
-        expect(args)
-          .to satisfy_one { |arg| arg.end_with?('-n "review-apps-ee" delete') }
-      end
+      expect(Gitlab::Popen).to receive(:popen_with_detail)
+        .with([%(kubectl --namespace "#{namespace}" delete ) \
+          'ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa ' \
+          "--now -l release=\"#{release_name}\""])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
       # We're not verifying the output here, just silencing it
-      expect { subject.cleanup(release_name: 'my-release') }.to output.to_stdout
+      expect { subject.cleanup(release_name: release_name) }.to output.to_stdout
     end
   end
 end

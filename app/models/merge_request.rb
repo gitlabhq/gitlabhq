@@ -21,6 +21,8 @@ class MergeRequest < ActiveRecord::Base
   self.reactive_cache_refresh_interval = 10.minutes
   self.reactive_cache_lifetime = 10.minutes
 
+  SORTING_PREFERENCE_FIELD = :merge_requests_sort
+
   ignore_column :locked_at,
                 :ref_fetched,
                 :deleted_at
@@ -48,8 +50,8 @@ class MergeRequest < ActiveRecord::Base
   # is the inverse of MergeRequest#merge_request_diff, which means it may not be
   # the latest diff, because we could have loaded any diff from this particular
   # MR. If we haven't already loaded a diff, then it's fine to load the latest.
-  def merge_request_diff(*args)
-    fallback = latest_merge_request_diff if args.empty? && !association(:merge_request_diff).loaded?
+  def merge_request_diff
+    fallback = latest_merge_request_diff unless association(:merge_request_diff).loaded?
 
     fallback || super
   end
@@ -63,6 +65,7 @@ class MergeRequest < ActiveRecord::Base
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
+  has_many :merge_request_pipelines, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline'
 
   belongs_to :assignee, class_name: "User"
 
@@ -104,7 +107,9 @@ class MergeRequest < ActiveRecord::Base
 
     before_transition any => :opened do |merge_request|
       merge_request.merge_jid = nil
+    end
 
+    after_transition any => :opened do |merge_request|
       merge_request.run_after_commit do
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
@@ -204,6 +209,12 @@ class MergeRequest < ActiveRecord::Base
     head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
   end
 
+  def merge_pipeline
+    return unless merged?
+
+    target_project.pipeline_for(target_branch, merge_commit_sha)
+  end
+
   # Pattern used to extract `!123` merge request references from text
   #
   # This pattern supports cross-project references.
@@ -275,6 +286,14 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
+  def committers
+    @committers ||= commits.committers
+  end
+
+  def authors
+    User.from_union([committers, User.where(id: self.author_id)])
+  end
+
   # Verifies if title has changed not taking into account WIP prefix
   # for merge requests.
   def wipless_title_changed(old_title)
@@ -318,13 +337,15 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def commits
-    if persisted?
-      merge_request_diff.commits
-    elsif compare_commits
-      compare_commits.reverse
-    else
-      []
-    end
+    return merge_request_diff.commits if persisted?
+
+    commits_arr = if compare_commits
+                    compare_commits.reverse
+                  else
+                    []
+                  end
+
+    CommitCollection.new(source_project, commits_arr, source_branch)
   end
 
   def commits_count
@@ -345,6 +366,19 @@ class MergeRequest < ActiveRecord::Base
     else
       Array(diff_head_sha)
     end
+  end
+
+  # Returns true if there are commits that match at least one commit SHA.
+  def includes_any_commits?(shas)
+    if persisted?
+      merge_request_diff.commits_by_shas(shas).exists?
+    else
+      (commit_shas & shas).present?
+    end
+  end
+
+  def supports_suggestion?
+    true
   end
 
   # Calls `MergeWorker` to proceed with the merge process and
@@ -388,10 +422,44 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diffs.where.not(id: merge_request_diff.id)
   end
 
+  def preloads_discussion_diff_highlighting?
+    true
+  end
+
+  def preload_discussions_diff_highlight
+    preloadable_files = note_diff_files.for_commit_or_unresolved
+
+    discussions_diffs.load_highlight(preloadable_files.pluck(:id))
+  end
+
+  def discussions_diffs
+    strong_memoize(:discussions_diffs) do
+      Gitlab::DiscussionsDiff::FileCollection.new(note_diff_files.to_a)
+    end
+  end
+
+  def note_diff_files
+    NoteDiffFile
+      .where(diff_note: discussion_notes)
+      .includes(diff_note: :project)
+  end
+
   def diff_size
     # Calling `merge_request_diff.diffs.real_size` will also perform
     # highlighting, which we don't need here.
     merge_request_diff&.real_size || diffs.real_size
+  end
+
+  def modified_paths(past_merge_request_diff: nil)
+    diffs = if past_merge_request_diff
+              past_merge_request_diff
+            elsif compare
+              compare
+            else
+              self.merge_request_diff
+            end
+
+    diffs.modified_paths
   end
 
   def diff_base_commit
@@ -494,15 +562,19 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    if persisted?
-      merge_request_diff.diff_refs
-    else
-      Gitlab::Diff::DiffRefs.new(
-        base_sha:  diff_base_sha,
-        start_sha: diff_start_sha,
-        head_sha:  diff_head_sha
-      )
-    end
+    persisted? ? merge_request_diff.diff_refs : repository_diff_refs
+  end
+
+  # Instead trying to fetch the
+  # persisted diff_refs, this method goes
+  # straight to the repository to get the
+  # most recent data possible.
+  def repository_diff_refs
+    Gitlab::Diff::DiffRefs.new(
+      base_sha:  branch_merge_base_sha,
+      start_sha: target_branch_sha,
+      head_sha:  source_branch_sha
+    )
   end
 
   def branch_merge_base_sha
@@ -511,15 +583,26 @@ class MergeRequest < ActiveRecord::Base
 
   def validate_branches
     if target_project == source_project && target_branch == source_branch
-      errors.add :branch_conflict, "You can not use same project/branch for source and target"
+      errors.add :branch_conflict, "You can't use same project/branch for source and target"
+      return
     end
 
     if opened?
-      similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.try(:id)).opened
-      similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
-      if similar_mrs.any?
-        errors.add :validate_branches,
-                   "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
+      similar_mrs = target_project
+        .merge_requests
+        .where(source_branch: source_branch, target_branch: target_branch)
+        .where(source_project_id: source_project&.id)
+        .opened
+
+      similar_mrs = similar_mrs.where.not(id: id) if persisted?
+
+      conflict = similar_mrs.first
+
+      if conflict.present?
+        errors.add(
+          :validate_branches,
+          "Another open merge request already exists for this source branch: #{conflict.to_reference}"
+        )
       end
     end
   end
@@ -574,10 +657,6 @@ class MergeRequest < ActiveRecord::Base
       merge_request_diffs.create
       reload_merge_request_diff
     end
-  end
-
-  def reload_merge_request_diff
-    merge_request_diff(true)
   end
 
   def viewable_diffs
@@ -1026,26 +1105,76 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
-  def all_pipelines
+  def all_pipelines(shas: all_commit_shas)
     return Ci::Pipeline.none unless source_project
 
-    @all_pipelines ||= source_project.pipelines
-      .where(sha: all_commit_shas, ref: source_branch)
-      .order(id: :desc)
+    @all_pipelines ||=
+      source_project.ci_pipelines
+                    .for_merge_request(self, source_branch, all_commit_shas)
+  end
+
+  def update_head_pipeline
+    find_actual_head_pipeline.try do |pipeline|
+      self.head_pipeline = pipeline
+      update_column(:head_pipeline_id, head_pipeline.id) if head_pipeline_id_changed?
+    end
+  end
+
+  def merge_request_pipeline_exists?
+    merge_request_pipelines.exists?(sha: diff_head_sha)
   end
 
   def has_test_reports?
     actual_head_pipeline&.has_test_reports?
   end
 
-  # rubocop: disable CodeReuse/ServiceClass
+  def predefined_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_MERGE_REQUEST_ID', value: id.to_s)
+      variables.append(key: 'CI_MERGE_REQUEST_IID', value: iid.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_REF_PATH',
+                       value: ref_path.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_ID',
+                       value: project.id.to_s)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_PATH',
+                       value: project.full_path)
+
+      variables.append(key: 'CI_MERGE_REQUEST_PROJECT_URL',
+                       value: project.web_url)
+
+      variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_NAME',
+                       value: target_branch.to_s)
+
+      if source_project
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_ID',
+                         value: source_project.id.to_s)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH',
+                         value: source_project.full_path)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_PROJECT_URL',
+                         value: source_project.web_url)
+
+        variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME',
+                         value: source_branch.to_s)
+      end
+    end
+  end
+
   def compare_test_reports
     unless has_test_reports?
       return { status: :error, status_reason: 'This merge request does not have test reports' }
     end
 
-    with_reactive_cache(:compare_test_results) do |data|
-      unless Ci::CompareTestReportsService.new(project)
+    compare_reports(Ci::CompareTestReportsService)
+  end
+
+  def compare_reports(service_class)
+    with_reactive_cache(service_class.name) do |data|
+      unless service_class.new(project)
         .latest?(base_pipeline, actual_head_pipeline, data)
         raise InvalidateReactiveCache
       end
@@ -1053,19 +1182,14 @@ class MergeRequest < ActiveRecord::Base
       data
     end || { status: :parsing }
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
-  # rubocop: disable CodeReuse/ServiceClass
   def calculate_reactive_cache(identifier, *args)
-    case identifier.to_sym
-    when :compare_test_results
-      Ci::CompareTestReportsService.new(project).execute(
-        base_pipeline, actual_head_pipeline)
-    else
-      raise NotImplementedError, "Unknown identifier: #{identifier}"
-    end
+    service_class = identifier.constantize
+
+    raise NameError, service_class unless service_class < Ci::CompareReportsBaseService
+
+    service_class.new(project).execute(base_pipeline, actual_head_pipeline)
   end
-  # rubocop: enable CodeReuse/ServiceClass
 
   def all_commits
     # MySQL doesn't support LIMIT in a subquery.
@@ -1188,7 +1312,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def base_pipeline
-    @base_pipeline ||= project.pipelines
+    @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)
       .find_by(sha: diff_base_sha)
   end
@@ -1235,5 +1359,12 @@ class MergeRequest < ActiveRecord::Base
     return false unless source_project
 
     source_project.repository.squash_in_progress?(id)
+  end
+
+  private
+
+  def find_actual_head_pipeline
+    source_project&.ci_pipelines
+                  &.latest_for_merge_request(self, source_branch, diff_head_sha)
   end
 end

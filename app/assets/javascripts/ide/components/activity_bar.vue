@@ -37,7 +37,7 @@ export default {
         <button
           v-tooltip
           :class="{
-            active: currentActivityView === $options.activityBarViews.edit
+            active: currentActivityView === $options.activityBarViews.edit,
           }"
           :title="s__('IDE|Edit')"
           :aria-label="s__('IDE|Edit')"
@@ -47,16 +47,14 @@ export default {
           class="ide-sidebar-link js-ide-edit-mode"
           @click.prevent="changedActivityView($event, $options.activityBarViews.edit)"
         >
-          <icon
-            name="code"
-          />
+          <icon name="code" />
         </button>
       </li>
       <li>
         <button
           v-tooltip
           :class="{
-            active: currentActivityView === $options.activityBarViews.review
+            active: currentActivityView === $options.activityBarViews.review,
           }"
           :title="s__('IDE|Review')"
           :aria-label="s__('IDE|Review')"
@@ -66,16 +64,14 @@ export default {
           class="ide-sidebar-link js-ide-review-mode"
           @click.prevent="changedActivityView($event, $options.activityBarViews.review)"
         >
-          <icon
-            name="file-modified"
-          />
+          <icon name="file-modified" />
         </button>
       </li>
       <li v-show="hasChanges">
         <button
           v-tooltip
           :class="{
-            active: currentActivityView === $options.activityBarViews.commit
+            active: currentActivityView === $options.activityBarViews.commit,
           }"
           :title="s__('IDE|Commit')"
           :aria-label="s__('IDE|Commit')"
@@ -85,9 +81,7 @@ export default {
           class="ide-sidebar-link js-ide-commit-mode"
           @click.prevent="changedActivityView($event, $options.activityBarViews.commit)"
         >
-          <icon
-            name="commit"
-          />
+          <icon name="commit" />
         </button>
       </li>
     </ul>

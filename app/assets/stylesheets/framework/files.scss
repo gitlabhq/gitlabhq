@@ -36,7 +36,6 @@
     text-align: left;
     padding: 10px $gl-padding;
     word-wrap: break-word;
-    border-radius: $border-radius-default $border-radius-default 0 0;
 
     &.file-title-clear {
       padding-left: 0;
@@ -416,7 +415,6 @@ span.idiff {
 }
 
 .preview-container {
-  height: 100%;
   overflow: auto;
 
   .file-container {

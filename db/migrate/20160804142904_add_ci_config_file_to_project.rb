@@ -1,4 +1,4 @@
-class AddCiConfigFileToProject < ActiveRecord::Migration
+class AddCiConfigFileToProject < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

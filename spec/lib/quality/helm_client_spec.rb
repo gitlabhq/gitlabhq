@@ -1,62 +1,111 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 
 RSpec.describe Quality::HelmClient do
   let(:namespace) { 'review-apps-ee' }
   let(:release_name) { 'my-release' }
-  let(:raw_helm_list_result) do
+  let(:raw_helm_list_page1) do
     <<~OUTPUT
-    NAME                    	REVISION	UPDATED                 	STATUS	CHART       	NAMESPACE
-    review-improve-re-2dsd9d	1       	Tue Jul 31 15:53:17 2018	FAILED	gitlab-0.3.4	#{namespace}
-    review-11-1-stabl-3r2fso	1       	Mon Jul 30 22:44:14 2018	FAILED	gitlab-0.3.3	#{namespace}
-    review-49375-css-fk664j 	1       	Thu Jul 19 11:01:30 2018	FAILED	gitlab-0.2.4	#{namespace}
+    {"Next":"review-6709-group-t40qbv",
+      "Releases":[
+        {"Name":"review-qa-60-reor-1mugd1", "Revision":1,"Updated":"Thu Oct  4 17:52:31 2018","Status":"FAILED", "Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-7846-fix-s-261vd6","Revision":1,"Updated":"Thu Oct  4 17:33:29 2018","Status":"FAILED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-7867-snowp-lzo3iy","Revision":1,"Updated":"Thu Oct  4 17:22:14 2018","Status":"DEPLOYED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-rename-geo-o4a780","Revision":1,"Updated":"Thu Oct  4 17:14:57 2018","Status":"DEPLOYED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-5781-opera-0k93fx","Revision":1,"Updated":"Thu Oct  4 17:06:15 2018","Status":"FAILED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-6709-group-2pzeec","Revision":1,"Updated":"Thu Oct  4 16:36:59 2018","Status":"FAILED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-ce-to-ee-2-l554mn","Revision":1,"Updated":"Thu Oct  4 16:27:02 2018","Status":"FAILED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-epics-e2e-m690eb","Revision":1,"Updated":"Thu Oct  4 16:08:26 2018","Status":"DEPLOYED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-7126-admin-06fae2","Revision":1,"Updated":"Thu Oct  4 15:56:35 2018","Status":"FAILED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"},
+        {"Name":"review-6983-promo-xyou11","Revision":1,"Updated":"Thu Oct  4 15:15:34 2018","Status":"FAILED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"}
+      ]}
+    OUTPUT
+  end
+  let(:raw_helm_list_page2) do
+    <<~OUTPUT
+    {"Releases":[
+      {"Name":"review-6709-group-t40qbv","Revision":1,"Updated":"Thu Oct  4 17:52:31 2018","Status":"FAILED","Chart":"gitlab-1.1.3","AppVersion":"master","Namespace":"#{namespace}"}
+    ]}
     OUTPUT
   end
 
   subject { described_class.new(namespace: namespace) }
 
   describe '#releases' do
-    it 'calls helm list with default arguments' do
+    it 'raises an error if the Helm command fails' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --namespace "#{namespace}")])
-        .and_return(Gitlab::Popen::Result.new([], ''))
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json)])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
 
-      subject.releases
+      expect { subject.releases.to_a }.to raise_error(described_class::CommandFailedError)
     end
 
-    it 'calls helm list with given arguments' do
+    it 'calls helm list with default arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --namespace "#{namespace}" --deployed)])
-        .and_return(Gitlab::Popen::Result.new([], ''))
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json)])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
-      subject.releases(args: ['--deployed'])
+      subject.releases.to_a
+    end
+
+    it 'calls helm list with extra arguments' do
+      expect(Gitlab::Popen).to receive(:popen_with_detail)
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json --deployed)])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
+
+      subject.releases(args: ['--deployed']).to_a
     end
 
     it 'returns a list of Release objects' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with([%(helm list --namespace "#{namespace}" --deployed)])
-        .and_return(Gitlab::Popen::Result.new([], raw_helm_list_result))
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json --deployed)])
+        .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page2, '', double(success?: true)))
 
-      releases = subject.releases(args: ['--deployed'])
+      releases = subject.releases(args: ['--deployed']).to_a
 
-      expect(releases.size).to eq(3)
-      expect(releases[0].name).to eq('review-improve-re-2dsd9d')
-      expect(releases[0].revision).to eq(1)
-      expect(releases[0].last_update).to eq(Time.parse('Tue Jul 31 15:53:17 2018'))
-      expect(releases[0].status).to eq('FAILED')
-      expect(releases[0].chart).to eq('gitlab-0.3.4')
-      expect(releases[0].namespace).to eq(namespace)
+      expect(releases.size).to eq(1)
+      expect(releases[0]).to have_attributes(
+        name: 'review-6709-group-t40qbv',
+        revision: 1,
+        last_update: Time.parse('Thu Oct 4 17:52:31 2018'),
+        status: 'FAILED',
+        chart: 'gitlab-1.1.3',
+        app_version: 'master',
+        namespace: namespace
+      )
+    end
+
+    it 'automatically paginates releases' do
+      expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json)])
+        .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page1, '', double(success?: true)))
+      expect(Gitlab::Popen).to receive(:popen_with_detail).ordered
+        .with([%(helm list --namespace "#{namespace}" --tiller-namespace "#{namespace}" --output json --offset review-6709-group-t40qbv)])
+        .and_return(Gitlab::Popen::Result.new([], raw_helm_list_page2, '', double(success?: true)))
+
+      releases = subject.releases.to_a
+
+      expect(releases.size).to eq(11)
+      expect(releases.last.name).to eq('review-6709-group-t40qbv')
     end
   end
 
   describe '#delete' do
+    it 'raises an error if the Helm command fails' do
+      expect(Gitlab::Popen).to receive(:popen_with_detail)
+        .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name})])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: false)))
+
+      expect { subject.delete(release_name: release_name) }.to raise_error(described_class::CommandFailedError)
+    end
+
     it 'calls helm delete with default arguments' do
       expect(Gitlab::Popen).to receive(:popen_with_detail)
-        .with(["helm delete --purge #{release_name}"])
-        .and_return(Gitlab::Popen::Result.new([], '', '', 0))
+        .with([%(helm delete --tiller-namespace "#{namespace}" --purge #{release_name})])
+        .and_return(Gitlab::Popen::Result.new([], '', '', double(success?: true)))
 
-      expect(subject.delete(release_name: release_name).status).to eq(0)
+      expect(subject.delete(release_name: release_name)).to eq('')
     end
   end
 end

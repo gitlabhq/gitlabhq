@@ -46,12 +46,14 @@ describe('ZenMode', () => {
     it('should not call dropzone if element is not dropzone valid', () => {
       $('.div-dropzone').addClass('js-invalid-dropzone');
       exitZen();
+
       expect(dropzoneForElementSpy.calls.count()).toEqual(0);
     });
 
     it('should call dropzone if element is dropzone valid', () => {
       $('.div-dropzone').removeClass('js-invalid-dropzone');
       exitZen();
+
       expect(dropzoneForElementSpy.calls.count()).toEqual(2);
     });
   });
@@ -60,12 +62,14 @@ describe('ZenMode', () => {
     it('pauses Mousetrap', () => {
       const mouseTrapPauseSpy = spyOn(Mousetrap, 'pause');
       enterZen();
+
       expect(mouseTrapPauseSpy).toHaveBeenCalled();
     });
 
     it('removes textarea styling', () => {
       $('.notes-form textarea').attr('style', 'height: 400px');
       enterZen();
+
       expect($('.notes-form textarea')).not.toHaveAttr('style');
     });
   });
@@ -75,6 +79,7 @@ describe('ZenMode', () => {
 
     it('exits on Escape', () => {
       escapeKeydown();
+
       expect($('.notes-form .zen-backdrop')).not.toHaveClass('fullscreen');
     });
   });
@@ -85,12 +90,14 @@ describe('ZenMode', () => {
     it('unpauses Mousetrap', () => {
       const mouseTrapUnpauseSpy = spyOn(Mousetrap, 'unpause');
       exitZen();
+
       expect(mouseTrapUnpauseSpy).toHaveBeenCalled();
     });
 
     it('restores the scroll position', () => {
       spyOn(zen, 'scrollTo');
       exitZen();
+
       expect(zen.scrollTo).toHaveBeenCalled();
     });
   });

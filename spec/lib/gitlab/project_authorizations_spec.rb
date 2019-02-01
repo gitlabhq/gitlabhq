@@ -20,7 +20,7 @@ describe Gitlab::ProjectAuthorizations do
   end
 
   let(:authorizations) do
-    klass = if Group.supports_nested_groups?
+    klass = if Group.supports_nested_objects?
               Gitlab::ProjectAuthorizations::WithNestedGroups
             else
               Gitlab::ProjectAuthorizations::WithoutNestedGroups
@@ -46,7 +46,7 @@ describe Gitlab::ProjectAuthorizations do
     expect(mapping[group_project.id]).to eq(Gitlab::Access::DEVELOPER)
   end
 
-  if Group.supports_nested_groups?
+  if Group.supports_nested_objects?
     context 'with nested groups' do
       let!(:nested_group) { create(:group, parent: group) }
       let!(:nested_project) { create(:project, namespace: nested_group) }

@@ -24,7 +24,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create
-    @key = DeployKeys::CreateService.new(current_user, create_params).execute
+    @key = DeployKeys::CreateService.new(current_user, create_params).execute(project: @project)
 
     unless @key.valid?
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe
@@ -46,7 +46,9 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def enable
-    Projects::EnableDeployKeyService.new(@project, current_user, params).execute
+    key = Projects::EnableDeployKeyService.new(@project, current_user, params).execute
+
+    return render_404 unless key
 
     respond_to do |format|
       format.html { redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings') }
@@ -54,19 +56,16 @@ class Projects::DeployKeysController < Projects::ApplicationController
     end
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def disable
-    deploy_key_project = @project.deploy_keys_projects.find_by(deploy_key_id: params[:id])
+    deploy_key_project = Projects::DisableDeployKeyService.new(@project, current_user, params).execute
+
     return render_404 unless deploy_key_project
 
-    deploy_key_project.destroy!
-
     respond_to do |format|
       format.html { redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings') }
       format.json { head :ok }
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   protected
 

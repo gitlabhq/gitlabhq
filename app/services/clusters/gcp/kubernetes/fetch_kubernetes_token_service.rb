@@ -4,10 +4,12 @@ module Clusters
   module Gcp
     module Kubernetes
       class FetchKubernetesTokenService
-        attr_reader :kubeclient
+        attr_reader :kubeclient, :service_account_token_name, :namespace
 
-        def initialize(kubeclient)
+        def initialize(kubeclient, service_account_token_name, namespace)
           @kubeclient = kubeclient
+          @service_account_token_name = service_account_token_name
+          @namespace = namespace
         end
 
         def execute
@@ -18,11 +20,8 @@ module Clusters
         private
 
         def get_secret
-          kubeclient.get_secret(SERVICE_ACCOUNT_TOKEN_NAME, SERVICE_ACCOUNT_NAMESPACE).as_json
-        rescue Kubeclient::HttpError => err
-          raise err unless err.error_code == 404
-
-          nil
+          kubeclient.get_secret(service_account_token_name, namespace).as_json
+        rescue Kubeclient::ResourceNotFoundError
         end
       end
     end

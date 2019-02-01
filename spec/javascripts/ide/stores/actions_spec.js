@@ -279,8 +279,6 @@ describe('Multi-file store actions', () => {
     });
   });
 
-  describe('popHistoryState', () => {});
-
   describe('scrollToTab', () => {
     it('focuses the current active element', done => {
       document.body.innerHTML +=

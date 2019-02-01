@@ -4,6 +4,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :authorize_read_pipeline!
+  before_action :authorize_read_build!, only: [:index]
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
 
@@ -46,7 +47,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def new
-    @pipeline = project.pipelines.new(ref: @project.default_branch)
+    @pipeline = project.all_pipelines.new(ref: @project.default_branch)
   end
 
   def create
@@ -69,7 +70,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
         render json: PipelineSerializer
           .new(project: @project, current_user: @current_user)
-          .represent(@pipeline, grouped: true)
+          .represent(@pipeline, show_represent_params)
       end
     end
   end
@@ -142,9 +143,9 @@ class Projects::PipelinesController < Projects::ApplicationController
     @charts[:pipeline_times] = Gitlab::Ci::Charts::PipelineTime.new(project)
 
     @counts = {}
-    @counts[:total] = @project.pipelines.count(:all)
-    @counts[:success] = @project.pipelines.success.count(:all)
-    @counts[:failed] = @project.pipelines.failed.count(:all)
+    @counts[:total] = @project.all_pipelines.count(:all)
+    @counts[:success] = @project.all_pipelines.success.count(:all)
+    @counts[:failed] = @project.all_pipelines.failed.count(:all)
   end
 
   private
@@ -157,6 +158,10 @@ class Projects::PipelinesController < Projects::ApplicationController
     end
   end
 
+  def show_represent_params
+    { grouped: true }
+  end
+
   def create_params
     params.require(:pipeline).permit(:ref, variables_attributes: %i[key secret_value])
   end
@@ -164,7 +169,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   # rubocop: disable CodeReuse/ActiveRecord
   def pipeline
     @pipeline ||= project
-                    .pipelines
+                    .all_pipelines
                     .includes(user: :status)
                     .find_by!(id: params[:id])
                     .present(current_user: current_user)

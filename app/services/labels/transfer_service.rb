@@ -40,7 +40,7 @@ module Labels
           group_labels_applied_to_merge_requests
         ])
         .reorder(nil)
-        .uniq
+        .distinct
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

@@ -1,0 +1,5 @@
+---
+title: 'remove red/green colors from diff view of no-color syntax theme'
+merge_request: 24582
+author: khm
+type: changed

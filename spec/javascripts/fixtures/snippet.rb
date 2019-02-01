@@ -24,7 +24,7 @@ describe SnippetsController, '(JavaScript fixtures)', type: :controller do
   end
 
   it 'snippets/show.html.raw' do |example|
-    get(:show, id: snippet.to_param)
+    get(:show, params: { id: snippet.to_param })
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)

@@ -1,0 +1,44 @@
+From: "Jake the Dog" <jake@adventuretime.ooo>
+To: incoming+gitlabhq-gitlabhq-project_id-auth_token-merge-request@appmail.adventuretime.ooo
+Subject: new-branch-with-a-patch
+Date: Wed, 24 Oct 2018 16:39:49 +0200
+X-Mailer: MailMate (1.12r5523)
+Message-ID: <F1F36291-728D-4E8F-AFEB-C398B8D9BB4E@gitlab.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="=_MailMate_D2C4B06A-4F8D-4AAB-B247-C507E35AAED6_="
+
+
+--=_MailMate_D2C4B06A-4F8D-4AAB-B247-C507E35AAED6_=
+
+This applies nicely to a branch freshly created from the root-ref
+
+The other attachments in this email are ignored
+
+/target_branch with-codeowners
+
+
+--=_MailMate_D2C4B06A-4F8D-4AAB-B247-C507E35AAED6_=
+Content-Disposition: attachment; filename=0001-A-commit-from-a-patch.patch
+Content-Transfer-Encoding: quoted-printable
+
+=46rom 3fee0042e610fb3563e4379e316704cb1210f3de Mon Sep 17 00:00:00 2001
+From: Patch user <patchuser@gitlab.org>
+Date: Thu, 18 Oct 2018 13:40:35 +0200
+Subject: [PATCH] A commit from a patch
+
+---
+ README | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/README b/README
+index 3742e48..e40a3b9 100644
+--- a/README
++++ b/README
+@@ -1 +1,3 @@
+ Sample repo for testing gitlab features
++
++This was applied in a patch!
+-- =
+
+2.19.1

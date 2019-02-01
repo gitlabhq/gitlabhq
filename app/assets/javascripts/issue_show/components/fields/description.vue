@@ -44,11 +44,7 @@ export default {
 
 <template>
   <div class="common-note-form">
-    <label
-      class="sr-only"
-      for="issue-description">
-      Description
-    </label>
+    <label class="sr-only" for="issue-description"> Description </label>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
@@ -67,7 +63,8 @@ export default {
         aria-label="Description"
         placeholder="Write a comment or drag your files here…"
         @keydown.meta.enter="updateIssuable"
-        @keydown.ctrl.enter="updateIssuable">
+        @keydown.ctrl.enter="updateIssuable"
+      >
       </textarea>
     </markdown-field>
   </div>

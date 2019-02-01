@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import getIconForFile from './file_icon/file_icon_map';
 import icon from '../../vue_shared/components/icon.vue';
 
@@ -17,6 +18,7 @@ import icon from '../../vue_shared/components/icon.vue';
 export default {
   components: {
     icon,
+    GlLoadingIcon,
   },
   props: {
     fileName: {
@@ -70,21 +72,10 @@ export default {
 </script>
 <template>
   <span>
-    <svg
-      v-if="!loading && !folder"
-      :class="[iconSizeClass, cssClasses]"
-    >
-      <use v-bind="{ 'xlink:href':spriteHref }" />
+    <svg v-if="!loading && !folder" :class="[iconSizeClass, cssClasses]">
+      <use v-bind="{ 'xlink:href': spriteHref }" />
     </svg>
-    <icon
-      v-if="!loading && folder"
-      :name="folderIconName"
-      :size="size"
-      css-classes="folder-icon"
-    />
-    <gl-loading-icon
-      v-if="loading"
-      :inline="true"
-    />
+    <icon v-if="!loading && folder" :name="folderIconName" :size="size" css-classes="folder-icon" />
+    <gl-loading-icon v-if="loading" :inline="true" />
   </span>
 </template>

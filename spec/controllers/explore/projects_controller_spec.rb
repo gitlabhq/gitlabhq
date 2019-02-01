@@ -12,13 +12,13 @@ describe Explore::ProjectsController do
       end
 
       it 'sorts by last updated' do
-        get :trending, sort: 'updated_desc'
+        get :trending, params: { sort: 'updated_desc' }
 
         expect(assigns(:projects)).to eq [project2, project1]
       end
 
       it 'sorts by oldest updated' do
-        get :trending, sort: 'updated_asc'
+        get :trending, params: { sort: 'updated_asc' }
 
         expect(assigns(:projects)).to eq [project1, project2]
       end

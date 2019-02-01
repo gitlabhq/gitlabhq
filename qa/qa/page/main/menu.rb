@@ -57,15 +57,21 @@ module QA
         end
 
         def go_to_profile_settings
-          within_user_menu do
-            click_link 'Settings'
+          with_retry(reload: false) do
+            within_user_menu do
+              click_link 'Settings'
+            end
+
+            has_text?('User Settings')
           end
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)
-          using_wait_time(wait) do
-            page.has_selector?(element_selector_css(:user_avatar))
-          end
+          has_element?(:user_avatar, wait: wait)
+        end
+
+        def has_admin_area_link?(wait: Capybara.default_max_wait_time)
+          has_element?(:admin_area_link, wait: wait)
         end
 
         private

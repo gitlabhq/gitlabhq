@@ -18,6 +18,7 @@ describe('ItemTypeIconComponent', () => {
     it('should render component template correctly', () => {
       const vm = createComponent();
       vm.$mount();
+
       expect(vm.$el.classList.contains('item-type-icon')).toBeTruthy();
       vm.$destroy();
     });
@@ -27,11 +28,13 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.GROUP, true);
       vm.$mount();
+
       expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder-open');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
       vm.$mount();
+
       expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('folder');
       vm.$destroy();
     });
@@ -41,11 +44,13 @@ describe('ItemTypeIconComponent', () => {
 
       vm = createComponent(ITEM_TYPE.PROJECT);
       vm.$mount();
+
       expect(vm.$el.querySelector('use').getAttribute('xlink:href')).toContain('bookmark');
       vm.$destroy();
 
       vm = createComponent(ITEM_TYPE.GROUP);
       vm.$mount();
+
       expect(vm.$el.querySelector('use').getAttribute('xlink:href')).not.toContain('bookmark');
       vm.$destroy();
     });

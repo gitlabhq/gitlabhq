@@ -5,7 +5,7 @@ describe 'Project' do
   include MobileHelpers
 
   describe 'creating from template' do
-    let(:user)    { create(:user) }
+    let(:user) { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
     before do
@@ -55,30 +55,30 @@ describe 'Project' do
     it 'parses Markdown' do
       project.update_attribute(:description, 'This is **my** project')
       visit path
-      expect(page).to have_css('.project-description > .project-description-markdown > p > strong')
+      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > strong')
     end
 
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.project-description > .project-description-markdown > p > gl-emoji')
+      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
       project.update_attribute(:description, "```\ncode\n```")
       visit path
-      expect(page).not_to have_css('.project-description code')
+      expect(page).not_to have_css('.home-panel-description code')
     end
 
     it 'permits `rel` attribute on links' do
       project.update_attribute(:description, 'https://google.com/')
       visit path
-      expect(page).to have_css('.project-description a[rel]')
+      expect(page).to have_css('.home-panel-description a[rel]')
     end
 
     context 'read more', :js do
       let(:read_more_selector)         { '.read-more-container' }
-      let(:read_more_trigger_selector) { '.project-home-desc .js-read-more-trigger' }
+      let(:read_more_trigger_selector) { '.home-panel-home-desc .js-read-more-trigger' }
 
       it 'does not display "read more" link on desktop breakpoint' do
         project.update_attribute(:description, 'This is **my** project')
@@ -94,8 +94,32 @@ describe 'Project' do
 
         find(read_more_trigger_selector).click
 
-        expect(page).to have_css('.project-description .is-expanded')
+        expect(page).to have_css('.home-panel-description .is-expanded')
       end
+    end
+  end
+
+  describe 'project topics' do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
+      visit path
+    end
+
+    it 'shows project topics' do
+      project.update_attribute(:tag_list, 'topic1')
+      visit path
+      expect(page).to have_css('.home-panel-topic-list')
+      expect(page).to have_content('topic1')
+    end
+
+    it 'shows up to 3 project tags' do
+      project.update_attribute(:tag_list, 'topic1, topic2, topic3, topic4')
+      visit path
+      expect(page).to have_css('.home-panel-topic-list')
+      expect(page).to have_content('topic1, topic2, topic3 + 1 more')
     end
   end
 
@@ -146,7 +170,7 @@ describe 'Project' do
 
   describe 'showing information about source of a project fork' do
     let(:user) { create(:user) }
-    let(:base_project)  { create(:project, :public, :repository) }
+    let(:base_project) { create(:project, :public, :repository) }
     let(:forked_project) { fork_project(base_project, user, repository: true) }
 
     before do
@@ -190,6 +214,23 @@ describe 'Project' do
         expect(page).to have_content("Forked from")
         expect(page).to have_link(base_project.full_name)
       end
+    end
+  end
+
+  describe 'when the project repository is disabled', :js do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, :repository_disabled, :repository, namespace: user.namespace) }
+
+    before do
+      sign_in(user)
+      project.add_maintainer(user)
+      visit project_path(project)
+    end
+
+    it 'does not show an error' do
+      wait_for_requests
+
+      expect(page).not_to have_selector('.flash-alert')
     end
   end
 
@@ -260,7 +301,7 @@ describe 'Project' do
       end
     end
 
-    context 'for subgroups', :js do
+    context 'for subgroups', :js, :nested_groups do
       let(:group) { create(:group) }
       let(:subgroup) { create(:group, parent: group) }
       let(:project) { create(:project, :repository, group: subgroup) }
@@ -302,6 +343,22 @@ describe 'Project' do
 
     it 'loads activity', :js do
       expect(page).to have_selector('.event-item')
+    end
+  end
+
+  context 'content is not cached after signing out', :js do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    it 'does not load activity', :js do
+      project.add_maintainer(user)
+      sign_in(user)
+      visit project_path(project)
+      sign_out(user)
+
+      page.evaluate_script('window.history.back()')
+
+      expect(page).not_to have_selector('.event-item')
     end
   end
 

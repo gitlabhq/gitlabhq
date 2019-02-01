@@ -1,4 +1,4 @@
-- if can?(current_user, :create_deployment, deployment) && deployment.deployable
+- if can?(current_user, :create_deployment, deployment)
   - tooltip = deployment.last? ? s_('Environments|Re-deploy to environment') : s_('Environments|Rollback environment')
   = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build has-tooltip', title: tooltip do
     - if deployment.last?

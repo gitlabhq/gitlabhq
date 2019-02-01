@@ -2,18 +2,18 @@
 
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
-    def execute(oldrev, newrev, ref)
-      push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
-      return true unless push.branch_push?
+    attr_reader :push
 
-      refresh_merge_requests!(push)
+    def execute(oldrev, newrev, ref)
+      @push = Gitlab::Git::Push.new(@project, oldrev, newrev, ref)
+      return true unless @push.branch_push?
+
+      refresh_merge_requests!
     end
 
     private
 
-    def refresh_merge_requests!(push)
-      @push = push
-
+    def refresh_merge_requests!
       Gitlab::GitalyClient.allow_n_plus_1_calls(&method(:find_new_commits))
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
@@ -58,13 +58,27 @@ module MergeRequests
         .preload(:latest_merge_request_diff)
         .where(target_branch: @push.branch_name).to_a
         .select(&:diff_head_commit)
+        .select do |merge_request|
+          commit_ids.include?(merge_request.diff_head_sha) &&
+            merge_request.merge_request_diff.state != 'empty'
+        end
+      merge_requests = filter_merge_requests(merge_requests)
 
-      merge_requests = merge_requests.select do |merge_request|
-        commit_ids.include?(merge_request.diff_head_sha) &&
-          merge_request.merge_request_diff.state != 'empty'
+      return if merge_requests.empty?
+
+      commit_analyze_enabled = Feature.enabled?(:branch_push_merge_commit_analyze, @project, default_enabled: true)
+      if commit_analyze_enabled
+        analyzer = Gitlab::BranchPushMergeCommitAnalyzer.new(
+          @commits.reverse,
+          relevant_commit_ids: merge_requests.map(&:diff_head_sha)
+        )
       end
 
-      filter_merge_requests(merge_requests).each do |merge_request|
+      merge_requests.each do |merge_request|
+        if commit_analyze_enabled
+          merge_request.merge_commit_sha = analyzer.get_merge_commit(merge_request.diff_head_sha)
+        end
+
         MergeRequests::PostMergeService
           .new(merge_request.target_project, @current_user)
           .execute(merge_request)
@@ -85,16 +99,14 @@ module MergeRequests
         .where.not(target_project: @project).to_a
 
       filter_merge_requests(merge_requests).each do |merge_request|
-        if merge_request.source_branch == @push.branch_name || @push.force_push?
+        if branch_and_project_match?(merge_request) || @push.force_push?
           merge_request.reload_diff(current_user)
-        else
-          mr_commit_ids = merge_request.commit_shas
-          push_commit_ids = @commits.map(&:id)
-          matches = mr_commit_ids & push_commit_ids
-          merge_request.reload_diff(current_user) if matches.any?
+        elsif merge_request.includes_any_commits?(push_commit_ids)
+          merge_request.reload_diff(current_user)
         end
 
         merge_request.mark_as_unchecked
+        create_merge_request_pipeline(merge_request, current_user)
         UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
 
@@ -103,6 +115,15 @@ module MergeRequests
       merge_requests_for_source_branch(reload: true)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def push_commit_ids
+      @push_commit_ids ||= @commits.map(&:id)
+    end
+
+    def branch_and_project_match?(merge_request)
+      merge_request.source_project == @project &&
+        merge_request.source_branch == @push.branch_name
+    end
 
     def reset_merge_when_pipeline_succeeds
       merge_requests_for_source_branch.each(&:reset_merge_when_pipeline_succeeds)

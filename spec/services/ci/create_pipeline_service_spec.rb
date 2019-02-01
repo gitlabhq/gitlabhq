@@ -18,15 +18,18 @@ describe Ci::CreatePipelineService do
       message: 'Message',
       ref: ref_name,
       trigger_request: nil,
-      variables_attributes: nil)
+      variables_attributes: nil,
+      merge_request: nil,
+      push_options: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }],
-                 variables_attributes: variables_attributes }
+                 variables_attributes: variables_attributes,
+                 push_options: push_options }
 
       described_class.new(project, user, params).execute(
-        source, trigger_request: trigger_request)
+        source, trigger_request: trigger_request, merge_request: merge_request)
     end
 
     context 'valid params' do
@@ -43,7 +46,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline).to be_valid
         expect(pipeline).to be_persisted
         expect(pipeline).to be_push
-        expect(pipeline).to eq(project.pipelines.last)
+        expect(pipeline).to eq(project.ci_pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
         expect(pipeline.repository_source?).to be true
@@ -60,10 +63,10 @@ describe Ci::CreatePipelineService do
 
       context 'when merge requests already exist for this source branch' do
         let(:merge_request_1) do
-          create(:merge_request, source_branch: 'master', target_branch: "branch_1", source_project: project)
+          create(:merge_request, source_branch: 'feature', target_branch: "master", source_project: project)
         end
         let(:merge_request_2) do
-          create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
+          create(:merge_request, source_branch: 'feature', target_branch: "v1.1.0", source_project: project)
         end
 
         context 'when related merge request is already merged' do
@@ -83,7 +86,7 @@ describe Ci::CreatePipelineService do
             merge_request_1
             merge_request_2
 
-            head_pipeline = execute_service
+            head_pipeline = execute_service(ref: 'feature', after: nil)
 
             expect(merge_request_1.reload.head_pipeline).to eq(head_pipeline)
             expect(merge_request_2.reload.head_pipeline).to eq(head_pipeline)
@@ -123,12 +126,12 @@ describe Ci::CreatePipelineService do
           let!(:target_project) { create(:project, :repository) }
 
           it 'updates head pipeline for merge request' do
-            merge_request = create(:merge_request, source_branch: 'master',
-                                                   target_branch: "branch_1",
+            merge_request = create(:merge_request, source_branch: 'feature',
+                                                   target_branch: "master",
                                                    source_project: project,
                                                    target_project: target_project)
 
-            head_pipeline = execute_service
+            head_pipeline = execute_service(ref: 'feature', after: nil)
 
             expect(merge_request.reload.head_pipeline).to eq(head_pipeline)
           end
@@ -140,7 +143,8 @@ describe Ci::CreatePipelineService do
                                                    target_branch: "branch_1",
                                                    source_project: project)
 
-            allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(false)
+            allow_any_instance_of(MergeRequest)
+              .to receive(:find_actual_head_pipeline) { }
 
             execute_service
 
@@ -356,6 +360,22 @@ describe Ci::CreatePipelineService do
       end
     end
 
+    context 'when push options contain ci.skip' do
+      let(:push_options) do
+        ['ci.skip',
+         'another push option']
+      end
+
+      it 'creates a pipline in the skipped state' do
+        pipeline = execute_service(push_options: push_options)
+
+        # TODO: DRY these up with "skips builds creation if the commit message"
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.any?).to be false
+        expect(pipeline.status).to eq("skipped")
+      end
+    end
+
     context 'when there are no jobs for this pipeline' do
       before do
         config = YAML.dump({ test: { script: 'ls', only: ['feature'] } })
@@ -387,15 +407,24 @@ describe Ci::CreatePipelineService do
 
     context 'with environment' do
       before do
-        config = YAML.dump(deploy: { environment: { name: "review/$CI_COMMIT_REF_NAME" }, script: 'ls' })
+        config = YAML.dump(
+          deploy: {
+            environment: { name: "review/$CI_COMMIT_REF_NAME" },
+            script: 'ls',
+            tags: ['hello']
+          })
+
         stub_ci_pipeline_yaml_file(config)
       end
 
-      it 'creates the environment' do
+      it 'creates the environment with tags' do
         result = execute_service
 
         expect(result).to be_persisted
         expect(Environment.find_by(name: "review/master")).to be_present
+        expect(result.builds.first.tag_list).to contain_exactly('hello')
+        expect(result.builds.first.deployment).to be_persisted
+        expect(result.builds.first.deployment.deployable).to be_a(Ci::Build)
       end
     end
 
@@ -435,16 +464,34 @@ describe Ci::CreatePipelineService do
     end
 
     context 'when builds with auto-retries are configured' do
-      before do
-        config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
-        stub_ci_pipeline_yaml_file(config)
+      context 'as an integer' do
+        before do
+          config = YAML.dump(rspec: { script: 'rspec', retry: 2 })
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        it 'correctly creates builds with auto-retry value configured' do
+          pipeline = execute_service
+
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['always']
+        end
       end
 
-      it 'correctly creates builds with auto-retry value configured' do
-        pipeline = execute_service
+      context 'as hash' do
+        before do
+          config = YAML.dump(rspec: { script: 'rspec', retry: { max: 2, when: 'runner_system_failure' } })
+          stub_ci_pipeline_yaml_file(config)
+        end
 
-        expect(pipeline).to be_persisted
-        expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+        it 'correctly creates builds with auto-retry value configured' do
+          pipeline = execute_service
+
+          expect(pipeline).to be_persisted
+          expect(pipeline.builds.find_by(name: 'rspec').retries_max).to eq 2
+          expect(pipeline.builds.find_by(name: 'rspec').retry_when).to eq ['runner_system_failure']
+        end
       end
     end
 
@@ -579,6 +626,382 @@ describe Ci::CreatePipelineService do
       it 'creates a pipeline with specified variables' do
         expect(subject.variables.map { |var| var.slice(:key, :secret_value) })
           .to eq variables_attributes.map(&:with_indifferent_access)
+      end
+    end
+
+    context 'when pipeline has a job with environment' do
+      let(:pipeline) { execute_service }
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      context 'when environment name is valid' do
+        let(:config) do
+          {
+            review_app: {
+              script: 'deploy',
+              environment: {
+                name: 'review/${CI_COMMIT_REF_NAME}',
+                url: 'http://${CI_COMMIT_REF_SLUG}-staging.example.com'
+              }
+            }
+          }
+        end
+
+        it 'has a job with environment' do
+          expect(pipeline.builds.count).to eq(1)
+          expect(pipeline.builds.first.persisted_environment.name).to eq('review/master')
+          expect(pipeline.builds.first.deployment).to be_created
+        end
+      end
+
+      context 'when environment name is invalid' do
+        let(:config) do
+          {
+            'job:deploy-to-test-site': {
+              script: 'deploy',
+              environment: {
+                name: '${CI_JOB_NAME}',
+                url: 'https://$APP_URL'
+              }
+            }
+          }
+        end
+
+        it 'has a job without environment' do
+          expect(pipeline.builds.count).to eq(1)
+          expect(pipeline.builds.first.persisted_environment).to be_nil
+          expect(pipeline.builds.first.deployment).to be_nil
+        end
+      end
+    end
+
+    describe 'Merge request pipelines' do
+      let(:pipeline) do
+        execute_service(source: source, merge_request: merge_request, ref: ref_name)
+      end
+
+      before do
+        stub_ci_pipeline_yaml_file(YAML.dump(config))
+      end
+
+      let(:ref_name) { 'refs/heads/feature' }
+
+      context 'when source is merge request' do
+        let(:source) { :merge_request }
+
+        context "when config has merge_requests keywords" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo'
+              },
+              test: {
+                stage: 'test',
+                script: 'echo',
+                only: ['merge_requests']
+              },
+              pages: {
+                stage: 'deploy',
+                script: 'echo',
+                except: ['merge_requests']
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: Gitlab::Git.ref_name(ref_name),
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'creates a merge request pipeline' do
+              expect(pipeline).to be_persisted
+              expect(pipeline).to be_merge_request
+              expect(pipeline.merge_request).to eq(merge_request)
+              expect(pipeline.builds.order(:stage_id).map(&:name)).to eq(%w[test])
+            end
+
+            context 'when ref is tag' do
+              let(:ref_name) { 'refs/tags/v1.1.0' }
+
+              it 'does not create a merge request pipeline' do
+                expect(pipeline).not_to be_persisted
+                expect(pipeline.errors[:tag]).to eq(["is not included in the list"])
+              end
+            end
+
+            context 'when merge request is created from a forked project' do
+              let(:merge_request) do
+                create(:merge_request,
+                  source_project: project,
+                  source_branch: Gitlab::Git.ref_name(ref_name),
+                  target_project: target_project,
+                  target_branch: 'master')
+              end
+
+              let!(:project) { fork_project(target_project, nil, repository: true) }
+              let!(:target_project) { create(:project, :repository) }
+
+              it 'creates a merge request pipeline in the forked project' do
+                expect(pipeline).to be_persisted
+                expect(project.ci_pipelines).to eq([pipeline])
+                expect(target_project.ci_pipelines).to be_empty
+              end
+            end
+
+            context "when there are no matched jobs" do
+              let(:config) do
+                {
+                  test: {
+                    stage: 'test',
+                    script: 'echo',
+                    except: ['merge_requests']
+                  }
+                }
+              end
+
+              it 'does not create a merge request pipeline' do
+                expect(pipeline).not_to be_persisted
+                expect(pipeline.errors[:base]).to eq(["No stages / jobs for this pipeline."])
+              end
+            end
+          end
+
+          context 'when merge request is not specified' do
+            let(:merge_request) { nil }
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+              expect(pipeline.errors[:merge_request]).to eq(["can't be blank"])
+            end
+          end
+        end
+
+        context "when config does not have merge_requests keywords" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo'
+              },
+              test: {
+                stage: 'test',
+                script: 'echo'
+              },
+              pages: {
+                stage: 'deploy',
+                script: 'echo'
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: Gitlab::Git.ref_name(ref_name),
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+
+          context 'when merge request is not specified' do
+            let(:merge_request) { nil }
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+        end
+
+        context "when config uses regular expression for only keyword" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo',
+                only: ["/^#{ref_name}$/"]
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: ref_name,
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+        end
+
+        context "when config uses variables for only keyword" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo',
+                only: {
+                  variables: %w($CI)
+                }
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: ref_name,
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+        end
+
+        context "when config has 'except: [tags]'" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo',
+                except: ['tags']
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: ref_name,
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+
+              expect(pipeline.errors[:base])
+                .to eq(['No stages / jobs for this pipeline.'])
+            end
+          end
+        end
+      end
+
+      context 'when source is web' do
+        let(:source) { :web }
+
+        context "when config has merge_requests keywords" do
+          let(:config) do
+            {
+              build: {
+                stage: 'build',
+                script: 'echo'
+              },
+              test: {
+                stage: 'test',
+                script: 'echo',
+                only: ['merge_requests']
+              },
+              pages: {
+                stage: 'deploy',
+                script: 'echo',
+                except: ['merge_requests']
+              }
+            }
+          end
+
+          context 'when merge request is specified' do
+            let(:merge_request) do
+              create(:merge_request,
+                source_project: project,
+                source_branch: Gitlab::Git.ref_name(ref_name),
+                target_project: project,
+                target_branch: 'master')
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(pipeline).not_to be_persisted
+              expect(pipeline.errors[:merge_request]).to eq(["must be blank"])
+            end
+          end
+
+          context 'when merge request is not specified' do
+            let(:merge_request) { nil }
+
+            it 'creates a branch pipeline' do
+              expect(pipeline).to be_persisted
+              expect(pipeline).to be_web
+              expect(pipeline.merge_request).to be_nil
+              expect(pipeline.builds.order(:stage_id).map(&:name)).to eq(%w[build pages])
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#execute!' do
+    subject { service.execute!(*args) }
+
+    let(:service) { described_class.new(project, user, ref: ref_name) }
+    let(:args) { [:push] }
+
+    context 'when user has a permission to create a pipeline' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'does not raise an error' do
+        expect { subject }.not_to raise_error
+      end
+
+      it 'creates a pipeline' do
+        expect { subject }.to change { Ci::Pipeline.count }.by(1)
+      end
+    end
+
+    context 'when user does not have a permission to create a pipeline' do
+      let(:user) { create(:user) }
+
+      it 'raises an error' do
+        expect { subject }
+          .to raise_error(described_class::CreateError)
+          .with_message('Insufficient permissions to create a new pipeline')
       end
     end
   end

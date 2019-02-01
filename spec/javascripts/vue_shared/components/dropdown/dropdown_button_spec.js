@@ -55,6 +55,7 @@ describe('DropdownButtonComponent', () => {
 
     it('renders dropdown toggle text element', () => {
       const dropdownToggleTextEl = vm.$el.querySelector('.dropdown-toggle-text');
+
       expect(dropdownToggleTextEl).not.toBeNull();
       expect(dropdownToggleTextEl.innerText.trim()).toBe(defaultLabel);
     });
@@ -67,9 +68,12 @@ describe('DropdownButtonComponent', () => {
     });
 
     it('renders slot, if default slot exists', () => {
-      vm = createComponent({}, {
-        default: ['Lorem Ipsum Dolar'],
-      });
+      vm = createComponent(
+        {},
+        {
+          default: ['Lorem Ipsum Dolar'],
+        },
+      );
 
       expect(vm.$el).not.toContainElement('.dropdown-toggle-text');
       expect(vm.$el).toHaveText('Lorem Ipsum Dolar');

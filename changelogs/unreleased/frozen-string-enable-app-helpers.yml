@@ -1,5 +1,0 @@
----
-title: Enable frozen string for app/helpers/**/*.rb
-merge_request:
-author: gfyoung
-type: performance

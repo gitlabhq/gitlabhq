@@ -14,8 +14,13 @@ module QA
           end
 
           view 'app/assets/javascripts/deploy_keys/components/key.vue' do
-            element :key_title, /class=".*qa-key-title.*"/ # rubocop:disable QA/ElementWithPattern
-            element :key_fingerprint, /class=".*qa-key-fingerprint.*"/ # rubocop:disable QA/ElementWithPattern
+            element :key
+            element :key_title
+            element :key_fingerprint
+          end
+
+          def add_key
+            click_on 'Add key'
           end
 
           def fill_key_title(title)
@@ -26,8 +31,18 @@ module QA
             fill_in 'deploy_key_key', with: key
           end
 
-          def add_key
-            click_on 'Add key'
+          def find_fingerprint(title)
+            within_project_deploy_keys do
+              find_element(:key, title)
+                .find(element_selector_css(:key_fingerprint)).text
+            end
+          end
+
+          def has_key?(title, fingerprint)
+            within_project_deploy_keys do
+              find_element(:key, title)
+                .has_css?(element_selector_css(:key_fingerprint), text: fingerprint)
+            end
           end
 
           def key_title
@@ -42,23 +57,11 @@ module QA
             end
           end
 
-          def key_titles
-            within_project_deploy_keys do
-              all_elements(:key_title)
-            end
-          end
-
-          def key_fingerprints
-            within_project_deploy_keys do
-              all_elements(:key_fingerprint)
-            end
-          end
-
           private
 
           def within_project_deploy_keys
             wait(reload: false) do
-              has_css?(element_selector_css(:project_deploy_keys))
+              has_element?(:project_deploy_keys)
             end
 
             within_element(:project_deploy_keys) do

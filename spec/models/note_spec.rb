@@ -517,7 +517,7 @@ describe Note do
 
   describe '#to_ability_name' do
     it 'returns snippet for a project snippet note' do
-      expect(build(:note_on_project_snippet).to_ability_name).to eq('snippet')
+      expect(build(:note_on_project_snippet).to_ability_name).to eq('project_snippet')
     end
 
     it 'returns personal_snippet for a personal snippet note' do
@@ -864,6 +864,45 @@ describe Note do
 
         note.save!
       end
+    end
+
+    describe '#with_notes_filter' do
+      let!(:comment) { create(:note) }
+      let!(:system_note) { create(:note, system: true) }
+
+      context 'when notes filter is nil' do
+        subject { described_class.with_notes_filter(nil) }
+
+        it { is_expected.to include(comment, system_note) }
+      end
+
+      context 'when notes filter is set to all notes' do
+        subject { described_class.with_notes_filter(UserPreference::NOTES_FILTERS[:all_notes]) }
+
+        it { is_expected.to include(comment, system_note) }
+      end
+
+      context 'when notes filter is set to only comments' do
+        subject { described_class.with_notes_filter(UserPreference::NOTES_FILTERS[:only_comments]) }
+
+        it { is_expected.to include(comment) }
+        it { is_expected.not_to include(system_note) }
+      end
+    end
+  end
+
+  describe '#parent' do
+    it 'returns project for project notes' do
+      project = create(:project)
+      note = create(:note_on_issue, project: project)
+
+      expect(note.parent).to eq(project)
+    end
+
+    it 'returns nil for personal snippet note' do
+      note = create(:note_on_personal_snippet)
+
+      expect(note.parent).to be_nil
     end
   end
 end

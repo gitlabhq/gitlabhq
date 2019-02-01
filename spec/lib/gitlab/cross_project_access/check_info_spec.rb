@@ -50,7 +50,7 @@ describe Gitlab::CrossProjectAccess::CheckInfo do
       expect(info.should_run?(dummy_controller)).to be_truthy
     end
 
-    it 'returns the the oposite of #should_skip? when the check is a skip' do
+    it 'returns the opposite of #should_skip? when the check is a skip' do
       info = described_class.new({}, nil, nil, true)
 
       expect(info).to receive(:should_skip?).with(dummy_controller).and_return(false)
@@ -101,7 +101,7 @@ describe Gitlab::CrossProjectAccess::CheckInfo do
       expect(info.should_skip?(dummy_controller)).to be_truthy
     end
 
-    it 'returns the the oposite of #should_run? when the check is not a skip' do
+    it 'returns the opposite of #should_run? when the check is not a skip' do
       info = described_class.new({}, nil, nil, false)
 
       expect(info).to receive(:should_run?).with(dummy_controller).and_return(false)

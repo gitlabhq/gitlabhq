@@ -1,4 +1,4 @@
-class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration
+class MigrateProcessCommitWorkerJobs < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   class Repository

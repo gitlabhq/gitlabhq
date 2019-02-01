@@ -4,15 +4,43 @@ function simulateEvent(el, type, options = {}) {
 
   if (/^mouse/.test(type)) {
     event = el.ownerDocument.createEvent('MouseEvents');
-    event.initMouseEvent(type, true, true, el.ownerDocument.defaultView,
-    options.button, options.screenX, options.screenY, options.clientX, options.clientY,
-    options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, el);
+    event.initMouseEvent(
+      type,
+      true,
+      true,
+      el.ownerDocument.defaultView,
+      options.button,
+      options.screenX,
+      options.screenY,
+      options.clientX,
+      options.clientY,
+      options.ctrlKey,
+      options.altKey,
+      options.shiftKey,
+      options.metaKey,
+      options.button,
+      el,
+    );
   } else {
     event = el.ownerDocument.createEvent('CustomEvent');
 
-    event.initCustomEvent(type, true, true, el.ownerDocument.defaultView,
-    options.button, options.screenX, options.screenY, options.clientX, options.clientY,
-    options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, el);
+    event.initCustomEvent(
+      type,
+      true,
+      true,
+      el.ownerDocument.defaultView,
+      options.button,
+      options.screenX,
+      options.screenY,
+      options.clientX,
+      options.clientY,
+      options.ctrlKey,
+      options.altKey,
+      options.shiftKey,
+      options.metaKey,
+      options.button,
+      el,
+    );
 
     event.dataTransfer = {
       data: {},
@@ -37,14 +65,16 @@ function simulateEvent(el, type, options = {}) {
 }
 
 function isLast(target) {
-  const el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
+  const el =
+    typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
   const { children } = el;
 
   return children.length - 1 === target.index;
 }
 
 function getTarget(target) {
-  const el = typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
+  const el =
+    typeof target.el === 'string' ? document.getElementById(target.el.substr(1)) : target.el;
   const { children } = el;
 
   return (
@@ -58,13 +88,13 @@ function getTarget(target) {
 function getRect(el) {
   const rect = el.getBoundingClientRect();
   const width = rect.right - rect.left;
-  const height = (rect.bottom - rect.top) + 10;
+  const height = rect.bottom - rect.top + 10;
 
   return {
     x: rect.left,
     y: rect.top,
-    cx: rect.left + (width / 2),
-    cy: rect.top + (height / 2),
+    cx: rect.left + width / 2,
+    cy: rect.top + height / 2,
     w: width,
     h: height,
     hw: width / 2,
@@ -112,8 +142,8 @@ export default function simulateDrag(options) {
 
   const dragInterval = setInterval(() => {
     const progress = (new Date().getTime() - startTime) / duration;
-    const x = (fromRect.cx + ((toRect.cx - fromRect.cx) * progress));
-    const y = (fromRect.cy + ((toRect.cy - fromRect.cy) * progress));
+    const x = fromRect.cx + (toRect.cx - fromRect.cx) * progress;
+    const y = fromRect.cy + (toRect.cy - fromRect.cy) * progress;
     const overEl = fromEl.ownerDocument.elementFromPoint(x, y);
 
     simulateEvent(overEl, 'mousemove', {

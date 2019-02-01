@@ -26,6 +26,8 @@ class Issue < ActiveRecord::Base
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
+  SORTING_PREFERENCE_FIELD = :issues_sort
+
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
@@ -97,6 +99,10 @@ class Issue < ActiveRecord::Base
 
   class << self
     alias_method :in_parents, :in_projects
+  end
+
+  def self.parent_column
+    :project_id
   end
 
   def self.reference_prefix
@@ -226,24 +232,12 @@ class Issue < ActiveRecord::Base
   end
 
   def check_for_spam?
-    project.public? && (title_changed? || description_changed?)
+    publicly_visible? &&
+      (title_changed? || description_changed? || confidential_changed?)
   end
 
   def as_json(options = {})
     super(options).tap do |json|
-      if options.key?(:issue_endpoints) && project
-        url_helper = Gitlab::Routing.url_helpers
-
-        issue_reference = options[:include_full_project_path] ? to_reference(full: true) : to_reference
-
-        json.merge!(
-          reference_path: issue_reference,
-          real_path: url_helper.project_issue_path(project, self),
-          issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
-          toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self)
-        )
-      end
-
       if options.key?(:labels)
         json[:labels] = labels.as_json(
           project: project,

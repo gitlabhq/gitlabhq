@@ -94,6 +94,12 @@ describe API::Snippets do
       expect(response.body).to eq(snippet.content)
     end
 
+    it 'forces attachment content disposition' do
+      get api("/snippets/#{snippet.id}/raw", user)
+
+      expect(headers['Content-Disposition']).to match(/^attachment/)
+    end
+
     it 'returns 404 for invalid snippet id' do
       get api("/snippets/1234/raw", user)
 
@@ -137,7 +143,7 @@ describe API::Snippets do
 
     it 'creates a new snippet' do
       expect do
-        post api("/snippets/", user), params
+        post api("/snippets/", user), params: params
       end.to change { PersonalSnippet.count }.by(1)
 
       expect(response).to have_gitlab_http_status(201)
@@ -150,14 +156,14 @@ describe API::Snippets do
     it 'returns 400 for missing parameters' do
       params.delete(:title)
 
-      post api("/snippets/", user), params
+      post api("/snippets/", user), params: params
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     context 'when the snippet is spam' do
       def create_snippet(snippet_params = {})
-        post api('/snippets', user), params.merge(snippet_params)
+        post api('/snippets', user), params: params.merge(snippet_params)
       end
 
       before do
@@ -199,7 +205,7 @@ describe API::Snippets do
       new_content = 'New content'
       new_description = 'New description'
 
-      put api("/snippets/#{snippet.id}", user), content: new_content, description: new_description
+      put api("/snippets/#{snippet.id}", user), params: { content: new_content, description: new_description }
 
       expect(response).to have_gitlab_http_status(200)
       snippet.reload
@@ -208,14 +214,14 @@ describe API::Snippets do
     end
 
     it 'returns 404 for invalid snippet id' do
-      put api("/snippets/1234", user), title: 'foo'
+      put api("/snippets/1234", user), params: { title: 'foo' }
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
     end
 
     it "returns 404 for another user's snippet" do
-      put api("/snippets/#{snippet.id}", other_user), title: 'fubar'
+      put api("/snippets/#{snippet.id}", other_user), params: { title: 'fubar' }
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 Snippet Not Found')
@@ -229,7 +235,7 @@ describe API::Snippets do
 
     context 'when the snippet is spam' do
       def update_snippet(snippet_params = {})
-        put api("/snippets/#{snippet.id}", user), snippet_params
+        put api("/snippets/#{snippet.id}", user), params: snippet_params
       end
 
       before do

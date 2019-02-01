@@ -2,6 +2,7 @@
 
 module MilestonesHelper
   include EntityDateHelper
+  include Gitlab::Utils::StrongMemoize
 
   def milestones_filter_path(opts = {})
     if @project
@@ -113,12 +114,6 @@ module MilestonesHelper
     end
   end
 
-  def milestone_tooltip_title(milestone)
-    if milestone
-      "#{milestone.title}<br />#{milestone_tooltip_due_date(milestone)}"
-    end
-  end
-
   def milestone_time_for(date, date_type)
     title = date_type == :start ? "Start date" : "End date"
 
@@ -172,7 +167,7 @@ module MilestonesHelper
 
   def milestone_tooltip_due_date(milestone)
     if milestone.due_date
-      "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone)})"
+      "#{milestone.due_date.to_s(:medium)} (#{remaining_days_in_words(milestone.due_date, milestone.start_date)})"
     else
       _('Milestone')
     end
@@ -236,11 +231,26 @@ module MilestonesHelper
     end
   end
 
-  def group_or_dashboard_milestone_path(milestone)
-    if milestone.group_milestone?
-      group_milestone_path(milestone.group, milestone.iid, milestone: { title: milestone.title })
-    else
-      dashboard_milestone_path(milestone.safe_title, title: milestone.title)
+  def group_or_project_milestone_path(milestone)
+    params =
+      if milestone.group_milestone?
+        { milestone: { title: milestone.title } }
+      else
+        { title: milestone.title }
+      end
+
+    milestone_path(milestone.milestone, params)
+  end
+
+  def can_admin_project_milestones?
+    strong_memoize(:can_admin_project_milestones) do
+      can?(current_user, :admin_milestone, @project)
+    end
+  end
+
+  def can_admin_group_milestones?
+    strong_memoize(:can_admin_group_milestones) do
+      can?(current_user, :admin_milestone, @project.group)
     end
   end
 end

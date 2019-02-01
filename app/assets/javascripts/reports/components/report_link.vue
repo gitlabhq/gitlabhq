@@ -20,10 +20,16 @@ export default {
       rel="noopener noreferrer nofollow"
       class="break-link"
     >
-      {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
+      {{ issue.path
+      }}<template v-if="issue.line"
+        >:{{ issue.line }}</template
+      >
     </a>
     <template v-else>
-      {{ issue.path }}<template v-if="issue.line">:{{ issue.line }}</template>
+      {{ issue.path
+      }}<template v-if="issue.line"
+        >:{{ issue.line }}</template
+      >
     </template>
   </div>
 </template>

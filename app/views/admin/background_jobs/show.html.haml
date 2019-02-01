@@ -6,40 +6,5 @@
   %p.light GitLab uses #{link_to "sidekiq", "http://sidekiq.org/"} library for async job processing
 
   %hr
-
-  .card
-    .card-header Sidekiq running processes
-    .card-body
-      - if @sidekiq_processes.empty?
-        %h4.cred
-          %i.fa.fa-exclamation-triangle
-          There are no running sidekiq processes. Please restart GitLab
-      - else
-        .table-holder
-          %table.table
-            %thead
-              %th USER
-              %th PID
-              %th CPU
-              %th MEM
-              %th STATE
-              %th START
-              %th COMMAND
-            %tbody
-              - @sidekiq_processes.each do |process|
-                %tr
-                  %td= gitlab_config.user
-                  - parse_sidekiq_ps(process).each do |value|
-                    %td= value
-        .clearfix
-          %p
-            %i.fa.fa-exclamation-circle
-            If '[#{@concurrency} of #{@concurrency} busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
-          %p
-            %i.fa.fa-exclamation-circle
-            If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u #{gitlab_config.user} -f sidekiq) and restart GitLab.
-
-
-
   .card
     %iframe{ src: sidekiq_path, width: '100%', height: 970, style: "border: 0" }

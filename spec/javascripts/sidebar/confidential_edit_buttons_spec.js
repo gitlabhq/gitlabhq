@@ -7,8 +7,8 @@ describe('Edit Form Buttons', () => {
 
   beforeEach(() => {
     const Component = Vue.extend(editFormButtons);
-    const toggleForm = () => { };
-    const updateConfidentialAttribute = () => { };
+    const toggleForm = () => {};
+    const updateConfidentialAttribute = () => {};
 
     vm1 = new Component({
       propsData: {
@@ -28,12 +28,8 @@ describe('Edit Form Buttons', () => {
   });
 
   it('renders on or off text based on confidentiality', () => {
-    expect(
-      vm1.$el.innerHTML.includes('Turn Off'),
-    ).toBe(true);
+    expect(vm1.$el.innerHTML.includes('Turn Off')).toBe(true);
 
-    expect(
-      vm2.$el.innerHTML.includes('Turn On'),
-    ).toBe(true);
+    expect(vm2.$el.innerHTML.includes('Turn On')).toBe(true);
   });
 });

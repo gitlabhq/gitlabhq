@@ -1,57 +1,59 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+require 'spec_helper'
 
 describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
+  include KubernetesHelpers
+
   describe '#execute' do
     let(:api_url) { 'http://111.111.111.111' }
-    let(:username) { 'admin' }
-    let(:password) { 'xxx' }
+    let(:namespace) { 'my-namespace' }
+    let(:service_account_token_name) { 'gitlab-token' }
 
     let(:kubeclient) do
       Gitlab::Kubernetes::KubeClient.new(
         api_url,
-        ['api', 'apis/rbac.authorization.k8s.io'],
-        auth_options: { username: username, password: password }
+        auth_options: { username: 'admin', password: 'xxx' }
       )
     end
 
-    subject { described_class.new(kubeclient).execute }
+    subject { described_class.new(kubeclient, service_account_token_name, namespace).execute }
+
+    before do
+      stub_kubeclient_discover(api_url)
+    end
 
     context 'when params correct' do
       let(:decoded_token) { 'xxx.token.xxx' }
       let(:token) { Base64.encode64(decoded_token) }
 
-      let(:secret_json) do
-        {
-          'metadata': {
-            name: 'gitlab-token'
-          },
-          'data': {
-            'token': token
-          }
-        }
-      end
-
-      before do
-        allow_any_instance_of(Kubeclient::Client)
-          .to receive(:get_secret).and_return(secret_json)
-      end
-
       context 'when gitlab-token exists' do
-        let(:metadata_name) { 'gitlab-token' }
+        before do
+          stub_kubeclient_get_secret(
+            api_url,
+            {
+              metadata_name: service_account_token_name,
+              namespace: namespace,
+              token: token
+            }
+          )
+        end
 
         it { is_expected.to eq(decoded_token) }
       end
 
-      context 'when gitlab-token does not exist' do
-        let(:secret_json) { {} }
+      context 'when there is a 500 error' do
+        before do
+          stub_kubeclient_get_secret_error(api_url, service_account_token_name, namespace: namespace, status: 500)
+        end
 
-        it { is_expected.to be_nil }
+        it { expect { subject }.to raise_error(Kubeclient::HttpError) }
       end
 
-      context 'when token is nil' do
-        let(:token) { nil }
+      context 'when gitlab-token does not exist' do
+        before do
+          stub_kubeclient_get_secret_error(api_url, service_account_token_name, namespace: namespace, status: 404)
+        end
 
         it { is_expected.to be_nil }
       end

@@ -1,52 +1,13 @@
 - @no_container = true
-- add_to_breadcrumbs "Jobs", project_jobs_path(@project)
+- add_to_breadcrumbs _("Jobs"), project_jobs_path(@project)
 - breadcrumb_title "##{@build.id}"
-- page_title "#{@build.name} (##{@build.id})", "Jobs"
+- page_title "#{@build.name} (##{@build.id})", _("Jobs")
 
 - content_for :page_specific_javascripts do
   = stylesheet_link_tag 'page_bundles/xterm'
 
 %div{ class: container_class }
-  .build-page.js-build-page
-    #js-build-header-vue
-
-    - if @build.running? || @build.has_trace?
-      .build-trace-container.prepend-top-default
-        .top-bar.js-top-bar
-          .js-truncated-info.truncated-info.d-none.d-sm-block.float-left.hidden<
-            Showing last
-            %span.js-truncated-info-size.truncated-info-size><
-            of log -
-            %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
-
-          .controllers.float-right
-            - if @build.has_trace?
-              = link_to raw_project_job_path(@project, @build),
-                      title: 'Show complete raw',
-                      data: { placement: 'top', container: 'body' },
-                      class: 'js-raw-link-controller has-tooltip controllers-buttons' do
-                = icon('file-text-o')
-
-            - if @build.erasable? && can?(current_user, :erase_build, @build)
-              = link_to erase_project_job_path(@project, @build),
-                        method: :post,
-                        data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },
-                        title: 'Erase job log',
-                        class: 'has-tooltip js-erase-link controllers-buttons' do
-                = icon('trash')
-            .has-tooltip.controllers-buttons{ title: 'Scroll to top', data: { placement: 'top', container: 'body'} }
-              %button.js-scroll-up.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-                = custom_icon('scroll_up')
-            .has-tooltip.controllers-buttons{ title: 'Scroll to bottom', data: { placement: 'top', container: 'body'} }
-              %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
-                = custom_icon('scroll_down')
-
-        = render 'shared/builds/build_output'
-
-  #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
-
-.js-build-options{ data: javascript_build_options }
-
-#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json),
-  runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner'),
-  runner_settings_url: project_runners_path(@build.project, anchor: 'js-runners-settings') } }
+  #js-job-vue-app{ data: { endpoint: project_job_path(@project, @build, format: :json),
+    runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner'),
+    runner_settings_url: project_runners_path(@build.project, anchor: 'js-runners-settings'),
+    build_options: javascript_build_options } }

@@ -45,7 +45,7 @@ module Todos
       # rubocop: disable CodeReuse/ActiveRecord
       def remove_confidential_issue_todos
         Todo.where(
-          target_id: confidential_issues.select(:id), target_type: Issue, user_id: user.id
+          target_id: confidential_issues.select(:id), target_type: Issue.name, user_id: user.id
         ).delete_all
       end
       # rubocop: enable CodeReuse/ActiveRecord

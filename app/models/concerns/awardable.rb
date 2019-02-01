@@ -13,13 +13,13 @@ module Awardable
   end
 
   class_methods do
-    def awarded(user, name)
+    def awarded(user, name = nil)
       sql = <<~EOL
         EXISTS (
           SELECT TRUE
           FROM award_emoji
           WHERE user_id = :user_id AND
-                name = :name AND
+                #{"name = :name AND" if name.present?}
                 awardable_type = :awardable_type AND
                 awardable_id = #{self.arel_table.name}.id
         )
@@ -28,15 +28,34 @@ module Awardable
       where(sql, user_id: user.id, name: name, awardable_type: self.name)
     end
 
+    def not_awarded(user)
+      sql = <<~EOL
+        NOT EXISTS (
+          SELECT TRUE
+          FROM award_emoji
+          WHERE user_id = :user_id AND
+                awardable_type = :awardable_type AND
+                awardable_id = #{self.arel_table.name}.id
+        )
+      EOL
+
+      where(sql, user_id: user.id, awardable_type: self.name)
+    end
+
     def order_upvotes_desc
-      order_votes_desc(AwardEmoji::UPVOTE_NAME)
+      order_votes(AwardEmoji::UPVOTE_NAME, 'DESC')
+    end
+
+    def order_upvotes_asc
+      order_votes(AwardEmoji::UPVOTE_NAME, 'ASC')
     end
 
     def order_downvotes_desc
-      order_votes_desc(AwardEmoji::DOWNVOTE_NAME)
+      order_votes(AwardEmoji::DOWNVOTE_NAME, 'DESC')
     end
 
-    def order_votes_desc(emoji_name)
+    # Order votes by emoji, optional sort order param `descending` defaults to true
+    def order_votes(emoji_name, direction)
       awardable_table = self.arel_table
       awards_table = AwardEmoji.arel_table
 
@@ -48,7 +67,7 @@ module Awardable
         )
       ).join_sources
 
-      joins(join_clause).group(awardable_table[:id]).reorder("COUNT(award_emoji.id) DESC")
+      joins(join_clause).group(awardable_table[:id]).reorder("COUNT(award_emoji.id) #{direction}")
     end
   end
 

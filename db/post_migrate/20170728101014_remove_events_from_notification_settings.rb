@@ -1,4 +1,4 @@
-class RemoveEventsFromNotificationSettings < ActiveRecord::Migration
+class RemoveEventsFromNotificationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

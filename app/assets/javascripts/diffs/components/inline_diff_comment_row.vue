@@ -1,5 +1,4 @@
 <script>
-import { mapState } from 'vuex';
 import diffDiscussions from './diff_discussions.vue';
 import diffLineNoteForm from './diff_line_note_form.vue';
 
@@ -17,41 +16,45 @@ export default {
       type: String,
       required: true,
     },
-    lineIndex: {
-      type: Number,
-      required: true,
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
-    ...mapState({
-      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
-    }),
     className() {
       return this.line.discussions.length ? '' : 'js-temp-notes-holder';
+    },
+    shouldRender() {
+      if (this.line.hasForm) return true;
+
+      if (!this.line.discussions || !this.line.discussions.length) {
+        return false;
+      }
+
+      return this.line.discussions.every(discussion => discussion.expanded);
     },
   },
 };
 </script>
 
 <template>
-  <tr
-    :class="className"
-    class="notes_holder"
-  >
-    <td
-      class="notes_content"
-      colspan="3"
-    >
+  <tr v-if="shouldRender" :class="className" class="notes_holder">
+    <td class="notes_content" colspan="3">
       <div class="content">
         <diff-discussions
           v-if="line.discussions.length"
+          :line="line"
           :discussions="line.discussions"
+          :help-page-path="helpPagePath"
         />
         <diff-line-note-form
-          v-if="diffLineCommentForms[line.lineCode]"
+          v-if="line.hasForm"
           :diff-file-hash="diffFileHash"
           :line="line"
           :note-target-line="line"
+          :help-page-path="helpPagePath"
         />
       </div>
     </td>

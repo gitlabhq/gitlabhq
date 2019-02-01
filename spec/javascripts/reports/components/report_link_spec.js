@@ -45,8 +45,7 @@ describe('report link', () => {
       vm = mountComponent(Component, {
         issue: {
           path: 'Gemfile.lock',
-          urlPath:
-            'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+          urlPath: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
           line: 22,
         },
       });
@@ -60,8 +59,7 @@ describe('report link', () => {
       vm = mountComponent(Component, {
         issue: {
           path: 'Gemfile.lock',
-          urlPath:
-            'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+          urlPath: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
         },
       });
 

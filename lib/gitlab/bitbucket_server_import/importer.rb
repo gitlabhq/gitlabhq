@@ -3,8 +3,6 @@
 module Gitlab
   module BitbucketServerImport
     class Importer
-      include Gitlab::ShellAdapter
-
       attr_reader :recover_missing_commits
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
       attr_accessor :logger
@@ -56,7 +54,7 @@ module Gitlab
       def handle_errors
         return unless errors.any?
 
-        project.update_column(:import_error, {
+        project.import_state.update_column(:last_error, {
           message: 'The remote data could not be fully imported.',
           errors: errors
         }.to_json)
@@ -134,7 +132,7 @@ module Gitlab
         project.repository.fetch_as_mirror(project.import_url, refmap: self.class.refmap, remote_name: REMOTE_NAME)
 
         log_info(stage: 'import_repository', message: 'finished import')
-      rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
+      rescue Gitlab::Shell::Error => e
         log_error(stage: 'import_repository', message: 'failed import', error: e.message)
 
         # Expire cache to prevent scenarios such as:
@@ -142,7 +140,7 @@ module Gitlab
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
         project.repository.expire_content_cache if project.repository_exists?
 
-        raise e.message
+        raise
       end
 
       # Bitbucket Server keeps tracks of references for open pull requests in

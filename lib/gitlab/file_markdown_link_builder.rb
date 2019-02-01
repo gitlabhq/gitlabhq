@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Builds the markdown link of a file
 # It needs the methods filename and secure_url (final destination url) to be defined.
 module Gitlab
@@ -8,7 +10,7 @@ module Gitlab
       return unless name = markdown_name
 
       markdown = "[#{name.gsub(']', '\\]')}](#{secure_url})"
-      markdown.prepend("!") if image_or_video? || dangerous?
+      markdown = "!#{markdown}" if image_or_video? || dangerous?
       markdown
     end
 

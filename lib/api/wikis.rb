@@ -6,7 +6,7 @@ module API
       def commit_params(attrs)
         {
           file_name: attrs[:file][:filename],
-          file_content: File.read(attrs[:file][:tempfile]),
+          file_content: attrs[:file][:tempfile].read,
           branch_name: attrs[:branch]
         }
       end
@@ -22,7 +22,9 @@ module API
       end
     end
 
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    WIKI_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: API::NO_SLASH_URL_PART_REGEX)
+
+    resource :projects, requirements: WIKI_ENDPOINT_REQUIREMENTS do
       desc 'Get a list of wiki pages' do
         success Entities::WikiPageBasic
       end
@@ -100,10 +102,10 @@ module API
         success Entities::WikiAttachment
       end
       params do
-        requires :file, type: File, desc: 'The attachment file to be uploaded'
+        requires :file, type: ::API::Validations::Types::SafeFile, desc: 'The attachment file to be uploaded'
         optional :branch, type: String, desc: 'The name of the branch'
       end
-      post ":id/wikis/attachments", requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      post ":id/wikis/attachments" do
         authorize! :create_wiki, user_project
 
         result = ::Wikis::CreateAttachmentService.new(user_project,

@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 # Gitlab::Git::CommitStats counts the additions, deletions, and total changes
 # in a commit.
 module Gitlab
   module Git
     class CommitStats
+      include Gitlab::Git::WrapsGitalyErrors
+
       attr_reader :id, :additions, :deletions, :total
 
       # Instantiate a CommitStats object
@@ -14,7 +18,7 @@ module Gitlab
         @deletions = 0
         @total = 0
 
-        repo.wrapped_gitaly_errors do
+        wrapped_gitaly_errors do
           gitaly_stats(repo, commit)
         end
       end

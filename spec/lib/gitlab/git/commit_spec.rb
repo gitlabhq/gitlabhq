@@ -94,7 +94,7 @@ describe Gitlab::Git::Commit, :seed_helper do
       context 'body_size less than threshold' do
         let(:body_size) { 123 }
 
-        it 'fetches commit message seperately' do
+        it 'fetches commit message separately' do
           expect(described_class).to receive(:get_message).with(repository, id)
 
           commit.safe_message
@@ -183,110 +183,100 @@ describe Gitlab::Git::Commit, :seed_helper do
       end
     end
 
-    shared_examples '.where' do
-      context 'path is empty string' do
-        subject do
-          commits = described_class.where(
-            repo: repository,
-            ref: 'master',
-            path: '',
-            limit: 10
-          )
+    context 'path is empty string' do
+      subject do
+        commits = described_class.where(
+          repo: repository,
+          ref: 'master',
+          path: '',
+          limit: 10
+        )
 
-          commits.map { |c| c.id }
-        end
-
-        it 'has 10 elements' do
-          expect(subject.size).to eq(10)
-        end
-        it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
+        commits.map { |c| c.id }
       end
 
-      context 'path is nil' do
-        subject do
-          commits = described_class.where(
-            repo: repository,
-            ref: 'master',
-            path: nil,
-            limit: 10
-          )
-
-          commits.map { |c| c.id }
-        end
-
-        it 'has 10 elements' do
-          expect(subject.size).to eq(10)
-        end
-        it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
+      it 'has 10 elements' do
+        expect(subject.size).to eq(10)
       end
-
-      context 'ref is branch name' do
-        subject do
-          commits = described_class.where(
-            repo: repository,
-            ref: 'master',
-            path: 'files',
-            limit: 3,
-            offset: 1
-          )
-
-          commits.map { |c| c.id }
-        end
-
-        it 'has 3 elements' do
-          expect(subject.size).to eq(3)
-        end
-        it { is_expected.to include("d14d6c0abdd253381df51a723d58691b2ee1ab08") }
-        it { is_expected.not_to include("eb49186cfa5c4338011f5f590fac11bd66c5c631") }
-      end
-
-      context 'ref is commit id' do
-        subject do
-          commits = described_class.where(
-            repo: repository,
-            ref: "874797c3a73b60d2187ed6e2fcabd289ff75171e",
-            path: 'files',
-            limit: 3,
-            offset: 1
-          )
-
-          commits.map { |c| c.id }
-        end
-
-        it 'has 3 elements' do
-          expect(subject.size).to eq(3)
-        end
-        it { is_expected.to include("2f63565e7aac07bcdadb654e253078b727143ec4") }
-        it { is_expected.not_to include(SeedRepo::Commit::ID) }
-      end
-
-      context 'ref is tag' do
-        subject do
-          commits = described_class.where(
-            repo: repository,
-            ref: 'v1.0.0',
-            path: 'files',
-            limit: 3,
-            offset: 1
-          )
-
-          commits.map { |c| c.id }
-        end
-
-        it 'has 3 elements' do
-          expect(subject.size).to eq(3)
-        end
-        it { is_expected.to include("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
-        it { is_expected.not_to include(SeedRepo::Commit::ID) }
-      end
+      it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
     end
 
-    describe '.where with gitaly' do
-      it_should_behave_like '.where'
+    context 'path is nil' do
+      subject do
+        commits = described_class.where(
+          repo: repository,
+          ref: 'master',
+          path: nil,
+          limit: 10
+        )
+
+        commits.map { |c| c.id }
+      end
+
+      it 'has 10 elements' do
+        expect(subject.size).to eq(10)
+      end
+      it { is_expected.to include(SeedRepo::EmptyCommit::ID) }
     end
 
-    describe '.where without gitaly', :skip_gitaly_mock do
-      it_should_behave_like '.where'
+    context 'ref is branch name' do
+      subject do
+        commits = described_class.where(
+          repo: repository,
+          ref: 'master',
+          path: 'files',
+          limit: 3,
+          offset: 1
+        )
+
+        commits.map { |c| c.id }
+      end
+
+      it 'has 3 elements' do
+        expect(subject.size).to eq(3)
+      end
+      it { is_expected.to include("d14d6c0abdd253381df51a723d58691b2ee1ab08") }
+      it { is_expected.not_to include("eb49186cfa5c4338011f5f590fac11bd66c5c631") }
+    end
+
+    context 'ref is commit id' do
+      subject do
+        commits = described_class.where(
+          repo: repository,
+          ref: "874797c3a73b60d2187ed6e2fcabd289ff75171e",
+          path: 'files',
+          limit: 3,
+          offset: 1
+        )
+
+        commits.map { |c| c.id }
+      end
+
+      it 'has 3 elements' do
+        expect(subject.size).to eq(3)
+      end
+      it { is_expected.to include("2f63565e7aac07bcdadb654e253078b727143ec4") }
+      it { is_expected.not_to include(SeedRepo::Commit::ID) }
+    end
+
+    context 'ref is tag' do
+      subject do
+        commits = described_class.where(
+          repo: repository,
+          ref: 'v1.0.0',
+          path: 'files',
+          limit: 3,
+          offset: 1
+        )
+
+        commits.map { |c| c.id }
+      end
+
+      it 'has 3 elements' do
+        expect(subject.size).to eq(3)
+      end
+      it { is_expected.to include("874797c3a73b60d2187ed6e2fcabd289ff75171e") }
+      it { is_expected.not_to include(SeedRepo::Commit::ID) }
     end
 
     describe '.between' do
@@ -460,10 +450,16 @@ describe Gitlab::Git::Commit, :seed_helper do
             described_class.extract_signature_lazily(repository, commit_id)
           end
 
+          other_repository = double(:repository)
+          described_class.extract_signature_lazily(other_repository, commit_ids.first)
+
           expect(described_class).to receive(:batch_signature_extraction)
             .with(repository, commit_ids)
             .once
             .and_return({})
+
+          expect(described_class).not_to receive(:batch_signature_extraction)
+            .with(other_repository, commit_ids.first)
 
           2.times { signatures.each(&:itself) }
         end
@@ -508,7 +504,7 @@ describe Gitlab::Git::Commit, :seed_helper do
     end
   end
 
-  shared_examples '#stats' do
+  describe '#stats' do
     subject { commit.stats }
 
     describe '#additions' do
@@ -525,14 +521,6 @@ describe Gitlab::Git::Commit, :seed_helper do
       subject { super().total }
       it { is_expected.to eq(17) }
     end
-  end
-
-  describe '#stats with gitaly on' do
-    it_should_behave_like '#stats'
-  end
-
-  describe '#stats with gitaly disabled', :skip_gitaly_mock do
-    it_should_behave_like '#stats'
   end
 
   describe '#has_zero_stats?' do
@@ -577,25 +565,15 @@ describe Gitlab::Git::Commit, :seed_helper do
       commit_ids.map { |id| described_class.get_message(repository, id) }
     end
 
-    shared_examples 'getting commit messages' do
-      it 'gets commit messages' do
-        expect(subject).to contain_exactly(
-          "Added contributing guide\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
-          "Add submodule\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n"
-        )
-      end
+    it 'gets commit messages' do
+      expect(subject).to contain_exactly(
+        "Added contributing guide\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n",
+        "Add submodule\n\nSigned-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>\n"
+      )
     end
 
-    context 'when Gitaly commit_messages feature is enabled' do
-      it_behaves_like 'getting commit messages'
-
-      it 'gets messages in one batch', :request_store do
-        expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
-      end
-    end
-
-    context 'when Gitaly commit_messages feature is disabled', :disable_gitaly do
-      it_behaves_like 'getting commit messages'
+    it 'gets messages in one batch', :request_store do
+      expect { subject.map(&:itself) }.to change { Gitlab::GitalyClient.get_request_count }.by(1)
     end
   end
 

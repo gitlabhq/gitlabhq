@@ -20,7 +20,7 @@ GET /projects/:id/repository/commits
 
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
 ```
 
 Example response:
@@ -87,7 +87,7 @@ POST /projects/:id/repository/commits
 | `action` | string | yes | The action to perform, `create`, `delete`, `move`, `update`, `chmod`|
 | `file_path` | string | yes | Full path to the file. Ex. `lib/class.rb` |
 | `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb`. Only considered for `move` action. |
-| `content` | string | no | File content, required for all except `delete` and `chmod`. Optional for `move` |
+| `content` | string | no | File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` will preserve the existing file content, and any other value of `content` will overwrite the file content. |
 | `encoding` | string | no | `text` or `base64`. `text` is default. |
 | `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
 | `execute_filemode` | boolean | no | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
@@ -127,7 +127,7 @@ PAYLOAD=$(cat << 'JSON'
 }
 JSON
 )
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data "$PAYLOAD" https://gitlab.example.com/api/v4/projects/1/repository/commits
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data "$PAYLOAD" https://gitlab.example.com/api/v4/projects/1/repository/commits
 ```
 
 Example response:
@@ -173,7 +173,7 @@ Parameters:
 | `stats` | boolean | no | Include commit stats. Default is true |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
 ```
 
 Example response:
@@ -229,7 +229,7 @@ Parameters:
 | `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
 ```
 
 Example response:
@@ -263,7 +263,7 @@ Parameters:
 | `branch` | string | yes | The name of the branch  |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/cherry_pick"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/cherry_pick"
 ```
 
 Example response:
@@ -288,6 +288,47 @@ Example response:
 }
 ```
 
+## Revert a commit
+
+> [Introduced][ce-22919] in GitLab 11.5.
+
+Reverts a commit in a given branch.
+
+```
+POST /projects/:id/repository/commits/:sha/revert
+```
+
+Parameters:
+
+| Attribute | Type           | Required | Description                                                                     |
+| --------- | ----           | -------- | -----------                                                                     |
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+| `sha`     | string         | yes      | Commit SHA to revert                                                            |
+| `branch`  | string         | yes      | Target branch name                                                              |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/a738f717824ff53aebad8b090c1b79a14f2bd9e8/revert"
+```
+
+Example response:
+
+```json
+{
+  "id":"8b090c1b79a14f2bd9e8a738f717824ff53aebad",
+  "short_id": "8b090c1b",
+  "title":"Revert \"Feature added\"",
+  "created_at":"2018-11-08T15:55:26.000Z",
+  "parent_ids":["a738f717824ff53aebad8b090c1b79a14f2bd9e8"],
+  "message":"Revert \"Feature added\"\n\nThis reverts commit a738f717824ff53aebad8b090c1b79a14f2bd9e8",
+  "author_name":"Administrator",
+  "author_email":"admin@example.com",
+  "authored_date":"2018-11-08T15:55:26.000Z",
+  "committer_name":"Administrator",
+  "committer_email":"admin@example.com",
+  "committed_date":"2018-11-08T15:55:26.000Z"
+}
+```
+
 ## Get the diff of a commit
 
 Get the diff of a commit in a project.
@@ -304,7 +345,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/diff"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/diff"
 ```
 
 Example response:
@@ -340,7 +381,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/comments"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/comments"
 ```
 
 Example response:
@@ -393,7 +434,7 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
 ```
 
 Example response:
@@ -439,7 +480,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
 ```
 
 Example response:
@@ -515,7 +556,7 @@ POST /projects/:id/statuses/:sha
 | `coverage` | float  | no    | The total code coverage
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
 Example response:
@@ -562,7 +603,7 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
 ```
 
 Example response:
@@ -619,3 +660,4 @@ Example response:
 [ce-8047]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/8047
 [ce-15026]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15026
 [ce-18004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18004
+[ce-22919]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22919

@@ -40,7 +40,9 @@ describe('graph component', () => {
       ).toEqual(true);
 
       expect(
-        component.$el.querySelector('.stage-column:nth-child(2) .build:nth-child(1)').classList.contains('left-connector'),
+        component.$el
+          .querySelector('.stage-column:nth-child(2) .build:nth-child(1)')
+          .classList.contains('left-connector'),
       ).toEqual(true);
 
       expect(component.$el.querySelector('loading-icon')).toBe(null);
@@ -56,7 +58,9 @@ describe('graph component', () => {
         pipeline: graphJSON,
       });
 
-      expect(component.$el.querySelector('.stage-column:nth-child(2) .stage-name').textContent.trim()).toEqual('Deploy &lt;img src=x onerror=alert(document.domain)&gt;');
+      expect(
+        component.$el.querySelector('.stage-column:nth-child(2) .stage-name').textContent.trim(),
+      ).toEqual('Deploy &lt;img src=x onerror=alert(document.domain)&gt;');
     });
   });
 });

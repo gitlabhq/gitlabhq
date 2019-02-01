@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
   let(:project) { create(:project) }
+  let(:import_state) { create(:import_state, project: project) }
   let(:worker) { described_class.new }
 
   describe '#import' do
@@ -19,8 +20,8 @@ describe Gitlab::GithubImport::Stage::ImportPullRequestsWorker do
         .to receive(:execute)
         .and_return(waiter)
 
-      expect(project)
-        .to receive(:refresh_import_jid_expiration)
+      expect(import_state)
+        .to receive(:refresh_jid_expiration)
 
       expect(Gitlab::GithubImport::AdvanceStageWorker)
         .to receive(:perform_async)

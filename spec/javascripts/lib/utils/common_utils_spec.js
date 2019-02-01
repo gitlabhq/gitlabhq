@@ -1,8 +1,26 @@
-/* eslint-disable promise/catch-or-return */
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MockAdapter from 'axios-mock-adapter';
 import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
+
+const PIXEL_TOLERANCE = 0.2;
+
+/**
+ * Loads a data URL as the src of an
+ * {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/Image|Image}
+ * and resolves to that Image once loaded.
+ *
+ * @param url
+ * @returns {Promise}
+ */
+const urlToImage = url =>
+  new Promise(resolve => {
+    const img = new Image();
+    img.onload = function() {
+      resolve(img);
+    };
+    img.src = url;
+  });
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -36,38 +54,31 @@ describe('common_utils', () => {
     });
 
     it('should decode params', () => {
-      expect(
-        commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0],
-      ).toBe('label_name[]=test');
+      expect(commonUtils.urlParamsToArray('?label_name%5B%5D=test')[0]).toBe('label_name[]=test');
     });
 
     it('should remove the question mark from the search params', () => {
       const paramsArray = commonUtils.urlParamsToArray('?test=thing');
+
       expect(paramsArray[0][0]).not.toBe('?');
     });
   });
 
   describe('urlParamsToObject', () => {
     it('parses path for label with trailing +', () => {
-      expect(
-        commonUtils.urlParamsToObject('label_name[]=label%2B', {}),
-      ).toEqual({
+      expect(commonUtils.urlParamsToObject('label_name[]=label%2B', {})).toEqual({
         label_name: ['label+'],
       });
     });
 
     it('parses path for milestone with trailing +', () => {
-      expect(
-        commonUtils.urlParamsToObject('milestone_title=A%2B', {}),
-      ).toEqual({
+      expect(commonUtils.urlParamsToObject('milestone_title=A%2B', {})).toEqual({
         milestone_title: 'A+',
       });
     });
 
     it('parses path for search terms with spaces', () => {
-      expect(
-        commonUtils.urlParamsToObject('search=two+words', {}),
-      ).toEqual({
+      expect(commonUtils.urlParamsToObject('search=two+words', {})).toEqual({
         search: 'two words',
       });
     });
@@ -122,6 +133,7 @@ describe('common_utils', () => {
       commonUtils.handleLocationHash();
 
       expectGetElementIdToHaveBeenCalledWith('test');
+
       expect(window.scrollY).toBe(document.getElementById('test').offsetTop);
 
       document.getElementById('parent').remove();
@@ -140,6 +152,7 @@ describe('common_utils', () => {
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');
+
       expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop);
 
       document.getElementById('parent').remove();
@@ -160,6 +173,7 @@ describe('common_utils', () => {
 
       expectGetElementIdToHaveBeenCalledWith('test');
       expectGetElementIdToHaveBeenCalledWith('user-content-test');
+
       expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop - 50);
       expect(window.scrollBy).toHaveBeenCalledWith(0, -50);
 
@@ -184,7 +198,11 @@ describe('common_utils', () => {
 
   describe('parseQueryStringIntoObject', () => {
     it('should return object with query parameters', () => {
-      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({ scope: 'all', page: '2' });
+      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({
+        scope: 'all',
+        page: '2',
+      });
+
       expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
       expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
     });
@@ -208,7 +226,9 @@ describe('common_utils', () => {
   describe('buildUrlWithCurrentLocation', () => {
     it('should build an url with current location and given parameters', () => {
       expect(commonUtils.buildUrlWithCurrentLocation()).toEqual(window.location.pathname);
-      expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(`${window.location.pathname}?page=2`);
+      expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(
+        `${window.location.pathname}?page=2`,
+      );
     });
   });
 
@@ -223,20 +243,24 @@ describe('common_utils', () => {
 
     it('should return valid parameter', () => {
       const value = commonUtils.getParameterByName('scope');
+
       expect(commonUtils.getParameterByName('p')).toEqual('2');
       expect(value).toBe('all');
     });
 
     it('should return invalid parameter', () => {
       const value = commonUtils.getParameterByName('fakeParameter');
+
       expect(value).toBe(null);
     });
 
     it('should return valid paramentes if URL is provided', () => {
       let value = commonUtils.getParameterByName('foo', 'http://cocteau.twins/?foo=bar');
+
       expect(value).toBe('bar');
 
       value = commonUtils.getParameterByName('manan', 'http://cocteau.twins/?foo=bar&manan=canchu');
+
       expect(value).toBe('canchu');
     });
   });
@@ -259,21 +283,24 @@ describe('common_utils', () => {
   });
 
   describe('normalizeCRLFHeaders', () => {
-    beforeEach(function () {
-      this.CLRFHeaders = 'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
+    beforeEach(function() {
+      this.CLRFHeaders =
+        'a-header: a-value\nAnother-Header: ANOTHER-VALUE\nLaSt-HeAdEr: last-VALUE';
       spyOn(String.prototype, 'split').and.callThrough();
       this.normalizeCRLFHeaders = commonUtils.normalizeCRLFHeaders(this.CLRFHeaders);
     });
 
-    it('should split by newline', function () {
+    it('should split by newline', function() {
       expect(String.prototype.split).toHaveBeenCalledWith('\n');
     });
 
-    it('should split by colon+space for each header', function () {
-      expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(3);
+    it('should split by colon+space for each header', function() {
+      expect(String.prototype.split.calls.allArgs().filter(args => args[0] === ': ').length).toBe(
+        3,
+      );
     });
 
-    it('should return a normalized headers object', function () {
+    it('should return a normalized headers object', function() {
       expect(this.normalizeCRLFHeaders).toEqual({
         'A-HEADER': 'a-value',
         'ANOTHER-HEADER': 'ANOTHER-VALUE',
@@ -338,6 +365,35 @@ describe('common_utils', () => {
     });
   });
 
+  describe('parseBoolean', () => {
+    const { parseBoolean } = commonUtils;
+
+    it('returns true for "true"', () => {
+      expect(parseBoolean('true')).toEqual(true);
+    });
+
+    it('returns false for "false"', () => {
+      expect(parseBoolean('false')).toEqual(false);
+    });
+
+    it('returns false for "something"', () => {
+      expect(parseBoolean('something')).toEqual(false);
+    });
+
+    it('returns false for null', () => {
+      expect(parseBoolean(null)).toEqual(false);
+    });
+
+    it('is idempotent', () => {
+      const input = ['true', 'false', 'something', null];
+      input.forEach(value => {
+        const result = parseBoolean(value);
+
+        expect(parseBoolean(result)).toBe(result);
+      });
+    });
+  });
+
   describe('convertPermissionToBoolean', () => {
     it('should convert a boolean in a string to a boolean', () => {
       expect(commonUtils.convertPermissionToBoolean('true')).toEqual(true);
@@ -352,60 +408,76 @@ describe('common_utils', () => {
       spyOn(window, 'setTimeout').and.callFake(cb => origSetTimeout(cb, 0));
     });
 
-    it('solves the promise from the callback', (done) => {
+    it('solves the promise from the callback', done => {
       const expectedResponseValue = 'Success!';
-      commonUtils.backOff((next, stop) => (
-        new Promise((resolve) => {
-          resolve(expectedResponseValue);
-        }).then((resp) => {
-          stop(resp);
+      commonUtils
+        .backOff((next, stop) =>
+          new Promise(resolve => {
+            resolve(expectedResponseValue);
+          })
+            .then(resp => {
+              stop(resp);
+            })
+            .catch(done.fail),
+        )
+        .then(respBackoff => {
+          expect(respBackoff).toBe(expectedResponseValue);
+          done();
         })
-      )).then((respBackoff) => {
-        expect(respBackoff).toBe(expectedResponseValue);
-        done();
-      });
+        .catch(done.fail);
     });
 
-    it('catches the rejected promise from the callback ', (done) => {
+    it('catches the rejected promise from the callback ', done => {
       const errorMessage = 'Mistakes were made!';
-      commonUtils.backOff((next, stop) => {
-        new Promise((resolve, reject) => {
-          reject(new Error(errorMessage));
-        }).then((resp) => {
-          stop(resp);
-        }).catch(err => stop(err));
-      }).catch((errBackoffResp) => {
-        expect(errBackoffResp instanceof Error).toBe(true);
-        expect(errBackoffResp.message).toBe(errorMessage);
-        done();
-      });
+      commonUtils
+        .backOff((next, stop) => {
+          new Promise((resolve, reject) => {
+            reject(new Error(errorMessage));
+          })
+            .then(resp => {
+              stop(resp);
+            })
+            .catch(err => stop(err));
+        })
+        .catch(errBackoffResp => {
+          expect(errBackoffResp instanceof Error).toBe(true);
+          expect(errBackoffResp.message).toBe(errorMessage);
+          done();
+        });
     });
 
-    it('solves the promise correctly after retrying a third time', (done) => {
+    it('solves the promise correctly after retrying a third time', done => {
       let numberOfCalls = 1;
       const expectedResponseValue = 'Success!';
-      commonUtils.backOff((next, stop) => (
-        Promise.resolve(expectedResponseValue)
-          .then((resp) => {
-            if (numberOfCalls < 3) {
-              numberOfCalls += 1;
-              next();
-            } else {
-              stop(resp);
-            }
-          })
-      )).then((respBackoff) => {
-        const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
-        expect(timeouts).toEqual([2000, 4000]);
-        expect(respBackoff).toBe(expectedResponseValue);
-        done();
-      });
+      commonUtils
+        .backOff((next, stop) =>
+          Promise.resolve(expectedResponseValue)
+            .then(resp => {
+              if (numberOfCalls < 3) {
+                numberOfCalls += 1;
+                next();
+              } else {
+                stop(resp);
+              }
+            })
+            .catch(done.fail),
+        )
+        .then(respBackoff => {
+          const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+
+          expect(timeouts).toEqual([2000, 4000]);
+          expect(respBackoff).toBe(expectedResponseValue);
+          done();
+        })
+        .catch(done.fail);
     });
 
-    it('rejects the backOff promise after timing out', (done) => {
-      commonUtils.backOff(next => next(), 64000)
-        .catch((errBackoffResp) => {
+    it('rejects the backOff promise after timing out', done => {
+      commonUtils
+        .backOff(next => next(), 64000)
+        .catch(errBackoffResp => {
           const timeouts = window.setTimeout.calls.allArgs().map(([, timeout]) => timeout);
+
           expect(timeouts).toEqual([2000, 4000, 8000, 16000, 32000, 32000]);
           expect(errBackoffResp instanceof Error).toBe(true);
           expect(errBackoffResp.message).toBe('BACKOFF_TIMEOUT');
@@ -451,16 +523,21 @@ describe('common_utils', () => {
       const favicon = document.getElementById('favicon');
       favicon.setAttribute('href', 'new/favicon');
       commonUtils.resetFavicon();
+
       expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
     });
   });
 
   describe('createOverlayIcon', () => {
-    it('should return the favicon with the overlay', (done) => {
-      commonUtils.createOverlayIcon(faviconDataUrl, overlayDataUrl).then((url) => {
-        expect(url).toEqual(faviconWithOverlayDataUrl);
-        done();
-      });
+    it('should return the favicon with the overlay', done => {
+      commonUtils
+        .createOverlayIcon(faviconDataUrl, overlayDataUrl)
+        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
+        .then(([actual, expected]) => {
+          expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -476,11 +553,16 @@ describe('common_utils', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should set page favicon to provided favicon overlay', (done) => {
-      commonUtils.setFaviconOverlay(overlayDataUrl).then(() => {
-        expect(document.getElementById('favicon').getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
-        done();
-      });
+    it('should set page favicon to provided favicon overlay', done => {
+      commonUtils
+        .setFaviconOverlay(overlayDataUrl)
+        .then(() => document.getElementById('favicon').getAttribute('href'))
+        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
+        .then(([actual, expected]) => {
+          expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -502,26 +584,28 @@ describe('common_utils', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset favicon in case of error', (done) => {
+    it('should reset favicon in case of error', done => {
       mock.onGet(BUILD_URL).replyOnce(500);
 
-      commonUtils.setCiStatusFavicon(BUILD_URL)
-        .catch(() => {
-          const favicon = document.getElementById('favicon');
-          expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
-          done();
-        });
+      commonUtils.setCiStatusFavicon(BUILD_URL).catch(() => {
+        const favicon = document.getElementById('favicon');
+
+        expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
+        done();
+      });
     });
 
-    it('should set page favicon to CI status favicon based on provided status', (done) => {
+    it('should set page favicon to CI status favicon based on provided status', done => {
       mock.onGet(BUILD_URL).reply(200, {
         favicon: overlayDataUrl,
       });
 
-      commonUtils.setCiStatusFavicon(BUILD_URL)
-        .then(() => {
-          const favicon = document.getElementById('favicon');
-          expect(favicon.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
+      commonUtils
+        .setCiStatusFavicon(BUILD_URL)
+        .then(() => document.getElementById('favicon').getAttribute('href'))
+        .then(url => Promise.all([urlToImage(url), urlToImage(faviconWithOverlayDataUrl)]))
+        .then(([actual, expected]) => {
+          expect(actual).toImageDiffEqual(expected, PIXEL_TOLERANCE);
           done();
         })
         .catch(done.fail);
@@ -542,11 +626,15 @@ describe('common_utils', () => {
     });
 
     it('should return the svg for a linked icon', () => {
-      expect(commonUtils.spriteIcon('test')).toEqual('<svg ><use xlink:href="icons.svg#test" /></svg>');
+      expect(commonUtils.spriteIcon('test')).toEqual(
+        '<svg ><use xlink:href="icons.svg#test" /></svg>',
+      );
     });
 
     it('should set svg className when passed', () => {
-      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
+      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual(
+        '<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>',
+      );
     });
   });
 
@@ -566,7 +654,7 @@ describe('common_utils', () => {
 
       const convertedObj = commonUtils.convertObjectPropsToCamelCase(mockObj);
 
-      Object.keys(convertedObj).forEach((prop) => {
+      Object.keys(convertedObj).forEach(prop => {
         expect(snakeRegEx.test(prop)).toBeFalsy();
         expect(convertedObj[prop]).toBe(mockObj[mappings[prop]]);
       });
@@ -585,66 +673,138 @@ describe('common_utils', () => {
         },
       };
 
-      expect(
-        commonUtils.convertObjectPropsToCamelCase(obj),
-      ).toEqual({
+      expect(commonUtils.convertObjectPropsToCamelCase(obj)).toEqual({
         snakeKey: {
           child_snake_key: 'value',
         },
       });
     });
 
-    describe('deep: true', () => {
-      it('converts object with child objects', () => {
-        const obj = {
-          snake_key: {
-            child_snake_key: 'value',
-          },
-        };
+    describe('with options', () => {
+      const objWithoutChildren = {
+        project_name: 'GitLab CE',
+        group_name: 'GitLab.org',
+        license_type: 'MIT',
+      };
 
-        expect(
-          commonUtils.convertObjectPropsToCamelCase(obj, { deep: true }),
-        ).toEqual({
-          snakeKey: {
-            childSnakeKey: 'value',
-          },
+      const objWithChildren = {
+        project_name: 'GitLab CE',
+        group_name: 'GitLab.org',
+        license_type: 'MIT',
+        tech_stack: {
+          backend: 'Ruby',
+          frontend_framework: 'Vue',
+          database: 'PostgreSQL',
+        },
+      };
+
+      describe('when options.deep is true', () => {
+        it('converts object with child objects', () => {
+          const obj = {
+            snake_key: {
+              child_snake_key: 'value',
+            },
+          };
+
+          expect(commonUtils.convertObjectPropsToCamelCase(obj, { deep: true })).toEqual({
+            snakeKey: {
+              childSnakeKey: 'value',
+            },
+          });
         });
-      });
 
-      it('converts array with child objects', () => {
-        const arr = [
-          {
-            child_snake_key: 'value',
-          },
-        ];
-
-        expect(
-          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
-        ).toEqual([
-          {
-            childSnakeKey: 'value',
-          },
-        ]);
-      });
-
-      it('converts array with child arrays', () => {
-        const arr = [
-          [
+        it('converts array with child objects', () => {
+          const arr = [
             {
               child_snake_key: 'value',
             },
-          ],
-        ];
+          ];
 
-        expect(
-          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
-        ).toEqual([
-          [
+          expect(commonUtils.convertObjectPropsToCamelCase(arr, { deep: true })).toEqual([
             {
               childSnakeKey: 'value',
             },
-          ],
-        ]);
+          ]);
+        });
+
+        it('converts array with child arrays', () => {
+          const arr = [
+            [
+              {
+                child_snake_key: 'value',
+              },
+            ],
+          ];
+
+          expect(commonUtils.convertObjectPropsToCamelCase(arr, { deep: true })).toEqual([
+            [
+              {
+                childSnakeKey: 'value',
+              },
+            ],
+          ]);
+        });
+      });
+
+      describe('when options.dropKeys is provided', () => {
+        it('discards properties mentioned in `dropKeys` array', () => {
+          expect(
+            commonUtils.convertObjectPropsToCamelCase(objWithoutChildren, {
+              dropKeys: ['group_name'],
+            }),
+          ).toEqual({
+            projectName: 'GitLab CE',
+            licenseType: 'MIT',
+          });
+        });
+
+        it('discards properties mentioned in `dropKeys` array when `deep` is true', () => {
+          expect(
+            commonUtils.convertObjectPropsToCamelCase(objWithChildren, {
+              deep: true,
+              dropKeys: ['group_name', 'database'],
+            }),
+          ).toEqual({
+            projectName: 'GitLab CE',
+            licenseType: 'MIT',
+            techStack: {
+              backend: 'Ruby',
+              frontendFramework: 'Vue',
+            },
+          });
+        });
+      });
+
+      describe('when options.ignoreKeyNames is provided', () => {
+        it('leaves properties mentioned in `ignoreKeyNames` array intact', () => {
+          expect(
+            commonUtils.convertObjectPropsToCamelCase(objWithoutChildren, {
+              ignoreKeyNames: ['group_name'],
+            }),
+          ).toEqual({
+            projectName: 'GitLab CE',
+            licenseType: 'MIT',
+            group_name: 'GitLab.org',
+          });
+        });
+
+        it('leaves properties mentioned in `ignoreKeyNames` array intact when `deep` is true', () => {
+          expect(
+            commonUtils.convertObjectPropsToCamelCase(objWithChildren, {
+              deep: true,
+              ignoreKeyNames: ['group_name', 'frontend_framework'],
+            }),
+          ).toEqual({
+            projectName: 'GitLab CE',
+            group_name: 'GitLab.org',
+            licenseType: 'MIT',
+            techStack: {
+              backend: 'Ruby',
+              frontend_framework: 'Vue',
+              database: 'PostgreSQL',
+            },
+          });
+        });
       });
     });
   });
@@ -665,6 +825,31 @@ describe('common_utils', () => {
       expect(commonUtils.roundOffFloat(34567.14159, -3)).toBe(35000);
       expect(commonUtils.roundOffFloat(34567.14159, -4)).toBe(30000);
       expect(commonUtils.roundOffFloat(34567.14159, -5)).toBe(0);
+    });
+  });
+
+  describe('isInViewport', () => {
+    let el;
+
+    beforeEach(() => {
+      el = document.createElement('div');
+    });
+
+    afterEach(() => {
+      document.body.removeChild(el);
+    });
+
+    it('returns true when provided `el` is in viewport', () => {
+      document.body.appendChild(el);
+
+      expect(commonUtils.isInViewport(el)).toBe(true);
+    });
+
+    it('returns false when provided `el` is not in viewport', () => {
+      el.setAttribute('style', 'position: absolute; top: -1000px; left: -1000px;');
+      document.body.appendChild(el);
+
+      expect(commonUtils.isInViewport(el)).toBe(false);
     });
   });
 });

@@ -54,6 +54,7 @@ describe('Environments block', () => {
         expect(vm.$el.textContent.trim()).toEqual(
           'This job is an out-of-date deployment to environment. View the most recent deployment #deployment.',
         );
+
         expect(vm.$el.querySelector('.js-job-deployment-link').getAttribute('href')).toEqual('bar');
       });
     });
@@ -110,6 +111,7 @@ describe('Environments block', () => {
         expect(vm.$el.textContent.trim()).toEqual(
           'This job is creating a deployment to environment and will overwrite the latest deployment.',
         );
+
         expect(vm.$el.querySelector('.js-job-deployment-link').getAttribute('href')).toEqual('foo');
       });
     });
@@ -139,6 +141,7 @@ describe('Environments block', () => {
           },
           iconStatus: status,
         });
+
         expect(vm.$el.querySelector('.js-environment-link')).toBeNull();
       });
     });

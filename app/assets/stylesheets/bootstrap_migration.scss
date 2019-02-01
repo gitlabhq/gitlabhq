@@ -18,8 +18,10 @@ $input-border: $border-color;
 $padding-base-vertical: $gl-vert-padding;
 $padding-base-horizontal: $gl-padding;
 
-html {
-  // Override default font size used in bs4
+body,
+.form-control,
+.search form {
+  // Override default font size used in non-csslab UI
   font-size: 14px;
 }
 
@@ -66,6 +68,17 @@ h6,
 .h6 {
   margin-top: 10px;
   margin-bottom: 10px;
+}
+
+/* Our adjustments to hx & .hx above add unnecessary margins to modal-title
+   and page-title in modals, so we set them to 0 in order to have properly
+   formatted modal headers. */
+.modal-header {
+  .modal-title,
+  .page-title {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
 }
 
 h5,
@@ -132,7 +145,8 @@ table {
   pointer-events: none;
 }
 
-.popover {
+.popover,
+.popover-header {
   font-size: 14px;
 }
 
@@ -140,7 +154,9 @@ table {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 
-    .d#{$infix}-table-header-group { display: table-header-group !important; }
+    .d#{$infix}-table-header-group {
+      display: table-header-group !important;
+    }
   }
 }
 
@@ -209,7 +225,7 @@ h3.popover-header {
 }
 
 .info-well {
-  background: $theme-gray-50;
+  background: $gray-50;
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 4px;
@@ -238,10 +254,6 @@ h3.popover-header {
 }
 
 .card {
-  .card-title {
-    margin-bottom: 0;
-  }
-
   &.card-without-border {
     @extend .border-0;
   }
@@ -252,13 +264,6 @@ h3.popover-header {
 
   &.bg-light {
     @extend .border-0;
-  }
-}
-
-.card-header {
-  h3.card-title,
-  h4.card-title {
-    margin-top: 0;
   }
 }
 
@@ -346,4 +351,13 @@ input[type=color].form-control {
 // Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
 .input-group-btn:last-child {
   @extend .input-group-append;
+}
+
+/*
+ Bootstrap 4.1.2 introduced a new default vertical alignment which breaks our icons,
+ so we need to reset the vertical alignment to the default value. See:
+ - https://gitlab.com/gitlab-org/gitlab-ce/issues/51362
+ */
+svg {
+  vertical-align: baseline;
 }

@@ -32,10 +32,35 @@ describe Groups::MilestonesController do
   end
 
   describe '#index' do
-    it 'shows group milestones page' do
-      get :index, group_id: group.to_param
+    describe 'as HTML' do
+      render_views
 
-      expect(response).to have_gitlab_http_status(200)
+      it 'shows group milestones page' do
+        milestone
+
+        get :index, params: { group_id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.body).to include(milestone.title)
+      end
+
+      it 'searches legacy milestones by title when search_title is given' do
+        project_milestone = create(:milestone, project: project, title: 'Project milestone title')
+
+        get :index, params: { group_id: group.to_param, search_title: 'Project mil' }
+
+        expect(response.body).to include(project_milestone.title)
+        expect(response.body).not_to include(milestone.title)
+      end
+
+      it 'searches group milestones by title when search_title is given' do
+        group_milestone = create(:milestone, title: 'Group milestone title', group: group)
+
+        get :index, params: { group_id: group.to_param, search_title: 'Group mil' }
+
+        expect(response.body).to include(group_milestone.title)
+        expect(response.body).not_to include(milestone.title)
+      end
     end
 
     context 'as JSON' do
@@ -44,7 +69,7 @@ describe Groups::MilestonesController do
       let!(:legacy_milestone2) { create(:milestone, project: project2, title: 'legacy') }
 
       it 'lists legacy group milestones and group milestones' do
-        get :index, group_id: group.to_param, format: :json
+        get :index, params: { group_id: group.to_param }, format: :json
 
         milestones = JSON.parse(response.body)
 
@@ -63,20 +88,20 @@ describe Groups::MilestonesController do
     let(:group_milestone) { create(:milestone, group: group) }
 
     context 'when there is a title parameter' do
-      it 'searchs for a legacy group milestone' do
-        expect(GlobalMilestone).to receive(:build)
+      it 'searches for a legacy group milestone' do
+        expect(GroupMilestone).to receive(:build)
         expect(Milestone).not_to receive(:find_by_iid)
 
-        get :show, group_id: group.to_param, id: title, title: milestone1.safe_title
+        get :show, params: { group_id: group.to_param, id: title, title: milestone1.safe_title }
       end
     end
 
     context 'when there is not a title parameter' do
-      it 'searchs for a group milestone' do
+      it 'searches for a group milestone' do
         expect(GlobalMilestone).not_to receive(:build)
         expect(Milestone).to receive(:find_by_iid)
 
-        get :show, group_id: group.to_param, id: group_milestone.id
+        get :show, params: { group_id: group.to_param, id: group_milestone.id }
       end
     end
   end
@@ -86,8 +111,10 @@ describe Groups::MilestonesController do
   describe "#create" do
     it "creates group milestone with Chinese title" do
       post :create,
-           group_id: group.to_param,
-           milestone: milestone_params
+           params: {
+             group_id: group.to_param,
+             milestone: milestone_params
+           }
 
       milestone = Milestone.find_by_title(title)
 
@@ -105,9 +132,11 @@ describe Groups::MilestonesController do
       milestone_params[:title] = "title changed"
 
       put :update,
-           id: milestone.iid,
-           group_id: group.to_param,
-           milestone: milestone_params
+           params: {
+             id: milestone.iid,
+             group_id: group.to_param,
+             milestone: milestone_params
+           }
 
       milestone.reload
       expect(response).to redirect_to(group_milestone_path(group, milestone.iid))
@@ -124,10 +153,12 @@ describe Groups::MilestonesController do
         milestone_params[:state_event] = "close"
 
         put :update,
-             id: milestone1.title.to_slug.to_s,
-             group_id: group.to_param,
-             milestone: milestone_params,
-             title: milestone1.title
+             params: {
+               id: milestone1.title.to_slug.to_s,
+               group_id: group.to_param,
+               milestone: milestone_params,
+               title: milestone1.title
+             }
 
         expect(response).to redirect_to(group_milestone_path(group, milestone1.safe_title, title: milestone1.title))
 
@@ -145,7 +176,7 @@ describe Groups::MilestonesController do
     let(:milestone) { create(:milestone, group: group) }
 
     it "removes milestone" do
-      delete :destroy, group_id: group.to_param, id: milestone.iid, format: :js
+      delete :destroy, params: { group_id: group.to_param, id: milestone.iid }, format: :js
 
       expect(response).to be_success
       expect { Milestone.find(milestone.id) }.to raise_exception(ActiveRecord::RecordNotFound)
@@ -162,7 +193,7 @@ describe Groups::MilestonesController do
         context 'non-show path' do
           context 'with exactly matching casing' do
             it 'does not redirect' do
-              get :index, group_id: group.to_param
+              get :index, params: { group_id: group.to_param }
 
               expect(response).not_to have_gitlab_http_status(301)
             end
@@ -170,7 +201,7 @@ describe Groups::MilestonesController do
 
           context 'with different casing' do
             it 'redirects to the correct casing' do
-              get :index, group_id: group.to_param.upcase
+              get :index, params: { group_id: group.to_param.upcase }
 
               expect(response).to redirect_to(group_milestones_path(group.to_param))
               expect(controller).not_to set_flash[:notice]
@@ -181,7 +212,7 @@ describe Groups::MilestonesController do
         context 'show path' do
           context 'with exactly matching casing' do
             it 'does not redirect' do
-              get :show, group_id: group.to_param, id: title
+              get :show, params: { group_id: group.to_param, id: title }
 
               expect(response).not_to have_gitlab_http_status(301)
             end
@@ -189,7 +220,7 @@ describe Groups::MilestonesController do
 
           context 'with different casing' do
             it 'redirects to the correct casing' do
-              get :show, group_id: group.to_param.upcase, id: title
+              get :show, params: { group_id: group.to_param.upcase, id: title }
 
               expect(response).to redirect_to(group_milestone_path(group.to_param, title))
               expect(controller).not_to set_flash[:notice]
@@ -202,7 +233,7 @@ describe Groups::MilestonesController do
         let(:redirect_route) { group.redirect_routes.create(path: 'old-path') }
 
         it 'redirects to the canonical path' do
-          get :merge_requests, group_id: redirect_route.path, id: title
+          get :merge_requests, params: { group_id: redirect_route.path, id: title }
 
           expect(response).to redirect_to(merge_requests_group_milestone_path(group.to_param, title))
           expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -212,7 +243,7 @@ describe Groups::MilestonesController do
           let(:redirect_route) { group.redirect_routes.create(path: 'http') }
 
           it 'does not modify the requested host' do
-            get :merge_requests, group_id: redirect_route.path, id: title
+            get :merge_requests, params: { group_id: redirect_route.path, id: title }
 
             expect(response).to redirect_to(merge_requests_group_milestone_path(group.to_param, title))
             expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -224,7 +255,7 @@ describe Groups::MilestonesController do
           let(:redirect_route) { group.redirect_routes.create(path: 'oups') }
 
           it 'does not modify the /groups part of the path' do
-            get :merge_requests, group_id: redirect_route.path, id: title
+            get :merge_requests, params: { group_id: redirect_route.path, id: title }
 
             expect(response).to redirect_to(merge_requests_group_milestone_path(group.to_param, title))
             expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -236,7 +267,7 @@ describe Groups::MilestonesController do
           let(:redirect_route) { group.redirect_routes.create(path: 'oups/oup') }
 
           it 'does not modify the /groups part of the path' do
-            get :merge_requests, group_id: redirect_route.path, id: title
+            get :merge_requests, params: { group_id: redirect_route.path, id: title }
 
             expect(response).to redirect_to(merge_requests_group_milestone_path(group.to_param, title))
             expect(controller).to set_flash[:notice].to(group_moved_message(redirect_route, group))
@@ -250,16 +281,20 @@ describe Groups::MilestonesController do
     context 'when requesting the canonical path with different casing' do
       it 'does not 404' do
         post :create,
-             group_id: group.to_param,
-             milestone: { title: title }
+             params: {
+               group_id: group.to_param,
+               milestone: { title: title }
+             }
 
         expect(response).not_to have_gitlab_http_status(404)
       end
 
       it 'does not redirect to the correct casing' do
         post :create,
-             group_id: group.to_param,
-             milestone: { title: title }
+             params: {
+               group_id: group.to_param,
+               milestone: { title: title }
+             }
 
         expect(response).not_to have_gitlab_http_status(301)
       end
@@ -270,8 +305,10 @@ describe Groups::MilestonesController do
 
       it 'returns not found' do
         post :create,
-             group_id: redirect_route.path,
-             milestone: { title: title }
+             params: {
+               group_id: redirect_route.path,
+               milestone: { title: title }
+             }
 
         expect(response).to have_gitlab_http_status(404)
       end

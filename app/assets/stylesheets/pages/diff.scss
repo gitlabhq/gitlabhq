@@ -6,6 +6,39 @@
   .file-title-flex-parent {
     cursor: pointer;
 
+    @media (min-width: map-get($grid-breakpoints, md)) {
+      position: -webkit-sticky;
+      position: sticky;
+      top: $mr-version-controls-height + $header-height + $mr-tabs-height;
+      margin-left: -1px;
+      border-left: 1px solid $border-color;
+      z-index: 102;
+
+      &.is-commit {
+        top: $header-height + 36px;
+
+        .with-performance-bar & {
+          top: $header-height + 36px + $performance-bar-height;
+
+        }
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        top: -1px;
+        left: -11px;
+        width: 10px;
+        height: calc(100% + 1px);
+        background: $white-light;
+        pointer-events: none;
+      }
+
+      .with-performance-bar & {
+        top: $header-height + $performance-bar-height + $mr-version-controls-height + $mr-tabs-height;
+      }
+    }
+
     a:hover {
       text-decoration: none;
     }
@@ -59,6 +92,7 @@
       margin: 0;
       padding: 0;
       table-layout: fixed;
+      border-radius: 0 0 $border-radius-default $border-radius-default;
 
       .diff-line-num {
         width: 50px;
@@ -252,19 +286,6 @@
         right: 7px;
       }
 
-      .frame {
-        top: 0;
-        right: 0;
-        position: absolute;
-
-        &.deleted {
-          margin: 0;
-          display: block;
-          top: 13px;
-          right: 7px;
-        }
-      }
-
       .swipe-bar {
         display: block;
         height: 100%;
@@ -421,28 +442,20 @@
 
   .diff-file-container {
     .frame.deleted {
-      border: 0;
+      border: 1px solid $deleted;
       background-color: inherit;
-
-      .image_file img {
-        border: 1px solid $deleted;
-      }
     }
 
     .frame.added {
-      border: 0;
+      border: 1px solid $added;
       background-color: inherit;
-
-      .image_file img {
-        border: 1px solid $added;
-      }
     }
 
     .swipe.view,
     .onion-skin.view {
       .swipe-wrap {
         top: 0;
-        right: 0;
+        left: 0;
       }
 
       .frame.deleted {
@@ -480,6 +493,11 @@
     .onion-skin.view .controls {
       bottom: -25px;
     }
+  }
+
+  .discussion-notes .discussion-notes {
+    margin-left: 0;
+    border-left: 0;
   }
 }
 
@@ -694,15 +712,14 @@
   }
 
   @include media-breakpoint-up(sm) {
-    top: 24px;
+    position: -webkit-sticky;
+    position: sticky;
+    top: $header-height;
     background-color: $white-light;
+    z-index: 200;
 
-    &.diff-files-changed-merge-request {
-      position: sticky;
-      top: 90px;
-      z-index: 200;
-      margin: $gl-padding 0;
-      padding: 0;
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height;
     }
 
     &.is-stuck {
@@ -723,14 +740,6 @@
       .diff-stats-additions-deletions-collapsed {
         display: block !important;
       }
-    }
-  }
-}
-
-@include media-breakpoint-up(sm) {
-  .with-performance-bar {
-    .diff-files-changed.diff-files-changed-merge-request {
-      top: 76px + $performance-bar-height;
     }
   }
 }
@@ -804,7 +813,7 @@
 
   // double jagged line divider
   .discussion-notes + .discussion-notes::before,
-  .discussion-notes + .discussion-form::before {
+  .diff-file-discussions + .discussion-form::before {
     content: '';
     position: relative;
     display: block;
@@ -844,6 +853,17 @@
     background-repeat: repeat;
   }
 
+  .diff-file-discussions + .discussion-form {
+    padding: $gl-padding;
+
+    &::before {
+      width: auto;
+      margin-left: -$gl-padding;
+      margin-right: -$gl-padding;
+      margin-bottom: $gl-padding;
+    }
+  }
+
   .notes {
     position: relative;
   }
@@ -855,7 +875,7 @@
 }
 
 .diff-file .note-container > .new-note,
-.note-container .discussion-notes {
+.note-container .discussion-notes.diff-discussions {
   margin-left: 100px;
   border-left: 1px solid $white-normal;
 }
@@ -870,11 +890,13 @@
   }
 }
 
-.files:not([data-can-create-note]) .frame {
+.files:not([data-can-create-note="true"]) .frame {
   cursor: auto;
 }
 
-.frame.click-to-comment {
+.frame,
+.frame.click-to-comment,
+.btn-transparent.image-diff-overlay-add-comment {
   position: relative;
   cursor: image-url('illustrations/image_comment_light_cursor.svg')
       $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
@@ -893,6 +915,7 @@
     padding: 0;
     width: (2px * $image-comment-cursor-left-offset);
     height: (2px * $image-comment-cursor-top-offset);
+    color: $blue-400;
     // center the indicator to match the top left click region
     margin-top: (-1px * $image-comment-cursor-top-offset) + 2;
     margin-left: (-1px * $image-comment-cursor-left-offset) + 1;
@@ -910,6 +933,7 @@
 
 .frame .badge.badge-pill,
 .image-diff-avatar-link .badge.badge-pill,
+.user-avatar-link .badge.badge-pill,
 .notes > .badge.badge-pill {
   position: absolute;
   background-color: $blue-400;
@@ -944,7 +968,8 @@
   }
 }
 
-.image-diff-avatar-link {
+.image-diff-avatar-link,
+.user-avatar-link {
   position: relative;
 
   .badge.badge-pill,
@@ -1002,8 +1027,9 @@
 .tree-list-holder {
   position: -webkit-sticky;
   position: sticky;
-  top: 100px;
-  max-height: calc(100vh - 100px);
+  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  max-height: calc(100vh - #{$top-pos});
   padding-right: $gl-padding;
 
   .file-row {
@@ -1012,8 +1038,9 @@
   }
 
   .with-performance-bar & {
-    top: 135px;
-    max-height: calc(100vh - 135px);
+    $performance-bar-top-pos: $performance-bar-height + $top-pos;
+    top: $performance-bar-top-pos;
+    max-height: calc(100vh - #{$performance-bar-top-pos});
   }
 }
 
@@ -1027,8 +1054,12 @@
   overflow-x: auto;
 }
 
-.tree-list-search .form-control {
-  padding-left: 30px;
+.tree-list-search {
+  flex: 0 0 34px;
+
+  .form-control {
+    padding-left: 30px;
+  }
 }
 
 .tree-list-icon {
@@ -1061,5 +1092,16 @@
       max-height: calc(50px + 50vh);
       padding-right: 0;
     }
+  }
+}
+
+.image-diff-overlay,
+.image-diff-overlay-add-comment {
+  top: 0;
+  left: 0;
+
+  &:active,
+  &:focus {
+    outline: 0;
   }
 }

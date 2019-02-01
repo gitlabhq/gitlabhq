@@ -35,14 +35,8 @@ export default {
   <div class="dropdown show">
     <div class="dropdown-menu sidebar-item-warning-message">
       <div>
-        <p
-          v-if="!isConfidential"
-          v-html="confidentialityOnWarning">
-        </p>
-        <p
-          v-else
-          v-html="confidentialityOffWarning">
-        </p>
+        <p v-if="!isConfidential" v-html="confidentialityOnWarning"></p>
+        <p v-else v-html="confidentialityOffWarning"></p>
         <edit-form-buttons
           :is-confidential="isConfidential"
           :update-confidential-attribute="updateConfidentialAttribute"

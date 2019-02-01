@@ -64,10 +64,7 @@ export default {
         return [];
       }
       const { details } = this.pipeline;
-      return [
-        ...(details.manual_actions || []),
-        ...(details.scheduled_actions || []),
-      ];
+      return [...(details.manual_actions || []), ...(details.scheduled_actions || [])];
     },
     /**
      * If provided, returns the commit tag.
@@ -260,31 +257,16 @@ export default {
 <template>
   <div class="commit gl-responsive-table-row">
     <div class="table-section section-10 commit-link">
-      <div
-        class="table-mobile-header"
-        role="rowheader"
-      >
-        Status
-      </div>
+      <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Status') }}</div>
       <div class="table-mobile-content">
-        <ci-badge
-          :status="pipelineStatus"
-          :show-text="!isChildView"
-        />
+        <ci-badge :status="pipelineStatus" :show-text="!isChildView" />
       </div>
     </div>
 
-    <pipeline-url
-      :pipeline="pipeline"
-      :auto-devops-help-path="autoDevopsHelpPath"
-    />
+    <pipeline-url :pipeline="pipeline" :auto-devops-help-path="autoDevopsHelpPath" />
 
     <div class="table-section section-20">
-      <div
-        class="table-mobile-header"
-        role="rowheader">
-        Commit
-      </div>
+      <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Commit') }}</div>
       <div class="table-mobile-content">
         <commit-component
           :tag="commitTag"
@@ -299,17 +281,14 @@ export default {
     </div>
 
     <div class="table-section section-wrap section-20 stage-cell">
-      <div
-        class="table-mobile-header"
-        role="rowheader">
-        Stages
-      </div>
+      <div class="table-mobile-header" role="rowheader">{{ s__('Pipeline|Stages') }}</div>
       <div class="table-mobile-content">
         <template v-if="pipeline.details.stages.length > 0">
           <div
             v-for="(stage, index) in pipeline.details.stages"
             :key="index"
-            class="stage-container dropdown js-mini-pipeline-graph">
+            class="stage-container dropdown js-mini-pipeline-graph"
+          >
             <pipeline-stage
               :type="$options.pipelinesTable"
               :stage="stage"
@@ -320,20 +299,14 @@ export default {
       </div>
     </div>
 
-    <pipelines-timeago
-      :duration="pipelineDuration"
-      :finished-time="pipelineFinishedAt"
-    />
+    <pipelines-timeago :duration="pipelineDuration" :finished-time="pipelineFinishedAt" />
 
     <div
       v-if="displayPipelineActions"
       class="table-section section-20 table-button-footer pipeline-actions"
     >
       <div class="btn-group table-action-buttons">
-        <pipelines-actions-component
-          v-if="actions.length > 0"
-          :actions="actions"
-        />
+        <pipelines-actions-component v-if="actions.length > 0" :actions="actions" />
 
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"

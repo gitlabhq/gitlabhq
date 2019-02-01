@@ -1,5 +1,5 @@
 import Timeago from 'timeago.js';
-import { getStateKey } from '../dependencies';
+import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 
@@ -11,19 +11,26 @@ export default class MergeRequestStore {
     this.setData(data);
   }
 
-  setData(data) {
+  setData(data, isRebased) {
+    if (isRebased) {
+      this.sha = data.diff_head_sha;
+    }
+
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 
     this.squash = data.squash;
     this.squashBeforeMergeHelpPath =
       this.squashBeforeMergeHelpPath || data.squash_before_merge_help_path;
+    this.troubleshootingDocsPath = this.troubleshootingDocsPath || data.troubleshooting_docs_path;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
 
     this.iid = data.iid;
     this.title = data.title;
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
+    this.sourceBranchProtected = data.source_branch_protected;
+    this.conflictsDocsPath = data.conflicts_docs_path;
     this.mergeStatus = data.merge_status;
     this.commitMessage = data.merge_commit_message;
     this.shortMergeCommitSha = data.short_merge_commit_sha;
@@ -32,7 +39,9 @@ export default class MergeRequestStore {
     this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
     this.pipeline = data.pipeline || {};
+    this.mergePipeline = data.merge_pipeline || {};
     this.deployments = this.deployments || data.deployments || [];
+    this.postMergeDeployments = this.postMergeDeployments || [];
     this.initRebase(data);
 
     if (data.issues_links) {
@@ -81,7 +90,7 @@ export default class MergeRequestStore {
     this.canMerge = !!data.merge_path;
     this.canCreateIssue = currentUser.can_create_issue || false;
     this.canCancelAutomaticMerge = !!data.cancel_merge_when_pipeline_succeeds_path;
-    this.hasSHAChanged = this.sha !== data.diff_head_sha;
+    this.isSHAMismatch = this.sha !== data.diff_head_sha;
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;

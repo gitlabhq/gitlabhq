@@ -4,12 +4,15 @@ require 'email_spec'
 describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
+  include EmailHelpers
   include RepoHelpers
 
   include_context 'gitlab email notification'
 
+  let(:current_user_sanitized) { 'www_example_com' }
+
   set(:user) { create(:user) }
-  set(:current_user) { create(:user, email: "current@email.com") }
+  set(:current_user) { create(:user, email: "current@email.com", name: 'www.example.com') }
   set(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
 
   set(:merge_request) do
@@ -25,15 +28,6 @@ describe Notify do
                    assignees: [assignee],
                    project: project,
                    description: 'My awesome description!')
-  end
-
-  def have_referable_subject(referable, reply: false)
-    prefix = referable.project ? "#{referable.project.name} | " : ''
-    prefix.prepend('Re: ') if reply
-
-    suffix = "#{referable.title} (#{referable.to_reference})"
-
-    have_subject [prefix, suffix].compact.join
   end
 
   context 'for a project' do
@@ -190,7 +184,7 @@ describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
             is_expected.to have_body_text(status)
-            is_expected.to have_body_text(current_user.name)
+            is_expected.to have_body_text(current_user_sanitized)
             is_expected.to have_body_text(project_issue_path project, issue)
           end
         end
@@ -369,7 +363,7 @@ describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text(status)
-            is_expected.to have_body_text(current_user.name)
+            is_expected.to have_body_text(current_user_sanitized)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
           end
         end
@@ -522,7 +516,7 @@ describe Notify do
       let(:project_snippet) { create(:project_snippet, project: project) }
       let(:project_snippet_note) { create(:note_on_project_snippet, project: project, noteable: project_snippet) }
 
-      subject { described_class.note_snippet_email(project_snippet_note.author_id, project_snippet_note.id) }
+      subject { described_class.note_project_snippet_email(project_snippet_note.author_id, project_snippet_note.id) }
 
       it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
         let(:model) { project_snippet }
@@ -895,25 +889,17 @@ describe Notify do
         allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 
-      shared_examples 'an email for a note on a diff discussion' do  |model|
+      shared_examples 'an email for a note on a diff discussion' do |model|
         let(:note) { create(model, author: note_author) }
 
-        context 'when note is on image' do
+        context 'when note is not on text' do
           before do
-            allow_any_instance_of(DiffDiscussion).to receive(:on_image?).and_return(true)
+            allow_any_instance_of(DiffDiscussion).to receive(:on_text?).and_return(false)
           end
 
           it 'does not include diffs with character-level highlighting' do
             is_expected.not_to have_body_text '<span class="p">}</span></span>'
           end
-
-          it 'ends the intro with a dot' do
-            is_expected.to have_body_text "#{note.diff_file.file_path}</a>."
-          end
-        end
-
-        it 'ends the intro with a colon' do
-          is_expected.to have_body_text "#{note.diff_file.file_path}</a>:"
         end
 
         it 'includes diffs with character-level highlighting' do

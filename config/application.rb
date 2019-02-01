@@ -5,12 +5,6 @@ require 'rails/all'
 Bundler.require(:default, Rails.env)
 
 module Gitlab
-  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
-  def self.rails5?
-    ENV["RAILS5"].in?(%w[1 true])
-  end
-
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
@@ -66,6 +60,12 @@ module Gitlab
     # config.i18n.default_locale = :de
     config.i18n.enforce_available_locales = false
 
+    # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
+    # the I18n.default_locale when a translation can not be found).
+    # We have to explicitly set default locale since 1.1.0 - see:
+    # https://github.com/svenfuchs/i18n/pull/415
+    config.i18n.fallbacks = [:en]
+
     # Translation for AR attrs is not working well for POROs like WikiPage
     config.gettext_i18n_rails.use_for_active_record_attributes = false
 
@@ -77,7 +77,7 @@ module Gitlab
     # namespaces/users.
     # https://github.com/rails/rails/blob/5-0-stable/actioncable/lib/action_cable.rb#L38
     # Please change this value when configuring ActionCable for real usage.
-    config.action_cable.mount_path = "/-/cable" if rails5?
+    config.action_cable.mount_path = "/-/cable"
 
     # Configure sensitive parameters which will be filtered from the log file.
     #
@@ -94,6 +94,9 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
+    #
+    # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here to not
+    #       introduce another security vulnerability: https://gitlab.com/gitlab-org/gitlab-workhorse/issues/182
     config.filter_parameters += [/token$/, /password/, /secret/, /key$/]
     config.filter_parameters += %i(
       certificate
@@ -142,9 +145,10 @@ module Gitlab
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
+    config.assets.precompile << "csslab.css"
 
     # Import gitlab-svgs directly from vendored directory
-    config.assets.paths << "#{config.root}/node_modules/@gitlab-org/gitlab-svgs/dist"
+    config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
@@ -157,6 +161,12 @@ module Gitlab
     config.assets.version = '1.0'
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
+
+    # Can be removed once upgraded to Rails 5.1 or higher
+    config.action_controller.raise_on_unfiltered_parameters = true
+
+    # Nokogiri is significantly faster and uses less memory than REXML
+    ActiveSupport::XmlMini.backend = 'Nokogiri'
 
     # This middleware needs to precede ActiveRecord::QueryCache and other middlewares that
     # connect to the database.
@@ -196,8 +206,6 @@ module Gitlab
     end
 
     config.cache_store = :redis_store, caching_config_hash
-
-    config.active_record.raise_in_transactional_callbacks = true unless rails5?
 
     config.active_job.queue_adapter = :sidekiq
 

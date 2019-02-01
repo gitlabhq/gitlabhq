@@ -10,6 +10,7 @@ import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -201,8 +202,8 @@ export default {
   methods: {
     handleBeforeUnloadEvent(e) {
       const event = e;
-      if (this.showForm && this.issueChanged) {
-        event.returnValue = 'Are you sure you want to lose your issue information?';
+      if (this.showForm && this.issueChanged && !this.showRecaptcha) {
+        event.returnValue = __('Are you sure you want to lose your issue information?');
       }
       return undefined;
     },
@@ -294,11 +295,7 @@ export default {
         :issuable-type="issuableType"
       />
 
-      <recaptcha-modal
-        v-show="showRecaptcha"
-        :html="recaptchaHTML"
-        @close="closeRecaptchaModal"
-      />
+      <recaptcha-modal v-show="showRecaptcha" :html="recaptchaHTML" @close="closeRecaptchaModal" />
     </div>
     <div v-else>
       <title-component

@@ -87,7 +87,7 @@ class Event < ActiveRecord::Base
   scope :with_associations, -> do
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
-    includes(:author, :project, project: :namespace)
+    includes(:author, :project, project: [:project_feature, :import_data, :namespace])
       .preload(:target, :push_event_payload)
   end
 
@@ -112,19 +112,6 @@ class Event < ActiveRecord::Base
       else
         Event
       end
-    end
-
-    # Remove this method when removing Gitlab.rails5? code.
-    def subclass_from_attributes(attrs)
-      return super if Gitlab.rails5?
-
-      # Without this Rails will keep calling this method on the returned class,
-      # resulting in an infinite loop.
-      return unless self == Event
-
-      action = attrs.with_indifferent_access[inheritance_column].to_i
-
-      PushEvent if action == PUSHED
     end
 
     # Update Gitlab::ContributionsCalendar#activity_dates if this changes

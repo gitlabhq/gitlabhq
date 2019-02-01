@@ -33,6 +33,7 @@ describe('BaseComponent', () => {
       it('returns correct string when showCreate prop is `false`', () => {
         const mockConfigNonEditable = Object.assign({}, mockConfig, { showCreate: false });
         const vmNonEditable = createComponent(mockConfigNonEditable);
+
         expect(vmNonEditable.hiddenInputName).toBe('label_id[]');
         vmNonEditable.$destroy();
       });
@@ -46,6 +47,7 @@ describe('BaseComponent', () => {
       it('return `Create group label` when `isProject` prop is false', () => {
         const mockConfigGroup = Object.assign({}, mockConfig, { isProject: false });
         const vmGroup = createComponent(mockConfigGroup);
+
         expect(vmGroup.createLabelTitle).toBe('Create group label');
         vmGroup.$destroy();
       });
@@ -59,6 +61,7 @@ describe('BaseComponent', () => {
       it('return `Manage group labels` when `isProject` prop is false', () => {
         const mockConfigGroup = Object.assign({}, mockConfig, { isProject: false });
         const vmGroup = createComponent(mockConfigGroup);
+
         expect(vmGroup.manageLabelsTitle).toBe('Manage group labels');
         vmGroup.$destroy();
       });
@@ -70,6 +73,7 @@ describe('BaseComponent', () => {
       it('emits onLabelClick event with label and list of labels as params', () => {
         spyOn(vm, '$emit');
         vm.handleClick(mockLabels[0]);
+
         expect(vm.$emit).toHaveBeenCalledWith('onLabelClick', mockLabels[0]);
       });
     });
@@ -78,6 +82,7 @@ describe('BaseComponent', () => {
       it('emits toggleCollapse event on component', () => {
         spyOn(vm, '$emit');
         vm.handleCollapsedValueClick();
+
         expect(vm.$emit).toHaveBeenCalledWith('toggleCollapse');
       });
     });
@@ -86,6 +91,7 @@ describe('BaseComponent', () => {
       it('emits onDropdownClose event on component', () => {
         spyOn(vm, '$emit');
         vm.handleDropdownHidden();
+
         expect(vm.$emit).toHaveBeenCalledWith('onDropdownClose');
       });
     });
@@ -114,6 +120,7 @@ describe('BaseComponent', () => {
 
     it('renders `.dropdown-menu` element', () => {
       const dropdownMenuEl = vm.$el.querySelector('.dropdown-menu');
+
       expect(dropdownMenuEl).not.toBeNull();
       expect(dropdownMenuEl.querySelector('.dropdown-page-one')).not.toBeNull();
       expect(dropdownMenuEl.querySelector('.dropdown-content')).not.toBeNull();

@@ -23,10 +23,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-once
-    class="multi-file-discard-btn d-flex"
-  >
+  <div v-once class="multi-file-discard-btn d-flex">
     <button
       v-tooltip
       :aria-label="__('Unstage changes')"
@@ -38,11 +35,7 @@ export default {
       data-placement="bottom"
       @click.stop.prevent="unstageChange(path)"
     >
-      <icon
-        :size="16"
-        name="redo"
-        class="ml-auto mr-auto"
-      />
+      <icon :size="16" name="redo" class="ml-auto mr-auto" />
     </button>
   </div>
 </template>

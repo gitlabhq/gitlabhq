@@ -3,6 +3,7 @@
 class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
   include GitlabRoutingHelper
+  include EmailsHelper
 
   include Emails::Issues
   include Emails::MergeRequests
@@ -13,7 +14,9 @@ class Notify < BaseMailer
   include Emails::Pipelines
   include Emails::Members
   include Emails::AutoDevops
+  include Emails::RemoteMirrors
 
+  helper MilestonesHelper
   helper MergeRequestsHelper
   helper DiffHelper
   helper BlobHelper
@@ -128,7 +131,7 @@ class Notify < BaseMailer
         address.display_name = reply_display_name(model)
       end
 
-      fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>".freeze
+      fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>"
       headers['References'] ||= []
       headers['References'].unshift(fallback_reply_message_id)
 
@@ -166,7 +169,7 @@ class Notify < BaseMailer
     headers['In-Reply-To'] = message_id(model)
     headers['References'] = [message_id(model)]
 
-    headers[:subject]&.prepend('Re: ')
+    headers[:subject] = "Re: #{headers[:subject]}" if headers[:subject]
 
     mail_thread(model, headers)
   end
@@ -178,7 +181,7 @@ class Notify < BaseMailer
 
     headers['X-GitLab-Discussion-ID'] = note.discussion.id if note.part_of_discussion?
 
-    headers[:subject]&.prepend('Re: ')
+    headers[:subject] = "Re: #{headers[:subject]}" if headers[:subject]
 
     mail_thread(model, headers)
   end
@@ -193,6 +196,7 @@ class Notify < BaseMailer
     headers['X-GitLab-Project'] = @project.name
     headers['X-GitLab-Project-Id'] = @project.id
     headers['X-GitLab-Project-Path'] = @project.full_path
+    headers['List-Id'] = "#{@project.full_path} <#{create_list_id_string(@project)}>"
   end
 
   def add_unsubscription_headers_and_links

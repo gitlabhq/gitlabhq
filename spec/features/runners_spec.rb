@@ -236,7 +236,7 @@ describe 'Runners' do
         it 'group runners are available' do
           visit project_runners_path(project)
 
-          expect(page).to have_content 'Available group Runners : 1'
+          expect(page).to have_content 'Available group Runners: 1'
           expect(page).to have_content 'group-runner'
         end
 
@@ -259,8 +259,9 @@ describe 'Runners' do
 
   context 'group runners in group settings' do
     let(:group) { create(:group) }
+
     before do
-      group.add_maintainer(user)
+      group.add_owner(user)
     end
 
     context 'group with no runners' do
@@ -278,7 +279,7 @@ describe 'Runners' do
         visit group_settings_ci_cd_path(group)
 
         expect(page).not_to have_content 'This group does not provide any group Runners yet'
-        expect(page).to have_content 'Available group Runners : 1'
+        expect(page).to have_content 'Available group Runners: 1'
         expect(page).to have_content 'group-runner'
       end
 

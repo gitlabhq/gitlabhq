@@ -38,11 +38,11 @@ class PipelinesEmailService < Service
   end
 
   def can_test?
-    project.pipelines.any?
+    project.ci_pipelines.any?
   end
 
   def test_data(project, user)
-    data = Gitlab::DataBuilder::Pipeline.build(project.pipelines.last)
+    data = Gitlab::DataBuilder::Pipeline.build(project.ci_pipelines.last)
     data[:user] = user.hook_attrs
     data
   end

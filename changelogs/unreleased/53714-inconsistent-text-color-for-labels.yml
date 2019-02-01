@@ -1,0 +1,5 @@
+---
+title: Fix foreground color for labels to ensure consistency of label appearance
+merge_request: 23873
+author: Nathan Friend
+type: fixed

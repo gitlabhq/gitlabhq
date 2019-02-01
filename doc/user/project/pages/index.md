@@ -166,11 +166,11 @@ with Pages, read through this series:
 
 If you're using GitLab Pages default domain (`.gitlab.io`), your website will be 
 automatically secure and available under HTTPS. If you're using your own domain, you can
-optionally secure it with with SSL/TLS certificates. You can read the following
+optionally secure it with SSL/TLS certificates. You can read the following
 tutorials to learn how to use these third-party certificates with GitLab Pages:
 
 - [CloudFlare](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
-- [Let's Encrypt](https://about.gitlab.com/2016/04/11/tutorial-securing-your-gitlab-pages-with-tls-and-letsencrypt/) (mind that although this article is out-of-date, it can still be useful to guide you through the basic steps)
+- [Let's Encrypt](lets_encrypt_for_gitlab_pages.md)
 
 ## Advanced use
 

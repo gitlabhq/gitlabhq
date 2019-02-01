@@ -2,8 +2,12 @@ require 'spec_helper'
 
 describe 'Dashboard shortcuts', :js do
   context 'logged in' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project) }
+
     before do
-      sign_in(create(:user))
+      project.add_developer(user)
+      sign_in(user)
       visit root_dashboard_path
     end
 
@@ -45,11 +49,11 @@ describe 'Dashboard shortcuts', :js do
       find('body').send_keys([:shift, 'P'])
 
       find('.nothing-here-block')
-      expect(page).to have_content('No projects found')
+      expect(page).to have_content('This user doesn\'t have any personal projects')
     end
   end
 
   def check_page_title(title)
-    expect(find('.breadcrumbs-sub-title')).to have_content(title)
+    expect(find('.page-title')).to have_content(title)
   end
 end

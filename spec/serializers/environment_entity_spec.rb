@@ -40,4 +40,34 @@ describe EnvironmentEntity do
       expect(subject).to include(:metrics_path)
     end
   end
+
+  context 'with deployment platform' do
+    let(:project) { create(:project, :repository) }
+    let(:environment) { create(:environment, project: project) }
+
+    context 'when deployment platform is a cluster' do
+      before do
+        create(:cluster,
+               :provided_by_gcp,
+               :project,
+               environment_scope: '*',
+               projects: [project])
+      end
+
+      it 'should include cluster_type' do
+        expect(subject).to include(:cluster_type)
+        expect(subject[:cluster_type]).to eq('project_type')
+      end
+    end
+
+    context 'when deployment platform is a Kubernetes Service' do
+      before do
+        create(:kubernetes_service, project: project)
+      end
+
+      it 'should not include cluster_type' do
+        expect(subject).not_to include(:cluster_type)
+      end
+    end
+  end
 end

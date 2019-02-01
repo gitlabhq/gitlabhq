@@ -133,7 +133,7 @@ describe('RavenConfig', () => {
       RavenConfig.setUser.call(ravenConfig);
     });
 
-    it('should call .setUserContext', function () {
+    it('should call .setUserContext', function() {
       expect(Raven.setUserContext).toHaveBeenCalledWith({
         id: ravenConfig.options.currentUserId,
       });

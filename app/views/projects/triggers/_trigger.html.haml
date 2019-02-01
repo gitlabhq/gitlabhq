@@ -1,6 +1,6 @@
 %tr
   %td
-    - if can?(current_user, :admin_trigger, trigger)
+    - if trigger.has_token_exposed?
       %span= trigger.token
       = clipboard_button(text: trigger.token, title: "Copy trigger token to clipboard")
     - else

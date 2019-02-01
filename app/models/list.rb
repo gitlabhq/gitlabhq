@@ -15,6 +15,7 @@ class List < ActiveRecord::Base
 
   scope :destroyable, -> { where(list_type: list_types.slice(*destroyable_types).values) }
   scope :movable, -> { where(list_type: list_types.slice(*movable_types).values) }
+  scope :preload_associations, -> { preload(:board, :label) }
 
   class << self
     def destroyable_types
@@ -53,6 +54,6 @@ class List < ActiveRecord::Base
   private
 
   def can_be_destroyed
-    destroyable?
+    throw(:abort) unless destroyable?
   end
 end

@@ -28,7 +28,7 @@ describe Banzai::Filter::AbsoluteLinkFilter do
         end
 
         context 'if relative_url_root is set' do
-          it 'joins the url without without doubling the path' do
+          it 'joins the url without doubling the path' do
             allow(Gitlab.config.gitlab).to receive(:url).and_return("#{fake_url}/gitlab/")
             doc = filter(link("/gitlab/foo", 'gfm'), only_path_context)
             expect(doc.at_css('a')['href']).to eq "#{fake_url}/gitlab/foo"

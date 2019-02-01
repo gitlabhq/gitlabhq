@@ -1,60 +1,52 @@
 <script>
-  import { mapGetters, mapActions } from 'vuex';
-  import Flash from '../../flash';
-  import store from '../stores';
-  import collapsibleContainer from './collapsible_container.vue';
-  import { errorMessages, errorMessagesTypes } from '../constants';
+import { mapGetters, mapActions } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
+import store from '../stores';
+import CollapsibleContainer from './collapsible_container.vue';
 
-  export default {
-    name: 'RegistryListApp',
-    components: {
-      collapsibleContainer,
+export default {
+  name: 'RegistryListApp',
+  components: {
+    CollapsibleContainer,
+    GlLoadingIcon,
+  },
+  props: {
+    endpoint: {
+      type: String,
+      required: true,
     },
-    props: {
-      endpoint: {
-        type: String,
-        required: true,
-      },
-    },
-    store,
-    computed: {
-      ...mapGetters([
-        'isLoading',
-        'repos',
-      ]),
-    },
-    created() {
-      this.setMainEndpoint(this.endpoint);
-    },
-    mounted() {
-      this.fetchRepos()
-        .catch(() => Flash(errorMessages[errorMessagesTypes.FETCH_REPOS]));
-    },
-    methods: {
-      ...mapActions([
-        'setMainEndpoint',
-        'fetchRepos',
-      ]),
-    },
-  };
+  },
+  store,
+  computed: {
+    ...mapGetters(['isLoading', 'repos']),
+  },
+  created() {
+    this.setMainEndpoint(this.endpoint);
+  },
+  mounted() {
+    this.fetchRepos();
+  },
+  methods: {
+    ...mapActions(['setMainEndpoint', 'fetchRepos']),
+  },
+};
 </script>
 <template>
   <div>
-    <gl-loading-icon
-      v-if="isLoading"
-      :size="3"
-    />
+    <gl-loading-icon v-if="isLoading" :size="3" />
 
     <collapsible-container
-      v-for="(item, index) in repos"
+      v-for="item in repos"
       v-else-if="!isLoading && repos.length"
-      :key="index"
+      :key="item.id"
       :repo="item"
     />
 
     <p v-else-if="!isLoading && !repos.length">
-      {{ __(`No container images stored for this project.
-Add one by following the instructions above.`) }}
+      {{
+        __(`No container images stored for this project.
+Add one by following the instructions above.`)
+      }}
     </p>
   </div>
 </template>

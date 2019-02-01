@@ -2,8 +2,14 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration, schema: 20180916011959 do
   let(:migration) { described_class.new }
+
+  before do
+    # This migration was created before we introduced metadata configs
+    stub_feature_flags(ci_build_metadata_config: false)
+  end
 
   let!(:internal_pipeline) { create(:ci_pipeline, source: :web) }
   let(:pipelines) { [internal_pipeline, unknown_pipeline].map(&:id) }
@@ -60,3 +66,4 @@ describe Gitlab::BackgroundMigration::PopulateExternalPipelineSource, :migration
     it_behaves_like 'no changes'
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

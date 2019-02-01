@@ -95,6 +95,14 @@ class Settings < Settingslogic
       Gitlab::Application.secrets.db_key_base[0..31]
     end
 
+    def attr_encrypted_db_key_base_32
+      Gitlab::Utils.ensure_utf8_size(attr_encrypted_db_key_base, bytes: 32.bytes)
+    end
+
+    def attr_encrypted_db_key_base_12
+      Gitlab::Utils.ensure_utf8_size(attr_encrypted_db_key_base, bytes: 12.bytes)
+    end
+
     # This should be used for :per_attribute_salt_and_iv mode. There is no
     # need to truncate the key because the encryptor will use the salt to
     # generate a hash of the password:

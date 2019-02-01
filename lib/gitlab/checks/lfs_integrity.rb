@@ -3,9 +3,10 @@
 module Gitlab
   module Checks
     class LfsIntegrity
-      def initialize(project, newrev)
+      def initialize(project, newrev, time_left)
         @project = project
         @newrev = newrev
+        @time_left = time_left
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
@@ -13,7 +14,7 @@ module Gitlab
         return false unless @newrev && @project.lfs_enabled?
 
         new_lfs_pointers = Gitlab::Git::LfsChanges.new(@project.repository, @newrev)
-                                                  .new_pointers(object_limit: ::Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT)
+                                                  .new_pointers(object_limit: ::Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT, dynamic_timeout: @time_left)
 
         return false unless new_lfs_pointers.present?
 

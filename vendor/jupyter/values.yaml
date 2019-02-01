@@ -16,9 +16,10 @@ singleuser:
   lifecycleHooks:
     postStart:
       exec:
-        command: ["git", "clone", "https://gitlab.com/gitlab-org/nurtch-demo.git", "DevOps-Runbook-Demo"]
+        command: ["sh", "-c", "git clone https://gitlab.com/gitlab-org/nurtch-demo.git DevOps-Runbook-Demo || true"]
 
 ingress:
  enabled: true
  annotations:
    kubernetes.io/ingress.class: "nginx"
+   kubernetes.io/tls-acme: "true"

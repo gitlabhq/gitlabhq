@@ -23,3 +23,10 @@ has_pick_into_stable_label = gitlab.mr_labels.find { |label| label.start_with?('
 if gitlab.branch_for_base != "master" && !has_pick_into_stable_label
   warn "Most of the time, merge requests should target `master`. Otherwise, please set the relevant `Pick into X.Y` label."
 end
+
+if gitlab.mr_json['title'].length > 72
+  warn 'The title of this merge request is longer than 72 characters and ' \
+    'would violate our commit message rules when using the Squash on Merge ' \
+    'feature. Please consider adjusting the title, or rebase the ' \
+    "commits manually and don't use Squash on Merge."
+end

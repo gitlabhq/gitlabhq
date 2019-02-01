@@ -29,7 +29,7 @@
           = f.label :build_timeout_human_readable, _('Timeout'), class: 'label-bold'
           = f.text_field :build_timeout_human_readable, class: 'form-control'
           %p.form-text.text-muted
-            = _("Per job. If a job passes this threshold, it will be marked as failed")
+            = _('If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like "1 hour". Values without specification represent seconds.')
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'timeout'), target: '_blank'
 
         %hr
@@ -91,7 +91,7 @@
                 %code \(\d+.\d+\%\) covered
               %li
                 pytest-cov (Python) -
-                %code \d+\%\s*$
+                %code ^TOTAL\s+\d+\s+\d+\s+(\d+\%)$
               %li
                 phpunit --coverage-text --colors=never (PHP) -
                 %code ^\s*Lines:\s*\d+.\d+\%
@@ -110,6 +110,9 @@
               %li
                 go test -cover (Go)
                 %code coverage: \d+.\d+% of statements
+              %li
+                nyc npm test (NodeJS) -
+                %code All files[^|]*\|[^|]*\s+([\d\.]+)
 
         = f.submit _('Save changes'), class: "btn btn-success"
 

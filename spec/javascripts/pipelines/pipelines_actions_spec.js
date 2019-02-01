@@ -31,11 +31,13 @@ describe('Pipelines Actions dropdown', () => {
 
     it('renders a dropdown with the provided actions', () => {
       const dropdownItems = vm.$el.querySelectorAll('.dropdown-menu li');
+
       expect(dropdownItems.length).toEqual(actions.length);
     });
 
     it("renders a disabled action when it's not playable", () => {
       const dropdownItem = vm.$el.querySelector('.dropdown-menu li:last-child button');
+
       expect(dropdownItem).toBeDisabled();
     });
   });
@@ -60,9 +62,13 @@ describe('Pipelines Actions dropdown', () => {
       );
     };
 
-    beforeEach(() => {
+    beforeEach(done => {
       spyOn(Date, 'now').and.callFake(() => new Date('2063-04-04T00:42:00Z').getTime());
       vm = mountComponent(Component, { actions: [scheduledJobAction, expiredJobAction] });
+
+      Vue.nextTick()
+        .then(done)
+        .catch(done.fail);
     });
 
     it('emits postAction event after confirming', () => {

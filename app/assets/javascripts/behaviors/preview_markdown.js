@@ -26,7 +26,7 @@ MarkdownPreview.prototype.emptyMessage = 'Nothing to preview.';
 
 MarkdownPreview.prototype.ajaxCache = {};
 
-MarkdownPreview.prototype.showPreview = function ($form) {
+MarkdownPreview.prototype.showPreview = function($form) {
   var mdText;
   var markdownVersion;
   var url;
@@ -44,34 +44,40 @@ MarkdownPreview.prototype.showPreview = function ($form) {
     this.hideReferencedUsers($form);
   } else {
     preview.addClass('md-preview-loading').text('Loading...');
-    this.fetchMarkdownPreview(mdText, url, (function (response) {
-      var body;
-      if (response.body.length > 0) {
-        ({ body } = response);
-      } else {
-        body = this.emptyMessage;
-      }
+    this.fetchMarkdownPreview(
+      mdText,
+      url,
+      function(response) {
+        var body;
+        if (response.body.length > 0) {
+          ({ body } = response);
+        } else {
+          body = this.emptyMessage;
+        }
 
-      preview.removeClass('md-preview-loading').html(body);
-      preview.renderGFM();
-      this.renderReferencedUsers(response.references.users, $form);
+        preview.removeClass('md-preview-loading').html(body);
+        preview.renderGFM();
+        this.renderReferencedUsers(response.references.users, $form);
 
-      if (response.references.commands) {
-        this.renderReferencedCommands(response.references.commands, $form);
-      }
-    }).bind(this));
+        if (response.references.commands) {
+          this.renderReferencedCommands(response.references.commands, $form);
+        }
+      }.bind(this),
+    );
   }
 };
 
-MarkdownPreview.prototype.versionedPreviewPath = function (markdownPreviewPath, markdownVersion) {
+MarkdownPreview.prototype.versionedPreviewPath = function(markdownPreviewPath, markdownVersion) {
   if (typeof markdownVersion === 'undefined') {
     return markdownPreviewPath;
   }
 
-  return `${markdownPreviewPath}${markdownPreviewPath.indexOf('?') === -1 ? '?' : '&'}markdown_version=${markdownVersion}`;
+  return `${markdownPreviewPath}${
+    markdownPreviewPath.indexOf('?') === -1 ? '?' : '&'
+  }markdown_version=${markdownVersion}`;
 };
 
-MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {
+MarkdownPreview.prototype.fetchMarkdownPreview = function(text, url, success) {
   if (!url) {
     return;
   }
@@ -79,24 +85,25 @@ MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {
     success(this.ajaxCache.response);
     return;
   }
-  axios.post(url, {
-    text,
-  })
-  .then(({ data }) => {
-    this.ajaxCache = {
-      text: text,
-      response: data,
-    };
-    success(data);
-  })
-  .catch(() => flash(__('An error occurred while fetching markdown preview')));
+  axios
+    .post(url, {
+      text,
+    })
+    .then(({ data }) => {
+      this.ajaxCache = {
+        text: text,
+        response: data,
+      };
+      success(data);
+    })
+    .catch(() => flash(__('An error occurred while fetching markdown preview')));
 };
 
-MarkdownPreview.prototype.hideReferencedUsers = function ($form) {
+MarkdownPreview.prototype.hideReferencedUsers = function($form) {
   $form.find('.referenced-users').hide();
 };
 
-MarkdownPreview.prototype.renderReferencedUsers = function (users, $form) {
+MarkdownPreview.prototype.renderReferencedUsers = function(users, $form) {
   var referencedUsers;
   referencedUsers = $form.find('.referenced-users');
   if (referencedUsers.length) {
@@ -109,11 +116,11 @@ MarkdownPreview.prototype.renderReferencedUsers = function (users, $form) {
   }
 };
 
-MarkdownPreview.prototype.hideReferencedCommands = function ($form) {
+MarkdownPreview.prototype.hideReferencedCommands = function($form) {
   $form.find('.referenced-commands').hide();
 };
 
-MarkdownPreview.prototype.renderReferencedCommands = function (commands, $form) {
+MarkdownPreview.prototype.renderReferencedCommands = function(commands, $form) {
   var referencedCommands;
   referencedCommands = $form.find('.referenced-commands');
   if (commands.length > 0) {
@@ -132,14 +139,14 @@ writeButtonSelector = '.js-md-write-button';
 lastTextareaPreviewed = null;
 const markdownToolbar = $('.md-header-toolbar');
 
-$.fn.setupMarkdownPreview = function () {
+$.fn.setupMarkdownPreview = function() {
   var $form = $(this);
-  $form.find('textarea.markdown-area').on('input', function () {
+  $form.find('textarea.markdown-area').on('input', function() {
     markdownPreview.hideReferencedUsers($form);
   });
 };
 
-$(document).on('markdown-preview:show', function (e, $form) {
+$(document).on('markdown-preview:show', function(e, $form) {
   if (!$form) {
     return;
   }
@@ -148,8 +155,14 @@ $(document).on('markdown-preview:show', function (e, $form) {
   lastTextareaHeight = lastTextareaPreviewed.height();
 
   // toggle tabs
-  $form.find(writeButtonSelector).parent().removeClass('active');
-  $form.find(previewButtonSelector).parent().addClass('active');
+  $form
+    .find(writeButtonSelector)
+    .parent()
+    .removeClass('active');
+  $form
+    .find(previewButtonSelector)
+    .parent()
+    .addClass('active');
 
   // toggle content
   $form.find('.md-write-holder').hide();
@@ -158,7 +171,7 @@ $(document).on('markdown-preview:show', function (e, $form) {
   markdownPreview.showPreview($form);
 });
 
-$(document).on('markdown-preview:hide', function (e, $form) {
+$(document).on('markdown-preview:hide', function(e, $form) {
   if (!$form) {
     return;
   }
@@ -169,8 +182,14 @@ $(document).on('markdown-preview:hide', function (e, $form) {
   }
 
   // toggle tabs
-  $form.find(writeButtonSelector).parent().addClass('active');
-  $form.find(previewButtonSelector).parent().removeClass('active');
+  $form
+    .find(writeButtonSelector)
+    .parent()
+    .addClass('active');
+  $form
+    .find(previewButtonSelector)
+    .parent()
+    .removeClass('active');
 
   // toggle content
   $form.find('.md-write-holder').show();
@@ -181,7 +200,7 @@ $(document).on('markdown-preview:hide', function (e, $form) {
   markdownPreview.hideReferencedCommands($form);
 });
 
-$(document).on('markdown-preview:toggle', function (e, keyboardEvent) {
+$(document).on('markdown-preview:toggle', function(e, keyboardEvent) {
   var $target;
   $target = $(keyboardEvent.target);
   if ($target.is('textarea.markdown-area')) {
@@ -194,14 +213,14 @@ $(document).on('markdown-preview:toggle', function (e, keyboardEvent) {
   }
 });
 
-$(document).on('click', previewButtonSelector, function (e) {
+$(document).on('click', previewButtonSelector, function(e) {
   var $form;
   e.preventDefault();
   $form = $(this).closest('form');
   $(document).triggerHandler('markdown-preview:show', [$form]);
 });
 
-$(document).on('click', writeButtonSelector, function (e) {
+$(document).on('click', writeButtonSelector, function(e) {
   var $form;
   e.preventDefault();
   $form = $(this).closest('form');

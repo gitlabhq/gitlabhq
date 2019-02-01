@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AddCiBuildsIndexForJobscontroller < ActiveRecord::Migration
+class AddCiBuildsIndexForJobscontroller < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -28,7 +28,7 @@ class AddCiBuildsIndexForJobscontroller < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_concurrent_index :ci_builds, [:project_id, :id]  unless index_exists? :ci_builds, [:project_id, :id]
+    add_concurrent_index :ci_builds, [:project_id, :id] unless index_exists? :ci_builds, [:project_id, :id]
     remove_concurrent_index :ci_builds, :project_id if index_exists? :ci_builds, :project_id
   end
 

@@ -11,6 +11,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
+  before_action do
+    push_frontend_feature_flag(:area_chart, project)
+  end
+
+  # Returns all environments or all folders based on the :nested param
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)
@@ -21,11 +26,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
         render json: {
-          environments: EnvironmentSerializer
-            .new(project: @project, current_user: @current_user)
-            .with_pagination(request, response)
-            .within_folders
-            .represent(@environments),
+          environments: serialize_environments(request, response, params[:nested]),
           available_count: project.environments.available.count,
           stopped_count: project.environments.stopped.count
         }
@@ -33,6 +34,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  # Returns all environments for a given folder
   # rubocop: disable CodeReuse/ActiveRecord
   def folder
     folder_environments = project.environments.where(environment_type: params[:id])
@@ -44,10 +46,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         render json: {
-          environments: EnvironmentSerializer
-            .new(project: @project, current_user: @current_user)
-            .with_pagination(request, response)
-            .represent(@environments),
+          environments: serialize_environments(request, response),
           available_count: folder_environments.available.count,
           stopped_count: folder_environments.stopped.count
         }
@@ -122,7 +121,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       set_workhorse_internal_api_content_type
       render json: Gitlab::Workhorse.terminal_websocket(terminal)
     else
-      render text: 'Not found', status: :not_found
+      render html: 'Not found', status: :not_found
     end
   end
 
@@ -180,6 +179,14 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def serialize_environments(request, response, nested = false)
+    serializer = EnvironmentSerializer
+      .new(project: @project, current_user: @current_user)
+      .with_pagination(request, response)
+    serializer = serializer.within_folders if nested
+    serializer.represent(@environments)
   end
 
   def authorize_stop_environment!

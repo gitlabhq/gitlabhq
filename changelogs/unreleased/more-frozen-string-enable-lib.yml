@@ -1,5 +1,0 @@
----
-title: Enable more frozen string in lib/**/*.rb
-merge_request:
-author: gfyoung
-type: performance

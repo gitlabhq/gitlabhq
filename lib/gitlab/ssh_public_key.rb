@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Gitlab
   class SSHPublicKey
     Technology = Struct.new(:name, :key_class, :supported_sizes)
 
-    Technologies = [
+    TECHNOLOGIES = [
       Technology.new(:rsa, OpenSSL::PKey::RSA, [1024, 2048, 3072, 4096]),
       Technology.new(:dsa, OpenSSL::PKey::DSA, [1024, 2048, 3072]),
       Technology.new(:ecdsa, OpenSSL::PKey::EC, [256, 384, 521]),
@@ -10,11 +12,11 @@ module Gitlab
     ].freeze
 
     def self.technology(name)
-      Technologies.find { |tech| tech.name.to_s == name.to_s }
+      TECHNOLOGIES.find { |tech| tech.name.to_s == name.to_s }
     end
 
     def self.technology_for_key(key)
-      Technologies.find { |tech| key.is_a?(tech.key_class) }
+      TECHNOLOGIES.find { |tech| key.is_a?(tech.key_class) }
     end
 
     def self.supported_sizes(name)
@@ -26,7 +28,7 @@ module Gitlab
 
       return key_content if parts.empty?
 
-      parts.each_with_object("#{ssh_type} ").with_index do |(part, content), index|
+      parts.each_with_object(+"#{ssh_type} ").with_index do |(part, content), index|
         content << part
 
         if Gitlab::SSHPublicKey.new(content).valid?

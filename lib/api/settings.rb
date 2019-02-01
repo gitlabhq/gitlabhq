@@ -35,7 +35,7 @@ module API
       end
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
-      optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
+      optional :default_branch_protection, type: Integer, values: Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'

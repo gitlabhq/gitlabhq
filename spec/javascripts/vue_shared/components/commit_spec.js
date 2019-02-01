@@ -78,6 +78,7 @@ describe('Commit component', () => {
       expect(component.$el.querySelector('.commit-sha').getAttribute('href')).toEqual(
         props.commitUrl,
       );
+
       expect(component.$el.querySelector('.commit-sha').textContent).toContain(props.shortSha);
     });
 
@@ -97,9 +98,10 @@ describe('Commit component', () => {
       it('Should render the author avatar with title and alt attributes', () => {
         expect(
           component.$el
-            .querySelector('.commit-title .avatar-image-container img')
-            .getAttribute('data-original-title'),
+            .querySelector('.commit-title .avatar-image-container .js-user-avatar-image-toolip')
+            .textContent.trim(),
         ).toContain(props.author.username);
+
         expect(
           component.$el
             .querySelector('.commit-title .avatar-image-container img')
@@ -112,6 +114,7 @@ describe('Commit component', () => {
       expect(component.$el.querySelector('a.commit-row-message').getAttribute('href')).toEqual(
         props.commitUrl,
       );
+
       expect(component.$el.querySelector('a.commit-row-message').textContent).toContain(
         props.title,
       );

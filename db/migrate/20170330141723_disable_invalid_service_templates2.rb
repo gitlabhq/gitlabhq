@@ -1,7 +1,7 @@
 # This is the same as DisableInvalidServiceTemplates. Later migrations may have
 # inadventently enabled some invalid templates again.
 #
-class DisableInvalidServiceTemplates2 < ActiveRecord::Migration
+class DisableInvalidServiceTemplates2 < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   unless defined?(Service)

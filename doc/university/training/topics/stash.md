@@ -9,7 +9,7 @@ comments: false
 We use git stash to store our changes when they are not ready to be committed
 and we need to change to a different branch.
 
-* Stash
+- Stash:
 
     ```
     git stash save
@@ -19,7 +19,7 @@ and we need to change to a different branch.
     git stash save "this is a message to display on the list"
     ```
 
-* Apply stash to keep working on it
+- Apply stash to keep working on it:
 
     ```
     git stash apply
@@ -29,7 +29,7 @@ and we need to change to a different branch.
 
 ----------
 
-* Every time we save a stash it gets stacked so by using list we can see all our
+- Every time we save a stash it gets stacked so by using list we can see all our
 stashes.
 
     ```
@@ -38,7 +38,7 @@ stashes.
     git stash list --stat
     ```
 
-* To clean our stack we need to manually remove them.
+- To clean our stack we need to manually remove them:
 
     ```
     # drop top stash
@@ -51,27 +51,26 @@ stashes.
 
 ----------
 
-* Apply and drop on one command
+- Apply and drop on one command:
 
     ```
       git stash pop
     ```
 
-* If we meet conflicts we need to either reset or commit our changes.
-
-* Conflicts through `pop` will not drop a stash afterwards.
+- If we meet conflicts we need to either reset or commit our changes.
+- Conflicts through `pop` will not drop a stash afterwards.
 
 ----------
 
 ## Git Stash
 
 1. Modify a file
-2. Stage file
-3. Stash it
-4. View our stash list
-5. Confirm no pending changes through status
-5. Apply with pop
-6. View list to confirm changes
+1. Stage file
+1. Stash it
+1. View our stash list
+1. Confirm no pending changes through status
+1. Apply with pop
+1. View list to confirm changes
 
 ----------
 

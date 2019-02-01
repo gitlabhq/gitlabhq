@@ -3,8 +3,11 @@ require 'rails_helper'
 describe Clusters::Applications::Ingress do
   let(:ingress) { create(:clusters_applications_ingress) }
 
+  it_behaves_like 'having unique enum values'
+
   include_examples 'cluster application core specs', :clusters_applications_ingress
   include_examples 'cluster application status specs', :clusters_applications_ingress
+  include_examples 'cluster application helm specs', :clusters_applications_ingress
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
@@ -32,7 +35,7 @@ describe Clusters::Applications::Ingress do
       let(:application) { create(:clusters_applications_ingress, :scheduled, version: '0.22.0') }
 
       it 'updates the application version' do
-        expect(application.reload.version).to eq('0.23.0')
+        expect(application.reload.version).to eq('1.1.2')
       end
     end
   end
@@ -87,24 +90,24 @@ describe Clusters::Applications::Ingress do
     it 'should be initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
-      expect(subject.version).to eq('0.23.0')
-      expect(subject).not_to be_rbac
+      expect(subject.version).to eq('1.1.2')
+      expect(subject).to be_rbac
       expect(subject.files).to eq(ingress.files)
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        ingress.cluster.platform_kubernetes.rbac!
+        ingress.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
       let(:ingress) { create(:clusters_applications_ingress, :errored, version: 'nginx') }
 
       it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('0.23.0')
+        expect(subject.version).to eq('1.1.2')
       end
     end
   end
@@ -120,29 +123,6 @@ describe Clusters::Applications::Ingress do
       expect(values).to include('repository')
       expect(values).to include('stats')
       expect(values).to include('podAnnotations')
-    end
-
-    context 'when the helm application does not have a ca_cert' do
-      before do
-        application.cluster.application_helm.ca_cert = nil
-      end
-
-      it 'should not include cert files' do
-        expect(subject[:'ca.pem']).not_to be_present
-        expect(subject[:'cert.pem']).not_to be_present
-        expect(subject[:'key.pem']).not_to be_present
-      end
-    end
-
-    it 'should include cert files' do
-      expect(subject[:'ca.pem']).to be_present
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
-
-      expect(subject[:'cert.pem']).to be_present
-      expect(subject[:'key.pem']).to be_present
-
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
     end
   end
 end

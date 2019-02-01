@@ -8,7 +8,7 @@ module UsersHelper
   end
 
   def user_email_help_text(user)
-    return 'We also use email for avatar detection if no avatar is uploaded.' unless user.unconfirmed_email.present?
+    return 'We also use email for avatar detection if no avatar is uploaded' unless user.unconfirmed_email.present?
 
     confirmation_link = link_to 'Resend confirmation e-mail', user_confirmation_path(user: { email: @user.unconfirmed_email }), method: :post
 
@@ -68,6 +68,10 @@ module UsersHelper
                 data: { html: true, placement: 'top' } do
       emoji_icon user.status.emoji
     end
+  end
+
+  def impersonation_enabled?
+    Gitlab.config.gitlab.impersonation_enabled
   end
 
   private

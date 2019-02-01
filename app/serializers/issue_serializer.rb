@@ -2,17 +2,21 @@
 
 class IssueSerializer < BaseSerializer
   # This overrided method takes care of which entity should be used
-  # to serialize the `issue` based on `basic` key in `opts` param.
+  # to serialize the `issue` based on `serializer` key in `opts` param.
   # Hence, `entity` doesn't need to be declared on the class scope.
-  def represent(merge_request, opts = {})
+  def represent(issue, opts = {})
     entity =
       case opts[:serializer]
       when 'sidebar'
-        IssueSidebarEntity
+        IssueSidebarBasicEntity
+      when 'sidebar_extras'
+        IssueSidebarExtrasEntity
+      when 'board'
+        IssueBoardEntity
       else
         IssueEntity
       end
 
-    super(merge_request, opts, entity)
+    super(issue, opts, entity)
   end
 end

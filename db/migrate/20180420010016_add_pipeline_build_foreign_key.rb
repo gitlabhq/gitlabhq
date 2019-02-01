@@ -1,4 +1,4 @@
-class AddPipelineBuildForeignKey < ActiveRecord::Migration
+class AddPipelineBuildForeignKey < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

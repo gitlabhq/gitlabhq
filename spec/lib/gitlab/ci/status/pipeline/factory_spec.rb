@@ -71,7 +71,7 @@ describe Gitlab::Ci::Status::Pipeline::Factory do
 
       it 'matches a correct extended statuses' do
         expect(factory.extended_statuses)
-          .to eq [Gitlab::Ci::Status::Pipeline::Scheduled]
+          .to eq [Gitlab::Ci::Status::Pipeline::Delayed]
       end
 
       it 'extends core status with common pipeline methods' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Email
     module Message
@@ -116,7 +118,7 @@ module Gitlab
         end
 
         def subject
-          subject_text = '[Git]'
+          subject_text = ['[Git]']
           subject_text << "[#{project.full_path}]"
           subject_text << "[#{ref_name}]" if @action == :push
           subject_text << ' '
@@ -134,6 +136,8 @@ module Gitlab
             subject_action[0] = subject_action[0].capitalize
             subject_text << "#{subject_action} #{ref_type} #{ref_name}"
           end
+
+          subject_text.join
         end
       end
     end

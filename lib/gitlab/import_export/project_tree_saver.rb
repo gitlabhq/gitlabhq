@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class ProjectTreeSaver
@@ -31,6 +33,8 @@ module Gitlab
         end
 
         project_json['project_members'] += group_members_json
+
+        RelationRenameService.add_new_associations(project_json)
 
         project_json.to_json
       end

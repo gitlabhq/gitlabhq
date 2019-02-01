@@ -69,9 +69,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="multi-file-commit-list-collapsed text-center"
-  >
+  <div class="multi-file-commit-list-collapsed text-center">
     <div
       v-tooltip
       :title="titleTooltip"
@@ -79,11 +77,7 @@ export default {
       data-placement="left"
       class="append-bottom-15"
     >
-      <icon
-        v-once
-        :name="iconName"
-        :size="18"
-      />
+      <icon v-once :name="iconName" :size="18" />
     </div>
     <div
       v-tooltip
@@ -92,11 +86,7 @@ export default {
       data-placement="left"
       class="append-bottom-10"
     >
-      <icon
-        :name="additionIconName"
-        :size="18"
-        :css-classes="addedFilesIconClass"
-      />
+      <icon :name="additionIconName" :size="18" :css-classes="addedFilesIconClass" />
     </div>
     {{ addedFilesLength }}
     <div
@@ -106,11 +96,7 @@ export default {
       data-placement="left"
       class="prepend-top-10 append-bottom-10"
     >
-      <icon
-        :name="modifiedIconName"
-        :size="18"
-        :css-classes="modifiedFilesClass"
-      />
+      <icon :name="modifiedIconName" :size="18" :css-classes="modifiedFilesClass" />
     </div>
     {{ modifiedFilesLength }}
   </div>

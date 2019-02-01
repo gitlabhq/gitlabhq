@@ -1,5 +1,5 @@
 # rubocop:disable Migration/UpdateColumnInBatches
-class RenameSlackAndMattermostNotificationServices < ActiveRecord::Migration
+class RenameSlackAndMattermostNotificationServices < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

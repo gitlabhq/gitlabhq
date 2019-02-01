@@ -31,7 +31,7 @@ describe('Stages Dropdown', () => {
           name: 'test',
         },
       ],
-      selectedStage: 'deploy'
+      selectedStage: 'deploy',
     });
   });
 

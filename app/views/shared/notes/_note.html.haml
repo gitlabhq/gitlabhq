@@ -5,7 +5,7 @@
 - note_editable = can?(current_user, :admin_note, note)
 - note_counter = local_assigns.fetch(:note_counter, 0)
 
-%li.timeline-entry{ id: dom_id(note),
+%li.timeline-entry.note-wrapper{ id: dom_id(note),
   class: ["note", "note-row-#{note.id}", ('system-note' if note.system)],
   data: { author_id: note.author.id,
     editable: note_editable,
@@ -62,7 +62,7 @@
           = render 'award_emoji/awards_block', awardable: note, inline: false
         - if note.system
           .system-note-commit-list-toggler.hide
-            Toggle commit list
+            = _("Toggle commit list")
             %i.fa.fa-angle-down
       - if note.attachment.url
         .note-attachment
@@ -74,5 +74,5 @@
               = icon('paperclip')
               = note.attachment_identifier
               = link_to delete_attachment_project_note_path(note.project, note),
-                title: 'Delete this attachment', method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: 'danger js-note-attachment-delete' do
+                title: _('Delete this attachment'), method: :delete, remote: true, data: { confirm: _('Are you sure you want to remove the attachment?') }, class: 'danger js-note-attachment-delete' do
                 = icon('trash-o', class: 'cred')

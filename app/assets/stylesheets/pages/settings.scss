@@ -167,12 +167,14 @@
       font-weight: $gl-font-weight-normal;
       display: inline-block;
       color: $gl-text-color;
+      vertical-align: top;
     }
 
     .option-description,
     .option-disabled-reason {
       margin-left: 30px;
       color: $project-option-descr-color;
+      margin-top: -5px;
     }
 
     .option-disabled-reason {
@@ -297,7 +299,7 @@
 
   .btn-clipboard {
     background-color: $white-light;
-    border: 1px solid $theme-gray-200;
+    border: 1px solid $gray-200;
   }
 
   .deploy-token-help-block {

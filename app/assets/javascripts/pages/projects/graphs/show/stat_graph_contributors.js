@@ -3,7 +3,11 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import { n__, s__, createDateTimeFormat, sprintf } from '~/locale';
-import { ContributorsGraph, ContributorsAuthorGraph, ContributorsMasterGraph } from './stat_graph_contributors_graph';
+import {
+  ContributorsGraph,
+  ContributorsAuthorGraph,
+  ContributorsMasterGraph,
+} from './stat_graph_contributors_graph';
 import ContributorsStatGraphUtil from './stat_graph_contributors_util';
 
 export default (function() {
@@ -14,7 +18,7 @@ export default (function() {
   ContributorsStatGraph.prototype.init = function(log) {
     var author_commits, total_commits;
     this.parsed_log = ContributorsStatGraphUtil.parse_log(log);
-    this.set_current_field("commits");
+    this.set_current_field('commits');
     total_commits = ContributorsStatGraphUtil.get_total_data(this.parsed_log, this.field);
     author_commits = ContributorsStatGraphUtil.get_author_data(this.parsed_log, this.field);
     this.add_master_graph(total_commits);
@@ -31,23 +35,26 @@ export default (function() {
     var limited_author_data;
     this.authors = [];
     limited_author_data = author_data.slice(0, 100);
-    return _.each(limited_author_data, (function(_this) {
-      return function(d) {
-        var author_graph, author_header;
-        author_header = _this.create_author_header(d);
-        $(".contributors-list").append(author_header);
+    return _.each(
+      limited_author_data,
+      (function(_this) {
+        return function(d) {
+          var author_graph, author_header;
+          author_header = _this.create_author_header(d);
+          $('.contributors-list').append(author_header);
 
-        author_graph = new ContributorsAuthorGraph(d.dates);
-        _this.authors[d.author_name] = author_graph;
-        return author_graph.draw();
-      };
-    })(this));
+          author_graph = new ContributorsAuthorGraph(d.dates);
+          _this.authors[d.author_name] = author_graph;
+          return author_graph.draw();
+        };
+      })(this),
+    );
   };
 
   ContributorsStatGraph.prototype.format_author_commit_info = function(author) {
     var commits;
     commits = $('<span/>', {
-      "class": 'graph-author-commits-count'
+      class: 'graph-author-commits-count',
     });
     commits.text(n__('%d commit', '%d commits', author.commits));
     return $('<span/>').append(commits);
@@ -56,13 +63,13 @@ export default (function() {
   ContributorsStatGraph.prototype.create_author_header = function(author) {
     var author_commit_info, author_commit_info_span, author_email, author_name, list_item;
     list_item = $('<li/>', {
-      "class": 'person',
-      style: 'display: block;'
+      class: 'person',
+      style: 'display: block;',
     });
     author_name = $('<h4>' + author.author_name + '</h4>');
     author_email = $('<p class="graph-author-email">' + author.author_email + '</p>');
     author_commit_info_span = $('<span/>', {
-      "class": 'commits'
+      class: 'commits',
     });
     author_commit_info = this.format_author_commit_info(author);
     author_commit_info_span.html(author_commit_info);
@@ -80,37 +87,41 @@ export default (function() {
   };
 
   ContributorsStatGraph.prototype.redraw_authors = function() {
-    $("ol").html("");
+    $('ol').html('');
 
     const { x_domain } = ContributorsGraph.prototype;
-    const author_commits = ContributorsStatGraphUtil.get_author_data(this.parsed_log, this.field, x_domain);
+    const author_commits = ContributorsStatGraphUtil.get_author_data(
+      this.parsed_log,
+      this.field,
+      x_domain,
+    );
 
-    return _.each(author_commits, (function(_this) {
-      return function(d) {
-        _this.redraw_author_commit_info(d);
-        if (_this.authors[d.author_name] != null) {
-          $(_this.authors[d.author_name].list_item).appendTo("ol");
-          _this.authors[d.author_name].set_data(d.dates);
-          return _this.authors[d.author_name].redraw();
-        }
-        return '';
-      };
-    })(this));
+    return _.each(
+      author_commits,
+      (function(_this) {
+        return function(d) {
+          _this.redraw_author_commit_info(d);
+          if (_this.authors[d.author_name] != null) {
+            $(_this.authors[d.author_name].list_item).appendTo('ol');
+            _this.authors[d.author_name].set_data(d.dates);
+            return _this.authors[d.author_name].redraw();
+          }
+          return '';
+        };
+      })(this),
+    );
   };
 
   ContributorsStatGraph.prototype.set_current_field = function(field) {
-    return this.field = field;
+    return (this.field = field);
   };
 
   ContributorsStatGraph.prototype.change_date_header = function() {
     const { x_domain } = ContributorsGraph.prototype;
-    const formattedDateRange = sprintf(
-      s__('ContributorsPage|%{startDate} – %{endDate}'),
-      {
-        startDate: this.dateFormat.format(new Date(x_domain[0])),
-        endDate: this.dateFormat.format(new Date(x_domain[1])),
-      },
-    );
+    const formattedDateRange = sprintf(s__('ContributorsPage|%{startDate} – %{endDate}'), {
+      startDate: this.dateFormat.format(new Date(x_domain[0])),
+      endDate: this.dateFormat.format(new Date(x_domain[1])),
+    });
     return $('#date_header').text(formattedDateRange);
   };
 
@@ -120,7 +131,7 @@ export default (function() {
     if ($author != null) {
       author_list_item = $(this.authors[author.author_name].list_item);
       author_commit_info = this.format_author_commit_info(author);
-      return author_list_item.find("span").html(author_commit_info);
+      return author_list_item.find('span').html(author_commit_info);
     }
     return '';
   };

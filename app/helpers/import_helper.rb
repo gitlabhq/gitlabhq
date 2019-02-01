@@ -8,7 +8,9 @@ module ImportHelper
   end
 
   def sanitize_project_name(name)
-    name.gsub(/[^\w\-]/, '-')
+    # For personal projects in Bitbucket in the form ~username, we can
+    # just drop that leading tilde.
+    name.gsub(/\A~+/, '').gsub(/[^\w\-]/, '-')
   end
 
   def import_project_target(owner, name)
@@ -83,7 +85,7 @@ module ImportHelper
   private
 
   def github_project_url(full_path)
-    URI.join(github_root_url, full_path).to_s
+    Gitlab::Utils.append_path(github_root_url, full_path)
   end
 
   def github_root_url
@@ -95,6 +97,6 @@ module ImportHelper
   end
 
   def gitea_project_url(full_path)
-    URI.join(@gitea_host_url, full_path).to_s
+    Gitlab::Utils.append_path(@gitea_host_url, full_path)
   end
 end

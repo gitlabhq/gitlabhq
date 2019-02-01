@@ -1,15 +1,20 @@
 # Database MySQL
 
-> **Note:**
-> - We do not recommend using MySQL due to various issues. For example, case
-    [(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html)
-    and [problems](https://bugs.mysql.com/bug.php?id=65830) that
-    [suggested](https://bugs.mysql.com/bug.php?id=50909)
-    [fixes](https://bugs.mysql.com/bug.php?id=65830) [have](https://bugs.mysql.com/bug.php?id=63164).
+NOTE: **Note:**
+We do not recommend using MySQL due to various issues.
+For example, there have been bugs with case
+[(in)sensitivity](https://dev.mysql.com/doc/refman/5.7/en/case-sensitivity.html).
+
+Bugs relating to case sensitivity:
+
+- <https://bugs.mysql.com/bug.php?id=65830>
+- <https://bugs.mysql.com/bug.php?id=50909>
+- <https://bugs.mysql.com/bug.php?id=65830>
+- <https://bugs.mysql.com/bug.php?id=63164>
 
 ## Initial database setup
 
-```
+```sh
 # Install the database packages
 sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
 
@@ -84,14 +89,15 @@ GitLab 8.14 has introduced [a feature](https://gitlab.com/gitlab-org/gitlab-ce/m
 Follow the below instructions to ensure you use the most up to date requirements for your GitLab MySQL Database.
 
 **We are about to do the following:**
+
 - Ensure you can enable `utf8mb4` encoding and `utf8mb4_general_ci` collation for your GitLab DB, tables and data.
-- Convert your GitLab tables and data from `utf8`/`utf8_general_ci` to `utf8mb4`/`utf8mb4_general_ci`
+- Convert your GitLab tables and data from `utf8`/`utf8_general_ci` to `utf8mb4`/`utf8mb4_general_ci`.
 
 ### Check for utf8mb4 support
 
 #### Check for InnoDB File-Per-Table Tablespaces
 
-We need to check, enable and maybe convert your existing GitLab DB tables to the [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) as a prerequisite for supporting **utfb8mb4 with long indexes** required by recent GitLab databases.
+We need to check, enable and maybe convert your existing GitLab DB tables to the [InnoDB File-Per-Table Tablespaces](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) as a prerequisite for supporting **utfb8mb4 with long indexes** required by recent GitLab databases.
 
     # Login to MySQL
     mysql -u root -p
@@ -128,9 +134,10 @@ We need to check, enable and maybe convert your existing GitLab DB tables to the
 
 > You need **MySQL 5.5.3 or later** to perform this update.
 
-Whatever the results of your checks above, we now need to check if your GitLab database has been created using [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) (i.e. `innodb_file_per_table` was set to **1** at initial setup time).
+Whatever the results of your checks above, we now need to check if your GitLab database has been created using [InnoDB File-Per-Table Tablespaces](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) (i.e. `innodb_file_per_table` was set to **1** at initial setup time).
 
-> Note: This setting is [enabled by default](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_file_per_table) since MySQL 5.6.6.
+NOTE: **Note:**
+This setting is [enabled by default](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_file_per_table) since MySQL 5.6.6.
 
     # Run this command with root privileges, replace the data dir if different:
     sudo ls -lh /var/lib/mysql/gitlabhq_production/*.ibd | wc -l
@@ -138,26 +145,25 @@ Whatever the results of your checks above, we now need to check if your GitLab d
     # Run this command with root privileges, replace the data dir if different:
     sudo ls -lh /var/lib/mysql/gitlabhq_production/*.frm | wc -l
 
-
 - **Case 1: a result > 0 for both commands**
 
-Congrats, your GitLab database uses the right InnoDB tablespace format.
+Congratulations, your GitLab database uses the right InnoDB tablespace format.
 
 However, you must still ensure that any **future tables** created by GitLab will still use the right format:
 
 - If `SELECT @@innodb_file_per_table` returned **1** previously, your server is running correctly.
 
-    > It's however a requirement to check *now* that this setting is indeed persisted in your [my.cnf](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) file!
+    > It's however a requirement to check *now* that this setting is indeed persisted in your [`my.cnf`](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) file!
 
 - If `SELECT @@innodb_file_per_table` returned **0** previously, your server is not running correctly.
 
-    > [Enable innodb_file_per_table](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) by running in a MySQL session as root the command `SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda;` and persist the two settings in your [my.cnf](https://dev.mysql.com/doc/refman/5.7/en/tablespace-enabling.html) file
+    > [Enable innodb_file_per_table](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) by running in a MySQL session as root the command `SET GLOBAL innodb_file_per_table=1, innodb_file_format=Barracuda;` and persist the two settings in your [`my.cnf`](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) file.
 
 Now, if you have a **different result** returned by the 2 commands above, it means you have a **mix of tables format** uses in your GitLab database. This can happen if your MySQL server had different values for `innodb_file_per_table` in its life and you updated GitLab at different moments with those inconsistent values. So keep reading.
 
 - **Case 2: a result equals to "0" OR not the same result for both commands**
 
-Unfortunately, none or only some of your GitLab database tables use the GitLab requirement of [InnoDB File-Per-Table Tablespaces](http://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html).
+Unfortunately, none or only some of your GitLab database tables use the GitLab requirement of [InnoDB File-Per-Table Tablespaces](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html).
 
 Let's enable what we need on the running server:
 
@@ -172,7 +178,7 @@ Let's enable what we need on the running server:
     # You can now quit the database session
     mysql> \q
 
-> Now, **persist** [innodb_file_per_table](https://dev.mysql.com/doc/refman/5.6/en/tablespace-enabling.html) and [innodb_file_format](https://dev.mysql.com/doc/refman/5.6/en/innodb-file-format-enabling.html) in your `my.cnf` file.
+> Now, **persist** [innodb_file_per_table](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) and [innodb_file_format](https://dev.mysql.com/doc/refman/5.7/en/innodb-file-format-enabling.html) in your `my.cnf` file.
 
 Ensure at this stage that your GitLab instance is indeed **stopped**.
 
@@ -184,7 +190,7 @@ Now, let's convert all the GitLab database tables to the new tablespace format:
     # Type the MySQL root password
     mysql > use gitlabhq_production;
 
-    # Safety check: you should still have those values set as follow:
+    # Safety check: you should still have those values set as follows:
     mysql> SELECT @@innodb_file_per_table, @@innodb_file_format;
     +-------------------------+----------------------+
     | @@innodb_file_per_table | @@innodb_file_format |
@@ -203,7 +209,7 @@ Now, let's convert all the GitLab database tables to the new tablespace format:
 
 #### Check for proper InnoDB File Format, Row Format, Large Prefix and tables conversion
 
-We need to check, enable and probably convert your existing GitLab DB tables to use the [Barracuda InnoDB file format](https://dev.mysql.com/doc/refman/5.6/en/innodb-file-format.html), the [DYNAMIC row format](https://dev.mysql.com/doc/refman/5.6/en/glossary.html#glos_dynamic_row_format) and [innodb_large_prefix](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_large_prefix) as a second prerequisite for supporting **utfb8mb4 with long indexes** used by recent GitLab databases.
+We need to check, enable and probably convert your existing GitLab DB tables to use the [Barracuda InnoDB file format](https://dev.mysql.com/doc/refman/5.7/en/innodb-file-format.html), the [DYNAMIC row format](https://dev.mysql.com/doc/refman/5.7/en/glossary.html#glos_dynamic_row_format) and [innodb_large_prefix](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_large_prefix) as a second prerequisite for supporting **utfb8mb4 with long indexes** used by recent GitLab databases.
 
     # Login to MySQL
     mysql -u root -p
@@ -229,7 +235,7 @@ We need to check, enable and probably convert your existing GitLab DB tables to 
     | utf8                     | utf8_general_ci      |
     +--------------------------+----------------------+
 
-> Now, ensure that [innodb_file_format](https://dev.mysql.com/doc/refman/5.6/en/tablespace-enabling.html) and [innodb_large_prefix](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_large_prefix) are **persisted** in your `my.cnf` file.
+> Now, ensure that [innodb_file_format](https://dev.mysql.com/doc/refman/5.7/en/innodb-multiple-tablespaces.html) and [innodb_large_prefix](http://dev.mysql.com/doc/refman/5.7/en/innodb-parameters.html#sysvar_innodb_large_prefix) are **persisted** in your `my.cnf` file.
 
 #### Tables and data conversion to utf8mb4
 
@@ -257,7 +263,7 @@ Now that you have a persistent MySQL setup, you can safely upgrade tables after 
 
 Ensure your GitLab database configuration file uses a proper connection encoding and collation:
 
-```sudo -u git -H editor config/database.yml```
+`sudo -u git -H editor config/database.yml`
 
     production:
       adapter: mysql2
@@ -266,19 +272,19 @@ Ensure your GitLab database configuration file uses a proper connection encoding
 
 [Restart your GitLab instance](../administration/restart_gitlab.md).
 
-
 ## MySQL strings limits
 
 After installation or upgrade, remember to run the `add_limits_mysql` Rake task:
 
 **Omnibus GitLab installations**
-```
+
+```sh
 sudo gitlab-rake add_limits_mysql
 ```
 
 **Installations from source**
 
-```
+```sh
 bundle exec rake add_limits_mysql RAILS_ENV=production
 ```
 
@@ -291,8 +297,7 @@ GitLab database to `longtext` columns, which can persist values of up to 4GB
 (sometimes less if the value contains multibyte characters).
 
 Details can be found in the [PostgreSQL][postgres-text-type] and
-[MySQL][mysql-text-types] manuals.
+[MySQL](https://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html) manuals.
 
 [postgres-text-type]: http://www.postgresql.org/docs/9.2/static/datatype-character.html
-[mysql-text-types]: http://dev.mysql.com/doc/refman/5.7/en/string-type-overview.html
 [ce-38152]: https://gitlab.com/gitlab-org/gitlab-ce/issues/38152

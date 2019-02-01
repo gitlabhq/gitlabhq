@@ -3,8 +3,7 @@ import Pikaday from 'pikaday';
 import dateFormat from 'dateformat';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
-import { timeFor } from './lib/utils/datetime_utility';
-import { parsePikadayDate, pikadayToString } from './lib/utils/datefix';
+import { timeFor, parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
 import boardsStore from './boards/stores/boards_store';
 
 class DueDateSelect {

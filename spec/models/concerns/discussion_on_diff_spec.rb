@@ -7,10 +7,38 @@ describe DiscussionOnDiff do
     let(:truncated_lines) { subject.truncated_diff_lines }
 
     context "when diff is greater than allowed number of truncated diff lines " do
-      it "returns fewer lines"  do
+      it "returns fewer lines" do
         expect(subject.diff_lines.count).to be > DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
 
         expect(truncated_lines.count).to be <= DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
+      end
+
+      context 'with truncated diff lines diff limit set' do
+        let(:truncated_lines) do
+          subject.truncated_diff_lines(
+            diff_limit: diff_limit
+          )
+        end
+
+        context 'when diff limit is higher than default' do
+          let(:diff_limit) { DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES + 1 }
+
+          it 'returns fewer lines than the default' do
+            expect(subject.diff_lines.count).to be > diff_limit
+
+            expect(truncated_lines.count).to be <= DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
+          end
+        end
+
+        context 'when diff_limit is lower than default' do
+          let(:diff_limit) { 3 }
+
+          it 'returns fewer lines than the default' do
+            expect(subject.diff_lines.count).to be > DiffDiscussion::NUMBER_OF_TRUNCATED_DIFF_LINES
+
+            expect(truncated_lines.count).to be <= diff_limit
+          end
+        end
       end
     end
 
@@ -22,11 +50,17 @@ describe DiscussionOnDiff do
     end
 
     context "when the diff line does not exist on a legacy diff note" do
+      subject { create(:legacy_diff_note_on_merge_request).to_discussion }
+
       it "returns an empty array" do
-        legacy_note = LegacyDiffNote.new
+        expect(truncated_lines).to eq([])
+      end
+    end
 
-        allow(subject).to receive(:first_note).and_return(legacy_note)
+    context 'when the discussion is on an image' do
+      subject { create(:image_diff_note_on_merge_request).to_discussion }
 
+      it 'returns an empty array' do
         expect(truncated_lines).to eq([])
       end
     end

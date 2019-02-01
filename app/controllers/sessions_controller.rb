@@ -104,7 +104,7 @@ class SessionsController < Devise::SessionsController
   end
 
   def failed_login?
-    (options = env["warden.options"]) && options[:action] == "unauthenticated"
+    (options = request.env["warden.options"]) && options[:action] == "unauthenticated"
   end
 
   # Handle an "initial setup" state, where there's only one user, it's an admin,

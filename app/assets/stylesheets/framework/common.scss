@@ -33,6 +33,11 @@
   color: $brand-danger;
 }
 
+.text-danger-muted,
+.text-danger-muted:hover {
+  color: $red-300;
+}
+
 .text-warning,
 .text-warning:hover {
   color: $brand-warning;
@@ -334,9 +339,18 @@ img.emoji {
   }
 }
 
+.outline-0 {
+  outline: 0;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
 .prepend-top-2 { margin-top: 2px; }
+.prepend-top-4 { margin-top: $gl-padding-4; }
 .prepend-top-5 { margin-top: 5px; }
 .prepend-top-8 { margin-top: $grid-size; }
 .prepend-top-10 { margin-top: 10px; }
@@ -357,6 +371,7 @@ img.emoji {
 .append-right-default { margin-right: $gl-padding; }
 .append-right-20 { margin-right: 20px; }
 .append-bottom-0 { margin-bottom: 0; }
+.append-bottom-4 { margin-bottom: $gl-padding-4; }
 .append-bottom-5 { margin-bottom: 5px; }
 .append-bottom-8 { margin-bottom: $grid-size; }
 .append-bottom-10 { margin-bottom: 10px; }
@@ -366,6 +381,48 @@ img.emoji {
 .inline { display: inline-block; }
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
+.vertical-align-sub { vertical-align: sub; }
 .flex-align-self-center { align-self: center; }
 .flex-grow { flex-grow: 1; }
 .flex-no-shrink { flex-shrink: 0; }
+.ws-initial { white-space: initial; }
+.overflow-auto { overflow: auto; }
+
+/** COMMON SIZING CLASSES **/
+.w-0 { width: 0; }
+.h-13em { height: 13em; }
+.mw-460 { max-width: 460px; }
+.mw-6em { max-width: 6em; }
+.min-height-0 { min-height: 0; }
+
+/** COMMON SPACING CLASSES **/
+.gl-pl-0 { padding-left: 0; }
+.gl-pl-1 { padding-left: #{0.5 * $grid-size}; }
+.gl-pl-2 { padding-left: $grid-size; }
+.gl-pl-3 { padding-left: #{2 * $grid-size}; }
+.gl-pl-4 { padding-left: #{3 * $grid-size}; }
+.gl-pl-5 { padding-left: #{4 * $grid-size}; }
+
+.gl-pr-0 { padding-right: 0; }
+.gl-pr-1 { padding-right: #{0.5 * $grid-size}; }
+.gl-pr-2 { padding-right: $grid-size; }
+.gl-pr-3 { padding-right: #{2 * $grid-size}; }
+.gl-pr-4 { padding-right: #{3 * $grid-size}; }
+.gl-pr-5 { padding-right: #{4 * $grid-size}; }
+
+/**
+ * Removes browser specific clear icon from input fields in
+ * Internet Explorer 10, Internet Explorer 11, and Microsoft Edge.
+ * This is intended for elements which add a customized clear icon.
+ *
+ * see also https://developer.mozilla.org/en-US/docs/Web/CSS/::-ms-clear
+ */
+.ms-no-clear ::-ms-clear {
+  display: none;
+}
+
+/** COMMON POSITIONING CLASSES */
+.position-bottom-0 { bottom: 0; }
+.position-left-0 { left: 0; }
+.position-right-0 { right: 0; }
+.position-top-0 { top: 0; }

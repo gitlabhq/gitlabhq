@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class Logger < ::Logger
     def self.file_name

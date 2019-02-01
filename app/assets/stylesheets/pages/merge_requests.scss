@@ -47,15 +47,24 @@
   }
 }
 
-
 .mr-widget-heading {
   position: relative;
   border: 1px solid $border-color;
-  border-radius: 4px;
+  border-radius: $border-radius-default;
+}
 
-  &:not(.deploy-heading)::before {
+.mr-widget-extension {
+  border-top: 1px solid $border-color;
+  background-color: $gray-light;
+}
+
+.mr-widget-workflow {
+  margin-top: $gl-padding;
+  position: relative;
+
+  &::before {
     content: '';
-    border-left: 1px solid $theme-gray-200;
+    border-left: 1px solid $gray-200;
     position: absolute;
     left: 32px;
     top: -17px;
@@ -69,8 +78,8 @@
   border-top: 0;
 }
 
-.mr-widget-heading,
 .mr-widget-section,
+.mr-widget-content,
 .mr-widget-footer {
   padding: $gl-padding;
 }
@@ -201,7 +210,6 @@
 
   .mr-widget-icon {
     font-size: 22px;
-    margin-right: $gl-btn-padding;
   }
 
   .ci-status-icon svg {
@@ -455,7 +463,7 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px  0 10px 15px;
+    padding: 10px 0 10px 15px;
     position: relative;
     display: -webkit-flex;
     display: flex;
@@ -469,7 +477,6 @@
       margin-bottom: 2px;
 
       .ci-status-link {
-
         svg {
           height: 16px;
           width: 16px;
@@ -563,19 +570,6 @@
     color: $gl-text-color;
   }
 
-  .git-merge-icon-container {
-    border: 1px solid $theme-gray-400;
-    border-radius: 50%;
-    height: 32px;
-    width: 32px;
-    color: $theme-gray-700;
-    line-height: 28px;
-
-    .ic-git-merge {
-      vertical-align: middle;
-      width: 31px;
-    }
-  }
 
   .git-merge-container {
     justify-content: space-between;
@@ -699,7 +693,6 @@
 
 .table-holder {
   .ci-table {
-
     th {
       background-color: $white-light;
       color: $gl-text-color-secondary;
@@ -715,12 +708,14 @@
 
 .mr-version-controls {
   position: relative;
+  z-index: 103;
   background: $gray-light;
   color: $gl-text-color;
 
   .mr-version-menus-container {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     padding: 16px;
     z-index: 199;
     white-space: nowrap;
@@ -761,13 +756,37 @@
     color: $orange-500;
     padding-right: 5px;
   }
+
+  @include media-breakpoint-up(md) {
+    position: -webkit-sticky;
+    position: sticky;
+    top: $header-height + $mr-tabs-height;
+    width: 100%;
+    border-top: 1px solid $border-color;
+
+    &.is-fileTreeOpen {
+      margin-left: -16px;
+      width: calc(100% + 32px);
+    }
+
+    .mr-version-menus-container {
+      flex-wrap: nowrap;
+    }
+
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height + $mr-tabs-height;
+    }
+  }
 }
 
 .merge-request-tabs-holder {
   top: $header-height;
   z-index: 200;
   background-color: $white-light;
-  border-bottom: 1px solid $border-color;
+
+  @include media-breakpoint-down(md) {
+    border-bottom: 1px solid $border-color;
+  }
 
   @include media-breakpoint-up(sm) {
     position: sticky;
@@ -776,7 +795,7 @@
 
   &.affix {
     left: 0;
-    transition: right .15s;
+    transition: right 0.15s;
 
     @include media-breakpoint-down(xs) {
       right: 0;
@@ -822,8 +841,16 @@
   display: flex;
   justify-content: space-between;
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     flex-direction: column-reverse;
+  }
+
+  .discussion-filter-container {
+    margin-top: $gl-padding-8;
+
+    &:not(:only-child) {
+      padding-right: $gl-padding-8;
+    }
   }
 }
 
@@ -849,11 +876,6 @@
 }
 
 .deploy-heading {
-  margin-top: -19px;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
-  background-color: $gray-light;
-
   @include media-breakpoint-up(md) {
     padding: $gl-padding-8 $gl-padding;
   }
@@ -862,6 +884,10 @@
     min-width: 0;
     font-size: 12px;
     margin-left: 48px;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $border-color;
   }
 }
 
@@ -885,7 +911,7 @@
   }
 
   > *:not(:last-child) {
-    margin-right: .3em;
+    margin-right: 0.3em;
   }
 
   svg {
@@ -906,7 +932,11 @@
   }
 
   .btn svg {
-    fill: $theme-gray-700;
+    fill: $gray-700;
+  }
+
+  .dropdown-menu {
+    width: 400px;
   }
 }
 
@@ -918,7 +948,7 @@
   &[disabled] {
     cursor: not-allowed;
     box-shadow: none;
-    opacity: .65;
+    opacity: 0.65;
 
     &:hover {
       color: $gl-gray-500;
@@ -946,7 +976,7 @@
 
   .coverage {
     font-size: 12px;
-    color: $theme-gray-700;
+    color: $gray-700;
     line-height: initial;
   }
 

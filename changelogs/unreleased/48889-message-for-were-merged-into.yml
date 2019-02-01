@@ -1,5 +1,0 @@
----
-title: Fix 'merged with' UI being displayed when merge request has no merge commit
-merge_request: 22022
-author:
-type: fixed

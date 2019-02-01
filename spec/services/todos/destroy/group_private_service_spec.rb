@@ -40,7 +40,7 @@ describe Todos::Destroy::GroupPrivateService do
 
         let(:parent_member)  { create(:user) }
         let(:subgroup_member)  { create(:user) }
-        let(:subgproject_member)  { create(:user) }
+        let(:subgproject_member) { create(:user) }
 
         let!(:todo_parent_member)     { create(:todo, user: parent_member, group: group) }
         let!(:todo_subgroup_member)   { create(:todo, user: subgroup_member, group: group) }

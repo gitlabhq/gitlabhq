@@ -3,6 +3,7 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { Manager } from 'smooshpack';
 import { listen } from 'codesandbox-api';
+import { GlLoadingIcon } from '@gitlab/ui';
 import Navigator from './navigator.vue';
 import { packageJsonPath } from '../../constants';
 import { createPathWithExt } from '../../utils';
@@ -10,6 +11,7 @@ import { createPathWithExt } from '../../utils';
 export default {
   components: {
     Navigator,
+    GlLoadingIcon,
   },
   data() {
     return {
@@ -144,9 +146,7 @@ export default {
 <template>
   <div class="preview h-100 w-100 d-flex flex-column">
     <template v-if="showPreview">
-      <navigator
-        :manager="manager"
-      />
+      <navigator :manager="manager" />
       <div id="ide-preview"></div>
     </template>
     <div
@@ -154,15 +154,8 @@ export default {
       v-once
       class="d-flex h-100 flex-column align-items-center justify-content-center svg-content"
     >
-      <img
-        :src="promotionSvgPath"
-        :alt="s__('IDE|Live Preview')"
-        width="130"
-        height="100"
-      />
-      <h3>
-        {{ s__('IDE|Live Preview') }}
-      </h3>
+      <img :src="promotionSvgPath" :alt="s__('IDE|Live Preview')" width="130" height="100" />
+      <h3>{{ s__('IDE|Live Preview') }}</h3>
       <p class="text-center">
         {{ s__('IDE|Preview your web application using Web IDE client-side evaluation.') }}
       </p>
@@ -175,10 +168,6 @@ export default {
         {{ s__('IDE|Get started with Live Preview') }}
       </a>
     </div>
-    <gl-loading-icon
-      v-else
-      :size="2"
-      class="align-self-center mt-auto mb-auto"
-    />
+    <gl-loading-icon v-else :size="2" class="align-self-center mt-auto mb-auto" />
   </div>
 </template>

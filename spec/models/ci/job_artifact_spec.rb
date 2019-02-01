@@ -15,6 +15,8 @@ describe Ci::JobArtifact do
   it { is_expected.to delegate_method(:open).to(:file) }
   it { is_expected.to delegate_method(:exists?).to(:file) }
 
+  it_behaves_like 'having unique enum values'
+
   describe '.test_reports' do
     subject { described_class.test_reports }
 
@@ -191,6 +193,14 @@ describe Ci::JobArtifact do
         it 'iterates blob three times' do
           expect { |b| artifact.each_blob(&b) }.to yield_control.exactly(3).times
         end
+      end
+    end
+
+    context 'when file format is raw' do
+      let(:artifact) { build(:ci_job_artifact, :codequality, file_format: :raw) }
+
+      it 'iterates blob once' do
+        expect { |b| artifact.each_blob(&b) }.to yield_control.once
       end
     end
 

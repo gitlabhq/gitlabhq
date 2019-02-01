@@ -8,7 +8,7 @@ describe Gitlab::Kubernetes::Helm::InitCommand do
 
   let(:commands) do
     <<~EOS
-    helm init --tiller-tls --tiller-tls-verify --tls-ca-cert /data/helm/helm/config/ca.pem --tiller-tls-cert /data/helm/helm/config/cert.pem --tiller-tls-key /data/helm/helm/config/key.pem >/dev/null
+    helm init --tiller-tls --tiller-tls-verify --tls-ca-cert /data/helm/helm/config/ca.pem --tiller-tls-cert /data/helm/helm/config/cert.pem --tiller-tls-key /data/helm/helm/config/key.pem
     EOS
   end
 
@@ -22,7 +22,7 @@ describe Gitlab::Kubernetes::Helm::InitCommand do
     it_behaves_like 'helm commands' do
       let(:commands) do
         <<~EOS
-        helm init --tiller-tls --tiller-tls-verify --tls-ca-cert /data/helm/helm/config/ca.pem --tiller-tls-cert /data/helm/helm/config/cert.pem --tiller-tls-key /data/helm/helm/config/key.pem --service-account tiller >/dev/null
+        helm init --tiller-tls --tiller-tls-verify --tls-ca-cert /data/helm/helm/config/ca.pem --tiller-tls-cert /data/helm/helm/config/cert.pem --tiller-tls-key /data/helm/helm/config/key.pem --service-account tiller
         EOS
       end
     end

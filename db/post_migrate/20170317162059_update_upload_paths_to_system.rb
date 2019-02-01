@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class UpdateUploadPathsToSystem < ActiveRecord::Migration
+class UpdateUploadPathsToSystem < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -48,7 +48,7 @@ class UpdateUploadPathsToSystem < ActiveRecord::Migration
   end
 
   def new_upload_dir
-    File.join(base_directory, "-",  "system")
+    File.join(base_directory, "-", "system")
   end
 
   def arel_table

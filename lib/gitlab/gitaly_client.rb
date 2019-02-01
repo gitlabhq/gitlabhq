@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 
 require 'gitaly'
@@ -7,11 +9,6 @@ require 'grpc/health/v1/health_services_pb'
 module Gitlab
   module GitalyClient
     include Gitlab::Metrics::Methods
-    module MigrationStatus
-      DISABLED = 1
-      OPT_IN = 2
-      OPT_OUT = 3
-    end
 
     class TooManyInvocationsError < StandardError
       attr_reader :call_site, :invocation_count, :max_call_stack
@@ -23,13 +20,14 @@ module Gitlab
         stacks = most_invoked_stack.join('\n') if most_invoked_stack
 
         msg = "GitalyClient##{call_site} called #{invocation_count} times from single request. Potential n+1?"
-        msg << "\nThe following call site called into Gitaly #{max_call_stack} times:\n#{stacks}\n" if stacks
+        msg = "#{msg}\nThe following call site called into Gitaly #{max_call_stack} times:\n#{stacks}\n" if stacks
 
         super(msg)
       end
     end
 
-    SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
+    PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m
+    SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
@@ -40,11 +38,6 @@ module Gitlab
     end
 
     self.query_time = 0
-
-    define_histogram :gitaly_migrate_call_duration_seconds do
-      docstring "Gitaly migration call execution timings"
-      base_labels gitaly_enabled: nil, feature: nil
-    end
 
     define_histogram :gitaly_controller_action_duration_seconds do
       docstring "Gitaly endpoint histogram by controller and action combination"
@@ -58,8 +51,46 @@ module Gitlab
         @stubs[storage][name] ||= begin
           klass = stub_class(name)
           addr = stub_address(storage)
-          klass.new(addr, :this_channel_is_insecure)
+          creds = stub_creds(storage)
+          klass.new(addr, creds, interceptors: interceptors)
         end
+      end
+    end
+
+    def self.interceptors
+      return [] unless Gitlab::Tracing.enabled?
+
+      [Gitlab::Tracing::GRPCInterceptor.instance]
+    end
+    private_class_method :interceptors
+
+    def self.stub_cert_paths
+      cert_paths = Dir["#{OpenSSL::X509::DEFAULT_CERT_DIR}/*"]
+      cert_paths << OpenSSL::X509::DEFAULT_CERT_FILE if File.exist? OpenSSL::X509::DEFAULT_CERT_FILE
+      cert_paths
+    end
+
+    def self.stub_certs
+      return @certs if @certs
+
+      @certs = stub_cert_paths.flat_map do |cert_file|
+        File.read(cert_file).scan(PEM_REGEX).map do |cert|
+          begin
+            OpenSSL::X509::Certificate.new(cert).to_pem
+          rescue OpenSSL::OpenSSLError => e
+            Rails.logger.error "Could not load certificate #{cert_file} #{e}"
+            Gitlab::Sentry.track_exception(e, extra: { cert_file: cert_file })
+            nil
+          end
+        end.compact
+      end.uniq.join("\n")
+    end
+
+    def self.stub_creds(storage)
+      if URI(address(storage)).scheme == 'tls'
+        GRPC::Core::ChannelCredentials.new stub_certs
+      else
+        :this_channel_is_insecure
       end
     end
 
@@ -72,9 +103,7 @@ module Gitlab
     end
 
     def self.stub_address(storage)
-      addr = address(storage)
-      addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
-      addr
+      address(storage).sub(%r{^tcp://|^tls://}, '')
     end
 
     def self.clear_stubs!
@@ -96,15 +125,19 @@ module Gitlab
         raise "storage #{storage.inspect} is missing a gitaly_address"
       end
 
-      unless URI(address).scheme.in?(%w(tcp unix))
-        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix'"
+      unless URI(address).scheme.in?(%w(tcp unix tls))
+        raise "Unsupported Gitaly address: #{address.inspect} does not use URL scheme 'tcp' or 'unix' or 'tls'"
       end
 
       address
     end
 
     def self.address_metadata(storage)
-      Base64.strict_encode64(JSON.dump({ storage => { 'address' => address(storage), 'token' => token(storage) } }))
+      Base64.strict_encode64(JSON.dump(storage => connection_data(storage)))
+    end
+
+    def self.connection_data(storage)
+      { 'address' => address(storage), 'token' => token(storage) }
     end
 
     # All Gitaly RPC call sites should use GitalyClient.call. This method
@@ -124,7 +157,6 @@ module Gitlab
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
       start = Gitlab::Metrics::System.monotonic_time
       request_hash = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : {}
-      @current_call_id ||= SecureRandom.uuid
 
       enforce_gitaly_request_limits(:call)
 
@@ -137,15 +169,13 @@ module Gitlab
     ensure
       duration = Gitlab::Metrics::System.monotonic_time - start
 
-      # Keep track, seperately, for the performance bar
+      # Keep track, separately, for the performance bar
       self.query_time += duration
       gitaly_controller_action_duration_seconds.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
 
-      add_call_details(id: @current_call_id, feature: service, duration: duration, request: request_hash)
-
-      @current_call_id = nil
+      add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc)
     end
 
     def self.handle_grpc_unavailable!(ex)
@@ -204,6 +234,7 @@ module Gitlab
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
+      metadata['x-gitlab-correlation-id'] = Gitlab::CorrelationId.current_id if Gitlab::CorrelationId.current_id
 
       metadata.merge!(server_feature_flags)
 
@@ -220,7 +251,7 @@ module Gitlab
       result
     end
 
-    SERVER_FEATURE_FLAGS = %w[gogit_findcommit].freeze
+    SERVER_FEATURE_FLAGS = %w[].freeze
 
     def self.server_feature_flags
       SERVER_FEATURE_FLAGS.map do |f|
@@ -235,82 +266,8 @@ module Gitlab
       params['gitaly_token'].presence || Gitlab.config.gitaly['token']
     end
 
-    # Evaluates whether a feature toggle is on or off
-    def self.feature_enabled?(feature_name, status: MigrationStatus::OPT_IN)
-      # Disabled features are always off!
-      return false if status == MigrationStatus::DISABLED
-
-      feature = Feature.get("gitaly_#{feature_name}")
-
-      # If the feature has been set, always evaluate
-      if Feature.persisted?(feature)
-        if feature.percentage_of_time_value > 0
-          # Probabilistically enable this feature
-          return Random.rand() * 100 < feature.percentage_of_time_value
-        end
-
-        return feature.enabled?
-      end
-
-      # If the feature has not been set, the default depends
-      # on it's status
-      case status
-      when MigrationStatus::OPT_OUT
-        true
-      when MigrationStatus::OPT_IN
-        opt_into_all_features? && !explicit_opt_in_required.include?(feature_name)
-      else
-        false
-      end
-    rescue => ex
-      # During application startup feature lookups in SQL can fail
-      Rails.logger.warn "exception while checking Gitaly feature status for #{feature_name}: #{ex}"
-      false
-    end
-
-    # We have a mechanism to let GitLab automatically opt in to all Gitaly
-    # features. We want to be able to exclude some features from automatic
-    # opt-in. This function has an override in EE.
-    def self.explicit_opt_in_required
-      []
-    end
-
-    # opt_into_all_features? returns true when the current environment
-    # is one in which we opt into features automatically
-    def self.opt_into_all_features?
-      Rails.env.development? || ENV["GITALY_FEATURE_DEFAULT_ON"] == "1"
-    end
-    private_class_method :opt_into_all_features?
-
-    def self.migrate(feature, status: MigrationStatus::OPT_IN)
-      # Enforce limits at both the `migrate` and `call` sites to ensure that
-      # problems are not hidden by a feature being disabled
-      enforce_gitaly_request_limits(:migrate)
-
-      is_enabled  = feature_enabled?(feature, status: status)
-      metric_name = feature.to_s
-      metric_name += "_gitaly" if is_enabled
-
-      Gitlab::Metrics.measure(metric_name) do
-        # Some migrate calls wrap other migrate calls
-        allow_n_plus_1_calls do
-          feature_stack = Thread.current[:gitaly_feature_stack] ||= []
-          feature_stack.unshift(feature)
-          begin
-            start = Gitlab::Metrics::System.monotonic_time
-            @current_call_id = SecureRandom.uuid
-            call_details = { id: @current_call_id }
-            yield is_enabled
-          ensure
-            total_time = Gitlab::Metrics::System.monotonic_time - start
-            gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
-            feature_stack.shift
-            Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
-
-            add_call_details(call_details.merge(feature: feature, duration: total_time))
-          end
-        end
-      end
+    def self.feature_enabled?(feature_name)
+      Feature.enabled?("gitaly_#{feature_name}")
     end
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
@@ -366,48 +323,29 @@ module Gitlab
     end
     private_class_method :decrement_call_count
 
-    # Returns an estimate of the number of Gitaly calls made for this
-    # request
+    # Returns the of the number of Gitaly calls made for this request
     def self.get_request_count
-      return 0 unless Gitlab::SafeRequestStore.active?
-
-      gitaly_migrate_count = get_call_count("gitaly_migrate_actual")
-      gitaly_call_count = get_call_count("gitaly_call_actual")
-
-      # Using the maximum of migrate and call_count will provide an
-      # indicator of how many Gitaly calls will be made, even
-      # before a feature is enabled. This provides us with a single
-      # metric, but not an exact number, but this tradeoff is acceptable
-      if gitaly_migrate_count > gitaly_call_count
-        gitaly_migrate_count
-      else
-        gitaly_call_count
-      end
+      get_call_count("gitaly_call_actual")
     end
 
     def self.reset_counts
       return unless Gitlab::SafeRequestStore.active?
 
-      %w[migrate call].each do |call_site|
-        Gitlab::SafeRequestStore["gitaly_#{call_site}_actual"] = 0
-        Gitlab::SafeRequestStore["gitaly_#{call_site}_permitted"] = 0
-      end
+      Gitlab::SafeRequestStore["gitaly_call_actual"] = 0
+      Gitlab::SafeRequestStore["gitaly_call_permitted"] = 0
     end
 
     def self.add_call_details(details)
-      id = details.delete(:id)
+      return unless Gitlab::SafeRequestStore[:peek_enabled]
 
-      return unless id && Gitlab::SafeRequestStore[:peek_enabled]
-
-      Gitlab::SafeRequestStore['gitaly_call_details'] ||= {}
-      Gitlab::SafeRequestStore['gitaly_call_details'][id] ||= {}
-      Gitlab::SafeRequestStore['gitaly_call_details'][id].merge!(details)
+      Gitlab::SafeRequestStore['gitaly_call_details'] ||= []
+      Gitlab::SafeRequestStore['gitaly_call_details'] << details
     end
 
     def self.list_call_details
-      return {} unless Gitlab::SafeRequestStore[:peek_enabled]
+      return [] unless Gitlab::SafeRequestStore[:peek_enabled]
 
-      Gitlab::SafeRequestStore['gitaly_call_details'] || {}
+      Gitlab::SafeRequestStore['gitaly_call_details'] || []
     end
 
     def self.expected_server_version

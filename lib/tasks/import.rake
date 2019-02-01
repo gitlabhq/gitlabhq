@@ -9,7 +9,7 @@ class GithubImport
   def initialize(token, gitlab_username, project_path, extras)
     @options = { token: token }
     @project_path = project_path
-    @current_user = User.find_by(username: gitlab_username)
+    @current_user = UserFinder.new(gitlab_username).find_by_username
 
     raise "GitLab user #{gitlab_username} not found. Please specify a valid username." unless @current_user
 
@@ -42,7 +42,7 @@ class GithubImport
   end
 
   def import!
-    @project.force_import_start
+    @project.import_state.force_start
 
     import_success = false
 
@@ -57,7 +57,7 @@ class GithubImport
       puts "Import finished. Timings: #{timings}".color(:green)
     else
       puts "Import was not successful. Errors were as follows:"
-      puts @project.import_error
+      puts @project.import_state.last_error
     end
   end
 

@@ -67,12 +67,16 @@ describe CacheMarkdownField do
   end
 
   let(:markdown) { '`Foo`' }
-  let(:html) { '<p dir="auto"><code>Foo</code></p>' }
+  let(:html)     { '<p dir="auto"><code>Foo</code></p>' }
 
   let(:updated_markdown) { '`Bar`' }
-  let(:updated_html) { '<p dir="auto"><code>Bar</code></p>' }
+  let(:updated_html)     { '<p dir="auto"><code>Bar</code></p>' }
 
   let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+
+  before do
+    stub_commonmark_sourcepos_disabled
+  end
 
   describe '.attributes' do
     it 'excludes cache attributes' do

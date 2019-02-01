@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class CleanupMoveSystemUploadFolderSymlink < ActiveRecord::Migration
+class CleanupMoveSystemUploadFolderSymlink < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -13,7 +13,7 @@ class CleanupMoveSystemUploadFolderSymlink < ActiveRecord::Migration
       say "Removing #{old_directory} -> #{new_directory} symlink"
       FileUtils.rm(old_directory)
     else
-      say "Symlink #{old_directory} non existant, nothing to do."
+      say "Symlink #{old_directory} non existent, nothing to do."
     end
   end
 

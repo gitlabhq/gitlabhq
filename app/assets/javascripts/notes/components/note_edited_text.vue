@@ -40,16 +40,11 @@ export default {
     {{ actionText }}
     <template v-if="editedBy">
       by
-      <a
-        :href="editedBy.path"
-        class="js-vue-author author-link">
+      <a :href="editedBy.path" :data-user-id="editedBy.id" class="js-user-link author-link">
         {{ editedBy.name }}
       </a>
     </template>
     {{ actionDetailText }}
-    <time-ago-tooltip
-      :time="editedAt"
-      tooltip-placement="bottom"
-    />
+    <time-ago-tooltip :time="editedAt" tooltip-placement="bottom" />
   </div>
 </template>

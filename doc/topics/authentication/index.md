@@ -36,14 +36,13 @@ This page gathers all the resources for the topic **Authentication** within GitL
 ## API
 
 - [OAuth 2 Tokens](../../api/README.md#oauth-2-tokens)
-- [Private Tokens](../../api/README.md#private-tokens)
+- [Personal access tokens](../../api/README.md#personal-access-tokens)
 - [Impersonation tokens](../../api/README.md#impersonation-tokens)
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)
 
 ## Third-party resources
 
 - [Kanboard Plugin GitLab Authentication](https://github.com/kanboard/plugin-gitlab-auth)
-- [Jenkins GitLab OAuth Plugin](https://wiki.jenkins-ci.org/display/JENKINS/GitLab+OAuth+Plugin)
-- [Set up Gitlab CE with Active Directory authentication](https://www.caseylabs.com/setup-gitlab-ce-with-active-directory-authentication/)
+- [Jenkins GitLab OAuth Plugin](https://wiki.jenkins.io/display/JENKINS/GitLab+OAuth+Plugin)
 - [How to customize GitLab to support OpenID authentication](http://eric.van-der-vlist.com/blog/2013/11/23/how-to-customize-gitlab-to-support-openid-authentication/)
-- [Openshift - Configuring Authentication and User Agent](https://docs.openshift.org/latest/install_config/configuring_authentication.html#GitLab)
+- [OKD - Configuring Authentication and User Agent](https://docs.okd.io/latest/install_config/configuring_authentication.html#GitLab)

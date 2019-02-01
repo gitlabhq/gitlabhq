@@ -46,9 +46,19 @@ describe 'rake gitlab:storage:*' do
   describe 'gitlab:storage:migrate_to_hashed' do
     let(:task) { 'gitlab:storage:migrate_to_hashed' }
 
+    context 'read-only database' do
+      it 'does nothing' do
+        expect(Gitlab::Database).to receive(:read_only?).and_return(true)
+
+        expect(Project).not_to receive(:with_unmigrated_storage)
+
+        expect { run_rake_task(task) }.to output(/This task requires database write access. Exiting./).to_stderr
+      end
+    end
+
     context '0 legacy projects' do
       it 'does nothing' do
-        expect(StorageMigratorWorker).not_to receive(:perform_async)
+        expect(::HashedStorage::MigratorWorker).not_to receive(:perform_async)
 
         run_rake_task(task)
       end
@@ -62,9 +72,9 @@ describe 'rake gitlab:storage:*' do
           stub_env('BATCH' => 1)
         end
 
-        it 'enqueues one StorageMigratorWorker per project' do
+        it 'enqueues one HashedStorage::MigratorWorker per project' do
           projects.each do |project|
-            expect(StorageMigratorWorker).to receive(:perform_async).with(project.id, project.id)
+            expect(::HashedStorage::MigratorWorker).to receive(:perform_async).with(project.id, project.id)
           end
 
           run_rake_task(task)
@@ -76,10 +86,10 @@ describe 'rake gitlab:storage:*' do
           stub_env('BATCH' => 2)
         end
 
-        it 'enqueues one StorageMigratorWorker per 2 projects' do
+        it 'enqueues one HashedStorage::MigratorWorker per 2 projects' do
           projects.map(&:id).sort.each_slice(2) do |first, last|
             last ||= first
-            expect(StorageMigratorWorker).to receive(:perform_async).with(first, last)
+            expect(::HashedStorage::MigratorWorker).to receive(:perform_async).with(first, last)
           end
 
           run_rake_task(task)
@@ -92,7 +102,7 @@ describe 'rake gitlab:storage:*' do
         stub_env('ID_FROM', 99999)
         stub_env('ID_TO', 99999)
 
-        expect { run_rake_task(task) }.to output(/There are no projects requiring storage migration with ID=99999/).to_stdout
+        expect { run_rake_task(task) }.to output(/There are no projects requiring storage migration with ID=99999/).to_stderr
       end
 
       it 'displays a message when project exists but its already migrated' do
@@ -100,7 +110,7 @@ describe 'rake gitlab:storage:*' do
         stub_env('ID_FROM', project.id)
         stub_env('ID_TO', project.id)
 
-        expect { run_rake_task(task) }.to output(/There are no projects requiring storage migration with ID=#{project.id}/).to_stdout
+        expect { run_rake_task(task) }.to output(/There are no projects requiring storage migration with ID=#{project.id}/).to_stderr
       end
 
       it 'enqueues migration when project can be found' do

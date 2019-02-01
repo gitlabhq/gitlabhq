@@ -1,5 +1,0 @@
----
-title: Fix erased block not being rendered when job was erased
-merge_request: 22294
-author:
-type: fixed

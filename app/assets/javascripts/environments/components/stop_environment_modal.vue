@@ -1,7 +1,7 @@
 <script>
+import { GlTooltipDirective } from '@gitlab/ui';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { s__, sprintf } from '~/locale';
-import tooltip from '~/vue_shared/directives/tooltip';
 import LoadingButton from '~/vue_shared/components/loading_button.vue';
 import eventHub from '../event_hub';
 
@@ -15,7 +15,7 @@ export default {
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -62,31 +62,25 @@ export default {
     @submit="onSubmit"
   >
     <template slot="header">
-      <h4
-        class="modal-title d-flex mw-100"
-      >
+      <h4 class="modal-title d-flex mw-100">
         Stopping
-        <span
-          v-tooltip
-          :title="environment.name"
-          class="text-truncate ml-1 mr-1 flex-fill"
-        >{{ environment.name }}</span>
+        <span v-gl-tooltip :title="environment.name" class="text-truncate ml-1 mr-1 flex-fill">{{
+          environment.name
+        }}</span>
         ?
       </h4>
     </template>
 
     <p>{{ s__('Environments|Are you sure you want to stop this environment?') }}</p>
 
-    <div
-      v-if="!environment.has_stop_action"
-      class="warning_message"
-    >
+    <div v-if="!environment.has_stop_action" class="warning_message">
       <p v-html="noStopActionMessage"></p>
       <a
         href="https://docs.gitlab.com/ee/ci/environments.html#stopping-an-environment"
         target="_blank"
         rel="noopener noreferrer"
-      >{{ s__('Environments|Learn more about stopping environments') }}</a>
+        >{{ s__('Environments|Learn more about stopping environments') }}</a
+      >
     </div>
   </gl-modal>
 </template>

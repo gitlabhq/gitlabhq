@@ -17,7 +17,7 @@ class NamespacelessProjectDestroyWorker
       return
     end
 
-    return if project.namespace  # Reject doing anything for projects that *do* have a namespace
+    return if project.namespace # Reject doing anything for projects that *do* have a namespace
 
     project.team.truncate
 
@@ -32,7 +32,5 @@ class NamespacelessProjectDestroyWorker
     merge_requests = project.forked_from_project.merge_requests.opened.from_project(project)
 
     merge_requests.update_all(state: 'closed')
-
-    project.forked_project_link.destroy
   end
 end

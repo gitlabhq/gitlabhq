@@ -1,0 +1,6 @@
+---
+title: Fix lost line number when navigating to a specific line in a protected file
+  before authenticating.
+merge_request: 19165
+author: Scott Escue
+type: fixed

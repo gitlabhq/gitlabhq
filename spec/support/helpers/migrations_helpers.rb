@@ -1,6 +1,10 @@
 module MigrationsHelpers
+  def active_record_base
+    ActiveRecord::Base
+  end
+
   def table(name)
-    Class.new(ActiveRecord::Base) do
+    Class.new(active_record_base) do
       self.table_name = name
       self.inheritance_column = :_type_disabled
 
@@ -19,7 +23,7 @@ module MigrationsHelpers
   end
 
   def clear_schema_cache!
-    ActiveRecord::Base.connection_pool.connections.each do |conn|
+    active_record_base.connection_pool.connections.each do |conn|
       conn.schema_cache.clear!
     end
   end
@@ -40,15 +44,38 @@ module MigrationsHelpers
     # Reset column information for the most offending classes **after** we
     # migrated the schema up, otherwise, column information could be
     # outdated. We have a separate method for this so we can override it in EE.
-    ActiveRecord::Base.descendants.each(&method(:reset_column_information))
+    active_record_base.descendants.each(&method(:reset_column_information))
+  end
 
-    # Without that, we get errors because of missing attributes, e.g.
+  def refresh_attribute_methods
+    # Without this, we get errors because of missing attributes, e.g.
     # super: no superclass method `elasticsearch_indexing' for #<ApplicationSetting:0x00007f85628508d8>
-    ApplicationSetting.define_attribute_methods
+    # attr_encrypted also expects ActiveRecord attribute methods to be
+    # defined, or it will override the accessors:
+    # https://gitlab.com/gitlab-org/gitlab-ee/issues/8234#note_113976421
+    [ApplicationSetting, SystemHook].each do |model|
+      model.define_attribute_methods
+    end
   end
 
   def reset_column_information(klass)
     klass.reset_column_information
+  end
+
+  # In some migration tests, we're using factories to create records,
+  # however those models might be depending on a schema version which
+  # doesn't have the columns we want in application_settings.
+  # In these cases, we'll need to use the fake application settings
+  # as if we have migrations pending
+  def use_fake_application_settings
+    # We stub this way because we can't stub on
+    # `current_application_settings` due to `method_missing` is
+    # depending on current_application_settings...
+    allow(ActiveRecord::Base.connection)
+      .to receive(:active?)
+      .and_return(false)
+
+    stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
   end
 
   def previous_migration
@@ -84,6 +111,7 @@ module MigrationsHelpers
     end
 
     reset_column_in_all_models
+    refresh_attribute_methods
   end
 
   def disable_migrations_output

@@ -6,6 +6,7 @@ class MergeRequestDiff < ActiveRecord::Base
   include ManualInverseAssociation
   include IgnorableColumn
   include EachBatch
+  include Gitlab::Utils::StrongMemoize
 
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
@@ -140,6 +141,12 @@ class MergeRequestDiff < ActiveRecord::Base
     merge_request_diff_commits.map(&:sha)
   end
 
+  def commits_by_shas(shas)
+    return MergeRequestDiffCommit.none unless shas.present?
+
+    merge_request_diff_commits.where(sha: shas)
+  end
+
   def diff_refs=(new_diff_refs)
     self.base_commit_sha = new_diff_refs&.base_sha
     self.start_commit_sha = new_diff_refs&.start_sha
@@ -228,6 +235,12 @@ class MergeRequestDiff < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
+  def modified_paths
+    strong_memoize(:modified_paths) do
+      merge_request_diff_files.pluck(:new_path, :old_path).flatten.uniq
+    end
+  end
+
   private
 
   def create_merge_request_diff_files(diffs)
@@ -300,7 +313,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
     # merge_request_diff_commits.reload is preferred way to reload associated
     # objects but it returns cached result for some reason in this case
-    commits = merge_request_diff_commits(true)
+    # we can circumvent that by specifying that we need an uncached reload
+    commits = self.class.uncached { merge_request_diff_commits.reload }
     self.commits_count = commits.size
   end
 

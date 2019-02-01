@@ -1,0 +1,5 @@
+---
+title: Display "commented" only for commit discussions on merge requests
+merge_request: 24427
+author:
+type: changed

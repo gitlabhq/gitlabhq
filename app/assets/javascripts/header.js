@@ -4,6 +4,7 @@ import Translate from '~/vue_shared/translate';
 import { highCountTrim } from '~/lib/utils/text_utility';
 import SetStatusModalTrigger from './set_status_modal/set_status_modal_trigger.vue';
 import SetStatusModalWrapper from './set_status_modal/set_status_modal_wrapper.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 /**
  * Updates todo counter when todos are toggled.
@@ -22,7 +23,7 @@ export default function initTodoToggle() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initStatusTriggers() {
   const setStatusModalTriggerEl = document.querySelector('.js-set-status-modal-trigger');
   const setStatusModalWrapperEl = document.querySelector('.js-set-status-modal-wrapper');
 
@@ -36,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const { hasStatus } = this.$options.el.dataset;
 
         return {
-          hasStatus: hasStatus === 'true',
+          hasStatus: parseBoolean(hasStatus),
         };
       },
       render(createElement) {
@@ -71,4 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  requestIdleCallback(initStatusTriggers);
 });

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  context :manage, :orchestrated, :ldap do
+  context 'Manage', :orchestrated, :ldap_no_tls, :ldap_tls do
     describe 'LDAP login' do
       it 'user logs into GitLab using LDAP credentials' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

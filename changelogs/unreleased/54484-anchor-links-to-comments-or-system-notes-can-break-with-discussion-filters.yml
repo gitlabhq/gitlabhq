@@ -1,0 +1,5 @@
+---
+title: Ensured links to a comment or system note anchor resolves to the right note if a user has a discussion filter.
+merge_request: 24228
+author:
+type: changed

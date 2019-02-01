@@ -61,7 +61,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       format.html do
         usage_data_json = JSON.pretty_generate(Gitlab::UsageData.data)
 
-        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json)
+        render html: Gitlab::Highlight.highlight('payload.json', usage_data_json, language: 'json')
       end
       format.json { render json: Gitlab::UsageData.to_json }
     end
@@ -77,7 +77,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def reset_health_check_token
     @application_setting.reset_health_check_access_token!
     flash[:notice] = 'New health check access token has been generated!'
-    redirect_to :back
+    redirect_back_or_default
   end
 
   def clear_repository_check_states

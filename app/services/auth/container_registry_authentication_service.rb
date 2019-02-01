@@ -99,7 +99,7 @@ module Auth
     ##
     # Because we do not have two way communication with registry yet,
     # we create a container repository image resource when push to the
-    # registry is successfuly authorized.
+    # registry is successfully authorized.
     #
     def ensure_container_repository!(path, actions)
       return if path.has_repository?

@@ -16,12 +16,36 @@ module AuthHelper
     PROVIDERS_WITH_ICONS.include?(name.to_s)
   end
 
+  def qa_class_for_provider(provider)
+    {
+      saml: 'qa-saml-login-button',
+      github: 'qa-github-login-button'
+    }[provider.to_sym]
+  end
+
   def auth_providers
     Gitlab::Auth::OAuth::Provider.providers
   end
 
   def label_for_provider(name)
     Gitlab::Auth::OAuth::Provider.label_for(name)
+  end
+
+  def form_based_provider_priority
+    ['crowd', /^ldap/, 'kerberos']
+  end
+
+  def form_based_provider_with_highest_priority
+    @form_based_provider_with_highest_priority ||= begin
+      form_based_provider_priority.each do |provider_regexp|
+        highest_priority = form_based_providers.find { |provider| provider.match?(provider_regexp) }
+        break highest_priority unless highest_priority.nil?
+      end
+    end
+  end
+
+  def form_based_auth_provider_has_active_class?(provider)
+    form_based_provider_with_highest_priority == provider
   end
 
   def form_based_provider?(name)
@@ -38,6 +62,10 @@ module AuthHelper
 
   def button_based_providers
     auth_providers.reject { |provider| form_based_provider?(provider) }
+  end
+
+  def display_providers_on_profile?
+    button_based_providers.any?
   end
 
   def providers_for_base_controller

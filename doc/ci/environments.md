@@ -249,7 +249,7 @@ the basis of [Review apps](review_apps/index.md).
 
 NOTE: **Note:**
 The `name` and `url` parameters can use most of the CI/CD variables,
-including [predefined](variables/README.md#predefined-variables-environment-variables),
+including [predefined](variables/README.md#predefined-environment-variables),
 [project/group ones](variables/README.md#variables) and
 [`.gitlab-ci.yml` variables](yaml/README.md#variables). You however cannot use variables
 defined under `script` or on the Runner's side. There are also other variables that
@@ -416,63 +416,15 @@ and/or `production`) you can see this information in the merge request itself.
 
 ### Go directly from source files to public pages on the environment
 
-> Introduced in GitLab 8.17.
+With GitLab's [Route Maps](review_apps/index.md#route-maps) you can go directly
+from source files to public pages on the environment set for Review Apps.
 
-To go one step further, we can specify a Route Map to get GitLab to show us "View on [environment URL]" buttons to go directly from a file to that file's representation on the deployed website. It will be exposed in a few places:
-
-| In the diff for a merge request, comparison or commit | In the file view |
-| ------ | ------ |
-| !["View on env" button in merge request diff](img/view_on_env_mr.png) | !["View on env" button in file view](img/view_on_env_blob.png) |
-
-To get this to work, you need to tell GitLab how the paths of files in your repository map to paths of pages on your website, using a Route Map.
-
-A Route Map is a file inside the repository at `.gitlab/route-map.yml`, which contains a YAML array that maps `source` paths (in the repository) to `public` paths (on the website).
-
-This is an example of a route map for [Middleman](https://middlemanapp.com) static websites like [http://about.gitlab.com](https://gitlab.com/gitlab-com/www-gitlab-com):
-
-```yaml
-# Team data
-- source: 'data/team.yml' # data/team.yml
-  public: 'team/' # team/
-
-# Blogposts
-- source: /source\/posts\/([0-9]{4})-([0-9]{2})-([0-9]{2})-(.+?)\..*/ # source/posts/2017-01-30-around-the-world-in-6-releases.html.md.erb
-  public: '\1/\2/\3/\4/' # 2017/01/30/around-the-world-in-6-releases/
-
-# HTML files
-- source: /source\/(.+?\.html).*/ # source/index.html.haml
-  public: '\1' # index.html
-
-# Other files
-- source: /source\/(.*)/ # source/images/blogimages/around-the-world-in-6-releases-cover.png
-  public: '\1' # images/blogimages/around-the-world-in-6-releases-cover.png
-```
-
-Mappings are defined as entries in the root YAML array, and are identified by a `-` prefix. Within an entry, we have a hash map with two keys:
-
-- `source`
-    - a string, starting and ending with `'`, for an exact match
-    - a regular expression, starting and ending with `/`, for a pattern match
-      - The regular expression needs to match the entire source path - `^` and `$` anchors are implied.
-      - Can include capture groups denoted by `()` that can be referred to in the `public` path.
-      - Slashes (`/`) can, but don't have to, be escaped as `\/`.
-      - Literal periods (`.`) should be escaped as `\.`.
-- `public`
-    - a string, starting and ending with `'`.
-      - Can include `\N` expressions to refer to capture groups in the `source` regular expression in order of their occurrence, starting with `\1`.
-
-The public path for a source path is determined by finding the first `source` expression that matches it, and returning the corresponding `public` path, replacing the `\N` expressions with the values of the `()` capture groups if appropriate.
-
-In the example above, the fact that mappings are evaluated in order of their definition is used to ensure that `source/index.html.haml` will match `/source\/(.+?\.html).*/` instead of `/source\/(.*)/`, and will result in a public path of `index.html`, instead of `index.html.haml`.
-
----
-
-We now have a full development cycle, where our app is tested, built, deployed
-as a Review app, deployed to a staging server once the merge request is merged,
-and finally manually deployed to the production server. What we just described
-is a single workflow, but imagine tens of developers working on a project
-at the same time. They each push to their branches, and dynamic environments are
-created all the time. In that case, we probably need to do some clean up. Read
+From then on, you have a full development cycle, where your app is tested, built, deployed
+as a Review App, deployed to a staging server once the merge request is merged,
+and finally manually deployed to the production server. This is a simple workflow,
+but when you have multiple developers working on a project
+at the same time, each of them pushing to their own branches, dynamic environments are
+created all the time. In which case, you probably want to do some clean up. Read
 next how environments can be stopped.
 
 ## Stopping an environment
@@ -568,13 +520,13 @@ exist, you should see something like:
 >
 > - For the monitoring dashboard to appear, you need to:
 >   - Have enabled the [Prometheus integration][prom]
->   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/metrics.md)
+>   - Configured Prometheus to collect at least one [supported metric](../user/project/integrations/prometheus_library/index.md)
 > - With GitLab 9.2, all deployments to an environment are shown directly on the
 >  monitoring dashboard
 
 If you have enabled [Prometheus for monitoring system and response metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html), you can monitor the performance behavior of your app running in each environment.
 
-Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/metrics.html) for any
+Once configured, GitLab will attempt to retrieve [supported performance metrics](https://docs.gitlab.com/ee/user/project/integrations/prometheus_library/index.html) for any
 environment which has had a successful deployment. If monitoring data was
 successfully retrieved, a Monitoring button will appear for each environment.
 

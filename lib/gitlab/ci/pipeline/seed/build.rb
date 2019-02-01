@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     module Pipeline
@@ -36,9 +38,17 @@ module Gitlab
             )
           end
 
+          def bridge?
+            @attributes.to_h.dig(:options, :trigger).present?
+          end
+
           def to_resource
             strong_memoize(:resource) do
-              ::Ci::Build.new(attributes)
+              if bridge?
+                ::Ci::Bridge.new(attributes)
+              else
+                ::Ci::Build.new(attributes)
+              end
             end
           end
         end

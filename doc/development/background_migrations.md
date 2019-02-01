@@ -25,9 +25,9 @@ should only be used for data migrations.
 
 Some examples where background migrations can be useful:
 
-* Migrating events from one table to multiple separate tables.
-* Populating one column based on JSON stored in another column.
-* Migrating data that depends on the output of external services (e.g. an API).
+- Migrating events from one table to multiple separate tables.
+- Populating one column based on JSON stored in another column.
+- Migrating data that depends on the output of external services (e.g. an API).
 
 ## Isolation
 
@@ -211,7 +211,7 @@ existing data. Since we're dealing with a lot of rows we'll schedule jobs in
 batches instead of doing this one by one:
 
 ```ruby
-class ScheduleExtractServicesUrl < ActiveRecord::Migration
+class ScheduleExtractServicesUrl < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   class Service < ActiveRecord::Base
@@ -242,7 +242,7 @@ jobs and manually run on any un-migrated rows. Such a migration would look like
 this:
 
 ```ruby
-class ConsumeRemainingExtractServicesUrlJobs < ActiveRecord::Migration
+class ConsumeRemainingExtractServicesUrlJobs < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   class Service < ActiveRecord::Base

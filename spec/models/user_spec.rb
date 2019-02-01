@@ -4,6 +4,8 @@ describe User do
   include ProjectForksHelper
   include TermsHelper
 
+  it_behaves_like 'having unique enum values'
+
   describe 'modules' do
     subject { described_class }
 
@@ -43,6 +45,7 @@ describe User do
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
+    it { is_expected.to have_many(:releases).dependent(:nullify) }
 
     describe "#abuse_report" do
       let(:current_user) { create(:user) }
@@ -181,6 +184,12 @@ describe User do
         found_user = described_class.find_by(id: user.id)
 
         expect(found_user.commit_email).to eq(user.email)
+      end
+
+      it 'returns the private commit email when commit_email has _private' do
+        user.update_column(:commit_email, Gitlab::PrivateCommitEmail::TOKEN)
+
+        expect(user.commit_email).to eq(user.private_commit_email)
       end
 
       it 'can be set to a confirmed email' do
@@ -330,6 +339,40 @@ describe User do
       context 'owns_notification_email' do
         it 'accepts temp_oauth_email emails' do
           user = build(:user, email: "temp-email-for-oauth@example.com")
+          expect(user).to be_valid
+        end
+      end
+
+      context 'set_commit_email' do
+        it 'keeps commit email when private commit email is being used' do
+          user = create(:user, commit_email: Gitlab::PrivateCommitEmail::TOKEN)
+
+          expect(user.read_attribute(:commit_email)).to eq(Gitlab::PrivateCommitEmail::TOKEN)
+        end
+
+        it 'keeps the commit email when nil' do
+          user = create(:user, commit_email: nil)
+
+          expect(user.read_attribute(:commit_email)).to be_nil
+        end
+
+        it 'reverts to nil when email is not verified' do
+          user = create(:user, commit_email: "foo@bar.com")
+
+          expect(user.read_attribute(:commit_email)).to be_nil
+        end
+      end
+
+      context 'owns_commit_email' do
+        it 'accepts private commit email' do
+          user = build(:user, commit_email: Gitlab::PrivateCommitEmail::TOKEN)
+
+          expect(user).to be_valid
+        end
+
+        it 'accepts nil commit email' do
+          user = build(:user, commit_email: nil)
+
           expect(user).to be_valid
         end
       end
@@ -715,11 +758,28 @@ describe User do
     end
   end
 
+  describe 'ensure user preference' do
+    it 'has user preference upon user initialization' do
+      user = build(:user)
+
+      expect(user.user_preference).to be_present
+      expect(user.user_preference).not_to be_persisted
+    end
+  end
+
   describe 'ensure incoming email token' do
     it 'has incoming email token' do
       user = create(:user)
 
       expect(user.incoming_email_token).not_to be_blank
+    end
+
+    it 'uses SecureRandom to generate the incoming email token' do
+      expect(SecureRandom).to receive(:hex).and_return('3b8ca303')
+
+      user = create(:user)
+
+      expect(user.incoming_email_token).to eql('gitlab')
     end
   end
 
@@ -1058,6 +1118,14 @@ describe User do
   end
 
   describe '.find_by_any_email' do
+    it 'finds user through private commit email' do
+      user = create(:user)
+      private_email = user.private_commit_email
+
+      expect(described_class.find_by_any_email(private_email)).to eq(user)
+      expect(described_class.find_by_any_email(private_email, confirmed: true)).to eq(user)
+    end
+
     it 'finds by primary email' do
       user = create(:user, email: 'foo@example.com')
 
@@ -1065,12 +1133,45 @@ describe User do
       expect(described_class.find_by_any_email(user.email, confirmed: true)).to eq user
     end
 
-    it 'finds by secondary email' do
-      email = create(:email, email: 'foo@example.com')
-      user  = email.user
+    it 'finds by uppercased email' do
+      user = create(:user, email: 'foo@example.com')
 
-      expect(described_class.find_by_any_email(email.email)).to eq user
-      expect(described_class.find_by_any_email(email.email, confirmed: true)).to eq user
+      expect(described_class.find_by_any_email(user.email.upcase)).to eq user
+      expect(described_class.find_by_any_email(user.email.upcase, confirmed: true)).to eq user
+    end
+
+    context 'finds by secondary email' do
+      let(:user) { email.user }
+
+      context 'primary email confirmed' do
+        context 'secondary email confirmed' do
+          let!(:email) { create(:email, :confirmed, email: 'foo@example.com') }
+
+          it 'finds user respecting the confirmed flag' do
+            expect(described_class.find_by_any_email(email.email)).to eq user
+            expect(described_class.find_by_any_email(email.email, confirmed: true)).to eq user
+          end
+        end
+
+        context 'secondary email not confirmed' do
+          let!(:email) { create(:email, email: 'foo@example.com') }
+
+          it 'finds user respecting the confirmed flag' do
+            expect(described_class.find_by_any_email(email.email)).to eq user
+            expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
+          end
+        end
+      end
+
+      context 'primary email not confirmed' do
+        let(:user) { create(:user, confirmed_at: nil) }
+        let!(:email) { create(:email, :confirmed, user: user, email: 'foo@example.com') }
+
+        it 'finds user respecting the confirmed flag' do
+          expect(described_class.find_by_any_email(email.email)).to eq user
+          expect(described_class.find_by_any_email(email.email, confirmed: true)).to be_nil
+        end
+      end
     end
 
     it 'returns nil when nothing found' do
@@ -1101,6 +1202,22 @@ describe User do
       user = create(:user)
 
       expect(described_class.by_any_email(user.email, confirmed: true)).to eq([user])
+    end
+
+    it 'finds user through a private commit email' do
+      user = create(:user)
+      private_email = user.private_commit_email
+
+      expect(described_class.by_any_email(private_email)).to eq([user])
+      expect(described_class.by_any_email(private_email, confirmed: true)).to eq([user])
+    end
+
+    it 'finds user through a private commit email in an array' do
+      user = create(:user)
+      private_email = user.private_commit_email
+
+      expect(described_class.by_any_email([private_email])).to eq([user])
+      expect(described_class.by_any_email([private_email], confirmed: true)).to eq([user])
     end
   end
 
@@ -1429,7 +1546,12 @@ describe User do
       email_unconfirmed = create :email, user: user
       user.reload
 
-      expect(user.all_emails).to match_array([user.email, email_unconfirmed.email, email_confirmed.email])
+      expect(user.all_emails).to contain_exactly(
+        user.email,
+        user.private_commit_email,
+        email_unconfirmed.email,
+        email_confirmed.email
+      )
     end
   end
 
@@ -1440,7 +1562,11 @@ describe User do
       email_confirmed = create :email, user: user, confirmed_at: Time.now
       create :email, user: user
 
-      expect(user.verified_emails).to match_array([user.email, email_confirmed.email])
+      expect(user.verified_emails).to contain_exactly(
+        user.email,
+        user.private_commit_email,
+        email_confirmed.email
+      )
     end
   end
 
@@ -1454,6 +1580,18 @@ describe User do
 
       expect(user.verified_email?(user.email)).to be_truthy
       expect(user.verified_email?(email_confirmed.email.titlecase)).to be_truthy
+    end
+
+    it 'returns true when user is found through private commit email' do
+      expect(user.verified_email?(user.private_commit_email)).to be_truthy
+    end
+
+    it 'returns true for an outdated private commit email' do
+      old_email = user.private_commit_email
+
+      user.update!(username: 'changed-username')
+
+      expect(user.verified_email?(old_email)).to be_truthy
     end
 
     it 'returns false when the email is not verified/confirmed' do
@@ -1651,6 +1789,24 @@ describe User do
     end
   end
 
+  describe '.find_by_private_commit_email' do
+    context 'with email' do
+      set(:user) { create(:user) }
+
+      it 'returns user through private commit email' do
+        expect(described_class.find_by_private_commit_email(user.private_commit_email)).to eq(user)
+      end
+
+      it 'returns nil when email other than private_commit_email is used' do
+        expect(described_class.find_by_private_commit_email(user.email)).to be_nil
+      end
+    end
+
+    it 'returns nil when email is nil' do
+      expect(described_class.find_by_private_commit_email(nil)).to be_nil
+    end
+  end
+
   describe '#sort_by_attribute' do
     before do
       described_class.delete_all
@@ -1810,7 +1966,7 @@ describe User do
 
     subject { user.membership_groups }
 
-    if Group.supports_nested_groups?
+    if Group.supports_nested_objects?
       it { is_expected.to contain_exactly parent_group, child_group }
     else
       it { is_expected.to contain_exactly parent_group }
@@ -1840,6 +1996,33 @@ describe User do
 
       expect(subject).to include(accessible)
       expect(subject).not_to include(other)
+    end
+
+    context 'with min_access_level' do
+      let!(:user) { create(:user) }
+      let!(:project) { create(:project, :private, namespace: user.namespace) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      subject { Project.where("EXISTS (?)", user.authorizations_for_projects(min_access_level: min_access_level)) }
+
+      context 'when developer access' do
+        let(:min_access_level) { Gitlab::Access::DEVELOPER }
+
+        it 'includes projects a user has access to' do
+          expect(subject).to include(project)
+        end
+      end
+
+      context 'when owner access' do
+        let(:min_access_level) { Gitlab::Access::OWNER }
+
+        it 'does not include projects with higher access level' do
+          expect(subject).not_to include(project)
+        end
+      end
     end
   end
 
@@ -2170,11 +2353,11 @@ describe User do
 
     context 'user is member of all groups' do
       before do
-        group.add_owner(user)
-        nested_group_1.add_owner(user)
-        nested_group_1_1.add_owner(user)
-        nested_group_2.add_owner(user)
-        nested_group_2_1.add_owner(user)
+        group.add_reporter(user)
+        nested_group_1.add_developer(user)
+        nested_group_1_1.add_maintainer(user)
+        nested_group_2.add_developer(user)
+        nested_group_2_1.add_maintainer(user)
       end
 
       it 'returns all groups' do
@@ -2191,7 +2374,7 @@ describe User do
         group.add_owner(user)
       end
 
-      if Group.supports_nested_groups?
+      if Group.supports_nested_objects?
         it 'returns all groups' do
           is_expected.to match_array [
             group,
@@ -3076,7 +3259,7 @@ describe User do
   end
 
   context 'with uploads' do
-    it_behaves_like 'model with mounted uploader', false do
+    it_behaves_like 'model with uploads', false do
       let(:model_object) { create(:user, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }

@@ -1,10 +1,12 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   components: {
     TimeagoTooltip,
+    GlLink,
   },
   mixins: [timeagoMixin],
   props: {
@@ -26,59 +28,45 @@ export default {
 </script>
 <template>
   <div class="block">
-    <div class="title">
-      {{ s__('Job|Job artifacts') }}
-    </div>
+    <div class="title font-weight-bold">{{ s__('Job|Job artifacts') }}</div>
 
     <p
-      v-if="isExpired"
-      class="js-artifacts-removed build-detail-row"
+      v-if="isExpired || willExpire"
+      :class="{
+        'js-artifacts-removed': isExpired,
+        'js-artifacts-will-be-removed': willExpire,
+      }"
+      class="build-detail-row"
     >
-      {{ s__('Job|The artifacts were removed') }}
+      <span v-if="isExpired">{{ s__('Job|The artifacts were removed') }}</span>
+      <span v-if="willExpire">{{ s__('Job|The artifacts will be removed') }}</span>
+      <timeago-tooltip v-if="artifact.expire_at" :time="artifact.expire_at" />
     </p>
 
-    <p
-      v-else-if="willExpire"
-      class="js-artifacts-will-be-removed build-detail-row"
-    >
-      {{ s__('Job|The artifacts will be removed in') }}
-    </p>
-
-    <timeago-tooltip
-      v-if="artifact.expire_at"
-      :time="artifact.expire_at"
-    />
-
-    <div
-      class="btn-group d-flex"
-      role="group"
-    >
-      <a
+    <div class="btn-group d-flex prepend-top-10" role="group">
+      <gl-link
         v-if="artifact.keep_path"
         :href="artifact.keep_path"
         class="js-keep-artifacts btn btn-sm btn-default"
         data-method="post"
+        >{{ s__('Job|Keep') }}</gl-link
       >
-        {{ s__('Job|Keep') }}
-      </a>
 
-      <a
+      <gl-link
         v-if="artifact.download_path"
         :href="artifact.download_path"
         class="js-download-artifacts btn btn-sm btn-default"
         download
         rel="nofollow"
+        >{{ s__('Job|Download') }}</gl-link
       >
-        {{ s__('Job|Download') }}
-      </a>
 
-      <a
+      <gl-link
         v-if="artifact.browse_path"
         :href="artifact.browse_path"
         class="js-browse-artifacts btn btn-sm btn-default"
+        >{{ s__('Job|Browse') }}</gl-link
       >
-        {{ s__('Job|Browse') }}
-      </a>
     </div>
   </div>
 </template>

@@ -24,6 +24,8 @@ class NotesFinder
   def execute
     notes = init_collection
     notes = since_fetch_at(notes)
+    notes = notes.with_notes_filter(@params[:notes_filter]) if notes_filter?
+
     notes.fresh
   end
 
@@ -133,5 +135,9 @@ class NotesFinder
     # Default to 0 to remain compatible with old clients
     last_fetched_at = Time.at(@params.fetch(:last_fetched_at, 0).to_i)
     notes.updated_after(last_fetched_at - FETCH_OVERLAP)
+  end
+
+  def notes_filter?
+    @params[:notes_filter].present?
   end
 end

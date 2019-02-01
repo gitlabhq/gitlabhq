@@ -1,6 +1,0 @@
----
-title: Fix sorting by priority or popularity on group issues page, when also searching
-  issue content
-merge_request: 21521
-author:
-type: fixed

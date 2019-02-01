@@ -3,7 +3,7 @@ import FileRow from '~/vue_shared/components/file_row.vue';
 import { file } from 'spec/ide/helpers';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-describe('RepoFile', () => {
+describe('File row component', () => {
   let vm;
 
   function createComponent(propsData) {
@@ -70,5 +70,18 @@ describe('RepoFile', () => {
     });
 
     expect(vm.$el.querySelector('.file-row-name').style.marginLeft).toBe('32px');
+  });
+
+  it('renders header for file', () => {
+    createComponent({
+      file: {
+        isHeader: true,
+        path: 'app/assets',
+        tree: [],
+      },
+      level: 0,
+    });
+
+    expect(vm.$el.querySelector('.js-file-row-header')).not.toBe(null);
   });
 });

@@ -16,15 +16,15 @@ comments: false
 ## Merge conflicts
 
 1. Checkout a new branch and edit `conflicts.rb`. Add 'Line4' and 'Line5'.
-2. Commit and push
-3. Checkout master and edit `conflicts.rb`. Add 'Line6' and 'Line7' below 'Line3'.
-4. Commit and push to master
-5. Create a merge request and watch it fail
-6. Rebase our new branch with master
-7. Fix conflicts on the `conflicts.rb` file.
-8. Stage the file and continue rebasing
-9. Force push the changes
-10. Finally continue with the Merge Request
+1. Commit and push.
+1. Checkout master and edit `conflicts.rb`. Add 'Line6' and 'Line7' below 'Line3'.
+1. Commit and push to master.
+1. Create a merge request and watch it fail.
+1. Rebase our new branch with master.
+1. Fix conflicts on the `conflicts.rb` file.
+1. Stage the file and continue rebasing.
+1. Force push the changes.
+1. Finally continue with the Merge Request.
 
 ----------
 
@@ -68,7 +68,8 @@ git push origin conflicts_branch -f
 ----------
 
 ## Note
-* When to use 'git merge' and when to use 'git rebase'
-* Rebase when updating your branch with master
-* Merge when bringing changes from feature to master
-* Reference: https://www.atlassian.com/git/tutorials/merging-vs-rebasing/
+
+- When to use 'git merge' and when to use 'git rebase'
+- Rebase when updating your branch with master
+- Merge when bringing changes from feature to master
+- Reference: <https://www.atlassian.com/git/tutorials/merging-vs-rebasing/>

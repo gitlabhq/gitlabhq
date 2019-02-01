@@ -12,7 +12,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       ]
 
       RSpec::Mocks.with_temporary_scope do
-        @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
+        @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
         @shared = @project.import_export_shared
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
 
@@ -40,7 +40,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         project = Project.find_by_path('project')
 
         expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
-        expect(project.project_feature.builds_access_level).to eq(ProjectFeature::DISABLED)
+        expect(project.project_feature.builds_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.snippets_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::ENABLED)
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)
@@ -197,9 +197,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'has the correct number of pipelines and statuses' do
-          expect(@project.pipelines.size).to eq(5)
+          expect(@project.ci_pipelines.size).to eq(5)
 
-          @project.pipelines.zip([2, 2, 2, 2, 2])
+          @project.ci_pipelines.zip([2, 2, 2, 2, 2])
             .each do |(pipeline, expected_status_size)|
             expect(pipeline.statuses.size).to eq(expected_status_size)
           end
@@ -273,6 +273,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     it 'has group milestone' do
       expect(project.group.milestones.size).to eq(results.fetch(:milestones, 0))
     end
+
+    it 'has the correct visibility level' do
+      # INTERNAL in the `project.json`, group's is PRIVATE
+      expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
+    end
   end
 
   context 'Light JSON' do
@@ -297,7 +302,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                       issues: 1,
                       labels: 1,
                       milestones: 1,
-                      first_issue_labels: 1
+                      first_issue_labels: 1,
+                      services: 1
 
       context 'project.json file access check' do
         it 'does not read a symlink' do
@@ -321,7 +327,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
     end
 
-    context 'when the project has overriden params in import data' do
+    context 'when the project has overridden params in import data' do
       it 'overwrites the params stored in the JSON' do
         project.create_import_data(data: { override_params: { description: "Overridden" } })
 
@@ -335,7 +341,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         restored_project_json
 
-        expect(project.lfs_enabled).to be_nil
+        expect(project.lfs_enabled).to be_falsey
       end
     end
 
@@ -346,7 +352,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
                :issues_disabled,
                name: 'project',
                path: 'project',
-               group: create(:group))
+               group: create(:group, visibility_level: Gitlab::VisibilityLevel::PRIVATE))
       end
 
       before do
@@ -380,6 +386,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
       before do
         project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+      end
+
+      it 'does not import any templated services' do
+        restored_project_json
+
+        expect(project.services.where(template: true).count).to eq(0)
       end
 
       it 'imports labels' do
@@ -424,6 +436,60 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(project.milestones.count).to eq(2)
         expect(Milestone.find_by_title('Another milestone').iid).to eq(1)
         expect(Milestone.find_by_title('Group-level milestone').iid).to eq(2)
+      end
+    end
+  end
+
+  describe '#restored_project' do
+    let(:project) { create(:project) }
+    let(:shared) { project.import_export_shared }
+    let(:tree_hash) { { 'visibility_level' => visibility } }
+    let(:restorer) { described_class.new(user: nil, shared: shared, project: project) }
+
+    before do
+      restorer.instance_variable_set(:@tree_hash, tree_hash)
+    end
+
+    context 'no group visibility' do
+      let(:visibility) { Gitlab::VisibilityLevel::PRIVATE }
+
+      it 'uses the project visibility' do
+        expect(restorer.restored_project.visibility_level).to eq(visibility)
+      end
+    end
+
+    context 'with group visibility' do
+      before do
+        group = create(:group, visibility_level: group_visibility)
+
+        project.update(group: group)
+      end
+
+      context 'private group visibility' do
+        let(:group_visibility) { Gitlab::VisibilityLevel::PRIVATE }
+        let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
+
+        it 'uses the group visibility' do
+          expect(restorer.restored_project.visibility_level).to eq(group_visibility)
+        end
+      end
+
+      context 'public group visibility' do
+        let(:group_visibility) { Gitlab::VisibilityLevel::PUBLIC }
+        let(:visibility) { Gitlab::VisibilityLevel::PRIVATE }
+
+        it 'uses the project visibility' do
+          expect(restorer.restored_project.visibility_level).to eq(visibility)
+        end
+      end
+
+      context 'internal group visibility' do
+        let(:group_visibility) { Gitlab::VisibilityLevel::INTERNAL }
+        let(:visibility) { Gitlab::VisibilityLevel::PUBLIC }
+
+        it 'uses the group visibility' do
+          expect(restorer.restored_project.visibility_level).to eq(group_visibility)
+        end
       end
     end
   end

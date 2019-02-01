@@ -45,6 +45,7 @@ describe('IDE store merge request mutations', () => {
       });
 
       const newMr = localState.projects.abcproject.mergeRequests[1];
+
       expect(newMr.changes.diff).toBe('abc');
     });
   });
@@ -58,6 +59,7 @@ describe('IDE store merge request mutations', () => {
       });
 
       const newMr = localState.projects.abcproject.mergeRequests[1];
+
       expect(newMr.versions.length).toBe(1);
       expect(newMr.versions[0].id).toBe(123);
     });

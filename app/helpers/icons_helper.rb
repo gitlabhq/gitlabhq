@@ -42,7 +42,7 @@ module IconsHelper
   end
 
   def sprite_icon(icon_name, size: nil, css_class: nil)
-    if Gitlab::Sentry.should_raise?
+    if Gitlab::Sentry.should_raise_for_dev?
       unless known_sprites.include?(icon_name)
         exception = ArgumentError.new("#{icon_name} is not a known icon in @gitlab-org/gitlab-svg")
         raise exception
@@ -109,6 +109,8 @@ module IconsHelper
   def file_type_icon_class(type, mode, name)
     if type == 'folder'
       icon_class = 'folder'
+    elsif type == 'archive'
+      icon_class = 'archive'
     elsif mode == '120000'
       icon_class = 'share'
     else
@@ -153,6 +155,6 @@ module IconsHelper
   private
 
   def known_sprites
-    @known_sprites ||= JSON.parse(File.read(Rails.root.join('node_modules/@gitlab-org/gitlab-svgs/dist/icons.json')))['icons']
+    @known_sprites ||= JSON.parse(File.read(Rails.root.join('node_modules/@gitlab/svgs/dist/icons.json')))['icons']
   end
 end

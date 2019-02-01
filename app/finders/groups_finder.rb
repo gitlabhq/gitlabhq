@@ -40,19 +40,17 @@ class GroupsFinder < UnionFinder
 
   attr_reader :current_user, :params
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def all_groups
     return [owned_groups] if params[:owned]
     return [groups_with_min_access_level] if min_access_level?
     return [Group.all] if current_user&.full_private_access? && all_available?
 
     groups = []
-    groups << Gitlab::GroupHierarchy.new(groups_for_ancestors, groups_for_descendants).all_groups if current_user
+    groups << Gitlab::ObjectHierarchy.new(groups_for_ancestors, groups_for_descendants).all_objects if current_user
     groups << Group.unscoped.public_to_user(current_user) if include_public_groups?
     groups << Group.none if groups.empty?
     groups
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def groups_for_ancestors
     current_user.authorized_groups
@@ -68,7 +66,7 @@ class GroupsFinder < UnionFinder
       .groups
       .where('members.access_level >= ?', params[:min_access_level])
 
-    Gitlab::GroupHierarchy
+    Gitlab::ObjectHierarchy
       .new(groups)
       .base_and_descendants
   end
@@ -82,11 +80,9 @@ class GroupsFinder < UnionFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def owned_groups
     current_user&.owned_groups || Group.none
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def include_public_groups?
     current_user.nil? || all_available?

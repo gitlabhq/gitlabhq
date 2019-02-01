@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     module Pipeline
@@ -13,6 +15,10 @@ module Gitlab
 
               unless @command.sha
                 return error('Commit not found')
+              end
+
+              if @command.ambiguous_ref?
+                return error('Ref is ambiguous')
               end
             end
 

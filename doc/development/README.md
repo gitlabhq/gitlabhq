@@ -23,13 +23,14 @@ description: 'Learn how to contribute to GitLab.'
 
 ## UX and frontend guides
 
-- [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
+- [GitLab Design System](https://design.gitlab.com/) for building GitLab with existing CSS styles and elements
 - [Frontend guidelines](fe_guide/index.md)
 - [Emoji guide](fe_guide/emojis.md)
 
 ## Backend guides
 
 - [GitLab utilities](utilities.md)
+- [Logging](logging.md)
 - [API styleguide](api_styleguide.md) Use this styleguide if you are
   contributing to the API.
 - [GraphQL API styleguide](api_graphql_styleguide.md) Use this
@@ -46,6 +47,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
+- [Import/Export development documentation](import_export.md)
 - [Working with Merge Request diffs](diffs.md)
 - [Permissions](permissions.md)
 - [Prometheus metrics](prometheus_metrics.md)

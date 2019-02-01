@@ -18,7 +18,7 @@ Into a single commit on merge:
 
 ![A squashed commit followed by a merge commit][squashed-commit]
 
-The squashed commit's commit message is the merge request title. And note that 
+The squashed commit's commit message is the merge request title. And note that
 the squashed commit is still followed by a merge commit, as the merge
 method for this example repository uses a merge commit. Squashing also works
 with the fast-forward merge strategy, see
@@ -30,7 +30,7 @@ details.
 When working on a feature branch, you sometimes want to commit your current
 progress, but don't really care about the commit messages. Those 'work in
 progress commits' don't necessarily contain important information and as such
-you'd rather not include them in your target branch. 
+you'd rather not include them in your target branch.
 
 With squash and merge, when the merge request is ready to be merged,
 all you have to do is enable squashing before you press merge to join
@@ -56,9 +56,9 @@ This can then be overridden at the time of accepting the merge request:
 
 The squashed commit has the following metadata:
 
-* Message: the title of the merge request.
-* Author: the author of the merge request.
-* Committer: the user who initiated the squash.
+- Message: the title of the merge request.
+- Author: the author of the merge request.
+- Committer: the user who initiated the squash.
 
 ## Squash and fast-forward merge
 

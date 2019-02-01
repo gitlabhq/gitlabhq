@@ -1,3 +1,4 @@
-export default (time = 0) => new Promise((resolve) => {
-  setTimeout(resolve, time);
-});
+export default (time = 0) =>
+  new Promise(resolve => {
+    setTimeout(resolve, time);
+  });

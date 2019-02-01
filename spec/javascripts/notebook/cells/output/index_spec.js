@@ -7,10 +7,10 @@ describe('Output component', () => {
   let vm;
   let json;
 
-  const createComponent = (output) => {
+  const createComponent = output => {
     vm = new Component({
       propsData: {
-        output,
+        outputs: [].concat(output),
         count: 1,
       },
     });
@@ -22,7 +22,7 @@ describe('Output component', () => {
   });
 
   describe('text output', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       createComponent(json.cells[2].outputs[0]);
 
       setTimeout(() => {
@@ -40,7 +40,7 @@ describe('Output component', () => {
   });
 
   describe('image output', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       createComponent(json.cells[3].outputs[0]);
 
       setTimeout(() => {
@@ -51,33 +51,26 @@ describe('Output component', () => {
     it('renders as an image', () => {
       expect(vm.$el.querySelector('img')).not.toBeNull();
     });
-
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
-    });
   });
 
   describe('html output', () => {
-    beforeEach((done) => {
+    it('renders raw HTML', () => {
       createComponent(json.cells[4].outputs[0]);
 
-      setTimeout(() => {
-        done();
-      });
-    });
-
-    it('renders raw HTML', () => {
       expect(vm.$el.querySelector('p')).not.toBeNull();
-      expect(vm.$el.textContent.trim()).toBe('test');
+      expect(vm.$el.querySelectorAll('p').length).toBe(1);
+      expect(vm.$el.textContent.trim()).toContain('test');
     });
 
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
+    it('renders multiple raw HTML outputs', () => {
+      createComponent([json.cells[4].outputs[0], json.cells[4].outputs[0]]);
+
+      expect(vm.$el.querySelectorAll('p').length).toBe(2);
     });
   });
 
   describe('svg output', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       createComponent(json.cells[5].outputs[0]);
 
       setTimeout(() => {
@@ -88,14 +81,10 @@ describe('Output component', () => {
     it('renders as an svg', () => {
       expect(vm.$el.querySelector('svg')).not.toBeNull();
     });
-
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
-    });
   });
 
   describe('default to plain text', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       createComponent(json.cells[6].outputs[0]);
 
       setTimeout(() => {
@@ -112,7 +101,7 @@ describe('Output component', () => {
       expect(vm.$el.querySelector('.prompt span')).not.toBeNull();
     });
 
-    it('renders as plain text when doesn\'t recognise other types', (done) => {
+    it("renders as plain text when doesn't recognise other types", done => {
       createComponent(json.cells[7].outputs[0]);
 
       setTimeout(() => {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Metrics
     # Rack middleware for tracking Rails and Grape requests.

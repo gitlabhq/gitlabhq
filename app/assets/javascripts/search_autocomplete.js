@@ -226,7 +226,7 @@ export class SearchAutocomplete {
             icon,
             text: term,
             template: s__('SearchAutocomplete|in all GitLab'),
-            url: `/search?search=${term}`,
+            url: `${gon.relative_url_root}/search?search=${term}`,
           });
 
           if (template) {
@@ -234,7 +234,9 @@ export class SearchAutocomplete {
               icon,
               text: term,
               template,
-              url: `/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
+              url: `${
+                gon.relative_url_root
+              }/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
             });
           }
         }
@@ -251,7 +253,6 @@ export class SearchAutocomplete {
   }
 
   getCategoryContents() {
-    const userId = gon.current_user_id;
     const userName = gon.current_username;
     const { projectOptions, groupOptions, dashboardOptions } = gl;
 
@@ -277,21 +278,21 @@ export class SearchAutocomplete {
     const issueItems = [
       {
         text: s__('SearchAutocomplete|Issues assigned to me'),
-        url: `${issuesPath}/?assignee_id=${userId}`,
+        url: `${issuesPath}/?assignee_username=${userName}`,
       },
       {
         text: s__("SearchAutocomplete|Issues I've created"),
-        url: `${issuesPath}/?author_id=${userId}`,
+        url: `${issuesPath}/?author_username=${userName}`,
       },
     ];
     const mergeRequestItems = [
       {
         text: s__('SearchAutocomplete|Merge requests assigned to me'),
-        url: `${mrPath}/?assignee_id=${userId}`,
+        url: `${mrPath}/?assignee_username=${userName}`,
       },
       {
         text: s__("SearchAutocomplete|Merge requests I've created"),
-        url: `${mrPath}/?author_id=${userId}`,
+        url: `${mrPath}/?author_username=${userName}`,
       },
     ];
 

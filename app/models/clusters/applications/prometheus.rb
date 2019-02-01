@@ -5,7 +5,8 @@ module Clusters
     class Prometheus < ActiveRecord::Base
       include PrometheusAdapter
 
-      VERSION = '6.7.3'.freeze
+      VERSION = '6.7.3'
+      READY_STATUS = [:installed, :updating, :updated, :update_errored].freeze
 
       self.table_name = 'clusters_applications_prometheus'
 
@@ -24,12 +25,8 @@ module Clusters
         end
       end
 
-      def ready_status
-        [:installed]
-      end
-
       def ready?
-        ready_status.include?(status_name)
+        READY_STATUS.include?(status_name)
       end
 
       def chart
@@ -50,8 +47,27 @@ module Clusters
           version: VERSION,
           rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
-          files: files
+          files: files,
+          postinstall: install_knative_metrics
         )
+      end
+
+      def upgrade_command(values)
+        ::Gitlab::Kubernetes::Helm::UpgradeCommand.new(
+          name,
+          version: VERSION,
+          chart: chart,
+          rbac: cluster.platform_kubernetes_rbac?,
+          files: files_with_replaced_values(values)
+        )
+      end
+
+      # Returns a copy of files where the values of 'values.yaml'
+      # are replaced by the argument.
+      #
+      # See #values for the data format required
+      def files_with_replaced_values(replaced_values)
+        files.merge('values.yaml': replaced_values)
       end
 
       def prometheus_client
@@ -73,6 +89,10 @@ module Clusters
 
       def kube_client
         cluster&.kubeclient&.core_client
+      end
+
+      def install_knative_metrics
+        ["kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}"] if cluster.application_knative_available?
       end
     end
   end

@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Seed::Stage do
-  let(:pipeline) { create(:ci_empty_pipeline) }
+  let(:project) { create(:project, :repository) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:attributes) do
     { name: 'test',
@@ -61,8 +62,18 @@ describe Gitlab::Ci::Pipeline::Seed::Stage do
       expect(subject.seeds.map(&:attributes)).to all(include(ref: 'master'))
       expect(subject.seeds.map(&:attributes)).to all(include(tag: false))
       expect(subject.seeds.map(&:attributes)).to all(include(project: pipeline.project))
-      expect(subject.seeds.map(&:attributes))
-        .to all(include(trigger_request: pipeline.trigger_requests.first))
+    end
+
+    context 'when a legacy trigger exists' do
+      before do
+        create(:ci_trigger_request, pipeline: pipeline)
+      end
+
+      it 'returns build seeds including legacy trigger' do
+        expect(pipeline.legacy_trigger).not_to be_nil
+        expect(subject.seeds.map(&:attributes))
+          .to all(include(trigger_request: pipeline.legacy_trigger))
+      end
     end
 
     context 'when a ref is protected' do

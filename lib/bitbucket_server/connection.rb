@@ -7,6 +7,17 @@ module BitbucketServer
     DEFAULT_API_VERSION = '1.0'
     SEPARATOR = '/'
 
+    NETWORK_ERRORS = [
+      SocketError,
+      OpenSSL::SSL::SSLError,
+      Errno::ECONNRESET,
+      Errno::ECONNREFUSED,
+      Errno::EHOSTUNREACH,
+      Net::OpenTimeout,
+      Net::ReadTimeout,
+      Gitlab::HTTP::BlockedUrlError
+    ].freeze
+
     attr_reader :api_version, :base_uri, :username, :token
 
     ConnectionError = Class.new(StandardError)
@@ -27,6 +38,8 @@ module BitbucketServer
       check_errors!(response)
 
       response.parsed_response
+    rescue *NETWORK_ERRORS => e
+      raise ConnectionError, e
     end
 
     def post(path, body)
@@ -38,6 +51,8 @@ module BitbucketServer
       check_errors!(response)
 
       response.parsed_response
+    rescue *NETWORK_ERRORS => e
+      raise ConnectionError, e
     end
 
     # We need to support two different APIs for deletion:
@@ -55,6 +70,8 @@ module BitbucketServer
       check_errors!(response)
 
       response.parsed_response
+    rescue *NETWORK_ERRORS => e
+      raise ConnectionError, e
     end
 
     private
@@ -88,35 +105,19 @@ module BitbucketServer
     def build_url(path)
       return path if path.starts_with?(root_url)
 
-      url_join_paths(root_url, path)
+      Gitlab::Utils.append_path(root_url, path)
     end
 
     def root_url
-      url_join_paths(base_uri, "/rest/api/#{api_version}")
+      Gitlab::Utils.append_path(base_uri, "rest/api/#{api_version}")
     end
 
     def delete_url(resource, path)
       if resource == :branches
-        url_join_paths(base_uri, "/rest/branch-utils/#{api_version}#{path}")
+        Gitlab::Utils.append_path(base_uri, "rest/branch-utils/#{api_version}#{path}")
       else
         build_url(path)
       end
-    end
-
-    # URI.join is stupid in that slashes are important:
-    #
-    # # URI.join('http://example.com/subpath', 'hello')
-    # => http://example.com/hello
-    #
-    # We really want http://example.com/subpath/hello
-    #
-    def url_join_paths(*paths)
-      paths.map { |path| strip_slashes(path) }.join(SEPARATOR)
-    end
-
-    def strip_slashes(path)
-      path = path[1..-1] if path.starts_with?(SEPARATOR)
-      path.chomp(SEPARATOR)
     end
   end
 end

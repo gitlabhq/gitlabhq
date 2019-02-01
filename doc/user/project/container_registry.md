@@ -15,7 +15,7 @@
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
 
-You can read more about Docker Registry at https://docs.docker.com/registry/introduction/.
+You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry for your project
 
@@ -119,12 +119,17 @@ and [Using the GitLab Container Registry documentation](../../ci/docker/using_do
 > Project Deploy Tokens were [introduced][ce-17894] in GitLab 10.7
 
 If a project is private, credentials will need to be provided for authorization.
-The preferred way to do this, is either by using a [personal access tokens][pat] or a [project deploy token][pdt].
+There are two ways to do this:
+
+- By using a [personal access token](../profile/personal_access_tokens.md).
+- By using a [deploy token](../project/deploy_tokens/index.md).
+
 The minimal scope needed for both of them is `read_registry`.
 
-Example of using a personal access token:
-```
-docker login registry.example.com -u <your_username> -p <your_access_token>
+Example of using a token:
+
+```sh
+docker login registry.example.com -u <username> -p <token>
 ```
 
 ## Troubleshooting the GitLab Container Registry
@@ -134,12 +139,12 @@ docker login registry.example.com -u <your_username> -p <your_access_token>
 1. Check to make sure that the system clock on your Docker client and GitLab server have
    been synchronized (e.g. via NTP).
 
-2. If you are using an S3-backed Registry, double check that the IAM
+1. If you are using an S3-backed Registry, double check that the IAM
    permissions and the S3 credentials (including region) are correct. See [the
    sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
    for more details.
 
-3. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
+1. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 
@@ -278,9 +283,9 @@ In the example above, we see the following trace on the mitmproxy window:
 
 The above image shows:
 
-* The initial PUT requests went through fine with a 201 status code.
-* The 201 redirected the client to the S3 bucket.
-* The HEAD request to the AWS bucket reported a 403 Unauthorized.
+- The initial PUT requests went through fine with a 201 status code.
+- The 201 redirected the client to the S3 bucket.
+- The HEAD request to the AWS bucket reported a 403 Unauthorized.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).

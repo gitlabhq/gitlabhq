@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Searches and reads files present on each GitLab project repository
 module Gitlab
   module Template
@@ -24,6 +26,11 @@ module Gitlab
 
         def find(key)
           file_name = "#{key}#{@extension}"
+
+          # The key is untrusted input, so ensure we can't be directed outside
+          # of base_dir inside the repository
+          Gitlab::Utils.check_path_traversal!(file_name)
+
           directory = select_directory(file_name)
           raise FileNotFoundError if directory.nil?
 
@@ -33,7 +40,7 @@ module Gitlab
         def list_files_for(dir)
           return [] unless @commit
 
-          dir << '/' unless dir.end_with?('/')
+          dir = "#{dir}/" unless dir.end_with?('/')
 
           entries = @repository.tree(:head, dir).entries
 

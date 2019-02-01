@@ -44,6 +44,7 @@ The following table depicts the various user permission levels in a project.
 | View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View license management reports **[ULTIMATE]** | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **[ULTIMATE]**  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| View project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                         |         | ✓          | ✓           | ✓        | ✓      |
@@ -79,6 +80,7 @@ The following table depicts the various user permission levels in a project.
 | View approved/blacklisted licenses **[ULTIMATE]** |         |            | ✓           | ✓        | ✓      |
 | Use security dashboard **[ULTIMATE]** |         |            | ✓           | ✓        | ✓      |
 | Dismiss vulnerability **[ULTIMATE]**  |         |            | ✓           | ✓        | ✓      |
+| Apply code change suggestions         |         |            | ✓           | ✓        | ✓      |
 | Use environment terminals             |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
@@ -95,6 +97,7 @@ The following table depicts the various user permission levels in a project.
 | Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
 | Remove GitLab Pages                   |         |            |             |          | ✓      |
+| View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control-core-only) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
 | Manage license policy **[ULTIMATE]**  |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
@@ -156,6 +159,13 @@ Confidential issues can be accessed by reporters and higher permission levels,
 as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
+### Releases permissions
+
+[Project Releases](project/releases/index.md) can be read by all project
+members (Reporters, Developers, Maintainers, Owners) **except Guests**.
+Releases can be created, updated, or deleted via [Releases APIs](../api/releases/index.md)
+by project Developers, Maintainers, and Owners.
+
 ## Group members permissions
 
 NOTE: **Note:**
@@ -175,9 +185,7 @@ group.
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
-| View private group epic **[ULTIMATE]** |         | ✓        | ✓         | ✓      | ✓     |
-| View internal group epic **[ULTIMATE]** | ✓       | ✓        | ✓         | ✓      | ✓     |
-| View public group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
+| View group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit group epic **[ULTIMATE]**  |         | ✓        | ✓         | ✓      | ✓     |
 | Delete group epic **[ULTIMATE]**       |         |          |           |        | ✓     |
 | View group Audit Events  |         |          |           |        | ✓     |
@@ -206,7 +214,7 @@ They will, like usual users, receive a role in the project or group with all
 the abilities that are mentioned in the table above. They cannot however create
 groups or projects, and they have the same access as logged out users in all
 other cases.
- 
+
 An administrator can flag a user as external [through the API](../api/users.md)
 or by checking the checkbox on the admin panel. As an administrator, navigate
 to **Admin > Users** to create a new user or edit an existing one. There, you
@@ -217,7 +225,7 @@ by an administrator under **Admin > Application Settings**.
 
 ### Default internal users
 
-The "Internal users" field allows specifying an e-mail address regex pattern to identify default internal users.  
+The "Internal users" field allows specifying an e-mail address regex pattern to identify default internal users.
 
 New users whose email address matches the regex pattern will be set to internal by default rather than an external collaborator.
 

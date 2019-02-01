@@ -5,7 +5,8 @@
 #
 # This module depends on the finder implementing the following methods:
 #
-# - `#execute` should return an `ActiveRecord::Relation`
+# - `#execute` should return an `ActiveRecord::Relation` or the `model` needs to
+#              be defined in the call to `requires_cross_project_access`.
 # - `#current_user` the user that requires access (or nil)
 module FinderWithCrossProjectAccess
   extend ActiveSupport::Concern
@@ -13,24 +14,37 @@ module FinderWithCrossProjectAccess
 
   prepended do
     extend Gitlab::CrossProjectAccess::ClassMethods
+
+    cattr_accessor :finder_model
+
+    def self.requires_cross_project_access(*args)
+      super
+
+      self.finder_model = extract_model_from_arguments(args)
+    end
+
+    private
+
+    def self.extract_model_from_arguments(args)
+      args.detect { |argument| argument.is_a?(Hash) && argument[:model] }
+        &.fetch(:model)
+    end
   end
 
   override :execute
-  # rubocop: disable CodeReuse/ActiveRecord
   def execute(*args)
     check = Gitlab::CrossProjectAccess.find_check(self)
-    original = super
+    original = -> { super }
 
-    return original unless check
-    return original if should_skip_cross_project_check || can_read_cross_project?
+    return original.call unless check
+    return original.call if should_skip_cross_project_check || can_read_cross_project?
 
     if check.should_run?(self)
-      original.model.none
+      finder_model&.none || original.call.model.none
     else
-      original
+      original.call
     end
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   # We can skip the cross project check for finding indivitual records.
   # this would be handled by the `can?(:read_*, result)` call in `FinderMethods`
@@ -49,8 +63,6 @@ module FinderWithCrossProjectAccess
   def find(*args)
     skip_cross_project_check { super }
   end
-
-  private
 
   attr_accessor :should_skip_cross_project_check
 

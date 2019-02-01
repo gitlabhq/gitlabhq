@@ -17,13 +17,14 @@ export default class GroupsStore {
   }
 
   setSearchedGroups(rawGroups) {
-    const formatGroups = groups => groups.map((group) => {
-      const formattedGroup = this.formatGroupItem(group);
-      if (formattedGroup.children && formattedGroup.children.length) {
-        formattedGroup.children = formatGroups(formattedGroup.children);
-      }
-      return formattedGroup;
-    });
+    const formatGroups = groups =>
+      groups.map(group => {
+        const formattedGroup = this.formatGroupItem(group);
+        if (formattedGroup.children && formattedGroup.children.length) {
+          formattedGroup.children = formatGroups(formattedGroup.children);
+        }
+        return formattedGroup;
+      });
 
     if (rawGroups && rawGroups.length) {
       this.state.groups = formatGroups(rawGroups);
@@ -62,10 +63,10 @@ export default class GroupsStore {
 
   formatGroupItem(rawGroupItem) {
     const groupChildren = rawGroupItem.children || [];
-    const groupIsOpen = (groupChildren.length > 0) || false;
-    const childrenCount = this.hideProjects ?
-      rawGroupItem.subgroup_count :
-      rawGroupItem.children_count;
+    const groupIsOpen = groupChildren.length > 0 || false;
+    const childrenCount = this.hideProjects
+      ? rawGroupItem.subgroup_count
+      : rawGroupItem.children_count;
 
     return {
       id: rawGroupItem.id,

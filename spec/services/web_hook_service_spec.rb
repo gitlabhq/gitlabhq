@@ -61,7 +61,7 @@ describe WebHookService do
     end
 
     context 'when auth credentials are present' do
-      let(:url)  {'https://example.org'}
+      let(:url) {'https://example.org'}
       let(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
 
       it 'uses the credentials' do
@@ -76,7 +76,7 @@ describe WebHookService do
     end
 
     context 'when auth credentials are partial present' do
-      let(:url)  {'https://example.org'}
+      let(:url) {'https://example.org'}
       let(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
 
       it 'uses the credentials anyways' do
@@ -97,7 +97,7 @@ describe WebHookService do
     end
 
     it 'handles exceptions' do
-      exceptions = [SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError]
+      exceptions = [SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError, Gitlab::HTTP::RedirectionTooDeep]
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
 

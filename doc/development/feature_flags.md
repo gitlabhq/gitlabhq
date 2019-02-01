@@ -33,7 +33,7 @@ You can follow the progress on that [in the issue on our issue tracker](https://
 
 In general, it's better to have a group- or user-based gate, and you should prefer
 it over the use of percentage gates. This would make debugging easier, as you
-filter for example logs and errors based on actors too. Futhermore, this allows
+filter for example logs and errors based on actors too. Furthermore, this allows
 for enabling for the `gitlab-org` group first, while the rest of the users
 aren't impacted.
 
@@ -112,3 +112,16 @@ feature flag. You can stub a feature flag as follows:
 ```ruby
 stub_feature_flags(my_feature_flag: false)
 ```
+
+## Enabling a feature flag (in development)
+
+In the rails console (`rails c`), enter the following command to enable your feature flag
+
+```ruby
+Feature.enable(:feature_flag_name)
+```
+
+## Enabling a feature flag (in production)
+
+Check how to [roll out changes using feature flags](rolling_out_changes_using_feature_flags.md).
+

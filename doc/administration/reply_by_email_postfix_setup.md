@@ -8,7 +8,7 @@ The instructions make the assumption that you will be using the email address `i
 ## Configure your server firewall
 
 1. Open up port 25 on your server so that people can send email into the server over SMTP.
-2. If the mail server is different from the server running GitLab, open up port 143 on your server so that GitLab can read email from the server over IMAP.
+1. If the mail server is different from the server running GitLab, open up port 143 on your server so that GitLab can read email from the server over IMAP.
 
 ## Install packages
 
@@ -333,6 +333,6 @@ If all the tests were successful, Postfix is all set up and ready to receive ema
 
 ---
 
-_This document was adapted from https://help.ubuntu.com/community/PostfixBasicSetupHowto, by contributors to the Ubuntu documentation wiki._
+_This document was adapted from <https://help.ubuntu.com/community/PostfixBasicSetupHowto>, by contributors to the Ubuntu documentation wiki._
 
 [incoming email]: incoming_email.md

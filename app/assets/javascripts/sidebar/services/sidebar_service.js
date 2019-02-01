@@ -22,11 +22,15 @@ export default class SidebarService {
   }
 
   update(key, data) {
-    return Vue.http.put(this.endpoint, {
-      [key]: data,
-    }, {
-      emulateJSON: true,
-    });
+    return Vue.http.put(
+      this.endpoint,
+      {
+        [key]: data,
+      },
+      {
+        emulateJSON: true,
+      },
+    );
   }
 
   getProjectsAutocomplete(searchTerm) {

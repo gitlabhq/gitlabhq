@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class ContributionsCalendar
     attr_reader :contributor
@@ -71,7 +73,7 @@ module Gitlab
       # re-running the contributed projects query in each union is expensive, so
       # use IN(project_ids...) instead. It's the intersection of two users so
       # the list will be (relatively) short
-      @contributed_project_ids ||= projects.uniq.pluck(:id)
+      @contributed_project_ids ||= projects.distinct.pluck(:id)
       authed_projects = Project.where(id: @contributed_project_ids)
         .with_feature_available_for_user(feature, current_user)
         .reorder(nil)

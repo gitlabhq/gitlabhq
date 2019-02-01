@@ -18,7 +18,7 @@ describe 'Pipeline', :js do
 
     let!(:build_failed) do
       create(:ci_build, :failed,
-             pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
+             pipeline: pipeline, stage: 'test', name: 'test')
     end
 
     let!(:build_running) do
@@ -66,6 +66,10 @@ describe 'Pipeline', :js do
 
     it 'shows Pipeline tab pane as active' do
       expect(page).to have_css('#js-tab-pipeline.active')
+    end
+
+    it 'shows link to the pipeline ref' do
+      expect(page).to have_link(pipeline.ref)
     end
 
     it_behaves_like 'showing user status' do
@@ -236,6 +240,20 @@ describe 'Pipeline', :js do
         it { expect(page).not_to have_content('Cancel running') }
       end
     end
+
+    context 'when pipeline ref does not exist in repository anymore' do
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project,
+                                   ref: 'non-existent',
+                                   sha: project.commit.id,
+                                   user: user)
+      end
+
+      it 'does not render link to the pipeline ref' do
+        expect(page).not_to have_link(pipeline.ref)
+        expect(page).to have_content(pipeline.ref)
+      end
+    end
   end
 
   context 'when user does not have access to read jobs' do
@@ -264,6 +282,49 @@ describe 'Pipeline', :js do
 
       it 'should not link to job' do
         expect(page).not_to have_selector('.js-pipeline-graph-job-link')
+      end
+    end
+  end
+
+  context 'when a bridge job exists' do
+    include_context 'pipeline builds'
+
+    let(:project) { create(:project, :repository) }
+    let(:downstream) { create(:project, :repository) }
+
+    let(:pipeline) do
+      create(:ci_pipeline, project: project,
+                           ref: 'master',
+                           sha: project.commit.id,
+                           user: user)
+    end
+
+    let!(:bridge) do
+      create(:ci_bridge, pipeline: pipeline,
+                         name: 'cross-build',
+                         user: user,
+                         downstream: downstream)
+    end
+
+    describe 'GET /:project/pipelines/:id' do
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'shows the pipeline with a bridge job' do
+        expect(page).to have_selector('.pipeline-visualization')
+        expect(page).to have_content('cross-build')
+      end
+    end
+
+    describe 'GET /:project/pipelines/:id/builds' do
+      before do
+        visit builds_project_pipeline_path(project, pipeline)
+      end
+
+      it 'shows a bridge job on a list' do
+        expect(page).to have_content('cross-build')
+        expect(page).to have_content(bridge.id)
       end
     end
   end
@@ -370,54 +431,83 @@ describe 'Pipeline', :js do
     let(:pipeline_failures_page) { failures_project_pipeline_path(project, pipeline) }
     let!(:failed_build) { create(:ci_build, :failed, pipeline: pipeline) }
 
+    subject { visit pipeline_failures_page }
+
     context 'with failed build' do
       before do
         failed_build.trace.set('4 examples, 1 failure')
-
-        visit pipeline_failures_page
       end
 
       it 'shows jobs tab pane as active' do
+        subject
+
         expect(page).to have_content('Failed Jobs')
         expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
+        subject
+
         expect(page).to have_content(failed_build.name)
         expect(page).to have_content(failed_build.stage)
       end
 
       it 'shows build failure logs' do
+        subject
+
         expect(page).to have_content('4 examples, 1 failure')
       end
 
       it 'shows the failure reason' do
+        subject
+
         expect(page).to have_content('There is an unknown failure, please try again')
       end
 
-      it 'shows retry button for failed build' do
-        page.within(find('.build-failures', match: :first)) do
-          expect(page).to have_link('Retry')
+      context 'when user does not have permission to retry build' do
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('.build-failures', match: :first)) do
+            expect(page).not_to have_link('Retry')
+          end
+        end
+      end
+
+      context 'when user does have permission to retry build' do
+        before do
+          create(:protected_branch, :developers_can_merge,
+                 name: pipeline.ref, project: project)
+        end
+
+        it 'shows retry button for failed build' do
+          subject
+
+          page.within(find('.build-failures', match: :first)) do
+            expect(page).to have_link('Retry')
+          end
         end
       end
     end
 
     context 'when missing build logs' do
-      before do
-        visit pipeline_failures_page
-      end
-
       it 'shows jobs tab pane as active' do
+        subject
+
         expect(page).to have_content('Failed Jobs')
         expect(page).to have_css('#js-tab-failures.active')
       end
 
       it 'lists failed builds' do
+        subject
+
         expect(page).to have_content(failed_build.name)
         expect(page).to have_content(failed_build.stage)
       end
 
       it 'does not show trace' do
+        subject
+
         expect(page).to have_content('No job trace')
       end
     end
@@ -430,12 +520,11 @@ describe 'Pipeline', :js do
       end
 
       context 'when accessing failed jobs page' do
-        before do
-          visit pipeline_failures_page
-        end
+        it 'renders a 404 page' do
+          requests = inspect_requests { subject }
 
-        it 'fails to access the page' do
-          expect(page).to have_title('Access Denied')
+          expect(page).to have_title('Not Found')
+          expect(requests.first.status_code).to eq(404)
         end
       end
     end
@@ -443,14 +532,164 @@ describe 'Pipeline', :js do
     context 'without failures' do
       before do
         failed_build.update!(status: :success)
-
-        visit pipeline_failures_page
       end
 
       it 'displays the pipeline graph' do
+        subject
+
         expect(current_path).to eq(pipeline_path(pipeline))
         expect(page).not_to have_content('Failed Jobs')
         expect(page).to have_selector('.pipeline-visualization')
+      end
+    end
+  end
+
+  context 'when user sees pipeline flags in a pipeline detail page' do
+    let(:project) { create(:project, :repository) }
+
+    context 'when pipeline is latest' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates it is the latest build' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'latest'
+        end
+      end
+    end
+
+    context 'when pipeline has configuration errors' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               :invalid,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates errors' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'yaml invalid'
+        end
+      end
+
+      it 'contains badge with tooltip which contains error' do
+        expect(pipeline).to have_yaml_errors
+
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_selector(
+            %Q{span[title="#{pipeline.yaml_errors}"]})
+        end
+      end
+
+      it 'contains badge that indicates failure reason' do
+        expect(page).to have_content 'error'
+      end
+
+      it 'contains badge with tooltip which contains failure reason' do
+        expect(pipeline.failure_reason?).to eq true
+
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_selector(
+            %Q{span[title="#{pipeline.present.failure_reason}"]})
+        end
+      end
+    end
+
+    context 'when pipeline is stuck' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        create(:ci_build, :pending, pipeline: pipeline)
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates being stuck' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'stuck'
+        end
+      end
+    end
+
+    context 'when pipeline uses auto devops' do
+      include_context 'pipeline builds'
+
+      let(:project) { create(:project, :repository, auto_devops_attributes: { enabled: true }) }
+      let(:pipeline) do
+        create(:ci_pipeline,
+               :auto_devops_source,
+               project: project,
+               ref: 'master',
+               sha: project.commit.id,
+               user: user)
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates using auto devops' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'Auto DevOps'
+        end
+      end
+    end
+
+    context 'when pipeline runs in a merge request context' do
+      include_context 'pipeline builds'
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+               source: :merge_request,
+               project: merge_request.source_project,
+               ref: 'feature',
+               sha: merge_request.diff_head_sha,
+               user: user,
+               merge_request: merge_request)
+      end
+
+      let(:merge_request) do
+        create(:merge_request,
+               source_project: project,
+               source_branch: 'feature',
+               target_project: project,
+               target_branch: 'master')
+      end
+
+      before do
+        visit project_pipeline_path(project, pipeline)
+      end
+
+      it 'contains badge that indicates merge request pipeline' do
+        page.within(all('.well-segment')[1]) do
+          expect(page).to have_content 'merge request'
+        end
       end
     end
   end

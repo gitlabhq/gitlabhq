@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Kubernetes
     module Helm
@@ -45,7 +47,7 @@ module Gitlab
         def init_helm_command
           command = %w[helm init] + init_command_flags
 
-          command.shelljoin + " >/dev/null\n"
+          command.shelljoin
         end
 
         def init_command_flags

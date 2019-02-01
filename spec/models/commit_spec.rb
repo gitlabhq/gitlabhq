@@ -11,6 +11,7 @@ describe Commit do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(StaticModel) }
+    it { is_expected.to include_module(Presentable) }
   end
 
   describe '.lazy' do
@@ -72,6 +73,7 @@ describe Commit do
     context 'using eager loading' do
       let!(:alice) { create(:user, email: 'alice@example.com') }
       let!(:bob) { create(:user, email: 'hunter2@example.com') }
+      let!(:jeff) { create(:user) }
 
       let(:alice_commit) do
         described_class.new(RepoHelpers.sample_commit, project).tap do |c|
@@ -93,7 +95,14 @@ describe Commit do
         end
       end
 
-      let!(:commits) { [alice_commit, bob_commit, eve_commit] }
+      let(:jeff_commit) do
+        # The commit for Jeff uses his private commit email
+        described_class.new(RepoHelpers.sample_commit, project).tap do |c|
+          c.author_email = jeff.private_commit_email
+        end
+      end
+
+      let!(:commits) { [alice_commit, bob_commit, eve_commit, jeff_commit] }
 
       before do
         create(:email, user: bob, email: 'bob@example.com')
@@ -123,6 +132,20 @@ describe Commit do
         commits.each(&:lazy_author)
 
         expect(bob_commit.author).to eq(bob)
+      end
+
+      it "preloads the authors for Commits using a User's private commit Email" do
+        commits.each(&:lazy_author)
+
+        expect(jeff_commit.author).to eq(jeff)
+      end
+
+      it "preloads the authors for Commits using a User's outdated private commit Email" do
+        jeff.update!(username: 'new-username')
+
+        commits.each(&:lazy_author)
+
+        expect(jeff_commit.author).to eq(jeff)
       end
 
       it 'sets the author to Nil if an author could not be found for a Commit' do
@@ -182,7 +205,7 @@ describe Commit do
       message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.'
 
       allow(commit).to receive(:safe_message).and_return(message)
-      expect(commit.title).to eq('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis…')
+      expect(commit.title).to eq('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id...')
     end
 
     it "truncates a message with a newline before 80 characters at the newline" do

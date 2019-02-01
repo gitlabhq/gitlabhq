@@ -1,10 +1,10 @@
-require 'fast_spec_helper'
-
-require_dependency 'active_model'
+require 'spec_helper'
 
 describe Gitlab::Ci::Config do
+  set(:user) { create(:user) }
+
   let(:config) do
-    described_class.new(yml)
+    described_class.new(yml, project: nil, sha: nil, user: nil)
   end
 
   context 'when config is valid' do
@@ -156,7 +156,7 @@ describe Gitlab::Ci::Config do
     end
 
     let(:config) do
-      described_class.new(gitlab_ci_yml, project: project, sha: '12345')
+      described_class.new(gitlab_ci_yml, project: project, sha: '12345', user: user)
     end
 
     before do
@@ -172,7 +172,6 @@ describe Gitlab::Ci::Config do
         before_script_values = [
           "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs", "ruby -v",
           "which ruby",
-          "gem install bundler --no-ri --no-rdoc",
           "bundle install --jobs $(nproc)  \"${FLAGS[@]}\""
         ]
         variables = {
@@ -193,7 +192,7 @@ describe Gitlab::Ci::Config do
       end
     end
 
-    context "when gitlab_ci.yml has invalid 'include' defined"  do
+    context "when gitlab_ci.yml has invalid 'include' defined" do
       let(:gitlab_ci_yml) do
         <<~HEREDOC
           include: invalid
@@ -202,8 +201,25 @@ describe Gitlab::Ci::Config do
 
       it 'raises error YamlProcessor validationError' do
         expect { config }.to raise_error(
-          ::Gitlab::Ci::YamlProcessor::ValidationError,
-          "Local file 'invalid' is not valid."
+          described_class::ConfigError,
+          "Included file `invalid` does not have YAML extension!"
+        )
+      end
+    end
+
+    context "when gitlab_ci.yml has ambigious 'include' defined" do
+      let(:gitlab_ci_yml) do
+        <<~HEREDOC
+          include:
+            remote: http://url
+            local: /local/file.yml
+        HEREDOC
+      end
+
+      it 'raises error YamlProcessor validationError' do
+        expect { config }.to raise_error(
+          described_class::ConfigError,
+          'Include `{"remote":"http://url","local":"/local/file.yml"}` needs to match exactly one accessor!'
         )
       end
     end
@@ -214,7 +230,7 @@ describe Gitlab::Ci::Config do
           expect(project.repository).to receive(:blob_data_at)
             .with('eeff1122', local_location)
 
-          described_class.new(gitlab_ci_yml, project: project, sha: 'eeff1122')
+          described_class.new(gitlab_ci_yml, project: project, sha: 'eeff1122', user: user)
         end
       end
 
@@ -222,7 +238,7 @@ describe Gitlab::Ci::Config do
         it 'is using latest SHA on the default branch' do
           expect(project.repository).to receive(:root_ref_sha)
 
-          described_class.new(gitlab_ci_yml, project: project)
+          described_class.new(gitlab_ci_yml, project: project, sha: nil, user: user)
         end
       end
     end

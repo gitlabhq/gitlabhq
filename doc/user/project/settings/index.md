@@ -14,9 +14,11 @@ functionality of a project.
 
 ### General project settings
 
-Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and tags:
+Adjust your project's name, description, avatar, [default branch](../repository/branches/index.md#default-branch), and topics:
 
 ![general project settings](img/general_settings.png)
+
+The project description also partially supports [standard markdown](../../markdown.md#standard-markdown). You can use [emphasis](../../markdown.md#emphasis), [links](../../markdown.md#links), and [line-breaks](../../markdown.md#line-breaks) to add more context to the project description.
 
 ### Sharing and permissions
 
@@ -120,3 +122,9 @@ GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
 [permissions]: ../../permissions.md##project-members-permissions
+
+## Operations settings
+
+### Error Tracking
+
+Configure Error Tracking to discover and view [Sentry errors within GitLab](../operations/error_tracking.md).

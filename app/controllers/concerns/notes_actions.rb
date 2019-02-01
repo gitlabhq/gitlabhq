@@ -6,6 +6,7 @@ module NotesActions
   extend ActiveSupport::Concern
 
   included do
+    prepend_before_action :normalize_create_params, only: [:create]
     before_action :set_polling_interval_header, only: [:index]
     before_action :require_noteable!, only: [:index, :create]
     before_action :authorize_admin_note!, only: [:update, :destroy]
@@ -17,10 +18,17 @@ module NotesActions
 
     notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
-    notes = notes_finder.execute
-      .inc_relations_for_view
+    notes = notes_finder
+              .execute
+              .inc_relations_for_view
 
-    notes = ResourceEvents::MergeIntoNotesService.new(noteable, current_user, last_fetched_at: current_fetched_at).execute(notes)
+    if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
+      notes =
+        ResourceEvents::MergeIntoNotesService
+          .new(noteable, current_user, last_fetched_at: current_fetched_at)
+          .execute(notes)
+    end
+
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
@@ -224,6 +232,10 @@ module NotesActions
     request.headers['X-Last-Fetched-At']
   end
 
+  def notes_filter
+    current_user&.notes_filter_for(params[:target_type])
+  end
+
   def notes_finder
     @notes_finder ||= NotesFinder.new(project, current_user, finder_params)
   end
@@ -234,6 +246,15 @@ module NotesActions
 
   def discussion_serializer
     DiscussionSerializer.new(project: project, noteable: noteable, current_user: current_user, note_entity: ProjectNoteEntity)
+  end
+
+  # Avoids checking permissions in the wrong object - this ensures that the object we checked permissions for
+  # is the object we're actually creating a note in.
+  def normalize_create_params
+    params[:note].try do |note|
+      note[:noteable_id] = params[:target_id]
+      note[:noteable_type] = params[:target_type].classify
+    end
   end
 
   def note_project

@@ -6,7 +6,7 @@ module API
   class Branches < Grape::API
     include PaginationParams
 
-    BRANCH_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
+    BRANCH_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
 
     before { authorize! :download_code, user_project }
 
@@ -20,7 +20,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a project repository branches' do
         success Entities::Branch
       end
@@ -34,11 +34,11 @@ module API
         repository = user_project.repository
 
         branches = BranchesFinder.new(repository, declared_params(include_missing: false)).execute
-
+        branches = ::Kaminari.paginate_array(branches)
         merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
         present(
-          paginate(::Kaminari.paginate_array(branches)),
+          paginate(branches),
           with: Entities::Branch,
           current_user: current_user,
           project: user_project,

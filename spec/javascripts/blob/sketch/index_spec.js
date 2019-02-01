@@ -4,15 +4,13 @@ import SketchLoader from '~/blob/sketch';
 
 describe('Sketch viewer', () => {
   const generateZipFileArrayBuffer = (zipFile, resolve, done) => {
-    zipFile
-      .generateAsync({ type: 'arrayBuffer' })
-      .then((content) => {
-        resolve(content);
+    zipFile.generateAsync({ type: 'arrayBuffer' }).then(content => {
+      resolve(content);
 
-        setTimeout(() => {
-          done();
-        }, 100);
-      });
+      setTimeout(() => {
+        done();
+      }, 100);
+    });
   };
 
   preloadFixtures('static/sketch_viewer.html.raw');
@@ -22,60 +20,63 @@ describe('Sketch viewer', () => {
   });
 
   describe('with error message', () => {
-    beforeEach((done) => {
-      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(() => new Promise((resolve, reject) => {
-        reject();
+    beforeEach(done => {
+      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(
+        () =>
+          new Promise((resolve, reject) => {
+            reject();
 
-        setTimeout(() => {
-          done();
-        });
-      }));
+            setTimeout(() => {
+              done();
+            });
+          }),
+      );
 
       new SketchLoader(document.getElementById('js-sketch-viewer'));
     });
 
     it('renders error message', () => {
-      expect(
-        document.querySelector('#js-sketch-viewer p'),
-      ).not.toBeNull();
+      expect(document.querySelector('#js-sketch-viewer p')).not.toBeNull();
 
-      expect(
-        document.querySelector('#js-sketch-viewer p').textContent.trim(),
-      ).toContain('Cannot show preview.');
+      expect(document.querySelector('#js-sketch-viewer p').textContent.trim()).toContain(
+        'Cannot show preview.',
+      );
     });
 
     it('removes render the loading icon', () => {
-      expect(
-        document.querySelector('.js-loading-icon'),
-      ).toBeNull();
+      expect(document.querySelector('.js-loading-icon')).toBeNull();
     });
   });
 
   describe('success', () => {
-    beforeEach((done) => {
-      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(() => new Promise((resolve) => {
-        const zipFile = new JSZip();
-        zipFile.folder('previews')
-          .file('preview.png', 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAA1JREFUeNoBAgD9/wAAAAIAAVMrnDAAAAAASUVORK5CYII=', {
-            base64: true,
-          });
+    beforeEach(done => {
+      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(
+        () =>
+          new Promise(resolve => {
+            const zipFile = new JSZip();
+            zipFile
+              .folder('previews')
+              .file(
+                'preview.png',
+                'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAMAAAAoyzS7AAAAA1BMVEUAAACnej3aAAAAAXRSTlMAQObYZgAAAA1JREFUeNoBAgD9/wAAAAIAAVMrnDAAAAAASUVORK5CYII=',
+                {
+                  base64: true,
+                },
+              );
 
-        generateZipFileArrayBuffer(zipFile, resolve, done);
-      }));
+            generateZipFileArrayBuffer(zipFile, resolve, done);
+          }),
+      );
 
       new SketchLoader(document.getElementById('js-sketch-viewer'));
     });
 
     it('does not render error message', () => {
-      expect(
-        document.querySelector('#js-sketch-viewer p'),
-      ).toBeNull();
+      expect(document.querySelector('#js-sketch-viewer p')).toBeNull();
     });
 
     it('removes render the loading icon', () => {
-      expect(
-        document.querySelector('.js-loading-icon'),
-      ).toBeNull();
+      expect(document.querySelector('.js-loading-icon')).toBeNull();
     });
 
     it('renders preview img', () => {
@@ -95,24 +96,25 @@ describe('Sketch viewer', () => {
   });
 
   describe('incorrect file', () => {
-    beforeEach((done) => {
-      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(() => new Promise((resolve) => {
-        const zipFile = new JSZip();
+    beforeEach(done => {
+      spyOn(SketchLoader.prototype, 'getZipFile').and.callFake(
+        () =>
+          new Promise(resolve => {
+            const zipFile = new JSZip();
 
-        generateZipFileArrayBuffer(zipFile, resolve, done);
-      }));
+            generateZipFileArrayBuffer(zipFile, resolve, done);
+          }),
+      );
 
       new SketchLoader(document.getElementById('js-sketch-viewer'));
     });
 
     it('renders error message', () => {
-      expect(
-        document.querySelector('#js-sketch-viewer p'),
-      ).not.toBeNull();
+      expect(document.querySelector('#js-sketch-viewer p')).not.toBeNull();
 
-      expect(
-        document.querySelector('#js-sketch-viewer p').textContent.trim(),
-      ).toContain('Cannot show preview.');
+      expect(document.querySelector('#js-sketch-viewer p').textContent.trim()).toContain(
+        'Cannot show preview.',
+      );
     });
   });
 });

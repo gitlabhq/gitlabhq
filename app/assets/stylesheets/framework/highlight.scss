@@ -46,7 +46,7 @@
     a {
       font-family: $monospace-font;
       display: block;
-      font-size: $code_font_size !important;
+      font-size: $code-font-size !important;
       min-height: 19px;
       white-space: nowrap;
 
@@ -67,4 +67,10 @@
       }
     }
   }
+}
+
+// Vertically aligns <table> line numbers (eg. blame view)
+// see https://gitlab.com/gitlab-org/gitlab-ce/issues/54048
+td.line-numbers {
+  line-height: 1;
 }

@@ -2,6 +2,8 @@ resources :projects, only: [:index, :new, :create]
 
 draw :git_http
 
+get '/projects/:id' => 'projects#resolve'
+
 constraints(::Constraints::ProjectUrlConstrainer.new) do
   # If the route has a wildcard segment, the segment has a regex constraint,
   # the segment is potentially followed by _another_ wildcard segment, and
@@ -95,6 +97,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      resources :releases, only: [:index]
       resources :forks, only: [:index, :new, :create]
       resource :import, only: [:new, :create, :show]
 
@@ -178,6 +181,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resource :mirror, only: [:show, :update] do
         member do
+          get :ssh_host_keys, constraints: { format: :json }
           post :update_now
         end
       end
@@ -206,20 +210,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :clusters, except: [:edit, :create] do
-        collection do
-          post :create_gcp
-          post :create_user
-        end
-
-        member do
-          get :status, format: :json
-
-          scope :applications do
-            post '/:application', to: 'clusters/applications#create', as: :install_applications
-          end
-        end
-      end
+      concerns :clusterable
 
       resources :environments, except: [:destroy] do
         member do
@@ -257,13 +248,16 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      namespace :serverless do
+        get '/functions/:environment_id/:id', to: 'functions#show'
+        resources :functions, only: [:index]
+      end
+
       scope '-' do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
-            post :cancel_all
-
             resources :artifacts, only: [] do
               collection do
                 get :latest_succeeded,
@@ -368,6 +362,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
         collection do
           post :bulk_update
+          post :import_csv
         end
       end
 
@@ -444,13 +439,20 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository do
           post :create_deploy_token, path: 'deploy_token/create'
+          post :cleanup
         end
       end
+
+      resources :error_tracking, only: [:index], controller: :error_tracking
 
       # Since both wiki and repository routing contains wildcard characters
       # its preferable to keep it below all other project routes
       draw :wiki
       draw :repository
+
+      namespace :settings do
+        resource :operations, only: [:show, :update]
+      end
     end
 
     resources(:projects,

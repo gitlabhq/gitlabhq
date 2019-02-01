@@ -40,21 +40,27 @@ describe 'Merge request > User sees merge widget', :js do
 
   context 'view merge request' do
     let!(:environment) { create(:environment, project: project) }
+    let(:sha)          { project.commit(merge_request.source_branch).sha }
+    let(:pipeline)     { create(:ci_pipeline_without_jobs, status: 'success', sha: sha, project: project, ref: merge_request.source_branch) }
+    let(:build)        { create(:ci_build, :success, pipeline: pipeline) }
 
     let!(:deployment) do
-      create(:deployment, environment: environment,
-                          ref: 'feature',
-                          sha: merge_request.diff_head_sha)
+      create(:deployment, :succeed,
+                          environment: environment,
+                          ref: merge_request.source_branch,
+                          deployable: build,
+                          sha: sha)
     end
 
     before do
+      merge_request.update!(head_pipeline: pipeline)
       visit project_merge_request_path(project, merge_request)
     end
 
     it 'shows environments link' do
       wait_for_requests
 
-      page.within('.mr-widget-heading') do
+      page.within('.js-pre-deployment') do
         expect(page).to have_content("Deployed to #{environment.name}")
         expect(find('.js-deploy-url')[:href]).to include(environment.formatted_external_url)
       end
@@ -174,7 +180,7 @@ describe 'Merge request > User sees merge widget', :js do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 
-      expect(page).to have_text('Could not connect to the CI server. Please check your settings and try again')
+      expect(page).to have_text("Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.")
     end
   end
 
@@ -310,7 +316,7 @@ describe 'Merge request > User sees merge widget', :js do
 
     it 'user cannot remove source branch' do
       expect(page).not_to have_field('remove-source-branch-input')
-      expect(page).to have_content('Removes source branch')
+      expect(page).to have_content('Deletes source branch')
     end
   end
 
@@ -423,7 +429,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the new failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
@@ -438,7 +444,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the new failure' do
           it 'shows the test report detail' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do
@@ -468,7 +474,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the existing failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
@@ -483,7 +489,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the existing failure' do
           it 'shows test report detail of it' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do
@@ -519,7 +525,7 @@ describe 'Merge request > User sees merge widget', :js do
         end
 
         it 'shows test reports summary which includes the resolved failure' do
-          within(".mr-section-container") do
+          within(".js-reports-container") do
             click_button 'Expand'
 
             expect(page).to have_content('Test summary contained 1 fixed test result out of 2 total tests')
@@ -533,7 +539,7 @@ describe 'Merge request > User sees merge widget', :js do
 
         context 'when user clicks the resolved failure' do
           it 'shows test report detail of it' do
-            within(".mr-section-container") do
+            within(".js-reports-container") do
               click_button 'Expand'
 
               within(".js-report-section-container") do

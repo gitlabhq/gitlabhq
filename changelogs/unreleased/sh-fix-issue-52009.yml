@@ -1,5 +1,0 @@
----
-title: Prevent Error 500s with invalid relative links
-merge_request: 22001
-author:
-type: fixed

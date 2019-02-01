@@ -8,10 +8,12 @@ describe('Issuable Time Tracker', () => {
   let initialData;
   let vm;
 
-  const initTimeTrackingComponent = ({ timeEstimate,
-                                         timeSpent,
-                                         timeEstimateHumanReadable,
-                                         timeSpentHumanReadable }) => {
+  const initTimeTrackingComponent = ({
+    timeEstimate,
+    timeSpent,
+    timeEstimateHumanReadable,
+    timeSpentHumanReadable,
+  }) => {
     setFixtures(`
     <div>
       <div id="mock-container"></div>
@@ -88,6 +90,7 @@ describe('Issuable Time Tracker', () => {
           Vue.nextTick(() => {
             expect(vm.showComparisonState).toBe(true);
             const $comparisonPane = vm.$el.querySelector('.time-tracking-comparison-pane');
+
             expect($comparisonPane).toBeVisible();
             done();
           });
@@ -96,14 +99,18 @@ describe('Issuable Time Tracker', () => {
         describe('Remaining meter', () => {
           it('should display the remaining meter with the correct width', done => {
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[value="5"]')).not.toBeNull();
+              expect(
+                vm.$el.querySelector('.time-tracking-comparison-pane .progress[value="5"]'),
+              ).not.toBeNull();
               done();
             });
           });
 
           it('should display the remaining meter with the correct background color when within estimate', done => {
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="primary"]')).not.toBeNull();
+              expect(
+                vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="primary"]'),
+              ).not.toBeNull();
               done();
             });
           });
@@ -112,7 +119,9 @@ describe('Issuable Time Tracker', () => {
             vm.timeEstimate = 10000; // 2h 46m
             vm.timeSpent = 20000000; // 231 days
             Vue.nextTick(() => {
-              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="danger"]')).not.toBeNull();
+              expect(
+                vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="danger"]'),
+              ).not.toBeNull();
               done();
             });
           });

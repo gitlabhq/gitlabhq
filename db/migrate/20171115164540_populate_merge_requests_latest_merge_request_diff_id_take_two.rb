@@ -1,5 +1,5 @@
 # This is identical to the stolen background migration, which already has specs.
-class PopulateMergeRequestsLatestMergeRequestDiffIdTakeTwo < ActiveRecord::Migration
+class PopulateMergeRequestsLatestMergeRequestDiffIdTakeTwo < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

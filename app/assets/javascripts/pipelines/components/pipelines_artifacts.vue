@@ -1,13 +1,15 @@
 <script>
-import tooltip from '../../vue_shared/directives/tooltip';
-import icon from '../../vue_shared/components/icon.vue';
+import { GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
-    icon,
+    Icon,
+    GlLink,
+    GlButton,
   },
   props: {
     artifacts: {
@@ -18,36 +20,21 @@ export default {
 };
 </script>
 <template>
-  <div
-    class="btn-group"
-    role="group"
-  >
-    <button
-      v-tooltip
-      class="dropdown-toggle btn btn-default build-artifacts js-pipeline-dropdown-download"
+  <div class="btn-group" role="group">
+    <gl-button
+      v-gl-tooltip
+      class="dropdown-toggle build-artifacts js-pipeline-dropdown-download"
       title="Artifacts"
-      data-placement="top"
       data-toggle="dropdown"
       aria-label="Artifacts"
     >
-      <icon name="download" />
-      <i
-        class="fa fa-caret-down"
-        aria-hidden="true"
-      >
-      </i>
-    </button>
+      <icon name="download" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
+    </gl-button>
     <ul class="dropdown-menu dropdown-menu-right">
-      <li
-        v-for="(artifact, i) in artifacts"
-        :key="i">
-        <a
-          :href="artifact.path"
-          rel="nofollow"
-          download
-        >
+      <li v-for="(artifact, i) in artifacts" :key="i">
+        <gl-link :href="artifact.path" rel="nofollow" download>
           Download {{ artifact.name }} artifacts
-        </a>
+        </gl-link>
       </li>
     </ul>
   </div>

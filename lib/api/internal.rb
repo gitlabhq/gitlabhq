@@ -40,7 +40,7 @@ module API
           elsif params[:user_id]
             User.find_by(id: params[:user_id])
           elsif params[:username]
-            User.find_by_username(params[:username])
+            UserFinder.new(params[:username]).find_by_username
           end
 
         protocol = params[:protocol]
@@ -65,6 +65,8 @@ module API
                          result
                        rescue Gitlab::GitAccess::UnauthorizedError => e
                          break response_with_status(code: 401, success: false, message: e.message)
+                       rescue Gitlab::GitAccess::TimeoutError => e
+                         break response_with_status(code: 503, success: false, message: e.message)
                        rescue Gitlab::GitAccess::NotFoundError => e
                          break response_with_status(code: 404, success: false, message: e.message)
                        end
@@ -154,7 +156,7 @@ module API
         elsif params[:user_id]
           user = User.find_by(id: params[:user_id])
         elsif params[:username]
-          user = User.find_by(username: params[:username])
+          user = UserFinder.new(params[:username]).find_by_username
         end
 
         present user, with: Entities::UserSafe
@@ -254,8 +256,9 @@ module API
 
       post '/post_receive' do
         status 200
+
         PostReceive.perform_async(params[:gl_repository], params[:identifier],
-          params[:changes])
+          params[:changes], params[:push_options].to_a)
         broadcast_message = BroadcastMessage.current&.last&.message
         reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
 

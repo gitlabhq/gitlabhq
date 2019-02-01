@@ -25,15 +25,16 @@ class DirtySubmitForm {
       DirtySubmitForm.THROTTLE_DURATION,
     );
     this.form.addEventListener('input', throttledUpdateDirtyInput);
+    this.form.addEventListener('change', throttledUpdateDirtyInput);
     this.form.addEventListener('submit', event => this.formSubmit(event));
   }
 
   updateDirtyInput(event) {
-    const input = event.target;
+    const { target } = event;
 
-    if (!input.dataset.dirtySubmitOriginalValue) return;
+    if (!target.dataset.isDirtySubmitInput) return;
 
-    this.updateDirtyInputs(input);
+    this.updateDirtyInputs(target);
     this.toggleSubmission();
   }
 
@@ -65,6 +66,7 @@ class DirtySubmitForm {
   }
 
   static initInput(element) {
+    element.dataset.isDirtySubmitInput = true;
     element.dataset.dirtySubmitOriginalValue = DirtySubmitForm.inputCurrentValue(element);
   }
 

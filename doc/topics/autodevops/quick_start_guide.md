@@ -84,6 +84,9 @@ under which this application will be deployed.
 
 1. Once ready, click **Create Kubernetes cluster**.
 
+NOTE: **Note:**
+Do not select `f1-micro` from the **Machine type** dropdown. `f1-micro` machines cannot support a full GitLab installation.
+
 After a couple of minutes, the cluster will be created. You can also see its
 status on your [GCP dashboard](https://console.cloud.google.com/kubernetes).
 
@@ -213,7 +216,7 @@ deployment and clicking a square will take you to the pod's logs page.
 TIP: **Tip:**
 There is only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` variable](index.md#environment-variables)
-under **Settings > CI/CD > Variables**.
+under **Settings > CI/CD > Environment variables**.
 
 ### Working with branches
 

@@ -42,7 +42,7 @@ class BalsamiqViewer {
     this.initDatabase(loadEvent.target.response);
 
     const previews = this.getPreviews();
-    previews.forEach((preview) => {
+    previews.forEach(preview => {
       const renderedPreview = this.renderPreview(preview);
 
       container.appendChild(renderedPreview);

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module DataBuilder
     module Push
@@ -29,7 +31,11 @@ module Gitlab
               }
             }
           ],
-          total_commits_count: 1
+          total_commits_count: 1,
+          push_options: [
+            "ci.skip",
+            "custom option"
+          ]
         }.freeze
 
       # Produce a hash of post-receive data
@@ -50,10 +56,12 @@ module Gitlab
       #     homepage: String,
       #   },
       #   commits: Array,
-      #   total_commits_count: Fixnum
+      #   total_commits_count: Fixnum,
+      #   push_options: Array
       # }
       #
-      def build(project, user, oldrev, newrev, ref, commits = [], message = nil, commits_count: nil)
+      # rubocop:disable Metrics/ParameterLists
+      def build(project, user, oldrev, newrev, ref, commits = [], message = nil, commits_count: nil, push_options: [])
         commits = Array(commits)
 
         # Total commits count
@@ -85,12 +93,13 @@ module Gitlab
           user_id: user.id,
           user_name: user.name,
           user_username: user.username,
-          user_email: user.email,
+          user_email: user.public_email,
           user_avatar: user.avatar_url(only_path: false),
           project_id: project.id,
           project: project.hook_attrs,
           commits: commit_attrs,
           total_commits_count: commits_count,
+          push_options: push_options,
           # DEPRECATED
           repository: project.hook_attrs.slice(:name, :url, :description, :homepage,
                                                :git_http_url, :git_ssh_url, :visibility_level)

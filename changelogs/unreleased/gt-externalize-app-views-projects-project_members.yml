@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/projects/project_members`
+merge_request: 23227
+author: Tao Wang
+type: other

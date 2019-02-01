@@ -46,6 +46,7 @@
     "diff_head_commit_short_id": { "type": ["string", "null"] },
     "merge_commit_message": { "type": ["string", "null"] },
     "pipeline": { "type": ["object", "null"] },
+    "merge_pipeline": { "type": ["object", "null"] },
     "work_in_progress": { "type": "boolean" },
     "source_branch_exists": { "type": "boolean" },
     "mergeable_discussions_state": { "type": "boolean" },
@@ -118,7 +119,10 @@
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] },
     "squash": { "type": "boolean" },
-    "test_reports_path": { "type": ["string", "null"] }
+    "test_reports_path": { "type": ["string", "null"] },
+    "can_receive_suggestion": { "type": "boolean" },
+    "source_branch_protected": { "type": "boolean" },
+    "conflicts_docs_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

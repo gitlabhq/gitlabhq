@@ -229,6 +229,18 @@ describe ProjectsHelper do
     end
   end
 
+  describe '#link_to_project' do
+    let(:group)   { create(:group, name: 'group name with space') }
+    let(:project) { create(:project, group: group, name: 'project name with space') }
+    subject { link_to_project(project) }
+
+    it 'returns an HTML link to the project' do
+      expect(subject).to match(%r{/#{group.full_path}/#{project.path}})
+      expect(subject).to include('group name with space /')
+      expect(subject).to include('project name with space')
+    end
+  end
+
   describe '#link_to_member_avatar' do
     let(:user) { build_stubbed(:user) }
     let(:expected) { double }
@@ -342,8 +354,40 @@ describe ProjectsHelper do
         allow(project).to receive(:builds_enabled?).and_return(false)
       end
 
-      it "do not include pipelines tab" do
-        is_expected.not_to include(:pipelines)
+      context 'when user has access to builds' do
+        it "does include pipelines tab" do
+          is_expected.to include(:pipelines)
+        end
+      end
+
+      context 'when user does not have access to builds' do
+        before do
+          allow(helper).to receive(:can?) { false }
+        end
+
+        it "does not include pipelines tab" do
+          is_expected.not_to include(:pipelines)
+        end
+      end
+    end
+
+    context 'when project has external wiki' do
+      before do
+        allow(project).to receive(:has_external_wiki?).and_return(true)
+      end
+
+      it 'includes external wiki tab' do
+        is_expected.to include(:external_wiki)
+      end
+    end
+
+    context 'when project does not have external wiki' do
+      before do
+        allow(project).to receive(:has_external_wiki?).and_return(false)
+      end
+
+      it 'does not include external wiki tab' do
+        is_expected.not_to include(:external_wiki)
       end
     end
   end
@@ -471,6 +515,31 @@ describe ProjectsHelper do
     end
   end
 
+  describe 'link_to_bfg' do
+    subject { helper.link_to_bfg }
+
+    it 'generates a hardcoded link to the BFG Repo-Cleaner' do
+      result = helper.link_to_bfg
+      doc = Nokogiri::HTML.fragment(result)
+
+      expect(doc.children.size).to eq(1)
+
+      link = doc.children.first
+
+      aggregate_failures do
+        expect(result).to be_html_safe
+
+        expect(link.name).to eq('a')
+        expect(link[:target]).to eq('_blank')
+        expect(link[:rel]).to eq('noopener noreferrer')
+        expect(link[:href]).to eq('https://rtyley.github.io/bfg-repo-cleaner/')
+        expect(link.inner_html).to eq('BFG')
+
+        expect(result).to be_html_safe
+      end
+    end
+  end
+
   describe '#legacy_render_context' do
     it 'returns the redcarpet engine' do
       params = { legacy_render: '1' }
@@ -480,6 +549,215 @@ describe ProjectsHelper do
 
     it 'returns nothing' do
       expect(helper.legacy_render_context({})).to be_empty
+    end
+  end
+
+  describe '#explore_projects_tab?' do
+    subject { helper.explore_projects_tab? }
+
+    it 'returns true when on the "All" tab under "Explore projects"' do
+      allow(@request).to receive(:path) { explore_projects_path }
+
+      expect(subject).to be_truthy
+    end
+
+    it 'returns true when on the "Trending" tab under "Explore projects"' do
+      allow(@request).to receive(:path) { trending_explore_projects_path }
+
+      expect(subject).to be_truthy
+    end
+
+    it 'returns true when on the "Starred" tab under "Explore projects"' do
+      allow(@request).to receive(:path) { starred_explore_projects_path }
+
+      expect(subject).to be_truthy
+    end
+
+    it 'returns false when on the "Your projects" tab' do
+      allow(@request).to receive(:path) { dashboard_projects_path }
+
+      expect(subject).to be_falsey
+    end
+  end
+
+  describe '#show_merge_request_count' do
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(project_list_show_mr_count: true)
+      end
+
+      it 'returns true if compact mode is disabled' do
+        expect(helper.show_merge_request_count?).to be_truthy
+      end
+
+      it 'returns false if compact mode is enabled' do
+        expect(helper.show_merge_request_count?(compact_mode: true)).to be_falsey
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(project_list_show_mr_count: false)
+      end
+
+      it 'always returns false' do
+        expect(helper.show_merge_request_count?(disabled: false)).to be_falsy
+        expect(helper.show_merge_request_count?(disabled: true)).to be_falsy
+      end
+    end
+
+    context 'disabled flag' do
+      before do
+        stub_feature_flags(project_list_show_mr_count: true)
+      end
+
+      it 'returns false if disabled flag is true' do
+        expect(helper.show_merge_request_count?(disabled: true)).to be_falsey
+      end
+
+      it 'returns true if disabled flag is false' do
+        expect(helper.show_merge_request_count?).to be_truthy
+      end
+    end
+  end
+
+  describe '#show_issue_count?' do
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(project_list_show_issue_count: true)
+      end
+
+      it 'returns true if compact mode is disabled' do
+        expect(helper.show_issue_count?).to be_truthy
+      end
+
+      it 'returns false if compact mode is enabled' do
+        expect(helper.show_issue_count?(compact_mode: true)).to be_falsey
+      end
+    end
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(project_list_show_issue_count: false)
+      end
+
+      it 'always returns false' do
+        expect(helper.show_issue_count?(disabled: false)).to be_falsy
+        expect(helper.show_issue_count?(disabled: true)).to be_falsy
+      end
+    end
+
+    context 'disabled flag' do
+      before do
+        stub_feature_flags(project_list_show_issue_count: true)
+      end
+
+      it 'returns false if disabled flag is true' do
+        expect(helper.show_issue_count?(disabled: true)).to be_falsey
+      end
+
+      it 'returns true if disabled flag is false' do
+        expect(helper.show_issue_count?).to be_truthy
+      end
+    end
+  end
+
+  describe '#show_auto_devops_implicitly_enabled_banner?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { create(:user) }
+
+    let(:feature_visibilities) do
+      {
+        enabled: ProjectFeature::ENABLED,
+        disabled: ProjectFeature::DISABLED
+      }
+    end
+
+    where(:global_setting, :project_setting, :builds_visibility, :gitlab_ci_yml, :user_access, :result) do
+      # With ADO implicitly enabled scenarios
+      true | nil | :disabled | true  | :developer  | false
+      true | nil | :disabled | true  | :maintainer | false
+      true | nil | :disabled | true  | :owner      | false
+
+      true | nil | :disabled | false | :developer  | false
+      true | nil | :disabled | false | :maintainer | false
+      true | nil | :disabled | false | :owner      | false
+
+      true | nil | :enabled  | true  | :developer  | false
+      true | nil | :enabled  | true  | :maintainer | false
+      true | nil | :enabled  | true  | :owner      | false
+
+      true | nil | :enabled  | false | :developer  | false
+      true | nil | :enabled  | false | :maintainer | true
+      true | nil | :enabled  | false | :owner      | true
+
+      # With ADO enabled scenarios
+      true | true | :disabled | true  | :developer  | false
+      true | true | :disabled | true  | :maintainer | false
+      true | true | :disabled | true  | :owner      | false
+
+      true | true | :disabled | false | :developer  | false
+      true | true | :disabled | false | :maintainer | false
+      true | true | :disabled | false | :owner      | false
+
+      true | true | :enabled  | true  | :developer  | false
+      true | true | :enabled  | true  | :maintainer | false
+      true | true | :enabled  | true  | :owner      | false
+
+      true | true | :enabled  | false | :developer  | false
+      true | true | :enabled  | false | :maintainer | false
+      true | true | :enabled  | false | :owner      | false
+
+      # With ADO disabled scenarios
+      true | false | :disabled | true  | :developer  | false
+      true | false | :disabled | true  | :maintainer | false
+      true | false | :disabled | true  | :owner      | false
+
+      true | false | :disabled | false | :developer  | false
+      true | false | :disabled | false | :maintainer | false
+      true | false | :disabled | false | :owner      | false
+
+      true | false | :enabled  | true  | :developer  | false
+      true | false | :enabled  | true  | :maintainer | false
+      true | false | :enabled  | true  | :owner      | false
+
+      true | false | :enabled  | false | :developer  | false
+      true | false | :enabled  | false | :maintainer | false
+      true | false | :enabled  | false | :owner      | false
+    end
+
+    def grant_user_access(project, user, access)
+      case access
+      when :developer, :maintainer
+        project.add_user(user, access)
+      when :owner
+        project.namespace.update(owner: user)
+      end
+    end
+
+    with_them do
+      let(:project) do
+        if project_setting.nil?
+          create(:project, :repository)
+        else
+          create(:project, :repository, :auto_devops)
+        end
+      end
+
+      before do
+        stub_application_setting(auto_devops_enabled: global_setting)
+
+        allow_any_instance_of(Repository).to receive(:gitlab_ci_yml).and_return(gitlab_ci_yml)
+
+        grant_user_access(project, user, user_access)
+        project.project_feature.update_attribute(:builds_access_level, feature_visibilities[builds_visibility])
+        project.auto_devops.update_attribute(:enabled, project_setting) unless project_setting.nil?
+      end
+
+      subject { helper.show_auto_devops_implicitly_enabled_banner?(project, user) }
+
+      it { is_expected.to eq(result) }
     end
   end
 end

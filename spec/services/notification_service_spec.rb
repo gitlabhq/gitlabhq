@@ -13,6 +13,54 @@ describe NotificationService, :mailer do
     end
   end
 
+  shared_examples 'altered milestone notification on issue' do
+    it 'sends the email to the correct people' do
+      should_email(subscriber_to_new_milestone)
+      issue.assignees.each do |a|
+        should_email(a)
+      end
+      should_email(@u_watcher)
+      should_email(@u_guest_watcher)
+      should_email(@u_participant_mentioned)
+      should_email(@subscriber)
+      should_email(@subscribed_participant)
+      should_email(@watcher_and_subscriber)
+      should_not_email(@u_guest_custom)
+      should_not_email(@u_committer)
+      should_not_email(@unsubscriber)
+      should_not_email(@u_participating)
+      should_not_email(@u_lazy_participant)
+      should_not_email(issue.author)
+      should_not_email(@u_disabled)
+      should_not_email(@u_custom_global)
+      should_not_email(@u_mentioned)
+    end
+  end
+
+  shared_examples 'altered milestone notification on merge request' do
+    it 'sends the email to the correct people' do
+      should_email(subscriber_to_new_milestone)
+      merge_request.assignees.each do |a|
+        should_email(a)
+      end
+      should_email(@u_watcher)
+      should_email(@u_guest_watcher)
+      should_email(@u_participant_mentioned)
+      should_email(@subscriber)
+      should_email(@subscribed_participant)
+      should_email(@watcher_and_subscriber)
+      should_not_email(@u_guest_custom)
+      should_not_email(@u_committer)
+      should_not_email(@unsubscriber)
+      should_not_email(@u_participating)
+      should_not_email(@u_lazy_participant)
+      should_not_email(merge_request.author)
+      should_not_email(@u_disabled)
+      should_not_email(@u_custom_global)
+      should_not_email(@u_mentioned)
+    end
+  end
+
   shared_examples 'notifications for new mentions' do
     it 'sends no emails when no new mentions are present' do
       send_notifications
@@ -952,6 +1000,96 @@ describe NotificationService, :mailer do
       end
     end
 
+    describe '#removed_milestone_issue' do
+      it_behaves_like 'altered milestone notification on issue' do
+        let(:milestone) { create(:milestone, project: project, issues: [issue]) }
+        let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
+
+        before do
+          notification.removed_milestone_issue(issue, issue.author)
+        end
+      end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:guest) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignees: [assignee]) }
+        let(:milestone) { create(:milestone, project: project, issues: [confidential_issue]) }
+
+        it "emails subscribers of the issue's milestone that can read the issue" do
+          project.add_developer(member)
+          project.add_guest(guest)
+
+          confidential_issue.subscribe(non_member, project)
+          confidential_issue.subscribe(author, project)
+          confidential_issue.subscribe(assignee, project)
+          confidential_issue.subscribe(member, project)
+          confidential_issue.subscribe(guest, project)
+          confidential_issue.subscribe(admin, project)
+
+          reset_delivered_emails!
+
+          notification.removed_milestone_issue(confidential_issue, @u_disabled)
+
+          should_not_email(non_member)
+          should_not_email(guest)
+          should_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
+      end
+    end
+
+    describe '#changed_milestone_issue' do
+      it_behaves_like 'altered milestone notification on issue' do
+        let(:new_milestone) { create(:milestone, project: project, issues: [issue]) }
+        let!(:subscriber_to_new_milestone) { create(:user) { |u| issue.toggle_subscription(u, project) } }
+
+        before do
+          notification.changed_milestone_issue(issue, new_milestone, issue.author)
+        end
+      end
+
+      context 'confidential issues' do
+        let(:author) { create(:user) }
+        let(:assignee) { create(:user) }
+        let(:non_member) { create(:user) }
+        let(:member) { create(:user) }
+        let(:guest) { create(:user) }
+        let(:admin) { create(:admin) }
+        let(:confidential_issue) { create(:issue, :confidential, project: project, title: 'Confidential issue', author: author, assignees: [assignee]) }
+        let(:new_milestone) { create(:milestone, project: project, issues: [confidential_issue]) }
+
+        it "emails subscribers of the issue's milestone that can read the issue" do
+          project.add_developer(member)
+          project.add_guest(guest)
+
+          confidential_issue.subscribe(non_member, project)
+          confidential_issue.subscribe(author, project)
+          confidential_issue.subscribe(assignee, project)
+          confidential_issue.subscribe(member, project)
+          confidential_issue.subscribe(guest, project)
+          confidential_issue.subscribe(admin, project)
+
+          reset_delivered_emails!
+
+          notification.changed_milestone_issue(confidential_issue, new_milestone, @u_disabled)
+
+          should_not_email(non_member)
+          should_not_email(guest)
+          should_email(author)
+          should_email(assignee)
+          should_email(member)
+          should_email(admin)
+        end
+      end
+    end
+
     describe '#close_issue' do
       before do
         update_custom_notification(:close_issue, @u_guest_custom, resource: project)
@@ -1304,6 +1442,28 @@ describe NotificationService, :mailer do
       end
     end
 
+    describe '#removed_milestone_merge_request' do
+      it_behaves_like 'altered milestone notification on merge request' do
+        let(:milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
+        let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
+
+        before do
+          notification.removed_milestone_merge_request(merge_request, merge_request.author)
+        end
+      end
+    end
+
+    describe '#changed_milestone_merge_request' do
+      it_behaves_like 'altered milestone notification on merge request' do
+        let(:new_milestone) { create(:milestone, project: project, merge_requests: [merge_request]) }
+        let!(:subscriber_to_new_milestone) { create(:user) { |u| merge_request.toggle_subscription(u, project) } }
+
+        before do
+          notification.changed_milestone_merge_request(merge_request, new_milestone, merge_request.author)
+        end
+      end
+    end
+
     describe '#merge_request_unmergeable' do
       it "sends email to merge request author" do
         notification.merge_request_unmergeable(merge_request)
@@ -1485,6 +1645,23 @@ describe NotificationService, :mailer do
         should_not_email(@u_guest_watcher)
         should_not_email(@u_guest_custom)
         should_not_email(@u_disabled)
+      end
+
+      context 'users not having access to the new location' do
+        it 'does not send email' do
+          old_user = create(:user)
+          ProjectAuthorization.create!(project: project, user: old_user, access_level: Gitlab::Access::GUEST)
+
+          build_group(project)
+          reset_delivered_emails!
+
+          notification.project_was_moved(project, "gitlab/gitlab")
+
+          should_email(@g_watcher)
+          should_email(@g_global_watcher)
+          should_email(project.creator)
+          should_not_email(old_user)
+        end
       end
     end
 
@@ -1986,6 +2163,60 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe 'Repository cleanup' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project) }
+
+    describe '#repository_cleanup_success' do
+      it 'emails the specified user only' do
+        notification.repository_cleanup_success(project, user)
+
+        should_email(user)
+      end
+    end
+
+    describe '#repository_cleanup_failure' do
+      it 'emails the specified user only' do
+        notification.repository_cleanup_failure(project, user, 'Some error')
+
+        should_email(user)
+      end
+    end
+  end
+
+  context 'Remote mirror notifications' do
+    describe '#remote_mirror_update_failed' do
+      let(:project) { create(:project) }
+      let(:remote_mirror) { create(:remote_mirror, project: project) }
+      let(:u_blocked) { create(:user, :blocked) }
+      let(:u_silence) { create_user_with_notification(:disabled, 'silent-maintainer', project) }
+      let(:u_owner)   { project.owner }
+      let(:u_maintainer1) { create(:user) }
+      let(:u_maintainer2) { create(:user) }
+      let(:u_developer) { create(:user) }
+
+      before do
+        project.add_maintainer(u_blocked)
+        project.add_maintainer(u_silence)
+        project.add_maintainer(u_maintainer1)
+        project.add_maintainer(u_maintainer2)
+        project.add_developer(u_developer)
+
+        # Mock remote update
+        allow(project.repository).to receive(:async_remove_remote)
+        allow(project.repository).to receive(:add_remote)
+
+        reset_delivered_emails!
+      end
+
+      it 'emails current watching maintainers' do
+        notification.remote_mirror_update_failed(remote_mirror)
+
+        should_only_email(u_maintainer1, u_maintainer2, u_owner)
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)
@@ -2018,8 +2249,8 @@ describe NotificationService, :mailer do
 
   # Users in the project's group but not part of project's team
   # with different notification settings
-  def build_group(project)
-    group = create_nested_group
+  def build_group(project, visibility: :public)
+    group = create_nested_group(visibility)
     project.update(namespace_id: group.id)
 
     # Group member: global=disabled, group=watch
@@ -2035,10 +2266,10 @@ describe NotificationService, :mailer do
 
   # Creates a nested group only if supported
   # to avoid errors on MySQL
-  def create_nested_group
-    if Group.supports_nested_groups?
-      parent_group = create(:group, :public)
-      child_group = create(:group, :public, parent: parent_group)
+  def create_nested_group(visibility)
+    if Group.supports_nested_objects?
+      parent_group = create(:group, visibility)
+      child_group = create(:group, visibility, parent: parent_group)
 
       # Parent group member: global=disabled, parent_group=watch, child_group=global
       @pg_watcher ||= create_user_with_notification(:watch, 'parent_group_watcher', parent_group)
@@ -2058,12 +2289,12 @@ describe NotificationService, :mailer do
 
       child_group
     else
-      create(:group, :public)
+      create(:group, visibility)
     end
   end
 
   def add_member_for_parent_group(user, project)
-    return unless Group.supports_nested_groups?
+    return unless Group.supports_nested_objects?
 
     project.reload
 
@@ -2071,13 +2302,13 @@ describe NotificationService, :mailer do
   end
 
   def should_email_nested_group_user(user, times: 1, recipients: email_recipients)
-    return unless Group.supports_nested_groups?
+    return unless Group.supports_nested_objects?
 
     should_email(user, times: 1, recipients: email_recipients)
   end
 
   def should_not_email_nested_group_user(user, recipients: email_recipients)
-    return unless Group.supports_nested_groups?
+    return unless Group.supports_nested_objects?
 
     should_not_email(user, recipients: email_recipients)
   end

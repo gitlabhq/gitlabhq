@@ -3,7 +3,7 @@
 class PersonalAccessTokensFinder
   attr_accessor :params
 
-  delegate :build, :find, :find_by, to: :execute
+  delegate :build, :find, :find_by_id, :find_by_token, to: :execute
 
   def initialize(params = {})
     @params = params

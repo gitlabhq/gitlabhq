@@ -18,6 +18,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
       before_sha: nil,
       trigger_request: nil,
       schedule: nil,
+      merge_request: nil,
       project: project,
       current_user: user,
       variables_attributes: variables_attributes)
@@ -76,6 +77,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
         before_sha: nil,
         trigger_request: nil,
         schedule: nil,
+        merge_request: nil,
         project: project,
         current_user: user)
     end
@@ -88,6 +90,33 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
 
     it 'correctly indicated that this is a tagged pipeline' do
       expect(pipeline).to be_tag
+    end
+  end
+
+  context 'when pipeline is running for a merge request' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        source: :merge_request,
+        origin_ref: 'feature',
+        checkout_sha: project.commit.id,
+        after_sha: nil,
+        before_sha: nil,
+        trigger_request: nil,
+        schedule: nil,
+        merge_request: merge_request,
+        project: project,
+        current_user: user)
+    end
+
+    let(:merge_request) { build(:merge_request, target_project: project) }
+
+    before do
+      step.perform!
+    end
+
+    it 'correctly indicated that this is a merge request pipeline' do
+      expect(pipeline).to be_merge_request
+      expect(pipeline.merge_request).to eq(merge_request)
     end
   end
 end

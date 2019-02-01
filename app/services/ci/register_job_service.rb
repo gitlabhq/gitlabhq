@@ -36,7 +36,7 @@ module Ci
         builds = builds.with_any_tags
       end
 
-      builds.find do |build|
+      builds.each do |build|
         next unless runner.can_pick?(build)
 
         begin
@@ -45,7 +45,7 @@ module Ci
           if assign_runner!(build, params)
             register_success(build)
 
-            return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
+            return Result.new(build, true)
           end
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
           # We are looping to find another build that is not conflicting
@@ -82,6 +82,11 @@ module Ci
         return false
       end
 
+      if build.archived?
+        build.drop!(:archived_failure)
+        return false
+      end
+
       build.run!
       true
     end
@@ -113,7 +118,7 @@ module Ci
       # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
       groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
 
-      hierarchy_groups = Gitlab::GroupHierarchy.new(groups).base_and_descendants
+      hierarchy_groups = Gitlab::ObjectHierarchy.new(groups).base_and_descendants
       projects = Project.where(namespace_id: hierarchy_groups)
         .with_group_runners_enabled
         .with_builds_enabled

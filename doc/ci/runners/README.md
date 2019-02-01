@@ -135,12 +135,20 @@ Consider that if you don't lock your specific Runner to a specific project, any
 user with Maintainer role in you project can assign your Runner to another arbitrary
 project without requiring your authorization, so use it with caution.
 
+CAUTION: **Caution:**
+Never add a private Runner that you're using in your private projects to a
+project that you share with other people.
+
+CAUTION: **Caution:**
+Never use a Runner from a project which has multiple maintainers in your
+private project.
+
 An admin can enable/disable a specific Runner for projects:
 
 1. Navigate to **Admin > Runners**
-2. Find the Runner you wish to enable/disable
-3. Click edit on the Runner
-4. Click **Enable** or **Disable** on the project
+1. Find the Runner you wish to enable/disable
+1. Click edit on the Runner
+1. Click **Enable** or **Disable** on the project
 
 ## Protected Runners
 
@@ -312,7 +320,7 @@ We're always looking for contributions that can mitigate these
 
 If you think that registration token for a Project was revealed, you should
 reset them. It's recommended because such token can be used to register another
-Runner to thi Project. It may be next used to obtain the values of secret
+Runner to the Project. It may be next used to obtain the values of secret
 variables or clone the project code, that normally may be unavailable for the
 attacker.
 

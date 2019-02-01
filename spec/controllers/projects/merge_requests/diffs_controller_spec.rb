@@ -20,13 +20,25 @@ describe Projects::MergeRequests::DiffsController do
         format: 'json'
       }
 
-      get :show, params.merge(extra_params)
+      get :show, params: params.merge(extra_params)
     end
 
     context 'with default params' do
       context 'for the same project' do
         before do
           allow(controller).to receive(:rendered_for_merge_request?).and_return(true)
+        end
+
+        it 'serializes merge request diff collection' do
+          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+
+          go
+        end
+      end
+
+      context 'when note has no position' do
+        before do
+          create(:legacy_diff_note_on_merge_request, project: project, noteable: merge_request, position: nil)
         end
 
         it 'serializes merge request diff collection' do
@@ -77,7 +89,7 @@ describe Projects::MergeRequests::DiffsController do
         format: 'json'
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { 'files/ruby/popen.rb' }

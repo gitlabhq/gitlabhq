@@ -9,7 +9,7 @@ module QA::Page
         element :pipeline_graph, /class.*pipeline-graph.*/ # rubocop:disable QA/ElementWithPattern
       end
 
-      view 'app/assets/javascripts/pipelines/components/graph/job_component.vue' do
+      view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
         element :job_component, /class.*ci-job-component.*/ # rubocop:disable QA/ElementWithPattern
         element :job_link, /class.*js-pipeline-graph-job-link.*/ # rubocop:disable QA/ElementWithPattern
       end

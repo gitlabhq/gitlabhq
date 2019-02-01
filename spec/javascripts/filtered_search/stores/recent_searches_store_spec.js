@@ -38,14 +38,8 @@ describe('RecentSearchesStore', () => {
 
   describe('setRecentSearches', () => {
     it('should override list', () => {
-      store.setRecentSearches([
-        'foo',
-        'bar',
-      ]);
-      store.setRecentSearches([
-        'baz',
-        'qux',
-      ]);
+      store.setRecentSearches(['foo', 'bar']);
+      store.setRecentSearches(['baz', 'qux']);
 
       expect(store.state.recentSearches).toEqual(['baz', 'qux']);
     });

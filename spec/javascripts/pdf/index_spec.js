@@ -11,7 +11,7 @@ const Component = Vue.extend(PDFLab);
 describe('PDF component', () => {
   let vm;
 
-  const checkLoaded = (done) => {
+  const checkLoaded = done => {
     if (vm.loading) {
       setTimeout(() => {
         checkLoaded(done);
@@ -22,7 +22,7 @@ describe('PDF component', () => {
   };
 
   describe('without PDF data', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = new Component({
         propsData: {
           pdf: '',
@@ -40,7 +40,7 @@ describe('PDF component', () => {
   });
 
   describe('with PDF data', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = new Component({
         propsData: {
           pdf,

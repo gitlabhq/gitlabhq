@@ -519,7 +519,7 @@ describe Issuable do
       end
     end
 
-    context 'substracting time' do
+    context 'subtracting time' do
       before do
         spend_time(1800)
       end
@@ -530,7 +530,7 @@ describe Issuable do
         expect(issue.total_time_spent).to eq(900)
       end
 
-      context 'when time to substract exceeds the total time spent' do
+      context 'when time to subtract exceeds the total time spent' do
         it 'raise a validation error' do
           Timecop.travel(1.minute.from_now) do
             expect do
@@ -566,7 +566,7 @@ describe Issuable do
     end
 
     let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
-    let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do

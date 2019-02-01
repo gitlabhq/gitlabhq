@@ -2,7 +2,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable RemoveIndex
-class AddIndexOnRunnersLocked < ActiveRecord::Migration
+class AddIndexOnRunnersLocked < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

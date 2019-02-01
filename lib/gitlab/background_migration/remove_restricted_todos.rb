@@ -67,7 +67,7 @@ module Gitlab
           .where('access_level >= ?', 20)
 
         confidential_issues = Issue.select(:id, :author_id).where(confidential: true, project_id: project_id)
-        confidential_issues.each_batch(of: 100) do |batch|
+        confidential_issues.each_batch(of: 100, order_hint: :confidential) do |batch|
           batch.each do |issue|
             assigned_users = IssueAssignee.select(:user_id).where(issue_id: issue.id)
 

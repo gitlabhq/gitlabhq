@@ -6,7 +6,7 @@ describe PostReceive do
   let(:base64_changes) { Base64.encode64(wrongly_encoded_changes) }
   let(:gl_repository) { "project-#{project.id}" }
   let(:key) { create(:key, user: project.owner) }
-  let(:key_id) { key.shell_id }
+  let!(:key_id) { key.shell_id }
 
   let(:project) do
     create(:project, :repository, auto_cancel_pending_pipelines: 'disabled')
@@ -31,85 +31,108 @@ describe PostReceive do
   end
 
   describe "#process_project_changes" do
-    before do
-      allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
-    end
+    context 'empty changes' do
+      it "does not call any PushService but runs after project hooks" do
+        expect(GitPushService).not_to receive(:new)
+        expect(GitTagPushService).not_to receive(:new)
+        expect_next_instance_of(SystemHooksService) { |service| expect(service).to receive(:execute_hooks) }
 
-    context "branches" do
-      let(:changes) { "123456 789012 refs/heads/tést" }
-
-      it "calls GitTagPushService" do
-        expect_any_instance_of(GitPushService).to receive(:execute).and_return(true)
-        expect_any_instance_of(GitTagPushService).not_to receive(:execute)
-        described_class.new.perform(gl_repository, key_id, base64_changes)
+        described_class.new.perform(gl_repository, key_id, "")
       end
     end
 
-    context "tags" do
-      let(:changes) { "123456 789012 refs/tags/tag" }
+    context 'unidentified user' do
+      let!(:key_id) { "" }
 
-      it "calls GitTagPushService" do
-        expect_any_instance_of(GitPushService).not_to receive(:execute)
-        expect_any_instance_of(GitTagPushService).to receive(:execute).and_return(true)
-        described_class.new.perform(gl_repository, key_id, base64_changes)
+      it 'returns false' do
+        expect(GitPushService).not_to receive(:new)
+        expect(GitTagPushService).not_to receive(:new)
+
+        expect(described_class.new.perform(gl_repository, key_id, base64_changes)).to be false
       end
     end
 
-    context "merge-requests" do
-      let(:changes) { "123456 789012 refs/merge-requests/123" }
-
-      it "does not call any of the services" do
-        expect_any_instance_of(GitPushService).not_to receive(:execute)
-        expect_any_instance_of(GitTagPushService).not_to receive(:execute)
-        described_class.new.perform(gl_repository, key_id, base64_changes)
-      end
-    end
-
-    context "gitlab-ci.yml" do
-      let(:changes) { "123456 789012 refs/heads/feature\n654321 210987 refs/tags/tag" }
-
-      subject { described_class.new.perform(gl_repository, key_id, base64_changes) }
-
-      context "creates a Ci::Pipeline for every change" do
-        before do
-          stub_ci_pipeline_to_return_yaml_file
-
-          allow_any_instance_of(Project)
-            .to receive(:commit)
-            .and_return(project.commit)
-
-          allow_any_instance_of(Repository)
-            .to receive(:branch_exists?)
-            .and_return(true)
-        end
-
-        it { expect { subject }.to change { Ci::Pipeline.count }.by(2) }
-      end
-
-      context "does not create a Ci::Pipeline" do
-        before do
-          stub_ci_pipeline_yaml_file(nil)
-        end
-
-        it { expect { subject }.not_to change { Ci::Pipeline.count } }
-      end
-    end
-
-    context 'after project changes hooks' do
-      let(:changes) { '123456 789012 refs/heads/tést' }
-      let(:fake_hook_data) { Hash.new(event_name: 'repository_update') }
-
+    context 'with changes' do
       before do
-        allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
-        # silence hooks so we can isolate
-        allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
-        allow_any_instance_of(GitPushService).to receive(:execute).and_return(true)
+        allow_any_instance_of(Gitlab::GitPostReceive).to receive(:identify).and_return(project.owner)
       end
 
-      it 'calls SystemHooksService' do
-        expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
+      context "branches" do
+        let(:changes) { "123456 789012 refs/heads/tést" }
 
-        described_class.new.perform(gl_repository, key_id, base64_changes)
+        it "calls GitPushService" do
+          expect_any_instance_of(GitPushService).to receive(:execute).and_return(true)
+          expect_any_instance_of(GitTagPushService).not_to receive(:execute)
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+        end
+      end
+
+      context "tags" do
+        let(:changes) { "123456 789012 refs/tags/tag" }
+
+        it "calls GitTagPushService" do
+          expect_any_instance_of(GitPushService).not_to receive(:execute)
+          expect_any_instance_of(GitTagPushService).to receive(:execute).and_return(true)
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+        end
+      end
+
+      context "merge-requests" do
+        let(:changes) { "123456 789012 refs/merge-requests/123" }
+
+        it "does not call any of the services" do
+          expect_any_instance_of(GitPushService).not_to receive(:execute)
+          expect_any_instance_of(GitTagPushService).not_to receive(:execute)
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+        end
+      end
+
+      context "gitlab-ci.yml" do
+        let(:changes) { "123456 789012 refs/heads/feature\n654321 210987 refs/tags/tag" }
+
+        subject { described_class.new.perform(gl_repository, key_id, base64_changes) }
+
+        context "creates a Ci::Pipeline for every change" do
+          before do
+            stub_ci_pipeline_to_return_yaml_file
+
+            allow_any_instance_of(Project)
+              .to receive(:commit)
+              .and_return(project.commit)
+
+            allow_any_instance_of(Repository)
+              .to receive(:branch_exists?)
+              .and_return(true)
+          end
+
+          it { expect { subject }.to change { Ci::Pipeline.count }.by(2) }
+        end
+
+        context "does not create a Ci::Pipeline" do
+          before do
+            stub_ci_pipeline_yaml_file(nil)
+          end
+
+          it { expect { subject }.not_to change { Ci::Pipeline.count } }
+        end
+      end
+
+      context 'after project changes hooks' do
+        let(:changes) { '123456 789012 refs/heads/tést' }
+        let(:fake_hook_data) { Hash.new(event_name: 'repository_update') }
+
+        before do
+          allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
+          # silence hooks so we can isolate
+          allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
+          allow_any_instance_of(GitPushService).to receive(:execute).and_return(true)
+        end
+
+        it 'calls SystemHooksService' do
+          expect_any_instance_of(SystemHooksService).to receive(:execute_hooks).with(fake_hook_data, :repository_update_hooks).and_return(true)
+
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+        end
       end
     end
   end

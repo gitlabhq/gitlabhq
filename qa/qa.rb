@@ -18,6 +18,7 @@ module QA
     autoload :Address, 'qa/runtime/address'
     autoload :Path, 'qa/runtime/path'
     autoload :Fixtures, 'qa/runtime/fixtures'
+    autoload :Logger, 'qa/runtime/logger'
 
     module API
       autoload :Client, 'qa/runtime/api/client'
@@ -35,42 +36,40 @@ module QA
   ##
   # GitLab QA fabrication mechanisms
   #
-  module Factory
-    autoload :Base, 'qa/factory/base'
-    autoload :Dependency, 'qa/factory/dependency'
-    autoload :Product, 'qa/factory/product'
+  module Resource
+    autoload :ApiFabricator, 'qa/resource/api_fabricator'
+    autoload :Base, 'qa/resource/base'
 
-    module Resource
-      autoload :Sandbox, 'qa/factory/resource/sandbox'
-      autoload :Group, 'qa/factory/resource/group'
-      autoload :Issue, 'qa/factory/resource/issue'
-      autoload :Project, 'qa/factory/resource/project'
-      autoload :MergeRequest, 'qa/factory/resource/merge_request'
-      autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
-      autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
-      autoload :DeployKey, 'qa/factory/resource/deploy_key'
-      autoload :DeployToken, 'qa/factory/resource/deploy_token'
-      autoload :Branch, 'qa/factory/resource/branch'
-      autoload :SecretVariable, 'qa/factory/resource/secret_variable'
-      autoload :Runner, 'qa/factory/resource/runner'
-      autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
-      autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
-      autoload :User, 'qa/factory/resource/user'
-      autoload :ProjectMilestone, 'qa/factory/resource/project_milestone'
-      autoload :Wiki, 'qa/factory/resource/wiki'
-      autoload :File, 'qa/factory/resource/file'
-      autoload :Fork, 'qa/factory/resource/fork'
-      autoload :SSHKey, 'qa/factory/resource/ssh_key'
-    end
+    autoload :Sandbox, 'qa/resource/sandbox'
+    autoload :Group, 'qa/resource/group'
+    autoload :Issue, 'qa/resource/issue'
+    autoload :Project, 'qa/resource/project'
+    autoload :Label, 'qa/resource/label'
+    autoload :MergeRequest, 'qa/resource/merge_request'
+    autoload :ProjectImportedFromGithub, 'qa/resource/project_imported_from_github'
+    autoload :MergeRequestFromFork, 'qa/resource/merge_request_from_fork'
+    autoload :DeployKey, 'qa/resource/deploy_key'
+    autoload :DeployToken, 'qa/resource/deploy_token'
+    autoload :Branch, 'qa/resource/branch'
+    autoload :CiVariable, 'qa/resource/ci_variable'
+    autoload :Runner, 'qa/resource/runner'
+    autoload :PersonalAccessToken, 'qa/resource/personal_access_token'
+    autoload :KubernetesCluster, 'qa/resource/kubernetes_cluster'
+    autoload :User, 'qa/resource/user'
+    autoload :ProjectMilestone, 'qa/resource/project_milestone'
+    autoload :Wiki, 'qa/resource/wiki'
+    autoload :File, 'qa/resource/file'
+    autoload :Fork, 'qa/resource/fork'
+    autoload :SSHKey, 'qa/resource/ssh_key'
 
     module Repository
-      autoload :Push, 'qa/factory/repository/push'
-      autoload :ProjectPush, 'qa/factory/repository/project_push'
-      autoload :WikiPush, 'qa/factory/repository/wiki_push'
+      autoload :Push, 'qa/resource/repository/push'
+      autoload :ProjectPush, 'qa/resource/repository/project_push'
+      autoload :WikiPush, 'qa/resource/repository/wiki_push'
     end
 
     module Settings
-      autoload :HashedStorage, 'qa/factory/settings/hashed_storage'
+      autoload :HashedStorage, 'qa/resource/settings/hashed_storage'
     end
   end
 
@@ -97,8 +96,10 @@ module QA
 
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'
-        autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :LDAPNoTLS, 'qa/scenario/test/integration/ldap_no_tls'
+        autoload :LDAPTLS, 'qa/scenario/test/integration/ldap_tls'
         autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
+        autoload :OAuth, 'qa/scenario/test/integration/oauth'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
@@ -158,6 +159,14 @@ module QA
       autoload :Activity, 'qa/page/project/activity'
       autoload :Menu, 'qa/page/project/menu'
 
+      module Branches
+        autoload :Show, 'qa/page/project/branches/show'
+      end
+
+      module Commit
+        autoload :Show, 'qa/page/project/commit/show'
+      end
+
       module Import
         autoload :Github, 'qa/page/project/import/github'
       end
@@ -180,10 +189,20 @@ module QA
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
         autoload :DeployTokens, 'qa/page/project/settings/deploy_tokens'
         autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
-        autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
+        autoload :CiVariables, 'qa/page/project/settings/ci_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
         autoload :Members, 'qa/page/project/settings/members'
+        autoload :MirroringRepositories, 'qa/page/project/settings/mirroring_repositories'
+      end
+
+      module SubMenus
+        autoload :CiCd, 'qa/page/project/sub_menus/ci_cd'
+        autoload :Common, 'qa/page/project/sub_menus/common'
+        autoload :Issues, 'qa/page/project/sub_menus/issues'
+        autoload :Operations, 'qa/page/project/sub_menus/operations'
+        autoload :Repository, 'qa/page/project/sub_menus/repository'
+        autoload :Settings, 'qa/page/project/sub_menus/settings'
       end
 
       module Issue
@@ -240,6 +259,11 @@ module QA
       autoload :Banner, 'qa/page/layout/banner'
     end
 
+    module Label
+      autoload :New, 'qa/page/label/new'
+      autoload :Index, 'qa/page/label/index'
+    end
+
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
@@ -250,9 +274,11 @@ module QA
 
       module Settings
         autoload :Repository, 'qa/page/admin/settings/repository'
+        autoload :General, 'qa/page/admin/settings/general'
 
         module Component
           autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
+          autoload :AccountAndLimit, 'qa/page/admin/settings/component/account_and_limit'
         end
       end
     end
@@ -267,11 +293,14 @@ module QA
     #
     module Component
       autoload :ClonePanel, 'qa/page/component/clone_panel'
+      autoload :LazyLoader, 'qa/page/component/lazy_loader'
+      autoload :LegacyClonePanel, 'qa/page/component/legacy_clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
       autoload :Select2, 'qa/page/component/select2'
       autoload :DropdownFilter, 'qa/page/component/dropdown_filter'
       autoload :UsersSelect, 'qa/page/component/users_select'
+      autoload :Note, 'qa/page/component/note'
 
       module Issuable
         autoload :Common, 'qa/page/component/issuable/common'
@@ -316,6 +345,22 @@ module QA
         autoload :Login, 'qa/vendor/saml_idp/page/login'
       end
     end
+
+    module Github
+      module Page
+        autoload :Base, 'qa/vendor/github/page/base'
+        autoload :Login, 'qa/vendor/github/page/login'
+      end
+    end
+  end
+
+  # Classes that provide support to other parts of the framework.
+  #
+  module Support
+    module Page
+      autoload :Logging, 'qa/support/page/logging'
+    end
+    autoload :Api, 'qa/support/api'
   end
 end
 

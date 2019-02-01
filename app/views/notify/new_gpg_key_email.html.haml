@@ -1,5 +1,5 @@
 %p
-  Hi #{@user.name}!
+  Hi #{sanitize_name(@user.name)}!
 %p
   A new GPG key was added to your account:
 %p

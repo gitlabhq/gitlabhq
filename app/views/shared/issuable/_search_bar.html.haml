@@ -1,19 +1,17 @@
 - type = local_assigns.fetch(:type)
 - board = local_assigns.fetch(:board, nil)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
-- full_path = @project.present? ? @project.full_path : @group.full_path
 - user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
 
 .issues-filters
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
     - if type == :boards
-      #js-multiple-boards-switcher.inline.boards-switcher{ "v-cloak" => true }
-        = render_if_exists "shared/boards/switcher", board: board
-    = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
+      = render_if_exists "shared/boards/switcher", board: board
+    = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
       - if @can_bulk_update
-        .check-all-holder.hidden
+        .check-all-holder.d-none.d-sm-block.hidden
           = check_box_tag "check-all-issues", nil, false, class: "check-all-issues left"
       .issues-other-filters.filtered-search-wrapper
         .filtered-search-box
@@ -24,7 +22,7 @@
               dropdown_class: "filtered-search-history-dropdown",
               content_class: "filtered-search-history-dropdown-content",
               title: "Recent searches" }) do
-              .js-filtered-search-history-dropdown{ data: { full_path: full_path } }
+              .js-filtered-search-history-dropdown{ data: { full_path: search_history_storage_prefix } }
           .filtered-search-box-input-container.droplab-dropdown
             .scroll-container
               %ul.tokens-container.list-unstyled
@@ -36,7 +34,7 @@
                   %button.btn.btn-link{ type: 'button' }
                     = sprite_icon('search')
                     %span
-                      Press Enter or click to search
+                      = _('Press Enter or click to search')
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link{ type: 'button' }
@@ -59,9 +57,12 @@
                   avatar: { lazy: true, url: '{{avatar_url}}' }
             #js-dropdown-assignee.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
-                %li.filter-dropdown-item{ data: { value: 'none' } }
+                %li.filter-dropdown-item{ data: { value: 'None' } }
                   %button.btn.btn-link{ type: 'button' }
-                    No Assignee
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'Any' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Any')
                 %li.divider.droplab-item-ignore
                 - if current_user
                   = render 'shared/issuable/user_dropdown_item',
@@ -72,15 +73,18 @@
                   avatar: { lazy: true, url: '{{avatar_url}}' }
             #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
-                %li.filter-dropdown-item{ data: { value: 'none' } }
+                %li.filter-dropdown-item{ data: { value: 'None' } }
                   %button.btn.btn-link{ type: 'button' }
-                    No Milestone
-                %li.filter-dropdown-item{ data: { value: 'upcoming' } }
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'Any' } }
                   %button.btn.btn-link{ type: 'button' }
-                    Upcoming
-                %li.filter-dropdown-item{ 'data-value' => 'started' }
+                    = _('Any')
+                %li.filter-dropdown-item{ data: { value: 'Upcoming' } }
                   %button.btn.btn-link{ type: 'button' }
-                    Started
+                    = _('Upcoming')
+                %li.filter-dropdown-item{ data: { value: 'Started' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Started')
                 %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
@@ -88,9 +92,12 @@
                     {{title}}
             #js-dropdown-label.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
-                %li.filter-dropdown-item{ data: { value: 'none' } }
+                %li.filter-dropdown-item{ data: { value: 'None' } }
                   %button.btn.btn-link{ type: 'button' }
-                    No Label
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'Any' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Any')
                 %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
@@ -99,6 +106,14 @@
                     %span.label-title.js-data-value
                       {{title}}
             #js-dropdown-my-reaction.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'None' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('None')
+                %li.filter-dropdown-item{ data: { value: 'Any' } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Any')
+                %li.divider.droplab-item-ignore
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   %button.btn.btn-link{ type: 'button' }
@@ -127,4 +142,4 @@
                 #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
             #js-toggle-focus-btn
           - elsif type != :boards_modal
-            = render 'shared/sort_dropdown'
+            = render 'shared/issuable/sort_dropdown'

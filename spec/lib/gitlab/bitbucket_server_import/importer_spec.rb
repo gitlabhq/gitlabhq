@@ -21,18 +21,27 @@ describe Gitlab::BitbucketServerImport::Importer do
   end
 
   describe '#import_repository' do
-    before do
+    it 'adds a remote' do
       expect(subject).to receive(:import_pull_requests)
       expect(subject).to receive(:delete_temp_branches)
-    end
-
-    it 'adds a remote' do
       expect(project.repository).to receive(:fetch_as_mirror)
                                      .with('http://bitbucket:test@my-bitbucket',
                                            refmap: [:heads, :tags, '+refs/pull-requests/*/to:refs/merge-requests/*/head'],
                                            remote_name: 'bitbucket_server')
 
       subject.execute
+    end
+
+    it 'raises a Gitlab::Shell exception in the fetch' do
+      expect(project.repository).to receive(:fetch_as_mirror).and_raise(Gitlab::Shell::Error)
+
+      expect { subject.execute }.to raise_error(Gitlab::Shell::Error)
+    end
+
+    it 'raises an unhandled exception in the fetch' do
+      expect(project.repository).to receive(:fetch_as_mirror).and_raise(RuntimeError)
+
+      expect { subject.execute }.to raise_error(RuntimeError)
     end
   end
 

@@ -10,7 +10,7 @@ describe TodoService do
   let(:john_doe) { create(:user) }
   let(:skipped) { create(:user) }
   let(:skip_users) { [skipped] }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
   let(:mentions) { 'FYI: ' + [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed) { [author, assignee, john_doe, member, guest, non_member, admin, skipped].map(&:to_reference).join(' ') }
   let(:directly_addressed_and_mentioned) { member.to_reference + ", what do you think? cc: " + [guest, admin, skipped].map(&:to_reference).join(' ') }
@@ -19,6 +19,7 @@ describe TodoService do
   before do
     project.add_guest(guest)
     project.add_developer(author)
+    project.add_developer(assignee)
     project.add_developer(member)
     project.add_developer(john_doe)
     project.add_developer(skipped)
@@ -456,7 +457,7 @@ describe TodoService do
       end
 
       context 'on commit' do
-        let(:project)  { create(:project, :repository) }
+        let(:project) { create(:project, :repository) }
 
         it 'creates a todo for each valid mentioned user when leaving a note on commit' do
           service.new_note(note_on_commit, john_doe)

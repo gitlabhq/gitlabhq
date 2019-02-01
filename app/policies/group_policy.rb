@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GroupPolicy < BasePolicy
+  include ClusterableActions
+
   desc "Group is public"
   with_options scope: :subject, score: 0
   condition(:public_group) { @subject.public? }
@@ -16,7 +18,7 @@ class GroupPolicy < BasePolicy
   condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
 
-  condition(:nested_groups_supported, scope: :global) { Group.supports_nested_groups? }
+  condition(:nested_groups_supported, scope: :global) { Group.supports_nested_objects? }
 
   condition(:has_parent, scope: :subject) { @subject.has_parent? }
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
@@ -26,6 +28,9 @@ class GroupPolicy < BasePolicy
   condition(:has_projects) do
     GroupProjectsFinder.new(group: @subject, current_user: @user, options: { include_subgroups: true }).execute.any?
   end
+
+  condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
+  condition(:can_have_multiple_clusters) { multiple_clusters_available? }
 
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
@@ -40,11 +45,12 @@ class GroupPolicy < BasePolicy
 
   rule { guest }.policy do
     enable :read_group
+    enable :read_list
     enable :upload_file
     enable :read_label
   end
 
-  rule { admin }             .enable :read_group
+  rule { admin }.enable :read_group
 
   rule { has_projects }.policy do
     enable :read_group
@@ -65,6 +71,11 @@ class GroupPolicy < BasePolicy
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build
+    enable :read_cluster
+    enable :add_cluster
+    enable :create_cluster
+    enable :update_cluster
+    enable :admin_cluster
   end
 
   rule { owner }.policy do
@@ -100,6 +111,8 @@ class GroupPolicy < BasePolicy
   rule { has_access }.prevent              :request_access
 
   rule { owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock) }.enable :change_share_with_group_lock
+
+  rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
 
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?

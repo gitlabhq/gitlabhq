@@ -23,7 +23,7 @@ class Import::GiteaController < Import::GithubController
     :"#{provider}_host_url"
   end
 
-  # Overriden methods
+  # Overridden methods
   def provider
     :gitea
   end

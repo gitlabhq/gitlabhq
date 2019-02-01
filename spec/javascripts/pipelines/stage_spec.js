@@ -40,7 +40,7 @@ describe('Pipelines stage component', () => {
     expect(component.$el.querySelector('button').getAttribute('data-toggle')).toEqual('dropdown');
   });
 
-  describe('with successfull request', () => {
+  describe('with successful request', () => {
     beforeEach(() => {
       mock.onGet('path.json').reply(200, stageReply);
     });
@@ -53,6 +53,7 @@ describe('Pipelines stage component', () => {
         expect(
           component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
         ).toContain(stageReply.latest_statuses[0].name);
+
         expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
         done();
       }, 0);
@@ -119,12 +120,13 @@ describe('Pipelines stage component', () => {
 
         setTimeout(() => {
           component.$el.querySelector('.js-ci-action').click();
-          component.$nextTick()
-          .then(() => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
-          })
-          .then(done)
-          .catch(done.fail);
+          component
+            .$nextTick()
+            .then(() => {
+              expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
+            })
+            .then(done)
+            .catch(done.fail);
         }, 0);
       });
     });

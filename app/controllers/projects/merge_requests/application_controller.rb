@@ -39,8 +39,11 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   end
 
   def set_pipeline_variables
-    @pipelines = @merge_request.all_pipelines
-    @pipeline = @merge_request.head_pipeline
-    @statuses_count = @pipeline.present? ? @pipeline.statuses.relevant.count : 0
+    @pipelines =
+      if can?(current_user, :read_pipeline, @project)
+        @merge_request.all_pipelines
+      else
+        Ci::Pipeline.none
+      end
   end
 end

@@ -4,10 +4,7 @@ import {
   getTimeDifferenceMinutes,
   collapseSystemNotes,
 } from '~/notes/stores/collapse_utils';
-import {
-  notesWithDescriptionChanges,
-  collapsedSystemNotes,
-} from '../mock_data';
+import { notesWithDescriptionChanges, collapsedSystemNotes } from '../mock_data';
 
 describe('Collapse utils', () => {
   const mockSystemNote = {
@@ -22,14 +19,18 @@ describe('Collapse utils', () => {
   });
 
   it('returns false when a system note is not a description type', () => {
-    expect(isDescriptionSystemNote(Object.assign({}, mockSystemNote, { note: 'foo' }))).toEqual(false);
+    expect(isDescriptionSystemNote(Object.assign({}, mockSystemNote, { note: 'foo' }))).toEqual(
+      false,
+    );
   });
 
   it('changes the description to contain the number of changed times', () => {
     const changedNote = changeDescriptionNote(mockSystemNote, 3, 5);
 
     expect(changedNote.times_updated).toEqual(3);
-    expect(changedNote.note_html.trim()).toContain('<p dir="auto">changed the description 3 times within 5 minutes </p>');
+    expect(changedNote.note_html.trim()).toContain(
+      '<p dir="auto">changed the description 3 times within 5 minutes </p>',
+    );
   });
 
   it('gets the time difference between two notes', () => {

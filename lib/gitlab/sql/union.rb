@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module SQL
     # Class for building SQL UNION statements.
@@ -7,7 +9,7 @@ module Gitlab
     #
     # Example usage:
     #
-    #     union = Gitlab::SQL::Union.new(user.personal_projects, user.projects)
+    #     union = Gitlab::SQL::Union.new([user.personal_projects, user.projects])
     #     sql   = union.to_sql
     #
     #     Project.where("id IN (#{sql})")

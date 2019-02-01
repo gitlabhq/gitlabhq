@@ -185,8 +185,8 @@ describe NotesHelper do
       context 'for a non-diff discussion' do
         let(:discussion) { create(:discussion_note_on_commit, project: project).to_discussion }
 
-        it 'returns the commit path' do
-          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit))
+        it 'returns the commit path with the note anchor' do
+          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: "note_#{discussion.first_note.id}"))
         end
       end
     end

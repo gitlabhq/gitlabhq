@@ -1,5 +1,0 @@
----
-title: Removes expensive dead code on main MR page request
-merge_request: 22153
-author:
-type: performance

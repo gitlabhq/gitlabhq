@@ -32,6 +32,6 @@
 
 - else
   %h4.underlined-title
-    = _('Available group Runners : %{runners}').html_safe % { runners: @group_runners.count }
+    = _('Available group Runners: %{runners}').html_safe % { runners: @group_runners.count }
   %ul.bordered-list
     = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner

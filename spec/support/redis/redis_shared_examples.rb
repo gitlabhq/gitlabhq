@@ -1,7 +1,7 @@
 RSpec.shared_examples "redis_shared_examples" do
   include StubENV
 
-  let(:test_redis_url)  { "redis://redishost:#{redis_port}"}
+  let(:test_redis_url) { "redis://redishost:#{redis_port}"}
 
   before do
     stub_env(environment_config_file_name, Rails.root.join(config_file_name))
@@ -76,7 +76,7 @@ RSpec.shared_examples "redis_shared_examples" do
     context 'when yml file with env variable' do
       let(:config_file_name) { config_with_environment_variable_inside }
 
-      before  do
+      before do
         stub_env(config_env_variable_url, test_redis_url)
       end
 

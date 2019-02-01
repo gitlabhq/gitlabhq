@@ -21,8 +21,8 @@ Nested groups are only supported when you use PostgreSQL. Supporting nested
 groups on MySQL in an efficient way is not possible due to MySQL's limitations.
 See the following links for more information:
 
-* <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
-* <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10885>
+- <https://gitlab.com/gitlab-org/gitlab-ce/issues/30472>
+- <https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/10885>
 
 ## Overview
 
@@ -164,10 +164,11 @@ and you can choose the group of people to be notified.
 
 Here's a list of what you can't do with subgroups:
 
-- [GitLab Pages](../../project/pages/index.md) are not currently working for
-  projects hosted under a subgroup. That means that only projects hosted under
-  the first parent group will work.
-- Group level labels don't work in subgroups / sub projects
+- [GitLab Pages](../../project/pages/index.md) supports projects hosted under
+  a subgroup, but not subgroup websites.
+  That means that only the highest-level group supports
+  [group websites](../../project/pages/introduction.html#user-or-group-pages),
+  although you can have project websites under a subgroup.
 - It is not possible to share a project with a group that's an ancestor of
   the group the project is in. That means you can only share as you walk down
   the hierarchy. For example, `group/subgroup01/project` **cannot** be shared

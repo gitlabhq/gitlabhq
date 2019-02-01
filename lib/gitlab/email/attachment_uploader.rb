@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Email
     class AttachmentUploader
@@ -21,8 +23,8 @@ module Gitlab
               content_type: attachment.content_type
             }
 
-            link = UploadService.new(project, file).execute
-            attachments << link if link
+            uploader = UploadService.new(project, file).execute
+            attachments << uploader.to_h if uploader
           ensure
             tmp.close!
           end

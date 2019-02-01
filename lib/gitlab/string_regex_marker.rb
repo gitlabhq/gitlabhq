@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class StringRegexMarker < StringRangeMarker
     # rubocop: disable CodeReuse/ActiveRecord

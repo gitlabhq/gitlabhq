@@ -112,9 +112,19 @@ ProjectSnippet:
 - visibility_level
 Release:
 - id
+- name
 - tag
+- sha
 - description
+- author_id
 - project_id
+- created_at
+- updated_at
+Releases::Link:
+- id
+- release_id
+- url
+- name
 - created_at
 - updated_at
 ProjectMember:
@@ -243,6 +253,7 @@ Ci::Pipeline:
 - failure_reason
 - protected
 - iid
+- merge_request_id
 Ci::Stage:
 - id
 - name
@@ -589,3 +600,8 @@ ResourceLabelEvent:
 - label_id
 - user_id
 - created_at
+ErrorTracking::ProjectErrorTrackingSetting:
+- id
+- api_url
+- enabled
+- project_id

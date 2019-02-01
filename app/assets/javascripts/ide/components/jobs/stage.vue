@@ -1,4 +1,5 @@
 <script>
+import { GlLoadingIcon } from '@gitlab/ui';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import Icon from '../../../vue_shared/components/icon.vue';
 import CiIcon from '../../../vue_shared/components/ci_icon.vue';
@@ -12,6 +13,7 @@ export default {
     Icon,
     CiIcon,
     Item,
+    GlLoadingIcon,
   },
   props: {
     stage: {
@@ -54,20 +56,15 @@ export default {
 </script>
 
 <template>
-  <div
-    class="ide-stage card prepend-top-default"
-  >
+  <div class="ide-stage card prepend-top-default">
     <div
       :class="{
-        'border-bottom-0': stage.isCollapsed
+        'border-bottom-0': stage.isCollapsed,
       }"
       class="card-header"
       @click="toggleCollapsed"
     >
-      <ci-icon
-        :status="stage.status"
-        :size="24"
-      />
+      <ci-icon :status="stage.status" :size="24" />
       <strong
         ref="stageTitle"
         v-tooltip="showTooltip"
@@ -77,33 +74,15 @@ export default {
       >
         {{ stage.name }}
       </strong>
-      <div
-        v-if="!stage.isLoading || stage.jobs.length"
-        class="append-right-8 prepend-left-4"
-      >
-        <span class="badge badge-pill">
-          {{ jobsCount }}
-        </span>
+      <div v-if="!stage.isLoading || stage.jobs.length" class="append-right-8 prepend-left-4">
+        <span class="badge badge-pill"> {{ jobsCount }} </span>
       </div>
-      <icon
-        :name="collapseIcon"
-        css-classes="ide-stage-collapse-icon"
-      />
+      <icon :name="collapseIcon" css-classes="ide-stage-collapse-icon" />
     </div>
-    <div
-      v-show="!stage.isCollapsed"
-      class="card-body"
-    >
-      <gl-loading-icon
-        v-if="showLoadingIcon"
-      />
+    <div v-show="!stage.isCollapsed" class="card-body">
+      <gl-loading-icon v-if="showLoadingIcon" />
       <template v-else>
-        <item
-          v-for="job in stage.jobs"
-          :key="job.id"
-          :job="job"
-          @clickViewLog="clickViewLog"
-        />
+        <item v-for="job in stage.jobs" :key="job.id" :job="job" @clickViewLog="clickViewLog" />
       </template>
     </div>
   </div>

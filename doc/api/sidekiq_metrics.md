@@ -15,7 +15,7 @@ GET /sidekiq/queue_metrics
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/sidekiq/queue_metrics
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/queue_metrics
 ```
 
 Example response:
@@ -40,7 +40,7 @@ GET /sidekiq/process_metrics
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/sidekiq/process_metrics
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/process_metrics
 ```
 
 Example response:
@@ -82,7 +82,7 @@ GET /sidekiq/job_stats
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/sidekiq/job_stats
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/job_stats
 ```
 
 Example response:
@@ -106,7 +106,7 @@ GET /sidekiq/compound_metrics
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/sidekiq/compound_metrics
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/sidekiq/compound_metrics
 ```
 
 Example response:

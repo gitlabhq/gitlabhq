@@ -36,6 +36,7 @@ describe('new dropdown component', () => {
 
   it('renders new file, upload and new directory links', () => {
     const buttons = vm.$el.querySelectorAll('.dropdown-menu button');
+
     expect(buttons[0].textContent.trim()).toBe('New file');
     expect(buttons[1].textContent.trim()).toBe('Upload file');
     expect(buttons[2].textContent.trim()).toBe('New directory');

@@ -59,8 +59,7 @@ describe('IDE clientside preview', () => {
         }),
       );
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => vm.initPreview())
         .then(vm.$nextTick)
         .then(done)

@@ -1,6 +1,7 @@
 # Migrating projects to a GitLab instance
 
-1. [From Bitbucket.org](bitbucket.md)
+1. [From Bitbucket Cloud (aka bitbucket.org)](bitbucket.md)
+1. [From Bitbucket Server (aka Stash)](bitbucket_server.md)
 1. [From ClearCase](clearcase.md)
 1. [From CVS](cvs.md)
 1. [From FogBugz](fogbugz.md)
@@ -24,3 +25,10 @@ but issues and merge requests can't be imported.
 
 If you want to retain all metadata like issues and merge requests, you can use
 the [import/export feature](../settings/import_export.md).
+
+## Migrating between two self-hosted GitLab instances
+
+The best method for migrating a project from one GitLab instance to another,
+perhaps from an old server to a new server for example, is to
+[back up the project](../../../raketasks/backup_restore.md),
+then restore it on the new server.

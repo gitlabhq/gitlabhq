@@ -3,8 +3,9 @@ import Prism from '../../lib/highlight';
 import Prompt from '../prompt.vue';
 
 export default {
+  name: 'CodeOutput',
   components: {
-    prompt: Prompt,
+    Prompt,
   },
   props: {
     count: {
@@ -44,14 +45,7 @@ export default {
 
 <template>
   <div :class="type">
-    <prompt
-      :type="promptType"
-      :count="count" />
-    <pre
-      ref="code"
-      :class="codeCssClass"
-      class="language-python"
-      v-text="code">
-    </pre>
+    <prompt :type="promptType" :count="count" />
+    <pre ref="code" :class="codeCssClass" class="language-python" v-text="code"></pre>
   </div>
 </template>

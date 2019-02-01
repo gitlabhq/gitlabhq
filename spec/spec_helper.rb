@@ -22,7 +22,7 @@ if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
 end
 
-if ENV['CI'] && !ENV['NO_KNAPSACK']
+if ENV['CI'] && ENV['KNAPSACK_GENERATE_REPORT'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end
@@ -115,7 +115,7 @@ RSpec.configure do |config|
     TestEnv.clean_test_path
   end
 
-  config.before(:example) do
+  config.before do
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
 
@@ -127,6 +127,11 @@ RSpec.configure do |config|
       .and_return(false)
   end
 
+  config.before(:example, :quarantine) do
+    # Skip tests in quarantine unless we explicitly focus on them.
+    skip('In quarantine') unless config.inclusion_filter[:quarantine]
+  end
+
   config.before(:example, :request_store) do
     RequestStore.begin!
   end
@@ -136,11 +141,11 @@ RSpec.configure do |config|
     RequestStore.clear!
   end
 
-  config.after(:example) do
+  config.after do
     Fog.unmock! if Fog.mock?
   end
 
-  config.after(:example) do
+  config.after do
     Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
@@ -216,15 +221,19 @@ RSpec.configure do |config|
 
   # Each example may call `migrate!`, so we must ensure we are migrated down every time
   config.before(:each, :migration) do
+    use_fake_application_settings
+
     schema_migrate_down!
   end
 
   config.after(:context, :migration) do
     schema_migrate_up!
+
+    Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
   config.around(:each, :nested_groups) do |example|
-    example.run if Group.supports_nested_groups?
+    example.run if Group.supports_nested_objects?
   end
 
   config.around(:each, :postgresql) do |example|

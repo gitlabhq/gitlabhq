@@ -9,8 +9,7 @@ export default ({ container }) =>
       performanceBarApp: () => import('./components/performance_bar_app.vue'),
     },
     data() {
-      const performanceBarData = document.querySelector(this.$options.el)
-        .dataset;
+      const performanceBarData = document.querySelector(this.$options.el).dataset;
       const store = new PerformanceBarStore();
 
       return {

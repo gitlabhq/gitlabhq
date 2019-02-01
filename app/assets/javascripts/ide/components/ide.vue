@@ -43,7 +43,7 @@ export default {
       'currentProjectId',
       'errorMessage',
     ]),
-    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges', 'isCommitModeActive']),
+    ...mapGetters(['activeFile', 'hasChanges', 'someUncommittedChanges', 'isCommitModeActive']),
   },
   mounted() {
     window.onbeforeunload = e => this.onBeforeUnload(e);
@@ -63,7 +63,7 @@ export default {
     onBeforeUnload(e = {}) {
       const returnValue = __('Are you sure you want to lose unsaved changes?');
 
-      if (!this.someUncommitedChanges) return undefined;
+      if (!this.someUncommittedChanges) return undefined;
 
       Object.assign(e, {
         returnValue,
@@ -88,27 +88,13 @@ export default {
 
 <template>
   <article class="ide position-relative d-flex flex-column align-items-stretch">
-    <error-message
-      v-if="errorMessage"
-      :message="errorMessage"
-    />
-    <div
-      class="ide-view flex-grow d-flex"
-    >
-      <find-file
-        v-show="fileFindVisible"
-      />
+    <error-message v-if="errorMessage" :message="errorMessage" />
+    <div class="ide-view flex-grow d-flex">
+      <find-file v-show="fileFindVisible" />
       <ide-sidebar />
-      <div
-        class="multi-file-edit-pane"
-      >
-        <template
-          v-if="activeFile"
-        >
-          <commit-editor-header
-            v-if="isCommitModeActive"
-            :active-file="activeFile"
-          />
+      <div class="multi-file-edit-pane">
+        <template v-if="activeFile">
+          <commit-editor-header v-if="isCommitModeActive" :active-file="activeFile" />
           <repo-tabs
             v-else
             :active-file="activeFile"
@@ -117,32 +103,20 @@ export default {
             :has-changes="hasChanges"
             :merge-request-id="currentMergeRequestId"
           />
-          <repo-editor
-            :file="activeFile"
-            class="multi-file-edit-pane-content"
-          />
+          <repo-editor :file="activeFile" class="multi-file-edit-pane-content" />
         </template>
-        <template
-          v-else
-        >
-          <div
-            v-once
-            class="ide-empty-state"
-          >
+        <template v-else>
+          <div v-once class="ide-empty-state">
             <div class="row js-empty-state">
               <div class="col-12">
-                <div class="svg-content svg-250">
-                  <img :src="emptyStateSvgPath" />
-                </div>
+                <div class="svg-content svg-250"><img :src="emptyStateSvgPath" /></div>
               </div>
               <div class="col-12">
                 <div class="text-content text-center">
-                  <h4>
-                    Welcome to the GitLab IDE
-                  </h4>
+                  <h4>Welcome to the GitLab IDE</h4>
                   <p>
-                    Select a file from the left sidebar to begin editing.
-                    Afterwards, you'll be able to commit your changes.
+                    Select a file from the left sidebar to begin editing. Afterwards, you'll be able
+                    to commit your changes.
                   </p>
                 </div>
               </div>
@@ -150,12 +124,9 @@ export default {
           </div>
         </template>
       </div>
-      <component
-        :is="rightPaneComponent"
-        v-if="currentProjectId"
-      />
+      <component :is="rightPaneComponent" v-if="currentProjectId" />
     </div>
-    <ide-status-bar :file="activeFile"/>
+    <ide-status-bar :file="activeFile" />
     <new-modal />
   </article>
 </template>

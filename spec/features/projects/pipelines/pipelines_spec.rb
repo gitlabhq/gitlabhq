@@ -109,8 +109,7 @@ describe 'Pipelines', :js do
       context 'when pipeline is cancelable' do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
-                            stage: 'test',
-                            commands: 'test')
+                            stage: 'test')
         end
 
         before do
@@ -140,8 +139,7 @@ describe 'Pipelines', :js do
       context 'when pipeline is retryable' do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
-                            stage: 'test',
-                            commands: 'test')
+                            stage: 'test')
         end
 
         before do
@@ -202,8 +200,7 @@ describe 'Pipelines', :js do
           create(:ci_build, :manual,
             pipeline: pipeline,
             name: 'manual build',
-            stage: 'test',
-            commands: 'test')
+            stage: 'test')
         end
 
         before do
@@ -237,8 +234,7 @@ describe 'Pipelines', :js do
           create(:ci_build, :scheduled,
             pipeline: pipeline,
             name: 'delayed job',
-            stage: 'test',
-            commands: 'test')
+            stage: 'test')
         end
 
         before do
@@ -262,8 +258,7 @@ describe 'Pipelines', :js do
             create(:ci_build, :expired_scheduled,
               pipeline: pipeline,
               name: 'delayed job',
-              stage: 'test',
-              commands: 'test')
+              stage: 'test')
           end
 
           it "shows 00:00:00 as the remaining time" do
@@ -470,7 +465,7 @@ describe 'Pipelines', :js do
       context 'with pagination' do
         before do
           allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
-          create(:ci_empty_pipeline,  project: project)
+          create(:ci_empty_pipeline, project: project)
         end
 
         it 'should render pagination' do

@@ -107,7 +107,7 @@ module GraphqlHelpers
   end
 
   def post_graphql(query, current_user: nil, variables: nil)
-    post api('/', current_user, version: 'graphql'), query: query, variables: variables
+    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }
   end
 
   def post_graphql_mutation(mutation, current_user: nil)
@@ -149,7 +149,7 @@ module GraphqlHelpers
     # - List
     # - String!
     # - String
-    field_type = field_type.of_type  while field_type.respond_to?(:of_type)
+    field_type = field_type.of_type while field_type.respond_to?(:of_type)
 
     field_type
   end

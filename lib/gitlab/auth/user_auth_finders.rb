@@ -7,6 +7,7 @@ module Gitlab
     TokenNotFoundError = Class.new(AuthenticationError)
     ExpiredError = Class.new(AuthenticationError)
     RevokedError = Class.new(AuthenticationError)
+    ImpersonationDisabled = Class.new(AuthenticationError)
     UnauthorizedError = Class.new(AuthenticationError)
 
     class InsufficientScopeError < AuthenticationError
@@ -27,8 +28,8 @@ module Gitlab
         current_request.env['warden']&.authenticate if verified_request?
       end
 
-      def find_user_from_feed_token
-        return unless rss_request? || ics_request?
+      def find_user_from_feed_token(request_format)
+        return unless valid_rss_format?(request_format)
 
         # NOTE: feed_token was renamed from rss_token but both needs to be supported because
         #       users might have already added the feed to their RSS reader before the rename
@@ -36,6 +37,17 @@ module Gitlab
         return unless token
 
         User.find_by_feed_token(token) || raise(UnauthorizedError)
+      end
+
+      # We only allow Private Access Tokens with `api` scope to be used by web
+      # requests on RSS feeds or ICS files for backwards compatibility.
+      # It is also used by GraphQL/API requests.
+      def find_user_from_web_access_token(request_format)
+        return unless access_token && valid_web_access_format?(request_format)
+
+        validate_access_token!(scopes: [:api])
+
+        access_token.user || raise(UnauthorizedError)
       end
 
       def find_user_from_access_token
@@ -56,6 +68,8 @@ module Gitlab
           raise ExpiredError
         when AccessTokenValidationService::REVOKED
           raise RevokedError
+        when AccessTokenValidationService::IMPERSONATION_DISABLED
+          raise ImpersonationDisabled
         end
       end
 
@@ -73,7 +87,6 @@ module Gitlab
         end
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def find_personal_access_token
         token =
           current_request.params[PRIVATE_TOKEN_PARAM].presence ||
@@ -82,9 +95,8 @@ module Gitlab
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        PersonalAccessToken.find_by(token: token) || raise(UnauthorizedError)
+        PersonalAccessToken.find_by_token(token) || raise(UnauthorizedError)
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def find_oauth_access_token
         token = Doorkeeper::OAuth::Token.from_request(current_request, *Doorkeeper.configuration.access_token_methods)
@@ -111,12 +123,36 @@ module Gitlab
         @current_request ||= ensure_action_dispatch_request(request)
       end
 
+      def valid_web_access_format?(request_format)
+        case request_format
+        when :rss
+          rss_request?
+        when :ics
+          ics_request?
+        when :api
+          api_request?
+        end
+      end
+
+      def valid_rss_format?(request_format)
+        case request_format
+        when :rss
+          rss_request?
+        when :ics
+          ics_request?
+        end
+      end
+
       def rss_request?
         current_request.path.ends_with?('.atom') || current_request.format.atom?
       end
 
       def ics_request?
         current_request.path.ends_with?('.ics') || current_request.format.ics?
+      end
+
+      def api_request?
+        current_request.path.starts_with?("/api/")
       end
     end
   end

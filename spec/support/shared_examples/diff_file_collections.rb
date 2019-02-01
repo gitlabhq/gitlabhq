@@ -45,3 +45,19 @@ shared_examples 'diff statistics' do |test_include_stats_flag: true|
     end
   end
 end
+
+shared_examples 'unfoldable diff' do
+  let(:subject) { described_class.new(diffable, diff_options: nil) }
+
+  it 'calls Gitlab::Diff::File#unfold_diff_lines with correct position' do
+    position = instance_double(Gitlab::Diff::Position, file_path: 'README')
+    readme_file = instance_double(Gitlab::Diff::File, file_path: 'README')
+    other_file = instance_double(Gitlab::Diff::File, file_path: 'foo.rb')
+    nil_path_file = instance_double(Gitlab::Diff::File, file_path: nil)
+
+    allow(subject).to receive(:diff_files) { [readme_file, other_file, nil_path_file] }
+    expect(readme_file).to receive(:unfold_diff_lines).with(position)
+
+    subject.unfold_diff_files([position])
+  end
+end

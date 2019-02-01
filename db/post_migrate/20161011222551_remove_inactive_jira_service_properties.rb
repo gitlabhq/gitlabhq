@@ -1,4 +1,4 @@
-class RemoveInactiveJiraServiceProperties < ActiveRecord::Migration
+class RemoveInactiveJiraServiceProperties < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = true

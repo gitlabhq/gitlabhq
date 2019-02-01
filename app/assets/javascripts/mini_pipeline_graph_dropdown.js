@@ -46,7 +46,7 @@ export default class MiniPipelineGraph {
     $(document).on(
       'click',
       `${this.container} .js-builds-dropdown-list a.mini-pipeline-graph-dropdown-item`,
-      (e) => {
+      e => {
         e.stopPropagation();
       },
     );
@@ -82,7 +82,8 @@ export default class MiniPipelineGraph {
     this.renderBuildsList(button, '');
     this.toggleLoading(button);
 
-    axios.get(endpoint)
+    axios
+      .get(endpoint)
       .then(({ data }) => {
         this.toggleLoading(button);
         this.renderBuildsList(button, data.html);
@@ -90,7 +91,11 @@ export default class MiniPipelineGraph {
       })
       .catch(() => {
         this.toggleLoading(button);
-        if ($(button).parent().hasClass('open')) {
+        if (
+          $(button)
+            .parent()
+            .hasClass('open')
+        ) {
           $(button).dropdown('toggle');
         }
         flash('An error occurred while fetching the builds.', 'alert');
@@ -104,8 +109,8 @@ export default class MiniPipelineGraph {
    * @return {type}
    */
   toggleLoading(stageContainer) {
-    stageContainer.parentElement.querySelector(
-      `${this.dropdownListSelector} .js-builds-dropdown-loading`,
-    ).classList.toggle('hidden');
+    stageContainer.parentElement
+      .querySelector(`${this.dropdownListSelector} .js-builds-dropdown-loading`)
+      .classList.toggle('hidden');
   }
 }

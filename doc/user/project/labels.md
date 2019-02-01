@@ -19,6 +19,7 @@ A permission level of `Developer` or higher is required to create labels.
 ### New project label
 
 To create a **project label**, navigate to **Issues > Labels** in the project.
+This page only shows project labels in this project and group labels of this project's parent group.
 
 Click the **New label** button. Enter the title, an optional description, and the background color. Click **Create label** to create the label.
 
@@ -33,6 +34,7 @@ GitLab will add the following default labels to the project:
 ### New group label
 
 To create a **group label**, follow similar steps from above to project labels. Navigate to **Issues > Labels** in the group and create it from there.
+This page only shows group labels in this group.
 
 Group labels appear in every label list page of the group's child projects.
 
@@ -95,7 +97,7 @@ From the group issue list page and the group merge request list page, you can [f
 
 ## Subscribing to labels
 
-From the project label list page and the group label list page, you can subscribe to [notifications](../../workflow/notifications.md) of a given label, to alert you that that label has been assigned to an issue or merge request.
+From the project label list page and the group label list page, you can subscribe to [notifications](../../workflow/notifications.md) of a given label, to alert you that the label has been assigned to an issue or merge request.
 
 ![Labels subscriptions](img/labels_subscriptions.png)
 

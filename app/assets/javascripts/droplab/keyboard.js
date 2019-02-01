@@ -2,15 +2,18 @@
 
 import { ACTIVE_CLASS } from './constants';
 
-const Keyboard = function () {
+const Keyboard = function() {
   var currentKey;
   var currentFocus;
   var isUpArrow = false;
   var isDownArrow = false;
   var removeHighlight = function removeHighlight(list) {
-    var itemElements = Array.prototype.slice.call(list.list.querySelectorAll('li:not(.divider):not(.hidden)'), 0);
+    var itemElements = Array.prototype.slice.call(
+      list.list.querySelectorAll('li:not(.divider):not(.hidden)'),
+      0,
+    );
     var listItems = [];
-    for(var i = 0; i < itemElements.length; i++) {
+    for (var i = 0; i < itemElements.length; i++) {
       var listItem = itemElements[i];
       listItem.classList.remove(ACTIVE_CLASS);
 
@@ -23,13 +26,13 @@ const Keyboard = function () {
 
   var setMenuForArrows = function setMenuForArrows(list) {
     var listItems = removeHighlight(list);
-    if(list.currentIndex>0){
-      if(!listItems[list.currentIndex-1]){
-        list.currentIndex = list.currentIndex-1;
+    if (list.currentIndex > 0) {
+      if (!listItems[list.currentIndex - 1]) {
+        list.currentIndex = list.currentIndex - 1;
       }
 
-      if (listItems[list.currentIndex-1]) {
-        var el = listItems[list.currentIndex-1];
+      if (listItems[list.currentIndex - 1]) {
+        var el = listItems[list.currentIndex - 1];
         var filterDropdownEl = el.closest('.filter-dropdown');
         el.classList.add(ACTIVE_CLASS);
 
@@ -55,7 +58,7 @@ const Keyboard = function () {
   };
   var selectItem = function selectItem(list) {
     var listItems = removeHighlight(list);
-    var currentItem = listItems[list.currentIndex-1];
+    var currentItem = listItems[list.currentIndex - 1];
     var listEvent = new CustomEvent('click.dl', {
       detail: {
         list: list,
@@ -65,43 +68,49 @@ const Keyboard = function () {
     });
     list.list.dispatchEvent(listEvent);
     list.hide();
-  }
+  };
 
-  var keydown = function keydown(e){
+  var keydown = function keydown(e) {
     var typedOn = e.target;
     var list = e.detail.hook.list;
     var currentIndex = list.currentIndex;
     isUpArrow = false;
     isDownArrow = false;
 
-    if(e.detail.which){
+    if (e.detail.which) {
       currentKey = e.detail.which;
-      if(currentKey === 13){
+      if (currentKey === 13) {
         selectItem(e.detail.hook.list);
         return;
       }
-      if(currentKey === 38) {
+      if (currentKey === 38) {
         isUpArrow = true;
       }
-      if(currentKey === 40) {
+      if (currentKey === 40) {
         isDownArrow = true;
       }
-    } else if(e.detail.key) {
+    } else if (e.detail.key) {
       currentKey = e.detail.key;
-      if(currentKey === 'Enter'){
+      if (currentKey === 'Enter') {
         selectItem(e.detail.hook.list);
         return;
       }
-      if(currentKey === 'ArrowUp') {
+      if (currentKey === 'ArrowUp') {
         isUpArrow = true;
       }
-      if(currentKey === 'ArrowDown') {
+      if (currentKey === 'ArrowDown') {
         isDownArrow = true;
       }
     }
-    if(isUpArrow){ currentIndex--; }
-    if(isDownArrow){ currentIndex++; }
-    if(currentIndex < 0){ currentIndex = 0; }
+    if (isUpArrow) {
+      currentIndex--;
+    }
+    if (isDownArrow) {
+      currentIndex++;
+    }
+    if (currentIndex < 0) {
+      currentIndex = 0;
+    }
     list.currentIndex = currentIndex;
     setMenuForArrows(e.detail.hook.list);
   };

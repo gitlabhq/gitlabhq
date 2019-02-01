@@ -19,7 +19,7 @@ GET /application/settings
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings
 ```
 
 Example response:
@@ -75,7 +75,7 @@ PUT /application/settings
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
 ```
 
 Example response:
@@ -208,7 +208,7 @@ are listed in the descriptions of the relevant settings.
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |
 | `send_user_confirmation_email`           | boolean          | no                                   | Send confirmation email on sign-up. |
 | `sentry_dsn`                             | string           | required by: `sentry_enabled`        | Sentry Data Source Name. |
-| `sentry_enabled`                         | boolean          | no                                   | (**If enabled, requires:** `sentry_dsn`) Sentry is an error reporting and logging tool which is currently not shipped with GitLab, available at https://getsentry.com. |
+| `sentry_enabled`                         | boolean          | no                                   | (**If enabled, requires:** `sentry_dsn`) Sentry is an error reporting and logging tool which is currently not shipped with GitLab, available at <https://sentry.io>. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes |
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text`) Enable shared runners for new projects. |
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |

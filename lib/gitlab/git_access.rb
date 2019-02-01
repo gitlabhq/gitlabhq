@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Check a user's access to perform a git action. All public methods in this
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
@@ -7,7 +9,12 @@ module Gitlab
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     ProjectCreationError = Class.new(StandardError)
+    TimeoutError = Class.new(StandardError)
     ProjectMovedError = Class.new(NotFoundError)
+
+    # Use the magic string '_any' to indicate we do not know what the
+    # changes are. This is also what gitlab-shell does.
+    ANY = '_any'
 
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
@@ -21,14 +28,22 @@ module Gitlab
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       read_only: 'The repository is temporarily read-only. Please try again later.',
-      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
+      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance.",
+      push_code: 'You are not allowed to push code to this project.'
     }.freeze
+
+    INTERNAL_TIMEOUT = 50.seconds.freeze
+    LOG_HEADER = <<~MESSAGE
+      Push operation timed out
+
+      Timing information for debugging purposes:
+    MESSAGE
 
     DOWNLOAD_COMMANDS = %w{git-upload-pack git-upload-archive}.freeze
     PUSH_COMMANDS = %w{git-receive-pack}.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes, :logger
 
     def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
@@ -42,6 +57,7 @@ module Gitlab
     end
 
     def check(cmd, changes)
+      @logger = Checks::TimedLogger.new(timeout: INTERNAL_TIMEOUT, header: LOG_HEADER)
       @changes = changes
 
       check_protocol!
@@ -188,7 +204,7 @@ module Gitlab
 
     def ensure_project_on_push!(cmd, changes)
       return if project || deploy_key?
-      return unless receive_pack?(cmd) && changes == '_any' && authentication_abilities.include?(:push_code)
+      return unless receive_pack?(cmd) && changes == ANY && authentication_abilities.include?(:push_code)
 
       namespace = Namespace.find_by_full_path(namespace_path)
 
@@ -245,36 +261,50 @@ module Gitlab
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
 
-      return if changes.blank? # Allow access this is needed for EE.
-
       check_change_access!
     end
 
     def check_change_access!
-      # If there are worktrees with a HEAD pointing to a non-existent object,
-      # calls to `git rev-list --all` will fail in git 2.15+. This should also
-      # clear stale lock files.
-      project.repository.clean_stale_repository_files
+      # Deploy keys with write access can push anything
+      return if deploy_key?
 
-      # Iterate over all changes to find if user allowed all of them to be applied
-      changes_list.each.with_index do |change, index|
-        first_change = index == 0
+      if changes == ANY
+        can_push = user_access.can_do_action?(:push_code) ||
+          project.any_branch_allows_collaboration?(user_access.user)
 
-        # If user does not have access to make at least one change, cancel all
-        # push by allowing the exception to bubble up
-        check_single_change_access(change, skip_lfs_integrity_check: !first_change)
+        unless can_push
+          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_code]
+        end
+      else
+        # If there are worktrees with a HEAD pointing to a non-existent object,
+        # calls to `git rev-list --all` will fail in git 2.15+. This should also
+        # clear stale lock files.
+        project.repository.clean_stale_repository_files
+
+        # Iterate over all changes to find if user allowed all of them to be applied
+        changes_list.each.with_index do |change, index|
+          first_change = index == 0
+
+          # If user does not have access to make at least one change, cancel all
+          # push by allowing the exception to bubble up
+          check_single_change_access(change, skip_lfs_integrity_check: !first_change)
+        end
       end
     end
 
     def check_single_change_access(change, skip_lfs_integrity_check: false)
-      Checks::ChangeAccess.new(
+      change_access = Checks::ChangeAccess.new(
         change,
         user_access: user_access,
         project: project,
-        skip_authorization: deploy_key?,
         skip_lfs_integrity_check: skip_lfs_integrity_check,
-        protocol: protocol
-      ).exec
+        protocol: protocol,
+        logger: logger
+      )
+
+      change_access.exec
+    rescue Checks::TimedLogger::TimeoutError
+      raise TimeoutError, logger.full_message
     end
 
     def deploy_key
@@ -332,7 +362,7 @@ module Gitlab
     protected
 
     def changes_list
-      @changes_list ||= Gitlab::ChangesList.new(changes)
+      @changes_list ||= Gitlab::ChangesList.new(changes == ANY ? [] : changes)
     end
 
     def user

@@ -20,22 +20,20 @@ describe Projects::WikisController do
   describe 'GET #show' do
     render_views
 
-    subject { get :show, namespace_id: project.namespace, project_id: project, id: wiki_title }
+    subject { get :show, params: { namespace_id: project.namespace, project_id: project, id: wiki_title } }
 
-    context 'when page content encoding is invalid' do
-      it 'limits the retrieved pages for the sidebar' do
-        expect(controller).to receive(:load_wiki).and_return(project_wiki)
+    it 'limits the retrieved pages for the sidebar' do
+      expect(controller).to receive(:load_wiki).and_return(project_wiki)
 
-        # empty? call
-        expect(project_wiki).to receive(:pages).with(limit: 1).and_call_original
-        # Sidebar entries
-        expect(project_wiki).to receive(:pages).with(limit: 15).and_call_original
+      # empty? call
+      expect(project_wiki).to receive(:pages).with(limit: 1).and_call_original
+      # Sidebar entries
+      expect(project_wiki).to receive(:pages).with(limit: 15).and_call_original
 
-        subject
+      subject
 
-        expect(response).to have_http_status(:ok)
-        expect(response.body).to include(wiki_title)
-      end
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(wiki_title)
     end
 
     context 'when page content encoding is invalid' do
@@ -48,18 +46,55 @@ describe Projects::WikisController do
         expect(flash[:notice]).to eq 'The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.'
       end
     end
+
+    context 'when page is a file' do
+      include WikiHelpers
+
+      let(:path) { upload_file_to_wiki(project, user, file_name) }
+
+      before do
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: path }
+      end
+
+      context 'when file is an image' do
+        let(:file_name) { 'dk.png' }
+
+        it 'delivers the image' do
+          expect(response.headers['Content-Disposition']).to match(/^inline/)
+          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        end
+
+        context 'when file is a svg' do
+          let(:file_name) { 'unsanitized.svg' }
+
+          it 'delivers the image' do
+            expect(response.headers['Content-Disposition']).to match(/^inline/)
+            expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+          end
+        end
+      end
+
+      context 'when file is a pdf' do
+        let(:file_name) { 'git-cheat-sheet.pdf' }
+
+        it 'sets the content type to sets the content response headers' do
+          expect(response.headers['Content-Disposition']).to match(/^inline/)
+          expect(response.headers[Gitlab::Workhorse::DETECT_HEADER]).to eq "true"
+        end
+      end
+    end
   end
 
   describe 'POST #preview_markdown' do
     it 'renders json in a correct format' do
-      post :preview_markdown, namespace_id: project.namespace, project_id: project, id: 'page/path', text: '*Markdown* text'
+      post :preview_markdown, params: { namespace_id: project.namespace, project_id: project, id: 'page/path', text: '*Markdown* text' }
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
     end
   end
 
   describe 'GET #edit' do
-    subject { get(:edit, namespace_id: project.namespace, project_id: project, id: wiki_title) }
+    subject { get(:edit, params: { namespace_id: project.namespace, project_id: project, id: wiki_title }) }
 
     context 'when page content encoding is invalid' do
       it 'redirects to show' do
@@ -88,10 +123,12 @@ describe Projects::WikisController do
     let(:new_content) { 'New content' }
     subject do
       patch(:update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: wiki_title,
-            wiki: { title: new_title, content: new_content })
+            params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: wiki_title,
+              wiki: { title: new_title, content: new_content }
+            })
     end
 
     context 'when page content encoding is invalid' do

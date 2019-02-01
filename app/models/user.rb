@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   extend Gitlab::ConfigHelper
 
   include Gitlab::ConfigHelper
@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   ignore_column :email_provider
   ignore_column :authentication_token
 
-  add_authentication_token_field :incoming_email_token
+  add_authentication_token_field :incoming_email_token, token_generator: -> { SecureRandom.hex.to_i(16).to_s(36) }
   add_authentication_token_field :feed_token
 
   default_value_for :admin, false
@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
   has_one :namespace, -> { where(type: nil) }, dependent: :destroy, foreign_key: :owner_id, inverse_of: :owner, autosave: true # rubocop:disable Cop/ActiveRecordDependent
 
   # Profile
-  has_many :keys, -> { where(type: ['Key', nil]) }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :keys, -> { regular_keys }, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :deploy_keys, -> { where(type: 'DeployKey') }, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :gpg_keys
 
@@ -130,6 +130,7 @@ class User < ActiveRecord::Base
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :events,                   dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+  has_many :releases,                 dependent: :nullify, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
   has_many :subscriptions,            dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_one  :abuse_report,             dependent: :destroy, foreign_key: :user_id # rubocop:disable Cop/ActiveRecordDependent
@@ -144,7 +145,7 @@ class User < ActiveRecord::Base
 
   has_many :issue_assignees
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
-  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
+  has_many :assigned_merge_requests, dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
@@ -152,6 +153,7 @@ class User < ActiveRecord::Base
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
   has_one :status, class_name: 'UserStatus'
+  has_one :user_preference
 
   #
   # Validations
@@ -224,6 +226,8 @@ class User < ActiveRecord::Base
   enum project_view: [:readme, :activity, :files]
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
+  delegate :notes_filter_for, to: :user_preference
+  delegate :set_notes_filter, to: :user_preference
 
   state_machine :state, initial: :active do
     event :block do
@@ -264,7 +268,7 @@ class User < ActiveRecord::Base
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
-  scope :by_username, -> (usernames) { iwhere(username: usernames) }
+  scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
@@ -344,18 +348,36 @@ class User < ActiveRecord::Base
 
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email, confirmed: false)
+      return unless email
+
       by_any_email(email, confirmed: confirmed).take
     end
 
-    # Returns a relation containing all the users for the given Email address
-    def by_any_email(email, confirmed: false)
-      users = where(email: email)
-      users = users.confirmed if confirmed
+    # Returns a relation containing all the users for the given email addresses
+    #
+    # @param emails [String, Array<String>] email addresses to check
+    # @param confirmed [Boolean] Only return users where the email is confirmed
+    def by_any_email(emails, confirmed: false)
+      emails = Array(emails).map(&:downcase)
 
-      emails = joins(:emails).where(emails: { email: email })
-      emails = emails.confirmed if confirmed
+      from_users = where(email: emails)
+      from_users = from_users.confirmed if confirmed
 
-      from_union([users, emails])
+      from_emails = joins(:emails).where(emails: { email: emails })
+      from_emails = from_emails.confirmed.merge(Email.confirmed) if confirmed
+
+      items = [from_users, from_emails]
+
+      user_ids = Gitlab::PrivateCommitEmail.user_ids_for_emails(emails)
+      items << where(id: user_ids) if user_ids.present?
+
+      from_union(items)
+    end
+
+    def find_by_private_commit_email(email)
+      user_id = Gitlab::PrivateCommitEmail.user_id_for_email(email)
+
+      find_by(id: user_id)
     end
 
     def filter(filter_name)
@@ -455,12 +477,6 @@ class User < ActiveRecord::Base
 
     def find_by_username!(username)
       by_username(username).take!
-    end
-
-    def find_by_personal_access_token(token_string)
-      return unless token_string
-
-      PersonalAccessTokensFinder.new(state: 'active').find_by(token: token_string)&.user # rubocop: disable CodeReuse/Finder
     end
 
     # Returns a user for the given SSH key.
@@ -636,6 +652,10 @@ class User < ActiveRecord::Base
   def commit_email
     return self.email unless has_attribute?(:commit_email)
 
+    if super == Gitlab::PrivateCommitEmail::TOKEN
+      return private_commit_email
+    end
+
     # The commit email is the same as the primary email if undefined
     super.presence || self.email
   end
@@ -646,6 +666,10 @@ class User < ActiveRecord::Base
 
   def commit_email_changed?
     has_attribute?(:commit_email) && super
+  end
+
+  def private_commit_email
+    Gitlab::PrivateCommitEmail.for_user(self)
   end
 
   # see if the new email is already a verified secondary email
@@ -685,13 +709,13 @@ class User < ActiveRecord::Base
 
   # Returns the groups a user is a member of, either directly or through a parent group
   def membership_groups
-    Gitlab::GroupHierarchy.new(groups).base_and_descendants
+    Gitlab::ObjectHierarchy.new(groups).base_and_descendants
   end
 
   # Returns a relation of groups the user has access to, including their parent
   # and child groups (recursively).
   def all_expanded_groups
-    Gitlab::GroupHierarchy.new(groups).all_groups
+    Gitlab::ObjectHierarchy.new(groups).all_objects
   end
 
   def expanded_groups_requiring_two_factor_authentication
@@ -730,8 +754,12 @@ class User < ActiveRecord::Base
   #
   # Example use:
   # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
-  def authorizations_for_projects
-    project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+  def authorizations_for_projects(min_access_level: nil)
+    authorizations = project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+
+    return authorizations unless min_access_level.present?
+
+    authorizations.where('project_authorizations.access_level >= ?', min_access_level)
   end
 
   # Returns the projects this user has reporter (or greater) access to, limited
@@ -938,10 +966,15 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      !last_credential_check_at || (last_credential_check_at + ldap_sync_time) < Time.now
     else
       false
     end
+  end
+
+  def ldap_sync_time
+    # This number resides in this method so it can be redefined in EE.
+    1.hour
   end
 
   def try_obtain_ldap_lease
@@ -1011,6 +1044,7 @@ class User < ActiveRecord::Base
   def all_emails
     all_emails = []
     all_emails << email unless temp_oauth_email?
+    all_emails << private_commit_email
     all_emails.concat(emails.map(&:email))
     all_emails
   end
@@ -1018,13 +1052,29 @@ class User < ActiveRecord::Base
   def verified_emails
     verified_emails = []
     verified_emails << email if primary_email_verified?
+    verified_emails << private_commit_email
     verified_emails.concat(emails.confirmed.pluck(:email))
     verified_emails
   end
 
+  def any_email?(check_email)
+    downcased = check_email.downcase
+
+    # handle the outdated private commit email case
+    return true if persisted? &&
+        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+
+    all_emails.include?(check_email.downcase)
+  end
+
   def verified_email?(check_email)
     downcased = check_email.downcase
-    email == downcased ? primary_email_verified? : emails.confirmed.where(email: downcased).exists?
+
+    # handle the outdated private commit email case
+    return true if persisted? &&
+        id == Gitlab::PrivateCommitEmail.user_id_for_email(downcased)
+
+    verified_emails.include?(check_email.downcase)
   end
 
   def hook_attrs
@@ -1107,7 +1157,7 @@ class User < ActiveRecord::Base
   end
 
   def manageable_groups
-    Gitlab::GroupHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+    Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
   end
 
   def namespaces
@@ -1135,7 +1185,7 @@ class User < ActiveRecord::Base
     events = Event.select(:project_id)
       .contributions.where(author_id: self)
       .where("created_at > ?", Time.now - 1.year)
-      .uniq
+      .distinct
       .reorder(nil)
 
     Project.where(id: events)
@@ -1367,8 +1417,17 @@ class User < ActiveRecord::Base
     !consented_usage_stats? && 7.days.ago > self.created_at && !has_current_license? && User.single_user?
   end
 
+  # Avoid migrations only building user preference object when needed.
+  def user_preference
+    super.presence || build_user_preference
+  end
+
   def todos_limited_to(ids)
     todos.where(id: ids)
+  end
+
+  def pending_todo_for(target)
+    todos.find_by(target: target, state: :pending)
   end
 
   # @deprecated
@@ -1453,15 +1512,6 @@ class User < ActiveRecord::Base
       escaped = Regexp.escape(domain).gsub('\*', '.*?')
       regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
       signup_domain =~ regexp
-    end
-  end
-
-  def generate_token(token_field)
-    if token_field == :incoming_email_token
-      # Needs to be all lowercase and alphanumeric because it's gonna be used in an email address.
-      SecureRandom.hex.to_i(16).to_s(36)
-    else
-      super
     end
   end
 

@@ -68,24 +68,13 @@ export default {
 </script>
 
 <template>
-  <div
-    :id="id"
-    class="modal fade"
-    tabindex="-1"
-    role="dialog"
-  >
-    <div
-      :class="modalSizeClass"
-      class="modal-dialog"
-      role="document"
-    >
+  <div :id="id" class="modal fade" tabindex="-1" role="dialog">
+    <div :class="modalSizeClass" class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <slot name="header">
             <h4 class="modal-title">
-              <slot name="title">
-                {{ headerTitleText }}
-              </slot>
+              <slot name="title"> {{ headerTitleText }} </slot>
             </h4>
             <button
               :aria-label="s__('Modal|Close')"
@@ -99,9 +88,7 @@ export default {
           </slot>
         </div>
 
-        <div class="modal-body">
-          <slot></slot>
-        </div>
+        <div class="modal-body"><slot></slot></div>
 
         <div class="modal-footer">
           <slot name="footer">

@@ -3,7 +3,6 @@
 module UserCalloutsHelper
   GKE_CLUSTER_INTEGRATION = 'gke_cluster_integration'.freeze
   GCP_SIGNUP_OFFER = 'gcp_signup_offer'.freeze
-  CLUSTER_SECURITY_WARNING = 'cluster_security_warning'.freeze
 
   def show_gke_cluster_integration_callout?(project)
     can?(current_user, :create_cluster, project) &&
@@ -14,8 +13,8 @@ module UserCalloutsHelper
     !user_dismissed?(GCP_SIGNUP_OFFER)
   end
 
-  def show_cluster_security_warning?
-    !user_dismissed?(CLUSTER_SECURITY_WARNING)
+  def render_flash_user_callout(flash_type, message, feature_name)
+    render 'shared/flash_user_callout', flash_type: flash_type, message: message, feature_name: feature_name
   end
 
   private

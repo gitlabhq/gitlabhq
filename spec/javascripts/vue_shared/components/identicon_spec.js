@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import identiconComponent from '~/vue_shared/components/identicon.vue';
 
-const createComponent = (sizeClass) => {
+const createComponent = sizeClass => {
   const Component = Vue.extend(identiconComponent);
 
   return new Component({

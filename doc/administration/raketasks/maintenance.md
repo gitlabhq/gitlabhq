@@ -53,6 +53,7 @@ Git:              /usr/bin/git
 Runs the following rake tasks:
 
 - `gitlab:gitlab_shell:check`
+- `gitlab:gitaly:check`
 - `gitlab:sidekiq:check`
 - `gitlab:app:check`
 
@@ -252,7 +253,7 @@ clear it.
 
 To clear all exclusive leases:
 
-DANGER: **DANGER**: 
+DANGER: **DANGER**:
 Don't run it while GitLab or Sidekiq is running
 
 ```bash

@@ -12,9 +12,9 @@ If enabled, version check will inform you if a new version is available and the
 importance of it through a status. This is shown on the help page (i.e. `/help`)
 for all signed in users, and on the admin pages. The statuses are:
 
-* Green: You are running the latest version of GitLab.
-* Orange: An updated version of GitLab is available.
-* Red: The version of GitLab you are running is vulnerable. You should install
+- Green: You are running the latest version of GitLab.
+- Orange: An updated version of GitLab is available.
+- Red: The version of GitLab you are running is vulnerable. You should install
   the latest version with security fixes as soon as possible.
 
 ![Orange version check example](img/update-available.png)
@@ -42,7 +42,11 @@ not send any project names, usernames, or any other specific data. The
 information from the usage ping is not anonymous, it is linked to the hostname
 of the instance.
 
-You can view the exact JSON payload in the administration panel.
+You can view the exact JSON payload in the administration panel. To view the payload:
+
+1. Go to the **Admin area** (spanner symbol on the top bar).
+1. Expand **Settings** in the left sidebar and click on **Metrics and profiling**.
+1. Expand **Usage statistics** and click on the **Preview payload** button.
 
 ### Deactivate the usage ping
 

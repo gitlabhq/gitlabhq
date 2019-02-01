@@ -14,7 +14,7 @@ module API
         end
 
         def public_snippets
-          SnippetsFinder.new(current_user, visibility: Snippet::PUBLIC).execute
+          SnippetsFinder.new(current_user, scope: :are_public).execute
         end
       end
 
@@ -146,6 +146,7 @@ module API
 
         env['api.format'] = :txt
         content_type 'text/plain'
+        header['Content-Disposition'] = 'attachment'
         present snippet.content
       end
       # rubocop: enable CodeReuse/ActiveRecord

@@ -1,11 +1,11 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CIIcon from '~/vue_shared/components/ci_icon.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import initUserPopovers from '../../user_popovers';
 
 /**
  * CommitItem
@@ -21,9 +21,6 @@ import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_sta
  *
  */
 export default {
-  directives: {
-    tooltip,
-  },
   components: {
     UserAvatarLink,
     Icon,
@@ -39,15 +36,29 @@ export default {
     },
   },
   computed: {
+    author() {
+      return this.commit.author || {};
+    },
     authorName() {
-      return (this.commit.author && this.commit.author.name) || this.commit.authorName;
+      return this.author.name || this.commit.author_name;
+    },
+    authorClass() {
+      return this.author.name ? 'js-user-link' : '';
+    },
+    authorId() {
+      return this.author.id ? this.author.id : '';
     },
     authorUrl() {
-      return (this.commit.author && this.commit.author.webUrl) || `mailto:${this.commit.authorEmail}`;
+      return this.author.web_url || `mailto:${this.commit.author_email}`;
     },
     authorAvatar() {
-      return (this.commit.author && this.commit.author.avatarUrl) || this.commit.authorGravatarUrl;
+      return this.author.avatar_url || this.commit.author_gravatar_url;
     },
+  },
+  created() {
+    this.$nextTick(() => {
+      initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
+    });
   },
 };
 </script>
@@ -64,59 +75,47 @@ export default {
     <div class="commit-detail flex-list">
       <div class="commit-content qa-commit-content">
         <a
-          :href="commit.commitUrl"
+          :href="commit.commit_url"
           class="commit-row-message item-title"
-          v-html="commit.titleHtml"
+          v-html="commit.title_html"
         ></a>
 
-        <span class="commit-row-message d-block d-sm-none">
-          &middot;
-          {{ commit.shortId }}
-        </span>
+        <span class="commit-row-message d-block d-sm-none"> &middot; {{ commit.short_id }} </span>
 
         <button
-          v-if="commit.descriptionHtml"
+          v-if="commit.description_html"
           class="text-expander js-toggle-button"
           type="button"
           :aria-label="__('Toggle commit description')"
         >
-          <icon
-            :size="12"
-            name="ellipsis_h"
-          />
+          <icon :size="12" name="ellipsis_h" />
         </button>
 
         <div class="commiter">
           <a
             :href="authorUrl"
+            :class="authorClass"
+            :data-user-id="authorId"
             v-text="authorName"
           ></a>
           {{ s__('CommitWidget|authored') }}
-          <time-ago-tooltip
-            :time="commit.authoredDate"
-          />
+          <time-ago-tooltip :time="commit.authored_date" />
         </div>
 
         <pre
-          v-if="commit.descriptionHtml"
+          v-if="commit.description_html"
           class="commit-row-description js-toggle-content append-bottom-8"
-          v-html="commit.descriptionHtml"
+          v-html="commit.description_html"
         ></pre>
       </div>
       <div class="commit-actions flex-row d-none d-sm-flex">
-        <div
-          v-if="commit.signatureHtml"
-          v-html="commit.signatureHtml"
-        ></div>
+        <div v-if="commit.signature_html" v-html="commit.signature_html"></div>
         <commit-pipeline-status
-          v-if="commit.pipelineStatusPath"
-          :endpoint="commit.pipelineStatusPath"
+          v-if="commit.pipeline_status_path"
+          :endpoint="commit.pipeline_status_path"
         />
         <div class="commit-sha-group">
-          <div
-            class="label label-monospace"
-            v-text="commit.shortId"
-          ></div>
+          <div class="label label-monospace" v-text="commit.short_id"></div>
           <clipboard-button
             :text="commit.id"
             :title="__('Copy commit SHA to clipboard')"

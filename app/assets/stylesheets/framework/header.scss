@@ -33,6 +33,7 @@
 
     .close-icon {
       display: block;
+      margin: auto;
     }
   }
 
@@ -90,12 +91,6 @@
         padding: 2px 8px;
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
-
-        .tanuki-logo {
-          @include media-breakpoint-up(sm) {
-            margin-right: 8px;
-          }
-        }
       }
 
       .project-item-select {
@@ -110,6 +105,10 @@
       }
     }
 
+    .navbar-collapse > ul.nav > li:not(.d-none) {
+      margin: 0 2px;
+    }
+
     &.menu-expanded {
       @include media-breakpoint-down(xs) {
         .title-container {
@@ -117,16 +116,10 @@
         }
 
         .navbar-collapse {
-          display: block;
+          display: flex;
         }
       }
     }
-  }
-
-  li.dropdown-bold-header {
-    color: $gl-text-color-secondary;
-    font-size: 12px;
-    padding: 0 16px;
   }
 
   .navbar-collapse {
@@ -176,12 +169,6 @@
         color: currentColor;
         background-color: transparent;
       }
-
-      .more-icon,
-      .close-icon {
-        fill: $white-light;
-        margin: auto;
-      }
     }
 
     .navbar-nav {
@@ -209,7 +196,7 @@
 
       > a {
         will-change: color;
-        margin: 4px 2px;
+        margin: 4px 0;
         padding: 6px 8px;
         height: 32px;
 
@@ -379,6 +366,16 @@
       top: 1px;
     }
   }
+
+  .dropdown-menu li a .identicon {
+    width: 17px;
+    height: 17px;
+    font-size: $gl-font-size-xs;
+    vertical-align: middle;
+    text-indent: 0;
+    line-height: $gl-font-size-xs + 2px;
+    display: inline-block;
+  }
 }
 
 .breadcrumbs-list {
@@ -455,13 +452,10 @@
   color: $indigo-900;
   font-weight: $gl-font-weight-bold;
   line-height: 18px;
+  margin: 4px 0 4px 2px;
 
   &:hover {
     background-color: $white-light;
-  }
-
-  @include media-breakpoint-down(xs) {
-    margin-top: $gl-padding-4;
   }
 }
 
@@ -509,12 +503,7 @@
       margin-right: -10px;
 
       .nav > li:not(.d-none) {
-        display: table-cell !important;
-        width: 25%;
-
-        a {
-          margin-right: 8px;
-        }
+        flex: 1;
       }
     }
   }
@@ -530,29 +519,30 @@
 
 .header-user {
   &.show .dropdown-menu {
-    width: auto;
-    min-width: unset;
-    max-height: 323px;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
 
     li.current-user {
-      padding: 5px 18px;
+      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
 
       .user-name {
         display: block;
       }
 
-      .user-status-emoji {
+      .user-status {
         margin-right: 0;
-        display: block;
-        vertical-align: text-top;
-        max-width: 148px;
-        font-size: 12px;
+        max-width: 240px;
+        font-size: $gl-font-size-small;
 
         gl-emoji {
-          font-size: $gl-font-size;
+          font-size: $gl-font-size-small;
+        }
+
+        .user-status-emoji {
+          gl-emoji {
+            font-size: $gl-font-size;
+          }
         }
       }
     }
@@ -606,4 +596,16 @@
   .emoji-menu-toggle-button {
     @include emoji-menu-toggle-button;
   }
+
+  .input-group {
+    height: 34px;
+  }
+}
+
+.nav-links > li > a {
+  .badge.badge-pill {
+    @include media-breakpoint-down(xs) { display: none; }
+  }
+
+  @include media-breakpoint-down(xs) { margin-right: 3px; }
 }

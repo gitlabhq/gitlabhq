@@ -1,5 +1,0 @@
----
-title: Fix LFS uploaded images not being rendered
-merge_request: 22092
-author:
-type: fixed

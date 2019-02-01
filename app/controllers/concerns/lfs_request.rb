@@ -94,6 +94,7 @@ module LfsRequest
   def lfs_upload_access?
     return false unless project.lfs_enabled?
     return false unless has_authentication_ability?(:push_code)
+    return false if limit_exceeded?
 
     lfs_deploy_token? || can?(user, :push_code, project)
   end
@@ -120,5 +121,10 @@ module LfsRequest
 
   def has_authentication_ability?(capability)
     (authentication_abilities || []).include?(capability)
+  end
+
+  # Overriden in EE
+  def limit_exceeded?
+    false
   end
 end

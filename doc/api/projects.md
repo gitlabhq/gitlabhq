@@ -7,29 +7,28 @@ This is determined by the `visibility` field in the project.
 
 Values for the project visibility level are:
 
-* `private`:
+- `private`:
   Project access must be granted explicitly for each user.
 
-* `internal`:
+- `internal`:
   The project can be cloned by any logged in user.
 
-* `public`:
+- `public`:
   The project can be cloned without any authentication.
 
 ## Project merge method
 
 There are currently three options for `merge_method` to choose from:
 
-* `merge`:
+- `merge`:
   A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
 
-* `rebase_merge`:
+- `rebase_merge`:
   A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
   This way you could make sure that if this merge request would build, after merging to target branch it would also build.
 
-* `ff`:
+- `ff`:
   No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
-
 
 ## List all projects
 
@@ -451,6 +450,7 @@ GET /projects/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `statistics` | boolean | no | Include project statistics |
+| `license` | boolean | no | Include project license data |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 ```json
@@ -508,6 +508,14 @@ GET /projects/:id
   },
   "archived": false,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -517,11 +525,13 @@ GET /projects/:id
     {
       "group_id": 4,
       "group_name": "Twitter",
+      "group_full_path": "twitter",
       "group_access_level": 30
     },
     {
       "group_id": 3,
       "group_name": "Gitlab Org",
+      "group_full_path": "gitlab-org",
       "group_access_level": 10
     }
   ],
@@ -572,6 +582,14 @@ If the project is a fork, and you provide a valid token to authenticate, the
       "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-ce.git",
       "web_url":"https://gitlab.com/gitlab-org/gitlab-ce",
       "avatar_url":"https://assets.gitlab-static.net/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
+      "license_url": "https://gitlab.com/gitlab-org/gitlab-ce/blob/master/LICENSE",
+      "license": {
+        "key": "mit",
+        "name": "MIT License",
+        "nickname": null,
+        "html_url": "http://choosealicense.com/licenses/mit/",
+        "source_url": "https://opensource.org/licenses/MIT",
+      },
       "star_count":3812,
       "forks_count":3561,
       "last_activity_at":"2018-01-02T11:40:26.570Z",
@@ -651,7 +669,7 @@ POST /projects
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the merge method used |
@@ -689,7 +707,7 @@ POST /projects/user/:user_id
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the merge method used |
@@ -725,7 +743,7 @@ PUT /projects/:id
 | `shared_runners_enabled` | boolean | no | Enable shared runners for this project |
 | `visibility` | string | no | See [project visibility level](#project-visibility-level) |
 | `import_url` | string | no | URL to import repository from |
-| `public_jobs` | boolean | no | If `true`, jobs can be viewed by non-project-members |
+| `public_builds` | boolean | no | If `true`, jobs can be viewed by non-project-members |
 | `only_allow_merge_if_pipeline_succeeds` | boolean | no | Set whether merge requests can only be merged with successful jobs |
 | `only_allow_merge_if_all_discussions_are_resolved` | boolean | no | Set whether merge requests can only be merged when all the discussions are resolved |
 | `merge_method` | string | no | Set the merge method used |
@@ -781,7 +799,7 @@ GET /projects/:id/forks
 | `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/forks"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/forks"
 ```
 
 Example responses:
@@ -861,7 +879,7 @@ POST /projects/:id/star
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/star"
 ```
 
 Example response:
@@ -905,6 +923,14 @@ Example response:
   "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 1,
@@ -939,7 +965,7 @@ POST /projects/:id/unstar
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unstar"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unstar"
 ```
 
 Example response:
@@ -983,6 +1009,14 @@ Example response:
   "import_status": "none",
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -1013,7 +1047,7 @@ GET /projects/:id/languages
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/languages"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
 ```
 
 Example response:
@@ -1041,7 +1075,7 @@ POST /projects/:id/archive
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/archive"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/archive"
 ```
 
 Example response:
@@ -1101,6 +1135,14 @@ Example response:
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -1137,7 +1179,7 @@ POST /projects/:id/unarchive
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unarchive"
 ```
 
 Example response:
@@ -1197,6 +1239,14 @@ Example response:
   },
   "archived": false,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
+  "license_url": "http://example.com/diaspora/diaspora-client/blob/master/LICENSE",
+  "license": {
+    "key": "lgpl-3.0",
+    "name": "GNU Lesser General Public License v3.0",
+    "nickname": "GNU LGPLv3",
+    "html_url": "http://choosealicense.com/licenses/lgpl-3.0/",
+    "source_url": "http://www.gnu.org/licenses/lgpl-3.0.txt"
+  },
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
@@ -1250,7 +1300,7 @@ The `file=` parameter must point to a file on your filesystem and be preceded
 by `@`. For example:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/5/uploads
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/5/uploads
 ```
 
 Returned object:
@@ -1296,7 +1346,7 @@ DELETE /projects/:id/share/:group_id
 | `group_id` | integer | yes | The ID of the group |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17
 ```
 
 ## Hooks
@@ -1464,7 +1514,7 @@ GET /projects
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects?search=test
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects?search=test
 ```
 
 ## Start the Housekeeping task for a Project

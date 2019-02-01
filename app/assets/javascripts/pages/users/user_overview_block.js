@@ -10,11 +10,13 @@ export default class UserOverviewBlock {
       limit: DEFAULT_LIMIT,
       ...options.requestParams,
     };
+    this.postRenderCallback = options.postRenderCallback;
     this.loadData();
   }
 
   loadData() {
-    const loadingEl = document.querySelector(`${this.container} .loading`);
+    const containerEl = document.querySelector(this.container);
+    const loadingEl = containerEl.querySelector(`.loading`);
 
     loadingEl.classList.remove('hide');
 
@@ -28,20 +30,27 @@ export default class UserOverviewBlock {
 
   render(data) {
     const { html, count } = data;
-    const contentList = document.querySelector(`${this.container} .overview-content-list`);
+    const containerEl = document.querySelector(this.container);
+    const contentList = containerEl.querySelector('.overview-content-list');
 
     contentList.innerHTML += html;
 
-    const loadingEl = document.querySelector(`${this.container} .loading`);
+    const loadingEl = containerEl.querySelector('.loading');
 
     if (count && count > 0) {
-      document.querySelector(`${this.container} .js-view-all`).classList.remove('hide');
+      containerEl.querySelector('.js-view-all').classList.remove('hide');
     } else {
-      document
-        .querySelector(`${this.container} .nothing-here-block`)
-        .classList.add('text-left', 'p-0');
+      const nothingHereBlock = containerEl.querySelector('.nothing-here-block');
+
+      if (nothingHereBlock) {
+        nothingHereBlock.classList.add('p-5');
+      }
     }
 
     loadingEl.classList.add('hide');
+
+    if (this.postRenderCallback) {
+      this.postRenderCallback.call(this);
+    }
   }
 }

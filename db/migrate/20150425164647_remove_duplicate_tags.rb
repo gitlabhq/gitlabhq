@@ -1,5 +1,5 @@
 # rubocop:disable all
-class RemoveDuplicateTags < ActiveRecord::Migration
+class RemoveDuplicateTags < ActiveRecord::Migration[4.2]
   def up
     select_all("SELECT name, COUNT(id) as cnt FROM tags GROUP BY name HAVING COUNT(id) > 1").each do |tag|
       tag_name = quote_string(tag["name"])

@@ -20,6 +20,8 @@ describe('placeholder system note component', () => {
     });
 
     expect(vm.$el.tagName).toEqual('LI');
-    expect(vm.$el.querySelector('.timeline-content em').textContent.trim()).toEqual('This is a placeholder');
+    expect(vm.$el.querySelector('.timeline-content em').textContent.trim()).toEqual(
+      'This is a placeholder',
+    );
   });
 });

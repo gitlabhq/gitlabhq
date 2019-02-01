@@ -1,4 +1,0 @@
----
-title: "Fix the issue where long environment names aren't being truncated, causing the environment name to overlap into the column next to it."
-merge_request: 22104
-type: fixed

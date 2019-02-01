@@ -7,16 +7,19 @@ class ProjectsController < Projects::ApplicationController
   include PreviewMarkdown
   include SendFileUpload
 
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
+
   before_action :whitelist_query_limiting, only: [:create]
-  before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
+  before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve]
   before_action :redirect_git_extension, only: [:show]
-  before_action :project, except: [:index, :new, :create]
-  before_action :repository, except: [:index, :new, :create]
+  before_action :project, except: [:index, :new, :create, :resolve]
+  before_action :repository, except: [:index, :new, :create, :resolve]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
+  before_action :authorize_download_code!, only: [:refs]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -276,7 +279,7 @@ class ProjectsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   # Render project landing depending of which features are available
-  # So if page is not availble in the list it renders the next page
+  # So if page is not available in the list it renders the next page
   #
   # pages list order: repository readme, wiki home, issues list, customize workflow
   def render_landing_page
@@ -438,5 +441,15 @@ class ProjectsController < Projects::ApplicationController
 
   def present_project
     @project = @project.present(current_user: current_user)
+  end
+
+  def resolve
+    @project = Project.find(params[:id])
+
+    if can?(current_user, :read_project, @project)
+      redirect_to @project
+    else
+      render_404
+    end
   end
 end

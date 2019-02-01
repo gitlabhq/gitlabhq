@@ -3,23 +3,59 @@
 class Deployment < ActiveRecord::Base
   include AtomicInternalId
   include IidRoutes
+  include AfterCommitQueue
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
 
-  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.deployments&.maximum(:iid) }
+  has_internal_id :iid, scope: :project, init: ->(s) do
+    Deployment.where(project: s.project).maximum(:iid) if s&.project
+  end
 
   validates :sha, presence: true
   validates :ref, presence: true
 
   delegate :name, to: :environment, prefix: true
 
-  after_create :create_ref
-  after_create :invalidate_cache
-
   scope :for_environment, -> (environment) { where(environment_id: environment) }
+
+  state_machine :status, initial: :created do
+    event :run do
+      transition created: :running
+    end
+
+    event :succeed do
+      transition any - [:success] => :success
+    end
+
+    event :drop do
+      transition any - [:failed] => :failed
+    end
+
+    event :cancel do
+      transition any - [:canceled] => :canceled
+    end
+
+    before_transition any => [:success, :failed, :canceled] do |deployment|
+      deployment.finished_at = Time.now
+    end
+
+    after_transition any => :success do |deployment|
+      deployment.run_after_commit do
+        Deployments::SuccessWorker.perform_async(id)
+      end
+    end
+  end
+
+  enum status: {
+    created: 0,
+    running: 1,
+    success: 2,
+    failed: 3,
+    canceled: 4
+  }
 
   def self.last_for_environment(environment)
     ids = self
@@ -55,7 +91,11 @@ class Deployment < ActiveRecord::Base
   end
 
   def manual_actions
-    @manual_actions ||= deployable.try(:other_actions)
+    @manual_actions ||= deployable.try(:other_manual_actions)
+  end
+
+  def scheduled_actions
+    @scheduled_actions ||= deployable.try(:other_scheduled_actions)
   end
 
   def includes_commit?(commit)
@@ -65,15 +105,15 @@ class Deployment < ActiveRecord::Base
   end
 
   def update_merge_request_metrics!
-    return unless environment.update_merge_request_metrics?
+    return unless environment.update_merge_request_metrics? && success?
 
     merge_requests = project.merge_requests
                      .joins(:metrics)
                      .where(target_branch: self.ref, merge_request_metrics: { first_deployed_to_production_at: nil })
-                     .where("merge_request_metrics.merged_at <= ?", self.created_at)
+                     .where("merge_request_metrics.merged_at <= ?", finished_at)
 
     if previous_deployment
-      merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.created_at)
+      merge_requests = merge_requests.where("merge_request_metrics.merged_at >= ?", previous_deployment.finished_at)
     end
 
     # Need to use `map` instead of `select` because MySQL doesn't allow `SELECT`ing from the same table
@@ -87,7 +127,7 @@ class Deployment < ActiveRecord::Base
 
     MergeRequest::Metrics
       .where(merge_request_id: merge_request_ids, first_deployed_to_production_at: nil)
-      .update_all(first_deployed_to_production_at: self.created_at)
+      .update_all(first_deployed_to_production_at: finished_at)
   end
 
   def previous_deployment
@@ -105,26 +145,36 @@ class Deployment < ActiveRecord::Base
     @stop_action ||= manual_actions.find_by(name: on_stop)
   end
 
+  def finished_at
+    read_attribute(:finished_at) || legacy_finished_at
+  end
+
+  def deployed_at
+    return unless success?
+
+    finished_at
+  end
+
   def formatted_deployment_time
-    created_at.to_time.in_time_zone.to_s(:medium)
+    deployed_at&.to_time&.in_time_zone&.to_s(:medium)
   end
 
   def has_metrics?
-    prometheus_adapter&.can_query?
+    prometheus_adapter&.can_query? && success?
   end
 
   def metrics
     return {} unless has_metrics?
 
     metrics = prometheus_adapter.query(:deployment, self)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    metrics&.merge(deployment_time: finished_at.to_i) || {}
   end
 
   def additional_metrics
     return {} unless has_metrics?
 
     metrics = prometheus_adapter.query(:additional_metrics_deployment, self)
-    metrics&.merge(deployment_time: created_at.to_i) || {}
+    metrics&.merge(deployment_time: finished_at.to_i) || {}
   end
 
   private
@@ -135,5 +185,9 @@ class Deployment < ActiveRecord::Base
 
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)
+  end
+
+  def legacy_finished_at
+    self.created_at if success? && !read_attribute(:finished_at)
   end
 end

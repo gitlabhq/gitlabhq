@@ -1,6 +1,6 @@
 # GitLab Runner Helm Chart
 > **Note:**
-These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/gitlab-runner/issues).
+These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/gitlab-org/gitlab-runner/issues).
 
 The `gitlab-runner` Helm chart deploys a GitLab Runner instance into your
 Kubernetes cluster.
@@ -84,7 +84,7 @@ rbac:
   ##
   # serviceAccountName: default
 
-## Configuration for the Pods that that the runner launches for each new job
+## Configuration for the Pods that the runner launches for each new job
 ##
 runners:
   ## Default container image to use for builds when none is specified
@@ -132,7 +132,7 @@ runners:
 
 If your cluster has RBAC enabled, you can choose to either have the chart create its own service account or provide one.
 
-To have the chart create the service account for you, set `rbac.create` to true. 
+To have the chart create the service account for you, set `rbac.create` to true.
 
 ### Controlling maximum Runner concurrency
 

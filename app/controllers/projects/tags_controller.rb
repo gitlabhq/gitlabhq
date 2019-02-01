@@ -3,6 +3,8 @@
 class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
 
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
@@ -18,7 +20,7 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
     tag_names = @tags.map(&:name)
-    @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
+    @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
     @releases = project.releases.where(tag: tag_names)
 
     respond_to do |format|
@@ -40,10 +42,23 @@ class Projects::TagsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def create
-    result = Tags::CreateService.new(@project, current_user)
-      .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
+    result = ::Tags::CreateService.new(@project, current_user)
+      .execute(params[:tag_name], params[:ref], params[:message])
 
     if result[:status] == :success
+      # Release creation with Tags was deprecated in GitLab 11.7
+      if params[:release_description].present?
+        release_params = {
+          tag: params[:tag_name],
+          name: params[:tag_name],
+          description: params[:release_description]
+        }
+
+        Releases::CreateService
+          .new(@project, current_user, release_params)
+          .execute
+      end
+
       @tag = result[:tag]
 
       redirect_to project_tag_path(@project, @tag.name)
@@ -56,7 +71,7 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    result = Tags::DestroyService.new(project, current_user).execute(params[:id])
+    result = ::Tags::DestroyService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
       if result[:status] == :success

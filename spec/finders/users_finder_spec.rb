@@ -22,6 +22,12 @@ describe UsersFinder do
         expect(users).to contain_exactly(user1)
       end
 
+      it 'filters by username (case insensitive)' do
+        users = described_class.new(user, username: 'joHNdoE').execute
+
+        expect(users).to contain_exactly(user1)
+      end
+
       it 'filters by search' do
         users = described_class.new(user, search: 'orando').execute
 

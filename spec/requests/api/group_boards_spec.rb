@@ -46,7 +46,7 @@ describe API::GroupBoards do
     it 'does not create lists for child project labels' do
       project_label = create(:label, project: project)
 
-      post api(url, user), label_id: project_label.id
+      post api(url, user), params: { label_id: project_label.id }
 
       expect(response).to have_gitlab_http_status(400)
     end

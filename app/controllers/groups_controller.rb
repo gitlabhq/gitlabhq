@@ -2,12 +2,14 @@
 
 class GroupsController < Groups::ApplicationController
   include API::Helpers::RelatedResourcesHelpers
-  include IssuesAction
-  include MergeRequestsAction
+  include IssuableCollectionsAction
   include ParamsBackwardCompatibility
   include PreviewMarkdown
 
   respond_to :html
+
+  prepend_before_action(only: [:show, :issues]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
 
   before_action :authenticate_user!, only: [:new, :create]
   before_action :group, except: [:index, :new, :create]

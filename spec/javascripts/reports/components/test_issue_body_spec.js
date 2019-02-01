@@ -29,6 +29,7 @@ describe('Test Issue body', () => {
       spyOn(vm, 'openModal');
 
       vm.$el.querySelector('button').click();
+
       expect(vm.openModal).toHaveBeenCalledWith({
         issue: commonProps.issue,
       });

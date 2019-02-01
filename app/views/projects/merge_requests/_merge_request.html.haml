@@ -46,7 +46,7 @@
           %li.issuable-status.d-none.d-sm-inline-block
             = icon('ban')
             CLOSED
-        - if merge_request.head_pipeline
+        - if can?(current_user, :read_pipeline, merge_request.head_pipeline)
           %li.issuable-pipeline-status.d-none.d-sm-inline-block
             = render_pipeline_status(merge_request.head_pipeline)
         - if merge_request.open? && merge_request.broken?
@@ -56,6 +56,7 @@
         - if merge_request.assignee
           %li
             = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: _('Assigned to :name'))
+        = render_if_exists 'projects/merge_requests/approvals_count', merge_request: merge_request
 
         = render 'shared/issuable_meta_data', issuable: merge_request
 

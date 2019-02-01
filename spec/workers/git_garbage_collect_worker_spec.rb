@@ -71,6 +71,17 @@ describe GitGarbageCollectWorker do
 
           subject.perform(project.id)
         end
+
+        context 'when the repository has joined a pool' do
+          let!(:pool) { create(:pool_repository, :ready) }
+          let(:project) { pool.source_project }
+
+          it 'ensures the repositories are linked' do
+            expect_any_instance_of(PoolRepository).to receive(:link_repository).once
+
+            subject.perform(project.id)
+          end
+        end
       end
 
       context 'when no lease can be obtained' do

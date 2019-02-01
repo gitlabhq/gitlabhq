@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module PerformanceBar
     ALLOWED_USER_IDS_KEY = 'performance_bar_allowed_user_ids:v2'.freeze

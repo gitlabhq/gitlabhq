@@ -6,104 +6,103 @@ describe Gitlab::Kubernetes::KubeClient do
   include KubernetesHelpers
 
   let(:api_url) { 'https://kubernetes.example.com/prefix' }
-  let(:api_groups) { ['api', 'apis/rbac.authorization.k8s.io'] }
-  let(:api_version) { 'v1' }
   let(:kubeclient_options) { { auth_options: { bearer_token: 'xyz' } } }
 
-  let(:client) { described_class.new(api_url, api_groups, api_version, kubeclient_options) }
+  let(:client) { described_class.new(api_url, kubeclient_options) }
 
   before do
     stub_kubeclient_discover(api_url)
   end
 
-  describe '#hashed_clients' do
-    subject { client.hashed_clients }
-
-    it 'has keys from api groups' do
-      expect(subject.keys).to match_array api_groups
-    end
-
-    it 'has values of Kubeclient::Client' do
-      expect(subject.values).to all(be_an_instance_of Kubeclient::Client)
-    end
-  end
-
-  describe '#clients' do
-    subject { client.clients }
-
-    it 'is not empty' do
-      is_expected.to be_present
-    end
-
-    it 'is an array of Kubeclient::Client objects' do
-      is_expected.to all(be_an_instance_of Kubeclient::Client)
-    end
-
-    it 'has each API group url' do
-      expected_urls = api_groups.map { |group| "#{api_url}/#{group}" }
-
-      expect(subject.map(&:api_endpoint).map(&:to_s)).to match_array(expected_urls)
+  shared_examples 'a Kubeclient' do
+    it 'is a Kubeclient::Client' do
+      is_expected.to be_an_instance_of Kubeclient::Client
     end
 
     it 'has the kubeclient options' do
-      subject.each do |client|
-        expect(client.auth_options).to eq({ bearer_token: 'xyz' })
-      end
+      expect(subject.auth_options).to eq({ bearer_token: 'xyz' })
+    end
+  end
+
+  shared_examples 'redirection not allowed' do |method_name|
+    before do
+      redirect_url = 'https://not-under-our-control.example.com/api/v1/pods'
+
+      stub_request(:get, %r{\A#{api_url}/})
+        .to_return(status: 302, headers: { location: redirect_url })
+
+      stub_request(:get, redirect_url)
+        .to_return(status: 200, body: '{}')
     end
 
-    it 'has the api_version' do
-      subject.each do |client|
-        expect(client.instance_variable_get(:@api_version)).to eq('v1')
+    it 'does not follow redirects' do
+      method_call = -> do
+        case method_name
+        when /\A(get_|delete_)/
+          client.public_send(method_name)
+        when /\A(create_|update_)/
+          client.public_send(method_name, {})
+        else
+          raise "Unknown method name #{method_name}"
+        end
       end
+      expect { method_call.call }.to raise_error(Kubeclient::HttpError)
     end
   end
 
   describe '#core_client' do
     subject { client.core_client }
 
-    it 'is a Kubeclient::Client' do
-      is_expected.to be_an_instance_of Kubeclient::Client
-    end
+    it_behaves_like 'a Kubeclient'
 
     it 'has the core API endpoint' do
       expect(subject.api_endpoint.to_s).to match(%r{\/api\Z})
+    end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v1')
     end
   end
 
   describe '#rbac_client' do
     subject { client.rbac_client }
 
-    it 'is a Kubeclient::Client' do
-      is_expected.to be_an_instance_of Kubeclient::Client
-    end
+    it_behaves_like 'a Kubeclient'
 
     it 'has the RBAC API group endpoint' do
       expect(subject.api_endpoint.to_s).to match(%r{\/apis\/rbac.authorization.k8s.io\Z})
+    end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v1')
     end
   end
 
   describe '#extensions_client' do
     subject { client.extensions_client }
 
-    let(:api_groups) { ['apis/extensions'] }
-
-    it 'is a Kubeclient::Client' do
-      is_expected.to be_an_instance_of Kubeclient::Client
-    end
+    it_behaves_like 'a Kubeclient'
 
     it 'has the extensions API group endpoint' do
       expect(subject.api_endpoint.to_s).to match(%r{\/apis\/extensions\Z})
     end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v1beta1')
+    end
   end
 
-  describe '#discover!' do
-    it 'makes a discovery request for each API group' do
-      client.discover!
+  describe '#knative_client' do
+    subject { client.knative_client }
 
-      api_groups.each do |api_group|
-        discovery_url = api_url + '/' + api_group + '/v1'
-        expect(WebMock).to have_requested(:get, discovery_url).once
-      end
+    it_behaves_like 'a Kubeclient'
+
+    it 'has the extensions API group endpoint' do
+      expect(subject.api_endpoint.to_s).to match(%r{\/apis\/serving.knative.dev\Z})
+    end
+
+    it 'has the api_version' do
+      expect(subject.instance_variable_get(:@api_version)).to eq('v1alpha1')
     end
   end
 
@@ -126,9 +125,12 @@ describe Gitlab::Kubernetes::KubeClient do
       :create_secret,
       :create_service_account,
       :update_config_map,
+      :update_secret,
       :update_service_account
     ].each do |method|
       describe "##{method}" do
+        include_examples 'redirection not allowed', method
+
         it 'delegates to the core client' do
           expect(client).to delegate_method(method).to(:core_client)
         end
@@ -149,6 +151,8 @@ describe Gitlab::Kubernetes::KubeClient do
       :update_cluster_role_binding
     ].each do |method|
       describe "##{method}" do
+        include_examples 'redirection not allowed', method
+
         it 'delegates to the rbac client' do
           expect(client).to delegate_method(method).to(:rbac_client)
         end
@@ -156,24 +160,17 @@ describe Gitlab::Kubernetes::KubeClient do
         it 'responds to the method' do
           expect(client).to respond_to method
         end
-
-        context 'no rbac client' do
-          let(:api_groups) { ['api'] }
-
-          it 'throws an error' do
-            expect { client.public_send(method) }.to raise_error(Module::DelegationError)
-          end
-        end
       end
     end
   end
 
   describe 'extensions API group' do
     let(:api_groups) { ['apis/extensions'] }
-    let(:api_version) { 'v1beta1' }
     let(:extensions_client) { client.extensions_client }
 
     describe '#get_deployments' do
+      include_examples 'redirection not allowed', 'get_deployments'
+
       it 'delegates to the extensions client' do
         expect(client).to delegate_method(:get_deployments).to(:extensions_client)
       end
@@ -181,22 +178,11 @@ describe Gitlab::Kubernetes::KubeClient do
       it 'responds to the method' do
         expect(client).to respond_to :get_deployments
       end
-
-      context 'no extensions client' do
-        let(:api_groups) { ['api'] }
-        let(:api_version) { 'v1' }
-
-        it 'throws an error' do
-          expect { client.get_deployments }.to raise_error(Module::DelegationError)
-        end
-      end
     end
   end
 
   describe 'non-entity methods' do
     it 'does not proxy for non-entity methods' do
-      expect(client.clients.first).to respond_to :proxy_url
-
       expect(client).not_to respond_to :proxy_url
     end
 
@@ -211,14 +197,6 @@ describe Gitlab::Kubernetes::KubeClient do
     it 'is delegated to the core client' do
       expect(client).to delegate_method(:get_pod_log).to(:core_client)
     end
-
-    context 'when no core client' do
-      let(:api_groups) { ['apis/extensions'] }
-
-      it 'throws an error' do
-        expect { client.get_pod_log('pod-name') }.to raise_error(Module::DelegationError)
-      end
-    end
   end
 
   describe '#watch_pod_log' do
@@ -227,14 +205,84 @@ describe Gitlab::Kubernetes::KubeClient do
     it 'is delegated to the core client' do
       expect(client).to delegate_method(:watch_pod_log).to(:core_client)
     end
+  end
 
-    context 'when no core client' do
-      let(:api_groups) { ['apis/extensions'] }
+  shared_examples 'create_or_update method' do
+    let(:get_method) { "get_#{resource_type}" }
+    let(:update_method) { "update_#{resource_type}" }
+    let(:create_method) { "create_#{resource_type}" }
 
-      it 'throws an error' do
-        expect { client.watch_pod_log('pod-name') }.to raise_error(Module::DelegationError)
+    context 'resource exists' do
+      before do
+        expect(client).to receive(get_method).and_return(resource)
+      end
+
+      it 'calls the update method' do
+        expect(client).to receive(update_method).with(resource)
+
+        subject
       end
     end
+
+    context 'resource does not exist' do
+      before do
+        expect(client).to receive(get_method).and_raise(Kubeclient::ResourceNotFoundError.new(404, 'Not found', nil))
+      end
+
+      it 'calls the create method' do
+        expect(client).to receive(create_method).with(resource)
+
+        subject
+      end
+    end
+  end
+
+  describe '#create_or_update_cluster_role_binding' do
+    let(:resource_type) { 'cluster_role_binding' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_cluster_role_binding(resource) }
+
+    it_behaves_like 'create_or_update method'
+  end
+
+  describe '#create_or_update_role_binding' do
+    let(:resource_type) { 'role_binding' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_role_binding(resource) }
+
+    it_behaves_like 'create_or_update method'
+  end
+
+  describe '#create_or_update_service_account' do
+    let(:resource_type) { 'service_account' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_service_account(resource) }
+
+    it_behaves_like 'create_or_update method'
+  end
+
+  describe '#create_or_update_secret' do
+    let(:resource_type) { 'secret' }
+
+    let(:resource) do
+      ::Kubeclient::Resource.new(metadata: { name: 'name', namespace: 'namespace' })
+    end
+
+    subject { client.create_or_update_secret(resource) }
+
+    it_behaves_like 'create_or_update method'
   end
 
   describe 'methods that do not exist on any client' do

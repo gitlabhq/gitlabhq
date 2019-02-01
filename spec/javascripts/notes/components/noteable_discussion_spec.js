@@ -1,15 +1,15 @@
-import Vue from 'vue';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
+import mockDiffFile from '../../diffs/mock_data/diff_file';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
 describe('noteable_discussion component', () => {
-  const Component = Vue.extend(noteableDiscussion);
   let store;
-  let vm;
+  let wrapper;
 
   preloadFixtures(discussionWithTwoUnresolvedNotes);
 
@@ -19,41 +19,62 @@ describe('noteable_discussion component', () => {
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
-    vm = new Component({
+    const localVue = createLocalVue();
+    wrapper = shallowMount(noteableDiscussion, {
       store,
       propsData: { discussion: discussionMock },
-    }).$mount();
+      localVue,
+      sync: false,
+    });
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render user avatar', () => {
-    expect(vm.$el.querySelector('.user-avatar-link')).not.toBeNull();
+    expect(wrapper.find('.user-avatar-link').exists()).toBe(true);
   });
 
-  it('should render discussion header', () => {
-    expect(vm.$el.querySelector('.discussion-header')).not.toBeNull();
-    expect(vm.$el.querySelector('.notes').children.length).toEqual(discussionMock.notes.length);
+  it('should not render discussion header for non diff discussions', () => {
+    expect(wrapper.find('.discussion-header').exists()).toBe(false);
+  });
+
+  it('should render discussion header', done => {
+    const discussion = { ...discussionMock };
+    discussion.diff_file = mockDiffFile;
+    discussion.diff_discussion = true;
+
+    wrapper.setProps({ discussion });
+
+    wrapper.vm
+      .$nextTick()
+      .then(() => {
+        expect(wrapper.find('.discussion-header').exists()).toBe(true);
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   describe('actions', () => {
     it('should render reply button', () => {
-      expect(vm.$el.querySelector('.js-vue-discussion-reply').textContent.trim()).toEqual(
-        'Reply...',
-      );
+      expect(
+        wrapper
+          .find('.js-vue-discussion-reply')
+          .text()
+          .trim(),
+      ).toEqual('Reply...');
     });
 
     it('should toggle reply form', done => {
-      vm.$el.querySelector('.js-vue-discussion-reply').click();
+      wrapper.find('.js-vue-discussion-reply').trigger('click');
 
-      Vue.nextTick(() => {
-        expect(vm.isReplying).toEqual(true);
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.vm.isReplying).toEqual(true);
 
         // There is a watcher for `isReplying` which will init autosave in the next tick
-        Vue.nextTick(() => {
-          expect(vm.$refs.noteForm).not.toBeNull();
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.vm.$refs.noteForm).not.toBeNull();
           done();
         });
       });
@@ -61,47 +82,8 @@ describe('noteable_discussion component', () => {
 
     it('does not render jump to discussion button', () => {
       expect(
-        vm.$el.querySelector('*[data-original-title="Jump to next unresolved discussion"]'),
-      ).toBeNull();
-    });
-  });
-
-  describe('computed', () => {
-    describe('hasMultipleUnresolvedDiscussions', () => {
-      it('is false if there are no unresolved discussions', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is false if there is one unresolved discussion', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([discussionMock]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('is true if there are two unresolved discussions', done => {
-        const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
-        discussion.notes[0].resolved = false;
-        vm.$store.dispatch('setInitialNotes', [discussion, discussion]);
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.hasMultipleUnresolvedDiscussions).toBe(true);
-          })
-          .then(done)
-          .catch(done.fail);
-      });
+        wrapper.find('*[data-original-title="Jump to next unresolved discussion"]').exists(),
+      ).toBe(false);
     });
   });
 
@@ -110,13 +92,15 @@ describe('noteable_discussion component', () => {
       it('expands next unresolved discussion', done => {
         const discussion2 = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
         discussion2.resolved = false;
+        discussion2.active = true;
         discussion2.id = 'next'; // prepare this for being identified as next one (to be jumped to)
-        vm.$store.dispatch('setInitialNotes', [discussionMock, discussion2]);
+        store.dispatch('setInitialNotes', [discussionMock, discussion2]);
         window.mrTabs.currentAction = 'show';
 
-        Vue.nextTick()
+        wrapper.vm
+          .$nextTick()
           .then(() => {
-            spyOn(vm, 'expandDiscussion').and.stub();
+            spyOn(wrapper.vm, 'expandDiscussion').and.stub();
 
             const nextDiscussionId = discussion2.id;
 
@@ -124,9 +108,11 @@ describe('noteable_discussion component', () => {
               <div class="discussion" data-discussion-id="${nextDiscussionId}"></div>
             `);
 
-            vm.jumpToNextDiscussion();
+            wrapper.vm.jumpToNextDiscussion();
 
-            expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
+            expect(wrapper.vm.expandDiscussion).toHaveBeenCalledWith({
+              discussionId: nextDiscussionId,
+            });
           })
           .then(done)
           .catch(done.fail);
@@ -138,24 +124,121 @@ describe('noteable_discussion component', () => {
     it('should return first note object for placeholder note', () => {
       const data = {
         isPlaceholderNote: true,
-        notes: [
-          { body: 'hello world!' },
-        ],
+        notes: [{ body: 'hello world!' }],
       };
 
-      const note = vm.componentData(data);
+      const note = wrapper.vm.componentData(data);
+
       expect(note).toEqual(data.notes[0]);
     });
 
     it('should return given note for nonplaceholder notes', () => {
       const data = {
-        notes: [
-          { id: 12 },
-        ],
+        notes: [{ id: 12 }],
       };
 
-      const note = vm.componentData(data);
+      const note = wrapper.vm.componentData(data);
+
       expect(note).toEqual(data);
+    });
+  });
+
+  describe('action text', () => {
+    const commitId = 'razupaltuff';
+    const truncatedCommitId = commitId.substr(0, 8);
+    let commitElement;
+
+    beforeEach(done => {
+      store.state.diffs = {
+        projectPath: 'something',
+      };
+
+      wrapper.setProps({
+        discussion: {
+          ...discussionMock,
+          for_commit: true,
+          commit_id: commitId,
+          diff_discussion: true,
+          diff_file: {
+            ...mockDiffFile,
+          },
+        },
+        renderDiffFile: true,
+      });
+
+      wrapper.vm
+        .$nextTick()
+        .then(() => {
+          commitElement = wrapper.find('.commit-sha');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    describe('for commit discussions', () => {
+      it('should display a monospace started a discussion on commit', () => {
+        expect(wrapper.text()).toContain(`started a discussion on commit ${truncatedCommitId}`);
+        expect(commitElement.exists()).toBe(true);
+        expect(commitElement.text()).toContain(truncatedCommitId);
+      });
+    });
+
+    describe('for diff discussion with a commit id', () => {
+      it('should display started discussion on commit header', done => {
+        wrapper.vm.discussion.for_commit = false;
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.text()).toContain(`started a discussion on commit ${truncatedCommitId}`);
+
+          expect(commitElement).not.toBe(null);
+
+          done();
+        });
+      });
+
+      it('should display outdated change on commit header', done => {
+        wrapper.vm.discussion.for_commit = false;
+        wrapper.vm.discussion.active = false;
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.text()).toContain(
+            `started a discussion on an outdated change in commit ${truncatedCommitId}`,
+          );
+
+          expect(commitElement).not.toBe(null);
+
+          done();
+        });
+      });
+    });
+
+    describe('for diff discussions without a commit id', () => {
+      it('should show started a discussion on the diff text', done => {
+        Object.assign(wrapper.vm.discussion, {
+          for_commit: false,
+          commit_id: null,
+        });
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.text()).toContain('started a discussion on the diff');
+
+          done();
+        });
+      });
+
+      it('should show discussion on older version text', done => {
+        Object.assign(wrapper.vm.discussion, {
+          for_commit: false,
+          commit_id: null,
+          active: false,
+        });
+
+        wrapper.vm.$nextTick(() => {
+          expect(wrapper.text()).toContain('started a discussion on an old version of the diff');
+
+          done();
+        });
+      });
     });
   });
 });

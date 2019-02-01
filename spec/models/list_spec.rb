@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe List do
+  it_behaves_like 'having unique enum values'
+
   describe 'relationships' do
     it { is_expected.to belong_to(:board) }
     it { is_expected.to belong_to(:label) }
@@ -22,13 +24,13 @@ describe List do
   end
 
   describe '#destroy' do
-    it 'can be destroyed when when list_type is set to label' do
+    it 'can be destroyed when list_type is set to label' do
       subject = create(:list)
 
       expect(subject.destroy).to be_truthy
     end
 
-    it 'can not be destroyed when when list_type is set to closed' do
+    it 'can not be destroyed when list_type is set to closed' do
       subject = create(:closed_list)
 
       expect(subject.destroy).to be_falsey

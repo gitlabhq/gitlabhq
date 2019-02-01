@@ -34,7 +34,7 @@
     margin-bottom: 0;
   }
 
-  *:first-child:not(.katex-display) {
+  *:first-child {
     margin-top: 0;
   }
 
@@ -143,11 +143,12 @@
     margin: 0 0 16px;
   }
 
-  table {
+  table:not(.js-syntax-highlight) {
     @extend .table;
     @extend .table-bordered;
     margin: 16px 0;
     color: $gl-text-color;
+    border: 0;
 
     th {
       background: $label-gray-bg;
@@ -360,10 +361,6 @@ code {
   font-size: 95%;
 }
 
-.git-revision-dropdown-toggle {
-  @extend .monospace;
-}
-
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
 }
@@ -372,11 +369,11 @@ code {
  * Apply Markdown typography
  *
  */
-.wiki {
+.wiki:not(.use-csslab) {
   @include md-typography;
 }
 
-.md {
+.md:not(.use-csslab) {
   @include md-typography;
 }
 

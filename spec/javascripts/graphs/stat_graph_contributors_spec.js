@@ -20,7 +20,9 @@ describe('ContributorsStatGraph', () => {
 
       graph.change_date_header();
 
-      expect(document.getElementById('date_header').innerText).toBe('31. Januar 2012 – 31. Januar 2013');
+      expect(document.getElementById('date_header').innerText).toBe(
+        '31. Januar 2012 – 31. Januar 2013',
+      );
     });
   });
 });

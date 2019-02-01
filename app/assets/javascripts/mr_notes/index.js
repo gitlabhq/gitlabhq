@@ -4,6 +4,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import initDiffsApp from '../diffs';
 import notesApp from '../notes/components/notes_app.vue';
 import discussionCounter from '../notes/components/discussion_counter.vue';
+import initDiscussionFilters from '../notes/discussion_filters';
 import store from './stores';
 import MergeRequest from '../merge_request';
 
@@ -32,6 +33,7 @@ export default function initMrNotes() {
         noteableData,
         currentUserData: JSON.parse(notesDataset.currentUserData),
         notesData: JSON.parse(notesDataset.notesData),
+        helpPagePath: notesDataset.helpPagePath,
       };
     },
     computed: {
@@ -70,6 +72,7 @@ export default function initMrNotes() {
           notesData: this.notesData,
           userData: this.currentUserData,
           shouldShow: this.activeTab === 'show',
+          helpPagePath: this.helpPagePath,
         },
       });
     },
@@ -88,5 +91,6 @@ export default function initMrNotes() {
     },
   });
 
+  initDiscussionFilters(store);
   initDiffsApp(store);
 }

@@ -1,6 +1,0 @@
----
-title: Improving branch filter sorting by listing exact matches first and added support
-  for begins_with (^) and ends_with ($) matching.
-merge_request: 22166
-author: Jason Rutherford
-type: changed

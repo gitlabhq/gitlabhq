@@ -1,0 +1,5 @@
+---
+title: Creates mixin to reduce code duplication between CE and EE in graph component
+merge_request:
+author:
+type: other

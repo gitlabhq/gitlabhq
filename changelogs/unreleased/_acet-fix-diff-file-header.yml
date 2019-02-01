@@ -1,5 +1,0 @@
----
-title: Fix showing diff file header for renamed files
-merge_request: 22089
-author:
-type: fixed

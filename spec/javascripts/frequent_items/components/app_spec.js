@@ -232,8 +232,7 @@ describe('Frequent Items App Component', () => {
       expect(vm.$el.querySelectorAll('.frequent-items-list-container li').length).toBe(1);
 
       vm.$store.dispatch('setSearchQuery', 'gitlab');
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.$el.querySelector('.loading-animation')).toBeDefined();
         })

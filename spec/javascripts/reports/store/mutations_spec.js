@@ -13,6 +13,7 @@ describe('Reports Store Mutations', () => {
   describe('SET_ENDPOINT', () => {
     it('should set endpoint', () => {
       mutations[types.SET_ENDPOINT](stateCopy, 'endpoint.json');
+
       expect(stateCopy.endpoint).toEqual('endpoint.json');
     });
   });
@@ -20,6 +21,7 @@ describe('Reports Store Mutations', () => {
   describe('REQUEST_REPORTS', () => {
     it('should set isLoading to true', () => {
       mutations[types.REQUEST_REPORTS](stateCopy);
+
       expect(stateCopy.isLoading).toEqual(true);
     });
   });

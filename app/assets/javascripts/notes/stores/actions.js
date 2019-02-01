@@ -1,6 +1,8 @@
+import Vue from 'vue';
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import Visibility from 'visibilityjs';
+import TaskList from '../../task_list';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
@@ -9,12 +11,19 @@ import * as constants from '../constants';
 import service from '../services/notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
-import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
+import { isInViewport, scrollToElement, isInMRPage } from '../../lib/utils/common_utils';
 import mrWidgetEventHub from '../../vue_merge_request_widget/event_hub';
+import { __ } from '~/locale';
 
 let eTagPoll;
 
-export const expandDiscussion = ({ commit }, data) => commit(types.EXPAND_DISCUSSION, data);
+export const expandDiscussion = ({ commit, dispatch }, data) => {
+  if (data.discussionId) {
+    dispatch('diffs/renderFileForDiscussionId', data.discussionId, { root: true });
+  }
+
+  commit(types.EXPAND_DISCUSSION, data);
+};
 
 export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DISCUSSION, data);
 
@@ -36,12 +45,13 @@ export const setNotesFetchedState = ({ commit }, state) =>
 
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchDiscussions = ({ commit }, path) =>
+export const fetchDiscussions = ({ commit, dispatch }, { path, filter }) =>
   service
-    .fetchDiscussions(path)
+    .fetchDiscussions(path, filter)
     .then(res => res.json())
     .then(discussions => {
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
+      dispatch('updateResolvableDiscussonsCounts');
     });
 
 export const updateDiscussion = ({ commit, state }, discussion) => {
@@ -50,19 +60,27 @@ export const updateDiscussion = ({ commit, state }, discussion) => {
   return utils.findNoteObjectById(state.discussions, discussion.id);
 };
 
-export const deleteNote = ({ commit, dispatch }, note) =>
+export const deleteNote = ({ commit, dispatch, state }, note) =>
   service.deleteNote(note.path).then(() => {
+    const discussion = state.discussions.find(({ id }) => id === note.discussion_id);
+
     commit(types.DELETE_NOTE, note);
 
     dispatch('updateMergeRequestWidget');
+    dispatch('updateResolvableDiscussonsCounts');
+
+    if (isInMRPage()) {
+      dispatch('diffs/removeDiscussionsFromDiff', discussion);
+    }
   });
 
-export const updateNote = ({ commit }, { endpoint, note }) =>
+export const updateNote = ({ commit, dispatch }, { endpoint, note }) =>
   service
     .updateNote(endpoint, note)
     .then(res => res.json())
     .then(res => {
       commit(types.UPDATE_NOTE, res);
+      dispatch('startTaskList');
     });
 
 export const replyToDiscussion = ({ commit }, { endpoint, data }) =>
@@ -84,6 +102,8 @@ export const createNewNote = ({ commit, dispatch }, { endpoint, data }) =>
         commit(types.ADD_NEW_NOTE, res);
 
         dispatch('updateMergeRequestWidget');
+        dispatch('startTaskList');
+        dispatch('updateResolvableDiscussonsCounts');
       }
       return res;
     });
@@ -98,6 +118,8 @@ export const toggleResolveNote = ({ commit, dispatch }, { endpoint, isResolved, 
       const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
 
       commit(mutationType, res);
+
+      dispatch('updateResolvableDiscussonsCounts');
 
       dispatch('updateMergeRequestWidget');
     });
@@ -251,7 +273,7 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
         } else if (note.type === constants.DIFF_NOTE) {
-          dispatch('fetchDiscussions', state.notesData.discussionsPath);
+          dispatch('fetchDiscussions', { path: state.notesData.discussionsPath });
         } else {
           commit(types.ADD_NEW_NOTE, note);
         }
@@ -259,6 +281,8 @@ const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
         commit(types.ADD_NEW_NOTE, note);
       }
     });
+
+    dispatch('startTaskList');
   }
 
   commit(types.SET_LAST_FETCHED_AT, resp.last_fetched_at);
@@ -334,7 +358,7 @@ export const scrollToNoteIfNeeded = (context, el) => {
 };
 
 export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
-  axios.get(discussion.truncatedDiffLinesPath).then(({ data }) => {
+  axios.get(discussion.truncated_diff_lines_path).then(({ data }) => {
     commit(types.SET_DISCUSSION_DIFF_LINES, {
       discussionId: discussion.id,
       diffLines: data.truncated_diff_lines,
@@ -343,6 +367,63 @@ export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
 
 export const updateMergeRequestWidget = () => {
   mrWidgetEventHub.$emit('mr.discussion.updated');
+};
+
+export const setLoadingState = ({ commit }, data) => {
+  commit(types.SET_NOTES_LOADING_STATE, data);
+};
+
+export const filterDiscussion = ({ dispatch }, { path, filter }) => {
+  dispatch('setLoadingState', true);
+  dispatch('fetchDiscussions', { path, filter })
+    .then(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+    })
+    .catch(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      Flash(__('Something went wrong while fetching comments. Please try again.'));
+    });
+};
+
+export const setCommentsDisabled = ({ commit }, data) => {
+  commit(types.DISABLE_COMMENTS, data);
+};
+
+export const startTaskList = ({ dispatch }) =>
+  Vue.nextTick(
+    () =>
+      new TaskList({
+        dataType: 'note',
+        fieldName: 'note',
+        selector: '.notes .is-editable',
+        onSuccess: () => dispatch('startTaskList'),
+      }),
+  );
+
+export const updateResolvableDiscussonsCounts = ({ commit }) =>
+  commit(types.UPDATE_RESOLVABLE_DISCUSSIONS_COUNTS);
+
+export const submitSuggestion = (
+  { commit },
+  { discussionId, noteId, suggestionId, flashContainer, callback },
+) => {
+  service
+    .applySuggestion(suggestionId)
+    .then(() => {
+      commit(types.APPLY_SUGGESTION, { discussionId, noteId, suggestionId });
+      callback();
+    })
+    .catch(err => {
+      const defaultMessage = __(
+        'Something went wrong while applying the suggestion. Please try again.',
+      );
+      const flashMessage = err.response.data ? `${err.response.data.message}.` : defaultMessage;
+
+      Flash(__(flashMessage), 'alert', flashContainer);
+      callback();
+    });
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

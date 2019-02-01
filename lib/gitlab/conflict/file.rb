@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Conflict
     class File
       include Gitlab::Routing
       include IconsHelper
+      include Gitlab::Utils::StrongMemoize
 
       CONTEXT_LINES = 3
 
@@ -30,11 +33,8 @@ module Gitlab
       end
 
       def highlight_lines!
-        their_file = lines.reject { |line| line.type == 'new' }.map(&:text).join("\n")
-        our_file = lines.reject { |line| line.type == 'old' }.map(&:text).join("\n")
-
-        their_highlight = Gitlab::Highlight.highlight(their_path, their_file, repository: repository).lines
-        our_highlight = Gitlab::Highlight.highlight(our_path, our_file, repository: repository).lines
+        their_highlight = Gitlab::Highlight.highlight(their_path, their_lines, language: their_language).lines
+        our_highlight = Gitlab::Highlight.highlight(our_path, our_lines, language: our_language).lines
 
         lines.each do |line|
           line.rich_text =
@@ -180,6 +180,34 @@ module Gitlab
           Gitlab::Diff::Line.new(raw_line[:full_line], raw_line[:type],
             raw_line[:line_obj_index], raw_line[:line_old],
             raw_line[:line_new], parent_file: self)
+        end
+      end
+
+      def their_language
+        strong_memoize(:their_language) do
+          repository.gitattribute(their_path, 'gitlab-language')
+        end
+      end
+
+      def our_language
+        strong_memoize(:our_language) do
+          if our_path == their_path
+            their_language
+          else
+            repository.gitattribute(our_path, 'gitlab-language')
+          end
+        end
+      end
+
+      def their_lines
+        strong_memoize(:their_lines) do
+          lines.reject { |line| line.type == 'new' }.map(&:text).join("\n")
+        end
+      end
+
+      def our_lines
+        strong_memoize(:our_lines) do
+          lines.reject { |line| line.type == 'old' }.map(&:text).join("\n")
         end
       end
     end

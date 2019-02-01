@@ -74,8 +74,8 @@ export default {
       }
 
       if (!this.users.length) {
-        const emptyTooltipLabel = this.issuableType === 'issue' ?
-          __('Assignee(s)') : __('Assignee');
+        const emptyTooltipLabel =
+          this.issuableType === 'issue' ? __('Assignee(s)') : __('Assignee');
         names.push(emptyTooltipLabel);
       }
 
@@ -133,12 +133,7 @@ export default {
       data-placement="left"
       data-boundary="viewport"
     >
-      <i
-        v-if="hasNoUsers"
-        aria-label="No Assignee"
-        class="fa fa-user"
-      >
-      </i>
+      <i v-if="hasNoUsers" aria-label="No Assignee" class="fa fa-user"> </i>
       <button
         v-for="(user, index) in users"
         v-if="shouldRenderCollapsedAssignee(index)"
@@ -152,20 +147,10 @@ export default {
           width="24"
           class="avatar avatar-inline s24"
         />
-        <span class="author">
-          {{ user.name }}
-        </span>
+        <span class="author"> {{ user.name }} </span>
       </button>
-      <button
-        v-if="hasMoreThanTwoAssignees"
-        class="btn-link"
-        type="button"
-      >
-        <span
-          class="avatar-counter sidebar-avatar-counter"
-        >
-          {{ sidebarAvatarCounter }}
-        </span>
+      <button v-if="hasMoreThanTwoAssignees" class="btn-link" type="button">
+        <span class="avatar-counter sidebar-avatar-counter"> {{ sidebarAvatarCounter }} </span>
       </button>
     </div>
     <div class="value hide-collapsed">
@@ -173,34 +158,20 @@ export default {
         <span class="assign-yourself no-value">
           No assignee
           <template v-if="editable">
-            -
-            <button
-              type="button"
-              class="btn-link"
-              @click="assignSelf"
-            >
-              assign yourself
-            </button>
+            - <button type="button" class="btn-link" @click="assignSelf">assign yourself</button>
           </template>
         </span>
       </template>
       <template v-else-if="hasOneUser">
-        <a
-          :href="assigneeUrl(firstUser)"
-          class="author-link bold"
-        >
+        <a :href="assigneeUrl(firstUser)" class="author-link bold">
           <img
             :alt="assigneeAlt(firstUser)"
             :src="avatarUrl(firstUser)"
             width="32"
             class="avatar avatar-inline s32"
           />
-          <span class="author">
-            {{ firstUser.name }}
-          </span>
-          <span class="username">
-            {{ assigneeUsername(firstUser) }}
-          </span>
+          <span class="author"> {{ firstUser.name }} </span>
+          <span class="username"> {{ assigneeUsername(firstUser) }} </span>
         </a>
       </template>
       <template v-else>
@@ -227,15 +198,8 @@ export default {
             </a>
           </div>
         </div>
-        <div
-          v-if="renderShowMoreSection"
-          class="user-list-more"
-        >
-          <button
-            type="button"
-            class="btn-link"
-            @click="toggleShowLess"
-          >
+        <div v-if="renderShowMoreSection" class="user-list-more">
+          <button type="button" class="btn-link" @click="toggleShowLess">
             <template v-if="showLess">
               {{ hiddenAssigneesLabel }}
             </template>
@@ -248,4 +212,3 @@ export default {
     </div>
   </div>
 </template>
-

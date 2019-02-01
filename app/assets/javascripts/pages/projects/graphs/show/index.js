@@ -7,7 +7,8 @@ import ContributorsStatGraph from './stat_graph_contributors';
 document.addEventListener('DOMContentLoaded', () => {
   const url = document.querySelector('.js-graphs-show').dataset.projectGraphPath;
 
-  axios.get(url)
+  axios
+    .get(url)
     .then(({ data }) => {
       const graph = new ContributorsStatGraph();
       graph.init(data);

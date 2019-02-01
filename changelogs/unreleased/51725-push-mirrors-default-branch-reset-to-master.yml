@@ -1,5 +1,0 @@
----
-title: Doesn't synchronize the default branch for push mirrors
-merge_request: 21861
-author:
-type: fixed

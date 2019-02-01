@@ -15,6 +15,6 @@ describe Groups::UploadsController do
   def post_authorize(verified: true)
     request.headers.merge!(workhorse_internal_api_request_header) if verified
 
-    post :authorize, group_id: model.full_path, format: :json
+    post :authorize, params: { group_id: model.full_path }, format: :json
   end
 end

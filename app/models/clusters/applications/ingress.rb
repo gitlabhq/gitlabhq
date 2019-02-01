@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Ingress < ActiveRecord::Base
-      VERSION = '0.23.0'.freeze
+      VERSION = '1.1.2'.freeze
 
       self.table_name = 'clusters_applications_ingress'
 
@@ -23,7 +23,7 @@ module Clusters
       FETCH_IP_ADDRESS_DELAY = 30.seconds
 
       state_machine :status do
-        before_transition any => [:installed] do |application|
+        after_transition any => [:installed] do |application|
           application.run_after_commit do
             ClusterWaitForIngressIpAddressWorker.perform_in(
               FETCH_IP_ADDRESS_DELAY, application.name, application.id)
@@ -50,6 +50,10 @@ module Clusters
         return if external_ip
 
         ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
+      end
+
+      def ingress_service
+        cluster.kubeclient.get_service('ingress-nginx-ingress-controller', Gitlab::Kubernetes::Helm::NAMESPACE)
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class OmniauthInitializer
     def initialize(devise_config)

@@ -1,5 +1,0 @@
----
-title: Enable unauthenticated access to public SSH keys via the API
-merge_request: 20118
-author: Ronald Claveau
-type: changed

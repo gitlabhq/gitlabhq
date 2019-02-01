@@ -1,5 +1,12 @@
 # Visibility and access controls
 
+## Import sources
+
+Choose from which hosting sites the users can
+[import their projects](../../project/import/index.md).
+
+![import sources](img/import_sources.png)
+
 ## Enabled Git access protocols
 
 > [Introduced][ce-4696] in GitLab 8.10.

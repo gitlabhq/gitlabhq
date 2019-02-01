@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import _ from 'underscore';
 import axios from '../../lib/utils/axios_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 let vueResourceInterceptor;
 
@@ -11,8 +12,10 @@ export default class PerformanceBarService {
 
   static registerInterceptor(peekUrl, callback) {
     const interceptor = response => {
-      const [fireCallback, requestId, requestUrl] =
-        PerformanceBarService.callbackParams(response, peekUrl);
+      const [fireCallback, requestId, requestUrl] = PerformanceBarService.callbackParams(
+        response,
+        peekUrl,
+      );
 
       if (fireCallback) {
         callback(requestId, requestUrl);
@@ -30,10 +33,7 @@ export default class PerformanceBarService {
 
   static removeInterceptor(interceptor) {
     axios.interceptors.response.eject(interceptor);
-    Vue.http.interceptors = _.without(
-      Vue.http.interceptors,
-      vueResourceInterceptor,
-    );
+    Vue.http.interceptors = _.without(Vue.http.interceptors, vueResourceInterceptor);
   }
 
   static callbackParams(response, peekUrl) {
@@ -42,7 +42,8 @@ export default class PerformanceBarService {
     // Vue Resource.
     const requestUrl = (response.config || response).url;
     const apiRequest = requestUrl && requestUrl.match(/^\/api\//);
-    const cachedResponse = response.headers && response.headers['x-gitlab-from-cache'] === 'true';
+    const cachedResponse =
+      response.headers && parseBoolean(response.headers['x-gitlab-from-cache']);
     const fireCallback = requestUrl !== peekUrl && requestId && !apiRequest && !cachedResponse;
 
     return [fireCallback, requestId, requestUrl];

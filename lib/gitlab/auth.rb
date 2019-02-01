@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Auth
     MissingPersonalAccessTokenError = Class.new(StandardError)
@@ -149,17 +151,15 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def personal_access_token_check(password)
         return unless password.present?
 
-        token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
+        token = PersonalAccessTokensFinder.new(state: 'active').find_by_token(password)
 
         if token && valid_scoped_token?(token, available_scopes)
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def valid_oauth_token?(token)
         token && token.accessible? && valid_scoped_token?(token, [:api])
@@ -199,7 +199,7 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      def lfs_token_check(login, password, project)
+      def lfs_token_check(login, encoded_token, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
         actor =
@@ -222,7 +222,7 @@ module Gitlab
             read_authentication_abilities
           end
 
-        if Devise.secure_compare(token_handler.token, password)
+        if token_handler.token_valid?(encoded_token)
           Gitlab::Auth::Result.new(actor, nil, token_handler.type, authentication_abilities)
         end
       end

@@ -26,9 +26,7 @@ describe Gitaly::Server do
       end
     end
 
-    context 'when the storage is not readable' do
-      let(:server) { described_class.new('broken') }
-
+    context 'when the storage is not readable', :broken_storage do
       it 'returns false' do
         expect(server).not_to be_readable
       end
@@ -42,9 +40,7 @@ describe Gitaly::Server do
       end
     end
 
-    context 'when the storage is not writeable' do
-      let(:server) { described_class.new('broken') }
-
+    context 'when the storage is not writeable', :broken_storage do
       it 'returns false' do
         expect(server).not_to be_writeable
       end

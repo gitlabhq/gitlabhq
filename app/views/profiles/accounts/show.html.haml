@@ -1,37 +1,37 @@
-- page_title "Account"
+- page_title _('Account')
 - @content_class = "limit-container-width" unless fluid_layout
 
 - if current_user.ldap_user?
   .alert.alert-info
-    Some options are unavailable for LDAP accounts
+    = s_('Profiles|Some options are unavailable for LDAP accounts')
 
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      Two-Factor Authentication
+      = s_('Profiles|Two-Factor Authentication')
     %p
-      Increase your account's security by enabling Two-Factor Authentication (2FA).
+      = s_("Profiles|Increase your account's security by enabling Two-Factor Authentication (2FA)")
   .col-lg-8
     %p
-      Status: #{current_user.two_factor_enabled? ? 'Enabled' : 'Disabled'}
+      #{_('Status')}: #{current_user.two_factor_enabled? ? _('Enabled') : _('Disabled')}
     - if current_user.two_factor_enabled?
-      = link_to 'Manage two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-info'
+      = link_to _('Manage two-factor authentication'), profile_two_factor_auth_path, class: 'btn btn-info'
     - else
       .append-bottom-10
-        = link_to 'Enable two-factor authentication', profile_two_factor_auth_path, class: 'btn btn-success'
+        = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'btn btn-success'
 
 %hr
-- if button_based_providers.any?
+- if display_providers_on_profile?
   .row.prepend-top-default
     .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
-        Social sign-in
+        = s_('Profiles|Social sign-in')
       %p
-        Activate signin with one of the following services
+        = s_('Profiles|Activate signin with one of the following services')
     .col-lg-8
       %label.label-bold
-        Connected Accounts
-      %p Click on icon to activate signin with one of the following services
+        = s_('Profiles|Connected Accounts')
+      %p= s_('Profiles|Click on icon to activate signin with one of the following services')
       - button_based_providers.each do |provider|
         .provider-btn-group
           .provider-btn-image
@@ -39,23 +39,24 @@
           - if auth_active?(provider)
             - if unlink_allowed?(provider)
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
-                Disconnect
+                = s_('Profiles|Disconnect')
             - else
               %a.provider-btn
-                Active
+                = s_('Profiles|Active')
           - else
             = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
-              Connect
+              = s_('Profiles|Connect')
+      = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: local_assigns[:group_saml_identities]
   %hr
 - if current_user.can_change_username?
   .row.prepend-top-default
     .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0.warning-title
-        Change username
+        = s_('Profiles|Change username')
       %p
-        Changing your username can have unintended side effects.
+        = s_('Profiles|Changing your username can have unintended side effects.')
         = succeed '.' do
-          = link_to 'Learn more', help_page_path('user/profile/index', anchor: 'changing-your-username'), target: '_blank'
+          = link_to s_('Profiles|Learn more'), help_page_path('user/profile/index', anchor: 'changing-your-username'), target: '_blank'
     .col-lg-8
       - data = { initial_username: current_user.username, root_url: root_url, action_url: update_username_profile_path(format: :json) }
       #update-username{ data: data }
@@ -66,7 +67,7 @@
     %h4.prepend-top-0.danger-title
       = s_('Profiles|Delete account')
   .col-lg-8
-    - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
+    - if current_user.can_be_removed? && can?(current_user, :destroy_user, current_user)
       %p
         = s_('Profiles|Deleting an account has the following effects:')
       = render 'users/deletion_guidance', user: current_user
@@ -79,10 +80,10 @@
         confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
         username: current_user.username } }
     - else
-      - if @user.solo_owned_groups.present?
+      - if current_user.solo_owned_groups.present?
         %p
           = s_('Profiles|Your account is currently an owner in these groups:')
-          %strong= @user.solo_owned_groups.map(&:name).join(', ')
+          %strong= current_user.solo_owned_groups.map(&:name).join(', ')
         %p
           = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
       - else

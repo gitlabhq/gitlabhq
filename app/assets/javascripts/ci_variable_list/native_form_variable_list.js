@@ -2,10 +2,7 @@ import $ from 'jquery';
 import VariableList from './ci_variable_list';
 
 // Used for the variable list on scheduled pipeline edit page
-export default function setupNativeFormVariableList({
-  container,
-  formField = 'variables',
-}) {
+export default function setupNativeFormVariableList({ container, formField = 'variables' }) {
   const $container = $(container);
 
   const variableList = new VariableList({

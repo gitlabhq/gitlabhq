@@ -64,7 +64,7 @@ describe 'Contributions Calendar', :js do
   end
 
   def selected_day_activities(visible: true)
-    find('.tab-pane#activity .user-calendar-activities', visible: visible).text
+    find('#js-overview .user-calendar-activities', visible: visible).text
   end
 
   before do
@@ -74,16 +74,16 @@ describe 'Contributions Calendar', :js do
   describe 'calendar day selection' do
     before do
       visit user.username
-      page.find('.js-activity-tab a').click
+      page.find('.js-overview-tab a').click
       wait_for_requests
     end
 
     it 'displays calendar' do
-      expect(find('.tab-pane#activity')).to have_css('.js-contrib-calendar')
+      expect(find('#js-overview')).to have_css('.js-contrib-calendar')
     end
 
     describe 'select calendar day' do
-      let(:cells) { page.all('.tab-pane#activity .user-contrib-cell') }
+      let(:cells) { page.all('#js-overview .user-contrib-cell') }
 
       before do
         cells[0].click
@@ -109,7 +109,7 @@ describe 'Contributions Calendar', :js do
       describe 'deselect calendar day' do
         before do
           cells[0].click
-          page.find('.js-activity-tab a').click
+          page.find('.js-overview-tab a').click
           wait_for_requests
         end
 
@@ -124,7 +124,7 @@ describe 'Contributions Calendar', :js do
     shared_context 'visit user page' do
       before do
         visit user.username
-        page.find('.js-activity-tab a').click
+        page.find('.js-overview-tab a').click
         wait_for_requests
       end
     end
@@ -133,12 +133,12 @@ describe 'Contributions Calendar', :js do
       include_context 'visit user page'
 
       it 'displays calendar activity square color for 1 contribution' do
-        expect(find('.tab-pane#activity')).to have_selector(get_cell_color_selector(contribution_count), count: 1)
+        expect(find('#js-overview')).to have_selector(get_cell_color_selector(contribution_count), count: 1)
       end
 
       it 'displays calendar activity square on the correct date' do
         today = Date.today.strftime(date_format)
-        expect(find('.tab-pane#activity')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
+        expect(find('#js-overview')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
       end
     end
 
@@ -153,7 +153,7 @@ describe 'Contributions Calendar', :js do
         include_context 'visit user page'
 
         it 'displays calendar activity log' do
-          expect(find('.tab-pane#activity .content_list .event-note')).to have_content issue_title
+          expect(find('#js-overview .overview-content-list .event-target-title')).to have_content issue_title
         end
       end
     end
@@ -185,17 +185,17 @@ describe 'Contributions Calendar', :js do
       include_context 'visit user page'
 
       it 'displays calendar activity squares for both days' do
-        expect(find('.tab-pane#activity')).to have_selector(get_cell_color_selector(1), count: 2)
+        expect(find('#js-overview')).to have_selector(get_cell_color_selector(1), count: 2)
       end
 
       it 'displays calendar activity square for yesterday' do
         yesterday = Date.yesterday.strftime(date_format)
-        expect(find('.tab-pane#activity')).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
+        expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
       end
 
       it 'displays calendar activity square for today' do
         today = Date.today.strftime(date_format)
-        expect(find('.tab-pane#activity')).to have_selector(get_cell_date_selector(1, today), count: 1)
+        expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, today), count: 1)
       end
     end
   end

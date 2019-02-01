@@ -20,7 +20,8 @@ export default class EnvironmentsStore {
    *
    * Stores the received environments.
    *
-   * In the main environments endpoint, each environment has the following schema
+   * In the main environments endpoint (with { nested: true } in params), each folder
+   * has the following schema:
    * { name: String, size: Number, latest: Object }
    * In the endpoint to retrieve environments from each folder, the environment does
    * not have the `latest` key and the data is all in the root level.
@@ -34,14 +35,14 @@ export default class EnvironmentsStore {
    * @returns {Array}
    */
   storeEnvironments(environments = []) {
-    const filteredEnvironments = environments.map((env) => {
-      const oldEnvironmentState = this.state.environments
-      .find((element) => {
-        if (env.latest) {
-          return element.id === env.latest.id;
-        }
-        return element.id === env.id;
-      }) || {};
+    const filteredEnvironments = environments.map(env => {
+      const oldEnvironmentState =
+        this.state.environments.find(element => {
+          if (env.latest) {
+            return element.id === env.latest.id;
+          }
+          return element.id === env.id;
+        }) || {};
 
       let filtered = {};
 
@@ -101,11 +102,11 @@ export default class EnvironmentsStore {
   }
 
   /**
-    * Toggles folder open property for the given folder.
-    *
-    * @param  {Object} folder
-    * @return {Array}
-    */
+   * Toggles folder open property for the given folder.
+   *
+   * @param  {Object} folder
+   * @return {Array}
+   */
   toggleFolder(folder) {
     return this.updateEnvironmentProp(folder, 'isOpen', !folder.isOpen);
   }
@@ -119,7 +120,7 @@ export default class EnvironmentsStore {
    * @return {Object}
    */
   setfolderContent(folder, environments) {
-    const updatedEnvironments = environments.map((env) => {
+    const updatedEnvironments = environments.map(env => {
       let updated = env;
 
       if (env.latest) {
@@ -148,7 +149,7 @@ export default class EnvironmentsStore {
   updateEnvironmentProp(environment, prop, newValue) {
     const { environments } = this.state;
 
-    const updatedEnvironments = environments.map((env) => {
+    const updatedEnvironments = environments.map(env => {
       const updateEnv = Object.assign({}, env);
       if (env.id === environment.id) {
         updateEnv[prop] = newValue;

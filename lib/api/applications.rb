@@ -24,6 +24,22 @@ module API
           render_validation_error! application
         end
       end
+
+      desc 'Get applications' do
+        success Entities::Application
+      end
+      get do
+        applications = ApplicationsFinder.new.execute
+        present applications, with: Entities::Application
+      end
+
+      desc 'Delete an application'
+      delete ':id' do
+        application = ApplicationsFinder.new(params).execute
+        application.destroy
+
+        status 204
+      end
     end
   end
 end

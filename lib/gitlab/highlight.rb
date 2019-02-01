@@ -1,23 +1,28 @@
+# frozen_string_literal: true
+
 module Gitlab
   class Highlight
     TIMEOUT_BACKGROUND = 30.seconds
     TIMEOUT_FOREGROUND = 3.seconds
+    MAXIMUM_TEXT_HIGHLIGHT_SIZE = 1.megabyte
 
-    def self.highlight(blob_name, blob_content, repository: nil, plain: false)
-      new(blob_name, blob_content, repository: repository)
+    def self.highlight(blob_name, blob_content, language: nil, plain: false)
+      new(blob_name, blob_content, language: language)
         .highlight(blob_content, continue: false, plain: plain)
     end
 
     attr_reader :blob_name
 
-    def initialize(blob_name, blob_content, repository: nil)
+    def initialize(blob_name, blob_content, language: nil)
       @formatter = Rouge::Formatters::HTMLGitlab
-      @repository = repository
+      @language = language
       @blob_name = blob_name
       @blob_content = blob_content
     end
 
     def highlight(text, continue: true, plain: false)
+      plain ||= text.length > MAXIMUM_TEXT_HIGHLIGHT_SIZE
+
       highlighted_text = highlight_text(text, continue: continue, plain: plain)
       highlighted_text = link_dependencies(text, highlighted_text) if blob_name
       highlighted_text
@@ -34,11 +39,9 @@ module Gitlab
     private
 
     def custom_language
-      language_name = @repository && @repository.gitattribute(@blob_name, 'gitlab-language')
+      return nil unless @language
 
-      return nil unless language_name
-
-      Rouge::Lexer.find_fancy(language_name)
+      Rouge::Lexer.find_fancy(@language)
     end
 
     def highlight_text(text, continue: true, plain: false)

@@ -26,26 +26,13 @@ export default {
     <h4>
       {{ __('Too many changes to show.') }}
       <div class="pull-right">
-        <a
-          :href="plainDiffPath"
-          class="btn btn-sm"
-        >
-          {{ __('Plain diff') }}
-        </a>
-        <a
-          :href="emailPatchPath"
-          class="btn btn-sm"
-        >
-          {{ __('Email patch') }}
-        </a>
+        <a :href="plainDiffPath" class="btn btn-sm"> {{ __('Plain diff') }} </a>
+        <a :href="emailPatchPath" class="btn btn-sm"> {{ __('Email patch') }} </a>
       </div>
     </h4>
     <p>
-      To preserve performance only
-      <strong>
-        {{ visible }} of {{ total }}
-      </strong>
-      files are displayed.
+      To preserve performance only <strong> {{ visible }} of {{ total }} </strong> files are
+      displayed.
     </p>
   </div>
 </template>

@@ -6,14 +6,19 @@ module MergeRequests
 
     def execute
       @params_issue_iid = params.delete(:issue_iid)
+      self.merge_request = MergeRequest.new
+      # TODO: this should handle all quick actions that don't have side effects
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/53658
+      merge_quick_actions_into_params!(merge_request, only: [:target_branch])
+      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch) if params.has_key?(:force_remove_source_branch)
+      merge_request.assign_attributes(params)
 
-      self.merge_request = MergeRequest.new(params)
       merge_request.author = current_user
       merge_request.compare_commits = []
       merge_request.source_project  = find_source_project
       merge_request.target_project  = find_target_project
       merge_request.target_branch   = find_target_branch
-      merge_request.can_be_created  = branches_valid?
+      merge_request.can_be_created  = projects_and_branches_valid?
 
       # compare branches only if branches are valid, otherwise
       # compare_branches may raise an error
@@ -44,15 +49,19 @@ module MergeRequests
              to: :merge_request
 
     def find_source_project
-      return source_project if source_project.present? && can?(current_user, :read_project, source_project)
+      return source_project if source_project.present? && can?(current_user, :create_merge_request_from, source_project)
 
       project
     end
 
     def find_target_project
-      return target_project if target_project.present? && can?(current_user, :read_project, target_project)
+      return target_project if target_project.present? && can?(current_user, :create_merge_request_in, target_project)
 
-      project.default_merge_request_target
+      target_project = project.default_merge_request_target
+
+      return target_project if target_project.present? && can?(current_user, :create_merge_request_in, target_project)
+
+      project
     end
 
     def find_target_branch
@@ -67,10 +76,11 @@ module MergeRequests
       params[:target_branch].present?
     end
 
-    def branches_valid?
+    def projects_and_branches_valid?
+      return false if source_project.nil? || target_project.nil?
       return false unless source_branch_specified? || target_branch_specified?
 
-      validate_branches
+      validate_projects_and_branches
       errors.blank?
     end
 
@@ -89,7 +99,12 @@ module MergeRequests
       end
     end
 
-    def validate_branches
+    def validate_projects_and_branches
+      merge_request.validate_target_project
+      merge_request.validate_fork
+
+      return if errors.any?
+
       add_error('You must select source and target branch') unless branches_present?
       add_error('You must select different branches') if same_source_and_target?
       add_error("Source branch \"#{source_branch}\" does not exist") unless source_branch_exists?

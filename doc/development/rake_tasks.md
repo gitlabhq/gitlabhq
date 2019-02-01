@@ -38,6 +38,14 @@ Note that since you can't see the questions from stdout, you might just want
 to `echo 'yes'` to keep it running. It would still print the errors on stderr
 so no worries about missing errors.
 
+### Extra Project seed options
+
+There are a few environment flags you can pass to change how projects are seeded
+
+- `SIZE`: defaults to `8`, max: `32`. Amount of projects to create.
+- `LARGE_PROJECTS`: defaults to false. If set will clone 6 large projects to help with testing.
+- `FORK`: defaults to false. If set to `true` will fork `torvalds/linux` five times. Can also be set to an existing project full_path and it will fork that instead.
+
 ### Notes for MySQL
 
 Since the seeds would contain various UTF-8 characters, such as emojis or so,

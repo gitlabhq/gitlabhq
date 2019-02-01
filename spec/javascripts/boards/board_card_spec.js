@@ -18,7 +18,7 @@ describe('Board card', () => {
   let vm;
   let mock;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     mock = new MockAdapter(axios);
     mock.onAny().reply(boardsMockInterceptor);
 
@@ -71,7 +71,7 @@ describe('Board card', () => {
     expect(vm.$el.classList.contains('user-can-drag')).toBe(true);
   });
 
-  it('does not add user-can-drag class disabled', (done) => {
+  it('does not add user-can-drag class disabled', done => {
     vm.disabled = true;
 
     setTimeout(() => {
@@ -84,7 +84,7 @@ describe('Board card', () => {
     expect(vm.$el.classList.contains('is-disabled')).toBe(false);
   });
 
-  it('adds disabled class is disabled is true', (done) => {
+  it('adds disabled class is disabled is true', done => {
     vm.disabled = true;
 
     setTimeout(() => {
@@ -96,8 +96,23 @@ describe('Board card', () => {
   describe('mouse events', () => {
     const triggerEvent = (eventName, el = vm.$el) => {
       const event = document.createEvent('MouseEvents');
-      event.initMouseEvent(eventName, true, true, window, 1, 0, 0, 0, 0, false, false,
-                           false, false, 0, null);
+      event.initMouseEvent(
+        eventName,
+        true,
+        true,
+        window,
+        1,
+        0,
+        0,
+        0,
+        0,
+        false,
+        false,
+        false,
+        false,
+        0,
+        null,
+      );
 
       el.dispatchEvent(event);
     };
@@ -134,13 +149,15 @@ describe('Board card', () => {
       expect(boardsStore.detail.issue).toEqual({});
     });
 
-    it('does not set detail issue if img is clicked', (done) => {
-      vm.issue.assignees = [new ListAssignee({
-        id: 1,
-        name: 'testing 123',
-        username: 'test',
-        avatar: 'test_image',
-      })];
+    it('does not set detail issue if img is clicked', done => {
+      vm.issue.assignees = [
+        new ListAssignee({
+          id: 1,
+          name: 'testing 123',
+          username: 'test',
+          avatar: 'test_image',
+        }),
+      ];
 
       Vue.nextTick(() => {
         triggerEvent('mouseup', vm.$el.querySelector('img'));
@@ -167,7 +184,7 @@ describe('Board card', () => {
       expect(boardsStore.detail.list).toEqual(vm.list);
     });
 
-    it('adds active class if detail issue is set', (done) => {
+    it('adds active class if detail issue is set', done => {
       vm.detailIssue.issue = vm.issue;
 
       Vue.nextTick()

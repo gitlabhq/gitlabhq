@@ -13,7 +13,7 @@ describe Projects::CompareController do
     render_views
 
     before do
-      get :index, namespace_id: project.namespace, project_id: project
+      get :index, params: { namespace_id: project.namespace, project_id: project }
     end
 
     it 'returns successfully' do
@@ -24,7 +24,7 @@ describe Projects::CompareController do
   describe 'GET show' do
     render_views
 
-    subject(:show_request) { get :show, request_params }
+    subject(:show_request) { get :show, params: request_params }
 
     let(:request_params) do
       {
@@ -130,7 +130,7 @@ describe Projects::CompareController do
         project_id: project
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { 'files/ruby/feature.rb' }
@@ -201,7 +201,7 @@ describe Projects::CompareController do
   end
 
   describe 'POST create' do
-    subject(:create_request) { post :create, request_params }
+    subject(:create_request) { post :create, params: request_params }
 
     let(:request_params) do
       {
@@ -260,7 +260,7 @@ describe Projects::CompareController do
   end
 
   describe 'GET signatures' do
-    subject(:signatures_request) { get :signatures, request_params }
+    subject(:signatures_request) { get :signatures, params: request_params }
 
     let(:request_params) do
       {

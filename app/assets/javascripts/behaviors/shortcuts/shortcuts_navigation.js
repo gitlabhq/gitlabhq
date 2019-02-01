@@ -8,6 +8,7 @@ export default class ShortcutsNavigation extends Shortcuts {
 
     Mousetrap.bind('g p', () => findAndFollowLink('.shortcuts-project'));
     Mousetrap.bind('g v', () => findAndFollowLink('.shortcuts-project-activity'));
+    Mousetrap.bind('g r', () => findAndFollowLink('.shortcuts-project-releases'));
     Mousetrap.bind('g f', () => findAndFollowLink('.shortcuts-tree'));
     Mousetrap.bind('g c', () => findAndFollowLink('.shortcuts-commits'));
     Mousetrap.bind('g j', () => findAndFollowLink('.shortcuts-builds'));

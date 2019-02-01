@@ -1,6 +1,0 @@
----
-title: Allow user to revoke an authorized application even if User OAuth applications
-  setting is disabled in admin settings
-merge_request: 21835
-author:
-type: changed

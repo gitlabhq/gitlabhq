@@ -6,7 +6,8 @@ module Banzai
       def self.transform_context(context)
         super(context).merge(
           only_path: false,
-          xhtml: true
+          xhtml: true,
+          no_sourcepos: true
         )
       end
     end

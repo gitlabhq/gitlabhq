@@ -3,22 +3,25 @@
 module Banzai
   module Pipeline
     class GfmPipeline < BasePipeline
-      # These filters convert GitLab Flavored Markdown (GFM) to HTML.
-      # The handlers defined in app/assets/javascripts/behaviors/markdown/copy_as_gfm.js
-      # consequently convert that same HTML to GFM to be copied to the clipboard.
-      # Every filter that generates HTML from GFM should have a handler in
-      # app/assets/javascripts/behaviors/markdown/copy_as_gfm.js, in reverse order.
+      # These filters transform GitLab Flavored Markdown (GFM) to HTML.
+      # The nodes and marks referenced in app/assets/javascripts/behaviors/markdown/editor_extensions.js
+      # consequently transform that same HTML to GFM to be copied to the clipboard.
+      # Every filter that generates HTML from GFM should have a node or mark in
+      # app/assets/javascripts/behaviors/markdown/editor_extensions.js.
       # The GFM-to-HTML-to-GFM cycle is tested in spec/features/copy_as_gfm_spec.rb.
       def self.filters
         @filters ||= FilterArray[
           Filter::PlantumlFilter,
+
+          # Must always be before the SanitizationFilter to prevent XSS attacks
+          Filter::SpacedLinkFilter,
+
           Filter::SanitizationFilter,
           Filter::SyntaxHighlightFilter,
 
           Filter::MathFilter,
           Filter::ColorFilter,
           Filter::MermaidFilter,
-          Filter::SpacedLinkFilter,
           Filter::VideoLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
@@ -26,6 +29,8 @@ module Banzai
           Filter::TableOfContentsFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
+          Filter::SuggestionFilter,
+          Filter::FootnoteFilter,
 
           *reference_filters,
 
