@@ -143,6 +143,7 @@ HELM_CMD=$(cat << EOF
     --set global.hosts.hostSuffix="$HOST_SUFFIX" \
     --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \
     --set certmanager.install=false \
+    --set prometheus.install=false \
     --set global.ingress.configureCertmanager=false \
     --set global.ingress.tls.secretName=tls-cert \
     --set global.ingress.annotations."external-dns\.alpha\.kubernetes\.io/ttl"="10"
