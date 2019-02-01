@@ -274,9 +274,11 @@ module QA
 
       module Settings
         autoload :Repository, 'qa/page/admin/settings/repository'
+        autoload :General, 'qa/page/admin/settings/general'
 
         module Component
           autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
+          autoload :AccountAndLimit, 'qa/page/admin/settings/component/account_and_limit'
         end
       end
     end
