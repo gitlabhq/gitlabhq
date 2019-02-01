@@ -99,6 +99,7 @@ module QA
         autoload :LDAPNoTLS, 'qa/scenario/test/integration/ldap_no_tls'
         autoload :LDAPTLS, 'qa/scenario/test/integration/ldap_tls'
         autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
+        autoload :OAuth, 'qa/scenario/test/integration/oauth'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
@@ -340,6 +341,13 @@ module QA
       module Page
         autoload :Base, 'qa/vendor/saml_idp/page/base'
         autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
+
+    module Github
+      module Page
+        autoload :Base, 'qa/vendor/github/page/base'
+        autoload :Login, 'qa/vendor/github/page/login'
       end
     end
   end
