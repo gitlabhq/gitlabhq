@@ -15,6 +15,7 @@ class UsersStarProject < ApplicationRecord
   scope :order_user_name_asc, -> { joins(:user).reorder('"users"."name" ASC') }
   scope :order_user_name_desc, -> { joins(:user).reorder('"users"."name" DESC') }
   scope :by_project, -> (project) { where(project_id: project.id) }
+  scope :with_visible_profile, -> (user) { joins(:user).where('"users"."private_profile" IS NULL OR "users"."private_profile" = ? OR "users"."id" = ?', false, user.id ) }
 
   class << self
     def sort_by_attribute(method)

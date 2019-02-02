@@ -2,9 +2,8 @@
 
 .top-area.adjust
   .nav-text
-    %span.flex-project-title
-      = _("Starrers of <strong>%{project_name}</strong>").html_safe % { project_name: sanitize_project_name(@project.name) }
-    %span.badge.badge-pill= @starrers.total_count
+    - full_count_title = "#{@public_count} public and #{@private_count} private"
+    #{pluralize(@total_count, 'starrer')}: #{full_count_title}
   - if @starrers.size > 0 || params[:search].present?
     .nav-controls
       = form_tag request.original_url, method: :get, class: 'form-inline user-search-form flex-users-form' do
