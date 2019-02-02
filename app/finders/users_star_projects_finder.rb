@@ -5,7 +5,7 @@ class UsersStarProjectsFinder
 
   attr_accessor :params
 
-  def initialize(params = {}, project, current_user: nil)
+  def initialize(project, params = {}, current_user: nil)
     @params = params
     @project = project
     @current_user = current_user

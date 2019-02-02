@@ -382,7 +382,7 @@ module API
         use :pagination
       end
       get ':id/starrers' do
-        starrers = UsersStarProjectsFinder.new(params, user_project, current_user: current_user).execute
+        starrers = UsersStarProjectsFinder.new(user_project, params, current_user: current_user).execute
 
         present paginate(starrers), with: Entities::UserStarsProject
       end

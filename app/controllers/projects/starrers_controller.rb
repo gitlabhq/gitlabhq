@@ -9,7 +9,7 @@ class Projects::StarrersController < Projects::ApplicationController
   def index
     @sort = params[:sort].presence || sort_value_name
 
-    @starrers = UsersStarProjectsFinder.new(params, @project, current_user: @current_user).execute
+    @starrers = UsersStarProjectsFinder.new(@project, params, current_user: @current_user).execute
 
     @total_count = @project.starrers.size
     @public_count = @starrers.size
