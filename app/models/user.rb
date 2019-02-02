@@ -282,6 +282,15 @@ class User < ApplicationRecord
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
+  scope :with_visible_profile, -> (user) {
+    if user.nil?
+      where(private_profile: [false, nil])
+    elsif user.admin?
+      all
+    else
+      where(private_profile: [false, nil]).or where(id: user.id)
+    end
+  }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #

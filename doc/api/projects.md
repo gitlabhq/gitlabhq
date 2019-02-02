@@ -1358,21 +1358,27 @@ Example responses:
 ```json
 [
   {
-    "id": 1,
-    "username": "jane_smith",
-    "name": "Jane Smith",
-    "state": "active",
-    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
-    "web_url": "http://localhost:3000/jane_smith"
+    "starred_since": "2019-01-28T14:47:30.642Z",
+    "user":
+      {
+        "id": 1,
+        "username": "jane_smith",
+        "name": "Jane Smith",
+        "state": "active",
+        "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+        "web_url": "http://localhost:3000/jane_smith"
+      }
   },
-  {
-    "id": 2,
-    "username": "janine_smith",
-    "name": "Janine Smith",
-    "state": "blocked",
-    "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
-    "web_url": "http://localhost:3000/janine_smith"
-  }
+    "starred_since": "2018-01-02T11:40:26.570Z",
+    "user":
+      {
+        "id": 2,
+        "username": "janine_smith",
+        "name": "Janine Smith",
+        "state": "blocked",
+        "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
+        "web_url": "http://localhost:3000/janine_smith"
+      }
 ]
 ```
 

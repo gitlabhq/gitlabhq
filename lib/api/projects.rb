@@ -128,7 +128,7 @@ module API
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
-        starred_projects = StarredProjectsFinder.new(user, current_user: current_user).execute
+        starred_projects = StarredProjectsFinder.new(user, params: project_finder_params, current_user: current_user).execute
         present_projects starred_projects
       end
     end
@@ -382,10 +382,9 @@ module API
         use :pagination
       end
       get ':id/starrers' do
-        users = DeclarativePolicy.subject_scope { user_project.starrers }
-        users = users.search(params[:search]) if params[:search].present?
+        starrers = UsersStarProjectsFinder.new(params, user_project, current_user: current_user).execute
 
-        present paginate(users), with: Entities::UserBasic
+        present paginate(starrers), with: Entities::UserStarsProject
       end
 
       desc 'Get languages in project repository'
