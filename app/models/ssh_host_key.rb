@@ -54,7 +54,7 @@ class SshHostKey
 
   # Needed for reactive caching
   def self.primary_key
-    'id'
+    :id
   end
 
   def id
