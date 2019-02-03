@@ -264,7 +264,7 @@ your Pages project are the same.
 
 1. A PEM certificate
 1. An intermediate certificate
-1. A public key
+1. A private key
 
 ![Pages project - adding certificates](img/add_certificate_to_pages.png)
 
@@ -280,7 +280,7 @@ Usually it's combined with the PEM certificate, but there are
 some cases in which you need to add them manually.
 [CloudFlare certs](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
 are one of these cases.
-- A public key is an encrypted key which validates
+- A private key is an encrypted key which validates
 your PEM against your domain.
 
 ### Now what?
@@ -293,7 +293,7 @@ of this, it's simple:
 and paste the root certificate (usually available from your CA website)
 and paste it in the [same field as your PEM certificate](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
 just jumping a line between them.
-- Copy your public key and paste it in the last field
+- Copy your private key and paste it in the last field
 
 >**Note:**
 **Do not** open certificates or encryption keys in
