@@ -1109,7 +1109,9 @@ module API
 
     class Release < TagRelease
       expose :name
-      expose :description_html
+      expose :description_html do |entity|
+        MarkupHelper.markdown_field(entity, :description)
+      end
       expose :created_at
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
       expose :commit, using: Entities::Commit
