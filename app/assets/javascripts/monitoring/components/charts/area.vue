@@ -1,5 +1,5 @@
 <script>
-import { GlAreaChart } from '@gitlab/ui';
+import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 
 export default {
