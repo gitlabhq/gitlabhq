@@ -114,7 +114,11 @@ module Banzai
         # Since this came from a Text node, make sure the new href is encoded.
         # `commonmarker` percent encodes the domains of links it handles, so
         # do the same (instead of using `normalized_encode`).
-        href_safe = Addressable::URI.encode(match).html_safe
+        begin
+          href_safe = Addressable::URI.encode(match).html_safe
+        rescue Addressable::URI::InvalidURIError
+          return uri.to_s
+        end
 
         html_safe_match = match.html_safe
         options         = link_options.merge(href: href_safe)
