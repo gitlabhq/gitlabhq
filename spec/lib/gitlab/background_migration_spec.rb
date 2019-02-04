@@ -104,6 +104,38 @@ describe Gitlab::BackgroundMigration do
         end
       end
     end
+
+    context 'when retry_dead_jobs is true', :sidekiq, :redis do
+      let(:retry_queue) do
+        [double(args: ['Object', [3]], queue: described_class.queue, delete: true)]
+      end
+      let(:dead_queue) do
+        [double(args: ['Object', [4]], queue: described_class.queue, delete: true)]
+      end
+
+      before do
+        allow(Sidekiq::RetrySet).to receive(:new).and_return(retry_queue)
+        allow(Sidekiq::DeadSet).to receive(:new).and_return(dead_queue)
+      end
+
+      it 'steals from the dead and retry queue' do
+        Sidekiq::Testing.disable! do
+          expect(described_class).to receive(:perform)
+            .with('Object', [1]).ordered
+          expect(described_class).to receive(:perform)
+            .with('Object', [2]).ordered
+          expect(described_class).to receive(:perform)
+            .with('Object', [3]).ordered
+          expect(described_class).to receive(:perform)
+            .with('Object', [4]).ordered
+
+          BackgroundMigrationWorker.perform_async('Object', [2])
+          BackgroundMigrationWorker.perform_in(10.minutes, 'Object', [1])
+
+          described_class.steal('Object', retry_dead_jobs: true)
+        end
+      end
+    end
   end
 
   describe '.perform' do
