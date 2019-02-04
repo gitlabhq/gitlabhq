@@ -90,9 +90,7 @@ The repository will push soon. To force a push, click the appropriate button.
 
 ## Setting up a push mirror to another GitLab instance with 2FA activated
 
-1. Create a personal access token with scope "api". This could be done
-in your profile settings
-[personal_access_tokens](https://gitlab.com/profile/personal_access_tokens)
+1. Create a [personal access token](https://gitlab.com/profile/personal_access_tokens) with `API` scope.
 1. Fill in the **Git repository URL** field using this format: `https://oauth2@gitlab.com/<your_gitlab_group_or_name>/<your_gitlab_project>.git`.
 1. Fill in **Password** field with your GitLab personal access token.
 1. Click the **Mirror repository** button.
