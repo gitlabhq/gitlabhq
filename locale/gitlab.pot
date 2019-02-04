@@ -5519,6 +5519,9 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
+msgid "Profiles|Using emojis in names seems fun, but please try to set a status message instead"
+msgstr ""
+
 msgid "Profiles|What's your status?"
 msgstr ""
 

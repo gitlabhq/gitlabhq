@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import createFlash from '~/flash';
 import GfmAutoComplete from '~/gfm_auto_complete';
+import emojiRegex from 'emoji-regex';
 import EmojiMenu from './emoji_menu';
 
 const defaultStatusEmoji = 'speech_balloon';
@@ -41,6 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const emojiAutocomplete = new GfmAutoComplete();
   emojiAutocomplete.setup($(statusMessageField), { emojis: true });
+
+  const userNameInput = document.getElementById('user_name');
+  userNameInput.addEventListener('input', () => {
+    const EMOJI_REGEX = emojiRegex();
+    if (EMOJI_REGEX.test(userNameInput.value)) {
+      // set field to invalid so it gets detected by GlFieldErrors
+      userNameInput.setCustomValidity('Invalid field');
+    } else {
+      userNameInput.setCustomValidity('');
+    }
+  });
 
   import(/* webpackChunkName: 'emoji' */ '~/emoji')
     .then(Emoji => {
