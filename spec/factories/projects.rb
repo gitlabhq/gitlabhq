@@ -1,7 +1,7 @@
 require_relative '../support/helpers/test_env'
 
 FactoryBot.define do
-  PAGES_ACCESS_LEVEL_SCHEMA_VERSION = 20180423204600
+  PAGES_ACCESS_LEVEL_SCHEMA_VERSION ||= 20180423204600
 
   # Project without repository
   #
