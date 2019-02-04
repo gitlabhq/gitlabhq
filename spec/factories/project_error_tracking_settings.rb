@@ -6,5 +6,7 @@ FactoryBot.define do
     api_url 'https://gitlab.com/api/0/projects/sentry-org/sentry-project'
     enabled true
     token 'access_token_123'
+    project_name 'Sentry Project'
+    organization_name 'Sentry Org'
   end
 end
