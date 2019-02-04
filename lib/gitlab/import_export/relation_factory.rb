@@ -1,13 +1,17 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class RelationFactory
       OVERRIDES = { snippets: :project_snippets,
+                    ci_pipelines: 'Ci::Pipeline',
                     pipelines: 'Ci::Pipeline',
                     stages: 'Ci::Stage',
                     statuses: 'commit_status',
                     triggers: 'Ci::Trigger',
                     pipeline_schedules: 'Ci::PipelineSchedule',
                     builds: 'Ci::Build',
+                    runners: 'Ci::Runner',
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
@@ -19,7 +23,9 @@ module Gitlab
                     custom_attributes: 'ProjectCustomAttribute',
                     project_badges: 'Badge',
                     metrics: 'MergeRequest::Metrics',
-                    ci_cd_settings: 'ProjectCiCdSetting' }.freeze
+                    ci_cd_settings: 'ProjectCiCdSetting',
+                    error_tracking_setting: 'ErrorTracking::ProjectErrorTrackingSetting',
+                    links: 'Releases::Link' }.freeze
 
       USER_REFERENCES = %w[author_id assignee_id updated_by_id merged_by_id latest_closed_by_id user_id created_by_id last_edited_by_id merge_user_id resolved_by_id closed_by_id].freeze
 
@@ -31,7 +37,7 @@ module Gitlab
 
       EXISTING_OBJECT_CHECK = %i[milestone milestones label labels project_label project_labels group_label group_labels project_feature].freeze
 
-      TOKEN_RESET_MODELS = %w[Ci::Trigger Ci::Build ProjectHook].freeze
+      TOKEN_RESET_MODELS = %w[Project Namespace Ci::Trigger Ci::Build Ci::Runner ProjectHook].freeze
 
       def self.create(*args)
         new(*args).create
@@ -47,12 +53,14 @@ module Gitlab
       end
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
-        @relation_name = OVERRIDES[relation_sym] || relation_sym
+        @relation_name = self.class.overrides[relation_sym] || relation_sym
         @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
         @user = user
         @project = project
         @imported_object_retries = 0
+
+        @relation_hash['project_id'] = @project.id
 
         # Remove excluded keys from relation_hash
         # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
@@ -74,22 +82,24 @@ module Gitlab
         generate_imported_object
       end
 
+      def self.overrides
+        OVERRIDES
+      end
+
       private
 
       def setup_models
         case @relation_name
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
-        when :project_label, :project_labels then setup_label
-        when :milestone, :milestones         then setup_milestone
-        when 'Ci::Pipeline'                  then setup_pipeline
-        else
-          @relation_hash['project_id'] = @project.id
         end
 
         update_user_references
         update_project_references
+        update_group_references
         remove_duplicate_assignees
+
+        setup_pipeline if @relation_name == 'Ci::Pipeline'
 
         reset_tokens!
         remove_encrypted_attributes!
@@ -141,6 +151,7 @@ module Gitlab
         if BUILD_MODELS.include?(@relation_name)
           @relation_hash.delete('trace') # old export files have trace
           @relation_hash.delete('token')
+          @relation_hash.delete('commands')
 
           imported_object
         elsif @relation_name == :merge_requests
@@ -151,39 +162,23 @@ module Gitlab
       end
 
       def update_project_references
-        project_id = @relation_hash.delete('project_id')
-
         # If source and target are the same, populate them with the new project ID.
         if @relation_hash['source_project_id']
-          @relation_hash['source_project_id'] = same_source_and_target? ? project_id : MergeRequestParser::FORKED_PROJECT_ID
+          @relation_hash['source_project_id'] = same_source_and_target? ? @relation_hash['project_id'] : MergeRequestParser::FORKED_PROJECT_ID
         end
 
-        # project_id may not be part of the export, but we always need to populate it if required.
-        @relation_hash['project_id'] = project_id
-        @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
+        @relation_hash['target_project_id'] = @relation_hash['project_id'] if @relation_hash['target_project_id']
       end
 
       def same_source_and_target?
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
-      def setup_label
-        # If there's no group, move the label to a project label
-        if @relation_hash['type'] == 'GroupLabel' && @relation_hash['group_id']
-          @relation_hash['project_id'] = nil
-          @relation_name = :group_label
-        else
-          @relation_hash['group_id'] = nil
-          @relation_hash['type'] = 'ProjectLabel'
-        end
-      end
+      def update_group_references
+        return unless EXISTING_OBJECT_CHECK.include?(@relation_name)
+        return unless @relation_hash['group_id']
 
-      def setup_milestone
-        if @relation_hash['group_id']
-          @relation_hash['group_id'] = @project.group.id
-        else
-          @relation_hash['project_id'] = @project.id
-        end
+        @relation_hash['group_id'] = @project.group&.id
       end
 
       def reset_tokens!
@@ -223,7 +218,7 @@ module Gitlab
 
       def update_note_for_missing_author(author_name)
         @relation_hash['note'] = '*Blank note*' if @relation_hash['note'].blank?
-        @relation_hash['note'] += missing_author_note(@relation_hash['updated_at'], author_name)
+        @relation_hash['note'] = "#{@relation_hash['note']}#{missing_author_note(@relation_hash['updated_at'], author_name)}"
       end
 
       def admin_user?
@@ -271,15 +266,7 @@ module Gitlab
       end
 
       def existing_object
-        @existing_object ||=
-          begin
-            existing_object = find_or_create_object!
-
-            # Done in two steps, as MySQL behaves differently than PostgreSQL using
-            # the +find_or_create_by+ method and does not return the ID the second time.
-            existing_object.update!(parsed_relation_hash)
-            existing_object
-          end
+        @existing_object ||= find_or_create_object!
       end
 
       def unknown_service?
@@ -288,29 +275,16 @@ module Gitlab
       end
 
       def find_or_create_object!
-        finder_attributes = if @relation_name == :group_label
-                              %w[title group_id]
-                            elsif parsed_relation_hash['project_id']
-                              %w[title project_id]
-                            else
-                              %w[title group_id]
-                            end
+        return relation_class.find_or_create_by(project_id: @project.id) if @relation_name == :project_feature
 
-        finder_hash = parsed_relation_hash.slice(*finder_attributes)
-
-        if label?
-          label = relation_class.find_or_initialize_by(finder_hash)
-          parsed_relation_hash.delete('priorities') if label.persisted?
-
-          label.save!
-          label
-        else
-          relation_class.find_or_create_by(finder_hash)
+        # Can't use IDs as validation exists calling `group` or `project` attributes
+        finder_hash = parsed_relation_hash.tap do |hash|
+          hash['group'] = @project.group if relation_class.attribute_method?('group_id')
+          hash['project'] = @project
+          hash.delete('project_id')
         end
-      end
 
-      def label?
-        @relation_name.to_s.include?('label')
+        GroupProjectObjectBuilder.build(relation_class, finder_hash)
       end
     end
   end

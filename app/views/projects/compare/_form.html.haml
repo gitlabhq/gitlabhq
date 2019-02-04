@@ -8,7 +8,7 @@
         .input-group-text
           = s_("CompareBranches|Source")
       = hidden_field_tag :to, params[:to]
-      = button_tag type: 'button', title: params[:to], class: "form-control compare-dropdown-toggle js-compare-dropdown has-tooltip git-revision-dropdown-toggle", required: true, data: { refs_url: refs_project_path(@project), toggle: "dropdown", target: ".js-compare-to-dropdown", selected: params[:to], field_name: :to } do
+      = button_tag type: 'button', title: params[:to], class: "form-control compare-dropdown-toggle js-compare-dropdown has-tooltip monospace", required: true, data: { refs_url: refs_project_path(@project), toggle: "dropdown", target: ".js-compare-to-dropdown", selected: params[:to], field_name: :to } do
         .dropdown-toggle-text.str-truncated= params[:to] || _("Select branch/tag")
     = render 'shared/ref_dropdown'
   .compare-ellipsis.inline ...
@@ -18,11 +18,11 @@
         .input-group-text
           = s_("CompareBranches|Target")
       = hidden_field_tag :from, params[:from]
-      = button_tag type: 'button', title: params[:from], class: "form-control compare-dropdown-toggle js-compare-dropdown has-tooltip git-revision-dropdown-toggle", required: true, data: { refs_url: refs_project_path(@project), toggle: "dropdown", target: ".js-compare-from-dropdown", selected: params[:from], field_name: :from } do
+      = button_tag type: 'button', title: params[:from], class: "form-control compare-dropdown-toggle js-compare-dropdown has-tooltip monospace", required: true, data: { refs_url: refs_project_path(@project), toggle: "dropdown", target: ".js-compare-from-dropdown", selected: params[:from], field_name: :from } do
         .dropdown-toggle-text.str-truncated= params[:from] || _("Select branch/tag")
     = render 'shared/ref_dropdown'
   &nbsp;
-  = button_tag s_("CompareBranches|Compare"), class: "btn btn-create commits-compare-btn"
+  = button_tag s_("CompareBranches|Compare"), class: "btn btn-success commits-compare-btn"
   - if @merge_request.present?
     = link_to _("View open merge request"), project_merge_request_path(@project, @merge_request), class: 'prepend-left-10 btn'
   - elsif create_mr_button?

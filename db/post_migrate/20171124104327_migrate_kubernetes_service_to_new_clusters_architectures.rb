@@ -1,4 +1,4 @@
-class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migration
+class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -48,7 +48,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
-      key: Settings.attr_encrypted_db_key_base,
+      key: Settings.attr_encrypted_db_key_base_truncated,
       algorithm: 'aes-256-cbc'
   end
 

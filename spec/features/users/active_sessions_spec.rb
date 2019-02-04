@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-feature 'Active user sessions', :clean_gitlab_redis_shared_state do
-  scenario 'Successful login adds a new active user login' do
+describe 'Active user sessions', :clean_gitlab_redis_shared_state do
+  it 'Successful login adds a new active user login' do
     now = Time.zone.parse('2018-03-12 09:06')
     Timecop.freeze(now) do
       user = create(:user)
@@ -24,7 +24,7 @@ feature 'Active user sessions', :clean_gitlab_redis_shared_state do
     end
   end
 
-  scenario 'Successful login cleans up obsolete entries' do
+  it 'Successful login cleans up obsolete entries' do
     user = create(:user)
 
     Gitlab::Redis::SharedState.with do |redis|
@@ -38,7 +38,7 @@ feature 'Active user sessions', :clean_gitlab_redis_shared_state do
     end
   end
 
-  scenario 'Sessionless login does not clean up obsolete entries' do
+  it 'Sessionless login does not clean up obsolete entries' do
     user = create(:user)
     personal_access_token = create(:personal_access_token, user: user)
 
@@ -54,7 +54,7 @@ feature 'Active user sessions', :clean_gitlab_redis_shared_state do
     end
   end
 
-  scenario 'Logout deletes the active user login' do
+  it 'Logout deletes the active user login' do
     user = create(:user)
     gitlab_sign_in(user)
     expect(current_path).to eq root_path

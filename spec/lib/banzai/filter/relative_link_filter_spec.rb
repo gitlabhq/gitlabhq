@@ -83,6 +83,11 @@ describe Banzai::Filter::RelativeLinkFilter do
     expect { filter(act) }.not_to raise_error
   end
 
+  it 'does not raise an exception with a space in the path' do
+    act = link("/uploads/d18213acd3732630991986120e167e3d/Landscape_8.jpg  \nBut here's some more unexpected text :smile:)")
+    expect { filter(act) }.not_to raise_error
+  end
+
   it 'ignores ref if commit is passed' do
     doc = filter(link('non/existent.file'), commit: project.commit('empty-branch') )
     expect(doc.at_css('a')['href'])
@@ -221,7 +226,7 @@ describe Banzai::Filter::RelativeLinkFilter do
       let(:ref) {'mark#\'@],+;-._/#@!$&()+down'}
 
       it 'correctly escapes the ref' do
-        # Adressable won't escape the '#', so we do this manually
+        # Addressable won't escape the '#', so we do this manually
         ref_escaped = 'mark%23\'@%5D,+;-._/%23@!$&()+down'
 
         # Stub this method so the branch doesn't actually need to be in the repo
@@ -338,6 +343,60 @@ describe Banzai::Filter::RelativeLinkFilter do
         group.update!(parent: create(:group))
 
         doc = filter(upload_link)
+
+        expect(doc.at_css('a')['href']).to eq(relative_path)
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'))
+
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+    end
+
+    context 'to a personal snippet' do
+      let(:group) { nil }
+      let(:project) { nil }
+      let(:relative_path) { '/uploads/-/system/personal_snippet/6/674e4f07fbf0a7736c3439212896e51a/example.tar.gz' }
+
+      context 'with an absolute URL' do
+        let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }
+        let(:only_path) { false }
+
+        it 'rewrites the link correctly' do
+          doc = filter(link(relative_path))
+
+          expect(doc.at_css('a')['href']).to eq(absolute_path)
+        end
+      end
+
+      context 'with a relative URL root' do
+        let(:gitlab_root) { '/gitlab' }
+        let(:absolute_path) { Gitlab.config.gitlab.url + gitlab_root + relative_path }
+
+        before do
+          stub_config_setting(relative_url_root: gitlab_root)
+        end
+
+        context 'with an absolute URL' do
+          let(:only_path) { false }
+
+          it 'rewrites the link correctly' do
+            doc = filter(link(relative_path))
+
+            expect(doc.at_css('a')['href']).to eq(absolute_path)
+          end
+        end
+
+        it 'rewrites the link correctly' do
+          doc = filter(link(relative_path))
+
+          expect(doc.at_css('a')['href']).to eq(gitlab_root + relative_path)
+        end
+      end
+
+      it 'rewrites the link correctly' do
+        doc = filter(link(relative_path))
 
         expect(doc.at_css('a')['href']).to eq(relative_path)
       end

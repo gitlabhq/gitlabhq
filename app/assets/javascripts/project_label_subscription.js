@@ -3,6 +3,17 @@ import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
 
+const tooltipTitles = {
+  group: {
+    subscribed: __('Unsubscribe at group level'),
+    unsubscribed: __('Subscribe at group level'),
+  },
+  project: {
+    subscribed: __('Unsubscribe at project level'),
+    unsubscribed: __('Subscribe at project level'),
+  },
+};
+
 export default class ProjectLabelSubscription {
   constructor(container) {
     this.$container = $(container);
@@ -15,38 +26,46 @@ export default class ProjectLabelSubscription {
     event.preventDefault();
 
     const $btn = $(event.currentTarget);
-    const $span = $btn.find('span');
     const url = $btn.attr('data-url');
     const oldStatus = $btn.attr('data-status');
 
     $btn.addClass('disabled');
-    $span.toggleClass('hidden');
 
-    axios.post(url).then(() => {
-      let newStatus;
-      let newAction;
+    axios
+      .post(url)
+      .then(() => {
+        let newStatus;
+        let newAction;
 
-      if (oldStatus === 'unsubscribed') {
-        [newStatus, newAction] = ['subscribed', 'Unsubscribe'];
-      } else {
-        [newStatus, newAction] = ['unsubscribed', 'Subscribe'];
-      }
-
-      $span.toggleClass('hidden');
-      $btn.removeClass('disabled');
-
-      this.$buttons.attr('data-status', newStatus);
-      this.$buttons.find('> span').text(newAction);
-
-      this.$buttons.map((button) => {
-        const $button = $(button);
-
-        if ($button.attr('data-original-title')) {
-          $button.tooltip('hide').attr('data-original-title', newAction).tooltip('_fixTitle');
+        if (oldStatus === 'unsubscribed') {
+          [newStatus, newAction] = ['subscribed', 'Unsubscribe'];
+        } else {
+          [newStatus, newAction] = ['unsubscribed', 'Subscribe'];
         }
 
-        return button;
-      });
-    }).catch(() => flash(__('There was an error subscribing to this label.')));
+        $btn.removeClass('disabled');
+
+        this.$buttons.attr('data-status', newStatus);
+        this.$buttons.find('> span').text(newAction);
+
+        this.$buttons.map((i, button) => {
+          const $button = $(button);
+          const originalTitle = $button.attr('data-original-title');
+
+          if (originalTitle) {
+            ProjectLabelSubscription.setNewTitle($button, originalTitle, newStatus, newAction);
+          }
+
+          return button;
+        });
+      })
+      .catch(() => flash(__('There was an error subscribing to this label.')));
+  }
+
+  static setNewTitle($button, originalTitle, newStatus) {
+    const type = /group/.test(originalTitle) ? 'group' : 'project';
+    const newTitle = tooltipTitles[type][newStatus];
+
+    $button.attr('title', newTitle).tooltip('_fixTitle');
   }
 }

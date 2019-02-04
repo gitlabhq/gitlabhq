@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'Explore Snippets' do
+describe 'Explore Snippets' do
   let!(:public_snippet) { create(:personal_snippet, :public) }
   let!(:internal_snippet) { create(:personal_snippet, :internal) }
   let!(:private_snippet) { create(:personal_snippet, :private) }
 
-  scenario 'User should see snippets that are not private' do
+  it 'User should see snippets that are not private' do
     sign_in create(:user)
     visit explore_snippets_path
 
@@ -14,7 +14,7 @@ feature 'Explore Snippets' do
     expect(page).not_to have_content(private_snippet.title)
   end
 
-  scenario 'External user should see only public snippets' do
+  it 'External user should see only public snippets' do
     sign_in create(:user, :external)
     visit explore_snippets_path
 
@@ -23,7 +23,7 @@ feature 'Explore Snippets' do
     expect(page).not_to have_content(private_snippet.title)
   end
 
-  scenario 'Not authenticated user should see only public snippets' do
+  it 'Not authenticated user should see only public snippets' do
     visit explore_snippets_path
 
     expect(page).to have_content(public_snippet.title)

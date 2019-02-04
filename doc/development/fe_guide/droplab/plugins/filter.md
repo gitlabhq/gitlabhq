@@ -7,8 +7,8 @@ to the dropdown using a simple fuzzy string search of an input value.
 
 Add the `Filter` object to the plugins array of a `DropLab.prototype.init` or `DropLab.prototype.addHook` call.
 
-* `Filter` requires a config value for `template`.
-* `template` should be the key of the objects within your data array that you want to compare
+- `Filter` requires a config value for `template`.
+- `template` should be the key of the objects within your data array that you want to compare
 to the user input string, for filtering.
 
 ```html

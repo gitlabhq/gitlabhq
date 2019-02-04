@@ -6,20 +6,6 @@ class Gitlab::Seeder::CycleAnalytics
     @project = project
     @user = User.admins.first
     @issue_count = perf ? 1000 : 5
-    stub_git_pre_receive!
-  end
-
-  # The GitLab API needn't be running for the fixtures to be
-  # created. Since we're performing a number of git actions
-  # here (like creating a branch or committing a file), we need
-  # to disable the `pre_receive` hook in order to remove this
-  # dependency on the GitLab API.
-  def stub_git_pre_receive!
-    Gitlab::Git::HooksService.class_eval do
-      def run_hook(name)
-        [true, '']
-      end
-    end
   end
 
   def seed_metrics!
@@ -194,11 +180,8 @@ class Gitlab::Seeder::CycleAnalytics
                                               ref: "refs/heads/#{merge_request.source_branch}")
       pipeline = service.execute(:push, ignore_skip_ci: true, save_on_errors: false)
 
-      pipeline.run!
-      Timecop.travel rand(1..6).hours.from_now
-      pipeline.succeed!
-
-      PipelineMetricsWorker.new.perform(pipeline.id)
+      pipeline.builds.map(&:run!)
+      pipeline.update_status
     end
   end
 
@@ -218,7 +201,8 @@ class Gitlab::Seeder::CycleAnalytics
 
       job = merge_request.head_pipeline.builds.where.not(environment: nil).last
 
-      CreateDeploymentService.new(job).execute
+      job.success!
+      pipeline.update_status
     end
   end
 end

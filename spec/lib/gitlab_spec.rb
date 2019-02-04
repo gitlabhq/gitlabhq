@@ -8,6 +8,7 @@ describe Gitlab do
       expect(described_class.root).to eq(Pathname.new(File.expand_path('../..', __dir__)))
     end
   end
+
   describe '.revision' do
     let(:cmd) { %W[#{described_class.config.git.bin_path} log --pretty=format:%h -n 1] }
 

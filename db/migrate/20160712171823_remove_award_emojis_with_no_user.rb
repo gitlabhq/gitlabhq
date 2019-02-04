@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class RemoveAwardEmojisWithNoUser < ActiveRecord::Migration
+class RemoveAwardEmojisWithNoUser < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"
@@ -16,6 +16,6 @@ class RemoveAwardEmojisWithNoUser < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def up
-    AwardEmoji.joins('LEFT JOIN users ON users.id = user_id').where('users.id IS NULL').destroy_all
+    AwardEmoji.joins('LEFT JOIN users ON users.id = user_id').where('users.id IS NULL').destroy_all # rubocop: disable DestroyAll
   end
 end

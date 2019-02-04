@@ -109,6 +109,19 @@ describe JobEntity do
     end
   end
 
+  context 'when job is scheduled' do
+    let(:job) { create(:ci_build, :scheduled) }
+
+    it 'contains path to unschedule action' do
+      expect(subject).to include(:unschedule_path)
+    end
+
+    it 'contains scheduled_at' do
+      expect(subject[:scheduled]).to be_truthy
+      expect(subject[:scheduled_at]).to eq(job.scheduled_at)
+    end
+  end
+
   context 'when job is generic commit status' do
     let(:job) { create(:generic_commit_status, target_url: 'http://google.com') }
 
@@ -142,7 +155,7 @@ describe JobEntity do
     end
 
     it 'should indicate the failure reason on tooltip' do
-      expect(subject[:status][:tooltip]).to eq('failed <br> (API failure)')
+      expect(subject[:status][:tooltip]).to eq('failed - (API failure)')
     end
 
     it 'should include a callout message with a verbose output' do
@@ -166,7 +179,7 @@ describe JobEntity do
     end
 
     it 'should indicate the failure reason on tooltip' do
-      expect(subject[:status][:tooltip]).to eq('failed <br> (API failure) (allowed to fail)')
+      expect(subject[:status][:tooltip]).to eq('failed - (API failure) (allowed to fail)')
     end
 
     it 'should include a callout message with a verbose output' do

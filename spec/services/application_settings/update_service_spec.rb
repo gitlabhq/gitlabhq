@@ -10,11 +10,14 @@ describe ApplicationSettings::UpdateService do
   before do
     # So the caching behaves like it would in production
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
+
+    # Creating these settings first ensures they're used by other factories
+    application_settings
   end
 
   describe 'updating terms' do
     context 'when the passed terms are blank' do
-      let(:params) { { terms: ''  } }
+      let(:params) { { terms: '' } }
 
       it 'does not create terms' do
         expect { subject.execute }.not_to change { ApplicationSetting::Term.count }
@@ -22,7 +25,7 @@ describe ApplicationSettings::UpdateService do
     end
 
     context 'when passing terms' do
-      let(:params) { { terms: 'Be nice!  '  } }
+      let(:params) { { terms: 'Be nice!  ' } }
 
       it 'creates the terms' do
         expect { subject.execute }.to change { ApplicationSetting::Term.count }.by(1)

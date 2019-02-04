@@ -13,16 +13,16 @@ RSpec.describe 'Dashboard Group' do
 
   it 'creates new group', :js do
     visit dashboard_groups_path
-    find('.btn-new').click
-    new_path = 'Samurai'
+    find('.btn-success').click
+    new_name = 'Samurai'
     new_description = 'Tokugawa Shogunate'
 
-    fill_in 'group_path', with: new_path
+    fill_in 'group_name', with: new_name
     fill_in 'group_description', with: new_description
     click_button 'Create group'
 
-    expect(current_path).to eq group_path(Group.find_by(name: new_path))
-    expect(page).to have_content(new_path)
+    expect(current_path).to eq group_path(Group.find_by(name: new_name))
+    expect(page).to have_content(new_name)
     expect(page).to have_content(new_description)
   end
 end

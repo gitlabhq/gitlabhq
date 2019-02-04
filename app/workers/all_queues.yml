@@ -1,4 +1,6 @@
 ---
+- auto_devops:auto_devops_disable
+
 - cronjob:admin_email
 - cronjob:expire_build_artifacts
 - cronjob:gitlab_usage_ping
@@ -8,41 +10,46 @@
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
 - cronjob:remove_expired_members
-- cronjob:remove_old_web_hook_logs
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
-- cronjob:repository_check_batch
+- cronjob:repository_check_dispatch
 - cronjob:requests_profiles
-- cronjob:schedule_update_user_activity
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
+- cronjob:ci_archive_traces_cron
 - cronjob:trending_projects
 - cronjob:issue_due_scheduler
+- cronjob:prune_web_hook_logs
 
 - gcp_cluster:cluster_install_app
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
+- gcp_cluster:cluster_configure
+- gcp_cluster:cluster_project_configure
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note
 - github_importer:github_import_import_issue
 - github_importer:github_import_import_note
+- github_importer:github_import_import_lfs_object
 - github_importer:github_import_import_pull_request
 - github_importer:github_import_refresh_import_jid
 - github_importer:github_import_stage_finish_import
 - github_importer:github_import_stage_import_base_data
 - github_importer:github_import_stage_import_issues_and_diff_notes
 - github_importer:github_import_stage_import_notes
+- github_importer:github_import_stage_import_lfs_objects
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
+
+- hashed_storage:hashed_storage_migrator
 
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
 
-- object_storage_upload
 - object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
 
@@ -66,9 +73,27 @@
 - pipeline_processing:pipeline_update
 - pipeline_processing:stage_update
 - pipeline_processing:update_head_pipeline_for_merge_request
+- pipeline_processing:ci_build_schedule
+
+- deployment:deployments_success
 
 - repository_check:repository_check_clear
+- repository_check:repository_check_batch
 - repository_check:repository_check_single_repository
+
+- todos_destroyer:todos_destroyer_confidential_issue
+- todos_destroyer:todos_destroyer_entity_leave
+- todos_destroyer:todos_destroyer_group_private
+- todos_destroyer:todos_destroyer_project_private
+- todos_destroyer:todos_destroyer_private_features
+
+- object_pool:object_pool_create
+- object_pool:object_pool_schedule_join
+- object_pool:object_pool_join
+- object_pool:object_pool_destroy
+
+- container_repository:delete_container_repository
+- container_repository:cleanup_container_repository
 
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
@@ -104,14 +129,18 @@
 - propagate_service_template
 - reactive_caching
 - rebase
+- remote_mirror_notification
 - repository_fork
 - repository_import
 - repository_remove_remote
-- storage_migrator
 - system_hook_push
 - update_merge_requests
-- update_user_activity
 - upload_checksum
 - web_hook
 - repository_update_remote_mirror
 - create_note_diff_file
+- delete_diff_files
+- detect_repository_languages
+- repository_cleanup
+- delete_stored_files
+- import_issues_csv

@@ -10,6 +10,13 @@ RSpec::Matchers.define :match_ids do |*expected|
     'matches elements by ids'
   end
 
+  failure_message do
+    actual_ids = map_ids(actual)
+    expected_ids = map_ids(expected)
+
+    "expected IDs #{actual_ids} in:\n\n  #{actual.inspect}\n\nto match IDs #{expected_ids} in:\n\n  #{expected.inspect}"
+  end
+
   def map_ids(elements)
     elements = elements.flatten if elements.respond_to?(:flatten)
 

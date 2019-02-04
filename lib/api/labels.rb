@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Labels < Grape::API
     include PaginationParams
@@ -7,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all labels of the project' do
         success Entities::Label
       end
@@ -27,6 +29,7 @@ module API
         optional :description, type: String, desc: 'The description of label to be created'
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/labels' do
         authorize! :admin_label, user_project
 
@@ -43,6 +46,7 @@ module API
           render_validation_error!(label)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Delete an existing label' do
         success Entities::Label
@@ -50,6 +54,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the label to be deleted'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/labels' do
         authorize! :admin_label, user_project
 
@@ -58,18 +63,20 @@ module API
 
         destroy_conditionally!(label)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Update an existing label. At least one optional parameter is required.' do
         success Entities::Label
       end
       params do
-        requires :name,  type: String, desc: 'The name of the label to be updated'
+        requires :name, type: String, desc: 'The name of the label to be updated'
         optional :new_name, type: String, desc: 'The new name of the label'
         optional :color, type: String, desc: "The new color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB) or one of the allowed CSS color names"
         optional :description, type: String, desc: 'The new description of label'
         optional :priority, type: Integer, desc: 'The priority of the label', allow_blank: true
         at_least_one_of :new_name, :color, :description, :priority
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id/labels' do
         authorize! :admin_label, user_project
 
@@ -95,6 +102,7 @@ module API
 
         present label, with: Entities::Label, current_user: current_user, project: user_project
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

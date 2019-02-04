@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Sherlock
   class ApplicationController < ::ApplicationController
     before_action :find_transaction

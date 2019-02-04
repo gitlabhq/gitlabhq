@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GiteaController < Import::GithubController
   def new
     if session[access_token_key].present? && session[host_key].present?
@@ -21,7 +23,7 @@ class Import::GiteaController < Import::GithubController
     :"#{provider}_host_url"
   end
 
-  # Overriden methods
+  # Overridden methods
   def provider
     :gitea
   end

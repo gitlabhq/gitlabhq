@@ -1,17 +1,18 @@
+# frozen_string_literal: true
+
 class Label < ActiveRecord::Base
   include CacheMarkdownField
   include Referable
   include Subscribable
-
-  # Represents a "No Label" state used for filtering Issues and Merge
-  # Requests that have no label assigned.
-  LabelStruct = Struct.new(:title, :name)
-  None = LabelStruct.new('No Label', 'No Label')
-  Any = LabelStruct.new('Any Label', '')
+  include Gitlab::SQL::Pattern
+  include OptionallySearch
+  include Sortable
+  include FromUnion
 
   cache_markdown_field :description, pipeline: :single_line
 
-  DEFAULT_COLOR = '#428BCA'.freeze
+  DEFAULT_COLOR = '#428BCA'
+  NONE = 'no label'
 
   default_value_for :color, DEFAULT_COLOR
 
@@ -35,8 +36,11 @@ class Label < ActiveRecord::Base
   scope :templates, -> { where(template: true) }
   scope :with_title, ->(title) { where(title: title) }
   scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
-  scope :on_group_boards, ->(group_id) { with_lists_and_board.where(boards: { group_id: group_id }) }
   scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
+  scope :on_board, ->(board_id) { with_lists_and_board.where(boards: { id: board_id }) }
+  scope :order_name_asc, -> { reorder(title: :asc) }
+  scope :order_name_desc, -> { reorder(title: :desc) }
+  scope :subscribed_by, ->(user_id) { joins(:subscriptions).where(subscriptions: { user_id: user_id, subscribed: true }) }
 
   def self.prioritized(project)
     joins(:priorities)
@@ -66,6 +70,14 @@ class Label < ActiveRecord::Base
     joins(label_priorities)
   end
 
+  def self.optionally_subscribed_by(user_id)
+    if user_id
+      subscribed_by(user_id)
+    else
+      all
+    end
+  end
+
   alias_attribute :name, :title
 
   def self.reference_prefix
@@ -85,17 +97,33 @@ class Label < ActiveRecord::Base
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
-        (?<label_id>\d+(?!\S\w)\b) | # Integer-based label ID, or
-        (?<label_name>
-          [A-Za-z0-9_\-\?\.&]+ | # String-based single-word label title, or
-          ".+?"                  # String-based multi-word label surrounded in quotes
-        )
+          (?<label_id>\d+(?!\S\w)\b)
+        | # Integer-based label ID, or
+          (?<label_name>
+              # String-based single-word label title, or
+              [A-Za-z0-9_\-\?\.&]+
+              (?<!\.|\?)
+            |
+              # String-based multi-word label surrounded in quotes
+              ".+?"
+          )
       )
     }x
   end
 
   def self.link_reference_pattern
     nil
+  end
+
+  # Searches for labels with a matching title or description.
+  #
+  # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+  #
+  # query - The search query as a String.
+  #
+  # Returns an ActiveRecord::Relation.
+  def self.search(query)
+    fuzzy_search(query, [:title, :description])
   end
 
   def open_issues_count(user = nil)
@@ -135,6 +163,10 @@ class Label < ActiveRecord::Base
                end
 
     priority.try(:priority)
+  end
+
+  def priority?
+    priorities.present?
   end
 
   def template?
@@ -182,6 +214,7 @@ class Label < ActiveRecord::Base
     super(options).tap do |json|
       json[:type] = self.try(:type)
       json[:priority] = priority(options[:project]) if options.key?(:project)
+      json[:textColor] = text_color
     end
   end
 

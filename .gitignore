@@ -29,7 +29,7 @@ eslint-report.html
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
-/config/database.yml
+/config/database*.yml
 /config/gitlab.yml
 /config/gitlab_ci.yml
 /config/initializers/rack_attack.rb
@@ -40,6 +40,7 @@ eslint-report.html
 /config/redis.queues.yml
 /config/redis.shared_state.yml
 /config/unicorn.rb
+/config/puma.rb
 /config/secrets.yml
 /config/sidekiq.yml
 /config/registry.key
@@ -76,3 +77,7 @@ eslint-report.html
 /.rspec
 /plugins/*
 /.gitlab_pages_secret
+package-lock.json
+/junit_*.xml
+/coverage-frontend/
+jsdoc/

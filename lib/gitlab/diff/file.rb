@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Diff
     class File
-      attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs
+      include Gitlab::Utils::StrongMemoize
+
+      attr_reader :diff, :repository, :diff_refs, :fallback_diff_refs, :unique_identifier
 
       delegate :new_file?, :deleted_file?, :renamed_file?,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
@@ -20,11 +24,21 @@ module Gitlab
         DiffViewer::Image
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
-      def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil)
+      def initialize(
+        diff,
+        repository:,
+        diff_refs: nil,
+        fallback_diff_refs: nil,
+        stats: nil,
+        unique_identifier: nil)
+
         @diff = diff
+        @stats = stats
         @repository = repository
         @diff_refs = diff_refs
         @fallback_diff_refs = fallback_diff_refs
+        @unique_identifier = unique_identifier
+        @unfolded = false
 
         # Ensure items are collected in the the batch
         new_blob_lazy
@@ -63,7 +77,15 @@ module Gitlab
       def line_for_position(pos)
         return nil unless pos.position_type == 'text'
 
-        diff_lines.find { |line| line.old_line == pos.old_line && line.new_line == pos.new_line }
+        # This method is normally used to find which line the diff was
+        # commented on, and in this context, it's normally the raw diff persisted
+        # at `note_diff_files`, which is a fraction of the entire diff
+        # (it goes from the first line, to the commented line, or
+        # one line below). Therefore it's more performant to fetch
+        # from bottom to top instead of the other way around.
+        diff_lines
+          .reverse_each
+          .find { |line| line.old_line == pos.old_line && line.new_line == pos.new_line }
       end
 
       def position_for_line_code(code)
@@ -78,9 +100,12 @@ module Gitlab
 
       # Returns the raw diff content up to the given line index
       def diff_hunk(diff_line)
-        # Adding 2 because of the @@ diff header and Enum#take should consider
-        # an extra line, because we're passing an index.
-        raw_diff.each_line.take(diff_line.index + 2).join
+        diff_line_index = diff_line.index
+        # @@ (match) header is not kept if it's found in the top of the file,
+        # therefore we should keep an extra line on this scenario.
+        diff_line_index += 1 unless diff_lines.first.match?
+
+        diff_lines.select { |line| line.index <= diff_line_index }.map(&:text).join("\n")
       end
 
       def old_sha
@@ -115,6 +140,16 @@ module Gitlab
         old_blob_lazy&.itself
       end
 
+      def new_blob_lines_between(from_line, to_line)
+        return [] unless new_blob
+
+        from_index = from_line - 1
+        to_index = to_line - 1
+
+        new_blob.load_all_data!
+        new_blob.data.lines[from_index..to_index]
+      end
+
       def content_sha
         new_content_sha || old_content_sha
       end
@@ -127,11 +162,35 @@ module Gitlab
 
       # Array of Gitlab::Diff::Line objects
       def diff_lines
-        @diff_lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
+        @diff_lines ||=
+          Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
+      end
+
+      # Changes diff_lines according to the given position. That is,
+      # it checks whether the position requires blob lines into the diff
+      # in order to be presented.
+      def unfold_diff_lines(position)
+        return unless position
+
+        unfolder = Gitlab::Diff::LinesUnfolder.new(self, position)
+
+        if unfolder.unfold_required?
+          @diff_lines = unfolder.unfolded_diff_lines
+          @unfolded = true
+        end
+      end
+
+      def unfolded?
+        @unfolded
+      end
+
+      def highlight_loaded?
+        @highlighted_diff_lines.present?
       end
 
       def highlighted_diff_lines
-        @highlighted_diff_lines ||= Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+        @highlighted_diff_lines ||=
+          Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
       # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is hightlighted
@@ -160,11 +219,11 @@ module Gitlab
       end
 
       def added_lines
-        diff_lines.count(&:added?)
+        @stats&.additions || diff_lines.count(&:added?)
       end
 
       def removed_lines
-        diff_lines.count(&:removed?)
+        @stats&.deletions || diff_lines.count(&:removed?)
       end
 
       def file_identifier
@@ -175,12 +234,12 @@ module Gitlab
         repository.attributes(file_path).fetch('diff') { true }
       end
 
-      def binary?
-        has_binary_notice? || try_blobs(:binary?)
+      def binary_in_repo?
+        has_binary_notice? || try_blobs(:binary_in_repo?)
       end
 
-      def text?
-        !binary?
+      def text_in_repo?
+        !binary_in_repo?
       end
 
       def external_storage_error?
@@ -206,20 +265,32 @@ module Gitlab
         old_blob && new_blob && old_blob.binary? != new_blob.binary?
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def size
         valid_blobs.map(&:size).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def raw_size
         valid_blobs.map(&:raw_size).sum
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
-      def raw_binary?
-        try_blobs(:raw_binary?)
+      def empty?
+        valid_blobs.map(&:empty?).all?
       end
 
-      def raw_text?
-        !raw_binary? && !different_type?
+      def binary?
+        strong_memoize(:is_binary) do
+          try_blobs(:binary?)
+        end
+      end
+
+      def text?
+        strong_memoize(:is_text) do
+          !binary? && !different_type?
+        end
       end
 
       def simple_viewer
@@ -236,7 +307,33 @@ module Gitlab
         simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
       end
 
+      # This adds the bottom match line to the array if needed. It contains
+      # the data to load more context lines.
+      def diff_lines_for_serializer
+        lines = highlighted_diff_lines
+
+        return if lines.empty?
+        return if blob.nil?
+
+        last_line = lines.last
+
+        if last_line.new_pos < total_blob_lines(blob) && !deleted_file?
+          match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
+          lines.push(match_line)
+        end
+
+        lines
+      end
+
       private
+
+      def total_blob_lines(blob)
+        @total_lines ||= begin
+          line_count = blob.lines.size
+          line_count -= 1 if line_count > 0 && blob.lines.last.blank?
+          line_count
+        end
+      end
 
       # We can't use Object#try because Blob doesn't inherit from Object, but
       # from BasicObject (via SimpleDelegator).
@@ -276,19 +373,19 @@ module Gitlab
         return DiffViewer::NotDiffable unless diffable?
 
         if content_changed?
-          if raw_text?
+          if text?
             DiffViewer::Text
           else
             DiffViewer::NoPreview
           end
         elsif new_file?
-          if raw_text?
+          if text?
             DiffViewer::Text
           else
             DiffViewer::Added
           end
         elsif deleted_file?
-          if raw_text?
+          if text?
             DiffViewer::Text
           else
             DiffViewer::Deleted

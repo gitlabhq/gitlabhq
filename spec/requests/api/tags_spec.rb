@@ -10,7 +10,7 @@ describe API::Tags do
   let(:current_user) { nil }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/repository/tags' do
@@ -54,6 +54,18 @@ describe API::Tags do
       end
     end
 
+    context 'searching' do
+      it 'only returns searched tags' do
+        get api("#{route}", user), params: { search: 'v1.1.0' }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['name']).to eq('v1.1.0')
+      end
+    end
+
     shared_examples_for 'repository tags' do
       it 'returns the repository tags' do
         get api(route, current_user)
@@ -86,7 +98,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository tags'
@@ -107,9 +119,12 @@ describe API::Tags do
     context 'with releases' do
       let(:description) { 'Awesome release!' }
 
-      before do
-        release = project.releases.find_or_initialize_by(tag: tag_name)
-        release.update_attributes(description: description)
+      let!(:release) do
+        create(:release,
+               :legacy,
+               project: project,
+               tag: tag_name,
+               description: description)
       end
 
       it 'returns an array of project tags with release info' do
@@ -168,7 +183,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository tag'
@@ -193,7 +208,7 @@ describe API::Tags do
 
     shared_examples_for 'repository new tag' do
       it 'creates a new tag' do
-        post api(route, current_user), tag_name: tag_name, ref: 'master'
+        post api(route, current_user), params: { tag_name: tag_name, ref: 'master' }
 
         expect(response).to have_gitlab_http_status(201)
         expect(response).to match_response_schema('public_api/v4/tag')
@@ -222,7 +237,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
@@ -248,26 +263,26 @@ describe API::Tags do
       end
 
       it 'returns 400 if tag name is invalid' do
-        post api(route, current_user), tag_name: 'new design', ref: 'master'
+        post api(route, current_user), params: { tag_name: 'new design', ref: 'master' }
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('Tag name invalid')
       end
 
       it 'returns 400 if tag already exists' do
-        post api(route, current_user), tag_name: 'new_design1', ref: 'master'
+        post api(route, current_user), params: { tag_name: 'new_design1', ref: 'master' }
 
         expect(response).to have_gitlab_http_status(201)
         expect(response).to match_response_schema('public_api/v4/tag')
 
-        post api(route, current_user), tag_name: 'new_design1', ref: 'master'
+        post api(route, current_user), params: { tag_name: 'new_design1', ref: 'master' }
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('Tag new_design1 already exists')
       end
 
       it 'returns 400 if ref name is invalid' do
-        post api(route, current_user), tag_name: 'new_design3', ref: 'foo'
+        post api(route, current_user), params: { tag_name: 'new_design3', ref: 'foo' }
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']).to eq('Target foo is invalid')
@@ -275,7 +290,7 @@ describe API::Tags do
 
       context 'lightweight tags with release notes' do
         it 'creates a new tag' do
-          post api(route, current_user), tag_name: tag_name, ref: 'master', release_description: 'Wow'
+          post api(route, current_user), params: { tag_name: tag_name, ref: 'master', release_description: 'Wow' }
 
           expect(response).to have_gitlab_http_status(201)
           expect(response).to match_response_schema('public_api/v4/tag')
@@ -287,11 +302,14 @@ describe API::Tags do
       context 'annotated tag' do
         it 'creates a new annotated tag' do
           # Identity must be set in .gitconfig to create annotated tag.
-          repo_path = project.repository.path_to_repo
+          repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.path_to_repo
+          end
+
           system(*%W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} config user.name #{user.name}))
           system(*%W(#{Gitlab.config.git.bin_path} --git-dir=#{repo_path} config user.email #{user.email}))
 
-          post api(route, current_user), tag_name: 'v7.1.0', ref: 'master', message: 'Release 7.1.0'
+          post api(route, current_user), params: { tag_name: 'v7.1.0', ref: 'master', message: 'Release 7.1.0' }
 
           expect(response).to have_gitlab_http_status(201)
           expect(response).to match_response_schema('public_api/v4/tag')
@@ -338,7 +356,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository delete tag'
@@ -357,7 +375,7 @@ describe API::Tags do
 
     shared_examples_for 'repository new release' do
       it 'creates description for existing git tag' do
-        post api(route, user), description: description
+        post api(route, user), params: { description: description }
 
         expect(response).to have_gitlab_http_status(201)
         expect(response).to match_response_schema('public_api/v4/release')
@@ -369,8 +387,8 @@ describe API::Tags do
         let(:tag_name) { 'unknown' }
 
         it_behaves_like '404 response' do
-          let(:request) { post api(route, current_user), description: description }
-          let(:message) { 'Tag does not exist' }
+          let(:request) { post api(route, current_user), params: { description: description } }
+          let(:message) { '404 Tag Not Found' }
         end
       end
 
@@ -378,12 +396,12 @@ describe API::Tags do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { post api(route, current_user), description: description }
+          let(:request) { post api(route, current_user), params: { description: description } }
         end
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository new release'
@@ -395,13 +413,10 @@ describe API::Tags do
       end
 
       context 'on tag with existing release' do
-        before do
-          release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update_attributes(description: description)
-        end
+        let!(:release) { create(:release, :legacy, project: project, tag: tag_name, description: description) }
 
         it 'returns 409 if there is already a release' do
-          post api(route, user), description: description
+          post api(route, user), params: { description: description }
 
           expect(response).to have_gitlab_http_status(409)
           expect(json_response['message']).to eq('Release already exists')
@@ -417,13 +432,16 @@ describe API::Tags do
 
     shared_examples_for 'repository update release' do
       context 'on tag with existing release' do
-        before do
-          release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update_attributes(description: description)
+        let!(:release) do
+          create(:release,
+                 :legacy,
+                 project: project,
+                 tag: tag_name,
+                 description: description)
         end
 
         it 'updates the release description' do
-          put api(route, current_user), description: new_description
+          put api(route, current_user), params: { description: new_description }
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['tag_name']).to eq(tag_name)
@@ -434,9 +452,9 @@ describe API::Tags do
       context 'when tag does not exist' do
         let(:tag_name) { 'unknown' }
 
-        it_behaves_like '404 response' do
-          let(:request) { put api(route, current_user), description: new_description }
-          let(:message) { 'Tag does not exist' }
+        it_behaves_like '403 response' do
+          let(:request) { put api(route, current_user), params: { description: new_description } }
+          let(:message) { '403 Forbidden' }
         end
       end
 
@@ -444,12 +462,12 @@ describe API::Tags do
         include_context 'disabled repository'
 
         it_behaves_like '403 response' do
-          let(:request) { put api(route, current_user), description: new_description }
+          let(:request) { put api(route, current_user), params: { description: new_description } }
         end
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository update release'
@@ -461,9 +479,9 @@ describe API::Tags do
       end
 
       context 'when release does not exist' do
-        it_behaves_like '404 response' do
-          let(:request) { put api(route, current_user), description: new_description }
-          let(:message) { 'Release does not exist' }
+        it_behaves_like '403 response' do
+          let(:request) { put api(route, current_user), params: { description: new_description } }
+          let(:message) { '403 Forbidden' }
         end
       end
     end

@@ -1,17 +1,21 @@
+# frozen_string_literal: true
+
 module Storage
   module LegacyNamespace
     extend ActiveSupport::Concern
 
+    include Gitlab::ShellAdapter
+
     def move_dir
-      if any_project_has_container_registry_tags?
-        raise Gitlab::UpdatePathError.new('Namespace cannot be moved, because at least one project has tags in container registry')
+      proj_with_tags = first_project_with_container_registry_tags
+
+      if proj_with_tags
+        raise Gitlab::UpdatePathError.new("Namespace #{name} (#{id}) cannot be moved because at least one project (e.g. #{proj_with_tags.name} (#{proj_with_tags.id})) has tags in container registry")
       end
 
       parent_was = if parent_changed? && parent_id_was.present?
                      Namespace.find(parent_id_was) # raise NotFound early if needed
                    end
-
-      expires_full_path_cache
 
       move_repositories
 
@@ -25,8 +29,6 @@ module Storage
         Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
       end
 
-      remove_exports!
-
       # If repositories moved successfully we need to
       # send update instructions to users.
       # However we cannot allow rollback since we moved namespace dir
@@ -34,13 +36,12 @@ module Storage
       begin
         send_update_instructions
         write_projects_repository_config
-
-        true
-      rescue
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
+      rescue => e
+        # Raise if development/test environment, else just notify Sentry
+        Gitlab::Sentry.track_exception(e, extra: { full_path_was: full_path_was, full_path: full_path, action: 'move_dir' })
       end
+
+      true # false would cancel later callbacks but not rollback
     end
 
     # Hooks
@@ -95,15 +96,13 @@ module Storage
         if gitlab_shell.mv_namespace(repository_storage, full_path, new_path)
           Gitlab::AppLogger.info %Q(Namespace directory "#{full_path}" moved to "#{new_path}")
 
-          # Remove namespace directroy async with delay so
+          # Remove namespace directory async with delay so
           # GitLab has time to remove all projects first
           run_after_commit do
             GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage, new_path)
           end
         end
       end
-
-      remove_exports!
     end
 
     def remove_legacy_exports!

@@ -18,15 +18,20 @@ Doorkeeper::OpenidConnect.configure do
   end
 
   subject do |user|
-    # hash the user's ID with the Rails secret_key_base to avoid revealing it
-    Digest::SHA256.hexdigest "#{user.id}-#{Rails.application.secrets.secret_key_base}"
+    user.id
   end
 
   claims do
     with_options scope: :openid do |o|
+      o.claim(:sub_legacy, response: [:id_token, :user_info]) do |user|
+        # provide the previously hashed 'sub' claim to allow third-party apps
+        # to migrate to the new unhashed value
+        Digest::SHA256.hexdigest "#{user.id}-#{Rails.application.secrets.secret_key_base}"
+      end
+
       o.claim(:name)           { |user| user.name }
       o.claim(:nickname)       { |user| user.username }
-      o.claim(:email)          { |user| user.public_email  }
+      o.claim(:email)          { |user| user.public_email }
       o.claim(:email_verified) { |user| true if user.public_email? }
       o.claim(:website)        { |user| user.full_website_url if user.website_url? }
       o.claim(:profile)        { |user| Gitlab::Routing.url_helpers.user_url user }

@@ -1,7 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Metrics/LineLength
-# rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/ClassLength
 # rubocop:disable Style/Documentation
 
 module Gitlab

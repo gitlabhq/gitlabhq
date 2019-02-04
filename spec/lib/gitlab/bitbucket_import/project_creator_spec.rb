@@ -11,7 +11,7 @@ describe Gitlab::BitbucketImport::ProjectCreator do
            owner: "asd",
            full_name: 'Vim repo',
            visibility_level: Gitlab::VisibilityLevel::PRIVATE,
-           clone_url: 'ssh://git@bitbucket.org/asd/vim.git',
+           clone_url: 'http://bitbucket.org/asd/vim.git',
            has_wiki?: false)
   end
 
@@ -25,12 +25,14 @@ describe Gitlab::BitbucketImport::ProjectCreator do
   end
 
   it 'creates project' do
-    allow_any_instance_of(Project).to receive(:add_import_job)
+    expect_next_instance_of(Project) do |project|
+      expect(project).to receive(:add_import_job)
+    end
 
     project_creator = described_class.new(repo, 'vim', namespace, user, access_params)
     project = project_creator.execute
 
-    expect(project.import_url).to eq("ssh://git@bitbucket.org/asd/vim.git")
+    expect(project.import_url).to eq("http://bitbucket.org/asd/vim.git")
     expect(project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE)
   end
 end

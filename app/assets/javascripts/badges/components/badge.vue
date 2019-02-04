@@ -1,17 +1,15 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-import Tooltip from '~/vue_shared/directives/tooltip';
+import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 
 export default {
   name: 'Badge',
   components: {
     Icon,
-    LoadingIcon,
-    Tooltip,
+    GlLoadingIcon,
   },
   directives: {
-    Tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     imageUrl: {
@@ -65,57 +63,41 @@ export default {
 
 <template>
   <div>
-    <a
-      v-show="!isLoading && !hasError"
-      :href="linkUrl"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <a v-show="!isLoading && !hasError" :href="linkUrl" target="_blank" rel="noopener noreferrer">
       <img
-        class="project-badge"
         :src="imageUrlWithRetries"
+        class="project-badge"
+        aria-hidden="true"
         @load="onLoad"
         @error="onError"
-        aria-hidden="true"
       />
     </a>
 
-    <loading-icon
-      v-show="isLoading"
-      :inline="true"
-    />
+    <gl-loading-icon v-show="isLoading" :inline="true" />
 
-    <div
-      v-show="hasError"
-      class="btn-group"
-    >
+    <div v-show="hasError" class="btn-group">
       <div class="btn btn-default btn-sm disabled">
         <icon
-          class="prepend-left-8 append-right-8"
-          name="doc_image"
           :size="16"
+          class="prepend-left-8 append-right-8"
+          name="doc-image"
           aria-hidden="true"
         />
       </div>
-      <div
-        class="btn btn-default btn-sm disabled"
-      >
+      <div class="btn btn-default btn-sm disabled">
         <span class="prepend-left-8 append-right-8">{{ s__('Badges|No badge image') }}</span>
       </div>
     </div>
 
     <button
       v-show="hasError"
+      v-gl-tooltip.hover
+      :title="s__('Badges|Reload badge image')"
       class="btn btn-transparent btn-sm text-primary"
       type="button"
-      v-tooltip
-      :title="s__('Badges|Reload badge image')"
       @click="reloadImage"
     >
-      <icon
-        name="retry"
-        :size="16"
-      />
+      <icon :size="16" name="retry" />
     </button>
   </div>
 </template>

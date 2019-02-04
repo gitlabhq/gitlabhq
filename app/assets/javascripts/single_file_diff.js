@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
+/* eslint-disable func-names, prefer-arrow-callback, consistent-return, */
 
 import $ from 'jquery';
 import { __ } from './locale';
@@ -10,8 +10,10 @@ import syntaxHighlight from './syntax_highlight';
 
 const WRAPPER = '<div class="diff-content"></div>';
 const LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
-const ERROR_HTML = '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>';
-const COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
+const ERROR_HTML =
+  '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>';
+const COLLAPSED_HTML =
+  '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <button class="click-to-expand btn btn-link">Click to expand it.</button></div>';
 
 export default class SingleFileDiff {
   constructor(file) {
@@ -23,23 +25,36 @@ export default class SingleFileDiff {
     this.isOpen = !this.diffForPath;
     if (this.diffForPath) {
       this.collapsedContent = this.content;
-      this.loadingContent = $(WRAPPER).addClass('loading').html(LOADING_HTML).hide();
+      this.loadingContent = $(WRAPPER)
+        .addClass('loading')
+        .html(LOADING_HTML)
+        .hide();
       this.content = null;
       this.collapsedContent.after(this.loadingContent);
       this.$toggleIcon.addClass('fa-caret-right');
     } else {
-      this.collapsedContent = $(WRAPPER).html(COLLAPSED_HTML).hide();
+      this.collapsedContent = $(WRAPPER)
+        .html(COLLAPSED_HTML)
+        .hide();
       this.content.after(this.collapsedContent);
       this.$toggleIcon.addClass('fa-caret-down');
     }
 
-    $('.js-file-title, .click-to-expand', this.file).on('click', (function (e) {
-      this.toggleDiff($(e.target));
-    }).bind(this));
+    $('.js-file-title, .click-to-expand', this.file).on(
+      'click',
+      function(e) {
+        this.toggleDiff($(e.target));
+      }.bind(this),
+    );
   }
 
   toggleDiff($target, cb) {
-    if (!$target.hasClass('js-file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
+    if (
+      !$target.hasClass('js-file-title') &&
+      !$target.hasClass('click-to-expand') &&
+      !$target.hasClass('diff-toggle-caret')
+    )
+      return;
     this.isOpen = !this.isOpen;
     if (!this.isOpen && !this.hasError) {
       this.content.hide();
@@ -65,7 +80,8 @@ export default class SingleFileDiff {
     this.collapsedContent.hide();
     this.loadingContent.show();
 
-    axios.get(this.diffForPath)
+    axios
+      .get(this.diffForPath)
       .then(({ data }) => {
         this.loadingContent.hide();
         if (data.html) {

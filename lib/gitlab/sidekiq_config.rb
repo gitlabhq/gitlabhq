@@ -1,13 +1,22 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'set'
 
 module Gitlab
   module SidekiqConfig
+    QUEUE_CONFIG_PATHS = %w[app/workers/all_queues.yml ee/app/workers/all_queues.yml].freeze
+
     # This method is called by `bin/sidekiq-cluster` in EE, which runs outside
     # of bundler/Rails context, so we cannot use any gem or Rails methods.
     def self.worker_queues(rails_path = Rails.root.to_s)
       @worker_queues ||= {}
-      @worker_queues[rails_path] ||= YAML.load_file(File.join(rails_path, 'app/workers/all_queues.yml'))
+
+      @worker_queues[rails_path] ||= QUEUE_CONFIG_PATHS.flat_map do |path|
+        full_path = File.join(rails_path, path)
+
+        File.exist?(full_path) ? YAML.load_file(full_path) : []
+      end
     end
 
     # This method is called by `bin/sidekiq-cluster` in EE, which runs outside

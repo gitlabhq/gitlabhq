@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Storage
   module LegacyProjectWiki
     extend ActiveSupport::Concern

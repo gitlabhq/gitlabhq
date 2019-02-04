@@ -1,0 +1,26 @@
+- breadcrumb_title _("CI/CD")
+- page_title _("CI/CD")
+- @content_class = "limit-container-width" unless fluid_layout
+
+%section.settings.as-ci-cd.no-animate#js-ci-cd-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4
+      = _('Continuous Integration and Deployment')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = _('Auto DevOps, runners and job artifacts')
+  .settings-content
+    = render 'ci_cd'
+
+- if Gitlab.config.registry.enabled
+  %section.settings.as-registry.no-animate#js-registry-settings{ class: ('expanded' if expanded_by_default?) }
+    .settings-header
+      %h4
+        = _('Container Registry')
+      %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded_by_default? ? _('Collapse') : _('Expand')
+      %p
+        = _('Various container registry settings.')
+    .settings-content
+      = render 'registry'

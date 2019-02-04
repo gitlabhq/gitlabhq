@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExternalWikiService < Service
   prop_accessor :external_wiki_url
 

@@ -1,11 +1,5 @@
 # GitLab
 
-[![Build status](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ce/commits/master)
-[![Overall test coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-ce/pipelines)
-[![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
-[![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
-[![Gitter](https://badges.gitter.im/gitlabhq/gitlabhq.svg)](https://gitter.im/gitlabhq/gitlabhq?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 ## Test coverage
 
 - [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ce/coverage-ruby) Ruby
@@ -35,7 +29,7 @@ We're hiring developers, support people, and production engineers all the time, 
 There are two editions of GitLab:
 
 - GitLab Community Edition (CE) is available freely under the MIT Expat license.
-- GitLab Enterprise Edition (EE) includes [extra features](https://about.gitlab.com/products/#compare-options) that are more useful for organizations with more than 100 users. To use EE and get official support please [become a subscriber](https://about.gitlab.com/products/).
+- GitLab Enterprise Edition (EE) includes [extra features](https://about.gitlab.com/pricing/#compare-options) that are more useful for organizations with more than 100 users. To use EE and get official support please [become a subscriber](https://about.gitlab.com/pricing/).
 
 ## Website
 
@@ -64,7 +58,7 @@ You can access a new installation with the login **`root`** and password **`5ive
 
 ## Contributing
 
-GitLab is an open source project and we are very happy to accept community contributions. Please refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for details.
+GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
 
 ## Licensing
 
@@ -72,7 +66,7 @@ GitLab Community Edition (CE) is available freely under the MIT Expat license.
 
 All third party components incorporated into the GitLab Software are licensed under the original license provided by the owner of the applicable component.
 
-All Documentation content that resides under the doc/ directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
+All Documentation content that resides under the `doc/` directory of this repository is licensed under Creative Commons: CC BY-SA 4.0.
 
 ## Install a development environment
 
@@ -89,7 +83,7 @@ Instructions on how to start GitLab and how to run the tests can be found in the
 GitLab is a Ruby on Rails application that runs on the following software:
 
 - Ubuntu/Debian/CentOS/RHEL/OpenSUSE
-- Ruby (MRI) 2.3
+- Ruby (MRI) 2.4
 - Git 2.8.4+
 - Redis 2.8+
 - PostgreSQL (preferred) or MySQL
@@ -120,11 +114,15 @@ All documentation can be found on [docs.gitlab.com/ce/](https://docs.gitlab.com/
 
 Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on our website for the many options to get help.
 
+## Why?
+
+[Read here](https://about.gitlab.com/why/)
+
 ## Is it any good?
 
 [Yes](https://news.ycombinator.com/item?id=3067434)
 
 ## Is it awesome?
 
-Thanks for [asking this question](https://twitter.com/supersloth/status/489462789384056832) Joshua.
 [These people](https://twitter.com/gitlab/likes) seem to like it.
+

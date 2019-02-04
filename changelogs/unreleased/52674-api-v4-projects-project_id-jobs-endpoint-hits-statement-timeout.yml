@@ -1,0 +1,5 @@
+---
+title: "[API] Omit `X-Total` and `X-Total-Pages` headers when items count is more than 10,000"
+merge_request: 23931
+author:
+type: performance

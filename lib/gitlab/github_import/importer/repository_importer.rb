@@ -14,11 +14,13 @@ module Gitlab
         end
 
         # Returns true if we should import the wiki for the project.
+        # rubocop: disable CodeReuse/ActiveRecord
         def import_wiki?
           client.repository(project.import_source)&.has_wiki &&
             !project.wiki_repository_exists? &&
             Gitlab::GitalyClient::RemoteService.exists?(wiki_url)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         # Imports the repository data.
         #
@@ -78,7 +80,7 @@ module Gitlab
         end
 
         def fail_import(message)
-          project.mark_import_as_failed(message)
+          project.import_state.mark_as_failed(message)
           false
         end
       end

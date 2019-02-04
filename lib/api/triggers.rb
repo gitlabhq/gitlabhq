@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Triggers < Grape::API
     include PaginationParams
@@ -5,12 +7,12 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Trigger a GitLab project pipeline' do
         success Entities::Pipeline
       end
       params do
-        requires :ref, type: String, desc: 'The commit sha or name of a branch or tag'
+        requires :ref, type: String, desc: 'The commit sha or name of a branch or tag', allow_blank: false
         requires :token, type: String, desc: 'The unique token of trigger'
         optional :variables, type: Hash, desc: 'The list of variables to be injected into build'
       end
@@ -42,20 +44,22 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/triggers' do
         authenticate!
         authorize! :admin_build, user_project
 
         triggers = user_project.triggers.includes(:trigger_requests)
 
-        present paginate(triggers), with: Entities::Trigger
+        present paginate(triggers), with: Entities::Trigger, current_user: current_user
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get specific trigger of a project' do
         success Entities::Trigger
       end
       params do
-        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
+        requires :trigger_id, type: Integer, desc: 'The trigger ID'
       end
       get ':id/triggers/:trigger_id' do
         authenticate!
@@ -64,14 +68,14 @@ module API
         trigger = user_project.triggers.find(params.delete(:trigger_id))
         break not_found!('Trigger') unless trigger
 
-        present trigger, with: Entities::Trigger
+        present trigger, with: Entities::Trigger, current_user: current_user
       end
 
       desc 'Create a trigger' do
         success Entities::Trigger
       end
       params do
-        requires :description, type: String,  desc: 'The trigger description'
+        requires :description, type: String, desc: 'The trigger description'
       end
       post ':id/triggers' do
         authenticate!
@@ -81,7 +85,7 @@ module API
           declared_params(include_missing: false).merge(owner: current_user))
 
         if trigger.valid?
-          present trigger, with: Entities::Trigger
+          present trigger, with: Entities::Trigger, current_user: current_user
         else
           render_validation_error!(trigger)
         end
@@ -102,7 +106,7 @@ module API
         break not_found!('Trigger') unless trigger
 
         if trigger.update(declared_params(include_missing: false))
-          present trigger, with: Entities::Trigger
+          present trigger, with: Entities::Trigger, current_user: current_user
         else
           render_validation_error!(trigger)
         end
@@ -112,7 +116,7 @@ module API
         success Entities::Trigger
       end
       params do
-        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
+        requires :trigger_id, type: Integer, desc: 'The trigger ID'
       end
       post ':id/triggers/:trigger_id/take_ownership' do
         authenticate!
@@ -123,7 +127,7 @@ module API
 
         if trigger.update(owner: current_user)
           status :ok
-          present trigger, with: Entities::Trigger
+          present trigger, with: Entities::Trigger, current_user: current_user
         else
           render_validation_error!(trigger)
         end
@@ -133,7 +137,7 @@ module API
         success Entities::Trigger
       end
       params do
-        requires :trigger_id, type: Integer,  desc: 'The trigger ID'
+        requires :trigger_id, type: Integer, desc: 'The trigger ID'
       end
       delete ':id/triggers/:trigger_id' do
         authenticate!

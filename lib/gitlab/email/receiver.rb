@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'gitlab/email/handler'
 
 # Inspired in great part by Discourse's Email::Receiver
@@ -18,6 +20,7 @@ module Gitlab
     InvalidIssueError = Class.new(InvalidRecordError)
     InvalidMergeRequestError = Class.new(InvalidRecordError)
     UnknownIncomingEmail = Class.new(ProcessingError)
+    InvalidAttachment = Class.new(ProcessingError)
 
     class Receiver
       def initialize(raw)

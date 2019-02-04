@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class BuildPresenter < CommitStatusPresenter
     def erased_by_user?
@@ -31,6 +33,10 @@ module Ci
 
     def tooltip_message
       "#{subject.name} - #{detailed_status.status_tooltip}"
+    end
+
+    def execute_in
+      scheduled? && scheduled_at && [0, scheduled_at - Time.now].max
     end
 
     private

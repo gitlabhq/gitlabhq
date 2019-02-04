@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mattermost
   class CreateTeamService < ::BaseService
     def initialize(group, current_user)

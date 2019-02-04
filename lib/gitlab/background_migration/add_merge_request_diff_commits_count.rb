@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 # rubocop:disable Style/Documentation
-# rubocop:disable Metrics/LineLength
 
 module Gitlab
   module BackgroundMigration

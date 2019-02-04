@@ -183,9 +183,11 @@ Don't use ID selectors in CSS.
 ```
 
 ### Variables
+
 Before adding a new variable for a color or a size, guarantee:
-1. There isn't already one
-2. There isn't a similar one we can use instead.
+
+- There isn't already one
+- There isn't a similar one we can use instead.
 
 ## Linting
 
@@ -216,12 +218,12 @@ If you want a line or set of lines to be ignored by the linter, you can use
 `// scss-lint:disable RuleName` ([more info][disabling-linters]):
 
 ```scss
-// This lint rule is disabled because the class name comes from a gem.
-// scss-lint:disable SelectorFormat
-.ui_indigo {
-  background-color: #333;
+// This lint rule is disabled because it is supported only in Chrome/Safari
+// scss-lint:disable PropertySpelling
+body {
+  text-decoration-skip: ink;
 }
-// scss-lint:enable SelectorFormat
+// scss-lint:enable PropertySpelling
 ```
 
 Make sure a comment is added on the line above the `disable` rule, otherwise the

@@ -17,45 +17,60 @@ export function getParameterValues(sParam) {
 // @param {Object} params - url keys and value to merge
 // @param {String} url
 export function mergeUrlParams(params, url) {
-  let newUrl = Object.keys(params).reduce((acc, paramName) => {
-    const paramValue = encodeURIComponent(params[paramName]);
-    const pattern = new RegExp(`\\b(${paramName}=).*?(&|$)`);
+  const re = /^([^?#]*)(\?[^#]*)?(.*)/;
+  const merged = {};
+  const urlparts = url.match(re);
 
-    if (paramValue === null) {
-      return acc.replace(pattern, '');
-    } else if (url.search(pattern) !== -1) {
-      return acc.replace(pattern, `$1${paramValue}$2`);
-    }
-
-    return `${acc}${acc.indexOf('?') > 0 ? '&' : '?'}${paramName}=${paramValue}`;
-  }, decodeURIComponent(url));
-
-  // Remove a trailing ampersand
-  const lastChar = newUrl[newUrl.length - 1];
-
-  if (lastChar === '&') {
-    newUrl = newUrl.slice(0, -1);
+  if (urlparts[2]) {
+    urlparts[2]
+      .substr(1)
+      .split('&')
+      .forEach(part => {
+        if (part.length) {
+          const kv = part.split('=');
+          merged[decodeURIComponent(kv[0])] = decodeURIComponent(kv.slice(1).join('='));
+        }
+      });
   }
 
-  return newUrl;
+  Object.assign(merged, params);
+
+  const query = Object.keys(merged)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(merged[key])}`)
+    .join('&');
+
+  return `${urlparts[1]}?${query}${urlparts[3]}`;
 }
 
-export function removeParamQueryString(url, param) {
-  const decodedUrl = decodeURIComponent(url);
-  const urlVariables = decodedUrl.split('&');
+/**
+ * Removes specified query params from the url by returning a new url string that no longer
+ * includes the param/value pair. If no url is provided, `window.location.href` is used as
+ * the default value.
+ *
+ * @param {string[]} params - the query param names to remove
+ * @param {string} [url=windowLocation().href] - url from which the query param will be removed
+ * @returns {string} A copy of the original url but without the query param
+ */
+export function removeParams(params, url = window.location.href) {
+  const [rootAndQuery, fragment] = url.split('#');
+  const [root, query] = rootAndQuery.split('?');
 
-  return urlVariables.filter(variable => variable.indexOf(param) === -1).join('&');
-}
+  if (!query) {
+    return url;
+  }
 
-export function removeParams(params) {
-  const url = document.createElement('a');
-  url.href = window.location.href;
+  const encodedParams = params.map(param => encodeURIComponent(param));
+  const updatedQuery = query
+    .split('&')
+    .filter(paramPair => {
+      const [foundParam] = paramPair.split('=');
+      return encodedParams.indexOf(foundParam) < 0;
+    })
+    .join('&');
 
-  params.forEach(param => {
-    url.search = removeParamQueryString(url.search, param);
-  });
-
-  return url.href;
+  const writableQuery = updatedQuery.length > 0 ? `?${updatedQuery}` : '';
+  const writableFragment = fragment ? `#${fragment}` : '';
+  return `${root}${writableQuery}${writableFragment}`;
 }
 
 export function getLocationHash(url = window.location.href) {
@@ -63,6 +78,20 @@ export function getLocationHash(url = window.location.href) {
 
   return hashIndex === -1 ? null : url.substring(hashIndex + 1);
 }
+
+/**
+ * Apply the fragment to the given url by returning a new url string that includes
+ * the fragment. If the given url already contains a fragment, the original fragment
+ * will be removed.
+ *
+ * @param {string} url - url to which the fragment will be applied
+ * @param {string} fragment - fragment to append
+ */
+export const setUrlFragment = (url, fragment) => {
+  const [rootUrl] = url.split('#');
+  const encodedFragment = encodeURIComponent(fragment.replace(/^#/, ''));
+  return `${rootUrl}#${encodedFragment}`;
+};
 
 export function visitUrl(url, external = false) {
   if (external) {
@@ -85,9 +114,9 @@ export function redirectTo(url) {
 }
 
 export function webIDEUrl(route = undefined) {
-  let returnUrl = `${gon.relative_url_root}/-/ide/`;
+  let returnUrl = `${gon.relative_url_root || ''}/-/ide/`;
   if (route) {
-    returnUrl += `project${route}`;
+    returnUrl += `project${route.replace(new RegExp(`^${gon.relative_url_root || ''}`), '')}`;
   }
   return returnUrl;
 }

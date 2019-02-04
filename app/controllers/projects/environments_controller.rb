@@ -1,14 +1,21 @@
+# frozen_string_literal: true
+
 class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
-  before_action :authorize_create_deployment!, only: [:stop]
+  before_action :authorize_stop_environment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
+  before_action do
+    push_frontend_feature_flag(:area_chart, project)
+  end
+
+  # Returns all environments or all folders based on the :nested param
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)
@@ -19,11 +26,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
         Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
         render json: {
-          environments: EnvironmentSerializer
-            .new(project: @project, current_user: @current_user)
-            .with_pagination(request, response)
-            .within_folders
-            .represent(@environments),
+          environments: serialize_environments(request, response, params[:nested]),
           available_count: project.environments.available.count,
           stopped_count: project.environments.stopped.count
         }
@@ -31,6 +34,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  # Returns all environments for a given folder
+  # rubocop: disable CodeReuse/ActiveRecord
   def folder
     folder_environments = project.environments.where(environment_type: params[:id])
     @environments = folder_environments.with_state(params[:scope] || :available)
@@ -41,20 +46,20 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.html
       format.json do
         render json: {
-          environments: EnvironmentSerializer
-            .new(project: @project, current_user: @current_user)
-            .with_pagination(request, response)
-            .represent(@environments),
+          environments: serialize_environments(request, response),
           available_count: folder_environments.available.count,
           stopped_count: folder_environments.stopped.count
         }
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @deployments = environment.deployments.order(id: :desc).page(params[:page])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @environment = project.environments.new
@@ -116,7 +121,17 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       set_workhorse_internal_api_content_type
       render json: Gitlab::Workhorse.terminal_websocket(terminal)
     else
-      render text: 'Not found', status: 404
+      render html: 'Not found', status: :not_found
+    end
+  end
+
+  def metrics_redirect
+    environment = project.default_environment
+
+    if environment
+      redirect_to environment_metrics_path(environment)
+    else
+      render :empty
     end
   end
 
@@ -164,5 +179,17 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def serialize_environments(request, response, nested = false)
+    EnvironmentSerializer
+      .new(project: @project, current_user: @current_user)
+      .tap { |serializer| serializer.within_folders if nested }
+      .with_pagination(request, response)
+      .represent(@environments)
+  end
+
+  def authorize_stop_environment!
+    access_denied! unless can?(current_user, :stop_environment, environment)
   end
 end

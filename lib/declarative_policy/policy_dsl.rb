@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DeclarativePolicy
   # The return value of a rule { ... } declaration.
   # Can call back to register rules with the containing
@@ -15,8 +17,8 @@ module DeclarativePolicy
       @rule = rule
     end
 
-    def policy(&b)
-      instance_eval(&b)
+    def policy(&block)
+      instance_eval(&block)
     end
 
     def enable(*abilities)
@@ -31,14 +33,14 @@ module DeclarativePolicy
       @context_class.prevent_all_when(@rule)
     end
 
-    def method_missing(m, *a, &b)
-      return super unless @context_class.respond_to?(m)
+    def method_missing(msg, *args, &block)
+      return super unless @context_class.respond_to?(msg)
 
-      @context_class.__send__(m, *a, &b) # rubocop:disable GitlabSecurity/PublicSend
+      @context_class.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    def respond_to_missing?(m)
-      @context_class.respond_to?(m) || super
+    def respond_to_missing?(msg)
+      @context_class.respond_to?(msg) || super
     end
   end
 end

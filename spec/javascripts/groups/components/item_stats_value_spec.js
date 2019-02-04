@@ -29,11 +29,13 @@ describe('ItemStatsValueComponent', () => {
     describe('isValuePresent', () => {
       it('returns true if non-empty `value` is present', () => {
         vm = createComponent(Object.assign({}, itemConfig, { value: 10 }));
+
         expect(vm.isValuePresent).toBeTruthy();
       });
 
       it('returns false if empty `value` is present', () => {
         vm = createComponent(itemConfig);
+
         expect(vm.isValuePresent).toBeFalsy();
       });
 
@@ -57,8 +59,8 @@ describe('ItemStatsValueComponent', () => {
 
     it('renders component element correctly', () => {
       expect(vm.$el.classList.contains('number-subgroups')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('svg').length > 0).toBeTruthy();
-      expect(vm.$el.querySelectorAll('.stat-value').length > 0).toBeTruthy();
+      expect(vm.$el.querySelectorAll('svg').length).toBeGreaterThan(0);
+      expect(vm.$el.querySelectorAll('.stat-value').length).toBeGreaterThan(0);
     });
 
     it('renders element tooltip correctly', () => {

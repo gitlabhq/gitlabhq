@@ -5,26 +5,31 @@ import axios from './lib/utils/axios_utils';
 const Api = {
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id',
+  subgroupsPath: '/api/:version/groups/:id/subgroups',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
-  mergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
+  projectMergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
+  projectMergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
+  projectMergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
+  projectRunnersPath: '/api/:version/projects/:id/runners',
   mergeRequestsPath: '/api/:version/merge_requests',
-  mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
-  mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
-  licensePath: '/api/:version/templates/licenses/:key',
-  gitignorePath: '/api/:version/templates/gitignores/:key',
-  gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
-  dockerfilePath: '/api/:version/templates/dockerfiles/:key',
   issuableTemplatePath: '/:namespace_path/:project_path/templates/:type/:key',
+  projectTemplatePath: '/api/:version/projects/:id/templates/:type/:key',
+  projectTemplatesPath: '/api/:version/projects/:id/templates/:type',
   usersPath: '/api/:version/users.json',
+  userPath: '/api/:version/users/:id',
+  userStatusPath: '/api/:version/users/:id/status',
+  userPostStatusPath: '/api/:version/user/status',
   commitPath: '/api/:version/projects/:id/repository/commits',
+  applySuggestionPath: '/api/:version/suggestions/:id/apply',
   commitPipelinesPath: '/:project_id/commit/:sha/pipelines',
   branchSinglePath: '/api/:version/projects/:id/repository/branches/:branch',
   createBranchPath: '/api/:version/projects/:id/repository/branches',
+  releasesPath: '/api/:version/projects/:id/releases',
 
   group(groupId, callback) {
     const url = Api.buildUrl(Api.groupPath).replace(':id', groupId);
@@ -100,34 +105,43 @@ const Api = {
   },
 
   // Return Merge Request for project
-  mergeRequest(projectPath, mergeRequestId) {
-    const url = Api.buildUrl(Api.mergeRequestPath)
+  projectMergeRequest(projectPath, mergeRequestId, params = {}) {
+    const url = Api.buildUrl(Api.projectMergeRequestPath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':mrid', mergeRequestId);
+
+    return axios.get(url, { params });
+  },
+
+  projectMergeRequestChanges(projectPath, mergeRequestId) {
+    const url = Api.buildUrl(Api.projectMergeRequestChangesPath)
       .replace(':id', encodeURIComponent(projectPath))
       .replace(':mrid', mergeRequestId);
 
     return axios.get(url);
+  },
+
+  projectMergeRequestVersions(projectPath, mergeRequestId) {
+    const url = Api.buildUrl(Api.projectMergeRequestVersionsPath)
+      .replace(':id', encodeURIComponent(projectPath))
+      .replace(':mrid', mergeRequestId);
+
+    return axios.get(url);
+  },
+
+  projectRunners(projectPath, config = {}) {
+    const url = Api.buildUrl(Api.projectRunnersPath).replace(
+      ':id',
+      encodeURIComponent(projectPath),
+    );
+
+    return axios.get(url, config);
   },
 
   mergeRequests(params = {}) {
     const url = Api.buildUrl(Api.mergeRequestsPath);
 
     return axios.get(url, { params });
-  },
-
-  mergeRequestChanges(projectPath, mergeRequestId) {
-    const url = Api.buildUrl(Api.mergeRequestChangesPath)
-      .replace(':id', encodeURIComponent(projectPath))
-      .replace(':mrid', mergeRequestId);
-
-    return axios.get(url);
-  },
-
-  mergeRequestVersions(projectPath, mergeRequestId) {
-    const url = Api.buildUrl(Api.mergeRequestVersionsPath)
-      .replace(':id', encodeURIComponent(projectPath))
-      .replace(':mrid', mergeRequestId);
-
-    return axios.get(url);
   },
 
   newLabel(namespacePath, projectPath, data, callback) {
@@ -150,14 +164,15 @@ const Api = {
   },
 
   // Return group projects list. Filtered by query
-  groupProjects(groupId, query, callback) {
+  groupProjects(groupId, query, options, callback) {
     const url = Api.buildUrl(Api.groupProjectsPath).replace(':id', groupId);
+    const defaults = {
+      search: query,
+      per_page: 20,
+    };
     return axios
       .get(url, {
-        params: {
-          search: query,
-          per_page: 20,
-        },
+        params: Object.assign({}, defaults, options),
       })
       .then(({ data }) => callback(data));
   },
@@ -170,6 +185,12 @@ const Api = {
         'Content-Type': 'application/json; charset=utf-8',
       },
     });
+  },
+
+  applySuggestion(id) {
+    const url = Api.buildUrl(Api.applySuggestionPath).replace(':id', encodeURIComponent(id));
+
+    return axios.put(url);
   },
 
   commitPipelines(projectId, sha) {
@@ -193,29 +214,29 @@ const Api = {
     return axios.get(url);
   },
 
-  // Return text for a specific license
-  licenseText(key, data, callback) {
-    const url = Api.buildUrl(Api.licensePath).replace(':key', key);
-    return axios
-      .get(url, {
-        params: data,
-      })
-      .then(res => callback(res.data));
+  projectTemplate(id, type, key, options, callback) {
+    const url = Api.buildUrl(this.projectTemplatePath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':type', type)
+      .replace(':key', encodeURIComponent(key));
+
+    return axios.get(url, { params: options }).then(res => {
+      if (callback) callback(res.data);
+
+      return res;
+    });
   },
 
-  gitignoreText(key, callback) {
-    const url = Api.buildUrl(Api.gitignorePath).replace(':key', key);
-    return axios.get(url).then(({ data }) => callback(data));
-  },
+  projectTemplates(id, type, params = {}, callback) {
+    const url = Api.buildUrl(this.projectTemplatesPath)
+      .replace(':id', encodeURIComponent(id))
+      .replace(':type', type);
 
-  gitlabCiYml(key, callback) {
-    const url = Api.buildUrl(Api.gitlabCiYmlPath).replace(':key', key);
-    return axios.get(url).then(({ data }) => callback(data));
-  },
+    return axios.get(url, { params }).then(res => {
+      if (callback) callback(res.data);
 
-  dockerfileYml(key, callback) {
-    const url = Api.buildUrl(Api.dockerfilePath).replace(':key', key);
-    return axios.get(url).then(({ data }) => callback(data));
+      return res;
+    });
   },
 
   issueTemplate(namespacePath, projectPath, key, type, callback) {
@@ -241,6 +262,56 @@ const Api = {
         options,
       ),
     });
+  },
+
+  user(id, options) {
+    const url = Api.buildUrl(this.userPath).replace(':id', encodeURIComponent(id));
+    return axios.get(url, {
+      params: options,
+    });
+  },
+
+  userStatus(id, options) {
+    const url = Api.buildUrl(this.userStatusPath).replace(':id', encodeURIComponent(id));
+    return axios.get(url, {
+      params: options,
+    });
+  },
+
+  branches(id, query = '', options = {}) {
+    const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, {
+      params: {
+        search: query,
+        per_page: 20,
+        ...options,
+      },
+    });
+  },
+
+  createBranch(id, { ref, branch }) {
+    const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, {
+      ref,
+      branch,
+    });
+  },
+
+  postUserStatus({ emoji, message }) {
+    const url = Api.buildUrl(this.userPostStatusPath);
+
+    return axios.put(url, {
+      emoji,
+      message,
+    });
+  },
+
+  releases(id) {
+    const url = Api.buildUrl(this.releasesPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url);
   },
 
   buildUrl(url) {

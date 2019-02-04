@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop: disable Rails/Output
 module Gitlab
   # Checks if a set of migrations requires downtime or not.
@@ -5,7 +7,7 @@ module Gitlab
     CANONICAL_CE_PROJECT_URL = 'https://gitlab.com/gitlab-org/gitlab-ce'.freeze
     CANONICAL_EE_REPO_URL = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
-    IGNORED_FILES_REGEX = %r{VERSION|CHANGELOG\.md|db/schema\.rb|locale/gitlab\.pot}i.freeze
+    IGNORED_FILES_REGEX = /VERSION|CHANGELOG\.md/i.freeze
     PLEASE_READ_THIS_BANNER = %Q{
       ============================================================
       ===================== PLEASE READ THIS =====================
@@ -138,15 +140,23 @@ module Gitlab
 
     def ee_branch_presence_check!
       ee_remotes.keys.each do |remote|
-        [ce_branch, ee_branch_prefix, ee_branch_suffix].each do |branch|
-          _, status = step("Fetching #{remote}/#{branch}", %W[git fetch #{remote} #{branch}])
+        output, _ = step(
+          "Searching #{remote}",
+          %W[git ls-remote #{remote} *#{minimal_ee_branch_name}*])
 
-          if status.zero?
-            @ee_remote_with_branch = remote
-            @ee_branch_found = branch
-            return true
-          end
-        end
+        branches =
+          output.scan(%r{(?<=refs/heads/|refs/tags/).+}).sort_by(&:size)
+
+        next if branches.empty?
+
+        branch = branches.first
+
+        step("Fetching #{remote}/#{branch}", %W[git fetch #{remote} #{branch}])
+
+        @ee_remote_with_branch = remote
+        @ee_branch_found = branch
+
+        return true
       end
 
       puts
@@ -271,8 +281,12 @@ module Gitlab
       @ee_patch_full_path ||= patches_dir.join(ee_patch_name)
     end
 
+    def minimal_ee_branch_name
+      @minimal_ee_branch_name ||= ce_branch.sub(/(\Ace\-|\-ce\z)/, '')
+    end
+
     def patch_name_from_branch(branch_name)
-      branch_name.parameterize << '.patch'
+      "#{branch_name.parameterize}.patch"
     end
 
     def patch_url
@@ -420,9 +434,11 @@ module Gitlab
     end
 
     def conflicting_files_msg
-      failed_files.reduce("The conflicts detected were as follows:\n") do |memo, file|
-        memo << "\n        - #{file}"
-      end
+      header = "The conflicts detected were as follows:\n"
+      separator = "\n        - "
+      failed_items = failed_files.join(separator)
+
+      "#{header}#{separator}#{failed_items}"
     end
   end
 end

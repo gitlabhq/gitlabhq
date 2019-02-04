@@ -35,6 +35,10 @@ describe UserPolicy do
     end
   end
 
+  describe "updating a user's status" do
+    it_behaves_like 'changing a user', :update_user_status
+  end
+
   describe "destroying a user" do
     it_behaves_like 'changing a user', :destroy_user
   end

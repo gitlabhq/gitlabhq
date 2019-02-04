@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # Class for rendering multiple objects (e.g. Note instances) in a single pass,
   # using +render_field+ to benefit from caching in the database. Rendering and
@@ -38,6 +40,7 @@ module Banzai
         redacted_data = redacted[index]
         object.__send__("redacted_#{attribute}_html=", redacted_data[:document].to_html(save_options).html_safe) # rubocop:disable GitlabSecurity/PublicSend
         object.user_visible_reference_count = redacted_data[:visible_reference_count] if object.respond_to?(:user_visible_reference_count)
+        object.total_reference_count = redacted_data[:total_reference_count] if object.respond_to?(:total_reference_count)
       end
     end
 

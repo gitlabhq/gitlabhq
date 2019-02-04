@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::SnippetsController < Projects::ApplicationController
   include RendersNotes
   include ToggleAwardEmoji
@@ -73,7 +75,14 @@ class Projects::SnippetsController < Projects::ApplicationController
       format.json do
         render_blob_json(blob)
       end
-      format.js { render 'shared/snippets/show'}
+
+      format.js do
+        if @snippet.embeddable?
+          render 'shared/snippets/show'
+        else
+          head :not_found
+        end
+      end
     end
   end
 
@@ -82,13 +91,13 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to project_snippets_path(@project), status: 302
+    redirect_to project_snippets_path(@project), status: :found
   end
 
   protected
 
   def snippet
-    @snippet ||= @project.snippets.find(params[:id])
+    @snippet ||= @project.snippets.inc_relations_for_view.find(params[:id])
   end
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet

@@ -22,7 +22,7 @@ describe('NamespaceSelect', () => {
       const dropdown = document.createElement('div');
       // eslint-disable-next-line no-new
       new NamespaceSelect({ dropdown });
-      glDropdownOptions = $.fn.glDropdown.calls.argsFor(0)[0];
+      [glDropdownOptions] = $.fn.glDropdown.calls.argsFor(0);
     });
 
     it('prevents click events', () => {
@@ -43,7 +43,7 @@ describe('NamespaceSelect', () => {
       dropdown.dataset.isFilter = 'true';
       // eslint-disable-next-line no-new
       new NamespaceSelect({ dropdown });
-      glDropdownOptions = $.fn.glDropdown.calls.argsFor(0)[0];
+      [glDropdownOptions] = $.fn.glDropdown.calls.argsFor(0);
     });
 
     it('does not prevent click events', () => {

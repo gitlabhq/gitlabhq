@@ -1,5 +1,5 @@
 import { getChangesCountForFiles, filePathMatches } from './utils';
-import { activityBarViews } from '../constants';
+import { activityBarViews, packageJsonPath } from '../constants';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -63,13 +63,13 @@ export const isEditModeActive = state => state.currentActivityView === activityB
 export const isCommitModeActive = state => state.currentActivityView === activityBarViews.commit;
 export const isReviewModeActive = state => state.currentActivityView === activityBarViews.review;
 
-export const someUncommitedChanges = state =>
+export const someUncommittedChanges = state =>
   !!(state.changedFiles.length || state.stagedFiles.length);
 
 export const getChangesInFolder = state => path => {
-  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f, path)).length;
+  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f.path, path)).length;
   const stagedFilesCount = state.stagedFiles.filter(
-    f => filePathMatches(f, path) && !getChangedFile(state)(f.path),
+    f => filePathMatches(f.path, path) && !getChangedFile(state)(f.path),
   ).length;
 
   return changedFilesCount + stagedFilesCount;
@@ -82,10 +82,15 @@ export const getStagedFilesCountForPath = state => path =>
   getChangesCountForFiles(state.stagedFiles, path);
 
 export const lastCommit = (state, getters) => {
-  const branch = getters.currentProject && getters.currentProject.branches[state.currentBranchId];
+  const branch = getters.currentProject && getters.currentBranch;
 
   return branch ? branch.commit : null;
 };
+
+export const currentBranch = (state, getters) =>
+  getters.currentProject && getters.currentProject.branches[state.currentBranchId];
+
+export const packageJson = state => state.entries[packageJsonPath];
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

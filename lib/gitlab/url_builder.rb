@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class UrlBuilder
     include Gitlab::Routing
@@ -26,6 +28,8 @@ module Gitlab
         project_snippet_url(object.project, object)
       when Snippet
         snippet_url(object)
+      when Milestone
+        milestone_url(object)
       else
         raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end

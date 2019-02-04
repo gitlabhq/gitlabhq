@@ -1,5 +1,5 @@
 import UsersSelect from '~/users_select';
-import ShortcutsNavigation from '~/shortcuts_navigation';
+import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import initBoards from '~/boards';
 
 document.addEventListener('DOMContentLoaded', () => {

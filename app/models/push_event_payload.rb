@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PushEventPayload < ActiveRecord::Base
   include ShaAttribute
 

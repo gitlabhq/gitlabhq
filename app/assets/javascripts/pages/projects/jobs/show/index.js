@@ -1,3 +1,3 @@
-import initJobDetails from '~/jobs/job_details_bundle';
+import initJobDetails from '~/jobs';
 
 document.addEventListener('DOMContentLoaded', initJobDetails);

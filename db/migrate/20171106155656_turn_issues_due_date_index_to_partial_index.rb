@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class TurnIssuesDueDateIndexToPartialIndex < ActiveRecord::Migration
+class TurnIssuesDueDateIndexToPartialIndex < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -20,9 +20,7 @@ class TurnIssuesDueDateIndexToPartialIndex < ActiveRecord::Migration
       name: NEW_INDEX_NAME
     )
 
-    # We set the column name to nil as otherwise Rails will ignore the custom
-    # index name and remove the wrong index.
-    remove_concurrent_index(:issues, nil, name: OLD_INDEX_NAME)
+    remove_concurrent_index_by_name(:issues, OLD_INDEX_NAME)
   end
 
   def down
@@ -32,6 +30,6 @@ class TurnIssuesDueDateIndexToPartialIndex < ActiveRecord::Migration
       name: OLD_INDEX_NAME
     )
 
-    remove_concurrent_index(:issues, nil, name: NEW_INDEX_NAME)
+    remove_concurrent_index_by_name(:issues, NEW_INDEX_NAME)
   end
 end

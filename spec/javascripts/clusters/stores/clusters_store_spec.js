@@ -1,5 +1,5 @@
 import ClustersStore from '~/clusters/stores/clusters_store';
-import { APPLICATION_INSTALLING } from '~/clusters/constants';
+import { APPLICATION_STATUS } from '~/clusters/constants';
 import { CLUSTERS_MOCK_DATA } from '../services/mock_data';
 
 describe('Clusters Store', () => {
@@ -35,7 +35,7 @@ describe('Clusters Store', () => {
     it('should store new request status', () => {
       expect(store.state.applications.helm.requestStatus).toEqual(null);
 
-      const newStatus = APPLICATION_INSTALLING;
+      const newStatus = APPLICATION_STATUS.INSTALLING;
       store.updateAppProperty('helm', 'requestStatus', newStatus);
 
       expect(store.state.applications.helm.requestStatus).toEqual(newStatus);
@@ -53,7 +53,8 @@ describe('Clusters Store', () => {
 
   describe('updateStateFromServer', () => {
     it('should store new polling data from server', () => {
-      const mockResponseData = CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/1/status.json'].data;
+      const mockResponseData =
+        CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/1/status.json'].data;
       store.updateStateFromServer(mockResponseData);
 
       expect(store.state).toEqual({
@@ -61,6 +62,7 @@ describe('Clusters Store', () => {
         ingressHelpPath: null,
         status: mockResponseData.status,
         statusReason: mockResponseData.status_reason,
+        rbac: false,
         applications: {
           helm: {
             title: 'Helm Tiller',
@@ -99,18 +101,36 @@ describe('Clusters Store', () => {
             requestReason: null,
             hostname: '',
           },
+          knative: {
+            title: 'Knative',
+            status: mockResponseData.applications[5].status,
+            statusReason: mockResponseData.applications[5].status_reason,
+            requestStatus: null,
+            requestReason: null,
+            hostname: null,
+            externalIp: null,
+          },
+          cert_manager: {
+            title: 'Cert-Manager',
+            status: mockResponseData.applications[6].status,
+            statusReason: mockResponseData.applications[6].status_reason,
+            requestStatus: null,
+            requestReason: null,
+            email: mockResponseData.applications[6].email,
+          },
         },
       });
     });
 
     it('sets default hostname for jupyter when ingress has a ip address', () => {
-      const mockResponseData = CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
+      const mockResponseData =
+        CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
 
       store.updateStateFromServer(mockResponseData);
 
-      expect(
-        store.state.applications.jupyter.hostname,
-      ).toEqual(`jupyter.${store.state.applications.ingress.externalIp}.xip.io`);
+      expect(store.state.applications.jupyter.hostname).toEqual(
+        `jupyter.${store.state.applications.ingress.externalIp}.nip.io`,
+      );
     });
   });
 });

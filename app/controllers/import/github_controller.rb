@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GithubController < Import::BaseController
   before_action :verify_import_enabled
   before_action :provider_auth, only: [:status, :jobs, :create]
@@ -5,7 +7,7 @@ class Import::GithubController < Import::BaseController
   rescue_from Octokit::Unauthorized, with: :provider_unauthorized
 
   def new
-    if logged_in_with_provider?
+    if github_import_configured? && logged_in_with_provider?
       go_to_provider_for_permissions
     elsif session[access_token_key]
       redirect_to status_import_url
@@ -18,10 +20,11 @@ class Import::GithubController < Import::BaseController
   end
 
   def personal_access_token
-    session[access_token_key] = params[:personal_access_token]
+    session[access_token_key] = params[:personal_access_token]&.strip
     redirect_to status_import_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     @repos = client.repos
     @already_added_projects = find_already_added_projects(provider)
@@ -29,33 +32,31 @@ class Import::GithubController < Import::BaseController
 
     @repos.reject! { |repo| already_added_projects_names.include? repo.full_name }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
     render json: find_jobs(provider)
   end
 
   def create
-    repo = client.repo(params[:repo_id].to_i)
-    project_name = params[:new_name].presence || repo.name
-    namespace_path = params[:target_namespace].presence || current_user.namespace_path
-    target_namespace = find_or_create_namespace(namespace_path, current_user.namespace_path)
+    result = Import::GithubService.new(client, current_user, import_params).execute(access_params, provider)
 
-    if can?(current_user, :create_projects, target_namespace)
-      project = Gitlab::LegacyGithubImport::ProjectCreator
-                  .new(repo, project_name, target_namespace, current_user, access_params, type: provider)
-                  .execute(extra_project_attrs)
-
-      if project.persisted?
-        render json: ProjectSerializer.new.represent(project)
-      else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
-      end
+    if result[:status] == :success
+      render json: ProjectSerializer.new.represent(result[:project])
     else
-      render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
+      render json: { errors: result[:message] }, status: result[:http_status]
     end
   end
 
   private
+
+  def import_params
+    params.permit(permitted_import_params)
+  end
+
+  def permitted_import_params
+    [:repo_id, :new_name, :target_namespace]
+  end
 
   def client
     @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], client_options)
@@ -82,7 +83,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def callback_import_url
-    public_send("callback_import_#{provider}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("users_import_#{provider}_callback_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def provider_unauthorized
@@ -99,14 +100,16 @@ class Import::GithubController < Import::BaseController
     { github_access_token: session[access_token_key] }
   end
 
-  # The following methods are overriden in subclasses
+  # The following methods are overridden in subclasses
   def provider
     :github
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def logged_in_with_provider?
     current_user.identities.exists?(provider: provider)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def provider_auth
     if session[access_token_key].blank?
@@ -115,10 +118,6 @@ class Import::GithubController < Import::BaseController
   end
 
   def client_options
-    {}
-  end
-
-  def extra_project_attrs
     {}
   end
 

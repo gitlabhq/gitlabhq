@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # UrlValidator
 #
 # Custom validator for URLs.
@@ -18,6 +20,14 @@
 # This validator can also block urls pointing to localhost or the local network to
 # protect against Server-side Request Forgery (SSRF), or check for the right port.
 #
+# The available options are:
+# - protocols: Allowed protocols. Default: http and https
+# - allow_localhost: Allow urls pointing to localhost. Default: true
+# - allow_local_network: Allow urls pointing to private network addresses. Default: true
+# - ports: Allowed ports. Default: all.
+# - enforce_user: Validate user format. Default: false
+# - enforce_sanitization: Validate that there are no html/css/js tags. Default: false
+#
 # Example:
 #   class User < ActiveRecord::Base
 #     validates :personal_url, url: { allow_localhost: false, allow_local_network: false}
@@ -32,11 +42,12 @@ class UrlValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     @record = record
 
-    if value.present?
-      value.strip!
-    else
-      record.errors.add(attribute, "must be a valid URL")
+    unless value.present?
+      record.errors.add(attribute, 'must be a valid URL')
+      return
     end
+
+    value = strip_value!(record, attribute, value)
 
     Gitlab::UrlBlocker.validate!(value, blocker_args)
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
@@ -45,13 +56,23 @@ class UrlValidator < ActiveModel::EachValidator
 
   private
 
+  def strip_value!(record, attribute, value)
+    new_value = value.strip
+    return value if new_value == value
+
+    record.public_send("#{attribute}=", new_value) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
   def default_options
     # By default the validator doesn't block any url based on the ip address
     {
       protocols: DEFAULT_PROTOCOLS,
       ports: [],
       allow_localhost: true,
-      allow_local_network: true
+      allow_local_network: true,
+      ascii_only: false,
+      enforce_user: false,
+      enforce_sanitization: false
     }
   end
 
@@ -64,7 +85,7 @@ class UrlValidator < ActiveModel::EachValidator
   end
 
   def blocker_args
-    current_options.slice(:allow_localhost, :allow_local_network, :protocols, :ports).tap do |args|
+    current_options.slice(*default_options.keys).tap do |args|
       if allow_setting_local_requests?
         args[:allow_localhost] = args[:allow_local_network] = true
       end

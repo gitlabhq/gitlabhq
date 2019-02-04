@@ -18,27 +18,19 @@ export default class Renderer {
     this.loader = new STLLoader();
 
     this.fov = 45;
-    this.camera = new THREE.PerspectiveCamera(
-      this.fov,
-      this.width / this.height,
-      1,
-      1000,
-    );
+    this.camera = new THREE.PerspectiveCamera(this.fov, this.width / this.height, 1, 1000);
 
     this.scene = new THREE.Scene();
 
     this.scene.add(this.camera);
 
-    // Setup the viewer
+    // Set up the viewer
     this.setupRenderer();
     this.setupGrid();
     this.setupLight();
 
-    // Setup OrbitControls
-    this.controls = new OrbitControls(
-      this.camera,
-      this.renderer.domElement,
-    );
+    // Set up OrbitControls
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.minDistance = 5;
     this.controls.maxDistance = 30;
     this.controls.enableKeys = false;
@@ -51,47 +43,32 @@ export default class Renderer {
       antialias: true,
     });
 
-    this.renderer.setClearColor(0xFFFFFF);
+    this.renderer.setClearColor(0xffffff);
     this.renderer.setPixelRatio(window.devicePixelRatio);
-    this.renderer.setSize(
-      this.width,
-      this.height,
-    );
+    this.renderer.setSize(this.width, this.height);
   }
 
   setupLight() {
     // Point light illuminates the object
-    const pointLight = new THREE.PointLight(
-      0xFFFFFF,
-      2,
-      0,
-    );
+    const pointLight = new THREE.PointLight(0xffffff, 2, 0);
 
     pointLight.castShadow = true;
 
     this.camera.add(pointLight);
 
     // Ambient light illuminates the scene
-    const ambientLight = new THREE.AmbientLight(
-      0xFFFFFF,
-      1,
-    );
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1);
     this.scene.add(ambientLight);
   }
 
   setupGrid() {
-    this.grid = new THREE.GridHelper(
-      20,
-      20,
-      0x000000,
-      0x000000,
-    );
+    this.grid = new THREE.GridHelper(20, 20, 0x000000, 0x000000);
 
     this.scene.add(this.grid);
   }
 
   loadFile() {
-    this.loader.load(this.container.dataset.endpoint, (geo) => {
+    this.loader.load(this.container.dataset.endpoint, geo => {
       const obj = new MeshObject(geo);
 
       this.objects.push(obj);
@@ -116,30 +93,23 @@ export default class Renderer {
   }
 
   render() {
-    this.renderer.render(
-      this.scene,
-      this.camera,
-    );
+    this.renderer.render(this.scene, this.camera);
 
     requestAnimationFrame(this.renderWrapper);
   }
 
   changeObjectMaterials(type) {
-    this.objects.forEach((obj) => {
+    this.objects.forEach(obj => {
       obj.changeMaterial(type);
     });
   }
 
   setDefaultCameraPosition() {
     const obj = this.objects[0];
-    const radius = (obj.geometry.boundingSphere.radius / 1.5);
-    const dist = radius / (Math.sin((this.fov * (Math.PI / 180)) / 2));
+    const radius = obj.geometry.boundingSphere.radius / 1.5;
+    const dist = radius / Math.sin((this.fov * (Math.PI / 180)) / 2);
 
-    this.camera.position.set(
-      0,
-      dist + 1,
-      dist,
-    );
+    this.camera.position.set(0, dist + 1, dist);
 
     this.camera.lookAt(this.grid);
     this.controls.update();

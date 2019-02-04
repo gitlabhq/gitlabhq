@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ProcessCommitWorker do
+  include ProjectForksHelper
+
   let(:worker) { described_class.new }
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
@@ -32,15 +34,41 @@ describe ProcessCommitWorker do
       worker.perform(project.id, user.id, commit.to_hash)
     end
 
-    context 'when commit already exists in upstream project' do
-      let(:forked) { create(:project, :public, :repository) }
+    context 'when the project is forked' do
+      context 'when commit already exists in the upstream project' do
+        it 'does not process the commit message' do
+          forked = fork_project(project, user, repository: true)
 
-      it 'does not process commit message' do
-        create(:forked_project_link, forked_to_project: forked, forked_from_project: project)
+          expect(worker).not_to receive(:process_commit_message)
 
-        expect(worker).not_to receive(:process_commit_message)
+          worker.perform(forked.id, user.id, forked.commit.to_hash)
+        end
+      end
 
-        worker.perform(forked.id, user.id, forked.commit.to_hash)
+      context 'when the commit does not exist in the upstream project' do
+        it 'processes the commit message' do
+          empty_project = create(:project, :public)
+          forked = fork_project(empty_project, user, repository: true)
+
+          TestEnv.copy_repo(forked,
+                            bare_repo: TestEnv.factory_repo_path_bare,
+                            refs: TestEnv::BRANCH_SHA)
+
+          expect(worker).to receive(:process_commit_message)
+
+          worker.perform(forked.id, user.id, forked.commit.to_hash)
+        end
+      end
+
+      context 'when the upstream project no longer exists' do
+        it 'processes the commit message' do
+          forked = fork_project(project, user, repository: true)
+          project.destroy!
+
+          expect(worker).to receive(:process_commit_message)
+
+          worker.perform(forked.id, user.id, forked.commit.to_hash)
+        end
       end
     end
   end

@@ -1,5 +1,5 @@
 /* Developer beware! Do not add logic to showButton or hideButton
- * that will force a reflow. Doing so will create a signficant performance
+ * that will force a reflow. Doing so will create a significant performance
  * bottleneck for pages with large diffs. For a comprehensive list of what
  * causes reflows, visit https://gist.github.com/paulirish/5d52fb081b3570c81e3a
  */
@@ -25,13 +25,15 @@ export default {
 
     if (!this.userCanCreateNote) {
       // data-can-create-note is an empty string when true, otherwise undefined
-      this.userCanCreateNote = $diffFile.closest(DIFF_CONTAINER_SELECTOR).data('canCreateNote') === '';
+      this.userCanCreateNote =
+        $diffFile.closest(DIFF_CONTAINER_SELECTOR).data('canCreateNote') === '';
     }
 
     this.isParallelView = Cookies.get('diff_view') === 'parallel';
 
     if (this.userCanCreateNote) {
-      $diffFile.on('mouseover', LINE_COLUMN_CLASSES, e => this.showButton(this.isParallelView, e))
+      $diffFile
+        .on('mouseover', LINE_COLUMN_CLASSES, e => this.showButton(this.isParallelView, e))
         .on('mouseleave', LINE_COLUMN_CLASSES, e => this.hideButton(this.isParallelView, e));
     }
   },
@@ -64,9 +66,11 @@ export default {
   },
 
   validateButtonParent(buttonParentElement) {
-    return !buttonParentElement.classList.contains(EMPTY_CELL_CLASS) &&
+    return (
+      !buttonParentElement.classList.contains(EMPTY_CELL_CLASS) &&
       !buttonParentElement.classList.contains(UNFOLDABLE_LINE_CLASS) &&
       !buttonParentElement.classList.contains(NO_COMMENT_CLASS) &&
-      !buttonParentElement.parentNode.classList.contains(DIFF_EXPANDED_CLASS);
+      !buttonParentElement.parentNode.classList.contains(DIFF_EXPANDED_CLASS)
+    );
   },
 };

@@ -20,8 +20,9 @@
     .col-sm-10.create-from
       .dropdown
         = hidden_field_tag :ref, default_ref
-        = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide js-branch-select', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
+        = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide js-branch-select monospace', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
           .text-left.dropdown-toggle-text= default_ref
+          = icon('chevron-down')
         = render 'shared/ref_dropdown', dropdown_class: 'wide'
       .form-text.text-muted
         = s_('TagsPage|Existing branch name, tag, or commit SHA')
@@ -36,12 +37,12 @@
     = label_tag :release_description, s_('TagsPage|Release notes'), class: 'col-form-label col-sm-2'
     .col-sm-10
       = render layout: 'projects/md_preview', locals: { url: preview_markdown_path(@project), referenced_users: true } do
-        = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here...'), current_text: @release_description
+        = render 'projects/zen', attr: :release_description, classes: 'note-textarea', placeholder: s_('TagsPage|Write your release notes or drag files here…'), current_text: @release_description
         = render 'shared/notes/hints'
       .form-text.text-muted
         = s_('TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page.')
   .form-actions
-    = button_tag s_('TagsPage|Create tag'), class: 'btn btn-create'
+    = button_tag s_('TagsPage|Create tag'), class: 'btn btn-success'
     = link_to s_('TagsPage|Cancel'), project_tags_path(@project), class: 'btn btn-cancel'
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

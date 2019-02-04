@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class RemoteService
+      include Gitlab::EncodingHelper
+
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
       def self.exists?(remote_url)
@@ -28,13 +32,13 @@ module Gitlab
           mirror_refmaps: Array.wrap(mirror_refmaps).map(&:to_s)
         )
 
-        GitalyClient.call(@storage, :remote_service, :add_remote, request)
+        GitalyClient.call(@storage, :remote_service, :add_remote, request, timeout: GitalyClient.fast_timeout)
       end
 
       def remove_remote(name)
         request = Gitaly::RemoveRemoteRequest.new(repository: @gitaly_repo, name: name)
 
-        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request)
+        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.fast_timeout)
 
         response.result
       end
@@ -52,12 +56,29 @@ module Gitlab
         response.result
       end
 
-      def update_remote_mirror(ref_name, only_branches_matching)
+      def find_remote_root_ref(remote_name)
+        request = Gitaly::FindRemoteRootRefRequest.new(
+          repository: @gitaly_repo,
+          remote: remote_name
+        )
+
+        response = GitalyClient.call(@storage, :remote_service,
+                                     :find_remote_root_ref, request)
+
+        encode_utf8(response.ref)
+      end
+
+      def update_remote_mirror(ref_name, only_branches_matching, ssh_key: nil, known_hosts: nil)
         req_enum = Enumerator.new do |y|
-          y.yield Gitaly::UpdateRemoteMirrorRequest.new(
+          first_request = Gitaly::UpdateRemoteMirrorRequest.new(
             repository: @gitaly_repo,
             ref_name: ref_name
           )
+
+          first_request.ssh_key = ssh_key if ssh_key.present?
+          first_request.known_hosts = known_hosts if known_hosts.present?
+
+          y.yield(first_request)
 
           current_size = 0
 

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddLdapEmailToUsers < ActiveRecord::Migration
+class AddLdapEmailToUsers < ActiveRecord::Migration[4.2]
   def up
     add_column :users, :ldap_email, :boolean, default: false, null: false
 

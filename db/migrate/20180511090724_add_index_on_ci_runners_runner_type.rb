@@ -1,4 +1,4 @@
-class AddIndexOnCiRunnersRunnerType < ActiveRecord::Migration
+class AddIndexOnCiRunnersRunnerType < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -10,6 +10,7 @@ class AddIndexOnCiRunnersRunnerType < ActiveRecord::Migration
   end
 
   def down
+    # rubocop:disable Migration/RemoveIndex
     remove_index :ci_runners, :runner_type
   end
 end

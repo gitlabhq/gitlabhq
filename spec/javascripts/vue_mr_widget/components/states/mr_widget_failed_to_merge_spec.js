@@ -6,6 +6,7 @@ import mountComponent from 'spec/helpers/vue_mount_component_helper';
 describe('MRWidgetFailedToMerge', () => {
   const dummyIntervalId = 1337;
   let Component;
+  let mr;
   let vm;
 
   beforeEach(() => {
@@ -13,10 +14,11 @@ describe('MRWidgetFailedToMerge', () => {
     spyOn(eventHub, '$emit');
     spyOn(window, 'setInterval').and.returnValue(dummyIntervalId);
     spyOn(window, 'clearInterval').and.stub();
+    mr = {
+      mergeError: 'Merge error happened',
+    };
     vm = mountComponent(Component, {
-      mr: {
-        mergeError: 'Merge error happened.',
-      },
+      mr,
     });
   });
 
@@ -41,7 +43,21 @@ describe('MRWidgetFailedToMerge', () => {
         expect(vm.timerText).toEqual('Refreshing in 10 seconds to show the updated status...');
 
         vm.timer = 1;
+
         expect(vm.timerText).toEqual('Refreshing in a second to show the updated status...');
+      });
+    });
+
+    describe('mergeError', () => {
+      it('removes forced line breaks', done => {
+        mr.mergeError = 'contains<br />line breaks<br />';
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.mergeError).toBe('contains line breaks');
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
   });
@@ -58,6 +74,7 @@ describe('MRWidgetFailedToMerge', () => {
         expect(vm.isRefreshing).toEqual(false);
 
         vm.refresh();
+
         expect(vm.isRefreshing).toEqual(true);
         expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
         expect(eventHub.$emit).toHaveBeenCalledWith('EnablePolling');
@@ -103,7 +120,7 @@ describe('MRWidgetFailedToMerge', () => {
 
     it('renders given error', () => {
       expect(vm.$el.querySelector('.has-error-message').textContent.trim()).toEqual(
-        'Merge error happened..',
+        'Merge error happened.',
       );
     });
 

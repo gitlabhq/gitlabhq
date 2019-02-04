@@ -111,7 +111,9 @@ $monokai-gi: #a6e22e;
 
   // Diff line
   .line_holder {
-    &.match .line_content {
+    &.match .line_content,
+    &.old-nonewline .line_content,
+    &.new-nonewline .line_content {
       @include dark-diff-match-line;
     }
 

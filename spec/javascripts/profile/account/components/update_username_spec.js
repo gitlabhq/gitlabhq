@@ -90,7 +90,8 @@ describe('UpdateUsername component', () => {
   it('confirmation modal should escape usernames properly', done => {
     const { modalBody } = findElements();
 
-    vm.username = vm.newUsername = '<i>Italic</i>';
+    vm.username = '<i>Italic</i>';
+    vm.newUsername = vm.username;
 
     Vue.nextTick()
       .then(() => {
@@ -112,6 +113,7 @@ describe('UpdateUsername component', () => {
     Vue.nextTick()
       .then(() => {
         confirmModalBtn.click();
+
         expect(axios.put).toHaveBeenCalledWith(actionUrl, { user: { username: newUsername } });
       })
       .then(done)
@@ -130,8 +132,7 @@ describe('UpdateUsername component', () => {
 
     vm.newUsername = newUsername;
 
-    vm
-      .onConfirm()
+    vm.onConfirm()
       .then(() => {
         expect(vm.username).toBe(newUsername);
         expect(vm.newUsername).toBe(newUsername);
@@ -156,8 +157,7 @@ describe('UpdateUsername component', () => {
     const invalidUsername = 'anything.git';
     vm.newUsername = invalidUsername;
 
-    vm
-      .onConfirm()
+    vm.onConfirm()
       .then(() => done.fail('Expected onConfirm to throw!'))
       .catch(() => {
         expect(vm.username).toBe(username);

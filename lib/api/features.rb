@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Features < Grape::API
     before { authenticated_as_admin! }
@@ -15,11 +17,11 @@ module API
       end
 
       def gate_targets(params)
-        targets = []
-        targets << Feature.group(params[:feature_group]) if params[:feature_group]
-        targets << User.find_by_username(params[:user]) if params[:user]
+        Feature::Target.new(params).targets
+      end
 
-        targets
+      def gate_specified?(params)
+        Feature::Target.new(params).gate_specified?
       end
     end
 
@@ -40,6 +42,7 @@ module API
         requires :value, type: String, desc: '`true` or `false` to enable/disable, an integer for percentage of time'
         optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username'
+        optional :project, type: String, desc: 'A projects path, like gitlab-org/gitlab-ce'
       end
       post ':name' do
         feature = Feature.get(params[:name])
@@ -48,13 +51,13 @@ module API
 
         case value
         when true
-          if targets.present?
+          if gate_specified?(params)
             targets.each { |target| feature.enable(target) }
           else
             feature.enable
           end
         when false
-          if targets.present?
+          if gate_specified?(params)
             targets.each { |target| feature.disable(target) }
           else
             feature.disable

@@ -2,34 +2,12 @@ require 'spec_helper'
 
 describe Gitlab::Middleware::ReadOnly do
   include Rack::Test::Methods
-
-  RSpec::Matchers.define :be_a_redirect do
-    match do |response|
-      response.status == 301
-    end
-  end
-
-  RSpec::Matchers.define :disallow_request do
-    match do |middleware|
-      alert = middleware.env['rack.session'].to_hash
-        .dig('flash', 'flashes', 'alert')
-
-      alert&.include?('You cannot perform write operations')
-    end
-  end
-
-  RSpec::Matchers.define :disallow_request_in_json do
-    match do |response|
-      json_response = JSON.parse(response.body)
-      response.body.include?('You cannot perform write operations') && json_response.key?('message')
-    end
-  end
+  using RSpec::Parameterized::TableSyntax
 
   let(:rack_stack) do
     rack = Rack::Builder.new do
       use ActionDispatch::Session::CacheStore
       use ActionDispatch::Flash
-      use ActionDispatch::ParamsParser
     end
 
     rack.run(subject)
@@ -55,7 +33,7 @@ describe Gitlab::Middleware::ReadOnly do
     end
   end
 
-  context 'normal requests to a read-only Gitlab instance' do
+  context 'normal requests to a read-only GitLab instance' do
     let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
 
     before do
@@ -65,38 +43,38 @@ describe Gitlab::Middleware::ReadOnly do
     it 'expects PATCH requests to be disallowed' do
       response = request.patch('/test_request')
 
-      expect(response).to be_a_redirect
+      expect(response).to be_redirect
       expect(subject).to disallow_request
     end
 
     it 'expects PUT requests to be disallowed' do
       response = request.put('/test_request')
 
-      expect(response).to be_a_redirect
+      expect(response).to be_redirect
       expect(subject).to disallow_request
     end
 
     it 'expects POST requests to be disallowed' do
       response = request.post('/test_request')
 
-      expect(response).to be_a_redirect
+      expect(response).to be_redirect
       expect(subject).to disallow_request
     end
 
     it 'expects a internal POST request to be allowed after a disallowed request' do
       response = request.post('/test_request')
 
-      expect(response).to be_a_redirect
+      expect(response).to be_redirect
 
       response = request.post("/api/#{API::API.version}/internal")
 
-      expect(response).not_to be_a_redirect
+      expect(response).not_to be_redirect
     end
 
     it 'expects DELETE requests to be disallowed' do
       response = request.delete('/test_request')
 
-      expect(response).to be_a_redirect
+      expect(response).to be_redirect
       expect(subject).to disallow_request
     end
 
@@ -104,7 +82,7 @@ describe Gitlab::Middleware::ReadOnly do
       expect(Rails.application.routes).to receive(:recognize_path).and_call_original
       response = request.post('/root/gitlab-ce/new/master/app/info/lfs/objects/batch')
 
-      expect(response).to be_a_redirect
+      expect(response).to be_redirect
       expect(subject).to disallow_request
     end
 
@@ -117,39 +95,61 @@ describe Gitlab::Middleware::ReadOnly do
     context 'whitelisted requests' do
       it 'expects a POST internal request to be allowed' do
         expect(Rails.application.routes).not_to receive(:recognize_path)
-
         response = request.post("/api/#{API::API.version}/internal")
 
-        expect(response).not_to be_a_redirect
+        expect(response).not_to be_redirect
         expect(subject).not_to disallow_request
       end
 
-      it 'expects a POST LFS request to batch URL to be allowed' do
-        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
-        response = request.post('/root/rouge.git/info/lfs/objects/batch')
+      context 'sidekiq admin requests' do
+        where(:mounted_at) do
+          [
+            '',
+            '/',
+            '/gitlab',
+            '/gitlab/',
+            '/gitlab/gitlab',
+            '/gitlab/gitlab/'
+          ]
+        end
 
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
+        with_them do
+          before do
+            stub_config_setting(relative_url_root: mounted_at)
+          end
+
+          it 'allows requests' do
+            path = File.join(mounted_at, 'admin/sidekiq')
+            response = request.post(path)
+
+            expect(response).not_to be_redirect
+            expect(subject).not_to disallow_request
+
+            response = request.get(path)
+
+            expect(response).not_to be_redirect
+            expect(subject).not_to disallow_request
+          end
+        end
       end
 
-      it 'expects a POST request to git-upload-pack URL to be allowed' do
-        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
-        response = request.post('/root/rouge.git/git-upload-pack')
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
+      where(:description, :path) do
+        'LFS request to batch'        | '/root/rouge.git/info/lfs/objects/batch'
+        'LFS request to locks verify' | '/root/rouge.git/info/lfs/locks/verify'
+        'LFS request to locks create' | '/root/rouge.git/info/lfs/locks'
+        'LFS request to locks unlock' | '/root/rouge.git/info/lfs/locks/1/unlock'
+        'request to git-upload-pack'  | '/root/rouge.git/git-upload-pack'
+        'request to git-receive-pack' | '/root/rouge.git/git-receive-pack'
       end
 
-      it 'expects requests to sidekiq admin to be allowed' do
-        response = request.post('/admin/sidekiq')
+      with_them do
+        it "expects a POST #{description} URL to be allowed" do
+          expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+          response = request.post(path)
 
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
-
-        response = request.get('/admin/sidekiq')
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
+          expect(response).not_to be_redirect
+          expect(subject).not_to disallow_request
+        end
       end
     end
   end

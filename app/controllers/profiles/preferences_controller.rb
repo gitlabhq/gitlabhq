@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::PreferencesController < Profiles::ApplicationController
   before_action :user
 

@@ -4,7 +4,7 @@ describe 'Projects > Settings > User archives a project' do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 

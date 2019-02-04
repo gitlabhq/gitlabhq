@@ -13,9 +13,11 @@
 
   &.diff-collapsed {
     padding: 5px;
+    line-height: 34px;
 
     .click-to-expand {
       cursor: pointer;
+      vertical-align: initial;
     }
   }
 }
@@ -281,18 +283,20 @@
 
   .dismiss-button {
     position: absolute;
-    right: 6px;
-    top: 6px;
+    right: $gl-padding-8;
+    top: $gl-padding-8;
     cursor: pointer;
-    color: $blue-300;
+    color: $blue-500;
     z-index: 1;
     border: 0;
     background-color: transparent;
+    padding: $gl-padding-8;
+    line-height: 0;
 
     &:hover,
     &:focus {
       border: 0;
-      color: $blue-400;
+      color: $blue-700;
     }
   }
 
@@ -344,15 +348,26 @@
 
     @include media-breakpoint-down(xs) {
       width: 100%;
+      margin: $btn-side-margin 0;
     }
   }
 }
 
-.flex-container-block {
-  display: -webkit-flex;
-  display: flex;
-}
-
 .flex-right {
   margin-left: auto;
+}
+
+.code-block {
+  background: $black;
+  color: $gray-darkest;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 12px;
+  border: 0;
+  padding: $grid-size;
+
+  code {
+    background-color: inherit;
+    padding: inherit;
+  }
 }

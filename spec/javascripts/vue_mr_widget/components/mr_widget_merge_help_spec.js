@@ -23,15 +23,23 @@ describe('MRWidgetMergeHelp', () => {
 
     it('renders missing branch information', () => {
       expect(
-        vm.$el.textContent.trim().replace(/[\r\n]+/g, ' ').replace(/\s\s+/g, ' '),
+        vm.$el.textContent
+          .trim()
+          .replace(/[\r\n]+/g, ' ')
+          .replace(/\s\s+/g, ' '),
       ).toEqual(
         'If the this-is-not-the-branch-you-are-looking-for branch exists in your local repository, you can merge this merge request manually using the command line',
       );
     });
 
     it('renders button to open help modal', () => {
-      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual('#modal_merge_info');
-      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual('modal');
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual(
+        '#modal_merge_info',
+      );
+
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual(
+        'modal',
+      );
     });
   });
 
@@ -42,15 +50,21 @@ describe('MRWidgetMergeHelp', () => {
 
     it('renders information about how to merge manually', () => {
       expect(
-        vm.$el.textContent.trim().replace(/[\r\n]+/g, ' ').replace(/\s\s+/g, ' '),
-      ).toEqual(
-        'You can merge this merge request manually using the command line',
-      );
+        vm.$el.textContent
+          .trim()
+          .replace(/[\r\n]+/g, ' ')
+          .replace(/\s\s+/g, ' '),
+      ).toEqual('You can merge this merge request manually using the command line');
     });
 
     it('renders element to open a modal', () => {
-      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual('#modal_merge_info');
-      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual('modal');
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-target')).toEqual(
+        '#modal_merge_info',
+      );
+
+      expect(vm.$el.querySelector('.js-open-modal-help').getAttribute('data-toggle')).toEqual(
+        'modal',
+      );
     });
   });
 });

@@ -1,6 +1,0 @@
----
-title: Only preload member records for the relevant projects/groups/user in projects
-  API
-merge_request:
-author:
-type: performance

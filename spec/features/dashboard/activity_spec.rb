@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard > Activity' do
+describe 'Dashboard > Activity' do
   let(:user) { create(:user) }
 
   before do
@@ -60,13 +60,13 @@ feature 'Dashboard > Activity' do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       visit activity_dashboard_path
       wait_for_requests
     end
 
-    scenario 'user should see all events' do
+    it 'user should see all events' do
       within '.content_list' do
         expect(page).to have_content('pushed new branch')
         expect(page).to have_content('joined')
@@ -77,7 +77,7 @@ feature 'Dashboard > Activity' do
       end
     end
 
-    scenario 'user should see only pushed events' do
+    it 'user should see only pushed events' do
       click_link('Push events')
       wait_for_requests
 
@@ -90,7 +90,7 @@ feature 'Dashboard > Activity' do
       end
     end
 
-    scenario 'user should see only merged events' do
+    it 'user should see only merged events' do
       click_link('Merge events')
       wait_for_requests
 
@@ -103,7 +103,7 @@ feature 'Dashboard > Activity' do
       end
     end
 
-    scenario 'user should see only issues events' do
+    it 'user should see only issues events' do
       click_link('Issue events')
       wait_for_requests
 
@@ -117,7 +117,7 @@ feature 'Dashboard > Activity' do
       end
     end
 
-    scenario 'user should see only comments events' do
+    it 'user should see only comments events' do
       click_link('Comments')
       wait_for_requests
 
@@ -130,7 +130,7 @@ feature 'Dashboard > Activity' do
       end
     end
 
-    scenario 'user should see only joined events' do
+    it 'user should see only joined events' do
       click_link('Team')
       wait_for_requests
 
@@ -143,7 +143,7 @@ feature 'Dashboard > Activity' do
       end
     end
 
-    scenario 'user see selected event after page reloading' do
+    it 'user see selected event after page reloading' do
       click_link('Push events')
       wait_for_requests
       visit activity_dashboard_path

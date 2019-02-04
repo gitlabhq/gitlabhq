@@ -10,14 +10,13 @@ describe Clusters::Applications::ScheduleInstallationService do
       expect(ClusterInstallAppWorker).not_to receive(:perform_async)
       count_before = count_scheduled
 
-      expect { service.execute(application) }.to raise_error(StandardError)
+      expect { service.execute }.to raise_error(StandardError)
       expect(count_scheduled).to eq(count_before)
     end
   end
 
   describe '#execute' do
-    let(:project) { double(:project) }
-    let(:service) { described_class.new(project, nil) }
+    let(:service) { described_class.new(application) }
 
     context 'when application is installable' do
       let(:application) { create(:clusters_applications_helm, :installable) }
@@ -25,7 +24,7 @@ describe Clusters::Applications::ScheduleInstallationService do
       it 'make the application scheduled' do
         expect(ClusterInstallAppWorker).to receive(:perform_async).with(application.name, kind_of(Numeric)).once
 
-        expect { service.execute(application) }.to change { application.class.with_status(:scheduled).count }.by(1)
+        expect { service.execute }.to change { application.class.with_status(:scheduled).count }.by(1)
       end
     end
 

@@ -40,7 +40,7 @@ describe Gitlab::Template::GitlabCiYmlTemplate do
 
   describe '#content' do
     it 'loads the full file' do
-      gitignore = subject.new(Rails.root.join('vendor/gitlab-ci-yml/Ruby.gitlab-ci.yml'))
+      gitignore = subject.new(Rails.root.join('lib/gitlab/ci/templates/Ruby.gitlab-ci.yml'))
 
       expect(gitignore.name).to eq 'Ruby'
       expect(gitignore.content).to start_with('#')

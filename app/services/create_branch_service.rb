@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateBranchService < BaseService
   def execute(branch_name, ref)
     create_master_branch if project.empty_repo?
@@ -14,7 +16,7 @@ class CreateBranchService < BaseService
     else
       error('Invalid reference name')
     end
-  rescue Gitlab::Git::HooksService::PreReceiveError => ex
+  rescue Gitlab::Git::PreReceiveError => ex
     error(ex.message)
   end
 

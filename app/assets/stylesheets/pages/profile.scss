@@ -20,7 +20,7 @@
 .account-btn-link,
 .profile-settings-sidebar a,
 .settings-sidebar a {
-  color: $md-link-color;
+  color: $blue-600;
 }
 
 .private-tokens-reset div.reset-action:not(:first-child) {
@@ -81,14 +81,14 @@
 // Middle dot divider between each element in a list of items.
 .middle-dot-divider {
   &::after {
-    content: "\00B7"; // Middle Dot
+    content: '\00B7'; // Middle Dot
     padding: 0 6px;
     font-weight: $gl-font-weight-bold;
   }
 
   &:last-child {
     &::after {
-      content: "";
+      content: '';
       padding: 0;
     }
   }
@@ -98,7 +98,6 @@
   // Limits the width of the user bio for readability.
   max-width: 600px;
   margin: 10px auto;
-  padding: 0 16px;
 }
 
 .user-avatar-button {
@@ -137,18 +136,20 @@
 
 .profile-settings-content {
   a {
-    color: $md-link-color;
+    color: $blue-600;
   }
 }
 
 .provider-btn-group {
   display: inline-block;
   margin-right: 10px;
+  margin-bottom: 10px;
   border: 1px solid $border-color;
   border-radius: 3px;
 
   &:last-child {
     margin-right: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -170,7 +171,7 @@
   background-color: $gray-light;
 
   &.not-active {
-    color: $provider-btn-not-active-color;
+    color: $blue-500;
   }
 }
 
@@ -191,7 +192,6 @@
     @include media-breakpoint-down(xs) {
       width: auto;
     }
-
   }
 
   .profile-crop-image-container {
@@ -215,14 +215,17 @@
   }
 }
 
-
 .user-profile {
   .cover-controls a {
     margin-left: 5px;
   }
 
   .profile-header {
-    margin: 0 auto;
+    margin: 0 $gl-padding;
+
+    &.with-no-profile-tabs {
+      margin-bottom: $gl-padding-24;
+    }
 
     .avatar-holder {
       width: 90px;
@@ -240,6 +243,22 @@
 
   .fade-left {
     left: 0;
+  }
+
+  .activities-block {
+    .event-item {
+      padding-left: 40px;
+    }
+
+    @include media-breakpoint-up(lg) {
+      margin-right: 5px;
+    }
+  }
+
+  .projects-block {
+    @include media-breakpoint-up(lg) {
+      margin-left: 5px;
+    }
   }
 
   @include media-breakpoint-down(xs) {
@@ -269,6 +288,12 @@
         margin-right: 0;
       }
     }
+
+    .activities-block {
+      .event-item {
+        padding-left: 0;
+      }
+    }
   }
 }
 
@@ -277,6 +302,10 @@ table.u2f-registrations {
   td:not(:last-child) {
     border-right: solid 1px transparent;
   }
+}
+
+.codes {
+  padding-top: 14px;
 }
 
 .oauth-application-show {
@@ -414,7 +443,38 @@ table.u2f-registrations {
     }
 
     &.unverified {
-      @include status-color($gray-dark, color("gray"), $common-gray-dark);
+      @include status-color($gray-dark, color('gray'), $common-gray-dark);
     }
   }
+}
+
+.edit-user {
+  .clear-user-status {
+    svg {
+      fill: $gl-text-color-secondary;
+    }
+  }
+
+  .emoji-menu-toggle-button {
+    @include emoji-menu-toggle-button;
+
+    .no-emoji-placeholder {
+      position: relative;
+
+      svg {
+        fill: $gl-text-color-secondary;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .input-md,
+    .input-lg {
+      max-width: 100%;
+    }
+  }
+}
+
+.help-block {
+  color: $gl-text-color-secondary;
 }

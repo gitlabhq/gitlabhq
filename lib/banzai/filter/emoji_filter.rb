@@ -1,12 +1,11 @@
+# frozen_string_literal: true
+
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/emoji.js
 module Banzai
   module Filter
     # HTML filter that replaces :emoji: and unicode with images.
     #
     # Based on HTML::Pipeline::EmojiFilter
-    #
-    # Context options:
-    #   :asset_root
-    #   :asset_host
     class EmojiFilter < HTML::Pipeline::Filter
       IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
 

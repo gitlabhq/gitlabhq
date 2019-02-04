@@ -12,5 +12,6 @@ export const defaultEditorOptions = {
 export default [
   {
     readOnly: model => !!model.file.file_lock,
+    quickSuggestions: model => !(model.language === 'markdown'),
   },
 ];

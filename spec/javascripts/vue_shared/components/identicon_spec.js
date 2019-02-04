@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import identiconComponent from '~/vue_shared/components/identicon.vue';
 
-const createComponent = (sizeClass) => {
+const createComponent = sizeClass => {
   const Component = Vue.extend(identiconComponent);
 
   return new Component({
@@ -25,19 +25,12 @@ describe('IdenticonComponent', () => {
       vm.$destroy();
     });
 
-    describe('identiconStyles', () => {
-      it('should return styles attribute value with `background-color` property', () => {
+    describe('identiconBackgroundClass', () => {
+      it('should return bg class based on entityId', () => {
         vm.entityId = 4;
 
-        expect(vm.identiconStyles).toBeDefined();
-        expect(vm.identiconStyles.indexOf('background-color: #E0F2F1;') > -1).toBeTruthy();
-      });
-
-      it('should return styles attribute value with `color` property', () => {
-        vm.entityId = 4;
-
-        expect(vm.identiconStyles).toBeDefined();
-        expect(vm.identiconStyles.indexOf('color: #555;') > -1).toBeTruthy();
+        expect(vm.identiconBackgroundClass).toBeDefined();
+        expect(vm.identiconBackgroundClass).toBe('bg5');
       });
     });
 
@@ -58,7 +51,7 @@ describe('IdenticonComponent', () => {
       expect(vm.$el.nodeName).toBe('DIV');
       expect(vm.$el.classList.contains('identicon')).toBeTruthy();
       expect(vm.$el.classList.contains('s40')).toBeTruthy();
-      expect(vm.$el.getAttribute('style').indexOf('background-color') > -1).toBeTruthy();
+      expect(vm.$el.classList.contains('bg2')).toBeTruthy();
       vm.$destroy();
     });
 

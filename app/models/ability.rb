@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_dependency 'declarative_policy'
 
 class Ability
@@ -72,7 +74,7 @@ class Ability
     end
 
     def policy_for(user, subject = :global)
-      cache = RequestStore.active? ? RequestStore : {}
+      cache = Gitlab::SafeRequestStore.active? ? Gitlab::SafeRequestStore : {}
       DeclarativePolicy.policy_for(user, subject, cache: cache)
     end
 

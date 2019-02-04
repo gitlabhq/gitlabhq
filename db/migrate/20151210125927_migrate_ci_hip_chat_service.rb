@@ -1,5 +1,4 @@
-# rubocop:disable all
-class MigrateCiHipChatService < ActiveRecord::Migration
+class MigrateCiHipChatService < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   def up

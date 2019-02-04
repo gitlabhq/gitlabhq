@@ -30,29 +30,19 @@ export default {
 </script>
 
 <template>
-  <div
-    class="dropdown"
-  >
-    <button
-      type="button"
-      class="btn btn-link"
-      data-toggle="dropdown"
-    >
-      {{ __('Edit') }}
-    </button>
+  <div class="dropdown">
+    <button type="button" class="btn btn-link" data-toggle="dropdown">{{ __('Edit') }}</button>
     <div class="dropdown-menu dropdown-menu-selectable dropdown-open-left">
       <ul>
         <li>
           <a
-            href="#"
-            @click.prevent="changeMode($options.viewerTypes.mr)"
             :class="{
               'is-active': viewer === $options.viewerTypes.mr,
             }"
+            href="#"
+            @click.prevent="changeMode($options.viewerTypes.mr)"
           >
-            <strong class="dropdown-menu-inner-title">
-              {{ mergeReviewLine }}
-            </strong>
+            <strong class="dropdown-menu-inner-title"> {{ mergeReviewLine }} </strong>
             <span class="dropdown-menu-inner-content">
               {{ __('Compare changes with the merge request target branch') }}
             </span>
@@ -60,11 +50,11 @@ export default {
         </li>
         <li>
           <a
-            href="#"
-            @click.prevent="changeMode($options.viewerTypes.diff)"
             :class="{
               'is-active': viewer === $options.viewerTypes.diff,
             }"
+            href="#"
+            @click.prevent="changeMode($options.viewerTypes.diff)"
           >
             <strong class="dropdown-menu-inner-title">{{ __('Reviewing') }}</strong>
             <span class="dropdown-menu-inner-content">

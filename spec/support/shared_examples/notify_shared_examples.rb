@@ -1,5 +1,5 @@
 shared_context 'gitlab email notification' do
-  set(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository, name: 'a-known-name') }
   set(:recipient) { create(:user, email: 'recipient@example.com') }
 
   let(:gitlab_sender_display_name) { Gitlab.config.gitlab.email_display_name }
@@ -45,12 +45,28 @@ shared_examples 'an email that contains a header with author username' do
   end
 end
 
+shared_examples 'an email with X-GitLab headers containing IDs' do
+  it 'has X-GitLab-*-ID header' do
+    is_expected.to have_header "X-GitLab-#{model.class.name}-ID", "#{model.id}"
+  end
+
+  it 'has X-GitLab-*-IID header if model has iid defined' do
+    if model.respond_to?(:iid)
+      is_expected.to have_header "X-GitLab-#{model.class.name}-IID", "#{model.iid}"
+    else
+      expect(subject.header["X-GitLab-#{model.class.name}-IID"]).to eq nil
+    end
+  end
+end
+
 shared_examples 'an email with X-GitLab headers containing project details' do
   it 'has X-GitLab-Project headers' do
     aggregate_failures do
+      full_path_as_domain = "#{project.name}.#{project.namespace.path}"
       is_expected.to have_header('X-GitLab-Project', /#{project.name}/)
       is_expected.to have_header('X-GitLab-Project-Id', /#{project.id}/)
       is_expected.to have_header('X-GitLab-Project-Path', /#{project.full_path}/)
+      is_expected.to have_header('List-Id', "#{project.full_path} <#{project.id}.#{full_path_as_domain}.#{Gitlab.config.gitlab.host}>")
     end
   end
 end
@@ -69,6 +85,7 @@ end
 
 shared_examples 'a thread answer email with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'an email with X-GitLab headers containing IDs'
 
   it 'has the characteristics of a threaded reply' do
     host = Gitlab.config.gitlab.host
@@ -77,7 +94,7 @@ shared_examples 'a thread answer email with reply-by-email enabled' do
     aggregate_failures do
       is_expected.to have_header('Message-ID', /\A<.*@#{host}>\Z/)
       is_expected.to have_header('In-Reply-To', "<#{route_key}@#{host}>")
-      is_expected.to have_header('References',  /\A<#{route_key}@#{host}> <reply\-.*@#{host}>\Z/ )
+      is_expected.to have_header('References', /\A<reply\-.*@#{host}> <#{route_key}@#{host}>\Z/ )
       is_expected.to have_subject(/^Re: /)
     end
   end
@@ -85,7 +102,12 @@ end
 
 shared_examples 'an email starting a new thread with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'an email with X-GitLab headers containing IDs'
   include_examples 'a new thread email with reply-by-email enabled'
+
+  it 'includes "Reply to this email directly or <View it on GitLab>"' do
+    expect(subject.default_part.body).to include(%(Reply to this email directly or <a href="#{Gitlab::UrlBuilder.build(model)}">view it on GitLab</a>.))
+  end
 
   context 'when reply-by-email is enabled with incoming address with %{key}' do
     it 'has a Reply-To header' do
@@ -105,6 +127,7 @@ end
 
 shared_examples 'an answer to an existing thread with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
+  include_examples 'an email with X-GitLab headers containing IDs'
   include_examples 'a thread answer email with reply-by-email enabled'
 
   context 'when reply-by-email is enabled with incoming address with %{key}' do
@@ -212,7 +235,7 @@ shared_examples 'a note email' do
   end
 
   it 'contains the message from the note' do
-    is_expected.to have_html_escaped_body_text note.note
+    is_expected.to have_body_text note.note
   end
 
   it 'does not contain note author' do
@@ -225,7 +248,7 @@ shared_examples 'a note email' do
     end
 
     it 'contains a link to note author' do
-      is_expected.to have_html_escaped_body_text note.author_name
+      is_expected.to have_body_text note.author_name
     end
   end
 end

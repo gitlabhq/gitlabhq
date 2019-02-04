@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Sherlock
   class TransactionsController < Sherlock::ApplicationController
     def index
@@ -13,7 +15,7 @@ module Sherlock
     def destroy_all
       Gitlab::Sherlock.collection.clear
 
-      redirect_to :back, status: 302
+      redirect_back_or_default(options: { status: :found })
     end
   end
 end

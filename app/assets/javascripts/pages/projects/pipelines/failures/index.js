@@ -1,3 +1,2 @@
-import initPipelines from '../init_pipelines';
-
-document.addEventListener('DOMContentLoaded', initPipelines);
+// /failures is an alias for show
+import '../show/index';

@@ -22,7 +22,7 @@ GET /projects/:id/pipelines
 | `sort`    | string  | no       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines"
 ```
 
 Example of response
@@ -33,13 +33,15 @@ Example of response
     "id": 47,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a"
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+    "web_url": "https://example.com/foo/bar/pipelines/47"
   },
   {
     "id": 48,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a"
+    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
+    "web_url": "https://example.com/foo/bar/pipelines/48"
   }
 ]
 ```
@@ -58,7 +60,7 @@ GET /projects/:id/pipelines/:pipeline_id
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 Example of response
@@ -86,7 +88,8 @@ Example of response
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": "30.0"
+  "coverage": "30.0",
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 
@@ -102,9 +105,10 @@ POST /projects/:id/pipeline
 |------------|---------|----------|---------------------|
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `ref`       | string | yes      | Reference to commit |
+| `variables` | array | no | An array containing the variables available in the pipeline, matching the structure [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipeline?ref=master"
 ```
 
 Example of response
@@ -132,7 +136,8 @@ Example of response
   "finished_at": null,
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/61"
 }
 ```
 
@@ -150,7 +155,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
 ```
 
 Response:
@@ -178,7 +183,8 @@ Response:
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 
@@ -196,7 +202,7 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
 ```
 
 Response:
@@ -224,8 +230,26 @@ Response:
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
+```
+
+## Delete a pipeline
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22988) in GitLab 11.6.
+
+```
+DELETE /projects/:id/pipelines/:pipeline_id
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+```
+curl --header "PRIVATE-TOKEN: <your_access_token>" --request "DELETE" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 [ce-5837]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5837

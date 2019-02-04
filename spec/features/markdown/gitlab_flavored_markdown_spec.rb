@@ -6,7 +6,7 @@ describe "GitLab Flavored Markdown" do
   let(:issue) { create(:issue, project: project) }
   let(:fred) do
     create(:user, name: 'fred') do |user|
-      project.add_master(user)
+      project.add_maintainer(user)
     end
   end
 

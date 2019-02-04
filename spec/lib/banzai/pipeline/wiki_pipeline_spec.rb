@@ -121,6 +121,13 @@ describe Banzai::Pipeline::WikiPipeline do
               expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page\"")
             end
 
+            it 'rewrites non-file links (with spaces) to be at the scope of the wiki root' do
+              markdown = "[Link to Page](page slug)"
+              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/page%20slug\"")
+            end
+
             it "rewrites file links to be at the scope of the current directory" do
               markdown = "[Link to Page](page.md)"
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
@@ -133,6 +140,13 @@ describe Banzai::Pipeline::WikiPipeline do
               output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
 
               expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/start-page#title\"")
+            end
+
+            it 'rewrites links (with spaces) with anchor' do
+              markdown = '[Link to Header](start page#title)'
+              output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+              expect(output).to include("href=\"#{relative_url_root}/wiki_link_ns/wiki_link_project/wikis/start%20page#title\"")
             end
           end
 
@@ -162,6 +176,27 @@ describe Banzai::Pipeline::WikiPipeline do
           end
         end
       end
+    end
+  end
+
+  describe 'videos' do
+    let(:namespace) { create(:namespace, name: "wiki_link_ns") }
+    let(:project)   { create(:project, :public, name: "wiki_link_project", namespace: namespace) }
+    let(:project_wiki) { ProjectWiki.new(project, double(:user)) }
+    let(:page) { build(:wiki_page, wiki: project_wiki, page: OpenStruct.new(url_path: 'nested/twice/start-page')) }
+
+    it 'generates video html structure' do
+      markdown = "![video_file](video_file_name.mp4)"
+      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video_file_name.mp4"')
+    end
+
+    it 'rewrites and replaces video links names with white spaces to %20' do
+      markdown = "![video file](video file name.mp4)"
+      output = described_class.to_html(markdown, project: project, project_wiki: project_wiki, page_slug: page.slug)
+
+      expect(output).to include('<video src="/wiki_link_ns/wiki_link_project/wikis/nested/twice/video%20file%20name.mp4"')
     end
   end
 end

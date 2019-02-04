@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::RemoteRepository, seed_helper: true do
+describe Gitlab::Git::RemoteRepository, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   subject { described_class.new(repository) }
 

@@ -1,14 +1,17 @@
-FROM node:7.9-alpine
+FROM node:10.6-alpine
+
+# Uncomment if use of `process.dlopen` is necessary
+# apk add --no-cache libc6-compat
+
+ENV PORT 8080
+EXPOSE 8080 # replace this with your application's default port, if necessary
+
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
 
 WORKDIR /usr/src/app
-
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
-COPY package.json /usr/src/app/
-RUN npm install && npm cache clean
-COPY . /usr/src/app
+COPY package.json .
+RUN npm install
+COPY . .
 
 CMD [ "npm", "start" ]
-
-# replace this with your application's default port
-EXPOSE 8888

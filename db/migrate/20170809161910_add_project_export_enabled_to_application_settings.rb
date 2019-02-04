@@ -1,4 +1,4 @@
-class AddProjectExportEnabledToApplicationSettings < ActiveRecord::Migration
+class AddProjectExportEnabledToApplicationSettings < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 

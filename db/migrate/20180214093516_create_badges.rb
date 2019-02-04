@@ -1,4 +1,4 @@
-class CreateBadges < ActiveRecord::Migration
+class CreateBadges < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change
@@ -12,6 +12,7 @@ class CreateBadges < ActiveRecord::Migration
       t.timestamps_with_timezone null: false
     end
 
+    # rubocop:disable Migration/AddConcurrentForeignKey
     add_foreign_key :badges, :namespaces, column: :group_id, on_delete: :cascade
   end
 end

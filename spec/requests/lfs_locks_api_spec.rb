@@ -3,8 +3,8 @@ require 'spec_helper'
 describe 'Git LFS File Locking API' do
   include WorkhorseHelpers
 
-  let(:project)   { create(:project) }
-  let(:master)    { create(:user) }
+  let(:project) { create(:project) }
+  let(:maintainer) { create(:user) }
   let(:developer) { create(:user) }
   let(:guest)     { create(:user) }
   let(:path)      { 'README.md' }
@@ -29,7 +29,7 @@ describe 'Git LFS File Locking API' do
   before do
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
 
-    project.add_developer(master)
+    project.add_developer(maintainer)
     project.add_developer(developer)
     project.add_guest(guest)
   end
@@ -99,7 +99,7 @@ describe 'Git LFS File Locking API' do
     include_examples 'unauthorized request'
 
     it 'returns the list of locked files grouped by owner' do
-      lock_file('README.md', master)
+      lock_file('README.md', maintainer)
       lock_file('README', developer)
 
       post_lfs_json url, nil, headers
@@ -132,6 +132,17 @@ describe 'Git LFS File Locking API' do
 
         expect(json_response['lock'].keys).to match_array(%w(id path locked_at owner))
       end
+
+      context 'when a maintainer uses force' do
+        let(:authorization) { authorize_user(maintainer) }
+
+        it 'deletes the lock' do
+          project.add_maintainer(maintainer)
+          post_lfs_json url, { force: true }, headers
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
     end
   end
 
@@ -146,11 +157,11 @@ describe 'Git LFS File Locking API' do
   end
 
   def post_lfs_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
+    post(url, params: body.try(:to_json), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
-  def do_get(url, params = nil,  headers = nil)
-    get(url, (params || {}), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
+  def do_get(url, params = nil, headers = nil)
+    get(url, params: (params || {}), headers: (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
   end
 
   def json_response

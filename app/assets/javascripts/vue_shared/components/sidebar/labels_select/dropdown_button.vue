@@ -53,10 +53,7 @@ export default {
 
 <template>
   <button
-    type="button"
     ref="dropdownButton"
-    class="dropdown-menu-toggle wide js-label-select js-multiselect js-context-config-modal"
-    data-toggle="dropdown"
     :class="{ 'js-extra-options': showExtraOptions }"
     :data-ability-name="abilityName"
     :data-field-name="fieldName"
@@ -64,15 +61,11 @@ export default {
     :data-labels="labelsPath"
     :data-namespace-path="namespace"
     :data-show-any="showExtraOptions"
+    type="button"
+    class="dropdown-menu-toggle wide js-label-select js-multiselect js-context-config-modal"
+    data-toggle="dropdown"
   >
-    <span class="dropdown-toggle-text">
-      {{ dropdownToggleText }}
-    </span>
-    <i
-      aria-hidden="true"
-      class="fa fa-chevron-down"
-      data-hidden="true"
-    >
-    </i>
+    <span class="dropdown-toggle-text"> {{ dropdownToggleText }} </span>
+    <i aria-hidden="true" class="fa fa-chevron-down" data-hidden="true"> </i>
   </button>
 </template>

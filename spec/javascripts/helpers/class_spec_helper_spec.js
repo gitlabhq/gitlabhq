@@ -2,11 +2,13 @@
 
 import './class_spec_helper';
 
-describe('ClassSpecHelper', function () {
+describe('ClassSpecHelper', function() {
   describe('itShouldBeAStaticMethod', () => {
     beforeEach(() => {
       class TestClass {
-        instanceMethod() { this.prop = 'val'; }
+        instanceMethod() {
+          this.prop = 'val';
+        }
         static staticMethod() {}
       }
 

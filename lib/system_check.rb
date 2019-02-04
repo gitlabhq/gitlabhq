@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Library to perform System Checks
 #
 # Every Check is implemented as its own class inherited from SystemCheck::BaseCheck

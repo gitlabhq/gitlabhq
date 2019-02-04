@@ -107,7 +107,7 @@ Global Admins     GitLab.org/GitLab INT/Global Groups/Global Admins
 
 ## GitLab LDAP configuration
 
-The initial configuration of LDAP in GitLab requires changes to the `gitlab.rb` configuration file. Below is an example of a complete configuration using an Active Directory.
+The initial configuration of LDAP in GitLab requires changes to the `gitlab.rb` configuration file (`/etc/gitlab/gitlab.rb`). Below is an example of a complete configuration using an Active Directory.
 
 The two Active Directory specific values are `active_directory: true` and `uid: 'sAMAccountName'`. `sAMAccountName` is an attribute returned by Active Directory used for GitLab usernames. See the example output from `ldapsearch` for a full list of attributes a "person" object (user) has in **AD** - [`ldapsearch` example](#using-ldapsearch-unix)
 
@@ -255,7 +255,7 @@ After configuring LDAP, basic authentication will be available. Users can then l
 
 Users that are removed from the LDAP base group (e.g `OU=GitLab INT,DC=GitLab,DC=org`) will be **blocked** in GitLab. [More information](../ldap.md#security) on LDAP security.
 
-If `allow_username_or_email_login` is enabled in the LDAP configuration, GitLab will ignore everything after the first '@' in the LDAP username used on login. Example: The username `jon.doe@example.com` is converted to `jon.doe` when authenticating with the LDAP server. Disable this setting if you use `userPrincipalName` as the `uid`.
+If `allow_username_or_email_login` is enabled in the LDAP configuration, GitLab will ignore everything after the first '@' in the LDAP username used on login. Example: The username `` jon.doe@example.com `` is converted to `jon.doe` when authenticating with the LDAP server. Disable this setting if you use `userPrincipalName` as the `uid`.
 
 ## LDAP extended features on GitLab EE
 

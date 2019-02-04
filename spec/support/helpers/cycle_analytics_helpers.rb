@@ -1,15 +1,17 @@
 module CycleAnalyticsHelpers
+  include GitHelpers
+
   def create_commit_referencing_issue(issue, branch_name: generate(:branch))
     project.repository.add_branch(user, branch_name, 'master')
     create_commit("Commit for ##{issue.iid}", issue.project, user, branch_name)
   end
 
-  def create_commit(message, project, user, branch_name, count: 1)
+  def create_commit(message, project, user, branch_name, count: 1, commit_time: nil, skip_push_handler: false)
     repository = project.repository
-    oldrev = repository.commit(branch_name).sha
+    oldrev = repository.commit(branch_name)&.sha || Gitlab::Git::BLANK_SHA
 
     if Timecop.frozen? && Gitlab::GitalyClient.feature_enabled?(:operation_user_commit_files)
-      mock_gitaly_multi_action_dates(repository.raw)
+      mock_gitaly_multi_action_dates(repository, commit_time)
     end
 
     commit_shas = Array.new(count) do |index|
@@ -18,6 +20,8 @@ module CycleAnalyticsHelpers
 
       commit_sha
     end
+
+    return if skip_push_handler
 
     GitPushService.new(project,
                        user,
@@ -44,13 +48,11 @@ module CycleAnalyticsHelpers
       project.repository.add_branch(user, source_branch, 'master')
     end
 
-    sha = project.repository.create_file(
-      user,
-      generate(:branch),
-      'content',
-      message: commit_message,
-      branch_name: source_branch)
-    project.repository.commit(sha)
+    # Cycle analytic specs often test with frozen times, which causes metrics to be
+    # pinned to the current time. For example, in the plan stage, we assume that an issue
+    # milestone has been created before any code has been written. We add a second
+    # to ensure that the plan time is positive.
+    create_commit(commit_message, project, user, source_branch, commit_time: Time.now + 1.second, skip_push_handler: true)
 
     opts = {
       title: 'Awesome merge_request',
@@ -65,7 +67,9 @@ module CycleAnalyticsHelpers
   end
 
   def merge_merge_requests_closing_issue(user, project, issue)
-    merge_requests = issue.closed_by_merge_requests(user)
+    merge_requests = Issues::ReferencedMergeRequestsService
+                       .new(project, user)
+                       .closed_by_merge_requests(issue)
 
     merge_requests.each { |merge_request| MergeRequests::MergeService.new(project, user).execute(merge_request) }
   end
@@ -81,7 +85,7 @@ module CycleAnalyticsHelpers
         raise ArgumentError
       end
 
-    CreateDeploymentService.new(dummy_job).execute
+    dummy_job.success! # State machine automatically update associated deployment/environment record
   end
 
   def dummy_production_job(user, project)
@@ -93,7 +97,7 @@ module CycleAnalyticsHelpers
   end
 
   def dummy_pipeline(project)
-    Ci::Pipeline.new(
+    create(:ci_pipeline,
       sha: project.repository.commit('master').sha,
       ref: 'master',
       source: :push,
@@ -102,9 +106,7 @@ module CycleAnalyticsHelpers
   end
 
   def new_dummy_job(user, project, environment)
-    project.environments.find_or_create_by(name: environment)
-
-    Ci::Build.new(
+    create(:ci_build,
       project: project,
       user: user,
       environment: environment,
@@ -116,14 +118,16 @@ module CycleAnalyticsHelpers
       protected: false)
   end
 
-  def mock_gitaly_multi_action_dates(raw_repository)
-    allow(raw_repository).to receive(:multi_action).and_wrap_original do |m, *args|
-      new_date = Time.now
+  def mock_gitaly_multi_action_dates(repository, commit_time)
+    allow(repository.raw).to receive(:multi_action).and_wrap_original do |m, *args|
+      new_date = commit_time || Time.now
       branch_update = m.call(*args)
 
       if branch_update.newrev
         _, opts = args
-        commit = raw_repository.commit(branch_update.newrev).rugged_commit
+
+        commit = rugged_repo(repository).rev_parse(branch_update.newrev)
+
         branch_update.newrev = commit.amend(
           update_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{opts[:branch_name]}",
           author: commit.author.merge(time: new_date),

@@ -1,26 +1,23 @@
+# frozen_string_literal: true
+
 class ExpirePipelineCacheWorker
   include ApplicationWorker
   include PipelineQueue
 
   queue_namespace :pipeline_cache
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(pipeline_id)
     pipeline = Ci::Pipeline.find_by(id: pipeline_id)
     return unless pipeline
 
-    project = pipeline.project
     store = Gitlab::EtagCaching::Store.new
 
-    store.touch(project_pipelines_path(project))
-    store.touch(project_pipeline_path(project, pipeline))
-    store.touch(commit_pipelines_path(project, pipeline.commit)) unless pipeline.commit.nil?
-    store.touch(new_merge_request_pipelines_path(project))
-    each_pipelines_merge_request_path(project, pipeline) do |path|
-      store.touch(path)
-    end
+    update_etag_cache(pipeline, store)
 
     Gitlab::Cache::Ci::ProjectPipelineStatus.update_for_pipeline(pipeline)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -45,6 +42,25 @@ class ExpirePipelineCacheWorker
       path = Gitlab::Routing.url_helpers.pipelines_project_merge_request_path(project, merge_request, format: :json)
 
       yield(path)
+    end
+  end
+
+  # Updates ETag caches of a pipeline.
+  #
+  # This logic resides in a separate method so that EE can more easily extend
+  # it.
+  #
+  # @param [Ci::Pipeline] pipeline
+  # @param [Gitlab::EtagCaching::Store] store
+  def update_etag_cache(pipeline, store)
+    project = pipeline.project
+
+    store.touch(project_pipelines_path(project))
+    store.touch(project_pipeline_path(project, pipeline))
+    store.touch(commit_pipelines_path(project, pipeline.commit)) unless pipeline.commit.nil?
+    store.touch(new_merge_request_pipelines_path(project))
+    each_pipelines_merge_request_path(project, pipeline) do |path|
+      store.touch(path)
     end
   end
 end

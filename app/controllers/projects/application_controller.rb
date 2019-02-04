@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class Projects::ApplicationController < ApplicationController
+  include CookiesHelper
   include RoutableActions
+  include ProjectUnauthorized
   include ChecksCollaboration
 
   skip_before_action :authenticate_user!
@@ -18,7 +22,7 @@ class Projects::ApplicationController < ApplicationController
     path = File.join(params[:namespace_id], params[:project_id] || params[:id])
     auth_proc = ->(project) { !project.pending_delete? }
 
-    @project = find_routable!(Project, path, extra_authorization_proc: auth_proc)
+    @project = find_routable!(Project, path, extra_authorization_proc: auth_proc, not_found_or_authorized_proc: project_unauthorized_proc)
   end
 
   def build_canonical_path(project)
@@ -61,7 +65,7 @@ class Projects::ApplicationController < ApplicationController
   def require_non_empty_project
     # Be sure to return status code 303 to avoid a double DELETE:
     # http://api.rubyonrails.org/classes/ActionController/Redirecting.html
-    redirect_to project_path(@project), status: 303 if @project.empty_repo?
+    redirect_to project_path(@project), status: :see_other if @project.empty_repo?
   end
 
   def require_branch_head
@@ -74,7 +78,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def apply_diff_view_cookie!
-    cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
+    set_secure_cookie(:diff_view, params.delete(:view), permanent: true) if params[:view].present?
   end
 
   def require_pages_enabled!

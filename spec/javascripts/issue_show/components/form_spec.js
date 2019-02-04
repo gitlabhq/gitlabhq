@@ -4,7 +4,7 @@ import formComponent from '~/issue_show/components/form.vue';
 describe('Inline edit form component', () => {
   let vm;
 
-  beforeEach((done) => {
+  beforeEach(done => {
     const Component = Vue.extend(formComponent);
 
     vm = new Component({
@@ -15,6 +15,7 @@ describe('Inline edit form component', () => {
           description: 'a',
           lockedWarningVisible: false,
         },
+        issuableType: 'issue',
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         projectPath: '/',
@@ -26,36 +27,28 @@ describe('Inline edit form component', () => {
   });
 
   it('does not render template selector if no templates exist', () => {
-    expect(
-      vm.$el.querySelector('.js-issuable-selector-wrap'),
-    ).toBeNull();
+    expect(vm.$el.querySelector('.js-issuable-selector-wrap')).toBeNull();
   });
 
-  it('renders template selector when templates exists', (done) => {
+  it('renders template selector when templates exists', done => {
     vm.issuableTemplates = ['test'];
 
     Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.js-issuable-selector-wrap'),
-      ).not.toBeNull();
+      expect(vm.$el.querySelector('.js-issuable-selector-wrap')).not.toBeNull();
 
       done();
     });
   });
 
   it('hides locked warning by default', () => {
-    expect(
-      vm.$el.querySelector('.alert'),
-    ).toBeNull();
+    expect(vm.$el.querySelector('.alert')).toBeNull();
   });
 
-  it('shows locked warning if formState is different', (done) => {
+  it('shows locked warning if formState is different', done => {
     vm.formState.lockedWarningVisible = true;
 
     Vue.nextTick(() => {
-      expect(
-        vm.$el.querySelector('.alert'),
-      ).not.toBeNull();
+      expect(vm.$el.querySelector('.alert')).not.toBeNull();
 
       done();
     });

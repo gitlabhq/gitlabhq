@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class BaseService < ::IssuableBaseService
     def create_note(merge_request, state = merge_request.state)
@@ -38,8 +40,8 @@ module MergeRequests
     def filter_params(merge_request)
       super
 
-      unless merge_request.can_allow_maintainer_to_push?(current_user)
-        params.delete(:allow_maintainer_to_push)
+      unless merge_request.can_allow_collaboration?(current_user)
+        params.delete(:allow_collaboration)
       end
     end
 
@@ -52,14 +54,34 @@ module MergeRequests
         merge_request, merge_request.project, current_user, merge_request.assignee)
     end
 
+    def create_merge_request_pipeline(merge_request, user)
+      return unless Feature.enabled?(:ci_merge_request_pipeline,
+                                     merge_request.source_project,
+                                     default_enabled: true)
+
+      ##
+      # UpdateMergeRequestsWorker could be retried by an exception.
+      # MR pipelines should not be recreated in such case.
+      return if merge_request.merge_request_pipeline_exists?
+
+      Ci::CreatePipelineService
+        .new(merge_request.source_project, user, ref: merge_request.source_branch)
+        .execute(:merge_request,
+                 ignore_skip_ci: true,
+                 save_on_errors: false,
+                 merge_request: merge_request)
+    end
+
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
+    # rubocop: disable CodeReuse/ActiveRecord
     def merge_requests_for(source_branch, mr_states: [:opened])
-      MergeRequest
+      @project.source_of_merge_requests
         .with_state(mr_states)
-        .where(source_branch: source_branch, source_project_id: @project.id)
-        .preload(:source_project) # we don't need a #includes since we're just preloading for the #select
+        .where(source_branch: source_branch)
+        .preload(:source_project) # we don't need #includes since we're just preloading for the #select
         .select(&:source_project)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def pipeline_merge_requests(pipeline)
       merge_requests_for(pipeline.ref).each do |merge_request|

@@ -29,7 +29,7 @@ You can either use the user interface (UI), or connect your local computer
 with GitLab [through the command line](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
 
 To configure [GitLab CI/CD](../../../ci/README.md) to build, test, and deploy
-you code, add a file called [.`gitlab-ci.yml`](../../../ci/quick_start/README.md)
+you code, add a file called [`.gitlab-ci.yml`](../../../ci/quick_start/README.md)
 to your repository's root.
 
 **From the user interface:**
@@ -52,6 +52,46 @@ To get started with the command line, please read through the
 ### Find files
 
 Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
+
+### Supported markup languages and extensions
+
+GitLab supports a number of markup languages (sometimes called [lightweight
+markup languages](https://en.wikipedia.org/wiki/Lightweight_markup_language))
+that you can use for the content of your files in a repository. They are mostly
+used for documentation purposes.
+
+Just pick the right extension for your files and GitLab will render them
+according to the markup language.
+
+| Markup language | Extensions |
+| --------------- | ---------- |
+| Plain text | `txt` |
+| [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
+| [reStructuredText](http://docutils.sourceforge.net/rst.html) | `rst` |
+| [Asciidoc](https://asciidoctor.org/docs/what-is-asciidoc/) | `adoc`, `ad`, `asciidoc` |
+| [Textile](https://txstyle.org/) | `textile` |
+| [rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
+| [Orgmode](https://orgmode.org/) | `org` |
+| [creole](http://www.wikicreole.org/) | `creole` |
+| [Mediawiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
+
+### Repository README and index files
+
+When a `README` or `index` file is present in a repository, its contents will be
+automatically pre-rendered by GitLab without opening it.
+
+They can either be plain text or have an extension of a
+[supported markup language](#supported-markup-languages-and-extensions):
+
+Some things to note about precedence:
+
+1. When both a `README` and an `index` file are present, the `README` will always
+   take precedence.
+1. When more than one file is present with different extensions, they are
+   ordered alphabetically, with the exception of a file without an extension
+   which will always be last in precedence. For example, `README.adoc` will take
+   precedence over `README.md`, and `README.rst` will take precedence over
+   `README`.
 
 ### Jupyter Notebook files
 
@@ -82,15 +122,16 @@ your implementation with your team.
 You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
-With [GitLab Starter](https://about.gitlab.com/products/), you can also request
+With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request
 [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
 
-To create, delete, and [branches](branches/index.md) via GitLab's UI:
+To create, delete, and view [branches](branches/index.md) via GitLab's UI:
 
 - [Default branches](branches/index.md#default-branch)
 - [Create a branch](web_editor.md#create-a-new-branch)
 - [Protected branches](../protected_branches.md#protected-branches)
 - [Delete merged branches](branches/index.md#delete-merged-branches)
+- [Branch filter search box](branches/index.md#branch-filter-search-box)
 
 Alternatively, you can use the
 [command line](../../../gitlab-basics/start-using-git.md#create-a-branch).
@@ -155,9 +196,25 @@ The repository graph displays visually the Git flow strategy used in that reposi
 
 Find it under your project's **Repository > Graph**.
 
+## Repository Languages
+
+For the default branch of each repository, GitLab will determine what programming languages
+were used and display this on the projects pages. If this information is missing, it will
+be added after updating the default branch on the project. This process can take up to 5
+minutes.
+
+![Repository Languages bar](img/repository_languages.png)
+
+Not all files are detected, among others; documentation,
+vendored code, and most markup languages are excluded. This behaviour can be
+adjusted by overriding the default. For example, to enable `.proto` files to be
+detected, add the following to `.gitattributes` in the root of your repository.
+
+> *.proto linguist-detectable=true
+
 ## Compare
 
-Select branches to compare and view the changes inline:
+Select branches to compare using the [branch filter search box](branches/index.md#branch-filter-search-box), then click the **Compare** button to view the changes inline:
 
 ![compare branches](img/compare_branches.png)
 
@@ -165,15 +222,23 @@ Find it under your project's **Repository > Compare**.
 
 ## Locked files
 
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
+> Available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 Lock your files to prevent any conflicting changes.
 
 [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/products/).
+[GitLab Premium](https://about.gitlab.com/pricing/).
 
 ## Repository's API
 
 You can access your repos via [repository API](../../../api/repositories.md).
+
+## Clone in Apple Xcode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45820) in GitLab 11.0
+
+Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
+in Xcode using the new **Open in Xcode** button, located next to the Git URL
+used for cloning your project. The button is only shown on macOS.
 
 [jupyter]: https://jupyter.org

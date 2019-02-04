@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
@@ -5,7 +7,7 @@ module Gitlab
     def initialize(current_user, project, query, repository_ref = nil, per_page: 20)
       @current_user = current_user
       @project = project
-      @repository_ref = repository_ref.presence || project.default_branch
+      @repository_ref = repository_ref.presence
       @query = query
       @per_page = per_page
     end
@@ -15,9 +17,9 @@ module Gitlab
       when 'notes'
         notes.page(page).per(per_page)
       when 'blobs'
-        Kaminari.paginate_array(blobs).page(page).per(per_page)
+        paginated_blobs(blobs, page)
       when 'wiki_blobs'
-        Kaminari.paginate_array(wiki_blobs).page(page).per(per_page)
+        paginated_blobs(wiki_blobs, page)
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
       else
@@ -29,6 +31,7 @@ module Gitlab
       @blobs_count ||= blobs.count
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_notes_count
       return @limited_notes_count if defined?(@limited_notes_count)
 
@@ -42,6 +45,7 @@ module Gitlab
 
       @limited_notes_count
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def wiki_blobs_count
       @wiki_blobs_count ||= wiki_blobs.count
@@ -49,36 +53,6 @@ module Gitlab
 
     def commits_count
       @commits_count ||= commits.count
-    end
-
-    def self.parse_search_result(result, project = nil)
-      ref = nil
-      filename = nil
-      basename = nil
-      data = ""
-      startline = 0
-
-      result.each_line.each_with_index do |line, index|
-        prefix ||= line.match(/^(?<ref>[^:]*):(?<filename>[^\x00]*)\x00(?<startline>\d+)\x00/)&.tap do |matches|
-          ref = matches[:ref]
-          filename = matches[:filename]
-          startline = matches[:startline]
-          startline = startline.to_i - index
-          extname = Regexp.escape(File.extname(filename))
-          basename = filename.sub(/#{extname}$/, '')
-        end
-
-        data << line.sub(prefix.to_s, '')
-      end
-
-      FoundBlob.new(
-        filename: filename,
-        basename: basename,
-        ref: ref,
-        startline: startline,
-        data: data,
-        project_id: project ? project.id : nil
-      )
     end
 
     def single_commit_result?
@@ -92,10 +66,18 @@ module Gitlab
 
     private
 
+    def paginated_blobs(blobs, page)
+      results = Kaminari.paginate_array(blobs).page(page).per(per_page)
+
+      Gitlab::Search::FoundBlob.preload_blobs(results)
+
+      results
+    end
+
     def blobs
       return [] unless Ability.allowed?(@current_user, :download_code, @project)
 
-      @blobs ||= Gitlab::FileFinder.new(project, repository_ref).find(query)
+      @blobs ||= Gitlab::FileFinder.new(project, repository_project_ref).find(query)
     end
 
     def wiki_blobs
@@ -103,10 +85,8 @@ module Gitlab
 
       @wiki_blobs ||= begin
         if project.wiki_enabled? && query.present?
-          project_wiki = ProjectWiki.new(project)
-
-          unless project_wiki.empty?
-            project_wiki.search_files(query)
+          unless project.wiki.empty?
+            Gitlab::WikiFileFinder.new(project, repository_wiki_ref).find(query)
           else
             []
           end
@@ -120,9 +100,11 @@ module Gitlab
       @notes ||= notes_finder(nil)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def notes_finder(type)
       NotesFinder.new(project, @current_user, search: query, target_type: type).execute.user.order('updated_at DESC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def commits
       @commits ||= find_commits(query)
@@ -148,6 +130,14 @@ module Gitlab
 
     def project_ids_relation
       project
+    end
+
+    def repository_project_ref
+      @repository_project_ref ||= repository_ref || project.default_branch
+    end
+
+    def repository_wiki_ref
+      @repository_wiki_ref ||= repository_ref || project.wiki.default_branch
     end
   end
 end

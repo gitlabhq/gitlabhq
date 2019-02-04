@@ -1,0 +1,46 @@
+%tr.alert{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+  %td{ style: "padding:10px;border-radius:3px;font-size:14px;line-height:1.3;text-align:center;overflow:hidden;background-color:#d22f57;color:#ffffff;" }
+    %table.img{ border: "0", cellpadding: "0", cellspacing: "0", style: "border-collapse:collapse;margin:0 auto;" }
+      %tbody
+        %tr
+          %td{ style: "vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;line-height:1;" }
+            %img{ alt: "✖", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-x-red-inverted.gif'), style: "display:block;", width: "13" }/
+          %td{ style: "vertical-align:middle;color:#ffffff;text-align:center;" }
+            A remote mirror update has failed.
+%tr.spacer{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+  %td{ style: "height:18px;font-size:18px;line-height:18px;" }
+    &nbsp;
+%tr.section{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+  %td{ style: "padding:0 15px;border:1px solid #ededed;border-radius:3px;overflow:hidden;" }
+    %table.table-info{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;" }
+      %tbody{ style: "font-size:15px;line-height:1.4;color:#8c8c8c;" }
+        %tr
+          %td{ style: "font-weight:300;padding:14px 0;margin:0;" } Project
+          %td{ style: "font-weight:500;padding:14px 0;margin:0;color:#333333;width:75%;padding-left:5px;" }
+            - namespace_url = @project.group ? group_url(@project.group) : user_url(@project.namespace.owner)
+            %a.muted{ href: namespace_url, style: "color:#333333;text-decoration:none;" }
+              = @project.owner_name
+            \/
+            %a.muted{ href: project_url(@project), style: "color:#333333;text-decoration:none;" }
+              = @project.name
+        %tr
+          %td{ style: "font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Remote mirror
+          %td{ style: "font-weight:500;padding:14px 0;margin:0;color:#333333;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+            = @remote_mirror.safe_url
+        %tr
+          %td{ style: "font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" } Last update at
+          %td{ style: "font-weight:500;padding:14px 0;margin:0;color:#333333;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
+            = @remote_mirror.last_update_at
+
+%tr.table-warning{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+  %td{ style: "border: 1px solid #ededed; border-bottom: 0; border-radius: 4px 4px 0 0; overflow: hidden; background-color: #fdf4f6; color: #d22852; font-size: 14px; line-height: 1.4; text-align: center; padding: 8px 16px;" }
+    Logs may contain sensitive data. Please consider before forwarding this email.
+%tr.section{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
+  %td{ style: "padding: 0 16px; border: 1px solid #ededed; border-radius: 4px; overflow: hidden; border-top: 0; border-radius: 0 0 4px 4px;" }
+    %table.builds{ border: "0", cellpadding: "0", cellspacing: "0", style: "width: 100%; border-collapse: collapse;" }
+      %tbody
+        %tr.build-log
+          %td{ colspan: "2", style: "padding: 0 0 16px;" }
+          %pre{ style: "font-family: Monaco,'Lucida Console','Courier New',Courier,monospace; background-color: #fafafa; border-radius: 4px; overflow: hidden; white-space: pre-wrap; word-break: break-all; font-size:13px; line-height: 1.4; padding: 16px 8px; color: #333333; margin: 0;" }
+            = @remote_mirror.last_error
+

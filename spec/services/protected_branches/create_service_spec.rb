@@ -6,8 +6,8 @@ describe ProtectedBranches::CreateService do
   let(:params) do
     {
       name: 'master',
-      merge_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }],
-      push_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }]
+      merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
+      push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }]
     }
   end
 
@@ -16,8 +16,8 @@ describe ProtectedBranches::CreateService do
 
     it 'creates a new protected branch' do
       expect { service.execute }.to change(ProtectedBranch, :count).by(1)
-      expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
-      expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+      expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+      expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
     end
 
     context 'when user does not have permission' do

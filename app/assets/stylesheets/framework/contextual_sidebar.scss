@@ -9,8 +9,7 @@
     padding-left: $contextual-sidebar-width;
   }
 
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded
-    .issuable-sidebar-header {
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
     padding: 10px 0 15px;
   }
 }
@@ -26,19 +25,25 @@
   margin-right: 2px;
   width: $contextual-sidebar-width;
 
-  a {
+  > a,
+  > button {
     transition: padding $sidebar-transition-duration;
     font-weight: $gl-font-weight-bold;
     display: flex;
+    width: 100%;
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
-  }
+    background-color: transparent;
+    border: 0;
+    text-align: left;
 
-  &:hover,
-  a:hover {
-    background-color: $link-hover-background;
-    color: $gl-text-color;
+    &:hover,
+    &:focus {
+      background-color: $link-hover-background;
+      color: $gl-text-color;
+      outline: 0;
+    }
   }
 
   .avatar-container {
@@ -49,6 +54,11 @@
   .sidebar-context-title {
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &.text-secondary {
+      font-weight: normal;
+      font-size: 0.8em;
+    }
   }
 }
 
@@ -62,22 +72,20 @@
 }
 
 .nav-sidebar {
-  transition: width $sidebar-transition-duration,
-    left $sidebar-transition-duration;
+  transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
   position: fixed;
-  z-index: 400;
+  z-index: 600;
   width: $contextual-sidebar-width;
   top: $header-height;
   bottom: 0;
   left: 0;
   background-color: $gray-light;
-  box-shadow: inset -2px 0 0 $border-color;
+  box-shadow: inset -1px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
 
   &:not(.sidebar-collapsed-desktop) {
     @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
-      box-shadow: inset -2px 0 0 $border-color,
-        2px 1px 3px $dropdown-shadow-color;
+      box-shadow: inset -1px 0 0 $border-color, 2px 1px 3px $dropdown-shadow-color;
     }
   }
 
@@ -103,7 +111,7 @@
     }
 
     .avatar-container {
-      margin-right: 0;
+      margin: 0 auto;
     }
   }
 
@@ -208,7 +216,7 @@
   > li {
     > a {
       @include media-breakpoint-up(sm) {
-        margin-right: 2px;
+        margin-right: 1px;
       }
 
       &:hover {
@@ -218,7 +226,7 @@
 
     &.is-showing-fly-out {
       > a {
-        margin-right: 2px;
+        margin-right: 1px;
       }
 
       .sidebar-sub-level-items {
@@ -253,7 +261,7 @@
             height: 1px;
             margin: 4px -1px;
             padding: 0;
-            background-color: $dropdown-divider-color;
+            background-color: $dropdown-divider-bg;
           }
 
           > .active {
@@ -311,18 +319,18 @@
 
 .toggle-sidebar-button,
 .close-nav-button {
-  width: $contextual-sidebar-width - 2px;
+  width: $contextual-sidebar-width - 1px;
   transition: width $sidebar-transition-duration;
   position: fixed;
+  height: $toggle-sidebar-height;
   bottom: 0;
-  padding: $gl-padding;
+  padding: 0 $gl-padding;
   background-color: $gray-light;
   border: 0;
-  border-top: 2px solid $border-color;
+  border-top: 1px solid $border-color;
   color: $gl-text-color-secondary;
   display: flex;
   align-items: center;
-  line-height: 1;
 
   svg {
     margin-right: 8px;
@@ -373,7 +381,7 @@
 
   .toggle-sidebar-button {
     padding: 16px;
-    width: $contextual-sidebar-collapsed-width - 2px;
+    width: $contextual-sidebar-collapsed-width - 1px;
 
     .collapse-text,
     .icon-angle-double-left {

@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class ExternalIssue
   include Referable
+
+  attr_reader :project
 
   def initialize(issue_identifier, project)
     @issue_identifier, @project = issue_identifier, project
@@ -30,12 +34,8 @@ class ExternalIssue
     [self.class, to_s].hash
   end
 
-  def project
-    @project
-  end
-
   def project_id
-    @project.id
+    project.id
   end
 
   def to_reference(_from = nil, full: nil)

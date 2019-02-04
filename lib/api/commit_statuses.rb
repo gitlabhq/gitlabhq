@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'mime/types'
 
 module API
@@ -5,7 +7,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       include PaginationParams
 
       before { authenticate! }
@@ -21,12 +23,13 @@ module API
         optional :all,   type: String, desc: 'Show all statuses, default: false'
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/repository/commits/:sha/statuses' do
         authorize!(:read_commit_status, user_project)
 
         not_found!('Commit') unless user_project.commit(params[:sha])
 
-        pipelines = user_project.pipelines.where(sha: params[:sha])
+        pipelines = user_project.ci_pipelines.where(sha: params[:sha])
         statuses = ::CommitStatus.where(pipeline: pipelines)
         statuses = statuses.latest unless to_boolean(params[:all])
         statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
@@ -34,6 +37,7 @@ module API
         statuses = statuses.where(name: params[:name]) if params[:name].present?
         present paginate(statuses), with: Entities::CommitStatus
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Post status to a commit' do
         success Entities::CommitStatus
@@ -49,6 +53,7 @@ module API
         optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"'
         optional :coverage,    type: Float,   desc: 'The total code coverage'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
 
@@ -70,7 +75,7 @@ module API
 
         pipeline = @project.pipeline_for(ref, commit.sha)
         unless pipeline
-          pipeline = @project.pipelines.create!(
+          pipeline = @project.ci_pipelines.create!(
             source: :external,
             sha: commit.sha,
             ref: ref,
@@ -111,13 +116,14 @@ module API
           end
 
           MergeRequest.where(source_project: @project, source_branch: ref)
-            .update_all(head_pipeline_id: pipeline) if pipeline.latest?
+            .update_all(head_pipeline_id: pipeline.id) if pipeline.latest?
 
           present status, with: Entities::CommitStatus
         rescue StateMachines::InvalidTransition => e
           render_api_error!(e.message, 400)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

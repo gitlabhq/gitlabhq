@@ -43,7 +43,7 @@ describe HelpController do
     context 'for Markdown formats' do
       context 'when requested file exists' do
         before do
-          get :show, path: 'ssh/README', format: :md
+          get :show, params: { path: 'ssh/README' }, format: :md
         end
 
         it 'assigns to @markdown' do
@@ -58,7 +58,7 @@ describe HelpController do
 
       context 'when requested file is missing' do
         it 'renders not found' do
-          get :show, path: 'foo/bar', format: :md
+          get :show, params: { path: 'foo/bar' }, format: :md
           expect(response).to be_not_found
         end
       end
@@ -68,7 +68,9 @@ describe HelpController do
       context 'when requested file exists' do
         it 'renders the raw file' do
           get :show,
-              path: 'user/project/img/labels_default',
+              params: {
+                path: 'user/project/img/labels_default'
+              },
               format: :png
           expect(response).to be_success
           expect(response.content_type).to eq 'image/png'
@@ -79,7 +81,9 @@ describe HelpController do
       context 'when requested file is missing' do
         it 'renders not found' do
           get :show,
-              path: 'foo/bar',
+              params: {
+                path: 'foo/bar'
+              },
               format: :png
           expect(response).to be_not_found
         end
@@ -89,7 +93,9 @@ describe HelpController do
     context 'for other formats' do
       it 'always renders not found' do
         get :show,
-            path: 'ssh/README',
+            params: {
+              path: 'ssh/README'
+            },
             format: :foo
         expect(response).to be_not_found
       end

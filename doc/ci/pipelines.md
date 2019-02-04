@@ -3,13 +3,13 @@
 > Introduced in GitLab 8.8.
 
 NOTE: **Note:**
-If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
 ## Pipelines
 
-A pipeline is a group of [jobs][] that get executed in [stages][](batches).
+A pipeline is a group of [jobs] that get executed in [stages].
 All of the jobs in a stage are executed in parallel (if there are enough
 concurrent [Runners]), and if they all succeed, the pipeline moves on to the
 next stage. If one of the jobs fails, the next stage is not (usually)
@@ -27,23 +27,23 @@ GitLab capitalizes the stages' names when shown in the [pipeline graphs](#pipeli
 
 There are three types of pipelines that often use the single shorthand of "pipeline". People often talk about them as if each one is "the" pipeline, but really, they're just pieces of a single, comprehensive pipeline.
 
-![Types of Pipelines](img/types-of-pipelines.svg)
+![Types of Pipelines](img/types-of-pipelines.png)
 
-1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`
-2. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production
-3. **Project Pipeline**: Cross-project CI dependencies [triggered via API][triggers], particularly for micro-services, but also for complicated build dependencies: e.g. api -> front-end, ce/ee -> omnibus.
+1. **CI Pipeline**: Build and test stages defined in `.gitlab-ci.yml`.
+1. **Deploy Pipeline**: Deploy stage(s) defined in `.gitlab-ci.yml` The flow of deploying code to servers through various stages: e.g. development to staging to production.
+1. **Project Pipeline**: Cross-project CI dependencies [triggered via API][triggers], particularly for micro-services, but also for complicated build dependencies: e.g. api -> front-end, ce/ee -> omnibus.
 
 ## Development workflows
 
 Pipelines accommodate several development workflows:
 
-1. **Branch Flow** (e.g. different branch for dev, qa, staging, production)
-2. **Trunk-based Flow** (e.g. feature branches and single master branch, possibly with tags for releases)
-3. **Fork-based Flow** (e.g. merge requests come from forks)
+1. **Branch Flow** (e.g. different branch for dev, qa, staging, production).
+1. **Trunk-based Flow** (e.g. feature branches and single master branch, possibly with tags for releases).
+1. **Fork-based Flow** (e.g. merge requests come from forks).
 
 Example continuous delivery flow:
 
-![CD Flow](img/pipelines-goal.svg)
+![CD Flow](img/pipelines-goal.png)
 
 ## Jobs
 
@@ -56,6 +56,16 @@ Pipelines are defined in `.gitlab-ci.yml` by specifying [jobs] that run in
 [stages].
 
 See the reference [documentation for jobs](yaml/README.md#jobs).
+
+## Manually executing pipelines
+
+Pipelines can be manually executed, with predefined or manually-specified [variables](variables/README.md).
+
+To execute a pipeline manually:
+
+1. Navigate to your project's **CI/CD > Pipelines**.
+1. Click on the **Run Pipeline** button.
+1. Select the branch to run the pipeline for and enter any environment variables required for the pipeline run.
 
 ## Seeing pipeline status
 
@@ -112,9 +122,9 @@ Then, there is the pipeline mini graph which takes less space and can give you a
 quick glance if all jobs pass or something failed. The pipeline mini graph can
 be found when you visit:
 
-- the pipelines index page
-- a single commit page
-- a merge request page
+- The pipelines index page.
+- A single commit page.
+- A merge request page.
 
 That way, you can see all related jobs for a single commit and the net result
 of each stage of your pipeline. This allows you to quickly see what failed and
@@ -142,9 +152,9 @@ jobs. Click to expand them.
 The basic requirements is that there are two numbers separated with one of
 the following (you can even use them interchangeably):
 
-- a space
-- a slash (`/`)
-- a colon (`:`)
+- A space (` `)
+- A slash (`/`)
+- A colon (`:`)
 
 >**Note:**
 More specifically, [it uses][regexp] this regular expression: `\d+[\s:\/\\]+\d+\s*`.
@@ -183,6 +193,18 @@ stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
 
+### Delay a particular job in the pipeline graph
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
+
+When you do not want to run a job immediately, you can [delay the job to run after a certain period](yaml/README.md#when-delayed).
+This is especially useful for timed incremental rollout that new code is rolled out gradually.
+For example, if you start rolling out new code and users do not experience trouble, GitLab automatically completes the deployment from 0% to 100%.
+Alternatively, if you start rolling out and you noticed that a few users experience trouble with the version,
+you can stop the timed incremental rollout by canceling the pipeline, and [rolling](environments.md#rolling-back-changes) it back to the stable version.
+
+![Pipelines example](img/pipeline_incremental_rollout.png)
+
 ### Ordering of jobs in pipeline graphs
 
 **Regular pipeline graph**
@@ -201,6 +223,7 @@ by name. The order of severity is:
 - pending
 - running
 - manual
+- scheduled
 - canceled
 - success
 - skipped
@@ -218,9 +241,9 @@ So each job would be represented as a `Period`, which consists of
 `Period#first` as when the job started and `Period#last` as when the
 job was finished. A simple example here would be:
 
-* A (1, 3)
-* B (2, 4)
-* C (6, 7)
+- A (1, 3)
+- B (2, 4)
+- C (6, 7)
 
 Here A begins from 1, and ends to 3. B begins from 2, and ends to 4.
 C begins from 6, and ends to 7. Visually it could be viewed as:
@@ -252,13 +275,14 @@ A strict security model is enforced when pipelines are executed on
 The following actions are allowed on protected branches only if the user is
 [allowed to merge or push](../user/project/protected_branches.md#using-the-allowed-to-merge-and-allowed-to-push-settings)
 on that specific branch:
-- run **manual pipelines** (using Web UI or Pipelines API)
-- run **scheduled pipelines**
-- run pipelines using **triggers**
-- trigger **manual actions** on existing pipelines
-- **retry/cancel** existing jobs (using Web UI or Pipelines API)
 
-**Secret variables** marked as **protected** are accessible only to jobs that
+- Run **manual pipelines** (using [Web UI](#manually-executing-pipelines) or Pipelines API).
+- Run **scheduled pipelines**.
+- Run pipelines using **triggers**.
+- Trigger **manual actions** on existing pipelines.
+- **Retry/cancel** existing jobs (using Web UI or Pipelines API).
+
+**Variables** marked as **protected** are accessible only to jobs that
 run on protected branches, avoiding untrusted users to get unintended access to
 sensitive information like deployment credentials and tokens.
 
@@ -270,7 +294,7 @@ runners will not use regular runners, they must be tagged accordingly.
 
 [jobs]: #jobs
 [jobs-yaml]: yaml/README.md#jobs
-[manual]: yaml/README.md#manual
+[manual]: yaml/README.md#whenmanual
 [env-manual]: environments.md#manually-deploying-to-environments
 [stages]: yaml/README.md#stages
 [runners]: runners/README.html

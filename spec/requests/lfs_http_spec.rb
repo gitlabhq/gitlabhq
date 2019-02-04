@@ -63,7 +63,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS disabled globally' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
       end
 
@@ -79,7 +79,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with a 501 message on download' do
-          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", params: {}, headers: headers
 
           expect(response).to have_gitlab_http_status(501)
         end
@@ -97,7 +97,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with a 501 message on download' do
-          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", params: {}, headers: headers
 
           expect(response).to have_gitlab_http_status(501)
         end
@@ -106,7 +106,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS enabled globally' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         enable_lfs
       end
 
@@ -123,7 +123,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with a 403 message on download' do
-          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", params: {}, headers: headers
 
           expect(response).to have_gitlab_http_status(403)
           expect(json_response).to include('message' => 'Access forbidden. Check your access level.')
@@ -143,7 +143,7 @@ describe 'Git LFS API and storage' do
         end
 
         it 'responds with a 200 message on download' do
-          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", params: {}, headers: headers
 
           expect(response).to have_gitlab_http_status(200)
         end
@@ -172,7 +172,7 @@ describe 'Git LFS API and storage' do
       let(:authorization) { authorize_user }
 
       before do
-        get "#{project.http_url_to_repo}/info/lfs/objects/#{sample_oid}", nil, headers
+        get "#{project.http_url_to_repo}/info/lfs/objects/#{sample_oid}", params: {}, headers: headers
       end
 
       it_behaves_like 'a deprecated'
@@ -197,7 +197,7 @@ describe 'Git LFS API and storage' do
       enable_lfs
       update_permissions
       before_get
-      get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+      get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", params: {}, headers: headers
     end
 
     context 'and request comes from gitlab-workhorse' do
@@ -236,7 +236,7 @@ describe 'Git LFS API and storage' do
 
           context 'and does have project access' do
             let(:update_permissions) do
-              project.add_master(user)
+              project.add_maintainer(user)
               project.lfs_objects << lfs_object
             end
 
@@ -293,7 +293,7 @@ describe 'Git LFS API and storage' do
 
           context 'when user allowed' do
             let(:update_permissions) do
-              project.add_master(user)
+              project.add_maintainer(user)
               project.lfs_objects << lfs_object
             end
 
@@ -575,6 +575,40 @@ describe 'Git LFS API and storage' do
         end
       end
 
+      context 'when using Deploy Tokens' do
+        let(:project) { create(:project, :repository) }
+        let(:authorization) { authorize_deploy_token }
+        let(:update_user_permissions) { nil }
+        let(:role) { nil }
+        let(:update_lfs_permissions) do
+          project.lfs_objects << lfs_object
+        end
+
+        context 'when Deploy Token is valid' do
+          let(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+          it_behaves_like 'an authorized requests'
+        end
+
+        context 'when Deploy Token is not valid' do
+          let(:deploy_token) { create(:deploy_token, projects: [project], read_repository: false) }
+
+          it 'responds with access denied' do
+            expect(response).to have_gitlab_http_status(401)
+          end
+        end
+
+        context 'when Deploy Token is not related to the project' do
+          let(:another_project) { create(:project, :repository) }
+          let(:deploy_token) { create(:deploy_token, projects: [another_project]) }
+
+          it 'responds with access forbidden' do
+            # We render 404, to prevent data leakage about existence of the project
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+      end
+
       context 'when build is authorized as' do
         let(:authorization) { authorize_ci_project }
 
@@ -698,7 +732,7 @@ describe 'Git LFS API and storage' do
           expect(json_response['objects'].first['oid']).to eq(sample_oid)
           expect(json_response['objects'].first['size']).to eq(sample_size)
           expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
-          expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+          expect(json_response['objects'].first['actions']['upload']['header']).to eq({ 'Authorization' => authorization, 'Content-Type' => 'application/octet-stream' })
         end
       end
 
@@ -727,7 +761,7 @@ describe 'Git LFS API and storage' do
               expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
               expect(lfs_object.projects.pluck(:id)).to include(other_project.id)
               expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
-              expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+              expect(json_response['objects'].first['actions']['upload']['header']).to eq({ 'Authorization' => authorization, 'Content-Type' => 'application/octet-stream' })
             end
           end
 
@@ -762,7 +796,7 @@ describe 'Git LFS API and storage' do
               expect(json_response['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
               expect(json_response['objects'].first['size']).to eq(1575078)
               expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{project.http_url_to_repo}/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-              expect(json_response['objects'].first['actions']['upload']['header']).to eq("Authorization" => authorization)
+              expect(json_response['objects'].first['actions']['upload']['header']).to eq({ 'Authorization' => authorization, 'Content-Type' => 'application/octet-stream' })
 
               expect(json_response['objects'].last['oid']).to eq(sample_oid)
               expect(json_response['objects'].last['size']).to eq(sample_size)
@@ -829,7 +863,7 @@ describe 'Git LFS API and storage' do
       context 'when user is not authenticated' do
         context 'when user has push access' do
           let(:update_user_permissions) do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it 'responds with status 401' do
@@ -874,7 +908,7 @@ describe 'Git LFS API and storage' do
 
     before do
       allow(Gitlab::Database).to receive(:read_only?) { true }
-      project.add_master(user)
+      project.add_maintainer(user)
       enable_lfs
     end
 
@@ -1021,6 +1055,7 @@ describe 'Git LFS API and storage' do
                     expect(json_response['RemoteObject']).to have_key('GetURL')
                     expect(json_response['RemoteObject']).to have_key('StoreURL')
                     expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                    expect(json_response['RemoteObject']).not_to have_key('MultipartUpload')
                     expect(json_response['LfsOid']).to eq(sample_oid)
                     expect(json_response['LfsSize']).to eq(sample_size)
                   end
@@ -1048,6 +1083,12 @@ describe 'Git LFS API and storage' do
 
             it 'lfs object is linked to the project' do
               expect(lfs_object.projects.pluck(:id)).to include(project.id)
+            end
+          end
+
+          context 'and request to finalize the upload is not sent by gitlab-workhorse' do
+            it 'fails with a JWT decode error' do
+              expect { put_finalize(lfs_tmp_file, verified: false) }.to raise_error(JWT::DecodeError)
             end
           end
 
@@ -1088,7 +1129,7 @@ describe 'Git LFS API and storage' do
 
                 context 'with valid remote_id' do
                   before do
-                    fog_connection.directories.get('lfs-objects').files.create(
+                    fog_connection.directories.new(key: 'lfs-objects').files.create(
                       key: 'tmp/uploads/12312300',
                       body: 'content'
                     )
@@ -1306,14 +1347,19 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         before do
-          second_project.add_master(user)
+          second_project.add_maintainer(user)
           upstream_project.lfs_objects << lfs_object
         end
 
         context 'when pushing the same lfs object to the second project' do
           before do
-            put "#{second_project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", nil,
-                headers.merge('X-Gitlab-Lfs-Tmp' => lfs_tmp_file).compact
+            finalize_headers = headers
+              .merge('X-Gitlab-Lfs-Tmp' => lfs_tmp_file)
+              .merge(workhorse_internal_api_request_header)
+
+            put "#{second_project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}",
+                params: {},
+                headers: finalize_headers
           end
 
           it 'responds with status 200' do
@@ -1331,10 +1377,10 @@ describe 'Git LFS API and storage' do
       authorize_headers = headers
       authorize_headers.merge!(workhorse_internal_api_request_header) if verified
 
-      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, authorize_headers
+      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", params: {}, headers: authorize_headers
     end
 
-    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, args: {})
+    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, verified: true, args: {})
       upload_path = LfsObjectUploader.workhorse_local_upload_path
       file_path = upload_path + '/' + lfs_tmp if lfs_tmp
 
@@ -1348,11 +1394,14 @@ describe 'Git LFS API and storage' do
         'file.name' => File.basename(file_path)
       }
 
-      put_finalize_with_args(args.merge(extra_args).compact)
+      put_finalize_with_args(args.merge(extra_args).compact, verified: verified)
     end
 
-    def put_finalize_with_args(args)
-      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", args, headers
+    def put_finalize_with_args(args, verified:)
+      finalize_headers = headers
+      finalize_headers.merge!(workhorse_internal_api_request_header) if verified
+
+      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", params: args, headers: finalize_headers
     end
 
     def lfs_tmp_file
@@ -1380,8 +1429,15 @@ describe 'Git LFS API and storage' do
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, Gitlab::LfsToken.new(user).token)
   end
 
+  def authorize_deploy_token
+    ActionController::HttpAuthentication::Basic.encode_credentials(deploy_token.username, deploy_token.token)
+  end
+
   def post_lfs_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE))
+    params = body.try(:to_json)
+    headers = (headers || {}).merge('Content-Type' => LfsRequest::CONTENT_TYPE)
+
+    post(url, params: params, headers: headers)
   end
 
   def json_response

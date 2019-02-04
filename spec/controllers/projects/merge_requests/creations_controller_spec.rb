@@ -16,7 +16,7 @@ describe Projects::MergeRequests::CreationsController do
   end
 
   before do
-    fork_project.add_master(user)
+    fork_project.add_maintainer(user)
     Projects::ForkService.new(project, user).execute(fork_project)
     sign_in(user)
   end
@@ -24,9 +24,58 @@ describe Projects::MergeRequests::CreationsController do
   describe 'GET new' do
     context 'merge request that removes a submodule' do
       it 'renders new merge request widget template' do
-        get :new, get_diff_params
+        get :new, params: get_diff_params
 
         expect(response).to be_success
+      end
+    end
+
+    context 'merge request with some commits' do
+      render_views
+
+      let(:large_diff_params) do
+        {
+          namespace_id: fork_project.namespace.to_param,
+          project_id: fork_project,
+          merge_request: {
+            source_branch: 'master',
+            target_branch: 'fix'
+          }
+        }
+      end
+
+      describe 'with artificial limits' do
+        before do
+          # Load MergeRequestdiff so stub_const won't override it with its own definition
+          # See https://github.com/rspec/rspec-mocks/issues/1079
+          stub_const("#{MergeRequestDiff}::COMMITS_SAFE_SIZE", 2)
+        end
+
+        it 'limits total commits' do
+          get :new, params: large_diff_params
+
+          expect(response).to be_success
+
+          total = assigns(:total_commit_count)
+          expect(assigns(:commits)).to be_an Array
+          expect(total).to be > 0
+          expect(assigns(:hidden_commit_count)).to be > 0
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.body).to match %r(<span class="commits-count">2 commits</span>)
+        end
+      end
+
+      it 'shows total commits' do
+        get :new, params: large_diff_params
+
+        expect(response).to be_success
+
+        total = assigns(:total_commit_count)
+        expect(assigns(:commits)).to be_an CommitCollection
+        expect(total).to be > 0
+        expect(assigns(:hidden_commit_count)).to eq(0)
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.body).to match %r(<span class="commits-count">#{total} commits</span>)
       end
     end
   end
@@ -36,7 +85,7 @@ describe Projects::MergeRequests::CreationsController do
       it 'does not assign diffs var' do
         allow_any_instance_of(MergeRequest).to receive(:can_be_created).and_return(false)
 
-        get :diffs, get_diff_params.merge(format: 'json')
+        get :diffs, params: get_diff_params.merge(format: 'json')
 
         expect(response).to be_success
         expect(assigns[:diffs]).to be_nil
@@ -52,7 +101,7 @@ describe Projects::MergeRequests::CreationsController do
     end
 
     it 'renders JSON including serialized pipelines' do
-      get :pipelines, get_diff_params.merge(format: 'json')
+      get :pipelines, params: get_diff_params.merge(format: 'json')
 
       expect(response).to be_ok
       expect(json_response).to have_key 'pipelines'
@@ -68,7 +117,7 @@ describe Projects::MergeRequests::CreationsController do
         format: 'json'
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { 'files/ruby/feature.rb' }
@@ -94,7 +143,7 @@ describe Projects::MergeRequests::CreationsController do
       let(:other_project) { create(:project, :repository) }
 
       before do
-        other_project.add_master(user)
+        other_project.add_maintainer(user)
       end
 
       context 'when the path exists in the diff' do
@@ -135,10 +184,12 @@ describe Projects::MergeRequests::CreationsController do
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { true }
 
       get :branch_to,
-          namespace_id: fork_project.namespace,
-          project_id: fork_project,
-          target_project_id: project.id,
-          ref: 'master'
+          params: {
+            namespace_id: fork_project.namespace,
+            project_id: fork_project,
+            target_project_id: project.id,
+            ref: 'master'
+          }
 
       expect(assigns(:commit)).not_to be_nil
       expect(response).to have_gitlab_http_status(200)
@@ -148,10 +199,12 @@ describe Projects::MergeRequests::CreationsController do
       expect(Ability).to receive(:allowed?).with(user, :read_project, project) { false }
 
       get :branch_to,
-          namespace_id: fork_project.namespace,
-          project_id: fork_project,
-          target_project_id: project.id,
-          ref: 'master'
+          params: {
+            namespace_id: fork_project.namespace,
+            project_id: fork_project,
+            target_project_id: project.id,
+            ref: 'master'
+          }
 
       expect(assigns(:commit)).to be_nil
       expect(response).to have_gitlab_http_status(200)

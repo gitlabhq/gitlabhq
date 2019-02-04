@@ -30,7 +30,7 @@ describe('MRWidgetAutoMergeFailed', () => {
     expect(vm.$el.querySelector('button').textContent.trim()).toEqual('Refresh');
   });
 
-  it('emits event and shows loading icon when button is clicked', (done) => {
+  it('emits event and shows loading icon when button is clicked', done => {
     spyOn(eventHub, '$emit');
     vm.$el.querySelector('button').click();
 
@@ -38,9 +38,7 @@ describe('MRWidgetAutoMergeFailed', () => {
 
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('button').getAttribute('disabled')).toEqual('disabled');
-      expect(
-        vm.$el.querySelector('button i').classList,
-      ).toContain('fa-spinner');
+      expect(vm.$el.querySelector('button i').classList).toContain('fa-spinner');
       done();
     });
   });

@@ -1,35 +1,44 @@
 <script>
-  import sanitize from 'sanitize-html';
-  import Prompt from '../prompt.vue';
+import sanitize from 'sanitize-html';
+import Prompt from '../prompt.vue';
 
-  export default {
-    components: {
-      prompt: Prompt,
+export default {
+  components: {
+    Prompt,
+  },
+  props: {
+    count: {
+      type: Number,
+      required: true,
     },
-    props: {
-      rawCode: {
-        type: String,
-        required: true,
-      },
+    rawCode: {
+      type: String,
+      required: true,
     },
-    computed: {
-      sanitizedOutput() {
-        return sanitize(this.rawCode, {
-          allowedTags: sanitize.defaults.allowedTags.concat([
-            'img', 'svg',
-          ]),
-          allowedAttributes: {
-            img: ['src'],
-          },
-        });
-      },
+    index: {
+      type: Number,
+      required: true,
     },
-  };
+  },
+  computed: {
+    sanitizedOutput() {
+      return sanitize(this.rawCode, {
+        allowedTags: sanitize.defaults.allowedTags.concat(['img', 'svg']),
+        allowedAttributes: {
+          img: ['src'],
+        },
+      });
+    },
+    showOutput() {
+      return this.index === 0;
+    },
+  },
+};
 </script>
 
 <template>
   <div class="output">
-    <prompt />
+    <prompt type="Out" :count="count" :show-output="showOutput" />
     <div v-html="sanitizedOutput"></div>
   </div>
 </template>

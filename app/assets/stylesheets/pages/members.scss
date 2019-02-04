@@ -4,7 +4,7 @@
 }
 
 .users-project-form {
-  .btn-create {
+  .btn-success {
     margin-right: 10px;
   }
 }
@@ -121,10 +121,6 @@
   background: transparent;
   border: 0;
   outline: 0;
-
-  @include media-breakpoint-up(sm) {
-    right: 160px;
-  }
 }
 
 .flex-project-members-panel {

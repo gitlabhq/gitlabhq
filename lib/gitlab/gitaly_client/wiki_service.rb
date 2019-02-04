@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stringio'
 
 module Gitlab
@@ -69,7 +71,7 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        GitalyClient.call(@repository.storage, :wiki_service, :wiki_delete_page, request)
+        GitalyClient.call(@repository.storage, :wiki_service, :wiki_delete_page, request, timeout: GitalyClient.medium_timeout)
       end
 
       def find_page(title:, version: nil, dir: nil)
@@ -80,14 +82,14 @@ module Gitlab
           directory: encode_binary(dir)
         )
 
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request, timeout: GitalyClient.fast_timeout)
 
         wiki_page_from_iterator(response)
       end
 
-      def get_all_pages
-        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request)
+      def get_all_pages(limit: 0)
+        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo, limit: limit)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request, timeout: GitalyClient.medium_timeout)
         pages = []
 
         loop do
@@ -110,10 +112,10 @@ module Gitlab
           repository: @gitaly_repo,
           page_path: encode_binary(page_path),
           page: options[:page] || 1,
-          per_page: options[:per_page] || Gollum::Page.per_page
+          per_page: options[:per_page] || Gitlab::Git::Wiki::DEFAULT_PAGINATION
         )
 
-        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request)
+        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request, timeout: GitalyClient.medium_timeout)
 
         versions = []
         stream.each do |message|
@@ -132,14 +134,14 @@ module Gitlab
           revision: encode_binary(revision)
         )
 
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_file, request)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_file, request, timeout: GitalyClient.fast_timeout)
         wiki_file = nil
 
         response.each do |message|
           next unless message.name.present? || wiki_file
 
           if wiki_file
-            wiki_file.raw_data << message.raw_data
+            wiki_file.raw_data = "#{wiki_file.raw_data}#{message.raw_data}"
           else
             wiki_file = GitalyClient::WikiFile.new(message.to_h)
             # All gRPC strings in a response are frozen, so we get
@@ -160,7 +162,7 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_formatted_data, request)
-        response.reduce("") { |memo, msg| memo << msg.data }
+        response.reduce([]) { |memo, msg| memo << msg.data }.join
       end
 
       private

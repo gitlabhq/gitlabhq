@@ -1,45 +1,58 @@
 {
-    "additionalProperties": false,
-    "properties": {
-        "created_at": {
-            "type": "string"
-        },
-        "id": {
-            "type": "integer"
-        },
-        "iid": {
-            "type": "integer"
-        },
-        "last?": {
-            "type": "boolean"
-        },
-        "ref": {
-            "additionalProperties": false,
-            "properties": {
-                "name": {
-                    "type": "string"
-                }
-            },
-            "required": [
-                "name"
-            ],
-            "type": "object"
-        },
-        "sha": {
-            "type": "string"
-        },
-        "tag": {
-            "type": "boolean"
-        }
+  "type": "object",
+  "required": [
+    "sha",
+    "created_at",
+    "iid",
+    "tag",
+    "last?",
+    "ref",
+    "id"
+  ],
+  "properties": {
+    "created_at": { "type": "string" },
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "last?": { "type": "boolean" },
+    "ref": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": { "type": "string" },
+        "ref_path": { "type": "string" }
+      },
+      "additionalProperties": false
     },
-    "required": [
-        "sha",
-        "created_at",
-        "iid",
-        "tag",
-        "last?",
-        "ref",
-        "id"
-    ],
-    "type": "object"
+    "sha": { "type": "string" },
+    "tag": { "type": "boolean" },
+    "user": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "entities/user.json" }
+      ]
+    },
+    "commit": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "entities/commit.json" }
+      ]
+    },
+    "deployable": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "job/job.json" }
+      ]
+    },
+    "manual_actions": {
+      "type": "array",
+      "items": { "$ref": "job/job.json" }
+    },
+    "scheduled_actions": {
+      "type": "array",
+      "items": { "$ref": "job/job.json" }
+    }
+  },
+  "additionalProperties": false
 }

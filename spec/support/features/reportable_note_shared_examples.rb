@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 shared_examples 'reportable note' do |type|
+  include MobileHelpers
   include NotesHelper
 
   let(:comment) { find("##{ActionView::RecordIdentifier.dom_id(note)}") }
@@ -19,9 +20,9 @@ shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    expect(dropdown).to have_link('Report as abuse', href: abuse_report_path)
+    expect(dropdown).to have_link('Report abuse to GitLab', href: abuse_report_path)
 
-    if type == 'issue'
+    if type == 'issue' || type == 'merge_request'
       expect(dropdown).to have_button('Delete comment')
     else
       expect(dropdown).to have_link('Delete comment', href: note_url(note, project))
@@ -32,13 +33,16 @@ shared_examples 'reportable note' do |type|
     dropdown = comment.find(more_actions_selector)
     open_dropdown(dropdown)
 
-    dropdown.click_link('Report as abuse')
+    dropdown.click_link('Report abuse to GitLab')
 
     expect(find('#user_name')['value']).to match(note.author.username)
     expect(find('#abuse_report_message')['value']).to match(noteable_note_url(note))
   end
 
   def open_dropdown(dropdown)
+    # make window wide enough that tooltip doesn't trigger horizontal scrollbar
+    resize_window(1200, 800)
+
     dropdown.find('.more-actions-toggle').click
     dropdown.find('.dropdown-menu li', match: :first)
   end

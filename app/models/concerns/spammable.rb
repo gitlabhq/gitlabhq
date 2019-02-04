@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Spammable
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def attr_spammable(attr, options = {})
       spammable_attrs << [attr.to_s, options]
     end

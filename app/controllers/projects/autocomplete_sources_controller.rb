@@ -1,44 +1,43 @@
-class Projects::AutocompleteSourcesController < Projects::ApplicationController
-  before_action :load_autocomplete_service, except: [:members]
+# frozen_string_literal: true
 
+class Projects::AutocompleteSourcesController < Projects::ApplicationController
   def members
     render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)
   end
 
   def issues
-    render json: @autocomplete_service.issues
+    render json: autocomplete_service.issues
   end
 
   def merge_requests
-    render json: @autocomplete_service.merge_requests
+    render json: autocomplete_service.merge_requests
   end
 
   def labels
-    render json: @autocomplete_service.labels(target)
+    render json: autocomplete_service.labels_as_hash(target)
   end
 
   def milestones
-    render json: @autocomplete_service.milestones
+    render json: autocomplete_service.milestones
   end
 
   def commands
-    render json: @autocomplete_service.commands(target, params[:type])
+    render json: autocomplete_service.commands(target, params[:type])
+  end
+
+  def snippets
+    render json: autocomplete_service.snippets
   end
 
   private
 
-  def load_autocomplete_service
-    @autocomplete_service = ::Projects::AutocompleteService.new(@project, current_user)
+  def autocomplete_service
+    @autocomplete_service ||= ::Projects::AutocompleteService.new(@project, current_user)
   end
 
   def target
-    case params[:type]&.downcase
-    when 'issue'
-      IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
-    when 'mergerequest'
-      MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
-    when 'commit'
-      @project.commit(params[:type_id])
-    end
+    QuickActions::TargetService
+      .new(project, current_user)
+      .execute(params[:type], params[:type_id])
   end
 end

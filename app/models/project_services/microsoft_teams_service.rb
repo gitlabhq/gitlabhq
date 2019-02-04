@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MicrosoftTeamsService < ChatNotificationService
   def title
     'Microsoft Teams Notification'
@@ -15,7 +17,7 @@ class MicrosoftTeamsService < ChatNotificationService
     'This service sends notifications about projects events to Microsoft Teams channels.<br />
     To set up this service:
     <ol>
-      <li><a href="https://msdn.microsoft.com/en-us/microsoft-teams/connectors">Getting started with 365 Office Connectors For Microsoft Teams</a>.</li>
+      <li><a href="https://docs.microsoft.com/en-us/microsoftteams/platform/concepts/connectors/connectors-using#setting-up-a-custom-incoming-webhook">Setup a custom Incoming Webhook using Office 365 Connectors For Microsoft Teams</a>.</li>
       <li>Paste the <strong>Webhook URL</strong> into the field below.</li>
       <li>Select events below to enable notifications.</li>
     </ol>'
@@ -44,7 +46,7 @@ class MicrosoftTeamsService < ChatNotificationService
   def notify(message, opts)
     MicrosoftTeams::Notifier.new(webhook).ping(
       title: message.project_name,
-      pretext: message.pretext,
+      summary: message.summary,
       activity: message.activity,
       attachments: message.attachments
     )

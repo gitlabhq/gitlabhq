@@ -29,6 +29,7 @@ describe('CopyAsGFM', () => {
     it('wraps pasted code when not already in code tags', () => {
       spyOn(window.gl.utils, 'insertText').and.callFake((el, textFunc) => {
         const insertedText = textFunc('This is code: ', '');
+
         expect(insertedText).toEqual('`code`');
       });
 
@@ -38,10 +39,68 @@ describe('CopyAsGFM', () => {
     it('does not wrap pasted code when already in code tags', () => {
       spyOn(window.gl.utils, 'insertText').and.callFake((el, textFunc) => {
         const insertedText = textFunc('This is code: `', '`');
+
         expect(insertedText).toEqual('code');
       });
 
       callPasteGFM();
+    });
+  });
+
+  describe('CopyAsGFM.copyGFM', () => {
+    // Stub getSelection to return a purpose-built object.
+    const stubSelection = (html, parentNode) => ({
+      getRangeAt: () => ({
+        commonAncestorContainer: { tagName: parentNode },
+        cloneContents: () => {
+          const fragment = document.createDocumentFragment();
+          const node = document.createElement('div');
+          node.innerHTML = html;
+          Array.from(node.childNodes).forEach(item => fragment.appendChild(item));
+          return fragment;
+        },
+      }),
+      rangeCount: 1,
+    });
+
+    const clipboardData = {
+      setData() {},
+    };
+
+    const simulateCopy = () => {
+      const e = {
+        originalEvent: {
+          clipboardData,
+        },
+        preventDefault() {},
+        stopPropagation() {},
+      };
+      CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
+      return clipboardData;
+    };
+
+    beforeEach(() => spyOn(clipboardData, 'setData'));
+
+    describe('list handling', () => {
+      it('uses correct gfm for unordered lists', () => {
+        const selection = stubSelection('<li>List Item1</li><li>List Item2</li>\n', 'UL');
+        spyOn(window, 'getSelection').and.returnValue(selection);
+        simulateCopy();
+
+        const expectedGFM = '* List Item1\n\n* List Item2';
+
+        expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
+      });
+
+      it('uses correct gfm for ordered lists', () => {
+        const selection = stubSelection('<li>List Item1</li><li>List Item2</li>\n', 'OL');
+        spyOn(window, 'getSelection').and.returnValue(selection);
+        simulateCopy();
+
+        const expectedGFM = '1. List Item1\n\n1. List Item2';
+
+        expect(clipboardData.setData).toHaveBeenCalledWith('text/x-gfm', expectedGFM);
+      });
     });
   });
 });

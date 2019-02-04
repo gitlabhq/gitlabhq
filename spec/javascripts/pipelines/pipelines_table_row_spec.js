@@ -4,7 +4,7 @@ import eventHub from '~/pipelines/event_hub';
 
 describe('Pipelines Table Row', () => {
   const jsonFixtureName = 'pipelines/pipelines.json';
-  const buildComponent = (pipeline) => {
+  const buildComponent = pipeline => {
     const PipelinesTableRowComponent = Vue.extend(tableRowComp);
     return new PipelinesTableRowComponent({
       el: document.querySelector('.test-dom-element'),
@@ -24,7 +24,7 @@ describe('Pipelines Table Row', () => {
   preloadFixtures(jsonFixtureName);
 
   beforeEach(() => {
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    const { pipelines } = getJSONFixture(jsonFixtureName);
 
     pipeline = pipelines.find(p => p.user !== null && p.commit !== null);
     pipelineWithoutAuthor = pipelines.find(p => p.user === null && p.commit !== null);
@@ -37,6 +37,7 @@ describe('Pipelines Table Row', () => {
 
   it('should render a table row', () => {
     component = buildComponent(pipeline);
+
     expect(component.$el.getAttribute('class')).toContain('gl-responsive-table-row');
   });
 
@@ -52,9 +53,9 @@ describe('Pipelines Table Row', () => {
     });
 
     it('should render status text', () => {
-      expect(
-        component.$el.querySelector('.table-section.commit-link a').textContent,
-      ).toContain(pipeline.details.status.text);
+      expect(component.$el.querySelector('.table-section.commit-link a').textContent).toContain(
+        pipeline.details.status.text,
+      );
     });
   });
 
@@ -78,11 +79,15 @@ describe('Pipelines Table Row', () => {
     describe('when a user is provided', () => {
       it('should render user information', () => {
         expect(
-          component.$el.querySelector('.table-section:nth-child(2) a:nth-child(3)').getAttribute('href'),
+          component.$el
+            .querySelector('.table-section:nth-child(2) a:nth-child(3)')
+            .getAttribute('href'),
         ).toEqual(pipeline.user.path);
 
         expect(
-          component.$el.querySelector('.table-section:nth-child(2) img').getAttribute('data-original-title'),
+          component.$el
+            .querySelector('.table-section:nth-child(2) .js-user-avatar-image-toolip')
+            .textContent.trim(),
         ).toEqual(pipeline.user.name);
       });
     });
@@ -93,6 +98,7 @@ describe('Pipelines Table Row', () => {
       component = buildComponent(pipeline);
 
       const commitLink = component.$el.querySelector('.branch-commit .commit-sha');
+
       expect(commitLink.getAttribute('href')).toEqual(pipeline.commit.commit_path);
     });
 
@@ -105,7 +111,9 @@ describe('Pipelines Table Row', () => {
       }
 
       const commitAuthorLink = commitAuthorElement.getAttribute('href');
-      const commitAuthorName = commitAuthorElement.querySelector('img.avatar').getAttribute('data-original-title');
+      const commitAuthorName = commitAuthorElement
+        .querySelector('.js-user-avatar-image-toolip')
+        .textContent.trim();
 
       return { commitAuthorElement, commitAuthorLink, commitAuthorName };
     };
@@ -145,14 +153,20 @@ describe('Pipelines Table Row', () => {
 
     it('should render an icon for each stage', () => {
       expect(
-        component.$el.querySelectorAll('.table-section:nth-child(4) .js-builds-dropdown-button').length,
+        component.$el.querySelectorAll('.table-section:nth-child(4) .js-builds-dropdown-button')
+          .length,
       ).toEqual(pipeline.details.stages.length);
     });
   });
 
   describe('actions column', () => {
+    const scheduledJobAction = {
+      name: 'some scheduled job',
+    };
+
     beforeEach(() => {
       const withActions = Object.assign({}, pipeline);
+      withActions.details.scheduled_actions = [scheduledJobAction];
       withActions.flags.cancelable = true;
       withActions.flags.retryable = true;
       withActions.cancel_path = '/cancel';
@@ -164,19 +178,23 @@ describe('Pipelines Table Row', () => {
     it('should render the provided actions', () => {
       expect(component.$el.querySelector('.js-pipelines-retry-button')).not.toBeNull();
       expect(component.$el.querySelector('.js-pipelines-cancel-button')).not.toBeNull();
+      const dropdownMenu = component.$el.querySelectorAll('.dropdown-menu');
+
+      expect(dropdownMenu).toContainText(scheduledJobAction.name);
     });
 
     it('emits `retryPipeline` event when retry button is clicked and toggles loading', () => {
-      eventHub.$on('retryPipeline', (endpoint) => {
+      eventHub.$on('retryPipeline', endpoint => {
         expect(endpoint).toEqual('/retry');
       });
 
       component.$el.querySelector('.js-pipelines-retry-button').click();
+
       expect(component.isRetrying).toEqual(true);
     });
 
     it('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
-      eventHub.$on('openConfirmationModal', (data) => {
+      eventHub.$once('openConfirmationModal', data => {
         expect(data.endpoint).toEqual('/cancel');
         expect(data.pipelineId).toEqual(pipeline.id);
       });
@@ -186,7 +204,8 @@ describe('Pipelines Table Row', () => {
 
     it('renders a loading icon when `cancelingPipeline` matches pipeline id', done => {
       component.cancelingPipeline = pipeline.id;
-      component.$nextTick()
+      component
+        .$nextTick()
         .then(() => {
           expect(component.isCancelling).toEqual(true);
         })

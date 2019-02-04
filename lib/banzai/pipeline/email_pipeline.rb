@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Pipeline
     class EmailPipeline < FullPipeline
@@ -9,7 +11,9 @@ module Banzai
 
       def self.transform_context(context)
         super(context).merge(
-          only_path: false
+          only_path: false,
+          emailable_links: true,
+          no_sourcepos: true
         )
       end
     end

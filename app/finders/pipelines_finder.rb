@@ -1,15 +1,22 @@
+# frozen_string_literal: true
+
 class PipelinesFinder
-  attr_reader :project, :pipelines, :params
+  attr_reader :project, :pipelines, :params, :current_user
 
   ALLOWED_INDEXED_COLUMNS = %w[id status ref user_id].freeze
 
-  def initialize(project, params = {})
+  def initialize(project, current_user, params = {})
     @project = project
-    @pipelines = project.pipelines
+    @current_user = current_user
+    @pipelines = project.all_pipelines
     @params = params
   end
 
   def execute
+    unless Ability.allowed?(current_user, :read_pipeline, project)
+      return Ci::Pipeline.none
+    end
+
     items = pipelines
     items = by_scope(items)
     items = by_status(items)
@@ -23,13 +30,17 @@ class PipelinesFinder
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def ids_for_ref(refs)
     pipelines.where(ref: refs).group(:ref).select('max(id)')
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def from_ids(ids)
     pipelines.unscoped.where(id: ids)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def branches
     project.repository.branch_names
@@ -56,12 +67,15 @@ class PipelinesFinder
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_status(items)
     return items unless HasStatus::AVAILABLE_STATUSES.include?(params[:status])
 
     items.where(status: params[:status])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_ref(items)
     if params[:ref].present?
       items.where(ref: params[:ref])
@@ -69,7 +83,9 @@ class PipelinesFinder
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_sha(items)
     if params[:sha].present?
       items.where(sha: params[:sha])
@@ -77,7 +93,9 @@ class PipelinesFinder
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_name(items)
     if params[:name].present?
       items.joins(:user).where(users: { name: params[:name] })
@@ -85,7 +103,9 @@ class PipelinesFinder
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_username(items)
     if params[:username].present?
       items.joins(:user).where(users: { username: params[:username] })
@@ -93,7 +113,9 @@ class PipelinesFinder
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_yaml_errors(items)
     case Gitlab::Utils.to_boolean(params[:yaml_errors])
     when true
@@ -104,7 +126,9 @@ class PipelinesFinder
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def sort_items(items)
     order_by = if ALLOWED_INDEXED_COLUMNS.include?(params[:order_by])
                  params[:order_by]
@@ -120,4 +144,5 @@ class PipelinesFinder
 
     items.order(order_by => sort)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

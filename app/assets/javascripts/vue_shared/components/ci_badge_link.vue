@@ -1,6 +1,6 @@
 <script>
+import { GlTooltipDirective } from '@gitlab/ui';
 import CiIcon from './ci_icon.vue';
-import tooltip from '../directives/tooltip';
 /**
  * Renders CI Badge link with CI icon and status text based on
  * API response shared between all places where it is used.
@@ -27,7 +27,7 @@ export default {
     CiIcon,
   },
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     status: {
@@ -43,16 +43,16 @@ export default {
   computed: {
     cssClass() {
       const className = this.status.group;
-      return className ? `ci-status ci-${className}` : 'ci-status';
+      return className ? `ci-status ci-${className} qa-status-badge` : 'ci-status qa-status-badge';
     },
   },
 };
 </script>
 <template>
   <a
+    v-gl-tooltip
     :href="status.details_path"
     :class="cssClass"
-    v-tooltip
     :title="!showText ? status.text : ''"
   >
     <ci-icon :status="status" />

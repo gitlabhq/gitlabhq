@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class AvatarRestorer
@@ -19,7 +21,7 @@ module Gitlab
       private
 
       def avatar_export_file
-        @avatar_export_file ||= Dir["#{avatar_export_path}/*"].first
+        @avatar_export_file ||= Dir["#{avatar_export_path}/**/*"].find { |f| File.file?(f) }
       end
 
       def avatar_export_path

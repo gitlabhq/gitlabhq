@@ -23,18 +23,13 @@ export default {
 <template>
   <div class="dropdown-input">
     <input
-      class="dropdown-input-field"
-      type="search"
       v-model="searchQuery"
       :placeholder="placeholderText"
+      class="dropdown-input-field"
+      type="search"
       autocomplete="off"
     />
-    <i
-      class="fa fa-search dropdown-input-search"
-      aria-hidden="true"
-      data-hidden="true"
-    >
-    </i>
+    <i class="fa fa-search dropdown-input-search" aria-hidden="true" data-hidden="true"> </i>
     <i
       class="fa fa-times dropdown-input-clear js-dropdown-input-clear"
       aria-hidden="true"

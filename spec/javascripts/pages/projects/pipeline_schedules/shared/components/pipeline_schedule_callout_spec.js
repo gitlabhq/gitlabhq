@@ -6,7 +6,7 @@ const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
 const cookieKey = 'pipeline_schedules_callout_dismissed';
 const docsUrl = 'help/ci/scheduled_pipelines';
 
-describe('Pipeline Schedule Callout', function () {
+describe('Pipeline Schedule Callout', function() {
   beforeEach(() => {
     setFixtures(`
       <div id='pipeline-schedules-callout' data-docs-url=${docsUrl}></div>
@@ -76,7 +76,7 @@ describe('Pipeline Schedule Callout', function () {
       expect(this.calloutComponent.$el.outerHTML).toContain(docsUrl);
     });
 
-    it('updates calloutDismissed when close button is clicked', (done) => {
+    it('updates calloutDismissed when close button is clicked', done => {
       this.calloutComponent.$el.querySelector('#dismiss-callout-btn').click();
 
       Vue.nextTick(() => {
@@ -85,7 +85,7 @@ describe('Pipeline Schedule Callout', function () {
       });
     });
 
-    it('#dismissCallout updates calloutDismissed', (done) => {
+    it('#dismissCallout updates calloutDismissed', done => {
       this.calloutComponent.dismissCallout();
 
       Vue.nextTick(() => {
@@ -94,7 +94,7 @@ describe('Pipeline Schedule Callout', function () {
       });
     });
 
-    it('is hidden when close button is clicked', (done) => {
+    it('is hidden when close button is clicked', done => {
       this.calloutComponent.$el.querySelector('#dismiss-callout-btn').click();
 
       Vue.nextTick(() => {

@@ -85,7 +85,7 @@ When asked, answer `Y` to fetch and install dependencies.
 
 If everything went fine, you'll get an output like this:
 
-![`mix phoenix.new`](img/mix-phoenix-new.png)
+![mix phoenix.new](img/mix-phoenix-new.png)
 
 Now, our project is located inside the directory with the same name we pass to `mix` command, for
 example, `~/GitLab/hello_gitlab_ci`.
@@ -145,7 +145,7 @@ Now, we have our app running locally. We can preview it directly on our browser.
 not work, open [`127.0.0.1:4000`](http://127.0.0.1:4000) instead and later, configure your OS to
 point `localhost` to `127.0.0.1`.
 
-![`mix phoenix.server`](img/mix-phoenix-server.png)
+![mix phoenix.server](img/mix-phoenix-server.png)
 
 Great, now we have a local Phoenix Server running our app.
 
@@ -398,10 +398,10 @@ other reasons][ci-reasons] to keep using GitLab CI/CD. The benefits to our teams
 - [Using Docker images documentation][using-docker]
 - [Example project: Hello GitLab CI/CD on GitLab][hello-gitlab]
 
-[phoenix-site]: http://phoenixframework.org/ "Phoenix Framework"
+[phoenix-site]: https://phoenixframework.org/ "Phoenix Framework"
 [phoenix-learning-guide]: https://hexdocs.pm/phoenix/learning.html "Phoenix Learning Guide"
-[phoenix-install]: http://www.phoenixframework.org/docs/installation "Phoenix Installation"
-[phoenix-mysql]: http://www.phoenixframework.org/docs/using-mysql "Phoenix with MySQL"
+[phoenix-install]: https://hexdocs.pm/phoenix/installation.html "Phoenix Installation"
+[phoenix-mysql]: https://hexdocs.pm/phoenix/ecto.html#using-mysql "Phoenix with MySQL"
 [elixir-site]: http://elixir-lang.org/ "Elixir"
 [elixir-mix]: http://elixir-lang.org/getting-started/mix-otp/introduction-to-mix.html "Introduction to mix"
 [elixir-docs]: http://elixir-lang.org/getting-started/introduction.html "Elixir Documentation"

@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 # This class finds files in a repository by name and content
 # the result is joined and sorted by file name
 module Gitlab
   class FileFinder
-    BATCH_SIZE = 100
-
     attr_reader :project, :ref
 
     delegate :repository, to: :project
@@ -14,41 +14,35 @@ module Gitlab
     end
 
     def find(query)
-      by_content = find_by_content(query)
+      query = Gitlab::Search::Query.new(query, encode_binary: true) do
+        filter :filename, matcher: ->(filter, blob) { blob.binary_filename =~ /#{filter[:regex_value]}$/i }
+        filter :path, matcher: ->(filter, blob) { blob.binary_filename =~ /#{filter[:regex_value]}/i }
+        filter :extension, matcher: ->(filter, blob) { blob.binary_filename =~ /\.#{filter[:regex_value]}$/i }
+      end
 
-      already_found = Set.new(by_content.map(&:filename))
-      by_filename = find_by_filename(query, except: already_found)
+      files = find_by_filename(query.term) + find_by_content(query.term)
 
-      (by_content + by_filename)
-        .sort_by(&:filename)
-        .map { |blob| [blob.filename, blob] }
+      files = query.filter_results(files) if query.filters.any?
+
+      files
     end
 
     private
 
     def find_by_content(query)
-      results = repository.search_files_by_content(query, ref).first(BATCH_SIZE)
-      results.map { |result| Gitlab::ProjectSearchResults.parse_search_result(result, project) }
+      repository.search_files_by_content(query, ref).map do |result|
+        Gitlab::Search::FoundBlob.new(content_match: result, project: project, ref: ref, repository: repository)
+      end
     end
 
-    def find_by_filename(query, except: [])
-      filenames = repository.search_files_by_name(query, ref).first(BATCH_SIZE)
-      filenames.delete_if { |filename| except.include?(filename) } unless except.empty?
-
-      blob_refs = filenames.map { |filename| [ref, filename] }
-      blobs = Gitlab::Git::Blob.batch(repository, blob_refs, blob_size_limit: 1024)
-
-      blobs.map do |blob|
-        Gitlab::SearchResults::FoundBlob.new(
-          id: blob.id,
-          filename: blob.path,
-          basename: File.basename(blob.path),
-          ref: ref,
-          startline: 1,
-          data: blob.data,
-          project: project
-        )
+    def find_by_filename(query)
+      search_filenames(query).map do |filename|
+        Gitlab::Search::FoundBlob.new(blob_filename: filename, project: project, ref: ref, repository: repository)
       end
+    end
+
+    def search_filenames(query)
+      repository.search_files_by_name(query, ref)
     end
   end
 end

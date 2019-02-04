@@ -67,11 +67,11 @@ pid "/home/git/gitlab/tmp/pids/unicorn.pid"
 stderr_path "/home/git/gitlab/log/unicorn.stderr.log"
 stdout_path "/home/git/gitlab/log/unicorn.stdout.log"
 
-# combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
-# http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
+# Save memory by sharing the application code among multiple Unicorn workers
+# with "preload_app true". See:
+# https://www.rubydoc.info/gems/unicorn/5.1.0/Unicorn%2FConfigurator:preload_app
+# https://brandur.org/ruby-memory#copy-on-write
 preload_app true
-GC.respond_to?(:copy_on_write_friendly=) and
-  GC.copy_on_write_friendly = true
 
 # Enable this flag to have unicorn test client connections by writing the
 # beginning of the HTTP headers before calling the application.  This
@@ -81,11 +81,16 @@ GC.respond_to?(:copy_on_write_friendly=) and
 # fast LAN.
 check_client_connection false
 
+require_relative "/home/git/gitlab/lib/gitlab/cluster/lifecycle_events"
+
+before_exec do |server|
+  # Signal application hooks that we're about to restart
+  Gitlab::Cluster::LifecycleEvents.do_master_restart
+end
+
 before_fork do |server, worker|
-  # the following is highly recommended for Rails + "preload_app true"
-  # as there's no need for the master process to hold a connection
-  defined?(ActiveRecord::Base) and
-    ActiveRecord::Base.connection.disconnect!
+  # Signal application hooks that we're about to fork
+  Gitlab::Cluster::LifecycleEvents.do_before_fork
 
   # The following is only recommended for memory/DB-constrained
   # installations.  It is not needed if your system can house
@@ -113,21 +118,10 @@ before_fork do |server, worker|
 end
 
 after_fork do |server, worker|
+  # Signal application hooks of worker start
+  Gitlab::Cluster::LifecycleEvents.do_worker_start
+
   # per-process listener ports for debugging/admin/migrations
   # addr = "127.0.0.1:#{9293 + worker.nr}"
   # server.listen(addr, :tries => -1, :delay => 5, :tcp_nopush => true)
-
-  # the following is *required* for Rails + "preload_app true",
-  defined?(ActiveRecord::Base) and
-    ActiveRecord::Base.establish_connection
-
-  # reset prometheus client, this will cause any opened metrics files to be closed
-  defined?(::Prometheus::Client.reinitialize_on_pid_change) &&
-    Prometheus::Client.reinitialize_on_pid_change
-
-  # if preload_app is true, then you may also want to check and
-  # restart any other shared sockets/descriptors such as Memcached,
-  # and Redis.  TokyoCabinet file handles are safe to reuse
-  # between any number of forked children (assuming your kernel
-  # correctly implements pread()/pwrite() system calls)
 end

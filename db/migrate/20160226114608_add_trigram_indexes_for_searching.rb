@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddTrigramIndexesForSearching < ActiveRecord::Migration
+class AddTrigramIndexesForSearching < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
@@ -37,7 +37,7 @@ class AddTrigramIndexesForSearching < ActiveRecord::Migration
     res = execute("SELECT true AS enabled FROM pg_available_extensions WHERE name = 'pg_trgm' AND installed_version IS NOT NULL;")
     row = res.first
 
-    row && row['enabled'] == 't' ? true : false
+    row && row['enabled'] == true
   end
 
   def create_trigrams_extension

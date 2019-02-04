@@ -15,7 +15,7 @@ namespace :gitlab do
           build.artifacts_file.migrate!(ObjectStorage::Store::REMOTE)
           build.artifacts_metadata.migrate!(ObjectStorage::Store::REMOTE)
 
-          logger.info("Transferred artifacts of #{build.id} of #{build.artifacts_size} to object storage")
+          logger.info("Transferred artifact ID #{build.id} with size #{build.artifacts_size} to object storage")
         rescue => e
           logger.error("Failed to transfer artifacts of #{build.id} with error: #{e.message}")
         end

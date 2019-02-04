@@ -1,4 +1,4 @@
-class CreateRemoteMirrors < ActiveRecord::Migration
+class CreateRemoteMirrors < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -23,6 +23,7 @@ class CreateRemoteMirrors < ActiveRecord::Migration
       t.string :encrypted_credentials_iv
       t.string :encrypted_credentials_salt
 
+      # rubocop:disable Migration/Timestamps
       t.timestamps null: false
     end
   end

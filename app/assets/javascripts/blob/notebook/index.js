@@ -40,13 +40,14 @@ export default () => {
     },
     methods: {
       loadFile() {
-        axios.get(el.dataset.endpoint)
+        axios
+          .get(el.dataset.endpoint)
           .then(res => res.data)
-          .then((data) => {
+          .then(data => {
             this.json = data;
             this.loading = false;
           })
-          .catch((e) => {
+          .catch(e => {
             if (e.status !== 200) {
               this.loadError = true;
             }

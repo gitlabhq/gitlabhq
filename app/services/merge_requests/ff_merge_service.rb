@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   # MergeService class
   #
@@ -13,7 +15,7 @@ module MergeRequests
                           source,
                           merge_request.target_branch,
                           merge_request: merge_request)
-    rescue Gitlab::Git::HooksService::PreReceiveError => e
+    rescue Gitlab::Git::PreReceiveError => e
       raise MergeError, e.message
     rescue StandardError => e
       raise MergeError, "Something went wrong during merge: #{e.message}"

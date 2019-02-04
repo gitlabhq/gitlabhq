@@ -1,0 +1,5 @@
+---
+title: fix display comment avatars issue in IE 11
+merge_request: 24777
+author: Gokhan Apaydin
+type: fixed

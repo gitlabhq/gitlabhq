@@ -1,8 +1,16 @@
 <script>
-import { parseSeconds, stringifyTime } from '../../../lib/utils/pretty_time';
+import { parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
+import tooltip from '../../../vue_shared/directives/tooltip';
+import { GlProgressBar } from '@gitlab/ui';
 
 export default {
   name: 'TimeTrackingComparisonPane',
+  components: {
+    GlProgressBar,
+  },
+  directives: {
+    tooltip,
+  },
   props: {
     timeSpent: {
       type: Number,
@@ -38,10 +46,13 @@ export default {
       return this.timeEstimate - this.timeSpent;
     },
     timeRemainingPercent() {
-      return `${Math.floor((this.timeSpent / this.timeEstimate) * 100)}%`;
+      return Math.floor((this.timeSpent / this.timeEstimate) * 100);
     },
     timeRemainingStatusClass() {
       return this.timeEstimate >= this.timeSpent ? 'within_estimate' : 'over_estimate';
+    },
+    progressBarVariant() {
+      return this.timeRemainingPercent > 100 ? 'danger' : 'primary';
     },
   },
 };
@@ -50,42 +61,23 @@ export default {
 <template>
   <div class="time-tracking-comparison-pane">
     <div
+      v-tooltip
+      :title="timeRemainingTooltip"
+      :class="timeRemainingStatusClass"
       class="compare-meter"
       data-toggle="tooltip"
       data-placement="top"
       role="timeRemainingDisplay"
-      :aria-valuenow="timeRemainingTooltip"
-      :title="timeRemainingTooltip"
-      :data-original-title="timeRemainingTooltip"
-      :class="timeRemainingStatusClass"
     >
-      <div
-        class="meter-container"
-        role="timeSpentPercent"
-        :aria-valuenow="timeRemainingPercent"
-      >
-        <div
-          :style="{ width: timeRemainingPercent }"
-          class="meter-fill"
-        >
-        </div>
-      </div>
+      <gl-progress-bar :value="timeRemainingPercent" :variant="progressBarVariant" />
       <div class="compare-display-container">
         <div class="compare-display float-left">
-          <span class="compare-label">
-            {{ s__('TimeTracking|Spent') }}
-          </span>
-          <span class="compare-value spent">
-            {{ timeSpentHumanReadable }}
-          </span>
+          <span class="compare-label"> {{ s__('TimeTracking|Spent') }} </span>
+          <span class="compare-value spent"> {{ timeSpentHumanReadable }} </span>
         </div>
         <div class="compare-display estimated float-right">
-          <span class="compare-label">
-            {{ s__('TimeTrackingEstimated|Est') }}
-          </span>
-          <span class="compare-value">
-            {{ timeEstimateHumanReadable }}
-          </span>
+          <span class="compare-label"> {{ s__('TimeTrackingEstimated|Est') }} </span>
+          <span class="compare-value"> {{ timeEstimateHumanReadable }} </span>
         </div>
       </div>
     </div>

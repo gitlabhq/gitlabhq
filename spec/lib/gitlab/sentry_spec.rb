@@ -19,14 +19,15 @@ describe Gitlab::Sentry do
     end
 
     it 'raises the exception if it should' do
-      expect(described_class).to receive(:should_raise?).and_return(true)
+      expect(described_class).to receive(:should_raise_for_dev?).and_return(true)
       expect { described_class.track_exception(exception) }
         .to raise_error(RuntimeError)
     end
 
     context 'when exceptions should not be raised' do
       before do
-        allow(described_class).to receive(:should_raise?).and_return(false)
+        allow(described_class).to receive(:should_raise_for_dev?).and_return(false)
+        allow(Gitlab::CorrelationId).to receive(:current_id).and_return('cid')
       end
 
       it 'logs the exception with all attributes passed' do
@@ -35,8 +36,14 @@ describe Gitlab::Sentry do
           issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1'
         }
 
+        expected_tags = {
+          correlation_id: 'cid'
+        }
+
         expect(Raven).to receive(:capture_exception)
-                           .with(exception, extra: a_hash_including(expected_extras))
+                           .with(exception,
+                            tags: a_hash_including(expected_tags),
+                            extra: a_hash_including(expected_extras))
 
         described_class.track_exception(
           exception,
@@ -50,6 +57,37 @@ describe Gitlab::Sentry do
 
         described_class.track_exception(exception)
       end
+    end
+  end
+
+  context '.track_acceptable_exception' do
+    let(:exception) { RuntimeError.new('boom') }
+
+    before do
+      allow(described_class).to receive(:enabled?).and_return(true)
+      allow(Gitlab::CorrelationId).to receive(:current_id).and_return('cid')
+    end
+
+    it 'calls Raven.capture_exception' do
+      expected_extras = {
+        some_other_info: 'info',
+        issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1'
+      }
+
+      expected_tags = {
+        correlation_id: 'cid'
+      }
+
+      expect(Raven).to receive(:capture_exception)
+                         .with(exception,
+                          tags: a_hash_including(expected_tags),
+                          extra: a_hash_including(expected_extras))
+
+      described_class.track_acceptable_exception(
+        exception,
+        issue_url: 'http://gitlab.com/gitlab-org/gitlab-ce/issues/1',
+        extra: { some_other_info: 'info' }
+      )
     end
   end
 end

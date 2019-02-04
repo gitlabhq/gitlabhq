@@ -254,7 +254,7 @@ To ensure our changes don't break the build and all tests still pass, we utilize
 Continuous Integration (CI) to run these checks automatically for every push.
 Read through this article to understand [Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/),
 and how these methods are leveraged by GitLab.
-From the [last tutorial](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) we already have a `gitlab-ci.yml` file set up for building our app from
+From the [last tutorial](https://ryanhallcs.wordpress.com/2017/03/15/devops-and-game-dev/) we already have a `.gitlab-ci.yml` file set up for building our app from
 every push. We need to set up a new CI job for testing, which GitLab CI/CD will run after the build job using our generated artifacts from gulp.
 
 Please read through the [documentation on CI/CD configuration](../../../ci/yaml/README.md) file to explore its contents and adjust it to your needs.
@@ -406,7 +406,7 @@ and further delves into the principles of GitLab CI/CD than discussed in this ar
 
 We need to be able to deploy to AWS with our AWS account credentials, but we certainly
 don't want to put secrets into source code. Luckily GitLab provides a solution for this
-with [Secret Variables](../../../ci/variables/README.md). This can get complicated
+with [Variables](../../../ci/variables/README.md). This can get complicated
 due to [IAM](https://aws.amazon.com/iam/) management. As a best practice, you shouldn't
 use root security credentials. Proper IAM credential management is beyond the scope of this
 article, but AWS will remind you that using root credentials is unadvised and against their
@@ -418,7 +418,7 @@ fully understand [IAM Best Practices in AWS](http://docs.aws.amazon.com/IAM/late
 1. Click the **Access Keys** section and **Create New Access Key**. Create the key and keep the id and secret around, you'll need them later
     ![AWS Access Key Config](img/aws_config_window.png)
 1. Go to your GitLab project, click **Settings > CI/CD** on the left sidebar
-1. Expand the **Secret Variables** section
+1. Expand the **Variables** section
     ![GitLab Secret Config](img/gitlab_config.png)
 1. Add a key named `AWS_KEY_ID` and copy the key id from Step 2 into the **Value** textbox
 1. Add a key named `AWS_KEY_SECRET` and copy the key secret from Step 2 into the **Value** textbox
@@ -428,7 +428,7 @@ fully understand [IAM Best Practices in AWS](http://docs.aws.amazon.com/IAM/late
 To deploy our build artifacts, we need to install the [AWS CLI](https://aws.amazon.com/cli/) on
 the Shared Runner. The Shared Runner also needs to be able to authenticate with your AWS
 account to deploy the artifacts. By convention, AWS CLI will look for `AWS_ACCESS_KEY_ID`
-and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the secret variables we
+and `AWS_SECRET_ACCESS_KEY`. GitLab's CI gives us a way to pass the variables we
 set up in the prior section using the `variables` portion of the `deploy` job. At the end,
 we add directives to ensure deployment `only` happens on pushes to `master`. This way, every
 single branch still runs through CI, and only merging (or committing directly) to master will
@@ -520,7 +520,7 @@ a lot of breathing room in quickly getting changes to players.
 Here are some ideas to further investigate that can speed up or improve your pipeline:
 
 - [Yarn](https://yarnpkg.com) instead of npm
-- Setup a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ci-yml) image that can preload dependencies and tools (like AWS CLI)
+- Set up a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ci-yml) image that can preload dependencies and tools (like AWS CLI)
 - Forward a [custom domain](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html) to your game's S3 static website
 - Combine jobs if you find it unnecessary for a small project
 - Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)

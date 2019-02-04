@@ -1,5 +1,0 @@
----
-title: 'Add missing tooltip to creation date on container registry overview'
-merge_request: 18767
-author: Lars Greiss
-type: fixed

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 
@@ -16,7 +18,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
     runner = rp.runner
     rp.destroy
 
-    redirect_to admin_runner_path(runner), status: 302
+    redirect_to admin_runner_path(runner), status: :found
   end
 
   private

@@ -1,44 +1,46 @@
 <script>
-  /**
-  * Renders a terminal button to open a web terminal.
-  * Used in environments table.
-  */
-  import Icon from '~/vue_shared/components/icon.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
+/**
+ * Renders a terminal button to open a web terminal.
+ * Used in environments table.
+ */
+import { GlTooltipDirective } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      Icon,
+export default {
+  components: {
+    Icon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  props: {
+    terminalPath: {
+      type: String,
+      required: false,
+      default: '',
     },
-    directives: {
-      tooltip,
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    props: {
-      terminalPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
+  },
+  computed: {
+    title() {
+      return 'Terminal';
     },
-    computed: {
-      title() {
-        return 'Terminal';
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <a
-    v-tooltip
-    class="btn terminal-button d-none d-sm-none d-md-block"
-    data-container="body"
+    v-gl-tooltip
     :title="title"
     :aria-label="title"
     :href="terminalPath"
+    :class="{ disabled: disabled }"
+    class="btn terminal-button d-none d-sm-none d-md-block"
   >
-    <icon
-      name="terminal"
-      :size="12"
-    />
+    <icon name="terminal" />
   </a>
 </template>

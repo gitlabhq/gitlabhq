@@ -9,12 +9,14 @@ describe('html output cell', () => {
     return new Component({
       propsData: {
         rawCode,
+        count: 0,
+        index: 0,
       },
     }).$mount();
   }
 
   describe('sanitizes output', () => {
-    Object.keys(sanitizeTests).forEach((key) => {
+    Object.keys(sanitizeTests).forEach(key => {
       it(key, () => {
         const test = sanitizeTests[key];
         const vm = createComponent(test.input);

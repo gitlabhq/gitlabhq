@@ -1,5 +1,0 @@
----
-title: Dynamically fetch GCP cluster creation parameters.
-merge_request: 17806
-author:
-type: changed

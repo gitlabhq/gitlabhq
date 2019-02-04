@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::AvatarsController < Groups::ApplicationController
   before_action :authorize_admin_group!
 
@@ -7,6 +9,6 @@ class Groups::AvatarsController < Groups::ApplicationController
     @group.remove_avatar!
     @group.save
 
-    redirect_to edit_group_path(@group), status: 302
+    redirect_to edit_group_path(@group), status: :found
   end
 end

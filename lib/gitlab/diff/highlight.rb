@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Diff
     class Highlight
@@ -24,7 +26,7 @@ module Gitlab
           # ignore highlighting for "match" lines
           next diff_line if diff_line.meta?
 
-          rich_line = highlight_line(diff_line) || diff_line.text
+          rich_line = highlight_line(diff_line) || ERB::Util.html_escape(diff_line.text)
 
           if line_inline_diffs = inline_diffs[i]
             begin
@@ -37,7 +39,7 @@ module Gitlab
             end
           end
 
-          diff_line.text = rich_line
+          diff_line.rich_text = rich_line
 
           diff_line
         end
@@ -79,7 +81,7 @@ module Gitlab
         return [] unless blob
 
         blob.load_all_data!
-        Gitlab::Highlight.highlight(blob.path, blob.data, repository: repository).lines
+        blob.present.highlight.lines
       end
     end
   end

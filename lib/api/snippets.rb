@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   # Snippets API
   class Snippets < Grape::API
@@ -12,7 +14,7 @@ module API
         end
 
         def public_snippets
-          SnippetsFinder.new(current_user, visibility: Snippet::PUBLIC).execute
+          SnippetsFinder.new(current_user, scope: :are_public).execute
         end
       end
 
@@ -92,6 +94,7 @@ module API
                               desc: 'The visibility of the snippet'
         at_least_one_of :title, :file_name, :content, :visibility
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       put ':id' do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))
         break not_found!('Snippet') unless snippet
@@ -110,6 +113,7 @@ module API
           render_validation_error!(snippet)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Remove snippet' do
         detail 'This feature was introduced in GitLab 8.15.'
@@ -118,6 +122,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id' do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))
         break not_found!('Snippet') unless snippet
@@ -126,6 +131,7 @@ module API
 
         destroy_conditionally!(snippet)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a raw snippet' do
         detail 'This feature was introduced in GitLab 8.15.'
@@ -133,14 +139,17 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/raw" do
         snippet = snippets_for_current_user.find_by(id: params.delete(:id))
         break not_found!('Snippet') unless snippet
 
         env['api.format'] = :txt
         content_type 'text/plain'
+        header['Content-Disposition'] = 'attachment'
         present snippet.content
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get the user agent details for a snippet' do
         success Entities::UserAgentDetail
@@ -148,6 +157,7 @@ module API
       params do
         requires :id, type: Integer, desc: 'The ID of a snippet'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/user_agent_detail" do
         authenticated_as_admin!
 
@@ -157,6 +167,7 @@ module API
 
         present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

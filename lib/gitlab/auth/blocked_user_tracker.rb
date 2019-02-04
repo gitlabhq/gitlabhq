@@ -2,35 +2,19 @@
 module Gitlab
   module Auth
     class BlockedUserTracker
-      ACTIVE_RECORD_REQUEST_PARAMS = 'action_dispatch.request.request_parameters'
+      def initialize(user, auth)
+        @user = user
+        @auth = auth
+      end
 
-      def self.log_if_user_blocked(env)
-        message = env.dig('warden.options', :message)
+      def log_activity!
+        return unless @user.blocked?
 
-        # Devise calls User#active_for_authentication? on the User model and then
-        # throws an exception to Warden with User#inactive_message:
-        # https://github.com/plataformatec/devise/blob/v4.2.1/lib/devise/hooks/activatable.rb#L8
-        #
-        # Since Warden doesn't pass the user record to the failure handler, we
-        # need to do a database lookup with the username. We can limit the
-        # lookups to happen when the user was blocked by checking the inactive
-        # message passed along by Warden.
-        return unless message == User::BLOCKED_MESSAGE
+        Gitlab::AppLogger.info <<~INFO
+          "Failed login for blocked user: user=#{@user.username} ip=#{@auth.request.ip}")
+        INFO
 
-        # Check for either LDAP or regular GitLab account logins
-        login = env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'username') ||
-          env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'user', 'login')
-
-        return unless login.present?
-
-        user = User.by_login(login)
-
-        return unless user&.blocked?
-
-        Gitlab::AppLogger.info("Failed login for blocked user: user=#{user.username} ip=#{env['REMOTE_ADDR']}")
-        SystemHooksService.new.execute_hooks_for(user, :failed_login)
-
-        true
+        SystemHooksService.new.execute_hooks_for(@user, :failed_login)
       rescue TypeError
       end
     end

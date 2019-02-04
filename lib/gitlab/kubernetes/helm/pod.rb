@@ -1,31 +1,33 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Kubernetes
     module Helm
       class Pod
-        def initialize(command, namespace_name)
+        def initialize(command, namespace_name, service_account_name: nil)
           @command = command
           @namespace_name = namespace_name
+          @service_account_name = service_account_name
         end
 
         def generate
           spec = { containers: [container_specification], restartPolicy: 'Never' }
 
-          if command.config_map?
-            spec[:volumes] = volumes_specification
-            spec[:containers][0][:volumeMounts] = volume_mounts_specification
-          end
+          spec[:volumes] = volumes_specification
+          spec[:containers][0][:volumeMounts] = volume_mounts_specification
+          spec[:serviceAccountName] = service_account_name if service_account_name
 
           ::Kubeclient::Resource.new(metadata: metadata, spec: spec)
         end
 
         private
 
-        attr_reader :command, :namespace_name, :kubeclient, :config_map
+        attr_reader :command, :namespace_name, :service_account_name
 
         def container_specification
           {
             name: 'helm',
-            image: 'alpine:3.6',
+            image: "registry.gitlab.com/gitlab-org/cluster-integration/helm-install-image/releases/#{Gitlab::Kubernetes::Helm::HELM_VERSION}-kube-#{Gitlab::Kubernetes::Helm::KUBECTL_VERSION}",
             env: generate_pod_env(command),
             command: %w(/bin/sh),
             args: %w(-c $(COMMAND_SCRIPT))
@@ -61,7 +63,7 @@ module Gitlab
               name: 'configuration-volume',
               configMap: {
                 name: "values-content-configuration-#{command.name}",
-                items: [{ key: 'values', path: 'values.yaml' }]
+                items: command.file_names.map { |name| { key: name, path: name } }
               }
             }
           ]

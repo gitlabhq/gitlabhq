@@ -3,6 +3,7 @@ require 'spec_helper'
 describe MergeRequests::BuildService do
   using RSpec::Parameterized::TableSyntax
   include RepoHelpers
+  include ProjectForksHelper
 
   let(:project) { create(:project, :repository) }
   let(:source_project) { nil }
@@ -13,19 +14,28 @@ describe MergeRequests::BuildService do
   let(:description) { nil }
   let(:source_branch) { 'feature-branch' }
   let(:target_branch) { 'master' }
+  let(:milestone_id) { nil }
+  let(:label_ids) { [] }
   let(:merge_request) { service.execute }
   let(:compare) { double(:compare, commits: commits) }
   let(:commit_1) { double(:commit_1, sha: 'f00ba7', safe_message: "Initial commit\n\nCreate the app") }
   let(:commit_2) { double(:commit_2, sha: 'f00ba7', safe_message: 'This is a bad commit message!') }
   let(:commits) { nil }
 
+  let(:params) do
+    {
+      description: description,
+      source_branch: source_branch,
+      target_branch: target_branch,
+      source_project: source_project,
+      target_project: target_project,
+      milestone_id: milestone_id,
+      label_ids: label_ids
+    }
+  end
+
   let(:service) do
-    described_class.new(project, user,
-                                    description: description,
-                                    source_branch: source_branch,
-                                    target_branch: target_branch,
-                                    source_project: source_project,
-                                    target_project: target_project)
+    described_class.new(project, user, params)
   end
 
   before do
@@ -40,7 +50,7 @@ describe MergeRequests::BuildService do
 
   describe '#execute' do
     it 'calls the compare service with the correct arguments' do
-      allow_any_instance_of(described_class).to receive(:branches_valid?).and_return(true)
+      allow_any_instance_of(described_class).to receive(:projects_and_branches_valid?).and_return(true)
       expect(CompareService).to receive(:new)
                                   .with(project, Gitlab::Git::BRANCH_REF_PREFIX + source_branch)
                                   .and_call_original
@@ -50,6 +60,19 @@ describe MergeRequests::BuildService do
                                                   .and_call_original
 
       merge_request
+    end
+
+    it 'does not assign force_remove_source_branch' do
+      expect(merge_request.force_remove_source_branch?).to be_falsey
+    end
+
+    context 'with force_remove_source_branch parameter' do
+      let(:mr_params) { params.merge(force_remove_source_branch: '1') }
+      let(:merge_request) { described_class.new(project, user, mr_params).execute }
+
+      it 'assigns force_remove_source_branch' do
+        expect(merge_request.force_remove_source_branch?).to be_truthy
+      end
     end
 
     context 'missing source branch' do
@@ -169,10 +192,41 @@ describe MergeRequests::BuildService do
             end
           end
 
+          it 'uses the title of the commit as the title of the merge request' do
+            expect(merge_request.title).to eq('Initial commit')
+          end
+
           it 'appends the closing description' do
             expected_description = [commit_description, closing_message].compact.join("\n\n")
 
             expect(merge_request.description).to eq(expected_description)
+          end
+        end
+
+        context 'when the source branch matches an internal issue' do
+          let(:label) { create(:label, project: project) }
+          let(:milestone) { create(:milestone, project: project) }
+          let(:source_branch) { '123-fix-issue' }
+
+          before do
+            issue.update!(iid: 123, labels: [label], milestone: milestone)
+          end
+
+          it 'assigns the issue label and milestone' do
+            expect(merge_request.milestone).to eq(milestone)
+            expect(merge_request.labels).to match_array([label])
+          end
+
+          context 'when milestone_id and label_ids are shared in the params' do
+            let(:label2) { create(:label, project: project) }
+            let(:milestone2) { create(:milestone, project: project) }
+            let(:label_ids) { [label2.id] }
+            let(:milestone_id) { milestone2.id }
+
+            it 'assigns milestone_id and label_ids instead of issue labels and milestone' do
+              expect(merge_request.milestone).to eq(milestone2)
+              expect(merge_request.labels).to match_array([label2])
+            end
           end
         end
       end
@@ -340,11 +394,27 @@ describe MergeRequests::BuildService do
       end
     end
 
+    context 'target_project is set but repo is not accessible by current_user' do
+      let(:target_project) do
+        create(:project, :public, :repository, repository_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'sets target project correctly' do
+        expect(merge_request.target_project).to eq(project)
+      end
+    end
+
     context 'source_project is set and accessible by current_user' do
       let(:source_project) { create(:project, :public, :repository)}
       let(:commits) { Commit.decorate([commit_1], project) }
 
-      it 'sets target project correctly' do
+      before do
+        # To create merge requests _from_ a project the user needs at least
+        # developer access
+        source_project.add_developer(user)
+      end
+
+      it 'sets source project correctly' do
         expect(merge_request.source_project).to eq(source_project)
       end
     end
@@ -353,8 +423,48 @@ describe MergeRequests::BuildService do
       let(:source_project) { create(:project, :private, :repository)}
       let(:commits) { Commit.decorate([commit_1], project) }
 
-      it 'sets target project correctly' do
+      it 'sets source project correctly' do
         expect(merge_request.source_project).to eq(project)
+      end
+    end
+
+    context 'source_project is set but the user cannot create merge requests from the project' do
+      let(:source_project) do
+        create(:project, :public, :repository, merge_requests_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'sets the source_project correctly' do
+        expect(merge_request.source_project).to eq(project)
+      end
+    end
+
+    context 'target_project is not in the fork network of source_project' do
+      let(:target_project) { create(:project, :public, :repository) }
+
+      it 'adds an error to the merge request' do
+        expect(merge_request.errors[:validate_fork]).to contain_exactly('Source project is not a fork of the target project')
+      end
+    end
+
+    context 'target_project is in the fork network of source project but no longer accessible' do
+      let!(:project) { fork_project(target_project, user, namespace: user.namespace, repository: true) }
+      let(:source_project) { project }
+      let(:target_project) { create(:project, :public, :repository) }
+
+      before do
+        target_project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'sets the target_project correctly' do
+        expect(merge_request.target_project).to eq(project)
+      end
+    end
+
+    context 'when specifying target branch in the description' do
+      let(:description) { "A merge request targeting another branch\n\n/target_branch with-codeowners" }
+
+      it 'sets the attribute from the quick actions' do
+        expect(merge_request.target_branch).to eq('with-codeowners')
       end
     end
   end

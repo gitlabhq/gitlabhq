@@ -2,9 +2,9 @@
   .issue-box
     - if @can_bulk_update
       .issue-check.hidden
-        = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
-    .issue-info-container
-      .issue-main-info
+        = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected-issuable"
+    .issuable-info-container
+      .issuable-main-info
         .issue-title.title
           %span.issue-title-text
             - if issue.confidential?

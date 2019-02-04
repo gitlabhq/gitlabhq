@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::SystemInfoController < Admin::ApplicationController
   EXCLUDED_MOUNT_OPTIONS = [
     'nobrowse',

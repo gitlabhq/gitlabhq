@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::HooksController < Admin::ApplicationController
   include HooksExecution
 
@@ -9,7 +11,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def create
-    @hook = SystemHook.new(hook_params)
+    @hook = SystemHook.new(hook_params.to_h)
 
     if @hook.save
       redirect_to admin_hooks_path, notice: 'Hook was successfully created.'
@@ -23,7 +25,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def update
-    if hook.update_attributes(hook_params)
+    if hook.update(hook_params)
       flash[:notice] = 'System hook was successfully updated.'
       redirect_to admin_hooks_path
     else
@@ -34,7 +36,7 @@ class Admin::HooksController < Admin::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to admin_hooks_path, status: 302
+    redirect_to admin_hooks_path, status: :found
   end
 
   def test
@@ -52,8 +54,7 @@ class Admin::HooksController < Admin::ApplicationController
   end
 
   def hook_logs
-    @hook_logs ||=
-      Kaminari.paginate_array(hook.web_hook_logs.order(created_at: :desc)).page(params[:page])
+    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page])
   end
 
   def hook_params

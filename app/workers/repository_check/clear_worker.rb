@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module RepositoryCheck
   class ClearWorker
     include ApplicationWorker
     include RepositoryCheckQueue
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def perform
       # Do small batched updates because these updates will be slow and locking
       Project.select(:id).find_in_batches(batch_size: 100) do |batch|
@@ -12,5 +15,6 @@ module RepositoryCheck
         )
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

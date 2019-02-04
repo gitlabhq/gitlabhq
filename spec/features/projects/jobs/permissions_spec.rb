@@ -67,7 +67,7 @@ describe 'Project Jobs Permissions' do
         it_behaves_like 'recent job page details responds with status', 200 do
           it 'renders job details', :js do
             expect(page).to have_content "Job ##{job.id}"
-            expect(page).to have_css '#build-trace'
+            expect(page).to have_css '.js-build-trace'
           end
         end
 
@@ -88,10 +88,9 @@ describe 'Project Jobs Permissions' do
   describe 'artifacts page' do
     context 'when recent job has artifacts available' do
       before do
-        artifacts = Rails.root.join('spec/fixtures/ci_build_artifacts.zip')
-        archive = fixture_file_upload(artifacts, 'application/zip')
+        archive = fixture_file_upload('spec/fixtures/ci_build_artifacts.zip')
 
-        job.update_attributes(legacy_artifacts_file: archive)
+        job.update(legacy_artifacts_file: archive)
       end
 
       context 'when public access for jobs is disabled' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RedisCacheable
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
@@ -47,10 +49,6 @@ module RedisCacheable
   end
 
   def cast_value_from_cache(attribute, value)
-    if Gitlab.rails5?
-      self.class.type_for_attribute(attribute).cast(value)
-    else
-      self.class.column_for_attribute(attribute).type_cast_from_database(value)
-    end
+    self.class.type_for_attribute(attribute.to_s).cast(value)
   end
 end

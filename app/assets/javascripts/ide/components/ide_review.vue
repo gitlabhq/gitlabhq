@@ -10,35 +10,40 @@ export default {
     EditorModeDropdown,
   },
   computed: {
-    ...mapGetters(['currentMergeRequest']),
-    ...mapState(['viewer']),
+    ...mapGetters(['currentMergeRequest', 'activeFile']),
+    ...mapState(['viewer', 'currentMergeRequestId']),
     showLatestChangesText() {
-      return !this.currentMergeRequest || this.viewer === viewerTypes.diff;
+      return !this.currentMergeRequestId || this.viewer === viewerTypes.diff;
     },
     showMergeRequestText() {
-      return this.currentMergeRequest && this.viewer === viewerTypes.mr;
+      return this.currentMergeRequestId && this.viewer === viewerTypes.mr;
+    },
+    mergeRequestId() {
+      return `!${this.currentMergeRequest.iid}`;
     },
   },
   mounted() {
+    if (this.activeFile && this.activeFile.pending && !this.activeFile.deleted) {
+      this.$router.push(`/project${this.activeFile.url}`, () => {
+        this.updateViewer('editor');
+      });
+    } else if (this.activeFile && this.activeFile.deleted) {
+      this.resetOpenFiles();
+    }
+
     this.$nextTick(() => {
-      this.updateViewer(this.currentMergeRequest ? viewerTypes.mr : viewerTypes.diff);
+      this.updateViewer(this.currentMergeRequestId ? viewerTypes.mr : viewerTypes.diff);
     });
   },
   methods: {
-    ...mapActions(['updateViewer']),
+    ...mapActions(['updateViewer', 'resetOpenFiles']),
   },
 };
 </script>
 
 <template>
-  <ide-tree-list
-    :viewer-type="viewer"
-    header-class="ide-review-header"
-    :disable-action-dropdown="true"
-  >
-    <template
-      slot="header"
-    >
+  <ide-tree-list :viewer-type="viewer" header-class="ide-review-header">
+    <template slot="header">
       <div class="ide-review-button-holder">
         {{ __('Review') }}
         <editor-mode-dropdown
@@ -53,8 +58,12 @@ export default {
           {{ __('Latest changes') }}
         </template>
         <template v-else-if="showMergeRequestText">
-          {{ __('Merge request') }}
-          (<a :href="currentMergeRequest.web_url">!{{ currentMergeRequest.iid }}</a>)
+          {{ __('Merge request') }} (<a
+            v-if="currentMergeRequest"
+            :href="currentMergeRequest.web_url"
+            v-text="mergeRequestId"
+          ></a
+          >)
         </template>
       </div>
     </template>

@@ -1,5 +1,5 @@
 # rubocop:disable all
-class AddFingerprintIndex < ActiveRecord::Migration
+class AddFingerprintIndex < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   DOWNTIME = false

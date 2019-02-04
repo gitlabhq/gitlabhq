@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GlobalPolicy < BasePolicy
   desc "User is blocked"
   with_options scope: :user, score: 0
@@ -16,6 +18,11 @@ class GlobalPolicy < BasePolicy
   condition(:required_terms_not_accepted, scope: :user, score: 0) do
     @user&.required_terms_not_accepted?
   end
+
+  condition(:private_instance_statistics, score: 0) { Gitlab::CurrentSettings.instance_statistics_visibility_private? }
+
+  rule { admin | (~private_instance_statistics & ~anonymous) }
+    .enable :read_instance_statistics
 
   rule { anonymous }.policy do
     prevent :log_in

@@ -74,6 +74,19 @@ describe Gitlab::Gpg do
         email: 'nannie.bernhard@example.com'
       }])
     end
+
+    it 'rejects non UTF-8 names and addresses' do
+      public_key = double(:key)
+      fingerprints = double(:fingerprints)
+      email = "\xEEch@test.com".force_encoding('ASCII-8BIT')
+      uid = double(:uid, name: 'Test User', email: email)
+      raw_key = double(:raw_key, uids: [uid])
+      allow(Gitlab::Gpg::CurrentKeyChain).to receive(:fingerprints_from_key).with(public_key).and_return(fingerprints)
+      allow(GPGME::Key).to receive(:find).with(:public, anything).and_return([raw_key])
+
+      user_infos = described_class.user_infos_from_key(public_key)
+      expect(user_infos).to eq([])
+    end
   end
 
   describe '.current_home_dir' do
@@ -83,7 +96,7 @@ describe Gitlab::Gpg do
       expect(described_class.current_home_dir).to eq default_home_dir
     end
 
-    it 'returns the explicitely set home dir' do
+    it 'returns the explicitly set home dir' do
       GPGME::Engine.home_dir = '/tmp/gpg'
 
       expect(described_class.current_home_dir).to eq '/tmp/gpg'
@@ -91,7 +104,7 @@ describe Gitlab::Gpg do
       GPGME::Engine.home_dir = GPGME::Engine.dirinfo('homedir')
     end
 
-    it 'returns the default value when explicitely setting the home dir to nil' do
+    it 'returns the default value when explicitly setting the home dir to nil' do
       GPGME::Engine.home_dir = nil
 
       expect(described_class.current_home_dir).to eq default_home_dir
@@ -124,7 +137,7 @@ describe Gitlab::Gpg do
           described_class.using_tmp_keychain do
           end
         end
-      end.not_to raise_error(ThreadError)
+      end.not_to raise_error
     end
   end
 end

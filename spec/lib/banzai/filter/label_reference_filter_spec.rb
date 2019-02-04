@@ -148,9 +148,11 @@ describe Banzai::Filter::LabelReferenceFilter do
       expect(doc.text).to eq 'See ?g.fm&'
     end
 
-    it 'links with adjacent text' do
-      doc = reference_filter("Label (#{reference}).")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>\?g\.fm&amp;</span></a>\)\.))
+    it 'does not include trailing punctuation', :aggregate_failures do
+      ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
+        doc = filter("Label #{reference}#{trailing_punctuation}")
+        expect(doc.to_html).to match(%r(<a.+><span.+>\?g\.fm&amp;</span></a>#{Regexp.escape(trailing_punctuation)}))
+      end
     end
 
     it 'ignores invalid label names' do
@@ -231,6 +233,24 @@ describe Banzai::Filter::LabelReferenceFilter do
       exp = %(Label #{Label.reference_prefix}"?secnerefer &amp; mf.g\")
 
       expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'References with html entities' do
+    let!(:label) { create(:label, name: '&lt;html&gt;', project: project) }
+
+    it 'links to a valid reference' do
+      doc = reference_filter('See ~"&lt;html&gt;"')
+
+      expect(doc.css('a').first.attr('href')).to eq urls
+        .project_issues_url(project, label_name: label.name)
+      expect(doc.text).to eq 'See <html>'
+    end
+
+    it 'ignores invalid label names and escapes entities' do
+      act = %(Label #{Label.reference_prefix}"&lt;non valid&gt;")
+
+      expect(reference_filter(act).to_html).to eq act
     end
   end
 

@@ -42,6 +42,10 @@
   color: $text;
   border-color: $border;
 
+  &.btn-border-color {
+    border-color: $border-color;
+  }
+
   > .icon {
     color: $text;
   }
@@ -121,10 +125,6 @@
   &.btn-sm {
     margin-left: $btn-sm-side-margin;
   }
-
-  &.btn-xs {
-    margin-left: $btn-xs-side-margin;
-  }
 }
 
 @mixin btn-svg {
@@ -146,31 +146,32 @@
 
   &.btn-sm {
     padding: 4px 10px;
-    font-size: 13px;
-    line-height: 18px;
+    font-size: $gl-btn-small-font-size;
+    line-height: $gl-btn-small-line-height;
   }
 
   &.btn-xs {
-    padding: 2px 5px;
+    padding: 2px $gl-btn-padding;
+    font-size: $gl-btn-xs-font-size;
+    line-height: $gl-btn-xs-line-height;
   }
 
   &.btn-success,
-  &.btn-new,
-  &.btn-create,
-  &.btn-save {
+  &.btn-register {
     @include btn-green;
   }
 
   &.btn-inverted {
-    &.btn-success,
-    &.btn-new,
-    &.btn-create,
-    &.btn-save {
+    &.btn-success {
       @include btn-outline($white-light, $green-600, $green-500, $green-500, $white-light, $green-600, $green-600, $green-700);
     }
 
     &.btn-remove {
       @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
+    }
+
+    &.btn-warning {
+      @include btn-outline($white-light, $orange-500, $orange-500, $orange-500, $white-light, $orange-600, $orange-600, $orange-700);
     }
 
     &.btn-primary,
@@ -180,8 +181,7 @@
   }
 
   &.btn-info,
-  &.btn-primary,
-  &.btn-register {
+  &.btn-primary {
     @include btn-blue;
   }
 
@@ -217,6 +217,10 @@
     @include btn-with-margin;
   }
 
+  &.btn-icon {
+    color: $gl-gray-700;
+  }
+
   .fa-caret-down,
   .fa-chevron-down {
     margin-left: 5px;
@@ -225,6 +229,25 @@
   &.dropdown-toggle {
     .fa-caret-down {
       margin-left: 3px;
+    }
+  }
+
+  &.btn-text-field {
+    width: 100%;
+    text-align: left;
+    padding: 6px 16px;
+    border-color: $border-color;
+    color: $gray-darkest;
+    background-color: $gray-light;
+
+    &:hover,
+    &:active,
+    &:focus {
+      cursor: text;
+      box-shadow: none;
+      border-color: lighten($blue-300, 20%);
+      color: $gray-darkest;
+      background-color: $gray-light;
     }
   }
 
@@ -256,7 +279,7 @@
 .btn-terminal {
   svg {
     height: 14px;
-    width: 18px;
+    width: $default-icon-size;
   }
 }
 
@@ -302,6 +325,10 @@
 .btn-clipboard {
   border: 0;
   padding: 0 5px;
+
+  svg {
+    top: auto;
+  }
 }
 
 .input-group-prepend,
@@ -341,35 +368,20 @@
   }
 }
 
-.btn-text-field {
-  width: 100%;
-  text-align: left;
-  padding: 6px 16px;
-  border-color: $border-color;
-  color: $gray-darkest;
-  background-color: $gray-light;
-
-  &:hover,
-  &:active,
-  &:focus {
-    cursor: text;
-    box-shadow: none;
-    border-color: lighten($dropdown-input-focus-border, 20%);
-    color: $gray-darkest;
-    background-color: $gray-light;
-  }
-}
-
 .btn-build {
   margin-left: 10px;
 
   i {
     color: $gl-text-color-secondary;
   }
+
+  svg {
+    fill: $gl-text-color-secondary;
+  }
 }
 
 .clone-dropdown-btn a {
-  color: $dropdown-link-color;
+  color: $gl-gray-700;
 
   &:hover {
     text-decoration: none;
@@ -438,7 +450,7 @@
     &:hover,
     &:active,
     &:focus {
-      color: $gl-link-color;
+      color: $blue-600;
       text-decoration: none;
     }
   }
@@ -449,21 +461,21 @@
     &:hover,
     &:active,
     &:focus {
-      color: $gl-link-color;
+      color: $blue-600;
       text-decoration: none;
     }
   }
 }
 
 .btn-missing {
-  color: $notes-light-color;
+  color: $gl-text-color-secondary;
   border: 1px dashed $border-gray-normal-dashed;
   border-radius: $border-radius-default;
 
   &:hover,
   &:active,
   &:focus {
-    color: $notes-light-color;
+    color: $gl-text-color-secondary;
     background-color: $white-normal;
   }
 }
@@ -475,7 +487,7 @@
 // All disabled buttons, regardless of color, type, etc
 %disabled {
   background-color: $gray-light !important;
-  border-color: $theme-gray-200 !important;
+  border-color: $gray-200 !important;
   color: $gl-text-color-disabled !important;
   opacity: 1 !important;
   cursor: default !important;
@@ -495,6 +507,10 @@ fieldset[disabled] .btn,
   &:hover {
     @extend %disabled;
   }
+}
+
+[readonly] {
+  cursor: default;
 }
 
 .btn-no-padding {

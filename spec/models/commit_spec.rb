@@ -11,6 +11,7 @@ describe Commit do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(StaticModel) }
+    it { is_expected.to include_module(Presentable) }
   end
 
   describe '.lazy' do
@@ -65,13 +66,14 @@ describe Commit do
 
       key = "Commit:author:#{commit.author_email.downcase}"
 
-      expect(RequestStore.store[key]).to eq(user)
+      expect(Gitlab::SafeRequestStore[key]).to eq(user)
       expect(commit.author).to eq(user)
     end
 
     context 'using eager loading' do
       let!(:alice) { create(:user, email: 'alice@example.com') }
       let!(:bob) { create(:user, email: 'hunter2@example.com') }
+      let!(:jeff) { create(:user) }
 
       let(:alice_commit) do
         described_class.new(RepoHelpers.sample_commit, project).tap do |c|
@@ -93,7 +95,14 @@ describe Commit do
         end
       end
 
-      let!(:commits) { [alice_commit, bob_commit, eve_commit] }
+      let(:jeff_commit) do
+        # The commit for Jeff uses his private commit email
+        described_class.new(RepoHelpers.sample_commit, project).tap do |c|
+          c.author_email = jeff.private_commit_email
+        end
+      end
+
+      let!(:commits) { [alice_commit, bob_commit, eve_commit, jeff_commit] }
 
       before do
         create(:email, user: bob, email: 'bob@example.com')
@@ -123,6 +132,20 @@ describe Commit do
         commits.each(&:lazy_author)
 
         expect(bob_commit.author).to eq(bob)
+      end
+
+      it "preloads the authors for Commits using a User's private commit Email" do
+        commits.each(&:lazy_author)
+
+        expect(jeff_commit.author).to eq(jeff)
+      end
+
+      it "preloads the authors for Commits using a User's outdated private commit Email" do
+        jeff.update!(username: 'new-username')
+
+        commits.each(&:lazy_author)
+
+        expect(jeff_commit.author).to eq(jeff)
       end
 
       it 'sets the author to Nil if an author could not be found for a Commit' do
@@ -182,7 +205,7 @@ describe Commit do
       message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.'
 
       allow(commit).to receive(:safe_message).and_return(message)
-      expect(commit.title).to eq('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis…')
+      expect(commit.title).to eq('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id...')
     end
 
     it "truncates a message with a newline before 80 characters at the newline" do
@@ -225,6 +248,12 @@ eos
   end
 
   describe 'description' do
+    it 'returns no_commit_message when safe_message is blank' do
+      allow(commit).to receive(:safe_message).and_return(nil)
+
+      expect(commit.description).to eq('--no commit message')
+    end
+
     it 'returns description of commit message if title less than 100 characters' do
       message = <<eos
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
@@ -264,11 +293,11 @@ eos
     let(:issue) { create :issue, project: project }
     let(:other_project) { create(:project, :public) }
     let(:other_issue) { create :issue, project: other_project }
-    let(:commiter) { create :user }
+    let(:committer) { create :user }
 
     before do
-      project.add_developer(commiter)
-      other_project.add_developer(commiter)
+      project.add_developer(committer)
+      other_project.add_developer(committer)
     end
 
     it 'detects issues that this commit is marked as closing' do
@@ -276,7 +305,7 @@ eos
 
       allow(commit).to receive_messages(
         safe_message: "Fixes ##{issue.iid} and #{ext_ref}",
-        committer_email: commiter.email
+        committer_email: committer.email
       )
 
       expect(commit.closes_issues).to include(issue)
@@ -514,30 +543,21 @@ eos
   end
 
   describe '#uri_type' do
-    shared_examples 'URI type' do
-      it 'returns the URI type at the given path' do
-        expect(commit.uri_type('files/html')).to be(:tree)
-        expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
-        expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
-        expect(commit.uri_type('files/js/application.js')).to be(:blob)
-      end
-
-      it "returns nil if the path doesn't exists" do
-        expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
-      end
-
-      it 'is nil if the path is nil or empty' do
-        expect(commit.uri_type(nil)).to be_nil
-        expect(commit.uri_type("")).to be_nil
-      end
+    it 'returns the URI type at the given path' do
+      expect(commit.uri_type('files/html')).to be(:tree)
+      expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
+      expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
+      expect(commit.uri_type('files/js/application.js')).to be(:blob)
     end
 
-    context 'when Gitaly commit_tree_entry feature is enabled' do
-      it_behaves_like 'URI type'
+    it "returns nil if the path doesn't exists" do
+      expect(commit.uri_type('this/path/doesnt/exist')).to be_nil
+      expect(commit.uri_type('../path/doesnt/exist')).to be_nil
     end
 
-    context 'when Gitaly commit_tree_entry feature is disabled', :disable_gitaly do
-      it_behaves_like 'URI type'
+    it 'is nil if the path is nil or empty' do
+      expect(commit.uri_type(nil)).to be_nil
+      expect(commit.uri_type("")).to be_nil
     end
   end
 

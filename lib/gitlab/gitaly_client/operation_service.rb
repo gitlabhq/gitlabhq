@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class OperationService
@@ -17,10 +19,10 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.medium_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
       end
 
@@ -33,9 +35,9 @@ module Gitlab
           message: encode_binary(message.to_s)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient.medium_timeout)
         if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         elsif response.exists
           raise Gitlab::Git::Repository::TagExistsError
         end
@@ -56,7 +58,7 @@ module Gitlab
           :user_create_branch, request)
 
         if response.pre_receive_error.present?
-          raise Gitlab::Git::HooksService::PreReceiveError.new(response.pre_receive_error)
+          raise Gitlab::Git::PreReceiveError.new(response.pre_receive_error)
         end
 
         branch = response.branch
@@ -64,6 +66,24 @@ module Gitlab
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)
+      rescue GRPC::FailedPrecondition => ex
+        raise Gitlab::Git::Repository::InvalidRef, ex
+      end
+
+      def user_update_branch(branch_name, user, newrev, oldrev)
+        request = Gitaly::UserUpdateBranchRequest.new(
+          repository: @gitaly_repo,
+          branch_name: encode_binary(branch_name),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          newrev: encode_binary(newrev),
+          oldrev: encode_binary(oldrev)
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_update_branch, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
+        end
       end
 
       def user_delete_branch(branch_name, user)
@@ -76,7 +96,7 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request)
 
         if pre_receive_error = response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
       end
 
@@ -106,7 +126,7 @@ module Gitlab
         second_response = response_enum.next
 
         if second_response.pre_receive_error.present?
-          raise Gitlab::Git::HooksService::PreReceiveError, second_response.pre_receive_error
+          raise Gitlab::Git::PreReceiveError, second_response.pre_receive_error
         end
 
         branch_update = second_response.branch_update
@@ -126,13 +146,16 @@ module Gitlab
           branch: encode_binary(target_branch)
         )
 
-        branch_update = GitalyClient.call(
+        response = GitalyClient.call(
           @repository.storage,
           :operation_service,
           :user_ff_branch,
           request
-        ).branch_update
-        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
+        )
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+      rescue GRPC::FailedPrecondition => e
+        raise Gitlab::Git::CommitError, e
       end
 
       def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
@@ -175,7 +198,7 @@ module Gitlab
         )
 
         if response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
         elsif response.git_error.presence
           raise Gitlab::Git::Repository::GitError, response.git_error
         else
@@ -207,6 +230,32 @@ module Gitlab
         end
 
         response.squash_sha
+      end
+
+      def user_update_submodule(user:, submodule:, commit_sha:, branch:, message:)
+        request = Gitaly::UserUpdateSubmoduleRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit_sha: commit_sha,
+          branch: encode_binary(branch),
+          submodule: encode_binary(submodule),
+          commit_message: encode_binary(message)
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_update_submodule,
+          request
+        )
+
+        if response.pre_receive_error.present?
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
+        elsif response.commit_error.present?
+          raise Gitlab::Git::CommitError, response.commit_error
+        else
+          Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+        end
       end
 
       def user_commit_files(
@@ -242,12 +291,35 @@ module Gitlab
           :user_commit_files, req_enum, remote_storage: start_repository.storage)
 
         if (pre_receive_error = response.pre_receive_error.presence)
-          raise Gitlab::Git::HooksService::PreReceiveError, pre_receive_error
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
         end
 
         if (index_error = response.index_error.presence)
           raise Gitlab::Git::Index::IndexError, index_error
         end
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+      end
+
+      def user_commit_patches(user, branch_name, patches)
+        header = Gitaly::UserApplyPatchRequest::Header.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          target_branch: encode_binary(branch_name)
+        )
+        reader = binary_stringio(patches)
+
+        chunks = Enumerator.new do |chunk|
+          chunk.yield Gitaly::UserApplyPatchRequest.new(header: header)
+
+          until reader.eof?
+            patch_chunk = reader.read(MAX_MSG_SIZE)
+
+            chunk.yield(Gitaly::UserApplyPatchRequest.new(patches: patch_chunk))
+          end
+        end
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_apply_patch, chunks)
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
@@ -272,7 +344,8 @@ module Gitlab
           :operation_service,
           :"user_#{rpc}",
           request,
-          remote_storage: start_repository.storage
+          remote_storage: start_repository.storage,
+          timeout: GitalyClient.medium_timeout
         )
 
         handle_cherry_pick_or_revert_response(response)
@@ -280,14 +353,14 @@ module Gitlab
 
       def handle_cherry_pick_or_revert_response(response)
         if response.pre_receive_error.presence
-          raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
+          raise Gitlab::Git::PreReceiveError, response.pre_receive_error
         elsif response.commit_error.presence
           raise Gitlab::Git::CommitError, response.commit_error
         elsif response.create_tree_error.presence
           raise Gitlab::Git::Repository::CreateTreeError, response.create_tree_error
-        else
-          Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
         end
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
 
       def user_commit_files_request_header(
@@ -311,7 +384,9 @@ module Gitlab
           action: action[:action].upcase.to_sym,
           file_path: encode_binary(action[:file_path]),
           previous_path: encode_binary(action[:previous_path]),
-          base64_content: action[:encoding] == 'base64'
+          base64_content: action[:encoding] == 'base64',
+          execute_filemode: !!action[:execute_filemode],
+          infer_content: !!action[:infer_content]
         )
       rescue RangeError
         raise ArgumentError, "Unknown action '#{action[:action]}'"

@@ -63,11 +63,11 @@ export default {
 
 <template>
   <div
-    class="multi-file-commit-panel"
     :class="{
       'is-collapsed': collapsed && collapsible,
     }"
     :style="panelStyle"
+    class="multi-file-commit-panel"
     @click="toggleFullbarCollapsed"
   >
     <slot></slot>
@@ -77,9 +77,9 @@ export default {
       :start-size="initialWidth"
       :min-size="minSize"
       :max-size="$options.maxSize"
+      :side="side === 'right' ? 'left' : 'right'"
       @resize-start="setResizingStatus(true)"
       @resize-end="setResizingStatus(false)"
-      :side="side === 'right' ? 'left' : 'right'"
     />
   </div>
 </template>

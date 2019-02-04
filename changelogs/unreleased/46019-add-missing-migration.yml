@@ -1,5 +1,0 @@
----
-title: Add missing migration for minimal Project build_timeout
-merge_request: 18775
-author:
-type: fixed

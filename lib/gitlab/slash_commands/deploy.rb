@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module SlashCommands
     class Deploy < BaseCommand
@@ -36,6 +38,7 @@ module Gitlab
 
       private
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_action(from, to)
         environment = project.environments.find_by(name: from)
         return unless environment
@@ -50,6 +53,7 @@ module Gitlab
           actions.first
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

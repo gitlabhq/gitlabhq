@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe API::Users do
-  let(:user)  { create(:user) }
+  let(:user)  { create(:user, username: 'user.with.dot') }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
   let(:gpg_key) { create(:gpg_key, user: user) }
@@ -11,6 +11,28 @@ describe API::Users do
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
+  let(:private_user) { create(:user, private_profile: true) }
+
+  shared_examples 'rendering user status' do
+    it 'returns the status if there was one' do
+      create(:user_status, user: user)
+
+      get api(path, user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response['message']).to be_present
+      expect(json_response['message_html']).to be_present
+      expect(json_response['emoji']).to be_present
+    end
+
+    it 'returns an empty response if there was no status' do
+      get api(path, user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response['message']).to be_nil
+      expect(json_response['emoji']).to be_nil
+    end
+  end
 
   describe 'GET /users' do
     context "when unauthenticated" do
@@ -21,7 +43,16 @@ describe API::Users do
       end
 
       it "returns the user when a valid `username` parameter is passed" do
-        get api("/users"), username: user.username
+        get api("/users"), params: { username: user.username }
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['id']).to eq(user.id)
+        expect(json_response[0]['username']).to eq(user.username)
+      end
+
+      it "returns the user when a valid `username` parameter is passed (case insensitive)" do
+        get api("/users"), params: { username: user.username.upcase }
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(json_response.size).to eq(1)
@@ -30,7 +61,7 @@ describe API::Users do
       end
 
       it "returns an empty response when an invalid `username` parameter is passed" do
-        get api("/users"), username: 'invalid'
+        get api("/users"), params: { username: 'invalid' }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
@@ -43,7 +74,7 @@ describe API::Users do
         end
 
         it "returns authorization error when the `username` parameter refers to an inaccessible user" do
-          get api("/users"), username: user.username
+          get api("/users"), params: { username: user.username }
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -104,6 +135,14 @@ describe API::Users do
 
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.first['username']).to eq(omniauth_user.username)
+      end
+
+      it "returns one user (case insensitive)" do
+        get api("/users?username=#{omniauth_user.username.upcase}", user)
 
         expect(response).to match_response_schema('public_api/v4/user/basics')
         expect(response).to include_pagination_headers
@@ -204,7 +243,7 @@ describe API::Users do
         admin
         user
 
-        get api('/users', admin), { order_by: 'id', sort: 'asc' }
+        get api('/users', admin), params: { order_by: 'id', sort: 'asc' }
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(2)
@@ -217,7 +256,7 @@ describe API::Users do
         user
         user_with_2fa = create(:user, :two_factor_via_otp)
 
-        get api('/users', admin), { two_factor: 'enabled' }
+        get api('/users', admin), params: { two_factor: 'enabled' }
 
         expect(response).to match_response_schema('public_api/v4/user/admins')
         expect(json_response.size).to eq(1)
@@ -225,7 +264,7 @@ describe API::Users do
       end
 
       it 'returns 400 when provided incorrect sort params' do
-        get api('/users', admin), { order_by: 'magic', sort: 'asc' }
+        get api('/users', admin), params: { order_by: 'magic', sort: 'asc' }
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -254,6 +293,13 @@ describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['is_admin']).to be(false)
       end
+
+      it "includes the `created_at` field for private users" do
+        get api("/users/#{private_user.id}", admin)
+
+        expect(response).to match_response_schema('public_api/v4/user/admin')
+        expect(json_response.keys).to include 'created_at'
+      end
     end
 
     context 'for an anonymous user' do
@@ -272,6 +318,20 @@ describe API::Users do
 
         expect(response).to have_gitlab_http_status(404)
       end
+
+      it "returns the `created_at` field for public users" do
+        get api("/users/#{user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).to include 'created_at'
+      end
+
+      it "does not return the `created_at` field for private users" do
+        get api("/users/#{private_user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).not_to include 'created_at'
+      end
     end
 
     it "returns a 404 error if user id not found" do
@@ -288,6 +348,26 @@ describe API::Users do
     end
   end
 
+  describe 'GET /users/:id_or_username/status' do
+    context 'when finding the user by id' do
+      it_behaves_like 'rendering user status' do
+        let(:path) { "/users/#{user.id}/status" }
+      end
+    end
+
+    context 'when finding the user by username' do
+      it_behaves_like 'rendering user status' do
+        let(:path) { "/users/#{user.username}/status" }
+      end
+    end
+
+    context 'when finding the user by username (case insensitive)' do
+      it_behaves_like 'rendering user status' do
+        let(:path) { "/users/#{user.username.upcase}/status" }
+      end
+    end
+  end
+
   describe "POST /users" do
     before do
       admin
@@ -295,12 +375,12 @@ describe API::Users do
 
     it "creates user" do
       expect do
-        post api("/users", admin), attributes_for(:user, projects_limit: 3)
+        post api("/users", admin), params: attributes_for(:user, projects_limit: 3)
       end.to change { User.count }.by(1)
     end
 
     it "creates user with correct attributes" do
-      post api('/users', admin), attributes_for(:user, admin: true, can_create_group: true)
+      post api('/users', admin), params: attributes_for(:user, admin: true, can_create_group: true)
       expect(response).to have_gitlab_http_status(201)
       user_id = json_response['id']
       new_user = User.find(user_id)
@@ -313,13 +393,13 @@ describe API::Users do
       optional_attributes = { confirm: true }
       attributes = attributes_for(:user).merge(optional_attributes)
 
-      post api('/users', admin), attributes
+      post api('/users', admin), params: attributes
 
       expect(response).to have_gitlab_http_status(201)
     end
 
     it "creates non-admin user" do
-      post api('/users', admin), attributes_for(:user, admin: false, can_create_group: false)
+      post api('/users', admin), params: attributes_for(:user, admin: false, can_create_group: false)
       expect(response).to have_gitlab_http_status(201)
       user_id = json_response['id']
       new_user = User.find(user_id)
@@ -329,7 +409,7 @@ describe API::Users do
     end
 
     it "creates non-admin users by default" do
-      post api('/users', admin), attributes_for(:user)
+      post api('/users', admin), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(201)
       user_id = json_response['id']
       new_user = User.find(user_id)
@@ -338,12 +418,12 @@ describe API::Users do
     end
 
     it "returns 201 Created on success" do
-      post api("/users", admin), attributes_for(:user, projects_limit: 3)
+      post api("/users", admin), params: attributes_for(:user, projects_limit: 3)
       expect(response).to have_gitlab_http_status(201)
     end
 
     it 'creates non-external users by default' do
-      post api("/users", admin), attributes_for(:user)
+      post api("/users", admin), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(201)
 
       user_id = json_response['id']
@@ -353,7 +433,7 @@ describe API::Users do
     end
 
     it 'allows an external user to be created' do
-      post api("/users", admin), attributes_for(:user, external: true)
+      post api("/users", admin), params: attributes_for(:user, external: true)
       expect(response).to have_gitlab_http_status(201)
 
       user_id = json_response['id']
@@ -363,7 +443,7 @@ describe API::Users do
     end
 
     it "creates user with reset password" do
-      post api('/users', admin), attributes_for(:user, reset_password: true).except(:password)
+      post api('/users', admin), params: attributes_for(:user, reset_password: true).except(:password)
 
       expect(response).to have_gitlab_http_status(201)
 
@@ -374,42 +454,58 @@ describe API::Users do
       expect(new_user.recently_sent_password_reset?).to eq(true)
     end
 
+    it "creates user with private profile" do
+      post api('/users', admin), params: attributes_for(:user, private_profile: true)
+
+      expect(response).to have_gitlab_http_status(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+
+      expect(new_user).not_to eq(nil)
+      expect(new_user.private_profile?).to eq(true)
+    end
+
     it "does not create user with invalid email" do
       post api('/users', admin),
-           email: 'invalid email',
-           password: 'password',
-           name: 'test'
+           params: {
+             email: 'invalid email',
+             password: 'password',
+             name: 'test'
+           }
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 400 error if name not given' do
-      post api('/users', admin), attributes_for(:user).except(:name)
+      post api('/users', admin), params: attributes_for(:user).except(:name)
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 400 error if password not given' do
-      post api('/users', admin), attributes_for(:user).except(:password)
+      post api('/users', admin), params: attributes_for(:user).except(:password)
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 400 error if email not given' do
-      post api('/users', admin), attributes_for(:user).except(:email)
+      post api('/users', admin), params: attributes_for(:user).except(:email)
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 400 error if username not given' do
-      post api('/users', admin), attributes_for(:user).except(:username)
+      post api('/users', admin), params: attributes_for(:user).except(:username)
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 400 error if user does not validate' do
       post api('/users', admin),
-           password: 'pass',
-           email: 'test@example.com',
-           username: 'test!',
-           name: 'test',
-           bio: 'g' * 256,
-           projects_limit: -1
+           params: {
+             password: 'pass',
+             email: 'test@example.com',
+             username: 'test!',
+             name: 'test',
+             bio: 'g' * 256,
+             projects_limit: -1
+           }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['password'])
         .to eq(['is too short (minimum is 8 characters)'])
@@ -422,26 +518,30 @@ describe API::Users do
     end
 
     it "is not available for non admin users" do
-      post api("/users", user), attributes_for(:user)
+      post api("/users", user), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(403)
     end
 
     context 'with existing user' do
       before do
         post api('/users', admin),
-             email: 'test@example.com',
-             password: 'password',
-             username: 'test',
-             name: 'foo'
+             params: {
+               email: 'test@example.com',
+               password: 'password',
+               username: 'test',
+               name: 'foo'
+             }
       end
 
       it 'returns 409 conflict error if user with same email exists' do
         expect do
           post api('/users', admin),
-               name: 'foo',
-               email: 'test@example.com',
-               password: 'password',
-               username: 'foo'
+               params: {
+                 name: 'foo',
+                 email: 'test@example.com',
+                 password: 'password',
+                 username: 'foo'
+               }
         end.to change { User.count }.by(0)
         expect(response).to have_gitlab_http_status(409)
         expect(json_response['message']).to eq('Email has already been taken')
@@ -450,17 +550,33 @@ describe API::Users do
       it 'returns 409 conflict error if same username exists' do
         expect do
           post api('/users', admin),
-               name: 'foo',
-               email: 'foo@example.com',
-               password: 'password',
-               username: 'test'
+               params: {
+                 name: 'foo',
+                 email: 'foo@example.com',
+                 password: 'password',
+                 username: 'test'
+               }
+        end.to change { User.count }.by(0)
+        expect(response).to have_gitlab_http_status(409)
+        expect(json_response['message']).to eq('Username has already been taken')
+      end
+
+      it 'returns 409 conflict error if same username exists (case insensitive)' do
+        expect do
+          post api('/users', admin),
+               params: {
+                 name: 'foo',
+                 email: 'foo@example.com',
+                 password: 'password',
+                 username: 'TEST'
+               }
         end.to change { User.count }.by(0)
         expect(response).to have_gitlab_http_status(409)
         expect(json_response['message']).to eq('Username has already been taken')
       end
 
       it 'creates user with new identity' do
-        post api("/users", admin), attributes_for(:user, provider: 'github', extern_uid: '67890')
+        post api("/users", admin), params: attributes_for(:user, provider: 'github', extern_uid: '67890')
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['identities'].first['extern_uid']).to eq('67890')
@@ -489,7 +605,7 @@ describe API::Users do
     let!(:admin_user) { create(:admin) }
 
     it "updates user with new bio" do
-      put api("/users/#{user.id}", admin), { bio: 'new test bio' }
+      put api("/users/#{user.id}", admin), params: { bio: 'new test bio' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['bio']).to eq('new test bio')
@@ -497,14 +613,14 @@ describe API::Users do
     end
 
     it "updates user with new password and forces reset on next login" do
-      put api("/users/#{user.id}", admin), password: '12345678'
+      put api("/users/#{user.id}", admin), params: { password: '12345678' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(user.reload.password_expires_at).to be <= Time.now
     end
 
     it "updates user with organization" do
-      put api("/users/#{user.id}", admin), { organization: 'GitLab' }
+      put api("/users/#{user.id}", admin), params: { organization: 'GitLab' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['organization']).to eq('GitLab')
@@ -512,7 +628,7 @@ describe API::Users do
     end
 
     it 'updates user with avatar' do
-      put api("/users/#{user.id}", admin), { avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+      put api("/users/#{user.id}", admin), params: { avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
 
       user.reload
 
@@ -524,7 +640,7 @@ describe API::Users do
     it 'updates user with a new email' do
       old_email = user.email
       old_notification_email = user.notification_email
-      put api("/users/#{user.id}", admin), email: 'new@email.com'
+      put api("/users/#{user.id}", admin), params: { email: 'new@email.com' }
 
       user.reload
 
@@ -536,7 +652,7 @@ describe API::Users do
     end
 
     it 'skips reconfirmation when requested' do
-      put api("/users/#{user.id}", admin), email: 'new@email.com', skip_reconfirmation: true
+      put api("/users/#{user.id}", admin), params: { email: 'new@email.com', skip_reconfirmation: true }
 
       user.reload
 
@@ -546,7 +662,7 @@ describe API::Users do
     end
 
     it 'updates user with his own username' do
-      put api("/users/#{user.id}", admin), username: user.username
+      put api("/users/#{user.id}", admin), params: { username: user.username }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['username']).to eq(user.username)
@@ -554,14 +670,14 @@ describe API::Users do
     end
 
     it "updates user's existing identity" do
-      put api("/users/#{omniauth_user.id}", admin), provider: 'ldapmain', extern_uid: '654321'
+      put api("/users/#{omniauth_user.id}", admin), params: { provider: 'ldapmain', extern_uid: '654321' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(omniauth_user.reload.identities.first.extern_uid).to eq('654321')
     end
 
     it 'updates user with new identity' do
-      put api("/users/#{user.id}", admin), provider: 'github', extern_uid: 'john'
+      put api("/users/#{user.id}", admin), params: { provider: 'github', extern_uid: 'john' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(user.reload.identities.first.extern_uid).to eq('john')
@@ -569,22 +685,29 @@ describe API::Users do
     end
 
     it "updates admin status" do
-      put api("/users/#{user.id}", admin), { admin: true }
+      put api("/users/#{user.id}", admin), params: { admin: true }
 
       expect(response).to have_gitlab_http_status(200)
       expect(user.reload.admin).to eq(true)
     end
 
     it "updates external status" do
-      put api("/users/#{user.id}", admin), { external: true }
+      put api("/users/#{user.id}", admin), params: { external: true }
 
       expect(response.status).to eq 200
       expect(json_response['external']).to eq(true)
       expect(user.reload.external?).to be_truthy
     end
 
+    it "updates private profile" do
+      put api("/users/#{user.id}", admin), params: { private_profile: true }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.private_profile).to eq(true)
+    end
+
     it "does not update admin status" do
-      put api("/users/#{admin_user.id}", admin), { can_create_group: false }
+      put api("/users/#{admin_user.id}", admin), params: { can_create_group: false }
 
       expect(response).to have_gitlab_http_status(200)
       expect(admin_user.reload.admin).to eq(true)
@@ -592,7 +715,7 @@ describe API::Users do
     end
 
     it "does not allow invalid update" do
-      put api("/users/#{user.id}", admin), { email: 'invalid email' }
+      put api("/users/#{user.id}", admin), params: { email: 'invalid email' }
 
       expect(response).to have_gitlab_http_status(400)
       expect(user.reload.email).not_to eq('invalid email')
@@ -601,7 +724,7 @@ describe API::Users do
     context 'when the current user is not an admin' do
       it "is not available" do
         expect do
-          put api("/users/#{user.id}", user), attributes_for(:user)
+          put api("/users/#{user.id}", user), params: attributes_for(:user)
         end.not_to change { user.reload.attributes }
 
         expect(response).to have_gitlab_http_status(403)
@@ -609,7 +732,7 @@ describe API::Users do
     end
 
     it "returns 404 for non-existing user" do
-      put api("/users/999999", admin), { bio: 'update should fail' }
+      put api("/users/999999", admin), params: { bio: 'update should fail' }
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -623,12 +746,14 @@ describe API::Users do
 
     it 'returns 400 error if user does not validate' do
       put api("/users/#{user.id}", admin),
-          password: 'pass',
-          email: 'test@example.com',
-          username: 'test!',
-          name: 'test',
-          bio: 'g' * 256,
-          projects_limit: -1
+          params: {
+            password: 'pass',
+            email: 'test@example.com',
+            username: 'test!',
+            name: 'test',
+            bio: 'g' * 256,
+            projects_limit: -1
+          }
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['message']['password'])
         .to eq(['is too short (minimum is 8 characters)'])
@@ -641,26 +766,26 @@ describe API::Users do
     end
 
     it 'returns 400 if provider is missing for identity update' do
-      put api("/users/#{omniauth_user.id}", admin), extern_uid: '654321'
+      put api("/users/#{omniauth_user.id}", admin), params: { extern_uid: '654321' }
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 400 if external UID is missing for identity update' do
-      put api("/users/#{omniauth_user.id}", admin), provider: 'ldap'
+      put api("/users/#{omniauth_user.id}", admin), params: { provider: 'ldap' }
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     context "with existing user" do
       before do
-        post api("/users", admin), { email: 'test@example.com', password: 'password', username: 'test', name: 'test' }
-        post api("/users", admin), { email: 'foo@bar.com', password: 'password', username: 'john', name: 'john' }
+        post api("/users", admin), params: { email: 'test@example.com', password: 'password', username: 'test', name: 'test' }
+        post api("/users", admin), params: { email: 'foo@bar.com', password: 'password', username: 'john', name: 'john' }
         @user = User.all.last
       end
 
       it 'returns 409 conflict error if email address exists' do
-        put api("/users/#{@user.id}", admin), email: 'test@example.com'
+        put api("/users/#{@user.id}", admin), params: { email: 'test@example.com' }
 
         expect(response).to have_gitlab_http_status(409)
         expect(@user.reload.email).to eq(@user.email)
@@ -668,7 +793,15 @@ describe API::Users do
 
       it 'returns 409 conflict error if username taken' do
         @user_id = User.all.last.id
-        put api("/users/#{@user.id}", admin), username: 'test'
+        put api("/users/#{@user.id}", admin), params: { username: 'test' }
+
+        expect(response).to have_gitlab_http_status(409)
+        expect(@user.reload.username).to eq(@user.username)
+      end
+
+      it 'returns 409 conflict error if username taken (case insensitive)' do
+        @user_id = User.all.last.id
+        put api("/users/#{@user.id}", admin), params: { username: 'TEST' }
 
         expect(response).to have_gitlab_http_status(409)
         expect(@user.reload.username).to eq(@user.username)
@@ -682,14 +815,14 @@ describe API::Users do
     end
 
     it "does not create invalid ssh key" do
-      post api("/users/#{user.id}/keys", admin), { title: "invalid key" }
+      post api("/users/#{user.id}/keys", admin), params: { title: "invalid key" }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('key is missing')
     end
 
     it 'does not create key without title' do
-      post api("/users/#{user.id}/keys", admin), key: 'some key'
+      post api("/users/#{user.id}/keys", admin), params: { key: 'some key' }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('title is missing')
@@ -698,7 +831,7 @@ describe API::Users do
     it "creates ssh key" do
       key_attrs = attributes_for :key
       expect do
-        post api("/users/#{user.id}/keys", admin), key_attrs
+        post api("/users/#{user.id}/keys", admin), params: key_attrs
       end.to change { user.keys.count }.by(1)
     end
 
@@ -709,35 +842,25 @@ describe API::Users do
   end
 
   describe 'GET /user/:id/keys' do
-    before do
-      admin
+    it 'returns 404 for non-existing user' do
+      user_id = not_existing_user_id
+
+      get api("/users/#{user_id}/keys")
+
+      expect(response).to have_gitlab_http_status(404)
+      expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    context 'when unauthenticated' do
-      it 'returns authentication error' do
-        get api("/users/#{user.id}/keys")
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
+    it 'returns array of ssh keys' do
+      user.keys << key
+      user.save
 
-    context 'when authenticated' do
-      it 'returns 404 for non-existing user' do
-        get api('/users/999999/keys', admin)
-        expect(response).to have_gitlab_http_status(404)
-        expect(json_response['message']).to eq('404 User Not Found')
-      end
+      get api("/users/#{user.id}/keys")
 
-      it 'returns array of ssh keys' do
-        user.keys << key
-        user.save
-
-        get api("/users/#{user.id}/keys", admin)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.first['title']).to eq(key.title)
-      end
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(key.title)
     end
   end
 
@@ -800,7 +923,7 @@ describe API::Users do
     it 'creates GPG key' do
       key_attrs = attributes_for :gpg_key
       expect do
-        post api("/users/#{user.id}/gpg_keys", admin), key_attrs
+        post api("/users/#{user.id}/gpg_keys", admin), params: key_attrs
 
         expect(response).to have_gitlab_http_status(201)
       end.to change { user.gpg_keys.count }.by(1)
@@ -949,23 +1072,38 @@ describe API::Users do
     end
 
     it "does not create invalid email" do
-      post api("/users/#{user.id}/emails", admin), {}
+      post api("/users/#{user.id}/emails", admin), params: {}
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('email is missing')
     end
 
-    it "creates email" do
+    it "creates unverified email" do
       email_attrs = attributes_for :email
       expect do
-        post api("/users/#{user.id}/emails", admin), email_attrs
+        post api("/users/#{user.id}/emails", admin), params: email_attrs
       end.to change { user.emails.count }.by(1)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).not_to be_confirmed
     end
 
     it "returns a 400 for invalid ID" do
       post api("/users/999999/emails", admin)
 
       expect(response).to have_gitlab_http_status(400)
+    end
+
+    it "creates verified email" do
+      email_attrs = attributes_for :email
+      email_attrs[:skip_confirmation] = true
+
+      post api("/users/#{user.id}/emails", admin), params: email_attrs
+
+      expect(response).to have_gitlab_http_status(201)
+
+      email = Email.find_by(user_id: user.id, email: email_attrs[:email])
+      expect(email).to be_confirmed
     end
   end
 
@@ -1067,7 +1205,7 @@ describe API::Users do
     end
 
     it "deletes user" do
-      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
+      perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
       expect(response).to have_gitlab_http_status(204)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
@@ -1079,30 +1217,30 @@ describe API::Users do
     end
 
     it "does not delete for unauthenticated user" do
-      Sidekiq::Testing.inline! { delete api("/users/#{user.id}") }
+      perform_enqueued_jobs { delete api("/users/#{user.id}") }
       expect(response).to have_gitlab_http_status(401)
     end
 
     it "is not available for non admin users" do
-      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", user) }
+      perform_enqueued_jobs { delete api("/users/#{user.id}", user) }
       expect(response).to have_gitlab_http_status(403)
     end
 
     it "returns 404 for non-existing user" do
-      Sidekiq::Testing.inline! { delete api("/users/999999", admin) }
+      perform_enqueued_jobs { delete api("/users/999999", admin) }
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
-      Sidekiq::Testing.inline! { delete api("/users/ASDF", admin) }
+      perform_enqueued_jobs { delete api("/users/ASDF", admin) }
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     context "hard delete disabled" do
       it "moves contributions to the ghost user" do
-        Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
+        perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
         expect(response).to have_gitlab_http_status(204)
         expect(issue.reload).to be_persisted
@@ -1112,7 +1250,7 @@ describe API::Users do
 
     context "hard delete enabled" do
       it "removes contributions" do
-        Sidekiq::Testing.inline! { delete api("/users/#{user.id}?hard_delete=true", admin) }
+        perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
 
         expect(response).to have_gitlab_http_status(204)
         expect(Issue.exists?(issue.id)).to be_falsy
@@ -1123,58 +1261,63 @@ describe API::Users do
   describe "GET /user" do
     let(:personal_access_token) { create(:personal_access_token, user: user).token }
 
-    context 'with regular user' do
-      context 'with personal access token' do
-        it 'returns 403 without private token when sudo is defined' do
-          get api("/user?private_token=#{personal_access_token}&sudo=123")
+    shared_examples 'get user info' do |version|
+      context 'with regular user' do
+        context 'with personal access token' do
+          it 'returns 403 without private token when sudo is defined' do
+            get api("/user?private_token=#{personal_access_token}&sudo=123", version: version)
 
-          expect(response).to have_gitlab_http_status(403)
-        end
-      end
-
-      it 'returns current user without private token when sudo not defined' do
-        get api("/user", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('public_api/v4/user/public')
-        expect(json_response['id']).to eq(user.id)
-      end
-
-      context "scopes" do
-        let(:path) { "/user" }
-        let(:api_call) { method(:api) }
-
-        include_examples 'allows the "read_user" scope'
-      end
-    end
-
-    context 'with admin' do
-      let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
-
-      context 'with personal access token' do
-        it 'returns 403 without private token when sudo defined' do
-          get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}")
-
-          expect(response).to have_gitlab_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
+          end
         end
 
-        it 'returns initial current user without private token but with is_admin when sudo not defined' do
-          get api("/user?private_token=#{admin_personal_access_token}")
+        it 'returns current user without private token when sudo not defined' do
+          get api("/user", user, version: version)
 
           expect(response).to have_gitlab_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/admin')
-          expect(json_response['id']).to eq(admin.id)
+          expect(response).to match_response_schema('public_api/v4/user/public')
+          expect(json_response['id']).to eq(user.id)
+        end
+
+        context "scopes" do
+          let(:path) { "/user" }
+          let(:api_call) { method(:api) }
+
+          include_examples 'allows the "read_user" scope', version
+        end
+      end
+
+      context 'with admin' do
+        let(:admin_personal_access_token) { create(:personal_access_token, user: admin).token }
+
+        context 'with personal access token' do
+          it 'returns 403 without private token when sudo defined' do
+            get api("/user?private_token=#{admin_personal_access_token}&sudo=#{user.id}", version: version)
+
+            expect(response).to have_gitlab_http_status(403)
+          end
+
+          it 'returns initial current user without private token but with is_admin when sudo not defined' do
+            get api("/user?private_token=#{admin_personal_access_token}", version: version)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to match_response_schema('public_api/v4/user/admin')
+            expect(json_response['id']).to eq(admin.id)
+          end
+        end
+      end
+
+      context 'with unauthenticated user' do
+        it "returns 401 error if user is unauthenticated" do
+          get api("/user", version: version)
+
+          expect(response).to have_gitlab_http_status(401)
         end
       end
     end
 
-    context 'with unauthenticated user' do
-      it "returns 401 error if user is unauthenticated" do
-        get api("/user")
-
-        expect(response).to have_gitlab_http_status(401)
-      end
-    end
+    it_behaves_like 'get user info', 'v3'
+    it_behaves_like 'get user info', 'v4'
   end
 
   describe "GET /user/keys" do
@@ -1250,32 +1393,32 @@ describe API::Users do
     it "creates ssh key" do
       key_attrs = attributes_for :key
       expect do
-        post api("/user/keys", user), key_attrs
+        post api("/user/keys", user), params: key_attrs
       end.to change { user.keys.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
     end
 
     it "returns a 401 error if unauthorized" do
-      post api("/user/keys"), title: 'some title', key: 'some key'
+      post api("/user/keys"), params: { title: 'some title', key: 'some key' }
       expect(response).to have_gitlab_http_status(401)
     end
 
     it "does not create ssh key without key" do
-      post api("/user/keys", user), title: 'title'
+      post api("/user/keys", user), params: { title: 'title' }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('key is missing')
     end
 
     it 'does not create ssh key without title' do
-      post api('/user/keys', user), key: 'some key'
+      post api('/user/keys', user), params: { key: 'some key' }
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('title is missing')
     end
 
     it "does not create ssh key without title" do
-      post api("/user/keys", user), key: "somekey"
+      post api("/user/keys", user), params: { key: "somekey" }
       expect(response).to have_gitlab_http_status(400)
     end
   end
@@ -1394,14 +1537,14 @@ describe API::Users do
     it 'creates a GPG key' do
       key_attrs = attributes_for :gpg_key
       expect do
-        post api('/user/gpg_keys', user), key_attrs
+        post api('/user/gpg_keys', user), params: key_attrs
 
         expect(response).to have_gitlab_http_status(201)
       end.to change { user.gpg_keys.count }.by(1)
     end
 
     it 'returns a 401 error if unauthorized' do
-      post api('/user/gpg_keys'), key: 'some key'
+      post api('/user/gpg_keys'), params: { key: 'some key' }
 
       expect(response).to have_gitlab_http_status(401)
     end
@@ -1556,18 +1699,18 @@ describe API::Users do
     it "creates email" do
       email_attrs = attributes_for :email
       expect do
-        post api("/user/emails", user), email_attrs
+        post api("/user/emails", user), params: email_attrs
       end.to change { user.emails.count }.by(1)
       expect(response).to have_gitlab_http_status(201)
     end
 
     it "returns a 401 error if unauthorized" do
-      post api("/user/emails"), email: 'some email'
+      post api("/user/emails"), params: { email: 'some email' }
       expect(response).to have_gitlab_http_status(401)
     end
 
     it "does not create email with invalid email" do
-      post api("/user/emails", user), {}
+      post api("/user/emails", user), params: {}
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq('email is missing')
@@ -1642,7 +1785,7 @@ describe API::Users do
   end
 
   describe 'POST /users/:id/unblock' do
-    let(:blocked_user)  { create(:user, state: 'blocked') }
+    let(:blocked_user) { create(:user, state: 'blocked') }
 
     before do
       admin
@@ -1728,6 +1871,34 @@ describe API::Users do
     end
   end
 
+  describe 'GET /user/status' do
+    let(:path) { '/user/status' }
+    it_behaves_like 'rendering user status'
+  end
+
+  describe 'PUT /user/status' do
+    it 'saves the status' do
+      put api('/user/status', user), params: { emoji: 'smirk', message: 'hello world' }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response['emoji']).to eq('smirk')
+    end
+
+    it 'renders errors when the status was invalid' do
+      put api('/user/status', user), params: { emoji: 'does not exist', message: 'hello world' }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['message']['emoji']).to be_present
+    end
+
+    it 'deletes the status when passing empty values' do
+      put api('/user/status', user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(user.reload.status).to be_nil
+    end
+  end
+
   describe 'GET /users/:user_id/impersonation_tokens' do
     let!(:active_personal_access_token) { create(:personal_access_token, user: user) }
     let!(:revoked_personal_access_token) { create(:personal_access_token, :revoked, user: user) }
@@ -1793,8 +1964,10 @@ describe API::Users do
 
     it 'returns a 404 error if user not found' do
       post api("/users/#{not_existing_user_id}/impersonation_tokens", admin),
-        name: name,
-        expires_at: expires_at
+        params: {
+          name: name,
+          expires_at: expires_at
+        }
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -1802,8 +1975,10 @@ describe API::Users do
 
     it 'returns a 403 error when authenticated as normal user' do
       post api("/users/#{user.id}/impersonation_tokens", user),
-        name: name,
-        expires_at: expires_at
+        params: {
+          name: name,
+          expires_at: expires_at
+        }
 
       expect(response).to have_gitlab_http_status(403)
       expect(json_response['message']).to eq('403 Forbidden')
@@ -1811,10 +1986,12 @@ describe API::Users do
 
     it 'creates a impersonation token' do
       post api("/users/#{user.id}/impersonation_tokens", admin),
-        name: name,
-        expires_at: expires_at,
-        scopes: scopes,
-        impersonation: impersonation
+        params: {
+          name: name,
+          expires_at: expires_at,
+          scopes: scopes,
+          impersonation: impersonation
+        }
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['name']).to eq(name)
@@ -1861,11 +2038,11 @@ describe API::Users do
       expect(json_response['message']).to eq('403 Forbidden')
     end
 
-    it 'returns a personal access token' do
+    it 'returns an impersonation token' do
       get api("/users/#{user.id}/impersonation_tokens/#{impersonation_token.id}", admin)
 
       expect(response).to have_gitlab_http_status(200)
-      expect(json_response['token']).to be_present
+      expect(json_response['token']).not_to be_present
       expect(json_response['impersonation']).to be_truthy
     end
   end

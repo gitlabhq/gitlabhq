@@ -6,7 +6,7 @@ describe 'User find project file' do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
 
     visit project_tree_path(project, project.repository.root_ref)
   end

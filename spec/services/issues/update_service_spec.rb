@@ -18,7 +18,7 @@ describe Issues::UpdateService, :mailer do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
   end
@@ -55,6 +55,8 @@ describe Issues::UpdateService, :mailer do
       end
 
       it 'updates the issue with the given params' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
         update_issue(opts)
 
         expect(issue).to be_valid
@@ -72,6 +74,21 @@ describe Issues::UpdateService, :mailer do
 
         expect { update_issue(confidential: true) }
           .to change { project.open_issues_count }.from(1).to(0)
+      end
+
+      it 'enqueues ConfidentialIssueWorker when an issue is made confidential' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, issue.id)
+
+        update_issue(confidential: true)
+      end
+
+      it 'does not enqueue ConfidentialIssueWorker when an issue is made non confidential' do
+        # set confidentiality to true before the actual update
+        issue.update!(confidential: true)
+
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
+        update_issue(confidential: false)
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do
@@ -172,11 +189,12 @@ describe Issues::UpdateService, :mailer do
           expect(note.note).to include "assigned to #{user2.to_reference}"
         end
 
-        it 'creates system note about issue label edit' do
-          note = find_note('added ~')
+        it 'creates a resource label event' do
+          event = issue.resource_label_events.last
 
-          expect(note).not_to be_nil
-          expect(note.note).to include "added #{label.to_reference} label"
+          expect(event).not_to be_nil
+          expect(event.label_id).to eq label.id
+          expect(event.user_id).to eq user.id
         end
 
         it 'creates system note about title change' do
@@ -325,7 +343,42 @@ describe Issues::UpdateService, :mailer do
         end
       end
 
-      context 'when the milestone change' do
+      context 'when the milestone is removed' do
+        let!(:non_subscriber) { create(:user) }
+
+        let!(:subscriber) do
+          create(:user) do |u|
+            issue.toggle_subscription(u, project)
+            project.add_developer(u)
+          end
+        end
+
+        it_behaves_like 'system notes for milestones'
+
+        it 'sends notifications for subscribers of changed milestone' do
+          issue.milestone = create(:milestone)
+
+          issue.save
+
+          perform_enqueued_jobs do
+            update_issue(milestone_id: "")
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+      end
+
+      context 'when the milestone is changed' do
+        let!(:non_subscriber) { create(:user) }
+
+        let!(:subscriber) do
+          create(:user) do |u|
+            issue.toggle_subscription(u, project)
+            project.add_developer(u)
+          end
+        end
+
         it 'marks todos as done' do
           update_issue(milestone: create(:milestone))
 
@@ -333,6 +386,15 @@ describe Issues::UpdateService, :mailer do
         end
 
         it_behaves_like 'system notes for milestones'
+
+        it 'sends notifications for subscribers of changed milestone' do
+          perform_enqueued_jobs do
+            update_issue(milestone: create(:milestone))
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
       end
 
       context 'when the labels change' do
@@ -356,7 +418,7 @@ describe Issues::UpdateService, :mailer do
       let!(:non_subscriber) { create(:user) }
 
       let!(:subscriber) do
-        create(:user).tap do |u|
+        create(:user) do |u|
           label.toggle_subscription(u, project)
           project.add_developer(u)
         end
@@ -481,6 +543,76 @@ describe Issues::UpdateService, :mailer do
       end
     end
 
+    context 'when updating a single task' do
+      before do
+        update_issue(description: "- [ ] Task 1\n- [ ] Task 2")
+      end
+
+      it { expect(issue.tasks?).to eq(true) }
+
+      context 'when a task is marked as completed' do
+        before do
+          update_issue(update_task: { index: 1, checked: true, line_source: '- [ ] Task 1', line_number: 1 })
+        end
+
+        it 'creates system note about task status change' do
+          note1 = find_note('marked the task **Task 1** as completed')
+
+          expect(note1).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
+        end
+      end
+
+      context 'when a task is marked as incomplete' do
+        before do
+          update_issue(description: "- [x] Task 1\n- [X] Task 2")
+          update_issue(update_task: { index: 2, checked: false, line_source: '- [X] Task 2', line_number: 2 })
+        end
+
+        it 'creates system note about task status change' do
+          note1 = find_note('marked the task **Task 2** as incomplete')
+
+          expect(note1).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(1)
+        end
+      end
+
+      context 'when the task position has been modified' do
+        before do
+          update_issue(description: "- [ ] Task 1\n- [ ] Task 3\n- [ ] Task 2")
+        end
+
+        it 'raises an exception' do
+          expect(Note.count).to eq(2)
+          expect do
+            update_issue(update_task: { index: 2, checked: true, line_source: '- [ ] Task 2', line_number: 2 })
+          end.to raise_error(ActiveRecord::StaleObjectError)
+          expect(Note.count).to eq(2)
+        end
+      end
+
+      context 'when the content changes but not task line number' do
+        before do
+          update_issue(description: "Paragraph\n\n- [ ] Task 1\n- [x] Task 2")
+          update_issue(description: "Paragraph with more words\n\n- [ ] Task 1\n- [x] Task 2")
+          update_issue(update_task: { index: 2, checked: false, line_source: '- [x] Task 2', line_number: 4 })
+        end
+
+        it 'creates system note about task status change' do
+          note1 = find_note('marked the task **Task 2** as incomplete')
+
+          expect(note1).not_to be_nil
+
+          description_notes = find_notes('description')
+          expect(description_notes.length).to eq(2)
+        end
+      end
+    end
+
     context 'updating labels' do
       let(:label3) { create(:label, project: project) }
       let(:result) { described_class.new(project, user, params).execute(issue).reload }
@@ -501,7 +633,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label, label3])
+          issue.update(labels: [label, label3])
         end
 
         it 'ignores the label_ids parameter' do
@@ -517,7 +649,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label])
+          issue.update(labels: [label])
         end
 
         it 'adds the passed labels' do
@@ -596,7 +728,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid project' do
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
         end
 
         it 'calls the move service with the proper issue and project' do

@@ -1,21 +1,34 @@
-- page_title 'Labels'
-
+- @no_container = true
+- page_title "Labels"
+- can_admin_label = can?(current_user, :admin_label, @group)
 - issuables = ['issues', 'merge requests']
+- search = params[:search]
+- subscribed = params[:subscribed]
+- labels_or_filters = @labels.exists? || search.present? || subscribed.present?
 
-.top-area.adjust
-  .nav-text
-    = _("Labels can be applied to %{features}. Group labels are available for any project within the group.") % { features: issuables.to_sentence }
+- if labels_or_filters
+  #promote-label-modal
+  %div{ class: container_class }
+    = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
-  .nav-controls
-    - if can?(current_user, :admin_label, @group)
-      = link_to "New label", new_group_label_path(@group), class: "btn btn-new"
+    .labels-container.prepend-top-5
+      - if @labels.any?
+        .text-muted
+          = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuables.to_sentence }
+        .other-labels
+          %h5= _('Labels')
+          %ul.content-list.manage-labels-list.js-other-labels
+            = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: false }
+            = paginate @labels, theme: 'gitlab'
+      - elsif search.present?
+        .nothing-here-block
+          = _('No labels with such name or description')
+      - elsif subscribed.present?
+        .nothing-here-block
+          = _('You do not have any subscriptions yet')
+- else
+  = render 'shared/empty_states/labels'
 
-.labels
-  .other-labels
-    - if @labels.present?
-      %ul.content-list.manage-labels-list.js-other-labels
-        = render partial: 'shared/label', subject: @group, collection: @labels, as: :label
-        = paginate @labels, theme: 'gitlab'
-    - else
-      .nothing-here-block
-        = _("No labels created yet.")
+%template#js-badge-item-template
+  %li.label-link-item.js-priority-badge.inline.prepend-left-10
+    .label-badge.label-badge-blue= _('Prioritized label')

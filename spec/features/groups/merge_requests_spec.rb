@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group merge requests page' do
+describe 'Group merge requests page' do
   include FilteredSearchHelpers
 
   let(:path) { merge_requests_group_path(group) }
@@ -54,6 +54,23 @@ feature 'Group merge requests page' do
 
       expect(find('#js-dropdown-assignee .filter-dropdown')).to have_content(user.name)
       expect(find('#js-dropdown-assignee .filter-dropdown')).not_to have_content(user2.name)
+    end
+  end
+
+  describe 'new merge request dropdown' do
+    let(:project_with_merge_requests_disabled) { create(:project, :merge_requests_disabled, group: group) }
+
+    before do
+      visit path
+    end
+
+    it 'shows projects only with merge requests feature enabled', :js do
+      find('.new-project-item-link').click
+
+      page.within('.select2-results') do
+        expect(page).to have_content(project.name_with_namespace)
+        expect(page).not_to have_content(project_with_merge_requests_disabled.name_with_namespace)
+      end
     end
   end
 end

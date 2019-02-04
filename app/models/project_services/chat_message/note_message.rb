@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChatMessage
   class NoteMessage < BaseMessage
     attr_reader :note

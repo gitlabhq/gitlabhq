@@ -13,7 +13,7 @@ GET /broadcast_messages
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages
 ```
 
 Example response:
@@ -43,7 +43,7 @@ GET /broadcast_messages/:id
 | `id`        | integer  | yes      | Broadcast message ID      |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages/1
 ```
 
 Example response:
@@ -75,7 +75,7 @@ POST /broadcast_messages
 | `font`      | string   | no       | Foreground color hex code                            |
 
 ```bash
-curl --data "message=Deploy in progress&color=#cecece" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages
+curl --data "message=Deploy in progress&color=#cecece" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages
 ```
 
 Example response:
@@ -108,7 +108,7 @@ PUT /broadcast_messages/:id
 | `font`      | string   | no       | Foreground color hex code |
 
 ```bash
-curl --request PUT --data "message=Update message&color=#000" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages/1
+curl --request PUT --data "message=Update message&color=#000" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages/1
 ```
 
 Example response:
@@ -136,5 +136,5 @@ DELETE /broadcast_messages/:id
 | `id`        | integer  | yes      | Broadcast message ID      |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/broadcast_messages/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/broadcast_messages/1
 ```

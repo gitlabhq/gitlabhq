@@ -8,8 +8,8 @@ describe QA::Page::View do
   describe '.evaluate' do
     it 'evaluates a block and returns a DSL object' do
       results = described_class.evaluate do
-        element :something, 'my pattern'
-        element :something_else, /another pattern/
+        element :something
+        element :something_else
       end
 
       expect(results.elements.size).to eq 2
@@ -32,7 +32,7 @@ describe QA::Page::View do
 
       context 'when pattern is found' do
         before do
-          allow(File).to receive(:foreach)
+          allow(::File).to receive(:foreach)
             .and_yield('some element').once
           allow(element).to receive(:matches?)
             .with('some element').and_return(true)
@@ -45,7 +45,7 @@ describe QA::Page::View do
 
       context 'when pattern has not been found' do
         before do
-          allow(File).to receive(:foreach)
+          allow(::File).to receive(:foreach)
             .and_yield('some element').once
           allow(element).to receive(:matches?)
             .with('some element').and_return(false)

@@ -22,207 +22,135 @@ describe Gitlab::ProjectSearchResults do
     it { expect(results.query).to eq('hello world') }
   end
 
-  describe 'blob search' do
-    let(:project) { create(:project, :public, :repository) }
+  shared_examples 'general blob search' do |entity_type, blob_kind|
+    let(:query) { 'files' }
+    subject(:results) { described_class.new(user, project, query).objects(blob_type) }
 
-    subject(:results) { described_class.new(user, project, 'files').objects('blobs') }
-
-    context 'when repository is disabled' do
-      let(:project) { create(:project, :public, :repository, :repository_disabled) }
-
-      it 'hides blobs from members' do
+    context "when #{entity_type} is disabled" do
+      let(:project) { disabled_project }
+      it "hides #{blob_kind} from members" do
         project.add_reporter(user)
 
         is_expected.to be_empty
       end
 
-      it 'hides blobs from non-members' do
+      it "hides #{blob_kind} from non-members" do
         is_expected.to be_empty
       end
     end
 
-    context 'when repository is internal' do
-      let(:project) { create(:project, :public, :repository, :repository_private) }
+    context "when #{entity_type} is internal" do
+      let(:project) { private_project }
 
-      it 'finds blobs for members' do
+      it "finds #{blob_kind} for members" do
         project.add_reporter(user)
 
         is_expected.not_to be_empty
       end
 
-      it 'hides blobs from non-members' do
+      it "hides #{blob_kind} from non-members" do
         is_expected.to be_empty
       end
     end
 
     it 'finds by name' do
-      expect(results.map(&:first)).to include('files/images/wm.svg')
+      expect(results.map(&:filename)).to include(expected_file_by_name)
+    end
+
+    it "loads all blobs for filename matches in single batch" do
+      expect(Gitlab::Git::Blob).to receive(:batch).once.and_call_original
+
+      expected = project.repository.search_files_by_name(query, 'master')
+      expect(results.map(&:filename)).to include(*expected)
     end
 
     it 'finds by content' do
-      blob = results.select { |result| result.first == "CHANGELOG" }.flatten.last
+      blob = results.select { |result| result.filename == expected_file_by_content }.flatten.last
 
-      expect(blob.filename).to eq("CHANGELOG")
+      expect(blob.filename).to eq(expected_file_by_content)
+    end
+  end
+
+  shared_examples 'blob search repository ref' do |entity_type|
+    let(:query) { 'files' }
+    let(:file_finder) { double }
+    let(:project_branch) { 'project_branch' }
+
+    subject(:results) { described_class.new(user, project, query, repository_ref).objects(blob_type) }
+
+    before do
+      allow(entity).to receive(:default_branch).and_return(project_branch)
+      allow(file_finder).to receive(:find).and_return([])
     end
 
-    describe 'parsing results' do
-      let(:results) { project.repository.search_files_by_content('feature', 'master') }
-      let(:search_result) { results.first }
+    context 'when repository_ref exists' do
+      let(:repository_ref) { 'ref_branch' }
 
-      subject { described_class.parse_search_result(search_result) }
+      it 'uses it' do
+        expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
 
-      it "returns a valid FoundBlob" do
-        is_expected.to be_an Gitlab::SearchResults::FoundBlob
-        expect(subject.id).to be_nil
-        expect(subject.path).to eq('CHANGELOG')
-        expect(subject.filename).to eq('CHANGELOG')
-        expect(subject.basename).to eq('CHANGELOG')
-        expect(subject.ref).to eq('master')
-        expect(subject.startline).to eq(188)
-        expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
+        results
       end
+    end
 
-      context 'when the matching filename contains a colon' do
-        let(:search_result) { "master:testdata/project::function1.yaml\x001\x00---\n" }
+    context 'when repository_ref is not present' do
+      let(:repository_ref) { nil }
 
-        it 'returns a valid FoundBlob' do
-          expect(subject.filename).to eq('testdata/project::function1.yaml')
-          expect(subject.basename).to eq('testdata/project::function1')
-          expect(subject.ref).to eq('master')
-          expect(subject.startline).to eq(1)
-          expect(subject.data).to eq("---\n")
-        end
+      it "uses #{entity_type} repository default reference" do
+        expect(Gitlab::FileFinder).to receive(:new).with(project, project_branch).and_return(file_finder)
+
+        results
       end
+    end
 
-      context 'when the matching content contains a number surrounded by colons' do
-        let(:search_result) { "master:testdata/foo.txt\x001\x00blah:9:blah" }
+    context 'when repository_ref is blank' do
+      let(:repository_ref) { '' }
 
-        it 'returns a valid FoundBlob' do
-          expect(subject.filename).to eq('testdata/foo.txt')
-          expect(subject.basename).to eq('testdata/foo')
-          expect(subject.ref).to eq('master')
-          expect(subject.startline).to eq(1)
-          expect(subject.data).to eq('blah:9:blah')
-        end
+      it "uses #{entity_type} repository default reference" do
+        expect(Gitlab::FileFinder).to receive(:new).with(project, project_branch).and_return(file_finder)
+
+        results
       end
+    end
+  end
 
-      context 'when the matching content contains multiple null bytes' do
-        let(:search_result) { "master:testdata/foo.txt\x001\x00blah\x001\x00foo" }
+  describe 'blob search' do
+    let(:project) { create(:project, :public, :repository) }
 
-        it 'returns a valid FoundBlob' do
-          expect(subject.filename).to eq('testdata/foo.txt')
-          expect(subject.basename).to eq('testdata/foo')
-          expect(subject.ref).to eq('master')
-          expect(subject.startline).to eq(1)
-          expect(subject.data).to eq("blah\x001\x00foo")
-        end
-      end
+    it_behaves_like 'general blob search', 'repository', 'blobs' do
+      let(:blob_type) { 'blobs' }
+      let(:disabled_project) { create(:project, :public, :repository, :repository_disabled) }
+      let(:private_project) { create(:project, :public, :repository, :repository_private) }
+      let(:expected_file_by_name) { 'files/images/wm.svg' }
+      let(:expected_file_by_content) { 'CHANGELOG' }
+    end
 
-      context 'when the search result ends with an empty line' do
-        let(:results) { project.repository.search_files_by_content('Role models', 'master') }
-
-        it 'returns a valid FoundBlob that ends with an empty line' do
-          expect(subject.filename).to eq('files/markdown/ruby-style-guide.md')
-          expect(subject.basename).to eq('files/markdown/ruby-style-guide')
-          expect(subject.ref).to eq('master')
-          expect(subject.startline).to eq(1)
-          expect(subject.data).to eq("# Prelude\n\n> Role models are important. <br/>\n> -- Officer Alex J. Murphy / RoboCop\n\n")
-        end
-      end
-
-      context 'when the search returns non-ASCII data' do
-        context 'with UTF-8' do
-          let(:results) { project.repository.search_files_by_content('файл', 'master') }
-
-          it 'returns results as UTF-8' do
-            expect(subject.filename).to eq('encoding/russian.rb')
-            expect(subject.basename).to eq('encoding/russian')
-            expect(subject.ref).to eq('master')
-            expect(subject.startline).to eq(1)
-            expect(subject.data).to eq("Хороший файл\n")
-          end
-        end
-
-        context 'with UTF-8 in the filename' do
-          let(:results) { project.repository.search_files_by_content('webhook', 'master') }
-
-          it 'returns results as UTF-8' do
-            expect(subject.filename).to eq('encoding/テスト.txt')
-            expect(subject.basename).to eq('encoding/テスト')
-            expect(subject.ref).to eq('master')
-            expect(subject.startline).to eq(3)
-            expect(subject.data).to include('WebHookの確認')
-          end
-        end
-
-        context 'with ISO-8859-1' do
-          let(:search_result) { "master:encoding/iso8859.txt\x001\x00\xC4\xFC\nmaster:encoding/iso8859.txt\x002\x00\nmaster:encoding/iso8859.txt\x003\x00foo\n".force_encoding(Encoding::ASCII_8BIT) }
-
-          it 'returns results as UTF-8' do
-            expect(subject.filename).to eq('encoding/iso8859.txt')
-            expect(subject.basename).to eq('encoding/iso8859')
-            expect(subject.ref).to eq('master')
-            expect(subject.startline).to eq(1)
-            expect(subject.data).to eq("Äü\n\nfoo\n")
-          end
-        end
-      end
-
-      context "when filename has extension" do
-        let(:search_result) { "master:CONTRIBUTE.md\x005\x00- [Contribute to GitLab](#contribute-to-gitlab)\n" }
-
-        it { expect(subject.path).to eq('CONTRIBUTE.md') }
-        it { expect(subject.filename).to eq('CONTRIBUTE.md') }
-        it { expect(subject.basename).to eq('CONTRIBUTE') }
-      end
-
-      context "when file under directory" do
-        let(:search_result) { "master:a/b/c.md\x005\x00a b c\n" }
-
-        it { expect(subject.path).to eq('a/b/c.md') }
-        it { expect(subject.filename).to eq('a/b/c.md') }
-        it { expect(subject.basename).to eq('a/b/c') }
-      end
+    it_behaves_like 'blob search repository ref', 'project' do
+      let(:blob_type) { 'blobs' }
+      let(:entity) { project }
     end
   end
 
   describe 'wiki search' do
     let(:project) { create(:project, :public, :wiki_repo) }
     let(:wiki) { build(:project_wiki, project: project) }
-    let!(:wiki_page) { wiki.create_page('Title', 'Content') }
 
-    subject(:results) { described_class.new(user, project, 'Content').objects('wiki_blobs') }
-
-    context 'when wiki is disabled' do
-      let(:project) { create(:project, :public, :wiki_repo, :wiki_disabled) }
-
-      it 'hides wiki blobs from members' do
-        project.add_reporter(user)
-
-        is_expected.to be_empty
-      end
-
-      it 'hides wiki blobs from non-members' do
-        is_expected.to be_empty
-      end
+    before do
+      wiki.create_page('Files/Title', 'Content')
+      wiki.create_page('CHANGELOG', 'Files example')
     end
 
-    context 'when wiki is internal' do
-      let(:project) { create(:project, :public, :wiki_repo, :wiki_private) }
-
-      it 'finds wiki blobs for guest' do
-        project.add_guest(user)
-
-        is_expected.not_to be_empty
-      end
-
-      it 'hides wiki blobs from non-members' do
-        is_expected.to be_empty
-      end
+    it_behaves_like 'general blob search', 'wiki', 'wiki blobs' do
+      let(:blob_type) { 'wiki_blobs' }
+      let(:disabled_project) { create(:project, :public, :wiki_repo, :wiki_disabled) }
+      let(:private_project) { create(:project, :public, :wiki_repo, :wiki_private) }
+      let(:expected_file_by_name) { 'Files/Title.md' }
+      let(:expected_file_by_content) { 'CHANGELOG.md' }
     end
 
-    it 'finds by content' do
-      expect(results).to include("master:Title.md\x001\x00Content\n")
+    it_behaves_like 'blob search repository ref', 'wiki' do
+      let(:blob_type) { 'wiki_blobs' }
+      let(:entity) { project.wiki }
     end
   end
 
@@ -397,7 +325,7 @@ describe Gitlab::ProjectSearchResults do
       let!(:private_project) { create(:project, :private, :repository, creator: creator, namespace: creator.namespace) }
       let(:team_master) do
         user = create(:user, username: 'private-project-master')
-        private_project.add_master(user)
+        private_project.add_maintainer(user)
         user
       end
       let(:team_reporter) do

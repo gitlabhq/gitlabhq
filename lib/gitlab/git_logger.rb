@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class GitLogger < Gitlab::Logger
     def self.file_name_noext

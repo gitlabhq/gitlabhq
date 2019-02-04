@@ -513,7 +513,7 @@ const fileNameIcons = {
   'credits.md': 'credits',
   'credits.md.rendered': 'credits',
   '.flowconfig': 'flow',
-  'favicon.ico': 'favicon',
+  'favicon.png': 'favicon',
   'karma.conf.js': 'karma',
   'karma.conf.ts': 'karma',
   'karma.conf.coffee': 'karma',
@@ -549,6 +549,7 @@ const fileNameIcons = {
   jenkinsfile: 'jenkins',
   'firebase.json': 'firebase',
   '.firebaserc': 'firebase',
+  Rakefile: 'ruby',
   'rollup.config.js': 'rollup',
   'rollup.config.ts': 'rollup',
   'rollup-config.js': 'rollup',
@@ -583,7 +584,5 @@ const fileNameIcons = {
 };
 
 export default function getIconForFile(name) {
-  return fileNameIcons[name] ||
-         fileExtensionIcons[name ? name.split('.').pop() : ''] ||
-         '';
+  return fileNameIcons[name] || fileExtensionIcons[name ? name.split('.').pop() : ''] || '';
 }

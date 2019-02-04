@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::PagesDomainsController < Projects::ApplicationController
   layout 'project_settings'
 
@@ -70,7 +72,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     params.require(:pages_domain).permit(:key, :certificate)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def domain
     @domain ||= @project.pages_domains.find_by!(domain: params[:id].to_s)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

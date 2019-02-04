@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Ci
   class RunnerPolicy < BasePolicy
     with_options scope: :subject, score: 0
     condition(:locked, scope: :subject) { @subject.locked? }
 
+    # rubocop: disable CodeReuse/ActiveRecord
     condition(:owned_runner) { @user.ci_owned_runners.exists?(@subject.id) }
+    # rubocop: enable CodeReuse/ActiveRecord
 
     rule { anonymous }.prevent_all
 

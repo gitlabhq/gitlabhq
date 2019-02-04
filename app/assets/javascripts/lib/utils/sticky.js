@@ -1,3 +1,5 @@
+import StickyFill from 'stickyfilljs';
+
 export const createPlaceholder = () => {
   const placeholder = document.createElement('div');
   placeholder.classList.add('sticky-placeholder');
@@ -22,18 +24,49 @@ export const isSticky = (el, scrollY, stickyTop, insertPlaceholder) => {
   } else if (top > stickyTop && el.classList.contains('is-stuck')) {
     el.classList.remove('is-stuck');
 
-    if (insertPlaceholder && el.nextElementSibling && el.nextElementSibling.classList.contains('sticky-placeholder')) {
+    if (
+      insertPlaceholder &&
+      el.nextElementSibling &&
+      el.nextElementSibling.classList.contains('sticky-placeholder')
+    ) {
       el.nextElementSibling.remove();
     }
   }
 };
 
-export default (el, stickyTop, insertPlaceholder = true) => {
+/**
+ * Create a listener that will toggle a 'is-stuck' class, based on the current scroll position.
+ *
+ * - If the current environment does not support `position: sticky`, do nothing.
+ *
+ * @param {HTMLElement} el The `position: sticky` element.
+ * @param {Number} stickyTop Used to determine when an element is stuck.
+ * @param {Boolean} insertPlaceholder Should a placeholder element be created when element is stuck?
+ */
+export const stickyMonitor = (el, stickyTop, insertPlaceholder = true) => {
   if (!el) return;
 
-  if (typeof CSS === 'undefined' || !(CSS.supports('(position: -webkit-sticky) or (position: sticky)'))) return;
+  if (
+    typeof CSS === 'undefined' ||
+    !CSS.supports('(position: -webkit-sticky) or (position: sticky)')
+  )
+    return;
 
-  document.addEventListener('scroll', () => isSticky(el, window.scrollY, stickyTop, insertPlaceholder), {
-    passive: true,
-  });
+  document.addEventListener(
+    'scroll',
+    () => isSticky(el, window.scrollY, stickyTop, insertPlaceholder),
+    {
+      passive: true,
+    },
+  );
+};
+
+/**
+ * Polyfill the `position: sticky` behavior.
+ *
+ * - If the current environment supports `position: sticky`, do nothing.
+ * - Can receive an iterable element list (NodeList, jQuery collection, etc.) or single HTMLElement.
+ */
+export const polyfillSticky = el => {
+  StickyFill.add(el);
 };

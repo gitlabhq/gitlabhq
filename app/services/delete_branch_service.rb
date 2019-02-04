@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeleteBranchService < BaseService
   def execute(branch_name)
     repository = project.repository
@@ -12,11 +14,11 @@ class DeleteBranchService < BaseService
     end
 
     if repository.rm_branch(current_user, branch_name)
-      success('Branch was removed')
+      success('Branch was deleted')
     else
       error('Failed to remove branch')
     end
-  rescue Gitlab::Git::HooksService::PreReceiveError => ex
+  rescue Gitlab::Git::PreReceiveError => ex
     error(ex.message)
   end
 

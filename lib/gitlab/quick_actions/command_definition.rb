@@ -1,14 +1,17 @@
+# frozen_string_literal: true
+
 module Gitlab
   module QuickActions
     class CommandDefinition
       attr_accessor :name, :aliases, :description, :explanation, :params,
-        :condition_block, :parse_params_block, :action_block
+        :condition_block, :parse_params_block, :action_block, :warning
 
       def initialize(name, attributes = {})
         @name = name
 
         @aliases = attributes[:aliases] || []
         @description = attributes[:description] || ''
+        @warning = attributes[:warning] || ''
         @explanation = attributes[:explanation] || ''
         @params = attributes[:params] || []
         @condition_block = attributes[:condition_block]
@@ -33,11 +36,13 @@ module Gitlab
       def explain(context, arg)
         return unless available?(context)
 
-        if explanation.respond_to?(:call)
-          execute_block(explanation, context, arg)
-        else
-          explanation
-        end
+        message = if explanation.respond_to?(:call)
+                    execute_block(explanation, context, arg)
+                  else
+                    explanation
+                  end
+
+        warning.empty? ? message : "#{message} (#{warning})"
       end
 
       def execute(context, arg)
@@ -61,6 +66,7 @@ module Gitlab
           name: name,
           aliases: aliases,
           description: desc,
+          warning: warning,
           params: prms
         }
       end

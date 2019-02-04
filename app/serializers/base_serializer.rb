@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BaseSerializer
   attr_reader :params
 
@@ -14,11 +16,11 @@ class BaseSerializer
       .as_json
   end
 
-  def self.entity(entity_class)
-    @entity_class ||= entity_class
-  end
+  class << self
+    attr_reader :entity_class
 
-  def self.entity_class
-    @entity_class
+    def entity(entity_class)
+      @entity_class ||= entity_class
+    end
   end
 end

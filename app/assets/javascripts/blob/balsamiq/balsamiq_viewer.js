@@ -42,7 +42,7 @@ class BalsamiqViewer {
     this.initDatabase(loadEvent.target.response);
 
     const previews = this.getPreviews();
-    previews.forEach((preview) => {
+    previews.forEach(preview => {
       const renderedPreview = this.renderPreview(preview);
 
       container.appendChild(renderedPreview);
@@ -84,7 +84,7 @@ class BalsamiqViewer {
   renderTemplate(preview) {
     const resource = this.getResource(preview.resourceID);
     const name = BalsamiqViewer.parseTitle(resource);
-    const image = preview.image;
+    const { image } = preview;
 
     const template = PREVIEW_TEMPLATE({
       name,

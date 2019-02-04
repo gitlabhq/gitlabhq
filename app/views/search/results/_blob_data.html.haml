@@ -1,0 +1,10 @@
+.blob-result
+  .file-holder
+    .js-file-title.file-title
+      = link_to blob_link do
+        %i.fa.fa-file
+        %strong
+          = search_blob_title(project, file_name)
+    - if blob.data
+      .file-content.code.term
+        = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline

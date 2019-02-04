@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProtectedBranchPolicy < BasePolicy
   delegate { @subject.project }
 

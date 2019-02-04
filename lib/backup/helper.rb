@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Backup
   module Helper
     def access_denied_error(path)

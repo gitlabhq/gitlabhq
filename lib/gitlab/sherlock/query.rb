@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Sherlock
     class Query
@@ -48,7 +50,7 @@ module Gitlab
         end
 
         unless @query.end_with?(';')
-          @query += ';'
+          @query = "#{@query};"
         end
       end
 

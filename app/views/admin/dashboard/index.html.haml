@@ -2,7 +2,7 @@
 - breadcrumb_title "Dashboard"
 
 %div{ class: container_class }
-  = render_if_exists "admin/licenses/breakdown", license: @license
+  = render_if_exists 'admin/licenses/breakdown', license: @license
 
   .admin-dashboard.prepend-top-default
     .row
@@ -14,7 +14,7 @@
                 Projects:
                 = approximate_count_with_delimiters(@counts, Project)
             %hr
-            = link_to('New project', new_project_path, class: "btn btn-new")
+            = link_to('New project', new_project_path, class: "btn btn-success")
       .col-sm-4
         .info-well.dark-well
           .well-segment.well-centered
@@ -22,9 +22,9 @@
               %h3.text-center
                 Users:
                 = approximate_count_with_delimiters(@counts, User)
-            = render_if_exists 'users_statistics'
+            = render_if_exists 'admin/dashboard/users_statistics'
             %hr
-            = link_to 'New user', new_admin_user_path, class: "btn btn-new"
+            = link_to 'New user', new_admin_user_path, class: "btn btn-success"
       .col-sm-4
         .info-well.dark-well
           .well-segment.well-centered
@@ -33,7 +33,7 @@
                 Groups:
                 = approximate_count_with_delimiters(@counts, Group)
             %hr
-            = link_to 'New group', new_admin_group_path, class: "btn btn-new"
+            = link_to 'New group', new_admin_group_path, class: "btn btn-success"
     .row
       .col-md-4
         .info-well
@@ -42,7 +42,7 @@
             %p
               Forks
               %span.light.float-right
-                = approximate_count_with_delimiters(@counts, ForkedProjectLink)
+                = approximate_fork_count_with_delimiters(@counts)
             %p
               Issues
               %span.light.float-right
@@ -91,17 +91,17 @@
               %span.light.float-right
                 = boolean_to_icon gravatar_enabled?
             - omniauth = "OmniAuth"
-            %p{ "aria-label" => "#{omniauth}: status " + (Gitlab.config.omniauth.enabled ? "on" : "off") }
+            %p{ "aria-label" => "#{omniauth}: status " + (Gitlab::Auth.omniauth_enabled? ? "on" : "off") }
               = omniauth
               %span.light.float-right
-                = boolean_to_icon Gitlab.config.omniauth.enabled
+                = boolean_to_icon Gitlab::Auth.omniauth_enabled?
             - reply_email = "Reply by email"
             %p{ "aria-label" => "#{reply_email}: status " + (Gitlab::IncomingEmail.enabled? ? "on" : "off") }
               = reply_email
               %span.light.float-right
                 = boolean_to_icon Gitlab::IncomingEmail.enabled?
 
-            = render_if_exists 'elastic_and_geo'
+            = render_if_exists 'admin/dashboard/elastic_and_geo'
 
             - container_reg = "Container Registry"
             %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
@@ -151,7 +151,7 @@
                 %span.float-right
                   = Gitlab::Pages::VERSION
 
-            = render_if_exists 'geo'
+            = render_if_exists 'admin/dashboard/geo'
 
             %p
               Ruby
@@ -174,7 +174,7 @@
             %h4 Latest projects
             - @projects.each do |project|
               %p
-                = link_to project.full_name, [:admin, project.namespace.becomes(Namespace), project], class: 'str-truncated-60'
+                = link_to project.full_name, admin_project_path(project), class: 'str-truncated-60'
                 %span.light.float-right
                   #{time_ago_with_tooltip(project.created_at)}
       .col-md-4

@@ -1,5 +1,4 @@
-# rubocop:disable all
-class AddConsumedTimestepToUsers < ActiveRecord::Migration
+class AddConsumedTimestepToUsers < ActiveRecord::Migration[4.2]
   def change
     add_column :users, :consumed_timestep, :integer
   end

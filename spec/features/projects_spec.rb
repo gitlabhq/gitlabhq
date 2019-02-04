@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-feature 'Project' do
+describe 'Project' do
   include ProjectForksHelper
+  include MobileHelpers
 
   describe 'creating from template' do
-    let(:user)    { create(:user) }
+    let(:user) { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
     before do
@@ -15,7 +16,7 @@ feature 'Project' do
     it "allows creation from templates", :js do
       find('#create-from-template-tab').click
       find("label[for=#{template.name}]").click
-      fill_in("project_path", with: template.name)
+      fill_in("project_name", with: template.name)
 
       page.within '#content-body' do
         click_button "Create project"
@@ -54,25 +55,96 @@ feature 'Project' do
     it 'parses Markdown' do
       project.update_attribute(:description, 'This is **my** project')
       visit path
-      expect(page).to have_css('.project-home-desc > p > strong')
+      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > strong')
     end
 
     it 'passes through html-pipeline' do
       project.update_attribute(:description, 'This project is the :poop:')
       visit path
-      expect(page).to have_css('.project-home-desc > p > gl-emoji')
+      expect(page).to have_css('.home-panel-description > .home-panel-description-markdown > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
       project.update_attribute(:description, "```\ncode\n```")
       visit path
-      expect(page).not_to have_css('.project-home-desc code')
+      expect(page).not_to have_css('.home-panel-description code')
     end
 
     it 'permits `rel` attribute on links' do
       project.update_attribute(:description, 'https://google.com/')
       visit path
-      expect(page).to have_css('.project-home-desc a[rel]')
+      expect(page).to have_css('.home-panel-description a[rel]')
+    end
+
+    context 'read more', :js do
+      let(:read_more_selector)         { '.read-more-container' }
+      let(:read_more_trigger_selector) { '.home-panel-home-desc .js-read-more-trigger' }
+
+      it 'does not display "read more" link on desktop breakpoint' do
+        project.update_attribute(:description, 'This is **my** project')
+        visit path
+
+        expect(find(read_more_trigger_selector, visible: false)).not_to be_visible
+      end
+
+      it 'displays "read more" link on mobile breakpoint' do
+        project.update_attribute(:description, 'This is **my** project')
+        visit path
+        resize_screen_xs
+
+        find(read_more_trigger_selector).click
+
+        expect(page).to have_css('.home-panel-description .is-expanded')
+      end
+    end
+  end
+
+  describe 'project topics' do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
+      visit path
+    end
+
+    it 'shows project topics' do
+      project.update_attribute(:tag_list, 'topic1')
+      visit path
+      expect(page).to have_css('.home-panel-topic-list')
+      expect(page).to have_content('topic1')
+    end
+
+    it 'shows up to 3 project tags' do
+      project.update_attribute(:tag_list, 'topic1, topic2, topic3, topic4')
+      visit path
+      expect(page).to have_css('.home-panel-topic-list')
+      expect(page).to have_content('topic1, topic2, topic3 + 1 more')
+    end
+  end
+
+  describe 'copy clone URL to clipboard', :js do
+    let(:project) { create(:project, :repository) }
+    let(:path)    { project_path(project) }
+
+    before do
+      sign_in(create(:admin))
+      visit path
+    end
+
+    context 'desktop component' do
+      it 'shows on md and larger breakpoints' do
+        expect(find('.git-clone-holder')).to be_visible
+        expect(find('.mobile-git-clone', visible: false)).not_to be_visible
+      end
+    end
+
+    context 'mobile component' do
+      it 'shows mobile component on sm and smaller breakpoints' do
+        resize_screen_xs
+        expect(find('.mobile-git-clone')).to be_visible
+        expect(find('.git-clone-holder', visible: false)).not_to be_visible
+      end
     end
   end
 
@@ -98,7 +170,7 @@ feature 'Project' do
 
   describe 'showing information about source of a project fork' do
     let(:user) { create(:user) }
-    let(:base_project)  { create(:project, :public, :repository) }
+    let(:base_project) { create(:project, :public, :repository) }
     let(:forked_project) { fork_project(base_project, user, repository: true) }
 
     before do
@@ -145,14 +217,37 @@ feature 'Project' do
     end
   end
 
+  describe 'when the project repository is disabled', :js do
+    let(:user)    { create(:user) }
+    let(:project) { create(:project, :repository_disabled, :repository, namespace: user.namespace) }
+
+    before do
+      sign_in(user)
+      project.add_maintainer(user)
+      visit project_path(project)
+    end
+
+    it 'does not show an error' do
+      wait_for_requests
+
+      expect(page).not_to have_selector('.flash-alert')
+    end
+  end
+
   describe 'removal', :js do
     let(:user)    { create(:user) }
     let(:project) { create(:project, namespace: user.namespace) }
 
     before do
       sign_in(user)
-      project.add_master(user)
+      project.add_maintainer(user)
       visit edit_project_path(project)
+    end
+
+    it 'focuses on the confirmation field' do
+      click_button 'Remove project'
+
+      expect(page).to have_selector '#confirm_name_input:focus'
     end
 
     it 'removes a project' do
@@ -169,7 +264,7 @@ feature 'Project' do
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_path(project)
     end
@@ -191,6 +286,49 @@ feature 'Project' do
 
       expect(page.status_code).to eq(200)
     end
+
+    context 'for signed commit on default branch', :js do
+      before do
+        project.change_head('33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+      end
+
+      it 'displays a GPG badge' do
+        visit project_path(project)
+        wait_for_requests
+
+        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
+        expect(page).to have_selector '.gpg-status-box.invalid'
+      end
+    end
+
+    context 'for subgroups', :js, :nested_groups do
+      let(:group) { create(:group) }
+      let(:subgroup) { create(:group, parent: group) }
+      let(:project) { create(:project, :repository, group: subgroup) }
+
+      it 'renders tree table without errors' do
+        wait_for_requests
+
+        expect(page).to have_selector('.tree-item')
+        expect(page).not_to have_selector('.flash-alert')
+      end
+
+      context 'for signed commit' do
+        before do
+          repository = project.repository
+          repository.write_ref("refs/heads/#{project.default_branch}", '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+          repository.expire_branches_cache
+        end
+
+        it 'displays a GPG badge' do
+          visit project_path(project)
+          wait_for_requests
+
+          expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
+          expect(page).to have_selector '.gpg-status-box.invalid'
+        end
+      end
+    end
   end
 
   describe 'activity view' do
@@ -198,13 +336,29 @@ feature 'Project' do
     let(:project) { create(:project, :repository) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_path(project)
     end
 
     it 'loads activity', :js do
       expect(page).to have_selector('.event-item')
+    end
+  end
+
+  context 'content is not cached after signing out', :js do
+    let(:user) { create(:user, project_view: 'activity') }
+    let(:project) { create(:project, :repository) }
+
+    it 'does not load activity', :js do
+      project.add_maintainer(user)
+      sign_in(user)
+      visit project_path(project)
+      sign_out(user)
+
+      page.evaluate_script('window.history.back()')
+
+      expect(page).not_to have_selector('.event-item')
     end
   end
 

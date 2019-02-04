@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group show page' do
+describe 'Group show page' do
   let(:group) { create(:group) }
   let(:path) { group_path(group) }
 
@@ -65,7 +65,7 @@ feature 'Group show page' do
 
     context 'when subgroups are supported', :js, :nested_groups do
       before do
-        allow(Group).to receive(:supports_nested_groups?) { true }
+        allow(Group).to receive(:supports_nested_objects?) { true }
         visit path
       end
 
@@ -76,7 +76,7 @@ feature 'Group show page' do
 
     context 'when subgroups are not supported' do
       before do
-        allow(Group).to receive(:supports_nested_groups?) { false }
+        allow(Group).to receive(:supports_nested_objects?) { false }
         visit path
       end
 
@@ -99,6 +99,27 @@ feature 'Group show page' do
     it 'shows the project info' do
       expect(page).to have_content(project.title)
       expect(page).to have_emoji('smile')
+    end
+  end
+
+  context 'where group has projects' do
+    let(:user) { create(:user) }
+
+    before do
+      group.add_owner(user)
+      sign_in(user)
+    end
+
+    it 'allows users to sorts projects by most stars', :js do
+      project1 = create(:project, namespace: group, star_count: 2)
+      project2 = create(:project, namespace: group, star_count: 3)
+      project3 = create(:project, namespace: group, star_count: 0)
+
+      visit group_path(group, sort: :stars_desc)
+
+      expect(find('.group-row:nth-child(1) .namespace-title > a')).to have_content(project2.title)
+      expect(find('.group-row:nth-child(2) .namespace-title > a')).to have_content(project1.title)
+      expect(find('.group-row:nth-child(3) .namespace-title > a')).to have_content(project3.title)
     end
   end
 end

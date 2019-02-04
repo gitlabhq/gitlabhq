@@ -15,6 +15,40 @@ describe Ci::JobArtifact do
   it { is_expected.to delegate_method(:open).to(:file) }
   it { is_expected.to delegate_method(:exists?).to(:file) }
 
+  it_behaves_like 'having unique enum values'
+
+  describe '.test_reports' do
+    subject { described_class.test_reports }
+
+    context 'when there is a test report' do
+      let!(:artifact) { create(:ci_job_artifact, :junit) }
+
+      it { is_expected.to eq([artifact]) }
+    end
+
+    context 'when there are no test reports' do
+      let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
+  describe '.erasable' do
+    subject { described_class.erasable }
+
+    context 'when there is an erasable artifact' do
+      let!(:artifact) { create(:ci_job_artifact, :junit) }
+
+      it { is_expected.to eq([artifact]) }
+    end
+
+    context 'when there are no erasable artifacts' do
+      let!(:artifact) { create(:ci_job_artifact, :trace) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 
@@ -25,7 +59,7 @@ describe Ci::JobArtifact do
         end
 
         it 'does not schedule the migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+          expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
           subject
         end
@@ -76,14 +110,60 @@ describe Ci::JobArtifact do
 
   context 'updating the artifact file' do
     it 'updates the artifact size' do
-      artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
+      artifact.update!(file: fixture_file_upload('spec/fixtures/dk.png'))
       expect(artifact.size).to eq(1062)
     end
 
     it 'updates the project statistics' do
-      expect { artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+      expect { artifact.update!(file: fixture_file_upload('spec/fixtures/dk.png')) }
         .to change { artifact.project.statistics.reload.build_artifacts_size }
         .by(1062 - 106365)
+    end
+  end
+
+  describe 'validates file format' do
+    subject { artifact }
+
+    described_class::TYPE_AND_FORMAT_PAIRS.except(:trace).each do |file_type, file_format|
+      context "when #{file_type} type with #{file_format} format" do
+        let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: file_format) }
+
+        it { is_expected.to be_valid }
+      end
+
+      context "when #{file_type} type without format specification" do
+        let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: nil) }
+
+        it { is_expected.not_to be_valid }
+      end
+
+      context "when #{file_type} type with other formats" do
+        described_class.file_formats.except(file_format).values.each do |other_format|
+          let(:artifact) { build(:ci_job_artifact, file_type: file_type, file_format: other_format) }
+
+          it { is_expected.not_to be_valid }
+        end
+      end
+    end
+  end
+
+  describe 'validates DEFAULT_FILE_NAMES' do
+    subject { described_class::DEFAULT_FILE_NAMES }
+
+    described_class.file_types.each do |file_type, _|
+      it "expects #{file_type} to be included" do
+        is_expected.to include(file_type.to_sym)
+      end
+    end
+  end
+
+  describe 'validates TYPE_AND_FORMAT_PAIRS' do
+    subject { described_class::TYPE_AND_FORMAT_PAIRS }
+
+    described_class.file_types.each do |file_type, _|
+      it "expects #{file_type} to be included" do
+        expect(described_class.file_formats).to include(subject[file_type.to_sym])
+      end
     end
   end
 
@@ -94,6 +174,42 @@ describe Ci::JobArtifact do
       it { is_expected.to respond_to(:store_dir) }
       it { is_expected.to respond_to(:cache_dir) }
       it { is_expected.to respond_to(:work_dir) }
+    end
+  end
+
+  describe '#each_blob' do
+    context 'when file format is gzip' do
+      context 'when gzip file contains one file' do
+        let(:artifact) { build(:ci_job_artifact, :junit) }
+
+        it 'iterates blob once' do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
+        end
+      end
+
+      context 'when gzip file contains three files' do
+        let(:artifact) { build(:ci_job_artifact, :junit_with_three_testsuites) }
+
+        it 'iterates blob three times' do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.exactly(3).times
+        end
+      end
+    end
+
+    context 'when file format is raw' do
+      let(:artifact) { build(:ci_job_artifact, :codequality, file_format: :raw) }
+
+      it 'iterates blob once' do
+        expect { |b| artifact.each_blob(&b) }.to yield_control.once
+      end
+    end
+
+    context 'when there are no adapters for the file format' do
+      let(:artifact) { build(:ci_job_artifact, :junit, file_format: :zip) }
+
+      it 'raises an error' do
+        expect { |b| artifact.each_blob(&b) }.to raise_error(described_class::NotSupportedAdapterError)
+      end
     end
   end
 
@@ -163,7 +279,7 @@ describe Ci::JobArtifact do
         expect(ProjectStatistics)
           .not_to receive(:increment_statistic)
 
-        project.update_attributes(pending_delete: true)
+        project.update(pending_delete: true)
         project.destroy!
       end
     end

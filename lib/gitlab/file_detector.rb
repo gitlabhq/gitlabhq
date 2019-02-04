@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'set'
 
 module Gitlab
@@ -6,9 +8,9 @@ module Gitlab
   module FileDetector
     PATTERNS = {
       # Project files
-      readme: %r{\Areadme[^/]*\z}i,
+      readme: /\A(#{Regexp.union(*Gitlab::MarkupHelper::PLAIN_FILENAMES).source})(\.(#{Regexp.union(*Gitlab::MarkupHelper::EXTENSIONS).source}))?\z/i,
       changelog: %r{\A(changelog|history|changes|news)[^/]*\z}i,
-      license: %r{\A(licen[sc]e|copying)(\.[^/]+)?\z}i,
+      license: %r{\A((un)?licen[sc]e|copying)(\.[^/]+)?\z}i,
       contributing: %r{\Acontributing[^/]*\z}i,
       version: 'version',
       avatar: /\Alogo\.(png|jpg|gif)\z/,
@@ -18,7 +20,6 @@ module Gitlab
 
       # Configuration files
       gitignore: '.gitignore',
-      koding: '.koding.yml',
       gitlab_ci: '.gitlab-ci.yml',
       route_map: '.gitlab/route-map.yml',
 

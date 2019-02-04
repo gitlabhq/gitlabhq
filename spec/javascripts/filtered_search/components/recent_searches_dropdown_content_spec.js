@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import eventHub from '~/filtered_search/event_hub';
 import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content.vue';
-import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
+import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
-const createComponent = (propsData) => {
+const createComponent = propsData => {
   const Component = Vue.extend(RecentSearchesDropdownContent);
 
   return new Component({
@@ -18,14 +18,11 @@ const trimMarkupWhitespace = text => text.replace(/(\n|\s)+/gm, ' ').trim();
 describe('RecentSearchesDropdownContent', () => {
   const propsDataWithoutItems = {
     items: [],
-    allowedKeys: FilteredSearchTokenKeys.getKeys(),
+    allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
   };
   const propsDataWithItems = {
-    items: [
-      'foo',
-      'author:@root label:~foo bar',
-    ],
-    allowedKeys: FilteredSearchTokenKeys.getKeys(),
+    items: ['foo', 'author:@root label:~foo bar'],
+    allowedKeys: IssuableFilteredSearchTokenKeys.getKeys(),
   };
 
   let vm;
@@ -47,6 +44,7 @@ describe('RecentSearchesDropdownContent', () => {
       expect(el.querySelector('.dropdown-info-note')).toBeDefined();
 
       const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+
       expect(items.length).toEqual(propsDataWithoutItems.items.length);
     });
   });
@@ -65,17 +63,27 @@ describe('RecentSearchesDropdownContent', () => {
 
     it('should render recent search items', () => {
       const items = el.querySelectorAll('.filtered-search-history-dropdown-item');
+
       expect(items.length).toEqual(propsDataWithItems.items.length);
 
-      expect(trimMarkupWhitespace(items[0].querySelector('.filtered-search-history-dropdown-search-token').textContent)).toEqual('foo');
+      expect(
+        trimMarkupWhitespace(
+          items[0].querySelector('.filtered-search-history-dropdown-search-token').textContent,
+        ),
+      ).toEqual('foo');
 
       const item1Tokens = items[1].querySelectorAll('.filtered-search-history-dropdown-token');
+
       expect(item1Tokens.length).toEqual(2);
       expect(item1Tokens[0].querySelector('.name').textContent).toEqual('author:');
       expect(item1Tokens[0].querySelector('.value').textContent).toEqual('@root');
       expect(item1Tokens[1].querySelector('.name').textContent).toEqual('label:');
       expect(item1Tokens[1].querySelector('.value').textContent).toEqual('~foo');
-      expect(trimMarkupWhitespace(items[1].querySelector('.filtered-search-history-dropdown-search-token').textContent)).toEqual('bar');
+      expect(
+        trimMarkupWhitespace(
+          items[1].querySelector('.filtered-search-history-dropdown-search-token').textContent,
+        ),
+      ).toEqual('bar');
     });
   });
 
@@ -103,7 +111,7 @@ describe('RecentSearchesDropdownContent', () => {
     describe('processedItems', () => {
       it('with items', () => {
         vm = createComponent(propsDataWithItems);
-        const processedItems = vm.processedItems;
+        const { processedItems } = vm;
 
         expect(processedItems.length).toEqual(2);
 
@@ -122,7 +130,7 @@ describe('RecentSearchesDropdownContent', () => {
 
       it('with no items', () => {
         vm = createComponent(propsDataWithoutItems);
-        const processedItems = vm.processedItems;
+        const { processedItems } = vm;
 
         expect(processedItems.length).toEqual(0);
       });
@@ -131,13 +139,15 @@ describe('RecentSearchesDropdownContent', () => {
     describe('hasItems', () => {
       it('with items', () => {
         vm = createComponent(propsDataWithItems);
-        const hasItems = vm.hasItems;
+        const { hasItems } = vm;
+
         expect(hasItems).toEqual(true);
       });
 
       it('with no items', () => {
         vm = createComponent(propsDataWithoutItems);
-        const hasItems = vm.hasItems;
+        const { hasItems } = vm;
+
         expect(hasItems).toEqual(false);
       });
     });
@@ -161,6 +171,7 @@ describe('RecentSearchesDropdownContent', () => {
       it('emits event', () => {
         expect(onRecentSearchesItemSelectedSpy).not.toHaveBeenCalled();
         vm.onItemActivated('something');
+
         expect(onRecentSearchesItemSelectedSpy).toHaveBeenCalledWith('something');
       });
     });
@@ -182,6 +193,7 @@ describe('RecentSearchesDropdownContent', () => {
       it('emits event', () => {
         expect(onRequestClearRecentSearchesSpy).not.toHaveBeenCalled();
         vm.onRequestClearRecentSearches({ stopPropagation: () => {} });
+
         expect(onRequestClearRecentSearchesSpy).toHaveBeenCalled();
       });
     });

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Gitlab::Middleware::Multipart - a Rack::Multipart replacement
 #
 # Rack::Multipart leaves behind tempfiles in /tmp and uses valuable Ruby
@@ -30,7 +32,7 @@ module Gitlab
 
       class Handler
         def initialize(env, message)
-          @request = Rack::Request.new(env)
+          @request = ActionDispatch::Request.new(env)
           @rewritten_fields = message['rewritten_fields']
           @open_files = []
         end
@@ -42,10 +44,10 @@ module Gitlab
 
             key, value = parsed_field.first
             if value.nil?
-              value = open_file(tmp_path, @request.params["#{key}.name"])
+              value = open_file(@request.params, key)
               @open_files << value
             else
-              value = decorate_params_value(value, @request.params[key], tmp_path)
+              value = decorate_params_value(value, @request.params[key])
             end
 
             @request.update_param(key, value)
@@ -57,7 +59,7 @@ module Gitlab
         end
 
         # This function calls itself recursively
-        def decorate_params_value(path_hash, value_hash, tmp_path)
+        def decorate_params_value(path_hash, value_hash)
           unless path_hash.is_a?(Hash) && path_hash.count == 1
             raise "invalid path: #{path_hash.inspect}"
           end
@@ -70,19 +72,25 @@ module Gitlab
 
           case path_value
           when nil
-            value_hash[path_key] = open_file(tmp_path, value_hash.dig(path_key, '.name'))
+            value_hash[path_key] = open_file(value_hash.dig(path_key), '')
             @open_files << value_hash[path_key]
             value_hash
           when Hash
-            decorate_params_value(path_value, value_hash[path_key], tmp_path)
+            decorate_params_value(path_value, value_hash[path_key])
             value_hash
           else
             raise "unexpected path value: #{path_value.inspect}"
           end
         end
 
-        def open_file(path, name)
-          ::UploadedFile.new(path, filename: name || File.basename(path), content_type: 'application/octet-stream')
+        def open_file(params, key)
+          allowed_paths = [
+            ::FileUploader.root,
+            Gitlab.config.uploads.storage_path,
+            File.join(Rails.root, 'public/uploads/tmp')
+          ]
+
+          ::UploadedFile.from_params(params, key, allowed_paths)
         end
       end
 

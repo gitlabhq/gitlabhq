@@ -1,16 +1,20 @@
+# frozen_string_literal: true
+
 module SystemCheck
   module Orphans
     class NamespaceCheck < SystemCheck::BaseCheck
       set_name 'Orphaned namespaces:'
 
       def multi_check
-        Gitlab.config.repositories.storages.each do |storage_name, repository_storage|
-          $stdout.puts
-          $stdout.puts "* Storage: #{storage_name} (#{repository_storage.legacy_disk_path})".color(:yellow)
-          toplevel_namespace_dirs = disk_namespaces(repository_storage.legacy_disk_path)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          Gitlab.config.repositories.storages.each do |storage_name, repository_storage|
+            $stdout.puts
+            $stdout.puts "* Storage: #{storage_name} (#{repository_storage.legacy_disk_path})".color(:yellow)
+            toplevel_namespace_dirs = disk_namespaces(repository_storage.legacy_disk_path)
 
-          orphans = (toplevel_namespace_dirs - existing_namespaces)
-          print_orphans(orphans, storage_name)
+            orphans = (toplevel_namespace_dirs - existing_namespaces)
+            print_orphans(orphans, storage_name)
+          end
         end
 
         clear_namespaces! # releases memory when check finishes

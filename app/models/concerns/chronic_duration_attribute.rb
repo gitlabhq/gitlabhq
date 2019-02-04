@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChronicDurationAttribute
   extend ActiveSupport::Concern
 
@@ -22,7 +24,7 @@ module ChronicDurationAttribute
         end
       end
 
-      validates virtual_attribute, allow_nil: true, duration: true
+      validates virtual_attribute, allow_nil: true, duration: { message: parameters[:error_message] }
     end
 
     alias_method :chronic_duration_attr, :chronic_duration_attr_writer

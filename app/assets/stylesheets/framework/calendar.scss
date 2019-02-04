@@ -1,8 +1,7 @@
-.calender-block {
+.calendar-block {
   padding-left: 0;
   padding-right: 0;
   border-top: 0;
-  direction: rtl;
 
   @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
     overflow-x: auto;
@@ -42,10 +41,13 @@
 }
 
 .calendar-hint {
-  margin-top: -23px;
-  float: right;
   font-size: 12px;
-  direction: ltr;
+
+  &.bottom-right {
+    direction: ltr;
+    margin-top: -23px;
+    float: right;
+  }
 }
 
 .pika-single.gitlab-theme {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IssuablesHelper
   include GitlabRoutingHelper
 
@@ -21,30 +23,41 @@ module IssuablesHelper
     end
   end
 
-  def sidebar_due_date_tooltip_label(issuable)
-    if issuable.due_date
-      "#{_('Due date')}<br />#{due_date_remaining_days(issuable)}"
-    else
-      _('Due date')
-    end
+  def sidebar_milestone_tooltip_label(milestone)
+    return _('Milestone') unless milestone.present?
+
+    [milestone[:title], sidebar_milestone_remaining_days(milestone) || _('Milestone')].join('<br/>')
   end
 
-  def due_date_remaining_days(issuable)
-    remaining_days_in_words = remaining_days_in_words(issuable)
+  def sidebar_milestone_remaining_days(milestone)
+    due_date_with_remaining_days(milestone[:due_date], milestone[:start_date])
+  end
 
-    "#{issuable.due_date.to_s(:medium)} (#{remaining_days_in_words})"
+  def sidebar_due_date_tooltip_label(due_date)
+    [_('Due date'), due_date_with_remaining_days(due_date)].compact.join('<br/>')
+  end
+
+  def due_date_with_remaining_days(due_date, start_date = nil)
+    return unless due_date
+
+    "#{due_date.to_s(:medium)} (#{remaining_days_in_words(due_date, start_date)})"
+  end
+
+  def sidebar_label_filter_path(base_path, label_name)
+    query_params = { label_name: [label_name] }.to_query
+
+    "#{base_path}?#{query_params}"
   end
 
   def multi_label_name(current_labels, default_label)
-    if current_labels && current_labels.any?
-      title = current_labels.first.try(:title)
-      if current_labels.size > 1
-        "#{title} +#{current_labels.size - 1} more"
-      else
-        title
-      end
+    return default_label if current_labels.blank?
+
+    title = current_labels.first.try(:title) || current_labels.first[:title]
+
+    if current_labels.size > 1
+      "#{title} +#{current_labels.size - 1} more"
     else
-      default_label
+      title
     end
   end
 
@@ -105,6 +118,7 @@ module IssuablesHelper
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user_dropdown_label(user_id, default_label)
     return default_label if user_id.nil?
     return "Unassigned" if user_id == "0"
@@ -117,7 +131,9 @@ module IssuablesHelper
       default_label
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_dropdown_label(project_id, default_label)
     return default_label if project_id.nil?
     return "Any project" if project_id == "0"
@@ -130,6 +146,22 @@ module IssuablesHelper
       default_label
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def group_dropdown_label(group_id, default_label)
+    return default_label if group_id.nil?
+    return "Any group" if group_id == "0"
+
+    group = ::Group.find_by(id: group_id)
+
+    if group
+      group.full_name
+    else
+      default_label
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def milestone_dropdown_label(milestone_title, default_label = "Milestone")
     title =
@@ -154,33 +186,33 @@ module IssuablesHelper
   end
 
   def issuable_meta(issuable, project, text)
-    output = ""
+    output = []
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline-block", tooltip: true)
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
+
+      if status = user_status(issuable.author)
+        author_output << "#{status}".html_safe
+      end
+
+      author_output
     end
 
-    output << "&ensp;".html_safe
     output << content_tag(:span, (issuable_first_contribution_icon if issuable.first_contribution?), class: 'has-tooltip', title: _('1st contribution!'))
 
-    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block")
-    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none d-lg-none d-xl-inline-block")
+    output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block prepend-left-8")
+    output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
 
-    output.html_safe
-  end
-
-  def issuable_todo(issuable)
-    if current_user
-      current_user.todos.find_by(target: issuable, state: :pending)
-    end
+    output.join.html_safe
   end
 
   def issuable_labels_tooltip(labels, limit: 5)
-    first, last = labels.partition.with_index { |_, i| i < limit  }
+    first, last = labels.partition.with_index { |_, i| i < limit }
 
     if labels && labels.any?
-      label_names = first.collect(&:name)
+      label_names = first.collect { |label| label.fetch(:title) }
       label_names << "and #{last.size} more" unless last.empty?
 
       label_names.join(', ')
@@ -236,6 +268,8 @@ module IssuablesHelper
       issuableRef: issuable.to_reference,
       markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
+      markdownVersion: issuable.cached_markdown_version,
+      lockVersion: issuable.lock_version,
       issuableTemplates: issuable_templates(issuable),
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
@@ -297,11 +331,15 @@ module IssuablesHelper
   end
 
   def issuable_button_visibility(issuable, closed)
+    return 'hidden' if issuable_button_hidden?(issuable, closed)
+  end
+
+  def issuable_button_hidden?(issuable, closed)
     case issuable
     when Issue
-      issue_button_visibility(issuable, closed)
+      issue_button_hidden?(issuable, closed)
     when MergeRequest
-      merge_request_button_visibility(issuable, closed)
+      merge_request_button_hidden?(issuable, closed)
     end
   end
 
@@ -322,10 +360,8 @@ module IssuablesHelper
     issuable.model_name.human.downcase
   end
 
-  def selected_labels
-    Array(params[:label_name]).map do |label_name|
-      Label.new(title: label_name)
-    end
+  def has_filter_bar_param?
+    finder.class.scalar_params.any? { |p| params[p].present? }
   end
 
   private
@@ -348,19 +384,20 @@ module IssuablesHelper
     params[:issuable_template] if issuable_templates(issuable).any? { |template| template[:name] == params[:issuable_template] }
   end
 
-  def issuable_todo_button_data(issuable, todo, is_collapsed)
+  def issuable_todo_button_data(issuable, is_collapsed)
     {
-      todo_text: "Add todo",
-      mark_text: "Mark todo as done",
-      todo_icon: (is_collapsed ? icon('plus-square') : nil),
-      mark_icon: (is_collapsed ? icon('check-square', class: 'todo-undone') : nil),
-      issuable_id: issuable.id,
-      issuable_type: issuable.class.name.underscore,
-      url: project_todos_path(@project),
-      delete_path: (dashboard_todo_path(todo) if todo),
-      placement: (is_collapsed ? 'left' : nil),
-      container: (is_collapsed ? 'body' : nil),
-      boundary: 'viewport'
+      todo_text: _('Add todo'),
+      mark_text: _('Mark todo as done'),
+      todo_icon: sprite_icon('todo-add'),
+      mark_icon: sprite_icon('todo-done', css_class: 'todo-undone'),
+      issuable_id: issuable[:id],
+      issuable_type: issuable[:type],
+      create_path: issuable[:create_todo_path],
+      delete_path: issuable.dig(:current_user, :todo, :delete_path),
+      placement: is_collapsed ? 'left' : nil,
+      container: is_collapsed ? 'body' : nil,
+      boundary: 'viewport',
+      is_collapsed: is_collapsed
     }
   end
 
@@ -380,27 +417,20 @@ module IssuablesHelper
     end
   end
 
-  def issuable_sidebar_options(issuable, can_edit_issuable)
+  def issuable_sidebar_options(issuable)
     {
-      endpoint: "#{issuable_json_path(issuable)}?serializer=sidebar",
-      toggleSubscriptionEndpoint: toggle_subscription_path(issuable),
-      moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
-      projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
-      editable: can_edit_issuable,
-      currentUser: UserSerializer.new.represent(current_user),
+      endpoint: "#{issuable[:issuable_json_path]}?serializer=sidebar_extras",
+      toggleSubscriptionEndpoint: issuable[:toggle_subscription_path],
+      moveIssueEndpoint: issuable[:move_issue_path],
+      projectsAutocompleteEndpoint: issuable[:projects_autocomplete_path],
+      editable: issuable.dig(:current_user, :can_edit),
+      currentUser: issuable[:current_user],
       rootPath: root_path,
-      fullPath: @project.full_path
+      fullPath: issuable[:project_full_path]
     }
   end
 
   def parent
     @project || @group
-  end
-
-  def issuable_milestone_tooltip_title(issuable)
-    if issuable.milestone
-      milestone_tooltip = milestone_tooltip_title(issuable.milestone)
-      _('Milestone') + (milestone_tooltip ? ': ' + milestone_tooltip : '')
-    end
   end
 end

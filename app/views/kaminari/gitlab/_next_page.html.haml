@@ -8,5 +8,5 @@
 
 - page_url = current_page.last? ? '#' : url
 
-%li.page-item{ class: ('disabled' if current_page.last?) }
+%li.page-item.js-next-button{ class: ('disabled' if current_page.last?) }
   = link_to raw(t 'views.pagination.next'), page_url, rel: 'next', remote: remote, class: 'page-link'

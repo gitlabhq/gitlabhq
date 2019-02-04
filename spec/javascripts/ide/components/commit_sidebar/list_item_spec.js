@@ -19,6 +19,7 @@ describe('Multi-file editor commit sidebar list item', () => {
     vm = createComponentWithStore(Component, store, {
       file: f,
       actionComponent: 'stage-button',
+      activeFileKey: `staged-${f.key}`,
     }).$mount();
   });
 
@@ -29,11 +30,7 @@ describe('Multi-file editor commit sidebar list item', () => {
   });
 
   it('renders file path', () => {
-    expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent.trim()).toBe(f.path);
-  });
-
-  it('renders actionn button', () => {
-    expect(vm.$el.querySelector('.multi-file-discard-btn')).not.toBeNull();
+    expect(vm.$el.querySelector('.multi-file-commit-list-path').textContent).toContain(f.path);
   });
 
   it('opens a closed file in the editor when clicking the file path', done => {
@@ -75,17 +72,45 @@ describe('Multi-file editor commit sidebar list item', () => {
 
         expect(vm.iconName).toBe('file-addition');
       });
+
+      it('returns deletion', () => {
+        f.deleted = true;
+
+        expect(vm.iconName).toBe('file-deletion');
+      });
     });
 
     describe('iconClass', () => {
       it('returns modified when not a tempFile', () => {
-        expect(vm.iconClass).toContain('multi-file-modified');
+        expect(vm.iconClass).toContain('ide-file-modified');
       });
 
       it('returns addition when not a tempFile', () => {
         f.tempFile = true;
 
-        expect(vm.iconClass).toContain('multi-file-addition');
+        expect(vm.iconClass).toContain('ide-file-addition');
+      });
+
+      it('returns deletion', () => {
+        f.deleted = true;
+
+        expect(vm.iconClass).toContain('ide-file-deletion');
+      });
+    });
+  });
+
+  describe('is active', () => {
+    it('does not add active class when dont keys match', () => {
+      expect(vm.$el.querySelector('.is-active')).toBe(null);
+    });
+
+    it('adds active class when keys match', done => {
+      vm.keyPrefix = 'staged';
+
+      vm.$nextTick(() => {
+        expect(vm.$el.querySelector('.is-active')).not.toBe(null);
+
+        done();
       });
     });
   });

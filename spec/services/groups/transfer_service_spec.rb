@@ -9,7 +9,7 @@ describe Groups::TransferService, :postgresql do
   shared_examples 'ensuring allowed transfer for a group' do
     context 'with other database than PostgreSQL' do
       before do
-        allow(Group).to receive(:supports_nested_groups?).and_return(false)
+        allow(Group).to receive(:supports_nested_objects?).and_return(false)
       end
 
       it 'should return false' do
@@ -22,7 +22,7 @@ describe Groups::TransferService, :postgresql do
       end
     end
 
-    context "when there's an exception on Gitlab shell directories" do
+    context "when there's an exception on GitLab shell directories" do
       let(:new_parent_group) { create(:group, :public) }
 
       before do
@@ -177,7 +177,7 @@ describe Groups::TransferService, :postgresql do
 
         it 'should add an error on group' do
           transfer_service.execute(new_parent_group)
-          expect(transfer_service.error).to eq('Transfer failed: Validation failed: Path has already been taken')
+          expect(transfer_service.error).to eq('Transfer failed: Validation failed: Group URL has already been taken')
         end
       end
 
@@ -347,7 +347,7 @@ describe Groups::TransferService, :postgresql do
         end
       end
 
-      context 'when transfering a group with nested groups and projects' do
+      context 'when transferring a group with nested groups and projects' do
         let!(:group) { create(:group, :public) }
         let!(:project1) { create(:project, :repository, :private, namespace: group) }
         let!(:subgroup1) { create(:group, :private, parent: group) }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Module providing methods for dealing with separating a tree-ish string and a
 # file path string when combined in a request parameter
 module ExtractsPath
@@ -50,11 +52,13 @@ module ExtractsPath
       # branches and tags
 
       # Append a trailing slash if we only get a ref and no file path
-      id += '/' unless id.ends_with?('/')
+      unless id.ends_with?('/')
+        id = [id, '/'].join
+      end
 
       valid_refs = ref_names.select { |v| id.start_with?("#{v}/") }
 
-      if valid_refs.length == 0
+      if valid_refs.empty?
         # No exact ref match, so just try our best
         pair = id.match(%r{([^/]+)(.*)}).captures
       else
@@ -106,11 +110,6 @@ module ExtractsPath
   # resolved (e.g., when a user inserts an invalid path or ref).
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def assign_ref_vars
-    # assign allowed options
-    allowed_options = ["filter_ref"]
-    @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
-    @options = HashWithIndifferentAccess.new(@options)
-
     @id = get_id
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
@@ -139,16 +138,21 @@ module ExtractsPath
 
   def lfs_blob_ids
     blob_ids = tree.blobs.map(&:id)
+
+    # When current endpoint is a Blob then `tree.blobs` will be empty, it means we need to analyze
+    # the current Blob in order to determine if it's a LFS object
+    blob_ids = Array.wrap(@repo.blob_at(@commit.id, @path)&.id) if blob_ids.empty? # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
     @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, blob_ids).map(&:id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   private
 
-  # overriden in subclasses, do not remove
+  # overridden in subclasses, do not remove
   def get_id
-    id = params[:id] || params[:ref]
-    id += "/" + params[:path] unless params[:path].blank?
-    id
+    id = [params[:id] || params[:ref]]
+    id << "/" + params[:path] unless params[:path].blank?
+    id.join
   end
 
   def ref_names

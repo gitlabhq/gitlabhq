@@ -1,5 +1,0 @@
----
-title: Forbid to patch traces for finished jobs
-merge_request: 18969
-author:
-type: fixed

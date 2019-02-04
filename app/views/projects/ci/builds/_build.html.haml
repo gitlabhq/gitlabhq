@@ -25,7 +25,7 @@
           = job.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
         = link_to job.ref, project_ref_path(job.project, job.ref), class: "ref-name"
       - else
-        .light none
+        .light= _('none')
       .icon-container.commit-icon
         = custom_icon("icon_commit")
 
@@ -33,10 +33,10 @@
       = link_to job.short_sha, project_commit_path(job.project, job.sha), class: "commit-sha"
 
     - if job.stuck?
-      = icon('warning', class: 'text-warning has-tooltip', title: 'Job is stuck. Check runners.')
+      = icon('warning', class: 'text-warning has-tooltip', title: _('Job is stuck. Check runners.'))
 
     - if retried
-      = icon('refresh', class: 'text-warning has-tooltip', title: 'Job was retried')
+      = icon('refresh', class: 'text-warning has-tooltip', title: _('Job was retried'))
 
     .label-container
       - if job.tags.any?
@@ -44,11 +44,13 @@
           %span.badge.badge-primary
             = tag
       - if job.try(:trigger_request)
-        %span.badge.badge-info triggered
+        %span.badge.badge-info= _('triggered')
       - if job.try(:allow_failure)
-        %span.badge.badge-danger allowed to fail
-      - if job.action?
-        %span.badge.badge-info manual
+        %span.badge.badge-danger= _('allowed to fail')
+      - if job.schedulable?
+        %span.badge.badge-info= s_('DelayedJobs|delayed')
+      - elsif job.action?
+        %span.badge.badge-info= _('manual')
 
   - if pipeline_link
     %td
@@ -58,7 +60,7 @@
       - if pipeline.user
         = user_avatar(user: pipeline.user, size: 20)
       - else
-        %span.api API
+        %span.monospace API
 
   - if admin
     %td
@@ -68,7 +70,7 @@
       - if job.try(:runner)
         = runner_link(job.runner)
       - else
-        .light none
+        .light= _('none')
 
   - if stage
     %td
@@ -95,16 +97,34 @@
   %td
     .float-right
       - if can?(current_user, :read_build, job) && job.artifacts?
-        = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: 'Download artifacts', class: 'btn btn-build' do
+        = link_to download_project_job_artifacts_path(job.project, job), rel: 'nofollow', download: '', title: _('Download artifacts'), class: 'btn btn-build' do
           = sprite_icon('download')
       - if can?(current_user, :update_build, job)
         - if job.active?
-          = link_to cancel_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
+          = link_to cancel_project_job_path(job.project, job, continue: { to: request.fullpath }), method: :post, title: _('Cancel'), class: 'btn btn-build' do
             = icon('remove', class: 'cred')
+        - elsif job.scheduled?
+          .btn-group
+            .btn.btn-default{ disabled: true }
+              = sprite_icon('planning')
+              %time.js-remaining-time{ datetime: job.scheduled_at.utc.iso8601 }
+                = duration_in_numbers(job.execute_in)
+            - confirmation_message = s_("DelayedJobs|Are you sure you want to run %{job_name} immediately? This job will run automatically after it's timer finishes.") % { job_name: job.name }
+            = link_to play_project_job_path(job.project, job, return_to: request.original_url),
+              method: :post,
+              title: s_('DelayedJobs|Start now'),
+              class: 'btn btn-default btn-build has-tooltip',
+              data: { confirm: confirmation_message } do
+              = sprite_icon('play')
+            = link_to unschedule_project_job_path(job.project, job, return_to: request.original_url),
+              method: :post,
+              title: s_('DelayedJobs|Unschedule'),
+              class: 'btn btn-default btn-build has-tooltip' do
+              = sprite_icon('time-out')
         - elsif allow_retry
           - if job.playable? && !admin && can?(current_user, :update_build, job)
-            = link_to play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
+            = link_to play_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Play'), class: 'btn btn-build' do
               = custom_icon('icon_play')
           - elsif job.retryable?
-            = link_to retry_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+            = link_to retry_project_job_path(job.project, job, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build' do
               = icon('repeat')

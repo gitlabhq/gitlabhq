@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module HealthChecks
     class GitalyCheck
@@ -13,14 +15,14 @@ module Gitlab
         end
 
         def metrics
-          repository_storages.flat_map do |storage_name|
-            result, elapsed = with_timing { check(storage_name) }
-            labels = { shard: storage_name }
+          Gitaly::Server.all.flat_map do |server|
+            result, elapsed = with_timing { server.read_writeable? }
+            labels = { shard: server.storage }
 
             [
-              metric("#{metric_prefix}_success", successful?(result) ? 1 : 0, **labels),
+              metric("#{metric_prefix}_success", result ? 1 : 0, **labels),
               metric("#{metric_prefix}_latency_seconds", elapsed, **labels)
-            ].flatten
+            ]
           end
         end
 
@@ -34,10 +36,6 @@ module Gitlab
 
         def metric_prefix
           METRIC_PREFIX
-        end
-
-        def successful?(result)
-          result[:success]
         end
 
         def repository_storages

@@ -11,7 +11,6 @@ export default class U2FAuthenticate {
   constructor(container, form, u2fParams, fallbackButton, fallbackUI) {
     this.u2fUtils = null;
     this.container = container;
-    this.renderNotSupported = this.renderNotSupported.bind(this);
     this.renderAuthenticated = this.renderAuthenticated.bind(this);
     this.renderError = this.renderError.bind(this);
     this.renderInProgress = this.renderInProgress.bind(this);
@@ -41,7 +40,6 @@ export default class U2FAuthenticate {
     this.signRequests = u2fParams.sign_requests.map(request => _(request).omit('challenge'));
 
     this.templates = {
-      notSupported: '#js-authenticate-u2f-not-supported',
       setup: '#js-authenticate-u2f-setup',
       inProgress: '#js-authenticate-u2f-in-progress',
       error: '#js-authenticate-u2f-error',
@@ -51,22 +49,27 @@ export default class U2FAuthenticate {
 
   start() {
     return importU2FLibrary()
-      .then((utils) => {
+      .then(utils => {
         this.u2fUtils = utils;
         this.renderInProgress();
       })
-      .catch(() => this.renderNotSupported());
+      .catch(() => this.switchToFallbackUI());
   }
 
   authenticate() {
-    return this.u2fUtils.sign(this.appId, this.challenge, this.signRequests,
-      (response) => {
+    return this.u2fUtils.sign(
+      this.appId,
+      this.challenge,
+      this.signRequests,
+      response => {
         if (response.errorCode) {
           const error = new U2FError(response.errorCode, 'authenticate');
           return this.renderError(error);
         }
         return this.renderAuthenticated(JSON.stringify(response));
-      }, 10);
+      },
+      10,
+    );
   }
 
   renderTemplate(name, params) {
@@ -96,14 +99,9 @@ export default class U2FAuthenticate {
     this.fallbackButton.classList.add('hidden');
   }
 
-  renderNotSupported() {
-    return this.renderTemplate('notSupported');
-  }
-
   switchToFallbackUI() {
     this.fallbackButton.classList.add('hidden');
     this.container[0].classList.add('hidden');
     this.fallbackUI.classList.remove('hidden');
   }
-
 }

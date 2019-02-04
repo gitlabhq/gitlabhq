@@ -1,5 +1,0 @@
----
-title: Remove docker pull prefix from registry clipboard feature
-merge_request: 18933
-author: Lars Greiss
-type: changed

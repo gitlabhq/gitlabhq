@@ -1,5 +1,4 @@
-# rubocop:disable all
-class RenameBuildboxService < ActiveRecord::Migration
+class RenameBuildboxService < ActiveRecord::Migration[4.2]
   def up
     execute "UPDATE services SET type = 'BuildkiteService' WHERE type = 'BuildboxService';"
   end

@@ -2,12 +2,12 @@
   = s_('PrometheusService|Auto configuration')
 
 - if service.manual_configuration?
-  .well
+  .info-well
     = s_('PrometheusService|To enable the installation of Prometheus on your clusters, deactivate the manual configuration below')
 - else
   .container-fluid
     .row
-      - if service.prometheus_installed?
+      - if service.prometheus_available?
         .col-sm-2
           .svg-container
             = image_tag 'illustrations/monitoring/getting_started.svg'

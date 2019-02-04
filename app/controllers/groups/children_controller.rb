@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   class ChildrenController < Groups::ApplicationController
     before_action :group
@@ -33,7 +35,7 @@ module Groups
     def setup_children(parent)
       @children = GroupDescendantsFinder.new(current_user: current_user,
                                              parent_group: parent,
-                                             params: params).execute
+                                             params: params.to_unsafe_h).execute
       @children = @children.page(params[:page])
     end
   end

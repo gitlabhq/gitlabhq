@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailsOnPushWorker
   include ApplicationWorker
 
@@ -49,7 +51,7 @@ class EmailsOnPushWorker
       end
     end
 
-    recipients.split.each do |recipient|
+    valid_recipients(recipients).each do |recipient|
       begin
         send_email(
           recipient,
@@ -86,5 +88,11 @@ class EmailsOnPushWorker
     email.add_message_id
     email.header[:skip_premailer] = true if skip_premailer
     email.deliver_now
+  end
+
+  def valid_recipients(recipients)
+    recipients.split.select do |recipient|
+      recipient.include?('@')
+    end
   end
 end

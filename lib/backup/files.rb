@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'open3'
 require_relative 'helper'
 
@@ -26,20 +28,29 @@ module Backup
 
         unless status.zero?
           puts output
-          abort 'Backup failed'
+          raise Backup::Error, 'Backup failed'
         end
 
-        run_pipeline!([%W(tar --exclude=lost+found -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
         FileUtils.rm_rf(@backup_files_dir)
       else
-        run_pipeline!([%W(tar --exclude=lost+found -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
       end
     end
 
     def restore
       backup_existing_files_dir
 
-      run_pipeline!([%w(gzip -cd), %W(tar --unlink-first --recursive-unlink -C #{app_files_dir} -xf -)], in: backup_tarball)
+      run_pipeline!([%w(gzip -cd), %W(#{tar} --unlink-first --recursive-unlink -C #{app_files_dir} -xf -)], in: backup_tarball)
+    end
+
+    def tar
+      if system(*%w[gtar --version], out: '/dev/null')
+        # It looks like we can get GNU tar by running 'gtar'
+        'gtar'
+      else
+        'tar'
+      end
     end
 
     def backup_existing_files_dir
@@ -60,8 +71,14 @@ module Backup
     end
 
     def run_pipeline!(cmd_list, options = {})
-      status_list = Open3.pipeline(*cmd_list, options)
-      abort 'Backup failed' unless status_list.compact.all?(&:success?)
+      err_r, err_w = IO.pipe
+      options[:err] = err_w
+      status = Open3.pipeline(*cmd_list, options)
+      err_w.close
+      return if status.compact.all?(&:success?)
+
+      regex = /^g?tar: \.: Cannot mkdir: No such file or directory$/
+      raise Backup::Error, 'Backup failed' unless err_r.read =~ regex
     end
   end
 end

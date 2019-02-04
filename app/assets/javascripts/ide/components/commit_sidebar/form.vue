@@ -24,7 +24,7 @@ export default {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['hasChanges']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return sprintf(
         __(
@@ -35,6 +35,9 @@ export default {
           changedFilesLength: this.changedFiles.length,
         },
       );
+    },
+    commitButtonText() {
+      return this.stagedFiles.length ? __('Commit') : __('Stage & Commit');
     },
   },
   watch: {
@@ -91,14 +94,14 @@ export default {
 
 <template>
   <div
-    class="multi-file-commit-form"
     :class="{
       'is-compact': isCompact,
-      'is-full': !isCompact
+      'is-full': !isCompact,
     }"
     :style="{
       height: componentHeight ? `${componentHeight}px` : null,
     }"
+    class="multi-file-commit-form"
   >
     <transition
       name="commit-form-slide-up"
@@ -106,45 +109,31 @@ export default {
       @enter="enterTransition"
       @after-enter="afterEndTransition"
     >
-      <div
-        v-if="isCompact"
-        class="commit-form-compact"
-        ref="compactEl"
-      >
+      <div v-if="isCompact" ref="compactEl" class="commit-form-compact">
         <button
-          type="button"
           :disabled="!hasChanges"
-          class="btn btn-primary btn-sm btn-block"
+          type="button"
+          class="btn btn-primary btn-sm btn-block qa-begin-commit-button"
           @click="toggleIsSmall"
         >
-          {{ __('Commit') }}
+          {{ __('Commit…') }}
         </button>
-        <p
-          class="text-center"
-          v-html="overviewText"
-        ></p>
+        <p class="text-center" v-html="overviewText"></p>
       </div>
-      <form
-        v-if="!isCompact"
-        @submit.prevent.stop="commitChanges"
-        ref="formEl"
-      >
-        <transition name="fade">
-          <success-message
-            v-show="lastCommitMsg"
-          />
-        </transition>
+      <form v-if="!isCompact" ref="formEl" @submit.prevent.stop="commitChanges">
+        <transition name="fade"> <success-message v-show="lastCommitMsg" /> </transition>
         <commit-message-field
           :text="commitMessage"
+          :placeholder="preBuiltCommitMessage"
           @input="updateCommitMessage"
+          @submit="commitChanges"
         />
         <div class="clearfix prepend-top-15">
           <actions />
           <loading-button
             :loading="submitCommitLoading"
-            :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm float-left"
-            :label="__('Commit')"
+            :label="commitButtonText"
+            container-class="btn btn-success btn-sm float-left qa-commit-button"
             @click="commitChanges"
           />
           <button

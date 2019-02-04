@@ -54,6 +54,18 @@ describe Banzai::Filter::SanitizationFilter do
       expect(instance.whitelist[:transformers].size).to eq control_count
     end
 
+    it 'customizes the whitelist only once for different instances' do
+      instance1 = described_class.new('Foo1')
+      instance2 = described_class.new('Foo2')
+      control_count = instance1.whitelist[:transformers].size
+
+      instance1.whitelist
+      instance2.whitelist
+
+      expect(instance1.whitelist[:transformers].size).to eq control_count
+      expect(instance2.whitelist[:transformers].size).to eq control_count
+    end
+
     it 'sanitizes `class` attribute from all elements' do
       act = %q{<pre class="code highlight white c"><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
       exp = %q{<pre><code>&lt;span class="k"&gt;def&lt;/span&gt;</code></pre>}
@@ -91,6 +103,16 @@ describe Banzai::Filter::SanitizationFilter do
 
       expect(doc.at_css('th')['style']).to be_nil
       expect(doc.at_css('td')['style']).to eq 'text-align: center'
+    end
+
+    it 'disallows `text-align` property in `style` attribute on other elements' do
+      html = <<~HTML
+        <div style="text-align: center">Text</div>
+      HTML
+
+      doc = filter(html)
+
+      expect(doc.at_css('div')['style']).to be_nil
     end
 
     it 'allows `span` elements' do
@@ -277,6 +299,56 @@ describe Banzai::Filter::SanitizationFilter do
       act = filter(exp)
 
       expect(act.to_html).to eq exp
+    end
+
+    it 'allows the `data-sourcepos` attribute globally' do
+      exp = %q{<p data-sourcepos="1:1-1:10">foo/bar.md</p>}
+      act = filter(exp)
+
+      expect(act.to_html).to eq exp
+    end
+
+    describe 'footnotes' do
+      it 'allows correct footnote id property on links' do
+        exp = %q{<a href="#fn1" id="fnref1">foo/bar.md</a>}
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'allows correct footnote id property on li element' do
+        exp = %q{<ol><li id="fn1">footnote</li></ol>}
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
+
+      it 'removes invalid id for footnote links' do
+        exp = %q{<a href="#fn1">link</a>}
+
+        %w[fnrefx test xfnref1].each do |id|
+          act = filter(%Q{<a href="#fn1" id="#{id}">link</a>})
+
+          expect(act.to_html).to eq exp
+        end
+      end
+
+      it 'removes invalid id for footnote li' do
+        exp = %q{<ol><li>footnote</li></ol>}
+
+        %w[fnx test xfn1].each do |id|
+          act = filter(%Q{<ol><li id="#{id}">footnote</li></ol>})
+
+          expect(act.to_html).to eq exp
+        end
+      end
+
+      it 'allows footnotes numbered higher than 9' do
+        exp = %q{<a href="#fn15" id="fnref15">link</a><ol><li id="fn15">footnote</li></ol>}
+        act = filter(exp)
+
+        expect(act.to_html).to eq exp
+      end
     end
   end
 end

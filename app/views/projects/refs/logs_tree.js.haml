@@ -8,6 +8,8 @@
     row.find("td.tree-time-ago").html('#{escape_javascript time_ago_with_tooltip(commit.committed_date)}');
     row.find("td.tree-commit").html('#{escape_javascript render("projects/tree/tree_commit_column", commit: commit)}');
 
+  = render_if_exists 'projects/refs/logs_tree_lock_label', lock_label: content_data[:lock_label]
+
 - if @more_log_url
   :plain
     if($('#tree-slider').length) {

@@ -1,5 +1,0 @@
----
-title: Fix admin counters not working when PostgreSQL has secondaries
-merge_request:
-author:
-type: fixed

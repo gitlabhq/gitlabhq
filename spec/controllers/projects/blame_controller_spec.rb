@@ -7,7 +7,7 @@ describe Projects::BlameController do
   before do
     sign_in(user)
 
-    project.add_master(user)
+    project.add_maintainer(user)
     controller.instance_variable_set(:@project, project)
   end
 
@@ -16,9 +16,11 @@ describe Projects::BlameController do
 
     before do
       get(:show,
-          namespace_id: project.namespace,
-          project_id: project,
-          id: id)
+          params: {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id
+          })
     end
 
     context "valid file" do

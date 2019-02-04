@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class GroupMilestones < Grape::API
     include MilestoneResponses
@@ -10,7 +12,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a group'
     end
-    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of group milestones' do
         success Entities::Milestone
       end
@@ -41,7 +43,7 @@ module API
         use :optional_params
       end
       post ":id/milestones" do
-        authorize! :admin_milestones, user_group
+        authorize! :admin_milestone, user_group
 
         create_milestone_for(user_group)
       end
@@ -53,9 +55,19 @@ module API
         use :update_params
       end
       put ":id/milestones/:milestone_id" do
-        authorize! :admin_milestones, user_group
+        authorize! :admin_milestone, user_group
 
         update_milestone_for(user_group)
+      end
+
+      desc 'Remove a project milestone'
+      delete ":id/milestones/:milestone_id" do
+        authorize! :admin_milestone, user_group
+
+        milestone = user_group.milestones.find(params[:milestone_id])
+        Milestones::DestroyService.new(user_group, current_user).execute(milestone)
+
+        status(204)
       end
 
       desc 'Get all issues for a single group milestone' do

@@ -26,12 +26,14 @@
   opacity: 0.3;
 }
 
+.dropdown-projects {
+  .dropdown-content {
+    max-height: 200px;
+  }
+}
+
 .dropdown-menu-issues-board-new {
   width: 320px;
-
-  .open & {
-    max-height: 400px;
-  }
 
   .dropdown-content {
     max-height: 162px;
@@ -41,7 +43,7 @@
 .issue-board-dropdown-content {
   margin: 0 8px 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid $dropdown-divider-color;
+  border-bottom: 1px solid $dropdown-divider-bg;
 
   > p {
     margin: 0;
@@ -63,7 +65,7 @@
     width: 100%;
 
     &.is-compact {
-      width: calc(100% - #{$gutter_width});
+      width: calc(100% - #{$gutter-width});
     }
   }
 }
@@ -90,20 +92,14 @@
   }
 
   .with-performance-bar & {
-    height: calc(
-      100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height}
-    );
+    height: calc(100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height});
 
     @include media-breakpoint-only(sm) {
-      height: calc(
-        100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height}
-      );
+      height: calc(100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height});
     }
 
     @include media-breakpoint-up(md) {
-      height: calc(
-        100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height}
-      );
+      height: calc(100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height});
     }
   }
 }
@@ -136,15 +132,23 @@
       right: 0;
       bottom: 0;
       left: 0;
+
+      button {
+        display: none;
+      }
     }
 
     .board-title {
       padding: 0;
       border-bottom: 0;
+      justify-content: center;
 
       > span {
+        width: 100%;
+        margin-top: -12px;
         display: block;
-        transform: rotate(90deg) translate(35px, 10px);
+        transform: rotate(90deg) translate(35px, 0);
+        overflow: initial;
       }
     }
 
@@ -169,6 +173,7 @@
   background: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  flex: 1;
 }
 
 .board-header {
@@ -205,7 +210,7 @@
 
 .board-title {
   margin: 0;
-  padding: 12px $gl-padding;
+  padding: $gl-padding-8 $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
   display: flex;
@@ -225,14 +230,16 @@
   outline: 0;
 
   &:hover {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 }
 
 .board-blank-state {
-  height: calc(100% - 49px);
   padding: $gl-padding;
   background-color: $white-light;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .board-blank-state-list {
@@ -254,18 +261,18 @@
 }
 
 .board-list-component {
-  height: calc(100% - 49px);
-  overflow: hidden;
   position: relative;
+  flex: 1;
+  min-height: 0; // firefox fix
 }
 
 .board-list {
   height: 100%;
   width: 100%;
   margin-bottom: 0;
-  padding: 5px;
+  padding: $gl-padding-4;
   list-style: none;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 }
 
@@ -276,139 +283,140 @@
 
 .board-card {
   position: relative;
-  padding: 11px 10px 11px $gl-padding;
+  padding: $gl-padding;
   background: $white-light;
   border-radius: $border-radius-default;
+  border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
-
-  // as a fallback, hide overflow content so that dragging and dropping still works
-  overflow: hidden;
+  line-height: $gl-padding;
 
   &:not(:last-child) {
-    margin-bottom: 5px;
+    margin-bottom: $gl-padding-8;
   }
 
   &.is-active,
   &.is-active .board-card-assignee:hover a {
-    background-color: $row-hover;
-
-    &:first-child:not(:only-child) {
-      box-shadow: -10px 0 10px 1px $row-hover;
-    }
+    background-color: $blue-50;
   }
 
   .badge {
     border: 0;
     outline: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    @include media-breakpoint-down(lg) {
+      font-size: $gl-font-size-xs;
+      padding-left: $gl-padding-4;
+      padding-right: $gl-padding-4;
+      font-weight: $gl-font-weight-bold;
+    }
+  }
+
+  svg {
+    vertical-align: top;
   }
 
   .confidential-icon {
-    position: relative;
-    top: 1px;
-    margin-right: 5px;
+    color: $orange-600;
+    cursor: help;
+  }
+
+  @include media-breakpoint-down(md) {
+    padding: $gl-padding-8;
   }
 }
 
 .board-card-title {
   @include overflow-break-word();
-  margin: 0 30px 0 0;
   font-size: 1em;
-  line-height: inherit;
 
   a {
     color: $gl-text-color;
-    margin-right: 2px;
+  }
+
+  @include media-breakpoint-down(md) {
+    font-size: $label-font-size;
   }
 }
 
 .board-card-header {
   display: flex;
-  min-height: 20px;
+}
 
-  .board-card-assignee {
-    display: flex;
-    justify-content: flex-end;
-    position: absolute;
-    right: 15px;
-    height: 20px;
-    width: 20px;
+.board-card-assignee {
+  display: flex;
+  margin-top: -$gl-padding-4;
+  margin-bottom: -$gl-padding-4;
 
-    .avatar-counter {
-      display: none;
-      vertical-align: middle;
-      min-width: 20px;
-      line-height: 19px;
-      height: 20px;
-      padding-left: 2px;
-      padding-right: 2px;
-      border-radius: 2em;
+  .avatar-counter {
+    vertical-align: middle;
+    line-height: $gl-padding-24;
+    min-width: $gl-padding-24;
+    height: $gl-padding-24;
+    border-radius: $gl-padding-24;
+    background-color: $gl-text-color-tertiary;
+    font-size: $gl-font-size-xs;
+    cursor: help;
+    font-weight: $gl-font-weight-bold;
+    margin-left: -$gl-padding-4;
+    border: 0;
+    padding: 0 $gl-padding-4;
+
+    @include media-breakpoint-down(md) {
+      min-width: auto;
+      height: $gl-padding;
+      border-radius: $gl-padding;
+      line-height: $gl-padding;
     }
+  }
 
-    img {
-      vertical-align: top;
-    }
+  img {
+    vertical-align: top;
+  }
 
-    a {
-      position: relative;
-      margin-left: -15px;
-    }
+  .user-avatar-link:not(:only-child) {
+    margin-left: -$gl-padding-4;
 
-    a:nth-child(1) {
-      z-index: 3;
-    }
-
-    a:nth-child(2) {
+    &:nth-of-type(1) {
       z-index: 2;
     }
 
-    a:nth-child(3) {
+    &:nth-of-type(2) {
       z-index: 1;
-    }
-
-    a:nth-child(4) {
-      display: none;
-    }
-
-    &:hover {
-      .avatar-counter {
-        display: inline-block;
-      }
-
-      a {
-        position: static;
-        background-color: $white-light;
-        transition: background-color 0s;
-        margin-left: auto;
-
-        &:nth-child(4) {
-          display: block;
-        }
-
-        &:first-child:not(:only-child) {
-          box-shadow: -10px 0 10px 1px $white-light;
-        }
-      }
     }
   }
 
   .avatar {
     margin: 0;
+
+    @include media-breakpoint-down(md) {
+      width: $gl-padding;
+      height: $gl-padding;
+    }
   }
-}
 
-.board-card-footer {
-  margin: 0 0 5px;
-
-  .badge {
-    margin-top: 5px;
-    margin-right: 6px;
+  @include media-breakpoint-down(md) {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 
 .board-card-number {
-  font-size: 12px;
+  font-size: $gl-font-size-xs;
   color: $gl-text-color-secondary;
+  overflow: hidden;
+
+  @include media-breakpoint-up(md) {
+    font-size: $label-font-size;
+  }
+}
+
+.board-card-number-container {
+  overflow: hidden;
 }
 
 .issue-boards-search {
@@ -474,8 +482,7 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width $sidebar-transition-duration,
-      padding $sidebar-transition-duration;
+    transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,
@@ -649,4 +656,37 @@
       width: 140px;
     }
   }
+}
+
+.board-card-info {
+  color: $gl-text-color-secondary;
+  white-space: nowrap;
+  margin-right: $gl-padding-8;
+
+  &:not(.board-card-weight) {
+    cursor: help;
+  }
+
+  &.board-card-weight {
+    color: $gl-text-color;
+    cursor: pointer;
+
+    &:hover {
+      color: initial;
+      text-decoration: underline;
+    }
+  }
+
+  .board-card-info-icon {
+    color: $gray-600;
+    margin-right: $gl-padding-4;
+  }
+
+  @include media-breakpoint-down(md) {
+    font-size: $label-font-size;
+  }
+}
+
+.board-issue-path.js-show-tooltip {
+  cursor: help;
 }

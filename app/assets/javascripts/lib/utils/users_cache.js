@@ -7,21 +7,48 @@ class UsersCache extends Cache {
       return Promise.resolve(this.get(username));
     }
 
-    return Api.users('', { username })
-      .then(({ data }) => {
-        if (!data.length) {
-          throw new Error(`User "${username}" could not be found!`);
-        }
+    return Api.users('', { username }).then(({ data }) => {
+      if (!data.length) {
+        throw new Error(`User "${username}" could not be found!`);
+      }
 
-        if (data.length > 1) {
-          throw new Error(`Expected username "${username}" to be unique!`);
-        }
+      if (data.length > 1) {
+        throw new Error(`Expected username "${username}" to be unique!`);
+      }
 
-        const user = data[0];
-        this.internalStorage[username] = user;
-        return user;
-      });
-      // missing catch is intentional, error handling depends on use case
+      const user = data[0];
+      this.internalStorage[username] = user;
+      return user;
+    });
+    // missing catch is intentional, error handling depends on use case
+  }
+
+  retrieveById(userId) {
+    if (this.hasData(userId) && this.get(userId).username) {
+      return Promise.resolve(this.get(userId));
+    }
+
+    return Api.user(userId).then(({ data }) => {
+      this.internalStorage[userId] = data;
+      return data;
+    });
+    // missing catch is intentional, error handling depends on use case
+  }
+
+  retrieveStatusById(userId) {
+    if (this.hasData(userId) && this.get(userId).status) {
+      return Promise.resolve(this.get(userId).status);
+    }
+
+    return Api.userStatus(userId).then(({ data }) => {
+      if (!this.hasData(userId)) {
+        this.internalStorage[userId] = {};
+      }
+      this.internalStorage[userId].status = data;
+
+      return data;
+    });
+    // missing catch is intentional, error handling depends on use case
   }
 }
 

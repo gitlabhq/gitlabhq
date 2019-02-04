@@ -11,29 +11,26 @@
     padding-top: $gl-padding;
   }
 
-  .panel {
-    .panel-heading {
+  .card {
+    .card-header {
       display: -webkit-flex;
       display: flex;
       align-items: center;
       justify-content: space-between;
       line-height: $line-height-base;
 
-      .title {
+      .logo-text {
+        width: 55px;
+        height: 24px;
         display: flex;
-        align-items: center;
-
-        .logo-text {
-          width: 55px;
-          height: 24px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
+        flex-direction: column;
+        justify-content: center;
       }
 
       .navbar-collapse {
         padding-right: 0;
+        flex-grow: 0;
+        flex-basis: auto;
 
         .navbar-nav {
           margin: 0;

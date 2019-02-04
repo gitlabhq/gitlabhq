@@ -1,38 +1,12 @@
-module AvatarsHelper
-  def project_icon(project_id, options = {})
-    project =
-      if project_id.respond_to?(:avatar_url)
-        project_id
-      else
-        Project.find_by_full_path(project_id)
-      end
+# frozen_string_literal: true
 
-    if project.avatar_url
-      image_tag project.avatar_url, options
-    else # generated icon
-      project_identicon(project, options)
-    end
+module AvatarsHelper
+  def project_icon(project, options = {})
+    source_icon(project, options)
   end
 
-  def project_identicon(project, options = {})
-    allowed_colors = {
-      red: 'FFEBEE',
-      purple: 'F3E5F5',
-      indigo: 'E8EAF6',
-      blue: 'E3F2FD',
-      teal: 'E0F2F1',
-      orange: 'FBE9E7',
-      gray: 'EEEEEE'
-    }
-
-    options[:class] ||= ''
-    options[:class] << ' identicon'
-    bg_key = project.id % 7
-    style = "background-color: ##{allowed_colors.values[bg_key]}; color: #555"
-
-    content_tag(:div, class: options[:class], style: style) do
-      project.name[0, 1].upcase
-    end
+  def group_icon(group, options = {})
+    source_icon(group, options)
   end
 
   # Takes both user and email and returns the avatar_icon by
@@ -48,7 +22,7 @@ module AvatarsHelper
   end
 
   def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
-    user = User.find_by_any_email(email.try(:downcase))
+    user = User.find_by_any_email(email)
     if user
       avatar_icon_for_user(user, size, scale, only_path: only_path)
     else
@@ -131,6 +105,29 @@ module AvatarsHelper
       link_to(avatar, user_path(options[:user]))
     elsif options[:user_email]
       mail_to(options[:user_email], avatar)
+    end
+  end
+
+  private
+
+  def source_icon(source, options = {})
+    avatar_url = source.try(:avatar_url)
+
+    if avatar_url
+      image_tag avatar_url, options
+    else
+      source_identicon(source, options)
+    end
+  end
+
+  def source_identicon(source, options = {})
+    bg_key = (source.id % 7) + 1
+
+    options[:class] =
+      [*options[:class], "identicon bg#{bg_key}"].join(' ')
+
+    content_tag(:div, class: options[:class].strip) do
+      source.name[0, 1].upcase
     end
   end
 end

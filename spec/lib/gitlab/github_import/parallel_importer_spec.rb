@@ -36,7 +36,7 @@ describe Gitlab::GithubImport::ParallelImporter do
     it 'updates the import JID of the project' do
       importer.execute
 
-      expect(project.reload.import_jid).to eq("github-importer/#{project.id}")
+      expect(project.import_state.reload.jid).to eq("github-importer/#{project.id}")
     end
   end
 end

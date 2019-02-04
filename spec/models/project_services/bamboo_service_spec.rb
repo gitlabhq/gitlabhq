@@ -120,6 +120,14 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#execute' do
+    it 'runs update and build action' do
+      stub_update_and_build_request
+
+      subject.execute(Gitlab::DataBuilder::Push::SAMPLE_DATA)
+    end
+  end
+
   describe '#build_page' do
     it 'returns the contents of the reactive cache' do
       stub_reactive_cache(service, { build_page: 'foo' }, 'sha', 'ref')
@@ -136,7 +144,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#calculate_reactive_cache' do
+  shared_examples 'reactive cache calculation' do
     context '#build_page' do
       subject { service.calculate_reactive_cache('123', 'unused')[:build_page] }
 
@@ -147,7 +155,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
       end
 
       it 'returns a specific URL when response has no results' do
-        stub_request(body: bamboo_response(size: 0))
+        stub_request(body: %q({"results":{"results":{"size":"0"}}}))
 
         is_expected.to eq('http://gitlab.com/bamboo/browse/foo')
       end
@@ -216,17 +224,46 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  def stub_request(status: 200, body: nil)
-    bamboo_full_url = 'http://gitlab.com/bamboo/rest/api/latest/result?label=123&os_authType=basic'
+  describe '#calculate_reactive_cache' do
+    context 'when Bamboo API returns single result' do
+      let(:bamboo_response_template) do
+        %q({"results":{"results":{"size":"1","result":{"buildState":"%{build_state}","planResultKey":{"key":"42"}}}}})
+      end
 
-    WebMock.stub_request(:get, bamboo_full_url).to_return(
+      it_behaves_like 'reactive cache calculation'
+    end
+
+    context 'when Bamboo API returns an array of results and we only consider the last one' do
+      let(:bamboo_response_template) do
+        %q({"results":{"results":{"size":"2","result":[{"buildState":"%{build_state}","planResultKey":{"key":"41"}},{"buildState":"%{build_state}","planResultKey":{"key":"42"}}]}}})
+      end
+
+      it_behaves_like 'reactive cache calculation'
+    end
+  end
+
+  def stub_update_and_build_request(status: 200, body: nil)
+    bamboo_full_url = 'http://gitlab.com/bamboo/updateAndBuild.action?buildKey=foo&os_authType=basic'
+
+    stub_bamboo_request(bamboo_full_url, status, body)
+  end
+
+  def stub_request(status: 200, body: nil)
+    bamboo_full_url = 'http://gitlab.com/bamboo/rest/api/latest/result/byChangeset/123?os_authType=basic'
+
+    stub_bamboo_request(bamboo_full_url, status, body)
+  end
+
+  def stub_bamboo_request(url, status, body)
+    WebMock.stub_request(:get, url).to_return(
       status: status,
       headers: { 'Content-Type' => 'application/json' },
       body: body
     ).with(basic_auth: %w(mic password))
   end
 
-  def bamboo_response(result_key: 42, build_state: 'success', size: 1)
-    %Q({"results":{"results":{"size":"#{size}","result":{"buildState":"#{build_state}","planResultKey":{"key":"#{result_key}"}}}}})
+  def bamboo_response(build_state: 'success')
+    # reference: https://docs.atlassian.com/atlassian-bamboo/REST/6.2.5/#d2e786
+    bamboo_response_template % { build_state: build_state }
   end
 end

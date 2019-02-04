@@ -117,23 +117,15 @@ describe('ImageDiff', () => {
 
       it('should register click event delegation to js-diff-notes-toggle', () => {
         element.querySelector('.js-diff-notes-toggle').click();
+
         expect(imageDiffHelper.toggleCollapsed).toHaveBeenCalled();
       });
 
       it('should register click event delegation to comment-indicator', () => {
         element.querySelector('.comment-indicator').click();
+
         expect(imageDiffHelper.commentIndicatorOnClick).toHaveBeenCalled();
       });
-    });
-
-    describe('image loaded', () => {
-      beforeEach(() => {
-        spyOn(imageUtility, 'isImageLoaded').and.returnValue(true);
-        imageDiff = new ImageDiff(element);
-        imageDiff.imageEl = imageEl;
-      });
-
-      it('should renderBadges', () => {});
     });
 
     describe('image not loaded', () => {
@@ -147,6 +139,7 @@ describe('ImageDiff', () => {
       it('should registers load eventListener', () => {
         const loadEvent = new Event('load');
         imageEl.dispatchEvent(loadEvent);
+
         expect(imageDiff.renderBadges).toHaveBeenCalled();
       });
     });
@@ -164,24 +157,28 @@ describe('ImageDiff', () => {
       it('should register click.imageDiff event', () => {
         const event = new CustomEvent('click.imageDiff');
         element.dispatchEvent(event);
+
         expect(imageDiff.imageClicked).toHaveBeenCalled();
       });
 
       it('should register blur.imageDiff event', () => {
         const event = new CustomEvent('blur.imageDiff');
         element.dispatchEvent(event);
+
         expect(imageDiffHelper.removeCommentIndicator).toHaveBeenCalled();
       });
 
       it('should register addBadge.imageDiff event', () => {
         const event = new CustomEvent('addBadge.imageDiff');
         element.dispatchEvent(event);
+
         expect(imageDiff.addBadge).toHaveBeenCalled();
       });
 
       it('should register removeBadge.imageDiff event', () => {
         const event = new CustomEvent('removeBadge.imageDiff');
         element.dispatchEvent(event);
+
         expect(imageDiff.removeBadge).toHaveBeenCalled();
       });
     });
@@ -197,6 +194,7 @@ describe('ImageDiff', () => {
       it('should not register click.imageDiff event', () => {
         const event = new CustomEvent('click.imageDiff');
         element.dispatchEvent(event);
+
         expect(imageDiff.imageClicked).not.toHaveBeenCalled();
       });
     });
@@ -240,6 +238,7 @@ describe('ImageDiff', () => {
 
     it('should call renderBadge for each discussionEl', () => {
       const discussionEls = element.querySelectorAll('.note-container .discussion-notes .notes');
+
       expect(imageDiff.renderBadge.calls.count()).toEqual(discussionEls.length);
     });
   });
@@ -336,6 +335,7 @@ describe('ImageDiff', () => {
     describe('cascade badge count', () => {
       it('should update next imageBadgeEl value', () => {
         const imageBadgeEls = imageDiff.imageFrameEl.querySelectorAll('.badge');
+
         expect(imageBadgeEls[0].innerText).toEqual('1');
         expect(imageBadgeEls[1].innerText).toEqual('2');
         expect(imageBadgeEls.length).toEqual(2);

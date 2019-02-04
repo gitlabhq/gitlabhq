@@ -1,7 +1,6 @@
 # Custom Git Hooks
 
->
-**Note:** Custom Git hooks must be configured on the filesystem of the GitLab
+> **Note:** Custom Git hooks must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
 Please explore [webhooks] and [CI] as an option if you do not
 have filesystem access. For a user configurable Git hook interface, see
@@ -51,6 +50,9 @@ Hooks can be also placed in `hooks/<hook_name>.d` (global) or
 `custom_hooks/<hook_name>.d` (per project) directories supporting chained
 execution of the hooks.
 
+NOTE: **Note:** `<hook_name>.d` would need to be either `pre-receive.d`,
+`post-receive.d`, or `update.d` to work properly. Any other names will be ignored. 
+
 To look in a different directory for the global custom hooks (those in
 `hooks/<hook_name.d>`), set `custom_hooks_dir` in gitlab-shell config. For
 Omnibus installations, this can be set in `gitlab.rb`; and in source
@@ -58,7 +60,7 @@ installations, this can be set in `gitlab-shell/config.yml`.
 
 The hooks are searched and executed in this order:
 
-1. `<project>.git/hooks/` - symlink to `gitlab-shell/hooks` global dir
+1. `gitlab-shell/hooks` directory as known to Gitaly
 1. `<project>.git/hooks/<hook_name>` -  executed by `git` itself, this is `gitlab-shell/hooks/<hook_name>`
 1. `<project>.git/custom_hooks/<hook_name>` - per project hook (this is already existing behavior)
 1. `<project>.git/custom_hooks/<hook_name>.d/*` - per project hooks

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UsersController < ApplicationController
   include RoutableActions
   include RendersMemberAccess
@@ -12,7 +14,10 @@ class UsersController < ApplicationController
                                 calendar_activities: true
 
   skip_before_action :authenticate_user!
+  prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
   before_action :user, except: [:exists]
+  before_action :authorize_read_user_profile!,
+                only: [:calendar, :calendar_activities, :groups, :projects, :contributed_projects, :snippets]
 
   def show
     respond_to do |format|
@@ -25,8 +30,14 @@ class UsersController < ApplicationController
 
       format.json do
         load_events
-        pager_json("events/_events", @events.count)
+        pager_json("events/_events", @events.count, events: @events)
       end
+    end
+  end
+
+  def activity
+    respond_to do |format|
+      format.html { render 'show' }
     end
   end
 
@@ -46,12 +57,14 @@ class UsersController < ApplicationController
   def projects
     load_projects
 
+    skip_pagination = Gitlab::Utils.to_boolean(params[:skip_pagination])
+    skip_namespace = Gitlab::Utils.to_boolean(params[:skip_namespace])
+    compact_mode = Gitlab::Utils.to_boolean(params[:compact_mode])
+
     respond_to do |format|
       format.html { render 'show' }
       format.json do
-        render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @projects)
-        }
+        pager_json("shared/projects/_list", @projects.count, projects: @projects, skip_pagination: skip_pagination, skip_namespace: skip_namespace, compact_mode: compact_mode)
       end
     end
   end
@@ -121,6 +134,7 @@ class UsersController < ApplicationController
     @projects =
       PersonalProjectsFinder.new(user).execute(current_user)
       .page(params[:page])
+      .per(params[:limit])
 
     prepare_projects_for_rendering(@projects)
   end
@@ -147,5 +161,9 @@ class UsersController < ApplicationController
 
   def build_canonical_path(user)
     url_for(safe_params.merge(username: user.to_param))
+  end
+
+  def authorize_read_user_profile!
+    access_denied! unless can?(current_user, :read_user_profile, user)
   end
 end

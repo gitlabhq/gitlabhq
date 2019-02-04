@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
   extend ::Gitlab::Utils::Override
 

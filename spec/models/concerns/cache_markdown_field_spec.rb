@@ -67,12 +67,16 @@ describe CacheMarkdownField do
   end
 
   let(:markdown) { '`Foo`' }
-  let(:html) { '<p dir="auto"><code>Foo</code></p>' }
+  let(:html)     { '<p dir="auto"><code>Foo</code></p>' }
 
   let(:updated_markdown) { '`Bar`' }
-  let(:updated_html) { '<p dir="auto"><code>Bar</code></p>' }
+  let(:updated_html)     { '<p dir="auto"><code>Bar</code></p>' }
 
   let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+
+  before do
+    stub_commonmark_sourcepos_disabled
+  end
 
   describe '.attributes' do
     it 'excludes cache attributes' do
@@ -129,6 +133,15 @@ describe CacheMarkdownField do
     end
   end
 
+  context 'when a markdown field and html field are both changed' do
+    it do
+      expect(thing).not_to receive(:refresh_markdown_cache)
+      thing.foo = '_look over there!_'
+      thing.foo_html = '<em>look over there!</em>'
+      thing.save
+    end
+  end
+
   context 'a non-markdown field changed' do
     shared_examples 'with cache version' do |cache_version|
       let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
@@ -156,7 +169,7 @@ describe CacheMarkdownField do
     end
 
     it { expect(thing.foo_html).to eq(updated_html) }
-    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION) }
+    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
   end
 
   describe '#cached_html_up_to_date?' do
@@ -234,7 +247,31 @@ describe CacheMarkdownField do
 
     it 'returns default version when version is nil' do
       thing.cached_markdown_version = nil
-      is_expected.to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+      is_expected.to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
+    end
+  end
+
+  describe '#legacy_markdown?' do
+    subject { thing.legacy_markdown? }
+
+    it 'returns true for redcarpet versions' do
+      thing.cached_markdown_version = CacheMarkdownField::CACHE_COMMONMARK_VERSION_START - 1
+      is_expected.to be_truthy
+    end
+
+    it 'returns false for commonmark versions' do
+      thing.cached_markdown_version = CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if nil' do
+      thing.cached_markdown_version = nil
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if 0' do
+      thing.cached_markdown_version = 0
+      is_expected.to be_falsey
     end
   end
 
@@ -261,7 +298,7 @@ describe CacheMarkdownField do
       thing.cached_markdown_version = nil
       thing.refresh_markdown_cache
 
-      expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+      expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
     end
   end
 
@@ -331,11 +368,12 @@ describe CacheMarkdownField do
     end
 
     context 'with a project' do
-      let(:thing) { thing_subclass(:project).new(foo: markdown, foo_html: html, project: :project_value) }
+      let(:project) { create(:project, group: create(:group)) }
+      let(:thing) { thing_subclass(:project).new(foo: markdown, foo_html: html, project: project) }
 
       it 'sets the project in the context' do
         is_expected.to have_key(:project)
-        expect(context[:project]).to eq(:project_value)
+        expect(context[:project]).to eq(project)
       end
 
       it 'invalidates the cache when project changes' do
@@ -346,7 +384,7 @@ describe CacheMarkdownField do
 
         expect(thing.foo_html).to eq(updated_html)
         expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
       end
     end
 
@@ -366,8 +404,24 @@ describe CacheMarkdownField do
 
         expect(thing.foo_html).to eq(updated_html)
         expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_REDCARPET_VERSION)
+        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
       end
+    end
+  end
+
+  describe CacheMarkdownField::MarkdownEngine do
+    subject { lambda { |version| CacheMarkdownField::MarkdownEngine.from_version(version) } }
+
+    it 'returns :common_mark as a default' do
+      expect(subject.call(nil)).to eq :common_mark
+    end
+
+    it 'returns :common_mark' do
+      expect(subject.call(CacheMarkdownField::CACHE_COMMONMARK_VERSION)).to eq :common_mark
+    end
+
+    it 'returns :redcarpet' do
+      expect(subject.call(CacheMarkdownField::CACHE_REDCARPET_VERSION)).to eq :redcarpet
     end
   end
 end

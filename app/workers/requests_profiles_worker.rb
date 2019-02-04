@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RequestsProfilesWorker
   include ApplicationWorker
   include CronjobQueue

@@ -1,3 +1,3 @@
 import initAdmin from './admin';
 
-document.addEventListener('DOMContentLoaded', initAdmin);
+document.addEventListener('DOMContentLoaded', initAdmin());

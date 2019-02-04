@@ -3,13 +3,22 @@
  * Mixins with fixed values
  */
 
-@mixin str-truncated($max_width: 82%) {
+@mixin str-truncated($max-width: 82%) {
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
   white-space: nowrap;
-  max-width: $max_width;
+  max-width: $max-width;
+}
+
+/**
+ * Mixin for fixed width container
+ */
+@mixin fixed-width-container {
+  max-width: $limited-layout-width - ($gl-padding * 2);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /*
@@ -20,20 +29,24 @@
   display: inline-block;
   overflow-x: auto;
   border: 0;
-  border-color: $md-area-border;
+  border-color: $gl-gray-100;
 
-  @supports(width: fit-content) {
+  @supports (width: fit-content) {
     display: block;
     width: fit-content;
   }
 
+  tbody {
+    background-color: $white-light;
+  }
+
   tr {
     th {
-      border-bottom: solid 2px $md-area-border;
+      border-bottom: solid 2px $gl-gray-100;
     }
 
     td {
-      border-color: $md-area-border;
+      border-color: $gl-gray-100;
     }
   }
 }
@@ -50,7 +63,7 @@
     @include clearfix;
 
     padding: 10px 0;
-    border-bottom: 1px solid $list-border-light;
+    border-bottom: 1px solid $gray-darker;
     display: block;
     margin: 0;
 
@@ -116,7 +129,7 @@
 
 /* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
 @mixin on-webkit-only {
-  @media screen and (-webkit-min-device-pixel-ratio:0) {
+  @media screen and (-webkit-min-device-pixel-ratio: 0) {
     @content;
   }
 }
@@ -164,14 +177,18 @@
   bottom: 12px;
   width: 43px;
   height: 30px;
-  transition-duration: .3s;
+  transition-duration: 0.3s;
   -webkit-transform: translateZ(0);
-  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
+  background: linear-gradient(
+    to $gradient-direction,
+    $gradient-color 45%,
+    rgba($gradient-color, 0.4)
+  );
 
   &.scrolling {
     visibility: visible;
     opacity: 1;
-    transition-duration: .3s;
+    transition-duration: 0.3s;
   }
 
   .fa {
@@ -186,6 +203,7 @@
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   display: flex;
+  flex-wrap: nowrap;
 
   &::-webkit-scrollbar {
     display: none;
@@ -230,4 +248,185 @@
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
+}
+
+/*
+* Mixin that handles the container for the job logs (CI/CD and kubernetes pod logs)
+*/
+@mixin build-trace {
+  background: $black;
+  color: $gray-darkest;
+  white-space: pre;
+  overflow-x: auto;
+  font-size: 12px;
+  border-radius: 0;
+  border: 0;
+  padding: $grid-size;
+
+  .bash {
+    display: block;
+  }
+
+  &.build-trace-rounded {
+    border-radius: $border-radius-base;
+  }
+}
+
+@mixin build-trace-top-bar($height) {
+  height: $height;
+  min-height: $height;
+  background: $gray-light;
+  border: 1px solid $border-color;
+  color: $gl-text-color;
+  position: sticky;
+  position: -webkit-sticky;
+  top: $header-height;
+  padding: $grid-size;
+
+  .with-performance-bar & {
+    top: $header-height + $performance-bar-height;
+  }
+}
+
+/*
+* Mixin that handles the position of the controls placed on the top bar
+*/
+@mixin build-controllers($control-font-size, $flex-direction, $with-grow, $flex-grow-size, $svg-display: 'block', $svg-top: '2px') {
+  display: flex;
+  font-size: $control-font-size;
+  justify-content: $flex-direction;
+  align-items: center;
+  align-self: baseline;
+  @if $with-grow {
+    flex-grow: $flex-grow-size;
+  }
+
+  svg {
+    width: 15px;
+    height: 15px;
+    display: $svg-display;
+    fill: $gl-text-color;
+    top: $svg-top;
+  }
+
+  .controllers-buttons {
+    color: $gl-text-color;
+    margin: 0 $grid-size;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .btn-scroll.animate {
+    .first-triangle {
+      animation: blinking-scroll-button 1s ease infinite;
+      animation-delay: 0.3s;
+    }
+
+    .second-triangle {
+      animation: blinking-scroll-button 1s ease infinite;
+      animation-delay: 0.2s;
+    }
+
+    .third-triangle {
+      animation: blinking-scroll-button 1s ease infinite;
+    }
+
+    &:disabled {
+      opacity: 1;
+    }
+  }
+
+  .btn-scroll:disabled,
+  .btn-refresh:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+@mixin build-loader-animation {
+  position: relative;
+  white-space: initial;
+
+  .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin: auto auto 12px;
+    border-radius: 50%;
+    animation: blinking-dot 1s linear infinite;
+    background: $white-light;
+
+    &:nth-child(2) {
+      animation-delay: 0.33s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.66s;
+    }
+  }
+}
+
+@mixin borderless-status-icon($color) {
+  svg {
+    border: 1px solid $color;
+    border-radius: 50%;
+  }
+}
+
+@mixin emoji-menu-toggle-button {
+  line-height: 1;
+  padding: 0;
+  min-width: 16px;
+  color: $gray-darkest;
+  fill: $gray-darkest;
+
+  .fa {
+    position: relative;
+    font-size: 16px;
+  }
+
+  svg {
+    @include btn-svg;
+    margin: 0;
+  }
+
+  .award-control-icon-positive,
+  .award-control-icon-super-positive {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+
+  &:hover,
+  &.is-active {
+    .danger-highlight {
+      color: $red-500;
+    }
+
+    .link-highlight {
+      color: $blue-600;
+      fill: $blue-600;
+    }
+
+    .award-control-icon-neutral {
+      opacity: 0;
+    }
+
+    .award-control-icon-positive {
+      opacity: 1;
+    }
+  }
+
+  &.is-active {
+    .award-control-icon-positive {
+      opacity: 0;
+    }
+
+    .award-control-icon-super-positive {
+      opacity: 1;
+    }
+  }
 }

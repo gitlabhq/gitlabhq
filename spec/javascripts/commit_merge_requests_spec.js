@@ -3,11 +3,16 @@ import * as CommitMergeRequests from '~/commit_merge_requests';
 describe('CommitMergeRequests', () => {
   describe('createContent', () => {
     it('should return created content', () => {
-      const content1 = CommitMergeRequests.createContent([{ iid: 1, path: '/path1', title: 'foo' }, { iid: 2, path: '/path2', title: 'baz' }])[0];
+      const content1 = CommitMergeRequests.createContent([
+        { iid: 1, path: '/path1', title: 'foo' },
+        { iid: 2, path: '/path2', title: 'baz' },
+      ])[0];
+
       expect(content1.tagName).toEqual('SPAN');
       expect(content1.childElementCount).toEqual(4);
 
       const content2 = CommitMergeRequests.createContent([])[0];
+
       expect(content2.tagName).toEqual('SPAN');
       expect(content2.childElementCount).toEqual(0);
       expect(content2.innerText).toEqual('No related merge requests found');
@@ -26,6 +31,7 @@ describe('CommitMergeRequests', () => {
   describe('createHeader', () => {
     it('should return created header', () => {
       const header = CommitMergeRequests.createHeader(0, 1)[0];
+
       expect(header.tagName).toEqual('SPAN');
       expect(header.innerText).toEqual('1 merge request');
     });
@@ -34,6 +40,7 @@ describe('CommitMergeRequests', () => {
   describe('createItem', () => {
     it('should return created item', () => {
       const item = CommitMergeRequests.createItem({ iid: 1, path: '/path', title: 'foo' })[0];
+
       expect(item.tagName).toEqual('SPAN');
       expect(item.childElementCount).toEqual(2);
       expect(item.children[0].tagName).toEqual('A');
@@ -44,6 +51,7 @@ describe('CommitMergeRequests', () => {
   describe('createLink', () => {
     it('should return created link', () => {
       const link = CommitMergeRequests.createLink({ iid: 1, path: '/path', title: 'foo' })[0];
+
       expect(link.tagName).toEqual('A');
       expect(link.href).toMatch(/\/path$/);
       expect(link.innerText).toEqual('!1');
@@ -53,6 +61,7 @@ describe('CommitMergeRequests', () => {
   describe('createTitle', () => {
     it('should return created title', () => {
       const title = CommitMergeRequests.createTitle({ iid: 1, path: '/path', title: 'foo' })[0];
+
       expect(title.tagName).toEqual('SPAN');
       expect(title.innerText).toEqual('foo');
     });

@@ -1,0 +1,5 @@
+---
+title: Improves restriction of multiple Kubernetes clusters through API
+merge_request: 24251
+author:
+type: fixed

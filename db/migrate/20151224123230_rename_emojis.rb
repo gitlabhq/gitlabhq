@@ -1,6 +1,5 @@
-# rubocop:disable all
 # Migration type: online without errors (works on previous version and new one)
-class RenameEmojis < ActiveRecord::Migration
+class RenameEmojis < ActiveRecord::Migration[4.2]
   def up
     # Renames aliases to main names
     execute("UPDATE notes SET note ='thumbsup' WHERE is_award = true AND note = '+1'")

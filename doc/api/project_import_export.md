@@ -28,8 +28,11 @@ POST /projects/:id/export
 | `upload[url]`      | string | yes      | The URL to upload the project |
 | `upload[http_method]`      | string | no      | The HTTP method to upload the exported project. Only `PUT` and `POST` methods allowed. Default is `PUT` |
 
+
 ```console
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/export --data "description=FooBar&upload[http_method]=PUT&upload[url]=https://example-bucket.s3.eu-west-3.amazonaws.com/backup?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIMBJHN2O62W8IELQ%2F20180312%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20180312T110328Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=8413facb20ff33a49a147a0b4abcff4c8487cc33ee1f7e450c46e8f695569dbd"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/export \
+    --data "upload[http_method]=PUT" \
+    --data-urlencode "upload[url]=https://example-bucket.s3.eu-west-3.amazonaws.com/backup?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIMBJHN2O62W8IELQ%2F20180312%2Feu-west-3%2Fs3%2Faws4_request&X-Amz-Date=20180312T110328Z&X-Amz-Expires=900&X-Amz-SignedHeaders=host&X-Amz-Signature=8413facb20ff33a49a147a0b4abcff4c8487cc33ee1f7e450c46e8f695569dbd"
 ```
 
 ```json
@@ -51,7 +54,7 @@ GET /projects/:id/export
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```console
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/export
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/export
 ```
 
 Status can be one of `none`, `started`, `after_export_action` or `finished`. The
@@ -92,7 +95,7 @@ GET /projects/:id/export/download
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```console
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --remote-header-name --remote-name https://gitlab.example.com/api/v4/projects/5/export/download
+curl --header "PRIVATE-TOKEN: <your_access_token>" --remote-header-name --remote-name https://gitlab.example.com/api/v4/projects/5/export/download
 ```
 
 ```console
@@ -122,7 +125,30 @@ The `file=` parameter must point to a file on your file system and be preceded
 by `@`. For example:
 
 ```console
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "path=api-project" --form "file=@/path/to/file" https://gitlab.example.com/api/v4/projects/import
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "path=api-project" --form "file=@/path/to/file" https://gitlab.example.com/api/v4/projects/import
+```
+
+cURL doesn't support posting a file from a remote server. Importing a project from a remote server can be accomplished through something like the following:
+
+```python
+import requests
+import urllib
+import json
+import sys
+
+s3_file = urllib.urlopen(presigned_url)
+
+url =  'https://gitlab.example.com/api/v4/projects/import'
+files = {'file': s3_file}
+data = {
+    "path": "example-project",
+    "namespace": "example-group"
+}
+headers = {
+    'Private-Token': "<your_access_token>"
+}
+
+requests.post(url, headers=headers, data=data, files=files)
 ```
 
 ```json
@@ -151,7 +177,7 @@ GET /projects/:id/import
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```console
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/import
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/import
 ```
 
 Status can be one of `none`, `scheduled`, `failed`, `started`, or `finished`.

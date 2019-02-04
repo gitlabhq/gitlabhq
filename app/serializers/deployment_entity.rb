@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeploymentEntity < Grape::Entity
   include RequestAwareEntity
 
@@ -23,4 +25,5 @@ class DeploymentEntity < Grape::Entity
   expose :commit, using: CommitEntity
   expose :deployable, using: JobEntity
   expose :manual_actions, using: JobEntity
+  expose :scheduled_actions, using: JobEntity
 end

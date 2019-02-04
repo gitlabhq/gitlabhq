@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Group milestones' do
+describe 'Group milestones' do
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
-  let(:user) { create(:group_member, :master, user: create(:user), group: group ).user }
+  let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
   around do |example|
     Timecop.freeze { example.run }
@@ -23,17 +23,17 @@ feature 'Group milestones' do
 
       description.native.send_keys('')
 
-      click_link('Preview')
+      click_button('Preview')
 
       preview = find('.js-md-preview')
 
       expect(preview).to have_content('Nothing to preview.')
 
-      click_link('Write')
+      click_button('Write')
 
       description.native.send_keys(':+1: Nice')
 
-      click_link('Preview')
+      click_button('Preview')
 
       expect(preview).to have_css('gl-emoji')
       expect(find('#milestone_description', visible: false)).not_to be_visible
@@ -81,7 +81,7 @@ feature 'Group milestones' do
           description: 'Lorem Ipsum is simply dummy text'
         )
       end
-      let!(:active_project_milestone2) { create(:milestone, project: other_project, state: 'active', title: 'v1.0') }
+      let!(:active_project_milestone2) { create(:milestone, project: other_project, state: 'active', title: 'v1.1') }
       let!(:closed_project_milestone1) { create(:milestone, project: project, state: 'closed', title: 'v2.0') }
       let!(:closed_project_milestone2) { create(:milestone, project: other_project, state: 'closed', title: 'v2.0') }
       let!(:active_group_milestone) { create(:milestone, group: group, state: 'active', title: 'GL-113') }
@@ -95,29 +95,16 @@ feature 'Group milestones' do
       end
 
       it 'counts milestones correctly' do
-        expect(find('.top-area .active .badge').text).to eq("2")
-        expect(find('.top-area .closed .badge').text).to eq("2")
-        expect(find('.top-area .all .badge').text).to eq("4")
+        expect(find('.top-area .active .badge').text).to eq("3")
+        expect(find('.top-area .closed .badge').text).to eq("3")
+        expect(find('.top-area .all .badge').text).to eq("6")
       end
 
       it 'lists legacy group milestones and group milestones' do
         legacy_milestone = GroupMilestone.build_collection(group, group.projects, { state: 'active' }).first
 
         expect(page).to have_selector("#milestone_#{active_group_milestone.id}", count: 1)
-        expect(page).to have_selector("#milestone_#{legacy_milestone.milestones.first.id}", count: 1)
-      end
-
-      it 'updates milestone' do
-        page.within(".milestones #milestone_#{active_group_milestone.id}") do
-          click_link('Edit')
-        end
-
-        page.within('.milestone-form') do
-          fill_in 'milestone_title', with: 'new title'
-          click_button('Update milestone')
-        end
-
-        expect(find('#content-body h2')).to have_content('new title')
+        expect(page).to have_selector("#milestone_#{legacy_milestone.milestone.id}", count: 1)
       end
 
       it 'shows milestone detail and supports its edit' do
@@ -134,6 +121,7 @@ feature 'Group milestones' do
 
       it 'renders milestones' do
         expect(page).to have_content('v1.0')
+        expect(page).to have_content('v1.1')
         expect(page).to have_content('GL-113')
         expect(page).to have_link(
           '1 Issue',

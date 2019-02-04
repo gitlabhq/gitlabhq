@@ -498,7 +498,7 @@ describe Gitlab::Auth::OAuth::User do
     end
   end
 
-  describe 'ensure backwards compatibility with with sync email from provider option' do
+  describe 'ensure backwards compatibility with sync email from provider option' do
     let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     before do
@@ -777,6 +777,14 @@ describe Gitlab::Auth::OAuth::User do
 
         expect(oauth_user.send(:find_ldap_person, hash, adapter)).to be_nil
       end
+    end
+  end
+
+  describe '#bypass_two_factor?' do
+    subject { oauth_user.bypass_two_factor? }
+
+    it 'returns always false' do
+      is_expected.to be_falsey
     end
   end
 end

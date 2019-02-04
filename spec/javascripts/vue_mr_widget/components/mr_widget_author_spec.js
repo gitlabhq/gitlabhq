@@ -13,9 +13,9 @@ describe('MrWidgetAuthor', () => {
         name: 'Administrator',
         username: 'root',
         webUrl: 'http://localhost:3000/root',
-        avatarUrl: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+        avatarUrl:
+          'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
       },
-
     });
   });
 
@@ -28,9 +28,9 @@ describe('MrWidgetAuthor', () => {
   });
 
   it('renders image with avatar url', () => {
-    expect(
-      vm.$el.querySelector('img').getAttribute('src'),
-    ).toEqual('http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon');
+    expect(vm.$el.querySelector('img').getAttribute('src')).toEqual(
+      'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+    );
   });
 
   it('renders author name', () => {

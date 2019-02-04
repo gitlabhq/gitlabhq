@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   module Concerns
     module ApplicationCore
@@ -13,7 +15,7 @@ module Clusters
         def set_initial_status
           return unless not_installable?
 
-          self.status = 'installable' if cluster&.application_helm_installed?
+          self.status = 'installable' if cluster&.application_helm_available?
         end
 
         def self.application_name

@@ -1,20 +1,20 @@
-RSpec.shared_examples 'Master manages access requests' do
+RSpec.shared_examples 'Maintainer manages access requests' do
   let(:user) { create(:user) }
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
 
   before do
     entity.request_access(user)
-    entity.respond_to?(:add_owner) ? entity.add_owner(master) : entity.add_master(master)
-    sign_in(master)
+    entity.respond_to?(:add_owner) ? entity.add_owner(maintainer) : entity.add_maintainer(maintainer)
+    sign_in(maintainer)
   end
 
-  it 'master can see access requests' do
+  it 'maintainer can see access requests' do
     visit members_page_path
 
     expect_visible_access_request(entity, user)
   end
 
-  it 'master can grant access', :js do
+  it 'maintainer can grant access', :js do
     visit members_page_path
 
     expect_visible_access_request(entity, user)
@@ -28,7 +28,7 @@ RSpec.shared_examples 'Master manages access requests' do
     end
   end
 
-  it 'master can deny access', :js do
+  it 'maintainer can deny access', :js do
     visit members_page_path
 
     expect_visible_access_request(entity, user)

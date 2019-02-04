@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module CycleAnalytics
     module Summary
@@ -7,9 +9,7 @@ module Gitlab
         end
 
         def value
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            @value ||= count_commits
-          end
+          @value ||= count_commits
         end
 
         private
@@ -21,19 +21,11 @@ module Gitlab
         def count_commits
           return unless ref
 
-          repository = @project.repository.raw_repository
-          sha = @project.repository.commit(ref).sha
+          gitaly_commit_client.commit_count(ref, after: @from)
+        end
 
-          cmd = %W(git --git-dir=#{repository.path} log)
-          cmd << '--format=%H'
-          cmd << "--after=#{@from.iso8601}"
-          cmd << sha
-
-          output, status = Gitlab::Popen.popen(cmd)
-
-          raise IOError, output unless status.zero?
-
-          output.lines.count
+        def gitaly_commit_client
+          Gitlab::GitalyClient::CommitService.new(@project.repository.raw_repository)
         end
 
         def ref

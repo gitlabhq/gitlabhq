@@ -1,4 +1,3 @@
-- show_controls = local_assigns.fetch(:show_controls, true)
 - pipeline = @build.pipeline
 
 .content-block.build-header.top-area.page-content-header
@@ -20,12 +19,3 @@
     = render "projects/jobs/user" if @build.user
 
     = time_ago_with_tooltip(@build.created_at)
-
-  - if show_controls
-    .nav-controls
-      - if can?(current_user, :create_issue, @project) && @build.failed?
-        = link_to "New issue", new_project_issue_path(@project, issue: build_failed_issue_options), class: 'btn btn-new btn-inverted'
-      - if can?(current_user, :update_build, @build) && @build.retryable?
-        = link_to "Retry job", retry_project_job_path(@project, @build), class: 'btn btn-inverted-secondary', method: :post
-    %button.btn.btn-default.float-right.d-block.d-sm-none.d-md-none.build-gutter-toggle.js-sidebar-build-toggle{ role: "button", type: "button" }
-      = icon('angle-double-left')

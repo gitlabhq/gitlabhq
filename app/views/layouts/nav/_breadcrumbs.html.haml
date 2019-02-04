@@ -5,7 +5,7 @@
   .breadcrumbs-container
     - if defined?(@left_sidebar)
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
-        %span.sr-only Open sidebar
+        %span.sr-only= _("Open sidebar")
         = icon ('bars')
     .breadcrumbs-links.js-title-container
       %ul.list-unstyled.breadcrumbs-list.js-breadcrumbs-list

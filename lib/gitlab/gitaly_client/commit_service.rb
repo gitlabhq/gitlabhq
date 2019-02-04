@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     class CommitService
@@ -70,12 +72,19 @@ module Gitlab
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(diff_from_parent_request_params(commit))
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request, timeout: GitalyClient.fast_timeout)
 
         response.flat_map { |msg| msg.deltas }
       end
 
       def tree_entry(ref, path, limit = nil)
+        if Pathname.new(path).cleanpath.to_s.start_with?('../')
+          # The TreeEntry RPC should return an empty reponse in this case but in
+          # Gitaly 0.107.0 and earlier we get an exception instead. This early return
+          # saves us a Gitaly roundtrip while also avoiding the exception.
+          return
+        end
+
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(ref),
@@ -86,7 +95,7 @@ module Gitlab
         response = GitalyClient.call(@repository.storage, :commit_service, :tree_entry, request, timeout: GitalyClient.medium_timeout)
 
         entry = nil
-        data = ''
+        data = []
         response.each do |msg|
           if entry.nil?
             entry = msg
@@ -96,7 +105,7 @@ module Gitlab
 
           data << msg.data
         end
-        entry.data = data
+        entry.data = data.join
 
         entry unless entry.oid.blank?
       end
@@ -141,6 +150,24 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
 
+      def list_last_commits_for_tree(revision, path, offset: 0, limit: 25)
+        request = Gitaly::ListLastCommitsForTreeRequest.new(
+          repository: @gitaly_repo,
+          revision: encode_binary(revision),
+          path: encode_binary(path.to_s),
+          offset: offset,
+          limit: limit
+        )
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_last_commits_for_tree, request, timeout: GitalyClient.medium_timeout)
+
+        response.each_with_object({}) do |gitaly_response, hsh|
+          gitaly_response.commits.each do |commit_for_tree|
+            hsh[commit_for_tree.path] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
+          end
+        end
+      end
+
       def last_commit_for_path(revision, path)
         request = Gitaly::LastCommitForPathRequest.new(
           repository: @gitaly_repo,
@@ -165,6 +192,17 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def diff_stats(left_commit_sha, right_commit_sha)
+        request = Gitaly::DiffStatsRequest.new(
+          repository: @gitaly_repo,
+          left_commit_id: left_commit_sha,
+          right_commit_id: right_commit_sha
+        )
+
+        response = GitalyClient.call(@repository.storage, :diff_service, :diff_stats, request, timeout: GitalyClient.medium_timeout)
+        response.flat_map(&:stats)
+      end
+
       def find_all_commits(opts = {})
         request = Gitaly::FindAllCommitsRequest.new(
           repository: @gitaly_repo,
@@ -179,6 +217,8 @@ module Gitlab
       end
 
       def list_commits_by_oid(oids)
+        return [] if oids.empty?
+
         request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
@@ -216,31 +256,33 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :commit_service, :raw_blame, request, timeout: GitalyClient.medium_timeout)
-        response.reduce("") { |memo, msg| memo << msg.data }
+        response.reduce([]) { |memo, msg| memo << msg.data }.join
       end
 
       def find_commit(revision)
-        if RequestStore.active?
-          # We don't use RequeStstore.fetch(key) { ... } directly because `revision`
-          # can be a branch name, so we can't use it as a key as it could point
-          # to another commit later on (happens a lot in tests).
+        if Gitlab::SafeRequestStore.active?
+          # We don't use Gitlab::SafeRequestStore.fetch(key) { ... } directly
+          # because `revision` can be a branch name, so we can't use it as a key
+          # as it could point to another commit later on (happens a lot in
+          # tests).
           key = {
             storage: @gitaly_repo.storage_name,
             relative_path: @gitaly_repo.relative_path,
             commit_id: revision
           }
-          return RequestStore[key] if RequestStore.exist?(key)
+          return Gitlab::SafeRequestStore[key] if Gitlab::SafeRequestStore.exist?(key)
 
           commit = call_find_commit(revision)
           return unless commit
 
           key[:commit_id] = commit.id
-          RequestStore[key] = commit
+          Gitlab::SafeRequestStore[key] = commit
         else
           call_find_commit(revision)
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def patch(revision)
         request = Gitaly::CommitPatchRequest.new(
           repository: @gitaly_repo,
@@ -250,6 +292,7 @@ module Gitlab
 
         response.sum(&:data)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def commit_stats(revision)
         request = Gitaly::CommitStatsRequest.new(
@@ -293,7 +336,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum)
+        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum, timeout: GitalyClient.fast_timeout)
 
         response.flat_map do |msg|
           msg.shas.map { |sha| EncodingHelper.encode!(sha) }
@@ -304,8 +347,8 @@ module Gitlab
         request = Gitaly::ExtractCommitSignatureRequest.new(repository: @gitaly_repo, commit_id: commit_id)
         response = GitalyClient.call(@repository.storage, :commit_service, :extract_commit_signature, request)
 
-        signature = ''.b
-        signed_text = ''.b
+        signature = +''.b
+        signed_text = +''.b
 
         response.each do |message|
           signature << message.signature
@@ -315,13 +358,15 @@ module Gitlab
         return if signature.blank? && signed_text.blank?
 
         [signature, signed_text]
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_signatures(commit_ids)
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
 
-        signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
+        signatures = Hash.new { |h, k| h[k] = [+''.b, +''.b] }
         current_commit_id = nil
 
         response.each do |message|
@@ -332,13 +377,15 @@ module Gitlab
         end
 
         signatures
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_messages(commit_ids)
         request = Gitaly::GetCommitMessagesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request, timeout: GitalyClient.fast_timeout)
 
-        messages = Hash.new { |h, k| h[k] = ''.b }
+        messages = Hash.new { |h, k| h[k] = +''.b }
         current_commit_id = nil
 
         response.each do |rpc_message|
@@ -355,8 +402,8 @@ module Gitlab
       def call_commit_diff(request_params, options = {})
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
         request_params[:enforce_limits] = options.fetch(:limits, true)
-        request_params[:collapse_diffs] = request_params[:enforce_limits] || !options.fetch(:expanded, true)
-        request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
+        request_params[:collapse_diffs] = !options.fetch(:expanded, true)
+        request_params.merge!(Gitlab::Git::DiffCollection.limits(options).to_h)
 
         request = Gitaly::CommitDiffRequest.new(request_params)
         response = GitalyClient.call(@repository.storage, :diff_service, :commit_diff, request, timeout: GitalyClient.medium_timeout)
@@ -386,8 +433,8 @@ module Gitlab
         end
       end
 
-      def encode_repeated(a)
-        Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| encode_binary(s) } )
+      def encode_repeated(array)
+        Google::Protobuf::RepeatedField.new(:bytes, array.map { |s| encode_binary(s) } )
       end
 
       def call_find_commit(revision)

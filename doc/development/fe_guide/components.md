@@ -1,17 +1,18 @@
 # Components
 
 ## Contents
-* [Dropdowns](#dropdowns)
-* [Modals](#modals)
+
+- [Dropdowns](#dropdowns)
+- [Modals](#modals)
 
 ## Dropdowns
 
-See also the [corresponding UX guide](../ux_guide/components.md#dropdowns).
+See also the [corresponding UX guide](https://design.gitlab.com/#/components/dropdowns).
 
 ### How to style a bootstrap dropdown
+
 1. Use the HTML structure provided by the [docs][bootstrap-dropdowns]
 1. Add a specific class to the top level `.dropdown` element
-
 
     ```Haml
     .dropdown.my-dropdown
@@ -40,9 +41,9 @@ See also the [corresponding UX guide](../ux_guide/components.md#dropdowns).
 
 ## Modals
 
-See also the [corresponding UX guide](../ux_guide/components.md#modals).
+See also the [corresponding UX guide](https://design.gitlab.com/#/components/modals).
 
-We have a reusable Vue component for modals: [vue_shared/components/gl-modal.vue](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/gl-modal.vue)
+We have a reusable Vue component for modals: [vue_shared/components/gl_modal.vue](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/vue_shared/components/gl_modal.vue)
 
 Here is an example of how to use it:
 

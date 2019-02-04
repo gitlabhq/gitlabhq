@@ -1,21 +1,17 @@
 - expanded = [*discussions_left, *discussions_right].any?(&:expanded?)
 %tr.notes_holder{ class: ('hide' unless expanded) }
   - if discussions_left
-    %td.notes_line.old
-    %td.notes_content.parallel.old
+    %td.notes_content.parallel.old{ colspan: 2 }
       .content{ class: ('hide' unless discussions_left.any?(&:expanded?)) }
         = render partial: "discussions/notes", collection: discussions_left, as: :discussion, line_type: 'old', locals: { disable_collapse_class: true }
   - else
-    %td.notes_line.old= ("")
-    %td.notes_content.parallel.old
+    %td.notes_content.parallel.old{ colspan: 2 }
       .content
 
   - if discussions_right
-    %td.notes_line.new
-    %td.notes_content.parallel.new
+    %td.notes_content.parallel.new{ colspan: 2 }
       .content{ class: ('hide' unless discussions_right.any?(&:expanded?)) }
         = render partial: "discussions/notes", collection: discussions_right, as: :discussion, line_type: 'new', locals: { disable_collapse_class: true }
   - else
-    %td.notes_line.new= ("")
-    %td.notes_content.parallel.new
+    %td.notes_content.parallel.new{ colspan: 2 }
       .content

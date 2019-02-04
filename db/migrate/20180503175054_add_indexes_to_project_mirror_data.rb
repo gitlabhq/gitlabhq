@@ -1,4 +1,4 @@
-class AddIndexesToProjectMirrorData < ActiveRecord::Migration
+class AddIndexesToProjectMirrorData < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -11,6 +11,7 @@ class AddIndexesToProjectMirrorData < ActiveRecord::Migration
   end
 
   def down
+    # rubocop:disable Migration/RemoveIndex
     remove_index :project_mirror_data, :jid if index_exists? :project_mirror_data, :jid
     remove_index :project_mirror_data, :status if index_exists? :project_mirror_data, :status
   end

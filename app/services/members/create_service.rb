@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class CreateService < Members::BaseService
     DEFAULT_LIMIT = 100
@@ -17,9 +19,19 @@ module Members
         current_user: current_user
       )
 
-      members.each { |member| after_execute(member: member) }
+      errors = []
 
-      success
+      members.each do |member|
+        if member.errors.any?
+          errors << "#{member.user.username}: #{member.errors.full_messages.to_sentence}"
+        else
+          after_execute(member: member)
+        end
+      end
+
+      return success unless errors.any?
+
+      error(errors.to_sentence)
     end
 
     private

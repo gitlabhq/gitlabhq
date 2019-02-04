@@ -1,6 +1,8 @@
 require 'rails_helper'
 
-describe RemoteMirror do
+describe RemoteMirror, :mailer do
+  include GitHelpers
+
   describe 'URL validation' do
     context 'with a valid URL' do
       it 'should be valid' do
@@ -14,6 +16,27 @@ describe RemoteMirror do
         remote_mirror = build(:remote_mirror, url: 'ftp://invalid.invalid')
 
         expect(remote_mirror).not_to be_valid
+      end
+
+      it 'does not allow url with an invalid user' do
+        remote_mirror = build(:remote_mirror, url: 'http://$user:password@invalid.invalid')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Username needs to start with an alphanumeric character')
+      end
+
+      it 'does not allow url pointing to localhost' do
+        remote_mirror = build(:remote_mirror, url: 'http://127.0.0.2/t.git')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to loopback addresses are not allowed')
+      end
+
+      it 'does not allow url pointing to the local network' do
+        remote_mirror = build(:remote_mirror, url: 'https://192.168.1.1')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to the local network are not allowed')
       end
     end
   end
@@ -67,7 +90,7 @@ describe RemoteMirror do
 
         mirror.update_attribute(:url, 'http://foo:baz@test.com')
 
-        config = repo.raw_repository.rugged.config
+        config = rugged_repo(repo).config
         expect(config["remote.#{mirror.remote_name}.url"]).to eq('http://foo:baz@test.com')
       end
 
@@ -76,7 +99,7 @@ describe RemoteMirror do
 
         expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(mirror.project.id, mirror.remote_name).and_call_original
 
-        mirror.update_attributes(url: 'http://test.com')
+        mirror.update(url: 'http://test.com')
       end
     end
   end
@@ -128,6 +151,43 @@ describe RemoteMirror do
     end
   end
 
+  describe '#mark_as_failed' do
+    let(:remote_mirror) { create(:remote_mirror) }
+    let(:error_message) { 'http://user:pass@test.com/root/repoC.git/' }
+    let(:sanitized_error_message) { 'http://*****:*****@test.com/root/repoC.git/' }
+
+    subject do
+      remote_mirror.update_start
+      remote_mirror.mark_as_failed(error_message)
+    end
+
+    it 'sets the update_status to failed' do
+      subject
+
+      expect(remote_mirror.reload.update_status).to eq('failed')
+    end
+
+    it 'saves the sanitized error' do
+      subject
+
+      expect(remote_mirror.last_error).to eq(sanitized_error_message)
+    end
+
+    context 'notifications' do
+      let(:user) { create(:user) }
+
+      before do
+        remote_mirror.project.add_maintainer(user)
+      end
+
+      it 'notifies the project maintainers' do
+        perform_enqueued_jobs { subject }
+
+        should_email(user)
+      end
+    end
+  end
+
   context 'when remote mirror gets destroyed' do
     it 'removes remote' do
       mirror = create_mirror(url: 'http://foo:bar@test.com')
@@ -158,14 +218,22 @@ describe RemoteMirror do
 
     context 'with remote mirroring disabled' do
       it 'returns nil' do
-        remote_mirror.update_attributes(enabled: false)
+        remote_mirror.update(enabled: false)
 
         expect(remote_mirror.sync).to be_nil
       end
     end
 
     context 'with remote mirroring enabled' do
+      it 'defaults to disabling only protected branches' do
+        expect(remote_mirror.only_protected_branches?).to be_falsey
+      end
+
       context 'with only protected branches enabled' do
+        before do
+          remote_mirror.only_protected_branches = true
+        end
+
         context 'when it did not update in the last minute' do
           it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
             expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)
@@ -211,6 +279,49 @@ describe RemoteMirror do
     end
   end
 
+  context '#ensure_remote!' do
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+    let(:project) { remote_mirror.project }
+    let(:repository) { project.repository }
+
+    it 'adds a remote multiple times with no errors' do
+      expect(repository).to receive(:add_remote).with(remote_mirror.remote_name, remote_mirror.url).twice.and_call_original
+
+      2.times do
+        remote_mirror.ensure_remote!
+      end
+    end
+
+    context 'SSH public-key authentication' do
+      it 'omits the password from the URL' do
+        remote_mirror.update!(auth_method: 'ssh_public_key', url: 'ssh://git:pass@example.com')
+
+        expect(repository).to receive(:add_remote).with(remote_mirror.remote_name, 'ssh://git@example.com')
+
+        remote_mirror.ensure_remote!
+      end
+    end
+  end
+
+  context '#url=' do
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+
+    it 'resets all the columns when URL changes' do
+      remote_mirror.update(last_error: Time.now,
+                           last_update_at: Time.now,
+                           last_successful_update_at: Time.now,
+                           update_status: 'started',
+                           error_notification_sent: true)
+
+      expect { remote_mirror.update_attribute(:url, 'http://new.example.com') }
+        .to change { remote_mirror.last_error }.to(nil)
+        .and change { remote_mirror.last_update_at }.to(nil)
+        .and change { remote_mirror.last_successful_update_at }.to(nil)
+        .and change { remote_mirror.update_status }.to('finished')
+        .and change { remote_mirror.error_notification_sent }.to(false)
+    end
+  end
+
   context '#updated_since?' do
     let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
     let(:timestamp) { Time.now - 5.minutes }
@@ -220,7 +331,7 @@ describe RemoteMirror do
     end
 
     before do
-      remote_mirror.update_attributes(last_update_started_at: Time.now)
+      remote_mirror.update(last_update_started_at: Time.now)
     end
 
     context 'when remote mirror does not have status failed' do
@@ -235,7 +346,7 @@ describe RemoteMirror do
 
     context 'when remote mirror has status failed' do
       it 'returns false when last update started after the timestamp' do
-        remote_mirror.update_attributes(update_status: 'failed')
+        remote_mirror.update(update_status: 'failed')
 
         expect(remote_mirror.updated_since?(timestamp)).to be false
       end

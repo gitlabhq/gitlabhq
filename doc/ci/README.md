@@ -71,11 +71,14 @@ learn how to leverage its potential even more.
 - [Caching dependencies](caching/index.md)
 - [Git submodules](git_submodules.md) - How to run your CI jobs when Git
   submodules are involved
+- [Pipelines for merge requests](merge_request_pipelines/index.md)
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger pipelines through the GitLab API](triggers/README.md)
 - [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
 - [Kubernetes clusters](../user/project/clusters/index.md) - Integrate one or
   more Kubernetes clusters to your project
+- [Interactive web terminal](interactive_web_terminal/index.md) - Open an interactive
+  web terminal to debug the running jobs
 
 ## GitLab CI/CD for Docker
 
@@ -130,5 +133,3 @@ your whole GitLab instance as well as in each project.
 - [New CI job permissions model](../user/project/new_ci_build_permissions_model.md)
   Read about what changed in GitLab 8.12 and how that affects your jobs.
   There's a new way to access your Git submodules and LFS objects in jobs.
-
-[gitlab-ci-templates]: https://gitlab.com/gitlab-org/gitlab-ci-yml

@@ -9,29 +9,21 @@
   }
 }
 
-@keyframes blinking-dots {
+@keyframes blinking-dot {
   0% {
-    background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-      24px 0 0 0 rgba($white-light, 0.2);
+    opacity: 1;
   }
 
   25% {
-    background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 2),
-      24px 0 0 0 rgba($white-light, 0.2);
+    opacity: 0.4;
   }
 
   75% {
-    background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-      24px 0 0 0 rgba($white-light, 1);
+    opacity: 0.4;
   }
 
   100% {
-    background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-      24px 0 0 0 rgba($white-light, 0.2);
+    opacity: 1;
   }
 }
 
@@ -58,30 +50,33 @@
     position: relative;
   }
 
-  .build-trace {
-    background: $black;
-    color: $gray-darkest;
-    white-space: pre;
-    overflow-x: auto;
-    font-size: 12px;
-    border-radius: 0;
-    border: 0;
-    padding: $grid-size;
 
-    .bash {
-      display: block;
+  .build-trace {
+    @include build-trace();
+  }
+
+  .archived-job {
+    top: $header-height;
+    border-radius: 2px 2px 0 0;
+    color: $orange-600;
+    background-color: $orange-100;
+    border: 1px solid $border-gray-normal;
+    padding: 3px 12px;
+    margin: auto;
+    align-items: center;
+    z-index: 1;
+
+    .with-performance-bar & {
+      top: $header-height + $performance-bar-height;
     }
   }
 
   .top-bar {
-    height: 35px;
-    background: $gray-light;
-    border: 1px solid $border-color;
-    color: $gl-text-color;
-    position: sticky;
-    position: -webkit-sticky;
-    top: $header-height;
-    padding: $grid-size;
+    @include build-trace-top-bar(35px);
+
+    &.has-archived-block {
+      top: $header-height + $performance-bar-height + 28px;
+    }
 
     &.affix {
       top: $header-height;
@@ -119,50 +114,7 @@
     }
 
     .controllers {
-      display: flex;
-      font-size: 15px;
-      justify-content: center;
-      align-items: center;
-
-      svg {
-        height: 15px;
-        display: block;
-        fill: $gl-text-color;
-      }
-
-      .controllers-buttons {
-        color: $gl-text-color;
-        margin: 0 $grid-size;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-
-      .btn-scroll.animate {
-        .first-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: 0.3s;
-        }
-
-        .second-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: 0.2s;
-        }
-
-        .third-triangle {
-          animation: blinking-scroll-button 1s ease infinite;
-        }
-
-        &:disabled {
-          opacity: 1;
-        }
-      }
-
-      .btn-scroll:disabled {
-        opacity: 0.35;
-        cursor: not-allowed;
-      }
+      @include build-controllers(15px, center, false, 0, inline, 0);
     }
   }
 
@@ -181,22 +133,15 @@
   }
 
   .build-loader-animation {
-    position: relative;
-    width: 6px;
-    height: 6px;
-    margin: auto auto 12px 2px;
-    border-radius: 50%;
-    animation: blinking-dots 1s linear infinite;
+    @include build-loader-animation;
+    float: left;
+    padding-left: $gl-padding-8;
   }
 }
 
 .with-performance-bar .build-page {
-  .top-bar {
+  .top-bar.affix {
     top: $header-height + $performance-bar-height;
-
-    &.affix {
-      top: $header-height + $performance-bar-height;
-    }
   }
 }
 
@@ -229,7 +174,7 @@
       color: $gl-text-color;
 
       &:hover {
-        color: $gl-link-color;
+        color: $blue-600;
         text-decoration: none;
       }
     }
@@ -269,6 +214,7 @@
 
   .block {
     width: 100%;
+    word-break: break-word;
 
     &:last-child {
       border-bottom: 1px solid $border-gray-normal;
@@ -283,9 +229,21 @@
     padding: 16px 0;
   }
 
+  .trigger-variables-btn-container {
+    @extend .d-flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .trigger-variables-btn {
+      margin-top: -5px;
+      margin-bottom: -5px;
+    }
+  }
+
   .trigger-build-variables {
     margin: 0;
     overflow-x: auto;
+    width: 100%;
     -ms-overflow-style: scrollbar;
     -webkit-overflow-scrolling: touch;
   }
@@ -298,7 +256,15 @@
   .trigger-build-value {
     padding: 2px 4px;
     color: $black;
-    background-color: $white-light;
+  }
+
+  .trigger-variables-table-cell {
+    font-size: $gl-font-size-small;
+    line-height: $gl-line-height;
+    border: 1px solid $gray-200;
+    padding: $gl-padding-4 6px;
+    width: 50%;
+    vertical-align: top;
   }
 
   .badge.badge-pill {
@@ -306,23 +272,19 @@
   }
 
   .retry-link {
-    display: none;
+    display: block;
+
+    .btn {
+      i {
+        margin-left: 5px;
+      }
+    }
 
     .btn-inverted-secondary {
       color: $blue-500;
 
       &:hover {
         color: $white-light;
-      }
-    }
-
-    @include media-breakpoint-down(sm) {
-      display: block;
-
-      .btn {
-        i {
-          margin-left: 5px;
-        }
       }
     }
   }
@@ -332,23 +294,6 @@
 
     &:hover {
       color: $gl-text-color;
-    }
-  }
-
-  .build-dropdown {
-    margin: $gl-padding 0;
-    padding: 0;
-
-    .dropdown-menu-toggle {
-      margin-top: #{$gl-padding / 2};
-    }
-
-    svg {
-      position: relative;
-      top: 3px;
-      margin-right: 3px;
-      width: 14px;
-      height: 14px;
     }
   }
 
@@ -388,15 +333,11 @@
         position: absolute;
         left: 15px;
         top: 20px;
-        display: none;
+        display: block;
       }
 
       &.active {
         font-weight: $gl-font-weight-bold;
-
-        .icon-arrow-right {
-          display: block;
-        }
       }
 
       &.retried {
@@ -404,7 +345,7 @@
       }
 
       &:hover {
-        background-color: $dropdown-item-hover-bg;
+        background-color: $gray-darker;
       }
 
       .icon-retry {

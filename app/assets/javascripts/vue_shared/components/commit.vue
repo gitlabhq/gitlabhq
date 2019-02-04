@@ -1,11 +1,11 @@
 <script>
+import { GlTooltipDirective } from '@gitlab/ui';
 import UserAvatarLink from './user_avatar/user_avatar_link.vue';
-import tooltip from '../directives/tooltip';
 import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     UserAvatarLink,
@@ -13,7 +13,7 @@ export default {
   },
   props: {
     /**
-     * Indicates the existance of a tag.
+     * Indicates the existence of a tag.
      * Used to render the correct icon, if true will render `fa-tag` icon,
      * if false will render a svg sprite fork icon
      */
@@ -111,63 +111,30 @@ export default {
   <div class="branch-commit">
     <template v-if="hasCommitRef && showBranch">
       <div class="icon-container">
-        <i
-          v-if="tag"
-          class="fa fa-tag"
-          aria-hidden="true"
-        >
-        </i>
-        <icon
-          v-if="!tag"
-          name="fork"
-        />
+        <i v-if="tag" class="fa fa-tag" aria-hidden="true"> </i> <icon v-if="!tag" name="fork" />
       </div>
 
-      <a
-        class="ref-name"
-        :href="commitRef.ref_url"
-        v-tooltip
-        data-container="body"
-        :title="commitRef.name"
-      >
+      <a v-gl-tooltip :href="commitRef.ref_url" :title="commitRef.name" class="ref-name">
         {{ commitRef.name }}
       </a>
     </template>
-    <icon
-      name="commit"
-      class="commit-icon js-commit-icon"
-    />
+    <icon name="commit" class="commit-icon js-commit-icon" />
 
-    <a
-      class="commit-sha"
-      :href="commitUrl"
-    >
-      {{ shortSha }}
-    </a>
+    <a :href="commitUrl" class="commit-sha"> {{ shortSha }} </a>
 
     <div class="commit-title flex-truncate-parent">
-      <span
-        v-if="title"
-        class="flex-truncate-child"
-      >
+      <span v-if="title" class="flex-truncate-child">
         <user-avatar-link
           v-if="hasAuthor"
-          class="avatar-image-container"
           :link-href="author.path"
           :img-src="author.avatar_url"
           :img-alt="userImageAltDescription"
           :tooltip-text="author.username"
+          class="avatar-image-container"
         />
-        <a
-          class="commit-row-message"
-          :href="commitUrl"
-        >
-          {{ title }}
-        </a>
+        <a :href="commitUrl" class="commit-row-message"> {{ title }} </a>
       </span>
-      <span v-else>
-        Can't find HEAD commit for this branch
-      </span>
+      <span v-else> Can't find HEAD commit for this branch </span>
     </div>
   </div>
 </template>

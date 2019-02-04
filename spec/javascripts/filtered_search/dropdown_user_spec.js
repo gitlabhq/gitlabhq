@@ -1,7 +1,7 @@
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import DropdownUser from '~/filtered_search/dropdown_user';
 import FilteredSearchTokenizer from '~/filtered_search/filtered_search_tokenizer';
-import FilteredSearchTokenKeys from '~/filtered_search/filtered_search_token_keys';
+import IssuableFilteredTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
 
 describe('Dropdown User', () => {
   describe('getSearchInput', () => {
@@ -14,7 +14,7 @@ describe('Dropdown User', () => {
       spyOn(DropdownUtils, 'getSearchInput').and.callFake(() => {});
 
       dropdownUser = new DropdownUser({
-        tokenKeys: FilteredSearchTokenKeys,
+        tokenKeys: IssuableFilteredTokenKeys,
       });
     });
 
@@ -28,14 +28,14 @@ describe('Dropdown User', () => {
 
     it('should not return the single quote found in value', () => {
       spyOn(FilteredSearchTokenizer, 'processTokens').and.returnValue({
-        lastToken: '\'larry boy',
+        lastToken: "'larry boy",
       });
 
       expect(dropdownUser.getSearchInput()).toBe('larry boy');
     });
   });
 
-  describe('config AjaxFilter\'s endpoint', () => {
+  describe("config AjaxFilter's endpoint", () => {
     beforeEach(() => {
       spyOn(DropdownUser.prototype, 'bindEvents').and.callFake(() => {});
       spyOn(DropdownUser.prototype, 'getProjectId').and.callFake(() => {});
@@ -88,10 +88,12 @@ describe('Dropdown User', () => {
       });
     });
 
-    const findCurrentUserElement = () => authorFilterDropdownElement.querySelector('.js-current-user');
+    const findCurrentUserElement = () =>
+      authorFilterDropdownElement.querySelector('.js-current-user');
 
     it('hides the current user from dropdown', () => {
       const currentUserElement = findCurrentUserElement();
+
       expect(currentUserElement).not.toBe(null);
 
       dropdown.hideCurrentUser();
@@ -102,6 +104,7 @@ describe('Dropdown User', () => {
     it('does nothing if no user is logged in', () => {
       const currentUserElement = findCurrentUserElement();
       currentUserElement.parentNode.removeChild(currentUserElement);
+
       expect(findCurrentUserElement()).toBe(null);
 
       dropdown.hideCurrentUser();

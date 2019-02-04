@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # CronTimezoneValidator
 #
 # Custom validator for CronTimezone.

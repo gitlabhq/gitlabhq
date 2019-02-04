@@ -23,23 +23,19 @@ export default {
 </script>
 
 <template>
-  <div
-    v-once
-    class="multi-file-discard-btn"
-  >
+  <div v-once class="multi-file-discard-btn d-flex">
     <button
       v-tooltip
-      type="button"
-      class="btn btn-blank"
       :aria-label="__('Unstage changes')"
       :title="__('Unstage changes')"
+      type="button"
+      class="btn btn-blank align-items-center"
       data-container="body"
-      @click="unstageChange(path)"
+      data-boundary="viewport"
+      data-placement="bottom"
+      @click.stop.prevent="unstageChange(path)"
     >
-      <icon
-        name="history"
-        :size="12"
-      />
+      <icon :size="16" name="redo" class="ml-auto mr-auto" />
     </button>
   </div>
 </template>

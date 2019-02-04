@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CreatedAtFilter
   def by_created_at(items)
     items = items.created_before(params[:created_before]) if params[:created_before].present?

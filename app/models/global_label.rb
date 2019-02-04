@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GlobalLabel
   attr_accessor :title, :labels
   alias_attribute :name, :title

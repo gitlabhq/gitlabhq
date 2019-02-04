@@ -1,5 +1,0 @@
----
-title: Rename issue scope created-by-me to created_by_me, and assigned-to-me to assigned_to_me
-merge_request: 44799
-author:
-type: deprecated

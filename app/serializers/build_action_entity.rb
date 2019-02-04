@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildActionEntity < Grape::Entity
   include RequestAwareEntity
 
@@ -10,6 +12,12 @@ class BuildActionEntity < Grape::Entity
   end
 
   expose :playable?, as: :playable
+  expose :scheduled?, as: :scheduled
+  expose :scheduled_at, if: -> (*) { scheduled? }
+
+  expose :unschedule_path, if: -> (build) { build.scheduled? } do |build|
+    unschedule_project_job_path(build.project, build)
+  end
 
   private
 
@@ -17,5 +25,9 @@ class BuildActionEntity < Grape::Entity
 
   def playable?
     build.playable? && can?(request.current_user, :update_build, build)
+  end
+
+  def scheduled?
+    build.scheduled?
   end
 end

@@ -14,7 +14,8 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       disk_path: 'foo',
       repository: repository,
       create_wiki: true,
-      import_state: import_state
+      import_state: import_state,
+      lfs_enabled?: true
     )
   end
 
@@ -217,7 +218,7 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
   describe '#fail_import' do
     it 'marks the import as failed' do
-      expect(project).to receive(:mark_import_as_failed).with('foo')
+      expect(project.import_state).to receive(:mark_as_failed).with('foo')
 
       expect(importer.fail_import('foo')).to eq(false)
     end

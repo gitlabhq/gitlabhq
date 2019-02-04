@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 module API
   class Events < Grape::API
     include PaginationParams
+    include APIGuard
 
     helpers do
       params :event_filter_params do
@@ -16,13 +19,19 @@ module API
       end
 
       def present_events(events)
-        events = events.reorder(created_at: params[:sort])
+        events = paginate(events)
 
-        present paginate(events), with: Entities::Event
+        present events, with: Entities::Event
+      end
+
+      def find_events(source)
+        EventsFinder.new(params.merge(source: source, current_user: current_user, with_associations: true)).execute
       end
     end
 
     resource :events do
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
+
       desc "List currently authenticated user's events" do
         detail 'This feature was introduced in GitLab 9.3.'
         success Entities::Event
@@ -32,10 +41,11 @@ module API
         use :event_filter_params
         use :sort_params
       end
+
       get do
         authenticate!
 
-        events = EventsFinder.new(params.merge(source: current_user, current_user: current_user)).execute.preload(:author, :target)
+        events = find_events(current_user)
 
         present_events(events)
       end
@@ -45,6 +55,8 @@ module API
       requires :id, type: String, desc: 'The ID or Username of the user'
     end
     resource :users do
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
+
       desc 'Get the contribution events of a specified user' do
         detail 'This feature was introduced in GitLab 8.13.'
         success Entities::Event
@@ -54,11 +66,12 @@ module API
         use :event_filter_params
         use :sort_params
       end
+
       get ':id/events' do
         user = find_user(params[:id])
         not_found!('User') unless user
 
-        events = EventsFinder.new(params.merge(source: user, current_user: current_user)).execute.preload(:author, :target)
+        events = find_events(user)
 
         present_events(events)
       end
@@ -67,7 +80,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc "List a Project's visible events" do
         success Entities::Event
       end
@@ -76,8 +89,9 @@ module API
         use :event_filter_params
         use :sort_params
       end
+
       get ":id/events" do
-        events = EventsFinder.new(params.merge(source: user_project, current_user: current_user)).execute.preload(:author, :target)
+        events = find_events(user_project)
 
         present_events(events)
       end

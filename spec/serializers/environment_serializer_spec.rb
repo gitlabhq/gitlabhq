@@ -14,7 +14,8 @@ describe EnvironmentSerializer do
     let(:project) { create(:project, :repository) }
     let(:deployable) { create(:ci_build) }
     let(:deployment) do
-      create(:deployment, deployable: deployable,
+      create(:deployment, :success,
+                          deployable: deployable,
                           user: user,
                           project: project,
                           sha: project.commit.id)
@@ -54,7 +55,9 @@ describe EnvironmentSerializer do
 
   context 'when representing environments within folders' do
     let(:serializer) do
-      described_class.new(project: project).within_folders
+      described_class
+        .new(current_user: user, project: project)
+        .within_folders
     end
 
     let(:resource) { Environment.all }
@@ -123,7 +126,8 @@ describe EnvironmentSerializer do
     let(:pagination) { { page: 1, per_page: 2 } }
 
     let(:serializer) do
-      described_class.new(project: project)
+      described_class
+        .new(current_user: user, project: project)
         .with_pagination(request, response)
     end
 
@@ -169,7 +173,8 @@ describe EnvironmentSerializer do
 
       context 'when grouping environments within folders' do
         let(:serializer) do
-          described_class.new(project: project)
+          described_class
+            .new(current_user: user, project: project)
             .with_pagination(request, response)
             .within_folders
         end

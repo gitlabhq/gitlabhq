@@ -24,8 +24,8 @@ describe('MRWidgetArchived', () => {
   });
 
   it('renders information', () => {
-    expect(
-      vm.$el.querySelector('.bold').textContent.trim(),
-    ).toEqual('This project is archived, write access has been disabled');
+    expect(vm.$el.querySelector('.bold').textContent.trim()).toEqual(
+      'This project is archived, write access has been disabled',
+    );
   });
 });

@@ -42,8 +42,7 @@ export default class SmartInterval {
   /* public */
 
   start() {
-    const cfg = this.cfg;
-    const state = this.state;
+    const { cfg, state } = this;
 
     if (cfg.immediateExecution && !this.isLoading) {
       cfg.immediateExecution = false;
@@ -94,13 +93,15 @@ export default class SmartInterval {
   destroy() {
     this.cancel();
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
-    $(document).off('visibilitychange').off('beforeunload');
+    $(document)
+      .off('visibilitychange')
+      .off('beforeunload');
   }
 
   /* private */
 
   initInterval() {
-    const cfg = this.cfg;
+    const { cfg } = this;
 
     if (!cfg.lazyStart) {
       this.start();
@@ -112,11 +113,12 @@ export default class SmartInterval {
 
   triggerCallback() {
     this.isLoading = true;
-    this.cfg.callback()
+    this.cfg
+      .callback()
       .then(() => {
         this.isLoading = false;
       })
-      .catch((err) => {
+      .catch(err => {
         this.isLoading = false;
         throw err;
       });
@@ -135,9 +137,9 @@ export default class SmartInterval {
 
   handleVisibilityChange(e) {
     this.state.pageVisibility = e.target.visibilityState;
-    const intervalAction = this.isPageVisible() ?
-      this.onVisibilityVisible :
-      this.onVisibilityHidden;
+    const intervalAction = this.isPageVisible()
+      ? this.onVisibilityVisible
+      : this.onVisibilityHidden;
 
     intervalAction.apply(this);
   }
@@ -151,7 +153,7 @@ export default class SmartInterval {
   }
 
   incrementInterval() {
-    const cfg = this.cfg;
+    const { cfg } = this;
     const currentInterval = this.getCurrentInterval();
     if (cfg.hiddenInterval && !this.isPageVisible()) return;
     let nextInterval = currentInterval * cfg.incrementByFactorOf;
@@ -163,12 +165,13 @@ export default class SmartInterval {
     this.setCurrentInterval(nextInterval);
   }
 
-  isPageVisible() { return this.state.pageVisibility === 'visible'; }
+  isPageVisible() {
+    return this.state.pageVisibility === 'visible';
+  }
 
   stopTimer() {
-    const state = this.state;
+    const { state } = this;
 
     state.intervalId = window.clearInterval(state.intervalId);
   }
 }
-

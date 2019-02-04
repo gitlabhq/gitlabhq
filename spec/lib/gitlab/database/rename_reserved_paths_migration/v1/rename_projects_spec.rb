@@ -169,7 +169,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :de
 
     it "doesn't break when the project was renamed" do
       subject.rename_project(project)
-      project.update_attributes!(path: 'renamed-afterwards')
+      project.update!(path: 'renamed-afterwards')
 
       expect { subject.revert_renames }.not_to raise_error
     end

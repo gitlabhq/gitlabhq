@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Issue prioritization' do
+describe 'Issue prioritization' do
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
@@ -13,7 +13,7 @@ feature 'Issue prioritization' do
 
   # According to https://gitlab.com/gitlab-org/gitlab-ce/issues/14189#note_4360653
   context 'when issues have one label' do
-    scenario 'Are sorted properly' do
+    it 'Are sorted properly' do
       # Issues
       issue_1 = create(:issue, title: 'issue_1', project: project)
       issue_2 = create(:issue, title: 'issue_2', project: project)
@@ -32,7 +32,7 @@ feature 'Issue prioritization' do
       visit project_issues_path(project, sort: 'label_priority')
 
       # Ensure we are indicating that issues are sorted by priority
-      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
+      expect(page).to have_selector('.dropdown', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)
@@ -43,7 +43,7 @@ feature 'Issue prioritization' do
   end
 
   context 'when issues have multiple labels' do
-    scenario 'Are sorted properly' do
+    it 'Are sorted properly' do
       # Issues
       issue_1 = create(:issue, title: 'issue_1', project: project)
       issue_2 = create(:issue, title: 'issue_2', project: project)
@@ -70,7 +70,7 @@ feature 'Issue prioritization' do
       sign_in user
       visit project_issues_path(project, sort: 'label_priority')
 
-      expect(page).to have_selector('.dropdown-toggle', text: 'Label priority')
+      expect(page).to have_selector('.dropdown', text: 'Label priority')
 
       page.within('.issues-holder') do
         issue_titles = all('.issues-list .issue-title-text').map(&:text)

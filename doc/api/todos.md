@@ -18,11 +18,12 @@ Parameters:
 | `action` | string | no | The action to be filtered. Can be `assigned`, `mentioned`, `build_failed`, `marked`, `approval_required`, `unmergeable` or `directly_addressed`. |
 | `author_id` | integer | no | The ID of an author |
 | `project_id` | integer | no | The ID of a project |
+| `group_id` | integer | no | The ID of a group |
 | `state` | string | no | The state of the todo. Can be either `pending` or `done` |
 | `type` | string | no | The type of a todo. Can be either `Issue` or `MergeRequest` |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos
 ```
 
 Example Response:
@@ -194,7 +195,7 @@ Parameters:
 | `id` | integer | yes | The ID of a todo |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/130/mark_as_done
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/130/mark_as_done
 ```
 
 Example Response:
@@ -284,8 +285,7 @@ POST /todos/mark_as_done
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/donmark_as_donee
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/todos/mark_as_done
 ```
-
 
 [ce-3188]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3188

@@ -1,7 +1,6 @@
-# rubocop:disable all
 require 'fileutils'
 
-class RemoveSatellites < ActiveRecord::Migration
+class RemoveSatellites < ActiveRecord::Migration[4.2]
   def up
     satellites = Gitlab.config['satellites']
     return if satellites.nil?

@@ -48,7 +48,7 @@ require File.expand_path('../config/environment', File.dirname(__FILE__))
 result = Gitlab::Profiler.profile(options[:url],
                                   logger: Logger.new(options[:sql_output]),
                                   post_data: options[:post_data],
-                                  user: User.find_by_username(options[:username]),
+                                  user: UserFinder.new(options[:username]).find_by_username,
                                   private_token: ENV['PRIVATE_TOKEN'])
 
 printer = RubyProf::CallStackPrinter.new(result)

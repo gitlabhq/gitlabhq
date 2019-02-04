@@ -2,7 +2,7 @@
 comments: false
 ---
 
-# Bisect	  	
+# Bisect
 
 ----------
 
@@ -10,18 +10,18 @@ comments: false
 
 - Find a commit that introduced a bug
 - Works through a process of elimination
-- Specify a known good and bad revision to begin	  	
+- Specify a known good and bad revision to begin
 
 ----------
 
 ## Bisect
 
 1. Start the bisect process
-2. Enter the bad revision (usually latest commit)
-3. Enter a known good revision (commit/branch)
-4. Run code to see if bug still exists
-5. Tell bisect the result
-6. Repeat the previous 2 items until you find the offending commit
+1. Enter the bad revision (usually latest commit)
+1. Enter a known good revision (commit/branch)
+1. Run code to see if bug still exists
+1. Tell bisect the result
+1. Repeat the previous 2 items until you find the offending commit
 
 ----------
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AbuseReport < ActiveRecord::Base
   include CacheMarkdownField
 

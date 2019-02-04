@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::Runner do
+  it_behaves_like 'having unique enum values'
+
   describe 'validation' do
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
@@ -105,7 +107,7 @@ describe Ci::Runner do
     end
   end
 
-  describe '.shared' do
+  describe '.instance_type' do
     let(:group) { create(:group) }
     let(:project) { create(:project) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
@@ -113,7 +115,7 @@ describe Ci::Runner do
     let!(:shared_runner) { create(:ci_runner, :instance) }
 
     it 'returns only shared runners' do
-      expect(described_class.shared).to contain_exactly(shared_runner)
+      expect(described_class.instance_type).to contain_exactly(shared_runner)
     end
   end
 
@@ -155,7 +157,7 @@ describe Ci::Runner do
     end
   end
 
-  describe '.owned_or_shared' do
+  describe '.owned_or_instance_wide' do
     it 'returns a globally shared, a project specific and a group specific runner' do
       # group specific
       group = create(:group)
@@ -168,7 +170,7 @@ describe Ci::Runner do
       # globally shared
       shared_runner = create(:ci_runner, :instance)
 
-      expect(described_class.owned_or_shared(project.id)).to contain_exactly(
+      expect(described_class.owned_or_instance_wide(project.id)).to contain_exactly(
         group_runner, project_runner, shared_runner
       )
     end
@@ -202,7 +204,6 @@ describe Ci::Runner do
       it 'transitions shared runner to project runner and assigns project' do
         expect(subject).to be_truthy
 
-        expect(runner).to be_specific
         expect(runner).to be_project_type
         expect(runner.projects).to eq([project])
         expect(runner.only_for?(project)).to be_truthy
@@ -224,7 +225,7 @@ describe Ci::Runner do
     subject { described_class.online }
 
     before do
-      @runner1 = create(:ci_runner, :instance, contacted_at: 1.year.ago)
+      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
       @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
     end
 
@@ -299,6 +300,17 @@ describe Ci::Runner do
           .and_return({ contacted_at: value }.to_json).at_least(:once)
       end
     end
+  end
+
+  describe '.offline' do
+    subject { described_class.offline }
+
+    before do
+      @runner1 = create(:ci_runner, :instance, contacted_at: 1.hour.ago)
+      @runner2 = create(:ci_runner, :instance, contacted_at: 1.second.ago)
+    end
+
+    it { is_expected.to eq([@runner1])}
   end
 
   describe '#can_pick?' do
@@ -549,7 +561,7 @@ describe Ci::Runner do
   end
 
   describe '#update_cached_info' do
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project) }
 
     subject { runner.update_cached_info(architecture: '18-bit') }
 
@@ -570,17 +582,22 @@ describe Ci::Runner do
         runner.contacted_at = 2.hours.ago
       end
 
-      it 'updates database' do
-        expect_redis_update
+      context 'with invalid runner' do
+        before do
+          runner.projects = []
+        end
 
-        expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
-          .and change { runner.reload.read_attribute(:architecture) }
+        it 'still updates redis cache and database' do
+          expect(runner).to be_invalid
+
+          expect_redis_update
+          does_db_update
+        end
       end
 
-      it 'updates cache' do
+      it 'updates redis cache and database' do
         expect_redis_update
-
-        subject
+        does_db_update
       end
     end
 
@@ -589,6 +606,11 @@ describe Ci::Runner do
         redis_key = runner.send(:cache_attribute_key)
         expect(redis).to receive(:set).with(redis_key, anything, any_args)
       end
+    end
+
+    def does_db_update
+      expect { subject }.to change { runner.reload.read_attribute(:contacted_at) }
+        .and change { runner.reload.read_attribute(:architecture) }
     end
   end
 
@@ -776,5 +798,32 @@ describe Ci::Runner do
       subject
       expect { subject.destroy }.to change { described_class.count }.by(-1)
     end
+  end
+
+  describe '.order_by' do
+    it 'supports ordering by the contact date' do
+      runner1 = create(:ci_runner, contacted_at: 1.year.ago)
+      runner2 = create(:ci_runner, contacted_at: 1.month.ago)
+      runners = described_class.order_by('contacted_asc')
+
+      expect(runners).to eq([runner1, runner2])
+    end
+
+    it 'supports ordering by the creation date' do
+      runner1 = create(:ci_runner, created_at: 1.year.ago)
+      runner2 = create(:ci_runner, created_at: 1.month.ago)
+      runners = described_class.order_by('created_asc')
+
+      expect(runners).to eq([runner2, runner1])
+    end
+  end
+
+  describe '#uncached_contacted_at' do
+    let(:contacted_at_stored) { 1.hour.ago.change(usec: 0) }
+    let(:runner) { create(:ci_runner, contacted_at: contacted_at_stored) }
+
+    subject { runner.uncached_contacted_at }
+
+    it { is_expected.to eq(contacted_at_stored) }
   end
 end

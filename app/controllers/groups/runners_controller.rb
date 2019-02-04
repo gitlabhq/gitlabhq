@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Groups::RunnersController < Groups::ApplicationController
   # Proper policies should be implemented per
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/45894
@@ -23,7 +25,7 @@ class Groups::RunnersController < Groups::ApplicationController
   def destroy
     @runner.destroy
 
-    redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), status: 302
+    redirect_to group_settings_ci_cd_path(@group, anchor: 'runners-settings'), status: :found
   end
 
   def resume

@@ -2,17 +2,19 @@ import $ from 'jquery';
 import VersionCheckImage from '~/version_check_image';
 import ClassSpecHelper from './helpers/class_spec_helper';
 
-describe('VersionCheckImage', function () {
-  describe('bindErrorEvent', function () {
+describe('VersionCheckImage', function() {
+  describe('bindErrorEvent', function() {
     ClassSpecHelper.itShouldBeAStaticMethod(VersionCheckImage, 'bindErrorEvent');
 
-    beforeEach(function () {
+    beforeEach(function() {
       this.imageElement = $('<div></div>');
     });
 
-    it('registers an error event', function () {
+    it('registers an error event', function() {
       spyOn($.prototype, 'on');
-      spyOn($.prototype, 'off').and.callFake(function () { return this; });
+      spyOn($.prototype, 'off').and.callFake(function() {
+        return this;
+      });
 
       VersionCheckImage.bindErrorEvent(this.imageElement);
 
@@ -20,7 +22,7 @@ describe('VersionCheckImage', function () {
       expect($.prototype.on).toHaveBeenCalledWith('error', jasmine.any(Function));
     });
 
-    it('hides the imageElement on error', function () {
+    it('hides the imageElement on error', function() {
       spyOn($.prototype, 'hide');
 
       VersionCheckImage.bindErrorEvent(this.imageElement);

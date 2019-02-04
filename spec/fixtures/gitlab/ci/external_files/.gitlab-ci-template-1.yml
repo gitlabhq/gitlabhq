@@ -1,0 +1,9 @@
+before_script:
+  - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
+  - ruby -v
+  - which ruby
+  - bundle install --jobs $(nproc)  "${FLAGS[@]}"
+
+rspec:
+  script:
+    - bundle exec rspec

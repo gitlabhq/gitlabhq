@@ -7,7 +7,7 @@ FactoryBot.define do
   end
 
   trait :with_file do
-    file { fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png") }
+    file { fixture_file_upload("spec/fixtures/dk.png", "`/png") }
   end
 
   # The uniqueness constraint means we can't use the correct OID for all LFS

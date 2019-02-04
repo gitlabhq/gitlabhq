@@ -1,6 +1,6 @@
 .shortcut-mappings {
   font-size: 12px;
-  color: $help-shortcut-mapping-color;
+  color: $gl-gray-700;
 
   tbody:first-child tr:first-child {
     padding-top: 0;
@@ -22,7 +22,7 @@
 
   .shortcut {
     padding-right: 10px;
-    color: $help-shortcut-color;
+    color: $gl-gray-400;
     text-align: right;
     white-space: nowrap;
   }

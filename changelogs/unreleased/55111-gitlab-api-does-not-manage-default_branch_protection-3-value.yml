@@ -1,0 +1,5 @@
+---
+title: 'API: Fix default_branch_protection admin setting'
+merge_request: 24398
+author: Robert Schilling
+type: fixed

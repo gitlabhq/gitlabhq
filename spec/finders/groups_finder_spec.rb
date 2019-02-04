@@ -8,22 +8,22 @@ describe GroupsFinder do
       using RSpec::Parameterized::TableSyntax
 
       where(:user_type, :params, :results) do
-        nil | { all_available: true  } | %i(public_group user_public_group)
-        nil | { all_available: false  } | %i(public_group user_public_group)
+        nil | { all_available: true } | %i(public_group user_public_group)
+        nil | { all_available: false } | %i(public_group user_public_group)
         nil | {} | %i(public_group user_public_group)
 
-        :regular | { all_available: true  } | %i(public_group internal_group user_public_group user_internal_group
-                                                 user_private_group)
-        :regular | { all_available: false  } | %i(user_public_group user_internal_group user_private_group)
+        :regular | { all_available: true } | %i(public_group internal_group user_public_group user_internal_group
+                                                user_private_group)
+        :regular | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
         :regular | {} | %i(public_group internal_group user_public_group user_internal_group user_private_group)
 
-        :external | { all_available: true  } | %i(public_group user_public_group user_internal_group user_private_group)
-        :external | { all_available: false  } | %i(user_public_group user_internal_group user_private_group)
+        :external | { all_available: true } | %i(public_group user_public_group user_internal_group user_private_group)
+        :external | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
         :external | {} | %i(public_group user_public_group user_internal_group user_private_group)
 
-        :admin | { all_available: true  } | %i(public_group internal_group private_group user_public_group
-                                               user_internal_group user_private_group)
-        :admin | { all_available: false  } | %i(user_public_group user_internal_group user_private_group)
+        :admin | { all_available: true } | %i(public_group internal_group private_group user_public_group
+                                              user_internal_group user_private_group)
+        :admin | { all_available: false } | %i(user_public_group user_internal_group user_private_group)
         :admin | {} | %i(public_group internal_group private_group user_public_group user_internal_group
                          user_private_group)
       end

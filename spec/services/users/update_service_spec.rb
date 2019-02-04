@@ -30,6 +30,27 @@ describe Users::UpdateService do
       expect(result[:message]).to eq('Username has already been taken')
     end
 
+    it 'updates the status if status params were given' do
+      update_user(user, status: { message: "On a call" })
+
+      expect(user.status.message).to eq("On a call")
+    end
+
+    it 'does not delete the status if no status param was passed' do
+      create(:user_status, user: user, message: 'Busy!')
+
+      update_user(user, name: 'New name')
+
+      expect(user.status.message).to eq('Busy!')
+    end
+
+    it 'includes status error messages' do
+      result = update_user(user, status: { emoji: "Moo!" })
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq("Emoji is not included in the list")
+    end
+
     def update_user(user, opts)
       described_class.new(user, opts.merge(user: user)).execute
     end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class ContainerRepositoryEntity < Grape::Entity
   include RequestAwareEntity
 
-  expose :id, :path, :location
+  expose :id, :name, :path, :location, :created_at
 
   expose :tags_path do |repository|
     project_registry_repository_tags_path(project, repository, format: :json)

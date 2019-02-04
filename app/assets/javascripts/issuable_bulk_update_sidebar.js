@@ -30,7 +30,7 @@ export default class IssuableBulkUpdateSidebar {
     this.$otherFilters = $('.issues-other-filters');
     this.$checkAllContainer = $('.check-all-holder');
     this.$issueChecks = $('.issue-check');
-    this.$issuesList = $('.selected_issue');
+    this.$issuesList = $('.selected-issuable');
     this.$issuableIdsInput = $('#update_issuable_ids');
   }
 
@@ -55,7 +55,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   updateFormState() {
-    const noCheckedIssues = !$('.selected_issue:checked').length;
+    const noCheckedIssues = !$('.selected-issuable:checked').length;
 
     this.toggleSubmitButtonDisabled(noCheckedIssues);
     this.updateSelectedIssuableIds();
@@ -123,7 +123,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   static getCheckedIssueIds() {
-    const $checkedIssues = $('.selected_issue:checked');
+    const $checkedIssues = $('.selected-issuable:checked');
 
     if ($checkedIssues.length > 0) {
       return $.map($checkedIssues, value => $(value).data('id'));

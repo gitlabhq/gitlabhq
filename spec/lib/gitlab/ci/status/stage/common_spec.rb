@@ -27,7 +27,7 @@ describe Gitlab::Ci::Status::Stage::Common do
 
   context 'when user has permission to read pipeline' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it 'has details' do

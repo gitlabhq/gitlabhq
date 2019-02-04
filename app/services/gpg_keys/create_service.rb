@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GpgKeys
   class CreateService < Keys::BaseService
     def execute

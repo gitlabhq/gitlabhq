@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class PipelineVariable < ActiveRecord::Base
     extend Gitlab::Ci::Model
@@ -8,5 +10,9 @@ module Ci
     alias_attribute :secret_value, :value
 
     validates :key, uniqueness: { scope: :pipeline_id }
+
+    def hook_attrs
+      { key: key, value: value }
+    end
   end
 end

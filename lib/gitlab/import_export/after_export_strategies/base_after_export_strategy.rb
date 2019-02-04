@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     module AfterExportStrategies
       class BaseAfterExportStrategy
+        extend Gitlab::ImportExport::CommandLineUtil
         include ActiveModel::Validations
         extend Forwardable
 
@@ -24,9 +27,10 @@ module Gitlab
         end
 
         def execute(current_user, project)
-          return unless project&.export_project_path
-
           @project = project
+
+          return unless @project.export_status == :finished
+
           @current_user = current_user
 
           if invalid?
@@ -51,9 +55,12 @@ module Gitlab
         end
 
         def self.lock_file_path(project)
-          return unless project&.export_path
+          return unless project.export_path || export_file_exists?
 
-          File.join(project.export_path, AFTER_EXPORT_LOCK_FILE_NAME)
+          lock_path = project.import_export_shared.archive_path
+
+          mkdir_p(lock_path)
+          File.join(lock_path, AFTER_EXPORT_LOCK_FILE_NAME)
         end
 
         protected
@@ -76,6 +83,10 @@ module Gitlab
 
         def log_validation_errors
           errors.full_messages.each { |msg| project.import_export_shared.add_error_message(msg) }
+        end
+
+        def export_file_exists?
+          project.export_file_exists?
         end
       end
     end

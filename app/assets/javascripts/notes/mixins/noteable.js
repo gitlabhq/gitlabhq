@@ -1,15 +1,10 @@
 import * as constants from '../constants';
 
 export default {
-  props: {
-    note: {
-      type: Object,
-      required: true,
-    },
-  },
   computed: {
     noteableType() {
-      return constants.NOTEABLE_TYPE_MAPPING[this.note.noteable_type];
+      const note = this.discussion ? this.discussion.notes[0] : this.note;
+      return constants.NOTEABLE_TYPE_MAPPING[note.noteable_type];
     },
   },
 };

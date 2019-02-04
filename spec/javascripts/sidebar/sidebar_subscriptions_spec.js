@@ -6,13 +6,13 @@ import SidebarStore from '~/sidebar/stores/sidebar_store';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import Mock from './mock_data';
 
-describe('Sidebar Subscriptions', function () {
+describe('Sidebar Subscriptions', function() {
   let vm;
   let SidebarSubscriptions;
 
   beforeEach(() => {
     SidebarSubscriptions = Vue.extend(sidebarSubscriptions);
-    // Setup the stores, services, etc
+    // Set up the stores, services, etc
     // eslint-disable-next-line no-new
     new SidebarMediator(Mock.mediator);
   });

@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class CleanupAddTimezoneToIssuesClosedAt < ActiveRecord::Migration
+class CleanupAddTimezoneToIssuesClosedAt < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -13,6 +13,7 @@ class CleanupAddTimezoneToIssuesClosedAt < ActiveRecord::Migration
   end
 
   # rubocop:disable Migration/Datetime
+  # rubocop:disable Migration/UpdateLargeTable
   def down
     change_column_type_concurrently(:issues, :closed_at, :datetime)
   end

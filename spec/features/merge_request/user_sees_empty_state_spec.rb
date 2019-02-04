@@ -5,7 +5,7 @@ describe 'Merge request > User sees empty state' do
   let(:user)    { project.creator }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -19,12 +19,20 @@ describe 'Merge request > User sees empty state' do
   context 'if there are merge requests' do
     before do
       create(:merge_request, source_project: project)
-
-      visit project_merge_requests_path(project)
     end
 
     it 'does not show an empty state' do
+      visit project_merge_requests_path(project)
+
       expect(page).not_to have_selector('.empty-state')
+    end
+
+    it 'shows empty state when filter results empty' do
+      visit project_merge_requests_path(project, milestone_title: "1.0")
+
+      expect(page).to have_selector('.empty-state')
+      expect(page).to have_content('Sorry, your filter produced no results')
+      expect(page).to have_content('To widen your search, change or remove filters above')
     end
   end
 end

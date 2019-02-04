@@ -45,9 +45,31 @@ describe Gitlab::GitalyClient::RemoteService do
     end
   end
 
+  describe '#find_remote_root_ref' do
+    it 'sends an find_remote_root_ref message and returns the root ref' do
+      expect_any_instance_of(Gitaly::RemoteService::Stub)
+        .to receive(:find_remote_root_ref)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(ref: 'master'))
+
+      expect(client.find_remote_root_ref('origin')).to eq 'master'
+    end
+
+    it 'ensure ref is a valid UTF-8 string' do
+      expect_any_instance_of(Gitaly::RemoteService::Stub)
+        .to receive(:find_remote_root_ref)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(ref: "an_invalid_ref_\xE5"))
+
+      expect(client.find_remote_root_ref('origin')).to eq "an_invalid_ref_å"
+    end
+  end
+
   describe '#update_remote_mirror' do
     let(:ref_name) { 'remote_mirror_1' }
     let(:only_branches_matching) { ['my-branch', 'master'] }
+    let(:ssh_key) { 'KEY' }
+    let(:known_hosts) { 'KNOWN HOSTS' }
 
     it 'sends an update_remote_mirror message' do
       expect_any_instance_of(Gitaly::RemoteService::Stub)
@@ -55,7 +77,7 @@ describe Gitlab::GitalyClient::RemoteService do
         .with(kind_of(Enumerator), kind_of(Hash))
         .and_return(double(:update_remote_mirror_response))
 
-      client.update_remote_mirror(ref_name, only_branches_matching)
+      client.update_remote_mirror(ref_name, only_branches_matching, ssh_key: ssh_key, known_hosts: known_hosts)
     end
   end
 

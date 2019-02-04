@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 # rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/LineLength
 # rubocop:disable Metrics/ClassLength
 # rubocop:disable Metrics/BlockLength
 # rubocop:disable Style/Documentation

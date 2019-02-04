@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Defines a specific location, identified by paths line numbers and image coordinates,
 # within a specific diff, identified by start, head and base commit ids.
 module Gitlab
@@ -69,6 +71,10 @@ module Gitlab
         JSON.generate(formatter.to_h, opts)
       end
 
+      def as_json(opts = nil)
+        to_h.as_json(opts)
+      end
+
       def type
         formatter.line_age
       end
@@ -97,23 +103,27 @@ module Gitlab
         @diff_refs ||= DiffRefs.new(base_sha: base_sha, start_sha: start_sha, head_sha: head_sha)
       end
 
+      def unfolded_diff?(repository)
+        diff_file(repository)&.unfolded?
+      end
+
       def diff_file(repository)
         return @diff_file if defined?(@diff_file)
 
         @diff_file = begin
-          if RequestStore.active?
-            key = {
-              project_id: repository.project.id,
-              start_sha: start_sha,
-              head_sha: head_sha,
-              path: file_path
-            }
+          key = {
+            project_id: repository.project.id,
+            start_sha: start_sha,
+            head_sha: head_sha,
+            path: file_path
+          }
 
-            RequestStore.fetch(key) { find_diff_file(repository) }
-          else
-            find_diff_file(repository)
-          end
+          Gitlab::SafeRequestStore.fetch(key) { find_diff_file(repository) }
         end
+      end
+
+      def diff_options
+        { paths: paths, expanded: true, include_stats: false }
       end
 
       def diff_line(repository)
@@ -130,7 +140,13 @@ module Gitlab
         return unless diff_refs.complete?
         return unless comparison = diff_refs.compare_in(repository.project)
 
-        comparison.diffs(paths: paths, expanded: true).diff_files.first
+        file = comparison.diffs(diff_options).diff_files.first
+
+        # We need to unfold diff lines according to the position in order
+        # to correctly calculate the line code and trace position changes.
+        file&.unfold_diff_lines(self)
+
+        file
       end
 
       def get_formatter_class(type)

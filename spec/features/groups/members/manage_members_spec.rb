@@ -1,17 +1,18 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Manage members' do
+describe 'Groups > Members > Manage members' do
   include Select2Helper
+  include Spec::Support::Helpers::Features::ListRowsHelpers
 
   let(:user1) { create(:user, name: 'John Doe') }
   let(:user2) { create(:user, name: 'Mary Jane') }
   let(:group) { create(:group) }
 
-  background do
+  before do
     sign_in(user1)
   end
 
-  scenario 'update user to owner level', :js do
+  it 'update user to owner level', :js do
     group.add_owner(user1)
     group.add_developer(user2)
 
@@ -25,7 +26,7 @@ feature 'Groups > Members > Manage members' do
     end
   end
 
-  scenario 'add user to group', :js do
+  it 'add user to group', :js do
     group.add_owner(user1)
 
     visit group_group_members_path(group)
@@ -38,7 +39,7 @@ feature 'Groups > Members > Manage members' do
     end
   end
 
-  scenario 'do not disclose email addresses', :js do
+  it 'do not disclose email addresses', :js do
     group.add_owner(user1)
     create(:user, email: 'undisclosed_email@gitlab.com', name: "Jane 'invisible' Doe")
 
@@ -59,7 +60,7 @@ feature 'Groups > Members > Manage members' do
     expect(page).to have_content("Jane 'invisible' Doe")
   end
 
-  scenario 'remove user from group', :js do
+  it 'remove user from group', :js do
     group.add_owner(user1)
     group.add_developer(user2)
 
@@ -75,7 +76,7 @@ feature 'Groups > Members > Manage members' do
     expect(group.users).not_to include(user2)
   end
 
-  scenario 'add yourself to group when already an owner', :js do
+  it 'add yourself to group when already an owner', :js do
     group.add_owner(user1)
 
     visit group_group_members_path(group)
@@ -88,7 +89,7 @@ feature 'Groups > Members > Manage members' do
     end
   end
 
-  scenario 'invite user to group', :js do
+  it 'invite user to group', :js do
     group.add_owner(user1)
 
     visit group_group_members_path(group)
@@ -102,7 +103,7 @@ feature 'Groups > Members > Manage members' do
     end
   end
 
-  scenario 'guest can not manage other users' do
+  it 'guest can not manage other users' do
     group.add_guest(user1)
     group.add_developer(user2)
 
@@ -117,14 +118,6 @@ feature 'Groups > Members > Manage members' do
       # Can not remove user2
       expect(page).not_to have_css('a.btn-remove')
     end
-  end
-
-  def first_row
-    page.all('ul.content-list > li')[0]
-  end
-
-  def second_row
-    page.all('ul.content-list > li')[1]
   end
 
   def add_user(id, role)

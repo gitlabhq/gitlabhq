@@ -69,7 +69,8 @@ export default {
         this.loading = false;
       }
 
-      this.mediator.saveAssignees(this.field)
+      this.mediator
+        .saveAssignees(this.field)
         .then(setLoadingFalse.bind(this))
         .catch(() => {
           setLoadingFalse();
@@ -90,12 +91,12 @@ export default {
     />
     <assignees
       v-if="!store.isFetching.assignees"
-      class="value"
       :root-path="store.rootPath"
       :users="store.assignees"
       :editable="store.editable"
-      @assign-self="assignSelf"
       :issuable-type="issuableType"
+      class="value"
+      @assign-self="assignSelf"
     />
   </div>
 </template>

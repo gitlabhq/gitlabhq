@@ -3,6 +3,11 @@
 cd $(dirname $0)/..
 app_root=$(pwd)
 
+# Switch to experimental PUMA configuration
+if [ -n "${EXPERIMENTAL_PUMA}" ]; then
+  exec bin/web_puma "$@"
+fi
+
 unicorn_pidfile="$app_root/tmp/pids/unicorn.pid"
 unicorn_config="$app_root/config/unicorn.rb"
 unicorn_cmd="bundle exec unicorn_rails -c $unicorn_config -E $RAILS_ENV"

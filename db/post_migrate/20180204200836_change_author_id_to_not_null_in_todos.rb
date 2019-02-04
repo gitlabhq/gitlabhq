@@ -1,4 +1,4 @@
-class ChangeAuthorIdToNotNullInTodos < ActiveRecord::Migration
+class ChangeAuthorIdToNotNullInTodos < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   class Todo < ActiveRecord::Base

@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class RemoveSoftRemovedObjects < ActiveRecord::Migration
+class RemoveSoftRemovedObjects < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -78,12 +78,12 @@ class RemoveSoftRemovedObjects < ActiveRecord::Migration
   MODELS = [Issue, MergeRequest, CiPipelineSchedule, CiTrigger].freeze
 
   def up
-    disable_statement_timeout
-
-    remove_personal_routes
-    remove_personal_namespaces
-    remove_group_namespaces
-    remove_simple_soft_removed_rows
+    disable_statement_timeout do
+      remove_personal_routes
+      remove_personal_namespaces
+      remove_group_namespaces
+      remove_simple_soft_removed_rows
+    end
   end
 
   def down

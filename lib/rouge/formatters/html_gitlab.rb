@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Rouge
   module Formatters
     class HTMLGitlab < Rouge::Formatters::HTML
@@ -11,7 +13,7 @@ module Rouge
         @tag = tag
       end
 
-      def stream(tokens, &b)
+      def stream(tokens)
         is_first = true
         token_lines(tokens) do |line|
           yield "\n" unless is_first

@@ -1,39 +1,44 @@
-/* eslint-disable comma-dangle, space-before-function-paren, no-new */
+/* eslint-disable no-new */
 
 import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../../flash';
-import { __ } from '../../locale';
+import { sprintf, __ } from '../../locale';
 import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
-import assigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
-import assignees from '../../sidebar/components/assignees/assignees.vue';
+import AssigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
+import Assignees from '../../sidebar/components/assignees/assignees.vue';
 import DueDateSelectors from '../../due_date_select';
-import './sidebar/remove_issue';
+import RemoveBtn from './sidebar/remove_issue.vue';
 import IssuableContext from '../../issuable_context';
 import LabelsSelect from '../../labels_select';
-import subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
+import Subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
 import MilestoneSelect from '../../milestone_select';
+import boardsStore from '../stores/boards_store';
 
-const Store = gl.issueBoards.BoardsStore;
-
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
-gl.issueBoards.BoardSidebar = Vue.extend({
+export default Vue.extend({
+  components: {
+    AssigneeTitle,
+    Assignees,
+    RemoveBtn,
+    Subscriptions,
+  },
   props: {
-    currentUser: Object
+    currentUser: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
-      detail: Store.detail,
+      detail: boardsStore.detail,
       issue: {},
       list: {},
       loadingAssignees: false,
     };
   },
   computed: {
-    showSidebar () {
+    showSidebar() {
       return Object.keys(this.issue).length;
     },
     milestoneTitle() {
@@ -42,10 +47,24 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     canRemove() {
       return !this.list.preset;
     },
+    hasLabels() {
+      return this.issue.labels && this.issue.labels.length;
+    },
+    labelDropdownTitle() {
+      return this.hasLabels
+        ? sprintf(__('%{firstLabel} +%{labelCount} more'), {
+            firstLabel: this.issue.labels[0].title,
+            labelCount: this.issue.labels.length - 1,
+          })
+        : __('Label');
+    },
+    selectedLabels() {
+      return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
+    },
   },
   watch: {
     detail: {
-      handler () {
+      handler() {
         if (this.issue.id !== this.detail.issue.id) {
           $('.block.assignee')
             .find('input:not(.js-vue)[name="issue[assignee_ids][]"]')
@@ -54,50 +73,19 @@ gl.issueBoards.BoardSidebar = Vue.extend({
             });
 
           $('.js-issue-board-sidebar', this.$el).each((i, el) => {
-            $(el).data('glDropdown').clearMenu();
+            $(el)
+              .data('glDropdown')
+              .clearMenu();
           });
         }
 
         this.issue = this.detail.issue;
         this.list = this.detail.list;
       },
-      deep: true
+      deep: true,
     },
   },
-  methods: {
-    closeSidebar () {
-      this.detail.issue = {};
-    },
-    assignSelf () {
-      // Notify gl dropdown that we are now assigning to current user
-      this.$refs.assigneeBlock.dispatchEvent(new Event('assignYourself'));
-
-      this.addAssignee(this.currentUser);
-      this.saveAssignees();
-    },
-    removeAssignee (a) {
-      gl.issueBoards.BoardsStore.detail.issue.removeAssignee(a);
-    },
-    addAssignee (a) {
-      gl.issueBoards.BoardsStore.detail.issue.addAssignee(a);
-    },
-    removeAllAssignees () {
-      gl.issueBoards.BoardsStore.detail.issue.removeAllAssignees();
-    },
-    saveAssignees () {
-      this.loadingAssignees = true;
-
-      gl.issueBoards.BoardsStore.detail.issue.update()
-        .then(() => {
-          this.loadingAssignees = false;
-        })
-        .catch(() => {
-          this.loadingAssignees = false;
-          Flash(__('An error occurred while saving assignees'));
-        });
-    },
-  },
-  created () {
+  created() {
     // Get events from glDropdown
     eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
     eventHub.$on('sidebar.addAssignee', this.addAssignee);
@@ -110,17 +98,45 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     eventHub.$off('sidebar.removeAllAssignees', this.removeAllAssignees);
     eventHub.$off('sidebar.saveAssignees', this.saveAssignees);
   },
-  mounted () {
+  mounted() {
     new IssuableContext(this.currentUser);
     new MilestoneSelect();
     new DueDateSelectors();
     new LabelsSelect();
     new Sidebar();
   },
-  components: {
-    assigneeTitle,
-    assignees,
-    removeBtn: gl.issueBoards.RemoveIssueBtn,
-    subscriptions,
+  methods: {
+    closeSidebar() {
+      this.detail.issue = {};
+    },
+    assignSelf() {
+      // Notify gl dropdown that we are now assigning to current user
+      this.$refs.assigneeBlock.dispatchEvent(new Event('assignYourself'));
+
+      this.addAssignee(this.currentUser);
+      this.saveAssignees();
+    },
+    removeAssignee(a) {
+      boardsStore.detail.issue.removeAssignee(a);
+    },
+    addAssignee(a) {
+      boardsStore.detail.issue.addAssignee(a);
+    },
+    removeAllAssignees() {
+      boardsStore.detail.issue.removeAllAssignees();
+    },
+    saveAssignees() {
+      this.loadingAssignees = true;
+
+      boardsStore.detail.issue
+        .update()
+        .then(() => {
+          this.loadingAssignees = false;
+        })
+        .catch(() => {
+          this.loadingAssignees = false;
+          Flash(__('An error occurred while saving assignees'));
+        });
+    },
   },
 });

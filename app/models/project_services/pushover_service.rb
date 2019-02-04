@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PushoverService < Service
   BASE_URI = 'https://api.pushover.net/1'.freeze
 
@@ -79,7 +81,7 @@ class PushoverService < Service
       end
 
     if data[:total_commits_count] > 0
-      message << "\nTotal commits count: #{data[:total_commits_count]}"
+      message = [message, "Total commits count: #{data[:total_commits_count]}"].join("\n")
     end
 
     pushover_data = {

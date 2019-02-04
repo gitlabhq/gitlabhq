@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # `Redcarpet` markdown engine for GitLab's Banzai markdown filter.
 # This module is used in Banzai::Filter::MarkdownFilter.
 # Used gem is `redcarpet` which is a ruby library for markdown processing.
@@ -18,7 +20,7 @@ module Banzai
           tables:              true
         }.freeze
 
-        def initialize
+        def initialize(context = nil)
           html_renderer = Banzai::Renderer::Redcarpet::HTML.new
           @renderer = ::Redcarpet::Markdown.new(html_renderer, OPTIONS)
         end

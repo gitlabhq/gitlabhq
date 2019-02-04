@@ -30,7 +30,7 @@ Bitbucket.org account
 
 ## Project services
 
-Integration with services such as Campfire, Flowdock, Gemnasium, HipChat,
+Integration with services such as Campfire, Flowdock, HipChat,
 Pivotal Tracker, and Slack are available in the form of a [Project Service][].
 
 [Project Service]: ../user/project/integrations/project_services.md

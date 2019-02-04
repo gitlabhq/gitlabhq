@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 class ClustersFinder
-  def initialize(project, user, scope)
-    @project = project
+  def initialize(clusterable, user, scope)
+    @clusterable = clusterable
     @user = user
     @scope = scope || :active
   end
 
   def execute
-    clusters = project.clusters
+    clusters = clusterable.clusters
     filter_by_scope(clusters)
   end
 
   private
 
-  attr_reader :project, :user, :scope
+  attr_reader :clusterable, :user, :scope
 
   def filter_by_scope(clusters)
     case scope.to_sym

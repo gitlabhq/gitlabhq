@@ -1,19 +1,24 @@
+# frozen_string_literal: true
+
 class PreviewMarkdownService < BaseService
   def execute
     text, commands = explain_quick_actions(params[:text])
     users = find_user_references(text)
+    suggestions = find_suggestions(text)
 
     success(
       text: text,
       users: users,
-      commands: commands.join(' ')
+      suggestions: suggestions,
+      commands: commands.join(' '),
+      markdown_engine: markdown_engine
     )
   end
 
   private
 
   def explain_quick_actions(text)
-    return text, [] unless %w(Issue MergeRequest).include?(commands_target_type)
+    return text, [] unless %w(Issue MergeRequest Commit).include?(commands_target_type)
 
     quick_actions_service = QuickActions::InterpretService.new(project, current_user)
     quick_actions_service.explain(text, find_commands_target)
@@ -25,14 +30,16 @@ class PreviewMarkdownService < BaseService
     extractor.users.map(&:username)
   end
 
+  def find_suggestions(text)
+    return [] unless params[:preview_suggestions]
+
+    Banzai::SuggestionsParser.parse(text)
+  end
+
   def find_commands_target
-    if commands_target_id.present?
-      finder = commands_target_type == 'Issue' ? IssuesFinder : MergeRequestsFinder
-      finder.new(current_user, project_id: project.id).find(commands_target_id)
-    else
-      collection = commands_target_type == 'Issue' ? project.issues : project.merge_requests
-      collection.build
-    end
+    QuickActions::TargetService
+      .new(project, current_user)
+      .execute(commands_target_type, commands_target_id)
   end
 
   def commands_target_type
@@ -41,5 +48,13 @@ class PreviewMarkdownService < BaseService
 
   def commands_target_id
     params[:quick_actions_target_id]
+  end
+
+  def markdown_engine
+    if params[:legacy_render]
+      :redcarpet
+    else
+      CacheMarkdownField::MarkdownEngine.from_version(params[:markdown_version].to_i)
+    end
   end
 end

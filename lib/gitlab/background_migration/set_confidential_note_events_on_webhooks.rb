@@ -3,8 +3,8 @@
 
 module Gitlab
   module BackgroundMigration
-    # Ensures hooks which previously recieved all notes events continue
-    # to recieve confidential ones.
+    # Ensures hooks which previously received all notes events continue
+    # to receive confidential ones.
     class SetConfidentialNoteEventsOnWebhooks
       class WebHook < ActiveRecord::Base
         self.table_name = 'web_hooks'

@@ -147,18 +147,46 @@ describe('IDE store getters', () => {
       const commitTitle = 'Example commit title';
       const localGetters = {
         currentProject: {
-          branches: {
-            'example-branch': {
-              commit: {
-                title: commitTitle,
-              },
-            },
+          name: 'test-project',
+        },
+        currentBranch: {
+          commit: {
+            title: commitTitle,
           },
         },
       };
       localState.currentBranchId = 'example-branch';
 
       expect(getters.lastCommit(localState, localGetters).title).toBe(commitTitle);
+    });
+  });
+
+  describe('currentBranch', () => {
+    it('returns current projects branch', () => {
+      const localGetters = {
+        currentProject: {
+          branches: {
+            master: {
+              name: 'master',
+            },
+          },
+        },
+      };
+      localState.currentBranchId = 'master';
+
+      expect(getters.currentBranch(localState, localGetters)).toEqual({
+        name: 'master',
+      });
+    });
+  });
+
+  describe('packageJson', () => {
+    it('returns package.json entry', () => {
+      localState.entries['package.json'] = { name: 'package.json' };
+
+      expect(getters.packageJson(localState)).toEqual({
+        name: 'package.json',
+      });
     });
   });
 });

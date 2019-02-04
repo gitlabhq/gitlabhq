@@ -16,7 +16,7 @@ describe RecordsUploads do
   end
 
   def upload_fixture(filename)
-    fixture_file_upload(Rails.root.join('spec', 'fixtures', filename))
+    fixture_file_upload(File.join('spec', 'fixtures', filename))
   end
 
   describe 'callbacks' do

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Task Lists' do
+describe 'Task Lists' do
   include Warden::Test::Helpers
 
   let(:project) { create(:project, :repository) }
@@ -36,7 +36,7 @@ feature 'Task Lists' do
     MARKDOWN
   end
 
-  let(:nested_tasks_markdown) do
+  let(:nested_tasks_markdown_redcarpet) do
     <<-EOT.strip_heredoc
     - [ ] Task a
       - [x] Task a.1
@@ -49,10 +49,23 @@ feature 'Task Lists' do
     EOT
   end
 
+  let(:nested_tasks_markdown) do
+    <<-EOT.strip_heredoc
+    - [ ] Task a
+      - [x] Task a.1
+      - [ ] Task a.2
+    - [ ] Task b
+
+    1. [ ] Task 1
+       1. [ ] Task 1.1
+       1. [x] Task 1.2
+    EOT
+  end
+
   before do
     Warden.test_mode!
 
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_guest(user2)
 
     login_as(user)
@@ -141,13 +154,11 @@ feature 'Task Lists' do
       end
     end
 
-    describe 'nested tasks', :js do
-      let(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project) }
-
+    shared_examples 'shared nested tasks' do
       before do
+        allow(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('Redcarpet')
         visit_issue(project, issue)
       end
-
       it 'renders' do
         expect(page).to have_selector('ul.task-list',      count: 2)
         expect(page).to have_selector('li.task-list-item', count: 7)
@@ -159,8 +170,11 @@ feature 'Task Lists' do
         expect(page).to have_content("2 of 7 tasks completed")
 
         page.find('li.task-list-item', text: 'Task b').find('input').click
+        wait_for_requests
         page.find('li.task-list-item ul li.task-list-item', text: 'Task a.2').find('input').click
+        wait_for_requests
         page.find('li.task-list-item ol li.task-list-item', text: 'Task 1.1').find('input').click
+        wait_for_requests
 
         expect(page).to have_content("5 of 7 tasks completed")
 
@@ -169,6 +183,29 @@ feature 'Task Lists' do
         expect(page).to have_content('marked the task Task b as complete')
         expect(page).to have_content('marked the task Task a.2 as complete')
         expect(page).to have_content('marked the task Task 1.1 as complete')
+      end
+    end
+
+    describe 'nested tasks', :js do
+      let(:cache_version) { CacheMarkdownField::CACHE_COMMONMARK_VERSION }
+      let!(:issue) do
+        create(:issue, description: nested_tasks_markdown, author: user, project: project,
+                       cached_markdown_version: cache_version)
+      end
+
+      before do
+        visit_issue(project, issue)
+      end
+
+      context 'with Redcarpet' do
+        let(:cache_version) { CacheMarkdownField::CACHE_REDCARPET_VERSION }
+        let(:nested_tasks_markdown) { nested_tasks_markdown_redcarpet }
+
+        it_behaves_like 'shared nested tasks'
+      end
+
+      context 'with CommonMark' do
+        it_behaves_like 'shared nested tasks'
       end
     end
   end

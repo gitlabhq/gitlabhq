@@ -1,14 +1,13 @@
 <script>
 /* eslint-disable vue/require-default-prop */
-import './issue_card_inner';
+import IssueCardInner from './issue_card_inner.vue';
 import eventHub from '../eventhub';
-
-const Store = gl.issueBoards.BoardsStore;
+import boardsStore from '../stores/boards_store';
 
 export default {
   name: 'BoardsIssueCard',
   components: {
-    'issue-card-inner': gl.issueBoards.IssueCardInner,
+    IssueCardInner,
   },
   props: {
     list: {
@@ -42,7 +41,7 @@ export default {
   data() {
     return {
       showDetail: false,
-      detailIssue: Store.detail,
+      detailIssue: boardsStore.detail,
     };
   },
   computed: {
@@ -63,11 +62,11 @@ export default {
       if (this.showDetail) {
         this.showDetail = false;
 
-        if (Store.detail.issue && Store.detail.issue.id === this.issue.id) {
+        if (boardsStore.detail.issue && boardsStore.detail.issue.id === this.issue.id) {
           eventHub.$emit('clearDetailIssue');
         } else {
           eventHub.$emit('newDetailIssue', this.issue);
-          Store.detail.list = this.list;
+          boardsStore.detail.list = this.list;
         }
       }
     },
@@ -77,17 +76,18 @@ export default {
 
 <template>
   <li
-    class="board-card"
     :class="{
       'user-can-drag': !disabled && issue.id,
       'is-disabled': disabled || !issue.id,
-      'is-active': issueDetailVisible
+      'is-active': issueDetailVisible,
     }"
     :index="index"
     :data-issue-id="issue.id"
+    class="board-card"
     @mousedown="mouseDown"
     @mousemove="mouseMove"
-    @mouseup="showIssue($event)">
+    @mouseup="showIssue($event)"
+  >
     <issue-card-inner
       :list="list"
       :issue="issue"

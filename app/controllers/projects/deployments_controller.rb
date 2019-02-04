@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class Projects::DeploymentsController < Projects::ApplicationController
   before_action :authorize_read_environment!
   before_action :authorize_read_deployment!
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     deployments = environment.deployments.reorder(created_at: :desc)
     deployments = deployments.where('created_at > ?', params[:after].to_time) if params[:after]&.to_time
@@ -9,6 +12,7 @@ class Projects::DeploymentsController < Projects::ApplicationController
     render json: { deployments: DeploymentSerializer.new(project: project)
                                   .represent_concise(deployments) }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def metrics
     return render_404 unless deployment.has_metrics?
@@ -41,9 +45,11 @@ class Projects::DeploymentsController < Projects::ApplicationController
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def deployment
     @deployment ||= environment.deployments.find_by(iid: params[:id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def environment
     @environment ||= project.environments.find(params[:environment_id])

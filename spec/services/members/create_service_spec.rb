@@ -6,7 +6,7 @@ describe Members::CreateService do
   let(:project_user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   it 'adds user to members' do
@@ -34,6 +34,15 @@ describe Members::CreateService do
 
     expect(result[:status]).to eq(:error)
     expect(result[:message]).to be_present
+    expect(project.users).not_to include project_user
+  end
+
+  it 'does not add an invalid member' do
+    params = { user_ids: project_user.id.to_s, access_level: -1 }
+    result = described_class.new(user, params).execute(project)
+
+    expect(result[:status]).to eq(:error)
+    expect(result[:message]).to include(project_user.username)
     expect(project.users).not_to include project_user
   end
 end

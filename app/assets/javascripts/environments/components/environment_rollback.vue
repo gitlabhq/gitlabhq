@@ -1,57 +1,67 @@
 <script>
-  /**
-  * Renders Rollback or Re deploy button in environments table depending
-  * of the provided property `isLastDeployment`.
-  *
-  * Makes a post request when the button is clicked.
-  */
-  import eventHub from '../event_hub';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+/**
+ * Renders Rollback or Re deploy button in environments table depending
+ * of the provided property `isLastDeployment`.
+ *
+ * Makes a post request when the button is clicked.
+ */
+import { s__ } from '~/locale';
+import { GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
+import eventHub from '../event_hub';
 
-  export default {
-    components: {
-      loadingIcon,
+export default {
+  components: {
+    Icon,
+    GlLoadingIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  props: {
+    retryUrl: {
+      type: String,
+      default: '',
     },
-    props: {
-      retryUrl: {
-        type: String,
-        default: '',
-      },
 
-      isLastDeployment: {
-        type: Boolean,
-        default: true,
-      },
+    isLastDeployment: {
+      type: Boolean,
+      default: true,
     },
-    data() {
-      return {
-        isLoading: false,
-      };
-    },
-    methods: {
-      onClick() {
-        this.isLoading = true;
+  },
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
 
-        eventHub.$emit('postAction', this.retryUrl);
-      },
+  computed: {
+    title() {
+      return this.isLastDeployment
+        ? s__('Environments|Re-deploy to environment')
+        : s__('Environments|Rollback environment');
     },
-  };
+  },
+
+  methods: {
+    onClick() {
+      this.isLoading = true;
+
+      eventHub.$emit('postAction', { endpoint: this.retryUrl });
+    },
+  },
+};
 </script>
 <template>
   <button
+    v-gl-tooltip
+    :disabled="isLoading"
+    :title="title"
     type="button"
     class="btn d-none d-sm-none d-md-block"
     @click="onClick"
-    :disabled="isLoading"
   >
-
-    <span v-if="isLastDeployment">
-      {{ s__("Environments|Re-deploy") }}
-    </span>
-    <span v-else>
-      {{ s__("Environments|Rollback") }}
-    </span>
-
-    <loading-icon v-if="isLoading" />
+    <icon v-if="isLastDeployment" name="repeat" /> <icon v-else name="redo" />
+    <gl-loading-icon v-if="isLoading" />
   </button>
 </template>

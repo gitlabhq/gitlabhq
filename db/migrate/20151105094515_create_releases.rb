@@ -1,5 +1,5 @@
 # rubocop:disable all
-class CreateReleases < ActiveRecord::Migration
+class CreateReleases < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module GraphHelper
   def refs(repo, commit)
-    refs = commit.ref_names(repo).join(' ')
+    refs = [commit.ref_names(repo).join(' ')]
 
     # append note count
     notes_count = @graph.notes[commit.id]
     refs << "[#{pluralize(notes_count, 'note')}]" if notes_count > 0
 
-    refs
+    refs.join
   end
 
   def parents_zip_spaces(parents, parent_spaces)

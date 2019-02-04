@@ -244,7 +244,9 @@ module Ci
 
       context 'when first build is stalled' do
         before do
-          pending_job.update(lock_version: 0)
+          allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!).and_call_original
+          allow_any_instance_of(Ci::RegisterJobService).to receive(:assign_runner!)
+            .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
         end
 
         subject { described_class.new(specific_runner).execute }
@@ -351,6 +353,38 @@ module Ci
         end
       end
 
+      context 'runner feature set is verified' do
+        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline) }
+
+        before do
+          expect_any_instance_of(Ci::Build).to receive(:runner_required_feature_names) do
+            [:runner_required_feature]
+          end
+        end
+
+        subject { execute(specific_runner, params) }
+
+        context 'when feature is missing by runner' do
+          let(:params) { {} }
+
+          it 'does not pick the build and drops the build' do
+            expect(subject).to be_nil
+            expect(pending_job.reload).to be_failed
+            expect(pending_job).to be_runner_unsupported
+          end
+        end
+
+        context 'when feature is supported by runner' do
+          let(:params) do
+            { info: { features: { runner_required_feature: true } } }
+          end
+
+          it 'does pick job' do
+            expect(subject).not_to be_nil
+          end
+        end
+      end
+
       context 'when "dependencies" keyword is specified' do
         shared_examples 'not pick' do
           it 'does not pick the build and drops the build' do
@@ -403,6 +437,7 @@ module Ci
 
             it { expect(subject).to eq(pending_job) }
           end
+
           context 'when artifacts of depended job has been expired' do
             let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
@@ -425,7 +460,12 @@ module Ci
         end
 
         let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
-        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['test'] } ) }
+
+        let!(:pending_job) do
+          create(:ci_build, :pending,
+            pipeline: pipeline, stage_idx: 1,
+            options: { script: ["bash"], dependencies: ['test'] })
+        end
 
         subject { execute(specific_runner) }
 
@@ -443,6 +483,20 @@ module Ci
           end
 
           it_behaves_like 'validation is not active'
+        end
+      end
+
+      context 'when build is degenerated' do
+        let!(:pending_job) { create(:ci_build, :pending, :degenerated, pipeline: pipeline) }
+
+        subject { execute(specific_runner, {}) }
+
+        it 'does not pick the build and drops the build' do
+          expect(subject).to be_nil
+
+          pending_job.reload
+          expect(pending_job).to be_failed
+          expect(pending_job).to be_archived_failure
         end
       end
     end
@@ -548,8 +602,21 @@ module Ci
       end
     end
 
-    def execute(runner)
-      described_class.new(runner).execute.build
+    context 'when runner_session params are' do
+      it 'present sets runner session configuration in the build' do
+        runner_session_params = { session: { 'url' => 'https://example.com' } }
+
+        expect(execute(specific_runner, runner_session_params).runner_session.attributes)
+          .to include(runner_session_params[:session])
+      end
+
+      it 'not present it does not configure the runner session' do
+        expect(execute(specific_runner).runner_session).to be_nil
+      end
+    end
+
+    def execute(runner, params = {})
+      described_class.new(runner).execute(params).build
     end
   end
 end

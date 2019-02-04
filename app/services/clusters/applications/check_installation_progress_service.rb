@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class CheckInstallationProgressService < BaseHelmService
@@ -12,8 +14,9 @@ module Clusters
         else
           check_timeout
         end
-      rescue Kubeclient::HttpError => ke
-        app.make_errored!("Kubernetes error: #{ke.message}") unless app.errored?
+      rescue Kubeclient::HttpError => e
+        log_error(e)
+        app.make_errored!("Kubernetes error: #{e.error_code}") unless app.errored?
       end
 
       private
@@ -25,17 +28,13 @@ module Clusters
       end
 
       def on_failed
-        app.make_errored!(installation_errors || 'Installation silently failed')
-      ensure
-        remove_installation_pod
+        app.make_errored!("Installation failed. Check pod logs for #{install_command.pod_name} for more details.")
       end
 
       def check_timeout
         if timeouted?
           begin
-            app.make_errored!('Installation timeouted')
-          ensure
-            remove_installation_pod
+            app.make_errored!("Installation timed out. Check pod logs for #{install_command.pod_name} for more details.")
           end
         else
           ClusterWaitForAppInstallationWorker.perform_in(
@@ -48,17 +47,15 @@ module Clusters
       end
 
       def remove_installation_pod
-        helm_api.delete_installation_pod!(install_command.pod_name)
-      rescue
-        # no-op
+        helm_api.delete_pod!(install_command.pod_name)
       end
 
       def installation_phase
-        helm_api.installation_status(install_command.pod_name)
+        helm_api.status(install_command.pod_name)
       end
 
       def installation_errors
-        helm_api.installation_log(install_command.pod_name)
+        helm_api.log(install_command.pod_name)
       end
     end
   end

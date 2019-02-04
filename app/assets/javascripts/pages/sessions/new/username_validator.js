@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, consistent-return, class-methods-use-this, arrow-parens, no-param-reassign, max-len */
+/* eslint-disable consistent-return, class-methods-use-this */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -22,10 +22,10 @@ export default class UsernameValidator {
       available: false,
       valid: false,
       pending: false,
-      empty: true
+      empty: true,
     };
 
-    const debounceTimeout = _.debounce((username) => {
+    const debounceTimeout = _.debounce(username => {
       this.validateUsername(username);
     }, debounceTimeoutDuration);
 
@@ -62,12 +62,12 @@ export default class UsernameValidator {
       return this.setPendingState();
     }
 
-    if (!this.state.available) {
-      return this.setUnavailableState();
-    }
-
     if (!this.state.valid) {
       return this.setInvalidState();
+    }
+
+    if (!this.state.available) {
+      return this.setUnavailableState();
     }
   }
 
@@ -81,7 +81,8 @@ export default class UsernameValidator {
       this.state.pending = true;
       this.state.available = false;
       this.renderState();
-      axios.get(`${gon.relative_url_root}/users/${username}/exists`)
+      axios
+        .get(`${gon.relative_url_root}/users/${username}/exists`)
         .then(({ data }) => this.setAvailabilityState(data.exists))
         .catch(() => flash(__('An error occurred while validating username')));
     }
@@ -89,7 +90,6 @@ export default class UsernameValidator {
 
   setAvailabilityState(usernameTaken) {
     if (usernameTaken) {
-      this.state.valid = false;
       this.state.available = false;
     } else {
       this.state.available = true;
@@ -101,8 +101,7 @@ export default class UsernameValidator {
   clearFieldValidationState() {
     this.inputElement.siblings('p').hide();
 
-    this.inputElement.removeClass(invalidInputClass)
-      .removeClass(successInputClass);
+    this.inputElement.removeClass(invalidInputClass).removeClass(successInputClass);
   }
 
   setUnavailableState() {

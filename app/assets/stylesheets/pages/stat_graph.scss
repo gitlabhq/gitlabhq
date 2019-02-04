@@ -5,7 +5,7 @@
 }
 
 .area {
-  fill: $stat-graph-area-fill;
+  fill: $green-500;
   fill-opacity: 0.5;
 }
 
@@ -54,7 +54,7 @@
     }
 
     .area-contributor {
-      fill: $stat-graph-orange-fill;
+      fill: $orange-500;
     }
   }
 }

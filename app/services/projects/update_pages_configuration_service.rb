@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class UpdatePagesConfigurationService < BaseService
     attr_reader :project
@@ -19,7 +21,9 @@ module Projects
     def pages_config
       {
         domains: pages_domains_config,
-        https_only: project.pages_https_only?
+        https_only: project.pages_https_only?,
+        id: project.project_id,
+        access_control: !project.public_pages?
       }
     end
 
@@ -29,7 +33,9 @@ module Projects
           domain: domain.domain,
           certificate: domain.certificate,
           key: domain.key,
-          https_only: project.pages_https_only? && domain.https?
+          https_only: project.pages_https_only? && domain.https?,
+          id: project.project_id,
+          access_control: !project.public_pages?
         }
       end
     end

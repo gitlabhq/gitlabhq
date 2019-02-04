@@ -1,4 +1,4 @@
-class MigrateStagesStatuses < ActiveRecord::Migration
+class MigrateStagesStatuses < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -26,8 +26,9 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   end
 
   def down
-    disable_statement_timeout
-
-    update_column_in_batches(:ci_stages, :status, nil)
+    disable_statement_timeout do
+      # rubocop:disable Migration/UpdateLargeTable
+      update_column_in_batches(:ci_stages, :status, nil)
+    end
   end
 end

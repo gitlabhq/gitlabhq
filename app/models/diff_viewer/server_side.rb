@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DiffViewer
   module ServerSide
     extend ActiveSupport::Concern
@@ -21,6 +23,18 @@ module DiffViewer
       return :server_side_but_stored_externally if diff_file.stored_externally?
 
       super
+    end
+
+    private
+
+    def render_error_reason
+      return super unless render_error == :server_side_but_stored_externally
+
+      if diff_file.external_storage == :lfs
+        _('it is stored in LFS')
+      else
+        _('it is stored externally')
+      end
     end
   end
 end

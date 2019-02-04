@@ -11,7 +11,7 @@ You can leave a comment in the following places:
 - commit diffs
 
 The comment area supports [Markdown] and [quick actions]. One can edit their
-own comment at any time, and anyone with [Master access level][permissions] or
+own comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
 You could also reply to the notification email in order to reply to a comment,
@@ -23,9 +23,9 @@ in the form of a resolvable or threaded discussion.
 
 ## Resolvable discussions
 
->**Notes:**
-- The main feature was [introduced][ce-5022] in GitLab 8.11.
-- Resolvable discussions can be added only to merge request diffs.
+> **Notes:**
+> - The main feature was [introduced][ce-5022] in GitLab 8.11.
+> - Resolvable discussions can be added only to merge request diffs.
 
 Discussion resolution helps keep track of progress during planning or code review.
 Resolving comments prevents you from forgetting to address feedback and lets you
@@ -253,7 +253,7 @@ to newer issues or merge requests.
 - The people participating in the discussion are trolling, abusive, or otherwise
 being unproductive.
 
-In these cases, a user with Master permissions or higher in the project can lock (and unlock)
+In these cases, a user with Maintainer permissions or higher in the project can lock (and unlock)
 an issue or a merge request, using the "Lock" section in the sidebar:
 
 | Unlock | Lock |
@@ -271,6 +271,73 @@ edit existing comments. Non-team members are restricted from adding or editing c
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
 
+Additionally locked issues can not be reopened.
+
+## Filtering notes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26723) in GitLab 11.5. 
+
+For issues with many comments like activity notes and user comments, sometimes 
+finding useful information can be hard. There is a way to filter comments from single notes and discussions for merge requests and issues.  
+
+From a merge request's **Discussion** tab, or from an epic/issue overview, find the filter's dropdown menu on the right side of the page, from which you can choose one of the following options:
+
+- **Show all activity**: displays all user comments and system notes
+(issue updates, mentions from other issues, changes to the description, etc).
+- **Show comments only**: only displays user comments in the list.
+- **Show history only**: only displays activity notes. 
+
+![Notes filters dropdown options](img/index_notes_filters.png)
+
+Once you select one of the filters in a given issue or MR, GitLab will save
+your preference, so that it will persist when you visit the same page again
+from any device you're logged into.
+
+## Suggest Changes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
+
+As a reviewer, you're able to suggest code changes with a simple 
+markdown syntax in Merge Request Diff discussions. Then, the
+Merge Request author (or other users with appropriate 
+[permission](../permissions.md)) is able to apply these
+suggestions with a click, which will generate a commit in 
+the Merge Request authored by the user that applied them.
+
+1. Choose a line of code to be changed, add a new comment, then click
+on the **Insert suggestion** icon in the toolbar:
+
+    ![Add a new comment](img/insert_suggestion.png)
+    
+    > **Note:**
+    The suggestion will only affect the commented line. Multi-line
+    suggestions are currently not supported. Will be introduced by 
+    [#53310](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310).
+
+1. In the comment, add your suggestion to the pre-populated code block:
+
+    ![Add a suggestion into a code block tagged properly](img/make_suggestion.png)
+
+1. Click **Comment**.
+
+    The suggestions in the comment can be applied by the merge request author
+    directly from the merge request:
+
+    ![Apply suggestions](img/suggestion.png)
+
+    > **Note:**
+    Discussions are _not_ automatically resolved. Will be introduced by 
+    [#54405](https://gitlab.com/gitlab-org/gitlab-ce/issues/54405).
+    
+Once the author applies a suggestion, it will be marked with the **Applied** label,
+and GitLab will create a new commit with the message `Apply suggestion to <file-name>`
+and push the suggested change directly into the codebase in the merge request's branch.
+[Developer permission](../permissions.md) is required to do so.
+
+> **Note:**
+Custom commit messages will be introduced by
+[#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
+
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
 [ce-7527]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7527
@@ -279,7 +346,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 [ce-14053]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14053
 [ce-14061]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14061
 [ce-14531]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14531
-[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/31847
+[ce-31847]: https://gitlab.com/gitlab-org/gitlab-ce/issues/31847
 [resolve-discussion-button]: img/resolve_discussion_button.png
 [resolve-comment-button]: img/resolve_comment_button.png
 [discussion-view]: img/discussion_view.png

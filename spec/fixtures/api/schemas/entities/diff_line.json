@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "required": ["type"],
+  "properties": {
+    "line_code": { "type": ["string", "null"] },
+    "type": { "type": ["string", "null"] },
+    "old_line": { "type": ["integer", "null"] },
+    "new_line": { "type": ["integer", "null"] },
+    "text": { "type": ["string"] },
+    "rich_text": { "type": ["string"] },
+    "meta_data": { "type": ["object", "null"] },
+    "can_receive_suggestion": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

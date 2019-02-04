@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::ChatNamesController < Profiles::ApplicationController
   before_action :chat_name_token, only: [:new]
   before_action :chat_name_params, only: [:new, :create, :deny]
@@ -39,7 +41,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
       flash[:alert] = "Could not delete chat nickname #{@chat_name.chat_name}."
     end
 
-    redirect_to profile_chat_names_path, status: 302
+    redirect_to profile_chat_names_path, status: :found
   end
 
   private

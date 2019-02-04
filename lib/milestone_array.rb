@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MilestoneArray
   class << self
     def sort(array, sort_method)

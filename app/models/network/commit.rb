@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Network
   class Commit
     include ActionView::Helpers::TagHelper
@@ -11,12 +13,12 @@ module Network
       @parent_spaces = []
     end
 
-    def method_missing(m, *args, &block)
-      @commit.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+    def method_missing(msg, *args, &block)
+      @commit.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def space
-      if @spaces.size > 0
+      if @spaces.present?
         @spaces.first
       else
         0

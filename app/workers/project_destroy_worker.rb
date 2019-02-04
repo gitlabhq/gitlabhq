@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectDestroyWorker
   include ApplicationWorker
   include ExceptionBacktrace

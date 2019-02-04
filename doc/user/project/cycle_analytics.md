@@ -72,7 +72,7 @@ Here's a little explanation of how this works behind the scenes:
    `<issue, merge request>` pair, the merge request has the [issue closing pattern]
    for the corresponding issue. All other issues and merge requests are **not**
    considered.
-1. Then the <issue, merge request> pairs are filtered out by last XX days (specified
+1. Then the `<issue, merge request>` pairs are filtered out by last XX days (specified
    by the UI - default is 90 days). So it prohibits these pairs from being considered.
 1. For the remaining `<issue, merge request>` pairs, we check the information that
    we need for the stages, like issue creation date, merge request merge time,
@@ -146,7 +146,8 @@ A few notes:
 The current permissions on the Cycle Analytics dashboard are:
 
 - Public projects - anyone can access
-- Private/internal projects - any member (guest level and above) can access
+- Internal projects - any authenticated user can access
+- Private projects - any member Guest and above can access
 
 You can [read more about permissions][permissions] in general.
 
@@ -154,7 +155,7 @@ You can [read more about permissions][permissions] in general.
 
 Learn more about Cycle Analytics in the following resources:
 
-- [Cycle Analytics feature page](https://about.gitlab.com/solutions/cycle-analytics/)
+- [Cycle Analytics feature page](https://about.gitlab.com/features/cycle-analytics/)
 - [Cycle Analytics feature preview](https://about.gitlab.com/2016/09/16/feature-preview-introducing-cycle-analytics/)
 - [Cycle Analytics feature highlight](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
 

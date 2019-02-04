@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationSetting
   class TermPolicy < BasePolicy
     include Gitlab::Utils::StrongMemoize
@@ -17,6 +19,7 @@ class ApplicationSetting
 
     rule { terms_accepted }.prevent :accept_terms
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def agreement
       strong_memoize(:agreement) do
         next nil if @user.nil? || @subject.nil?
@@ -24,5 +27,6 @@ class ApplicationSetting
         @user.term_agreements.find_by(term: @subject)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

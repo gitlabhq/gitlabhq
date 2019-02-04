@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TabHelper
   # Navigation link helper
   #
@@ -6,7 +8,7 @@ module TabHelper
   # element is the value passed to the block.
   #
   # options - The options hash used to determine if the element is "active" (default: {})
-  #           :controller   - One or more controller names to check (optional).
+  #           :controller   - One or more controller names to check, use path notation when namespaced (optional).
   #           :action       - One or more action names to check (optional).
   #           :path         - A shorthand path, such as 'dashboard#index', to check (optional).
   #           :html_options - Extra options to be passed to the list element (optional).
@@ -40,6 +42,20 @@ module TabHelper
   #   nav_link(controller: :tree, html_options: {class: 'home'}) { "Hello" }
   #   # => '<li class="home active">Hello</li>'
   #
+  #   # For namespaced controllers like Admin::AppearancesController#show
+  #
+  #   # Controller and namespace matches
+  #   nav_link(controller: 'admin/appearances') { "Hello" }
+  #   # => '<li class="active">Hello</li>'
+  #
+  #   # Controller and namespace matches but action doesn't
+  #   nav_link(controller: 'admin/appearances', action: :edit) { "Hello" }
+  #   # => '<li>Hello</li>'
+  #
+  #   # Shorthand path with namespace
+  #   nav_link(path: 'admin/appearances#show') { "Hello"}
+  #   # => '<li class="active">Hello</li>'
+  #
   # Returns a list item element String
   def nav_link(options = {}, &block)
     klass = active_nav_link?(options) ? 'active' : ''
@@ -47,9 +63,7 @@ module TabHelper
     # Add our custom class into the html_options, which may or may not exist
     # and which may or may not already have a :class key
     o = options.delete(:html_options) || {}
-    o[:class] ||= ''
-    o[:class] += ' ' + klass
-    o[:class].strip!
+    o[:class] = [*o[:class], klass].join(' ').strip
 
     if block_given?
       content_tag(:li, capture(&block), o)

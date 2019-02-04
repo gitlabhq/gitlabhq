@@ -15,9 +15,9 @@ describe 'User views an empty project' do
     end
   end
 
-  describe 'as a master' do
+  describe 'as a maintainer' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it_behaves_like 'allowing push to default branch'

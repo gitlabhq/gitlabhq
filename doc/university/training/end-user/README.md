@@ -50,7 +50,7 @@ project.
 - Use the tools at your disposal when you get stuck.
   - Use `git help <command>` command
   - Use Google (i.e. StackOverflow, Google groups)
-  - Read documentation at https://git-scm.com
+  - Read documentation at <https://git-scm.com>
 
 ---
 
@@ -62,7 +62,7 @@ Workshop Time!
 ### Setup
 
 - Windows: Install 'Git for Windows'
-  - https://git-for-windows.github.io
+  - <https://git-for-windows.github.io>
 - Mac: Type `git` in the Terminal application.
   - If it's not installed, it will prompt you to install it.
 - Linux
@@ -78,9 +78,9 @@ Workshop Time!
 ```bash
 git config --global user.name "Your Name"
 git config --global user.email you@example.com
-```    
+```
 
-- If you don't use the global flag you can setup a different author for
+- If you don't use the global flag you can set up a different author for
   each project
 - Check settings with:
 
@@ -107,14 +107,14 @@ cd ~/development
 -or-
 
 mkdir ~/workspace
-cd ~/workspace  
+cd ~/workspace
 ```
 
 ---
 
 ## Git Basics
 
----  
+---
 
 ### Git Workflow
 
@@ -136,13 +136,13 @@ cd ~/workspace
   issue tracking, Merge Requests, and other features.
 - The hosted version of GitLab is gitlab.com
 
----  
+---
 
 ### New Project
 
 - Sign in into your gitlab.com account
 - Create a project
-- Choose to import from 'Any Repo by URL' and use https://gitlab.com/gitlab-org/training-examples.git
+- Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>
 - On your machine clone the `training-examples` project
 
 ---
@@ -150,12 +150,12 @@ cd ~/workspace
 ### Git and GitLab basics
 
 1. Edit `edit_this_file.rb` in `training-examples`
-2. See it listed as a changed file (working area)
-3. View the differences
-4. Stage the file
-5. Commit
-6. Push the commit to the remote
-7. View the git log
+1. See it listed as a changed file (working area)
+1. View the differences
+1. Stage the file
+1. Commit
+1. Push the commit to the remote
+1. View the git log
 
 ---
 
@@ -169,14 +169,14 @@ git push origin master
 git log
 ```
 
----  
+---
 
 ### Feature Branching
 
 1. Create a new feature branch called `squash_some_bugs`
-2. Edit `bugs.rb` and remove all the bugs.
-3. Commit
-4. Push
+1. Edit `bugs.rb` and remove all the bugs.
+1. Commit
+1. Push
 
 ---
 
@@ -242,24 +242,26 @@ git push origin squash_some_bugs
 ---
 
 ### Merge Conflicts
-* Happen often
-* Learning to fix conflicts is hard
-* Practice makes perfect
-* Force push after fixing conflicts. Be careful!
+
+- Happen often
+- Learning to fix conflicts is hard
+- Practice makes perfect
+- Force push after fixing conflicts. Be careful!
 
 ---
 
 ### Example Plan
+
 1. Checkout a new branch and edit conflicts.rb. Add 'Line4' and 'Line5'.
-2. Commit and push
-3. Checkout master and edit conflicts.rb. Add 'Line6' and 'Line7' below 'Line3'.
-4. Commit and push to master
-5. Create a merge request and watch it fail
-6. Rebase our new branch with master
-7. Fix conflicts on the conflicts.rb file.
-8. Stage the file and continue rebasing
-9. Force push the changes
-10. Finally continue with the Merge Request
+1. Commit and push
+1. Checkout master and edit conflicts.rb. Add 'Line6' and 'Line7' below 'Line3'.
+1. Commit and push to master
+1. Create a merge request and watch it fail
+1. Rebase our new branch with master
+1. Fix conflicts on the conflicts.rb file.
+1. Stage the file and continue rebasing
+1. Force push the changes
+1. Finally continue with the Merge Request
 
 ---
 
@@ -305,10 +307,10 @@ Create a merge request on the GitLab web UI. You'll see a conflict warning.
 
 ### Notes
 
-* When to use `git merge` and when to use `git rebase`
-* Rebase when updating your branch with master
-* Merge when bringing changes from feature to master
-* Reference: https://www.atlassian.com/git/tutorials/merging-vs-rebasing/
+- When to use `git merge` and when to use `git rebase`
+- Rebase when updating your branch with master
+- Merge when bringing changes from feature to master
+- Reference: <https://www.atlassian.com/git/tutorials/merging-vs-rebasing/>
 
 ---
 
@@ -362,15 +364,15 @@ Don't reset after pushing
 ### Reset Workflow
 
 1. Edit file again 'edit_this_file.rb'
-2. Check status
-3. Add and commit with wrong message
-4. Check log
-5. Amend commit
-6. Check log
-7. Soft reset
-8. Check log
-9. Pull for updates
-10. Push changes
+1. Check status
+1. Add and commit with wrong message
+1. Check log
+1. Amend commit
+1. Check log
+1. Soft reset
+1. Check log
+1. Pull for updates
+1. Push changes
 
 ----
 
@@ -389,9 +391,9 @@ Don't reset after pushing
 
 ### Note
 
-git revert vs git reset  
-Reset removes the commit while revert removes the changes but leaves the commit  
-Revert is safer considering we can revert a revert  
+git revert vs git reset
+Reset removes the commit while revert removes the changes but leaves the commit
+Revert is safer considering we can revert a revert
 
 
     # Changed file

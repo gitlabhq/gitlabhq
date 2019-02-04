@@ -23,21 +23,16 @@ export default {
       </div>
       <div class="text col-md-7 order-md-first col-12">
         <span>
-          Merge requests are a place to propose changes you have made to a project
-          and discuss those changes with others.
+          Merge requests are a place to propose changes you have made to a project and discuss those
+          changes with others.
         </span>
+        <p>Interested parties can even contribute by pushing commits if they want to.</p>
         <p>
-          Interested parties can even contribute by pushing commits if they want to.
-        </p>
-        <p>
-          Currently there are no changes in this merge request's source branch.
-          Please push new commits or use a different branch.
+          Currently there are no changes in this merge request's source branch. Please push new
+          commits or use a different branch.
         </p>
         <div>
-          <a
-            v-if="mr.newBlobPath"
-            :href="mr.newBlobPath"
-            class="btn btn-inverted btn-save">
+          <a v-if="mr.newBlobPath" :href="mr.newBlobPath" class="btn btn-inverted btn-success">
             Create file
           </a>
         </div>

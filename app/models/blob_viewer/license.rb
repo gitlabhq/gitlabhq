@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlobViewer
   class License < Base
     include Auxiliary

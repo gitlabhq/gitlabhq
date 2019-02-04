@@ -172,6 +172,10 @@ object which can be treated like any other jasmine spy object.
 Further documentation on the babel rewire pluign API can be found on
 [its repository Readme doc](https://github.com/speedskater/babel-plugin-rewire#babel-plugin-rewire).
 
+#### Waiting in tests
+
+If you cannot avoid using [`setTimeout`](https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout) in tests, please use the [Jasmine mock clock](https://jasmine.github.io/api/2.9/Clock.html).
+
 ### Vue.js unit tests
 
 See this [section][vue-test].
@@ -181,8 +185,8 @@ See this [section][vue-test].
 `rake karma` runs the frontend-only (JavaScript) tests.
 It consists of two subtasks:
 
-* `rake karma:fixtures` (re-)generates fixtures
-* `rake karma:tests` actually executes the tests
+- `rake karma:fixtures` (re-)generates fixtures
+- `rake karma:tests` actually executes the tests
 
 As long as the fixtures don't change, `rake karma:tests` (or `yarn karma`)
 is sufficient (and saves you some time).
@@ -239,14 +243,14 @@ supported by the PhantomJS test runner which is used for both Karma and RSpec
 tests. We polyfill some JavaScript objects for older browsers, but some
 features are still unavailable:
 
-* Array.from
-* Array.first
-* Async functions
-* Generators
-* Array destructuring
-* For..Of
-* Symbol/Symbol.iterator
-* Spread
+- Array.from
+- Array.first
+- Async functions
+- Generators
+- Array destructuring
+- For..Of
+- Symbol/Symbol.iterator
+- Spread
 
 Until these are polyfilled appropriately, they should not be used. Please
 update this list with additional unsupported features.

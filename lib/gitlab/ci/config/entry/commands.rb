@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -5,22 +7,11 @@ module Gitlab
         ##
         # Entry that represents a job script.
         #
-        class Commands < Node
-          include Validatable
+        class Commands < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
-            include LegacyValidationHelpers
-
-            validate do
-              unless string_or_array_of_strings?(config)
-                errors.add(:config,
-                           'should be a string or an array of strings')
-              end
-            end
-
-            def string_or_array_of_strings?(field)
-              validate_string(field) || validate_array_of_strings(field)
-            end
+            validates :config, array_of_strings_or_string: true
           end
 
           def value

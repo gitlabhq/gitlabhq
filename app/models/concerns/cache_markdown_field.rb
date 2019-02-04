@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This module takes care of updating cache columns for Markdown-containing
 # fields. Use like this in the body of your class:
 #
@@ -13,7 +15,7 @@ module CacheMarkdownField
   # Increment this number every time the renderer changes its output
   CACHE_REDCARPET_VERSION         = 3
   CACHE_COMMONMARK_VERSION_START  = 10
-  CACHE_COMMONMARK_VERSION        = 11
+  CACHE_COMMONMARK_VERSION        = 14
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
@@ -40,6 +42,18 @@ module CacheMarkdownField
     end
   end
 
+  class MarkdownEngine
+    def self.from_version(version = nil)
+      return :common_mark if version.nil? || version == 0
+
+      if version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+        :redcarpet
+      else
+        :common_mark
+      end
+    end
+  end
+
   def skip_project_check?
     false
   end
@@ -57,7 +71,7 @@ module CacheMarkdownField
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
 
-    context[:markdown_engine] = markdown_engine
+    context[:markdown_engine] = MarkdownEngine.from_version(latest_cached_markdown_version)
 
     context
   end
@@ -114,21 +128,17 @@ module CacheMarkdownField
   end
 
   def latest_cached_markdown_version
-    return CacheMarkdownField::CACHE_REDCARPET_VERSION unless cached_markdown_version
+    return CacheMarkdownField::CACHE_COMMONMARK_VERSION unless cached_markdown_version
 
-    if cached_markdown_version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+    if legacy_markdown?
       CacheMarkdownField::CACHE_REDCARPET_VERSION
     else
       CacheMarkdownField::CACHE_COMMONMARK_VERSION
     end
   end
 
-  def markdown_engine
-    if latest_cached_markdown_version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
-      :redcarpet
-    else
-      :common_mark
-    end
+  def legacy_markdown?
+    cached_markdown_version && cached_markdown_version.between?(1, CacheMarkdownField::CACHE_COMMONMARK_VERSION_START - 1)
   end
 
   included do
@@ -172,7 +182,9 @@ module CacheMarkdownField
       # author and project invalidate the cache in all circumstances.
       define_method(invalidation_method) do
         changed_fields = changed_attributes.keys
-        invalidations = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations  = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations.delete(markdown_field.to_s) if changed_fields.include?("#{markdown_field}_html")
+
         !invalidations.empty? || !cached_html_up_to_date?(markdown_field)
       end
     end

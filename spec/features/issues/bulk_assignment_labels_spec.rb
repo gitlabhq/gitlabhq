@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > Labels bulk assignment' do
+describe 'Issues > Labels bulk assignment' do
   let(:user)      { create(:user) }
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
@@ -11,7 +11,7 @@ feature 'Issues > Labels bulk assignment' do
 
   context 'as an allowed user', :js do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in user
     end

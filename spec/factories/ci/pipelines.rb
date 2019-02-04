@@ -54,8 +54,16 @@ FactoryBot.define do
         status :manual
       end
 
+      trait :scheduled do
+        status :scheduled
+      end
+
       trait :success do
         status :success
+      end
+
+      trait :running do
+        status :running
       end
 
       trait :failed do
@@ -64,6 +72,22 @@ FactoryBot.define do
 
       trait :protected do
         protected true
+      end
+
+      trait :with_test_reports do
+        status :success
+
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
+      trait :auto_devops_source do
+        config_source { Ci::Pipeline.config_sources[:auto_devops_source] }
+      end
+
+      trait :repository_source do
+        config_source { Ci::Pipeline.config_sources[:repository_source] }
       end
     end
   end

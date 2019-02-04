@@ -13,10 +13,12 @@ describe Ci::BuildMetadata do
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:build_metadata) { build.metadata }
+  let(:metadata) { build.metadata }
+
+  it_behaves_like 'having unique enum values'
 
   describe '#update_timeout_state' do
-    subject { build_metadata }
+    subject { metadata }
 
     context 'when runner is not assigned to the job' do
       it "doesn't change timeout value" do
@@ -30,7 +32,7 @@ describe Ci::BuildMetadata do
 
     context 'when runner is assigned to the job' do
       before do
-        build.update_attributes(runner: runner)
+        build.update(runner: runner)
       end
 
       context 'when runner timeout is lower than project timeout' do

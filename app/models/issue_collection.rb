@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # IssueCollection can be used to reduce a list of issues down to a subset.
 #
 # IssueCollection is not meant to be some sort of Enumerable, instead it's meant

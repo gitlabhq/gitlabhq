@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserCustomAttribute < ActiveRecord::Base
   belongs_to :user
 

@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import Flash from './flash';
 import { __ } from './locale';
-import { convertPermissionToBoolean } from './lib/utils/common_utils';
+import { parseBoolean } from './lib/utils/common_utils';
 
 /*
  example HAML:
@@ -18,7 +18,7 @@ function updateToggle(toggle, isOn) {
 }
 
 function onToggleClicked(toggle, input, clickCallback) {
-  const previousIsOn = convertPermissionToBoolean(input.value);
+  const previousIsOn = parseBoolean(input.value);
 
   // Visually change the toggle and start loading
   updateToggle(toggle, !previousIsOn);
@@ -49,9 +49,9 @@ function onToggleClicked(toggle, input, clickCallback) {
 export default function setupToggleButtons(container, clickCallback = () => {}) {
   const toggles = container.querySelectorAll('.js-project-feature-toggle');
 
-  toggles.forEach((toggle) => {
+  toggles.forEach(toggle => {
     const input = toggle.querySelector('.js-project-feature-toggle-input');
-    const isOn = convertPermissionToBoolean(input.value);
+    const isOn = parseBoolean(input.value);
 
     // Get the visible toggle in sync with the hidden input
     updateToggle(toggle, isOn);

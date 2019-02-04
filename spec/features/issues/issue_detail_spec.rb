@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue Detail', :js do
+describe 'Issue Detail', :js do
   let(:user)     { create(:user) }
   let(:project)  { create(:project, :public) }
   let(:issue)    { create(:issue, project: project, author: user) }
@@ -14,6 +14,23 @@ feature 'Issue Detail', :js do
     it 'shows the issue' do
       page.within('.issuable-details') do
         expect(find('h2')).to have_content(issue.title)
+      end
+    end
+  end
+
+  context 'when issue description has xss snippet' do
+    before do
+      issue.update!(description: '![xss" onload=alert(1);//](a)')
+      sign_in(user)
+      visit project_issue_path(project, issue)
+      wait_for_requests
+    end
+
+    it 'should encode the description to prevent xss issues' do
+      page.within('.issuable-details .detail-page-description') do
+        expect(page).to have_selector('img', count: 1)
+        expect(find('img')['onerror']).to be_nil
+        expect(find('img')['src']).to end_with('/a')
       end
     end
   end

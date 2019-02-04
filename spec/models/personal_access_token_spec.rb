@@ -49,18 +49,36 @@ describe PersonalAccessToken do
 
   describe 'Redis storage' do
     let(:user_id) { 123 }
-    let(:token) { 'abc000foo' }
+    let(:token) { 'KS3wegQYXBLYhQsciwsj' }
 
-    before do
-      subject.redis_store!(user_id, token)
+    context 'reading encrypted data' do
+      before do
+        subject.redis_store!(user_id, token)
+      end
+
+      it 'returns stored data' do
+        expect(subject.redis_getdel(user_id)).to eq(token)
+      end
     end
 
-    it 'returns stored data' do
-      expect(subject.redis_getdel(user_id)).to eq(token)
+    context 'reading unencrypted data' do
+      before do
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.set(described_class.redis_shared_state_key(user_id),
+                    token,
+                    ex: PersonalAccessToken::REDIS_EXPIRY_TIME)
+        end
+      end
+
+      it 'returns stored data unmodified' do
+        expect(subject.redis_getdel(user_id)).to eq(token)
+      end
     end
 
     context 'after deletion' do
       before do
+        subject.redis_store!(user_id, token)
+
         expect(subject.redis_getdel(user_id)).to eq(token)
       end
 

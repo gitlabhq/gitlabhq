@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GitalyClient
     # Meant for extraction of server data, and later maybe to perform misc task
@@ -9,7 +11,7 @@ module Gitlab
       end
 
       def info
-        GitalyClient.call(@storage, :server_service, :server_info, Gitaly::ServerInfoRequest.new)
+        GitalyClient.call(@storage, :server_service, :server_info, Gitaly::ServerInfoRequest.new, timeout: GitalyClient.fast_timeout)
       end
     end
   end

@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AddPathIndexToRedirectRoutes < ActiveRecord::Migration
+class AddPathIndexToRedirectRoutes < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -20,10 +20,10 @@ class AddPathIndexToRedirectRoutes < ActiveRecord::Migration
   def up
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout
-
-    unless index_exists_by_name?(:redirect_routes, INDEX_NAME)
-      execute("CREATE UNIQUE INDEX CONCURRENTLY #{INDEX_NAME} ON redirect_routes (lower(path) varchar_pattern_ops);")
+    disable_statement_timeout do
+      unless index_exists_by_name?(:redirect_routes, INDEX_NAME)
+        execute("CREATE UNIQUE INDEX CONCURRENTLY #{INDEX_NAME} ON redirect_routes (lower(path) varchar_pattern_ops);")
+      end
     end
   end
 

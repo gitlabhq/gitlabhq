@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     module Status
       module External
         module Common
           def label
-            subject.description
+            subject.description.presence || super
           end
 
           def has_details?

@@ -1,3 +1,9 @@
+require 'sidekiq/web'
+
+# Disable the Sidekiq Rack session since GitLab already has its own session store.
+# CSRF protection still works (https://github.com/mperham/sidekiq/commit/315504e766c4fd88a29b7772169060afc4c40329).
+Sidekiq::Web.set :sessions, false
+
 # Custom Queues configuration
 queues_config_hash = Gitlab::Redis::Queues.params
 queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
@@ -14,6 +20,8 @@ Sidekiq.configure_server do |config|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
     chain.add Gitlab::SidekiqMiddleware::Shutdown
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
+    chain.add Gitlab::SidekiqMiddleware::BatchLoader
+    chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
     chain.add Gitlab::SidekiqStatus::ServerMiddleware
   end
 
@@ -24,12 +32,19 @@ Sidekiq.configure_server do |config|
 
   config.client_middleware do |chain|
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
+    chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
   end
 
   config.on :startup do
     # Clear any connections that might have been obtained before starting
     # Sidekiq (e.g. in an initializer).
     ActiveRecord::Base.clear_all_connections!
+  end
+
+  if Feature::FlipperFeature.table_exists? && Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
+    # By default we're going to use Semi Reliable Fetch
+    config.options[:semi_reliable_fetch] = Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+    Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
 
   # Sidekiq-cron: load recurring jobs from gitlab.yml
@@ -47,14 +62,12 @@ Sidekiq.configure_server do |config|
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
-  Gitlab::SidekiqThrottler.execute!
-
   Gitlab::SidekiqVersioning.install!
 
-  config = Gitlab::Database.config ||
+  db_config = Gitlab::Database.config ||
     Rails.application.config.database_configuration[Rails.env]
-  config['pool'] = Sidekiq.options[:concurrency]
-  ActiveRecord::Base.establish_connection(config)
+  db_config['pool'] = Sidekiq.options[:concurrency]
+  ActiveRecord::Base.establish_connection(db_config)
   Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
 
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
@@ -66,6 +79,7 @@ Sidekiq.configure_client do |config|
   config.redis = queues_config_hash
 
   config.client_middleware do |chain|
+    chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
   end
 end

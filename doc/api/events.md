@@ -44,13 +44,15 @@ YYYY-MM-DD
 
 ### Event Time Period Limit
 
-GitLab removes events older than 1 year from the events table for performance reasons. The range of 1 year was chosen because user contribution calendars only show contributions of the past year.
+GitLab removes events older than 2 years from the events table for performance reasons.
 
 ## List currently authenticated user's events
 
->**Note:** This endpoint was introduced in GitLab 9.3.
+>**Notes:**
+> This endpoint was introduced in GitLab 9.3.
+> `read_user` access was introduced in GitLab 11.3.
 
-Get a list of events for the authenticated user.
+Get a list of events for the authenticated user. Scope `read_user` or `api` is required.
 
 ```
 GET /events
@@ -69,7 +71,7 @@ Parameters:
 Example request:
 
 ```
-curl --header "PRIVATE-TOKEN 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/events&target_type=issue&action=created&after=2017-01-31&before=2017-03-01
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
 ```
 
 Example response:
@@ -119,9 +121,11 @@ Example response:
 
 ### Get user contribution events
 
->**Note:** Documentation was formerly located in the [Users API pages][users-api].
+>**Notes:**
+> Documentation was formerly located in the [Users API pages][users-api].
+> `read_user` access was introduced in GitLab 11.3.
 
-Get the contribution events for the specified user, sorted from newest to oldest.
+Get the contribution events for the specified user, sorted from newest to oldest. Scope `read_user` or `api` is required.
 
 ```
 GET /users/:id/events
@@ -139,7 +143,7 @@ Parameters:
 | `sort` | string | no | Sort events in `asc` or `desc` order by `created_at`. Default is `desc` |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/users/:id/events
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/users/:id/events
 ```
 
 Example response:
@@ -255,7 +259,7 @@ Example response:
 Get a list of visible events for a particular project.
 
 ```
-GET /:project_id/events
+GET /projects/:project_id/events
 ```
 
 Parameters:
@@ -272,7 +276,7 @@ Parameters:
 Example request:
 
 ```
-curl --header "PRIVATE-TOKEN 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:project_id/events&target_type=issue&action=created&after=2017-01-31&before=2017-03-01
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/:project_id/events?target_type=issue&action=created&after=2017-01-31&before=2017-03-01
 ```
 
 Example response:

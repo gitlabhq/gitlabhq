@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 require 'gitlab/email/handler/base_handler'
 require 'gitlab/email/handler/reply_processing'
 
+# handles note/reply creation emails with these formats:
+#   incoming+1234567890abcdef1234567890abcdef@incoming.gitlab.com
 module Gitlab
   module Email
     module Handler
@@ -26,10 +30,6 @@ module Gitlab
             record: create_note,
             invalid_exception: InvalidNoteError,
             record_name: 'comment')
-        end
-
-        def metrics_params
-          super.merge(project: project&.full_path)
         end
 
         private

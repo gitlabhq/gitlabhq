@@ -1,0 +1,5 @@
+---
+title: Actually set raise_on_unfiltered_parameters to true
+merge_request: 24443
+author: Jasper Maes
+type: other

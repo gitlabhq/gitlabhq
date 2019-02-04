@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SystemCheck
   module App
     class RubyVersionCheck < SystemCheck::BaseCheck
@@ -9,7 +11,7 @@ module SystemCheck
       end
 
       def self.current_version
-        @current_version ||= Gitlab::VersionInfo.parse(Gitlab::TaskHelpers.run_command(%w(ruby --version)))
+        @current_version ||= Gitlab::VersionInfo.parse(RUBY_VERSION)
       end
 
       def check?

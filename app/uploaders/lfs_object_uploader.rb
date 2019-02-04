@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 class LfsObjectUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
 
   storage_options Gitlab.config.lfs
+
+  alias_method :upload, :model
 
   def filename
     model.oid[4..-1]

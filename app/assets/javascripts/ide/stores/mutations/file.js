@@ -1,5 +1,6 @@
-/* eslint-disable no-param-reassign */
 import * as types from '../mutation_types';
+import { sortTree } from '../utils';
+import { diffModes } from '../../constants';
 
 export default {
   [types.SET_FILE_ACTIVE](state, { path, active }) {
@@ -42,16 +43,35 @@ export default {
       rawPath: data.raw_path,
       binary: data.binary,
       renderError: data.render_error,
-      raw: null,
+      raw: (state.entries[file.path] && state.entries[file.path].raw) || null,
       baseRaw: null,
       html: data.html,
       size: data.size,
+      lastCommitSha: data.last_commit_sha,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
-    Object.assign(state.entries[file.path], {
-      raw,
-    });
+    const openPendingFile = state.openFiles.find(
+      f => f.path === file.path && f.pending && !(f.tempFile && !f.prevPath),
+    );
+
+    if (file.tempFile && file.content === '') {
+      Object.assign(state.entries[file.path], {
+        content: raw,
+      });
+    } else {
+      Object.assign(state.entries[file.path], {
+        raw,
+      });
+    }
+
+    if (!openPendingFile) return;
+
+    if (!openPendingFile.tempFile) {
+      openPendingFile.raw = raw;
+    } else if (openPendingFile.tempFile) {
+      openPendingFile.content = raw;
+    }
   },
   [types.SET_FILE_BASE_RAW_DATA](state, { file, baseRaw }) {
     Object.assign(state.entries[file.path], {
@@ -85,8 +105,19 @@ export default {
     });
   },
   [types.SET_FILE_MERGE_REQUEST_CHANGE](state, { file, mrChange }) {
+    let diffMode = diffModes.replaced;
+    if (mrChange.new_file) {
+      diffMode = diffModes.new;
+    } else if (mrChange.deleted_file) {
+      diffMode = diffModes.deleted;
+    } else if (mrChange.renamed_file) {
+      diffMode = diffModes.renamed;
+    }
     Object.assign(state.entries[file.path], {
-      mrChange,
+      mrChange: {
+        ...mrChange,
+        diffMode,
+      },
     });
   },
   [types.SET_FILE_VIEWMODE](state, { file, viewMode }) {
@@ -96,11 +127,30 @@ export default {
   },
   [types.DISCARD_FILE_CHANGES](state, path) {
     const stagedFile = state.stagedFiles.find(f => f.path === path);
+    const entry = state.entries[path];
+    const { deleted, prevPath } = entry;
 
     Object.assign(state.entries[path], {
       content: stagedFile ? stagedFile.content : state.entries[path].raw,
       changed: false,
+      deleted: false,
+      moved: false,
+      movedPath: '',
     });
+
+    if (deleted) {
+      const parent = entry.parentPath
+        ? state.entries[entry.parentPath]
+        : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+
+      parent.tree = sortTree(parent.tree.concat(entry));
+    } else if (prevPath) {
+      const parent = entry.parentPath
+        ? state.entries[entry.parentPath]
+        : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+
+      parent.tree = parent.tree.filter(f => f.path !== path);
+    }
   },
   [types.ADD_FILE_TO_CHANGED](state, path) {
     Object.assign(state, {

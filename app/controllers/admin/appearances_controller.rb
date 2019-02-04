@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::AppearancesController < Admin::ApplicationController
   before_action :set_appearance, except: :create
 
@@ -31,14 +33,21 @@ class Admin::AppearancesController < Admin::ApplicationController
 
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Logo was succesfully removed.'
+    redirect_to admin_appearances_path, notice: 'Logo was successfully removed.'
   end
 
   def header_logos
     @appearance.remove_header_logo!
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Header logo was succesfully removed.'
+    redirect_to admin_appearances_path, notice: 'Header logo was successfully removed.'
+  end
+
+  def favicon
+    @appearance.remove_favicon!
+    @appearance.save
+
+    redirect_to admin_appearances_path, notice: 'Favicon was successfully removed.'
   end
 
   private
@@ -61,6 +70,8 @@ class Admin::AppearancesController < Admin::ApplicationController
       logo_cache
       header_logo
       header_logo_cache
+      favicon
+      favicon_cache
       new_project_guidelines
       updated_by
     ]

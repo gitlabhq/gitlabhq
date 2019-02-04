@@ -1,5 +1,0 @@
----
-title: Remove double-checked internal id generation.
-merge_request: 19181
-author:
-type: performance

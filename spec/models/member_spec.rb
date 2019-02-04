@@ -53,6 +53,29 @@ describe Member do
         expect(member).to be_valid
       end
     end
+
+    context "when a child member inherits its access level" do
+      let(:user) { create(:user) }
+      let(:member) { create(:group_member, :developer, user: user) }
+      let(:child_group) { create(:group, parent: member.group) }
+      let(:child_member) { build(:group_member, group: child_group, user: user) }
+
+      it "requires a higher level" do
+        child_member.access_level = GroupMember::REPORTER
+
+        child_member.validate
+
+        expect(child_member).not_to be_valid
+      end
+
+      it "is valid with a higher level" do
+        child_member.access_level = GroupMember::MAINTAINER
+
+        child_member.validate
+
+        expect(child_member).to be_valid
+      end
+    end
   end
 
   describe 'Scopes & finders' do
@@ -62,16 +85,16 @@ describe Member do
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
 
-      @master_user = create(:user).tap { |u| project.add_master(u) }
-      @master = project.members.find_by(user_id: @master_user.id)
+      @maintainer_user = create(:user).tap { |u| project.add_maintainer(u) }
+      @maintainer = project.members.find_by(user_id: @maintainer_user.id)
 
       @blocked_user = create(:user).tap do |u|
-        project.add_master(u)
+        project.add_maintainer(u)
         project.add_developer(u)
 
         u.block!
       end
-      @blocked_master = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::MASTER)
+      @blocked_maintainer = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::MAINTAINER)
       @blocked_developer = project.members.find_by(user_id: @blocked_user.id, access_level: Gitlab::Access::DEVELOPER)
 
       @invited_member = create(:project_member, :developer,
@@ -95,10 +118,10 @@ describe Member do
 
     describe '.access_for_user_ids' do
       it 'returns the right access levels' do
-        users = [@owner_user.id, @master_user.id, @blocked_user.id]
+        users = [@owner_user.id, @maintainer_user.id, @blocked_user.id]
         expected = {
           @owner_user.id => Gitlab::Access::OWNER,
-          @master_user.id => Gitlab::Access::MASTER
+          @maintainer_user.id => Gitlab::Access::MAINTAINER
         }
 
         expect(described_class.access_for_user_ids(users)).to eq(expected)
@@ -106,7 +129,7 @@ describe Member do
     end
 
     describe '.invite' do
-      it { expect(described_class.invite).not_to include @master }
+      it { expect(described_class.invite).not_to include @maintainer }
       it { expect(described_class.invite).to include @invited_member }
       it { expect(described_class.invite).not_to include @accepted_invite_member }
       it { expect(described_class.invite).not_to include @requested_member }
@@ -114,7 +137,7 @@ describe Member do
     end
 
     describe '.non_invite' do
-      it { expect(described_class.non_invite).to include @master }
+      it { expect(described_class.non_invite).to include @maintainer }
       it { expect(described_class.non_invite).not_to include @invited_member }
       it { expect(described_class.non_invite).to include @accepted_invite_member }
       it { expect(described_class.non_invite).to include @requested_member }
@@ -122,7 +145,7 @@ describe Member do
     end
 
     describe '.request' do
-      it { expect(described_class.request).not_to include @master }
+      it { expect(described_class.request).not_to include @maintainer }
       it { expect(described_class.request).not_to include @invited_member }
       it { expect(described_class.request).not_to include @accepted_invite_member }
       it { expect(described_class.request).to include @requested_member }
@@ -130,7 +153,7 @@ describe Member do
     end
 
     describe '.non_request' do
-      it { expect(described_class.non_request).to include @master }
+      it { expect(described_class.non_request).to include @maintainer }
       it { expect(described_class.non_request).to include @invited_member }
       it { expect(described_class.non_request).to include @accepted_invite_member }
       it { expect(described_class.non_request).not_to include @requested_member }
@@ -141,35 +164,35 @@ describe Member do
       subject { described_class.developers.to_a }
 
       it { is_expected.not_to include @owner }
-      it { is_expected.not_to include @master }
+      it { is_expected.not_to include @maintainer }
       it { is_expected.to include @invited_member }
       it { is_expected.to include @accepted_invite_member }
       it { is_expected.not_to include @requested_member }
       it { is_expected.to include @accepted_request_member }
-      it { is_expected.not_to include @blocked_master }
+      it { is_expected.not_to include @blocked_maintainer }
       it { is_expected.not_to include @blocked_developer }
     end
 
-    describe '.owners_and_masters' do
-      it { expect(described_class.owners_and_masters).to include @owner }
-      it { expect(described_class.owners_and_masters).to include @master }
-      it { expect(described_class.owners_and_masters).not_to include @invited_member }
-      it { expect(described_class.owners_and_masters).not_to include @accepted_invite_member }
-      it { expect(described_class.owners_and_masters).not_to include @requested_member }
-      it { expect(described_class.owners_and_masters).not_to include @accepted_request_member }
-      it { expect(described_class.owners_and_masters).not_to include @blocked_master }
+    describe '.owners_and_maintainers' do
+      it { expect(described_class.owners_and_maintainers).to include @owner }
+      it { expect(described_class.owners_and_maintainers).to include @maintainer }
+      it { expect(described_class.owners_and_maintainers).not_to include @invited_member }
+      it { expect(described_class.owners_and_maintainers).not_to include @accepted_invite_member }
+      it { expect(described_class.owners_and_maintainers).not_to include @requested_member }
+      it { expect(described_class.owners_and_maintainers).not_to include @accepted_request_member }
+      it { expect(described_class.owners_and_maintainers).not_to include @blocked_maintainer }
     end
 
     describe '.has_access' do
       subject { described_class.has_access.to_a }
 
       it { is_expected.to include @owner }
-      it { is_expected.to include @master }
+      it { is_expected.to include @maintainer }
       it { is_expected.to include @invited_member }
       it { is_expected.to include @accepted_invite_member }
       it { is_expected.not_to include @requested_member }
       it { is_expected.to include @accepted_request_member }
-      it { is_expected.not_to include @blocked_master }
+      it { is_expected.not_to include @blocked_maintainer }
       it { is_expected.not_to include @blocked_developer }
     end
   end
@@ -187,20 +210,20 @@ describe Member do
         let!(:admin) { create(:admin) }
 
         it 'returns a <Source>Member object' do
-          member = described_class.add_user(source, user, :master)
+          member = described_class.add_user(source, user, :maintainer)
 
           expect(member).to be_a "#{source_type.classify}Member".constantize
           expect(member).to be_persisted
         end
 
         it 'sets members.created_by to the given current_user' do
-          member = described_class.add_user(source, user, :master, current_user: admin)
+          member = described_class.add_user(source, user, :maintainer, current_user: admin)
 
           expect(member.created_by).to eq(admin)
         end
 
         it 'sets members.expires_at to the given expires_at' do
-          member = described_class.add_user(source, user, :master, expires_at: Date.new(2016, 9, 22))
+          member = described_class.add_user(source, user, :maintainer, expires_at: Date.new(2016, 9, 22))
 
           expect(member.expires_at).to eq(Date.new(2016, 9, 22))
         end
@@ -230,7 +253,7 @@ describe Member do
             it 'adds the user as a member' do
               expect(source.users).not_to include(user)
 
-              described_class.add_user(source, user.id, :master)
+              described_class.add_user(source, user.id, :maintainer)
 
               expect(source.users.reload).to include(user)
             end
@@ -240,7 +263,7 @@ describe Member do
             it 'adds the user as a member' do
               expect(source.users).not_to include(user)
 
-              described_class.add_user(source, 42, :master)
+              described_class.add_user(source, 42, :maintainer)
 
               expect(source.users.reload).not_to include(user)
             end
@@ -250,7 +273,7 @@ describe Member do
             it 'adds the user as a member' do
               expect(source.users).not_to include(user)
 
-              described_class.add_user(source, user, :master)
+              described_class.add_user(source, user, :maintainer)
 
               expect(source.users.reload).to include(user)
             end
@@ -265,7 +288,7 @@ describe Member do
               expect(source.users).not_to include(user)
               expect(source.requesters.exists?(user_id: user)).to be_truthy
 
-              expect { described_class.add_user(source, user, :master) }
+              expect { described_class.add_user(source, user, :maintainer) }
                 .to raise_error(Gitlab::Access::AccessDeniedError)
 
               expect(source.users.reload).not_to include(user)
@@ -277,7 +300,7 @@ describe Member do
             it 'adds the user as a member' do
               expect(source.users).not_to include(user)
 
-              described_class.add_user(source, user.email, :master)
+              described_class.add_user(source, user.email, :maintainer)
 
               expect(source.users.reload).to include(user)
             end
@@ -287,7 +310,7 @@ describe Member do
             it 'creates an invited member' do
               expect(source.users).not_to include(user)
 
-              described_class.add_user(source, 'user@example.com', :master)
+              described_class.add_user(source, 'user@example.com', :maintainer)
 
               expect(source.members.invite.pluck(:invite_email)).to include('user@example.com')
             end
@@ -298,7 +321,7 @@ describe Member do
           it 'creates the member' do
             expect(source.users).not_to include(user)
 
-            described_class.add_user(source, user, :master, current_user: admin)
+            described_class.add_user(source, user, :maintainer, current_user: admin)
 
             expect(source.users.reload).to include(user)
           end
@@ -312,7 +335,7 @@ describe Member do
               expect(source.users).not_to include(user)
               expect(source.requesters.exists?(user_id: user)).to be_truthy
 
-              described_class.add_user(source, user, :master, current_user: admin)
+              described_class.add_user(source, user, :maintainer, current_user: admin)
 
               expect(source.users.reload).to include(user)
               expect(source.requesters.reload.exists?(user_id: user)).to be_falsy
@@ -324,7 +347,7 @@ describe Member do
           it 'does not create the member' do
             expect(source.users).not_to include(user)
 
-            member = described_class.add_user(source, user, :master, current_user: user)
+            member = described_class.add_user(source, user, :maintainer, current_user: user)
 
             expect(source.users.reload).not_to include(user)
             expect(member).not_to be_persisted
@@ -339,7 +362,7 @@ describe Member do
               expect(source.users).not_to include(user)
               expect(source.requesters.exists?(user_id: user)).to be_truthy
 
-              described_class.add_user(source, user, :master, current_user: user)
+              described_class.add_user(source, user, :maintainer, current_user: user)
 
               expect(source.users.reload).not_to include(user)
               expect(source.requesters.exists?(user_id: user)).to be_truthy
@@ -356,9 +379,9 @@ describe Member do
             it 'updates the member' do
               expect(source.users).to include(user)
 
-              described_class.add_user(source, user, :master)
+              described_class.add_user(source, user, :maintainer)
 
-              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MASTER)
+              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
             end
           end
 
@@ -366,9 +389,9 @@ describe Member do
             it 'updates the member' do
               expect(source.users).to include(user)
 
-              described_class.add_user(source, user, :master, current_user: admin)
+              described_class.add_user(source, user, :maintainer, current_user: admin)
 
-              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MASTER)
+              expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::MAINTAINER)
             end
           end
 
@@ -376,7 +399,7 @@ describe Member do
             it 'does not update the member' do
               expect(source.users).to include(user)
 
-              described_class.add_user(source, user, :master, current_user: user)
+              described_class.add_user(source, user, :maintainer, current_user: user)
 
               expect(source.members.find_by(user_id: user).access_level).to eq(Gitlab::Access::DEVELOPER)
             end
@@ -395,7 +418,7 @@ describe Member do
         let(:user2) { create(:user) }
 
         it 'returns a <Source>Member objects' do
-          members = described_class.add_users(source, [user1, user2], :master)
+          members = described_class.add_users(source, [user1, user2], :maintainer)
 
           expect(members).to be_a Array
           expect(members.size).to eq(2)
@@ -404,7 +427,7 @@ describe Member do
         end
 
         it 'returns an empty array' do
-          members = described_class.add_users(source, [], :master)
+          members = described_class.add_users(source, [], :maintainer)
 
           expect(members).to be_a Array
           expect(members).to be_empty
@@ -413,7 +436,7 @@ describe Member do
         it 'supports differents formats' do
           list = ['joe@local.test', admin, user1.id, user2.id.to_s]
 
-          members = described_class.add_users(source, list, :master)
+          members = described_class.add_users(source, list, :maintainer)
 
           expect(members.size).to eq(4)
           expect(members.first).to be_invite

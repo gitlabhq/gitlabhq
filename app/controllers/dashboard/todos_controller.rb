@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
 
   before_action :authorize_read_project!, only: :index
+  before_action :authorize_read_group!, only: :index
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
@@ -58,6 +61,15 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     end
   end
 
+  def authorize_read_group!
+    group_id = params[:group_id]
+
+    if group_id.present?
+      group = Group.find(group_id)
+      render_404 unless can?(current_user, :read_group, group)
+    end
+  end
+
   def find_todos
     @todos ||= TodosFinder.new(current_user, todo_params).execute
   end
@@ -70,9 +82,10 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def todo_params
-    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state)
+    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def redirect_out_of_range(todos)
     total_pages =
       if todo_params.except(:sort, :page).empty?
@@ -91,4 +104,5 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
     out_of_range
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

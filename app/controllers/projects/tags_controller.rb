@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
+
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
 
   # Authorize
   before_action :require_non_empty_project
@@ -7,6 +11,7 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_push_code!, only: [:new, :create]
   before_action :authorize_admin_project!, only: [:destroy]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     params[:sort] = params[:sort].presence || sort_value_recently_updated
 
@@ -15,10 +20,17 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
     tag_names = @tags.map(&:name)
-    @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
+    @tags_pipelines = @project.ci_pipelines.latest_successful_for_refs(tag_names)
     @releases = project.releases.where(tag: tag_names)
-  end
 
+    respond_to do |format|
+      format.html
+      format.atom { render layout: 'xml.atom' }
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def show
     @tag = @repository.find_tag(params[:id])
 
@@ -27,12 +39,26 @@ class Projects::TagsController < Projects::ApplicationController
     @release = @project.releases.find_or_initialize_by(tag: @tag.name)
     @commit = @repository.commit(@tag.dereferenced_target)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def create
-    result = Tags::CreateService.new(@project, current_user)
-      .execute(params[:tag_name], params[:ref], params[:message], params[:release_description])
+    result = ::Tags::CreateService.new(@project, current_user)
+      .execute(params[:tag_name], params[:ref], params[:message])
 
     if result[:status] == :success
+      # Release creation with Tags was deprecated in GitLab 11.7
+      if params[:release_description].present?
+        release_params = {
+          tag: params[:tag_name],
+          name: params[:tag_name],
+          description: params[:release_description]
+        }
+
+        Releases::CreateService
+          .new(@project, current_user, release_params)
+          .execute
+      end
+
       @tag = result[:tag]
 
       redirect_to project_tag_path(@project, @tag.name)
@@ -45,12 +71,12 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def destroy
-    result = Tags::DestroyService.new(project, current_user).execute(params[:id])
+    result = ::Tags::DestroyService.new(project, current_user).execute(params[:id])
 
     respond_to do |format|
       if result[:status] == :success
         format.html do
-          redirect_to project_tags_path(@project), status: 303
+          redirect_to project_tags_path(@project), status: :see_other
         end
 
         format.js

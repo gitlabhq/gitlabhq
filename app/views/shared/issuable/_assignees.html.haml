@@ -3,7 +3,7 @@
 - render_count = assignees_rendering_overflow ? max_render - 1 : max_render
 - more_assignees_count = issue.assignees.size - render_count
 
-- issue.assignees.take(render_count).each do |assignee|
+- issue.assignees.take(render_count).each do |assignee| # rubocop: disable CodeReuse/ActiveRecord
   = link_to_member(@project, assignee, name: false, title: "Assigned to :name")
 
 - if more_assignees_count.positive?

@@ -17,10 +17,10 @@
             - if project.archived
               %span.badge.badge-warning archived
           .title
-            = link_to [:admin, project.namespace.becomes(Namespace), project] do
+            = link_to(admin_namespace_project_path(project.namespace, project)) do
               .dash-project-avatar
                 .avatar-container.s40
-                  = project_icon(project, alt: '', class: 'avatar project-avatar s40')
+                  = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
               %span.project-full-name
                 %span.namespace-name
                   - if project.namespace

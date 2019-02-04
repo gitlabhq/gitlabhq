@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Load a specific server configuration
 module Gitlab
   module Auth

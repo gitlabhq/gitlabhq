@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ForkNetworkMember < ActiveRecord::Base
   belongs_to :fork_network
   belongs_to :project

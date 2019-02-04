@@ -1,7 +1,4 @@
-import $ from 'jquery';
-import { isInIssuePage, isInMRPage, isInEpicPage, hasVueMRDiscussionsCookie } from './common_utils';
-
-const isVueMRDiscussions = () => isInMRPage() && hasVueMRDiscussionsCookie() && !$('#diffs').is(':visible');
+import { isInIssuePage, isInMRPage, isInEpicPage } from './common_utils';
 
 export const addClassIfElementExists = (element, className) => {
   if (element) {
@@ -9,4 +6,9 @@ export const addClassIfElementExists = (element, className) => {
   }
 };
 
-export const isInVueNoteablePage = () => isInIssuePage() || isInEpicPage() || isVueMRDiscussions();
+export const isInVueNoteablePage = () => isInIssuePage() || isInEpicPage() || isInMRPage();
+
+export const canScrollUp = ({ scrollTop }, margin = 0) => scrollTop > margin;
+
+export const canScrollDown = ({ scrollTop, offsetHeight, scrollHeight }, margin = 0) =>
+  scrollTop + offsetHeight < scrollHeight - margin;

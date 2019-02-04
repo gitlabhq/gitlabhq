@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Constraints
   class UserUrlConstrainer
     def matches?(request)

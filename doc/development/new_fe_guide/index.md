@@ -19,6 +19,10 @@ Guidance on topics related to development.
 
 Learn about all the dependencies that make up our frontend, including some of our own custom built libraries.
 
+## [Modules](modules/index.md)
+
+Learn about all the internal JavaScript modules that make up our frontend.
+
 ## [Style guides](style/index.md)
 
 Style guides to keep our code consistent.

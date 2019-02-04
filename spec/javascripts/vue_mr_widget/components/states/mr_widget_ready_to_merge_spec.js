@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
+import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 const commitMessage = 'This is the commit message';
 const commitMessageWithDescription = 'This is the commit message description';
-const createComponent = (customConfig = {}) => {
-  const Component = Vue.extend(ReadyToMerge);
+const createTestMr = customConfig => {
   const mr = {
     isPipelineActive: false,
     pipeline: null,
@@ -16,6 +17,7 @@ const createComponent = (customConfig = {}) => {
     hasCI: false,
     ciStatus: null,
     sha: '12345678',
+    squash: false,
     commitMessage,
     commitMessageWithDescription,
     shouldRemoveSourceBranch: true,
@@ -24,14 +26,23 @@ const createComponent = (customConfig = {}) => {
 
   Object.assign(mr, customConfig.mr);
 
-  const service = {
-    merge() {},
-    poll() {},
-  };
+  return mr;
+};
+
+const createTestService = () => ({
+  merge() {},
+  poll() {},
+});
+
+const createComponent = (customConfig = {}) => {
+  const Component = Vue.extend(ReadyToMerge);
 
   return new Component({
     el: document.createElement('div'),
-    propsData: { mr, service },
+    propsData: {
+      mr: createTestMr(customConfig),
+      service: createTestService(),
+    },
   });
 };
 
@@ -76,11 +87,13 @@ describe('ReadyToMerge', () => {
     describe('shouldShowMergeWhenPipelineSucceedsText', () => {
       it('should return true with active pipeline', () => {
         vm.mr.isPipelineActive = true;
+
         expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeTruthy();
       });
 
       it('should return false with inactive pipeline', () => {
         vm.mr.isPipelineActive = false;
+
         expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeFalsy();
       });
     });
@@ -95,6 +108,7 @@ describe('ReadyToMerge', () => {
 
       it('should return message without description', () => {
         vm.useCommitMessageWithDescription = true;
+
         expect(vm.commitMessageLinkTitle).toEqual(withoutDesc);
       });
     });
@@ -102,11 +116,13 @@ describe('ReadyToMerge', () => {
     describe('status', () => {
       it('defaults to success', () => {
         vm.mr.pipeline = true;
+
         expect(vm.status).toEqual('success');
       });
 
       it('returns failed when MR has CI but also has an unknown status', () => {
         vm.mr.hasCI = true;
+
         expect(vm.status).toEqual('failed');
       });
 
@@ -117,12 +133,14 @@ describe('ReadyToMerge', () => {
       it('returns pending when pipeline is active', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
+
         expect(vm.status).toEqual('pending');
       });
 
       it('returns failed when pipeline is failed', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineFailed = true;
+
         expect(vm.status).toEqual('failed');
       });
     });
@@ -138,17 +156,20 @@ describe('ReadyToMerge', () => {
 
       it('returns success class for success status', () => {
         vm.mr.pipeline = true;
+
         expect(vm.mergeButtonClass).toEqual(defaultClass);
       });
 
       it('returns info class for pending status', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
+
         expect(vm.mergeButtonClass).toEqual(inActionClass);
       });
 
       it('returns failed class for failed status', () => {
         vm.mr.hasCI = true;
+
         expect(vm.mergeButtonClass).toEqual(failedClass);
       });
     });
@@ -160,22 +181,26 @@ describe('ReadyToMerge', () => {
 
       it('shows tick for success status', () => {
         vm.mr.pipeline = true;
+
         expect(vm.iconClass).toEqual('success');
       });
 
       it('shows tick for pending status', () => {
         vm.mr.pipeline = {};
         vm.mr.isPipelineActive = true;
+
         expect(vm.iconClass).toEqual('success');
       });
 
       it('shows warning icon for failed status', () => {
         vm.mr.hasCI = true;
+
         expect(vm.iconClass).toEqual('warning');
       });
 
       it('shows warning icon for merge not allowed', () => {
         vm.mr.hasCI = true;
+
         expect(vm.iconClass).toEqual('warning');
       });
     });
@@ -187,12 +212,14 @@ describe('ReadyToMerge', () => {
 
       it('should return Merge in progress', () => {
         vm.isMergingImmediately = true;
+
         expect(vm.mergeButtonText).toEqual('Merge in progress');
       });
 
       it('should return Merge when pipeline succeeds', () => {
         vm.isMergingImmediately = false;
         vm.mr.isPipelineActive = true;
+
         expect(vm.mergeButtonText).toEqual('Merge when pipeline succeeds');
       });
     });
@@ -204,12 +231,14 @@ describe('ReadyToMerge', () => {
 
       it('should return true when pipeline active', () => {
         vm.mr.isPipelineActive = true;
+
         expect(vm.shouldShowMergeOptionsDropdown).toBeTruthy();
       });
 
       it('should return false when pipeline active but only merge when pipeline succeeds set in project options', () => {
         vm.mr.isPipelineActive = true;
         vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
+
         expect(vm.shouldShowMergeOptionsDropdown).toBeFalsy();
       });
     });
@@ -217,24 +246,28 @@ describe('ReadyToMerge', () => {
     describe('isMergeButtonDisabled', () => {
       it('should return false with initial data', () => {
         vm.mr.isMergeAllowed = true;
+
         expect(vm.isMergeButtonDisabled).toBeFalsy();
       });
 
       it('should return true when there is no commit message', () => {
         vm.mr.isMergeAllowed = true;
         vm.commitMessage = '';
+
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
 
       it('should return true if merge is not allowed', () => {
         vm.mr.isMergeAllowed = false;
         vm.mr.onlyAllowMergeIfPipelineSucceeds = true;
+
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
 
       it('should return true when the vm instance is making request', () => {
         vm.mr.isMergeAllowed = true;
         vm.isMakingRequest = true;
+
         expect(vm.isMergeButtonDisabled).toBeTruthy();
       });
     });
@@ -245,24 +278,28 @@ describe('ReadyToMerge', () => {
       it('should return false when an external pipeline is running and required to succeed', () => {
         vm.mr.isMergeAllowed = false;
         vm.mr.isPipelineActive = false;
+
         expect(vm.shouldShowMergeControls()).toBeFalsy();
       });
 
       it('should return true when the build succeeded or build not required to succeed', () => {
         vm.mr.isMergeAllowed = true;
         vm.mr.isPipelineActive = false;
+
         expect(vm.shouldShowMergeControls()).toBeTruthy();
       });
 
       it('should return true when showing the MWPS button and a pipeline is running that needs to be successful', () => {
         vm.mr.isMergeAllowed = false;
         vm.mr.isPipelineActive = true;
+
         expect(vm.shouldShowMergeControls()).toBeTruthy();
       });
 
       it('should return true when showing the MWPS button but not required for the pipeline to succeed', () => {
         vm.mr.isMergeAllowed = true;
         vm.mr.isPipelineActive = true;
+
         expect(vm.shouldShowMergeControls()).toBeTruthy();
       });
     });
@@ -272,9 +309,11 @@ describe('ReadyToMerge', () => {
         expect(vm.useCommitMessageWithDescription).toBeFalsy();
         expect(vm.commitMessage).toEqual(commitMessage);
         vm.updateCommitMessage();
+
         expect(vm.useCommitMessageWithDescription).toBeTruthy();
         expect(vm.commitMessage).toEqual(commitMessageWithDescription);
         vm.updateCommitMessage();
+
         expect(vm.useCommitMessageWithDescription).toBeFalsy();
         expect(vm.commitMessage).toEqual(commitMessage);
       });
@@ -284,20 +323,22 @@ describe('ReadyToMerge', () => {
       it('should toggle showCommitMessageEditor flag', () => {
         expect(vm.showCommitMessageEditor).toBeFalsy();
         vm.toggleCommitMessageEditor();
+
         expect(vm.showCommitMessageEditor).toBeTruthy();
       });
     });
 
     describe('handleMergeButtonClick', () => {
-      const returnPromise = status => new Promise((resolve) => {
-        resolve({
-          data: {
-            status,
-          },
+      const returnPromise = status =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              status,
+            },
+          });
         });
-      });
 
-      it('should handle merge when pipeline succeeds', (done) => {
+      it('should handle merge when pipeline succeeds', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'merge').and.returnValue(returnPromise('merge_when_pipeline_succeeds'));
         vm.removeSourceBranch = false;
@@ -309,6 +350,7 @@ describe('ReadyToMerge', () => {
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
 
           const params = vm.service.merge.calls.argsFor(0)[0];
+
           expect(params.sha).toEqual(vm.mr.sha);
           expect(params.commit_message).toEqual(vm.mr.commitMessage);
           expect(params.should_remove_source_branch).toBeFalsy();
@@ -317,7 +359,7 @@ describe('ReadyToMerge', () => {
         }, 333);
       });
 
-      it('should handle merge failed', (done) => {
+      it('should handle merge failed', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'merge').and.returnValue(returnPromise('failed'));
         vm.handleMergeButtonClick(false, true);
@@ -328,13 +370,14 @@ describe('ReadyToMerge', () => {
           expect(eventHub.$emit).toHaveBeenCalledWith('FailedToMerge', undefined);
 
           const params = vm.service.merge.calls.argsFor(0)[0];
+
           expect(params.should_remove_source_branch).toBeTruthy();
           expect(params.merge_when_pipeline_succeeds).toBeFalsy();
           done();
         }, 333);
       });
 
-      it('should handle merge action accepted case', (done) => {
+      it('should handle merge action accepted case', done => {
         spyOn(vm.service, 'merge').and.returnValue(returnPromise('success'));
         spyOn(vm, 'initiateMergePolling');
         vm.handleMergeButtonClick();
@@ -345,6 +388,7 @@ describe('ReadyToMerge', () => {
           expect(vm.initiateMergePolling).toHaveBeenCalled();
 
           const params = vm.service.merge.calls.argsFor(0)[0];
+
           expect(params.should_remove_source_branch).toBeTruthy();
           expect(params.merge_when_pipeline_succeeds).toBeFalsy();
           done();
@@ -356,25 +400,27 @@ describe('ReadyToMerge', () => {
       it('should call simplePoll', () => {
         const simplePoll = spyOnDependency(ReadyToMerge, 'simplePoll');
         vm.initiateMergePolling();
+
         expect(simplePoll).toHaveBeenCalled();
       });
     });
 
     describe('handleMergePolling', () => {
-      const returnPromise = state => new Promise((resolve) => {
-        resolve({
-          data: {
-            state,
-            source_branch_exists: true,
-          },
+      const returnPromise = state =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              state,
+              source_branch_exists: true,
+            },
+          });
         });
-      });
 
       beforeEach(() => {
         loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
       });
 
-      it('should call start and stop polling when MR merged', (done) => {
+      it('should call start and stop polling when MR merged', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
@@ -382,7 +428,14 @@ describe('ReadyToMerge', () => {
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleMergePolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleMergePolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(vm.service.poll).toHaveBeenCalled();
           expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
@@ -395,7 +448,7 @@ describe('ReadyToMerge', () => {
         }, 333);
       });
 
-      it('updates status box', (done) => {
+      it('updates status box', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
@@ -403,6 +456,7 @@ describe('ReadyToMerge', () => {
 
         setTimeout(() => {
           const statusBox = document.querySelector('.status-box');
+
           expect(statusBox.classList.contains('status-box-mr-merged')).toBeTruthy();
           expect(statusBox.textContent).toContain('Merged');
 
@@ -410,7 +464,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('hides close button', (done) => {
+      it('hides close button', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
@@ -423,7 +477,7 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('updates merge request count badge', (done) => {
+      it('updates merge request count badge', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('merged'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
@@ -436,14 +490,21 @@ describe('ReadyToMerge', () => {
         });
       });
 
-      it('should continue polling until MR is merged', (done) => {
+      it('should continue polling until MR is merged', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise('some_other_state'));
         spyOn(vm, 'initiateRemoveSourceBranchPolling');
 
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleMergePolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleMergePolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(cpc).toBeTruthy();
           expect(spc).toBeFalsy();
@@ -459,35 +520,46 @@ describe('ReadyToMerge', () => {
         const simplePoll = spyOnDependency(ReadyToMerge, 'simplePoll');
 
         vm.initiateRemoveSourceBranchPolling();
+
         expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [true]);
         expect(simplePoll).toHaveBeenCalled();
       });
     });
 
     describe('handleRemoveBranchPolling', () => {
-      const returnPromise = state => new Promise((resolve) => {
-        resolve({
-          data: {
-            source_branch_exists: state,
-          },
+      const returnPromise = state =>
+        new Promise(resolve => {
+          resolve({
+            data: {
+              source_branch_exists: state,
+            },
+          });
         });
-      });
 
-      it('should call start and stop polling when MR merged', (done) => {
+      it('should call start and stop polling when MR merged', done => {
         spyOn(eventHub, '$emit');
         spyOn(vm.service, 'poll').and.returnValue(returnPromise(false));
 
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleRemoveBranchPolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleRemoveBranchPolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(vm.service.poll).toHaveBeenCalled();
 
           const args = eventHub.$emit.calls.argsFor(0);
+
           expect(args[0]).toEqual('MRWidgetUpdateRequested');
           expect(args[1]).toBeDefined();
           args[1]();
+
           expect(eventHub.$emit).toHaveBeenCalledWith('SetBranchRemoveFlag', [false]);
 
           expect(cpc).toBeFalsy();
@@ -497,13 +569,20 @@ describe('ReadyToMerge', () => {
         }, 333);
       });
 
-      it('should continue polling until MR is merged', (done) => {
+      it('should continue polling until MR is merged', done => {
         spyOn(vm.service, 'poll').and.returnValue(returnPromise(true));
 
         let cpc = false; // continuePollingCalled
         let spc = false; // stopPollingCalled
 
-        vm.handleRemoveBranchPolling(() => { cpc = true; }, () => { spc = true; });
+        vm.handleRemoveBranchPolling(
+          () => {
+            cpc = true;
+          },
+          () => {
+            spc = true;
+          },
+        );
         setTimeout(() => {
           expect(cpc).toBeTruthy();
           expect(spc).toBeFalsy();
@@ -518,6 +597,7 @@ describe('ReadyToMerge', () => {
     describe('when user can merge but cannot delete branch', () => {
       it('should be disabled in the rendered output', () => {
         const checkboxElement = vm.$el.querySelector('#remove-source-branch-input');
+
         expect(checkboxElement).toBeNull();
       });
     });
@@ -537,8 +617,50 @@ describe('ReadyToMerge', () => {
 
       it('should be enabled in rendered output', () => {
         const checkboxElement = customVm.$el.querySelector('#remove-source-branch-input');
+
         expect(checkboxElement).not.toBeNull();
       });
+    });
+  });
+
+  describe('Squash checkbox component', () => {
+    let wrapper;
+    const localVue = createLocalVue();
+
+    const createLocalComponent = (customConfig = {}) => {
+      wrapper = shallowMount(localVue.extend(ReadyToMerge), {
+        localVue,
+        propsData: {
+          mr: createTestMr(customConfig),
+          service: createTestService(),
+        },
+      });
+    };
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
+
+    it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
+      createLocalComponent({
+        mr: { commitsCount: 2, enableSquashBeforeMerge: true },
+      });
+
+      expect(findCheckboxElement().exists()).toBeTruthy();
+    });
+
+    it('should not be rendered when squash before merge is disabled', () => {
+      createLocalComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: false } });
+
+      expect(findCheckboxElement().exists()).toBeFalsy();
+    });
+
+    it('should not be rendered when there is only 1 commit', () => {
+      createLocalComponent({ mr: { commitsCount: 1, enableSquashBeforeMerge: true } });
+
+      expect(findCheckboxElement().exists()).toBeFalsy();
     });
   });
 

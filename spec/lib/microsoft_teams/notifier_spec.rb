@@ -8,7 +8,7 @@ describe MicrosoftTeams::Notifier do
   let(:options) do
     {
       title: 'JohnDoe4/project2',
-      pretext: '[[JohnDoe4/project2](http://localhost/namespace2/gitlabhq)] Issue [#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1) opened by user6',
+      summary: '[[JohnDoe4/project2](http://localhost/namespace2/gitlabhq)] Issue [#1 Awesome issue](http://localhost/namespace2/gitlabhq/issues/1) opened by user6',
       activity: {
         title: 'Issue opened by user6',
         subtitle: 'in [JohnDoe4/project2](http://localhost/namespace2/gitlabhq)',
@@ -48,7 +48,7 @@ describe MicrosoftTeams::Notifier do
       stub_request(:post, webhook_url).with(body: JSON(body), headers: { 'Content-Type' => 'application/json' }).to_return(status: 200, body: "", headers: {})
     end
 
-    it 'expects to receive successfull answer' do
+    it 'expects to receive successful answer' do
       expect(subject.ping(options)).to be true
     end
   end

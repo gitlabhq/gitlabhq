@@ -18,7 +18,8 @@ import '../commons/bootstrap';
 $.fn.requiresInput = function requiresInput() {
   const $form = $(this);
   const $button = $('button[type=submit], input[type=submit]', $form);
-  const fieldSelector = 'input[required=required], select[required=required], textarea[required=required]';
+  const fieldSelector =
+    'input[required=required], select[required=required], textarea[required=required]';
 
   function requireInput() {
     // Collect the input values of *all* required fields
@@ -49,10 +50,11 @@ function hideOrShowHelpBlock(form) {
 }
 
 $(() => {
-  const $form = $('form.js-requires-input');
-  if ($form) {
+  $('form.js-requires-input').each((i, el) => {
+    const $form = $(el);
+
     $form.requiresInput();
     hideOrShowHelpBlock($form);
     $('.select2.js-select-namespace').change(() => hideOrShowHelpBlock($form));
-  }
+  });
 });

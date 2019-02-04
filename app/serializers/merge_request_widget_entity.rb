@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestWidgetEntity < IssuableEntity
   expose :state
   expose :in_progress_merge_commit_sha
@@ -9,11 +11,20 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_user_id
   expose :merge_when_pipeline_succeeds
   expose :source_branch
+  expose :source_branch_protected do |merge_request|
+    merge_request.source_project.present? && ProtectedBranch.protected?(merge_request.source_project, merge_request.source_branch)
+  end
   expose :source_project_id
+  expose :source_project_full_path do |merge_request|
+    merge_request.source_project&.full_path
+  end
   expose :squash
   expose :target_branch
   expose :target_project_id
-  expose :allow_maintainer_to_push
+  expose :target_project_full_path do |merge_request|
+    merge_request.project&.full_path
+  end
+  expose :allow_collaboration
 
   expose :should_be_rebased?, as: :should_be_rebased
   expose :ff_only_enabled do |merge_request|
@@ -46,7 +57,8 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
 
   expose :merge_commit_message
-  expose :actual_head_pipeline, with: PipelineDetailsEntity, as: :pipeline
+  expose :actual_head_pipeline, with: PipelineDetailsEntity, as: :pipeline, if: -> (mr, _) { presenter(mr).can_read_pipeline? }
+  expose :merge_pipeline, with: PipelineDetailsEntity, if: ->(mr, _) { mr.merged? && can?(request.current_user, :read_pipeline, mr.target_project)}
 
   # Booleans
   expose :merge_ongoing?, as: :merge_ongoing
@@ -109,7 +121,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   expose :current_user do
     expose :can_remove_source_branch do |merge_request|
-      merge_request.source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
+      presenter(merge_request).can_remove_source_branch?
     end
 
     expose :can_revert_on_current_merge_request do |merge_request|
@@ -120,12 +132,16 @@ class MergeRequestWidgetEntity < IssuableEntity
       presenter(merge_request).can_cherry_pick_on_current_merge_request?
     end
 
-    expose :can_create_note do |issue|
-      can?(request.current_user, :create_note, issue.project)
+    expose :can_create_note do |merge_request|
+      can?(request.current_user, :create_note, merge_request)
     end
 
-    expose :can_update do |issue|
-      can?(request.current_user, :update_issue, issue)
+    expose :can_create_issue do |merge_request|
+      can?(current_user, :create_issue, merge_request.project)
+    end
+
+    expose :can_update do |merge_request|
+      can?(request.current_user, :update_merge_request, merge_request)
     end
   end
 
@@ -209,10 +225,26 @@ class MergeRequestWidgetEntity < IssuableEntity
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
   end
 
+  expose :preview_note_path do |merge_request|
+    preview_markdown_path(merge_request.project, quick_actions_target_type: 'MergeRequest', quick_actions_target_id: merge_request.iid)
+  end
+
   expose :merge_commit_path do |merge_request|
     if merge_request.merge_commit_sha
       project_commit_path(merge_request.project, merge_request.merge_commit_sha)
     end
+  end
+
+  expose :test_reports_path do |merge_request|
+    if merge_request.has_test_reports?
+      test_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
+    end
+  end
+
+  expose :supports_suggestion?, as: :can_receive_suggestion
+
+  expose :conflicts_docs_path do |merge_request|
+    presenter(merge_request).conflicts_docs_path
   end
 
   private
@@ -221,7 +253,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   def presenter(merge_request)
     @presenters ||= {}
-    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user)
+    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 
   # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,

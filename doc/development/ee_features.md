@@ -5,7 +5,7 @@
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
   the feature and include screenshots, if applicable.
 - **Submit a MR to the `www-gitlab-com` project.**: Add the new feature to the
-  [EE features list][ee-features-list].
+  [EE features list](https://about.gitlab.com/features/).
 
 ## Act as CE when unlicensed
 
@@ -119,10 +119,20 @@ This also applies to views.
 
 ### EE features based on CE features
 
-For features that build on existing CE features, write a module in the
-`EE` namespace and `prepend` it in the CE class. This makes conflicts
-less likely to happen during CE to EE merges because only one line is
-added to the CE class - the `prepend` line.
+For features that build on existing CE features, write a module in the `EE`
+namespace and `prepend` it in the CE class, on the last line of the file that
+the class resides in. This makes conflicts less likely to happen during CE to EE
+merges because only one line is added to the CE class - the `prepend` line. For
+example, to prepend a module into the `User` class you would use the following
+approach:
+
+```ruby
+class User < ActiveRecord::Base
+  # ... lots of code here ...
+end
+
+User.prepend(EE::User)
+```
 
 Since the module would require an `EE` namespace, the file should also be
 put in an `ee/` sub-directory. For example, we want to extend the user model
@@ -166,47 +176,53 @@ There are a few gotchas with it:
   to make it call the other method we want to extend, like a [template method
   pattern](https://en.wikipedia.org/wiki/Template_method_pattern).
   For example, given this base:
-  ``` ruby
-    class Base
-      def execute
-        return unless enabled?
 
-        # ...
-        # ...
+    ```ruby
+      class Base
+        def execute
+          return unless enabled?
+
+          # ...
+          # ...
+        end
       end
-    end
-  ```
-  Instead of just overriding `Base#execute`, we should update it and extract
-  the behaviour into another method:
-  ``` ruby
-    class Base
-      def execute
-        return unless enabled?
+    ```
 
-        do_something
+    Instead of just overriding `Base#execute`, we should update it and extract
+    the behaviour into another method:
+
+    ```ruby
+      class Base
+        def execute
+          return unless enabled?
+
+          do_something
+        end
+
+        private
+
+        def do_something
+          # ...
+          # ...
+        end
       end
+    ```
 
-      private
+    Then we're free to override that `do_something` without worrying about the
+    guards:
 
-      def do_something
-        # ...
-        # ...
+    ```ruby
+      module EE::Base
+        extend ::Gitlab::Utils::Override
+
+        override :do_something
+        def do_something
+          # Follow the above pattern to call super and extend it
+        end
       end
-    end
-  ```
-  Then we're free to override that `do_something` without worrying about the
-  guards:
-  ``` ruby
-    module EE::Base
-      extend ::Gitlab::Utils::Override
+    ```
 
-      override :do_something
-      def do_something
-        # Follow the above pattern to call super and extend it
-      end
-    end
-  ```
-  This would require updating CE first, or make sure this is back ported to CE.
+    This would require updating CE first, or make sure this is back ported to CE.
 
 When prepending, place them in the `ee/` specific sub-directory, and
 wrap class or module in `module EE` to avoid naming conflicts.
@@ -225,7 +241,6 @@ the existing file:
 
 ```ruby
 class ApplicationController < ActionController::Base
-  prepend EE::ApplicationController
   # ...
 
   def after_sign_out_path_for(resource)
@@ -234,6 +249,8 @@ class ApplicationController < ActionController::Base
 
   # ...
 end
+
+ApplicationController.prepend(EE::ApplicationController)
 ```
 
 And create a new file in the `ee/` sub-directory with the altered
@@ -257,6 +274,31 @@ end
 ```
 
 [`extend ::Gitlab::Utils::Override`]: utilities.md#override
+
+##### Overriding CE class methods
+
+The same applies to class methods, except we want to use
+`ActiveSupport::Concern` and put `extend ::Gitlab::Utils::Override`
+within the block of `class_methods`. Here's an example:
+
+```ruby
+module EE
+  module Groups
+    module GroupMembersController
+      extend ActiveSupport::Concern
+
+      class_methods do
+        extend ::Gitlab::Utils::Override
+
+        override :admin_not_required_endpoints
+        def admin_not_required_endpoints
+          super.concat(%i[update override])
+        end
+      end
+    end
+  end
+end
+```
 
 #### Use self-descriptive wrapper methods
 
@@ -300,6 +342,21 @@ full implementation details.
 
 [ce-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12373
 [ee-mr-full-private]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2199
+
+### Code in `config/routes`
+
+When we add `draw :admin` in `config/routes.rb`, the application will try to
+load the file located in `config/routes/admin.rb`, and also try to load the
+file located in `ee/config/routes/admin.rb`.
+
+In EE, it should at least load one file, at most two files. If it cannot find
+any files, an error will be raised. In CE, since we don't know if there will
+be an EE route, it will not raise any errors even if it cannot find anything.
+
+This means if we want to extend a particular CE route file, just add the same
+file located in `ee/config/routes`. If we want to add an EE only route, we
+could still put `draw :ee_only` in both CE and EE, and add
+`ee/config/routes/ee_only.rb` in EE, similar to `render_if_exists`.
 
 ### Code in `app/controllers/`
 
@@ -362,7 +419,7 @@ view. For instance the approval code in the project's settings page.
 **Mitigations**
 
 Blocks of code that are EE-specific should be moved to partials. This
-avoids conflicts with big chunks of HAML code that that are not fun to
+avoids conflicts with big chunks of HAML code that are not fun to
 resolve when you add the indentation to the equation.
 
 EE-specific views should be placed in `ee/app/views/`, using extra
@@ -444,7 +501,7 @@ Put the EE module files following
 
 For EE API routes, we put them in a `prepended` block:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -454,7 +511,7 @@ module EE
         params do
           requires :id, type: String, desc: 'The ID of a project'
         end
-        resource :projects, requirements: ::API::API::PROJECT_ENDPOINT_REQUIREMENTS do
+        resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           # ...
         end
       end
@@ -478,7 +535,7 @@ interface first here.
 For example, suppose we have a few more optional params for EE, given this CE
 API code:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     # EE::API::MergeRequests would override the following helpers
@@ -487,8 +544,6 @@ module API
       end
     end
 
-    prepend EE::API::MergeRequests
-
     params :optional_params do
       # CE specific params go here...
 
@@ -496,11 +551,13 @@ module API
     end
   end
 end
+
+API::MergeRequests.prepend(EE::API::MergeRequests)
 ```
 
 And then we could override it in EE module:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -527,7 +584,7 @@ To make it easy for an EE module to override the CE helpers, we need to define
 those helpers we want to extend first. Try to do that immediately after the
 class definition to make it easy and clear:
 
-``` ruby
+```ruby
 module API
   class JobArtifacts < Grape::API
     # EE::API::JobArtifacts would override the following helpers
@@ -536,15 +593,15 @@ module API
         authorize_read_builds!
       end
     end
-
-    prepend EE::API::JobArtifacts
   end
 end
+
+API::JobArtifacts.prepend(EE::API::JobArtifacts)
 ```
 
 And then we can follow regular object-oriented practices to override it:
 
-``` ruby
+```ruby
 module EE
   module API
     module JobArtifacts
@@ -571,7 +628,7 @@ therefore can't be simply overridden. We need to extract them into a standalone
 method, or introduce some "hooks" where we could inject behavior in the CE
 route. Something like this:
 
-``` ruby
+```ruby
 module API
   class MergeRequests < Grape::API
     helpers do
@@ -579,8 +636,6 @@ module API
       def update_merge_request_ee(merge_request)
       end
     end
-
-    prepend EE::API::MergeRequests
 
     put ':id/merge_requests/:merge_request_iid/merge' do
       merge_request = find_project_merge_request(params[:merge_request_iid])
@@ -593,12 +648,14 @@ module API
     end
   end
 end
+
+API::MergeRequests.prepend(EE::API::MergeRequests)
 ```
 
 Note that `update_merge_request_ee` doesn't do anything in CE, but
 then we could override it in EE:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
@@ -630,27 +687,37 @@ or not we really need to extend it from EE. For now we're not using it much.
 
 Sometimes we need to use different arguments for a particular API route, and we
 can't easily extend it with an EE module because Grape has different context in
-different blocks. In order to overcome this, we could use class methods from the
-API class.
+different blocks. In order to overcome this, we need to move the data to a class
+method that resides in a separate module or class. This allows us to extend that
+module or class before its data is used, without having to place a `prepend` in
+the middle of CE code.
 
 For example, in one place we need to pass an extra argument to
 `at_least_one_of` so that the API could consider an EE-only argument as the
-least argument. This is not quite beautiful but it's working:
+least argument. We would approach this as follows:
 
-``` ruby
+```ruby
+# api/merge_requests/parameters.rb
 module API
   class MergeRequests < Grape::API
-    def self.update_params_at_least_one_of
-      %i[
-        assignee_id
-        description
-      ]
+    module Parameters
+      def self.update_params_at_least_one_of
+        %i[
+          assignee_id
+          description
+        ]
+      end
     end
+  end
+end
 
-    prepend EE::API::MergeRequests
+API::MergeRequests::Parameters.prepend(EE::API::MergeRequests::Parameters)
 
+# api/merge_requests.rb
+module API
+  class MergeRequests < Grape::API
     params do
-      at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
+      at_least_one_of(*Parameters.update_params_at_least_one_of)
     end
   end
 end
@@ -658,17 +725,22 @@ end
 
 And then we could easily extend that argument in the EE class method:
 
-``` ruby
+```ruby
 module EE
   module API
     module MergeRequests
-      extend ActiveSupport::Concern
+      module Parameters
+        extend ActiveSupport::Concern
 
-      class_methods do
-        def update_params_at_least_one_of
-          super.push(*%i[
-            squash
-          ])
+        class_methods do
+          extend ::Gitlab::Utils::Override
+
+          override :update_params_at_least_one_of
+          def update_params_at_least_one_of
+            super.push(*%i[
+              squash
+            ])
+          end
         end
       end
     end
@@ -678,6 +750,78 @@ end
 
 It could be annoying if we need this for a lot of routes, but it might be the
 simplest solution right now.
+
+This approach can also be used when models define validations that depend on
+class methods. For example:
+
+```ruby
+# app/models/identity.rb
+class Identity < ActiveRecord::Base
+  def self.uniqueness_scope
+    [:provider]
+  end
+
+  prepend EE::Identity
+
+  validates :extern_uid,
+    allow_blank: true,
+    uniqueness: { scope: uniqueness_scope, case_sensitive: false }
+end
+
+# ee/app/models/ee/identity.rb
+module EE
+  module Identity
+    extend ActiveSupport::Concern
+
+    class_methods do
+      extend ::Gitlab::Utils::Override
+
+      def uniqueness_scope
+        [*super, :saml_provider_id]
+      end
+    end
+  end
+end
+```
+
+Instead of taking this approach, we would refactor our code into the following:
+
+```ruby
+# ee/app/models/ee/identity/uniqueness_scopes.rb
+module EE
+  module Identity
+    module UniquenessScopes
+      extend ActiveSupport::Concern
+
+      class_methods do
+        extend ::Gitlab::Utils::Override
+
+        def uniqueness_scope
+          [*super, :saml_provider_id]
+        end
+      end
+    end
+  end
+end
+
+# app/models/identity/uniqueness_scopes.rb
+class Identity < ActiveRecord::Base
+  module UniquenessScopes
+    def self.uniqueness_scope
+      [:provider]
+    end
+  end
+end
+
+Identity::UniquenessScopes.prepend(EE::Identity::UniquenessScopes)
+
+# app/models/identity.rb
+class Identity < ActiveRecord::Base
+  validates :extern_uid,
+    allow_blank: true,
+    uniqueness: { scope: Identity::UniquenessScopes.scopes, case_sensitive: false }
+end
+```
 
 ### Code in `spec/`
 
@@ -695,6 +839,20 @@ For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
 EE counterpart
 `ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js`.
+The corresponding import statement would then look like this:
+
+```javascript
+// app/assets/javascripts/protected_branches/protected_branches_bundle.js
+import bundle from '~/protected_branches/protected_branches_bundle.js';
+
+// ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js
+// (only works in EE)
+import bundle from 'ee/protected_branches/protected_branches_bundle.js';
+
+// in CE: app/assets/javascripts/protected_branches/protected_branches_bundle.js
+// in EE: ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js
+import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
+```
 
 See the frontend guide [performance section](./fe_guide/performance.md) for
 information on managing page-specific javascript within EE.

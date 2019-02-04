@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class UpdateMergeRequestsWorker
   include ApplicationWorker
 
   LOG_TIME_THRESHOLD = 90 # seconds
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(project_id, user_id, oldrev, newrev, ref)
     project = Project.find_by(id: project_id)
     return unless project
@@ -26,4 +29,5 @@ class UpdateMergeRequestsWorker
 
     Rails.logger.info("UpdateMergeRequestsWorker#perform #{args_log}") if time.real > LOG_TIME_THRESHOLD
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

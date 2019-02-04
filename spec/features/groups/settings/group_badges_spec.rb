@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group Badges' do
+describe 'Group Badges' do
   include WaitForRequests
 
   let(:user) { create(:user) }
@@ -14,7 +14,7 @@ feature 'Group Badges' do
     group.add_owner(user)
     sign_in(user)
 
-    visit(group_settings_badges_path(group))
+    visit(edit_group_path(group))
   end
 
   it 'shows a list of badges', :js do

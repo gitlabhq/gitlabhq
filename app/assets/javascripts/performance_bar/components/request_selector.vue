@@ -35,16 +35,9 @@ export default {
 };
 </script>
 <template>
-  <div
-    id="peek-request-selector"
-    class="float-right"
-  >
+  <div id="peek-request-selector">
     <select v-model="currentRequestId">
-      <option
-        v-for="request in requests"
-        :key="request.id"
-        :value="request.id"
-      >
+      <option v-for="request in requests" :key="request.id" :value="request.id">
         {{ truncatedUrl(request.url) }}
       </option>
     </select>

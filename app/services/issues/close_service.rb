@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class CloseService < Issues::BaseService
     # Closes the supplied issue if the current user is able to do so.

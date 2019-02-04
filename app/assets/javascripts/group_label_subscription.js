@@ -1,7 +1,12 @@
 import $ from 'jquery';
+import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
-import { __ } from './locale';
+
+const tooltipTitles = {
+  group: __('Unsubscribe at group level'),
+  project: __('Unsubscribe at project level'),
+};
 
 export default class GroupLabelSubscription {
   constructor(container) {
@@ -18,7 +23,8 @@ export default class GroupLabelSubscription {
     event.preventDefault();
 
     const url = this.$unsubscribeButtons.attr('data-url');
-    axios.post(url)
+    axios
+      .post(url)
       .then(() => {
         this.toggleSubscriptionButtons();
         this.$unsubscribeButtons.removeAttr('data-url');
@@ -34,7 +40,9 @@ export default class GroupLabelSubscription {
 
     this.$unsubscribeButtons.attr('data-url', url);
 
-    axios.post(url)
+    axios
+      .post(url)
+      .then(() => GroupLabelSubscription.setNewTooltip($btn))
       .then(() => this.toggleSubscriptionButtons())
       .catch(() => flash(__('There was an error when subscribing to this label.')));
   }
@@ -43,5 +51,17 @@ export default class GroupLabelSubscription {
     this.$dropdown.toggleClass('hidden');
     this.$subscribeButtons.toggleClass('hidden');
     this.$unsubscribeButtons.toggleClass('hidden');
+  }
+
+  static setNewTooltip($button) {
+    if (!$button.hasClass('js-subscribe-button')) return;
+
+    const type = $button.hasClass('js-group-level') ? 'group' : 'project';
+    const newTitle = tooltipTitles[type];
+
+    $('.js-unsubscribe-button', $button.closest('.label-actions-list'))
+      .tooltip('hide')
+      .attr('title', newTitle)
+      .tooltip('_fixTitle');
   }
 }

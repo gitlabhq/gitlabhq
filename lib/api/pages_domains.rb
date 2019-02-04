@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module API
   class PagesDomains < Grape::API
     include PaginationParams
 
-    PAGES_DOMAINS_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(domain: API::NO_SLASH_URL_PART_REGEX)
+    PAGES_DOMAINS_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(domain: API::NO_SLASH_URL_PART_REGEX)
 
     before do
       authenticate!
@@ -13,9 +15,11 @@ module API
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_pages_domain!
         user_project.pages_domains.find_by(domain: params[:domain]) || not_found!('PagesDomain')
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def pages_domain
         @pages_domain ||= find_pages_domain!
@@ -50,7 +54,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
         require_pages_enabled!
       end
@@ -61,11 +65,13 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/pages/domains" do
         authorize! :read_pages, user_project
 
         present paginate(user_project.pages_domains.order(:domain)), with: Entities::PagesDomain
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a single pages domain' do
         success Entities::PagesDomain

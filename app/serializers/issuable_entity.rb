@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssuableEntity < Grape::Entity
   include RequestAwareEntity
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DirectlyAddressedUser
   class << self
     def reference_pattern

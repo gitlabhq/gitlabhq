@@ -1,6 +1,30 @@
 namespace :gitlab do
   namespace :uploads do
-    desc 'GitLab | Uploads | Migrate the uploaded files to object storage'
+    namespace :migrate do
+      desc "GitLab | Uploads | Migrate all uploaded files to object storage"
+      task all: :environment do
+        categories = [%w(AvatarUploader Project :avatar),
+                      %w(AvatarUploader Group :avatar),
+                      %w(AvatarUploader User :avatar),
+                      %w(AttachmentUploader Note :attachment),
+                      %w(AttachmentUploader Appearance :logo),
+                      %w(AttachmentUploader Appearance :header_logo),
+                      %w(FaviconUploader Appearance :favicon),
+                      %w(FileUploader Project),
+                      %w(PersonalFileUploader Snippet),
+                      %w(NamespaceFileUploader Snippet),
+                      %w(FileUploader MergeRequest)]
+
+        categories.each do |args|
+          Rake::Task["gitlab:uploads:migrate"].invoke(*args)
+          Rake::Task["gitlab:uploads:migrate"].reenable
+        end
+      end
+    end
+
+    # The following is the actual rake task that migrates uploads of specified
+    # category to object storage
+    desc 'GitLab | Uploads | Migrate the uploaded files of specified type to object storage'
     task :migrate, [:uploader_class, :model_class, :mounted_as] => :environment do |task, args|
       batch_size     = ENV.fetch('BATCH', 200).to_i
       @to_store      = ObjectStorage::Store::REMOTE
@@ -8,7 +32,7 @@ namespace :gitlab do
       @uploader_class = args.uploader_class.constantize
       @model_class    = args.model_class.constantize
 
-      uploads.each_batch(of: batch_size, &method(:enqueue_batch)) # rubocop: disable Cop/InBatches
+      uploads.each_batch(of: batch_size, &method(:enqueue_batch))
     end
 
     def enqueue_batch(batch, index)

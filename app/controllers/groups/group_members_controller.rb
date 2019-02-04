@@ -1,10 +1,16 @@
+# frozen_string_literal: true
+
 class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
   include MembersPresentation
   include SortingHelper
 
+  def self.admin_not_required_endpoints
+    %i[index leave request_access]
+  end
+
   # Authorize
-  before_action :authorize_admin_group_member!, except: [:index, :leave, :request_access]
+  before_action :authorize_admin_group_member!, except: admin_not_required_endpoints
 
   skip_cross_project_access_check :index, :create, :update, :destroy, :request_access,
                                   :approve_access_request, :leave, :resend_invite,
@@ -26,7 +32,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
 
     @members = @members.page(params[:page]).per(50)
-    @members = present_members(@members.includes(:user))
+    @members = present_members(@members)
 
     @requesters = present_members(
       AccessRequestsFinder.new(@group).execute(current_user))

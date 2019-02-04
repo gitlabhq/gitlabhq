@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WithPerformanceBar
   extend ActiveSupport::Concern
 
@@ -8,11 +10,7 @@ module WithPerformanceBar
   def peek_enabled?
     return false unless Gitlab::PerformanceBar.enabled?(current_user)
 
-    if RequestStore.active?
-      RequestStore.fetch(:peek_enabled) { cookie_or_default_value }
-    else
-      cookie_or_default_value
-    end
+    Gitlab::SafeRequestStore.fetch(:peek_enabled) { cookie_or_default_value }
   end
 
   private

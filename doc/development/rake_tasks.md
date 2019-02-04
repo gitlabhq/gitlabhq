@@ -1,6 +1,6 @@
 # Rake tasks for developers
 
-## Setup db with developer seeds
+## Set up db with developer seeds
 
 Note that if your db user does not have advanced privileges you must create the db manually before running this command.
 
@@ -37,6 +37,14 @@ echo 'yes' | bundle exec rake setup > /dev/null
 Note that since you can't see the questions from stdout, you might just want
 to `echo 'yes'` to keep it running. It would still print the errors on stderr
 so no worries about missing errors.
+
+### Extra Project seed options
+
+There are a few environment flags you can pass to change how projects are seeded
+
+- `SIZE`: defaults to `8`, max: `32`. Amount of projects to create.
+- `LARGE_PROJECTS`: defaults to false. If set will clone 6 large projects to help with testing.
+- `FORK`: defaults to false. If set to `true` will fork `torvalds/linux` five times. Can also be set to an existing project full_path and it will fork that instead.
 
 ### Notes for MySQL
 
@@ -176,3 +184,20 @@ git push -u origin update-project-templates
 ```
 
 Now create a merge request and merge that to master.
+
+## Generate route lists
+
+To see the full list of API routes, you can run:
+
+```shell
+bundle exec rake grape:path_helpers
+```
+
+For the Rails controllers, run:
+
+```shell
+bundle exec rake routes
+```
+
+Since these take some time to create, it's often helpful to save the output to
+a file for quick reference.

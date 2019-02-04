@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   module Helpers
     module CustomAttributes
@@ -12,6 +14,7 @@ module API
                                          desc: 'Filter with custom attributes'
           end
 
+          # rubocop: disable CodeReuse/ActiveRecord
           def with_custom_attributes(collection_or_resource, options = {})
             options = options.merge(
               with_custom_attributes: params[:with_custom_attributes] &&
@@ -24,6 +27,7 @@ module API
 
             [collection_or_resource, options]
           end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
       end
     end

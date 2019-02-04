@@ -60,7 +60,17 @@ Unicorn master then automatically replaces the worker process.
 This is a robust way to handle memory leaks: Unicorn is designed to handle
 workers that 'crash' so no user requests will be dropped. The
 unicorn-worker-killer gem is designed to only terminate a worker process _in
-between requests_, so no user requests are affected.
+between requests_, so no user requests are affected. You can set the minimum and
+maximum memory threshold (in bytes) for the Unicorn worker killer by
+setting the following values `/etc/gitlab/gitlab.rb`:
+
+```ruby
+unicorn['worker_memory_limit_min'] = "400 * 1 << 20"
+unicorn['worker_memory_limit_max'] = "650 * 1 << 20"
+```
+
+Otherwise, you can set the `GITLAB_UNICORN_MEMORY_MIN` and `GITLAB_UNICORN_MEMORY_MIN`
+[environment variables](../environment_variables.md).
 
 This is what a Unicorn worker memory restart looks like in unicorn_stderr.log.
 You see that worker 4 (PID 125918) is inspecting itself and decides to exit.

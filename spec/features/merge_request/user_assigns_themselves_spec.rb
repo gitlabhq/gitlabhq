@@ -42,7 +42,7 @@ describe 'Merge request > User assigns themselves' do
       visit project_merge_request_path(project, merge_request)
     end
 
-    it 'does not not show assignment link' do
+    it 'does not show assignment link' do
       expect(page).not_to have_content 'Assign yourself'
     end
   end

@@ -6,12 +6,12 @@ describe Projects::GraphsController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET languages' do
     it "redirects_to action charts" do
-      get(:commits, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
+      get(:commits, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
 
       expect(response).to redirect_to action: :charts
     end
@@ -19,7 +19,7 @@ describe Projects::GraphsController do
 
   describe 'GET commits' do
     it "redirects_to action charts" do
-      get(:commits, namespace_id: project.namespace.path, project_id: project.path, id: 'master')
+      get(:commits, params: { namespace_id: project.namespace.path, project_id: project.path, id: 'master' })
 
       expect(response).to redirect_to action: :charts
     end

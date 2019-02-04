@@ -1,4 +1,6 @@
-# Searches and reads file present on Gitlab installation directory
+# frozen_string_literal: true
+
+# Searches and reads file present on GitLab installation directory
 module Gitlab
   module Template
     module Finders
@@ -16,12 +18,16 @@ module Gitlab
         def find(key)
           file_name = "#{key}#{@extension}"
 
+          # The key is untrusted input, so ensure we can't be directed outside
+          # of base_dir
+          Gitlab::Utils.check_path_traversal!(file_name)
+
           directory = select_directory(file_name)
           directory ? File.join(category_directory(directory), file_name) : nil
         end
 
         def list_files_for(dir)
-          dir << '/' unless dir.end_with?('/')
+          dir = "#{dir}/" unless dir.end_with?('/')
           Dir.glob(File.join(dir, "*#{@extension}")).select { |f| f =~ self.class.filter_regex(@extension) }
         end
 

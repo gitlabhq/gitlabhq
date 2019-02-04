@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class BuildAccess < UserAccess
     attr_accessor :user, :project

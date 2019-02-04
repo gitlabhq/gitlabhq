@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class ProjectImportData < ActiveRecord::Base
@@ -19,5 +21,17 @@ class ProjectImportData < ActiveRecord::Base
   def symbolize_credentials
     # bang doesn't work here - attr_encrypted makes it not to work
     self.credentials = self.credentials.deep_symbolize_keys unless self.credentials.blank?
+  end
+
+  def merge_data(hash)
+    self.data = data.to_h.merge(hash) unless hash.empty?
+  end
+
+  def merge_credentials(hash)
+    self.credentials = credentials.to_h.merge(hash) unless hash.empty?
+  end
+
+  def clear_credentials
+    self.credentials = {}
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Projects::Clusters::ApplicationsController do
@@ -17,7 +19,7 @@ describe Projects::Clusters::ApplicationsController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -70,7 +72,7 @@ describe Projects::Clusters::ApplicationsController do
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -79,7 +81,7 @@ describe Projects::Clusters::ApplicationsController do
     end
 
     def go
-      post :create, params.merge(namespace_id: project.namespace, project_id: project)
+      post :create, params: params.merge(namespace_id: project.namespace, project_id: project)
     end
   end
 end

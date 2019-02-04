@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 const Filter = {
-  keydown: function(e){
+  keydown: function(e) {
     if (this.destroyed) return;
 
     var hiddenCount = 0;
@@ -14,14 +14,14 @@ const Filter = {
     var matches = [];
     var filterFunction;
     // will only work on dynamically set data
-    if(!data){
+    if (!data) {
       return;
     }
 
     if (config && config.filterFunction && typeof config.filterFunction === 'function') {
       filterFunction = config.filterFunction;
     } else {
-      filterFunction = function(o){
+      filterFunction = function(o) {
         // cheap string search
         o.droplab_hidden = o[config.template].toLowerCase().indexOf(value) === -1;
         return o;
@@ -47,20 +47,23 @@ const Filter = {
   },
 
   debounceKeydown: function debounceKeydown(e) {
-    if ([
-      13, // enter
-      16, // shift
-      17, // ctrl
-      18, // alt
-      20, // caps lock
-      37, // left arrow
-      38, // up arrow
-      39, // right arrow
-      40, // down arrow
-      91, // left window
-      92, // right window
-      93, // select
-    ].indexOf(e.detail.which || e.detail.keyCode) > -1) return;
+    if (
+      [
+        13, // enter
+        16, // shift
+        17, // ctrl
+        18, // alt
+        20, // caps lock
+        37, // left arrow
+        38, // up arrow
+        39, // right arrow
+        40, // down arrow
+        91, // left window
+        92, // right window
+        93, // select
+      ].indexOf(e.detail.which || e.detail.keyCode) > -1
+    )
+      return;
 
     if (this.timeout) clearTimeout(this.timeout);
     this.timeout = setTimeout(this.keydown.bind(this, e), 200);
@@ -87,7 +90,7 @@ const Filter = {
 
     this.hook.trigger.removeEventListener('keydown.dl', this.eventWrapper.debounceKeydown);
     this.hook.trigger.removeEventListener('mousedown.dl', this.eventWrapper.debounceKeydown);
-  }
+  },
 };
 
 export default Filter;

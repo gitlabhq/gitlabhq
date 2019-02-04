@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # This class is used to move local, unhashed files owned by projects to their new location
   class ProjectTransfer

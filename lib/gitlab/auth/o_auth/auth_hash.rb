@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Class to parse and transform the info provided by omniauth
 #
 module Gitlab
@@ -78,7 +80,7 @@ module Gitlab
         end
 
         # Get the first part of the email address (before @)
-        # In addtion in removes illegal characters
+        # In addition in removes illegal characters
         def generate_username(email)
           email.match(/^[^@]*/)[0].mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/, '').to_s
         end

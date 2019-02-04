@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
 
-  protect_from_forgery except: [:kerberos, :saml, :cas3]
+  protect_from_forgery except: [:kerberos, :saml, :cas3], prepend: true
 
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)
@@ -73,6 +75,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def omniauth_flow(auth_module, identity_linker: nil)
+    if fragment = request.env.dig('omniauth.params', 'redirect_fragment').presence
+      store_redirect_fragment(fragment)
+    end
+
     if current_user
       log_audit_event(current_user, with: oauth['provider'])
 
@@ -119,7 +125,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       set_remember_me(user)
 
-      if user.two_factor_enabled?
+      if user.two_factor_enabled? && !auth_user.bypass_two_factor?
         prompt_for_two_factor(user)
       else
         sign_in_and_redirect(user)
@@ -135,14 +141,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_signup_error
     label = Gitlab::Auth::OAuth::Provider.label_for(oauth['provider'])
-    message = "Signing in using your #{label} account without a pre-existing GitLab account is not allowed."
+    message = ["Signing in using your #{label} account without a pre-existing GitLab account is not allowed."]
 
     if Gitlab::CurrentSettings.allow_signup?
-      message << " Create a GitLab account first, and then connect it to your #{label} account."
+      message << "Create a GitLab account first, and then connect it to your #{label} account."
     end
 
-    flash[:notice] = message
-
+    flash[:notice] = message.join(' ')
     redirect_to new_user_session_path
   end
 
@@ -187,5 +192,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def remember_me?
     request_params = request.env['omniauth.params']
     (request_params['remember_me'] == '1') if request_params.present?
+  end
+
+  def store_redirect_fragment(redirect_fragment)
+    key = stored_location_key_for(:user)
+    location = session[key]
+    if uri = parse_uri(location)
+      uri.fragment = redirect_fragment
+      store_location_for(:user, uri.to_s)
+    end
   end
 end

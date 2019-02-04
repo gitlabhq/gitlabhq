@@ -29,12 +29,14 @@ describe('DropdownValueCollapsedComponent', () => {
     describe('labelsList', () => {
       it('returns empty text when `labels` prop is empty array', () => {
         const vmEmptyLabels = createComponent([]);
+
         expect(vmEmptyLabels.labelsList).toBe('');
         vmEmptyLabels.$destroy();
       });
 
       it('returns labels names separated by coma when `labels` prop has more than one item', () => {
         const vmMoreLabels = createComponent(mockLabels.concat(mockLabels));
+
         expect(vmMoreLabels.labelsList).toBe('Foo Label, Foo Label');
         vmMoreLabels.$destroy();
       });
@@ -46,7 +48,10 @@ describe('DropdownValueCollapsedComponent', () => {
         }
 
         const vmMoreLabels = createComponent(mockMoreLabels);
-        expect(vmMoreLabels.labelsList).toBe('Foo Label, Foo Label, Foo Label, Foo Label, Foo Label, and 2 more');
+
+        expect(vmMoreLabels.labelsList).toBe(
+          'Foo Label, Foo Label, Foo Label, Foo Label, Foo Label, and 2 more',
+        );
         vmMoreLabels.$destroy();
       });
 
@@ -61,6 +66,7 @@ describe('DropdownValueCollapsedComponent', () => {
       it('emits onValueClick event on component', () => {
         spyOn(vm, '$emit');
         vm.handleClick();
+
         expect(vm.$emit).toHaveBeenCalledWith('onValueClick');
       });
     });

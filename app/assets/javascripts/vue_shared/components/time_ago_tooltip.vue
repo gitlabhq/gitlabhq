@@ -1,5 +1,5 @@
 <script>
-import tooltip from '../directives/tooltip';
+import { GlTooltipDirective } from '@gitlab/ui';
 import timeagoMixin from '../mixins/timeago';
 import '../../lib/utils/datetime_utility';
 
@@ -9,23 +9,19 @@ import '../../lib/utils/datetime_utility';
 
 export default {
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
-  mixins: [
-    timeagoMixin,
-  ],
+  mixins: [timeagoMixin],
   props: {
     time: {
       type: String,
       required: true,
     },
-
     tooltipPlacement: {
       type: String,
       required: false,
       default: 'top',
     },
-
     cssClass: {
       type: String,
       required: false,
@@ -36,11 +32,10 @@ export default {
 </script>
 <template>
   <time
-    v-tooltip
+    v-gl-tooltip="{ placement: tooltipPlacement }"
     :class="cssClass"
     :title="tooltipTitle(time)"
-    :data-placement="tooltipPlacement"
-    data-container="body"
-    v-text="timeFormated(time)">
+    v-text="timeFormated(time)"
+  >
   </time>
 </template>

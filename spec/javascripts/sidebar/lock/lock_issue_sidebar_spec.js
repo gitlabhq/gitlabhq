@@ -38,20 +38,14 @@ describe('LockIssueSidebar', () => {
   });
 
   it('shows if locked and/or editable', () => {
-    expect(
-      vm1.$el.innerHTML.includes('Edit'),
-    ).toBe(true);
+    expect(vm1.$el.innerHTML.includes('Edit')).toBe(true);
 
-    expect(
-      vm1.$el.innerHTML.includes('Locked'),
-    ).toBe(true);
+    expect(vm1.$el.innerHTML.includes('Locked')).toBe(true);
 
-    expect(
-      vm2.$el.innerHTML.includes('Unlocked'),
-    ).toBe(true);
+    expect(vm2.$el.innerHTML.includes('Unlocked')).toBe(true);
   });
 
-  it('displays the edit form when editable', (done) => {
+  it('displays the edit form when editable', done => {
     expect(vm1.isLockDialogOpen).toBe(false);
 
     vm1.$el.querySelector('.lock-edit').click();
@@ -59,17 +53,13 @@ describe('LockIssueSidebar', () => {
     expect(vm1.isLockDialogOpen).toBe(true);
 
     vm1.$nextTick(() => {
-      expect(
-        vm1.$el
-          .innerHTML
-          .includes('Unlock this issue?'),
-      ).toBe(true);
+      expect(vm1.$el.innerHTML.includes('Unlock this issue?')).toBe(true);
 
       done();
     });
   });
 
-  it('displays the edit form when opened from collapsed state', (done) => {
+  it('displays the edit form when opened from collapsed state', done => {
     expect(vm1.isLockDialogOpen).toBe(false);
 
     vm1.$el.querySelector('.sidebar-collapsed-icon').click();
@@ -77,11 +67,7 @@ describe('LockIssueSidebar', () => {
     expect(vm1.isLockDialogOpen).toBe(true);
 
     setTimeout(() => {
-      expect(
-        vm1.$el
-          .innerHTML
-          .includes('Unlock this issue?'),
-      ).toBe(true);
+      expect(vm1.$el.innerHTML.includes('Unlock this issue?')).toBe(true);
 
       done();
     });

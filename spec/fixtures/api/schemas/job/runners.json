@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "online",
+    "available"
+  ],
+  "properties": {
+    "online": { "type": "boolean" },
+    "available": { "type": "boolean" },
+    "settings_path": { "type": "string" }
+  }
+}

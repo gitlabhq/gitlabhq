@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::CreateService, '#execute' do
+  include GitHelpers
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create :user }
   let(:opts) do
@@ -14,7 +16,11 @@ describe Projects::CreateService, '#execute' do
     Label.create(title: "bug", template: true)
     project = create_project(user, opts)
 
-    expect(project.labels).not_to be_empty
+    created_label = project.reload.labels.last
+
+    expect(created_label.type).to eq('ProjectLabel')
+    expect(created_label.project_id).to eq(project.id)
+    expect(created_label.title).to eq('bug')
   end
 
   context 'user namespace' do
@@ -23,7 +29,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_valid
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to include(user)
+      expect(project.team.maintainers).to include(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -47,7 +53,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_persisted
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to contain_exactly(user)
+      expect(project.team.maintainers).to contain_exactly(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -111,6 +117,17 @@ describe Projects::CreateService, '#execute' do
     def wiki_repo(project)
       relative_path = ProjectWiki.new(project).disk_path + '.git'
       Gitlab::Git::Repository.new(project.repository_storage, relative_path, 'foobar')
+    end
+  end
+
+  context 'import data' do
+    it 'stores import data and URL' do
+      import_data = { data: { 'test' => 'some data' } }
+      project = create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data })
+
+      expect(project.import_data).to be_persisted
+      expect(project.import_data.data).to eq(import_data[:data])
+      expect(project.import_url).to eq('http://import-url')
     end
   end
 
@@ -236,6 +253,44 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'when readme initialization is requested' do
+    it 'creates README.md' do
+      opts[:initialize_with_readme] = '1'
+
+      project = create_project(user, opts)
+
+      expect(project.repository.commit_count).to be(1)
+      expect(project.repository.readme.name).to eql('README.md')
+      expect(project.repository.readme.data).to include('# GitLab')
+    end
+  end
+
+  context 'when group has kubernetes cluster' do
+    let(:group_cluster) { create(:cluster, :group, :provided_by_gcp) }
+    let(:group) { group_cluster.group }
+
+    let(:token) { 'aaaa' }
+    let(:service_account_creator) { double(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService, execute: true) }
+    let(:secrets_fetcher) { double(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService, execute: token) }
+
+    before do
+      group.add_owner(user)
+
+      expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
+      expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).to receive(:new).and_return(secrets_fetcher)
+    end
+
+    it 'creates kubernetes namespace for the project' do
+      project = create_project(user, opts.merge!(namespace_id: group.id))
+
+      expect(project).to be_valid
+
+      kubernetes_namespace = group_cluster.kubernetes_namespaces.first
+      expect(kubernetes_namespace).to be_present
+      expect(kubernetes_namespace.project).to eq(project)
+    end
+  end
+
   context 'when there is an active service template' do
     before do
       create(:service, project: nil, template: true, active: true)
@@ -270,10 +325,22 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  it 'calls the passed block' do
+    fake_block = double('block')
+    opts[:relations_block] = fake_block
+
+    expect_next_instance_of(Project) do |project|
+      expect(fake_block).to receive(:call).with(project)
+    end
+
+    create_project(user, opts)
+  end
+
   it 'writes project full path to .git/config' do
     project = create_project(user, opts)
+    rugged = rugged_repo(project.repository)
 
-    expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+    expect(rugged.config['gitlab.fullpath']).to eq project.full_path
   end
 
   def create_project(user, opts)

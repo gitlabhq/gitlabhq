@@ -8,6 +8,7 @@
       Authored
       = time_ago_with_tooltip(@snippet.created_at, placement: 'bottom', html_class: 'snippet_updated_ago')
       by #{link_to_member(@project, @snippet.author, size: 24, author_class: "author item-title", avatar_class: "d-none d-sm-inline")}
+      = user_status(@snippet.author)
 
   .detail-page-header-actions
     - if @snippet.project_id?
@@ -29,7 +30,7 @@
   - if @snippet.updated_at != @snippet.created_at
     = edited_time_ago_with_tooltip(@snippet, placement: 'bottom', html_class: 'snippet-edited-ago', exclude_author: true)
 
-  - if public_snippet?
+  - if @snippet.embeddable?
     .embed-snippet
       .input-group
         .input-group-prepend

@@ -28,12 +28,12 @@ describe Dashboard::GroupsController do
     let!(:other_group) { create(:group, name: 'other') }
 
     before do
-      top_level_result.add_master(user)
-      top_level_a.add_master(user)
+      top_level_result.add_maintainer(user)
+      top_level_a.add_maintainer(user)
     end
 
     it 'renders only groups the user is a member of when searching hierarchy correctly' do
-      get :index, filter: 'chef', format: :json
+      get :index, params: { filter: 'chef' }, format: :json
 
       expect(response).to have_gitlab_http_status(200)
       all_groups = [top_level_result, top_level_a, sub_level_result_a]

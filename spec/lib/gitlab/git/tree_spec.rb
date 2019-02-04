@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::Git::Tree, seed_helper: true do
+describe Gitlab::Git::Tree, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
   context :repo do
@@ -80,18 +80,8 @@ describe Gitlab::Git::Tree, seed_helper: true do
   end
 
   describe '#where' do
-    shared_examples '#where' do
-      it 'returns an empty array when called with an invalid ref' do
-        expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
-      end
-    end
-
-    context 'with gitaly' do
-      it_behaves_like '#where'
-    end
-
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#where'
+    it 'returns an empty array when called with an invalid ref' do
+      expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module EncodingHelper
     extend self
@@ -65,17 +67,17 @@ module Gitlab
         clean(message)
       end
     rescue ArgumentError
-      return nil
+      nil
     end
 
-    def encode_binary(s)
-      return "" if s.nil?
+    def encode_binary(str)
+      return "" if str.nil?
 
-      s.dup.force_encoding(Encoding::ASCII_8BIT)
+      str.dup.force_encoding(Encoding::ASCII_8BIT)
     end
 
-    def binary_stringio(s)
-      StringIO.new(s || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
+    def binary_stringio(str)
+      StringIO.new(str.freeze || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
     end
 
     private

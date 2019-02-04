@@ -29,8 +29,10 @@ export default {
   source_branch: 'daaaa',
   source_branch_link: 'daaaa',
   source_project_id: 19,
+  source_project_full_path: '/group1/project1',
   target_branch: 'master',
   target_project_id: 19,
+  target_project_full_path: '/group2/project2',
   metrics: {
     merged_by: {
       name: 'Administrator',
@@ -74,7 +76,7 @@ export default {
     path: '/root/acets-app/pipelines/172',
     details: {
       status: {
-        icon: 'icon_status_success',
+        icon: 'status_success',
         favicon: 'favicon_status_success',
         text: 'passed',
         label: 'passed',
@@ -89,7 +91,7 @@ export default {
           name: 'build',
           title: 'build: failed',
           status: {
-            icon: 'icon_status_failed',
+            icon: 'status_failed',
             favicon: 'favicon_status_failed',
             text: 'failed',
             label: 'failed',
@@ -104,7 +106,7 @@ export default {
           name: 'review',
           title: 'review: skipped',
           status: {
-            icon: 'icon_status_skipped',
+            icon: 'status_skipped',
             favicon: 'favicon_status_skipped',
             text: 'skipped',
             label: 'skipped',
@@ -216,5 +218,20 @@ export default {
   diverged_commits_count: 0,
   only_allow_merge_if_pipeline_succeeds: false,
   commit_change_content_path: '/root/acets-app/merge_requests/22/commit_change_content',
-  merge_commit_path: 'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
+  merge_commit_path:
+    'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
+  troubleshooting_docs_path: 'help',
+};
+
+export const mockStore = {
+  pipeline: { id: 0 },
+  mergePipeline: { id: 1 },
+  targetBranch: 'target-branch',
+  sourceBranch: 'source-branch',
+  sourceBranchLink: 'source-branch-link',
+  deployments: [{ id: 0, name: 'bogus' }, { id: 1, name: 'bogus-docs' }],
+  postMergeDeployments: [{ id: 0, name: 'prod' }, { id: 1, name: 'prod-docs' }],
+  troubleshootingDocsPath: 'troubleshooting-docs-path',
+  ciStatus: 'ci-status',
+  hasCI: true,
 };

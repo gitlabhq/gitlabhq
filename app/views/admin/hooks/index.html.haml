@@ -4,13 +4,13 @@
     %h4.prepend-top-0
       = page_title
     %p
-      #{link_to 'System hooks ', help_page_path('system_hooks/system_hooks'), class: 'vlink'} can be
+      #{link_to 'System hooks ', help_page_path('system_hooks/system_hooks')} can be
       used for binding events when GitLab creates a User or Project.
 
   .col-lg-8.append-bottom-default
     = form_for @hook, as: :hook, url: admin_hooks_path do |f|
       = render partial: 'form', locals: { form: f, hook: @hook }
-      = f.submit 'Add system hook', class: 'btn btn-create'
+      = f.submit 'Add system hook', class: 'btn btn-success'
 
     %hr
 

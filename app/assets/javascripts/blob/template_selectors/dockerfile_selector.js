@@ -1,5 +1,3 @@
-import Api from '../../api';
-
 import FileTemplateSelector from '../file_template_selector';
 
 export default class DockerfileSelector extends FileTemplateSelector {
@@ -9,7 +7,7 @@ export default class DockerfileSelector extends FileTemplateSelector {
       key: 'dockerfile',
       name: 'Dockerfile',
       pattern: /(Dockerfile)/,
-      endpoint: Api.dockerfileYml,
+      type: 'dockerfiles',
       dropdown: '.js-dockerfile-selector',
       wrapper: '.js-dockerfile-selector-wrap',
     };

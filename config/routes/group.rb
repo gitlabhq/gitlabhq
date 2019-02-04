@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 resources :groups, only: [:index, :new, :create] do
   post :preview_markdown
 end
@@ -14,6 +16,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       get :projects, as: :projects_group
       get :activity, as: :activity_group
       put :transfer, as: :transfer_group
+      # TODO: Remove as part of refactor in https://gitlab.com/gitlab-org/gitlab-ce/issues/49693
+      get 'shared', action: :show, as: :group_shared
+      get 'archived', action: :show, as: :group_archived
     end
 
     get '/', action: :show, as: :group_canonical
@@ -24,8 +29,9 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         as: :group,
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
     namespace :settings do
-      resource :ci_cd, only: [:show], controller: 'ci_cd'
-      resources :badges, only: [:index]
+      resource :ci_cd, only: [:show], controller: 'ci_cd' do
+        put :reset_registration_token
+      end
     end
 
     resource :variables, only: [:show, :update]
@@ -37,7 +43,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       post :toggle_subscription, on: :member
     end
 
-    resources :milestones, constraints: { id: %r{[^/]+} }, only: [:index, :show, :edit, :update, :new, :create] do
+    resources :milestones, constraints: { id: %r{[^/]+} } do
       member do
         get :merge_requests
         get :participants
@@ -47,6 +53,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resource :avatar, only: [:destroy]
 
+    concerns :clusterable
+
     resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
       post :resend_invite, on: :member
       delete :leave, on: :collection
@@ -55,10 +63,10 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :uploads, only: [:create] do
       collection do
         get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
+        post :authorize
       end
     end
 
-    # On CE only index and show actions are needed
     resources :boards, only: [:index, :show]
 
     resources :runners, only: [:index, :edit, :update, :destroy, :show] do

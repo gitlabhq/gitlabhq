@@ -47,7 +47,7 @@ describe 'Commits' do
 
     context 'commit status is Ci Build' do
       let!(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
+      let(:artifacts_file) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
 
       context 'when logged as developer' do
         before do
@@ -89,7 +89,7 @@ describe 'Commits' do
 
         context 'Download artifacts' do
           before do
-            build.update_attributes(legacy_artifacts_file: artifacts_file)
+            build.update(legacy_artifacts_file: artifacts_file)
           end
 
           it do
@@ -114,39 +114,12 @@ describe 'Commits' do
             expect(page).to have_content 'canceled'
           end
         end
-
-        describe '.gitlab-ci.yml not found warning' do
-          context 'ci builds enabled' do
-            it "does not show warning" do
-              visit pipeline_path(pipeline)
-              expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
-            end
-
-            it 'shows warning' do
-              stub_ci_pipeline_yaml_file(nil)
-              visit pipeline_path(pipeline)
-              expect(page).to have_content '.gitlab-ci.yml not found in this commit'
-            end
-          end
-
-          context 'ci builds disabled' do
-            before do
-              stub_ci_builds_disabled
-              stub_ci_pipeline_yaml_file(nil)
-              visit pipeline_path(pipeline)
-            end
-
-            it 'does not show warning' do
-              expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
-            end
-          end
-        end
       end
 
       context "when logged as reporter" do
         before do
           project.add_reporter(user)
-          build.update_attributes(legacy_artifacts_file: artifacts_file)
+          build.update(legacy_artifacts_file: artifacts_file)
           visit pipeline_path(pipeline)
         end
 
@@ -168,7 +141,7 @@ describe 'Commits' do
           project.update(
             visibility_level: Gitlab::VisibilityLevel::INTERNAL,
             public_builds: false)
-          build.update_attributes(legacy_artifacts_file: artifacts_file)
+          build.update(legacy_artifacts_file: artifacts_file)
           visit pipeline_path(pipeline)
         end
 
@@ -182,13 +155,46 @@ describe 'Commits' do
         end
       end
     end
+
+    describe '.gitlab-ci.yml not found warning' do
+      before do
+        project.add_reporter(user)
+      end
+
+      context 'ci builds enabled' do
+        it 'does not show warning' do
+          visit pipeline_path(pipeline)
+
+          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
+        end
+
+        it 'shows warning' do
+          stub_ci_pipeline_yaml_file(nil)
+
+          visit pipeline_path(pipeline)
+
+          expect(page).to have_content '.gitlab-ci.yml not found in this commit'
+        end
+      end
+
+      context 'ci builds disabled' do
+        it 'does not show warning' do
+          stub_ci_builds_disabled
+          stub_ci_pipeline_yaml_file(nil)
+
+          visit pipeline_path(pipeline)
+
+          expect(page).not_to have_content '.gitlab-ci.yml not found in this commit'
+        end
+      end
+    end
   end
 
   context 'viewing commits for a branch' do
     let(:branch_name) { 'master' }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       visit project_commits_path(project, branch_name)
     end

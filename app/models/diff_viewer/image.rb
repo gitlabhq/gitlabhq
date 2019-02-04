@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DiffViewer
   class Image < Base
     include Rich
@@ -7,6 +9,6 @@ module DiffViewer
     self.extensions = UploaderHelper::IMAGE_EXT
     self.binary = true
     self.switcher_icon = 'picture-o'
-    self.switcher_title = 'image diff'
+    self.switcher_title = _('image diff')
   end
 end

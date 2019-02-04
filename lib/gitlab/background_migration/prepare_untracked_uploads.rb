@@ -54,7 +54,8 @@ module Gitlab
 
       def ensure_temporary_tracking_table_exists
         table_name = :untracked_files_for_uploads
-        unless UntrackedFile.connection.table_exists?(table_name)
+
+        unless ActiveRecord::Base.connection.data_source_exists?(table_name)
           UntrackedFile.connection.create_table table_name do |t|
             t.string :path, limit: 600, null: false
             t.index :path, unique: true
@@ -143,7 +144,7 @@ module Gitlab
 
       def table_columns_and_values_for_insert(file_paths)
         values = file_paths.map do |file_path|
-          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend, Metrics/LineLength
+          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend
         end.join(', ')
 
         "#{UntrackedFile.table_name} (path) VALUES #{values}"

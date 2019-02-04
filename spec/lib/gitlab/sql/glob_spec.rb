@@ -36,7 +36,7 @@ describe Gitlab::SQL::Glob do
               .rows.flatten.first
 
     case value
-    when 't', 1
+    when true, 1
       true
     else
       false

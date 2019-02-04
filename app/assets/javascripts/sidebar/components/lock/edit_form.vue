@@ -43,22 +43,11 @@ export default {
 <template>
   <div class="dropdown show">
     <div class="dropdown-menu sidebar-item-warning-message">
-      <p
-        class="text"
-        v-if="isLocked"
-        v-html="unlockWarning">
-      </p>
+      <p v-if="isLocked" class="text" v-html="unlockWarning"></p>
 
-      <p
-        class="text"
-        v-else
-        v-html="lockWarning">
-      </p>
+      <p v-else class="text" v-html="lockWarning"></p>
 
-      <edit-form-buttons
-        :is-locked="isLocked"
-        :update-locked-attribute="updateLockedAttribute"
-      />
+      <edit-form-buttons :is-locked="isLocked" :update-locked-attribute="updateLockedAttribute" />
     </div>
   </div>
 </template>

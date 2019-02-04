@@ -26,7 +26,7 @@ export default {
   methods: {
     listenForQuickActions() {
       $(document).on('ajax:success', '.gfm-form', this.quickActionListened);
-      eventHub.$on('timeTrackingUpdated', (data) => {
+      eventHub.$on('timeTrackingUpdated', data => {
         this.quickActionListened(null, data);
       });
     },
@@ -34,9 +34,7 @@ export default {
       const subscribedCommands = ['spend_time', 'time_estimate'];
       let changedCommands;
       if (data !== undefined) {
-        changedCommands = data.commands_changes
-          ? Object.keys(data.commands_changes)
-          : [];
+        changedCommands = data.commands_changes ? Object.keys(data.commands_changes) : [];
       } else {
         changedCommands = [];
       }
@@ -51,10 +49,10 @@ export default {
 <template>
   <div class="block">
     <issuable-time-tracker
-      :time_estimate="store.timeEstimate"
-      :time_spent="store.totalTimeSpent"
-      :human_time_estimate="store.humanTimeEstimate"
-      :human_time_spent="store.humanTotalTimeSpent"
+      :time-estimate="store.timeEstimate"
+      :time-spent="store.totalTimeSpent"
+      :human-time-estimate="store.humanTimeEstimate"
+      :human-time-spent="store.humanTotalTimeSpent"
       :root-path="store.rootPath"
     />
   </div>

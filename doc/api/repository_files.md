@@ -4,6 +4,16 @@
 
 **Create, read, update and delete repository files using this API**
 
+The different scopes available using [personal access tokens](../user/profile/personal_access_tokens.md) are depicted
+in the following table.
+
+| Scope | Description |
+| ----- | ----------- |
+| `read_repository` | Allows read-access to the repository files. |
+| `api` | Allows read-write access to the repository files. |
+
+> `read_repository` scope was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23534) in GitLab 11.6.
+
 ## Get file from repository
 
 Allows you to receive information about file in repository like name, size,
@@ -15,7 +25,7 @@ GET /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
+curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
 ```
 
 Example response:
@@ -27,6 +37,7 @@ Example response:
   "size": 1476,
   "encoding": "base64",
   "content": "IyA9PSBTY2hlbWEgSW5mb3...",
+  "content_sha256": "4c294617b60715c1d218e61164a3abd4808a4284cbc30e6728a01ad9aada4481",
   "ref": "master",
   "blob_id": "79f7bbd25901e8334750839545a9bd021f0e4c83",
   "commit_id": "d5a3ff139356ce33e37e73add446f16869741b50",
@@ -39,6 +50,36 @@ Parameters:
 - `file_path` (required) - Url encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `ref` (required) - The name of branch, tag or commit
 
+NOTE: **Note:**
+`blob_id` is the blob sha, see [repositories - Get a blob from repository](repositories.md#get-a-blob-from-repository)
+
+In addition to the `GET` method, you can also use `HEAD` to get just file metadata.
+
+```
+HEAD /projects/:id/repository/files/:file_path
+```
+
+```bash
+curl --head --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
+```
+
+Example response:
+
+```text
+HTTP/1.1 200 OK
+...
+X-Gitlab-Blob-Id: 79f7bbd25901e8334750839545a9bd021f0e4c83
+X-Gitlab-Commit-Id: d5a3ff139356ce33e37e73add446f16869741b50
+X-Gitlab-Content-Sha256: 4c294617b60715c1d218e61164a3abd4808a4284cbc30e6728a01ad9aada4481
+X-Gitlab-Encoding: base64
+X-Gitlab-File-Name: key.rb
+X-Gitlab-File-Path: app/models/key.rb
+X-Gitlab-Last-Commit-Id: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
+X-Gitlab-Ref: master
+X-Gitlab-Size: 1476
+...
+```
+
 ## Get raw file from repository
 
 ```
@@ -46,7 +87,7 @@ GET /projects/:id/repository/files/:file_path/raw
 ```
 
 ```bash
-curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master'
+curl --request GET --header 'PRIVATE-TOKEN: <your_access_token>' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=master'
 ```
 
 Parameters:
@@ -54,14 +95,22 @@ Parameters:
 - `file_path` (required) - Url encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `ref` (required) - The name of branch, tag or commit
 
+NOTE: **Note:**
+Like [Get file from repository](repository_files.md#get-file-from-repository) you can use `HEAD` to get just file metadata.
+
 ## Create new file in repository
+
+This allows you to create a single file. For creating multiple files with a single request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
 
 ```
 POST /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fprojectrb%2E?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20content&commit_message=create%20a%20new%20file'
+curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
+  --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
+    "content": "some content", "commit_message": "create a new file"}' \
+  'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'
 ```
 
 Example response:
@@ -86,12 +135,17 @@ Parameters:
 
 ## Update existing file in repository
 
+This allows you to update a single file. For updating multiple files with a single request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
+
 ```
 PUT /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&content=some%20other%20content&commit_message=update%20file'
+curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
+  --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
+    "content": "some content", "commit_message": "update file"}' \
+  'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'
 ```
 
 Example response:
@@ -126,12 +180,17 @@ Currently gitlab-shell has a boolean return code, preventing GitLab from specify
 
 ## Delete existing file in repository
 
+This allows you to delete a single file. For deleting multiple files with a singleh request see the [commits API](commits.html#create-a-commit-with-multiple-files-and-actions).
+
 ```
 DELETE /projects/:id/repository/files/:file_path
 ```
 
 ```bash
-curl --request DELETE --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb?branch=master&author_email=author%40example.com&author_name=Firstname%20Lastname&commit_message=delete%20file'
+curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' --header "Content-Type: application/json" \
+  --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname", \
+    "commit_message": "delete file"}' \
+  'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb'
 ```
 
 Parameters:

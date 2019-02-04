@@ -35,12 +35,13 @@ describe('pipeline graph action component', () => {
   it('should update bootstrap tooltip when title changes', done => {
     component.tooltipText = 'changed';
 
-    component.$nextTick()
-    .then(() => {
-      expect(component.$el.getAttribute('data-original-title')).toBe('changed');
-    })
-    .then(done)
-    .catch(done.fail);
+    component
+      .$nextTick()
+      .then(() => {
+        expect(component.$el.getAttribute('data-original-title')).toBe('changed');
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('should render an svg', () => {
@@ -49,12 +50,13 @@ describe('pipeline graph action component', () => {
   });
 
   describe('on click', () => {
-    it('emits `pipelineActionRequestComplete` after a successfull request', done => {
+    it('emits `pipelineActionRequestComplete` after a successful request', done => {
       spyOn(component, '$emit');
 
       component.$el.click();
 
-      component.$nextTick()
+      component
+        .$nextTick()
         .then(() => {
           expect(component.$emit).toHaveBeenCalledWith('pipelineActionRequestComplete');
         })

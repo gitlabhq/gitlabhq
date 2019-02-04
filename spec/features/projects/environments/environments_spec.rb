@@ -1,13 +1,17 @@
 require 'spec_helper'
 
-feature 'Environments page', :js do
-  given(:project) { create(:project) }
-  given(:user) { create(:user) }
-  given(:role) { :developer }
+describe 'Environments page', :js do
+  let(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let(:role) { :developer }
 
-  background do
+  before do
     project.add_role(user, role)
     sign_in(user)
+  end
+
+  def stop_button_selector
+    %q{button[data-original-title="Stop environment"]}
   end
 
   describe 'page tabs' do
@@ -91,7 +95,7 @@ feature 'Environments page', :js do
     end
 
     it 'does not show environments and counters are set to zero' do
-      expect(page).to have_content('You don\'t have any environments right now.')
+      expect(page).to have_content('You don\'t have any environments right now')
 
       expect(page.find('.js-environments-tab-available .badge').text).to eq('0')
       expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
@@ -99,7 +103,7 @@ feature 'Environments page', :js do
   end
 
   describe 'environments table' do
-    given!(:environment) do
+    let!(:environment) do
       create(:environment, project: project, state: :available)
     end
 
@@ -120,15 +124,16 @@ feature 'Environments page', :js do
       end
 
       it 'does not show stip button when environment is not stoppable' do
-        expect(page).not_to have_selector('.stop-env-link')
+        expect(page).not_to have_selector(stop_button_selector)
       end
     end
 
-    context 'when there are deployments' do
-      given(:project) { create(:project, :repository) }
+    context 'when there are successful deployments' do
+      let(:project) { create(:project, :repository) }
 
-      given!(:deployment) do
-        create(:deployment, environment: environment,
+      let!(:deployment) do
+        create(:deployment, :success,
+                            environment: environment,
                             sha: project.commit.id)
       end
 
@@ -140,15 +145,16 @@ feature 'Environments page', :js do
       end
 
       context 'when builds and manual actions are present' do
-        given!(:pipeline) { create(:ci_pipeline, project: project) }
-        given!(:build) { create(:ci_build, pipeline: pipeline) }
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+        let!(:build) { create(:ci_build, pipeline: pipeline) }
 
-        given!(:action) do
+        let!(:action) do
           create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production')
         end
 
-        given!(:deployment) do
-          create(:deployment, environment: environment,
+        let!(:deployment) do
+          create(:deployment, :success,
+                              environment: environment,
                               deployable: build,
                               sha: project.commit.id)
         end
@@ -158,7 +164,7 @@ feature 'Environments page', :js do
         end
 
         it 'shows a play button' do
-          find('.js-dropdown-play-icon-container').click
+          find('.js-environment-actions-dropdown').click
 
           expect(page).to have_content(action.name.humanize)
         end
@@ -166,7 +172,7 @@ feature 'Environments page', :js do
         it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
-          find('.js-dropdown-play-icon-container').click
+          find('.js-environment-actions-dropdown').click
           expect(page).to have_content(action.name.humanize)
 
           expect { find('.js-manual-action-link').click }
@@ -178,7 +184,7 @@ feature 'Environments page', :js do
         end
 
         it 'shows a stop button' do
-          expect(page).not_to have_selector('.stop-env-link')
+          expect(page).not_to have_selector(stop_button_selector)
         end
 
         it 'does not show external link button' do
@@ -190,9 +196,9 @@ feature 'Environments page', :js do
         end
 
         context 'with external_url' do
-          given(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
-          given(:build) { create(:ci_build, pipeline: pipeline) }
-          given(:deployment) { create(:deployment, environment: environment, deployable: build) }
+          let(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
+          let(:build) { create(:ci_build, pipeline: pipeline) }
+          let(:deployment) { create(:deployment, :success, environment: environment, deployable: build) }
 
           it 'shows an external link button' do
             expect(page).to have_link(nil, href: environment.external_url)
@@ -200,33 +206,34 @@ feature 'Environments page', :js do
         end
 
         context 'with stop action' do
-          given(:action) do
+          let(:action) do
             create(:ci_build, :manual, pipeline: pipeline, name: 'close_app')
           end
 
-          given(:deployment) do
-            create(:deployment, environment: environment,
+          let(:deployment) do
+            create(:deployment, :success,
+                                environment: environment,
                                 deployable: build,
                                 on_stop: 'close_app')
           end
 
           it 'shows a stop button' do
-            expect(page).to have_selector('.stop-env-link')
+            expect(page).to have_selector(stop_button_selector)
           end
 
           context 'when user is a reporter' do
             let(:role) { :reporter }
 
             it 'does not show stop button' do
-              expect(page).not_to have_selector('.stop-env-link')
+              expect(page).not_to have_selector(stop_button_selector)
             end
           end
         end
 
         context 'when kubernetes terminal is available' do
           shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-            context 'for project master' do
-              let(:role) { :master }
+            context 'for project maintainer' do
+              let(:role) { :maintainer }
 
               it 'shows the terminal button' do
                 expect(page).to have_terminal_button
@@ -256,6 +263,84 @@ feature 'Environments page', :js do
           end
         end
       end
+
+      context 'when there is a delayed job' do
+        let!(:pipeline) { create(:ci_pipeline, project: project) }
+        let!(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let!(:delayed_job) do
+          create(:ci_build, :scheduled,
+                 pipeline: pipeline,
+                 name: 'delayed job',
+                 stage: 'test')
+        end
+
+        let!(:deployment) do
+          create(:deployment,
+                 :success,
+                 environment: environment,
+                 deployable: build,
+                 sha: project.commit.id)
+        end
+
+        before do
+          visit_environments(project)
+        end
+
+        it 'has a dropdown for actionable jobs' do
+          expect(page).to have_selector('.dropdown-new.btn.btn-default .ic-play')
+        end
+
+        it "has link to the delayed job's action" do
+          find('.js-environment-actions-dropdown').click
+
+          expect(page).to have_button('Delayed job')
+          expect(page).to have_content(/\d{2}:\d{2}:\d{2}/)
+        end
+
+        context 'when delayed job is expired already' do
+          let!(:delayed_job) do
+            create(:ci_build, :expired_scheduled,
+                   pipeline: pipeline,
+                   name: 'delayed job',
+                   stage: 'test')
+          end
+
+          it "shows 00:00:00 as the remaining time" do
+            find('.js-environment-actions-dropdown').click
+
+            expect(page).to have_content("00:00:00")
+          end
+        end
+
+        context 'when user played a delayed job immediately' do
+          before do
+            find('.js-environment-actions-dropdown').click
+            page.accept_confirm { click_button('Delayed job') }
+            wait_for_requests
+          end
+
+          it 'enqueues the delayed job', :js do
+            expect(delayed_job.reload).to be_pending
+          end
+        end
+      end
+    end
+
+    context 'when there is a failed deployment' do
+      let(:project) { create(:project, :repository) }
+
+      let!(:deployment) do
+        create(:deployment, :failed,
+                            environment: environment,
+                            sha: project.commit.id)
+      end
+
+      it 'does not show deployments' do
+        visit_environments(project)
+
+        expect(page).to have_content('No deployments yet')
+      end
     end
   end
 
@@ -271,9 +356,9 @@ feature 'Environments page', :js do
     end
 
     context 'user is a developer' do
-      given(:role) { :developer }
+      let(:role) { :developer }
 
-      scenario 'developer creates a new environment with a valid name' do
+      it 'developer creates a new environment with a valid name' do
         within(".top-area") { click_link 'New environment' }
         fill_in('Name', with: 'production')
         click_on 'Save'
@@ -281,7 +366,7 @@ feature 'Environments page', :js do
         expect(page).to have_content('production')
       end
 
-      scenario 'developer creates a new environmetn with invalid name' do
+      it 'developer creates a new environmetn with invalid name' do
         within(".top-area") { click_link 'New environment' }
         fill_in('Name', with: 'name,with,commas')
         click_on 'Save'
@@ -291,9 +376,9 @@ feature 'Environments page', :js do
     end
 
     context 'user is a reporter' do
-      given(:role) { :reporter }
+      let(:role) { :reporter }
 
-      scenario 'reporters tries to create a new environment' do
+      it 'reporters tries to create a new environment' do
         expect(page).not_to have_link('New environment')
       end
     end
@@ -309,7 +394,7 @@ feature 'Environments page', :js do
                            state: :available)
     end
 
-    scenario 'users unfurls an environment folder' do
+    it 'users unfurls an environment folder' do
       visit_environments(project)
 
       expect(page).not_to have_content 'review-1'
@@ -335,7 +420,7 @@ feature 'Environments page', :js do
                            state: :available)
     end
 
-    scenario 'user opens folder view' do
+    it 'user opens folder view' do
       visit folder_project_environments_path(project, 'staging.review')
       wait_for_requests
 

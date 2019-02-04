@@ -1,43 +1,41 @@
 <script>
-  /**
-  * Renders the Monitoring (Metrics) link in environments table.
-  */
-  import Icon from '~/vue_shared/components/icon.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
+/**
+ * Renders the Monitoring (Metrics) link in environments table.
+ */
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      Icon,
+export default {
+  components: {
+    Icon,
+    GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  props: {
+    monitoringUrl: {
+      type: String,
+      required: true,
     },
-    directives: {
-      tooltip,
+  },
+  computed: {
+    title() {
+      return 'Monitoring';
     },
-    props: {
-      monitoringUrl: {
-        type: String,
-        required: true,
-      },
-    },
-    computed: {
-      title() {
-        return 'Monitoring';
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
-  <a
-    v-tooltip
-    class="btn monitoring-url d-none d-sm-none d-md-block"
-    data-container="body"
-    rel="noopener noreferrer nofollow"
+  <gl-button
+    v-gl-tooltip
     :href="monitoringUrl"
     :title="title"
     :aria-label="title"
+    class="monitoring-url d-none d-sm-none d-md-block"
+    rel="noopener noreferrer nofollow"
+    variant="default"
   >
-    <icon
-      name="chart"
-      :size="12"
-    />
-  </a>
+    <icon name="chart" />
+  </gl-button>
 </template>

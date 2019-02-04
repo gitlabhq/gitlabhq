@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RspecFlaky
   # This is a wrapper class for RSpec::Core::Example
   class Example

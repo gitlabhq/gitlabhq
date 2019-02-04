@@ -1,104 +1,121 @@
 <script>
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import popover from '../../vue_shared/directives/popover';
+import { GlLink, GlTooltipDirective } from '@gitlab/ui';
+import _ from 'underscore';
+import { __, sprintf } from '~/locale';
+import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import popover from '~/vue_shared/directives/popover';
 
-  export default {
-    components: {
-      userAvatarLink,
+const popoverTitle = sprintf(
+  _.escape(
+    __(
+      `This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}`,
+    ),
+  ),
+  { strongStart: '<b>', strongEnd: '</b>' },
+  false,
+);
+
+export default {
+  components: {
+    UserAvatarLink,
+    GlLink,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+    popover,
+  },
+  props: {
+    pipeline: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
-      popover,
+    autoDevopsHelpPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      pipeline: {
-        type: Object,
-        required: true,
-      },
-      autoDevopsHelpPath: {
-        type: String,
-        required: true,
-      },
+  },
+  computed: {
+    user() {
+      return this.pipeline.user;
     },
-    computed: {
-      user() {
-        return this.pipeline.user;
-      },
-      popoverOptions() {
-        return {
-          html: true,
-          trigger: 'focus',
-          placement: 'top',
-          title: `<div class="autodevops-title">
-            This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
+    popoverOptions() {
+      return {
+        html: true,
+        trigger: 'focus',
+        placement: 'top',
+        title: `<div class="autodevops-title">
+            ${popoverTitle}
           </div>`,
-          content: `<a
+        content: `<a
             class="autodevops-link"
             href="${this.autoDevopsHelpPath}"
             target="_blank"
             rel="noopener noreferrer nofollow">
-            Learn more about Auto DevOps
+            ${_.escape(__('Learn more about Auto DevOps'))}
           </a>`,
-        };
-      },
+      };
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">
-    <a
-      :href="pipeline.path"
-      class="js-pipeline-url-link">
+    <gl-link :href="pipeline.path" class="js-pipeline-url-link">
       <span class="pipeline-id">#{{ pipeline.id }}</span>
-    </a>
+    </gl-link>
     <span>by</span>
     <user-avatar-link
       v-if="user"
+      :link-href="user.path"
+      :img-src="user.avatar_url"
+      :tooltip-text="user.name"
       class="js-pipeline-url-user"
-      :link-href="pipeline.user.path"
-      :img-src="pipeline.user.avatar_url"
-      :tooltip-text="pipeline.user.name"
     />
-    <span
-      v-if="!user"
-      class="js-pipeline-url-api api">
-      API
-    </span>
+    <span v-if="!user" class="js-pipeline-url-api api"> API </span>
     <div class="label-container">
       <span
         v-if="pipeline.flags.latest"
-        v-tooltip
+        v-gl-tooltip
+        :title="__('Latest pipeline for this branch')"
         class="js-pipeline-url-latest badge badge-success"
-        title="Latest pipeline for this branch">
-        latest
+      >
+        {{ __('latest') }}
       </span>
       <span
         v-if="pipeline.flags.yaml_errors"
-        v-tooltip
+        v-gl-tooltip
+        :title="pipeline.yaml_errors"
         class="js-pipeline-url-yaml badge badge-danger"
-        :title="pipeline.yaml_errors">
-        yaml invalid
+      >
+        {{ __('yaml invalid') }}
       </span>
       <span
         v-if="pipeline.flags.failure_reason"
-        v-tooltip
+        v-gl-tooltip
+        :title="pipeline.failure_reason"
         class="js-pipeline-url-failure badge badge-danger"
-        :title="pipeline.failure_reason">
-        error
+      >
+        {{ __('error') }}
       </span>
-      <a
+      <gl-link
         v-if="pipeline.flags.auto_devops"
+        v-popover="popoverOptions"
         tabindex="0"
         class="js-pipeline-url-autodevops badge badge-info autodevops-badge"
-        v-popover="popoverOptions"
-        role="button">
+        role="button"
+      >
         Auto DevOps
-      </a>
+      </gl-link>
+      <span v-if="pipeline.flags.stuck" class="js-pipeline-url-stuck badge badge-warning">
+        {{ __('stuck') }}
+      </span>
       <span
-        v-if="pipeline.flags.stuck"
-        class="js-pipeline-url-stuck badge badge-warning">
-        stuck
+        v-if="pipeline.flags.merge_request"
+        v-gl-tooltip
+        :title="__('This pipeline is run in a merge request context')"
+        class="js-pipeline-url-mergerequest badge badge-info"
+      >
+        {{ __('merge request') }}
       </span>
     </div>
   </div>

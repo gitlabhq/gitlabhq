@@ -16,7 +16,15 @@ describe AutoDevopsHelper do
 
     subject { helper.show_auto_devops_callout?(project) }
 
-    context 'when all conditions are met' do
+    context 'when auto devops is implicitly enabled' do
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto devops is not implicitly enabled' do
+      before do
+        Gitlab::CurrentSettings.update!(auto_devops_enabled: false)
+      end
+
       it { is_expected.to eq(true) }
     end
 

@@ -20,18 +20,31 @@ describe Projects::MergeRequests::DiffsController do
         format: 'json'
       }
 
-      get :show, params.merge(extra_params)
+      get :show, params: params.merge(extra_params)
     end
 
     context 'with default params' do
       context 'for the same project' do
         before do
-          go
+          allow(controller).to receive(:rendered_for_merge_request?).and_return(true)
         end
 
-        it 'renders the diffs template to a string' do
-          expect(response).to render_template('projects/merge_requests/diffs/_diffs')
-          expect(json_response).to have_key('html')
+        it 'serializes merge request diff collection' do
+          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+
+          go
+        end
+      end
+
+      context 'when note has no position' do
+        before do
+          create(:legacy_diff_note_on_merge_request, project: project, noteable: merge_request, position: nil)
+        end
+
+        it 'serializes merge request diff collection' do
+          expect_any_instance_of(DiffsSerializer).to receive(:represent).with(an_instance_of(Gitlab::Diff::FileCollection::MergeRequestDiff), an_instance_of(Hash))
+
+          go
         end
       end
 
@@ -56,17 +69,6 @@ describe Projects::MergeRequests::DiffsController do
       end
     end
 
-    context 'with ignore_whitespace_change' do
-      before do
-        go(w: 1)
-      end
-
-      it 'renders the diffs template to a string' do
-        expect(response).to render_template('projects/merge_requests/diffs/_diffs')
-        expect(json_response).to have_key('html')
-      end
-    end
-
     context 'with view' do
       before do
         go(view: 'parallel')
@@ -87,7 +89,7 @@ describe Projects::MergeRequests::DiffsController do
         format: 'json'
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { 'files/ruby/popen.rb' }
@@ -105,12 +107,11 @@ describe Projects::MergeRequests::DiffsController do
           end
 
           it 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
-              expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(diffs)
-            end
-
             diff_for_path(old_path: existing_path, new_path: existing_path)
+
+            paths = JSON.parse(response.body)["diff_files"].map { |file| file['new_path'] }
+
+            expect(paths).to include(existing_path)
           end
         end
 
@@ -151,7 +152,7 @@ describe Projects::MergeRequests::DiffsController do
       let(:other_project) { create(:project) }
 
       before do
-        other_project.add_master(user)
+        other_project.add_maintainer(user)
         diff_for_path(old_path: existing_path, new_path: existing_path, project_id: other_project)
       end
 

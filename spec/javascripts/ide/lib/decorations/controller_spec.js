@@ -1,6 +1,4 @@
-/* global monaco */
-import monacoLoader from '~/ide/monaco_loader';
-import editor from '~/ide/lib/editor';
+import Editor from '~/ide/lib/editor';
 import DecorationsController from '~/ide/lib/decorations/controller';
 import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
@@ -10,16 +8,12 @@ describe('Multi-file editor library decorations controller', () => {
   let controller;
   let model;
 
-  beforeEach(done => {
-    monacoLoader(['vs/editor/editor.main'], () => {
-      editorInstance = editor.create(monaco);
-      editorInstance.createInstance(document.createElement('div'));
+  beforeEach(() => {
+    editorInstance = Editor.create();
+    editorInstance.createInstance(document.createElement('div'));
 
-      controller = new DecorationsController(editorInstance);
-      model = new Model(monaco, file('path'));
-
-      done();
-    });
+    controller = new DecorationsController(editorInstance);
+    model = new Model(file('path'));
   });
 
   afterEach(() => {
@@ -62,7 +56,7 @@ describe('Multi-file editor library decorations controller', () => {
       controller.addDecorations(model, 'key', [{ decoration: 'decorationValue' }]);
 
       expect(controller.decorations.size).toBe(1);
-      expect(controller.decorations.keys().next().value).toBe('path--path');
+      expect(controller.decorations.keys().next().value).toBe('gitlab:path--path');
     });
 
     it('calls decorate method', () => {
@@ -96,7 +90,7 @@ describe('Multi-file editor library decorations controller', () => {
 
       controller.decorate(model);
 
-      expect(controller.editorDecorations.keys().next().value).toBe('path--path');
+      expect(controller.editorDecorations.keys().next().value).toBe('gitlab:path--path');
     });
   });
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MattermostService < ChatNotificationService
   def title
     'Mattermost notifications'

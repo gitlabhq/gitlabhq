@@ -11,6 +11,12 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
   let(:uploads) { Upload.all }
   let(:to_store) { ObjectStorage::Store::REMOTE }
 
+  def perform(uploads)
+    described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, to_store)
+  rescue ObjectStorage::MigrateUploadsWorker::Report::MigrationFailures
+    # swallow
+  end
+
   shared_examples "uploads migration worker" do
     describe '.enqueue!' do
       def enqueue!
@@ -69,12 +75,6 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     end
 
     describe '#perform' do
-      def perform
-        described_class.new.perform(uploads.ids, model_class.to_s, mounted_as, to_store)
-      rescue ObjectStorage::MigrateUploadsWorker::Report::MigrationFailures
-        # swallow
-      end
-
       shared_examples 'outputs correctly' do |success: 0, failures: 0|
         total = success + failures
 
@@ -82,7 +82,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
           it 'outputs the reports' do
             expect(Rails.logger).to receive(:info).with(%r{Migrated #{success}/#{total} files})
 
-            perform
+            perform(uploads)
           end
         end
 
@@ -90,7 +90,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
           it 'outputs upload failures' do
             expect(Rails.logger).to receive(:warn).with(/Error .* I am a teapot/)
 
-            perform
+            perform(uploads)
           end
         end
       end
@@ -98,7 +98,7 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
       it_behaves_like 'outputs correctly', success: 10
 
       it 'migrates files' do
-        perform
+        perform(uploads)
 
         expect(Upload.where(store: ObjectStorage::Store::LOCAL).count).to eq(0)
       end
@@ -123,6 +123,17 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     end
 
     it_behaves_like "uploads migration worker"
+
+    describe "limits N+1 queries" do
+      it "to N*5" do
+        query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
+
+        more_projects = create_list(:project, 3, :with_avatar)
+
+        expected_queries_per_migration = 5 * more_projects.count
+        expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(expected_queries_per_migration)
+      end
+    end
   end
 
   context "for FileUploader" do
@@ -130,15 +141,29 @@ describe ObjectStorage::MigrateUploadsWorker, :sidekiq do
     let(:secret) { SecureRandom.hex }
     let(:mounted_as) { nil }
 
+    def upload_file(project)
+      uploader = FileUploader.new(project)
+      uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
+    end
+
     before do
       stub_uploads_object_storage(FileUploader)
 
-      projects.map do |project|
-        uploader = FileUploader.new(project)
-        uploader.store!(fixture_file_upload('spec/fixtures/doc_sample.txt'))
-      end
+      projects.map(&method(:upload_file))
     end
 
     it_behaves_like "uploads migration worker"
+
+    describe "limits N+1 queries" do
+      it "to N*5" do
+        query_count = ActiveRecord::QueryRecorder.new { perform(uploads) }
+
+        more_projects = create_list(:project, 3)
+        more_projects.map(&method(:upload_file))
+
+        expected_queries_per_migration = 5 * more_projects.count
+        expect { perform(Upload.all) }.not_to exceed_query_limit(query_count).with_threshold(expected_queries_per_migration)
+      end
+    end
   end
 end

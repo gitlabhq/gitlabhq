@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/table_of_contents.js
 module Banzai
   module Filter
     # HTML filter that adds an anchor child element to all Headers in a
@@ -19,7 +22,7 @@ module Banzai
       def call
         return doc if context[:no_header_anchors]
 
-        result[:toc] = ""
+        result[:toc] = +""
 
         headers = Hash.new(0)
         header_root = current_header = HeaderNode.new
@@ -92,7 +95,7 @@ module Banzai
         def text
           return '' unless node
 
-          @text ||= node.text
+          @text ||= EscapeUtils.escape_html(node.text)
         end
 
         private

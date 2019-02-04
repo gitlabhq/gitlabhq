@@ -6,20 +6,27 @@
   .row.prepend-top-default
     .col-lg-4
       %h4.prepend-top-0
-        Register Two-Factor Authentication App
+        Register Two-Factor Authenticator
       %p
-        Use an app on your mobile device to enable two-factor authentication (2FA).
+        Use an one time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).
     .col-lg-8
       - if current_user.two_factor_otp_enabled?
         %p
-          You've already enabled two-factor authentication using mobile authenticator applications. In order to register a different device, you must first disable two-factor authentication.
+          You've already enabled two-factor authentication using one time password authenticators. In order to register a different device, you must first disable two-factor authentication.
+        %p
+          If you lose your recovery codes you can generate new ones, invalidating all previous codes.
+        %div
           = link_to 'Disable two-factor authentication', profile_two_factor_auth_path,
                 method: :delete,
                 data: { confirm: "Are you sure? This will invalidate your registered applications and U2F devices." },
-                class: 'btn btn-danger'
+                class: 'btn btn-danger append-right-10'
+          = form_tag codes_profile_two_factor_auth_path, {style: 'display: inline-block', method: :post} do |f|
+            = submit_tag 'Regenerate recovery codes', class: 'btn'
+
       - else
         %p
-          Download the Google Authenticator application from App Store or Google Play Store and scan this code.
+          Install a soft token authenticator like <a href="https://freeotp.github.io/">FreeOTP</a>
+          or Google Authenticator from your application repository and scan this QR code.
           More information is available in the #{link_to('documentation', help_page_path('user/profile/account/two_factor_authentication'))}.
         .row.append-bottom-10
           .col-md-4
@@ -43,7 +50,7 @@
             .alert.alert-danger
               = @error
           .form-group
-            = label_tag :pin_code, nil, class: "label-light"
+            = label_tag :pin_code, nil, class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control", required: true
           .prepend-top-default
             = submit_tag 'Register with two-factor app', class: 'btn btn-success'

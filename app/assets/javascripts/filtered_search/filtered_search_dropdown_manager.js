@@ -7,6 +7,7 @@ import DropdownHint from './dropdown_hint';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownNonUser from './dropdown_non_user';
 import DropdownUser from './dropdown_user';
+import NullDropdown from './null_dropdown';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
@@ -90,9 +91,24 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
+      wip: {
+        reference: null,
+        gl: DropdownNonUser,
+        element: this.container.querySelector('#js-dropdown-wip'),
+      },
+      status: {
+        reference: null,
+        gl: NullDropdown,
+        element: this.container.querySelector('#js-dropdown-admin-runner-status'),
+      },
+      type: {
+        reference: null,
+        gl: NullDropdown,
+        element: this.container.querySelector('#js-dropdown-admin-runner-type'),
+      },
     };
 
-    supportedTokens.forEach((type) => {
+    supportedTokens.forEach(type => {
       if (availableMappings[type]) {
         allowedMappings[type] = availableMappings[type];
       }
@@ -125,10 +141,13 @@ export default class FilteredSearchDropdownManager {
     return endpoint;
   }
 
-  static addWordToInput(tokenName, tokenValue = '', clicked = false) {
+  static addWordToInput(tokenName, tokenValue = '', clicked = false, options = {}) {
+    const { uppercaseTokenName = false, capitalizeTokenValue = false } = options;
     const input = FilteredSearchContainer.container.querySelector('.filtered-search');
-
-    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue);
+    FilteredSearchVisualTokens.addFilterVisualToken(tokenName, tokenValue, {
+      uppercaseTokenName,
+      capitalizeTokenValue,
+    });
     input.value = '';
 
     if (clicked) {
@@ -142,13 +161,16 @@ export default class FilteredSearchDropdownManager {
 
   updateDropdownOffset(key) {
     // Always align dropdown with the input field
-    let offset = this.filteredSearchInput.getBoundingClientRect().left - this.container.querySelector('.scroll-container').getBoundingClientRect().left;
+    let offset =
+      this.filteredSearchInput.getBoundingClientRect().left -
+      this.container.querySelector('.scroll-container').getBoundingClientRect().left;
 
     const maxInputWidth = 240;
     const currentDropdownWidth = this.mapping[key].element.clientWidth || maxInputWidth;
 
     // Make sure offset never exceeds the input container
-    const offsetMaxWidth = this.container.querySelector('.scroll-container').clientWidth - currentDropdownWidth;
+    const offsetMaxWidth =
+      this.container.querySelector('.scroll-container').clientWidth - currentDropdownWidth;
     if (offsetMaxWidth < offset) {
       offset = offsetMaxWidth;
     }
@@ -159,7 +181,7 @@ export default class FilteredSearchDropdownManager {
   load(key, firstLoad = false) {
     const mappingKey = this.mapping[key];
     const glClass = mappingKey.gl;
-    const element = mappingKey.element;
+    const { element } = mappingKey;
     let forceShowList = false;
 
     if (!mappingKey.reference) {
@@ -174,8 +196,7 @@ export default class FilteredSearchDropdownManager {
       const glArguments = Object.assign({}, defaultArguments, extraArguments);
 
       // Passing glArguments to `new glClass(<arguments>)`
-      mappingKey.reference =
-        new (Function.prototype.bind.apply(glClass, [null, glArguments]))();
+      mappingKey.reference = new (Function.prototype.bind.apply(glClass, [null, glArguments]))();
     }
 
     if (firstLoad) {
@@ -202,8 +223,8 @@ export default class FilteredSearchDropdownManager {
     }
 
     const match = this.filteredSearchTokenKeys.searchByKey(dropdownName.toLowerCase());
-    const shouldOpenFilterDropdown = match && this.currentDropdown !== match.key
-      && this.mapping[match.key];
+    const shouldOpenFilterDropdown =
+      match && this.currentDropdown !== match.key && this.mapping[match.key];
     const shouldOpenHintDropdown = !match && this.currentDropdown !== 'hint';
 
     if (shouldOpenFilterDropdown || shouldOpenHintDropdown) {
@@ -214,8 +235,10 @@ export default class FilteredSearchDropdownManager {
 
   setDropdown() {
     const query = DropdownUtils.getSearchQuery(true);
-    const { lastToken, searchToken } =
-      this.tokenizer.processTokens(query, this.filteredSearchTokenKeys.getKeys());
+    const { lastToken, searchToken } = this.tokenizer.processTokens(
+      query,
+      this.filteredSearchTokenKeys.getKeys(),
+    );
 
     if (this.currentDropdown) {
       this.updateCurrentDropdownOffset();

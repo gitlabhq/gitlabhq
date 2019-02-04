@@ -12,9 +12,6 @@ export default {
 
 <template>
   <div class="time-tracking-estimate-only-pane">
-    <span class="bold">
-      {{ s__('TimeTracking|Estimated:') }}
-    </span>
-    {{ timeEstimateHumanReadable }}
+    <span class="bold"> {{ s__('TimeTracking|Estimated:') }} </span> {{ timeEstimateHumanReadable }}
   </div>
 </template>

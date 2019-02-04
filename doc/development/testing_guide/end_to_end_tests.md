@@ -1,32 +1,37 @@
-# End-to-End Testing
+# End-to-end Testing
 
-## What is End-to-End testing?
+## What is end-to-end testing?
 
-End-to-End testing is a strategy used to check whether your application works
-as expected across entire software stack and architecture, including
-integration of all microservices and components that are supposed to work
+End-to-end testing is a strategy used to check whether your application works
+as expected across the entire software stack and architecture, including
+integration of all micro-services and components that are supposed to work
 together.
 
 ## How do we test GitLab?
 
 We use [Omnibus GitLab][omnibus-gitlab] to build GitLab packages and then we
-test these packages using [GitLab QA][gitlab-qa] project, which is entirely
-black-box, click-driven testing framework.
+test these packages using the [GitLab QA orchestrator][gitlab-qa] tool, which is
+a black-box testing framework for the API and the UI.
 
 ### Testing nightly builds
 
 We run scheduled pipeline each night to test nightly builds created by Omnibus.
-You can find these nightly pipelines at [GitLab QA pipelines page][gitlab-qa-pipelines].
+You can find these nightly pipelines at [gitlab-org/quality/nightly/pipelines][quality-nightly-pipelines].
+
+### Testing staging
+
+We run scheduled pipeline each night to test staging.
+You can find these nightly pipelines at [gitlab-org/quality/staging/pipelines][quality-staging-pipelines].
 
 ### Testing code in merge requests
 
 It is possible to run end-to-end tests (eventually being run within a
 [GitLab QA pipeline][gitlab-qa-pipelines]) for a merge request by triggering
-the `package-and-qa` manual action, that should be present in a merge request
-widget.
+the `package-and-qa` manual action in the `test` stage, that should be present
+in a merge request widget (unless the merge request is from a fork).
 
 Manual action that starts end-to-end tests is also available in merge requests
-in Omnibus GitLab project.
+in [Omnibus GitLab][omnibus-gitlab].
 
 Below you can read more about how to use it and how does it work.
 
@@ -35,46 +40,56 @@ Below you can read more about how to use it and how does it work.
 Currently, we are using _multi-project pipeline_-like approach to run QA
 pipelines.
 
-1. Developer triggers a manual action, that can be found in CE and EE merge
+1. Developer triggers a manual action, that can be found in CE / EE merge
 requests. This starts a chain of pipelines in multiple projects.
 
-1. The script being executed triggers a pipeline in GitLab Omnibus and waits
-for the resulting status. We call this a _status attribution_.
+1. The script being executed triggers a pipeline in [Omnibus GitLab][omnibus-gitlab]
+and waits for the resulting status. We call this a _status attribution_.
 
-1. GitLab packages are being built in Omnibus pipeline. Packages are going to be
-pushed to Container Registry.
+1. GitLab packages are being built in the [Omnibus GitLab][omnibus-gitlab]
+pipeline. Packages are then pushed to its Container Registry.
 
 1. When packages are ready, and available in the registry, a final step in the
-pipeline, that is now running in Omnibus, triggers a new pipeline in the GitLab
-QA project. It also waits for a resulting status.
+[Omnibus GitLab][omnibus-gitlab] pipeline, triggers a new
+[GitLab QA pipeline][gitlab-qa-pipelines]. It also waits for a resulting status.
 
 1. GitLab QA pulls images from the registry, spins-up containers and runs tests
 against a test environment that has been just orchestrated by the `gitlab-qa`
 tool.
 
-1. The result of the GitLab QA pipeline is being propagated upstream, through
-Omnibus, back to CE / EE merge request.
+1. The result of the [GitLab QA pipeline][gitlab-qa-pipelines] is being
+propagated upstream, through Omnibus, back to the CE / EE merge request.
 
 #### How do I write tests?
 
 In order to write new tests, you first need to learn more about GitLab QA
-architecture. See the [documentation about it][gitlab-qa-architecture] in
-GitLab QA project.
+architecture. See the [documentation about it][gitlab-qa-architecture].
 
-Once you decided where to put test environment orchestration scenarios and
-instance specs, take a look at the [relevant documentation][instance-qa-readme]
-and examples in [the `qa/` directory][instance-qa-examples].
+Once you decided where to put [test environment orchestration scenarios] and
+[instance-level scenarios], take a look at the [GitLab QA README][instance-qa-readme],
+the [GitLab QA orchestrator README][gitlab-qa-readme], and [the already existing
+instance-level scenarios][instance-level scenarios].
 
 ## Where can I ask for help?
 
 You can ask question in the `#quality` channel on Slack (GitLab internal) or
 you can find an issue you would like to work on in
-[the issue tracker][gitlab-qa-issues] and start a new discussion there.
+[the `gitlab-ce` issue tracker][gitlab-ce-issues],
+[the `gitlab-ee` issue tracker][gitlab-ce-issues], or
+[the `gitlab-qa` issue tracker][gitlab-qa-issues].
 
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa
+[gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
 [gitlab-qa-pipelines]: https://gitlab.com/gitlab-org/gitlab-qa/pipelines
+[quality-nightly-pipelines]: https://gitlab.com/gitlab-org/quality/nightly/pipelines
+[quality-staging-pipelines]: https://gitlab.com/gitlab-org/quality/staging/pipelines
 [gitlab-qa-architecture]: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md
-[gitlab-qa-issues]: https://gitlab.com/gitlab-org/gitlab-qa/issues
+[gitlab-qa-issues]: https://gitlab.com/gitlab-org/gitlab-qa/issues?label_name%5B%5D=new+scenario
+[gitlab-ce-issues]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name[]=QA&label_name[]=test
+[gitlab-ee-issues]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name[]=QA&label_name[]=test
+[test environment orchestration scenarios]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/lib/gitlab/qa/scenario
+[instance-level scenarios]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa/specs/features
+[Page objects documentation]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa/page/README.md
 [instance-qa-readme]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/README.md
 [instance-qa-examples]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa

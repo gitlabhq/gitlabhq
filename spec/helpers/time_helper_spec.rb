@@ -4,10 +4,12 @@ describe TimeHelper do
   describe "#time_interval_in_words" do
     it "returns minutes and seconds" do
       intervals_in_words = {
-        100 => "1 minute 40 seconds",
-        100.32 => "1 minute 40 seconds",
-        121 => "2 minutes 1 second",
-        3721 => "62 minutes 1 second",
+        60 => "1 minute",
+        100 => "1 minute and 40 seconds",
+        100.32 => "1 minute and 40 seconds",
+        120 => "2 minutes",
+        121 => "2 minutes and 1 second",
+        3721 => "62 minutes and 1 second",
         0 => "0 seconds"
       }
 
@@ -18,18 +20,19 @@ describe TimeHelper do
   end
 
   describe "#duration_in_numbers" do
-    it "returns minutes and seconds" do
-      durations_and_expectations = {
-        100 => "01:40",
-        121 => "02:01",
-        3721 => "01:02:01",
-        0 => "00:00",
-        42 => "00:42"
-      }
+    using RSpec::Parameterized::TableSyntax
 
-      durations_and_expectations.each do |duration, expectation|
-        expect(duration_in_numbers(duration)).to eq(expectation)
-      end
+    where(:duration, :formatted_string) do
+      0                              | "00:00"
+      1.second                       | "00:01"
+      42.seconds                     | "00:42"
+      2.minutes + 1.second           | "02:01"
+      3.hours + 2.minutes + 1.second | "03:02:01"
+      30.hours                       | "30:00:00"
+    end
+
+    with_them do
+      it { expect(duration_in_numbers(duration)).to eq formatted_string }
     end
   end
 end

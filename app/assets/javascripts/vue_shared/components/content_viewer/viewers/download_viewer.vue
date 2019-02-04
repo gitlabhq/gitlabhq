@@ -1,9 +1,11 @@
 <script>
+import { GlLink } from '@gitlab/ui';
 import Icon from '../../icon.vue';
 import { numberToHumanSize } from '../../../../lib/utils/number_utils';
 
 export default {
   components: {
+    GlLink,
     Icon,
   },
   props: {
@@ -32,21 +34,15 @@ export default {
   <div class="file-container">
     <div class="file-content">
       <p class="prepend-top-10 file-info">
-        {{ fileName }} ({{ fileSizeReadable }})
+        {{ fileName }}
+        <template v-if="fileSize > 0">
+          ({{ fileSizeReadable }})
+        </template>
       </p>
-      <a
-        :href="path"
-        class="btn btn-default"
-        rel="nofollow"
-        download
-        target="_blank">
-        <icon
-          name="download"
-          css-classes="float-left append-right-8"
-          :size="16"
-        />
+      <gl-link :href="path" class="btn btn-default" rel="nofollow" download target="_blank">
+        <icon :size="16" name="download" css-classes="float-left append-right-8" />
         {{ __('Download') }}
-      </a>
+      </gl-link>
     </div>
   </div>
 </template>

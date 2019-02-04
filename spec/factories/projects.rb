@@ -1,6 +1,8 @@
 require_relative '../support/helpers/test_env'
 
 FactoryBot.define do
+  PAGES_ACCESS_LEVEL_SCHEMA_VERSION ||= 20180423204600
+
   # Project without repository
   #
   # Project does not have bare repository.
@@ -23,10 +25,13 @@ FactoryBot.define do
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
+      pages_access_level ProjectFeature::ENABLED
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
       group_runners_enabled nil
+      import_status nil
+      import_jid nil
     end
 
     after(:create) do |project, evaluator|
@@ -34,26 +39,40 @@ FactoryBot.define do
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
 
-      project.project_feature.update_columns(
+      hash = {
         wiki_access_level: evaluator.wiki_access_level,
         builds_access_level: builds_access_level,
         snippets_access_level: evaluator.snippets_access_level,
         issues_access_level: evaluator.issues_access_level,
         merge_requests_access_level: merge_requests_access_level,
-        repository_access_level: evaluator.repository_access_level)
+        repository_access_level: evaluator.repository_access_level
+      }
+
+      if ActiveRecord::Migrator.current_version >= PAGES_ACCESS_LEVEL_SCHEMA_VERSION
+        hash.store("pages_access_level", evaluator.pages_access_level)
+      end
+
+      project.project_feature.update(hash)
 
       # Normally the class Projects::CreateService is used for creating
       # projects, and this class takes care of making sure the owner and current
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_master(project.owner)
+        project.add_maintainer(project.owner)
       end
 
       project.group&.refresh_members_authorized_projects
 
       # assign the delegated `#ci_cd_settings` attributes after create
       project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
+
+      if evaluator.import_status
+        import_state = project.import_state || project.build_import_state
+        import_state.status = evaluator.import_status
+        import_state.jid = evaluator.import_jid
+        import_state.save
+      end
     end
 
     trait :public do
@@ -103,7 +122,7 @@ FactoryBot.define do
     end
 
     trait :with_export do
-      after(:create) do |project, evaluator|
+      after(:create) do |project, _evaluator|
         ProjectExportWorker.new.perform(project.creator.id, project.id)
       end
     end
@@ -111,6 +130,33 @@ FactoryBot.define do
     trait :broken_storage do
       after(:create) do |project|
         project.update_column(:repository_storage, 'broken')
+      end
+    end
+
+    # Build a custom repository by specifying a hash of `filename => content` in
+    # the transient `files` attribute. Each file will be created in its own
+    # commit, operating against the master branch. So, the following call:
+    #
+    #     create(:project, :custom_repo, files: { 'foo/a.txt' => 'foo', 'b.txt' => bar' })
+    #
+    # will create a repository containing two files, and two commits, in master
+    trait :custom_repo do
+      transient do
+        files {}
+      end
+
+      after :create do |project, evaluator|
+        raise "Failed to create repository!" unless project.create_repository
+
+        evaluator.files.each do |filename, content|
+          project.repository.create_file(
+            project.creator,
+            filename,
+            content,
+            message: "Automatically created file #{filename}",
+            branch_name: 'master'
+          )
+        end
       end
     end
 
@@ -151,11 +197,6 @@ FactoryBot.define do
     trait :empty_repo do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
-
-        # We delete hooks so that gitlab-shell will not try to authenticate with
-        # an API that isn't running
-        project.gitlab_shell.rm_directory(project.repository_storage,
-                                          File.join("#{project.disk_path}.git", 'hooks'))
       end
     end
 
@@ -180,13 +221,6 @@ FactoryBot.define do
     trait :wiki_repo do
       after(:create) do |project|
         raise 'Failed to create wiki repository!' unless project.create_wiki
-
-        # We delete hooks so that gitlab-shell will not try to authenticate with
-        # an API that isn't running
-        project.gitlab_shell.rm_directory(
-          project.repository_storage,
-          File.join("#{project.wiki.repository.disk_path}.git", "hooks")
-        )
       end
     end
 
@@ -229,6 +263,14 @@ FactoryBot.define do
     trait(:repository_enabled)      { repository_access_level ProjectFeature::ENABLED }
     trait(:repository_disabled)     { repository_access_level ProjectFeature::DISABLED }
     trait(:repository_private)      { repository_access_level ProjectFeature::PRIVATE }
+    trait(:pages_public)            { pages_access_level ProjectFeature::PUBLIC }
+    trait(:pages_enabled)           { pages_access_level ProjectFeature::ENABLED }
+    trait(:pages_disabled)          { pages_access_level ProjectFeature::DISABLED }
+    trait(:pages_private)           { pages_access_level ProjectFeature::PRIVATE }
+
+    trait :auto_devops do
+      association :auto_devops, factory: :project_auto_devops
+    end
   end
 
   # Project with empty repository

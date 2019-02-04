@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   # MergeService class
   #
@@ -47,6 +49,11 @@ module MergeRequests
       end
     end
 
+    # Overridden in EE.
+    def hooks_validation_pass?(_merge_request)
+      true
+    end
+
     private
 
     def error_check!
@@ -79,7 +86,7 @@ module MergeRequests
       message = params[:commit_message] || merge_request.merge_commit_message
 
       repository.merge(current_user, source, merge_request, message)
-    rescue Gitlab::Git::HooksService::PreReceiveError => e
+    rescue Gitlab::Git::PreReceiveError => e
       handle_merge_error(log_message: e.message)
       raise MergeError, 'Something went wrong during merge pre-receive hook'
     rescue => e

@@ -1,4 +1,4 @@
-class CreateProjectDeployTokens < ActiveRecord::Migration
+class CreateProjectDeployTokens < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def change

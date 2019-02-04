@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module ReferenceParser
     class MergeRequestParser < IssuableParser
@@ -14,11 +16,12 @@ module Banzai
               # Eager loading these ensures we don't end up running dozens of
               # queries in this process.
               target_project: [
-                { namespace: :owner },
+                { namespace: [:owner, :route] },
                 { group: [:owners, :group_members] },
                 :invited_groups,
                 :project_members,
-                :project_feature
+                :project_feature,
+                :route
               ]
             }),
           self.class.data_attribute

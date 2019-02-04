@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     class MarkdownFilter < HTML::Pipeline::TextFilter
       def initialize(text, context = nil, result = nil)
         super(text, context, result)
 
-        @renderer = renderer(context[:markdown_engine]).new
+        @renderer = renderer(context[:markdown_engine]).new(context)
         @text = @text.delete("\r")
       end
 
@@ -14,7 +16,7 @@ module Banzai
 
       private
 
-      DEFAULT_ENGINE = :redcarpet
+      DEFAULT_ENGINE = :common_mark
 
       def engine(engine_from_context)
         engine_from_context ||= DEFAULT_ENGINE

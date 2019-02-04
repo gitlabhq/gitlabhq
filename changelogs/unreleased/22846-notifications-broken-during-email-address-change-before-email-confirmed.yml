@@ -1,6 +1,0 @@
----
-title: Fix an issue where the notification email address would be set to an unconfirmed
-  email address
-merge_request: 18474
-author:
-type: fixed

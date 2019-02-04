@@ -2,17 +2,17 @@
   %div{ class: container_class }
     .prepend-top-default.append-bottom-default
       .wiki
-        = render_wiki_content(@wiki_home)
+        = render_wiki_content(@wiki_home, legacy_render_context(params))
 - else
   - can_create_wiki = can?(current_user, :create_wiki, @project)
-  .project-home-empty{ class: [('row-content-block' if can_create_wiki), ('content-block' unless can_create_wiki)] }
-    .text-center{ class: container_class }
+  .landing{ class: [('row-content-block row p-0 align-items-center' if can_create_wiki), ('content-block' unless can_create_wiki)] }
+    .col-12.col-md-3.p-0
+      .svg-content
+        = image_tag 'illustrations/wiki_login_empty.svg'
+    .col-12.col-md-9.text-center.text-md-left.pl-md-0.pl-sm-3.mb-4
       %h4
-        This project does not have a wiki homepage yet
+        = _("This project does not have a wiki homepage yet")
       - if can_create_wiki
         %p
-          Add a homepage to your wiki that contains information about your project
-        %p
-          We recommend you
-          = link_to "add a homepage", project_wiki_path(@project, :home)
-          to your project's wiki and GitLab will show it here instead of this message.
+          = _("Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message.")
+        = link_to _("Create your first page"), project_wiki_path(@project, :home) + '?view=create', class: "btn btn-primary"

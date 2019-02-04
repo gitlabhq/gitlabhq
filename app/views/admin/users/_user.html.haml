@@ -3,7 +3,7 @@
     = image_tag avatar_icon_for_user(user), class: "avatar", alt: ''
   .row-main-content
     .user-name.row-title.str-truncated-100
-      = link_to user.name, [:admin, user]
+      = link_to user.name, [:admin, user], class: "js-user-link", data: { user_id: user.id }
     - if user.blocked?
       %span.badge.badge-danger blocked
     - if user.admin?
@@ -38,7 +38,7 @@
             %li.divider
             - if user.can_be_removed?
               %li
-                %button.delete-user-button.btn.btn-danger{ data: { toggle: 'modal',
+                %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
                   target: '#delete-user-modal',
                   delete_user_url: admin_user_path(user),
                   block_user_url: block_admin_user_path(user),
@@ -47,7 +47,7 @@
                   = s_('AdminUsers|Delete user')
 
             %li
-              %button.delete-user-button.btn.btn-danger{ data: { toggle: 'modal',
+              %button.delete-user-button.btn.text-danger{ data: { toggle: 'modal',
                 target: '#delete-user-modal',
                 delete_user_url: admin_user_path(user, hard_delete: true),
                 block_user_url: block_admin_user_path(user),

@@ -3,4 +3,5 @@ export default () => ({
   isLoadingJobs: false,
   latestPipeline: null,
   stages: [],
+  detailJob: null,
 });

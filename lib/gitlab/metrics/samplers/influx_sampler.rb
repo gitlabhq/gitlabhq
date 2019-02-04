@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Metrics
     module Samplers
@@ -16,12 +18,6 @@ module Gitlab
 
           @last_minor_gc = Delta.new(GC.stat[:minor_gc_count])
           @last_major_gc = Delta.new(GC.stat[:major_gc_count])
-
-          if Gitlab::Metrics.mri?
-            require 'allocations'
-
-            Allocations.start
-          end
         end
 
         def sample

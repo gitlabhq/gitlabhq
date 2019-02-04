@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Database
     # Model that can be used for querying permissions of a SQL user.
     class Grant < ActiveRecord::Base
+      include FromUnion
+
       self.table_name =
         if Database.postgresql?
           'information_schema.role_table_grants'
@@ -42,9 +46,7 @@ module Gitlab
               .where("GRANTEE = CONCAT('\\'', REPLACE(CURRENT_USER(), '@', '\\'@\\''), '\\'')")
           ]
 
-          union = SQL::Union.new(queries).to_sql
-
-          Grant.from("(#{union}) privs").any?
+          Grant.from_union(queries, alias_as: 'privs').any?
         end
       end
     end

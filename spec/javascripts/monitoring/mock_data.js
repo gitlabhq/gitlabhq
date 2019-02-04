@@ -1,5 +1,3 @@
-/* eslint-disable quote-props, indent, comma-dangle */
-
 export const mockApiEndpoint = `${gl.TEST_HOST}/monitoring/mock`;
 
 export const metricsGroupsAPIResponse = {
@@ -10,12 +8,13 @@ export const metricsGroupsAPIResponse = {
       priority: 1,
       metrics: [
         {
+          id: 5,
           title: 'Memory usage',
           weight: 1,
           queries: [
             {
               query_range: 'avg(container_memory_usage_bytes{%{environment_filter}}) / 2^20',
-              y_label: 'Memory',
+              label: 'Memory',
               unit: 'MiB',
               result: [
                 {
@@ -325,12 +324,15 @@ export const metricsGroupsAPIResponse = {
           ],
         },
         {
+          id: 6,
           title: 'CPU usage',
           weight: 1,
           queries: [
             {
               query_range:
                 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100',
+              label: 'Core Usage',
+              unit: 'Cores',
               result: [
                 {
                   metric: {},
@@ -632,6 +634,39 @@ export const metricsGroupsAPIResponse = {
                     [1495718194.925, '0.004793227554547938'],
                     [1495718254.925, '0.003997442857142731'],
                     [1495718314.925, '0.004386040132951264'],
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      group: 'NGINX',
+      priority: 2,
+      metrics: [
+        {
+          id: 100,
+          title: 'Http Error Rate',
+          weight: 100,
+          queries: [
+            {
+              query_range:
+                'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"nginx-test-8691397-production-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"nginx-test-8691397-production-.*"}[2m])) * 100',
+              label: '5xx errors',
+              unit: '%',
+              result: [
+                {
+                  metric: {},
+                  values: [
+                    [1495700554.925, NaN],
+                    [1495700614.925, NaN],
+                    [1495700674.925, NaN],
+                    [1495700734.925, NaN],
+                    [1495700794.925, NaN],
+                    [1495700854.925, NaN],
+                    [1495700914.925, NaN],
                   ],
                 },
               ],
@@ -6527,6 +6562,21 @@ export const singleRowMetricsMultipleSeries = [
   },
 ];
 
+export const queryWithoutData = {
+  title: 'HTTP Error rate',
+  weight: 10,
+  y_label: 'Http Error Rate',
+  queries: [
+    {
+      query_range:
+        'sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"nginx-test-8691397-production-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"nginx-test-8691397-production-.*"}[2m])) * 100',
+      label: '5xx errors',
+      unit: '%',
+      result: [],
+    },
+  ],
+};
+
 export function convertDatesMultipleSeries(multipleSeries) {
   const convertedMultiple = multipleSeries;
   multipleSeries.forEach((column, index) => {
@@ -6544,3 +6594,49 @@ export function convertDatesMultipleSeries(multipleSeries) {
   });
   return convertedMultiple;
 }
+
+export const environmentData = [
+  {
+    id: 34,
+    name: 'production',
+    state: 'available',
+    external_url: 'http://root-autodevops-deploy.my-fake-domain.com',
+    environment_type: null,
+    stop_action: false,
+    metrics_path: '/root/hello-prometheus/environments/34/metrics',
+    environment_path: '/root/hello-prometheus/environments/34',
+    stop_path: '/root/hello-prometheus/environments/34/stop',
+    terminal_path: '/root/hello-prometheus/environments/34/terminal',
+    folder_path: '/root/hello-prometheus/environments/folders/production',
+    created_at: '2018-06-29T16:53:38.301Z',
+    updated_at: '2018-06-29T16:57:09.825Z',
+    last_deployment: {
+      id: 127,
+    },
+  },
+  {
+    id: 35,
+    name: 'review/noop-branch',
+    state: 'available',
+    external_url: 'http://root-autodevops-deploy-review-noop-branc-die93w.my-fake-domain.com',
+    environment_type: 'review',
+    stop_action: true,
+    metrics_path: '/root/hello-prometheus/environments/35/metrics',
+    environment_path: '/root/hello-prometheus/environments/35',
+    stop_path: '/root/hello-prometheus/environments/35/stop',
+    terminal_path: '/root/hello-prometheus/environments/35/terminal',
+    folder_path: '/root/hello-prometheus/environments/folders/review',
+    created_at: '2018-07-03T18:39:41.702Z',
+    updated_at: '2018-07-03T18:44:54.010Z',
+    last_deployment: {
+      id: 128,
+    },
+  },
+  {
+    id: 36,
+    name: 'no-deployment/noop-branch',
+    state: 'available',
+    created_at: '2018-07-04T18:39:41.702Z',
+    updated_at: '2018-07-04T18:44:54.010Z',
+  },
+];

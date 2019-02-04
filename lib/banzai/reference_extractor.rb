@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   # Extract possible GFM references from an arbitrary String for further processing.
   class ReferenceExtractor

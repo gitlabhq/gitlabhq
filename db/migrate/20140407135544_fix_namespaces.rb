@@ -1,5 +1,4 @@
-# rubocop:disable all
-class FixNamespaces < ActiveRecord::Migration
+class FixNamespaces < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

@@ -12,7 +12,7 @@ describe 'Issue Boards add issue modal', :js do
   let!(:issue2) { create(:issue, project: project, title: 'hij', description: 'klm') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 
@@ -160,7 +160,7 @@ describe 'Issue Boards add issue modal', :js do
 
       it 'changes button text with plural' do
         page.within('.add-issues-modal') do
-          all('.board-card .board-card-number').each do |el|
+          all('.board-card .js-board-card-number-container').each do |el|
             el.click
           end
 

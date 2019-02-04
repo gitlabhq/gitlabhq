@@ -1,5 +1,4 @@
-# rubocop:disable all
-class MigrateProjectTags < ActiveRecord::Migration
+class MigrateProjectTags < ActiveRecord::Migration[4.2]
   def up
     ActsAsTaggableOn::Tagging.where(taggable_type: 'Project', context: 'labels').update_all(context: 'tags')
   end

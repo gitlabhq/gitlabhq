@@ -3,7 +3,7 @@ shared_examples_for 'throttled touch' do
     it 'updates the updated_at timestamp' do
       Timecop.freeze do
         subject.touch
-        expect(subject.updated_at).to eq(Time.zone.now)
+        expect(subject.updated_at).to be_like_time(Time.zone.now)
       end
     end
 
@@ -14,7 +14,7 @@ shared_examples_for 'throttled touch' do
       Timecop.freeze(first_updated_at) { subject.touch }
       Timecop.freeze(second_updated_at) { subject.touch }
 
-      expect(subject.updated_at).to eq(first_updated_at)
+      expect(subject.updated_at).to be_like_time(first_updated_at)
     end
   end
 end

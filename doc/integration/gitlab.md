@@ -7,13 +7,11 @@ GitLab.com will generate an application ID and secret key for you to use.
 
 1.  Sign in to GitLab.com
 
-1.  Navigate to your profile settings.
+1. On the upper right corner, click on your avatar and go to your **Settings**.
 
-1.  Select "Applications" in the left menu.
+1.  Select **Applications** in the left menu.
 
-1.  Select "New application".
-
-1.  Provide the required details.
+1.  Provide the required details for **Add new application**.
     - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
     - Redirect URI:
 
@@ -24,9 +22,9 @@ GitLab.com will generate an application ID and secret key for you to use.
 
     The first link is required for the importer and second for the authorization.
 
-1.  Select "Submit".
+1.  Select **Save application**.
 
-1.  You should now see a Client ID and Client Secret near the top right of the page (see screenshot).
+1.  You should now see a **Application Id** and **Secret** near the top right of the page (see screenshot).
     Keep this page open as you continue configuration.
     ![GitLab app](img/gitlab_app.png)
 

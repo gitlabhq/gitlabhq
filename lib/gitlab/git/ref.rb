@@ -1,4 +1,4 @@
-# Gitaly note: JV: probably no RPC's here (just one interaction with Rugged).
+# frozen_string_literal: true
 
 module Gitlab
   module Git
@@ -24,13 +24,6 @@ module Gitlab
       #   Ref.extract_branch_name('refs/heads/master') #=> 'master'
       def self.extract_branch_name(str)
         str.gsub(%r{\Arefs/heads/}, '')
-      end
-
-      # Gitaly: this method will probably be migrated indirectly via its call sites.
-      def self.dereference_object(object)
-        object = object.target while object.is_a?(Rugged::Tag::Annotation)
-
-        object
       end
 
       def initialize(repository, name, target, dereferenced_target)

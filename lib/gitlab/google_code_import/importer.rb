@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module GoogleCodeImport
     class Importer
@@ -78,6 +80,7 @@ module Gitlab
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def import_issues
         return unless repo.issues
 
@@ -101,7 +104,7 @@ module Gitlab
             if username.start_with?("@")
               username = username[1..-1]
 
-              if user = User.find_by(username: username)
+              if user = UserFinder.new(username).find_by_username
                 assignee_id = user.id
               end
             end
@@ -123,6 +126,7 @@ module Gitlab
           import_issue_comments(issue, comments)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def import_issue_labels(raw_issue)
         labels = []
@@ -200,27 +204,27 @@ module Gitlab
         "Status: #{name}"
       end
 
-      def linkify_issues(s)
-        s = s.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
-        s = s.gsub(/([Cc]omment) #([0-9]+)/, '\1 \2')
-        s
+      def linkify_issues(str)
+        str = str.gsub(/([Ii]ssue) ([0-9]+)/, '\1 #\2')
+        str = str.gsub(/([Cc]omment) #([0-9]+)/, '\1 \2')
+        str
       end
 
-      def escape_for_markdown(s)
+      def escape_for_markdown(str)
         # No headings and lists
-        s = s.gsub(/^#/, "\\#")
-        s = s.gsub(/^-/, "\\-")
+        str = str.gsub(/^#/, "\\#")
+        str = str.gsub(/^-/, "\\-")
 
         # No inline code
-        s = s.gsub("`", "\\`")
+        str = str.gsub("`", "\\`")
 
         # Carriage returns make me sad
-        s = s.delete("\r")
+        str = str.delete("\r")
 
         # Markdown ignores single newlines, but we need them as <br />.
-        s = s.gsub("\n", "  \n")
+        str = str.gsub("\n", "  \n")
 
-        s
+        str
       end
 
       def create_label(name)

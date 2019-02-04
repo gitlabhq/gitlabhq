@@ -22,9 +22,9 @@
 
 header,
 nav,
-nav.main-nav,
 nav.navbar-collapse,
 nav.navbar-collapse.collapse,
+.nav-sidebar,
 .profiler-results,
 .tree-ref-holder,
 .tree-holder .breadcrumb,
@@ -38,7 +38,8 @@ ul.notes-form,
 .edit-link,
 .note-action-button,
 .right-sidebar,
-.flash-container {
+.flash-container,
+#js-peek {
   display: none !important;
 }
 

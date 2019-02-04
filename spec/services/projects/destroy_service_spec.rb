@@ -5,7 +5,11 @@ describe Projects::DestroyService do
 
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
-  let!(:path) { project.repository.path_to_repo }
+  let!(:path) do
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.path_to_repo
+    end
+  end
   let!(:remove_path) { path.sub(/\.git\Z/, "+#{project.id}+deleted.git") }
   let!(:async) { false } # execute or async_execute
 
@@ -41,18 +45,18 @@ describe Projects::DestroyService do
   shared_examples 'handles errors thrown during async destroy' do |error_message|
     it 'does not allow the error to bubble up' do
       expect do
-        Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+        perform_enqueued_jobs { destroy_project(project, user, {}) }
       end.not_to raise_error
     end
 
     it 'unmarks the project as "pending deletion"' do
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      perform_enqueued_jobs { destroy_project(project, user, {}) }
 
       expect(project.reload.pending_delete).to be(false)
     end
 
     it 'stores an error message in `projects.delete_error`' do
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      perform_enqueued_jobs { destroy_project(project, user, {}) }
 
       expect(project.reload.delete_error).to be_present
       expect(project.delete_error).to include(error_message)
@@ -61,9 +65,11 @@ describe Projects::DestroyService do
 
   context 'Sidekiq inline' do
     before do
-      # Run sidekiq immediatly to check that renamed repository will be removed
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      # Run sidekiq immediately to check that renamed repository will be removed
+      perform_enqueued_jobs { destroy_project(project, user, {}) }
     end
+
+    it_behaves_like 'deleting the project'
 
     context 'when has remote mirrors' do
       let!(:project) do
@@ -78,12 +84,27 @@ describe Projects::DestroyService do
       end
     end
 
-    it_behaves_like 'deleting the project'
-
     it 'invalidates personal_project_count cache' do
       expect(user).to receive(:invalidate_personal_projects_count)
 
       destroy_project(project, user)
+    end
+
+    context 'when project has exports' do
+      let!(:project_with_export) do
+        create(:project, :repository, namespace: user.namespace).tap do |project|
+          create(:import_export_upload,
+                 project: project,
+                 export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'))
+        end
+      end
+      let!(:async) { true }
+
+      it 'destroys project and export' do
+        expect { destroy_project(project_with_export, user) }.to change(ImportExportUpload, :count).by(-1)
+
+        expect(Project.all).not_to include(project_with_export)
+      end
     end
   end
 
@@ -106,7 +127,7 @@ describe Projects::DestroyService do
     end
 
     it 'keeps project team intact upon an error' do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         begin
           destroy_project(project, user, {})
         rescue ::Redis::CannotConnectError
@@ -124,7 +145,7 @@ describe Projects::DestroyService do
       before do
         project.project_feature.update_attribute("issues_access_level", ProjectFeature::PRIVATE)
         # Run sidekiq immediately to check that renamed repository will be removed
-        Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+        perform_enqueued_jobs { destroy_project(project, user, {}) }
       end
 
       it_behaves_like 'deleting the project'
@@ -168,7 +189,7 @@ describe Projects::DestroyService do
 
         it 'allows error to bubble up and rolls back project deletion' do
           expect do
-            Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+            perform_enqueued_jobs { destroy_project(project, user, {}) }
           end.to raise_error(Exception, 'Other error message')
 
           expect(project.reload.pending_delete).to be(false)
@@ -200,7 +221,7 @@ describe Projects::DestroyService do
       context 'when image repository deletion fails' do
         it 'raises an exception' do
           expect_any_instance_of(ContainerRepository)
-            .to receive(:delete_tags!).and_return(false)
+            .to receive(:delete_tags!).and_raise(RuntimeError)
 
           expect(destroy_project(project, user)).to be false
         end
@@ -238,7 +259,6 @@ describe Projects::DestroyService do
 
     before do
       project.lfs_objects << create(:lfs_object)
-      forked_project.forked_project_link.destroy
       forked_project.reload
     end
 
@@ -258,6 +278,40 @@ describe Projects::DestroyService do
 
       expect(fork_network.deleted_root_project_name).to eq(project.full_name)
       expect(fork_network.root_project).to be_nil
+    end
+  end
+
+  context 'repository +deleted path removal' do
+    def removal_path(path)
+      "#{path}+#{project.id}#{described_class::DELETED_FLAG}"
+    end
+
+    context 'regular phase' do
+      it 'schedules +deleted removal of existing repos' do
+        service = described_class.new(project, user, {})
+        allow(service).to receive(:schedule_stale_repos_removal)
+
+        expect(GitlabShellWorker).to receive(:perform_in)
+          .with(5.minutes, :remove_repository, project.repository_storage, removal_path(project.disk_path))
+
+        service.execute
+      end
+    end
+
+    context 'stale cleanup' do
+      let!(:async) { true }
+
+      it 'schedules +deleted wiki and repo removal' do
+        allow(ProjectDestroyWorker).to receive(:perform_async)
+
+        expect(GitlabShellWorker).to receive(:perform_in)
+          .with(10.minutes, :remove_repository, project.repository_storage, removal_path(project.disk_path))
+
+        expect(GitlabShellWorker).to receive(:perform_in)
+          .with(10.minutes, :remove_repository, project.repository_storage, removal_path(project.wiki.disk_path))
+
+        destroy_project(project, user, {})
+      end
     end
   end
 

@@ -33,6 +33,7 @@
 
     .close-icon {
       display: block;
+      margin: auto;
     }
   }
 
@@ -90,12 +91,6 @@
         padding: 2px 8px;
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
-
-        .tanuki-logo {
-          @include media-breakpoint-up(sm) {
-            margin-right: 8px;
-          }
-        }
       }
 
       .project-item-select {
@@ -110,6 +105,10 @@
       }
     }
 
+    .navbar-collapse > ul.nav > li:not(.d-none) {
+      margin: 0 2px;
+    }
+
     &.menu-expanded {
       @include media-breakpoint-down(xs) {
         .title-container {
@@ -117,16 +116,10 @@
         }
 
         .navbar-collapse {
-          display: block;
+          display: flex;
         }
       }
     }
-  }
-
-  li.dropdown-bold-header {
-    color: $gl-text-color-secondary;
-    font-size: 12px;
-    padding: 0 16px;
   }
 
   .navbar-collapse {
@@ -139,6 +132,8 @@
     }
 
     .nav {
+      flex-wrap: nowrap;
+
       > li:not(.d-none) a {
         @include media-breakpoint-down(xs) {
           margin-left: 0;
@@ -158,11 +153,12 @@
     }
 
     .navbar-toggler {
+      position: relative;
       right: -10px;
       border-radius: 0;
       min-width: 45px;
       padding: 0;
-      margin-right: -7px;
+      margin: $gl-padding-8 -7px $gl-padding-8 0;
       font-size: 14px;
       text-align: center;
       color: currentColor;
@@ -173,12 +169,6 @@
         color: currentColor;
         background-color: transparent;
       }
-
-      .more-icon,
-      .close-icon {
-        fill: $white-light;
-        margin: auto;
-      }
     }
 
     .navbar-nav {
@@ -186,6 +176,7 @@
         display: -webkit-flex;
         display: flex;
         padding-right: 10px;
+        flex-direction: row;
       }
 
       li {
@@ -205,7 +196,7 @@
 
       > a {
         will-change: color;
-        margin: 4px 2px;
+        margin: 4px 0;
         padding: 6px 8px;
         height: 32px;
 
@@ -265,14 +256,8 @@
 .navbar-sub-nav,
 .navbar-nav {
   > li {
-    > a:hover,
-    > a:focus {
-      text-decoration: none;
-      outline: 0;
-      color: $white-light;
-    }
-
-    > a {
+    > a,
+    > button {
       display: -webkit-flex;
       display: flex;
       align-items: center;
@@ -284,11 +269,27 @@
       border-radius: $border-radius-default;
       height: 32px;
       font-weight: $gl-font-weight-bold;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+        outline: 0;
+        color: $white-light;
+      }
+    }
+
+    > button {
+      background: transparent;
+      border: 0;
     }
 
     &.line-separator {
       margin: 8px;
     }
+  }
+
+  .dropdown-menu {
+    position: absolute;
   }
 }
 
@@ -297,19 +298,13 @@
   display: flex;
   margin: 0 0 0 6px;
 
-  .projects-dropdown-menu {
-    padding: 0;
-    overflow-y: initial;
-    max-height: initial;
-  }
-
   .dropdown-chevron {
     position: relative;
     top: -1px;
     font-size: 10px;
   }
 
-  .project-item-select-holder {
+  .frequent-items-item-select-holder {
     display: inline;
   }
 
@@ -370,6 +365,16 @@
       position: relative;
       top: 1px;
     }
+  }
+
+  .dropdown-menu li a .identicon {
+    width: 17px;
+    height: 17px;
+    font-size: $gl-font-size-xs;
+    vertical-align: middle;
+    text-indent: 0;
+    line-height: $gl-font-size-xs + 2px;
+    display: inline-block;
   }
 }
 
@@ -443,8 +448,11 @@
 }
 
 .btn-sign-in {
-  margin-top: 3px;
+  background-color: $indigo-100;
+  color: $indigo-900;
   font-weight: $gl-font-weight-bold;
+  line-height: 18px;
+  margin: 4px 0 4px 2px;
 
   &:hover {
     background-color: $white-light;
@@ -495,12 +503,7 @@
       margin-right: -10px;
 
       .nav > li:not(.d-none) {
-        display: table-cell !important;
-        width: 25%;
-
-        a {
-          margin-right: 8px;
-        }
+        flex: 1;
       }
     }
   }
@@ -515,19 +518,37 @@
 }
 
 .header-user {
-  .dropdown-menu {
-    width: auto;
-    min-width: 160px;
+  &.show .dropdown-menu {
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
 
     li.current-user {
-      padding: 5px 18px;
+      padding: $dropdown-item-padding-y $dropdown-item-padding-x;
 
       .user-name {
         display: block;
       }
+
+      .user-status {
+        margin-right: 0;
+        max-width: 240px;
+        font-size: $gl-font-size-small;
+
+        gl-emoji {
+          font-size: $gl-font-size-small;
+        }
+
+        .user-status-emoji {
+          gl-emoji {
+            font-size: $gl-font-size;
+          }
+        }
+      }
+    }
+
+    svg {
+      vertical-align: text-top;
     }
   }
 }
@@ -536,7 +557,7 @@
   float: left;
   margin-right: 5px;
   border-radius: 50%;
-  border: 1px solid $avatar-border;
+  border: 1px solid $gray-normal;
 }
 
 .with-performance-bar .navbar-gitlab {
@@ -548,13 +569,43 @@
   background: $white-light;
   border-bottom: 1px solid $white-normal;
 
-  .center-logo {
-    margin: 8px 0;
-    text-align: center;
-
+  .mx-auto {
     .tanuki-logo,
     img {
       height: 36px;
     }
   }
+}
+
+.set-user-status-modal {
+  .modal-body {
+    min-height: unset;
+  }
+
+  .input-lg {
+    max-width: unset;
+  }
+
+  .no-emoji-placeholder,
+  .clear-user-status {
+    svg {
+      fill: $gl-text-color-secondary;
+    }
+  }
+
+  .emoji-menu-toggle-button {
+    @include emoji-menu-toggle-button;
+  }
+
+  .input-group {
+    height: 34px;
+  }
+}
+
+.nav-links > li > a {
+  .badge.badge-pill {
+    @include media-breakpoint-down(xs) { display: none; }
+  }
+
+  @include media-breakpoint-down(xs) { margin-right: 3px; }
 }

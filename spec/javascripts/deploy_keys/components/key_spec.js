@@ -82,17 +82,19 @@ describe('Deploy keys key', () => {
 
     it('shows expandable button if more than two projects', () => {
       const labels = vm.$el.querySelectorAll('.deploy-project-label');
+
       expect(labels.length).toBe(2);
       expect(labels[1].textContent).toContain('others');
       expect(labels[1].getAttribute('data-original-title')).toContain('Expand');
     });
 
     it('expands all project labels after click', done => {
-      const length = vm.deployKey.deploy_keys_projects.length;
+      const { length } = vm.deployKey.deploy_keys_projects;
       vm.$el.querySelectorAll('.deploy-project-label')[1].click();
 
       Vue.nextTick(() => {
         const labels = vm.$el.querySelectorAll('.deploy-project-label');
+
         expect(labels.length).toBe(length);
         expect(labels[1].textContent).not.toContain(`+${length} others`);
         expect(labels[1].getAttribute('data-original-title')).not.toContain('Expand');
@@ -105,6 +107,7 @@ describe('Deploy keys key', () => {
 
       Vue.nextTick(() => {
         const labels = vm.$el.querySelectorAll('.deploy-project-label');
+
         expect(labels.length).toBe(2);
         expect(labels[1].textContent).toContain(
           vm.deployKey.deploy_keys_projects[1].project.full_name,

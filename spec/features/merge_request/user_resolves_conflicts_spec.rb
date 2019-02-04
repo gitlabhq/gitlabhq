@@ -138,7 +138,8 @@ describe 'Merge request > User resolves conflicts', :js do
         end
       end
 
-      it 'conflicts are resolved in Edit inline mode' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+      xit 'conflicts are resolved in Edit inline mode' do
         within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
           wait_for_requests
           find('.files-wrapper .diff-file pre')

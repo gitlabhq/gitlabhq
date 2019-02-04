@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SlackService < ChatNotificationService
   def title
     'Slack notifications'

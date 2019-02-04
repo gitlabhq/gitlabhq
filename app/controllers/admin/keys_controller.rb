@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::KeysController < Admin::ApplicationController
   before_action :user, only: [:show, :destroy]
 
@@ -24,9 +26,11 @@ class Admin::KeysController < Admin::ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def user
     @user ||= User.find_by!(username: params[:user_id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def key_params
     params.require(:user_id, :id)

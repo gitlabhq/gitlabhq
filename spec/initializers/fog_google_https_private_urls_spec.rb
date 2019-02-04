@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe 'Fog::Storage::GoogleXML::File' do
+describe 'Fog::Storage::GoogleXML::File', :fog_requests do
   let(:storage) do
     Fog.mock!
-    Fog::Storage.new({
-                       google_storage_access_key_id: "asdf",
-                       google_storage_secret_access_key: "asdf",
-                       provider: "Google"
-                     })
+    Fog::Storage.new(
+      google_storage_access_key_id: "asdf",
+      google_storage_secret_access_key: "asdf",
+      provider: "Google"
+    )
   end
 
   let(:file) do

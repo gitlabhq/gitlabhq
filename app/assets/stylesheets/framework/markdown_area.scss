@@ -61,10 +61,6 @@
       padding-top: 0;
       line-height: 19px;
 
-      &.btn.btn-xs {
-        padding: 2px 5px;
-      }
-
       &:focus {
         margin-top: -10px;
         padding-top: 10px;
@@ -76,6 +72,7 @@
 .md-header-tab {
   @include media-breakpoint-down(xs) {
     flex: 1;
+    flex-direction: column;
     width: 100%;
     border-bottom: 1px solid $border-color;
     text-align: center;
@@ -126,7 +123,7 @@
 .markdown-area {
   border-radius: 0;
   background: $white-light;
-  border: 1px solid $md-area-border;
+  border: 1px solid $gray-100;
   min-height: 140px;
   max-height: 500px;
   padding: 5px;
@@ -134,7 +131,7 @@
   width: 100%;
 }
 
-.md {
+.md:not(.use-csslab) {
   &.md-preview-holder {
     // Reset ul style types since we're nested inside a ul already
     @include bulleted-list;
@@ -161,7 +158,7 @@
     max-height: calc(100vh - 100px);
   }
 
-  table {
+  table:not(.js-syntax-highlight) {
     @include markdown-table;
   }
 }
@@ -176,14 +173,14 @@
   svg {
     width: 14px;
     height: 14px;
-    margin-top: 3px;
+    vertical-align: middle;
     fill: $gl-text-color-secondary;
   }
 
   &:hover,
   &:focus {
     svg {
-      fill: $gl-link-color;
+      fill: $blue-600;
     }
   }
 }
@@ -222,6 +219,13 @@
     margin-bottom: 0;
   }
 
+  .has-warning {
+    .name,
+    .description {
+      color: $orange-700;
+    }
+  }
+
   .cur {
     .avatar {
       @include disableAllAnimation;
@@ -249,6 +253,11 @@
         small {
           color: inherit;
         }
+
+        &.has-warning {
+          color: $orange-700;
+          background-color: $orange-100;
+        }
       }
 
       div.avatar {
@@ -268,6 +277,29 @@
   }
 }
 
+.md-suggestion-diff {
+  display: table !important;
+  border: 1px solid $border-color !important;
+  width: 100% !important;
+  font-family: $monospace-font !important;
+}
+
+.md-suggestion-header {
+  height: $suggestion-header-height;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: $gray-light;
+  border: 1px solid $border-color;
+  padding: $gl-padding;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+
+  svg {
+    vertical-align: middle;
+    margin-bottom: 3px;
+  }
+}
+
 @include media-breakpoint-down(xs) {
   .atwho-view-ul {
     width: 350px;
@@ -276,5 +308,9 @@
   .atwho-view ul li {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .referenced-users {
+    margin-right: 0;
   }
 }

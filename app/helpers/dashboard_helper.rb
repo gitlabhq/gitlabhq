@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module DashboardHelper
   def assigned_issues_dashboard_path
-    issues_dashboard_path(assignee_id: current_user.id)
+    issues_dashboard_path(assignee_username: current_user.username)
   end
 
   def assigned_mrs_dashboard_path
-    merge_requests_dashboard_path(assignee_id: current_user.id)
+    merge_requests_dashboard_path(assignee_username: current_user.username)
   end
 
   def dashboard_nav_links

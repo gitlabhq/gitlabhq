@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Namespace do
   include ProjectForksHelper
+  include GitHelpers
 
   let!(:namespace) { create(:namespace) }
   let(:gitlab_shell) { Gitlab::Shell.new }
@@ -80,6 +81,27 @@ describe Namespace do
 
   describe '#human_name' do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
+  end
+
+  describe '#first_project_with_container_registry_tags' do
+    let(:container_repository) { create(:container_repository) }
+    let!(:project) { create(:project, namespace: namespace, container_repositories: [container_repository]) }
+
+    before do
+      stub_container_registry_config(enabled: true)
+    end
+
+    it 'returns the project' do
+      stub_container_registry_tags(repository: :any, tags: ['tag'])
+
+      expect(namespace.first_project_with_container_registry_tags).to eq(project)
+    end
+
+    it 'returns no project' do
+      stub_container_registry_tags(repository: :any, tags: nil)
+
+      expect(namespace.first_project_with_container_registry_tags).to be_nil
+    end
   end
 
   describe '.search' do
@@ -184,7 +206,8 @@ describe Namespace do
         end
 
         it 'raises an error about not movable project' do
-          expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+          expect { namespace.move_dir }.to raise_error(Gitlab::UpdatePathError,
+                                                       /Namespace .* cannot be moved/)
         end
       end
     end
@@ -200,9 +223,37 @@ describe Namespace do
       end
 
       it "moves dir if path changed" do
-        namespace.update_attributes(path: namespace.full_path + '_new')
+        namespace.update(path: namespace.full_path + '_new')
 
         expect(gitlab_shell.exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
+      end
+
+      context 'when #write_projects_repository_config raises an error' do
+        context 'in test environment' do
+          it 'raises an exception' do
+            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
+
+            expect do
+              namespace.update(path: namespace.full_path + '_new')
+            end.to raise_error('foo')
+          end
+        end
+
+        context 'in production environment' do
+          it 'does not cancel later callbacks' do
+            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
+            expect(namespace).to receive(:move_dir).and_wrap_original do |m, *args|
+              move_dir_result = m.call(*args)
+
+              expect(move_dir_result).to be_truthy # Must be truthy, or else later callbacks would be canceled
+
+              move_dir_result
+            end
+            expect(Gitlab::Sentry).to receive(:should_raise_for_dev?).and_return(false) # like prod
+
+            namespace.update(path: namespace.full_path + '_new')
+          end
+        end
       end
 
       context 'with subgroups', :nested_groups do
@@ -279,34 +330,56 @@ describe Namespace do
 
       it "repository directory remains unchanged if path changed" do
         before_disk_path = project.disk_path
-        namespace.update_attributes(path: namespace.full_path + '_new')
+        namespace.update(path: namespace.full_path + '_new')
 
         expect(before_disk_path).to eq(project.disk_path)
         expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
       end
     end
 
-    it 'updates project full path in .git/config for each project inside namespace' do
-      parent = create(:group, name: 'mygroup', path: 'mygroup')
-      subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
-      project_in_parent_group = create(:project, :legacy_storage, :repository, namespace: parent, name: 'foo1')
-      hashed_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo2')
-      legacy_project_in_subgroup = create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3')
+    context 'for each project inside the namespace' do
+      let!(:parent) { create(:group, name: 'mygroup', path: 'mygroup') }
+      let!(:subgroup) { create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent) }
+      let!(:project_in_parent_group) { create(:project, :legacy_storage, :repository, namespace: parent, name: 'foo1') }
+      let!(:hashed_project_in_subgroup) { create(:project, :repository, namespace: subgroup, name: 'foo2') }
+      let!(:legacy_project_in_subgroup) { create(:project, :legacy_storage, :repository, namespace: subgroup, name: 'foo3') }
 
-      parent.update(path: 'mygroup_new')
+      it 'updates project full path in .git/config' do
+        parent.update(path: 'mygroup_new')
 
-      expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
-      expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
-      expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
-    end
+        expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
+        expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+        expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+      end
 
-    def project_rugged(project)
-      project.repository.rugged
+      it 'updates the project storage location' do
+        repository_project_in_parent_group = create(:project_repository, project: project_in_parent_group)
+        repository_hashed_project_in_subgroup = create(:project_repository, project: hashed_project_in_subgroup)
+        repository_legacy_project_in_subgroup = create(:project_repository, project: legacy_project_in_subgroup)
+
+        parent.update(path: 'mygroup_moved')
+
+        expect(repository_project_in_parent_group.reload.disk_path).to eq "mygroup_moved/#{project_in_parent_group.path}"
+        expect(repository_hashed_project_in_subgroup.reload.disk_path).to eq hashed_project_in_subgroup.disk_path
+        expect(repository_legacy_project_in_subgroup.reload.disk_path).to eq "mygroup_moved/mysubgroup/#{legacy_project_in_subgroup.path}"
+      end
+
+      def project_rugged(project)
+        # Routes are loaded when creating the projects, so we need to manually
+        # reload them for the below code to be aware of the above UPDATE.
+        project.route.reload
+
+        rugged_repo(project.repository)
+      end
     end
   end
 
   describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
+    let(:repository_storage_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.default.legacy_disk_path
+      end
+    end
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }
@@ -350,12 +423,6 @@ describe Namespace do
           child.destroy
         end
       end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
-      end
     end
 
     context 'hashed storage' do
@@ -369,12 +436,6 @@ describe Namespace do
         namespace.destroy
 
         expect(File.exist?(deleted_path_in_dir)).to be(false)
-      end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
       end
     end
   end
@@ -485,7 +546,7 @@ describe Namespace do
     it 'returns member users on every nest level without duplication' do
       group.add_developer(user_a)
       nested_group.add_developer(user_b)
-      deep_nested_group.add_developer(user_a)
+      deep_nested_group.add_maintainer(user_a)
 
       expect(group.users_with_descendants).to contain_exactly(user_a, user_b)
       expect(nested_group.users_with_descendants).to contain_exactly(user_a, user_b)
@@ -507,6 +568,18 @@ describe Namespace do
     let!(:project2) { create(:project_empty_repo, namespace: child) }
 
     it { expect(group.all_projects.to_a).to match_array([project2, project1]) }
+    it { expect(child.all_projects.to_a).to match_array([project2]) }
+  end
+
+  describe '#all_pipelines' do
+    let(:group) { create(:group) }
+    let(:child) { create(:group, parent: group) }
+    let!(:project1) { create(:project_empty_repo, namespace: group) }
+    let!(:project2) { create(:project_empty_repo, namespace: child) }
+    let!(:pipeline1) { create(:ci_empty_pipeline, project: project1) }
+    let!(:pipeline2) { create(:ci_empty_pipeline, project: project2) }
+
+    it { expect(group.all_pipelines.to_a).to match_array([pipeline1, pipeline2]) }
   end
 
   describe '#share_with_group_lock with subgroups', :nested_groups do
@@ -649,23 +722,17 @@ describe Namespace do
     end
   end
 
-  describe '#remove_exports' do
-    let(:legacy_project) { create(:project, :with_export, :legacy_storage, namespace: namespace) }
-    let(:hashed_project) { create(:project, :with_export, namespace: namespace) }
-    let(:export_path) { Dir.mktmpdir('namespace_remove_exports_spec') }
-    let(:legacy_export) { legacy_project.export_project_path }
-    let(:hashed_export) { hashed_project.export_project_path }
+  describe '#root_ancestor' do
+    it 'returns the top most ancestor', :nested_groups do
+      root_group = create(:group)
+      nested_group = create(:group, parent: root_group)
+      deep_nested_group = create(:group, parent: nested_group)
+      very_deep_nested_group = create(:group, parent: deep_nested_group)
 
-    it 'removes exports for legacy and hashed projects' do
-      allow(Gitlab::ImportExport).to receive(:storage_path) { export_path }
-
-      expect(File.exist?(legacy_export)).to be_truthy
-      expect(File.exist?(hashed_export)).to be_truthy
-
-      namespace.remove_exports!
-
-      expect(File.exist?(legacy_export)).to be_falsy
-      expect(File.exist?(hashed_export)).to be_falsy
+      expect(root_group.root_ancestor).to eq(root_group)
+      expect(nested_group.root_ancestor).to eq(root_group)
+      expect(deep_nested_group.root_ancestor).to eq(root_group)
+      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
     end
   end
 

@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class DropEventsForMigrationTable < ActiveRecord::Migration
+class DropEventsForMigrationTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -18,7 +18,6 @@ class DropEventsForMigrationTable < ActiveRecord::Migration
     end
   end
 
-  # rubocop: disable Migration/Datetime
   def down
     create_table :events_for_migration do |t|
       t.string :target_type, index: true

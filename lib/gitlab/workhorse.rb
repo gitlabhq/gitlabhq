@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'base64'
 require 'json'
 require 'securerandom'
@@ -11,6 +13,7 @@ module Gitlab
     INTERNAL_API_REQUEST_HEADER = 'Gitlab-Workhorse-Api-Request'.freeze
     NOTIFICATION_CHANNEL = 'workhorse:notifications'.freeze
     ALLOWED_GIT_HTTP_ACTIONS = %w[git_receive_pack git_upload_pack info_refs].freeze
+    DETECT_HEADER = 'Gitlab-Workhorse-Detect-Content-Type'.freeze
 
     # Supposedly the effective key size for HMAC-SHA256 is 256 bits, i.e. 32
     # bytes https://tools.ietf.org/html/rfc4868#section-2.6
@@ -22,36 +25,37 @@ module Gitlab
 
         project = repository.project
 
-        {
+        attrs = {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           Repository: repository.gitaly_repository.to_h,
-          RepoPath: 'ignored but not allowed to be empty in gitlab-workhorse',
+          GitConfigOptions: [],
           GitalyServer: {
             address: Gitlab::GitalyClient.address(project.repository_storage),
             token: Gitlab::GitalyClient.token(project.repository_storage)
           }
         }
+
+        # Custom option for git-receive-pack command
+        receive_max_input_size = Gitlab::CurrentSettings.receive_max_input_size.to_i
+        if receive_max_input_size > 0
+          attrs[:GitConfigOptions] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
+        end
+
+        attrs
       end
 
       def send_git_blob(repository, blob)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'GetBlobRequest' => {
-                       repository: repository.gitaly_repository.to_h,
-                       oid: blob.id,
-                       limit: -1
-                     }
-                   }
-                 else
-                   {
-                     'RepoPath' => repository.path_to_repo,
-                     'BlobId' => blob.id
-                   }
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'GetBlobRequest' => {
+            repository: repository.gitaly_repository.to_h,
+            oid: blob.id,
+            limit: -1
+          }
+        }
 
         [
           SEND_DATA_HEADER,
@@ -61,7 +65,7 @@ module Gitlab
 
       def send_git_archive(repository, ref:, format:, append_sha:)
         format ||= 'tar.gz'
-        format.downcase!
+        format = format.downcase
         params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha: append_sha)
         raise "Repository or ref not found" if params.empty?
 
@@ -91,16 +95,12 @@ module Gitlab
       end
 
       def send_git_diff(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'RawDiffRequest' => Gitaly::RawDiffRequest.new(
-                       gitaly_diff_or_patch_hash(repository, diff_refs)
-                     ).to_json
-                   }
-                 else
-                   workhorse_diff_or_patch_hash(repository, diff_refs)
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'RawDiffRequest' => Gitaly::RawDiffRequest.new(
+            gitaly_diff_or_patch_hash(repository, diff_refs)
+          ).to_json
+        }
 
         [
           SEND_DATA_HEADER,
@@ -109,16 +109,12 @@ module Gitlab
       end
 
       def send_git_patch(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_patch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'RawPatchRequest' => Gitaly::RawPatchRequest.new(
-                       gitaly_diff_or_patch_hash(repository, diff_refs)
-                     ).to_json
-                   }
-                 else
-                   workhorse_diff_or_patch_hash(repository, diff_refs)
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'RawPatchRequest' => Gitaly::RawPatchRequest.new(
+            gitaly_diff_or_patch_hash(repository, diff_refs)
+          ).to_json
+        }
 
         [
           SEND_DATA_HEADER,
@@ -228,14 +224,6 @@ module Gitlab
         {
           address: Gitlab::GitalyClient.address(repository.project.repository_storage),
           token: Gitlab::GitalyClient.token(repository.project.repository_storage)
-        }
-      end
-
-      def workhorse_diff_or_patch_hash(repository, diff_refs)
-        {
-          'RepoPath'  => repository.path_to_repo,
-          'ShaFrom'   => diff_refs.base_sha,
-          'ShaTo'     => diff_refs.head_sha
         }
       end
 

@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 class UserCallout < ActiveRecord::Base
   belongs_to :user
 
-  enum feature_name: {
-    gke_cluster_integration: 1,
-    gcp_signup_offer: 2
-  }
+  # We use `UserCalloutEnums.feature_names` here so that EE can more easily
+  # extend this `Hash` with new values.
+  enum feature_name: ::UserCalloutEnums.feature_names
 
   validates :user, presence: true
   validates :feature_name,

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   module Lists
     class GenerateService < Boards::BaseService

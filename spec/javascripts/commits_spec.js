@@ -56,7 +56,7 @@ describe('Commits List', () => {
     beforeEach(() => {
       commitsList.searchField.val('');
 
-      spyOn(history, 'replaceState').and.stub();
+      spyOn(window.history, 'replaceState').and.stub();
       mock = new MockAdapter(axios);
 
       mock.onGet('/h5bp/html5-boilerplate/commits/master').reply(200, {

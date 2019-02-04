@@ -1,5 +1,3 @@
-- show_create = local_assigns.fetch(:show_create, false)
-
 - dropdown_toggle_text = @ref || @project.default_branch
 = form_tag switch_project_refs_path(@project), method: :get, class: "project-refs-form" do
   = hidden_field_tag :destination, destination

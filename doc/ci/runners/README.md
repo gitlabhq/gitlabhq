@@ -29,7 +29,7 @@ are:
 - **Specific Runners** are useful for jobs that have special requirements or for
   projects with a specific demand. If a job has certain requirements, you can set
   up the specific Runner with this in mind, while not having to do this for all
-  Runners. For example, if you want to deploy a certain project, you can setup
+  Runners. For example, if you want to deploy a certain project, you can set up
   a specific Runner to have the right credentials for this. The [usage of tags](#using-tags)
   may be useful in this case. Specific Runners process jobs using a [FIFO] queue.
 - **Group Runners** are useful when you have multiple projects under one group
@@ -84,7 +84,7 @@ visit the project you want to make the Runner work for in GitLab:
 
 ## Registering a group Runner
 
-Creating a group Runner requires Master permissions for the group. To create a
+Creating a group Runner requires Maintainer permissions for the group. To create a
 group Runner visit the group you want to make the Runner work for in GitLab:
 
 1. Go to **Settings > CI/CD** to obtain the token
@@ -120,9 +120,9 @@ To lock/unlock a Runner:
 
 ## Assigning a Runner to another project
 
-If you are Master on a project where a specific Runner is assigned to, and the
+If you are Maintainer on a project where a specific Runner is assigned to, and the
 Runner is not [locked only to that project](#locking-a-specific-runner-from-being-enabled-for-other-projects),
-you can enable the Runner also on any other project where you have Master permissions.
+you can enable the Runner also on any other project where you have Maintainer permissions.
 
 To enable/disable a Runner in your project:
 
@@ -132,21 +132,28 @@ To enable/disable a Runner in your project:
 
 > **Note**:
 Consider that if you don't lock your specific Runner to a specific project, any
-user with Master role in you project can assign your Runner to another arbitrary
+user with Maintainer role in you project can assign your Runner to another arbitrary
 project without requiring your authorization, so use it with caution.
+
+CAUTION: **Caution:**
+Never add a private Runner that you're using in your private projects to a
+project that you share with other people.
+
+CAUTION: **Caution:**
+Never use a Runner from a project which has multiple maintainers in your
+private project.
 
 An admin can enable/disable a specific Runner for projects:
 
 1. Navigate to **Admin > Runners**
-2. Find the Runner you wish to enable/disable
-3. Click edit on the Runner
-4. Click **Enable** or **Disable** on the project
+1. Find the Runner you wish to enable/disable
+1. Click edit on the Runner
+1. Click **Enable** or **Disable** on the project
 
 ## Protected Runners
 
->
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
-in GitLab 10.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13194)
+> in GitLab 10.0.
 
 You can protect Runners from revealing sensitive information.
 Whenever a Runner is protected, the Runner picks only jobs created on
@@ -223,7 +230,7 @@ should keep in mind.
 
 ### Using tags
 
-You must setup a Runner to be able to run all the different types of jobs
+You must set up a Runner to be able to run all the different types of jobs
 that it may encounter on the projects it's shared over. This would be
 problematic for large amounts of projects, if it wasn't for tags.
 
@@ -299,7 +306,7 @@ and using more secure [Runner Executors](https://docs.gitlab.com/runner/executor
 ### Forks
 
 Whenever a project is forked, it copies the settings of the jobs that relate
-to it. This means that if you have shared Runners setup for a project and
+to it. This means that if you have shared Runners set up for a project and
 someone forks that project, the shared Runners will also serve jobs of this
 project.
 
@@ -313,7 +320,7 @@ We're always looking for contributions that can mitigate these
 
 If you think that registration token for a Project was revealed, you should
 reset them. It's recommended because such token can be used to register another
-Runner to thi Project. It may be next used to obtain the values of secret
+Runner to the Project. It may be next used to obtain the values of secret
 variables or clone the project code, that normally may be unavailable for the
 attacker.
 

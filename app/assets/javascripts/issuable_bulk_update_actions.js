@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, quotes, consistent-return, func-names, array-callback-return, space-before-function-paren, prefer-arrow-callback, max-len, no-unused-expressions, no-sequences, no-underscore-dangle, no-unused-vars, no-param-reassign */
+/* eslint-disable consistent-return, func-names, array-callback-return, prefer-arrow-callback, no-unused-vars */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -32,11 +32,11 @@ export default {
 
   onFormSubmitFailure() {
     this.form.find('[type="submit"]').enable();
-    return new Flash("Issue update failed");
+    return new Flash('Issue update failed');
   },
 
   getSelectedIssues() {
-    return this.issues.has('.selected_issue:checked');
+    return this.issues.has('.selected-issuable:checked');
   },
 
   getLabelsFromSelection() {
@@ -63,7 +63,7 @@ export default {
     const result = [];
     const labelsToKeep = this.$labelDropdown.data('indeterminate');
 
-    this.getLabelsFromSelection().forEach((id) => {
+    this.getLabelsFromSelection().forEach(id => {
       if (labelsToKeep.indexOf(id) === -1) {
         result.push(id);
       }
@@ -89,8 +89,8 @@ export default {
         issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),
         subscription_event: this.form.find('input[name="update[subscription_event]"]').val(),
         add_label_ids: [],
-        remove_label_ids: []
-      }
+        remove_label_ids: [],
+      },
     };
     if (this.willUpdateLabels) {
       formData.update.add_label_ids = this.$labelDropdown.data('marked');
@@ -110,7 +110,7 @@ export default {
   getOriginalCommonIds() {
     const labelIds = [];
 
-    this.getElement('.selected_issue:checked').each((i, el) => {
+    this.getElement('.selected-issuable:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
     });
     return _.intersection.apply(this, labelIds);
@@ -119,7 +119,7 @@ export default {
   // From issuable's initial bulk selection
   getOriginalMarkedIds() {
     const labelIds = [];
-    this.getElement('.selected_issue:checked').each((i, el) => {
+    this.getElement('.selected-issuable:checked').each((i, el) => {
       labelIds.push(this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels'));
     });
     return _.intersection.apply(this, labelIds);
@@ -132,9 +132,9 @@ export default {
     let issuableLabels = [];
 
     // Collect unique label IDs for all checked issues
-    this.getElement('.selected_issue:checked').each((i, el) => {
+    this.getElement('.selected-issuable:checked').each((i, el) => {
       issuableLabels = this.getElement(`#${this.prefixId}${el.dataset.id}`).data('labels');
-      issuableLabels.forEach((labelId) => {
+      issuableLabels.forEach(labelId => {
         // Store unique IDs
         if (uniqueIds.indexOf(labelId) === -1) {
           uniqueIds.push(labelId);

@@ -6,20 +6,17 @@ FactoryBot.define do
     active    true
     access_level :not_protected
 
-    is_shared true
     runner_type :instance_type
 
     trait :online do
-      contacted_at Time.now
+      contacted_at { Time.now }
     end
 
     trait :instance do
-      is_shared true
       runner_type :instance_type
     end
 
     trait :group do
-      is_shared false
       runner_type :group_type
 
       after(:build) do |runner, evaluator|
@@ -28,7 +25,6 @@ FactoryBot.define do
     end
 
     trait :project do
-      is_shared false
       runner_type :project_type
 
       after(:build) do |runner, evaluator|
@@ -50,6 +46,16 @@ FactoryBot.define do
 
     trait :ref_protected do
       access_level :ref_protected
+    end
+
+    trait :tagged_only do
+      run_untagged false
+
+      tag_list %w(tag1 tag2)
+    end
+
+    trait :locked do
+      locked true
     end
   end
 end

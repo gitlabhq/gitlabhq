@@ -16,12 +16,14 @@ describe('Pipelines Store', () => {
   describe('storePipelines', () => {
     it('should use the default parameter if none is provided', () => {
       store.storePipelines();
+
       expect(store.state.pipelines).toEqual([]);
     });
 
     it('should store the provided array', () => {
       const array = [{ id: 1, status: 'running' }, { id: 2, status: 'success' }];
       store.storePipelines(array);
+
       expect(store.state.pipelines).toEqual(array);
     });
   });
@@ -29,6 +31,7 @@ describe('Pipelines Store', () => {
   describe('storeCount', () => {
     it('should use the default parameter if none is provided', () => {
       store.storeCount();
+
       expect(store.state.count).toEqual({});
     });
 
@@ -43,6 +46,7 @@ describe('Pipelines Store', () => {
   describe('storePagination', () => {
     it('should use the default parameter if none is provided', () => {
       store.storePagination();
+
       expect(store.state.pageInfo).toEqual({});
     });
 
@@ -66,6 +70,7 @@ describe('Pipelines Store', () => {
       };
 
       store.storePagination(pagination);
+
       expect(store.state.pageInfo).toEqual(expectedResult);
     });
   });

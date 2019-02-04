@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::RunnerProjectsController < Projects::ApplicationController
   before_action :authorize_admin_build!
 
@@ -21,6 +23,6 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     runner_project = project.runner_projects.find(params[:id])
     runner_project.destroy
 
-    redirect_to project_runners_path(project), status: 302
+    redirect_to project_runners_path(project), status: :found
   end
 end

@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 class UnionFinder
   def find_union(segments, klass)
-    if segments.length > 1
-      union = Gitlab::SQL::Union.new(segments.map { |s| s.select(:id) })
+    unless klass < FromUnion
+      raise TypeError, "#{klass.inspect} must include the FromUnion module"
+    end
 
-      klass.where("#{klass.table_name}.id IN (#{union.to_sql})")
+    if segments.length > 1
+      klass.from_union(segments)
     else
       segments.first
     end

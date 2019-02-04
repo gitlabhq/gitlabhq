@@ -1,0 +1,35 @@
+{
+  "description": "Basic job information",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "started",
+    "build_path",
+    "playable",
+    "created_at",
+    "updated_at",
+    "status",
+    "archived"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "started": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "boolean" }
+      ]
+    },
+    "build_path": { "type": "string" },
+    "retry_path": { "type": "string" },
+    "playable": { "type": "boolean" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "status": { "$ref": "../status/ci_detailed_status.json" },
+    "callout_message": { "type": "string" },
+    "recoverable": { "type": "boolean" },
+    "archived": { "type": "boolean" }
+  },
+  "additionalProperties": true
+}

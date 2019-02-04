@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A discussion on merge request or commit diffs consisting of `DiffNote` notes.
 #
 # A discussion of this type can be resolvable.

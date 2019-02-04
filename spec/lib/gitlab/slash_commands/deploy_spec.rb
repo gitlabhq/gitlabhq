@@ -31,7 +31,7 @@ describe Gitlab::SlashCommands::Deploy do
       let!(:staging) { create(:environment, name: 'staging', project: project) }
       let!(:pipeline) { create(:ci_pipeline, project: project) }
       let!(:build) { create(:ci_build, pipeline: pipeline) }
-      let!(:deployment) { create(:deployment, environment: staging, deployable: build) }
+      let!(:deployment) { create(:deployment, :success, environment: staging, deployable: build) }
 
       context 'without actions' do
         it 'does not execute an action' do

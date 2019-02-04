@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SidekiqHelper
   SIDEKIQ_PS_REGEXP = %r{\A
     (?<pid>\d+)\s+

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SnippetsHelper
   def reliable_snippet_path(snippet, opts = nil)
     if snippet.project_id?
@@ -108,7 +110,7 @@ module SnippetsHelper
 
   def embedded_snippet_raw_button
     blob = @snippet.blob
-    return if blob.empty? || blob.raw_binary? || blob.stored_externally?
+    return if blob.empty? || blob.binary? || blob.stored_externally?
 
     snippet_raw_url = if @snippet.is_a?(PersonalSnippet)
                         raw_snippet_url(@snippet)
@@ -116,7 +118,7 @@ module SnippetsHelper
                         raw_project_snippet_url(@snippet.project, @snippet)
                       end
 
-    link_to external_snippet_icon('doc_code'), snippet_raw_url, class: 'btn', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw'
+    link_to external_snippet_icon('doc-code'), snippet_raw_url, class: 'btn', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw'
   end
 
   def embedded_snippet_download_button
@@ -127,13 +129,5 @@ module SnippetsHelper
                    end
 
     link_to external_snippet_icon('download'), download_url, class: 'btn', target: '_blank', title: 'Download', rel: 'noopener noreferrer'
-  end
-
-  def public_snippet?
-    if @snippet.project_id?
-      can?(nil, :read_project_snippet, @snippet)
-    else
-      can?(nil, :read_personal_snippet, @snippet)
-    end
   end
 end

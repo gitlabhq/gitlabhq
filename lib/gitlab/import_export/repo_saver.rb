@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class RepoSaver
@@ -25,10 +27,6 @@ module Gitlab
       rescue => e
         @shared.error(e)
         false
-      end
-
-      def path_to_repo
-        @project.repository.path_to_repo
       end
     end
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
   protected
 
@@ -11,6 +13,10 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
 
   def load_protected_ref
     @protected_ref = @project.protected_branches.find(params[:id])
+  end
+
+  def access_levels
+    [:merge_access_levels, :push_access_levels]
   end
 
   def protected_ref_params

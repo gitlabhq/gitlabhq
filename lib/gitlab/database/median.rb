@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # https://www.periscopedata.com/blog/medians-in-sql.html
 module Gitlab
   module Database
@@ -33,7 +35,7 @@ module Gitlab
       end
 
       def mysql_median_datetime_sql(arel_table, query_so_far, column_sym)
-        query = arel_table
+        query = arel_table.from
                 .from(arel_table.project(Arel.sql('*')).order(arel_table[column_sym]).as(arel_table.table_name))
                 .project(average([arel_table[column_sym]], 'median'))
                 .where(
@@ -143,7 +145,7 @@ module Gitlab
                 .order(arel_table[column_sym])
             ).as('row_id')
 
-          count = arel_table.from(arel_table.alias)
+          count = arel_table.from.from(arel_table.alias)
                     .project('COUNT(*)')
                     .where(arel_table[partition_column].eq(arel_table.alias[partition_column]))
                     .as('ct')

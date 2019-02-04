@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class LabelLink < ActiveRecord::Base
   include Importable
 
-  belongs_to :target, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :target, polymorphic: true, inverse_of: :label_links # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :label
 
   validates :target, presence: true, unless: :importing?

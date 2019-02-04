@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   module Gcp
     class FinalizeCreationService
@@ -7,16 +9,31 @@ module Clusters
         @provider = provider
 
         configure_provider
+        create_gitlab_service_account!
         configure_kubernetes
-
         cluster.save!
+
+        ClusterConfigureWorker.perform_async(cluster.id)
+
       rescue Google::Apis::ServerError, Google::Apis::ClientError, Google::Apis::AuthorizationError => e
-        provider.make_errored!("Failed to request to CloudPlatform; #{e.message}")
+        log_service_error(e.class.name, provider.id, e.message)
+        provider.make_errored!(s_('ClusterIntegration|Failed to request to Google Cloud Platform: %{message}') % { message: e.message })
+      rescue Kubeclient::HttpError => e
+        log_service_error(e.class.name, provider.id, e.message)
+        provider.make_errored!(s_('ClusterIntegration|Failed to run Kubeclient: %{message}') % { message: e.message })
       rescue ActiveRecord::RecordInvalid => e
-        provider.make_errored!("Failed to configure Google Kubernetes Engine Cluster: #{e.message}")
+        log_service_error(e.class.name, provider.id, e.message)
+        provider.make_errored!(s_('ClusterIntegration|Failed to configure Google Kubernetes Engine Cluster: %{message}') % { message: e.message })
       end
 
       private
+
+      def create_gitlab_service_account!
+        Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService.gitlab_creator(
+          kube_client,
+          rbac: create_rbac_cluster?
+        ).execute
+      end
 
       def configure_provider
         provider.endpoint = gke_cluster.endpoint
@@ -30,15 +47,55 @@ module Clusters
           ca_cert: Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           username: gke_cluster.master_auth.username,
           password: gke_cluster.master_auth.password,
+          authorization_type: authorization_type,
           token: request_kubernetes_token)
       end
 
       def request_kubernetes_token
-        Ci::FetchKubernetesTokenService.new(
+        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(
+          kube_client,
+          Clusters::Gcp::Kubernetes::GITLAB_ADMIN_TOKEN_NAME,
+          Clusters::Gcp::Kubernetes::GITLAB_SERVICE_ACCOUNT_NAMESPACE
+        ).execute
+      end
+
+      def authorization_type
+        create_rbac_cluster? ? 'rbac' : 'abac'
+      end
+
+      def create_rbac_cluster?
+        !provider.legacy_abac?
+      end
+
+      def kube_client
+        @kube_client ||= build_kube_client!(
           'https://' + gke_cluster.endpoint,
           Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           gke_cluster.master_auth.username,
-          gke_cluster.master_auth.password).execute
+          gke_cluster.master_auth.password
+        )
+      end
+
+      def build_kube_client!(api_url, ca_pem, username, password)
+        raise "Incomplete settings" unless api_url && username && password
+
+        Gitlab::Kubernetes::KubeClient.new(
+          api_url,
+          auth_options: { username: username, password: password },
+          ssl_options: kubeclient_ssl_options(ca_pem),
+          http_proxy_uri: ENV['http_proxy']
+        )
+      end
+
+      def kubeclient_ssl_options(ca_pem)
+        opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
+
+        if ca_pem.present?
+          opts[:cert_store] = OpenSSL::X509::Store.new
+          opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_pem))
+        end
+
+        opts
       end
 
       def gke_cluster
@@ -50,6 +107,19 @@ module Clusters
 
       def cluster
         @cluster ||= provider.cluster
+      end
+
+      def logger
+        @logger ||= Gitlab::Kubernetes::Logger.build
+      end
+
+      def log_service_error(exception, provider_id, message)
+        logger.error(
+          exception: exception.class.name,
+          service: self.class.name,
+          provider_id: provider_id,
+          message: message
+        )
       end
     end
   end

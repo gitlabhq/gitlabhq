@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe FileMover do
   let(:filename) { 'banana_sample.gif' }
-  let(:file) { fixture_file_upload(Rails.root.join('spec', 'fixtures', filename)) }
+  let(:file) { fixture_file_upload(File.join('spec', 'fixtures', filename)) }
   let(:temp_file_path) { File.join('uploads/-/system/temp', 'secret55', filename) }
 
   let(:temp_description) do

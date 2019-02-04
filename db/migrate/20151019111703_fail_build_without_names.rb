@@ -1,5 +1,4 @@
-# rubocop:disable all
-class FailBuildWithoutNames < ActiveRecord::Migration
+class FailBuildWithoutNames < ActiveRecord::Migration[4.2]
   def up
     execute("UPDATE ci_builds SET status='failed' WHERE name IS NULL AND status='pending'")
   end

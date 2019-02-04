@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::GoogleCodeController < Import::BaseController
   before_action :verify_google_code_import_enabled
   before_action :user_map, only: [:new_user_map, :create_user_map]
@@ -65,6 +67,7 @@ class Import::GoogleCodeController < Import::BaseController
     redirect_to status_import_google_code_path
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     unless client.valid?
       return redirect_to new_import_google_code_path
@@ -78,6 +81,7 @@ class Import::GoogleCodeController < Import::BaseController
 
     @repos.reject! { |repo| already_added_projects_names.include? repo.name }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
     render json: find_jobs('google_code')
@@ -92,7 +96,7 @@ class Import::GoogleCodeController < Import::BaseController
     if project.persisted?
       render json: ProjectSerializer.new.represent(project)
     else
-      render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: project_save_error(project) }, status: :unprocessable_entity
     end
   end
 

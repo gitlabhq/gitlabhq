@@ -5,8 +5,8 @@ describe IssuablesHelper do
   let(:label2) { build_stubbed(:label) }
 
   describe '#users_dropdown_label' do
-    let(:user)  { build_stubbed(:user) }
-    let(:user2)  { build_stubbed(:user) }
+    let(:user) { build_stubbed(:user) }
+    let(:user2) { build_stubbed(:user) }
 
     it 'returns unassigned' do
       expect(users_dropdown_label([])).to eq('Unassigned')
@@ -21,17 +21,41 @@ describe IssuablesHelper do
     end
   end
 
+  describe '#group_dropdown_label' do
+    let(:group) { create(:group) }
+    let(:default) { 'default label' }
+
+    it 'returns default group label when group_id is nil' do
+      expect(group_dropdown_label(nil, default)).to eq('default label')
+    end
+
+    it 'returns "any group" when group_id is 0' do
+      expect(group_dropdown_label('0', default)).to eq('Any group')
+    end
+
+    it 'returns group full path when a group was found for the provided id' do
+      expect(group_dropdown_label(group.id, default)).to eq(group.full_name)
+    end
+
+    it 'returns default label when a group was not found for the provided id' do
+      expect(group_dropdown_label(9999, default)).to eq('default label')
+    end
+  end
+
   describe '#issuable_labels_tooltip' do
+    let(:label_entity) { LabelEntity.represent(label).as_json }
+    let(:label2_entity) { LabelEntity.represent(label2).as_json }
+
     it 'returns label text with no labels' do
       expect(issuable_labels_tooltip([])).to eq("Labels")
     end
 
     it 'returns label text with labels within max limit' do
-      expect(issuable_labels_tooltip([label])).to eq(label.title)
+      expect(issuable_labels_tooltip([label_entity])).to eq(label[:title])
     end
 
     it 'returns label text with labels exceeding max limit' do
-      expect(issuable_labels_tooltip([label, label2], limit: 1)).to eq("#{label.title}, and 1 more")
+      expect(issuable_labels_tooltip([label_entity, label2_entity], limit: 1)).to eq("#{label[:title]}, and 1 more")
     end
   end
 
@@ -149,6 +173,7 @@ describe IssuablesHelper do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).and_return(true)
+      stub_commonmark_sourcepos_disabled
     end
 
     it 'returns the correct json for an issue' do
@@ -163,7 +188,9 @@ describe IssuablesHelper do
         issuableRef: "##{issue.iid}",
         markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
         markdownDocsPath: '/help/user/markdown',
+        markdownVersion: CacheMarkdownField::CACHE_COMMONMARK_VERSION,
         issuableTemplates: [],
+        lockVersion: issue.lock_version,
         projectPath: @project.path,
         projectNamespace: @project.namespace.path,
         initialTitleHtml: issue.title,
@@ -173,35 +200,6 @@ describe IssuablesHelper do
         initialTaskStatus: '0 of 0 tasks completed'
       }
       expect(helper.issuable_initial_data(issue)).to eq(expected_data)
-    end
-  end
-
-  describe '#selected_labels' do
-    context 'if label_name param is a string' do
-      it 'returns a new label with title' do
-        allow(helper).to receive(:params)
-          .and_return(ActionController::Parameters.new(label_name: 'test label'))
-
-        labels = helper.selected_labels
-
-        expect(labels).to be_an(Array)
-        expect(labels.size).to eq(1)
-        expect(labels.first.title).to eq('test label')
-      end
-    end
-
-    context 'if label_name param is an array' do
-      it 'returns a new label with title for each element' do
-        allow(helper).to receive(:params)
-          .and_return(ActionController::Parameters.new(label_name: ['test label 1', 'test label 2']))
-
-        labels = helper.selected_labels
-
-        expect(labels).to be_an(Array)
-        expect(labels.size).to eq(2)
-        expect(labels.first.title).to eq('test label 1')
-        expect(labels.second.title).to eq('test label 2')
-      end
     end
   end
 end

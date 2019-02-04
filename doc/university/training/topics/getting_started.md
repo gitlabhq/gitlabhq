@@ -8,35 +8,37 @@ comments: false
 
 ## Instantiating Repositories
 
-* Create a new repository by instantiating it through
-```bash
-git init
-```
-* Copy an existing project by cloning the repository through
-```bash
-git clone <url>
-```
+- Create a new repository by instantiating it through:
+
+    ```bash
+    git init
+    ```
+- Copy an existing project by cloning the repository through:
+
+    ```bash
+    git clone <url>
+    ```
 
 ----------
 
 ## Central Repos
 
-* To instantiate a central repository a `--bare` flag is required.
-* Bare repositories don't allow file editing or committing changes.
-* Create a bare repo with
-```bash
-git init --bare project-name.git
-```
+- To instantiate a central repository a `--bare` flag is required.
+- Bare repositories don't allow file editing or committing changes.
+- Create a bare repo with:
+
+    ```bash
+    git init --bare project-name.git
+    ```
 
 ----------
 
 ## Instantiate workflow with clone
 
-1. Create a project in your user namespace
-  - Choose to import from 'Any Repo by URL' and use
-    https://gitlab.com/gitlab-org/training-examples.git
-2. Create a '`Workspace`' directory in your home directory.
-3. Clone the '`training-examples`' project
+1. Create a project in your user namespace.
+  - Choose to import from 'Any Repo by URL' and use <https://gitlab.com/gitlab-org/training-examples.git>.
+1. Create a '`Workspace`' directory in your home directory.
+1. Clone the '`training-examples`' project.
 
 ----------
 
@@ -95,5 +97,5 @@ git log
 
 ## Note
 
-* git fetch vs pull
-* Pull is git fetch + git merge
+- git fetch vs pull
+- Pull is git fetch + git merge

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class Todos < Grape::API
     include PaginationParams
@@ -12,7 +14,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS  do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       ISSUABLE_TYPES.each do |type, finder|
         type_id_str = "#{type.singularize}_iid".to_sym
 

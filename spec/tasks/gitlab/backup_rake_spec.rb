@@ -96,6 +96,27 @@ describe 'gitlab:app namespace rake task' do
         end
       end
     end
+
+    context 'when the restore directory is not empty' do
+      before do
+        # We only need a backup of the repositories for this test
+        stub_env('SKIP', 'db,uploads,builds,artifacts,lfs,registry')
+      end
+
+      it 'removes stale data' do
+        expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+
+        excluded_project = create(:project, :repository, name: 'mepmep')
+
+        expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
+
+        raw_repo = excluded_project.repository.raw
+
+        # The restore will not find the repository in the backup, but will create
+        # an empty one in its place
+        expect(raw_repo.empty?).to be(true)
+      end
+    end
   end # backup_restore task
 
   describe 'backup' do
@@ -110,7 +131,9 @@ describe 'gitlab:app namespace rake task' do
 
       before do
         stub_env('SKIP', 'db')
-        path = File.join(project.repository.path_to_repo, 'custom_hooks')
+        path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          File.join(project.repository.path_to_repo, 'custom_hooks')
+        end
         FileUtils.mkdir_p(path)
         FileUtils.touch(File.join(path, "dummy.txt"))
       end
@@ -131,7 +154,10 @@ describe 'gitlab:app namespace rake task' do
           expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
           expect { run_rake_task('gitlab:backup:restore') }.to output.to_stdout
 
-          expect(Dir.entries(File.join(project.repository.path, 'custom_hooks'))).to include("dummy.txt")
+          repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.path
+          end
+          expect(Dir.entries(File.join(repo_path, 'custom_hooks'))).to include("dummy.txt")
         end
       end
 
@@ -234,7 +260,7 @@ describe 'gitlab:app namespace rake task' do
 
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
 
-        # Avoid asking gitaly about the root ref (which will fail beacuse of the
+        # Avoid asking gitaly about the root ref (which will fail because of the
         # mocked storages)
         allow_any_instance_of(Repository).to receive(:empty?).and_return(false)
       end
@@ -252,10 +278,12 @@ describe 'gitlab:app namespace rake task' do
         FileUtils.mkdir_p(b_storage_dir)
 
         # Even when overriding the storage, we have to move it there, so it exists
-        FileUtils.mv(
-          File.join(Settings.absolute(storages['default'].legacy_disk_path), project_b.repository.disk_path + '.git'),
-          Rails.root.join(storages['test_second_storage'].legacy_disk_path, project_b.repository.disk_path + '.git')
-        )
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          FileUtils.mv(
+            File.join(Settings.absolute(storages['default'].legacy_disk_path), project_b.repository.disk_path + '.git'),
+            Rails.root.join(storages['test_second_storage'].legacy_disk_path, project_b.repository.disk_path + '.git')
+          )
+        end
 
         expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
 

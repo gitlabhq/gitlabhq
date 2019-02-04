@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for CI services
 # List methods you need to implement to get your CI service
 # working with GitLab Merge Requests

@@ -3,67 +3,105 @@ require 'spec_helper'
 describe MergeRequestsFinder do
   include ProjectForksHelper
 
+  # We need to explicitly permit Gitaly N+1s because of the specs that use
+  # :request_store. Gitaly N+1 detection is only enabled when :request_store is,
+  # but we don't care about potential N+1s when we're just creating several
+  # projects in the setup phase.
+  def create_project_without_n_plus_1(*args)
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      create(:project, :public, *args)
+    end
+  end
+
   let(:user)  { create :user }
   let(:user2) { create :user }
 
   let(:group) { create(:group) }
   let(:subgroup) { create(:group, parent: group) }
-  let(:project1) { create(:project, :public, group: group) }
-  let(:project2) { fork_project(project1, user) }
-  let(:project3) do
-    p = fork_project(project1, user)
-    p.update!(archived: true)
-    p
+  let(:project1) { create_project_without_n_plus_1(group: group) }
+  let(:project2) do
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      fork_project(project1, user)
+    end
   end
-  let(:project4) { create(:project, :public, group: subgroup) }
+  let(:project3) do
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      p = fork_project(project1, user)
+      p.update!(archived: true)
+      p
+    end
+  end
+  let(:project4) { create_project_without_n_plus_1(group: subgroup) }
+  let(:project5) { create_project_without_n_plus_1(group: subgroup) }
+  let(:project6) { create_project_without_n_plus_1(group: subgroup) }
 
   let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
   let!(:merge_request2) { create(:merge_request, :conflict, author: user, source_project: project2, target_project: project1, state: 'closed') }
-  let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2) }
-  let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3) }
-  let!(:merge_request5) { create(:merge_request, :simple, author: user, source_project: project4, target_project: project4) }
+  let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, state: 'locked', title: 'thing WIP thing') }
+  let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3, title: 'WIP thing') }
+  let!(:merge_request5) { create(:merge_request, :simple, author: user, source_project: project4, target_project: project4, title: '[WIP]') }
+  let!(:merge_request6) { create(:merge_request, :simple, author: user, source_project: project5, target_project: project5, title: 'WIP: thing') }
+  let!(:merge_request7) { create(:merge_request, :simple, author: user, source_project: project6, target_project: project6, title: 'wip thing') }
+  let!(:merge_request8) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project1, title: '[wip] thing') }
+  let!(:merge_request9) { create(:merge_request, :simple, author: user, source_project: project1, target_project: project2, title: 'wip: thing') }
 
   before do
-    project1.add_master(user)
+    project1.add_maintainer(user)
     project2.add_developer(user)
     project3.add_developer(user)
     project2.add_developer(user2)
     project4.add_developer(user)
+    project5.add_developer(user)
+    project6.add_developer(user)
   end
 
   describe "#execute" do
     it 'filters by scope' do
       params = { scope: 'authored', state: 'opened' }
       merge_requests = described_class.new(user, params).execute
-      expect(merge_requests.size).to eq(4)
+      expect(merge_requests.size).to eq(7)
     end
 
     it 'filters by project' do
       params = { project_id: project1.id, scope: 'authored', state: 'opened' }
       merge_requests = described_class.new(user, params).execute
-      expect(merge_requests.size).to eq(1)
-    end
-
-    it 'filters by group' do
-      params = { group_id: group.id }
-
-      merge_requests = described_class.new(user, params).execute
-
       expect(merge_requests.size).to eq(2)
     end
 
-    it 'filters by group including subgroups', :nested_groups do
-      params = { group_id: group.id, include_subgroups: true }
+    context 'filtering by group' do
+      it 'includes all merge requests when user has access' do
+        params = { group_id: group.id }
 
-      merge_requests = described_class.new(user, params).execute
+        merge_requests = described_class.new(user, params).execute
 
-      expect(merge_requests.size).to eq(3)
+        expect(merge_requests.size).to eq(3)
+      end
+
+      it 'excludes merge requests from projects the user does not have access to' do
+        private_project = create_project_without_n_plus_1(:private, group: group)
+        private_mr = create(:merge_request, :simple, author: user, source_project: private_project, target_project: private_project)
+        params = { group_id: group.id }
+
+        private_project.add_guest(user)
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests.size).to eq(3)
+        expect(merge_requests).not_to include(private_mr)
+      end
+
+      it 'filters by group including subgroups', :nested_groups do
+        params = { group_id: group.id, include_subgroups: true }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests.size).to eq(6)
+      end
     end
 
     it 'filters by non_archived' do
       params = { non_archived: true }
       merge_requests = described_class.new(user, params).execute
-      expect(merge_requests.size).to eq(4)
+      expect(merge_requests.size).to eq(8)
     end
 
     it 'filters by iid' do
@@ -88,6 +126,44 @@ describe MergeRequestsFinder do
       merge_requests = described_class.new(user, params).execute
 
       expect(merge_requests).to contain_exactly(merge_request2)
+    end
+
+    it 'filters by state' do
+      params = { state: 'locked' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request3)
+    end
+
+    it 'filters by wip' do
+      params = { wip: 'yes' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request4, merge_request5, merge_request6, merge_request7, merge_request8, merge_request9)
+    end
+
+    it 'filters by not wip' do
+      params = { wip: 'no' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3)
+    end
+
+    it 'returns all items if no valid wip param exists' do
+      params = { wip: '' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5, merge_request6, merge_request7, merge_request8, merge_request9)
+    end
+
+    it 'adds wip to scalar params' do
+      scalar_params = described_class.scalar_params
+
+      expect(scalar_params).to include(:wip, :assignee_id)
     end
 
     context 'filtering by group milestone' do
@@ -134,7 +210,7 @@ describe MergeRequestsFinder do
       end
 
       before do
-        new_project.add_master(user)
+        new_project.add_maintainer(user)
       end
 
       it 'filters by created_after' do
@@ -199,7 +275,7 @@ describe MergeRequestsFinder do
     it 'returns the number of rows for the default state' do
       finder = described_class.new(user)
 
-      expect(finder.row_count).to eq(4)
+      expect(finder.row_count).to eq(7)
     end
 
     it 'returns the number of rows for a given state' do

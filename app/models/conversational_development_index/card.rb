@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ConversationalDevelopmentIndex
   class Card
     attr_accessor :metric, :title, :description, :feature, :blog, :docs

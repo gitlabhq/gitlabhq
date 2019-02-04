@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class PipelineSchedules < Grape::API
     include PaginationParams
@@ -7,7 +9,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get all pipeline schedules' do
         success Entities::PipelineSchedule
       end
@@ -16,6 +18,7 @@ module API
         optional :scope,    type: String, values: %w[active inactive],
                             desc: 'The scope of pipeline schedules'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/pipeline_schedules' do
         authorize! :read_pipeline_schedule, user_project
 
@@ -23,12 +26,13 @@ module API
           .preload([:owner, :last_pipeline])
         present paginate(schedules), with: Entities::PipelineSchedule
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a single pipeline schedule' do
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
         present pipeline_schedule, with: Entities::PipelineScheduleDetails
@@ -39,7 +43,7 @@ module API
       end
       params do
         requires :description, type: String, desc: 'The description of pipeline schedule'
-        requires :ref, type: String, desc: 'The branch/tag name will be triggered'
+        requires :ref, type: String, desc: 'The branch/tag name will be triggered', allow_blank: false
         requires :cron, type: String, desc: 'The cron'
         optional :cron_timezone, type: String, default: 'UTC', desc: 'The timezone'
         optional :active, type: Boolean, default: true, desc: 'The activation of pipeline schedule'
@@ -83,7 +87,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
         authorize! :update_pipeline_schedule, pipeline_schedule
@@ -99,7 +103,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :admin_pipeline_schedule, pipeline_schedule
@@ -161,6 +165,7 @@ module API
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def pipeline_schedule
         @pipeline_schedule ||=
           user_project
@@ -172,7 +177,9 @@ module API
               end
             end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def pipeline_schedule_variable
         @pipeline_schedule_variable ||=
           pipeline_schedule.variables.find_by(key: params[:key]).tap do |pipeline_schedule_variable|
@@ -181,6 +188,7 @@ module API
             end
           end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

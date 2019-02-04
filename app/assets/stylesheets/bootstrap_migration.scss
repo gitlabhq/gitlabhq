@@ -4,36 +4,86 @@
 
 $text-color: $gl-text-color;
 
-$brand-primary: $gl-primary;
-$brand-success: $gl-success;
-$brand-info: $gl-info;
-$brand-warning: $gl-warning;
-$brand-danger: $gl-danger;
+$brand-primary: $blue-500;
+$brand-success: $green-500;
+$brand-info: $blue-500;
+$brand-warning: $orange-500;
+$brand-danger: $red-500;
 
 $border-radius-base: 3px !default;
 
 $modal-body-bg: $white-light;
 $input-border: $border-color;
-$input-border-focus: $focus-border-color;
 
 $padding-base-vertical: $gl-vert-padding;
 $padding-base-horizontal: $gl-padding;
 
-html {
-  // Override default font size used in bs4
+body,
+.form-control,
+.search form {
+  // Override default font size used in non-csslab UI
   font-size: 14px;
+}
+
+legend {
+  border-bottom: 1px solid $border-color;
+  margin-bottom: 20px;
 }
 
 button,
 html [type="button"],
 [type="reset"],
-[type="submit"] {
+[type="submit"],
+[role="button"] {
   // Override bootstrap reboot
   -webkit-appearance: inherit;
+  cursor: pointer;
 }
 
-[role="button"] {
-  cursor: pointer;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $gl-text-color;
+  font-weight: 600;
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Our adjustments to hx & .hx above add unnecessary margins to modal-title
+   and page-title in modals, so we set them to 0 in order to have properly
+   formatted modal headers. */
+.modal-header {
+  .modal-title,
+  .page-title {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+h5,
+.h5 {
+  font-size: $gl-font-size;
 }
 
 input[type="file"] {
@@ -48,7 +98,11 @@ strong {
 }
 
 a {
-  color: $gl-link-color;
+  color: $blue-600;
+}
+
+hr {
+  overflow: hidden;
 }
 
 .form-group.row .col-form-label {
@@ -59,10 +113,25 @@ a {
   }
 }
 
+kbd {
+  display: inline-block;
+}
+
 code {
   padding: 2px 4px;
+  color: $red-600;
   background-color: $red-100;
-  border-radius: 3px;
+  border-radius: $border-radius-default;
+
+  .code > & {
+    background-color: inherit;
+    padding: unset;
+  }
+
+  .build-trace & {
+    background-color: inherit;
+    padding: inherit;
+  }
 }
 
 table {
@@ -70,12 +139,14 @@ table {
   border-spacing: 0;
 }
 
-.tooltip {
+.tooltip,
+.no-pointer-events {
   // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
   pointer-events: none;
 }
 
-.popover {
+.popover,
+.popover-header {
   font-size: 14px;
 }
 
@@ -83,7 +154,9 @@ table {
   @include media-breakpoint-up($breakpoint) {
     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
 
-    .d#{$infix}-table-header-group { display: table-header-group !important; }
+    .d#{$infix}-table-header-group {
+      display: table-header-group !important;
+    }
   }
 }
 
@@ -91,6 +164,16 @@ table {
   // Override Bootstrap's light secondary color
   // We have to use !important because bootstrap has that set as well
   color: $gl-text-color-secondary !important;
+}
+
+.bg-success,
+.bg-primary,
+.bg-info,
+.bg-danger,
+.bg-warning {
+  .card-header {
+    color: $white-light;
+  }
 }
 
 // Polyfill deprecated selectors
@@ -110,7 +193,16 @@ table {
   display: none;
 }
 
-.badge {
+h3.popover-header {
+  // Default bootstrap popovers use <h3>
+  // which we default to having a top margin
+  margin-top: 0;
+}
+
+// Add to .label so that old system notes that are saved to the db
+// will still receive the correct styling
+.badge,
+.label {
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
@@ -133,7 +225,7 @@ table {
 }
 
 .info-well {
-  background: $theme-gray-50;
+  background: $gray-50;
   color: $gl-text-color;
   border: 1px solid $border-color;
   border-radius: 4px;
@@ -145,14 +237,23 @@ table {
     &:not(:last-of-type) {
       border-bottom: 1px solid $well-inner-border;
     }
+
+    p,
+    ol,
+    ul,
+    .form-group {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .badge.badge-gray {
+    background-color: $well-expand-item;
   }
 }
 
 .card {
-  .card-title {
-    margin-bottom: 0;
-  }
-
   &.card-without-border {
     @extend .border-0;
   }
@@ -167,8 +268,13 @@ table {
 }
 
 .nav-tabs {
+  // Override bootstrap's default border
+  border-bottom: 0;
+
   .nav-link {
-    border: 0;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
   }
 
   .nav-item {
@@ -178,4 +284,80 @@ table {
 
 pre code {
   white-space: pre-wrap;
+}
+
+.alert,
+.flash-notice {
+  border-radius: 0;
+}
+
+.alert-success {
+  background-color: $green-500;
+  border-color: $green-500;
+}
+
+.alert-info {
+  background-color: $blue-500;
+  border-color: $blue-500;
+}
+
+.alert-warning {
+  background-color: $orange-500;
+  border-color: $orange-500;
+}
+
+.alert-danger {
+  background-color: $red-500;
+  border-color: $red-500;
+}
+
+.alert-success,
+.alert-info,
+.alert-warning,
+.alert-danger,
+.flash-notice {
+  color: $white-light;
+
+  h4,
+  a:not(.btn),
+  .alert-link {
+    color: $white-light;
+  }
+}
+
+input[type=color].form-control {
+  height: $input-height;
+}
+
+.toggle-sidebar-button {
+  .collapse-text,
+  .icon-angle-double-left,
+  .icon-angle-double-right {
+    color: $gl-text-color-secondary;
+  }
+}
+
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
+  }
+}
+
+// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
+.input-group-btn:first-child {
+  @extend .input-group-prepend;
+}
+
+// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
+.input-group-btn:last-child {
+  @extend .input-group-append;
+}
+
+/*
+ Bootstrap 4.1.2 introduced a new default vertical alignment which breaks our icons,
+ so we need to reset the vertical alignment to the default value. See:
+ - https://gitlab.com/gitlab-org/gitlab-ce/issues/51362
+ */
+svg {
+  vertical-align: baseline;
 }

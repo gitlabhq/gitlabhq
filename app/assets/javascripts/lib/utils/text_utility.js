@@ -8,7 +8,7 @@
  * @returns {String}
  */
 export const addDelimiter = text =>
-  (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text);
+  text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text;
 
 /**
  * Returns '99+' for numbers bigger than 99.
@@ -49,6 +49,13 @@ export const dasherize = str => str.replace(/[_\s]+/g, '-');
 export const slugify = str => str.trim().toLowerCase();
 
 /**
+ * Replaces whitespaces with hyphens and converts to lower case
+ * @param {String} str
+ * @returns {String}
+ */
+export const slugifyWithHyphens = str => str.toLowerCase().replace(/\s+/g, '-');
+
+/**
  * Truncates given text
  *
  * @param {String} string
@@ -58,6 +65,37 @@ export const slugify = str => str.trim().toLowerCase();
 export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3)}...`;
 
 /**
+ * Truncate SHA to 8 characters
+ *
+ * @param {String} sha
+ * @returns {String}
+ */
+export const truncateSha = sha => sha.substr(0, 8);
+
+const ELLIPSIS_CHAR = '…';
+export const truncatePathMiddleToLength = (text, maxWidth) => {
+  let returnText = text;
+  let ellipsisCount = 0;
+
+  while (returnText.length >= maxWidth) {
+    const textSplit = returnText.split('/').filter(s => s !== ELLIPSIS_CHAR);
+    const middleIndex = Math.floor(textSplit.length / 2);
+
+    returnText = textSplit
+      .slice(0, middleIndex)
+      .concat(
+        new Array(ellipsisCount + 1).fill().map(() => ELLIPSIS_CHAR),
+        textSplit.slice(middleIndex + 1),
+      )
+      .join('/');
+
+    ellipsisCount += 1;
+  }
+
+  return returnText;
+};
+
+/**
  * Capitalizes first character
  *
  * @param {String} text
@@ -65,6 +103,18 @@ export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3
  */
 export function capitalizeFirstCharacter(text) {
   return `${text[0].toUpperCase()}${text.slice(1)}`;
+}
+
+/**
+ * Returns the first character capitalized
+ *
+ * If falsey, returns empty string.
+ *
+ * @param {String} text
+ * @return {String}
+ */
+export function getFirstCharacterCapitalized(text) {
+  return text ? text.charAt(0).toUpperCase() : '';
 }
 
 /**
@@ -98,3 +148,15 @@ export const convertToSentenceCase = string => {
 
   return splitWord.join(' ');
 };
+
+/**
+ * Splits camelCase or PascalCase words
+ * e.g. HelloWorld => Hello World
+ *
+ * @param {*} string
+ */
+export const splitCamelCase = string =>
+  string
+    .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+    .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+    .trim();

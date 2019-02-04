@@ -24,11 +24,11 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 
 1. Register your application in the OAuth2 provider you wish to authenticate with.
 
-   The redirect URI you provide when registering the application should be:
+    The redirect URI you provide when registering the application should be:
 
-   ```
-   http://your-gitlab.host.com/users/auth/oauth2_generic/callback
-   ```
+    ```
+    http://your-gitlab.host.com/users/auth/oauth2_generic/callback
+    ```
 
 1. You should now be able to get a Client ID and Client Secret.
    Where this shows up will differ for each provider.
@@ -36,18 +36,18 @@ This strategy is designed to allow configuration of the simple OmniAuth SSO proc
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+    For Omnibus package:
 
-   ```sh
-   sudo editor /etc/gitlab/gitlab.rb
-   ```
+    ```sh
+    sudo editor /etc/gitlab/gitlab.rb
+    ```
 
-   For installations from source:
+    For installations from source:
 
-   ```sh
-   cd /home/git/gitlab
-   sudo -u git -H editor config/gitlab.yml
-   ```
+    ```sh
+    cd /home/git/gitlab
+    sudo -u git -H editor config/gitlab.yml
+    ```
 
 1. See [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration) for initial settings
 

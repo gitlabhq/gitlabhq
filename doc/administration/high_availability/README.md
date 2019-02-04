@@ -37,7 +37,7 @@ Follow the steps below to configure an active/active setup:
 
 1. [Configure the database](database.md)
 1. [Configure Redis](redis.md)
-  1. [Configure Redis for GitLab source installations](redis_source.md)
+   1. [Configure Redis for GitLab source installations](redis_source.md)
 1. [Configure NFS](nfs.md)
 1. [Configure the GitLab application servers](gitlab.md)
 1. [Configure the load balancers](load_balancer.md)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserProjectAccessChangedService
   def initialize(user_ids)
     @user_ids = Array.wrap(user_ids)

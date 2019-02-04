@@ -4,7 +4,7 @@ describe Import::GoogleCodeController do
   include ImportSpecHelper
 
   let(:user) { create(:user) }
-  let(:dump_file) { fixture_file_upload(Rails.root + 'spec/fixtures/GoogleCodeProjectHosting.json', 'application/json') }
+  let(:dump_file) { fixture_file_upload('spec/fixtures/GoogleCodeProjectHosting.json', 'application/json') }
 
   before do
     sign_in(user)
@@ -12,7 +12,7 @@ describe Import::GoogleCodeController do
 
   describe "POST callback" do
     it "stores Google Takeout dump list in session" do
-      post :callback, dump_file: dump_file
+      post :callback, params: { dump_file: dump_file }
 
       expect(session[:google_code_dump]).to be_a(Hash)
       expect(session[:google_code_dump]["kind"]).to eq("projecthosting#user")

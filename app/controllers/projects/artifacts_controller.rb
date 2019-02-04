@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
@@ -7,11 +9,13 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :authorize_read_build!
   before_action :authorize_update_build!, only: [:keep]
   before_action :extract_ref_name_and_path
-  before_action :validate_artifacts!
+  before_action :validate_artifacts!, except: [:download]
   before_action :entry, only: [:file]
 
   def download
-    send_upload(artifacts_file, attachment: artifacts_file.filename)
+    return render_404 unless artifacts_file
+
+    send_upload(artifacts_file, attachment: artifacts_file.filename, proxy: params[:proxy])
   end
 
   def browse
@@ -82,18 +86,17 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def build_from_id
-    project.builds.find_by(id: params[:job_id]) if params[:job_id]
+    project.builds.find_by_id(params[:job_id]) if params[:job_id]
   end
 
   def build_from_ref
     return unless @ref_name
 
-    builds = project.latest_successful_builds_for(@ref_name)
-    builds.find_by(name: params[:job])
+    project.latest_successful_build_for(params[:job], @ref_name)
   end
 
   def artifacts_file
-    @artifacts_file ||= build.artifacts_file
+    @artifacts_file ||= build&.artifacts_file_for_type(params[:file_type] || :archive)
   end
 
   def entry

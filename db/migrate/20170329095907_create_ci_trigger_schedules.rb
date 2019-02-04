@@ -1,5 +1,4 @@
-# rubocop:disable Migration/Datetime
-class CreateCiTriggerSchedules < ActiveRecord::Migration
+class CreateCiTriggerSchedules < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

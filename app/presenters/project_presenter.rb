@@ -1,57 +1,64 @@
+# frozen_string_literal: true
+
 class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include StorageHelper
   include TreeHelper
+  include IconsHelper
   include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
 
   presents :project
 
+  AnchorData = Struct.new(:is_link, :label, :link, :class_modifier, :icon)
+  MAX_TOPICS_TO_SHOW = 3
+
+  def statistic_icon(icon_name = 'plus-square-o')
+    sprite_icon(icon_name, size: 16, css_class: 'icon append-right-4')
+  end
+
   def statistics_anchors(show_auto_devops_callout:)
     [
-      files_anchor_data,
+      license_anchor_data,
       commits_anchor_data,
       branches_anchor_data,
       tags_anchor_data,
-      readme_anchor_data,
-      changelog_anchor_data,
-      license_anchor_data,
-      contribution_guide_anchor_data,
-      gitlab_ci_anchor_data,
-      autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
-      kubernetes_cluster_anchor_data
-    ].compact.select { |item| item.enabled }
+      files_anchor_data
+    ].compact.select(&:is_link)
   end
 
   def statistics_buttons(show_auto_devops_callout:)
     [
+      readme_anchor_data,
       changelog_anchor_data,
-      license_anchor_data,
       contribution_guide_anchor_data,
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
-      gitlab_ci_anchor_data,
-      koding_anchor_data
-    ].compact.reject { |item| item.enabled }
+      gitlab_ci_anchor_data
+    ].compact.reject(&:is_link)
   end
 
   def empty_repo_statistics_anchors
     [
-      autodevops_anchor_data,
-      kubernetes_cluster_anchor_data
-    ].compact.select { |item| item.enabled }
+      license_anchor_data,
+      commits_anchor_data,
+      branches_anchor_data,
+      tags_anchor_data,
+      files_anchor_data
+    ].compact.select { |item| item.is_link }
   end
 
   def empty_repo_statistics_buttons
     [
       new_file_anchor_data,
       readme_anchor_data,
-      license_anchor_data,
+      changelog_anchor_data,
+      contribution_guide_anchor_data,
       autodevops_anchor_data,
       kubernetes_cluster_anchor_data
-    ].compact.reject { |item| item.enabled }
+    ].compact.reject { |item| item.is_link }
   end
 
   def default_view
@@ -107,7 +114,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def add_contribution_guide_path
-    add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add contribution guide')
+    add_special_file_path(file_name: 'CONTRIBUTING.md', commit_message: 'Add CONTRIBUTING')
   end
 
   def add_ci_yml_path
@@ -116,43 +123,6 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def add_readme_path
     add_special_file_path(file_name: 'README.md')
-  end
-
-  def add_koding_stack_path
-    project_new_blob_path(
-      project,
-      default_branch || 'master',
-      file_name:      '.koding.yml',
-      commit_message: "Add Koding stack script",
-      content: <<-CONTENT.strip_heredoc
-        provider:
-          aws:
-            access_key: '${var.aws_access_key}'
-            secret_key: '${var.aws_secret_key}'
-        resource:
-          aws_instance:
-            #{project.path}-vm:
-              instance_type: t2.nano
-              user_data: |-
-
-                # Created by GitLab UI for :>
-
-                echo _KD_NOTIFY_@Installing Base packages...@
-
-                apt-get update -y
-                apt-get install git -y
-
-                echo _KD_NOTIFY_@Cloning #{project.name}...@
-
-                export KODING_USER=${var.koding_user_username}
-                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
-                export BRANCH=${var.koding_queryString_branch}
-
-                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
-
-                echo _KD_NOTIFY_@#{project.name} cloned.@
-      CONTENT
-    )
   end
 
   def license_short_name
@@ -179,130 +149,181 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def files_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: _('Files (%{human_size})') % { human_size: storage_counter(statistics.total_repository_size) },
-                   link: project_tree_path(project))
+    AnchorData.new(true,
+                   statistic_icon('doc-code') +
+                   _('%{strong_start}%{human_size}%{strong_end} Files').html_safe % {
+                     human_size: storage_counter(statistics.total_repository_size),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                   empty_repo? ? nil : project_tree_path(project))
   end
 
   def commits_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: n_('Commit (%{commit_count})', 'Commits (%{commit_count})', statistics.commit_count) % { commit_count: number_with_delimiter(statistics.commit_count) },
-                   link: project_commits_path(project, repository.root_ref))
+    AnchorData.new(true,
+                   statistic_icon('commit') +
+                   n_('%{strong_start}%{commit_count}%{strong_end} Commit', '%{strong_start}%{commit_count}%{strong_end} Commits', statistics.commit_count).html_safe % {
+                     commit_count: number_with_delimiter(statistics.commit_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                   empty_repo? ? nil : project_commits_path(project, repository.root_ref))
   end
 
   def branches_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: n_('Branch (%{branch_count})', 'Branches (%{branch_count})', repository.branch_count) % { branch_count: number_with_delimiter(repository.branch_count) },
-                   link: project_branches_path(project))
+    AnchorData.new(true,
+                   statistic_icon('branch') +
+                   n_('%{strong_start}%{branch_count}%{strong_end} Branch', '%{strong_start}%{branch_count}%{strong_end} Branches', repository.branch_count).html_safe % {
+                     branch_count: number_with_delimiter(repository.branch_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                   empty_repo? ? nil : project_branches_path(project))
   end
 
   def tags_anchor_data
-    OpenStruct.new(enabled: true,
-                   label: n_('Tag (%{tag_count})', 'Tags (%{tag_count})', repository.tag_count) % { tag_count: number_with_delimiter(repository.tag_count) },
-                   link: project_tags_path(project))
+    AnchorData.new(true,
+                   statistic_icon('label') +
+                   n_('%{strong_start}%{tag_count}%{strong_end} Tag', '%{strong_start}%{tag_count}%{strong_end} Tags', repository.tag_count).html_safe % {
+                     tag_count: number_with_delimiter(repository.tag_count),
+                     strong_start: '<strong class="project-stat-value">'.html_safe,
+                     strong_end: '</strong>'.html_safe
+                   },
+                   empty_repo? ? nil : project_tags_path(project))
   end
 
   def new_file_anchor_data
     if current_user && can_current_user_push_to_default_branch?
-      OpenStruct.new(enabled: false,
-                     label: _('New file'),
-                     link: project_new_blob_path(project, default_branch || 'master'),
-                     class_modifier: 'new')
+      AnchorData.new(false,
+                     statistic_icon + _('New file'),
+                     project_new_blob_path(project, default_branch || 'master'),
+                     'success')
     end
   end
 
   def readme_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && repository.readme.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Add Readme'),
-                     link: add_readme_path)
-    elsif repository.readme.present?
-      OpenStruct.new(enabled: true,
-                     label: _('Readme'),
-                     link: default_view != 'readme' ? readme_path : '#readme')
+    if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
+      AnchorData.new(false,
+                     statistic_icon + _('Add README'),
+                     add_readme_path)
+    elsif repository.readme
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('README'),
+                     default_view != 'readme' ? readme_path : '#readme',
+                    'default',
+                    'doc-text')
     end
   end
 
   def changelog_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.changelog.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Add Changelog'),
-                     link: add_changelog_path)
+      AnchorData.new(false,
+                     statistic_icon + _('Add CHANGELOG'),
+                     add_changelog_path)
     elsif repository.changelog.present?
-      OpenStruct.new(enabled: true,
-                     label: _('Changelog'),
-                     link: changelog_path)
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('CHANGELOG'),
+                     changelog_path,
+                    'default')
     end
   end
 
   def license_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && repository.license_blob.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Add License'),
-                     link: add_license_path)
-    elsif repository.license_blob.present?
-      OpenStruct.new(enabled: true,
-                     label: license_short_name,
-                     link: license_path)
+    icon = statistic_icon('scale')
+
+    if repository.license_blob.present?
+      AnchorData.new(true,
+                     icon + content_tag(:strong, license_short_name, class: 'project-stat-value'),
+                     license_path)
+    else
+      if current_user && can_current_user_push_to_default_branch?
+        AnchorData.new(true,
+                       content_tag(:span, icon + _('Add license'), class: 'add-license-link d-flex'),
+                       add_license_path)
+      else
+        AnchorData.new(true,
+                       icon + content_tag(:strong, _('No license. All rights reserved'), class: 'project-stat-value'),
+                       nil)
+      end
     end
   end
 
   def contribution_guide_anchor_data
     if current_user && can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Add Contribution guide'),
-                     link: add_contribution_guide_path)
+      AnchorData.new(false,
+                     statistic_icon + _('Add CONTRIBUTING'),
+                     add_contribution_guide_path)
     elsif repository.contribution_guide.present?
-      OpenStruct.new(enabled: true,
-                     label: _('Contribution guide'),
-                     link: contribution_guide_path)
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('CONTRIBUTING'),
+                     contribution_guide_path)
     end
   end
 
   def autodevops_anchor_data(show_auto_devops_callout: false)
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
-      OpenStruct.new(enabled: auto_devops_enabled?,
-                     label: auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
-                     link: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
+      if auto_devops_enabled?
+        AnchorData.new(false,
+                       statistic_icon('doc-text') + _('Auto DevOps enabled'),
+                       project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
+                       'default')
+      else
+        AnchorData.new(false,
+                       statistic_icon + _('Enable Auto DevOps'),
+                       project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
+      end
     elsif auto_devops_enabled?
-      OpenStruct.new(enabled: true,
-                     label: _('Auto DevOps enabled'),
-                     link: nil)
+      AnchorData.new(false,
+                     _('Auto DevOps enabled'),
+                     nil)
     end
   end
 
   def kubernetes_cluster_anchor_data
     if current_user && can?(current_user, :create_cluster, project)
-      cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
       if clusters.empty?
-        cluster_link = new_project_cluster_path(project)
-      end
+        AnchorData.new(false,
+                       statistic_icon + _('Add Kubernetes cluster'),
+                       new_project_cluster_path(project))
+      else
+        cluster_link = clusters.count == 1 ? project_cluster_path(project, clusters.first) : project_clusters_path(project)
 
-      OpenStruct.new(enabled: !clusters.empty?,
-                     label: clusters.empty? ? _('Add Kubernetes cluster') : _('Kubernetes configured'),
-                     link: cluster_link)
+        AnchorData.new(false,
+                       _('Kubernetes configured'),
+                       cluster_link,
+                      'default')
+      end
     end
   end
 
   def gitlab_ci_anchor_data
     if current_user && can_current_user_push_code? && repository.gitlab_ci_yml.blank? && !auto_devops_enabled?
-      OpenStruct.new(enabled: false,
-                     label: _('Set up CI/CD'),
-                     link: add_ci_yml_path)
+      AnchorData.new(false,
+                     statistic_icon + _('Set up CI/CD'),
+                     add_ci_yml_path)
     elsif repository.gitlab_ci_yml.present?
-      OpenStruct.new(enabled: true,
-                     label: _('CI/CD configuration'),
-                     link: ci_configuration_path)
+      AnchorData.new(false,
+                     statistic_icon('doc-text') + _('CI/CD configuration'),
+                     ci_configuration_path,
+                    'default')
     end
   end
 
-  def koding_anchor_data
-    if current_user && can_current_user_push_code? && koding_enabled? && repository.koding_yml.blank?
-      OpenStruct.new(enabled: false,
-                     label: _('Set up Koding'),
-                     link: add_koding_stack_path)
+  def topics_to_show
+    project.tag_list.take(MAX_TOPICS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
+  end
+
+  def count_of_extra_topics_not_shown
+    if project.tag_list.count > MAX_TOPICS_TO_SHOW
+      project.tag_list.count - MAX_TOPICS_TO_SHOW
+    else
+      0
     end
+  end
+
+  def has_extra_topics?
+    count_of_extra_topics_not_shown > 0
   end
 
   private
@@ -333,9 +354,5 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       commit_message: commit_message,
       branch_name:    branch_name
     )
-  end
-
-  def koding_enabled?
-    Gitlab::CurrentSettings.koding_enabled?
   end
 end

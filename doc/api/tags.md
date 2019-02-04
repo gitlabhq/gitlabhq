@@ -17,6 +17,9 @@ Parameters:
 | `id` | integer/string| yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user|
 | `order_by` | string | no | Return tags ordered by `name` or `updated` fields. Default is `updated` |
 | `sort` | string | no | Return tags sorted in `asc` or `desc` order. Default is `desc` |
+| `search` | string | no | Return list of tags matching the search criteria |
+
+> Support for `search` was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/54401) in GitLab 11.8.
 
 ```json
 [
@@ -65,7 +68,7 @@ Parameters:
 | `tag_name` | string | yes | The name of the tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/repository/tags/v1.0.0
 ```
 
 Example Response:
@@ -134,7 +137,7 @@ Parameters:
     "description": "Amazing release. Wow"
   },
   "name": "v1.0.0",
-  "target: "2695effb5807a22ff3d138d593fd856244e155e7",
+  "target": "2695effb5807a22ff3d138d593fd856244e155e7",
   "message": null
 }
 ```
@@ -174,7 +177,18 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
+
+Request body:
+
 - `description` (required) - Release notes with markdown support
+
+```json
+{
+  "description": "Amazing release. Wow"
+}
+```
+
+Response:
 
 ```json
 {
@@ -195,7 +209,18 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
+
+Request body:
+
 - `description` (required) - Release notes with markdown support
+
+```json
+{
+  "description": "Amazing release. Wow"
+}
+```
+
+Response:
 
 ```json
 {

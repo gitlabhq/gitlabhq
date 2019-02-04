@@ -164,69 +164,53 @@ export default {
 </script>
 
 <template>
-  <div
-    class="ide-file-finder-overlay"
-    @mousedown.self="toggleFileFinder(false)"
-  >
-    <div
-      class="dropdown-menu diff-file-changes ide-file-finder show"
-    >
+  <div class="ide-file-finder-overlay" @mousedown.self="toggleFileFinder(false)">
+    <div class="dropdown-menu diff-file-changes ide-file-finder show">
       <div class="dropdown-input">
         <input
+          ref="searchInput"
+          v-model="searchText"
+          :placeholder="__('Search files')"
           type="search"
           class="dropdown-input-field"
-          :placeholder="__('Search files')"
           autocomplete="off"
-          v-model="searchText"
-          ref="searchInput"
           @keydown="onKeydown($event)"
           @keyup="onKeyup($event)"
         />
         <i
+          :class="{
+            hidden: showClearInputButton,
+          }"
           aria-hidden="true"
           class="fa fa-search dropdown-input-search"
-          :class="{
-            hidden: showClearInputButton
-          }"
         ></i>
         <i
-          role="button"
           :aria-label="__('Clear search input')"
-          class="fa fa-times dropdown-input-clear"
           :class="{
-            show: showClearInputButton
+            show: showClearInputButton,
           }"
+          role="button"
+          class="fa fa-times dropdown-input-clear"
           @click="clearSearchInput"
         ></i>
       </div>
       <div>
-        <virtual-list
-          :size="listHeight"
-          :remain="listShowCount"
-          wtag="ul"
-          ref="virtualScrollList"
-        >
+        <virtual-list ref="virtualScrollList" :size="listHeight" :remain="listShowCount" wtag="ul">
           <template v-if="filteredBlobsLength">
-            <li
-              v-for="(file, index) in filteredBlobs"
-              :key="file.key"
-            >
+            <li v-for="(file, index) in filteredBlobs" :key="file.key">
               <item
-                class="disable-hover"
                 :file="file"
                 :search-text="searchText"
                 :focused="index === focusedIndex"
                 :index="index"
+                class="disable-hover"
                 @click="openFile"
                 @mouseover="onMouseOver"
                 @mousemove="onMouseMove"
               />
             </li>
           </template>
-          <li
-            v-else
-            class="dropdown-menu-empty-item"
-          >
+          <li v-else class="dropdown-menu-empty-item">
             <div class="append-right-default prepend-left-default prepend-top-8 append-bottom-8">
               <template v-if="loading">
                 {{ __('Loading...') }}

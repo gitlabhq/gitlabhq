@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Edit group settings' do
-  given(:user)  { create(:user) }
-  given(:group) { create(:group, path: 'foo') }
+describe 'Edit group settings' do
+  let(:user)  { create(:user) }
+  let(:group) { create(:group, path: 'foo') }
 
-  background do
+  before do
     group.add_owner(user)
     sign_in(user)
   end
@@ -14,44 +14,44 @@ feature 'Edit group settings' do
     let(:old_group_full_path) { "/#{group.path}" }
     let(:new_group_full_path) { "/#{new_group_path}" }
 
-    scenario 'the group is accessible via the new path' do
+    it 'the group is accessible via the new path' do
       update_path(new_group_path)
       visit new_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(group.name)
+      expect(find('h1.home-panel-title')).to have_content(group.name)
     end
 
-    scenario 'the old group path redirects to the new path' do
+    it 'the old group path redirects to the new path' do
       update_path(new_group_path)
       visit old_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(group.name)
+      expect(find('h1.home-panel-title')).to have_content(group.name)
     end
 
     context 'with a subgroup' do
-      given!(:subgroup) { create(:group, parent: group, path: 'subgroup') }
-      given(:old_subgroup_full_path) { "/#{group.path}/#{subgroup.path}" }
-      given(:new_subgroup_full_path) { "/#{new_group_path}/#{subgroup.path}" }
+      let!(:subgroup) { create(:group, parent: group, path: 'subgroup') }
+      let(:old_subgroup_full_path) { "/#{group.path}/#{subgroup.path}" }
+      let(:new_subgroup_full_path) { "/#{new_group_path}/#{subgroup.path}" }
 
-      scenario 'the subgroup is accessible via the new path' do
+      it 'the subgroup is accessible via the new path' do
         update_path(new_group_path)
         visit new_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.name)
+        expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
 
-      scenario 'the old subgroup path redirects to the new path' do
+      it 'the old subgroup path redirects to the new path' do
         update_path(new_group_path)
         visit old_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.name)
+        expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
     end
 
     context 'with a project' do
-      given!(:project) { create(:project, group: group) }
-      given(:old_project_full_path) { "/#{group.path}/#{project.path}" }
-      given(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
+      let!(:project) { create(:project, group: group) }
+      let(:old_project_full_path) { "/#{group.path}/#{project.path}" }
+      let(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }
 
       before(:context) do
         TestEnv.clean_test_path
@@ -61,14 +61,14 @@ feature 'Edit group settings' do
         TestEnv.clean_test_path
       end
 
-      scenario 'the project is accessible via the new path' do
+      it 'the project is accessible via the new path' do
         update_path(new_group_path)
         visit new_project_full_path
         expect(current_path).to eq(new_project_full_path)
         expect(find('.breadcrumbs')).to have_content(project.path)
       end
 
-      scenario 'the old project path redirects to the new path' do
+      it 'the old project path redirects to the new path' do
         update_path(new_group_path)
         visit old_project_full_path
         expect(current_path).to eq(new_project_full_path)
@@ -98,6 +98,22 @@ feature 'Edit group settings' do
     end
   end
 
+  describe 'edit group path' do
+    it 'has a root URL label for top-level group' do
+      visit edit_group_path(group)
+
+      expect(find(:css, '.group-root-path').text).to eq(root_url)
+    end
+
+    it 'has a parent group URL label for a subgroup group', :postgresql do
+      subgroup = create(:group, parent: group)
+
+      visit edit_group_path(subgroup)
+
+      expect(find(:css, '.group-root-path').text).to eq(group_url(subgroup.parent) + '/')
+    end
+  end
+
   def update_path(new_group_path)
     visit edit_group_path(group)
 
@@ -109,7 +125,7 @@ feature 'Edit group settings' do
 
   def save_group
     page.within('.gs-general') do
-      click_button 'Save group'
+      click_button 'Save changes'
     end
   end
 end

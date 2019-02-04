@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { truncate } from '../../../lib/utils/text_utility';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 const MAX_MESSAGE_LENGTH = 500;
 const MESSAGE_CELL_SELECTOR = '.abuse-reports .message';
@@ -26,12 +27,12 @@ export default class AbuseReports {
     const $messageCellElement = $(this);
     const originalMessage = $messageCellElement.data('originalMessage');
     if (!originalMessage) return;
-    if ($messageCellElement.data('messageTruncated') === 'true') {
+    if (parseBoolean($messageCellElement.data('messageTruncated'))) {
       $messageCellElement.data('messageTruncated', 'false');
       $messageCellElement.text(originalMessage);
     } else {
       $messageCellElement.data('messageTruncated', 'true');
-      $messageCellElement.text(`${originalMessage.substr(0, (MAX_MESSAGE_LENGTH - 3))}...`);
+      $messageCellElement.text(`${originalMessage.substr(0, MAX_MESSAGE_LENGTH - 3)}...`);
     }
   }
 }

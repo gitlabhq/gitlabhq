@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   class DestroyService < ::Emails::BaseService
     def execute(email)

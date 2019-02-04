@@ -4,10 +4,10 @@
 - expanded = Rails.env.test?
 
 .project-edit-container
-  %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
+  %section.settings.general-settings.no-animate#js-general-project-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
-        General project settings
+        General project
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
@@ -15,57 +15,53 @@
     .settings-content
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
+        %input{ name: 'update_section', type: 'hidden', value: 'js-general-project-settings' }
         %fieldset
           .row
             .form-group.col-md-9
-              = f.label :name, class: 'label-light', for: 'project_name_edit' do
+              = f.label :name, class: 'label-bold', for: 'project_name_edit' do
                 Project name
               = f.text_field :name, class: "form-control", id: "project_name_edit"
 
             .form-group.col-md-3
-              = f.label :id, class: 'label-light' do
+              = f.label :id, class: 'label-bold' do
                 Project ID
               = f.text_field :id, class: 'form-control', readonly: true
 
           .form-group
-            = f.label :description, class: 'label-light' do
+            = f.label :description, class: 'label-bold' do
               Project description
               %span.light (optional)
             = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
           = render_if_exists 'projects/classification_policy_settings', f: f
 
-          - unless @project.empty_repo?
-            .form-group
-              = f.label :default_branch, "Default Branch", class: 'label-light'
-              = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
-
         = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
         .form-group
-          = f.label :tag_list, "Tags", class: 'label-light'
-          = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
-          %p.form-text.text-muted Separate tags with commas.
+          = f.label :tag_list, "Topics", class: 'label-bold'
+          = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
+          %p.form-text.text-muted Separate topics with commas.
         %fieldset.features
           %h5.prepend-top-0= _("Project avatar")
           .form-group
             - if @project.avatar?
               .avatar-container.s160.append-bottom-15
-                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
+                = project_icon(@project, alt: '', class: 'avatar project-avatar s160', width: 160, height: 160)
             - if @project.avatar_in_git
               %p.light
                 = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
             .prepend-top-5.append-bottom-10
               %button.btn.js-choose-project-avatar-button{ type: 'button' }= _("Choose file...")
-              %span.file_name.prepend-left-default.js-avatar-filename= _("No file chosen")
+              %span.file_name.prepend-left-default.js-filename= _("No file chosen")
               = f.file_field :avatar, class: "js-project-avatar-input hidden"
             .form-text.text-muted= _("The maximum file size allowed is 200KB.")
             - if @project.avatar?
               %hr
               = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
-        = f.submit 'Save changes', class: "btn btn-success js-btn-save-general-project-settings"
+        = f.submit 'Save changes', class: "btn btn-success js-btn-success-general-project-settings"
 
-  %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
+  %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Permissions
@@ -75,17 +71,18 @@
         Enable or disable certain project features and choose access levels.
     .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+        %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         -# haml-lint:disable InlineJavaScript
-        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
+        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
         .js-project-permissions-form
-        = f.submit 'Save changes', class: "btn btn-save"
+        = f.submit 'Save changes', class: "btn btn-success"
 
   = render_if_exists 'projects/issues_settings'
 
-  %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
+  %section.qa-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
-        Merge request settings
+        Merge request
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
@@ -94,17 +91,32 @@
       = render_if_exists 'shared/promotions/promote_mr_features'
 
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
+        %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
         = render 'projects/merge_request_settings', form: f
-        = f.submit 'Save changes', class: "btn btn-save qa-save-merge-request-changes"
+        = f.submit 'Save changes', class: "btn btn-success qa-save-merge-request-changes"
+
+  = render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
 
   = render_if_exists 'projects/service_desk_settings'
 
-  = render 'export', project: @project
-
-  %section.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
+  %section.settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
-        Advanced settings
+        = s_('ProjectSettings|Badges')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? 'Collapse' : 'Expand'
+      %p
+        = s_('ProjectSettings|Customize your project badges.')
+        = link_to s_('ProjectSettings|Learn more about badges.'), help_page_path('user/project/badges')
+    .settings-content
+      = render 'shared/badges/badge_settings'
+
+  = render 'export', project: @project
+
+  %section.qa-advanced-settings.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        Advanced
       %button.btn.js-settings-toggle{ type: 'button' }
         = expanded ? 'Collapse' : 'Expand'
       %p
@@ -138,24 +150,24 @@
             = link_to 'Archive project', archive_project_path(@project),
                 data: { confirm: "Are you sure that you want to archive this project?" },
                 method: :post, class: "btn btn-warning"
-      .sub-section.rename-respository
+      .sub-section.rename-repository
         %h4.warning-title
           Rename repository
         = render 'projects/errors'
         = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
           .form-group.project_name_holder
-            = f.label :name, class: 'label-light' do
+            = f.label :name, class: 'label-bold' do
               Project name
             .form-group
               = f.text_field :name, class: "form-control"
           .form-group
-            = f.label :path, class: 'label-light' do
+            = f.label :path, class: 'label-bold' do
               %span Path
             .form-group
               .input-group
                 .input-group-prepend
                   .input-group-text
-                    #{URI.join(root_url, @project.namespace.full_path)}/
+                    #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
                 = f.text_field :path, class: 'form-control'
             %ul
               %li Be careful. Renaming a project's repository can have unintended side effects.
@@ -169,7 +181,7 @@
             Transfer project
           = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
             .form-group
-              = label_tag :new_namespace_id, nil, class: 'label-light' do
+              = label_tag :new_namespace_id, nil, class: 'label-bold' do
                 %span  Select a new namespace
               .form-group
                 = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'

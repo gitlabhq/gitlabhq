@@ -7,13 +7,13 @@ export default class EnvironmentsService {
   }
 
   fetchEnvironments(options = {}) {
-    const { scope, page } = options;
-    return axios.get(this.environmentsEndpoint, { params: { scope, page } });
+    const { scope, page, nested } = options;
+    return axios.get(this.environmentsEndpoint, { params: { scope, page, nested } });
   }
 
   // eslint-disable-next-line class-methods-use-this
   postAction(endpoint) {
-    return axios.post(endpoint, {}, { emulateJSON: true });
+    return axios.post(endpoint, {});
   }
 
   getFolderContent(folderUrl) {

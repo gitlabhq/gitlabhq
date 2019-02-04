@@ -1,9 +1,15 @@
+# frozen_string_literal: true
+
 require_dependency 'declarative_policy'
 
 class BasePolicy < DeclarativePolicy::Base
   desc "User is an instance admin"
   with_options scope: :user, score: 0
   condition(:admin) { @user&.admin? }
+
+  desc "User has access to all private groups & projects"
+  with_options scope: :user, score: 0
+  condition(:full_private_access) { @user&.full_private_access? }
 
   with_options scope: :user, score: 0
   condition(:external_user) { @user.nil? || @user.external? }

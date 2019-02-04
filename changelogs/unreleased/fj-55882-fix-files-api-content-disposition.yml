@@ -1,0 +1,5 @@
+---
+title: Fix files/blob api endpoints content disposition
+merge_request: 24267
+author:
+type: fixed

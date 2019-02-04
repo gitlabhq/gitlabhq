@@ -9,8 +9,8 @@ To measure the impact of a merge request you can use
 [Sherlock](profiling.md#sherlock). It's also highly recommended that you read
 the following guides:
 
-* [Performance Guidelines](performance.md)
-* [What requires downtime?](what_requires_downtime.md)
+- [Performance Guidelines](performance.md)
+- [What requires downtime?](what_requires_downtime.md)
 
 ## Impact Analysis
 
@@ -168,6 +168,7 @@ user objects for every username we can remove the need for running the same
 query for every mention of `@alice`.
 
 Caching data per transaction can be done using
-[RequestStore](https://github.com/steveklabnik/request_store). Caching data in
-Redis can be done using [Rails' caching
+[RequestStore](https://github.com/steveklabnik/request_store) (use
+`Gitlab::SafeRequestStore` to avoid having to remember to check
+`RequestStore.active?`). Caching data in Redis can be done using [Rails' caching
 system](http://guides.rubyonrails.org/caching_with_rails.html).

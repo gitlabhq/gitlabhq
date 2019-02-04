@@ -8,7 +8,7 @@ input {
 
 input[type='text'].danger {
   background: $input-danger-bg !important;
-  border-color: $input-danger-border;
+  border-color: $red-400;
   text-shadow: 0 1px 1px $white-light;
 }
 
@@ -31,9 +31,18 @@ label {
     margin: 0;
   }
 
-  &.label-light {
+  &.label-bold {
     font-weight: $gl-font-weight-bold;
   }
+}
+
+.label-wrapper {
+  display: block;
+  margin: 0;
+}
+
+.form-label {
+  @extend label;
 }
 
 .form-control-label {
@@ -80,7 +89,7 @@ label {
   .form-control {
     height: 29px;
     background: $white-light;
-    font-family: $monospace_font;
+    font-family: $monospace-font;
   }
 
   .input-group-prepend .btn,
@@ -170,7 +179,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $gl-text-color-secondary;
+  color: $gl-text-color-tertiary;
 }
 
 .input-group {
@@ -201,6 +210,10 @@ label {
 }
 
 .gl-show-field-errors {
+  .form-control:not(textarea) {
+    height: 34px;
+  }
+
   .gl-field-success-outline {
     border: 1px solid $green-600;
 
@@ -238,4 +251,26 @@ label {
       margin-top: 0;
     }
   }
+}
+
+.input-icon-wrapper {
+  position: relative;
+
+  .input-icon-right {
+    position: absolute;
+    right: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $gray-600;
+  }
+}
+
+.input-md {
+  max-width: $input-md-width;
+  width: 100%;
+}
+
+.input-lg {
+  max-width: $input-lg-width;
+  width: 100%;
 }

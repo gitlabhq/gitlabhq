@@ -19,7 +19,7 @@ module Support
       allow(ENV).to receive(:[]).with(key).and_return(value)
       allow(ENV).to receive(:key?).with(key).and_return(true)
       allow(ENV).to receive(:fetch).with(key).and_return(value)
-      allow(ENV).to receive(:fetch).with(key, anything()) do |_, default_val|
+      allow(ENV).to receive(:fetch).with(key, anything) do |_, default_val|
         value || default_val
       end
     end
@@ -32,6 +32,8 @@ module Support
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:key?).and_call_original
       allow(ENV).to receive(:fetch).and_call_original
+      # Prevent secrets from leaking in CI
+      allow(ENV).to receive(:inspect).and_return([])
       add_stubbed_value(STUBBED_KEY, true)
     end
   end

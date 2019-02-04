@@ -35,5 +35,13 @@ describe AvatarUploader do
 
     it_behaves_like "migrates", to_store: described_class::Store::REMOTE
     it_behaves_like "migrates", from_store: described_class::Store::REMOTE, to_store: described_class::Store::LOCAL
+
+    it 'sets the right absolute path' do
+      storage_path = Gitlab.config.uploads.storage_path
+      absolute_path = File.join(storage_path, upload.path)
+
+      expect(uploader.absolute_path.scan(storage_path).size).to eq(1)
+      expect(uploader.absolute_path).to eq(absolute_path)
+    end
   end
 end

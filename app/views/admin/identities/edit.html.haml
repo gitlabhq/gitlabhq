@@ -1,6 +1,9 @@
-- page_title "Edit", @identity.provider, "Identities", @user.name, "Users"
+- add_to_breadcrumbs "Users", admin_users_path
+- add_to_breadcrumbs @user.name, admin_user_identities_path(@user)
+- breadcrumb_title "Edit Identity"
+- page_title _("Edit"), @identity.provider, _("Identities"), @user.name, _("Users")
 %h3.page-title
-  Edit identity for #{@user.name}
+  = _('Edit identity for %{user_name}') % { user_name: @user.name }
 %hr
 
 = render 'form'

@@ -1,10 +1,10 @@
 %li{ id: dom_id(merge_request), class: mr_css_classes(merge_request), data: { labels: merge_request.label_ids, id: merge_request.id } }
   - if @can_bulk_update
     .issue-check.hidden
-      = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected_issue"
+      = check_box_tag dom_id(merge_request, "selected"), nil, false, 'data-id' => merge_request.id, class: "selected-issuable"
 
-  .issue-info-container
-    .issue-main-info
+  .issuable-info-container
+    .issuable-main-info
       .merge-request-title.title
         %span.merge-request-title-text
           = link_to merge_request.title, merge_request_path(merge_request)
@@ -46,7 +46,7 @@
           %li.issuable-status.d-none.d-sm-inline-block
             = icon('ban')
             CLOSED
-        - if merge_request.head_pipeline
+        - if can?(current_user, :read_pipeline, merge_request.head_pipeline)
           %li.issuable-pipeline-status.d-none.d-sm-inline-block
             = render_pipeline_status(merge_request.head_pipeline)
         - if merge_request.open? && merge_request.broken?
@@ -56,6 +56,7 @@
         - if merge_request.assignee
           %li
             = link_to_member(merge_request.source_project, merge_request.assignee, name: false, title: _('Assigned to :name'))
+        = render_if_exists 'projects/merge_requests/approvals_count', merge_request: merge_request
 
         = render 'shared/issuable_meta_data', issuable: merge_request
 

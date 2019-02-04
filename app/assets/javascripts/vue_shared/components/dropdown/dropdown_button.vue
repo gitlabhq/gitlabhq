@@ -1,10 +1,10 @@
 <script>
 import { __ } from '~/locale';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 
 export default {
   components: {
-    LoadingIcon,
+    GlLoadingIcon,
   },
   props: {
     isDisabled: {
@@ -28,28 +28,19 @@ export default {
 
 <template>
   <button
+    :disabled="isDisabled || isLoading"
     class="dropdown-menu-toggle dropdown-menu-full-width"
     type="button"
     data-toggle="dropdown"
     aria-expanded="false"
-    :disabled="isDisabled || isLoading"
   >
-    <loading-icon
-      v-show="isLoading"
-      :inline="true"
-    />
-    <span class="dropdown-toggle-text">
-      {{ toggleText }}
-    </span>
-    <span
-      class="dropdown-toggle-icon"
-      v-show="!isLoading"
-    >
-      <i
-        class="fa fa-chevron-down"
-        aria-hidden="true"
-        data-hidden="true"
-      ></i>
+    <gl-loading-icon v-show="isLoading" :inline="true" />
+    <template>
+      <slot v-if="$slots.default"></slot>
+      <span v-else class="dropdown-toggle-text"> {{ toggleText }} </span>
+    </template>
+    <span v-show="!isLoading" class="dropdown-toggle-icon">
+      <i class="fa fa-chevron-down" aria-hidden="true" data-hidden="true"></i>
     </span>
   </button>
 </template>

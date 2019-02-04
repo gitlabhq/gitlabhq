@@ -1,10 +1,12 @@
-# Gitaly note: JV: 1 RPC, migration in progress.
+# frozen_string_literal: true
 
 # Gitlab::Git::CommitStats counts the additions, deletions, and total changes
 # in a commit.
 module Gitlab
   module Git
     class CommitStats
+      include Gitlab::Git::WrapsGitalyErrors
+
       attr_reader :id, :additions, :deletions, :total
 
       # Instantiate a CommitStats object
@@ -16,12 +18,8 @@ module Gitlab
         @deletions = 0
         @total = 0
 
-        repo.gitaly_migrate(:commit_stats) do |is_enabled|
-          if is_enabled
-            gitaly_stats(repo, commit)
-          else
-            rugged_stats(commit)
-          end
+        wrapped_gitaly_errors do
+          gitaly_stats(repo, commit)
         end
       end
 
@@ -29,12 +27,6 @@ module Gitlab
         stats = repo.gitaly_commit_client.commit_stats(@id)
         @additions = stats.additions
         @deletions = stats.deletions
-        @total = @additions + @deletions
-      end
-
-      def rugged_stats(commit)
-        diff = commit.rugged_diff_from_parent
-        _files_changed, @additions, @deletions = diff.stat
         @total = @additions + @deletions
       end
     end

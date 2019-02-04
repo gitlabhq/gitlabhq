@@ -1,0 +1,5 @@
+---
+title: Redirect GET projects/:id to project page
+merge_request: 24467
+author:
+type: added

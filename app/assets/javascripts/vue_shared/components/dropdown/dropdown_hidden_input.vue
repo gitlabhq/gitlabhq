@@ -14,9 +14,5 @@ export default {
 </script>
 
 <template>
-  <input
-    type="hidden"
-    :name="name"
-    :value="value"
-  />
+  <input :name="name" :value="value" type="hidden" />
 </template>

@@ -1,5 +1,4 @@
-# rubocop:disable all
-class AddSentNotifications < ActiveRecord::Migration
+class AddSentNotifications < ActiveRecord::Migration[4.2]
   def change
     create_table :sent_notifications do |t|
       t.references :project

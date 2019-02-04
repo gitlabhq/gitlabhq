@@ -1,5 +1,4 @@
 <script>
-
 /* This is a re-usable vue component for rendering a user avatar that
   does not need to link to the user's profile. The image and an optional
   tooltip can be configured by props passed to this component.
@@ -16,14 +15,14 @@
 
 */
 
+import { GlTooltip } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { placeholderImage } from '../../../lazy_loader';
-import tooltip from '../../directives/tooltip';
 
 export default {
   name: 'UserAvatarImage',
-  directives: {
-    tooltip,
+  components: {
+    GlTooltip,
   },
   props: {
     lazy: {
@@ -67,13 +66,14 @@ export default {
     // we provide an empty string when we use it inside user avatar link.
     // In both cases we should render the defaultAvatarUrl
     sanitizedSource() {
-      return this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+      let baseSrc = this.imgSrc === '' || this.imgSrc === null ? defaultAvatarUrl : this.imgSrc;
+      // Only adds the width to the URL if its not a base64 data image
+      if (!(baseSrc.indexOf('data:') === 0) && !baseSrc.includes('?'))
+        baseSrc += `?width=${this.size}`;
+      return baseSrc;
     },
     resultantSrcAttribute() {
       return this.lazy ? placeholderImage : this.sanitizedSource;
-    },
-    tooltipContainer() {
-      return this.tooltipText ? 'body' : null;
     },
     avatarSizeClass() {
       return `s${this.size}`;
@@ -83,21 +83,29 @@ export default {
 </script>
 
 <template>
-  <img
-    v-tooltip
-    class="avatar"
-    :class="{
-      lazy: lazy,
-      [avatarSizeClass]: true,
-      [cssClasses]: true
-    }"
-    :src="resultantSrcAttribute"
-    :width="size"
-    :height="size"
-    :alt="imgAlt"
-    :data-src="sanitizedSource"
-    :data-container="tooltipContainer"
-    :data-placement="tooltipPlacement"
-    :title="tooltipText"
-  />
+  <span>
+    <img
+      ref="userAvatarImage"
+      :class="{
+        lazy: lazy,
+        [avatarSizeClass]: true,
+        [cssClasses]: true,
+      }"
+      :src="resultantSrcAttribute"
+      :width="size"
+      :height="size"
+      :alt="imgAlt"
+      :data-src="sanitizedSource"
+      class="avatar"
+    />
+    <gl-tooltip
+      v-if="tooltipText || $slots.default"
+      :target="() => $refs.userAvatarImage"
+      :placement="tooltipPlacement"
+      boundary="window"
+      class="js-user-avatar-image-toolip"
+    >
+      <slot> {{ tooltipText }} </slot>
+    </gl-tooltip>
+  </span>
 </template>

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ThrottledTouch can be used to throttle the number of updates triggered by
 # calling "touch" on an ActiveRecord model.
 module ThrottledTouch

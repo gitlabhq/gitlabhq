@@ -4,18 +4,83 @@
   }
 }
 
-.cluster-applications-table {
-  // Wait for the Vue to kick-in and render the applications block
-  min-height: 628px;
+.cluster-application-row {
+  background: $gray-lighter;
+
+  &.cluster-application-installed {
+    background: none;
+  }
+
+  .settings-message {
+    padding: $gl-vert-padding $gl-padding-8;
+  }
+}
+
+@media (min-width: map-get($grid-breakpoints, md)) {
+  .cluster-application-list {
+    border: 1px solid $border-color;
+    border-radius: $border-radius-default;
+  }
+
+  .cluster-application-row {
+    border-bottom: 1px solid $border-color;
+    padding: $gl-padding;
+
+    &:last-child {
+      border-bottom: 0;
+      border-bottom-left-radius: calc(#{$border-radius-default} - 1px);
+      border-bottom-right-radius: calc(#{$border-radius-default} - 1px);
+    }
+  }
+}
+
+.cluster-application-logo {
+  border: 3px solid $white-light;
+  box-shadow: 0 0 0 1px $gray-normal;
+
+  &.avatar:hover {
+    border-color: $white-light;
+  }
+}
+
+.cluster-application-warning {
+  font-weight: bold;
+  text-align: center;
+  padding: $gl-padding;
+  border-bottom: 1px solid $white-normal;
+
+  .svg-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: $gl-padding-8;
+    width: 40px;
+    height: 40px;
+  }
+}
+
+.cluster-application-description {
+  flex: 1;
+}
+
+.cluster-application-disabled {
+  opacity: 0.5;
 }
 
 .clusters-dropdown-menu {
   max-width: 100%;
 }
 
+.clusters-error-alert {
+  width: 100%;
+}
+
 .clusters-container {
   .nav-bar-right {
     padding: $gl-padding-top $gl-padding;
+  }
+
+  .card {
+    margin-bottom: $gl-vert-padding;
   }
 
   .empty-state .svg-content img {
@@ -25,52 +90,51 @@
   .top-area .nav-controls > .btn.btn-add-cluster {
     margin-right: 0;
   }
+
+  .clusters-table {
+    background-color: $gray-light;
+    padding: $gl-padding-8;
+  }
+
+  .badge-light {
+    background-color: $white-normal;
+  }
+
+  .gl-responsive-table-row {
+    padding: $gl-padding;
+    border: 0;
+
+    &.table-row-header {
+      background-color: none;
+      border: 0;
+      font-weight: bold;
+      color: $gl-gray-500;
+    }
+  }
+}
+
+.cluster-warning {
+  @include alert-variant(theme-color-level('warning', $alert-bg-level), theme-color-level('warning', $alert-border-level), theme-color-level('warning', $alert-color-level));
 }
 
 .gcp-signup-offer {
-  background-color: $blue-50;
-  border: 1px solid $blue-300;
-  border-radius: $border-radius-default;
+  border-left-color: $blue-500;
 
-  // TODO: To be superceded by cssLab
-  &.alert {
-    padding: 24px 16px;
-
-    &-dismissable {
-      padding-right: 32px;
-
-      .close {
-        top: -8px;
-        right: -16px;
-        color: $blue-500;
-        opacity: 1;
-      }
-    }
+  svg {
+    fill: $blue-500;
+    vertical-align: middle;
   }
 
-  .gcp-logo {
-    margin-bottom: $gl-padding;
-    text-align: center;
-  }
+  .gcp-signup-offer--content {
+    display: flex;
 
-  img {
-    max-width: $gcp-signup-offer-icon-max-width;
-  }
-
-  a:not(.btn) {
-    color: $gl-link-color;
-    font-weight: normal;
-    text-decoration: none;
-  }
-
-  @include media-breakpoint-up(sm) {
-    > div {
-      display: flex;
-      align-items: center;
+    h4 {
+      font-size: 16px;
+      line-height: 24px;
     }
 
-    .gcp-logo {
-      margin: 0;
+    .gcp-signup-offer--icon {
+      align-self: flex-start;
     }
   }
 }

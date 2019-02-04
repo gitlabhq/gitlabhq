@@ -23,10 +23,11 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
   end
 
   it 'services/edit_service.html.raw' do |example|
-    get :edit,
+    get :edit, params: {
       namespace_id: namespace,
       project_id: project,
       id: service.to_param
+    }
 
     expect(response).to be_success
     store_frontend_fixture(response, example.description)

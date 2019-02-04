@@ -1,13 +1,16 @@
 import Vue from 'vue';
 import stageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('stage column component', () => {
   let component;
+  const StageColumnComponent = Vue.extend(stageColumnComponent);
+
   const mockJob = {
     id: 4250,
     name: 'test',
     status: {
-      icon: 'icon_status_success',
+      icon: 'status_success',
       text: 'passed',
       label: 'passed',
       group: 'success',
@@ -22,28 +25,47 @@ describe('stage column component', () => {
   };
 
   beforeEach(() => {
-    const StageColumnComponent = Vue.extend(stageColumnComponent);
-
-    const mockJobs = [];
+    const mockGroups = [];
     for (let i = 0; i < 3; i += 1) {
       const mockedJob = Object.assign({}, mockJob);
       mockedJob.id += i;
-      mockJobs.push(mockedJob);
+      mockGroups.push(mockedJob);
     }
 
-    component = new StageColumnComponent({
-      propsData: {
-        title: 'foo',
-        jobs: mockJobs,
-      },
-    }).$mount();
+    component = mountComponent(StageColumnComponent, {
+      title: 'foo',
+      groups: mockGroups,
+    });
   });
 
   it('should render provided title', () => {
     expect(component.$el.querySelector('.stage-name').textContent.trim()).toEqual('foo');
   });
 
-  it('should render the provided jobs', () => {
+  it('should render the provided groups', () => {
     expect(component.$el.querySelectorAll('.builds-container > ul > li').length).toEqual(3);
+  });
+
+  describe('jobId', () => {
+    it('escapes job name', () => {
+      component = mountComponent(StageColumnComponent, {
+        groups: [
+          {
+            id: 4259,
+            name: '<img src=x onerror=alert(document.domain)>',
+            status: {
+              icon: 'icon_status_success',
+              label: 'success',
+              tooltip: '<img src=x onerror=alert(document.domain)>',
+            },
+          },
+        ],
+        title: 'test',
+      });
+
+      expect(component.$el.querySelector('.builds-container li').getAttribute('id')).toEqual(
+        'ci-badge-&lt;img src=x onerror=alert(document.domain)&gt;',
+      );
+    });
   });
 });

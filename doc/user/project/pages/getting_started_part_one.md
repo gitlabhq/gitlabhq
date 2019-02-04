@@ -85,6 +85,12 @@ and a project within this group is called `blog`. Your project
 URL is `https://gitlab.com/websites/blog/`. Once you enable
 GitLab Pages for this project, the site will live under
 `https://websites.gitlab.io/blog/`.
+- You created a group for your engineering department called `engineering`,
+a subgroup for all your documentation websites called `docs`,
+and a project within this subgroup is called `workflows`. Your project
+URL is `https://gitlab.com/engineering/docs/workflows/`. Once you enable
+GitLab Pages for this project, the site will live under
+`https://engineering.gitlab.io/docs/workflows`.
 
 #### User and Group Websites
 
@@ -97,9 +103,7 @@ will be published under `https://john.gitlab.io`.
 Once you enable GitLab Pages for your project,
 your website will be published under `https://websites.gitlab.io`.
 
->**Note:**
-GitLab Pages [does **not** support subgroups](../../group/subgroups/index.md#limitations).
-You can only create the highest level group website.
+> Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
 **General example:**
 

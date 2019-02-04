@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Cookies from 'js-cookie';
 import _ from 'underscore';
 import bp from './breakpoints';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default class ContextualSidebar {
   constructor() {
@@ -12,6 +13,9 @@ export default class ContextualSidebar {
   initDomElements() {
     this.$page = $('.layout-page');
     this.$sidebar = $('.nav-sidebar');
+
+    if (!this.$sidebar.length) return;
+
     this.$innerScroll = $('.nav-sidebar-inner-scroll', this.$sidebar);
     this.$overlay = $('.mobile-overlay');
     this.$openSidebar = $('.toggle-mobile-nav');
@@ -20,9 +24,14 @@ export default class ContextualSidebar {
   }
 
   bindEvents() {
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.nav-sidebar') && (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')) {
-        this.toggleCollapsedSidebar(true);
+    if (!this.$sidebar.length) return;
+
+    document.addEventListener('click', e => {
+      if (
+        !e.target.closest('.nav-sidebar') &&
+        (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')
+      ) {
+        this.toggleCollapsedSidebar(true, true);
       }
     });
     this.$openSidebar.on('click', () => this.toggleSidebarNav(true));
@@ -30,7 +39,7 @@ export default class ContextualSidebar {
     this.$overlay.on('click', () => this.toggleSidebarNav(false));
     this.$sidebarToggle.on('click', () => {
       const value = !this.$sidebar.hasClass('sidebar-collapsed-desktop');
-      this.toggleCollapsedSidebar(value);
+      this.toggleCollapsedSidebar(value, true);
     });
 
     $(window).on('resize', () => _.debounce(this.render(), 100));
@@ -49,16 +58,19 @@ export default class ContextualSidebar {
     this.$sidebar.removeClass('sidebar-collapsed-desktop');
   }
 
-  toggleCollapsedSidebar(collapsed) {
+  toggleCollapsedSidebar(collapsed, saveCookie) {
     const breakpoint = bp.getBreakpointSize();
 
     if (this.$sidebar.length) {
       this.$sidebar.toggleClass('sidebar-collapsed-desktop', collapsed);
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
     }
-    ContextualSidebar.setCollapsedCookie(collapsed);
 
-    this.toggleSidebarOverflow();
+    if (saveCookie) {
+      ContextualSidebar.setCollapsedCookie(collapsed);
+    }
+
+    requestIdleCallback(() => this.toggleSidebarOverflow());
   }
 
   toggleSidebarOverflow() {
@@ -70,13 +82,15 @@ export default class ContextualSidebar {
   }
 
   render() {
+    if (!this.$sidebar.length) return;
+
     const breakpoint = bp.getBreakpointSize();
 
     if (breakpoint === 'sm' || breakpoint === 'md') {
-      this.toggleCollapsedSidebar(true);
+      this.toggleCollapsedSidebar(true, false);
     } else if (breakpoint === 'lg') {
-      const collapse = Cookies.get('sidebar_collapsed') === 'true';
-      this.toggleCollapsedSidebar(collapse);
+      const collapse = parseBoolean(Cookies.get('sidebar_collapsed'));
+      this.toggleCollapsedSidebar(collapse, false);
     }
   }
 }

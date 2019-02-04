@@ -10,11 +10,14 @@ describe('ImageBadge', () => {
   };
 
   it('should save actual property', () => {
-    const imageBadge = new ImageBadge(Object.assign({}, options, {
-      actual: imageMeta,
-    }));
+    const imageBadge = new ImageBadge(
+      Object.assign({}, options, {
+        actual: imageMeta,
+      }),
+    );
 
     const { actual } = imageBadge;
+
     expect(actual.x).toEqual(imageMeta.x);
     expect(actual.y).toEqual(imageMeta.y);
     expect(actual.width).toEqual(imageMeta.width);
@@ -22,11 +25,14 @@ describe('ImageBadge', () => {
   });
 
   it('should save browser property', () => {
-    const imageBadge = new ImageBadge(Object.assign({}, options, {
-      browser: imageMeta,
-    }));
+    const imageBadge = new ImageBadge(
+      Object.assign({}, options, {
+        browser: imageMeta,
+      }),
+    );
 
     const { browser } = imageBadge;
+
     expect(browser.x).toEqual(imageMeta.x);
     expect(browser.y).toEqual(imageMeta.y);
     expect(browser.width).toEqual(imageMeta.width);
@@ -35,11 +41,13 @@ describe('ImageBadge', () => {
 
   it('should save noteId', () => {
     const imageBadge = new ImageBadge(options);
+
     expect(imageBadge.noteId).toEqual(noteId);
   });
 
   it('should save discussionId', () => {
     const imageBadge = new ImageBadge(options);
+
     expect(imageBadge.discussionId).toEqual(discussionId);
   });
 
@@ -52,6 +60,7 @@ describe('ImageBadge', () => {
 
     it('should return defaultimageMeta if actual property is not provided', () => {
       const { actual } = imageBadge;
+
       expect(actual.x).toEqual(0);
       expect(actual.y).toEqual(0);
       expect(actual.width).toEqual(0);
@@ -60,6 +69,7 @@ describe('ImageBadge', () => {
 
     it('should return defaultimageMeta if browser property is not provided', () => {
       const { browser } = imageBadge;
+
       expect(browser.x).toEqual(0);
       expect(browser.y).toEqual(0);
       expect(browser.width).toEqual(0);
@@ -73,9 +83,11 @@ describe('ImageBadge', () => {
     });
 
     it('should generate browser property', () => {
-      const imageBadge = new ImageBadge(Object.assign({}, options, {
-        imageEl: document.createElement('img'),
-      }));
+      const imageBadge = new ImageBadge(
+        Object.assign({}, options, {
+          imageEl: document.createElement('img'),
+        }),
+      );
 
       expect(imageDiffHelper.resizeCoordinatesToImageElement).toHaveBeenCalled();
       expect(imageBadge.browser).toEqual(true);

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 
 class IrkerService < Service
@@ -57,7 +59,7 @@ class IrkerService < Service
         ' append "?key=secretpassword" to the URI (Note that due to a bug, if you ' \
         ' want to use a password, you have to omit the "#" on the channel). If you ' \
         ' specify a default IRC URI to prepend before each recipient, you can just ' \
-        ' give a channel name.'  },
+        ' give a channel name.' },
       { type: 'checkbox', name: 'colorize_messages' }
     ]
   end
@@ -102,7 +104,7 @@ class IrkerService < Service
         new_recipient = URI.join(default_irc_uri, '/', recipient).to_s
         uri = consider_uri(URI.parse(new_recipient))
       rescue
-        Rails.logger.error("Unable to create a valid URL from #{default_irc_uri} and #{recipient}")
+        log_error("Unable to create a valid URL", default_irc_uri: default_irc_uri, recipient: recipient)
       end
     end
 

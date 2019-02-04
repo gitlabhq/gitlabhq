@@ -5,7 +5,7 @@ describe "Compare", :js do
   let(:project) { create(:project, :repository) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in user
   end
 
@@ -86,6 +86,21 @@ describe "Compare", :js do
       find(".js-compare-from-dropdown .compare-dropdown-toggle").click
 
       expect(find(".js-compare-from-dropdown .dropdown-content")).to have_selector("li", count: 3)
+    end
+
+    context 'when commit has overflow', :js do
+      it 'displays warning' do
+        visit project_compare_index_path(project, from: "feature", to: "master")
+
+        allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
+        allow_any_instance_of(DiffHelper).to receive(:render_overflow_warning?).and_return(true)
+
+        click_button('Compare')
+
+        page.within('.alert') do
+          expect(page).to have_text("Too many changes to show. To preserve performance only 3 of 3+ files are displayed.")
+        end
+      end
     end
   end
 

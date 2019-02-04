@@ -13,6 +13,10 @@ FactoryBot.define do
       state :opened
     end
 
+    trait :locked do
+      discussion_locked true
+    end
+
     trait :closed do
       state :closed
       closed_at { Time.now }
@@ -27,7 +31,7 @@ FactoryBot.define do
       end
 
       after(:create) do |issue, evaluator|
-        issue.update_attributes(labels: evaluator.labels)
+        issue.update(labels: evaluator.labels)
       end
     end
   end

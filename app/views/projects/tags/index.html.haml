@@ -1,6 +1,8 @@
 - @no_container = true
 - @sort ||= sort_value_recently_updated
 - page_title s_('TagsPage|Tags')
+= content_for :meta_tags do
+  = auto_discovery_link_tag(:atom, project_tags_url(@project, rss_url_options), title: "#{@project.name} tags")
 
 .flex-list{ class: container_class }
   .top-area.adjust
@@ -12,7 +14,7 @@
         = search_field_tag :search, params[:search], { placeholder: s_('TagsPage|Filter by tag name'), id: 'tag-search', class: 'form-control search-text-input input-short', spellcheck: false }
 
       .dropdown
-        %button.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown'} }
+        %button.dropdown-menu-toggle{ type: 'button', data: { toggle: 'dropdown'} }
           %span.light
             = tags_sort_options_hash[@sort]
           = icon('chevron-down')
@@ -23,8 +25,12 @@
             %li
               = link_to title, filter_tags_path(sort: value), class: ("is-active" if @sort == value)
       - if can?(current_user, :push_code, @project)
-        = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
+        = link_to new_project_tag_path(@project), class: 'btn btn-success new-tag-btn' do
           = s_('TagsPage|New tag')
+      = link_to project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'btn d-none d-sm-inline-block has-tooltip' do
+        = icon("rss")
+
+  = render_if_exists 'projects/commits/mirror_status'
 
   .tags
     - if @tags.any?

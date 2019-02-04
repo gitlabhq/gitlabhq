@@ -19,17 +19,17 @@ describe Gitlab::Auth::RequestAuthenticator do
       allow_any_instance_of(described_class).to receive(:find_sessionless_user).and_return(sessionless_user)
       allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_return(session_user)
 
-      expect(subject.user).to eq sessionless_user
+      expect(subject.user([:api])).to eq sessionless_user
     end
 
     it 'returns session user if no sessionless user found' do
       allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_return(session_user)
 
-      expect(subject.user).to eq session_user
+      expect(subject.user([:api])).to eq session_user
     end
 
     it 'returns nil if no user found' do
-      expect(subject.user).to be_blank
+      expect(subject.user([:api])).to be_blank
     end
 
     it 'bubbles up exceptions' do
@@ -42,26 +42,26 @@ describe Gitlab::Auth::RequestAuthenticator do
     let!(:feed_token_user) { build(:user) }
 
     it 'returns access_token user first' do
-      allow_any_instance_of(described_class).to receive(:find_user_from_access_token).and_return(access_token_user)
+      allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token).and_return(access_token_user)
       allow_any_instance_of(described_class).to receive(:find_user_from_feed_token).and_return(feed_token_user)
 
-      expect(subject.find_sessionless_user).to eq access_token_user
+      expect(subject.find_sessionless_user([:api])).to eq access_token_user
     end
 
     it 'returns feed_token user if no access_token user found' do
       allow_any_instance_of(described_class).to receive(:find_user_from_feed_token).and_return(feed_token_user)
 
-      expect(subject.find_sessionless_user).to eq feed_token_user
+      expect(subject.find_sessionless_user([:api])).to eq feed_token_user
     end
 
     it 'returns nil if no user found' do
-      expect(subject.find_sessionless_user).to be_blank
+      expect(subject.find_sessionless_user([:api])).to be_blank
     end
 
     it 'rescue Gitlab::Auth::AuthenticationError exceptions' do
-      allow_any_instance_of(described_class).to receive(:find_user_from_access_token).and_raise(Gitlab::Auth::UnauthorizedError)
+      allow_any_instance_of(described_class).to receive(:find_user_from_web_access_token).and_raise(Gitlab::Auth::UnauthorizedError)
 
-      expect(subject.find_sessionless_user).to be_blank
+      expect(subject.find_sessionless_user([:api])).to be_blank
     end
   end
 end

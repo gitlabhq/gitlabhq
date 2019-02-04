@@ -7,13 +7,13 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
   describe "POST /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_estimate" do
     context 'with an unauthorized user' do
-      subject { post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", non_member), duration: '1w') }
+      subject { post(api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", non_member), params: { duration: '1w' }) }
 
       it_behaves_like 'an unauthorized API user'
     end
 
     it "sets the time estimate for #{issuable_name}" do
-      post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), duration: '1w'
+      post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: '1w' }
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['human_time_estimate']).to eq('1w')
@@ -21,12 +21,12 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
     describe 'updating the current estimate' do
       before do
-        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), duration: '1w'
+        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: '1w' }
       end
 
       context 'when duration has a bad format' do
         it 'does not modify the original estimate' do
-          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), duration: 'foo'
+          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: 'foo' }
 
           expect(response).to have_gitlab_http_status(400)
           expect(issuable.reload.human_time_estimate).to eq('1w')
@@ -35,7 +35,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
       context 'with a valid duration' do
         it 'updates the estimate' do
-          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), duration: '3w1h'
+          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_estimate", user), params: { duration: '3w1h' }
 
           expect(response).to have_gitlab_http_status(200)
           expect(issuable.reload.human_time_estimate).to eq('3w 1h')
@@ -62,8 +62,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
   describe "POST /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/add_spent_time" do
     context 'with an unauthorized user' do
       subject do
-        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", non_member),
-             duration: '2h'
+        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", non_member), params: { duration: '2h' }
       end
 
       it_behaves_like 'an unauthorized API user'
@@ -72,8 +71,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
     it "add spent time for #{issuable_name}" do
       Timecop.travel(1.minute.from_now) do
         expect do
-          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
-            duration: '2h'
+          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user), params: { duration: '2h' }
         end.to change { issuable.reload.updated_at }
       end
 
@@ -85,12 +83,11 @@ shared_examples 'time tracking endpoints' do |issuable_name|
       it 'subtracts time of the total spent time' do
         Timecop.travel(1.minute.from_now) do
           expect do
-            issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
+            issuable.update!(spend_time: { duration: 7200, user_id: user.id })
           end.to change { issuable.reload.updated_at }
         end
 
-        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
-             duration: '-1h'
+        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user), params: { duration: '-1h' }
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['total_time_spent']).to eq(3600)
@@ -99,12 +96,11 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
     context 'when time to subtract is greater than the total spent time' do
       it 'does not modify the total time spent' do
-        issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
+        issuable.update!(spend_time: { duration: 7200, user_id: user.id })
 
         Timecop.travel(1.minute.from_now) do
           expect do
-            post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
-              duration: '-1w'
+            post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user), params: { duration: '-1w' }
           end.not_to change { issuable.reload.updated_at }
         end
 
@@ -135,8 +131,8 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
   describe "GET /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_stats" do
     it "returns the time stats for #{issuable_name}" do
-      issuable.update_attributes!(spend_time: { duration: 1800, user_id: user.id },
-                                  time_estimate: 3600)
+      issuable.update!(spend_time: { duration: 1800, user_id: user.id },
+                       time_estimate: 3600)
 
       get api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_stats", user)
 

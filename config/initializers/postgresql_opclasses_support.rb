@@ -41,7 +41,9 @@ module ActiveRecord
     # Abstract representation of an index definition on a table. Instances of
     # this type are typically created and returned by methods in database
     # adapters. e.g. ActiveRecord::ConnectionAdapters::AbstractMysqlAdapter#indexes
-    class IndexDefinition < Struct.new(:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :opclasses) #:nodoc:
+    attrs = [:table, :name, :unique, :columns, :lengths, :orders, :where, :type, :using, :comment, :opclasses]
+
+    class IndexDefinition < Struct.new(*attrs) #:nodoc:
     end
   end
 end
@@ -76,7 +78,7 @@ module ActiveRecord
         if index_name.length > max_index_length
           raise ArgumentError, "Index name '#{index_name}' on table '#{table_name}' is too long; the limit is #{max_index_length} characters"
         end
-        if table_exists?(table_name) && index_name_exists?(table_name, index_name, false)
+        if data_source_exists?(table_name) && index_name_exists?(table_name, index_name, false)
           raise ArgumentError, "Index name '#{index_name}' on table '#{table_name}' already exists"
         end
         index_columns = quoted_columns_for_index(column_names, options).join(", ")
@@ -107,8 +109,8 @@ module ActiveRecord
 
           result.map do |row|
             index_name = row[0]
-            unique = row[1] == 't'
-            indkey = row[2].split(" ")
+            unique = row[1]
+            indkey = row[2].split(" ").map(&:to_i)
             inddef = row[3]
             oid = row[4]
 
@@ -128,11 +130,16 @@ module ActiveRecord
               where = inddef.scan(/WHERE (.+)$/).flatten[0]
               using = inddef.scan(/USING (.+?) /).flatten[0].to_sym
               opclasses = Hash[inddef.scan(/\((.+?)\)(?:$| WHERE )/).flatten[0].split(',').map do |column_and_opclass|
-                                 column, opclass = column_and_opclass.split(' ').map(&:strip)
-                                 [column, opclass] if opclass
-                               end.compact]
+                column, opclass = column_and_opclass.split(' ').map(&:strip)
+              end.reject do |column, opclass|
+                ['desc', 'asc'].include?(opclass&.downcase)
+              end.map do |column, opclass|
+                [column, opclass] if opclass
+              end.compact]
 
-              IndexDefinition.new(table_name, index_name, unique, column_names, [], orders, where, nil, using, opclasses)
+              index_attrs = [table_name, index_name, unique, column_names, [], orders, where, nil, using, nil, opclasses]
+
+              IndexDefinition.new(*index_attrs)
             end
           end.compact
         end
@@ -147,6 +154,9 @@ module ActiveRecord
           def quoted_columns_for_index(column_names, options = {})
             column_opclasses = options[:opclasses] || {}
             column_names.map {|name| "#{quote_column_name(name)} #{column_opclasses[name]}"}
+
+            quoted_columns = Hash[column_names.map { |name| [name.to_sym, "#{quote_column_name(name)} #{column_opclasses[name]}"] }]
+            add_options_for_index_columns(quoted_columns, options).values
           end
       end
     end
@@ -160,29 +170,42 @@ module ActiveRecord
       def indexes(table, stream)
         if (indexes = @connection.indexes(table)).any?
           add_index_statements = indexes.map do |index|
-            statement_parts = [
-              "add_index #{remove_prefix_and_suffix(index.table).inspect}",
-              index.columns.inspect,
-              "name: #{index.name.inspect}",
-            ]
-            statement_parts << 'unique: true' if index.unique
-
-            index_lengths = (index.lengths || []).compact
-            statement_parts << "length: #{Hash[index.columns.zip(index.lengths)].inspect}" if index_lengths.any?
-
-            index_orders = index.orders || {}
-            statement_parts << "order: #{index.orders.inspect}" if index_orders.any?
-            statement_parts << "where: #{index.where.inspect}" if index.where
-            statement_parts << "using: #{index.using.inspect}" if index.using
-            statement_parts << "type: #{index.type.inspect}" if index.type
-            statement_parts << "opclasses: #{index.opclasses}" if index.opclasses.present?
-
-            "  #{statement_parts.join(', ')}"
+            table_name = remove_prefix_and_suffix(index.table).inspect
+            "  add_index #{([table_name]+index_parts(index)).join(', ')}"
           end
 
           stream.puts add_index_statements.sort.join("\n")
           stream.puts
         end
+      end
+
+      def indexes_in_create(table, stream)
+        if (indexes = @connection.indexes(table)).any?
+          index_statements = indexes.map do |index|
+            "    t.index #{index_parts(index).join(', ')}"
+          end
+          stream.puts index_statements.sort.join("\n")
+        end
+      end
+
+      def index_parts(index)
+        index_parts = [
+          index.columns.inspect,
+          "name: #{index.name.inspect}",
+        ]
+        index_parts << "unique: true" if index.unique
+        index_parts << "length: { #{format_options(index.lengths)} }" if index.lengths.present?
+        index_parts << "order: { #{format_options(index.orders)} }" if index.orders.present?
+        index_parts << "where: #{index.where.inspect}" if index.where
+        index_parts << "using: #{index.using.inspect}" if index.using
+        index_parts << "type: #{index.type.inspect}" if index.type
+        index_parts << "opclasses: #{index.opclasses.inspect}" if index.opclasses.present?
+        index_parts << "comment: #{index.comment.inspect}" if index.comment
+        index_parts
+      end
+
+      def format_options(options)
+        options.map { |key, value| "#{key}: #{value.inspect}" }.join(", ")
       end
   end
 end

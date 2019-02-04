@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectStatistics < ActiveRecord::Base
   belongs_to :project
   belongs_to :namespace
@@ -5,7 +7,7 @@ class ProjectStatistics < ActiveRecord::Base
   before_save :update_storage_size
 
   COLUMNS_TO_REFRESH = [:repository_size, :lfs_objects_size, :commit_count].freeze
-  INCREMENTABLE_COLUMNS = [:build_artifacts_size].freeze
+  INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size] }.freeze
 
   def total_repository_size
     repository_size + lfs_objects_size
@@ -38,11 +40,28 @@ class ProjectStatistics < ActiveRecord::Base
     self.storage_size = repository_size + lfs_objects_size + build_artifacts_size
   end
 
+  # Since this incremental update method does not call update_storage_size above,
+  # we have to update the storage_size here as additional column.
+  # Additional columns are updated depending on key => [columns], which allows
+  # to update statistics which are and also those which aren't included in storage_size
+  # or any other additional summary column in the future.
   def self.increment_statistic(project_id, key, amount)
-    raise ArgumentError, "Cannot increment attribute: #{key}" unless key.in?(INCREMENTABLE_COLUMNS)
+    raise ArgumentError, "Cannot increment attribute: #{key}" unless INCREMENTABLE_COLUMNS.key?(key)
     return if amount == 0
 
     where(project_id: project_id)
-      .update_all(["#{key} = COALESCE(#{key}, 0) + (?)", amount])
+      .columns_to_increment(key, amount)
+  end
+
+  def self.columns_to_increment(key, amount)
+    updates = ["#{key} = COALESCE(#{key}, 0) + (#{amount})"]
+
+    if (additional = INCREMENTABLE_COLUMNS[key])
+      additional.each do |column|
+        updates << "#{column} = COALESCE(#{column}, 0) + (#{amount})"
+      end
+    end
+
+    update_all(updates.join(', '))
   end
 end

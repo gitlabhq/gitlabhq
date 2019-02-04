@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::AfterImportService do
+  include GitHelpers
+
   subject { described_class.new(project) }
 
   let(:project) { create(:project, :repository) }
@@ -32,7 +34,7 @@ describe Projects::AfterImportService do
       end
 
       it 'removes refs/pull/**/*' do
-        expect(repository.rugged.references.map(&:name))
+        expect(rugged.references.map(&:name))
           .not_to include(%r{\Arefs/pull/})
       end
     end
@@ -46,10 +48,14 @@ describe Projects::AfterImportService do
         end
 
         it "does not remove refs/#{name}/tmp" do
-          expect(repository.rugged.references.map(&:name))
+          expect(rugged.references.map(&:name))
             .to include("refs/#{name}/tmp")
         end
       end
+    end
+
+    def rugged
+      rugged_repo(repository)
     end
   end
 end

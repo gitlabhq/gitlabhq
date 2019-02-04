@@ -77,4 +77,27 @@ describe AwardEmoji do
       end
     end
   end
+
+  describe '.award_counts_for_user' do
+    let(:user) { create(:user) }
+
+    before do
+      create(:award_emoji, user: user, name: 'thumbsup')
+      create(:award_emoji, user: user, name: 'thumbsup')
+      create(:award_emoji, user: user, name: 'thumbsdown')
+      create(:award_emoji, user: user, name: '+1')
+    end
+
+    it 'returns the awarded emoji in descending order' do
+      awards = described_class.award_counts_for_user(user)
+
+      expect(awards).to eq('thumbsup' => 2, 'thumbsdown' => 1, '+1' => 1)
+    end
+
+    it 'limits the returned number of rows' do
+      awards = described_class.award_counts_for_user(user, 1)
+
+      expect(awards).to eq('thumbsup' => 2)
+    end
+  end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class UpdateRunnerService
     attr_reader :runner

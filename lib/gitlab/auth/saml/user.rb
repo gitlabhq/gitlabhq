@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # SAML extension for User model
 #
 # * Find GitLab user based on SAML uid and provider
@@ -32,6 +34,10 @@ module Gitlab
           return true unless gl_user
 
           gl_user.changed? || gl_user.identities.any?(&:changed?)
+        end
+
+        def bypass_two_factor?
+          saml_config.upstream_two_factor_authn_contexts&.include?(auth_hash.authn_context)
         end
 
         protected

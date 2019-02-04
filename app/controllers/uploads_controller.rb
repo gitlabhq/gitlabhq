@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UploadsController < ApplicationController
   include UploadsActions
 
@@ -66,6 +68,10 @@ class UploadsController < ApplicationController
     else
       authenticate_user!
     end
+  end
+
+  def cache_publicly?
+    User === model || Appearance === model
   end
 
   def upload_model_class

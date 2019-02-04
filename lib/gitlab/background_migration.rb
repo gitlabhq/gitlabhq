@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module BackgroundMigration
     def self.queue
@@ -14,11 +16,18 @@ module Gitlab
     # re-raises the exception.
     #
     # steal_class - The name of the class for which to steal jobs.
-    def self.steal(steal_class)
-      enqueued = Sidekiq::Queue.new(self.queue)
-      scheduled = Sidekiq::ScheduledSet.new
+    def self.steal(steal_class, retry_dead_jobs: false)
+      queues = [
+        Sidekiq::ScheduledSet.new,
+        Sidekiq::Queue.new(self.queue)
+      ]
 
-      [scheduled, enqueued].each do |queue|
+      if retry_dead_jobs
+        queues << Sidekiq::RetrySet.new
+        queues << Sidekiq::DeadSet.new
+      end
+
+      queues.each do |queue|
         queue.each do |job|
           migration_class, migration_args = job.args
 
@@ -46,7 +55,24 @@ module Gitlab
     # arguments - The arguments to pass to the background migration's "perform"
     #             method.
     def self.perform(class_name, arguments)
-      const_get(class_name).new.perform(*arguments)
+      migration_class_for(class_name).new.perform(*arguments)
+    end
+
+    def self.exists?(migration_class)
+      enqueued = Sidekiq::Queue.new(self.queue)
+      scheduled = Sidekiq::ScheduledSet.new
+
+      [enqueued, scheduled].each do |queue|
+        queue.each do |job|
+          return true if job.queue == self.queue && job.args.first == migration_class
+        end
+      end
+
+      false
+    end
+
+    def self.migration_class_for(class_name)
+      const_get(class_name)
     end
   end
 end

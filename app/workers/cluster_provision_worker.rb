@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClusterProvisionWorker
   include ApplicationWorker
   include ClusterQueue
@@ -7,6 +9,8 @@ class ClusterProvisionWorker
       cluster.provider.try do |provider|
         Clusters::Gcp::ProvisionService.new.execute(provider) if cluster.gcp?
       end
+
+      ClusterConfigureWorker.perform_async(cluster.id) if cluster.user?
     end
   end
 end

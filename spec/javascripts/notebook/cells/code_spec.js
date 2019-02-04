@@ -12,7 +12,7 @@ describe('Code component', () => {
   });
 
   describe('without output', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = new Component({
         propsData: {
           cell: json.cells[0],
@@ -31,7 +31,7 @@ describe('Code component', () => {
   });
 
   describe('with output', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm = new Component({
         propsData: {
           cell: json.cells[2],

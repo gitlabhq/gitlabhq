@@ -1,16 +1,42 @@
 %h3
   = _('Specific Runners')
 
-= render partial: 'ci/runner/how_to_setup_specific_runner',
-         locals: { registration_token: @project.runners_token }
+.bs-callout.help-callout
+  .append-bottom-10
+    %h4= _('Set up a specific Runner automatically')
+
+  %p
+    - link_to_help_page = link_to(_('Learn more about Kubernetes'),
+                                  help_page_path('user/project/clusters/index'),
+                                  target: '_blank',
+                                  rel: 'noopener noreferrer')
+
+    = _('You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}').html_safe % { link_to_help_page: link_to_help_page }
+
+  %ol
+    %li
+      = _('Click the button below to begin the install process by navigating to the Kubernetes page')
+    %li
+      = _('Select an existing Kubernetes cluster or create a new one')
+    %li
+      = _('From the Kubernetes cluster details view, install Runner from the applications list')
+
+  = link_to _('Install Runner on Kubernetes'),
+    project_clusters_path(@project),
+    class: 'btn btn-info'
+  %hr
+  = render partial: 'ci/runner/how_to_setup_runner',
+           locals: { registration_token: @project.runners_token,
+                     type: 'specific',
+                     reset_token_url: reset_registration_token_namespace_project_settings_ci_cd_path }
 
 - if @project_runners.any?
-  %h4.underlined-title Runners activated for this project
+  %h4.underlined-title= _('Runners activated for this project')
   %ul.bordered-list.activated-specific-runners
     = render partial: 'projects/runners/runner', collection: @project_runners, as: :runner
 
 - if @assignable_runners.any?
-  %h4.underlined-title Available specific runners
+  %h4.underlined-title= _('Available specific runners')
   %ul.bordered-list.available-specific-runners
     = render partial: 'projects/runners/runner', collection: @assignable_runners, as: :runner
-  = paginate @assignable_runners, theme: "gitlab"
+  = paginate @assignable_runners, theme: "gitlab", :params => { :anchor => '#js-runners-settings' }

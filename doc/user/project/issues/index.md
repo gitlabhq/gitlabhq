@@ -8,7 +8,7 @@ It allows you, your team, and your collaborators to share
 and discuss proposals before and while implementing them.
 
 GitLab Issues and the GitLab Issue Tracker are available in all
-[GitLab Products](https://about.gitlab.com/products/) as
+[GitLab Products](https://about.gitlab.com/pricing/) as
 part of the [GitLab Workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 
 ## Use cases
@@ -35,7 +35,7 @@ your project public, open to collaboration.
 ### Streamline collaboration
 
 With [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
-available in [GitLab Starter](https://about.gitlab.com/products/)
+available in [GitLab Starter](https://about.gitlab.com/pricing/)
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
@@ -139,8 +139,17 @@ Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issue
 Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
-With [GitLab Starter](https://about.gitlab.com/products/), you can also
+With [GitLab Starter](https://about.gitlab.com/pricing/), you can also
 create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
+
+### Import Issues from CSV
+
+You can import a CSV file containing issue titles and descriptions to create
+a batch of issues simultaneously.
+
+When you navigate to the Issues list page, an import button is displayed.
+
+For further details, see [Importing issues from CSV](csv_import.md)
 
 ### External Issue Tracker
 
@@ -148,10 +157,14 @@ Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
 tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
 or Bugzilla.
 
-### Issue's API
+### Issue API
 
-Read through the [API documentation](../../../api/issues.md).
+See the [API documentation](../../../api/issues.md).
 
 ### Bulk editing issues
 
-Find out about [bulk editing issues](../../project/bulk_editing.md).
+See the [bulk editing issues](../../project/bulk_editing.md) page.
+
+### Similar issues
+
+See the [similar issues](similar_issues.md) page.

@@ -40,4 +40,28 @@ RSpec.describe TriggerableHooks do
       end
     end
   end
+
+  describe '.select_active' do
+    it 'returns hooks that match the active filter' do
+      TestableHook.create!(url: 'http://example1.com', push_events: true)
+      TestableHook.create!(url: 'http://example2.com', push_events: true)
+      filter1 = double(:filter1)
+      filter2 = double(:filter2)
+      allow(ActiveHookFilter).to receive(:new).exactly(2).times.and_return(filter1, filter2)
+      expect(filter1).to receive(:matches?).and_return(true)
+      expect(filter2).to receive(:matches?).and_return(false)
+
+      hooks = TestableHook.push_hooks.order_id_asc
+      expect(hooks.select_active(:push_hooks, {})).to eq [hooks.first]
+    end
+
+    it 'returns empty list if no hooks match the active filter' do
+      TestableHook.create!(url: 'http://example1.com', push_events: true)
+      filter = double(:filter)
+      allow(ActiveHookFilter).to receive(:new).and_return(filter)
+      expect(filter).to receive(:matches?).and_return(false)
+
+      expect(TestableHook.push_hooks.select_active(:push_hooks, {})).to eq []
+    end
+  end
 end

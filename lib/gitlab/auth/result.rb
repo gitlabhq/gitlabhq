@@ -1,4 +1,7 @@
-module Gitlab # rubocop:disable Naming/FileName
+# rubocop:disable Naming/FileName
+# frozen_string_literal: true
+
+module Gitlab
   module Auth
     Result = Struct.new(:actor, :project, :type, :authentication_abilities) do
       def ci?(for_project)

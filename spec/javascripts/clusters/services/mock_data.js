@@ -1,9 +1,4 @@
-import {
-  APPLICATION_INSTALLED,
-  APPLICATION_INSTALLABLE,
-  APPLICATION_INSTALLING,
-  APPLICATION_ERROR,
-} from '~/clusters/constants';
+import { APPLICATION_STATUS } from '~/clusters/constants';
 
 const CLUSTERS_MOCK_DATA = {
   GET: {
@@ -11,67 +6,101 @@ const CLUSTERS_MOCK_DATA = {
       data: {
         status: 'errored',
         status_reason: 'Failed to request to CloudPlatform.',
-        applications: [{
-          name: 'helm',
-          status: APPLICATION_INSTALLABLE,
-          status_reason: null,
-        }, {
-          name: 'ingress',
-          status: APPLICATION_ERROR,
-          status_reason: 'Cannot connect',
-          external_ip: null,
-        }, {
-          name: 'runner',
-          status: APPLICATION_INSTALLING,
-          status_reason: null,
-        },
-        {
-          name: 'prometheus',
-          status: APPLICATION_ERROR,
-          status_reason: 'Cannot connect',
-        }, {
-          name: 'jupyter',
-          status: APPLICATION_INSTALLING,
-          status_reason: 'Cannot connect',
-        }],
+        applications: [
+          {
+            name: 'helm',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            status_reason: null,
+          },
+          {
+            name: 'ingress',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            external_ip: null,
+          },
+          {
+            name: 'runner',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: null,
+          },
+          {
+            name: 'prometheus',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'jupyter',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'knative',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'cert_manager',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            email: 'test@example.com',
+          },
+        ],
       },
     },
     '/gitlab-org/gitlab-shell/clusters/2/status.json': {
       data: {
         status: 'errored',
         status_reason: 'Failed to request to CloudPlatform.',
-        applications: [{
-          name: 'helm',
-          status: APPLICATION_INSTALLED,
-          status_reason: null,
-        }, {
-          name: 'ingress',
-          status: APPLICATION_INSTALLED,
-          status_reason: 'Cannot connect',
-          external_ip: '1.1.1.1',
-        }, {
-          name: 'runner',
-          status: APPLICATION_INSTALLING,
-          status_reason: null,
-        },
-        {
-          name: 'prometheus',
-          status: APPLICATION_ERROR,
-          status_reason: 'Cannot connect',
-        }, {
-          name: 'jupyter',
-          status: APPLICATION_INSTALLABLE,
-          status_reason: 'Cannot connect',
-        }],
+        applications: [
+          {
+            name: 'helm',
+            status: APPLICATION_STATUS.INSTALLED,
+            status_reason: null,
+          },
+          {
+            name: 'ingress',
+            status: APPLICATION_STATUS.INSTALLED,
+            status_reason: 'Cannot connect',
+            external_ip: '1.1.1.1',
+          },
+          {
+            name: 'runner',
+            status: APPLICATION_STATUS.INSTALLING,
+            status_reason: null,
+          },
+          {
+            name: 'prometheus',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'jupyter',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'knative',
+            status: APPLICATION_STATUS.INSTALLABLE,
+            status_reason: 'Cannot connect',
+          },
+          {
+            name: 'cert_manager',
+            status: APPLICATION_STATUS.ERROR,
+            status_reason: 'Cannot connect',
+            email: 'test@example.com',
+          },
+        ],
       },
     },
   },
   POST: {
-    '/gitlab-org/gitlab-shell/clusters/1/applications/helm': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/runner': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': { },
-    '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': { },
+    '/gitlab-org/gitlab-shell/clusters/1/applications/helm': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/ingress': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/cert_manager': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/runner': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/prometheus': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/jupyter': {},
+    '/gitlab-org/gitlab-shell/clusters/1/applications/knative': {},
   },
 };
 
@@ -86,7 +115,4 @@ const DEFAULT_APPLICATION_STATE = {
   requestReason: null,
 };
 
-export {
-  CLUSTERS_MOCK_DATA,
-  DEFAULT_APPLICATION_STATE,
-};
+export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE };

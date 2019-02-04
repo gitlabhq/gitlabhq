@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
-      # Relations which cannot have both group_id and project_id at the same time
-      RESTRICT_PROJECT_AND_GROUP = %i(milestone milestones).freeze
+      # Relations which cannot be saved at project level (and have a group assigned)
+      GROUP_MODELS = [GroupLabel, Milestone].freeze
 
       def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
@@ -23,6 +25,8 @@ module Gitlab
         end
 
         @project_members = @tree_hash.delete('project_members')
+
+        RelationRenameService.rename(@tree_hash)
 
         ActiveRecord::Base.uncached do
           ActiveRecord::Base.no_touching do
@@ -70,10 +74,21 @@ module Gitlab
       def save_relation_hash(relation_hash_batch, relation_key)
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
+        remove_group_models(relation_hash) if relation_hash.is_a?(Array)
+
         @saved = false unless restored_project.append_or_update_attribute(relation_key, relation_hash)
 
         # Restore the project again, extra query that skips holding the AR objects in memory
         @restored_project = Project.find(@project_id)
+      end
+
+      # Remove project models that became group models as we found them at group level.
+      # This no longer required saving them at the root project level.
+      # For example, in the case of an existing group label that matched the title.
+      def remove_group_models(relation_hash)
+        relation_hash.reject! do |value|
+          GROUP_MODELS.include?(value.class) && value.group_id
+        end
       end
 
       def default_relation_list
@@ -83,13 +98,16 @@ module Gitlab
       end
 
       def restore_project
-        @project.update_columns(project_params)
+        Gitlab::Timeless.timeless(@project) do
+          @project.update(project_params)
+        end
+
         @project
       end
 
       def project_params
         @project_params ||= begin
-          attrs = json_params.merge(override_params)
+          attrs = json_params.merge(override_params).merge(visibility_level)
 
           # Cleaning all imported and overridden params
           Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
@@ -109,6 +127,13 @@ module Gitlab
         end
       end
 
+      def visibility_level
+        level = override_params['visibility_level'] || json_params['visibility_level'] || @project.visibility_level
+        level = @project.group.visibility_level if @project.group && level > @project.group.visibility_level
+
+        { 'visibility_level' => level }
+      end
+
       # Given a relation hash containing one or more models and its relationships,
       # loops through each model and each object from a model type and
       # and assigns its correspondent attributes hash from +tree_hash+
@@ -122,16 +147,25 @@ module Gitlab
         return if tree_hash[relation_key].blank?
 
         tree_array = [tree_hash[relation_key]].flatten
+        null_iid_pipelines = []
 
         # Avoid keeping a possible heavy object in memory once we are done with it
-        while relation_item = tree_array.shift
+        while relation_item = (tree_array.shift || null_iid_pipelines.shift)
+          if nil_iid_pipeline?(relation_key, relation_item) && tree_array.any?
+            # Move pipelines with NULL IIDs to the end
+            # so they don't clash with existing IIDs.
+            null_iid_pipelines << relation_item
+
+            next
+          end
+
           # The transaction at this level is less speedy than one single transaction
           # But we can't have it in the upper level or GC won't get rid of the AR objects
           # after we save the batch.
           Project.transaction do
             process_sub_relation(relation, relation_item)
 
-            # For every subrelation that hangs from Project, save the associated records alltogether
+            # For every subrelation that hangs from Project, save the associated records altogether
             # This effectively batches all records per subrelation item, only keeping those in memory
             # We have to keep in mind that more batch granularity << Memory, but >> Slowness
             if save
@@ -170,7 +204,7 @@ module Gitlab
       def create_relation(relation, relation_hash_list)
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
           Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: parsed_relation_hash(relation_hash, relation.to_sym),
+                                                       relation_hash: relation_hash,
                                                        members_mapper: members_mapper,
                                                        user: @user,
                                                        project: @restored_project,
@@ -180,24 +214,16 @@ module Gitlab
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
       end
 
-      def parsed_relation_hash(relation_hash, relation_type)
-        if RESTRICT_PROJECT_AND_GROUP.include?(relation_type)
-          params = {}
-          params['group_id'] = restored_project.group.try(:id) if relation_hash['group_id']
-          params['project_id'] = restored_project.id if relation_hash['project_id']
-        else
-          params = { 'group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id }
-        end
-
-        relation_hash.merge(params)
-      end
-
       def reader
         @reader ||= Gitlab::ImportExport::Reader.new(shared: @shared)
       end
 
       def excluded_keys_for_relation(relation)
-        @reader.attributes_finder.find_excluded_keys(relation)
+        reader.attributes_finder.find_excluded_keys(relation)
+      end
+
+      def nil_iid_pipeline?(relation_key, relation_item)
+        relation_key == 'ci_pipelines' && relation_item['iid'].nil?
       end
     end
   end

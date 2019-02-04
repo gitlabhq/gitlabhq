@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-feature 'Multiple issue updating from issues#index', :js do
+describe 'Multiple issue updating from issues#index', :js do
   let!(:project)   { create(:project) }
   let!(:issue)     { create(:issue, project: project) }
   let!(:user)      { create(:user)}
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -49,7 +49,7 @@ feature 'Multiple issue updating from issues#index', :js do
       click_update_issues_button
 
       page.within('.issue .controls') do
-        expect(find('.author_link')["title"]).to have_content(user.name)
+        expect(find('.author-link')["title"]).to have_content(user.name)
       end
     end
 
@@ -63,7 +63,7 @@ feature 'Multiple issue updating from issues#index', :js do
 
       click_link 'Unassigned'
       click_update_issues_button
-      expect(find('.issue:first-child .controls')).not_to have_css('.author_link')
+      expect(find('.issue:first-child .controls')).not_to have_css('.author-link')
     end
   end
 

@@ -8,10 +8,10 @@ Add the `Ajax` object to the plugins array of a `DropLab.prototype.init` or `Dro
 
 `Ajax` requires 2 config values, the `endpoint` and `method`.
 
-* `endpoint` should be a URL to the request endpoint.
-* `method` should be `setData` or `addData`.
-* `setData` completely replaces the dropdown with the response data.
-* `addData` appends the response data to the current dropdown list.
+- `endpoint` should be a URL to the request endpoint.
+- `method` should be `setData` or `addData`.
+- `setData` completely replaces the dropdown with the response data.
+- `addData` appends the response data to the current dropdown list.
 
 ```html
 <a href="#" id="trigger" data-dropdown-trigger="#list">Toggle</a>

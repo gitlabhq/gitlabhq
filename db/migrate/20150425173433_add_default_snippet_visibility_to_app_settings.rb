@@ -1,5 +1,4 @@
-# rubocop:disable all
-class AddDefaultSnippetVisibilityToAppSettings < ActiveRecord::Migration
+class AddDefaultSnippetVisibilityToAppSettings < ActiveRecord::Migration[4.2]
   def up
     add_column :application_settings, :default_snippet_visibility, :integer
     visibility = Settings.gitlab.default_projects_features['visibility_level']

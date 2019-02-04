@@ -14,13 +14,12 @@
         %br
         - if @target_url
           - if @reply_by_email
-            Reply to this email directly or
-            #{link_to "view it on GitLab", @target_url}.
+            = _('Reply to this email directly or %{view_it_on_gitlab}.').html_safe % { view_it_on_gitlab: link_to(_("view it on GitLab"), @target_url) }
           - else
-            #{link_to "View it on GitLab", @target_url}.
+            #{link_to _("View it on GitLab"), @target_url}.
           %br
           -# Don't link the host in the line below, one link in the email is easier to quickly click than two.
-          You're receiving this email because #{notification_reason_text(@reason)}.
+          = _("You're receiving this email because %{reason}.") % { reason: notification_reason_text(@reason) }
           If you'd like to receive fewer emails, you can
           - if @labels_url
             adjust your #{link_to 'label subscriptions', @labels_url}.

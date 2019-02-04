@@ -6,14 +6,14 @@ describe Groups::VariablesController do
 
   before do
     sign_in(user)
-    group.add_master(user)
+    group.add_maintainer(user)
   end
 
   describe 'GET #show' do
     let!(:variable) { create(:ci_group_variable, group: group) }
 
     subject do
-      get :show, group_id: group, format: :json
+      get :show, params: { group_id: group }, format: :json
     end
 
     include_examples 'GET #show lists all variables'
@@ -25,8 +25,10 @@ describe Groups::VariablesController do
 
     subject do
       patch :update,
-        group_id: group,
-        variables_attributes: variables_attributes,
+        params: {
+          group_id: group,
+          variables_attributes: variables_attributes
+        },
         format: :json
     end
 

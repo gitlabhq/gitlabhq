@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 class Projects::BuildArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
 
   before_action :authorize_read_build!
   before_action :extract_ref_name_and_path
-  before_action :validate_artifacts!
+  before_action :validate_artifacts!, except: [:download]
 
   def download
-    redirect_to download_project_job_artifacts_path(project, job)
+    redirect_to download_project_job_artifacts_path(project, job, params: request.query_parameters)
   end
 
   def browse
@@ -43,13 +45,12 @@ class Projects::BuildArtifactsController < Projects::ApplicationController
   end
 
   def job_from_id
-    project.builds.find_by(id: params[:build_id]) if params[:build_id]
+    project.builds.find_by_id(params[:build_id]) if params[:build_id]
   end
 
   def job_from_ref
     return unless @ref_name
 
-    jobs = project.latest_successful_builds_for(@ref_name)
-    jobs.find_by(name: params[:job])
+    project.latest_successful_build_for(params[:job], @ref_name)
   end
 end

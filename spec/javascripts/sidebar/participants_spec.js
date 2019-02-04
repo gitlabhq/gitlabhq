@@ -11,13 +11,9 @@ const PARTICIPANT = {
   avatar_url: 'gravatar.com/avatar/xxx',
 };
 
-const PARTICIPANT_LIST = [
-  PARTICIPANT,
-  { ...PARTICIPANT, id: 2 },
-  { ...PARTICIPANT, id: 3 },
-];
+const PARTICIPANT_LIST = [PARTICIPANT, { ...PARTICIPANT, id: 2 }, { ...PARTICIPANT, id: 3 }];
 
-describe('Participants', function () {
+describe('Participants', function() {
   let vm;
   let Participants;
 
@@ -69,7 +65,7 @@ describe('Participants', function () {
       expect(vm.$el.querySelector('.js-participants-expanded-loading-icon')).toBeDefined();
     });
 
-    it('when only showing visible participants, shows an avatar only for each participant under the limit', (done) => {
+    it('when only showing visible participants, shows an avatar only for each participant under the limit', done => {
       const numberOfLessParticipants = 2;
       vm = mountComponent(Participants, {
         loading: false,
@@ -88,7 +84,7 @@ describe('Participants', function () {
         .catch(done.fail);
     });
 
-    it('when only showing all participants, each has an avatar', (done) => {
+    it('when only showing all participants, each has an avatar', done => {
       const numberOfLessParticipants = 2;
       vm = mountComponent(Participants, {
         loading: false,
@@ -120,7 +116,7 @@ describe('Participants', function () {
       expect(moreParticipantLink).toBeNull();
     });
 
-    it('when too many participants, has more participants link to show more', (done) => {
+    it('when too many participants, has more participants link to show more', done => {
       vm = mountComponent(Participants, {
         loading: false,
         participants: PARTICIPANT_LIST,
@@ -138,7 +134,7 @@ describe('Participants', function () {
         .catch(done.fail);
     });
 
-    it('when too many participants and already showing them, has more participants link to show less', (done) => {
+    it('when too many participants and already showing them, has more participants link to show less', done => {
       vm = mountComponent(Participants, {
         loading: false,
         participants: PARTICIPANT_LIST,
@@ -182,6 +178,7 @@ describe('Participants', function () {
       const participantsIconEl = vm.$el.querySelector('.sidebar-collapsed-icon');
 
       participantsIconEl.click();
+
       expect(vm.$emit).toHaveBeenCalledWith('toggleSidebar');
     });
   });

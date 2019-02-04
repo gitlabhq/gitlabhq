@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Member < ActiveRecord::Base
   include AfterCommitQueue
   include Sortable
@@ -5,6 +7,7 @@ class Member < ActiveRecord::Base
   include Expirable
   include Gitlab::Access
   include Presentable
+  include Gitlab::Utils::StrongMemoize
 
   attr_accessor :raw_invite_token
 
@@ -20,6 +23,7 @@ class Member < ActiveRecord::Base
                                     message: "already exists in source",
                                     allow_nil: true }
   validates :access_level, inclusion: { in: Gitlab::Access.all_values }, presence: true
+  validate :higher_access_level_than_group, unless: :importing?
   validates :invite_email,
     presence: {
       if: :invite?
@@ -69,14 +73,19 @@ class Member < ActiveRecord::Base
   scope :guests, -> { active.where(access_level: GUEST) }
   scope :reporters, -> { active.where(access_level: REPORTER) }
   scope :developers, -> { active.where(access_level: DEVELOPER) }
-  scope :masters,  -> { active.where(access_level: MASTER) }
+  scope :maintainers, -> { active.where(access_level: MAINTAINER) }
+  scope :masters, -> { maintainers } # @deprecated
   scope :owners,  -> { active.where(access_level: OWNER) }
-  scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
+  scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
+  scope :owners_and_masters,  -> { owners_and_maintainers } # @deprecated
+  scope :with_user, -> (user) { where(user: user) }
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
   scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
+
+  scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
@@ -99,7 +108,7 @@ class Member < ActiveRecord::Base
     def filter_by_2fa(value)
       case value
       when 'enabled'
-        left_join_users.merge(User.with_two_factor_indistinct)
+        left_join_users.merge(User.with_two_factor)
       when 'disabled'
         left_join_users.merge(User.without_two_factor)
       else
@@ -141,17 +150,20 @@ class Member < ActiveRecord::Base
     end
 
     def add_user(source, user, access_level, existing_members: nil, current_user: nil, expires_at: nil, ldap: false)
+      # rubocop: disable CodeReuse/ServiceClass
       # `user` can be either a User object, User ID or an email to be invited
       member = retrieve_member(source, user, existing_members)
       access_level = retrieve_access_level(access_level)
 
       return member unless can_update_member?(current_user, member)
 
-      member.attributes = {
-        created_by: member.created_by || current_user,
-        access_level: access_level,
-        expires_at: expires_at
-      }
+      set_member_attributes(
+        member,
+        access_level,
+        current_user: current_user,
+        expires_at: expires_at,
+        ldap: ldap
+      )
 
       if member.request?
         ::Members::ApproveAccessRequestService.new(
@@ -167,6 +179,19 @@ class Member < ActiveRecord::Base
       end
 
       member
+      # rubocop: enable CodeReuse/ServiceClass
+    end
+
+    # Populates the attributes of a member.
+    #
+    # This logic resides in a separate method so that EE can extend this logic,
+    # without having to patch the `add_user` method directly.
+    def set_member_attributes(member, access_level, current_user: nil, expires_at: nil, ldap: false)
+      member.attributes = {
+        created_by: member.created_by || current_user,
+        access_level: access_level,
+        expires_at: expires_at
+      }
     end
 
     def add_users(source, users, access_level, current_user: nil, expires_at: nil)
@@ -335,11 +360,22 @@ class Member < ActiveRecord::Base
     @notification_setting ||= user&.notification_settings_for(source)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def notifiable?(type, opts = {})
     # always notify when there isn't a user yet
     return true if user.blank?
 
     NotificationRecipientService.notifiable?(user, type, notifiable_options.merge(opts))
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  # Find the user's group member with a highest access level
+  def highest_group_member
+    strong_memoize(:highest_group_member) do
+      next unless user_id && source&.ancestors&.any?
+
+      GroupMember.where(source: source.ancestors, user_id: user_id).order(:access_level).last
+    end
   end
 
   private
@@ -370,6 +406,7 @@ class Member < ActiveRecord::Base
   # in a transaction. Doing so can lead to the job running before the
   # transaction has been committed, resulting in the job either throwing an
   # error or not doing any meaningful work.
+  # rubocop: disable CodeReuse/ServiceClass
   def refresh_member_authorized_projects
     # If user/source is being destroyed, project access are going to be
     # destroyed eventually because of DB foreign keys, so we shouldn't bother
@@ -378,6 +415,7 @@ class Member < ActiveRecord::Base
 
     UserProjectAccessChangedService.new(user_id).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def after_accept_invite
     post_create_hook
@@ -391,15 +429,27 @@ class Member < ActiveRecord::Base
     post_create_hook
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def system_hook_service
     SystemHooksService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def notification_service
     NotificationService.new
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def notifiable_options
     {}
+  end
+
+  def higher_access_level_than_group
+    if highest_group_member && highest_group_member.access_level >= access_level
+      error_parameters = { access: highest_group_member.human_access, group_name: highest_group_member.group.name }
+
+      errors.add(:access_level, s_("should be higher than %{access} inherited membership from group %{group_name}") % error_parameters)
+    end
   end
 end

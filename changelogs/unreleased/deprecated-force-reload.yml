@@ -1,0 +1,6 @@
+---
+title: 'Fix deprecation: Passing an argument to force an association to reload is
+  now deprecated'
+merge_request: 24136
+author: Jasper Maes
+type: other

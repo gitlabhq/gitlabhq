@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for deployment services
 #
 # These services integrate with a deployment solution like Kubernetes/OpenShift,

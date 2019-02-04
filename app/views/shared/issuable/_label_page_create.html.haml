@@ -1,6 +1,7 @@
+- show_close = local_assigns.fetch(:show_close, true)
 - subject = @project || @group
 .dropdown-page-two.dropdown-new-label
-  = dropdown_title(create_label_title(subject), options: { back: true })
+  = dropdown_title(create_label_title(subject), options: { back: true, close: show_close })
   = dropdown_content do
     .dropdown-labels-error.js-label-error
     %input#new_label_name.default-dropdown-input{ type: "text", placeholder: _('Name new label') }

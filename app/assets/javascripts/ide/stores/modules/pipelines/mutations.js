@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import * as types from './mutation_types';
 import { normalizeJob } from './utils';
 
@@ -62,5 +61,18 @@ export default {
       ...stage,
       isCollapsed: stage.id === id ? !stage.isCollapsed : stage.isCollapsed,
     }));
+  },
+  [types.SET_DETAIL_JOB](state, job) {
+    state.detailJob = { ...job };
+  },
+  [types.REQUEST_JOB_TRACE](state) {
+    state.detailJob.isLoading = true;
+  },
+  [types.RECEIVE_JOB_TRACE_ERROR](state) {
+    state.detailJob.isLoading = false;
+  },
+  [types.RECEIVE_JOB_TRACE_SUCCESS](state, data) {
+    state.detailJob.isLoading = false;
+    state.detailJob.output = data.html;
   },
 };

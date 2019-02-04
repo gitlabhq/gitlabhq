@@ -1,27 +1,29 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-param-reassign */
-/* global DiscussionMixins */
+/* eslint-disable object-shorthand, func-names */
 /* global CommentsStore */
 
 import Vue from 'vue';
 
-import '../mixins/discussion';
+import DiscussionMixins from '../mixins/discussion';
 
 window.ResolveCount = Vue.extend({
   mixins: [DiscussionMixins],
   props: {
-    loggedOut: Boolean
+    loggedOut: {
+      type: Boolean,
+      required: true,
+    },
   },
-  data: function () {
+  data: function() {
     return {
-      discussions: CommentsStore.state
+      discussions: CommentsStore.state,
     };
   },
   computed: {
-    allResolved: function () {
+    allResolved: function() {
       return this.resolvedDiscussionCount === this.discussionCount;
     },
     resolvedCountText() {
       return this.discussionCount === 1 ? 'discussion' : 'discussions';
-    }
-  }
+    },
+  },
 });

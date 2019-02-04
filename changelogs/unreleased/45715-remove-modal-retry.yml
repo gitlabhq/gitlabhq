@@ -1,5 +1,0 @@
----
-title: Remove modalbox confirmation when retrying a pipeline
-merge_request: 18879
-author:
-type: changed

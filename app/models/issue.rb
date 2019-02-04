@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
   include AtomicInternalId
+  include IidRoutes
   include Issuable
   include Noteable
   include Referable
@@ -11,6 +14,7 @@ class Issue < ActiveRecord::Base
   include TimeTrackable
   include ThrottledTouch
   include IgnorableColumn
+  include LabelEventable
 
   ignore_column :assignee_id, :branch_name, :deleted_at
 
@@ -21,6 +25,8 @@ class Issue < ActiveRecord::Base
   DueThisWeek                     = DueDateStruct.new('Due This Week', 'week').freeze
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
+
+  SORTING_PREFERENCE_FIELD = :issues_sort
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
@@ -47,7 +53,7 @@ class Issue < ActiveRecord::Base
   scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
   scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}
 
-  scope :with_due_date, -> { where('due_date IS NOT NULL') }
+  scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
@@ -55,7 +61,7 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
-  scope :order_closest_future_date, -> { reorder('CASE WHEN due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - due_date) ASC') }
+  scope :order_closest_future_date, -> { reorder('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC') }
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
@@ -93,6 +99,10 @@ class Issue < ActiveRecord::Base
 
   class << self
     alias_method :in_parents, :in_projects
+  end
+
+  def self.parent_column
+    :project_id
   end
 
   def self.reference_prefix
@@ -166,39 +176,6 @@ class Issue < ActiveRecord::Base
     "#{project.to_reference(from, full: full)}#{reference}"
   end
 
-  def referenced_merge_requests(current_user = nil)
-    ext = all_references(current_user)
-
-    notes_with_associations.each do |object|
-      object.all_references(current_user, extractor: ext)
-    end
-
-    merge_requests = ext.merge_requests.sort_by(&:iid)
-
-    cross_project_filter = -> (merge_requests) do
-      merge_requests.select { |mr| mr.target_project == project }
-    end
-
-    Ability.merge_requests_readable_by_user(
-      merge_requests, current_user,
-      filters: {
-        read_cross_project: cross_project_filter
-      }
-    )
-  end
-
-  # All branches containing the current issue's ID, except for
-  # those with a merge request open referencing the current issue.
-  def related_branches(current_user)
-    branches_with_iid = project.repository.branch_names.select do |branch|
-      branch =~ /\A#{iid}-(?!\d+-stable)/i
-    end
-
-    branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
-
-    branches_with_iid - branches_with_merge_request
-  end
-
   def suggested_branch_name
     return to_branch_name unless project.repository.branch_exists?(to_branch_name)
 
@@ -219,26 +196,6 @@ class Issue < ActiveRecord::Base
   # To allow polymorphism with MergeRequest.
   def source_project
     project
-  end
-
-  # From all notes on this issue, we'll select the system notes about linked
-  # merge requests. Of those, the MRs closing `self` are returned.
-  def closed_by_merge_requests(current_user = nil)
-    return [] unless open?
-
-    ext = all_references(current_user)
-
-    notes.system.each do |note|
-      note.all_references(current_user, extractor: ext)
-    end
-
-    merge_requests = ext.merge_requests.select(&:open?)
-    if merge_requests.any?
-      ids = MergeRequestsClosingIssues.where(merge_request_id: merge_requests.map(&:id), issue_id: id).pluck(:merge_request_id)
-      merge_requests.select { |mr| mr.id.in?(ids) }
-    else
-      []
-    end
   end
 
   def moved?
@@ -274,29 +231,13 @@ class Issue < ActiveRecord::Base
     user ? readable_by?(user) : publicly_visible?
   end
 
-  def overdue?
-    due_date.try(:past?) || false
-  end
-
   def check_for_spam?
-    project.public? && (title_changed? || description_changed?)
+    publicly_visible? &&
+      (title_changed? || description_changed? || confidential_changed?)
   end
 
   def as_json(options = {})
     super(options).tap do |json|
-      if options.key?(:issue_endpoints) && project
-        url_helper = Gitlab::Routing.url_helpers
-
-        issue_reference = options[:include_full_project_path] ? to_reference(full: true) : to_reference
-
-        json.merge!(
-          reference_path: issue_reference,
-          real_path: url_helper.project_issue_path(project, self),
-          issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
-          toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self)
-        )
-      end
-
       if options.key?(:labels)
         json[:labels] = labels.as_json(
           project: project,
@@ -307,13 +248,19 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def etag_caching_enabled?
+    true
+  end
+
   def discussions_rendered_on_frontend?
     true
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def update_project_counter_caches
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   private
 

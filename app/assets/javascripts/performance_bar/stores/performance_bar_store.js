@@ -32,8 +32,6 @@ export default class PerformanceBarStore {
   }
 
   canTrackRequest(requestUrl) {
-    return (
-      this.requests.filter(request => request.url === requestUrl).length < 2
-    );
+    return this.requests.filter(request => request.url === requestUrl).length < 2;
   }
 }

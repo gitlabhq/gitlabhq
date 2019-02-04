@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module Notes
-  class CreateService < ::BaseService
+  class CreateService < ::Notes::BaseService
     def execute
       merge_request_diff_head_sha = params.delete(:merge_request_diff_head_sha)
 
@@ -33,6 +35,8 @@ module Notes
 
       if !only_commands && note.save
         todo_service.new_note(note, current_user)
+        clear_noteable_diffs_cache(note)
+        Suggestions::CreateService.new(note).execute
       end
 
       if command_params.present?

@@ -91,14 +91,14 @@ export default class IntegrationSettingsForm {
     }
   }
 
-  /* eslint-disable promise/catch-or-return, no-new */
   /**
    * Test Integration config
    */
   testSettings(formData) {
     this.toggleSubmitBtnState(true);
 
-    return axios.put(this.testEndPoint, formData)
+    return axios
+      .put(this.testEndPoint, formData)
       .then(({ data }) => {
         if (data.error) {
           let flashActions;
@@ -106,7 +106,7 @@ export default class IntegrationSettingsForm {
           if (data.test_failed) {
             flashActions = {
               title: 'Save anyway',
-              clickHandler: (e) => {
+              clickHandler: e => {
                 e.preventDefault();
                 this.$form.submit();
               },

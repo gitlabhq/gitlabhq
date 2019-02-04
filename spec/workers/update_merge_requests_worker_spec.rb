@@ -18,13 +18,9 @@ describe UpdateMergeRequestsWorker do
     end
 
     it 'executes MergeRequests::RefreshService with expected values' do
-      expect(MergeRequests::RefreshService).to receive(:new)
-        .with(project, user).and_wrap_original do |method, *args|
-          method.call(*args).tap do |refresh_service|
-            expect(refresh_service)
-              .to receive(:execute).with(oldrev, newrev, ref)
-          end
-        end
+      expect_next_instance_of(MergeRequests::RefreshService, project, user) do |refresh_service|
+        expect(refresh_service).to receive(:execute).with(oldrev, newrev, ref)
+      end
 
       perform
     end

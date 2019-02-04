@@ -49,7 +49,7 @@ describe Groups::DestroyService do
       context 'Sidekiq inline' do
         before do
           # Run sidekiq immediately to check that renamed dir will be removed
-          Sidekiq::Testing.inline! { destroy_group(group, user, async) }
+          perform_enqueued_jobs { destroy_group(group, user, async) }
         end
 
         it 'verifies that paths have been deleted' do
@@ -133,6 +133,17 @@ describe Groups::DestroyService do
     end
 
     it_behaves_like 'group destruction', false
+  end
+
+  context 'repository removal status is taken into account' do
+    it 'raises exception' do
+      expect_next_instance_of(::Projects::DestroyService) do |destroy_service|
+        expect(destroy_service).to receive(:execute).and_return(false)
+      end
+
+      expect { destroy_group(group, user, false) }
+        .to raise_error(Groups::DestroyService::DestroyError, "Project #{project.id} can't be deleted" )
+    end
   end
 
   describe 'repository removal' do

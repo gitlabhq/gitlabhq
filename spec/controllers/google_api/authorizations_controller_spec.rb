@@ -6,7 +6,7 @@ describe GoogleApi::AuthorizationsController do
     let(:token) { 'token' }
     let(:expires_at) { 1.hour.since.strftime('%s') }
 
-    subject { get :callback, code: 'xxx', state: @state }
+    subject { get :callback, params: { code: 'xxx', state: @state } }
 
     before do
       sign_in(user)

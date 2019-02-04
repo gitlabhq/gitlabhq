@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class GroupBoards < Grape::API
     include BoardsResponses
@@ -17,7 +19,7 @@ module API
       requires :id, type: String, desc: 'The ID of a group'
     end
 
-    resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+    resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       segment ':id/boards' do
         desc 'Find a group board' do
           detail 'This feature was introduced in 10.6'
@@ -70,12 +72,10 @@ module API
           success Entities::List
         end
         params do
-          requires :label_id, type: Integer, desc: 'The ID of an existing label'
+          use :list_creation_params
         end
         post '/lists' do
-          unless available_labels_for(board_parent).exists?(params[:label_id])
-            render_api_error!({ error: 'Label not found!' }, 400)
-          end
+          authorize_list_type_resource!
 
           authorize!(:admin_list, user_group)
 

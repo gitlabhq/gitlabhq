@@ -74,8 +74,8 @@ export default {
       }
 
       if (!this.users.length) {
-        const emptyTooltipLabel = this.issuableType === 'issue' ?
-          __('Assignee(s)') : __('Assignee');
+        const emptyTooltipLabel =
+          this.issuableType === 'issue' ? __('Assignee(s)') : __('Assignee');
         names.push(emptyTooltipLabel);
       }
 
@@ -125,47 +125,32 @@ export default {
 <template>
   <div>
     <div
-      class="sidebar-collapsed-icon sidebar-collapsed-user"
-      :class="{ 'multiple-users': hasMoreThanOneAssignee }"
       v-tooltip
+      :class="{ 'multiple-users': hasMoreThanOneAssignee }"
+      :title="collapsedTooltipTitle"
+      class="sidebar-collapsed-icon sidebar-collapsed-user"
       data-container="body"
       data-placement="left"
       data-boundary="viewport"
-      :title="collapsedTooltipTitle"
     >
-      <i
-        v-if="hasNoUsers"
-        aria-label="No Assignee"
-        class="fa fa-user"
-      >
-      </i>
+      <i v-if="hasNoUsers" aria-label="No Assignee" class="fa fa-user"> </i>
       <button
-        type="button"
-        class="btn-link"
         v-for="(user, index) in users"
         v-if="shouldRenderCollapsedAssignee(index)"
         :key="user.id"
+        type="button"
+        class="btn-link"
       >
         <img
-          width="24"
-          class="avatar avatar-inline s24"
           :alt="assigneeAlt(user)"
           :src="avatarUrl(user)"
+          width="24"
+          class="avatar avatar-inline s24"
         />
-        <span class="author">
-          {{ user.name }}
-        </span>
+        <span class="author"> {{ user.name }} </span>
       </button>
-      <button
-        v-if="hasMoreThanTwoAssignees"
-        class="btn-link"
-        type="button"
-      >
-        <span
-          class="avatar-counter sidebar-avatar-counter"
-        >
-          {{ sidebarAvatarCounter }}
-        </span>
+      <button v-if="hasMoreThanTwoAssignees" class="btn-link" type="button">
+        <span class="avatar-counter sidebar-avatar-counter"> {{ sidebarAvatarCounter }} </span>
       </button>
     </div>
     <div class="value hide-collapsed">
@@ -173,69 +158,48 @@ export default {
         <span class="assign-yourself no-value">
           No assignee
           <template v-if="editable">
-            -
-            <button
-              type="button"
-              class="btn-link"
-              @click="assignSelf"
-            >
-              assign yourself
-            </button>
+            - <button type="button" class="btn-link" @click="assignSelf">assign yourself</button>
           </template>
         </span>
       </template>
       <template v-else-if="hasOneUser">
-        <a
-          class="author_link bold"
-          :href="assigneeUrl(firstUser)"
-        >
+        <a :href="assigneeUrl(firstUser)" class="author-link bold">
           <img
-            width="32"
-            class="avatar avatar-inline s32"
             :alt="assigneeAlt(firstUser)"
             :src="avatarUrl(firstUser)"
+            width="32"
+            class="avatar avatar-inline s32"
           />
-          <span class="author">
-            {{ firstUser.name }}
-          </span>
-          <span class="username">
-            {{ assigneeUsername(firstUser) }}
-          </span>
+          <span class="author"> {{ firstUser.name }} </span>
+          <span class="username"> {{ assigneeUsername(firstUser) }} </span>
         </a>
       </template>
       <template v-else>
         <div class="user-list">
           <div
-            class="user-item"
             v-for="(user, index) in users"
             v-if="renderAssignee(index)"
             :key="user.id"
+            class="user-item"
           >
             <a
+              :href="assigneeUrl(user)"
+              :data-title="user.name"
               class="user-link has-tooltip"
               data-container="body"
               data-placement="bottom"
-              :href="assigneeUrl(user)"
-              :data-title="user.name"
             >
               <img
-                width="32"
-                class="avatar avatar-inline s32"
                 :alt="assigneeAlt(user)"
                 :src="avatarUrl(user)"
+                width="32"
+                class="avatar avatar-inline s32"
               />
             </a>
           </div>
         </div>
-        <div
-          v-if="renderShowMoreSection"
-          class="user-list-more"
-        >
-          <button
-            type="button"
-            class="btn-link"
-            @click="toggleShowLess"
-          >
+        <div v-if="renderShowMoreSection" class="user-list-more">
+          <button type="button" class="btn-link" @click="toggleShowLess">
             <template v-if="showLess">
               {{ hiddenAssigneesLabel }}
             </template>
@@ -248,4 +212,3 @@ export default {
     </div>
   </div>
 </template>
-

@@ -54,13 +54,9 @@ export default {
     updateConfidentialAttribute(confidential) {
       this.service
         .update('issue', { confidential })
-        .then(() => location.reload())
+        .then(() => window.location.reload())
         .catch(() => {
-          Flash(
-            __(
-              'Something went wrong trying to change the confidentiality of this issue',
-            ),
-          );
+          Flash(__('Something went wrong trying to change the confidentiality of this issue'));
         });
     },
   },
@@ -70,18 +66,15 @@ export default {
 <template>
   <div class="block issuable-sidebar-item confidentiality">
     <div
-      class="sidebar-collapsed-icon"
-      @click="toggleForm"
       v-tooltip
+      :title="tooltipLabel"
+      class="sidebar-collapsed-icon"
       data-container="body"
       data-placement="left"
       data-boundary="viewport"
-      :title="tooltipLabel"
+      @click="toggleForm"
     >
-      <icon
-        :name="confidentialityIcon"
-        aria-hidden="true"
-      />
+      <icon :name="confidentialityIcon" aria-hidden="true" />
     </div>
     <div class="title hide-collapsed">
       {{ __('Confidentiality') }}
@@ -100,23 +93,14 @@ export default {
         :is-confidential="isConfidential"
         :update-confidential-attribute="updateConfidentialAttribute"
       />
-      <div
-        v-if="!isConfidential"
-        class="no-value sidebar-item-value">
-        <icon
-          name="eye"
-          :size="16"
-          aria-hidden="true"
-          class="sidebar-item-icon inline"
-        />
+      <div v-if="!isConfidential" class="no-value sidebar-item-value">
+        <icon :size="16" name="eye" aria-hidden="true" class="sidebar-item-icon inline" />
         {{ __('Not confidential') }}
       </div>
-      <div
-        v-else
-        class="value sidebar-item-value hide-collapsed">
+      <div v-else class="value sidebar-item-value hide-collapsed">
         <icon
-          name="eye-slash"
           :size="16"
+          name="eye-slash"
           aria-hidden="true"
           class="sidebar-item-icon inline is-active"
         />

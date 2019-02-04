@@ -60,7 +60,7 @@ Let's consider the following scenario:
    hosted in private repositories and you have multiple CI jobs that make use
    of these repositories.
 
-2. You invite a new [external user][ext]. CI jobs created by that user do not
+1. You invite a new [external user][ext]. CI jobs created by that user do not
    have access to internal repositories, because the user also doesn't have the
    access from within GitLab. You as an employee have to grant explicit access
    for this user. This allows us to prevent from accidental data leakage.
@@ -205,16 +205,16 @@ With the update permission model we also extended the support for accessing
 Container Registries for private projects.
 
 > **Notes:**
-- GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
-  for permissions. This makes the `image:` directive to not work with private
-  projects automatically and it needs to be configured manually on Runner's host
-  with a predefined account (for example administrator's personal account with
-  access token created explicitly for this purpose). This issue is resolved with
-  latest changes in GitLab Runner 1.8 which receives GitLab credentials with
-  build data.
-- Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
-  to pass a [personal access token][pat] instead of your password in order to
-  login to GitLab's Container Registry.
+> - GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
+>   for permissions. This makes the `image:` directive to not work with private
+>   projects automatically and it needs to be configured manually on Runner's host
+>   with a predefined account (for example administrator's personal account with
+>   access token created explicitly for this purpose). This issue is resolved with
+>   latest changes in GitLab Runner 1.8 which receives GitLab credentials with
+>   build data.
+> - Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
+>   to pass a [personal access token][pat] instead of your password in order to
+>   login to GitLab's Container Registry.
 
 Your jobs can access all container images that you would normally have access
 to. The only implication is that you can push to the Container Registry of the
@@ -238,6 +238,6 @@ test:
 [triggers]: ../../ci/triggers/README.md
 [update-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 [workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
-[jobenv]: ../../ci/variables/README.md#predefined-variables-environment-variables
+[jobenv]: ../../ci/variables/README.md#predefined-environment-variables
 [2fa]: ../profile/account/two_factor_authentication.md
 [pat]: ../profile/personal_access_tokens.md

@@ -1,23 +1,32 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class BuildService < MergeRequests::BaseService
     include Gitlab::Utils::StrongMemoize
 
     def execute
       @params_issue_iid = params.delete(:issue_iid)
+      self.merge_request = MergeRequest.new
+      # TODO: this should handle all quick actions that don't have side effects
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/53658
+      merge_quick_actions_into_params!(merge_request, only: [:target_branch])
+      merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch) if params.has_key?(:force_remove_source_branch)
+      merge_request.assign_attributes(params)
 
-      self.merge_request = MergeRequest.new(params)
       merge_request.author = current_user
       merge_request.compare_commits = []
       merge_request.source_project  = find_source_project
       merge_request.target_project  = find_target_project
       merge_request.target_branch   = find_target_branch
-      merge_request.can_be_created  = branches_valid?
+      merge_request.can_be_created  = projects_and_branches_valid?
 
       # compare branches only if branches are valid, otherwise
       # compare_branches may raise an error
       if merge_request.can_be_created
         compare_branches
         assign_title_and_description
+        assign_labels
+        assign_milestone
       end
 
       merge_request
@@ -40,15 +49,19 @@ module MergeRequests
              to: :merge_request
 
     def find_source_project
-      return source_project if source_project.present? && can?(current_user, :read_project, source_project)
+      return source_project if source_project.present? && can?(current_user, :create_merge_request_from, source_project)
 
       project
     end
 
     def find_target_project
-      return target_project if target_project.present? && can?(current_user, :read_project, target_project)
+      return target_project if target_project.present? && can?(current_user, :create_merge_request_in, target_project)
 
-      project.default_merge_request_target
+      target_project = project.default_merge_request_target
+
+      return target_project if target_project.present? && can?(current_user, :create_merge_request_in, target_project)
+
+      project
     end
 
     def find_target_branch
@@ -63,10 +76,11 @@ module MergeRequests
       params[:target_branch].present?
     end
 
-    def branches_valid?
+    def projects_and_branches_valid?
+      return false if source_project.nil? || target_project.nil?
       return false unless source_branch_specified? || target_branch_specified?
 
-      validate_branches
+      validate_projects_and_branches
       errors.blank?
     end
 
@@ -85,7 +99,12 @@ module MergeRequests
       end
     end
 
-    def validate_branches
+    def validate_projects_and_branches
+      merge_request.validate_target_project
+      merge_request.validate_fork
+
+      return if errors.any?
+
       add_error('You must select source and target branch') unless branches_present?
       add_error('You must select different branches') if same_source_and_target?
       add_error("Source branch \"#{source_branch}\" does not exist") unless source_branch_exists?
@@ -126,12 +145,25 @@ module MergeRequests
     #
     def assign_title_and_description
       assign_title_and_description_from_single_commit
-      assign_title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
-
+      merge_request.title ||= title_from_issue if target_project.issues_enabled? || target_project.external_issue_tracker
       merge_request.title ||= source_branch.titleize.humanize
       merge_request.title = wip_title if compare_commits.empty?
 
       append_closes_description
+    end
+
+    def assign_labels
+      return unless target_project.issues_enabled? && issue
+      return if merge_request.label_ids&.any?
+
+      merge_request.label_ids = issue.try(:label_ids)
+    end
+
+    def assign_milestone
+      return unless target_project.issues_enabled? && issue
+      return if merge_request.milestone_id.present?
+
+      merge_request.milestone_id = issue.try(:milestone_id)
     end
 
     def append_closes_description
@@ -140,7 +172,8 @@ module MergeRequests
       closes_issue = "Closes #{issue.to_reference}"
 
       if description.present?
-        merge_request.description += closes_issue.prepend("\n\n")
+        descr_parts = [merge_request.description, closes_issue]
+        merge_request.description = descr_parts.join("\n\n")
       else
         merge_request.description = closes_issue
       end
@@ -156,18 +189,18 @@ module MergeRequests
       merge_request.description ||= commit.description.try(:strip)
     end
 
-    def assign_title_from_issue
+    def title_from_issue
       return unless issue
 
-      merge_request.title = "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
+      return "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
 
-      return if merge_request.title.present?
+      return if issue_iid.blank?
 
-      if issue_iid.present?
-        merge_request.title = "Resolve #{issue.to_reference}"
-        branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
-        merge_request.title += " \"#{branch_title}\"" if branch_title.present?
-      end
+      title_parts = ["Resolve #{issue.to_reference}"]
+      branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
+
+      title_parts << "\"#{branch_title}\"" if branch_title.present?
+      title_parts.join(' ')
     end
 
     def issue_iid
@@ -183,7 +216,9 @@ module MergeRequests
     end
 
     def issue
-      @issue ||= target_project.get_issue(issue_iid, current_user)
+      strong_memoize(:issue) do
+        target_project.get_issue(issue_iid, current_user)
+      end
     end
   end
 end

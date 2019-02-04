@@ -24,6 +24,7 @@ describe('DropdownSearchInputComponent', () => {
   describe('template', () => {
     it('renders input element with type `search`', () => {
       const inputEl = vm.$el.querySelector('input.dropdown-input-field');
+
       expect(inputEl).not.toBeNull();
       expect(inputEl.getAttribute('type')).toBe('search');
     });
@@ -33,7 +34,9 @@ describe('DropdownSearchInputComponent', () => {
     });
 
     it('renders clear search icon element', () => {
-      expect(vm.$el.querySelector('.fa-times.dropdown-input-clear.js-dropdown-input-clear')).not.toBeNull();
+      expect(
+        vm.$el.querySelector('.fa-times.dropdown-input-clear.js-dropdown-input-clear'),
+      ).not.toBeNull();
     });
   });
 });

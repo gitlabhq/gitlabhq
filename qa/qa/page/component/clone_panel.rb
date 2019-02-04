@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+module QA
+  module Page
+    module Component
+      module ClonePanel
+        def self.included(base)
+          base.view 'app/views/projects/buttons/_clone.html.haml' do
+            element :clone_dropdown
+            element :clone_options
+            element :ssh_clone_url
+            element :http_clone_url
+          end
+        end
+
+        def repository_clone_http_location
+          repository_clone_location(:http_clone_url)
+        end
+
+        def repository_clone_ssh_location
+          repository_clone_location(:ssh_clone_url)
+        end
+
+        def wait_for_push
+          sleep 5
+          refresh
+        end
+
+        private
+
+        def repository_clone_location(kind)
+          wait(reload: false) do
+            click_element :clone_dropdown
+
+            within_element :clone_options do
+              Git::Location.new(find_element(kind).value)
+            end
+          end
+        end
+      end
+    end
+  end
+end

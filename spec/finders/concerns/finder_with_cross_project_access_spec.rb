@@ -25,7 +25,7 @@ describe FinderWithCrossProjectAccess do
   let!(:result) { create(:issue) }
 
   before do
-    result.project.add_master(user)
+    result.project.add_maintainer(user)
   end
 
   def expect_access_check_on_result
@@ -113,6 +113,22 @@ describe FinderWithCrossProjectAccess do
       expect(finder).not_to receive(:requires_access?)
 
       expect(finder.execute).to include(result)
+    end
+  end
+
+  context 'when specifying a model' do
+    let(:finder_class) do
+      Class.new do
+        prepend FinderWithCrossProjectAccess
+
+        requires_cross_project_access model: Project
+      end
+    end
+
+    context '.finder_model' do
+      it 'is set correctly' do
+        expect(finder_class.finder_model).to eq(Project)
+      end
     end
   end
 end

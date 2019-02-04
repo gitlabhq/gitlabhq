@@ -1,10 +1,9 @@
 <script>
-import $ from 'jquery';
+import { GlTooltipDirective, GlButton } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { dasherize } from '~/lib/utils/text_utility';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
-import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 
 /**
@@ -20,35 +19,30 @@ import Icon from '~/vue_shared/components/icon.vue';
 export default {
   components: {
     Icon,
+    GlButton,
   },
-
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
-
   props: {
     tooltipText: {
       type: String,
       required: true,
     },
-
     link: {
       type: String,
       required: true,
     },
-
     actionIcon: {
       type: String,
       required: true,
     },
-
   },
   data() {
     return {
       isDisabled: false,
     };
   },
-
   computed: {
     cssClass() {
       const actionIconDash = dasherize(this.actionIcon);
@@ -63,11 +57,11 @@ export default {
      *
      */
     onClickAction() {
-      $(this.$el).tooltip('hide');
-
+      this.$root.$emit('bv::hide::tooltip', `js-ci-action-${this.link}`);
       this.isDisabled = true;
 
-      axios.post(`${this.link}.json`)
+      axios
+        .post(`${this.link}.json`)
         .then(() => {
           this.isDisabled = false;
           this.$emit('pipelineActionRequestComplete');
@@ -82,17 +76,16 @@ export default {
 };
 </script>
 <template>
-  <button
-    type="button"
-    @click="onClickAction"
-    v-tooltip
+  <gl-button
+    :id="`js-ci-action-${link}`"
+    v-gl-tooltip="{ boundary: 'viewport' }"
     :title="tooltipText"
+    :class="cssClass"
+    :disabled="isDisabled"
     class="js-ci-action btn btn-blank
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
-    :class="cssClass"
-    data-container="body"
-    :disabled="isDisabled"
+    @click="onClickAction"
   >
-    <icon :name="actionIcon"/>
-  </button>
+    <icon :name="actionIcon" />
+  </gl-button>
 </template>

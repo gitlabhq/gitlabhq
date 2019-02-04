@@ -8,6 +8,8 @@ RSpec.describe GpgSignature do
   let(:gpg_key) { create(:gpg_key) }
   let(:gpg_key_subkey) { create(:gpg_key_subkey) }
 
+  it_behaves_like 'having unique enum values'
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:gpg_key) }

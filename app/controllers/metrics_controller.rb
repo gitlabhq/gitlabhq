@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class MetricsController < ActionController::Base
   include RequiresWhitelistedMonitoringClient
 
-  protect_from_forgery with: :exception
+  protect_from_forgery with: :exception, prepend: true
 
   def index
     response = if Gitlab::Metrics.prometheus_metrics_enabled?
@@ -13,7 +15,7 @@ class MetricsController < ActionController::Base
                  "# Metrics are disabled, see: #{help_page}\n"
                end
 
-    render text: response, content_type: 'text/plain; version=0.0.4'
+    render plain: response, content_type: 'text/plain; version=0.0.4'
   end
 
   private

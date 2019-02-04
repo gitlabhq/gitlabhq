@@ -1,5 +1,0 @@
----
-title: Fix FreeBSD can not upload artifacts due to wrong tmp path
-merge_request: 19148
-author:
-type: fixed

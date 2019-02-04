@@ -10,7 +10,7 @@ describe 'Projects > Settings > User transfers a project', :js do
     sign_in(user)
   end
 
-  def transfer_project(project, group)
+  def transfer_project(project, group, confirm: true)
     visit edit_project_path(project)
 
     page.within('.js-project-transfer-form') do
@@ -21,11 +21,18 @@ describe 'Projects > Settings > User transfers a project', :js do
 
     click_button('Transfer project')
 
+    return unless confirm
+
     fill_in 'confirm_name_input', with: project.name
 
     click_button 'Confirm'
 
     wait_for_requests
+  end
+
+  it 'focuses on the confirmation field' do
+    transfer_project(project, group, confirm: false)
+    expect(page).to have_selector '#confirm_name_input:focus'
   end
 
   it 'allows transferring a project to a group' do

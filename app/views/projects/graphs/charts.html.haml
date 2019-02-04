@@ -1,5 +1,5 @@
 - @no_container = true
-- page_title "Charts"
+- page_title _("Contribution Charts")
 
 .repo-charts{ class: container_class }
   %h4.sub-header
@@ -30,7 +30,7 @@
           #{@commits_graph.start_date.strftime('%b %d')}
         - end_time = capture do
           #{@commits_graph.end_date.strftime('%b %d')}
-        = (_("Commit statistics for %{ref} %{start_time} - %{end_time}") % { ref: "<strong>#{@ref}</strong>", start_time: start_time, end_time: end_time }).html_safe
+        = (_("Commit statistics for %{ref} %{start_time} - %{end_time}") % { ref: "<strong>#{h @ref}</strong>", start_time: start_time, end_time: end_time }).html_safe
 
     .col-md-6
       .tree-ref-container

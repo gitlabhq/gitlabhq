@@ -10,21 +10,24 @@ export default {
       required: true,
     },
   },
+  computed: {
+    duration() {
+      return (
+        this.currentRequest.details[this.metric] &&
+        this.currentRequest.details[this.metric].duration
+      );
+    },
+    calls() {
+      return (
+        this.currentRequest.details[this.metric] && this.currentRequest.details[this.metric].calls
+      );
+    },
+  },
 };
 </script>
 <template>
-  <div
-    :id="`peek-view-${metric}`"
-    class="view"
-  >
-    <span
-      v-if="currentRequest.details"
-      class="bold"
-    >
-      {{ currentRequest.details[metric].duration }}
-      /
-      {{ currentRequest.details[metric].calls }}
-    </span>
+  <div :id="`peek-view-${metric}`" class="view">
+    <span v-if="currentRequest.details" class="bold"> {{ duration }} / {{ calls }} </span>
     {{ metric }}
   </div>
 </template>

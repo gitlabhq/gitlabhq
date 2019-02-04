@@ -25,14 +25,8 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
-    describe 'disabled_oauth_sign_in_sources validations' do
-      before do
-        allow(Devise).to receive(:omniauth_providers).and_return([:github])
-      end
-
-      it { is_expected.to allow_value(['github']).for(:disabled_oauth_sign_in_sources) }
-      it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
-    end
+    it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
+    it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
 
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
@@ -110,11 +104,18 @@ describe ApplicationSetting do
     # Upgraded databases will have this sort of content
     context 'repository_storages is a String, not an Array' do
       before do
-        setting.__send__(:raw_write_attribute, :repository_storages, 'default')
+        described_class.where(id: setting.id).update_all(repository_storages: 'default')
       end
 
-      it { expect(setting.repository_storages_before_type_cast).to eq('default') }
       it { expect(setting.repository_storages).to eq(['default']) }
+    end
+
+    context '#commit_email_hostname' do
+      it 'returns configured gitlab hostname if commit_email_hostname is not defined' do
+        setting.update(commit_email_hostname: nil)
+
+        expect(setting.commit_email_hostname).to eq("users.noreply.#{Gitlab.config.gitlab.host}")
+      end
     end
 
     context 'auto_devops_domain setting' do
@@ -147,19 +148,6 @@ describe ApplicationSetting do
           it 'is invalid' do
             expect(setting).to be_invalid
           end
-        end
-      end
-    end
-
-    context 'circuitbreaker settings' do
-      [:circuitbreaker_failure_count_threshold,
-       :circuitbreaker_check_interval,
-       :circuitbreaker_failure_reset_time,
-       :circuitbreaker_storage_timeout].each do |field|
-        it "Validates #{field} as number" do
-          is_expected.to validate_numericality_of(field)
-                           .only_integer
-                           .is_greater_than_or_equal_to(0)
         end
       end
     end
@@ -312,6 +300,63 @@ describe ApplicationSetting do
 
     it 'raises an record creation violation if already created' do
       expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
+  describe 'setting Sentry DSNs' do
+    context 'server DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(sentry_dsn: ' http://test ')
+
+        expect(subject.sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(sentry_dsn: nil)
+
+        expect(subject.sentry_dsn).to be_nil
+      end
+    end
+
+    context 'client-side DSN' do
+      it 'strips leading and trailing whitespace' do
+        subject.update(clientside_sentry_dsn: ' http://test ')
+
+        expect(subject.clientside_sentry_dsn).to eq('http://test')
+      end
+
+      it 'handles nil values' do
+        subject.update(clientside_sentry_dsn: nil)
+
+        expect(subject.clientside_sentry_dsn).to be_nil
+      end
+    end
+  end
+
+  describe '#disabled_oauth_sign_in_sources=' do
+    before do
+      allow(Devise).to receive(:omniauth_providers).and_return([:github])
+    end
+
+    it 'removes unknown sources (as strings) from the array' do
+      subject.disabled_oauth_sign_in_sources = %w[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'removes unknown sources (as symbols) from the array' do
+      subject.disabled_oauth_sign_in_sources = %i[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'ignores nil' do
+      subject.disabled_oauth_sign_in_sources = nil
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to be_empty
     end
   end
 
@@ -519,6 +564,65 @@ describe ApplicationSetting do
       allow(setting).to receive(:password_authentication_enabled_for_web?).and_return(false)
 
       expect(setting.allow_signup?).to be_falsey
+    end
+  end
+
+  describe '#user_default_internal_regex_enabled?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:user_default_external, :user_default_internal_regex, :result) do
+      false | nil                        | false
+      false | ''                         | false
+      false | '^(?:(?!\.ext@).)*$\r?\n?' | false
+      true  | ''                         | false
+      true  | nil                        | false
+      true  | '^(?:(?!\.ext@).)*$\r?\n?' | true
+    end
+
+    with_them do
+      before do
+        setting.update(user_default_external: user_default_external)
+        setting.update(user_default_internal_regex: user_default_internal_regex)
+      end
+
+      subject { setting.user_default_internal_regex_enabled? }
+
+      it { is_expected.to eq(result) }
+    end
+  end
+
+  context 'diff limit settings' do
+    describe '#diff_max_patch_bytes' do
+      context 'validations' do
+        it { is_expected.to validate_presence_of(:diff_max_patch_bytes) }
+
+        it do
+          is_expected.to validate_numericality_of(:diff_max_patch_bytes)
+          .only_integer
+          .is_greater_than_or_equal_to(Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES)
+          .is_less_than_or_equal_to(Gitlab::Git::Diff::MAX_PATCH_BYTES_UPPER_BOUND)
+        end
+      end
+    end
+  end
+
+  describe '#archive_builds_older_than' do
+    subject { setting.archive_builds_older_than }
+
+    context 'when the archive_builds_in_seconds is set' do
+      before do
+        setting.archive_builds_in_seconds = 3600
+      end
+
+      it { is_expected.to be_within(1.minute).of(1.hour.ago) }
+    end
+
+    context 'when the archive_builds_in_seconds is set' do
+      before do
+        setting.archive_builds_in_seconds = nil
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 end

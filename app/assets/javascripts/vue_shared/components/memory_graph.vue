@@ -41,7 +41,8 @@ export default {
       // Find metric timestamp which is closest to deploymentTime
       timestampDiff = Math.abs(metricTimestamps[0] - median);
       metricTimestamps.forEach((timestamp, index) => {
-        if (index === 0) { // Skip first element
+        if (index === 0) {
+          // Skip first element
           return;
         }
 
@@ -113,21 +114,14 @@ export default {
 <template>
   <div class="memory-graph-container">
     <svg
-      class="has-tooltip"
       :title="getFormattedMedian"
       :width="width"
       :height="height"
-      xmlns="http://www.w3.org/2000/svg">
-      <path
-        :d="pathD"
-        :viewBox="pathViewBox"
-      />
-      <circle
-        r="1.5"
-        :cx="dotX"
-        :cy="dotY"
-        tranform="translate(0 -1)"
-      />
+      class="has-tooltip"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path :d="pathD" :viewBox="pathViewBox" />
+      <circle :cx="dotX" :cy="dotY" r="1.5" transform="translate(0 -1)" />
     </svg>
   </div>
 </template>

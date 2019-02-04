@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::I18n::MetadataEntry do
-  describe '#expected_plurals' do
+  describe '#expected_forms' do
     it 'returns the number of plurals' do
       data = {
         msgid: "",
@@ -22,7 +22,7 @@ describe Gitlab::I18n::MetadataEntry do
       }
       entry = described_class.new(data)
 
-      expect(entry.expected_plurals).to eq(2)
+      expect(entry.expected_forms).to eq(2)
     end
 
     it 'returns 0 for the POT-metadata' do
@@ -45,7 +45,7 @@ describe Gitlab::I18n::MetadataEntry do
       }
       entry = described_class.new(data)
 
-      expect(entry.expected_plurals).to eq(0)
+      expect(entry.expected_forms).to eq(0)
     end
   end
 end

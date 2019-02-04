@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LfsObject < ActiveRecord::Base
   include AfterCommitQueue
   include ObjectStorage::BackgroundMove
@@ -5,7 +7,7 @@ class LfsObject < ActiveRecord::Base
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :lfs_objects_projects
 
-  scope :with_files_stored_locally, -> { where(file_store: [nil, LfsObjectUploader::Store::LOCAL]) }
+  scope :with_files_stored_locally, -> { where(file_store: LfsObjectUploader::Store::LOCAL) }
 
   validates :oid, presence: true, uniqueness: true
 
@@ -24,14 +26,16 @@ class LfsObject < ActiveRecord::Base
   end
 
   def local_store?
-    [nil, LfsObjectUploader::Store::LOCAL].include?(self.file_store)
+    file_store == LfsObjectUploader::Store::LOCAL
   end
 
+  # rubocop: disable DestroyAll
   def self.destroy_unreferenced
     joins("LEFT JOIN lfs_objects_projects ON lfs_objects_projects.lfs_object_id = #{table_name}.id")
         .where(lfs_objects_projects: { id: nil })
         .destroy_all
   end
+  # rubocop: enable DestroyAll
 
   def self.calculate_oid(path)
     Digest::SHA256.file(path).hexdigest

@@ -76,7 +76,7 @@ describe MigrateOldArtifacts do
         end
       end
 
-      context 'when there are aritfacts in old and new directory' do
+      context 'when there are artifacts in old and new directory' do
         before do
           store_artifacts_in_legacy_path(build2)
 

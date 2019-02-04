@@ -22,14 +22,15 @@ function mountAssigneesComponent(mediator) {
     components: {
       SidebarAssignees,
     },
-    render: createElement => createElement('sidebar-assignees', {
-      props: {
-        mediator,
-        field: el.dataset.field,
-        signedIn: el.hasAttribute('data-signed-in'),
-        issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
-      },
-    }),
+    render: createElement =>
+      createElement('sidebar-assignees', {
+        props: {
+          mediator,
+          field: el.dataset.field,
+          signedIn: el.hasAttribute('data-signed-in'),
+          issuableType: gl.utils.isInIssuePage() ? 'issue' : 'merge_request',
+        },
+      }),
   });
 }
 
@@ -75,7 +76,6 @@ function mountLockComponent(mediator) {
 function mountParticipantsComponent(mediator) {
   const el = document.querySelector('.js-sidebar-participants-entry-point');
 
-  // eslint-disable-next-line no-new
   if (!el) return;
 
   // eslint-disable-next-line no-new
@@ -84,11 +84,12 @@ function mountParticipantsComponent(mediator) {
     components: {
       sidebarParticipants,
     },
-    render: createElement => createElement('sidebar-participants', {
-      props: {
-        mediator,
-      },
-    }),
+    render: createElement =>
+      createElement('sidebar-participants', {
+        props: {
+          mediator,
+        },
+      }),
   });
 }
 
@@ -103,11 +104,12 @@ function mountSubscriptionsComponent(mediator) {
     components: {
       sidebarSubscriptions,
     },
-    render: createElement => createElement('sidebar-subscriptions', {
-      props: {
-        mediator,
-      },
-    }),
+    render: createElement =>
+      createElement('sidebar-subscriptions', {
+        props: {
+          mediator,
+        },
+      }),
   });
 }
 

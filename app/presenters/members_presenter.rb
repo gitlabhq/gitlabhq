@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MembersPresenter < Gitlab::View::Presenter::Delegated
   include Enumerable
 

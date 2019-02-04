@@ -1,11 +1,9 @@
 <script>
-import Icon from '../../../vue_shared/components/icon.vue';
-import CiIcon from '../../../vue_shared/components/ci_icon.vue';
+import JobDescription from './detail/description.vue';
 
 export default {
   components: {
-    Icon,
-    CiIcon,
+    JobDescription,
   },
   props: {
     job: {
@@ -18,29 +16,21 @@ export default {
       return `#${this.job.id}`;
     },
   },
+  methods: {
+    clickViewLog() {
+      this.$emit('clickViewLog', this.job);
+    },
+  },
 };
 </script>
 
 <template>
   <div class="ide-job-item">
-    <ci-icon
-      :status="job.status"
-      :borderless="true"
-      :size="24"
-    />
-    <span class="prepend-left-8">
-      {{ job.name }}
-      <a
-        :href="job.path"
-        target="_blank"
-        class="ide-external-link"
-      >
-        {{ jobId }}
-        <icon
-          name="external-link"
-          :size="12"
-        />
-      </a>
-    </span>
+    <job-description :job="job" class="append-right-default" />
+    <div class="ml-auto align-self-center">
+      <button v-if="job.started" type="button" class="btn btn-default btn-sm" @click="clickViewLog">
+        {{ __('View log') }}
+      </button>
+    </div>
   </div>
 </template>

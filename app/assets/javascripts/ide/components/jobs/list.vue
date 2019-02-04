@@ -1,12 +1,12 @@
 <script>
 import { mapActions } from 'vuex';
-import LoadingIcon from '../../../vue_shared/components/loading_icon.vue';
+import { GlLoadingIcon } from '@gitlab/ui';
 import Stage from './stage.vue';
 
 export default {
   components: {
-    LoadingIcon,
     Stage,
+    GlLoadingIcon,
   },
   props: {
     stages: {
@@ -19,18 +19,14 @@ export default {
     },
   },
   methods: {
-    ...mapActions('pipelines', ['fetchJobs', 'toggleStageCollapsed']),
+    ...mapActions('pipelines', ['fetchJobs', 'toggleStageCollapsed', 'setDetailJob']),
   },
 };
 </script>
 
 <template>
   <div>
-    <loading-icon
-      v-if="loading && !stages.length"
-      class="prepend-top-default"
-      size="2"
-    />
+    <gl-loading-icon v-if="loading && !stages.length" :size="2" class="prepend-top-default" />
     <template v-else>
       <stage
         v-for="stage in stages"
@@ -38,6 +34,7 @@ export default {
         :stage="stage"
         @fetch="fetchJobs"
         @toggleCollapsed="toggleStageCollapsed"
+        @clickViewLog="setDetailJob"
       />
     </template>
   </div>

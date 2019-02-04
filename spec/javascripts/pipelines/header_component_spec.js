@@ -18,7 +18,7 @@ describe('Pipeline details header', () => {
         details: {
           status: {
             group: 'failed',
-            icon: 'ci-status-failed',
+            icon: 'status_failed',
             label: 'failed',
             text: 'failed',
             details_path: 'path',
@@ -47,13 +47,16 @@ describe('Pipeline details header', () => {
 
   it('should render provided pipeline info', () => {
     expect(
-      vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
-    ).toEqual('failed Pipeline #123 triggered 3 weeks ago by Foo');
+      vm.$el
+        .querySelector('.header-main-content')
+        .textContent.replace(/\s+/g, ' ')
+        .trim(),
+    ).toContain('failed Pipeline #123 triggered 3 weeks ago by Foo');
   });
 
   describe('action buttons', () => {
     it('should call postAction when button action is clicked', () => {
-      eventHub.$on('headerPostAction', (action) => {
+      eventHub.$on('headerPostAction', action => {
         expect(action.path).toEqual('path');
       });
 

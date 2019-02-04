@@ -1,4 +1,4 @@
 <%= yield -%>
 
 -- <%# signature marker %>
-You're receiving this email because of your account on <%= Gitlab.config.gitlab.host %>.
+<%= _("You're receiving this email because of your account on %{host}.") % { host: Gitlab.config.gitlab.host } %>

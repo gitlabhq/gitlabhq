@@ -24,6 +24,16 @@ describe('IDE jobs item', () => {
   });
 
   it('renders CI icon', () => {
-    expect(vm.$el.querySelector('.ic-status_passed_borderless')).not.toBe(null);
+    expect(vm.$el.querySelector('.ic-status_success_borderless')).not.toBe(null);
+  });
+
+  it('does not render view logs button if not started', done => {
+    vm.job.started = false;
+
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.btn')).toBe(null);
+
+      done();
+    });
   });
 });

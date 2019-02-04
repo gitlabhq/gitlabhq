@@ -18,6 +18,7 @@ module Gitlab
         Caching.read_integer(cache_key_for(name))
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def build_cache
         mapping = @project
           .labels
@@ -28,6 +29,7 @@ module Gitlab
 
         Caching.write_multiple(mapping)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def cache_key_for(name)
         CACHE_KEY % { project: project.id, name: name }

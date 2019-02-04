@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -5,13 +7,14 @@ module Gitlab
         ##
         # Entry that represents a concrete CI/CD job.
         #
-        class Job < Node
-          include Configurable
-          include Attributable
+        class Job < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Configurable
+          include ::Gitlab::Config::Entry::Attributable
 
-          ALLOWED_KEYS = %i[tags script only except type image services allow_failure
-                            type stage when artifacts cache dependencies before_script
-                            after_script variables environment coverage retry].freeze
+          ALLOWED_KEYS = %i[tags script only except type image services
+                            allow_failure type stage when start_in artifacts cache
+                            dependencies before_script after_script variables
+                            environment coverage retry parallel extends].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -23,16 +26,19 @@ module Gitlab
             with_options allow_nil: true do
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
-              validates :retry, numericality: { only_integer: true,
-                                                greater_than_or_equal_to: 0,
-                                                less_than_or_equal_to: 2 }
+              validates :parallel, numericality: { only_integer: true,
+                                                   greater_than_or_equal_to: 2,
+                                                   less_than_or_equal_to: 50 }
               validates :when,
-                inclusion: { in: %w[on_success on_failure always manual],
+                inclusion: { in: %w[on_success on_failure always manual delayed],
                              message: 'should be on_success, on_failure, ' \
-                                      'always or manual' }
-
+                                      'always, manual or delayed' }
               validates :dependencies, array_of_strings: true
+              validates :extends, type: String
             end
+
+            validates :start_in, duration: { limit: '1 day' }, if: :delayed?
+            validates :start_in, absence: true, unless: :delayed?
           end
 
           entry :before_script, Entry::Script,
@@ -60,7 +66,8 @@ module Gitlab
             description: 'Services that will be used to execute this job.'
 
           entry :only, Entry::Policy,
-            description: 'Refs policy this job will be executed for.'
+            description: 'Refs policy this job will be executed for.',
+            default: Entry::Policy::DEFAULT_ONLY
 
           entry :except, Entry::Policy,
             description: 'Refs policy this job will be executed for.'
@@ -72,16 +79,21 @@ module Gitlab
             description: 'Artifacts configuration for this job.'
 
           entry :environment, Entry::Environment,
-               description: 'Environment configuration for this job.'
+            description: 'Environment configuration for this job.'
 
           entry :coverage, Entry::Coverage,
-               description: 'Coverage configuration for this job.'
+            description: 'Coverage configuration for this job.'
+
+          entry :retry, Entry::Retry,
+               description: 'Retry configuration for this job.'
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts, :commands, :environment, :coverage, :retry
+                  :artifacts, :environment, :coverage, :retry,
+                  :parallel
 
-          attributes :script, :tags, :allow_failure, :when, :dependencies, :retry
+          attributes :script, :tags, :allow_failure, :when, :dependencies,
+                     :retry, :parallel, :extends, :start_in
 
           def compose!(deps = nil)
             super do
@@ -103,12 +115,12 @@ module Gitlab
             @config.merge(to_hash.compact)
           end
 
-          def commands
-            (before_script_value.to_a + script_value.to_a).join("\n")
-          end
-
           def manual_action?
             self.when == 'manual'
+          end
+
+          def delayed?
+            self.when == 'delayed'
           end
 
           def ignored?
@@ -134,7 +146,6 @@ module Gitlab
             { name: name,
               before_script: before_script_value,
               script: script_value,
-              commands: commands,
               image: image_value,
               services: services_value,
               stage: stage_value,
@@ -145,7 +156,8 @@ module Gitlab
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,
               coverage: coverage_defined? ? coverage_value : nil,
-              retry: retry_defined? ? retry_value.to_i : nil,
+              retry: retry_defined? ? retry_value : nil,
+              parallel: parallel_defined? ? parallel_value.to_i : nil,
               artifacts: artifacts_value,
               after_script: after_script_value,
               ignore: ignored? }

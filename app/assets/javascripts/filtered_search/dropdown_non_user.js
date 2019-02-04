@@ -29,20 +29,18 @@ export default class DropdownNonUser extends FilteredSearchDropdown {
   }
 
   itemClicked(e) {
-    super.itemClicked(e, (selected) => {
+    super.itemClicked(e, selected => {
       const title = selected.querySelector('.js-data-value').innerText.trim();
       return `${this.symbol}${DropdownUtils.getEscapedText(title)}`;
     });
   }
 
   renderContent(forceShowList = false) {
-    this.droplab
-      .changeHookList(this.hookId, this.dropdown, [Ajax, Filter], this.config);
+    this.droplab.changeHookList(this.hookId, this.dropdown, [Ajax, Filter], this.config);
     super.renderContent(forceShowList);
   }
 
   init() {
-    this.droplab
-      .addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
+    this.droplab.addHook(this.input, this.dropdown, [Ajax, Filter], this.config).init();
   }
 }

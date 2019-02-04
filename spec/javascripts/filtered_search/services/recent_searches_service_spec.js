@@ -15,48 +15,49 @@ describe('RecentSearchesService', () => {
       spyOn(RecentSearchesService, 'isAvailable').and.returnValue(true);
     });
 
-    it('should default to empty array', (done) => {
+    it('should default to empty array', done => {
       const fetchItemsPromise = service.fetch();
 
       fetchItemsPromise
-        .then((items) => {
+        .then(items => {
           expect(items).toEqual([]);
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('should reject when unable to parse', (done) => {
+    it('should reject when unable to parse', done => {
       window.localStorage.setItem(service.localStorageKey, 'fail');
       const fetchItemsPromise = service.fetch();
 
       fetchItemsPromise
         .then(done.fail)
-        .catch((error) => {
+        .catch(error => {
           expect(error).toEqual(jasmine.any(SyntaxError));
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('should reject when service is unavailable', (done) => {
+    it('should reject when service is unavailable', done => {
       RecentSearchesService.isAvailable.and.returnValue(false);
 
-      service.fetch()
+      service
+        .fetch()
         .then(done.fail)
-        .catch((error) => {
+        .catch(error => {
           expect(error).toEqual(jasmine.any(Error));
         })
         .then(done)
         .catch(done.fail);
     });
 
-    it('should return items from localStorage', (done) => {
+    it('should return items from localStorage', done => {
       window.localStorage.setItem(service.localStorageKey, '["foo", "bar"]');
       const fetchItemsPromise = service.fetch();
 
       fetchItemsPromise
-        .then((items) => {
+        .then(items => {
           expect(items).toEqual(['foo', 'bar']);
         })
         .then(done)
@@ -70,10 +71,11 @@ describe('RecentSearchesService', () => {
         spyOn(window.localStorage, 'getItem');
       });
 
-      it('should not call .getItem', (done) => {
-        RecentSearchesService.prototype.fetch()
+      it('should not call .getItem', done => {
+        RecentSearchesService.prototype
+          .fetch()
           .then(done.fail)
-          .catch((err) => {
+          .catch(err => {
             expect(err).toEqual(new RecentSearchesServiceError());
             expect(window.localStorage.getItem).not.toHaveBeenCalled();
           })
@@ -92,6 +94,7 @@ describe('RecentSearchesService', () => {
       const items = ['foo', 'bar'];
       service.save(items);
       const newLocalStorageValue = window.localStorage.getItem(service.localStorageKey);
+
       expect(JSON.parse(newLocalStorageValue)).toEqual(items);
     });
   });

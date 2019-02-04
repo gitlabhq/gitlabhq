@@ -1,5 +1,6 @@
-# Gitaly note: JV: two sets of straightforward RPC's. 1 Hard RPC: fork_repository.
-# SSH key operations are not part of Gitaly so will never be migrated.
+# frozen_string_literal: true
+
+# Gitaly note: SSH key operations are not part of Gitaly so will never be migrated.
 
 require 'securerandom'
 
@@ -75,17 +76,10 @@ module Gitlab
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
-      gitaly_migrate(:create_repository,
-                     status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-        if is_enabled
-          repository = Gitlab::Git::Repository.new(storage, relative_path, '')
-          repository.gitaly_repository_client.create_repository
-          true
-        else
-          repo_path = File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, relative_path)
-          Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
-        end
-      end
+      repository = Gitlab::Git::Repository.new(storage, relative_path, '')
+      wrapped_gitaly_errors { repository.gitaly_repository_client.create_repository }
+
+      true
     rescue => err # Once the Rugged codes gets removes this can be improved
       Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
       false
@@ -100,40 +94,18 @@ module Gitlab
     # Ex.
     #   import_repository("nfs-file06", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
     #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/874
     def import_repository(storage, name, url)
       if url.start_with?('.', '/')
         raise Error.new("don't use disk paths with import_repository: #{url.inspect}")
       end
 
-      # The timeout ensures the subprocess won't hang forever
-      cmd = gitlab_projects(storage, "#{name}.git")
-      success = cmd.import_project(url, git_timeout)
+      relative_path = "#{name}.git"
+      cmd = GitalyGitlabProjects.new(storage, relative_path)
 
+      success = cmd.import_project(url, git_timeout)
       raise Error, cmd.output unless success
 
       success
-    end
-
-    # Fetch remote for repository
-    #
-    # repository - an instance of Git::Repository
-    # remote - remote name
-    # ssh_auth - SSH known_hosts data and a private key to use for public-key authentication
-    # forced - should we use --force flag?
-    # no_tags - should we use --no-tags flag?
-    #
-    # Ex.
-    #   fetch_remote(my_repo, "upstream")
-    #
-    def fetch_remote(repository, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
-      gitaly_migrate(:fetch_remote) do |is_enabled|
-        if is_enabled
-          repository.gitaly_repository_client.fetch_remote(remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, timeout: git_timeout, prune: prune)
-        else
-          local_fetch_remote(repository.storage, repository.relative_path, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags, prune: prune)
-        end
-      end
     end
 
     # Move repository reroutes to mv_directory which is an alias for
@@ -146,8 +118,6 @@ module Gitlab
     #
     # Ex.
     #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
-    #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def mv_repository(storage, path, new_path)
       return false if path.empty? || new_path.empty?
 
@@ -162,11 +132,11 @@ module Gitlab
     #
     # Ex.
     #  fork_repository("nfs-file06", "gitlab/gitlab-ci", "nfs-file07", "new-namespace/gitlab-ci")
-    #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/817
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
-      gitlab_projects(forked_from_storage, "#{forked_from_disk_path}.git")
-        .fork_repository(forked_to_storage, "#{forked_to_disk_path}.git")
+      forked_from_relative_path = "#{forked_from_disk_path}.git"
+      fork_args = [forked_to_storage, "#{forked_to_disk_path}.git"]
+
+      GitalyGitlabProjects.new(forked_from_storage, forked_from_relative_path).fork_repository(*fork_args)
     end
 
     # Removes a repository from file system, using rm_diretory which is an alias
@@ -178,8 +148,6 @@ module Gitlab
     #
     # Ex.
     #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
-    #
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/873
     def remove_repository(storage, name)
       return false if name.empty?
 
@@ -242,6 +210,7 @@ module Gitlab
     # Ex.
     #   remove_keys_not_found_in_db
     #
+    # rubocop: disable CodeReuse/ActiveRecord
     def remove_keys_not_found_in_db
       return unless self.authorized_keys_enabled?
 
@@ -260,6 +229,7 @@ module Gitlab
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     # Iterate over all ssh key IDs from gitlab shell, in batches
     #
@@ -319,10 +289,12 @@ module Gitlab
     #
     def mv_namespace(storage, old_name, new_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).rename(old_name, new_name)
-    rescue GRPC::InvalidArgument
+    rescue GRPC::InvalidArgument => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { old_name: old_name, new_name: new_name, storage: storage })
+
       false
     end
-    alias_method :mv_directory, :mv_namespace
+    alias_method :mv_directory, :mv_namespace # Note: ShellWorker uses this alias
 
     def url_to_repo(path)
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
@@ -343,9 +315,11 @@ module Gitlab
     #   exists?(storage, 'gitlab')
     #   exists?(storage, 'gitlab/cookies.git')
     #
+    # rubocop: disable CodeReuse/ActiveRecord
     def exists?(storage, dir_name)
       Gitlab::GitalyClient::NamespaceService.new(storage).exists?(dir_name)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     protected
 
@@ -385,37 +359,6 @@ module Gitlab
 
     private
 
-    def gitlab_projects(shard_name, disk_path)
-      Gitlab::Git::GitlabProjects.new(
-        shard_name,
-        disk_path,
-        global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
-        logger: Rails.logger
-      )
-    end
-
-    def local_fetch_remote(storage_name, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false, prune: true)
-      vars = { force: forced, tags: !no_tags, prune: prune }
-
-      if ssh_auth&.ssh_import?
-        if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
-          vars[:ssh_key] = ssh_auth.ssh_private_key
-        end
-
-        if ssh_auth.ssh_known_hosts.present?
-          vars[:known_hosts] = ssh_auth.ssh_known_hosts
-        end
-      end
-
-      cmd = gitlab_projects(storage_name, repository_relative_path)
-
-      success = cmd.fetch_remote(remote, git_timeout, vars)
-
-      raise Error, cmd.output unless success
-
-      success
-    end
-
     def gitlab_shell_fast_execute(cmd)
       output, status = gitlab_shell_fast_execute_helper(cmd)
 
@@ -445,12 +388,46 @@ module Gitlab
       Gitlab.config.gitlab_shell.git_timeout
     end
 
-    def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
-      Gitlab::GitalyClient.migrate(method, status: status, &block)
+    def wrapped_gitaly_errors
+      yield
     rescue GRPC::NotFound, GRPC::BadStatus => e
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...
       raise Error, e
+    end
+
+    class GitalyGitlabProjects
+      attr_reader :shard_name, :repository_relative_path, :output
+
+      def initialize(shard_name, repository_relative_path)
+        @shard_name = shard_name
+        @repository_relative_path = repository_relative_path
+        @output = ''
+      end
+
+      def import_project(source, _timeout)
+        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
+
+        Gitlab::GitalyClient::RepositoryService.new(raw_repository).import_repository(source)
+        true
+      rescue GRPC::BadStatus => e
+        @output = e.message
+        false
+      end
+
+      def fork_repository(new_shard_name, new_repository_relative_path)
+        target_repository = Gitlab::Git::Repository.new(new_shard_name, new_repository_relative_path, nil)
+        raw_repository = Gitlab::Git::Repository.new(shard_name, repository_relative_path, nil)
+
+        Gitlab::GitalyClient::RepositoryService.new(target_repository).fork_repository(raw_repository)
+      rescue GRPC::BadStatus => e
+        logger.error "fork-repository failed: #{e.message}"
+        false
+      end
+
+      def logger
+        Rails.logger
+      end
     end
   end
 end

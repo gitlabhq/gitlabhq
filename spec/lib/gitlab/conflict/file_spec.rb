@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::Conflict::File do
+  include GitHelpers
+
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:rugged) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository.rugged } }
+  let(:rugged) { rugged_repo(repository) }
   let(:their_commit) { rugged.branches['conflict-start'].target }
   let(:our_commit) { rugged.branches['conflict-resolvable'].target }
   let(:merge_request) { create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) }
@@ -67,10 +69,6 @@ describe Gitlab::Conflict::File do
   describe '#highlight_lines!' do
     def html_to_text(html)
       CGI.unescapeHTML(ActionView::Base.full_sanitizer.sanitize(html)).delete("\n")
-    end
-
-    it 'modifies the existing lines' do
-      expect { conflict_file.highlight_lines! }.to change { conflict_file.lines.map(&:instance_variables) }
     end
 
     it 'is called implicitly when rich_text is accessed on a line' do
@@ -268,11 +266,6 @@ FILE
     context 'with the full_content option passed' do
       it 'includes the full content of the conflict' do
         expect(conflict_file.as_json(full_content: true)).to have_key(:content)
-      end
-
-      it 'includes the detected language of the conflict file' do
-        expect(conflict_file.as_json(full_content: true)[:blob_ace_mode])
-          .to eq('ruby')
       end
     end
   end

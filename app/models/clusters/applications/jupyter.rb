@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class Jupyter < ActiveRecord::Base
-      VERSION = '0.0.1'.freeze
+      VERSION = 'v0.6'.freeze
 
       self.table_name = 'clusters_applications_jupyter'
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
       belongs_to :oauth_application, class_name: 'Doorkeeper::Application'
@@ -16,7 +19,7 @@ module Clusters
       def set_initial_status
         return unless not_installable?
 
-        if cluster&.application_ingress_installed? && cluster.application_ingress.external_ip
+        if cluster&.application_ingress_available? && cluster.application_ingress.external_ip
           self.status = 'installable'
         end
       end
@@ -35,9 +38,11 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
-          name,
+          name: name,
+          version: VERSION,
+          rbac: cluster.platform_kubernetes_rbac?,
           chart: chart,
-          values: values,
+          files: files,
           repository: repository
         )
       end
@@ -51,7 +56,11 @@ module Clusters
       def specification
         {
           "ingress" => {
-            "hosts" => [hostname]
+            "hosts" => [hostname],
+            "tls" => [{
+              "hosts" => [hostname],
+              "secretName" => "jupyter-cert"
+            }]
           },
           "hub" => {
             "extraEnv" => {
@@ -67,6 +76,11 @@ module Clusters
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
               "callbackUrl" => callback_url
+            }
+          },
+          "singleuser" => {
+            "extraEnv" => {
+              "GITLAB_CLUSTER_ID" => cluster.id
             }
           }
         }

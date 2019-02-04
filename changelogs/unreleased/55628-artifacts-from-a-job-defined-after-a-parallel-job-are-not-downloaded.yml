@@ -1,0 +1,5 @@
+---
+title: Handle regular job dependencies next to parallelized job dependencies.
+merge_request: 24273
+author:
+type: fixed

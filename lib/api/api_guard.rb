@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Guard API with OAuth 2.0 Access Token
 
 require 'rack/oauth2'
@@ -84,7 +86,7 @@ module API
       end
     end
 
-    module ClassMethods
+    class_methods do
       private
 
       def install_error_responders(base)
@@ -92,6 +94,7 @@ module API
                          Gitlab::Auth::TokenNotFoundError,
                          Gitlab::Auth::ExpiredError,
                          Gitlab::Auth::RevokedError,
+                         Gitlab::Auth::ImpersonationDisabled,
                          Gitlab::Auth::InsufficientScopeError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
@@ -118,6 +121,11 @@ module API
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Token was revoked. You have to re-authorize from the user.")
+
+            when Gitlab::Auth::ImpersonationDisabled
+              Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
+                :invalid_token,
+                "Token is an impersonation token but impersonation was disabled.")
 
             when Gitlab::Auth::InsufficientScopeError
               # FIXME: ForbiddenError (inherited from Bearer::Forbidden of Rack::Oauth2)

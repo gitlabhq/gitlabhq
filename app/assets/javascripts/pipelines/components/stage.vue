@@ -13,25 +13,24 @@
  */
 
 import $ from 'jquery';
+import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { __ } from '../../locale';
 import Flash from '../../flash';
 import axios from '../../lib/utils/axios_utils';
 import eventHub from '../event_hub';
 import Icon from '../../vue_shared/components/icon.vue';
-import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
-import JobComponent from './graph/job_component.vue';
-import tooltip from '../../vue_shared/directives/tooltip';
+import JobItem from './graph/job_item.vue';
 import { PIPELINES_TABLE } from '../constants';
 
 export default {
   components: {
-    LoadingIcon,
     Icon,
-    JobComponent,
+    JobItem,
+    GlLoadingIcon,
   },
 
   directives: {
-    tooltip,
+    GlTooltip: GlTooltipDirective,
   },
 
   props: {
@@ -157,60 +156,39 @@ export default {
 <template>
   <div class="dropdown">
     <button
-      v-tooltip
-      :class="triggerButtonClass"
-      @click="onClickStage"
-      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
-      :title="stage.title"
-      data-placement="top"
-      data-toggle="dropdown"
-      type="button"
       id="stageDropdown"
+      ref="dropdown"
+      v-gl-tooltip.hover
+      :class="triggerButtonClass"
+      :title="stage.title"
+      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
+      data-toggle="dropdown"
+      data-display="static"
+      type="button"
       aria-haspopup="true"
       aria-expanded="false"
-      ref="dropdown"
+      @click="onClickStage"
     >
-
-      <span
-        aria-hidden="true"
-        :aria-label="stage.title"
-      >
+      <span :aria-label="stage.title" aria-hidden="true" class="no-pointer-events">
         <icon :name="borderlessIcon" />
       </span>
-
-      <i
-        class="fa fa-caret-down"
-        aria-hidden="true"
-      >
-      </i>
     </button>
 
-    <ul
+    <div
       class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container"
       aria-labelledby="stageDropdown"
     >
-
-      <li
-        class="js-builds-dropdown-list scrollable-menu"
-      >
-
-        <loading-icon v-if="isLoading"/>
-
-        <ul
-          v-else
-        >
-          <li
-            v-for="job in dropdownContent"
-            :key="job.id"
-          >
-            <job-component
-              :job="job"
-              css-class-job-name="mini-pipeline-graph-dropdown-item"
-              @pipelineActionRequestComplete="pipelineActionRequestComplete"
-            />
-          </li>
-        </ul>
-      </li>
-    </ul>
+      <gl-loading-icon v-if="isLoading" />
+      <ul v-else class="js-builds-dropdown-list scrollable-menu">
+        <li v-for="job in dropdownContent" :key="job.id">
+          <job-item
+            :dropdown-length="dropdownContent.length"
+            :job="job"
+            css-class-job-name="mini-pipeline-graph-dropdown-item"
+            @pipelineActionRequestComplete="pipelineActionRequestComplete"
+          />
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

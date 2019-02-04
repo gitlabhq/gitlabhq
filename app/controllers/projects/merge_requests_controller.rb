@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
@@ -20,33 +22,27 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("projects/merge_requests/_merge_requests"),
-          labels: @labels.as_json(methods: :text_color)
+          html: view_to_html_string("projects/merge_requests/_merge_requests")
         }
       end
     end
   end
 
   def show
-    validates_merge_request
-    close_merge_request_without_source_project
-    check_if_can_be_merged
-
-    # Return if the response has already been rendered
-    return if response_body
+    close_merge_request_if_no_source_project
+    mark_merge_request_mergeable
 
     respond_to do |format|
       format.html do
+        # use next to appease Rubocop
+        next render('invalid') if target_branch_missing?
+
         # Build a note object for comment form
         @note = @project.notes.new(noteable: @merge_request)
 
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
-
-        @discussions = @merge_request.discussions
-        @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
-
-        labels
+        @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
 
         set_pipeline_variables
 
@@ -59,7 +55,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         render json: serializer.represent(@merge_request, serializer: params[:serializer])
       end
 
-      format.patch  do
+      format.patch do
         break render_404 unless @merge_request.diff_refs
 
         send_git_patch @project.repository, @merge_request.diff_refs
@@ -77,24 +73,42 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Get commits from repository
     # or from cache if already merged
     @commits =
-      prepare_commits_for_rendering(@merge_request.commits.with_pipeline_status)
+      set_commits_for_rendering(@merge_request.commits.with_pipeline_status)
 
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end
 
   def pipelines
-    @pipelines = @merge_request.all_pipelines
+    @pipelines = @merge_request.all_pipelines.page(params[:page]).per(30)
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
     render json: {
       pipelines: PipelineSerializer
         .new(project: @project, current_user: @current_user)
+        .with_pagination(request, response)
         .represent(@pipelines),
       count: {
         all: @pipelines.count
       }
     }
+  end
+
+  def test_reports
+    result = @merge_request.compare_test_reports
+
+    case result[:status]
+    when :parsing
+      Gitlab::PollingInterval.set_header(response, interval: 3000)
+
+      render json: '', status: :no_content
+    when :parsed
+      render json: result[:data].to_json, status: :ok
+    when :error
+      render json: { status_reason: result[:status_reason] }, status: :bad_request
+    else
+      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
+    end
   end
 
   def edit
@@ -106,17 +120,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     respond_to do |format|
       format.html do
-        if @merge_request.valid?
-          redirect_to([@merge_request.target_project.namespace.becomes(Namespace), @merge_request.target_project, @merge_request])
-        else
+        if @merge_request.errors.present?
           define_edit_vars
 
           render :edit
+        else
+          redirect_to project_merge_request_path(@merge_request.target_project, @merge_request)
         end
       end
 
       format.json do
-        render json: @merge_request.to_json(include: { milestone: {}, assignee: { only: [:name, :username], methods: [:avatar_url] }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        if merge_request.errors.present?
+          render json: @merge_request.errors, status: :bad_request
+        else
+          render json: serializer.represent(@merge_request, serializer: 'basic')
+        end
       end
     end
   rescue ActiveRecord::StaleObjectError
@@ -150,7 +168,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge
-    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    access_check_result = merge_access_check
+
+    return access_check_result if access_check_result
 
     status = merge!
 
@@ -183,49 +203,25 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def ci_environments_status
-    environments =
-      begin
-        @merge_request.environments_for(current_user).map do |environment|
-          project = environment.project
-          deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
+    environments = if ci_environments_status_on_merge_result?
+                     EnvironmentStatus.after_merge_request(@merge_request, current_user)
+                   else
+                     EnvironmentStatus.for_merge_request(@merge_request, current_user)
+                   end
 
-          stop_url =
-            if environment.stop_action? && can?(current_user, :create_deployment, environment)
-              stop_project_environment_path(project, environment)
-            end
-
-          metrics_url =
-            if can?(current_user, :read_environment, environment) && environment.has_metrics?
-              metrics_project_environment_deployment_path(environment.project, environment, deployment)
-            end
-
-          metrics_monitoring_url =
-            if can?(current_user, :read_environment, environment)
-              environment_metrics_path(environment)
-            end
-
-          {
-            id: environment.id,
-            name: environment.name,
-            url: project_environment_path(project, environment),
-            metrics_url: metrics_url,
-            metrics_monitoring_url: metrics_monitoring_url,
-            stop_url: stop_url,
-            external_url: environment.external_url,
-            external_url_formatted: environment.formatted_external_url,
-            deployed_at: deployment.try(:created_at),
-            deployed_at_formatted: deployment.try(:formatted_deployment_time)
-          }
-        end.compact
-      end
-
-    render json: environments
+    render json: EnvironmentStatusSerializer.new(current_user: current_user).represent(environments)
   end
 
   def rebase
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
 
-    render nothing: true, status: 200
+    head :ok
+  end
+
+  def discussions
+    merge_request.preload_discussions_diff_highlight
+
+    super
   end
 
   protected
@@ -234,18 +230,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
-  def validates_merge_request
-    # Show git not found page
-    # if there is no saved commits between source & target branch
-    if @merge_request.has_no_commits?
-      # and if target branch doesn't exist
-      return invalid_mr unless @merge_request.target_branch_exists?
-    end
-  end
-
-  def invalid_mr
-    # Render special view for MR with removed target branch
-    render 'invalid'
+  def issuable_sorting_field
+    MergeRequest::SORTING_PREFERENCE_FIELD
   end
 
   def merge_params
@@ -261,7 +247,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       @merge_request.head_pipeline && @merge_request.head_pipeline.active?
   end
 
-  def close_merge_request_without_source_project
+  def close_merge_request_if_no_source_project
     if !@merge_request.source_project && @merge_request.open?
       @merge_request.close
     end
@@ -269,7 +255,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   private
 
-  def check_if_can_be_merged
+  def ci_environments_status_on_merge_result?
+    params[:environment_target] == 'merge_commit'
+  end
+
+  def target_branch_missing?
+    @merge_request.has_no_commits? && !@merge_request.target_branch_exists?
+  end
+
+  def mark_merge_request_mergeable
     @merge_request.check_if_can_be_merged
   end
 
@@ -278,6 +272,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # to wait until CI completes to know
     unless @merge_request.mergeable?(skip_ci_check: merge_when_pipeline_succeeds_active?)
       return :failed
+    end
+
+    merge_service = ::MergeRequests::MergeService.new(@project, current_user, merge_params)
+
+    unless merge_service.hooks_validation_pass?(@merge_request)
+      return :hook_validation_error
     end
 
     return :sha_mismatch if params[:sha] != @merge_request.diff_head_sha
@@ -321,6 +321,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+    @noteable = @merge_request
+
+    # FIXME: We have to assign a presenter to another instance variable
+    # due to class_name checks being made with issuable classes
+    @mr_presenter = @merge_request.present(current_user: current_user)
   end
 
   def finder_type
@@ -335,6 +340,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .can_push_to_branch?(@merge_request.source_branch)
 
     access_denied! unless access_check
+  end
+
+  def merge_access_check
+    access_denied! unless @merge_request.can_be_merged_by?(current_user)
   end
 
   def whitelist_query_limiting

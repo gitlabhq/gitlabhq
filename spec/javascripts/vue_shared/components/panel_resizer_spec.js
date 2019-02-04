@@ -8,8 +8,23 @@ describe('Panel Resizer component', () => {
 
   const triggerEvent = (eventName, el = vm.$el, clientX = 0) => {
     const event = document.createEvent('MouseEvents');
-    event.initMouseEvent(eventName, true, true, window, 1, clientX, 0, clientX, 0, false, false,
-                         false, false, 0, null);
+    event.initMouseEvent(
+      eventName,
+      true,
+      true,
+      window,
+      1,
+      clientX,
+      0,
+      clientX,
+      0,
+      false,
+      false,
+      false,
+      false,
+      0,
+      null,
+    );
 
     el.dispatchEvent(event);
   };
@@ -29,7 +44,7 @@ describe('Panel Resizer component', () => {
     });
 
     expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.getAttribute('class')).toBe('dragHandle dragleft');
+    expect(vm.$el.getAttribute('class')).toBe('drag-handle drag-left');
     expect(vm.$el.getAttribute('style')).toBe('cursor: ew-resize;');
   });
 
@@ -40,7 +55,7 @@ describe('Panel Resizer component', () => {
     });
 
     expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.getAttribute('class')).toBe('dragHandle dragright');
+    expect(vm.$el.getAttribute('class')).toBe('drag-handle drag-right');
   });
 
   it('drag the resizer', () => {
@@ -53,7 +68,13 @@ describe('Panel Resizer component', () => {
     triggerEvent('mousedown', vm.$el);
     triggerEvent('mousemove', document);
     triggerEvent('mouseup', document);
-    expect(vm.$emit.calls.allArgs()).toEqual([['resize-start', 100], ['update:size', 100], ['resize-end', 100]]);
+
+    expect(vm.$emit.calls.allArgs()).toEqual([
+      ['resize-start', 100],
+      ['update:size', 100],
+      ['resize-end', 100],
+    ]);
+
     expect(vm.size).toBe(100);
   });
 });

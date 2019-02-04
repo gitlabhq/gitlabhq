@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module SlashCommands
     module Presenters
@@ -15,7 +17,7 @@ module Gitlab
             if @resource
               ":wave: Hi there! Before I do anything for you, please [connect your GitLab account](#{@resource})."
             else
-              ":sweat_smile: Couldn't identify you, nor can I autorize you!"
+              ":sweat_smile: Couldn't identify you, nor can I authorize you!"
             end
 
           ephemeral_response(text: message)

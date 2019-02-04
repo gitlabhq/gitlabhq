@@ -7,7 +7,7 @@ description: 'Read through the GitLab User documentation to learn how to use, co
 Welcome to GitLab! We're glad to have you here!
 
 As a GitLab user you'll have access to all the features
-your [subscription](https://about.gitlab.com/products/)
+your [subscription](https://about.gitlab.com/pricing/)
 includes, except [GitLab administrator](../README.md#administrator-documentation)
 settings, unless you have admin privileges to install, configure,
 and upgrade your GitLab instance.
@@ -23,7 +23,7 @@ documentation.
 GitLab is a fully integrated software development platform that enables you
 and your team to work cohesively, faster, transparently, and effectively,
 since the discussion of a new idea until taking that idea to production all
-all the way through, from within the same platform.
+the way through, from within the same platform.
 
 Please check this page for an overview on [GitLab's features](https://about.gitlab.com/features/).
 
@@ -96,7 +96,7 @@ directly from GitLab. No third-party integrations needed.
 - [GitLab Auto Deploy](../ci/autodeploy/index.md): Deploy your application out-of-the-box with GitLab Auto Deploy.
 - [Review Apps](../ci/review_apps/index.md): Live-preview the changes introduced by a merge request with Review Apps.
 - [GitLab Pages](project/pages/index.md): Publish your static site directly from
-GitLab with Gitlab Pages. You can build, test, and deploy any Static Site Generator with Pages.
+GitLab with GitLab Pages. You can build, test, and deploy any Static Site Generator with Pages.
 - [GitLab Container Registry](project/container_registry.md): Build and deploy Docker
 images with Container Registry.
 
@@ -110,9 +110,10 @@ personal access tokens, authorized applications, etc.
 - [Authentication](../topics/authentication/index.md): Read through the authentication
 methods available in GitLab.
 - [Permissions](permissions.md): Learn the different set of permissions levels for each
-user type (guest, reporter, developer, master, owner).
+user type (guest, reporter, developer, maintainer, owner).
 - [Feature highlight](feature_highlight.md): Learn more about the little blue dots
 around the app that explain certain features
+- [Abuse reports](abuse_reports.md): Report abuse from users to GitLab administrators
 
 ## Groups
 
@@ -161,14 +162,18 @@ such as Trello, JIRA, etc.
 
 ## Webhooks
 
-Configure [webhooks](project/integrations/webhooks.html) to listen for
+Configure [webhooks](project/integrations/webhooks.md) to listen for
 specific events like pushes, issues or merge requests. GitLab will send a
 POST request with data to the webhook URL.
 
 ## API
 
-Automate GitLab via [API](../api/README.html).
+Automate GitLab via [API](../api/README.md).
 
 ## Git and GitLab
 
 Learn what is [Git](../topics/git/index.md) and its best practices.
+
+## Instance statistics
+
+See [various statistics](instance_statistics/index.md) of your GitLab instance.

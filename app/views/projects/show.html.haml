@@ -1,25 +1,24 @@
 - @no_container = true
 - breadcrumb_title _("Details")
 - @content_class = "limit-container-width" unless fluid_layout
-- show_auto_devops_callout = show_auto_devops_callout?(@project)
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_path(@project, rss_url_options), title: "#{@project.name} activity")
 
 = render partial: 'flash_messages', locals: { project: @project }
 
+- if !@project.empty_repo? && can?(current_user, :download_code, @project)
+  - signatures_path = project_signatures_path(@project, @project.default_branch)
+  .js-signature-container{ data: { 'signatures-path': signatures_path } }
+
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   = render "projects/last_push"
 
-= render "home_panel"
+  = render "home_panel"
 
-- if can?(current_user, :download_code, @project)
-  %nav.project-stats{ class: container_class }
-    = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
-    = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
+  - if can?(current_user, :download_code, @project) && @project.repository_languages.present?
+    = repository_languages_bar(@project.repository_languages)
 
-
-%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   - if @project.archived?
     .text-warning.center.prepend-top-20
       %p
@@ -32,4 +31,4 @@
     = render 'shared/auto_devops_callout'
 
   %div{ class: project_child_container_class(view_path) }
-    = render view_path
+    = render view_path, is_project_overview: true

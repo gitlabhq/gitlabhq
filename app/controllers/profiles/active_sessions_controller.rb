@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::ActiveSessionsController < Profiles::ApplicationController
   def index
     @sessions = ActiveSession.list(current_user)
@@ -7,7 +9,7 @@ class Profiles::ActiveSessionsController < Profiles::ApplicationController
     ActiveSession.destroy(current_user, params[:id])
 
     respond_to do |format|
-      format.html { redirect_to profile_active_sessions_url, status: 302 }
+      format.html { redirect_to profile_active_sessions_url, status: :found }
       format.js { head :ok }
     end
   end

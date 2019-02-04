@@ -19,11 +19,15 @@
 >  - The exports are stored in a temporary [shared directory][tmp] and are deleted
 >    every 24 hours by a specific worker.
 >  - Group members will get exported as project members, as long as the user has
->    master or admin access to the group where the exported project lives. An admin
+>    maintainer or admin access to the group where the exported project lives. An admin
 >    in the import side is required to map the users, based on email or username.
 >    Otherwise, a supplementary comment is left to mention the original author and
 >    the MRs, notes or issues will be owned by the importer.
 >  - Control project Import/Export with the [API](../../../api/project_import_export.md).
+>  - If an imported project contains merge requests originated from forks, 
+>    then new branches associated with such merge requests will be created 
+>    within a project during the import/export. Thus, the number of branches 
+>    in the exported project could be bigger than in the original project.
 
 Existing projects running on any GitLab instance or GitLab.com can be exported
 with all their related data and be moved into a new GitLab instance.
@@ -32,7 +36,8 @@ with all their related data and be moved into a new GitLab instance.
 
 | GitLab version   | Import/Export version |
 | ---------------- | --------------------- |
-| 10.8 to current  | 0.2.3                 |
+| 11.1 to current  | 0.2.4                 |
+| 10.8             | 0.2.3                 |
 | 10.4             | 0.2.2                 |
 | 10.3             | 0.2.1                 |
 | 10.0             | 0.2.0                 |
@@ -56,7 +61,7 @@ The following items will be exported:
 
 - Project and wiki repositories
 - Project uploads
-- Project configuration including web hooks and services
+- Project configuration, including services
 - Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
   and other project entities
 - LFS objects
@@ -66,6 +71,7 @@ The following items will NOT be exported:
 - Build traces and artifacts
 - Container registry images
 - CI variables
+- Webhooks
 - Any encrypted tokens
 
 ## Exporting a project and its data

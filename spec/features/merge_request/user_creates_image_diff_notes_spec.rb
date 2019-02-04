@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge request > User creates image diff notes', :js do
+describe 'Merge request > User creates image diff notes', :js do
   include NoteInteractionHelpers
 
   let(:project) { create(:project, :public, :repository) }
@@ -12,7 +12,7 @@ feature 'Merge request > User creates image diff notes', :js do
     # Stub helper to return any blob file as image from public app folder.
     # This is necessary to run this specs since we don't display repo images in capybara.
     allow_any_instance_of(DiffHelper).to receive(:diff_file_blob_raw_url).and_return('/apple-touch-icon.png')
-    allow_any_instance_of(DiffHelper).to receive(:diff_file_old_blob_raw_url).and_return('/favicon.ico')
+    allow_any_instance_of(DiffHelper).to receive(:diff_file_old_blob_raw_url).and_return('/favicon.png')
   end
 
   context 'create commit diff notes' do
@@ -90,9 +90,6 @@ feature 'Merge request > User creates image diff notes', :js do
 
   %w(inline parallel).each do |view|
     context "#{view} view" do
-      let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, author: user) }
-      let(:path)          { "files/images/ee_repo_logo.png" }
-
       let(:position) do
         Gitlab::Diff::Position.new(
           old_path: path,
@@ -108,15 +105,17 @@ feature 'Merge request > User creates image diff notes', :js do
 
       let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
-      describe 'creating a new diff note' do
+      shared_examples 'creates image diff note' do
         before do
           visit diffs_project_merge_request_path(project, merge_request, view: view)
+          wait_for_requests
+
           create_image_diff_note
         end
 
         it 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes' do
           indicator = find('.js-image-badge', match: :first)
-          badge = find('.image-diff-avatar-link .badge', match: :first)
+          badge = find('.user-avatar-link .badge', match: :first)
 
           expect(indicator).to have_content('1')
           expect(badge).to have_content('1')
@@ -131,6 +130,32 @@ feature 'Merge request > User creates image diff notes', :js do
 
           expect(page).to have_content('image diff test comment')
         end
+      end
+
+      context 'when images are not stored in LFS' do
+        let(:merge_request) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, author: user) }
+        let(:path)          { 'files/images/ee_repo_logo.png' }
+
+        it_behaves_like 'creates image diff note'
+      end
+
+      context 'when images are stored in LFS' do
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project, source_branch: 'png-lfs', target_branch: 'master', author: user) }
+        let(:path)          { 'files/images/logo-black.png' }
+
+        before do
+          allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        it 'shows lfs badges' do
+          visit diffs_project_merge_request_path(project, merge_request, view: view)
+          wait_for_requests
+
+          expect(page.all('.diff-file span.label-lfs', visible: :all)).not_to be_empty
+        end
+
+        it_behaves_like 'creates image diff note'
       end
     end
   end
@@ -198,7 +223,6 @@ feature 'Merge request > User creates image diff notes', :js do
 
   def create_image_diff_note
     find('.js-add-image-diff-note-button', match: :first).click
-    page.all('.js-add-image-diff-note-button')[0].click
     find('.diff-content .note-textarea').native.send_keys('image diff test comment')
     click_button 'Comment'
     wait_for_requests

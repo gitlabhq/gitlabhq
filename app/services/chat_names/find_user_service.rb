@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChatNames
   class FindUserService
     def initialize(service, params)
@@ -15,6 +17,7 @@ module ChatNames
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_chat_name
       ChatName.find_by(
         service: @service,
@@ -22,5 +25,6 @@ module ChatNames
         chat_id: @params[:user_id]
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

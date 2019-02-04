@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
+  include MirrorAuthentication
 
   PROTECTED_BACKOFF_DELAY   = 1.minute
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
@@ -12,11 +15,9 @@ class RemoteMirror < ActiveRecord::Base
                  insecure_mode: true,
                  algorithm: 'aes-256-cbc'
 
-  default_value_for :only_protected_branches, true
-
   belongs_to :project, inverse_of: :remote_mirrors
 
-  validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
+  validates :url, presence: true, public_url: { protocols: %w(ssh git http https), allow_blank: true, enforce_user: true }
 
   before_save :set_new_remote_name, if: :mirror_url_changed?
 
@@ -25,6 +26,8 @@ class RemoteMirror < ActiveRecord::Base
   after_update :reset_fields, if: :mirror_url_changed?
 
   after_commit :remove_remote, on: :destroy
+
+  before_validation :store_credentials
 
   scope :enabled, -> { where(enabled: true) }
   scope :started, -> { with_update_status(:started) }
@@ -48,24 +51,31 @@ class RemoteMirror < ActiveRecord::Base
     state :failed
 
     after_transition any => :started do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_running, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_running)
 
       remote_mirror.update(last_update_started_at: Time.now)
     end
 
     after_transition started: :finished do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_finished, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_finished)
 
       timestamp = Time.now
-      remote_mirror.update_attributes!(
-        last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
+      remote_mirror.update!(
+        last_update_at: timestamp,
+        last_successful_update_at: timestamp,
+        last_error: nil,
+        error_notification_sent: false
       )
     end
 
-    after_transition started: :failed do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_failed, path: remote_mirror.project.full_path)
+    after_transition started: :failed do |remote_mirror|
+      Gitlab::Metrics.add_event(:remote_mirrors_failed)
 
       remote_mirror.update(last_update_at: Time.now)
+
+      remote_mirror.run_after_commit do
+        RemoteMirrorNotificationWorker.perform_async(remote_mirror.id)
+      end
     end
   end
 
@@ -82,7 +92,21 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def update_repository(options)
-    raw.update(options)
+    if ssh_mirror_url?
+      if ssh_key_auth? && ssh_private_key.present?
+        options[:ssh_key] = ssh_private_key
+      end
+
+      if ssh_known_hosts.present?
+        options[:known_hosts] = ssh_known_hosts
+      end
+    end
+
+    Gitlab::Git::RemoteMirror.new(
+      project.repository.raw,
+      remote_name,
+      **options
+    ).update
   end
 
   def sync?
@@ -118,15 +142,16 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def mark_as_failed(error_message)
-    update_fail
     update_column(:last_error, Gitlab::UrlSanitizer.sanitize(error_message))
+    update_fail
   end
 
   def url=(value)
     super(value) && return unless Gitlab::UrlSanitizer.valid?(value)
 
     mirror_url = Gitlab::UrlSanitizer.new(value)
-    self.credentials = mirror_url.credentials
+    self.credentials ||= {}
+    self.credentials = self.credentials.merge(mirror_url.credentials)
 
     super(mirror_url.sanitized_url)
   end
@@ -148,10 +173,34 @@ class RemoteMirror < ActiveRecord::Base
     result.to_s
   end
 
+  def ensure_remote!
+    return unless project
+    return unless remote_name && remote_url
+
+    # If this fails or the remote already exists, we won't know due to
+    # https://gitlab.com/gitlab-org/gitaly/issues/1317
+    project.repository.add_remote(remote_name, remote_url)
+  end
+
+  def after_sent_notification
+    update_column(:error_notification_sent, true)
+  end
+
   private
 
-  def raw
-    @raw ||= Gitlab::Git::RemoteMirror.new(project.repository.raw, remote_name)
+  def store_credentials
+    # This is a necessary workaround for attr_encrypted, which doesn't otherwise
+    # notice that the credentials have changed
+    self.credentials = self.credentials
+  end
+
+  # The remote URL omits any password if SSH public-key authentication is in use
+  def remote_url
+    return url unless ssh_key_auth? && password.present?
+
+    Gitlab::UrlSanitizer.new(read_attribute(:url), credentials: { user: user }).full_url
+  rescue
+    super
   end
 
   def fallback_remote_name
@@ -179,7 +228,8 @@ class RemoteMirror < ActiveRecord::Base
       last_error: nil,
       last_update_at: nil,
       last_successful_update_at: nil,
-      update_status: 'finished'
+      update_status: 'finished',
+      error_notification_sent: false
     )
   end
 
@@ -203,7 +253,7 @@ class RemoteMirror < ActiveRecord::Base
       project.repository.async_remove_remote(prev_remote_name)
     end
 
-    project.repository.add_remote(remote_name, url)
+    project.repository.add_remote(remote_name, remote_url)
   end
 
   def remove_remote
@@ -213,6 +263,6 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def mirror_url_changed?
-    url_changed? || encrypted_credentials_changed?
+    url_changed? || credentials_changed?
   end
 end

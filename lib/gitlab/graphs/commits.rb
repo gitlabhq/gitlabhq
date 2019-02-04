@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Graphs
     class Commits
@@ -18,7 +20,7 @@ module Gitlab
       end
 
       def commit_per_day
-        @commit_per_day ||= @commits.size / (@duration + 1)
+        @commit_per_day ||= (@commits.size.to_f / (@duration + 1)).round(1)
       end
 
       def collect_data

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Import::BitbucketController < Import::BaseController
   before_action :verify_bitbucket_import_enabled
   before_action :bitbucket_auth, except: :callback
@@ -6,7 +8,7 @@ class Import::BitbucketController < Import::BaseController
   rescue_from Bitbucket::Error::Unauthorized, with: :bitbucket_unauthorized
 
   def callback
-    response = client.auth_code.get_token(params[:code], redirect_uri: callback_import_bitbucket_url)
+    response = client.auth_code.get_token(params[:code], redirect_uri: users_import_bitbucket_callback_url)
 
     session[:bitbucket_token]         = response.token
     session[:bitbucket_expires_at]    = response.expires_at
@@ -16,6 +18,7 @@ class Import::BitbucketController < Import::BaseController
     redirect_to status_import_bitbucket_url
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def status
     bitbucket_client = Bitbucket::Client.new(credentials)
     repos = bitbucket_client.repos
@@ -27,6 +30,7 @@ class Import::BitbucketController < Import::BaseController
 
     @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.full_name) }
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def jobs
     render json: find_jobs('bitbucket')
@@ -55,7 +59,7 @@ class Import::BitbucketController < Import::BaseController
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
       else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
@@ -85,7 +89,7 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def go_to_bitbucket_for_permissions
-    redirect_to client.auth_code.authorize_url(redirect_uri: callback_import_bitbucket_url)
+    redirect_to client.auth_code.authorize_url(redirect_uri: users_import_bitbucket_callback_url)
   end
 
   def bitbucket_unauthorized

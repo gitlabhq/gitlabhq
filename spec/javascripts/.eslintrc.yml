@@ -30,5 +30,10 @@ rules:
   jasmine/no-spec-dupes:
     - warn
     - branch
-  no-console: off
   prefer-arrow-callback: off
+  import/no-unresolved:
+    - error
+    - ignore:
+      - 'fixtures/blob'
+  # Temporarily disabled to facilitate an upgrade to eslint-plugin-jasmine
+  jasmine/prefer-toHaveBeenCalledWith: off

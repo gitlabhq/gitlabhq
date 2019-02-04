@@ -1,5 +1,4 @@
-# rubocop:disable all
-class AddNotificationEmailToUser < ActiveRecord::Migration
+class AddNotificationEmailToUser < ActiveRecord::Migration[4.2]
   def up
     add_column :users, :notification_email, :string
 

@@ -6,7 +6,7 @@ _This diagram demonstrates the relative priority of each test type we use. `e2e`
 
 ## Unit tests
 
-Formal definition: https://en.wikipedia.org/wiki/Unit_testing
+Formal definition: <https://en.wikipedia.org/wiki/Unit_testing>
 
 These kind of tests ensure that a single unit of code (a method) works as
 expected (given an input, it has a predictable output). These tests should be
@@ -32,9 +32,13 @@ records should use stubs/doubles as much as possible.
 
 ## Integration tests
 
-Formal definition: https://en.wikipedia.org/wiki/Integration_testing
+Formal definition: <https://en.wikipedia.org/wiki/Integration_testing>
 
-These kind of tests ensure that individual parts of the application work well together, without the overhead of the actual app environment (i.e. the browser). These tests should assert at the request/response level: status code, headers, body. They're useful to test permissions, redirections, what view is rendered etc.
+These kind of tests ensure that individual parts of the application work well
+together, without the overhead of the actual app environment (i.e. the browser).
+These tests should assert at the request/response level: status code, headers,
+body.
+They're useful to test permissions, redirections, what view is rendered etc.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
@@ -67,20 +71,40 @@ run JavaScript tests, so you can either run unit tests (e.g. test a single
 JavaScript method), or integration tests (e.g. test a component that is composed
 of multiple components).
 
-## System tests or feature tests
+## White-box tests at the system level (formerly known as System / Feature tests)
 
-Formal definition: https://en.wikipedia.org/wiki/System_testing.
+Formal definitions:
 
-These kind of tests ensure the application works as expected from a user point
-of view (aka black-box testing). These tests should test a happy path for a
-given page or set of pages, and a test case should be added for any regression
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/White-box_testing>
+
+These kind of tests ensure the GitLab *Rails* application (i.e.
+`gitlab-ce`/`gitlab-ee`) works as expected from a *browser* point of view.
+
+Note that:
+
+- knowledge of the internals of the application are still required
+- data needed for the tests are usually created directly using RSpec factories
+- expectations are often set on the database or objects state
+
+These tests should only be used when:
+
+- the functionality/component being tested is small
+- the internal state of the objects/database *needs* to be tested
+- it cannot be tested at a lower level
+
+For instance, to test the breadcrumbs on a given page, writing a system test
+makes sense since it's a small component, which cannot be tested at the unit or
+controller level.
+
+Only test the happy path, but make sure to add a test case for any regression
 that couldn't have been caught at lower levels with better tests (i.e. if a
 regression is found, regression tests should be added at the lowest-level
 possible).
 
 | Tests path | Testing engine | Notes |
 | ---------- | -------------- | ----- |
-| `spec/features/` | [Capybara] + [RSpec] | If your spec has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
+| `spec/features/` | [Capybara] + [RSpec] | If your test has the `:js` metadata, the browser driver will be [Poltergeist], otherwise it's using [RackTest]. |
 
 ### Consider **not** writing a system test!
 
@@ -89,7 +113,7 @@ we have enough Unit & Integration tests), we shouldn't need to duplicate their
 thorough testing at the System test level.
 
 It's very easy to add tests, but a lot harder to remove or improve tests, so one
-should take care of not introducing too many (slow and duplicated) specs.
+should take care of not introducing too many (slow and duplicated) tests.
 
 The reasons why we should follow these best practices are as follows:
 
@@ -107,21 +131,33 @@ The reasons why we should follow these best practices are as follows:
 [Poltergeist]: https://github.com/teamcapybara/capybara#poltergeist
 [RackTest]: https://github.com/teamcapybara/capybara#racktest
 
-## Black-box tests or end-to-end tests
+## Black-box tests at the system level, aka end-to-end tests
+
+Formal definitions:
+
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/Black-box_testing>
 
 GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
 [Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
 are configured and packaged by [GitLab Omnibus].
 
-[GitLab QA] is a tool that allows to test that all these pieces integrate well
-together by building a Docker image for a given version of GitLab Rails and
-running feature tests (i.e. using Capybara) against it.
+The QA framework and instance-level scenarios are [part of GitLab Rails] so that
+they're always in-sync with the codebase (especially the views).
 
-The actual test scenarios and steps are [part of GitLab Rails] so that they're
-always in-sync with the codebase.
+Note that:
 
-Read a separate document about [end-to-end tests](end_to_end_tests.md) to
-learn more.
+- knowledge of the internals of the application are not required
+- data needed for the tests can only be created using the GUI or the API
+- expectations can only be made against the browser page and API responses
+
+Every new feature should come with a [test plan].
+
+| Tests path | Testing engine | Notes |
+| ---------- | -------------- | ----- |
+| `qa/qa/specs/features/` | [Capybara] + [RSpec] + Custom QA framework | Tests should be placed under their corresponding [Product category] |
+
+> See [end-to-end tests](end_to_end_tests.md) for more information.
 
 [multiple pieces]: ../architecture.md#components
 [GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
@@ -130,8 +166,29 @@ learn more.
 [GitLab Pages]: https://gitlab.com/gitlab-org/gitlab-pages
 [GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-runner
 [GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
-[GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
 [part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa
+[test plan]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/.gitlab/issue_templates/Test%20plan.md
+[Product category]: https://about.gitlab.com/handbook/product/categories/
+
+### Smoke tests
+
+Smoke tests are quick tests that may be run at any time (especially after the
+pre-deployment migrations).
+
+These tests run against the UI and ensure that basic functionality is working.
+
+> See [Smoke Tests](smoke.md) for more information.
+
+### GitLab QA orchestrator
+
+[GitLab QA orchestrator] is a tool that allows to test that all these pieces
+integrate well together by building a Docker image for a given version of GitLab
+Rails and running end-to-end tests (i.e. using Capybara) against it.
+
+Learn more in the [GitLab QA orchestrator README][gitlab-qa-readme].
+
+[GitLab QA orchestrator]: https://gitlab.com/gitlab-org/gitlab-qa
+[gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
 
 ## EE-specific tests
 
@@ -145,7 +202,7 @@ trade-off:
 - Unit tests are usually cheap, and you should consider them like the basement
   of your house: you need them to be confident that your code is behaving
   correctly. However if you run only unit tests without integration / system
-  tests, you might [miss] the [big] [picture]!
+  tests, you might [miss] the [big] / [picture] !
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require

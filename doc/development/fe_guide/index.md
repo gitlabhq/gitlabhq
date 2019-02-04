@@ -21,8 +21,8 @@ We also use [Axios][axios] to handle all of our network requests.
 We also utilize [webpack][webpack] to handle the bundling, minification, and
 compression of our assets.
 
-Working with our frontend assets requires Node (v6.0 or greater) and Yarn
-(v1.2 or greater).  You can find information on how to install these on our
+Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
+(v1.10.0 or greater). You can find information on how to install these on our
 [installation guide][install].
 
 ### Browser Support
@@ -53,6 +53,9 @@ Vuex specific design patterns and practices.
 
 ## [Axios](axios.md)
 Axios specific practices and gotchas.
+
+## [GraphQL](graphql.md)
+How to use GraphQL
 
 ## [Icons and Illustrations](icons.md)
 How we use SVG for our Icons and Illustrations.
@@ -115,7 +118,7 @@ The [externalization part of the guide](../i18n/externalization.md) explains the
 ## [DropLab](droplab/droplab.md)
 Our internal `DropLab` dropdown library.
 
-* [DropLab](droplab/droplab.md)
-* [Ajax plugin](droplab/plugins/ajax.md)
-* [Filter plugin](droplab/plugins/filter.md)
-* [InputSetter plugin](droplab/plugins/input_setter.md)
+- [DropLab](droplab/droplab.md)
+- [Ajax plugin](droplab/plugins/ajax.md)
+- [Filter plugin](droplab/plugins/filter.md)
+- [InputSetter plugin](droplab/plugins/input_setter.md)

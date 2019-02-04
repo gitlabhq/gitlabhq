@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TrendingProject < ActiveRecord::Base
   belongs_to :project
 

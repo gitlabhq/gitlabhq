@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
@@ -13,9 +15,10 @@ module Ci
       @runner = runner
     end
 
-    def execute
+    # rubocop: disable CodeReuse/ActiveRecord
+    def execute(params = {})
       builds =
-        if runner.shared?
+        if runner.instance_type?
           builds_for_shared_runner
         elsif runner.group_type?
           builds_for_group_runner
@@ -25,30 +28,24 @@ module Ci
 
       valid = true
 
-      if Feature.enabled?('ci_job_request_with_tags_matcher')
-        # pick builds that does not have other tags than runner's one
-        builds = builds.matches_tag_ids(runner.tags.ids)
+      # pick builds that does not have other tags than runner's one
+      builds = builds.matches_tag_ids(runner.tags.ids)
 
-        # pick builds that have at least one tag
-        unless runner.run_untagged?
-          builds = builds.with_any_tags
-        end
+      # pick builds that have at least one tag
+      unless runner.run_untagged?
+        builds = builds.with_any_tags
       end
 
-      builds.find do |build|
+      builds.each do |build|
         next unless runner.can_pick?(build)
 
         begin
           # In case when 2 runners try to assign the same build, second runner will be declined
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-          begin
-            build.runner_id = runner.id
-            build.run!
+          if assign_runner!(build, params)
             register_success(build)
 
-            return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
-          rescue Ci::Build::MissingDependenciesError
-            build.drop!(:missing_dependency_failure)
+            return Result.new(build, true)
           end
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
           # We are looping to find another build that is not conflicting
@@ -67,9 +64,34 @@ module Ci
       register_failure
       Result.new(nil, valid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
+    def assign_runner!(build, params)
+      build.runner_id = runner.id
+      build.runner_session_attributes = params[:session] if params[:session].present?
+
+      unless build.has_valid_build_dependencies?
+        build.drop!(:missing_dependency_failure)
+        return false
+      end
+
+      unless build.supported_runner?(params.dig(:info, :features))
+        build.drop!(:runner_unsupported)
+        return false
+      end
+
+      if build.archived?
+        build.drop!(:archived_failure)
+        return false
+      end
+
+      build.run!
+      true
+    end
+
+    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_shared_runner
       new_builds.
         # don't run projects which have not enabled shared runners and builds
@@ -83,27 +105,34 @@ module Ci
       joins("LEFT JOIN (#{running_builds_for_shared_runners.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
         .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_project_runner
       new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('id ASC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def builds_for_group_runner
       # Workaround for weird Rails bug, that makes `runner.groups.to_sql` to return `runner_id = NULL`
       groups = ::Group.joins(:runner_namespaces).merge(runner.runner_namespaces)
 
-      hierarchy_groups = Gitlab::GroupHierarchy.new(groups).base_and_descendants
+      hierarchy_groups = Gitlab::ObjectHierarchy.new(groups).base_and_descendants
       projects = Project.where(namespace_id: hierarchy_groups)
         .with_group_runners_enabled
         .with_builds_enabled
         .without_deleted
       new_builds.where(project: projects).order('id ASC')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def running_builds_for_shared_runners
-      Ci::Build.running.where(runner: Ci::Runner.shared)
+      Ci::Build.running.where(runner: Ci::Runner.instance_type)
         .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def new_builds
       builds = Ci::Build.pending.unstarted
@@ -117,21 +146,23 @@ module Ci
     end
 
     def register_success(job)
-      labels = { shared_runner: runner.shared?,
+      labels = { shared_runner: runner.instance_type?,
                  jobs_running_for_project: jobs_running_for_project(job) }
 
       job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
       attempt_counter.increment
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def jobs_running_for_project(job)
-      return '+Inf' unless runner.shared?
+      return '+Inf' unless runner.instance_type?
 
       # excluding currently started job
-      running_jobs_count = job.project.builds.running.where(runner: Ci::Runner.shared)
+      running_jobs_count = job.project.builds.running.where(runner: Ci::Runner.instance_type)
                               .limit(JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET + 1).count - 1
       running_jobs_count < JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET ? running_jobs_count : "#{JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET}+"
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def failed_attempt_counter
       @failed_attempt_counter ||= Gitlab::Metrics.counter(:job_register_attempts_failed_total, "Counts the times a runner tries to register a job")

@@ -7,7 +7,7 @@ describe Projects::TagsController do
 
   describe 'GET index' do
     before do
-      get :index, namespace_id: project.namespace.to_param, project_id: project
+      get :index, params: { namespace_id: project.namespace.to_param, project_id: project }
     end
 
     it 'returns the tags for the page' do
@@ -22,7 +22,7 @@ describe Projects::TagsController do
 
   describe 'GET show' do
     before do
-      get :show, namespace_id: project.namespace.to_param, project_id: project, id: id
+      get :show, params: { namespace_id: project.namespace.to_param, project_id: project, id: id }
     end
 
     context "valid tag" do
@@ -33,6 +33,28 @@ describe Projects::TagsController do
     context "invalid tag" do
       let(:id) { 'latest' }
       it { is_expected.to respond_with(:not_found) }
+    end
+  end
+
+  context 'private project with token authentication' do
+    let(:private_project) { create(:project, :repository, :private) }
+
+    it_behaves_like 'authenticates sessionless user', :index, :atom do
+      before do
+        default_params.merge!(project_id: private_project, namespace_id: private_project.namespace)
+
+        private_project.add_maintainer(user)
+      end
+    end
+  end
+
+  context 'public project with token authentication' do
+    let(:public_project) { create(:project, :repository, :public) }
+
+    it_behaves_like 'authenticates sessionless user', :index, :atom, public: true do
+      before do
+        default_params.merge!(project_id: public_project, namespace_id: public_project.namespace)
+      end
     end
   end
 end

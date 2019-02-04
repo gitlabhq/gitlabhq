@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::GpgKeysController < Profiles::ApplicationController
   before_action :set_gpg_key, only: [:destroy, :revoke]
 
@@ -21,7 +23,7 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
     @gpg_key.destroy
 
     respond_to do |format|
-      format.html { redirect_to profile_gpg_keys_url, status: 302 }
+      format.html { redirect_to profile_gpg_keys_url, status: :found }
       format.js { head :ok }
     end
   end
@@ -30,7 +32,7 @@ class Profiles::GpgKeysController < Profiles::ApplicationController
     @gpg_key.revoke
 
     respond_to do |format|
-      format.html { redirect_to profile_gpg_keys_url, status: 302 }
+      format.html { redirect_to profile_gpg_keys_url, status: :found }
       format.js { head :ok }
     end
   end

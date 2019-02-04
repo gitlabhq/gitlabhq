@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectSnippet < Snippet
   belongs_to :project
   belongs_to :author, class_name: "User"

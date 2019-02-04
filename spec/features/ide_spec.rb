@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe 'IDE', :js do
-  describe 'sub-groups' do
+  describe 'sub-groups', :nested_groups do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
     let(:subgroup) { create(:group, parent: group) }
     let(:subgroup_project) { create(:project, :repository, namespace: subgroup) }
 
     before do
-      subgroup_project.add_master(user)
+      subgroup_project.add_maintainer(user)
       sign_in(user)
 
       visit project_path(subgroup_project)

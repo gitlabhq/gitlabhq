@@ -1,7 +1,7 @@
 require_relative '../migrate/20180223120443_create_user_interacted_projects_table.rb'
 # rubocop:disable AddIndex
 # rubocop:disable AddConcurrentForeignKey
-class BuildUserInteractedProjectsTable < ActiveRecord::Migration
+class BuildUserInteractedProjectsTable < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   # Set this constant to true if this migration requires downtime.
@@ -43,9 +43,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
     end
   end
 
-  private
-
-  class PostgresStrategy < ActiveRecord::Migration
+  class PostgresStrategy < ActiveRecord::Migration[4.2]
     include Gitlab::Database::MigrationHelpers
 
     BATCH_SIZE = 100_000
@@ -79,6 +77,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
     end
 
     private
+
     def insert_missing_records
       iteration = 0
       records = 0
@@ -142,7 +141,7 @@ class BuildUserInteractedProjectsTable < ActiveRecord::Migration
     end
   end
 
-  class MysqlStrategy < ActiveRecord::Migration
+  class MysqlStrategy < ActiveRecord::Migration[4.2]
     include Gitlab::Database::MigrationHelpers
 
     def up

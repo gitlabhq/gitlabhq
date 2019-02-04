@@ -5,13 +5,12 @@ describe Projects::UnlinkForkService do
 
   subject { described_class.new(forked_project, user) }
 
-  let(:fork_link) { forked_project.forked_project_link }
   let(:project) { create(:project, :public) }
   let(:forked_project) { fork_project(project, user) }
   let(:user) { create(:user) }
 
   context 'with opened merge request on the source project' do
-    let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: fork_link.forked_from_project) }
+    let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: forked_project.forked_from_project) }
     let(:merge_request2) { create(:merge_request, source_project: forked_project, target_project: fork_project(project)) }
     let(:merge_request_in_fork) { create(:merge_request, source_project: forked_project, target_project: forked_project) }
 
@@ -33,12 +32,6 @@ describe Projects::UnlinkForkService do
     it 'does not close merge requests for the project being unlinked' do
       expect(mr_close_service).not_to receive(:execute).with(merge_request_in_fork)
     end
-  end
-
-  it 'remove fork relation' do
-    expect(forked_project.forked_project_link).to receive(:destroy)
-
-    subject.execute
   end
 
   it 'removes the link to the fork network' do

@@ -9,7 +9,7 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'returns group variables' do
@@ -42,7 +42,7 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'returns group variable details' do
@@ -82,12 +82,12 @@ describe API::GroupVariables do
       let!(:variable) { create(:ci_group_variable, group: group) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'creates variable' do
         expect do
-          post api("/groups/#{group.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true
+          post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true }
         end.to change {group.variables.count}.by(1)
 
         expect(response).to have_gitlab_http_status(201)
@@ -98,7 +98,7 @@ describe API::GroupVariables do
 
       it 'creates variable with optional attributes' do
         expect do
-          post api("/groups/#{group.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
+          post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
         end.to change {group.variables.count}.by(1)
 
         expect(response).to have_gitlab_http_status(201)
@@ -109,7 +109,7 @@ describe API::GroupVariables do
 
       it 'does not allow to duplicate variable key' do
         expect do
-          post api("/groups/#{group.id}/variables", user), key: variable.key, value: 'VALUE_2'
+          post api("/groups/#{group.id}/variables", user), params: { key: variable.key, value: 'VALUE_2' }
         end.to change {group.variables.count}.by(0)
 
         expect(response).to have_gitlab_http_status(400)
@@ -138,14 +138,14 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'updates variable data' do
         initial_variable = group.variables.reload.first
         value_before = initial_variable.value
 
-        put api("/groups/#{group.id}/variables/#{variable.key}", user), value: 'VALUE_1_UP', protected: true
+        put api("/groups/#{group.id}/variables/#{variable.key}", user), params: { value: 'VALUE_1_UP', protected: true }
 
         updated_variable = group.variables.reload.first
 
@@ -184,7 +184,7 @@ describe API::GroupVariables do
 
     context 'authorized user with proper permissions' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'deletes variable' do

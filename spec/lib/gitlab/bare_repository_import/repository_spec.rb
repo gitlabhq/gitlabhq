@@ -62,8 +62,10 @@ describe ::Gitlab::BareRepositoryImport::Repository do
 
     before do
       gitlab_shell.create_repository(repository_storage, hashed_path)
-      repository = Rugged::Repository.new(repo_path)
-      repository.config['gitlab.fullpath'] = 'to/repo'
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        repository = Rugged::Repository.new(repo_path)
+        repository.config['gitlab.fullpath'] = 'to/repo'
+      end
     end
 
     after do

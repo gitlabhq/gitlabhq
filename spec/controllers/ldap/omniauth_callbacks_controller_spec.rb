@@ -11,7 +11,7 @@ describe Ldap::OmniauthCallbacksController do
 
   it 'respects remember me checkbox' do
     expect do
-      post provider, remember_me: '1'
+      post provider, params: { remember_me: '1' }
     end.to change { user.reload.remember_created_at }.from(nil)
   end
 
@@ -19,7 +19,7 @@ describe Ldap::OmniauthCallbacksController do
     let(:user) { create(:omniauth_user, :two_factor_via_otp, extern_uid: uid, provider: provider) }
 
     it 'passes remember_me to the Devise view' do
-      post provider, remember_me: '1'
+      post provider, params: { remember_me: '1' }
 
       expect(assigns[:user].remember_me).to eq '1'
     end

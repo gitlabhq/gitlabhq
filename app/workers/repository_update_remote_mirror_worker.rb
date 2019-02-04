@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 class RepositoryUpdateRemoteMirrorWorker
   UpdateAlreadyInProgressError = Class.new(StandardError)
   UpdateError = Class.new(StandardError)
 
   include ApplicationWorker
-  include Gitlab::ShellAdapter
 
   sidekiq_options retry: 3, dead: false
 
@@ -14,7 +15,7 @@ class RepositoryUpdateRemoteMirrorWorker
   end
 
   def perform(remote_mirror_id, scheduled_time)
-    remote_mirror = RemoteMirror.find(remote_mirror_id)
+    remote_mirror = RemoteMirrorFinder.new(id: remote_mirror_id).execute
     return if remote_mirror.updated_since?(scheduled_time)
 
     raise UpdateAlreadyInProgressError if remote_mirror.update_in_progress?

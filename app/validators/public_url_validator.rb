@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # PublicUrlValidator
 #
 # Custom validator for URLs. This validator works like UrlValidator but

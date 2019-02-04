@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "nokogiri"
 require "asciidoctor-plantuml/plantuml"
 

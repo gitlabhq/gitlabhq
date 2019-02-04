@@ -210,6 +210,13 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
         .to eq reference
     end
 
+    it 'commit ref tag is valid' do
+      doc = reference_filter("See #{reference}")
+      commit_ref_tag = doc.css('a').first.css('span.gfm.gfm-commit')
+
+      expect(commit_ref_tag.text).to eq(commit.short_id)
+    end
+
     it 'has valid text' do
       doc = reference_filter("See #{reference}")
 

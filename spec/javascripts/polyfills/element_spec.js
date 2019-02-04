@@ -1,6 +1,6 @@
 import '~/commons/polyfills/element';
 
-describe('Element polyfills', function () {
+describe('Element polyfills', function() {
   beforeEach(() => {
     this.element = document.createElement('ul');
   });

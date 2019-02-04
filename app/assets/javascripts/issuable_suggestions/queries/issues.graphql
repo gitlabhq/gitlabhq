@@ -1,0 +1,26 @@
+query issueSuggestion($fullPath: ID!, $search: String) {
+  project(fullPath: $fullPath) {
+    issues(search: $search, sort: updated_desc, first: 5) {
+      edges {
+        node {
+          iid
+          title
+          confidential
+          userNotesCount
+          upvotes
+          webUrl
+          state
+          closedAt
+          createdAt
+          updatedAt
+          author {
+            name
+            username
+            avatarUrl
+            webUrl
+          }
+        }
+      }
+    }
+  }
+}

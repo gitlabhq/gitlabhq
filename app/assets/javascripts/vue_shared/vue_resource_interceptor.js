@@ -21,7 +21,7 @@ Vue.http.interceptors.push((request, next) => {
 Vue.http.interceptors.push((request, next) => {
   request.headers.set(csrf.headerKey, csrf.token);
 
-  next((response) => {
+  next(response => {
     // Headers object has a `forEach` property that iterates through all values.
     const headers = {};
 

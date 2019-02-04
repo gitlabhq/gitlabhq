@@ -1,20 +1,22 @@
+# frozen_string_literal: true
+
 class Projects::LfsLocksApiController < Projects::GitHttpClientController
   include LfsRequest
 
   def create
-    @result = Lfs::LockFileService.new(project, user, params).execute
+    @result = Lfs::LockFileService.new(project, user, lfs_params).execute
 
     render_json(@result[:lock])
   end
 
   def unlock
-    @result = Lfs::UnlockFileService.new(project, user, params).execute
+    @result = Lfs::UnlockFileService.new(project, user, lfs_params).execute
 
     render_json(@result[:lock])
   end
 
   def index
-    @result = Lfs::LocksFinderService.new(project, user, params).execute
+    @result = Lfs::LocksFinderService.new(project, user, lfs_params).execute
 
     render_json(@result[:locks])
   end
@@ -66,5 +68,9 @@ class Projects::LfsLocksApiController < Projects::GitHttpClientController
 
   def upload_request?
     %w(create unlock verify).include?(params[:action])
+  end
+
+  def lfs_params
+    params.permit(:id, :path, :force)
   end
 end

@@ -26,15 +26,20 @@ export default {
   created() {
     this.isTab = true;
   },
+  updated() {
+    if (this.$parent) {
+      this.$parent.$forceUpdate();
+    }
+  },
 };
 </script>
 
 <template>
   <div
-    class="tab-pane"
     :class="{
-      active: localActive
+      active: localActive,
     }"
+    class="tab-pane"
     role="tabpanel"
   >
     <slot></slot>

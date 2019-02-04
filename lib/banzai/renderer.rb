@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Renderer
     # Convert a Markdown String into an HTML-safe String of HTML

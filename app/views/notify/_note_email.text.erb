@@ -1,6 +1,9 @@
-<%  discussion = @note.discussion if @note.part_of_discussion? -%>
+<% note = local_assigns.fetch(:note, @note) -%>
+<% diff_limit = local_assigns.fetch(:diff_limit, nil) -%>
+
+<%  discussion = note.discussion if note.part_of_discussion? -%>
 <%  if discussion && !discussion.individual_note? -%>
-<%=   @note.author_name -%>
+<%=   sanitize_name(note.author_name) -%>
 <%    if discussion.new_discussion? -%>
 <%=     " started a new discussion" -%>
 <%    else -%>
@@ -13,14 +16,14 @@
 
 
 <%  elsif Gitlab::CurrentSettings.email_author_in_body -%>
-<%=     "#{@note.author_name} commented:" -%>
+<%=     "#{sanitize_name(note.author_name)} commented:" -%>
 
 
 <%  end -%>
-<%  if discussion&.diff_discussion? -%>
-<%    discussion.truncated_diff_lines(highlight: false).each do |line| -%>
+<%  if discussion&.diff_discussion? && discussion.on_text? -%>
+<%    discussion.truncated_diff_lines(highlight: false, diff_limit: diff_limit).each do |line| -%>
 <%=     "> #{line.text}\n" -%>
 <%    end -%>
 
 <%  end -%>
-<%= @note.note -%>
+<%= note.note -%>

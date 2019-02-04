@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   class UpdateService < Groups::BaseService
     include UpdateVisibilityLevel
@@ -12,7 +14,11 @@ module Groups
       group.assign_attributes(params)
 
       begin
-        group.save
+        success = group.save
+
+        after_update if success
+
+        success
       rescue Gitlab::UpdatePathError => e
         group.errors.add(:base, e.message)
 
@@ -22,8 +28,15 @@ module Groups
 
     private
 
+    def after_update
+      if group.previous_changes.include?(:visibility_level) && group.private?
+        # don't enqueue immediately to prevent todos removal in case of a mistake
+        TodosDestroyer::GroupPrivateWorker.perform_in(Todo::WAIT_FOR_DELETE, group.id)
+      end
+    end
+
     def reject_parent_id!
-      params.except!(:parent_id)
+      params.delete(:parent_id)
     end
 
     def valid_share_with_group_lock_change?

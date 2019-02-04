@@ -1,4 +1,4 @@
-class CleanupUsersRssTokenRename < ActiveRecord::Migration
+class CleanupUsersRssTokenRename < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -8,6 +8,7 @@ class CleanupUsersRssTokenRename < ActiveRecord::Migration
   end
 
   def down
+    # rubocop:disable Migration/UpdateLargeTable
     rename_column_concurrently :users, :feed_token, :rss_token
   end
 end

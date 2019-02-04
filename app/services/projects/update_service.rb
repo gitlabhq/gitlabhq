@@ -1,47 +1,97 @@
+# frozen_string_literal: true
+
 module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
 
+    ValidationError = Class.new(StandardError)
+
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute
-      unless valid_visibility_level_change?(project, params[:visibility_level])
-        return error('New visibility level not allowed!')
-      end
-
-      if renaming_project_with_container_registry_tags?
-        return error('Cannot rename project because it contains container registry tags!')
-      end
-
-      if changing_default_branch?
-        return error("Could not set the default branch") unless project.change_head(params[:default_branch])
-      end
+      validate!
 
       ensure_wiki_exists if enabling_wiki?
 
-      if project.update_attributes(params.except(:default_branch))
-        if project.previous_changes.include?('path')
-          project.rename_repo
-        else
-          system_hook_service.execute_hooks_for(project, :update)
-        end
+      yield if block_given?
 
-        update_pages_config if changing_pages_https_only?
+      # If the block added errors, don't try to save the project
+      return update_failed! if project.errors.any?
+
+      if project.update(params.except(:default_branch))
+        after_update
 
         success
       else
-        model_errors = project.errors.full_messages.to_sentence
-        error_message = model_errors.presence || 'Project could not be updated!'
-
-        error(error_message)
+        update_failed!
       end
+    rescue ValidationError => e
+      error(e.message)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def run_auto_devops_pipeline?
-      return false if project.repository.gitlab_ci_yml || !project.auto_devops.previous_changes.include?('enabled')
+      return false if project.repository.gitlab_ci_yml || !project.auto_devops&.previous_changes&.include?('enabled')
 
-      project.auto_devops.enabled? || (project.auto_devops.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?)
+      project.auto_devops_enabled?
     end
 
     private
+
+    def validate!
+      unless valid_visibility_level_change?(project, params[:visibility_level])
+        raise ValidationError.new('New visibility level not allowed!')
+      end
+
+      if renaming_project_with_container_registry_tags?
+        raise ValidationError.new('Cannot rename project because it contains container registry tags!')
+      end
+
+      if changing_default_branch?
+        raise ValidationError.new("Could not set the default branch") unless project.change_head(params[:default_branch])
+      end
+    end
+
+    def after_update
+      todos_features_changes = %w(
+        issues_access_level
+        merge_requests_access_level
+        repository_access_level
+      )
+      project_changed_feature_keys = project.project_feature.previous_changes.keys
+
+      if project.previous_changes.include?(:visibility_level) && project.private?
+        # don't enqueue immediately to prevent todos removal in case of a mistake
+        TodosDestroyer::ProjectPrivateWorker.perform_in(Todo::WAIT_FOR_DELETE, project.id)
+      elsif (project_changed_feature_keys & todos_features_changes).present?
+        TodosDestroyer::PrivateFeaturesWorker.perform_in(Todo::WAIT_FOR_DELETE, project.id)
+      end
+
+      if project.previous_changes.include?('path')
+        after_rename_service(project).execute
+      else
+        system_hook_service.execute_hooks_for(project, :update)
+      end
+
+      update_pages_config if changing_pages_related_config?
+    end
+
+    def after_rename_service(project)
+      # The path slug the project was using, before the rename took place.
+      path_before = project.previous_changes['path'].first
+
+      AfterRenameService.new(project, path_before: path_before, full_path_before: project.full_path_was)
+    end
+
+    def changing_pages_related_config?
+      changing_pages_https_only? || changing_pages_access_level?
+    end
+
+    def update_failed!
+      model_errors = project.errors.full_messages.to_sentence
+      error_message = model_errors.presence || 'Project could not be updated!'
+
+      error(error_message)
+    end
 
     def renaming_project_with_container_registry_tags?
       new_path = params[:path]
@@ -53,14 +103,18 @@ module Projects
     def changing_default_branch?
       new_branch = params[:default_branch]
 
-      project.repository.exists? &&
-        new_branch && new_branch != project.default_branch
+      new_branch && project.repository.exists? &&
+        new_branch != project.default_branch
     end
 
     def enabling_wiki?
-      return false if @project.wiki_enabled?
+      return false if project.wiki_enabled?
 
       params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
+    end
+
+    def changing_pages_access_level?
+      params.dig(:project_feature_attributes, :pages_access_level)
     end
 
     def ensure_wiki_exists

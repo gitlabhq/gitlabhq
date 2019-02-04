@@ -30,12 +30,15 @@ You can edit your account settings by navigating from the up-right corner menu b
 From there, you can:
 
 - Update your personal information
+- Set a [custom status](#current-status) for your profile
+- Manage your [commit email](#commit-email) for your profile
 - Manage [2FA](account/two_factor_authentication.md)
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
 [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Add and delete emails linked to your account
+- Choose which email to use for notifications, web-based commits, and display on your public profile
 - Manage [SSH keys](../../ssh/README.md#ssh) to access your account via SSH
 - Manage your [preferences](preferences.md#syntax-highlighting-theme)
 to customize your own GitLab experience
@@ -67,6 +70,107 @@ username, you can create a new group and transfer projects to it.
 Alternatively, you can follow [this detailed procedure from the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#how-to-change-your-username-at-gitlabcom)
 which also covers the case where you have projects hosted with
 [GitLab Pages](../project/pages/index.md).
+
+## Private profile
+
+The following information will be hidden from the user profile page (`https://gitlab.example.com/username`) if this feature is enabled:
+
+- Atom feed
+- Date when account is created
+- Activity tab
+- Groups tab
+- Contributed projects tab
+- Personal projects tab
+- Snippets tab
+
+To enable private profile:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+1. Check the "Private profile" option.
+1. Hit **Update profile settings**.
+
+
+NOTE: **Note:**
+You and GitLab admins can see your the abovementioned information on your profile even if it is private.
+
+## Private contributions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/14078) in GitLab 11.3.
+
+Enabling private contributions will include contributions to private projects, in the user contribution calendar graph and user recent activity.
+
+To enable private contributions:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+1. Check the "Private contributions" option.
+1. Hit **Update profile settings**.
+
+## Current status
+
+> Introduced in GitLab 11.2.
+
+You can provide a custom status message for your user profile along with an emoji that describes it.
+This may be helpful when you are out of office or otherwise not available.
+Other users can then take your status into consideration when responding to your issues or assigning work to you.
+Please be aware that your status is publicly visible even if your [profile is private](#private-profile).
+
+To set your current status:
+
+1. Open the user menu in the top-right corner of the navigation bar.
+1. Hit **Set status**, or **Edit status** if you have already set a status.
+1. Set the emoji and/or status message to your liking.
+1. Hit **Set status**. Alternatively, you can also hit **Remove status** to remove your user status entirely.
+
+or
+
+1. Navigate to your personal [profile settings](#profile-settings).
+1. In the text field below `Your status`, enter your status message.
+1. Select an emoji from the dropdown if you like.
+1. Hit **Update profile settings**.
+
+Status messages are restricted to 100 characters of plain text.
+They may however contain emoji codes such as `I'm on vacation :palm_tree:`.
+
+You can also set your current status [using the API](../../api/users.md#user-status).
+
+## Commit email
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21598) in GitLab 11.4.
+
+A commit email, is the email that will be displayed in every Git-related action done through the
+GitLab interface.
+
+You are able to select from the list of your own verified emails which email you want to use as the commit email.
+
+To change it:
+
+1. Open the user menu in the top-right corner of the navigation bar.
+1. Hit **Commit email** selection box.
+1. Select any of the verified emails.
+1. Hit **Update profile settings**.
+
+### Private commit email
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22560) in GitLab 11.5.
+
+GitLab provides the user with an automatically generated private commit email option,
+which allows the user to not make their email information public.
+
+To enable this option:
+
+1. Open the user menu in the top-right corner of the navigation bar.
+1. Hit **Commit email** selection box.
+1. Select **Use a private email** option.
+1. Hit **Update profile settings**.
+
+Once this option is enabled, every Git-related action will be performed using the private commit email.
+
+In order to stay fully annonymous, you can also copy this private commit email
+and configure it on your local machine using the following command:
+
+```
+git config --global user.email "YOUR_PRIVATE_COMMIT_EMAIL"
+```
 
 ## Troubleshooting
 

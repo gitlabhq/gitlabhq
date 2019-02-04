@@ -18,7 +18,7 @@ describe "User creates labels" do
 
   context "in project" do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
 
       visit(new_project_label_path(project))
@@ -69,7 +69,7 @@ describe "User creates labels" do
     before do
       create(:label, project: project, title: "bug") # Create label for `project` (not `another_project`) project.
 
-      another_project.add_master(user)
+      another_project.add_maintainer(user)
       sign_in(user)
 
       visit(new_project_label_path(another_project))

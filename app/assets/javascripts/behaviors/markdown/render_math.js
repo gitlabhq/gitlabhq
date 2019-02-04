@@ -32,7 +32,9 @@ export default function renderMath($els) {
   Promise.all([
     import(/* webpackChunkName: 'katex' */ 'katex'),
     import(/* webpackChunkName: 'katex' */ 'katex/dist/katex.min.css'),
-  ]).then(([katex]) => {
-    renderWithKaTeX($els, katex);
-  }).catch(() => flash(__('An error occurred while rendering KaTeX')));
+  ])
+    .then(([katex]) => {
+      renderWithKaTeX($els, katex);
+    })
+    .catch(() => flash(__('An error occurred while rendering KaTeX')));
 }

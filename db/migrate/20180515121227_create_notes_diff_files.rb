@@ -1,4 +1,4 @@
-class CreateNotesDiffFiles < ActiveRecord::Migration
+class CreateNotesDiffFiles < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   disable_ddl_transaction!
@@ -16,6 +16,7 @@ class CreateNotesDiffFiles < ActiveRecord::Migration
       t.text :old_path, null: false
     end
 
+    # rubocop:disable Migration/AddConcurrentForeignKey
     add_foreign_key :note_diff_files, :notes, column: :diff_note_id, on_delete: :cascade
   end
 end

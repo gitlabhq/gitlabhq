@@ -16,10 +16,10 @@ module Gitlab
         scope :running, -> { where(status: 'running') }
         scope :pending, -> { where(status: 'pending') }
         scope :success, -> { where(status: 'success') }
-        scope :failed, -> { where(status: 'failed')  }
-        scope :canceled, -> { where(status: 'canceled')  }
-        scope :skipped, -> { where(status: 'skipped')  }
-        scope :manual, -> { where(status: 'manual')  }
+        scope :failed, -> { where(status: 'failed') }
+        scope :canceled, -> { where(status: 'canceled') }
+        scope :skipped, -> { where(status: 'skipped') }
+        scope :manual, -> { where(status: 'manual') }
 
         scope :failed_but_allowed, -> do
           where(allow_failure: true, status: [:failed, :canceled])

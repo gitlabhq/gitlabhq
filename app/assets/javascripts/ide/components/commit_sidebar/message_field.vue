@@ -16,6 +16,10 @@ export default {
       type: String,
       required: true,
     },
+    placeholder: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -45,6 +49,10 @@ export default {
     onInput(e) {
       this.$emit('input', e.target.value);
     },
+    onCtrlEnter() {
+      if (!this.isFocused) return;
+      this.$emit('submit');
+    },
     updateIsFocused(isFocused) {
       this.isFocused = isFocused;
     },
@@ -54,7 +62,7 @@ export default {
     placement: 'top',
     content: sprintf(
       __(`
-        The character highligher helps you keep the subject line to %{titleLength} characters
+        The character highlighter helps you keep the subject line to %{titleLength} characters
         and wrap the body at %{bodyLength} so they are readable in git.
       `),
       { titleLength: MAX_TITLE_LENGTH, bodyLength: MAX_BODY_LENGTH },
@@ -66,25 +74,17 @@ export default {
 <template>
   <fieldset class="common-note-form ide-commit-message-field">
     <div
-      class="md-area"
       :class="{
-        'is-focused': isFocused
+        'is-focused': isFocused,
       }"
+      class="md-area"
     >
-      <div
-        v-once
-        class="md-header"
-      >
+      <div v-once class="md-header">
         <ul class="nav-links">
           <li>
             {{ __('Commit Message') }}
-            <span
-              v-popover="$options.popoverOptions"
-              class="form-text text-muted prepend-left-10"
-            >
-              <icon
-                name="question"
-              />
+            <span v-popover="$options.popoverOptions" class="form-text text-muted prepend-left-10">
+              <icon name="question" />
             </span>
           </li>
         </ul>
@@ -92,36 +92,29 @@ export default {
       <div class="ide-commit-message-textarea-container">
         <div class="ide-commit-message-highlights-container">
           <div
-            class="note-textarea highlights monospace"
             :style="{
-              transform: `translate3d(0, ${-scrollTop}px, 0)`
+              transform: `translate3d(0, ${-scrollTop}px, 0)`,
             }"
+            class="note-textarea highlights monospace"
           >
-            <div
-              v-for="(line, index) in allLines"
-              :key="index"
-            >
-              <span
-                v-text="line.text"
-              >
-              </span><mark
-                v-show="line.highlightedText"
-                v-text="line.highlightedText"
-              >
-              </mark>
+            <div v-for="(line, index) in allLines" :key="index">
+              <span v-text="line.text"> </span
+              ><mark v-show="line.highlightedText" v-text="line.highlightedText"> </mark>
             </div>
           </div>
         </div>
         <textarea
+          ref="textarea"
+          :placeholder="placeholder"
+          :value="text"
           class="note-textarea ide-commit-message-textarea"
           name="commit-message"
-          :placeholder="__('Write a commit message...')"
-          :value="text"
           @scroll="handleScroll"
           @input="onInput"
           @focus="updateIsFocused(true)"
           @blur="updateIsFocused(false)"
-          ref="textarea"
+          @keydown.ctrl.enter="onCtrlEnter"
+          @keydown.meta.enter="onCtrlEnter"
         >
         </textarea>
       </div>

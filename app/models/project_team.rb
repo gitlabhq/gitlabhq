@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectTeam
   include BulkMemberAccessLoad
 
@@ -19,12 +21,15 @@ class ProjectTeam
     add_user(user, :developer, current_user: current_user)
   end
 
-  def add_master(user, current_user: nil)
-    add_user(user, :master, current_user: current_user)
+  def add_maintainer(user, current_user: nil)
+    add_user(user, :maintainer, current_user: current_user)
   end
 
+  # @deprecated
+  alias_method :add_master, :add_maintainer
+
   def add_role(user, role, current_user: nil)
-    send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
+    public_send(:"add_#{role}", user, current_user: current_user) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def find_member(user_id)
@@ -69,6 +74,14 @@ class ProjectTeam
   end
   alias_method :users, :members
 
+  # `members` method uses project_authorizations table which
+  # is updated asynchronously, on project move it still contains
+  # old members who may not have access to the new location,
+  # so we filter out only members of project or project's group
+  def members_in_project_and_ancestors
+    members.where(id: member_user_ids)
+  end
+
   def guests
     @guests ||= fetch_members(Gitlab::Access::GUEST)
   end
@@ -81,9 +94,12 @@ class ProjectTeam
     @developers ||= fetch_members(Gitlab::Access::DEVELOPER)
   end
 
-  def masters
-    @masters ||= fetch_members(Gitlab::Access::MASTER)
+  def maintainers
+    @maintainers ||= fetch_members(Gitlab::Access::MAINTAINER)
   end
+
+  # @deprecated
+  alias_method :masters, :maintainers
 
   def owners
     @owners ||=
@@ -136,9 +152,12 @@ class ProjectTeam
     max_member_access(user.id) == Gitlab::Access::DEVELOPER
   end
 
-  def master?(user)
-    max_member_access(user.id) == Gitlab::Access::MASTER
+  def maintainer?(user)
+    max_member_access(user.id) == Gitlab::Access::MAINTAINER
   end
+
+  # @deprecated
+  alias_method :master?, :maintainer?
 
   # Checks if `user` is authorized for this project, with at least the
   # `min_access_level` (if given).
@@ -179,5 +198,9 @@ class ProjectTeam
 
   def group
     project.group
+  end
+
+  def member_user_ids
+    Member.on_project_and_ancestors(project).select(:user_id)
   end
 end

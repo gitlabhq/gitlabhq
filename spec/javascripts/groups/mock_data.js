@@ -340,7 +340,8 @@ export const mockSearchedGroups = [
                   {
                     id: 17,
                     name: 'v4.4',
-                    description: 'Voluptatem qui ea error aperiam veritatis doloremque consequatur temporibus.',
+                    description:
+                      'Voluptatem qui ea error aperiam veritatis doloremque consequatur temporibus.',
                     visibility: 'public',
                     full_name: 'platform / hardware / bsp / kernel / common / v4.4',
                     relative_path: '/platform/hardware/bsp/kernel/common/v4.4',

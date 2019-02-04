@@ -25,19 +25,10 @@ export default {
   <div class="dropdown-footer">
     <ul class="dropdown-footer-list">
       <li>
-        <a
-          href="#"
-          class="dropdown-toggle-page"
-        >
-          {{ createLabelTitle }}
-        </a>
+        <a href="#" class="dropdown-toggle-page"> {{ createLabelTitle }} </a>
       </li>
       <li>
-        <a
-          data-is-link="true"
-          class="dropdown-external-link"
-          :href="labelsWebUrl"
-        >
+        <a :href="labelsWebUrl" data-is-link="true" class="dropdown-external-link">
           {{ manageLabelsTitle }}
         </a>
       </li>

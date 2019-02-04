@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 module API
   module ProjectsRelationBuilder
     extend ActiveSupport::Concern
 
-    module ClassMethods
+    class_methods do
       def prepare_relation(projects_relation, options = {})
         projects_relation = preload_relation(projects_relation, options)
         execute_batch_counting(projects_relation)
         projects_relation
       end
 
-      def preload_relation(projects_relation, options =  {})
+      def preload_relation(projects_relation, options = {})
         projects_relation
       end
 

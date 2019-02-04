@@ -6,14 +6,14 @@ describe Projects::CompareController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET index' do
     render_views
 
     before do
-      get :index, namespace_id: project.namespace, project_id: project
+      get :index, params: { namespace_id: project.namespace, project_id: project }
     end
 
     it 'returns successfully' do
@@ -24,7 +24,7 @@ describe Projects::CompareController do
   describe 'GET show' do
     render_views
 
-    subject(:show_request) { get :show, request_params }
+    subject(:show_request) { get :show, params: request_params }
 
     let(:request_params) do
       {
@@ -97,6 +97,30 @@ describe Projects::CompareController do
         expect(assigns(:commits)).to eq([])
       end
     end
+
+    context 'when the target ref is invalid' do
+      let(:target_ref) { "master%' AND 2554=4423 AND '%'='" }
+      let(:source_ref) { "improve%2Fawesome" }
+
+      it 'shows a flash message and redirects' do
+        show_request
+
+        expect(flash[:alert]).to eq('Invalid branch name')
+        expect(response).to have_http_status(302)
+      end
+    end
+
+    context 'when the source ref is invalid' do
+      let(:source_ref) { "master%' AND 2554=4423 AND '%'='" }
+      let(:target_ref) { "improve%2Fawesome" }
+
+      it 'shows a flash message and redirects' do
+        show_request
+
+        expect(flash[:alert]).to eq('Invalid branch name')
+        expect(response).to have_http_status(302)
+      end
+    end
   end
 
   describe 'GET diff_for_path' do
@@ -106,7 +130,7 @@ describe Projects::CompareController do
         project_id: project
       }
 
-      get :diff_for_path, params.merge(extra_params)
+      get :diff_for_path, params: params.merge(extra_params)
     end
 
     let(:existing_path) { 'files/ruby/feature.rb' }
@@ -177,7 +201,7 @@ describe Projects::CompareController do
   end
 
   describe 'POST create' do
-    subject(:create_request) { post :create, request_params }
+    subject(:create_request) { post :create, params: request_params }
 
     let(:request_params) do
       {
@@ -236,7 +260,7 @@ describe Projects::CompareController do
   end
 
   describe 'GET signatures' do
-    subject(:signatures_request) { get :signatures, request_params }
+    subject(:signatures_request) { get :signatures, params: request_params }
 
     let(:request_params) do
       {

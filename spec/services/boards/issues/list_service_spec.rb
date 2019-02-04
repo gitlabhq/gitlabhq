@@ -12,7 +12,7 @@ describe Boards::Issues::ListService do
 
       let(:bug) { create(:label, project: project, name: 'Bug') }
       let(:development) { create(:label, project: project, name: 'Development') }
-      let(:testing)  { create(:label, project: project, name: 'Testing') }
+      let(:testing) { create(:label, project: project, name: 'Testing') }
       let(:p1) { create(:label, title: 'P1', project: project, priority: 1) }
       let(:p2) { create(:label, title: 'P2', project: project, priority: 2) }
       let(:p3) { create(:label, title: 'P3', project: project, priority: 3) }
@@ -24,7 +24,7 @@ describe Boards::Issues::ListService do
 
       let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
       let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2]) }
-      let!(:reopened_issue1) { create(:issue, :opened, project: project, title: 'Issue 3' ) }
+      let!(:reopened_issue1) { create(:issue, :opened, project: project, title: 'Reopened Issue 1' ) }
 
       let!(:list1_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [p2, development]) }
       let!(:list1_issue2) { create(:labeled_issue, project: project, milestone: m2, labels: [development]) }
@@ -44,19 +44,26 @@ describe Boards::Issues::ListService do
       end
 
       it_behaves_like 'issues list service'
+
+      context 'when project is archived' do
+        let(:project) { create(:project, :archived) }
+
+        it_behaves_like 'issues list service'
+      end
     end
 
     context 'when parent is a group' do
       let(:user)    { create(:user) }
       let(:project) { create(:project, :empty_repo, namespace: group) }
       let(:project1) { create(:project, :empty_repo, namespace: group) }
+      let(:project_archived) { create(:project, :empty_repo, :archived, namespace: group) }
 
       let(:m1) { create(:milestone, group: group) }
       let(:m2) { create(:milestone, group: group) }
 
       let(:bug) { create(:group_label, group: group, name: 'Bug') }
       let(:development) { create(:group_label, group: group, name: 'Development') }
-      let(:testing)  { create(:group_label, group: group, name: 'Testing') }
+      let(:testing) { create(:group_label, group: group, name: 'Testing') }
 
       let(:p1) { create(:group_label, title: 'P1', group: group) }
       let(:p2) { create(:group_label, title: 'P2', group: group) }
@@ -77,7 +84,8 @@ describe Boards::Issues::ListService do
 
       let!(:opened_issue1) { create(:labeled_issue, project: project, milestone: m1, title: 'Issue 1', labels: [bug]) }
       let!(:opened_issue2) { create(:labeled_issue, project: project, milestone: m2, title: 'Issue 2', labels: [p2, p2_project]) }
-      let!(:reopened_issue1) { create(:issue, state: 'opened', project: project, title: 'Issue 3', closed_at: Time.now ) }
+      let!(:opened_issue3) { create(:labeled_issue, project: project_archived, milestone: m1, title: 'Issue 3', labels: [bug]) }
+      let!(:reopened_issue1) { create(:issue, state: 'opened', project: project, title: 'Reopened Issue 1', closed_at: Time.now ) }
 
       let!(:list1_issue1) { create(:labeled_issue, project: project, milestone: m1, labels: [p2, p2_project, development]) }
       let!(:list1_issue2) { create(:labeled_issue, project: project, milestone: m2, labels: [development]) }

@@ -1,0 +1,5 @@
+---
+title: Add Container Registry API with cleanup function
+merge_request: 24303
+author:
+type: added

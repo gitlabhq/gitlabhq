@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Projects::ProtectedTagsController < Projects::ProtectedRefsController
   protected
 
@@ -11,6 +13,10 @@ class Projects::ProtectedTagsController < Projects::ProtectedRefsController
 
   def load_protected_ref
     @protected_ref = @project.protected_tags.find(params[:id])
+  end
+
+  def access_levels
+    [:create_access_levels]
   end
 
   def protected_ref_params

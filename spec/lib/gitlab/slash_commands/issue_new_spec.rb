@@ -8,7 +8,7 @@ describe Gitlab::SlashCommands::IssueNew do
     let(:regex_match) { described_class.match("issue create bird is the word") }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     subject do
@@ -44,7 +44,7 @@ describe Gitlab::SlashCommands::IssueNew do
     end
 
     context 'issue cannot be created' do
-      let!(:issue)  { create(:issue, project: project, title: 'bird is the word') }
+      let!(:issue) { create(:issue, project: project, title: 'bird is the word') }
       let(:regex_match) { described_class.match("issue create #{'a' * 512}}") }
 
       it 'displays the errors' do

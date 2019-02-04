@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # GroupProjectsFinder
 #
 # Used to filter Projects  by set of params
@@ -82,6 +84,7 @@ class GroupProjectsFinder < ProjectsFinder
     options.fetch(:include_subgroups, false)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def owned_projects
     if include_subgroups?
       Project.where(namespace_id: group.self_and_descendants.select(:id))
@@ -89,6 +92,7 @@ class GroupProjectsFinder < ProjectsFinder
       group.projects
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def shared_projects
     group.shared_projects

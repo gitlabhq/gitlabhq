@@ -5,35 +5,48 @@ import axios from '~/lib/utils/axios_utils';
 import createFlash from '~/flash';
 import { __ } from '~/locale';
 import TemplateSelectorMediator from '../blob/file_template_mediator';
+import getModeByFileExtension from '~/lib/utils/ace_utils';
+import { addEditorMarkdownListeners } from '~/lib/utils/text_markdown';
 
 export default class EditBlob {
-  constructor(assetsPath, aceMode, currentAction) {
-    this.configureAceEditor(aceMode, assetsPath);
+  // The options object has:
+  // assetsPath, filePath, currentAction, projectId, isMarkdown
+  constructor(options) {
+    this.options = options;
+    this.configureAceEditor();
     this.initModePanesAndLinks();
     this.initSoftWrap();
-    this.initFileSelectors(currentAction);
+    this.initFileSelectors();
   }
 
-  configureAceEditor(aceMode, assetsPath) {
+  configureAceEditor() {
+    const { filePath, assetsPath, isMarkdown } = this.options;
     ace.config.set('modePath', `${assetsPath}/ace`);
     ace.config.loadModule('ace/ext/searchbox');
+    ace.config.loadModule('ace/ext/modelist');
 
     this.editor = ace.edit('editor');
+
+    if (isMarkdown) {
+      addEditorMarkdownListeners(this.editor);
+    }
 
     // This prevents warnings re: automatic scrolling being logged
     this.editor.$blockScrolling = Infinity;
 
     this.editor.focus();
 
-    if (aceMode) {
-      this.editor.getSession().setMode(`ace/mode/${aceMode}`);
+    if (filePath) {
+      this.editor.getSession().setMode(getModeByFileExtension(filePath));
     }
   }
 
-  initFileSelectors(currentAction) {
+  initFileSelectors() {
+    const { currentAction, projectId } = this.options;
     this.fileTemplateMediator = new TemplateSelectorMediator({
       currentAction,
       editor: this.editor,
+      projectId,
     });
   }
 
@@ -60,14 +73,15 @@ export default class EditBlob {
 
     if (paneId === '#preview') {
       this.$toggleButton.hide();
-      axios.post(currentLink.data('previewUrl'), {
-        content: this.editor.getValue(),
-      })
-      .then(({ data }) => {
-        currentPane.empty().append(data);
-        currentPane.renderGFM();
-      })
-      .catch(() => createFlash(__('An error occurred previewing the blob')));
+      axios
+        .post(currentLink.data('previewUrl'), {
+          content: this.editor.getValue(),
+        })
+        .then(({ data }) => {
+          currentPane.empty().append(data);
+          currentPane.renderGFM();
+        })
+        .catch(() => createFlash(__('An error occurred previewing the blob')));
     }
 
     this.$toggleButton.show();

@@ -61,6 +61,10 @@ describe('badge helper', () => {
       expect(buttonEl).toBeDefined();
     });
 
+    it('should add badge classes', () => {
+      expect(buttonEl.className).toContain('badge badge-pill');
+    });
+
     it('should set the badge text', () => {
       expect(buttonEl.innerText).toEqual(badgeText);
     });
@@ -90,6 +94,7 @@ describe('badge helper', () => {
 
     it('should create icon comment button', () => {
       const iconEl = buttonEl.querySelector('svg');
+
       expect(iconEl).toBeDefined();
     });
   });

@@ -55,14 +55,14 @@ scope format: false do
     resources :branches, only: [:index, :new, :create, :destroy]
     delete :merged_branches, controller: 'branches', action: :destroy_all_merged
     resources :tags, only: [:index, :show, :new, :create, :destroy] do
-      resource :release, only: [:edit, :update]
+      resource :release, controller: 'tags/releases', only: [:edit, :update]
     end
 
     resources :protected_branches, only: [:index, :show, :create, :update, :destroy]
     resources :protected_tags, only: [:index, :show, :create, :update, :destroy]
   end
 
-  scope constraints: { id: /.+/ }  do
+  scope constraints: { id: /.+/ } do
     scope controller: :blob do
       get '/new/*id', action: :new, as: :new_blob
       post '/create/*id', action: :create, as: :create_blob
@@ -83,6 +83,7 @@ scope format: false do
     get '/raw/*id', to: 'raw#show', as: :raw
     get '/blame/*id', to: 'blame#show', as: :blame
 
+    get '/commits', to: 'commits#commits_root', as: :commits_root
     get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
     get '/commits/*id', to: 'commits#show', as: :commits
 

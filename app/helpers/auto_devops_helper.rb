@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module AutoDevopsHelper
   def show_auto_devops_callout?(project)
     Feature.get(:auto_devops_banner_disabled).off? &&
@@ -24,6 +26,7 @@ module AutoDevopsHelper
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def cluster_ingress_ip(project)
     project
       .cluster_ingresses
@@ -32,6 +35,7 @@ module AutoDevopsHelper
       .pluck(:external_ip)
       .first
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

@@ -6,7 +6,7 @@ for file in config/*.yml.example; do
   cp ${file} config/$(basename ${file} .example)
 done
 
-# Allow to override the Gitlab URL from an environment variable, as this will avoid having to change the configuration file for simple deployments.
+# Allow to override the GitLab URL from an environment variable, as this will avoid having to change the configuration file for simple deployments.
 config=$(echo '<% gitlab_url = URI(ENV["GITLAB_URL"] || "http://localhost:80") %>' | cat - config/gitlab.yml)
 echo "$config" > config/gitlab.yml
 sed -i "s/host: localhost/host: <%= gitlab_url.host %>/" config/gitlab.yml

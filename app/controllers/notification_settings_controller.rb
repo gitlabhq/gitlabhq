@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotificationSettingsController < ApplicationController
   before_action :authenticate_user!
 
@@ -5,16 +7,21 @@ class NotificationSettingsController < ApplicationController
     return render_404 unless can_read?(resource)
 
     @notification_setting = current_user.notification_settings_for(resource)
-    @saved = @notification_setting.update_attributes(notification_setting_params)
+    @saved = @notification_setting.update(notification_setting_params_for(resource))
 
     render_response
   end
 
   def update
     @notification_setting = current_user.notification_settings.find(params[:id])
-    @saved = @notification_setting.update_attributes(notification_setting_params)
+    @saved = @notification_setting.update(notification_setting_params_for(@notification_setting.source))
 
-    render_response
+    if params[:hide_label].present?
+      btn_class = params[:project_id].present? ? 'btn-xs' : ''
+      render_response("shared/notifications/_new_button", btn_class)
+    else
+      render_response
+    end
   end
 
   private
@@ -35,15 +42,15 @@ class NotificationSettingsController < ApplicationController
     can?(current_user, ability_name, resource)
   end
 
-  def render_response
+  def render_response(response_template = "shared/notifications/_button", btn_class = nil)
     render json: {
-      html: view_to_html_string("shared/notifications/_button", notification_setting: @notification_setting),
+      html: view_to_html_string(response_template, notification_setting: @notification_setting, btn_class: btn_class),
       saved: @saved
     }
   end
 
-  def notification_setting_params
-    allowed_fields = NotificationSetting::EMAIL_EVENTS.dup
+  def notification_setting_params_for(source)
+    allowed_fields = NotificationSetting.email_events(source).dup
     allowed_fields << :level
     params.require(:notification_setting).permit(allowed_fields)
   end

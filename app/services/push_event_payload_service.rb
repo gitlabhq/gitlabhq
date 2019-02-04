@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Service class for creating push event payloads as stored in the
 # "push_event_payloads" table.
 #

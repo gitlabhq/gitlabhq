@@ -1,0 +1,6 @@
+---
+title: Show CI artifact file size with 3 significant digits on 'browse job artifacts'
+  page
+merge_request: 24387
+author:
+type: fixed

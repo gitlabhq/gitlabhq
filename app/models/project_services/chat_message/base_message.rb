@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'slack-notifier'
 
 module ChatMessage
@@ -26,13 +28,18 @@ module ChatMessage
       end
     end
 
-    def pretext
+    def summary
       return message if markdown
 
       format(message)
     end
 
+    def pretext
+      summary
+    end
+
     def fallback
+      format(message)
     end
 
     def attachments

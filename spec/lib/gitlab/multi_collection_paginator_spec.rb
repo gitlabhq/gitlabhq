@@ -28,7 +28,7 @@ describe Gitlab::MultiCollectionPaginator do
       expect(paginator.paginate(1)).to eq(all_projects.take(3))
     end
 
-    it 'fils the second page with a mixture of of the first & second collection' do
+    it 'fils the second page with a mixture of the first & second collection' do
       first_collection_element = all_projects.last
       second_collection_elements = all_groups.take(2)
 

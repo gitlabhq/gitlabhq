@@ -7,7 +7,7 @@ describe 'Merge request > User sees pipelines', :js do
     let(:user) { project.creator }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
@@ -41,8 +41,7 @@ describe 'Merge request > User sees pipelines', :js do
         visit project_merge_request_path(project, merge_request)
         wait_for_requests
 
-        expect(page.find('.ci-widget')).to have_content(
-          'Could not connect to the CI server. Please check your settings and try again')
+        expect(page.find('.ci-widget')).to have_text("Could not retrieve the pipeline status. For troubleshooting steps, read the documentation.")
       end
     end
 
@@ -70,7 +69,7 @@ describe 'Merge request > User sees pipelines', :js do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
     end
 

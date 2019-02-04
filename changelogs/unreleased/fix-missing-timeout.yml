@@ -1,5 +1,0 @@
----
-title: Missing timeout value in object storage pre-authorization
-merge_request: 19201
-author:
-type: fixed

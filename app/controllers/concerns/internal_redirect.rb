@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module InternalRedirect
   extend ActiveSupport::Concern
 
@@ -23,6 +25,10 @@ module InternalRedirect
     nil
   end
 
+  def sanitize_redirect(url_or_path)
+    safe_redirect_path(url_or_path) || safe_redirect_path_for_url(url_or_path)
+  end
+
   def host_allowed?(uri)
     uri.host == request.host &&
       uri.port == request.port
@@ -31,5 +37,11 @@ module InternalRedirect
   def full_path_for_uri(uri)
     path_with_query = [uri.path, uri.query].compact.join('?')
     [path_with_query, uri.fragment].compact.join("#")
+  end
+
+  def referer_path(request)
+    return unless request.referer.presence
+
+    URI(request.referer).path
   end
 end

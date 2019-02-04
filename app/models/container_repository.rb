@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 class ContainerRepository < ActiveRecord::Base
+  include Gitlab::Utils::StrongMemoize
+
   belongs_to :project
 
   validates :name, length: { minimum: 0, allow_nil: false }
@@ -6,8 +10,9 @@ class ContainerRepository < ActiveRecord::Base
 
   delegate :client, to: :registry
 
-  before_destroy :delete_tags!
+  scope :ordered, -> { order(:name) }
 
+  # rubocop: disable CodeReuse/ServiceClass
   def registry
     @registry ||= begin
       token = Auth::ContainerRegistryAuthenticationService.full_access_token(path)
@@ -18,6 +23,7 @@ class ContainerRepository < ActiveRecord::Base
       ContainerRegistry::Registry.new(url, token: token, path: host_port)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def path
     @path ||= [project.full_path, name]
@@ -37,11 +43,12 @@ class ContainerRepository < ActiveRecord::Base
   end
 
   def tags
-    return @tags if defined?(@tags)
     return [] unless manifest && manifest['tags']
 
-    @tags = manifest['tags'].map do |tag|
-      ContainerRegistry::Tag.new(self, tag)
+    strong_memoize(:tags) do
+      manifest['tags'].sort.map do |tag|
+        ContainerRegistry::Tag.new(self, tag)
+      end
     end
   end
 

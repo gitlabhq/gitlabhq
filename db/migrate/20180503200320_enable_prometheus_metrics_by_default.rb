@@ -1,4 +1,4 @@
-class EnablePrometheusMetricsByDefault < ActiveRecord::Migration
+class EnablePrometheusMetricsByDefault < ActiveRecord::Migration[4.2]
   DOWNTIME = false
 
   def up

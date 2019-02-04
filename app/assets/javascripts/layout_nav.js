@@ -5,8 +5,14 @@ import initFlyOutNav from './fly_out_nav';
 function hideEndFade($scrollingTabs) {
   $scrollingTabs.each(function scrollTabsLoop() {
     const $this = $(this);
-    $this.siblings('.fade-right').toggleClass('scrolling', Math.round($this.width()) < $this.prop('scrollWidth'));
+    $this
+      .siblings('.fade-right')
+      .toggleClass('scrolling', Math.round($this.width()) < $this.prop('scrollWidth'));
   });
+}
+
+function initDeferred() {
+  $(document).trigger('init.scrolling-tabs');
 }
 
 export default function initLayoutNav() {
@@ -15,13 +21,16 @@ export default function initLayoutNav() {
 
   initFlyOutNav();
 
+  // We need to init it on DomContentLoaded as others could also call it
   $(document).on('init.scrolling-tabs', () => {
     const $scrollingTabs = $('.scrolling-tabs').not('.is-initialized');
     $scrollingTabs.addClass('is-initialized');
 
-    $(window).on('resize.nav', () => {
-      hideEndFade($scrollingTabs);
-    }).trigger('resize.nav');
+    $(window)
+      .on('resize.nav', () => {
+        hideEndFade($scrollingTabs);
+      })
+      .trigger('resize.nav');
 
     $scrollingTabs.on('scroll', function tabsScrollEvent() {
       const $this = $(this);
@@ -42,11 +51,13 @@ export default function initLayoutNav() {
         const offset = $active.offset().left + activeWidth;
 
         if (offset > scrollingTabWidth - 30) {
-          const scrollLeft = (offset - (scrollingTabWidth / 2)) - (activeWidth / 2);
+          const scrollLeft = offset - scrollingTabWidth / 2 - activeWidth / 2;
 
           $this.scrollLeft(scrollLeft);
         }
       }
     });
-  }).trigger('init.scrolling-tabs');
+  });
+
+  requestIdleCallback(initDeferred);
 }

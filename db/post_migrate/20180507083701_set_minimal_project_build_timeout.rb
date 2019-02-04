@@ -1,4 +1,4 @@
-class SetMinimalProjectBuildTimeout < ActiveRecord::Migration
+class SetMinimalProjectBuildTimeout < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false
@@ -8,6 +8,8 @@ class SetMinimalProjectBuildTimeout < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/UpdateLargeTable
+    # rubocop:disable Migration/UpdateColumnInBatches
     update_column_in_batches(:projects, :build_timeout, MINIMUM_TIMEOUT) do |table, query|
       query.where(table[:build_timeout].lt(MINIMUM_TIMEOUT))
     end

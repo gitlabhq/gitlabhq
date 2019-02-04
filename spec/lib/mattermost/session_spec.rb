@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Mattermost::Session, type: :request do
+  include ExclusiveLeaseHelpers
+
   let(:user) { create(:user) }
 
   let(:gitlab_url) { "http://gitlab.com" }
@@ -65,11 +67,13 @@ describe Mattermost::Session, type: :request do
             .with(query: hash_including({ 'state' => state }))
             .to_return do |request|
               post "/oauth/token",
-                client_id: doorkeeper.uid,
-                client_secret: doorkeeper.secret,
-                redirect_uri: params[:redirect_uri],
-                grant_type: 'authorization_code',
-                code: request.uri.query_values['code']
+                params: {
+                  client_id: doorkeeper.uid,
+                  client_secret: doorkeeper.secret,
+                  redirect_uri: params[:redirect_uri],
+                  grant_type: 'authorization_code',
+                  code: request.uri.query_values['code']
+                }
 
               if response.status == 200
                 { headers: { 'token' => 'thisworksnow' }, status: 202 }
@@ -80,7 +84,7 @@ describe Mattermost::Session, type: :request do
             .to_return(headers: { Authorization: 'token thisworksnow' }, status: 200)
         end
 
-        it 'can setup a session' do
+        it 'can set up a session' do
           subject.with_session do |session|
           end
 
@@ -97,26 +101,20 @@ describe Mattermost::Session, type: :request do
       end
     end
 
-    context 'with lease' do
-      before do
-        allow(subject).to receive(:lease_try_obtain).and_return('aldkfjsldfk')
-      end
+    context 'exclusive lease' do
+      let(:lease_key) { 'mattermost:session' }
 
       it 'tries to obtain a lease' do
-        expect(subject).to receive(:lease_try_obtain)
-        expect(Gitlab::ExclusiveLease).to receive(:cancel)
+        expect_to_obtain_exclusive_lease(lease_key, 'uuid')
+        expect_to_cancel_exclusive_lease(lease_key, 'uuid')
 
-        # Cannot setup a session, but we should still cancel the lease
+        # Cannot set up a session, but we should still cancel the lease
         expect { subject.with_session }.to raise_error(Mattermost::NoSessionError)
       end
-    end
 
-    context 'without lease' do
-      before do
-        allow(subject).to receive(:lease_try_obtain).and_return(nil)
-      end
+      it 'returns a NoSessionError error without lease' do
+        stub_exclusive_lease_taken(lease_key)
 
-      it 'returns a NoSessionError error' do
         expect { subject.with_session }.to raise_error(Mattermost::NoSessionError)
       end
     end

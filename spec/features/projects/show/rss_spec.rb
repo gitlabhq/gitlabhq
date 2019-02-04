@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Show > RSS' do
+describe 'Projects > Show > RSS' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:path) { project_path(project) }

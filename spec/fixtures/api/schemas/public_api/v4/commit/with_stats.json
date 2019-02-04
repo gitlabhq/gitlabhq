@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "allOf": [
+    { "$ref": "basic.json" },
+    {
+      "required" : [
+        "stats"
+      ],
+      "properties": {
+        "stats": { "$ref": "../commit_stats.json" }
+      }
+    }
+  ]
+}

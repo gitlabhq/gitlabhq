@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module Gitlab
   # Class for counting and caching the number of issuables per state.
   class IssuablesCountForState
-    # The name of the RequestStore cache key.
+    # The name of the Gitlab::SafeRequestStore cache key.
     CACHE_KEY = :issuables_count_for_state
 
     # The state values that can be safely casted to a Symbol.
@@ -10,12 +12,7 @@ module Gitlab
     # finder - The finder class to use for retrieving the issuables.
     def initialize(finder)
       @finder = finder
-      @cache =
-        if RequestStore.active?
-          RequestStore[CACHE_KEY] ||= initialize_cache
-        else
-          initialize_cache
-        end
+      @cache = Gitlab::SafeRequestStore[CACHE_KEY] ||= initialize_cache
     end
 
     def for_state_or_opened(state = nil)

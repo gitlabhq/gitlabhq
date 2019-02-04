@@ -112,122 +112,93 @@ export default {
 <template>
   <div class="gl-responsive-table-row deploy-key">
     <div class="table-section section-40">
-      <div
-        role="rowheader"
-        class="table-mobile-header">
-        {{ s__('DeployKeys|Deploy key') }}
-      </div>
-      <div class="table-mobile-content">
-        <strong class="title qa-key-title">
-          {{ deployKey.title }}
-        </strong>
-        <div class="fingerprint qa-key-fingerprint">
-          {{ deployKey.fingerprint }}
-        </div>
+      <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Deploy key') }}</div>
+      <div class="table-mobile-content qa-key">
+        <strong class="title qa-key-title"> {{ deployKey.title }} </strong>
+        <div class="fingerprint qa-key-fingerprint">{{ deployKey.fingerprint }}</div>
       </div>
     </div>
     <div class="table-section section-30 section-wrap">
-      <div
-        role="rowheader"
-        class="table-mobile-header">
-        {{ s__('DeployKeys|Project usage') }}
-      </div>
+      <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Project usage') }}</div>
       <div class="table-mobile-content deploy-project-list">
         <template v-if="projects.length > 0">
           <a
-            class="label deploy-project-label"
-            :title="projectTooltipTitle(firstProject)"
             v-tooltip
+            :title="projectTooltipTitle(firstProject)"
+            class="label deploy-project-label"
           >
-            <span>
-              {{ firstProject.project.full_name }}
-            </span>
-            <icon :name="firstProject.can_push ? 'lock-open' : 'lock'"/>
+            <span> {{ firstProject.project.full_name }} </span>
+            <icon :name="firstProject.can_push ? 'lock-open' : 'lock'" />
           </a>
           <a
             v-if="isExpandable"
+            v-tooltip
+            :title="restProjectsTooltip"
             class="label deploy-project-label"
             @click="toggleExpanded"
-            :title="restProjectsTooltip"
-            v-tooltip
           >
             <span>{{ restProjectsLabel }}</span>
           </a>
           <a
-            v-else-if="isExpanded"
             v-for="deployKeysProject in restProjects"
+            v-else-if="isExpanded"
             :key="deployKeysProject.project.full_path"
-            class="label deploy-project-label"
+            v-tooltip
             :href="deployKeysProject.project.full_path"
             :title="projectTooltipTitle(deployKeysProject)"
-            v-tooltip
+            class="label deploy-project-label"
           >
-            <span>
-              {{ deployKeysProject.project.full_name }}
-            </span>
-            <icon :name="deployKeysProject.can_push ? 'lock-open' : 'lock'"/>
+            <span> {{ deployKeysProject.project.full_name }} </span>
+            <icon :name="deployKeysProject.can_push ? 'lock-open' : 'lock'" />
           </a>
         </template>
-        <span
-          v-else
-          class="text-secondary">{{ __('None') }}</span>
+        <span v-else class="text-secondary">{{ __('None') }}</span>
       </div>
     </div>
     <div class="table-section section-15 text-right">
-      <div
-        role="rowheader"
-        class="table-mobile-header">
-        {{ __('Created') }}
-      </div>
+      <div role="rowheader" class="table-mobile-header">{{ __('Created') }}</div>
       <div class="table-mobile-content text-secondary key-created-at">
-        <span
-          :title="tooltipTitle(deployKey.created_at)"
-          v-tooltip>
-          <icon name="calendar"/>
-          <span>{{ timeFormated(deployKey.created_at) }}</span>
+        <span v-tooltip :title="tooltipTitle(deployKey.created_at)">
+          <icon name="calendar" /> <span>{{ timeFormated(deployKey.created_at) }}</span>
         </span>
       </div>
     </div>
     <div class="table-section section-15 table-button-footer deploy-key-actions">
       <div class="btn-group table-action-buttons">
-        <action-btn
-          v-if="!isEnabled"
-          :deploy-key="deployKey"
-          type="enable"
-        >
+        <action-btn v-if="!isEnabled" :deploy-key="deployKey" type="enable">
           {{ __('Enable') }}
         </action-btn>
         <a
           v-if="deployKey.can_edit"
-          class="btn btn-default text-secondary"
+          v-tooltip
           :href="editDeployKeyPath"
           :title="__('Edit')"
+          class="btn btn-default text-secondary"
           data-container="body"
-          v-tooltip
         >
-          <icon name="pencil"/>
+          <icon name="pencil" />
         </a>
         <action-btn
           v-if="isRemovable"
+          v-tooltip
           :deploy-key="deployKey"
+          :title="__('Remove')"
           btn-css-class="btn-danger"
           type="remove"
-          :title="__('Remove')"
           data-container="body"
-          v-tooltip
         >
-          <icon name="remove"/>
+          <icon name="remove" />
         </action-btn>
         <action-btn
           v-else-if="isEnabled"
+          v-tooltip
           :deploy-key="deployKey"
+          :title="__('Disable')"
           btn-css-class="btn-warning"
           type="disable"
-          :title="__('Disable')"
           data-container="body"
-          v-tooltip
         >
-          <icon name="cancel"/>
+          <icon name="cancel" />
         </action-btn>
       </div>
     </div>

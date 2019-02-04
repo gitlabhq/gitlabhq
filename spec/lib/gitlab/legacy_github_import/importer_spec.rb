@@ -138,7 +138,7 @@ describe Gitlab::LegacyGithubImport::Importer do
 
     let(:release2) do
       double(
-        tag_name: 'v2.0.0',
+        tag_name: 'v1.1.0',
         name: 'Second release',
         body: nil,
         draft: false,
@@ -174,7 +174,7 @@ describe Gitlab::LegacyGithubImport::Importer do
 
       described_class.new(project).execute
 
-      expect(project.import_error).to eq error.to_json
+      expect(project.import_state.last_error).to eq error.to_json
     end
   end
 

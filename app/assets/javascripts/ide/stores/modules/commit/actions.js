@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import flash from '~/flash';
-import { stripHtml } from '~/lib/utils/text_utility';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import router from '../../../ide_router';
@@ -31,9 +30,9 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   const currentProject = rootState.projects[rootState.currentProjectId];
   const commitStats = data.stats
     ? sprintf(__('with %{additions} additions, %{deletions} deletions.'), {
-        additions: data.stats.additions, // eslint-disable-line indent-legacy
-        deletions: data.stats.deletions, // eslint-disable-line indent-legacy
-      }) // eslint-disable-line indent-legacy
+        additions: data.stats.additions,
+        deletions: data.stats.deletions,
+      })
     : '';
   const commitMsg = sprintf(
     __('Your changes have been committed. Commit %{commitId} %{commitStats}'),
@@ -48,31 +47,6 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
 
   commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
 };
-
-export const checkCommitStatus = ({ rootState }) =>
-  service
-    .getBranchData(rootState.currentProjectId, rootState.currentBranchId)
-    .then(({ data }) => {
-      const { id } = data.commit;
-      const selectedBranch =
-        rootState.projects[rootState.currentProjectId].branches[rootState.currentBranchId];
-
-      if (selectedBranch.workingReference !== id) {
-        return true;
-      }
-
-      return false;
-    })
-    .catch(() =>
-      flash(
-        __('Error checking branch data. Please try again.'),
-        'alert',
-        document,
-        null,
-        false,
-        true,
-      ),
-    );
 
 export const updateFilesAfterCommit = ({ commit, dispatch, rootState }, { data }) => {
   const selectedProject = rootState.projects[rootState.currentProjectId];
@@ -128,24 +102,24 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState }, { data }
 
 export const commitChanges = ({ commit, state, getters, dispatch, rootState, rootGetters }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = createCommitPayload(getters.branchName, newBranch, state, rootState);
-  const getCommitStatus = newBranch ? Promise.resolve(false) : dispatch('checkCommitStatus');
+  const stageFilesPromise = rootState.stagedFiles.length
+    ? Promise.resolve()
+    : dispatch('stageAllChanges', null, { root: true });
 
   commit(types.UPDATE_LOADING, true);
 
-  return getCommitStatus
-    .then(
-      branchChanged =>
-        new Promise(resolve => {
-          if (branchChanged) {
-            // show the modal with a Bootstrap call
-            $('#ide-create-branch-modal').modal('show');
-          } else {
-            resolve();
-          }
-        }),
-    )
-    .then(() => service.commit(rootState.currentProjectId, payload))
+  return stageFilesPromise
+    .then(() => {
+      const payload = createCommitPayload({
+        branch: getters.branchName,
+        newBranch,
+        getters,
+        state,
+        rootState,
+      });
+
+      return service.commit(rootState.currentProjectId, payload);
+    })
     .then(({ data }) => {
       commit(types.UPDATE_LOADING, false);
 
@@ -200,11 +174,13 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
             dispatch('updateActivityBarView', activityBarViews.edit, { root: true });
             dispatch('updateViewer', 'editor', { root: true });
 
-            router.push(
-              `/project/${rootState.currentProjectId}/blob/${getters.branchName}/-/${
-                rootGetters.activeFile.path
-              }`,
-            );
+            if (rootGetters.activeFile) {
+              router.push(
+                `/project/${rootState.currentProjectId}/blob/${getters.branchName}/-/${
+                  rootGetters.activeFile.path
+                }`,
+              );
+            }
           }
         })
         .then(() => dispatch('updateCommitAction', consts.COMMIT_TO_CURRENT_BRANCH))
@@ -220,12 +196,23 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         );
     })
     .catch(err => {
-      let errMsg = __('Error committing changes. Please try again.');
-      if (err.response.data && err.response.data.message) {
-        errMsg += ` (${stripHtml(err.response.data.message)})`;
+      if (err.response.status === 400) {
+        $('#ide-create-branch-modal').modal('show');
+      } else {
+        dispatch(
+          'setErrorMessage',
+          {
+            text: __('An error occurred whilst committing your changes.'),
+            action: () =>
+              dispatch('commitChanges').then(() =>
+                dispatch('setErrorMessage', null, { root: true }),
+              ),
+            actionText: __('Please try again'),
+          },
+          { root: true },
+        );
+        window.dispatchEvent(new Event('resize'));
       }
-      flash(errMsg, 'alert', document, null, false, true);
-      window.dispatchEvent(new Event('resize'));
 
       commit(types.UPDATE_LOADING, false);
     });

@@ -37,7 +37,7 @@ module ExportFileHelper
 
     event = create(:event, :created, target: milestone, project: project, author: user, action: 5)
     create(:push_event_payload, event: event)
-    create(:project_member, :master, user: user, project: project)
+    create(:project_member, :maintainer, user: user, project: project)
     create(:ci_variable, project: project)
     create(:ci_trigger, project: project)
     key = create(:deploy_key)
@@ -52,7 +52,7 @@ module ExportFileHelper
   # Expands the compressed file for an exported project into +tmpdir+
   def in_directory_with_expanded_export(project)
     Dir.mktmpdir do |tmpdir|
-      export_file = project.export_project_path
+      export_file = project.export_file.path
       _output, exit_status = Gitlab::Popen.popen(%W{tar -zxf #{export_file} -C #{tmpdir}})
 
       yield(exit_status, tmpdir)
@@ -123,7 +123,7 @@ module ExportFileHelper
     false
   end
 
-  # Compares model attributes with those those found in the hash
+  # Compares model attributes with those found in the hash
   # and returns true if there is a match, ignoring some excluded attributes.
   def safe_model?(model, excluded_attributes, parent)
     excluded_attributes += associations_for(model)
@@ -133,6 +133,6 @@ module ExportFileHelper
   end
 
   def file_permissions(file)
-    File.stat(file).mode & 0777
+    File.lstat(file).mode & 0777
   end
 end

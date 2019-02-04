@@ -29,7 +29,7 @@ describe('ide component', () => {
     resetStore(vm.$store);
   });
 
-  it('does not render right right when no files open', () => {
+  it('does not render right when no files open', () => {
     expect(vm.$el.querySelector('.panel-right')).toBeNull();
   });
 
@@ -45,6 +45,33 @@ describe('ide component', () => {
     });
   });
 
+  describe('onBeforeUnload', () => {
+    it('returns undefined when no staged files or changed files', () => {
+      expect(vm.onBeforeUnload()).toBe(undefined);
+    });
+
+    it('returns warning text when their are changed files', () => {
+      vm.$store.state.changedFiles.push(file());
+
+      expect(vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
+    });
+
+    it('returns warning text when their are staged files', () => {
+      vm.$store.state.stagedFiles.push(file());
+
+      expect(vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
+    });
+
+    it('updates event object', () => {
+      const event = {};
+      vm.$store.state.stagedFiles.push(file());
+
+      vm.onBeforeUnload(event);
+
+      expect(event.returnValue).toBe('Are you sure you want to lose unsaved changes?');
+    });
+  });
+
   describe('file finder', () => {
     beforeEach(done => {
       spyOn(vm, 'toggleFileFinder');
@@ -57,8 +84,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `t` key press', done => {
       Mousetrap.trigger('t');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })
@@ -69,8 +95,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `command+p` key press', done => {
       Mousetrap.trigger('command+p');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })
@@ -81,8 +106,7 @@ describe('ide component', () => {
     it('calls toggleFileFinder on `ctrl+p` key press', done => {
       Mousetrap.trigger('ctrl+p');
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           expect(vm.toggleFileFinder).toHaveBeenCalled();
         })
@@ -112,6 +136,20 @@ describe('ide component', () => {
       setFixtures('<div class="inputarea"></div>');
 
       expect(vm.mousetrapStopCallback(null, document.querySelector('.inputarea'), 't')).toBe(true);
+    });
+  });
+
+  it('shows error message when set', done => {
+    expect(vm.$el.querySelector('.flash-container')).toBe(null);
+
+    vm.$store.state.errorMessage = {
+      text: 'error',
+    };
+
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.flash-container')).not.toBe(null);
+
+      done();
     });
   });
 });

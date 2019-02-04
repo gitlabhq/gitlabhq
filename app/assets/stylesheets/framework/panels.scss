@@ -47,15 +47,9 @@
 
 .card-body {
   padding: $gl-padding;
-  background-color: $white-light;
 
   .form-actions {
     margin: -$gl-padding;
     margin-top: $gl-padding;
   }
-}
-
-.card-title {
-  font-size: inherit;
-  line-height: inherit;
 }

@@ -3,8 +3,8 @@ shared_examples 'note entity' do
 
   context 'basic note' do
     it 'exposes correct elements' do
-      expect(subject).to include(:type, :author, :note, :note_html, :current_user,
-        :discussion_id, :emoji_awardable, :award_emoji, :report_abuse_path, :attachment)
+      expect(subject).to include(:type, :author, :note, :note_html, :current_user, :discussion_id,
+        :emoji_awardable, :award_emoji, :report_abuse_path, :attachment, :noteable_note_url, :resolvable)
     end
 
     it 'does not expose elements for specific notes cases' do

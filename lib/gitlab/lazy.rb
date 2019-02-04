@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   # A class that can be wrapped around an expensive method call so it's only
   # executed when actually needed.

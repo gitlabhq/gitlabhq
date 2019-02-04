@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PipelineEntity < Grape::Entity
   include RequestAwareEntity
 
@@ -21,6 +23,7 @@ class PipelineEntity < Grape::Entity
     expose :latest?, as: :latest
     expose :stuck?, as: :stuck
     expose :auto_devops_source?, as: :auto_devops
+    expose :merge_request?, as: :merge_request
     expose :has_yaml_errors?, as: :yaml_errors
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable
@@ -28,7 +31,7 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :details do
-    expose :detailed_status, as: :status, with: StatusEntity
+    expose :detailed_status, as: :status, with: DetailedStatusEntity
     expose :duration
     expose :finished_at
   end
@@ -46,6 +49,7 @@ class PipelineEntity < Grape::Entity
 
     expose :tag?, as: :tag
     expose :branch?, as: :branch
+    expose :merge_request?, as: :merge_request
   end
 
   expose :commit, using: CommitEntity
@@ -55,7 +59,7 @@ class PipelineEntity < Grape::Entity
     pipeline.present.failure_reason
   end
 
-  expose :retry_path, if: -> (*) { can_retry? }  do |pipeline|
+  expose :retry_path, if: -> (*) { can_retry? } do |pipeline|
     retry_project_pipeline_path(pipeline.project, pipeline)
   end
 

@@ -1,18 +1,18 @@
 <script>
-import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
-import store from '../stores/';
 import * as constants from '../constants';
+import eventHub from '../event_hub';
 import noteableNote from './noteable_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
 import systemNote from '../../vue_shared/components/notes/system_note.vue';
 import commentForm from './comment_form.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
+import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
+import initUserPopovers from '../../user_popovers';
 
 export default {
   name: 'NotesApp',
@@ -21,9 +21,9 @@ export default {
     noteableDiscussion,
     systemNote,
     commentForm,
-    loadingIcon,
     placeholderNote,
     placeholderSystemNote,
+    skeletonLoadingContainer,
   },
   props: {
     noteableData: {
@@ -39,19 +39,40 @@ export default {
       required: false,
       default: () => ({}),
     },
+    shouldShow: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    helpPagePath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
-  store,
   data() {
     return {
-      isLoading: true,
+      isFetching: false,
+      currentFilter: null,
     };
   },
   computed: {
-    ...mapGetters(['notes', 'getNotesDataByProp', 'discussionCount']),
+    ...mapGetters([
+      'isNotesFetched',
+      'discussions',
+      'getNotesDataByProp',
+      'isLoading',
+      'commentsDisabled',
+    ]),
     noteableType() {
       return this.noteableData.noteableType;
     },
-    allNotes() {
+    allDiscussions() {
       if (this.isLoading) {
         const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
 
@@ -59,76 +80,82 @@ export default {
           isSkeletonNote: true,
         });
       }
-      return this.notes;
+
+      return this.discussions;
+    },
+  },
+  watch: {
+    shouldShow() {
+      if (!this.isNotesFetched) {
+        this.fetchNotes();
+      }
     },
   },
   created() {
     this.setNotesData(this.notesData);
     this.setNoteableData(this.noteableData);
     this.setUserData(this.userData);
+    this.setTargetNoteHash(getLocationHash());
+    eventHub.$once('fetchNotesData', this.fetchNotes);
   },
   mounted() {
-    this.fetchNotes();
+    if (this.shouldShow) {
+      this.fetchNotes();
+    }
 
-    const parentElement = this.$el.parentElement;
-
-    if (
-      parentElement &&
-      parentElement.classList.contains('js-vue-notes-event')
-    ) {
+    const { parentElement } = this.$el;
+    if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {
         const { awardName, noteId } = event.detail;
-        this.actionToggleAward({ awardName, noteId });
+        this.toggleAward({ awardName, noteId });
       });
     }
-    document.addEventListener('refreshVueNotes', this.fetchNotes);
   },
-  beforeDestroy() {
-    document.removeEventListener('refreshVueNotes', this.fetchNotes);
+  updated() {
+    this.$nextTick(() => {
+      highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member'));
+      initUserPopovers(this.$el.querySelectorAll('.js-user-link'));
+    });
   },
   methods: {
-    ...mapActions({
-      actionFetchNotes: 'fetchNotes',
-      poll: 'poll',
-      actionToggleAward: 'toggleAward',
-      scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
-      setNotesData: 'setNotesData',
-      setNoteableData: 'setNoteableData',
-      setUserData: 'setUserData',
-      setLastFetchedAt: 'setLastFetchedAt',
-      setTargetNoteHash: 'setTargetNoteHash',
-    }),
-    getComponentName(note) {
-      if (note.isSkeletonNote) {
-        return skeletonLoadingContainer;
-      }
-      if (note.isPlaceholderNote) {
-        if (note.placeholderType === constants.SYSTEM_NOTE) {
-          return placeholderSystemNote;
-        }
-        return placeholderNote;
-      } else if (note.individual_note) {
-        return note.notes[0].system ? systemNote : noteableNote;
-      }
-
-      return noteableDiscussion;
-    },
-    getComponentData(note) {
-      return note.individual_note ? note.notes[0] : note;
-    },
+    ...mapActions([
+      'setLoadingState',
+      'fetchDiscussions',
+      'poll',
+      'toggleAward',
+      'scrollToNoteIfNeeded',
+      'setNotesData',
+      'setNoteableData',
+      'setUserData',
+      'setLastFetchedAt',
+      'setTargetNoteHash',
+      'toggleDiscussion',
+      'setNotesFetchedState',
+      'expandDiscussion',
+      'startTaskList',
+    ]),
     fetchNotes() {
-      return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
-        .then(() => this.initPolling())
+      if (this.isFetching) return null;
+
+      this.isFetching = true;
+
+      return this.fetchDiscussions({ path: this.getNotesDataByProp('discussionsPath') })
         .then(() => {
-          this.isLoading = false;
+          this.initPolling();
+        })
+        .then(() => {
+          this.setLoadingState(false);
+          this.setNotesFetchedState(true);
+          eventHub.$emit('fetchedNotesData');
+          this.isFetching = false;
         })
         .then(() => this.$nextTick())
+        .then(() => this.startTaskList())
         .then(() => this.checkLocationHash())
         .catch(() => {
-          this.isLoading = false;
-          Flash(
-            'Something went wrong while fetching comments. Please try again.',
-          );
+          this.setLoadingState(false);
+          this.setNotesFetchedState(true);
+          Flash('Something went wrong while fetching comments. Please try again.');
         });
     },
     initPolling() {
@@ -143,33 +170,56 @@ export default {
     },
     checkLocationHash() {
       const hash = getLocationHash();
-      const element = document.getElementById(hash);
+      const noteId = hash && hash.replace(/^note_/, '');
 
-      if (hash && element) {
-        this.setTargetNoteHash(hash);
-        this.scrollToNoteIfNeeded($(element));
+      if (noteId) {
+        const discussion = this.discussions.find(d => d.notes.some(({ id }) => id === noteId));
+
+        if (discussion) {
+          this.expandDiscussion({ discussionId: discussion.id });
+        }
       }
     },
   },
+  systemNote: constants.SYSTEM_NOTE,
 };
 </script>
 
 <template>
-  <div id="notes">
-    <ul
-      id="notes-list"
-      class="notes main-notes-list timeline">
-
-      <component
-        v-for="note in allNotes"
-        :is="getComponentName(note)"
-        :note="getComponentData(note)"
-        :key="note.id"
-      />
+  <div v-show="shouldShow" id="notes">
+    <ul id="notes-list" class="notes main-notes-list timeline">
+      <template v-for="discussion in allDiscussions">
+        <skeleton-loading-container v-if="discussion.isSkeletonNote" :key="discussion.id" />
+        <template v-else-if="discussion.isPlaceholderNote">
+          <placeholder-system-note
+            v-if="discussion.placeholderType === $options.systemNote"
+            :key="discussion.id"
+            :note="discussion.notes[0]"
+          />
+          <placeholder-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+        </template>
+        <template v-else-if="discussion.individual_note">
+          <system-note
+            v-if="discussion.notes[0].system"
+            :key="discussion.id"
+            :note="discussion.notes[0]"
+          />
+          <noteable-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+        </template>
+        <noteable-discussion
+          v-else
+          :key="discussion.id"
+          :discussion="discussion"
+          :render-diff-file="true"
+          :help-page-path="helpPagePath"
+        />
+      </template>
     </ul>
 
     <comment-form
+      v-if="!commentsDisabled"
       :noteable-type="noteableType"
+      :markdown-version="markdownVersion"
     />
   </div>
 </template>

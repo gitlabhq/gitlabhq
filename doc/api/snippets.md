@@ -37,18 +37,19 @@ Parameters:
 | ---------          | ----    | -------- | -----------                   |
 | `id`               | Integer | yes      | The ID of a snippet           |
 
-``` bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets/1
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1
 ```
 
 Example response:
 
-``` json
+```json
 {
   "id": 1,
   "title": "test",
   "file_name": "add.rb",
   "description": "Ruby test snippet",
+  "visibility": "private",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -62,6 +63,30 @@ Example response:
   "created_at": "2012-06-28T10:52:04Z",
   "web_url": "http://example.com/snippets/1",
 }
+```
+
+## Single snippet contents
+
+Get a single snippet's raw contents.
+
+```
+GET /snippets/:id/raw
+```
+
+Parameters:
+
+| Attribute          | Type    | Required | Description                   |
+| ---------          | ----    | -------- | -----------                   |
+| `id`               | Integer | yes      | The ID of a snippet           |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/raw
+```
+
+Example response:
+
+```
+Hello World snippet
 ```
 
 ## Create new snippet
@@ -83,7 +108,7 @@ Parameters:
 | `visibility`       | String  | no       | The snippet's visibility     |
 
 
-``` bash
+```bash
 curl --request POST \
      --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
      --header 'Content-Type: application/json' \
@@ -93,12 +118,13 @@ curl --request POST \
 
 Example response:
 
-``` json
+```json
 {
   "id": 1,
   "title": "This is a snippet",
   "file_name": "test.txt",
   "description": "Hello World snippet",
+  "visibility": "internal",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -134,7 +160,7 @@ Parameters:
 | `visibility`       | String  | no       | The snippet's visibility     |
 
 
-``` bash
+```bash
 curl --request PUT \
      --data '{"title": "foo", "content": "bar"}' \
      --header 'Content-Type: application/json' \
@@ -144,12 +170,13 @@ curl --request PUT \
 
 Example response:
 
-``` json
+```json
 {
   "id": 1,
   "title": "test",
   "file_name": "add.rb",
   "description": "description of snippet",
+  "visibility": "internal",
   "author": {
     "id": 1,
     "username": "john_smith",
@@ -181,7 +208,7 @@ Parameters:
 
 
 ```
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/snippets/1"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1"
 ```
 
 upon successful delete a `204 No content` HTTP code shall be expected, with no data,
@@ -198,13 +225,13 @@ GET /snippets/public
 | `per_page` | Integer | no       | number of snippets to return per page |
 | `page`     | Integer | no       | the page to retrieve                  |
 
-``` bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets/public?per_page=2&page=1
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/public?per_page=2&page=1
 ```
 
 Example response:
 
-``` json
+```json
 [
     {
         "author": {
@@ -238,7 +265,8 @@ Example response:
         "raw_url": "http://localhost:3000/snippets/48/raw",
         "title": "Minus similique nesciunt vel fugiat qui ullam sunt.",
         "updated_at": "2016-11-25T16:53:34.479Z",
-        "web_url": "http://localhost:3000/snippets/48"
+        "web_url": "http://localhost:3000/snippets/48",
+        "visibility": "public"
     }
 ]
 ```
@@ -260,7 +288,7 @@ GET /snippets/:id/user_agent_detail
 | `id`        | Integer | yes      | The ID of a snippet                  |
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/snippets/1/user_agent_detail
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/user_agent_detail
 ```
 
 Example response:

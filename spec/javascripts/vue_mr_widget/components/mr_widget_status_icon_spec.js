@@ -17,6 +17,7 @@ describe('MR widget status icon component', () => {
   describe('while loading', () => {
     it('renders loading icon', () => {
       vm = mountComponent(Component, { status: 'loading' });
+
       expect(vm.$el.querySelector('.mr-widget-icon i').classList).toContain('fa-spinner');
     });
   });
@@ -24,6 +25,7 @@ describe('MR widget status icon component', () => {
   describe('with status icon', () => {
     it('renders ci status icon', () => {
       vm = mountComponent(Component, { status: 'failed' });
+
       expect(vm.$el.querySelector('.js-ci-status-icon-failed')).not.toBeNull();
     });
   });
@@ -31,6 +33,7 @@ describe('MR widget status icon component', () => {
   describe('with disabled button', () => {
     it('renders a disabled button', () => {
       vm = mountComponent(Component, { status: 'failed', showDisabledButton: true });
+
       expect(vm.$el.querySelector('.js-disabled-merge-button').textContent.trim()).toEqual('Merge');
     });
   });
@@ -38,6 +41,7 @@ describe('MR widget status icon component', () => {
   describe('without disabled button', () => {
     it('does not render a disabled button', () => {
       vm = mountComponent(Component, { status: 'failed' });
+
       expect(vm.$el.querySelector('.js-disabled-merge-button')).toBeNull();
     });
   });

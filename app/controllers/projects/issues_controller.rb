@@ -1,17 +1,32 @@
+# frozen_string_literal: true
+
 class Projects::IssuesController < Projects::ApplicationController
   include RendersNotes
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
   include IssuableCollections
+  include IssuesCalendar
   include SpammableActions
 
+  def self.issue_except_actions
+    %i[index calendar new create bulk_update import_csv]
+  end
+
+  def self.set_issuables_index_only_actions
+    %i[index calendar]
+  end
+
+  prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
+  prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
   prepend_before_action :authenticate_user!, only: [:new]
+  prepend_before_action :store_uri, only: [:new, :show]
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
-  before_action :issue, except: [:index, :calendar, :new, :create, :bulk_update]
-  before_action :set_issuables_index, only: [:index, :calendar]
+  before_action :issue, except: issue_except_actions
+
+  before_action :set_issuables_index, only: set_issuables_index_only_actions
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -21,6 +36,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
+
+  before_action :authorize_import_issues!, only: [:import_csv]
+
+  before_action :set_suggested_issues_feature_flags, only: [:new]
 
   respond_to :html
 
@@ -40,14 +59,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def calendar
-    @issues = @issuables
-                  .non_archived
-                  .with_due_date
-                  .limit(100)
-
-    respond_to do |format|
-      format.ics { response.headers['Content-Disposition'] = 'inline' }
-    end
+    render_issues_calendar(@issuables)
   end
 
   def new
@@ -119,7 +131,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def referenced_merge_requests
-    @merge_requests, @closed_by_merge_requests = ::Issues::FetchReferencedMergeRequestsService.new(project, current_user).execute(issue)
+    @merge_requests, @closed_by_merge_requests = ::Issues::ReferencedMergeRequestsService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -131,7 +143,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def related_branches
-    @related_branches = @issue.related_branches(current_user)
+    @related_branches = Issues::RelatedBranchesService.new(project, current_user).execute(issue)
 
     respond_to do |format|
       format.json do
@@ -165,19 +177,37 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
+  def import_csv
+    if uploader = UploadService.new(project, params[:file]).execute
+      ImportIssuesCsvWorker.perform_async(current_user.id, project.id, uploader.upload.id)
+
+      flash[:notice] = _("Your issues are being imported. Once finished, you'll get a confirmation email.")
+    else
+      flash[:alert] = _("File upload error.")
+    end
+
+    redirect_to project_issues_path(project)
+  end
+
   protected
 
+  def issuable_sorting_field
+    Issue::SORTING_PREFERENCE_FIELD
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
   def issue
     return @issue if defined?(@issue)
 
     # The Sortable default scope causes performance issues when used with find_by
-    @issuable = @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @issuable = @noteable = @issue ||= @project.issues.includes(author: :status).where(iid: params[:id]).reorder(nil).take!
     @note = @project.notes.new(noteable: @issuable)
 
     return render_404 unless can?(current_user, :read_issue, @issue)
 
     @issue
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
@@ -216,19 +246,13 @@ class Projects::IssuesController < Projects::ApplicationController
       task_num
       lock_version
       discussion_locked
-    ] + [{ label_ids: [], assignee_ids: [] }]
+    ] + [{ label_ids: [], assignee_ids: [], update_task: [:index, :checked, :line_number, :line_source] }]
   end
 
-  def authenticate_user!
-    return if current_user
-
-    notice = "Please sign in to create the new issue."
-
+  def store_uri
     if request.get? && !request.xhr?
       store_location_for :user, request.fullpath
     end
-
-    redirect_to new_user_session_path, notice: notice
   end
 
   def serializer
@@ -251,5 +275,9 @@ class Projects::IssuesController < Projects::ApplicationController
     # 2. https://gitlab.com/gitlab-org/gitlab-ce/issues/42424
     # 3. https://gitlab.com/gitlab-org/gitlab-ce/issues/42426
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42422')
+  end
+
+  def set_suggested_issues_feature_flags
+    push_frontend_feature_flag(:graphql, default_enabled: true)
   end
 end

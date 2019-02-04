@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LegacyArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
@@ -5,6 +7,8 @@ class LegacyArtifactUploader < GitlabUploader
   ObjectNotReadyError = Class.new(StandardError)
 
   storage_options Gitlab.config.artifacts
+
+  alias_method :upload, :model
 
   def store_dir
     dynamic_segment

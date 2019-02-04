@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class CheckIngressIpAddressService < BaseHelmService
@@ -28,7 +30,7 @@ module Clusters
 
       def service
         strong_memoize(:ingress_service) do
-          kubeclient.get_service('ingress-nginx-ingress-controller', Gitlab::Kubernetes::Helm::NAMESPACE)
+          app.ingress_service
         end
       end
     end

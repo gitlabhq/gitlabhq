@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Auth
     MissingPersonalAccessTokenError = Class.new(StandardError)
@@ -14,23 +16,8 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
-      def omniauth_customized_providers
-        @omniauth_customized_providers ||= %w[bitbucket jwt]
-      end
-
-      def omniauth_setup_providers(provider_names)
-        provider_names.each do |provider|
-          omniauth_setup_a_provider(provider)
-        end
-      end
-
-      def omniauth_setup_a_provider(provider)
-        case provider
-        when 'kerberos'
-          require 'omniauth-kerberos'
-        when *omniauth_customized_providers
-          require_dependency "omni_auth/strategies/#{provider}"
-        end
+      def omniauth_enabled?
+        Gitlab.config.omniauth.enabled
       end
 
       def find_for_git_client(login, password, project:, ip:)
@@ -151,6 +138,7 @@ module Gitlab
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
@@ -161,11 +149,12 @@ module Gitlab
           end
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def personal_access_token_check(password)
         return unless password.present?
 
-        token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
+        token = PersonalAccessTokensFinder.new(state: 'active').find_by_token(password)
 
         if token && valid_scoped_token?(token, available_scopes)
           Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
@@ -192,6 +181,7 @@ module Gitlab
         end.uniq
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def deploy_token_check(login, password)
         return unless password.present?
 
@@ -207,8 +197,9 @@ module Gitlab
           Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
-      def lfs_token_check(login, password, project)
+      def lfs_token_check(login, encoded_token, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
         actor =
@@ -231,7 +222,7 @@ module Gitlab
             read_authentication_abilities
           end
 
-        if Devise.secure_compare(token_handler.token, password)
+        if token_handler.token_valid?(encoded_token)
           Gitlab::Auth::Result.new(actor, nil, token_handler.type, authentication_abilities)
         end
       end
@@ -240,7 +231,7 @@ module Gitlab
         return unless login == 'gitlab-ci-token'
         return unless password
 
-        build = ::Ci::Build.running.find_by_token(password)
+        build = find_build_by_token(password)
         return unless build
         return unless build.project.builds_enabled?
 
@@ -300,6 +291,12 @@ module Gitlab
         return [] unless Gitlab.config.registry.enabled
 
         REGISTRY_SCOPES
+      end
+
+      private
+
+      def find_build_by_token(token)
+        ::Ci::Build.running.find_by_token(token)
       end
     end
   end

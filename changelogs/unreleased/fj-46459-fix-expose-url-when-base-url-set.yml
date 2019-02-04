@@ -1,5 +1,0 @@
----
-title: Fixed bug where generated api urls didn't add the base url if set
-merge_request: 19003
-author:
-type: fixed

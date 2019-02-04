@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::RequestsProfilesController < Admin::ApplicationController
   def index
     @profile_token = Gitlab::RequestProfiler.profile_token
@@ -9,7 +11,7 @@ class Admin::RequestsProfilesController < Admin::ApplicationController
     profile    = Gitlab::RequestProfiler::Profile.find(clean_name)
 
     if profile
-      render text: profile.content
+      render html: profile.content.html_safe
     else
       redirect_to admin_requests_profiles_path, alert: 'Profile not found'
     end

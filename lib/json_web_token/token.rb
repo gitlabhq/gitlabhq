@@ -1,15 +1,22 @@
+# frozen_string_literal: true
+
+require 'securerandom'
+
 module JSONWebToken
   class Token
     attr_accessor :issuer, :subject, :audience, :id
     attr_accessor :issued_at, :not_before, :expire_time
 
+    DEFAULT_NOT_BEFORE_TIME = 5
+    DEFAULT_EXPIRE_TIME = 60
+
     def initialize
       @id = SecureRandom.uuid
       @issued_at = Time.now
       # we give a few seconds for time shift
-      @not_before = issued_at - 5.seconds
+      @not_before = issued_at - DEFAULT_NOT_BEFORE_TIME
       # default 60 seconds should be more than enough for this authentication token
-      @expire_time = issued_at + 1.minute
+      @expire_time = issued_at + DEFAULT_EXPIRE_TIME
       @custom_payload = {}
     end
 

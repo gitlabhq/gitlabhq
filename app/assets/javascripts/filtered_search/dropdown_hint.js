@@ -41,8 +41,10 @@ export default class DropdownHint extends FilteredSearchDropdown {
           previousInputValues.forEach((value, index) => {
             searchTerms.push(value);
 
-            if (index === previousInputValues.length - 1
-              && token.indexOf(value.toLowerCase()) !== -1) {
+            if (
+              index === previousInputValues.length - 1 &&
+              token.indexOf(value.toLowerCase()) !== -1
+            ) {
               searchTerms.pop();
             }
           });
@@ -51,7 +53,11 @@ export default class DropdownHint extends FilteredSearchDropdown {
             FilteredSearchVisualTokens.addSearchVisualToken(searchTerms.join(' '));
           }
 
-          FilteredSearchDropdownManager.addWordToInput(token.replace(':', ''), '', false, this.container);
+          const key = token.replace(':', '');
+          const { uppercaseTokenName } = this.tokenKeys.searchByKey(key);
+          FilteredSearchDropdownManager.addWordToInput(key, '', false, {
+            uppercaseTokenName,
+          });
         }
         this.dismissDropdown();
         this.dispatchInputEvent();
@@ -60,13 +66,12 @@ export default class DropdownHint extends FilteredSearchDropdown {
   }
 
   renderContent() {
-    const dropdownData = this.tokenKeys.get()
-      .map(tokenKey => ({
-        icon: `fa-${tokenKey.icon}`,
-        hint: tokenKey.key,
-        tag: `:${tokenKey.tag}`,
-        type: tokenKey.type,
-      }));
+    const dropdownData = this.tokenKeys.get().map(tokenKey => ({
+      icon: `${gon.sprite_icons}#${tokenKey.icon}`,
+      hint: tokenKey.key,
+      tag: `:${tokenKey.tag}`,
+      type: tokenKey.type,
+    }));
 
     this.droplab.changeHookList(this.hookId, this.dropdown, [Filter], this.config);
     this.droplab.setData(this.hookId, dropdownData);

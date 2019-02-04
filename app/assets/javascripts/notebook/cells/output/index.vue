@@ -1,87 +1,83 @@
 <script>
-  import CodeCell from '../code/index.vue';
-  import Html from './html.vue';
-  import Image from './image.vue';
+import CodeOutput from '../code/index.vue';
+import HtmlOutput from './html.vue';
+import ImageOutput from './image.vue';
 
-  export default {
-    components: {
-      'code-cell': CodeCell,
-      'html-output': Html,
-      'image-output': Image,
+export default {
+  props: {
+    codeCssClass: {
+      type: String,
+      required: false,
+      default: '',
     },
-    props: {
-      codeCssClass: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      count: {
-        type: Number,
-        required: false,
-        default: 0,
-      },
-      output: {
-        type: Object,
-        requred: true,
-        default: () => ({}),
-      },
+    count: {
+      type: Number,
+      required: false,
+      default: 0,
     },
-    computed: {
-      componentName() {
-        if (this.output.text) {
-          return 'code-cell';
-        } else if (this.output.data['image/png']) {
-          return 'image-output';
-        } else if (this.output.data['text/html']) {
-          return 'html-output';
-        } else if (this.output.data['image/svg+xml']) {
-          return 'html-output';
-        }
-
-        return 'code-cell';
-      },
-      rawCode() {
-        if (this.output.text) {
-          return this.output.text.join('');
-        }
-
-        return this.dataForType(this.outputType);
-      },
-      outputType() {
-        if (this.output.text) {
-          return '';
-        } else if (this.output.data['image/png']) {
-          return 'image/png';
-        } else if (this.output.data['text/html']) {
-          return 'text/html';
-        } else if (this.output.data['image/svg+xml']) {
-          return 'image/svg+xml';
-        }
-
-        return 'text/plain';
-      },
+    outputs: {
+      type: Array,
+      required: true,
     },
-    methods: {
-      dataForType(type) {
-        let data = this.output.data[type];
+  },
+  data() {
+    return {
+      outputType: '',
+    };
+  },
+  methods: {
+    dataForType(output, type) {
+      let data = output.data[type];
 
-        if (typeof data === 'object') {
-          data = data.join('');
-        }
+      if (typeof data === 'object') {
+        data = data.join('');
+      }
 
-        return data;
-      },
+      return data;
     },
-  };
+    getComponent(output) {
+      if (output.text) {
+        return CodeOutput;
+      } else if (output.data['image/png']) {
+        this.outputType = 'image/png';
+
+        return ImageOutput;
+      } else if (output.data['text/html']) {
+        this.outputType = 'text/html';
+
+        return HtmlOutput;
+      } else if (output.data['image/svg+xml']) {
+        this.outputType = 'image/svg+xml';
+
+        return HtmlOutput;
+      }
+
+      this.outputType = 'text/plain';
+      return CodeOutput;
+    },
+    rawCode(output) {
+      if (output.text) {
+        return output.text.join('');
+      }
+
+      return this.dataForType(output, this.outputType);
+    },
+  },
+};
 </script>
 
 <template>
-  <component
-    :is="componentName"
-    type="output"
-    :output-type="outputType"
-    :count="count"
-    :raw-code="rawCode"
-    :code-css-class="codeCssClass"
-  />
+  <div>
+    <component
+      :is="getComponent(output)"
+      v-for="(output, index) in outputs"
+      :key="index"
+      type="output"
+      :output-type="outputType"
+      :count="count"
+      :index="index"
+      :raw-code="rawCode(output)"
+      :code-css-class="codeCssClass"
+    />
+  </div>
 </template>

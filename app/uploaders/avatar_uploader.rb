@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AvatarUploader < GitlabUploader
   include UploaderHelper
   include RecordsUploads::Concern
@@ -14,6 +16,10 @@ class AvatarUploader < GitlabUploader
 
   def move_to_cache
     false
+  end
+
+  def absolute_path
+    self.class.absolute_path(model.avatar.upload)
   end
 
   private

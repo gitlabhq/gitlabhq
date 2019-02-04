@@ -1,5 +1,0 @@
----
-title: Fixed badge api endpoint route when relative url is set
-merge_request: 19004
-author:
-type: fixed

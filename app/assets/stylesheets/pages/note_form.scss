@@ -1,10 +1,6 @@
 /**
  * Note Form
  */
-.comment-btn {
-  @extend .btn-create;
-}
-
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
     opacity: 1;
@@ -42,7 +38,7 @@
   display: block;
   padding: 10px 0;
   color: $gl-text-color;
-  font-family: $regular_font;
+  font-family: $regular-font;
   border: 0;
 
   &:focus {
@@ -69,18 +65,18 @@
 
       .comment-toolbar,
       .nav-links {
-        border-color: $focus-border-color;
+        border-color: $blue-300;
       }
     }
 
     &.is-dropzone-hover {
-      border-color: $gl-success;
+      border-color: $green-500;
       box-shadow: 0 0 2px $black-transparent,
-                  0 0 4px $gl-success-focus;
+                  0 0 4px $green-500-focus;
 
       .comment-toolbar,
       .nav-links {
-        border-color: $gl-success;
+        border-color: $green-500;
       }
     }
   }
@@ -129,7 +125,7 @@
     .icon svg {
       position: relative;
       top: 2px;
-      margin-right: $btn-xs-side-margin;
+      margin-right: $btn-margin-5;
       width: $gl-font-size;
       height: $gl-font-size;
       fill: $orange-600;
@@ -151,7 +147,7 @@
   }
 
   .sidebar-item-value & {
-    fill: $theme-gray-700;
+    fill: $gray-700;
   }
 }
 
@@ -176,8 +172,10 @@
   background-color: $white-light;
 }
 
-.discussion-form-container {
-  padding: $gl-padding-top $gl-padding $gl-padding;
+table {
+  .discussion-form-container {
+    padding: $gl-padding;
+  }
 }
 
 .discussion-notes .disabled-comment {
@@ -235,10 +233,12 @@
 }
 
 .discussion-body,
-.diff-file {
+.diff-file,
+.commit-diff {
   .discussion-reply-holder {
     background-color: $white-light;
-    padding: 10px 16px;
+    border-radius: 0 0 3px 3px;
+    padding: $gl-padding;
 
     &.is-replying {
       padding-bottom: $gl-padding;
@@ -247,26 +247,14 @@
 }
 
 .discussion-with-resolve-btn {
-  display: table;
-  width: 100%;
-  border-collapse: separate;
-  table-layout: auto;
-
-  .btn-group {
-    display: table-cell;
-    float: none;
-    width: 1%;
-
-    &:first-child {
-      width: 100%;
-      padding-right: 5px;
-    }
+  @include media-breakpoint-up(sm) {
+    display: flex;
   }
 
   .discussion-actions {
     display: table;
 
-    .btn-default path {
+    svg {
       fill: $gray-darkest;
     }
 
@@ -283,8 +271,16 @@
     }
   }
 
-  .btn {
-    width: 100%;
+  @include media-breakpoint-down(xs) {
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .btn-text-field {
+    @include media-breakpoint-down(xs) {
+      margin-bottom: $gl-padding-8;
+    }
   }
 }
 
@@ -322,7 +318,7 @@
 
   &:hover,
   &:focus {
-    color: $gl-link-color;
+    color: $blue-600;
     outline: 0;
   }
 
@@ -356,6 +352,8 @@
 }
 
 .note-form-actions {
+  color: $gl-text-color;
+
   @include media-breakpoint-down(xs) {
     .btn {
       float: none;
@@ -384,7 +382,7 @@
 }
 
 .comment-type-dropdown {
-  .comment-btn {
+  .btn-success {
     width: auto;
   }
 
@@ -415,7 +413,7 @@
     width: 100%;
     margin-bottom: 10px;
 
-    .comment-btn {
+    .btn-success {
       flex-grow: 1;
       flex-shrink: 0;
       width: auto;
@@ -440,7 +438,7 @@
 
 .uploading-error-icon,
 .uploading-error-message {
-  color: $gl-text-red;
+  color: $red-500;
 }
 
 .uploading-error-message {
@@ -459,7 +457,7 @@
 .attach-new-file,
 .button-attach-file,
 .retry-uploading-link {
-  color: $gl-link-color;
+  color: $blue-600;
   padding: 0;
   background: none;
   border: 0;
@@ -468,5 +466,5 @@
 }
 
 .markdown-selector {
-  color: $gl-link-color;
+  color: $blue-600;
 }

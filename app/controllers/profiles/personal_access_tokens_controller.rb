@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
   def index
     set_index_vars
@@ -38,6 +40,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
     params.require(:personal_access_token).permit(:name, :expires_at, scopes: [])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def set_index_vars
     @scopes = Gitlab::Auth.available_scopes(current_user)
 
@@ -46,4 +49,5 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
     @new_personal_access_token = PersonalAccessToken.redis_getdel(current_user.id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

@@ -5,7 +5,7 @@ shared_examples 'variable list' do
     end
   end
 
-  it 'adds new secret variable' do
+  it 'adds new CI variable' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
       find('.js-ci-variable-input-value').set('key value')
@@ -60,6 +60,52 @@ shared_examples 'variable list' do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key value')
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
+    end
+  end
+
+  context 'defaults to the application setting' do
+    context 'application setting is true' do
+      before do
+        stub_application_setting(protected_ci_variables: true)
+
+        visit page_path
+      end
+
+      it 'defaults to protected' do
+        page.within('.js-ci-variable-list-section .js-row:last-child') do
+          find('.js-ci-variable-input-key').set('key')
+        end
+
+        values = all('.js-ci-variable-input-protected', visible: false).map(&:value)
+
+        expect(values).to eq %w(false true true)
+      end
+
+      it 'shows a message regarding the changed default' do
+        expect(page).to have_content 'Environment variables are configured by your administrator to be protected by default'
+      end
+    end
+
+    context 'application setting is false' do
+      before do
+        stub_application_setting(protected_ci_variables: false)
+
+        visit page_path
+      end
+
+      it 'defaults to unprotected' do
+        page.within('.js-ci-variable-list-section .js-row:last-child') do
+          find('.js-ci-variable-input-key').set('key')
+        end
+
+        values = all('.js-ci-variable-input-protected', visible: false).map(&:value)
+
+        expect(values).to eq %w(false false false)
+      end
+
+      it 'does not show a message regarding the default' do
+        expect(page).not_to have_content 'Environment variables are configured by your administrator to be protected by default'
+      end
     end
   end
 

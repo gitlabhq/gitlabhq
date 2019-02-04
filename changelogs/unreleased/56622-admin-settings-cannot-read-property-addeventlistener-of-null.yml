@@ -1,0 +1,5 @@
+---
+title: Load initUserInternalRegexPlaceholder only when required
+merge_request: 24522
+author:
+type: fixed

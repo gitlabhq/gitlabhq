@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CreatesCommit
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
@@ -65,7 +67,7 @@ module CreatesCommit
         flash[:notice] = nil
       else
         target = different_project? ? "project" : "branch"
-        flash[:notice] << " You can now submit a merge request to get this change into the original #{target}."
+        flash[:notice] = flash[:notice] + " You can now submit a merge request to get this change into the original #{target}."
       end
     end
   end
@@ -99,6 +101,7 @@ module CreatesCommit
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  # rubocop: disable CodeReuse/ActiveRecord
   def merge_request_exists?
     strong_memoize(:merge_request) do
       MergeRequestsFinder.new(current_user, project_id: @project.id)
@@ -110,6 +113,7 @@ module CreatesCommit
           target_branch: @start_branch)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def different_project?

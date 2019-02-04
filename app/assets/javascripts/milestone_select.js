@@ -1,13 +1,18 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable one-var, no-unused-vars, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
 import $ from 'jquery';
 import _ from 'underscore';
 import { __ } from '~/locale';
+import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 import ModalStore from './boards/stores/modal_store';
+import boardsStore, {
+  boardStoreIssueSet,
+  boardStoreIssueDelete,
+} from './boards/stores/boards_store';
 
 export default class MilestoneSelect {
   constructor(currentProject, els, options = {}) {
@@ -16,10 +21,10 @@ export default class MilestoneSelect {
         typeof currentProject === 'string' ? JSON.parse(currentProject) : currentProject;
     }
 
-    this.init(els, options);
+    MilestoneSelect.init(els, options);
   }
 
-  init(els, options) {
+  static init(els, options) {
     let $els = $(els);
 
     if (!els) {
@@ -56,7 +61,7 @@ export default class MilestoneSelect {
 
       if (issueUpdateURL) {
         milestoneLinkTemplate = _.template(
-          '<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
+          '<a href="<%- web_url %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>',
         );
         milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
       }
@@ -150,7 +155,7 @@ export default class MilestoneSelect {
           const { $el, e } = clickEvent;
           let selected = clickEvent.selectedObj;
 
-          let data, boardsStore;
+          let data, modalStoreFilter;
           if (!selected) return;
 
           if (options.handleClick) {
@@ -174,11 +179,11 @@ export default class MilestoneSelect {
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsStore = ModalStore.store.filter;
+            modalStoreFilter = ModalStore.store.filter;
           }
 
-          if (boardsStore) {
-            boardsStore[$dropdown.data('fieldName')] = selected.name;
+          if (modalStoreFilter) {
+            modalStoreFilter[$dropdown.data('fieldName')] = selected.name;
             e.preventDefault();
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));
@@ -186,7 +191,7 @@ export default class MilestoneSelect {
             return $dropdown.closest('form').submit();
           } else if ($dropdown.hasClass('js-issue-board-sidebar')) {
             if (selected.id !== -1 && isSelecting) {
-              gl.issueBoards.boardStoreIssueSet(
+              boardStoreIssueSet(
                 'milestone',
                 new ListMilestone({
                   id: selected.id,
@@ -194,13 +199,13 @@ export default class MilestoneSelect {
                 }),
               );
             } else {
-              gl.issueBoards.boardStoreIssueDelete('milestone');
+              boardStoreIssueDelete('milestone');
             }
 
             $dropdown.trigger('loading.gl.dropdown');
             $loading.removeClass('hidden').fadeIn();
 
-            gl.issueBoards.BoardsStore.detail.issue
+            boardsStore.detail.issue
               .update($dropdown.attr('data-issue-update'))
               .then(() => {
                 $dropdown.trigger('loaded.gl.dropdown');
@@ -224,7 +229,6 @@ export default class MilestoneSelect {
                 $selectBox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
-                  data.milestone.full_path = this.currentProject.full_path;
                   data.milestone.remaining = timeFor(data.milestone.due_date);
                   data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));
@@ -252,3 +256,5 @@ export default class MilestoneSelect {
     });
   }
 }
+
+window.MilestoneSelect = MilestoneSelect;

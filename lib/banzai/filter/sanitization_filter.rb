@@ -1,34 +1,30 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # Sanitize HTML
     #
     # Extends HTML::Pipeline::SanitizationFilter with a custom whitelist.
     class SanitizationFilter < HTML::Pipeline::SanitizationFilter
-      UNSAFE_PROTOCOLS = %w(data javascript vbscript).freeze
-      TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/
+      include Gitlab::Utils::StrongMemoize
+
+      UNSAFE_PROTOCOLS        = %w(data javascript vbscript).freeze
+      TABLE_ALIGNMENT_PATTERN = /text-align: (?<alignment>center|left|right)/.freeze
 
       def whitelist
-        whitelist = super
-
-        customize_whitelist(whitelist)
-
-        whitelist
+        strong_memoize(:whitelist) do
+          customize_whitelist(super.deep_dup)
+        end
       end
 
       private
 
-      def customized?(transformers)
-        transformers.last.source_location[0] == __FILE__
-      end
-
       def customize_whitelist(whitelist)
-        # Only push these customizations once
-        return if customized?(whitelist[:transformers])
-
-        # Allow table alignment; we whitelist specific style properties in a
+        # Allow table alignment; we whitelist specific text-align values in a
         # transformer below
         whitelist[:attributes]['th'] = %w(style)
         whitelist[:attributes]['td'] = %w(style)
+        whitelist[:css] = { properties: ['text-align'] }
 
         # Allow span elements
         whitelist[:elements].push('span')
@@ -45,14 +41,16 @@ module Banzai
         whitelist[:elements].push('abbr')
         whitelist[:attributes]['abbr'] = %w(title)
 
+        # Allow the 'data-sourcepos' from CommonMark on all elements
+        whitelist[:attributes][:all].push('data-sourcepos')
+
         # Disallow `name` attribute globally, allow on `a`
         whitelist[:attributes][:all].delete('name')
         whitelist[:attributes]['a'].push('name')
 
-        # Allow any protocol in `a` elements...
+        # Allow any protocol in `a` elements
+        # and then remove links with unsafe protocols
         whitelist[:protocols].delete('a')
-
-        # ...but then remove links with unsafe protocols
         whitelist[:transformers].push(self.class.remove_unsafe_links)
 
         # Remove `rel` attribute from `a` elements
@@ -60,6 +58,12 @@ module Banzai
 
         # Remove any `style` properties not required for table alignment
         whitelist[:transformers].push(self.class.remove_unsafe_table_style)
+
+        # Allow `id` in a and li elements for footnotes
+        # and remove any `id` properties not matching for footnotes
+        whitelist[:attributes]['a'].push('id')
+        whitelist[:attributes]['li'] = %w(id)
+        whitelist[:transformers].push(self.class.remove_non_footnote_ids)
 
         whitelist
       end
@@ -114,6 +118,20 @@ module Banzai
             else
               node.remove_attribute('style')
             end
+          end
+        end
+
+        def remove_non_footnote_ids
+          lambda do |env|
+            node = env[:node]
+
+            return unless node.name == 'a' || node.name == 'li'
+            return unless node.has_attribute?('id')
+
+            return if node.name == 'a' && node['id'] =~ Banzai::Filter::FootnoteFilter::FOOTNOTE_LINK_REFERENCE_PATTERN
+            return if node.name == 'li' && node['id'] =~ Banzai::Filter::FootnoteFilter::FOOTNOTE_LI_REFERENCE_PATTERN
+
+            node.remove_attribute('id')
           end
         end
       end

@@ -32,7 +32,7 @@ describe SystemHooksService do
     end
 
     it do
-      project.old_path_with_namespace = 'transfered_from_path'
+      project.old_path_with_namespace = 'transferred_from_path'
       expect(event_data(project, :transfer)).to include(
         :event_name, :name, :created_at, :updated_at, :path, :project_id,
         :owner_name, :owner_email, :project_visibility,
@@ -75,7 +75,7 @@ describe SystemHooksService do
     end
 
     it 'handles nil datetime columns' do
-      user.update_attributes(created_at: nil, updated_at: nil)
+      user.update(created_at: nil, updated_at: nil)
       data = event_data(user, :destroy)
 
       expect(data[:created_at]).to be(nil)

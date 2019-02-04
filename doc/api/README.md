@@ -3,71 +3,92 @@
 Automate GitLab via a simple and powerful API. All definitions can be found
 under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
 
-## Resources
+The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
 
-Documentation for various API resources can be found separately in the
-following locations:
+## API Resources
 
-- [Award Emoji](award_emoji.md)
+The following API resources are available:
+
+- [Applications](applications.md)
+- [Avatar](avatar.md)
+- [Award emoji](award_emoji.md)
 - [Branches](branches.md)
-- [Broadcast Messages](broadcast_messages.md)
-- [Project-level Variables](project_level_variables.md)
-- [Group-level Variables](group_level_variables.md)
-- [Code Snippets](snippets.md)
+- [Broadcast messages](broadcast_messages.md)
+- [Code snippets](snippets.md)
 - [Commits](commits.md)
-- [Custom Attributes](custom_attributes.md)
+- [Container Registry](container_registry.md)
+- [Custom attributes](custom_attributes.md)
+- [Deploy keys](deploy_keys.md), and [deploy keys for multiple projects](deploy_key_multiple_projects.md)
 - [Deployments](deployments.md)
-- [Deploy Keys](deploy_keys.md)
+- [Discussions](discussions.md) (threaded comments)
 - [Environments](environments.md)
 - [Events](events.md)
 - [Feature flags](features.md)
-- [Gitignores templates](templates/gitignores.md)
-- [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
-- [Groups](groups.md)
-- [Group Access Requests](access_requests.md)
-- [Group Badges](group_badges.md)
-- [Group Members](members.md)
+- Group-related resources, including:
+  - [Groups](groups.md)
+  - [Group access requests](access_requests.md)
+  - [Group badges](group_badges.md)
+  - [Group issue boards](group_boards.md)
+  - [Group-level variables](group_level_variables.md)
+  - [Group members](members.md)
+  - [Group milestones](group_milestones.md)
 - [Issues](issues.md)
-- [Issue Boards](boards.md)
-- [Group Issue Boards](group_boards.md)
+- [Issue boards](boards.md)
 - [Jobs](jobs.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [Markdown](markdown.md)
-- [Merge Requests](merge_requests.md)
-- [Project milestones](milestones.md)
-- [Group milestones](group_milestones.md)
+- [Merge requests](merge_requests.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
-- [Discussions](discussions.md) (threaded comments)
 - [Notification settings](notification_settings.md)
-- [Open source license templates](templates/licenses.md)
-- [Pages Domains](pages_domains.md)
+- [Pages domains](pages_domains.md)
 - [Pipelines](pipelines.md)
-- [Pipeline Triggers](pipeline_triggers.md)
-- [Pipeline Schedules](pipeline_schedules.md)
-- [Projects](projects.md) including setting Webhooks
-- [Project Access Requests](access_requests.md)
-- [Project Badges](project_badges.md)
-- [Project import/export](project_import_export.md)
-- [Project Members](members.md)
-- [Project Snippets](project_snippets.md)
-- [Protected Branches](protected_branches.md)
+- [Pipeline schedules](pipeline_schedules.md)
+- [Pipeline triggers](pipeline_triggers.md) and [triggering pipelines](../ci/triggers/README.md)
+- Project-related resources, including:
+  - [Projects](projects.md) including setting Webhooks
+  - [Project access requests](access_requests.md)
+  - [Project badges](project_badges.md)
+  - [Project clusters](project_clusters.md)
+  - [Project-level variables](project_level_variables.md)
+  - [Project import/export](project_import_export.md)
+  - [Project members](members.md)
+  - [Project milestones](milestones.md)
+  - [Project snippets](project_snippets.md)
+  - [Project templates](project_templates.md) (see also [Templates API Resources](#templates-api-resources))
+- [Protected branches](protected_branches.md)
+- [Protected tags](protected_tags.md)
 - [Repositories](repositories.md)
-- [Repository Files](repository_files.md)
+- [Repository files](repository_files.md)
+- [Repository submodules](repository_submodules.md)
+- [Resource label events](resource_label_events.md)
 - [Runners](runners.md)
 - [Search](search.md)
 - [Services](services.md)
 - [Settings](settings.md)
 - [Sidekiq metrics](sidekiq_metrics.md)
-- [System Hooks](system_hooks.md)
+- [System hooks](system_hooks.md)
 - [Tags](tags.md)
+- [Releases](releases/index.md)
+- Release Assets
+  - [Links](releases/links.md)
 - [Todos](todos.md)
 - [Users](users.md)
-- [Validate CI configuration](lint.md)
-- [V3 to V4](v3_to_v4.md)
+- [Validate CI configuration](lint.md) (linting)
 - [Version](version.md)
 - [Wikis](wikis.md)
+
+See also [V3 to V4](v3_to_v4.md).
+
+### Templates API Resources
+
+Endpoints are available for:
+
+- [Dockerfile templates](templates/dockerfiles.md).
+- [gitignore templates](templates/gitignores.md).
+- [GitLab CI YAML templates](templates/gitlab_ci_ymls.md).
+- [Open source license templates](templates/licenses.md).
 
 ## Road to GraphQL
 
@@ -76,8 +97,8 @@ Going forward, we will start on moving to
 controller-specific endpoints. GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.
-2. Callers of the API can request only what they need.
-3. It is versioned by default.
+1. Callers of the API can request only what they need.
+1. It is versioned by default.
 
 It will co-exist with the current v4 REST API. If we have a v5 API, this should
 be a compatibility layer on top of GraphQL.
@@ -90,21 +111,21 @@ specification.
 ## Compatibility Guidelines
 
 The HTTP API is versioned using a single number, the current one being 4. This
-number symbolises the same as the major version number as described by
+number symbolizes the same as the major version number as described by
 [SemVer](https://semver.org/). This mean that backward incompatible changes
 will require this version number to change. However, the minor version is
 not explicit. This allows for a stable API endpoint, but also means new
 features can be added to the API in the same version number.
 
 New features and bug fixes are released in tandem with a new GitLab, and apart
-from incidental patch and security releases, are released on the 22nd each
+from incidental patch and security releases, are released on the 22nd of each
 month. Backward incompatible changes (e.g. endpoints removal, parameters
 removal etc.), as well as removal of entire API versions are done in tandem
 with a major point release of GitLab itself. All deprecations and changes
 between two versions should be listed in the documentation. For the changes
 between v3 and v4; please read the [v3 to v4 documentation](v3_to_v4.md)
 
-#### Current status
+### Current status
 
 Currently only API version v4 is available. Version v3 was removed in
 [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/36819).
@@ -138,8 +159,9 @@ There are three ways to authenticate with the GitLab API:
 1. [Session cookie](#session-cookie)
 
 For admins who want to authenticate with the API as a specific user, or who want to build applications or scripts that do so, two options are available:
+
 1. [Impersonation tokens](#impersonation-tokens)
-2. [Sudo](#sudo)
+1. [Sudo](#sudo)
 
 If authentication information is invalid or omitted, an error message will be
 returned with status code `401`:
@@ -177,13 +199,13 @@ You can use a [personal access token][pat] to authenticate with the API by passi
 Example of using the personal access token in a parameter:
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects?private_token=9koXpg98eAheJpvBs5tK
+curl https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>
 ```
 
 Example of using the personal access token in a header:
 
 ```shell
-curl --header "Private-Token: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects
+curl --header "Private-Token: <your_access_token>" https://gitlab.example.com/api/v4/projects
 ```
 
 Read more about [personal access tokens][pat].
@@ -216,9 +238,46 @@ For more information, refer to the
 Impersonation tokens are used exactly like regular personal access tokens, and can be passed in either the
 `private_token` parameter or the `Private-Token` header.
 
+#### Disable impersonation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/40385) in GitLab
+11.6.
+
+By default, impersonation is enabled. To disable impersonation:
+
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    gitlab_rails['impersonation_enabled'] = false
+    ```
+
+1. Save the file and [reconfigure](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
+   GitLab for the changes to take effect.
+
+To re-enable impersonation, remove this configuration and reconfigure GitLab.
+
+---
+
+**For installations from source**
+
+1. Edit `config/gitlab.yml`:
+
+    ```yaml
+    gitlab:
+      impersonation_enabled: false
+    ```
+
+1. Save the file and [restart](../administration/restart_gitlab.md#installations-from-source)
+   GitLab for the changes to take effect.
+
+To re-enable impersonation, remove this configuration and restart GitLab.
+
 ### Sudo
 
-> Needs admin permissions.
+NOTE: **Note:**
+Only available to [administrators](../user/permissions.md).
 
 All API requests support performing an API call as if you were another user,
 provided you are authenticated as an administrator with an OAuth or Personal Access Token that has the `sudo` scope.
@@ -226,6 +285,9 @@ provided you are authenticated as an administrator with an OAuth or Personal Acc
 You need to pass the `sudo` parameter either via query string or a header with an ID/username of
 the user you want to perform the operation as. If passed as a header, the
 header name must be `Sudo`.
+
+NOTE: **Note:**
+Usernames are case insensitive.
 
 If a non administrative access token is provided, an error message will
 be returned with status code `403`:
@@ -262,22 +324,22 @@ Example of a valid API call and a request using cURL with sudo request,
 providing a username:
 
 ```
-GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
+GET /projects?private_token=<your_access_token>&sudo=username
 ```
 
 ```shell
-curl --header "Private-Token: 9koXpg98eAheJpvBs5tK" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
+curl --header "Private-Token: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
 ```
 
 Example of a valid API call and a request using cURL with sudo request,
 providing an ID:
 
 ```
-GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
+GET /projects?private_token=<your_access_token>&sudo=23
 ```
 
 ```shell
-curl --header "Private-Token: 9koXpg98eAheJpvBs5tK" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
+curl --header "Private-Token: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
 ```
 
 ## Status codes
@@ -326,7 +388,7 @@ resources you can pass the following parameters:
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/namespaces?per_page=50
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50
 ```
 
 ### Pagination Link header
@@ -340,7 +402,7 @@ and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
 ```bash
-curl --head --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2
 ```
 
 The response will then be:
@@ -377,6 +439,14 @@ Additional pagination headers are also sent back.
 | `X-Next-Page`   | The index of the next page |
 | `X-Prev-Page`   | The index of the previous page |
 
+CAUTION: **Caution:**
+For performance reasons since
+[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23931)
+and **behind the `api_kaminari_count_with_limit`
+[feature flag](../development/feature_flags.md)**, if the number of resources is
+more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
+`rel="last"` `Link` are not present in the response headers.
+
 ## Namespaced path encoding
 
 If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_NAME` is
@@ -388,7 +458,7 @@ For example, `/` is represented by `%2F`:
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
-## Branches & tags name encoding
+## Branches and tags name encoding
 
 If your branch or tag contains a `/`, make sure the branch/tag name is
 URL-encoded.
@@ -399,30 +469,68 @@ For example, `/` is represented by `%2F`:
 GET /api/v4/projects/1/branches/my%2Fbranch/commits
 ```
 
+## Encoding API parameters of `array` and `hash` types
+
+We can call the API with `array` and `hash` types parameters as shown below:
+
+### `array`
+
+`import_sources` is a parameter of type `array`:
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+-d "import_sources[]=github" \
+-d "import_sources[]=bitbucket" \
+"https://gitlab.example.com/api/v4/some_endpoint
+```
+
+### `hash`
+
+`override_params` is a parameter of type `hash`:
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+--form "namespace=email" \
+--form "path=impapi" \
+--form "file=@/path/to/somefile.txt"
+--form "override_params[visibility]=private" \
+--form "override_params[some_other_param]=some_value" \
+https://gitlab.example.com/api/v4/projects/import
+```
+
+### Array of hashes
+
+`variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }]`:
+
+```bash
+curl --globoff --request POST --header "PRIVATE-TOKEN: ********************" \
+"https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[][key]=VAR1&variables[][value]=hello&variables[][key]=VAR2&variables[][value]=world"
+
+curl --request POST --header "PRIVATE-TOKEN: ********************" \
+--header "Content-Type: application/json" \
+--data '{ "ref": "master", "variables": [ {"key": "VAR1", "value": "hello"}, {"key": "VAR2", "value": "world"} ] }' \
+"https://gitlab.example.com/api/v4/projects/169/pipeline"
+```
+
 ## `id` vs `iid`
 
-When you work with the API, you may notice two similar fields in API entities:
-`id` and `iid`. The main difference between them is scope.
+ Some resources have two similarly-named fields. For example, [issues](issues.md), [merge requests](merge_requests.md), and [project milestones](merge_requests.md). The fields are:
 
-For example, an issue might have `id: 46` and `iid: 5`.
+- `id`: ID that is unique across all projects.
+- `iid`: additional, internal ID that is unique in the scope of a single project.
 
-| Parameter | Description |
-| --------- | ----------- |
-| `id`  | Is unique across all issues and is used for any API call |
-| `iid` | Is unique only in scope of a single project. When you browse issues or merge requests with the Web UI, you see the `iid` |
+NOTE: **Note:**
+The `iid` is displayed in the web UI.
 
-That means that if you want to get an issue via the API you should use the `id`:
+If a resource has the `iid` field and the `id` field, the `iid` field is usually used instead of `id` to fetch the resource.
 
-```
-GET /projects/42/issues/:id
-```
+For example, suppose a project with `id: 42` has an issue with `id: 46` and `iid: 5`. In this case:
 
-On the other hand, if you want to create a link to a web page you should use
-the `iid`:
+- A valid API call to retrieve the issue is  `GET /projects/42/issues/5`
+- An invalid API call to retrieve the issue is `GET /projects/42/issues/46`.
 
-```
-GET /projects/42/issues/:iid
-```
+NOTE: **Note:**
+Not all resources with the `iid` field are fetched by `iid`. For guidance on which field to use, see the documentation for the specific resource.
 
 ## Data validation and error reporting
 
@@ -497,7 +605,7 @@ Content-Type: application/json
 ## Encoding `+` in ISO 8601 dates
 
 If you need to include a `+` in a query parameter, you may need to use `%2B` instead due
-a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
+to a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
 causes a `+` to be interpreted as a space. For example, in an ISO 8601 date, you may want to pass
 a time in Mountain Standard Time, such as:
 

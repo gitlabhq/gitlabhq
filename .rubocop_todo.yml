@@ -10,37 +10,9 @@
 Capybara/CurrentPathExpectation:
   Enabled: false
 
-# Offense count: 956
-Capybara/FeatureMethods:
-  Enabled: false
-
-# Offense count: 23
-FactoryBot/DynamicAttributeDefinedStatically:
-  Exclude:
-    - 'spec/factories/broadcast_messages.rb'
-    - 'spec/factories/ci/builds.rb'
-    - 'spec/factories/ci/runners.rb'
-    - 'spec/factories/clusters/applications/helm.rb'
-    - 'spec/factories/clusters/platforms/kubernetes.rb'
-    - 'spec/factories/emails.rb'
-    - 'spec/factories/gpg_keys.rb'
-    - 'spec/factories/group_members.rb'
-    - 'spec/factories/merge_requests.rb'
-    - 'spec/factories/notes.rb'
-    - 'spec/factories/oauth_access_grants.rb'
-    - 'spec/factories/project_members.rb'
-    - 'spec/factories/todos.rb'
-    - 'spec/factories/uploads.rb'
-
 # Offense count: 167
 # Cop supports --auto-correct.
 Layout/EmptyLinesAroundArguments:
-  Enabled: false
-
-# Offense count: 253
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Layout/ExtraSpacing:
   Enabled: false
 
 # Offense count: 83
@@ -57,35 +29,12 @@ Layout/IndentArray:
 Layout/IndentHash:
   Enabled: false
 
-# Offense count: 11
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Layout/SpaceBeforeFirstArg:
-  Exclude:
-    - 'config/routes/project.rb'
-    - 'db/migrate/20170506185517_add_foreign_key_pipeline_schedules_and_pipelines.rb'
-    - 'features/steps/project/source/browse_files.rb'
-    - 'features/steps/project/source/markdown_render.rb'
-    - 'lib/api/runners.rb'
-    - 'spec/features/search/user_uses_search_filters_spec.rb'
-    - 'spec/routing/project_routing_spec.rb'
-    - 'spec/services/system_note_service_spec.rb'
-
 # Offense count: 93
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: require_no_space, require_space
 Layout/SpaceInLambdaLiteral:
   Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBrackets.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBrackets: space, no_space
-Layout/SpaceInsideArrayLiteralBrackets:
-  Exclude:
-    - 'spec/lib/gitlab/import_export/relation_factory_spec.rb'
 
 # Offense count: 327
 # Cop supports --auto-correct.
@@ -99,14 +48,6 @@ Layout/SpaceInsideBlockBraces:
 # Cop supports --auto-correct.
 Layout/SpaceInsideParens:
   Enabled: false
-
-# Offense count: 14
-# Cop supports --auto-correct.
-Layout/SpaceInsidePercentLiteralDelimiters:
-  Exclude:
-    - 'lib/gitlab/git_access.rb'
-    - 'lib/gitlab/health_checks/fs_shards_check.rb'
-    - 'spec/lib/gitlab/health_checks/fs_shards_check_spec.rb'
 
 # Offense count: 26
 Lint/DuplicateMethods:
@@ -139,31 +80,6 @@ Lint/InterpolationCheck:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 2
-Lint/NestedPercentLiteral:
-  Exclude:
-    - 'lib/gitlab/git/repository.rb'
-    - 'spec/support/shared_examples/email_format_shared_examples.rb'
-
-# Offense count: 1
-Lint/ReturnInVoidContext:
-  Exclude:
-    - 'app/models/project.rb'
-
-# Offense count: 1
-# Configuration parameters: IgnoreImplicitReferences.
-Lint/ShadowedArgument:
-  Exclude:
-    - 'lib/gitlab/database/sha_attribute.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Lint/UnneededRequireStatement:
-  Exclude:
-    - 'db/post_migrate/20161221153951_rename_reserved_project_names.rb'
-    - 'db/post_migrate/20170313133418_rename_more_reserved_project_names.rb'
-    - 'lib/declarative_policy.rb'
-
 # Offense count: 9
 Lint/UriEscapeUnescape:
   Exclude:
@@ -179,12 +95,6 @@ Lint/UriEscapeUnescape:
 # URISchemes: http, https
 Metrics/LineLength:
   Max: 1310
-
-# Offense count: 2
-Naming/ConstantName:
-  Exclude:
-    - 'lib/gitlab/import_sources.rb'
-    - 'lib/gitlab/ssh_public_key.rb'
 
 # Offense count: 11
 # Configuration parameters: EnforcedStyle.
@@ -203,22 +113,6 @@ Naming/HeredocDelimiterCase:
 Naming/HeredocDelimiterNaming:
   Enabled: false
 
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect.
-Performance/HashEachMethods:
-  Enabled: false
-
-# Offense count: 1
-Performance/UnfreezeString:
-  Exclude:
-    - 'features/steps/project/commits/commits.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Performance/UriDefaultParser:
-  Exclude:
-    - 'lib/gitlab/url_sanitizer.rb'
 
 # Offense count: 3821
 # Configuration parameters: Prefixes.
@@ -243,17 +137,6 @@ RSpec/ExpectChange:
 # Offense count: 221
 RSpec/ExpectInHook:
   Enabled: false
-
-# Offense count: 7
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
-  Exclude:
-    - 'spec/spec_helper.rb'
-    - 'spec/support/carrierwave.rb'
-    - 'spec/support/db_cleaner.rb'
-    - 'spec/support/gitaly.rb'
-    - 'spec/support/setup_builds_storage.rb'
 
 # Offense count: 19
 # Configuration parameters: EnforcedStyle.
@@ -455,7 +338,6 @@ Style/Dir:
 # Cop supports --auto-correct.
 Style/EachWithObject:
   Exclude:
-    - 'config/initializers/gollum.rb'
     - 'lib/expand_variables.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ee_compat_check.rb'
@@ -487,7 +369,7 @@ Style/EmptyLiteral:
     - 'lib/gitlab/fogbugz_import/importer.rb'
     - 'lib/gitlab/git/diff_collection.rb'
     - 'lib/gitlab/gitaly_client.rb'
-    - 'scripts/trigger-build-omnibus'
+    - 'scripts/trigger-build'
     - 'spec/features/merge_requests/versions_spec.rb'
     - 'spec/helpers/merge_requests_helper_spec.rb'
     - 'spec/lib/gitlab/request_context_spec.rb'
@@ -549,11 +431,6 @@ Style/LineEndConcatenation:
     - 'spec/lib/gitlab/checks/project_moved_spec.rb'
     - 'spec/lib/gitlab/gfm/reference_rewriter_spec.rb'
     - 'spec/lib/gitlab/incoming_email_spec.rb'
-
-# Offense count: 39
-# Cop supports --auto-correct.
-Style/MethodCallWithoutArgsParentheses:
-  Enabled: false
 
 # Offense count: 18
 Style/MethodMissing:
@@ -716,12 +593,6 @@ Style/RescueModifier:
 Style/RescueStandardError:
   Enabled: false
 
-# Offense count: 92
-# Cop supports --auto-correct.
-# Configuration parameters: ConvertCodeThatCanStartToReturnNil.
-Style/SafeNavigation:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Style/SelfAssignment:
@@ -799,17 +670,6 @@ Style/TrailingUnderscoreVariable:
     - 'spec/lib/gitlab/etag_caching/middleware_spec.rb'
     - 'spec/services/quick_actions/interpret_service_spec.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: ExactNameMatch, AllowPredicates, AllowDSLWriters, IgnoreClassMethods, Whitelist.
-# Whitelist: to_ary, to_a, to_c, to_enum, to_h, to_hash, to_i, to_int, to_io, to_open, to_path, to_proc, to_r, to_regexp, to_str, to_s, to_sym
-Style/TrivialAccessors:
-  Exclude:
-    - 'app/models/external_issue.rb'
-    - 'app/serializers/base_serializer.rb'
-    - 'lib/gitlab/auth/ldap/person.rb'
-    - 'lib/system_check/base_check.rb'
-
 # Offense count: 4
 # Cop supports --auto-correct.
 Style/UnlessElse:
@@ -823,20 +683,6 @@ Style/UnlessElse:
 # Cop supports --auto-correct.
 Style/UnneededInterpolation:
   Enabled: false
-
-# Offense count: 11
-# Cop supports --auto-correct.
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'app/models/deploy_key.rb'
-    - 'app/models/network/commit.rb'
-    - 'app/models/network/graph.rb'
-    - 'app/models/project_services/asana_service.rb'
-    - 'app/services/boards/create_service.rb'
-    - 'app/services/merge_requests/conflicts/list_service.rb'
-    - 'lib/declarative_policy/dsl.rb'
-    - 'lib/extracts_path.rb'
-    - 'lib/gitlab/git/repository.rb'
 
 # Offense count: 22840
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.

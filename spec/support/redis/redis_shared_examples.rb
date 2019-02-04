@@ -1,7 +1,7 @@
 RSpec.shared_examples "redis_shared_examples" do
   include StubENV
 
-  let(:test_redis_url)  { "redis://redishost:#{redis_port}"}
+  let(:test_redis_url) { "redis://redishost:#{redis_port}"}
 
   before do
     stub_env(environment_config_file_name, Rails.root.join(config_file_name))
@@ -65,10 +65,18 @@ RSpec.shared_examples "redis_shared_examples" do
   end
 
   describe '.url' do
+    it 'withstands mutation' do
+      url1 = described_class.url
+      url2 = described_class.url
+      url1 << 'foobar' unless url1.frozen?
+
+      expect(url2).not_to end_with('foobar')
+    end
+
     context 'when yml file with env variable' do
       let(:config_file_name) { config_with_environment_variable_inside }
 
-      before  do
+      before do
         stub_env(config_env_variable_url, test_redis_url)
       end
 
@@ -101,7 +109,6 @@ RSpec.shared_examples "redis_shared_examples" do
     before do
       clear_pool
     end
-
     after do
       clear_pool
     end

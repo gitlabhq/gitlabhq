@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+FILE_EXTENSION = ".rb"
+MAGIC_COMMENT = "# frozen_string_literal: true"
+
+def get_files_with_no_magic_comment(files)
+  files.select do |file|
+    file.end_with?(FILE_EXTENSION) &&
+      !File.open(file, &:gets)&.start_with?(MAGIC_COMMENT)
+  end
+end
+
+files_to_fix = get_files_with_no_magic_comment(git.added_files)
+
+if files_to_fix.any?
+  warn 'This merge request adds files that do not enforce frozen string literal. ' \
+    'See https://gitlab.com/gitlab-org/gitlab-ce/issues/47424 for more information.'
+
+  markdown(<<~MARKDOWN)
+    ## Enable Frozen String Literal
+
+    The following files should have `#{MAGIC_COMMENT}` on the first line:
+
+    * #{files_to_fix.map { |path| "`#{path}`" }.join("\n* ")}
+  MARKDOWN
+end

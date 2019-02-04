@@ -147,6 +147,10 @@ describe('IDE pipelines mutations', () => {
           name: job.name,
           status: job.status,
           path: job.build_path,
+          rawPath: `${job.build_path}/raw`,
+          started: job.started,
+          isLoading: false,
+          output: '',
         })),
       );
     });
@@ -169,6 +173,51 @@ describe('IDE pipelines mutations', () => {
       mutations[types.TOGGLE_STAGE_COLLAPSE](mockedState, mockedState.stages[0].id);
 
       expect(mockedState.stages[0].isCollapsed).toBe(false);
+    });
+  });
+
+  describe(types.SET_DETAIL_JOB, () => {
+    it('sets detail job', () => {
+      mutations[types.SET_DETAIL_JOB](mockedState, jobs[0]);
+
+      expect(mockedState.detailJob).toEqual(jobs[0]);
+    });
+  });
+
+  describe(types.REQUEST_JOB_TRACE, () => {
+    beforeEach(() => {
+      mockedState.detailJob = { ...jobs[0] };
+    });
+
+    it('sets loading on detail job', () => {
+      mutations[types.REQUEST_JOB_TRACE](mockedState);
+
+      expect(mockedState.detailJob.isLoading).toBe(true);
+    });
+  });
+
+  describe(types.RECEIVE_JOB_TRACE_ERROR, () => {
+    beforeEach(() => {
+      mockedState.detailJob = { ...jobs[0], isLoading: true };
+    });
+
+    it('sets loading to false on detail job', () => {
+      mutations[types.RECEIVE_JOB_TRACE_ERROR](mockedState);
+
+      expect(mockedState.detailJob.isLoading).toBe(false);
+    });
+  });
+
+  describe(types.RECEIVE_JOB_TRACE_SUCCESS, () => {
+    beforeEach(() => {
+      mockedState.detailJob = { ...jobs[0], isLoading: true };
+    });
+
+    it('sets output on detail job', () => {
+      mutations[types.RECEIVE_JOB_TRACE_SUCCESS](mockedState, { html: 'html' });
+
+      expect(mockedState.detailJob.output).toBe('html');
+      expect(mockedState.detailJob.isLoading).toBe(false);
     });
   });
 });

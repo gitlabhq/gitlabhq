@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   class IssuesController < Boards::ApplicationController
     include BoardsResponses
@@ -11,22 +13,27 @@ module Boards
     before_action :authorize_update_issue, only: [:update]
     skip_before_action :authenticate_user!, only: [:index]
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def index
-      issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
-      issues = issues.page(params[:page]).per(params[:per] || 20)
-      make_sure_position_is_set(issues) if Gitlab::Database.read_write?
-      issues = issues.preload(:project,
-                              :milestone,
+      list_service = Boards::Issues::ListService.new(board_parent, current_user, filter_params)
+      issues = list_service.execute
+      issues = issues.page(params[:page]).per(params[:per] || 20).without_count
+      Issue.move_to_end(issues) if Gitlab::Database.read_write?
+      issues = issues.preload(:milestone,
                               :assignees,
+                              project: [
+                                  :route,
+                                  {
+                                      namespace: [:route]
+                                  }
+                              ],
                               labels: [:priorities],
                               notes: [:award_emoji, :author]
                              )
 
-      render json: {
-        issues: serialize_as_json(issues),
-        size: issues.total_count
-      }
+      render_issues(issues, list_service.metadata)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create
       service = Boards::Issues::CreateService.new(board_parent, project, current_user, issue_params)
@@ -51,10 +58,11 @@ module Boards
 
     private
 
-    def make_sure_position_is_set(issues)
-      issues.each do |issue|
-        issue.move_to_end && issue.save unless issue.relative_position
-      end
+    def render_issues(issues, metadata)
+      data = { issues: serialize_as_json(issues) }
+      data.merge!(metadata)
+
+      render json: data
     end
 
     def issue
@@ -92,18 +100,12 @@ module Boards
         .merge(board_id: params[:board_id], list_id: params[:list_id], request: request)
     end
 
+    def serializer
+      IssueSerializer.new(current_user: current_user)
+    end
+
     def serialize_as_json(resource)
-      resource.as_json(
-        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position, :weight],
-        labels: true,
-        issue_endpoints: true,
-        include_full_project_path: board.group_board?,
-        include: {
-          project: { only: [:id, :path] },
-          assignees: { only: [:id, :name, :username], methods: [:avatar_url] },
-          milestone: { only: [:id, :title] }
-        }
-      )
+      serializer.represent(resource, serializer: 'board', include_full_project_path: board.group_board?)
     end
 
     def whitelist_query_limiting

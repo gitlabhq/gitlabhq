@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that replaces user or group references with links.
@@ -104,7 +106,7 @@ module Banzai
       end
 
       def link_class
-        reference_class(:project_member)
+        reference_class(:project_member, tooltip: false)
       end
 
       def link_to_all(link_content: nil)

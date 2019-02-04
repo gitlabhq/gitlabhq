@@ -2,6 +2,17 @@ gl-emoji {
   font-style: normal;
   display: inline-flex;
   vertical-align: middle;
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  font-size: 1.5em;
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-size: 1.4em;
+  line-height: 1em;
+}
+
+.user-status-emoji {
+  margin-right: $gl-padding-4;
+
+  gl-emoji {
+    font-size: 1em;
+    line-height: 16px;
+    vertical-align: baseline;
+  }
 }

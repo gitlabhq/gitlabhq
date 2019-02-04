@@ -2,7 +2,7 @@
 
 **NB: This service is only listed if you are in a development environment!**
 
-To setup the mock CI service server, respond to the following endpoints
+To set up the mock CI service server, respond to the following endpoints
 
 - `commit_status`: `#{project.namespace.path}/#{project.path}/status/#{sha}.json`
    - Have your service return `200 { status: ['failed'|'canceled'|'running'|'pending'|'success'|'success_with_warnings'|'skipped'|'not_found'] }`

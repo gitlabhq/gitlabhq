@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   module Settings
     class CiCdController < Projects::ApplicationController
@@ -34,6 +36,13 @@ module Projects
         end
       end
 
+      def reset_registration_token
+        @project.reset_runners_token!
+
+        flash[:notice] = 'New runners registration token has been generated!'
+        redirect_to namespace_project_settings_ci_cd_path
+      end
+
       private
 
       def update_params
@@ -41,7 +50,7 @@ module Projects
           :runners_token, :builds_enabled, :build_allow_git_fetch,
           :build_timeout_human_readable, :build_coverage_regex, :public_builds,
           :auto_cancel_pending_pipelines, :ci_config_path,
-          auto_devops_attributes: [:id, :domain, :enabled]
+          auto_devops_attributes: [:id, :domain, :enabled, :deploy_strategy]
         )
       end
 
@@ -59,7 +68,7 @@ module Projects
 
       def define_variables
         define_runners_variables
-        define_secret_variables
+        define_ci_variables
         define_triggers_variables
         define_badges_variables
         define_auto_devops_variables
@@ -74,14 +83,14 @@ module Projects
           .ordered
           .page(params[:page]).per(20)
 
-        @shared_runners = ::Ci::Runner.shared.active
+        @shared_runners = ::Ci::Runner.instance_type.active
 
         @shared_runners_count = @shared_runners.count(:all)
 
         @group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id)
       end
 
-      def define_secret_variables
+      def define_ci_variables
         @variable = ::Ci::Variable.new(project: project)
           .present(current_user: current_user)
         @variables = project.variables.order_key_asc
@@ -90,7 +99,9 @@ module Projects
 
       def define_triggers_variables
         @triggers = @project.triggers
+          .present(current_user: current_user)
         @trigger = ::Ci::Trigger.new
+          .present(current_user: current_user)
       end
 
       def define_badges_variables

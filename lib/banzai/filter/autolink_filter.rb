@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'uri'
 
 module Banzai
@@ -5,6 +7,10 @@ module Banzai
     # HTML Filter for auto-linking URLs in HTML.
     #
     # Based on HTML::Pipeline::AutolinkFilter
+    #
+    # Note that our CommonMark parser, `commonmarker` (using the autolink extension)
+    # handles standard autolinking, like http/https. We detect additional
+    # schemes (smb, rdar, etc).
     #
     # Context options:
     #   :autolink  - Boolean, skips all processing done by this filter when false
@@ -105,10 +111,13 @@ module Banzai
           end
         end
 
-        # match has come from node.to_html above, so we know it's encoded
-        # correctly.
+        # Since this came from a Text node, make sure the new href is encoded.
+        # `commonmarker` percent encodes the domains of links it handles, so
+        # do the same (instead of using `normalized_encode`).
+        href_safe = Addressable::URI.encode(match).html_safe
+
         html_safe_match = match.html_safe
-        options = link_options.merge(href: html_safe_match)
+        options         = link_options.merge(href: href_safe)
 
         content_tag(:a, html_safe_match, options) + dropped
       end

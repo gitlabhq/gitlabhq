@@ -5,9 +5,9 @@ describe Gitlab::Themes, lib: true do
     it 'returns a space-separated list of class names' do
       css = described_class.body_classes
 
-      expect(css).to include('ui_indigo')
-      expect(css).to include(' ui_dark ')
-      expect(css).to include(' ui_blue')
+      expect(css).to include('ui-indigo')
+      expect(css).to include('ui-dark')
+      expect(css).to include('ui-blue')
     end
   end
 

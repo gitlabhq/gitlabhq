@@ -8,13 +8,19 @@ const hideFlash = (flashEl, fadeTransition = true) => {
     });
   }
 
-  flashEl.addEventListener('transitionend', () => {
-    flashEl.remove();
-    if (document.body.classList.contains('flash-shown')) document.body.classList.remove('flash-shown');
-  }, {
-    once: true,
-    passive: true,
-  });
+  flashEl.addEventListener(
+    'transitionend',
+    () => {
+      flashEl.remove();
+      window.dispatchEvent(new Event('resize'));
+      if (document.body.classList.contains('flash-shown'))
+        document.body.classList.remove('flash-shown');
+    },
+    {
+      once: true,
+      passive: true,
+    },
+  );
 
   if (!fadeTransition) flashEl.dispatchEvent(new Event('transitionend'));
 };
@@ -29,12 +35,14 @@ const createAction = config => `
   </a>
 `;
 
-const createFlashEl = (message, type, isInContentWrapper = false) => `
+const createFlashEl = (message, type, isFixedLayout = false) => `
   <div
     class="flash-${type}"
   >
     <div
-      class="flash-text ${isInContentWrapper ? 'container-fluid container-limited' : ''}"
+      class="flash-text ${
+        isFixedLayout ? 'container-fluid container-limited limit-container-width' : ''
+      }"
     >
       ${_.escape(message)}
     </div>
@@ -68,12 +76,15 @@ const createFlash = function createFlash(
   addBodyClass = false,
 ) {
   const flashContainer = parent.querySelector('.flash-container');
+  const navigation = parent.querySelector('.content');
 
   if (!flashContainer) return null;
 
-  const isInContentWrapper = flashContainer.parentNode.classList.contains('content-wrapper');
+  const isFixedLayout = navigation
+    ? navigation.parentNode.classList.contains('container-limited')
+    : true;
 
-  flashContainer.innerHTML = createFlashEl(message, type, isInContentWrapper);
+  flashContainer.innerHTML = createFlashEl(message, type, isFixedLayout);
 
   const flashEl = flashContainer.querySelector(`.flash-${type}`);
   removeFlashClickListener(flashEl, fadeTransition);
@@ -82,7 +93,9 @@ const createFlash = function createFlash(
     flashEl.innerHTML += createAction(actionConfig);
 
     if (actionConfig.clickHandler) {
-      flashEl.querySelector('.flash-action').addEventListener('click', e => actionConfig.clickHandler(e));
+      flashEl
+        .querySelector('.flash-action')
+        .addEventListener('click', e => actionConfig.clickHandler(e));
     }
   }
 
@@ -93,11 +106,5 @@ const createFlash = function createFlash(
   return flashContainer;
 };
 
-export {
-  createFlash as default,
-  createFlashEl,
-  createAction,
-  hideFlash,
-  removeFlashClickListener,
-};
+export { createFlash as default, createFlashEl, createAction, hideFlash, removeFlashClickListener };
 window.Flash = createFlash;

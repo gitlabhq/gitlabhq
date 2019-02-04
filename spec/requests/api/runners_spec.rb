@@ -18,41 +18,76 @@ describe API::Runners do
 
   before do
     # Set project access for users
-    create(:project_member, :master, user: user, project: project)
-    create(:project_member, :master, user: user, project: project2)
+    create(:project_member, :maintainer, user: user, project: project)
+    create(:project_member, :maintainer, user: user, project: project2)
     create(:project_member, :reporter, user: user2, project: project)
   end
 
   describe 'GET /runners' do
     context 'authorized user' do
+      it 'returns response status and headers' do
+        get api('/runners', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+      end
+
       it 'returns user available runners' do
         get api('/runners', user)
 
-        shared = json_response.any? { |r| r['is_shared'] }
-        descriptions = json_response.map { |runner| runner['description'] }
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(descriptions).to contain_exactly(
-          'Project runner', 'Two projects runner', 'Group runner'
-        )
-        expect(shared).to be_falsey
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner'),
+          a_hash_including('description' => 'Group runner')
+        ]
       end
 
       it 'filters runners by scope' do
-        get api('/runners?scope=active', user)
+        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
 
-        shared = json_response.any? { |r| r['is_shared'] }
+        get api('/runners?scope=paused', user)
+
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_falsey
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Inactive project runner')
+        ]
       end
 
       it 'avoids filtering if scope is invalid' do
         get api('/runners?scope=unknown', user)
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by type' do
+        get api('/runners?type=project_type', user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner')
+        ]
+      end
+
+      it 'does not filter by invalid type' do
+        get api('/runners?type=bogus', user)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by status' do
+        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+
+        get api('/runners?status=paused', user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Inactive project runner')
+        ]
+      end
+
+      it 'does not filter by invalid status' do
+        get api('/runners?status=bogus', user)
+
         expect(response).to have_gitlab_http_status(400)
       end
     end
@@ -69,15 +104,82 @@ describe API::Runners do
   describe 'GET /runners/all' do
     context 'authorized user' do
       context 'with admin privileges' do
+        it 'returns response status and headers' do
+          get api('/runners/all', admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+        end
+
         it 'returns all runners' do
           get api('/runners/all', admin)
 
-          shared = json_response.any? { |r| r['is_shared'] }
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner'),
+            a_hash_including('description' => 'Group runner'),
+            a_hash_including('description' => 'Shared runner')
+          ]
+        end
+
+        it 'filters runners by scope' do
+          get api('/runners/all?scope=shared', admin)
+
+          shared = json_response.all? { |r| r['is_shared'] }
           expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response[0]).to have_key('ip_address')
           expect(shared).to be_truthy
+        end
+
+        it 'filters runners by scope' do
+          get api('/runners/all?scope=specific', admin)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner'),
+            a_hash_including('description' => 'Group runner')
+          ]
+        end
+
+        it 'avoids filtering if scope is invalid' do
+          get api('/runners/all?scope=unknown', admin)
+          expect(response).to have_gitlab_http_status(400)
+        end
+
+        it 'filters runners by type' do
+          get api('/runners/all?type=project_type', admin)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner')
+          ]
+        end
+
+        it 'does not filter by invalid type' do
+          get api('/runners/all?type=bogus', admin)
+
+          expect(response).to have_gitlab_http_status(400)
+        end
+
+        it 'filters runners by status' do
+          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+
+          get api('/runners/all?status=paused', admin)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
+
+        it 'does not filter by invalid status' do
+          get api('/runners/all?status=bogus', admin)
+
+          expect(response).to have_gitlab_http_status(400)
         end
       end
 
@@ -87,22 +189,6 @@ describe API::Runners do
 
           expect(response).to have_gitlab_http_status(403)
         end
-      end
-
-      it 'filters runners by scope' do
-        get api('/runners/all?scope=specific', admin)
-
-        shared = json_response.any? { |r| r['is_shared'] }
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_falsey
-      end
-
-      it 'avoids filtering if scope is invalid' do
-        get api('/runners?scope=unknown', admin)
-        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -136,7 +222,7 @@ describe API::Runners do
               delete api("/runners/#{unused_project_runner.id}", admin)
 
               expect(response).to have_gitlab_http_status(204)
-            end.to change { Ci::Runner.specific.count }.by(-1)
+            end.to change { Ci::Runner.project_type.count }.by(-1)
           end
         end
 
@@ -200,6 +286,69 @@ describe API::Runners do
 
   describe 'PUT /runners/:id' do
     context 'admin user' do
+      # see https://gitlab.com/gitlab-org/gitlab-ce/issues/48625
+      context 'single parameter update' do
+        it 'runner description' do
+          description = shared_runner.description
+          update_runner(shared_runner.id, admin, description: "#{description}_updated")
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.description).to eq("#{description}_updated")
+        end
+
+        it 'runner active state' do
+          active = shared_runner.active
+          update_runner(shared_runner.id, admin, active: !active)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.active).to eq(!active)
+        end
+
+        it 'runner tag list' do
+          update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
+        end
+
+        it 'runner untagged flag' do
+          # Ensure tag list is non-empty before setting untagged to false.
+          update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
+          update_runner(shared_runner.id, admin, run_untagged: 'false')
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.run_untagged?).to be(false)
+        end
+
+        it 'runner unlocked flag' do
+          update_runner(shared_runner.id, admin, locked: 'true')
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.locked?).to be(true)
+        end
+
+        it 'runner access level' do
+          update_runner(shared_runner.id, admin, access_level: 'ref_protected')
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.ref_protected?).to be_truthy
+        end
+
+        it 'runner maximum timeout' do
+          update_runner(shared_runner.id, admin, maximum_timeout: 1234)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.maximum_timeout).to eq(1234)
+        end
+
+        it 'fails with no parameters' do
+          put api("/runners/#{shared_runner.id}", admin)
+
+          shared_runner.reload
+          expect(response).to have_gitlab_http_status(400)
+        end
+      end
+
       context 'when runner is shared' do
         it 'updates runner' do
           description = shared_runner.description
@@ -251,14 +400,14 @@ describe API::Runners do
       end
 
       def update_runner(id, user, args)
-        put api("/runners/#{id}", user), args
+        put api("/runners/#{id}", user), params: args
       end
     end
 
     context 'authorized user' do
       context 'when runner is shared' do
         it 'does not update runner' do
-          put api("/runners/#{shared_runner.id}", user), description: 'test'
+          put api("/runners/#{shared_runner.id}", user), params: { description: 'test' }
 
           expect(response).to have_gitlab_http_status(403)
         end
@@ -266,14 +415,14 @@ describe API::Runners do
 
       context 'when runner is not shared' do
         it 'does not update project runner without access to it' do
-          put api("/runners/#{project_runner.id}", user2), description: 'test'
+          put api("/runners/#{project_runner.id}", user2), params: { description: 'test' }
 
           expect(response).to have_http_status(403)
         end
 
         it 'updates project runner with access to it' do
           description = project_runner.description
-          put api("/runners/#{project_runner.id}", admin), description: 'test'
+          put api("/runners/#{project_runner.id}", admin), params: { description: 'test' }
           project_runner.reload
 
           expect(response).to have_gitlab_http_status(200)
@@ -300,7 +449,7 @@ describe API::Runners do
             delete api("/runners/#{shared_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(204)
-          end.to change { Ci::Runner.shared.count }.by(-1)
+          end.to change { Ci::Runner.instance_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
@@ -314,7 +463,7 @@ describe API::Runners do
             delete api("/runners/#{project_runner.id}", admin)
 
             expect(response).to have_http_status(204)
-          end.to change { Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.project_type.count }.by(-1)
         end
       end
 
@@ -349,7 +498,7 @@ describe API::Runners do
             delete api("/runners/#{project_runner.id}", user)
 
             expect(response).to have_http_status(204)
-          end.to change { Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.project_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
@@ -502,20 +651,74 @@ describe API::Runners do
   end
 
   describe 'GET /projects/:id/runners' do
-    context 'authorized user with master privileges' do
-      it "returns project's runners" do
-        get api("/projects/#{project.id}/runners", user)
+    context 'authorized user with maintainer privileges' do
+      it 'returns response status and headers' do
+        get api('/runners/all', admin)
 
-        shared = json_response.any? { |r| r['is_shared'] }
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response[0]).to have_key('ip_address')
-        expect(shared).to be_truthy
+      end
+
+      it 'returns all runners' do
+        get api("/projects/#{project.id}/runners", user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner'),
+          a_hash_including('description' => 'Shared runner')
+        ]
+      end
+
+      it 'filters runners by scope' do
+        get api("/projects/#{project.id}/runners?scope=specific", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner')
+        ]
+      end
+
+      it 'avoids filtering if scope is invalid' do
+        get api("/projects/#{project.id}/runners?scope=unknown", user)
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by type' do
+        get api("/projects/#{project.id}/runners?type=project_type", user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Project runner'),
+          a_hash_including('description' => 'Two projects runner')
+        ]
+      end
+
+      it 'does not filter by invalid type' do
+        get api("/projects/#{project.id}/runners?type=bogus", user)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by status' do
+        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+
+        get api("/projects/#{project.id}/runners?status=paused", user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Inactive project runner')
+        ]
+      end
+
+      it 'does not filter by invalid status' do
+        get api("/projects/#{project.id}/runners?status=bogus", user)
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
-    context 'authorized user without master privileges' do
+    context 'authorized user without maintainer privileges' do
       it "does not return project's runners" do
         get api("/projects/#{project.id}/runners", user2)
 
@@ -538,14 +741,14 @@ describe API::Runners do
 
       it 'enables specific runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
+          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }
         end.to change { project.runners.count }.by(+1)
         expect(response).to have_gitlab_http_status(201)
       end
 
       it 'avoids changes when enabling already enabled runner' do
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner.id
+          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner.id }
         end.to change { project.runners.count }.by(0)
         expect(response).to have_gitlab_http_status(400)
       end
@@ -554,20 +757,20 @@ describe API::Runners do
         project_runner2.update(locked: true)
 
         expect do
-          post api("/projects/#{project.id}/runners", user), runner_id: project_runner2.id
+          post api("/projects/#{project.id}/runners", user), params: { runner_id: project_runner2.id }
         end.to change { project.runners.count }.by(0)
 
         expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not enable shared runner' do
-        post api("/projects/#{project.id}/runners", user), runner_id: shared_runner.id
+        post api("/projects/#{project.id}/runners", user), params: { runner_id: shared_runner.id }
 
         expect(response).to have_gitlab_http_status(403)
       end
 
       it 'does not enable group runner' do
-        post api("/projects/#{project.id}/runners", user), runner_id: group_runner.id
+        post api("/projects/#{project.id}/runners", user), params: { runner_id: group_runner.id }
 
         expect(response).to have_http_status(403)
       end
@@ -578,18 +781,18 @@ describe API::Runners do
 
           it 'enables any specific runner' do
             expect do
-              post api("/projects/#{project.id}/runners", admin), runner_id: new_project_runner.id
+              post api("/projects/#{project.id}/runners", admin), params: { runner_id: new_project_runner.id }
             end.to change { project.runners.count }.by(+1)
             expect(response).to have_gitlab_http_status(201)
           end
         end
 
-        it 'enables a shared runner' do
+        it 'enables a instance type runner' do
           expect do
-            post api("/projects/#{project.id}/runners", admin), runner_id: shared_runner.id
+            post api("/projects/#{project.id}/runners", admin), params: { runner_id: shared_runner.id }
           end.to change { project.runners.count }.by(1)
 
-          expect(shared_runner.reload).not_to be_shared
+          expect(shared_runner.reload).not_to be_instance_type
           expect(response).to have_gitlab_http_status(201)
         end
       end
@@ -605,7 +808,7 @@ describe API::Runners do
       let!(:new_project_runner) { create(:ci_runner, :project) }
 
       it 'does not enable runner without access to' do
-        post api("/projects/#{project.id}/runners", user), runner_id: new_project_runner.id
+        post api("/projects/#{project.id}/runners", user), params: { runner_id: new_project_runner.id }
 
         expect(response).to have_gitlab_http_status(403)
       end

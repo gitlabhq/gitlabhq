@@ -22,5 +22,21 @@ describe BuildActionEntity do
     it 'contains whether it is playable' do
       expect(subject[:playable]).to eq job.playable?
     end
+
+    context 'when job is scheduled' do
+      let(:job) { create(:ci_build, :scheduled) }
+
+      it 'returns scheduled' do
+        expect(subject[:scheduled]).to be_truthy
+      end
+
+      it 'returns scheduled_at' do
+        expect(subject[:scheduled_at]).to eq(job.scheduled_at)
+      end
+
+      it 'returns unschedule path' do
+        expect(subject[:unschedule_path]).to include "jobs/#{job.id}/unschedule"
+      end
+    end
   end
 end

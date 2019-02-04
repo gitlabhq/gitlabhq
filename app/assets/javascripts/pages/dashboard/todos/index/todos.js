@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
+/* eslint-disable class-methods-use-this, no-unneeded-ternary */
 
 import $ from 'jquery';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -39,6 +39,7 @@ export default class Todos {
   }
 
   initFilters() {
+    this.initFilterDropdown($('.js-group-search'), 'group_id', ['text']);
     this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
     this.initFilterDropdown($('.js-type-search'), 'type');
     this.initFilterDropdown($('.js-action-search'), 'action_id');
@@ -53,7 +54,16 @@ export default class Todos {
       filterable: searchFields ? true : false,
       search: { fields: searchFields },
       data: $dropdown.data('data'),
-      clicked: () => $dropdown.closest('form.filter-form').submit(),
+      clicked: () => {
+        const $formEl = $dropdown.closest('form.filter-form');
+        const mutexDropdowns = {
+          group_id: 'project_id',
+          project_id: 'group_id',
+        };
+
+        $formEl.find(`input[name="${mutexDropdowns[fieldName]}"]`).remove();
+        $formEl.submit();
+      },
     });
   }
 
@@ -61,7 +71,7 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const target = e.target;
+    const { target } = e;
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
 
@@ -69,10 +79,14 @@ export default class Todos {
       .then(({ data }) => {
         this.updateRowState(target);
         this.updateBadges(data);
-      }).catch(() => flash(__('Error updating todo status.')));
+      })
+      .catch(() => {
+        this.updateRowState(target, true);
+        return flash(__('Error updating todo status.'));
+      });
   }
 
-  updateRowState(target) {
+  updateRowState(target, isInactive = false) {
     const row = target.closest('li');
     const restoreBtn = row.querySelector('.js-undo-todo');
     const doneBtn = row.querySelector('.js-done-todo');
@@ -81,7 +95,10 @@ export default class Todos {
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
 
-    if (target === doneBtn) {
+    if (isInactive === true) {
+      restoreBtn.classList.add('hidden');
+      doneBtn.classList.remove('hidden');
+    } else if (target === doneBtn) {
       row.classList.add('done-reversible');
       restoreBtn.classList.remove('hidden');
     } else if (target === restoreBtn) {
@@ -102,10 +119,12 @@ export default class Todos {
 
     axios[target.dataset.method](target.dataset.href, {
       ids: this.todo_ids,
-    }).then(({ data }) => {
-      this.updateAllState(target, data);
-      this.updateBadges(data);
-    }).catch(() => flash(__('Error updating status for all todos.')));
+    })
+      .then(({ data }) => {
+        this.updateAllState(target, data);
+        this.updateBadges(data);
+      })
+      .catch(() => flash(__('Error updating status for all todos.')));
   }
 
   updateAllState(target, data) {
@@ -117,7 +136,7 @@ export default class Todos {
     target.removeAttribute('disabled');
     target.classList.remove('disabled');
 
-    this.todo_ids = (target === markAllDoneBtn) ? data.updated_ids : [];
+    this.todo_ids = target === markAllDoneBtn ? data.updated_ids : [];
     undoAllBtn.classList.toggle('hidden');
     markAllDoneBtn.classList.toggle('hidden');
     todoListContainer.classList.toggle('hidden');

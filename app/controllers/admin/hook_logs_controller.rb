@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::HookLogsController < Admin::ApplicationController
   include HooksExecution
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -5,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents a set of jobs.
         #
-        class Jobs < Node
-          include Validatable
+        class Jobs < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, type: Hash
@@ -26,12 +28,17 @@ module Gitlab
             name.to_s.start_with?('.')
           end
 
+          def node_type(name)
+            hidden?(name) ? Entry::Hidden : Entry::Job
+          end
+
+          # rubocop: disable CodeReuse/ActiveRecord
           def compose!(deps = nil)
             super do
               @config.each do |name, config|
-                node = hidden?(name) ? Entry::Hidden : Entry::Job
+                node = node_type(name)
 
-                factory = Entry::Factory.new(node)
+                factory = ::Gitlab::Config::Entry::Factory.new(node)
                   .value(config || {})
                   .metadata(name: name)
                   .with(key: name, parent: self,
@@ -45,6 +52,7 @@ module Gitlab
               end
             end
           end
+          # rubocop: enable CodeReuse/ActiveRecord
         end
       end
     end

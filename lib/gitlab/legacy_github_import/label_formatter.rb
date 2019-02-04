@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module LegacyGithubImport
     class LabelFormatter < BaseFormatter
@@ -13,6 +15,7 @@ module Gitlab
         :labels
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def create!
         params  = attributes.except(:project)
         service = ::Labels::FindOrCreateService.new(nil, project, params)
@@ -22,6 +25,7 @@ module Gitlab
 
         label
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

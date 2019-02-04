@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class NotificationSetting < ActiveRecord::Base
   include IgnorableColumn
 
   ignore_column :events
 
-  enum level: { global: 3, watch: 2, mention: 4, participating: 1, disabled: 0, custom: 5 }
+  enum level: { global: 3, watch: 2, participating: 1, mention: 4, disabled: 0, custom: 5 }
 
   default_value_for :level, NotificationSetting.levels[:global]
 
@@ -32,6 +34,7 @@ class NotificationSetting < ActiveRecord::Base
     :reopen_issue,
     :close_issue,
     :reassign_issue,
+    :issue_due,
     :new_merge_request,
     :push_to_merge_request,
     :reopen_merge_request,
@@ -41,6 +44,15 @@ class NotificationSetting < ActiveRecord::Base
     :failed_pipeline,
     :success_pipeline
   ].freeze
+
+  # Update unfound_translations.rb when events are changed
+  def self.email_events(source = nil)
+    EMAIL_EVENTS
+  end
+
+  def email_events
+    self.class.email_events(source)
+  end
 
   EXCLUDED_PARTICIPATING_EVENTS = [
     :success_pipeline

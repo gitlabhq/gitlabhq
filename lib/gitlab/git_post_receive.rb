@@ -1,23 +1,27 @@
+# frozen_string_literal: true
+
 module Gitlab
   class GitPostReceive
     include Gitlab::Identifier
-    attr_reader :project, :identifier, :changes
+    attr_reader :project, :identifier, :changes, :push_options
 
-    def initialize(project, identifier, changes)
+    def initialize(project, identifier, changes, push_options)
       @project = project
       @identifier = identifier
       @changes = deserialize_changes(changes)
+      @push_options = push_options
     end
 
-    def identify(revision)
-      super(identifier, project, revision)
+    def identify
+      super(identifier)
     end
 
     def changes_refs
-      return enum_for(:changes_refs) unless block_given?
+      return changes unless block_given?
 
       changes.each do |change|
-        oldrev, newrev, ref = change.strip.split(' ')
+        change.strip!
+        oldrev, newrev, ref = change.split(' ')
 
         yield oldrev, newrev, ref
       end
@@ -26,13 +30,10 @@ module Gitlab
     private
 
     def deserialize_changes(changes)
-      changes = utf8_encode_changes(changes)
-      changes.lines
+      utf8_encode_changes(changes).each_line
     end
 
     def utf8_encode_changes(changes)
-      changes = changes.dup
-
       changes.force_encoding('UTF-8')
       return changes if changes.valid_encoding?
 

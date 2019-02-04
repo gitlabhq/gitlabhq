@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 class ProjectPolicy < BasePolicy
   extend ClassMethods
+  include ClusterableActions
 
   READONLY_FEATURES_WHEN_ARCHIVED = %i[
     issue
@@ -20,6 +23,7 @@ class ProjectPolicy < BasePolicy
     container_image
     pages
     cluster
+    release
   ].freeze
 
   desc "User is a project owner"
@@ -45,8 +49,8 @@ class ProjectPolicy < BasePolicy
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
-  desc "User has master access"
-  condition(:master) { team_access_level >= Gitlab::Access::MASTER }
+  desc "User has maintainer access"
+  condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
 
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
@@ -101,6 +105,13 @@ class ProjectPolicy < BasePolicy
     @subject.feature_available?(:merge_requests, @user)
   end
 
+  condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
+  condition(:can_have_multiple_clusters) { multiple_clusters_available? }
+
+  condition(:internal_builds_disabled) do
+    !@subject.builds_enabled?
+  end
+
   features = %w[
     merge_requests
     issues
@@ -108,6 +119,7 @@ class ProjectPolicy < BasePolicy
     snippets
     wiki
     builds
+    pages
   ]
 
   features.each do |f|
@@ -123,14 +135,14 @@ class ProjectPolicy < BasePolicy
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
-  rule { master }.enable :master_access
+  rule { maintainer }.enable :maintainer_access
   rule { owner | admin }.enable :owner_access
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
     enable :reporter_access
     enable :developer_access
-    enable :master_access
+    enable :maintainer_access
 
     enable :change_namespace
     enable :change_visibility_level
@@ -141,6 +153,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
+
+    enable :set_issue_iid
+    enable :set_issue_created_at
+    enable :set_note_created_at
   end
 
   rule { can?(:guest_access) }.policy do
@@ -161,6 +177,8 @@ class ProjectPolicy < BasePolicy
     enable :upload_file
     enable :read_cycle_analytics
     enable :award_emoji
+    enable :read_pages_content
+    enable :read_release
   end
 
   # These abilities are not allowed to admins that are not members of the project,
@@ -174,6 +192,7 @@ class ProjectPolicy < BasePolicy
     enable :fork_project
     enable :create_project_snippet
     enable :update_issue
+    enable :reopen_issue
     enable :admin_issue
     enable :admin_label
     enable :admin_list
@@ -181,10 +200,10 @@ class ProjectPolicy < BasePolicy
     enable :read_build
     enable :read_container_image
     enable :read_pipeline
-    enable :read_pipeline_schedule
     enable :read_environment
     enable :read_deployment
     enable :read_merge_request
+    enable :read_sentry_issue
   end
 
   # We define `:public_user_access` separately because there are cases in gitlab-ee
@@ -207,6 +226,8 @@ class ProjectPolicy < BasePolicy
   rule { owner | admin | guest | group_member }.prevent :request_access
   rule { ~request_access_enabled }.prevent :request_access
 
+  rule { can?(:developer_access) & can?(:create_issue) }.enable :import_issues
+
   rule { can?(:developer_access) }.policy do
     enable :admin_merge_request
     enable :admin_milestone
@@ -217,6 +238,7 @@ class ProjectPolicy < BasePolicy
     enable :update_build
     enable :create_pipeline
     enable :update_pipeline
+    enable :read_pipeline_schedule
     enable :create_pipeline_schedule
     enable :create_merge_request_from
     enable :create_wiki
@@ -226,9 +248,11 @@ class ProjectPolicy < BasePolicy
     enable :update_container_image
     enable :create_environment
     enable :create_deployment
+    enable :create_release
+    enable :update_release
   end
 
-  rule { can?(:master_access) }.policy do
+  rule { can?(:maintainer_access) }.policy do
     enable :push_to_delete_protected_branch
     enable :update_project_snippet
     enable :update_environment
@@ -248,7 +272,12 @@ class ProjectPolicy < BasePolicy
     enable :read_pages
     enable :update_pages
     enable :read_cluster
+    enable :add_cluster
     enable :create_cluster
+    enable :update_cluster
+    enable :admin_cluster
+    enable :create_environment_terminal
+    enable :destroy_release
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
@@ -278,6 +307,8 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:merge_request))
   end
 
+  rule { pages_disabled }.prevent :read_pages_content
+
   rule { issues_disabled & merge_requests_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:label))
     prevent(*create_read_update_admin_destroy(:milestone))
@@ -287,17 +318,27 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:project_snippet))
   end
 
-  rule { wiki_disabled & ~has_external_wiki }.policy do
+  rule { wiki_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:wiki))
     prevent(:download_wiki_code)
   end
 
   rule { builds_disabled | repository_disabled }.policy do
-    prevent(*create_update_admin_destroy(:pipeline))
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
+  end
+
+  # There's two separate cases when builds_disabled is true:
+  # 1. When internal CI is disabled - builds_disabled && internal_builds_disabled
+  #   - We do not prevent the user from accessing Pipelines to allow him to access external CI
+  # 2. When the user is not allowed to access CI - builds_disabled && ~internal_builds_disabled
+  #   - We prevent the user from accessing Pipelines
+  rule { (builds_disabled & ~internal_builds_disabled) | repository_disabled }.policy do
+    prevent(*create_read_update_admin_destroy(:pipeline))
+    prevent(*create_read_update_admin_destroy(:commit_status))
   end
 
   rule { repository_disabled }.policy do
@@ -305,6 +346,8 @@ class ProjectPolicy < BasePolicy
     prevent :download_code
     prevent :fork_project
     prevent :read_commit_status
+    prevent :read_pipeline
+    prevent(*create_read_update_admin_destroy(:release))
   end
 
   rule { container_registry_disabled }.policy do
@@ -330,12 +373,13 @@ class ProjectPolicy < BasePolicy
     enable :read_merge_request
     enable :read_note
     enable :read_pipeline
-    enable :read_pipeline_schedule
     enable :read_commit_status
     enable :read_container_image
     enable :download_code
+    enable :read_release
     enable :download_wiki_code
     enable :read_cycle_analytics
+    enable :read_pages_content
 
     # NOTE: may be overridden by IssuePolicy
     enable :read_issue
@@ -347,7 +391,6 @@ class ProjectPolicy < BasePolicy
 
   rule { public_builds & can?(:guest_access) }.policy do
     enable :read_pipeline
-    enable :read_pipeline_schedule
   end
 
   # These rules are included to allow maintainers of projects to push to certain
@@ -362,8 +405,10 @@ class ProjectPolicy < BasePolicy
   end.enable :read_issue_iid
 
   rule do
-    (can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
+    (~guest & can?(:read_project_for_iids) & merge_requests_visible_to_user) | can?(:read_merge_request)
   end.enable :read_merge_request_iid
+
+  rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
 
   private
 
@@ -381,7 +426,11 @@ class ProjectPolicy < BasePolicy
     greedy_load_subject ||= !@user.persisted?
 
     if greedy_load_subject
-      project.team.members.include?(user)
+      # We want to load all the members with one query. Calling #include? on
+      # project.team.members will perform a separate query for each user, unless
+      # project.team.members was loaded before somewhere else. Calling #to_a
+      # ensures it's always loaded before checking for membership.
+      project.team.members.to_a.include?(user)
     else
       # otherwise we just make a specific query for
       # this particular user.
@@ -389,6 +438,7 @@ class ProjectPolicy < BasePolicy
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def project_group_member?
     return false if @user.nil?
 
@@ -398,6 +448,7 @@ class ProjectPolicy < BasePolicy
         project.group.requesters.exists?(user_id: @user.id)
       )
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def team_access_level
     return -1 if @user.nil?

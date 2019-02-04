@@ -12,7 +12,7 @@
     }
 
     .issuable-meta {
-      .author_link {
+      .author-link {
         display: inline-block;
       }
 
@@ -80,7 +80,6 @@ ul.related-merge-requests > li {
   }
 }
 
-.merge-requests-title,
 .related-branches-title {
   font-size: 16px;
   font-weight: $gl-font-weight-bold;
@@ -91,23 +90,16 @@ ul.related-merge-requests > li {
 }
 
 .merge-request-status {
-  font-size: 13px;
-  padding: 0 5px;
-  color: $white-light;
-  height: 20px;
-  border-radius: 3px;
-  line-height: 18px;
-
   &.merged {
-    background: $blue-500;
+    color: $blue-500;
   }
 
   &.closed {
-    background: $red-500;
+    color: $red-500;
   }
 
   &.open {
-    background: $green-500;
+    color: $green-500;
   }
 }
 
@@ -155,9 +147,17 @@ ul.related-merge-requests > li {
   }
 }
 
+.issues-nav-controls {
+  font-size: 0;
+
+  .btn-group:empty {
+    display: none;
+  }
+}
+
 .issuable-email-modal-btn {
   padding: 0;
-  color: $gl-link-color;
+  color: $blue-600;
   background-color: transparent;
   border: 0;
   outline: 0;
@@ -185,12 +185,22 @@ ul.related-merge-requests > li {
 }
 
 .new-branch-col {
-  padding-top: 10px;
+  font-size: 0;
+
+  .discussion-filter-container {
+    &:not(:only-child) {
+      margin-right: $gl-padding-8;
+    }
+
+    @include media-breakpoint-down(md) {
+      margin-top: $gl-padding-8;
+    }
+  }
 }
 
 .create-mr-dropdown-wrap {
   .ref::selection {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 
   .dropdown {
@@ -205,6 +215,10 @@ ul.related-merge-requests > li {
 
   .btn-group:not(.hidden) {
     display: flex;
+
+    @include media-breakpoint-down(md) {
+      margin-top: $gl-padding-8;
+    }
   }
 
   .js-create-merge-request {
@@ -245,13 +259,22 @@ ul.related-merge-requests > li {
   display: block;
 }
 
+.issue-sort-dropdown {
+  .btn-group {
+    width: 100%;
+  }
+
+  .reverse-sort-btn {
+    color: $gl-text-color-secondary;
+  }
+}
+
 @include media-breakpoint-up(sm) {
   .emoji-block .row {
     display: flex;
 
     .new-branch-col {
       padding-top: 0;
-      text-align: right;
       align-self: center;
     }
 
@@ -260,5 +283,11 @@ ul.related-merge-requests > li {
         display: inline-flex;
       }
     }
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .new-branch-col {
+    text-align: right;
   }
 }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CalendarHelper
   def calendar_url_options
     { format: :ics,

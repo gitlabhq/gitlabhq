@@ -35,14 +35,14 @@ describe API::ProjectSnapshots do
     end
 
     it 'requests project repository raw archive as administrator' do
-      get api("/projects/#{project.id}/snapshot", admin), wiki: '0'
+      get api("/projects/#{project.id}/snapshot", admin), params: { wiki: '0' }
 
       expect(response).to have_gitlab_http_status(200)
       expect_snapshot_response_for(project.repository)
     end
 
     it 'requests wiki repository raw archive as administrator' do
-      get api("/projects/#{project.id}/snapshot", admin), wiki: '1'
+      get api("/projects/#{project.id}/snapshot", admin), params: { wiki: '1' }
 
       expect(response).to have_gitlab_http_status(200)
       expect_snapshot_response_for(project.wiki.repository)

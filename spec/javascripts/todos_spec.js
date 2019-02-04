@@ -14,10 +14,10 @@ describe('Todos', () => {
   });
 
   describe('goToTodoUrl', () => {
-    it('opens the todo url', (done) => {
+    it('opens the todo url', done => {
       const todoLink = todoItem.dataset.url;
 
-      spyOnDependency(Todos, 'visitUrl').and.callFake((url) => {
+      spyOnDependency(Todos, 'visitUrl').and.callFake(url => {
         expect(url).toEqual(todoLink);
         done();
       });

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Snippet', :js do
+describe 'Snippet', :js do
   let(:project) { create(:project, :repository) }
   let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content) }
 
@@ -65,6 +65,48 @@ feature 'Snippet', :js do
 
           # shows a download button
           expect(page).to have_link('Download')
+        end
+      end
+
+      context 'Markdown rendering' do
+        let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content) }
+        let(:file_name) { 'test.md' }
+        let(:content) { "1. one\n  - sublist\n" }
+
+        context 'when rendering default markdown' do
+          it 'renders using CommonMark' do
+            expect(page).to have_content("sublist")
+            expect(page).not_to have_xpath("//ol//li//ul")
+          end
+        end
+
+        context 'when rendering legacy markdown' do
+          before do
+            visit snippet_path(snippet, legacy_render: 1)
+
+            wait_for_requests
+          end
+
+          it 'renders using RedCarpet' do
+            expect(page).to have_content("sublist")
+            expect(page).to have_xpath("//ol//li//ul")
+          end
+        end
+
+        context 'with cached CommonMark html' do
+          let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+
+          it 'renders correctly' do
+            expect(page).not_to have_xpath("//ol//li//ul")
+          end
+        end
+
+        context 'with cached Redcarpet html' do
+          let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, cached_markdown_version: CacheMarkdownField::CACHE_REDCARPET_VERSION) }
+
+          it 'renders correctly' do
+            expect(page).to have_xpath("//ol//li//ul")
+          end
         end
       end
 
@@ -134,5 +176,13 @@ feature 'Snippet', :js do
         end
       end
     end
+  end
+
+  it_behaves_like 'showing user status' do
+    let(:file_name) { 'popen.rb' }
+    let(:content) { project.repository.blob_at('master', 'files/ruby/popen.rb').data }
+    let(:user_with_status) { snippet.author }
+
+    subject { visit snippet_path(snippet) }
   end
 end

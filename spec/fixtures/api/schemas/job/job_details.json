@@ -1,0 +1,24 @@
+{
+  "allOf": [
+    { "$ref": "job.json" }
+  ],
+  "description": "An extension of job.json with more detailed information",
+  "required": [
+    "artifact",
+    "runner",
+    "runners",
+    "has_trace",
+    "stage"
+  ],
+  "properties": {
+    "artifact": { "$ref": "artifact.json" },
+    "terminal_path": { "type": "string" },
+    "trigger": { "$ref": "trigger.json" },
+    "deployment_status": { "$ref": "deployment_status.json" },
+    "runner": { "$ref": "runner.json" },
+    "runners": { "$ref": "runners.json" },
+    "has_trace": { "type": "boolean" },
+    "stage": { "type": "string" },
+    "stuck": { "type": "boolean" }
+  }
+}

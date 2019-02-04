@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
-import monacoLoader from '~/ide/monaco_loader';
 import Editor from '~/ide/lib/editor';
 import { activityBarViews } from '~/ide/constants';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
@@ -25,13 +25,12 @@ describe('RepoEditor', () => {
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
     Vue.set(vm.$store.state.entries, f.path, f);
-    vm.monaco = true;
+
+    spyOn(vm, 'getFileData').and.returnValue(Promise.resolve());
 
     vm.$mount();
 
-    monacoLoader(['vs/editor/editor.main'], () => {
-      setTimeout(done, 0);
-    });
+    Vue.nextTick(() => setTimeout(done));
   });
 
   afterEach(() => {
@@ -53,6 +52,7 @@ describe('RepoEditor', () => {
   it('renders only an edit tab', done => {
     Vue.nextTick(() => {
       const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+
       expect(tabs.length).toBe(1);
       expect(tabs[0].textContent.trim()).toBe('Edit');
 
@@ -73,6 +73,7 @@ describe('RepoEditor', () => {
     it('renders an Edit and a Preview Tab', done => {
       Vue.nextTick(() => {
         const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+
         expect(tabs.length).toBe(2);
         expect(tabs[0].textContent.trim()).toBe('Edit');
         expect(tabs[1].textContent.trim()).toBe('Preview Markdown');
@@ -110,6 +111,7 @@ describe('RepoEditor', () => {
     it('renders an Edit and a Preview Tab', done => {
       Vue.nextTick(() => {
         const tabs = vm.$el.querySelectorAll('.ide-mode-tabs .nav-links li');
+
         expect(tabs.length).toBe(2);
         expect(tabs[0].textContent.trim()).toBe('Review');
         expect(tabs[1].textContent.trim()).toBe('Preview Markdown');
@@ -123,8 +125,7 @@ describe('RepoEditor', () => {
       vm.file.path = `${vm.file.path}.md`;
       vm.$store.state.entries[vm.file.path] = vm.file;
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$el.querySelectorAll('.ide-mode-tabs .nav-links a')[1].click();
         })
@@ -295,8 +296,7 @@ describe('RepoEditor', () => {
     it('calls updateDimensions when panelResizing is false', done => {
       vm.$store.state.panelResizing = true;
 
-      vm
-        .$nextTick()
+      vm.$nextTick()
         .then(() => {
           vm.$store.state.panelResizing = false;
         })
@@ -315,6 +315,17 @@ describe('RepoEditor', () => {
       vm.$nextTick(() => {
         expect(vm.editor.updateDimensions).not.toHaveBeenCalled();
         expect(vm.editor.updateDiffView).not.toHaveBeenCalled();
+
+        done();
+      });
+    });
+
+    it('calls updateDimensions when rightPane is opened', done => {
+      vm.$store.state.rightPane.isOpen = true;
+
+      vm.$nextTick(() => {
+        expect(vm.editor.updateDimensions).toHaveBeenCalled();
+        expect(vm.editor.updateDiffView).toHaveBeenCalled();
 
         done();
       });
@@ -353,8 +364,7 @@ describe('RepoEditor', () => {
 
     vm.file.pending = true;
 
-    vm
-      .$nextTick()
+    vm.$nextTick()
       .then(() => {
         vm.file = file('testing');
 

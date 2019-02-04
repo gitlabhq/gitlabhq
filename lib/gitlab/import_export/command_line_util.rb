@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Gitlab
   module ImportExport
     module CommandLineUtil
-      DEFAULT_MODE = 0700
+      UNTAR_MASK = 'u+rwX,go+rX,go-w'
+      DEFAULT_DIR_MODE = 0700
 
       def tar_czf(archive:, dir:)
         tar_with_options(archive: archive, dir: dir, options: 'czf')
@@ -12,11 +15,26 @@ module Gitlab
       end
 
       def mkdir_p(path)
-        FileUtils.mkdir_p(path, mode: DEFAULT_MODE)
-        FileUtils.chmod(DEFAULT_MODE, path)
+        FileUtils.mkdir_p(path, mode: DEFAULT_DIR_MODE)
+        FileUtils.chmod(DEFAULT_DIR_MODE, path)
       end
 
       private
+
+      def download_or_copy_upload(uploader, upload_path)
+        if uploader.upload.local?
+          copy_files(uploader.path, upload_path)
+        else
+          download(uploader.url, upload_path)
+        end
+      end
+
+      def download(url, upload_path)
+        File.open(upload_path, 'w') do |file|
+          # Download (stream) file from the uploader's location
+          IO.copy_stream(URI.parse(url).open, file)
+        end
+      end
 
       def tar_with_options(archive:, dir:, options:)
         execute(%W(tar -#{options} #{archive} -C #{dir} .))
@@ -24,6 +42,7 @@ module Gitlab
 
       def untar_with_options(archive:, dir:, options:)
         execute(%W(tar -#{options} #{archive} -C #{dir}))
+        execute(%W(chmod -R #{UNTAR_MASK} #{dir}))
       end
 
       def execute(cmd)

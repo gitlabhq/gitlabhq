@@ -1,5 +1,11 @@
+# frozen_string_literal: true
+
 module Users
   class BuildService < BaseService
+    delegate :user_default_internal_regex_enabled?,
+             :user_default_internal_regex_instance,
+             to: :'Gitlab::CurrentSettings.current_application_settings'
+
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params.dup
@@ -22,7 +28,7 @@ module Users
 
       identity_attrs = params.slice(:extern_uid, :provider)
 
-      if identity_attrs.any?
+      unless identity_attrs.empty?
         user.identities.build(identity_attrs)
       end
 
@@ -49,7 +55,6 @@ module Users
         :force_random_password,
         :hide_no_password,
         :hide_no_ssh_key,
-        :key_id,
         :linkedin,
         :name,
         :password,
@@ -62,7 +67,11 @@ module Users
         :theme_id,
         :twitter,
         :username,
-        :website_url
+        :website_url,
+        :private_profile,
+        :organization,
+        :location,
+        :public_email
       ]
     end
 
@@ -96,11 +105,19 @@ module Users
         end
       end
 
+      if user_default_internal_regex_enabled? && !user_params.key?(:external)
+        user_params[:external] = user_external?
+      end
+
       user_params
     end
 
     def skip_user_confirmation_email_from_setting
       !Gitlab::CurrentSettings.send_user_confirmation_email
+    end
+
+    def user_external?
+      user_default_internal_regex_instance.match(params[:email]).nil?
     end
   end
 end

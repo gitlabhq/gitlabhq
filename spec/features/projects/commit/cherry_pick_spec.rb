@@ -4,12 +4,12 @@ describe 'Cherry-pick Commits' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }
-  let(:master_pickable_commit)  { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
-  let(:master_pickable_merge)  { project.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+  let(:master_pickable_commit) { project.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+  let(:master_pickable_merge) { project.commit('e56497bb5f03a90a51293fc6d516788730953899') }
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
     visit project_commit_path(project, master_pickable_commit.id)
   end
 
@@ -21,7 +21,7 @@ describe 'Cherry-pick Commits' do
         uncheck 'create_merge_request'
         click_button 'Cherry-pick'
       end
-      expect(page).to have_content('The commit has been successfully cherry-picked.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into master.')
     end
   end
 
@@ -32,7 +32,7 @@ describe 'Cherry-pick Commits' do
         uncheck 'create_merge_request'
         click_button 'Cherry-pick'
       end
-      expect(page).to have_content('The commit has been successfully cherry-picked.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into master.')
     end
   end
 
@@ -59,7 +59,7 @@ describe 'Cherry-pick Commits' do
       page.within('#modal-cherry-pick-commit') do
         click_button 'Cherry-pick'
       end
-      expect(page).to have_content('The commit has been successfully cherry-picked. You can now submit a merge request to get this change into the original branch.')
+      expect(page).to have_content("The commit has been successfully cherry-picked into cherry-pick-#{master_pickable_commit.short_id}. You can now submit a merge request to get this change into the original branch.")
       expect(page).to have_content("From cherry-pick-#{master_pickable_commit.short_id} into master")
     end
   end
@@ -86,7 +86,7 @@ describe 'Cherry-pick Commits' do
         click_button 'Cherry-pick'
       end
 
-      expect(page).to have_content('The commit has been successfully cherry-picked.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into feature.')
     end
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
@@ -17,17 +19,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     else
       ci_service = source_project.try(:ci_service)
       ci_service&.commit_status(diff_head_sha, source_branch)
-    end
-  end
-
-  def unmergeable_reasons
-    strong_memoize(:unmergeable_reasons) do
-      reasons = []
-      reasons << "no commits" if merge_request.has_no_commits?
-      reasons << "source branch is missing" unless merge_request.source_branch_exists?
-      reasons << "target branch is missing" unless merge_request.target_branch_exists?
-      reasons << "has merge conflicts" unless merge_request.project.repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
-      reasons
     end
   end
 
@@ -117,16 +108,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     namespace = source_project_namespace
     branch = source_branch
 
-    if source_branch_exists?
-      namespace = link_to(namespace, project_path(source_project))
-      branch = link_to(branch, project_tree_path(source_project, source_branch))
-    end
+    namespace_link = source_branch_exists? ? link_to(namespace, project_path(source_project)) : ERB::Util.html_escape(namespace)
+    branch_link = source_branch_exists? ? link_to(branch, project_tree_path(source_project, source_branch)) : ERB::Util.html_escape(branch)
 
-    if for_fork?
-      namespace + ":" + branch
-    else
-      branch
-    end
+    for_fork? ? "#{namespace_link}:#{branch_link}" : branch_link
   end
 
   def closing_issues_links
@@ -151,6 +136,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def assign_to_closing_issues_link
+    # rubocop: disable CodeReuse/ServiceClass
     issues = MergeRequests::AssignIssuesService.new(project,
                                                     current_user,
                                                     merge_request: merge_request,
@@ -161,6 +147,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       pluralize_this_issue = issues.count > 1 ? "these issues" : "this issue"
       link_to "Assign yourself to #{pluralize_this_issue}", path, method: :post
     end
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   def can_revert_on_current_merge_request?
@@ -179,6 +166,37 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       .can_push_to_branch?(source_branch)
   end
 
+  def can_remove_source_branch?
+    source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
+  end
+
+  def can_read_pipeline?
+    pipeline && can?(current_user, :read_pipeline, pipeline)
+  end
+
+  def mergeable_discussions_state
+    # This avoids calling MergeRequest#mergeable_discussions_state without
+    # considering the state of the MR first. If a MR isn't mergeable, we can
+    # safely short-circuit it.
+    if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
+      merge_request.mergeable_discussions_state?
+    else
+      false
+    end
+  end
+
+  def web_url
+    Gitlab::UrlBuilder.build(merge_request)
+  end
+
+  def subscribed?
+    merge_request.subscribed?(current_user, merge_request.target_project)
+  end
+
+  def conflicts_docs_path
+    help_page_path('user/project/merge_requests/resolve_conflicts.md')
+  end
+
   private
 
   def cached_can_be_reverted?
@@ -188,11 +206,13 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def conflicts
+    # rubocop: disable CodeReuse/ServiceClass
     @conflicts ||= MergeRequests::Conflicts::ListService.new(merge_request)
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   def closing_issues
-    @closing_issues ||= closes_issues(current_user)
+    @closing_issues ||= visible_closing_issues_for(current_user)
   end
 
   def pipeline

@@ -1,27 +1,39 @@
 require 'rails_helper'
 
-feature 'GFM autocomplete', :js do
+describe 'GFM autocomplete', :js do
+  let(:issue_xss_title) { 'This will execute alert<img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let(:user_xss_title) { 'eve <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;' }
+  let(:label_xss_title) { 'alert label &lt;img src=x onerror="alert(\'Hello xss\');" a'}
+  let(:milestone_xss_title) { 'alert milestone &lt;img src=x onerror="alert(\'Hello xss\');" a' }
+
+  let(:user_xss) { create(:user, name: user_xss_title, username: 'xss.user') }
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
+    project.add_maintainer(user_xss)
+
     sign_in(user)
     visit project_issue_path(project, issue)
 
     wait_for_requests
   end
 
-  it 'updates issue descripton with GFM reference' do
+  it 'updates issue description with GFM reference' do
     find('.js-issuable-edit').click
 
     simulate_input('#issue-description', "@#{user.name[0...3]}")
 
+    wait_for_requests
+
     find('.atwho-view .cur').click
 
     click_button 'Save changes'
+
+    wait_for_requests
 
     expect(find('.description')).to have_content(user.to_reference)
   end
@@ -32,6 +44,52 @@ feature 'GFM autocomplete', :js do
     end
 
     expect(page).to have_selector('.atwho-container')
+  end
+
+  it 'opens autocomplete menu for Issues when field starts with text with item escaping HTML characters' do
+    create(:issue, project: project, title: issue_xss_title)
+
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('#')
+    end
+
+    wait_for_requests
+
+    expect(page).to have_selector('.atwho-container')
+
+    page.within '.atwho-container #at-view-issues' do
+      expect(page.all('li').first.text).to include(issue_xss_title)
+    end
+  end
+
+  it 'opens autocomplete menu for Username when field starts with text with item escaping HTML characters' do
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('@ev')
+    end
+
+    wait_for_requests
+
+    expect(page).to have_selector('.atwho-container')
+
+    page.within '.atwho-container #at-view-users' do
+      expect(find('li').text).to have_content(user_xss.username)
+    end
+  end
+
+  it 'opens autocomplete menu for Milestone when field starts with text with item escaping HTML characters' do
+    create(:milestone, project: project, title: milestone_xss_title)
+
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys('%')
+    end
+
+    wait_for_requests
+
+    expect(page).to have_selector('.atwho-container')
+
+    page.within '.atwho-container #at-view-milestones' do
+      expect(find('li').text).to have_content('alert milestone')
+    end
   end
 
   it 'doesnt open autocomplete menu character is prefixed with text' do
@@ -91,7 +149,7 @@ feature 'GFM autocomplete', :js do
 
     wait_for_requests
 
-    expect(find('#at-view-64')).to have_selector('.cur:first-of-type')
+    expect(find('#at-view-users')).to have_selector('.cur:first-of-type')
   end
 
   it 'includes items for assignee dropdowns with non-ASCII characters in name' do
@@ -104,7 +162,7 @@ feature 'GFM autocomplete', :js do
 
     wait_for_requests
 
-    expect(find('#at-view-64')).to have_content(user.name)
+    expect(find('#at-view-users')).to have_content(user.name)
   end
 
   it 'selects the first item for non-assignee dropdowns if a query is entered' do
@@ -221,10 +279,25 @@ feature 'GFM autocomplete', :js do
   end
 
   # This context has jsut one example in each contexts in order to improve spec performance.
-  context 'labels' do
+  context 'labels', :quarantine do
     let!(:backend)          { create(:label, project: project, title: 'backend') }
     let!(:bug)              { create(:label, project: project, title: 'bug') }
     let!(:feature_proposal) { create(:label, project: project, title: 'feature proposal') }
+
+    it 'opens autocomplete menu for Labels when field starts with text with item escaping HTML characters' do
+      create(:label, project: project, title: label_xss_title)
+
+      note = find('#note-body')
+
+      # It should show all the labels on "~".
+      type(note, '~')
+
+      wait_for_requests
+
+      page.within '.atwho-container #at-view-labels' do
+        expect(find('.atwho-view-ul').text).to have_content('alert label')
+      end
+    end
 
     context 'when no labels are assigned' do
       it 'shows labels' do
@@ -232,6 +305,7 @@ feature 'GFM autocomplete', :js do
 
         # It should show all the labels on "~".
         type(note, '~')
+        wait_for_requests
         expect_labels(shown: [backend, bug, feature_proposal])
 
         # It should show all the labels on "/label ~".
@@ -258,6 +332,7 @@ feature 'GFM autocomplete', :js do
 
         # It should show all the labels on "~".
         type(note, '~')
+        wait_for_requests
         expect_labels(shown: [backend, bug, feature_proposal])
 
         # It should show only unset labels on "/label ~".
@@ -284,6 +359,7 @@ feature 'GFM autocomplete', :js do
 
         # It should show all the labels on "~".
         type(note, '~')
+        wait_for_requests
         expect_labels(shown: [backend, bug, feature_proposal])
 
         # It should show no labels on "/label ~".
@@ -299,6 +375,57 @@ feature 'GFM autocomplete', :js do
         expect_labels(shown: [backend, bug, feature_proposal])
       end
     end
+  end
+
+  shared_examples 'autocomplete suggestions' do
+    it 'suggests objects correctly' do
+      page.within '.timeline-content-form' do
+        find('#note-body').native.send_keys(object.class.reference_prefix)
+      end
+
+      page.within '.atwho-container' do
+        expect(page).to have_content(object.title)
+
+        find('ul li').click
+      end
+
+      expect(find('.new-note #note-body').value).to include(expected_body)
+    end
+  end
+
+  context 'issues' do
+    let(:object) { issue }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'merge requests' do
+    let(:object) { create(:merge_request, source_project: project) }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'project snippets' do
+    let!(:object) { create(:project_snippet, project: project, title: 'code snippet') }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'label' do
+    let!(:object) { label }
+    let(:expected_body) { object.title }
+
+    it_behaves_like 'autocomplete suggestions'
+  end
+
+  context 'milestone' do
+    let!(:object) { create(:milestone, project: project) }
+    let(:expected_body) { object.to_reference }
+
+    it_behaves_like 'autocomplete suggestions'
   end
 
   private

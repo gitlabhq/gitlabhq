@@ -1,4 +1,4 @@
-class CreateClustersApplicationsRunners < ActiveRecord::Migration
+class CreateClustersApplicationsRunners < ActiveRecord::Migration[4.2]
   include Gitlab::Database::MigrationHelpers
 
   DOWNTIME = false

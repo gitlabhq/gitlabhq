@@ -19,7 +19,7 @@ describe MergeRequests::UpdateService, :mailer do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
   end
@@ -109,11 +109,12 @@ describe MergeRequests::UpdateService, :mailer do
         expect(note.note).to include "assigned to #{user2.to_reference}"
       end
 
-      it 'creates system note about merge_request label edit' do
-        note = find_note('added ~')
+      it 'creates a resource label event' do
+        event = merge_request.resource_label_events.last
 
-        expect(note).not_to be_nil
-        expect(note.note).to include "added #{label.to_reference} label"
+        expect(event).not_to be_nil
+        expect(event.label_id).to eq label.id
+        expect(event.user_id).to eq user.id
       end
 
       it 'creates system note about title change' do
@@ -314,7 +315,42 @@ describe MergeRequests::UpdateService, :mailer do
         end
       end
 
-      context 'when the milestone change' do
+      context 'when the milestone is removed' do
+        let!(:non_subscriber) { create(:user) }
+
+        let!(:subscriber) do
+          create(:user) do |u|
+            merge_request.toggle_subscription(u, project)
+            project.add_developer(u)
+          end
+        end
+
+        it_behaves_like 'system notes for milestones'
+
+        it 'sends notifications for subscribers of changed milestone' do
+          merge_request.milestone = create(:milestone)
+
+          merge_request.save
+
+          perform_enqueued_jobs do
+            update_merge_request(milestone_id: "")
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
+      end
+
+      context 'when the milestone is changed' do
+        let!(:non_subscriber) { create(:user) }
+
+        let!(:subscriber) do
+          create(:user) do |u|
+            merge_request.toggle_subscription(u, project)
+            project.add_developer(u)
+          end
+        end
+
         it 'marks pending todos as done' do
           update_merge_request({ milestone: create(:milestone) })
 
@@ -322,6 +358,15 @@ describe MergeRequests::UpdateService, :mailer do
         end
 
         it_behaves_like 'system notes for milestones'
+
+        it 'sends notifications for subscribers of changed milestone' do
+          perform_enqueued_jobs do
+            update_merge_request(milestone: create(:milestone))
+          end
+
+          should_email(subscriber)
+          should_not_email(non_subscriber)
+        end
       end
 
       context 'when the labels change' do
@@ -547,9 +592,9 @@ describe MergeRequests::UpdateService, :mailer do
       let(:closed_issuable) { create(:closed_merge_request, source_project: project) }
     end
 
-    context 'setting `allow_maintainer_to_push`' do
-      let(:target_project) { create(:project, :public) }
-      let(:source_project) { fork_project(target_project) }
+    context 'setting `allow_collaboration`' do
+      let(:target_project) { create(:project, :repository, :public) }
+      let(:source_project) { fork_project(target_project, nil, repository: true) }
       let(:user) { create(:user) }
       let(:merge_request) do
         create(:merge_request,
@@ -562,23 +607,23 @@ describe MergeRequests::UpdateService, :mailer do
         allow(ProtectedBranch).to receive(:protected?).with(source_project, 'fixes') { false }
       end
 
-      it 'does not allow a maintainer of the target project to set `allow_maintainer_to_push`' do
+      it 'does not allow a maintainer of the target project to set `allow_collaboration`' do
         target_project.add_developer(user)
 
-        update_merge_request(allow_maintainer_to_push: true, title: 'Updated title')
+        update_merge_request(allow_collaboration: true, title: 'Updated title')
 
         expect(merge_request.title).to eq('Updated title')
-        expect(merge_request.allow_maintainer_to_push).to be_falsy
+        expect(merge_request.allow_collaboration).to be_falsy
       end
 
       it 'is allowed by a user that can push to the source and can update the merge request' do
         merge_request.update!(assignee: user)
         source_project.add_developer(user)
 
-        update_merge_request(allow_maintainer_to_push: true, title: 'Updated title')
+        update_merge_request(allow_collaboration: true, title: 'Updated title')
 
         expect(merge_request.title).to eq('Updated title')
-        expect(merge_request.allow_maintainer_to_push).to be_truthy
+        expect(merge_request.allow_collaboration).to be_truthy
       end
     end
   end

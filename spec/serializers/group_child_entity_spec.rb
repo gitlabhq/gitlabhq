@@ -10,6 +10,7 @@ describe GroupChildEntity do
 
   before do
     allow(request).to receive(:current_user).and_return(user)
+    stub_commonmark_sourcepos_disabled
   end
 
   shared_examples 'group child json' do
@@ -42,7 +43,7 @@ describe GroupChildEntity do
     end
 
     before do
-      object.add_master(user)
+      object.add_maintainer(user)
     end
 
     it 'has the correct type' do

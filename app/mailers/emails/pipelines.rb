@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module Pipelines
     def pipeline_success_email(pipeline, recipients)
@@ -39,10 +41,10 @@ module Emails
     end
 
     def pipeline_subject(status)
-      commit = @pipeline.short_sha
-      commit << " in #{@merge_request.to_reference}" if @merge_request
+      commit = [@pipeline.short_sha]
+      commit << "in #{@merge_request.to_reference}" if @merge_request
 
-      subject("Pipeline ##{@pipeline.id} has #{status} for #{@pipeline.ref}", commit)
+      subject("Pipeline ##{@pipeline.id} has #{status} for #{@pipeline.ref}", commit.join(' '))
     end
   end
 end

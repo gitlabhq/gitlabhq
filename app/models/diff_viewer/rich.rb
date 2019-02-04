@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DiffViewer
   module Rich
     extend ActiveSupport::Concern
@@ -5,7 +7,7 @@ module DiffViewer
     included do
       self.type = :rich
       self.switcher_icon = 'file-text-o'
-      self.switcher_title = 'rendered diff'
+      self.switcher_title = _('rendered diff')
     end
   end
 end

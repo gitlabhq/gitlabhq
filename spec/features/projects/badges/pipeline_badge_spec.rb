@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Pipeline Badge' do
+describe 'Pipeline Badge' do
   set(:project) { create(:project, :repository, :public) }
   let(:ref) { project.default_branch }
 
@@ -19,7 +19,7 @@ feature 'Pipeline Badge' do
     let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: ref, sha: project.commit(ref).sha) }
     let!(:job) { create(:ci_build, pipeline: pipeline) }
 
-    context 'when the pipeline was successfull' do
+    context 'when the pipeline was successful' do
       it 'displays so on the badge' do
         job.success
 

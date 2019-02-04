@@ -8,7 +8,7 @@ comments: false
 ## Install
 
 - **Windows**
-  - Install 'Git for Windows' from https://git-for-windows.github.io
+  - Install 'Git for Windows' from <https://git-for-windows.github.io>
 
 - **Mac**
   - Type '`git`' in the Terminal application.
@@ -16,10 +16,10 @@ comments: false
 
 - **Linux**
   ```bash
-    sudo yum install git-all
+  sudo yum install git-all
   ```
   ```bash
-    sudo apt-get install git-all
+  sudo apt-get install git-all
   ```
 
 ----------

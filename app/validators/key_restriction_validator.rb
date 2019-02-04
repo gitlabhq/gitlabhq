@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class KeyRestrictionValidator < ActiveModel::EachValidator
   FORBIDDEN = -1
 

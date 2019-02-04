@@ -8,12 +8,49 @@ describe 'Projects > Show > User manages notifications', :js do
     visit project_path(project)
   end
 
-  it 'changes the notification setting' do
+  def click_notifications_button
     first('.notifications-btn').click
+  end
+
+  it 'changes the notification setting' do
+    click_notifications_button
     click_link 'On mention'
 
-    page.within '#notifications-button' do
-      expect(page).to have_content 'On mention'
+    wait_for_requests
+
+    click_notifications_button
+    expect(find('.update-notification.is-active')).to have_content('On mention')
+  end
+
+  context 'custom notification settings' do
+    let(:email_events) do
+      [
+        :new_note,
+        :new_issue,
+        :reopen_issue,
+        :close_issue,
+        :reassign_issue,
+        :issue_due,
+        :new_merge_request,
+        :push_to_merge_request,
+        :reopen_merge_request,
+        :close_merge_request,
+        :reassign_merge_request,
+        :merge_merge_request,
+        :failed_pipeline,
+        :success_pipeline
+      ]
+    end
+
+    it 'shows notification settings checkbox' do
+      click_notifications_button
+      page.find('a[data-notification-level="custom"]').click
+
+      page.within('.custom-notifications-form') do
+        email_events.each do |event_name|
+          expect(page).to have_selector("input[name='notification_setting[#{event_name}]']")
+        end
+      end
     end
   end
 end

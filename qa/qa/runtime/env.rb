@@ -1,30 +1,87 @@
+# frozen_string_literal: true
+
 module QA
   module Runtime
     module Env
       extend self
 
+      attr_writer :personal_access_token, :ldap_username, :ldap_password
+
+      # The environment variables used to indicate if the environment under test
+      # supports the given feature
+      SUPPORTED_FEATURES = {
+        git_protocol_v2: 'QA_CAN_TEST_GIT_PROTOCOL_V2'
+      }.freeze
+
+      def supported_features
+        SUPPORTED_FEATURES
+      end
+
+      def debug?
+        enabled?(ENV['QA_DEBUG'], default: false)
+      end
+
+      def log_destination
+        ENV['QA_LOG_PATH'] || $stdout
+      end
+
       # set to 'false' to have Chrome run visibly instead of headless
       def chrome_headless?
-        (ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i) != 0
+        enabled?(ENV['CHROME_HEADLESS'])
+      end
+
+      # set to 'true' to have Chrome use a fixed profile directory
+      def reuse_chrome_profile?
+        enabled?(ENV['CHROME_REUSE_PROFILE'], default: false)
+      end
+
+      def accept_insecure_certs?
+        enabled?(ENV['ACCEPT_INSECURE_CERTS'])
       end
 
       def running_in_ci?
         ENV['CI'] || ENV['CI_SERVER']
       end
 
-      # specifies token that can be used for the api
-      def personal_access_token
-        ENV['PERSONAL_ACCESS_TOKEN']
+      def qa_cookies
+        ENV['QA_COOKIES'] && ENV['QA_COOKIES'].split(';')
       end
 
-      # By default, "standard" denotes a standard GitLab user login.
-      # Set this to "ldap" if the user should be logged in via LDAP.
-      def user_type
-        (ENV['GITLAB_USER_TYPE'] || 'standard').tap do |type|
-          unless %w(ldap standard).include?(type)
-            raise ArgumentError.new("Invalid user type '#{type}': must be 'ldap' or 'standard'")
-          end
-        end
+      def signup_disabled?
+        enabled?(ENV['SIGNUP_DISABLED'], default: false)
+      end
+
+      # specifies token that can be used for the api
+      def personal_access_token
+        @personal_access_token ||= ENV['PERSONAL_ACCESS_TOKEN']
+      end
+
+      def remote_grid
+        # if username specified, password/auth token is required
+        # can be
+        # - "http://user:pass@somehost.com/wd/hub"
+        # - "https://user:pass@somehost.com:443/wd/hub"
+        # - "http://localhost:4444/wd/hub"
+
+        return if (ENV['QA_REMOTE_GRID'] || '').empty?
+
+        "#{remote_grid_protocol}://#{remote_grid_credentials}#{ENV['QA_REMOTE_GRID']}/wd/hub"
+      end
+
+      def remote_grid_username
+        ENV['QA_REMOTE_GRID_USERNAME']
+      end
+
+      def remote_grid_access_key
+        ENV['QA_REMOTE_GRID_ACCESS_KEY']
+      end
+
+      def remote_grid_protocol
+        ENV['QA_REMOTE_GRID_PROTOCOL'] || 'http'
+      end
+
+      def browser
+        ENV['QA_BROWSER'].nil? ? :chrome : ENV['QA_BROWSER'].to_sym
       end
 
       def user_username
@@ -35,16 +92,122 @@ module QA
         ENV['GITLAB_PASSWORD']
       end
 
+      def admin_username
+        ENV['GITLAB_ADMIN_USERNAME']
+      end
+
+      def admin_password
+        ENV['GITLAB_ADMIN_PASSWORD']
+      end
+
+      def github_username
+        ENV['GITHUB_USERNAME']
+      end
+
+      def github_password
+        ENV['GITHUB_PASSWORD']
+      end
+
+      def forker?
+        !!(forker_username && forker_password)
+      end
+
+      def forker_username
+        ENV['GITLAB_FORKER_USERNAME']
+      end
+
+      def forker_password
+        ENV['GITLAB_FORKER_PASSWORD']
+      end
+
+      def gitlab_qa_username_1
+        ENV['GITLAB_QA_USERNAME_1'] || 'gitlab-qa-user1'
+      end
+
+      def gitlab_qa_password_1
+        ENV['GITLAB_QA_PASSWORD_1']
+      end
+
+      def gitlab_qa_username_2
+        ENV['GITLAB_QA_USERNAME_2'] || 'gitlab-qa-user2'
+      end
+
+      def gitlab_qa_password_2
+        ENV['GITLAB_QA_PASSWORD_2']
+      end
+
       def ldap_username
-        ENV['GITLAB_LDAP_USERNAME']
+        @ldap_username ||= ENV['GITLAB_LDAP_USERNAME']
       end
 
       def ldap_password
-        ENV['GITLAB_LDAP_PASSWORD']
+        @ldap_password ||= ENV['GITLAB_LDAP_PASSWORD']
       end
 
       def sandbox_name
         ENV['GITLAB_SANDBOX_NAME']
+      end
+
+      def namespace_name
+        ENV['GITLAB_NAMESPACE_NAME']
+      end
+
+      def auto_devops_project_name
+        ENV['GITLAB_AUTO_DEVOPS_PROJECT_NAME']
+      end
+
+      def gcloud_account_key
+        ENV.fetch("GCLOUD_ACCOUNT_KEY")
+      end
+
+      def gcloud_account_email
+        ENV.fetch("GCLOUD_ACCOUNT_EMAIL")
+      end
+
+      def gcloud_zone
+        ENV.fetch('GCLOUD_ZONE')
+      end
+
+      def has_gcloud_credentials?
+        %w[GCLOUD_ACCOUNT_KEY GCLOUD_ACCOUNT_EMAIL].none? { |var| ENV[var].to_s.empty? }
+      end
+
+      # Specifies the token that can be used for the GitHub API
+      def github_access_token
+        ENV['GITHUB_ACCESS_TOKEN'].to_s.strip
+      end
+
+      def require_github_access_token!
+        return unless github_access_token.empty?
+
+        raise ArgumentError, "Please provide GITHUB_ACCESS_TOKEN"
+      end
+
+      # Returns true if there is an environment variable that indicates that
+      # the feature is supported in the environment under test.
+      # All features are supported by default.
+      def can_test?(feature)
+        raise ArgumentError, %Q(Unknown feature "#{feature}") unless SUPPORTED_FEATURES.include? feature
+
+        enabled?(ENV[SUPPORTED_FEATURES[feature]], default: true)
+      end
+
+      private
+
+      def remote_grid_credentials
+        if remote_grid_username
+          raise ArgumentError, %Q(Please provide an access key for user "#{remote_grid_username}") unless remote_grid_access_key
+
+          return "#{remote_grid_username}:#{remote_grid_access_key}@"
+        end
+
+        ''
+      end
+
+      def enabled?(value, default: true)
+        return default if value.nil?
+
+        (value =~ /^(false|no|0)$/i) != 0
       end
     end
   end

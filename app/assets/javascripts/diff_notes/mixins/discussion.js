@@ -1,11 +1,11 @@
-/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, comma-dangle, no-param-reassign, max-len */
+/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, */
 
-window.DiscussionMixins = {
+const DiscussionMixins = {
   computed: {
-    discussionCount: function () {
+    discussionCount: function() {
       return Object.keys(this.discussions).length;
     },
-    resolvedDiscussionCount: function () {
+    resolvedDiscussionCount: function() {
       let resolvedCount = 0;
 
       for (const discussionId in this.discussions) {
@@ -18,7 +18,7 @@ window.DiscussionMixins = {
 
       return resolvedCount;
     },
-    unresolvedDiscussionCount: function () {
+    unresolvedDiscussionCount: function() {
       let unresolvedCount = 0;
 
       for (const discussionId in this.discussions) {
@@ -30,6 +30,8 @@ window.DiscussionMixins = {
       }
 
       return unresolvedCount;
-    }
-  }
+    },
+  },
 };
+
+export default DiscussionMixins;

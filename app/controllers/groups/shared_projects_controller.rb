@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   class SharedProjectsController < Groups::ApplicationController
     respond_to :json
@@ -24,7 +26,9 @@ module Groups
                            # Make the `search` param consistent for the frontend,
                            # which will be using `filter`.
                            params[:search] ||= params[:filter] if params[:filter]
-                           params.permit(:sort, :search)
+                           # Don't show archived projects
+                           params[:non_archived] = true
+                           params.permit(:sort, :search, :non_archived)
                          end
     end
   end

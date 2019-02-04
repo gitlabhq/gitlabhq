@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 class Projects::NotesController < Projects::ApplicationController
+  include RendersNotes
   include NotesActions
   include NotesHelper
   include ToggleAwardEmoji
@@ -53,7 +56,7 @@ class Projects::NotesController < Projects::ApplicationController
   private
 
   def render_json_with_notes_serializer
-    Notes::RenderService.new(current_user).execute([note])
+    prepare_notes_for_rendering([note])
 
     render json: note_serializer.represent(note)
   end
@@ -65,7 +68,7 @@ class Projects::NotesController < Projects::ApplicationController
   alias_method :awardable, :note
 
   def finder_params
-    params.merge(last_fetched_at: last_fetched_at)
+    params.merge(last_fetched_at: last_fetched_at, notes_filter: notes_filter)
   end
 
   def authorize_admin_note!

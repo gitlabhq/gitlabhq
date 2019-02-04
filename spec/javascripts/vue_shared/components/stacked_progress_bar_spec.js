@@ -4,16 +4,20 @@ import stackedProgressBarComponent from '~/vue_shared/components/stacked_progres
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-const createComponent = (config) => {
+const createComponent = config => {
   const Component = Vue.extend(stackedProgressBarComponent);
-  const defaultConfig = Object.assign({}, {
-    successLabel: 'Synced',
-    failureLabel: 'Failed',
-    neutralLabel: 'Out of sync',
-    successCount: 10,
-    failureCount: 5,
-    totalCount: 20,
-  }, config);
+  const defaultConfig = Object.assign(
+    {},
+    {
+      successLabel: 'Synced',
+      failureLabel: 'Failed',
+      neutralLabel: 'Out of sync',
+      successCount: 25,
+      failureCount: 10,
+      totalCount: 5000,
+    },
+    config,
+  );
 
   return mountComponent(Component, defaultConfig);
 };
@@ -32,7 +36,7 @@ describe('StackedProgressBarComponent', () => {
   describe('computed', () => {
     describe('neutralCount', () => {
       it('returns neutralCount based on totalCount, successCount and failureCount', () => {
-        expect(vm.neutralCount).toBe(5); // 20 - 10 - 5
+        expect(vm.neutralCount).toBe(4965); // 5000 - 25 - 10
       });
     });
   });
@@ -40,7 +44,15 @@ describe('StackedProgressBarComponent', () => {
   describe('methods', () => {
     describe('getPercent', () => {
       it('returns percentage from provided count based on `totalCount`', () => {
-        expect(vm.getPercent(10)).toBe(50);
+        expect(vm.getPercent(500)).toBe(10);
+      });
+
+      it('returns percentage with decimal place from provided count based on `totalCount`', () => {
+        expect(vm.getPercent(67)).toBe(1.3);
+      });
+
+      it('returns percentage as `< 1` from provided count based on `totalCount` when evaluated value is less than 1', () => {
+        expect(vm.getPercent(10)).toBe('< 1');
       });
     });
 
@@ -64,6 +76,7 @@ describe('StackedProgressBarComponent', () => {
 
     it('renders empty state when count is unavailable', () => {
       const vmX = createComponent({ totalCount: 0, successCount: 0, failureCount: 0 });
+
       expect(vmX.$el.querySelectorAll('.status-unavailable').length).not.toBe(0);
       vmX.$destroy();
     });

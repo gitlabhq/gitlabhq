@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module DeployKeys
   class CreateService < Keys::BaseService
-    def execute
+    def execute(project: nil)
       DeployKey.create(params.merge(user: user))
     end
   end

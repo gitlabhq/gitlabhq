@@ -19,7 +19,7 @@ export default class PipelinesService {
 
   getPipelines(data = {}) {
     const { scope, page } = data;
-    const CancelToken = axios.CancelToken;
+    const { CancelToken } = axios;
 
     this.cancelationSource = CancelToken.source();
 

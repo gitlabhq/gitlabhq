@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module Issues
     def new_issue_email(recipient_id, issue_id, reason = nil)
@@ -17,6 +19,7 @@ module Emails
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def reassigned_issue_email(recipient_id, issue_id, previous_assignee_ids, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
@@ -25,6 +28,7 @@ module Emails
 
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def closed_issue_email(recipient_id, issue_id, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
@@ -41,6 +45,22 @@ module Emails
       mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
     end
 
+    def removed_milestone_issue_email(recipient_id, issue_id, updated_by_user_id, reason = nil)
+      setup_issue_mail(issue_id, recipient_id)
+
+      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason))
+    end
+
+    def changed_milestone_issue_email(recipient_id, issue_id, milestone, updated_by_user_id, reason = nil)
+      setup_issue_mail(issue_id, recipient_id)
+
+      @milestone = milestone
+      @milestone_url = milestone_url(@milestone)
+      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id, reason).merge({
+        template_name: 'changed_milestone_email'
+      }))
+    end
+
     def issue_status_changed_email(recipient_id, issue_id, status, updated_by_user_id, reason = nil)
       setup_issue_mail(issue_id, recipient_id)
 
@@ -55,6 +75,17 @@ module Emails
       @new_issue = new_issue
       @new_project = new_issue.project
       mail_answer_thread(issue, issue_thread_options(updated_by_user.id, recipient.id, reason))
+    end
+
+    def import_issues_csv_email(user_id, project_id, results)
+      @user = User.find(user_id)
+      @project = Project.find(project_id)
+      @results = results
+
+      mail(to: @user.notification_email, subject: subject('Imported issues')) do |format|
+        format.html { render layout: 'mailer' }
+        format.text { render layout: 'mailer' }
+      end
     end
 
     private

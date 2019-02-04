@@ -35,13 +35,13 @@
 
       - if can? current_user, :push_code, @project
         = link_to project_merged_branches_path(@project),
-          class: 'btn btn-inverted btn-remove has-tooltip',
+          class: 'btn btn-inverted btn-remove has-tooltip qa-delete-merged-branches',
           title: s_("Branches|Delete all branches that are merged into '%{default_branch}'") % { default_branch: @project.repository.root_ref },
           method: :delete,
           data: { confirm: s_('Branches|Deleting the merged branches cannot be undone. Are you sure?'),
             container: 'body' } do
           = s_('Branches|Delete merged branches')
-        = link_to new_project_branch_path(@project), class: 'btn btn-create' do
+        = link_to new_project_branch_path(@project), class: 'btn btn-success' do
           = s_('Branches|New branch')
 
   - if can?(current_user, :admin_project, @project)

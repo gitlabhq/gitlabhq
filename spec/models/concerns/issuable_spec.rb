@@ -519,7 +519,7 @@ describe Issuable do
       end
     end
 
-    context 'substracting time' do
+    context 'subtracting time' do
       before do
         spend_time(1800)
       end
@@ -530,7 +530,7 @@ describe Issuable do
         expect(issue.total_time_spent).to eq(900)
       end
 
-      context 'when time to substract exceeds the total time spent' do
+      context 'when time to subtract exceeds the total time spent' do
         it 'raise a validation error' do
           Timecop.travel(1.minute.from_now) do
             expect do
@@ -549,7 +549,7 @@ describe Issuable do
     let(:project) { create(:project, namespace: group) }
     let(:other_project) { create(:project) }
     let(:owner) { create(:owner) }
-    let(:master) { create(:user) }
+    let(:maintainer) { create(:user) }
     let(:reporter) { create(:user) }
     let(:guest) { create(:user) }
 
@@ -558,7 +558,7 @@ describe Issuable do
 
     before do
       group.add_owner(owner)
-      project.add_master(master)
+      project.add_maintainer(maintainer)
       project.add_reporter(reporter)
       project.add_guest(guest)
       project.add_guest(contributor)
@@ -566,12 +566,12 @@ describe Issuable do
     end
 
     let(:merged_mr) { create(:merge_request, :merged, author: contributor, target_project: project, source_project: project) }
-    let(:open_mr)  { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
+    let(:open_mr) { create(:merge_request, author: first_time_contributor, target_project: project, source_project: project) }
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do
-      it "is false for MASTER" do
-        mr = create(:merge_request, author: master, target_project: project, source_project: project)
+      it "is false for MAINTAINER" do
+        mr = create(:merge_request, author: maintainer, target_project: project, source_project: project)
 
         expect(mr).not_to be_first_contribution
       end

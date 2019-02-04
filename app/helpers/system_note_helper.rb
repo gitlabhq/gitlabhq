@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SystemNoteHelper
   ICON_NAMES_BY_ACTION = {
     'commit' => 'commit',
@@ -21,7 +23,8 @@ module SystemNoteHelper
     'outdated' => 'pencil-square',
     'duplicate' => 'issue-duplicate',
     'locked' => 'lock',
-    'unlocked' => 'lock-open'
+    'unlocked' => 'lock-open',
+    'due_date' => 'calendar'
   }.freeze
 
   def system_note_icon_name(note)

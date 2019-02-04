@@ -1,5 +1,0 @@
----
-title: Does not log failed sign-in attempts when the database is in read-only mode
-merge_request: 18957
-author:
-type: fixed

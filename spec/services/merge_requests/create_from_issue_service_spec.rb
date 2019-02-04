@@ -61,7 +61,15 @@ describe MergeRequests::CreateFromIssueService do
       expect(project.repository.branch_exists?(custom_source_branch)).to be_truthy
     end
 
-    it 'creates a system note' do
+    it 'creates the new_merge_request system note' do
+      expect(SystemNoteService).to receive(:new_merge_request).with(issue, project, user, instance_of(MergeRequest))
+
+      service.execute
+    end
+
+    it 'creates the new_issue_branch system note when the branch could be created but the merge_request cannot be created' do
+      project.project_feature.update!(merge_requests_access_level: ProjectFeature::DISABLED)
+
       expect(SystemNoteService).to receive(:new_issue_branch).with(issue, project, user, issue.to_branch_name)
 
       service.execute
@@ -125,9 +133,14 @@ describe MergeRequests::CreateFromIssueService do
       end
 
       context 'when ref branch does not exist' do
-        it 'does not create a merge request' do
-          expect { described_class.new(project, user, issue_iid: issue.iid, ref: 'nobr').execute }
-            .not_to change { project.merge_requests.count }
+        subject { described_class.new(project, user, issue_iid: issue.iid, ref: 'no-such-branch').execute }
+
+        it 'creates a merge request' do
+          expect { subject }.to change(project.merge_requests, :count).by(1)
+        end
+
+        it 'sets the merge request target branch to the project default branch' do
+          expect(subject[:merge_request].target_branch).to eq(project.default_branch)
         end
       end
     end

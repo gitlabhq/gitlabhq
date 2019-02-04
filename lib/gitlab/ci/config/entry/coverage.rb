@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   module Ci
     class Config
@@ -5,8 +7,8 @@ module Gitlab
         ##
         # Entry that represents Coverage settings.
         #
-        class Coverage < Node
-          include Validatable
+        class Coverage < ::Gitlab::Config::Entry::Node
+          include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, regexp: true

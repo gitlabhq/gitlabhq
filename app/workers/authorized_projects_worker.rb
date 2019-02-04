@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuthorizedProjectsWorker
   include ApplicationWorker
   prepend WaitableWorker
@@ -10,9 +12,11 @@ class AuthorizedProjectsWorker
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(user_id)
     user = User.find_by(id: user_id)
 
     user&.refresh_authorized_projects
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

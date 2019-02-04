@@ -10,8 +10,8 @@ describe('Deploy keys app component', () => {
   let vm;
   let mock;
 
-  beforeEach((done) => {
-    // setup axios mock before component
+  beforeEach(done => {
+    // set up axios mock before component
     mock = new MockAdapter(axios);
     mock.onGet(`${TEST_HOST}/dummy/`).replyOnce(200, data);
 
@@ -60,6 +60,7 @@ describe('Deploy keys app component', () => {
     expect(textContent('.js-deployKeys-tab-available_project_keys')).toContain(
       'Privately accessible deploy keys',
     );
+
     expect(textContent('.js-deployKeys-tab-public_keys')).toContain(
       'Publicly accessible deploy keys',
     );
@@ -67,9 +68,11 @@ describe('Deploy keys app component', () => {
     expect(textContent('.js-deployKeys-tab-enabled_keys .badge')).toBe(
       `${vm.store.keys.enabled_keys.length}`,
     );
+
     expect(textContent('.js-deployKeys-tab-available_project_keys .badge')).toBe(
       `${vm.store.keys.available_project_keys.length}`,
     );
+
     expect(textContent('.js-deployKeys-tab-public_keys .badge')).toBe(
       `${vm.store.keys.public_keys.length}`,
     );

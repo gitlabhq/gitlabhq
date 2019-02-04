@@ -8,8 +8,8 @@ in test environments we'll raise an error when this threshold is exceeded.
 When a test fails because it executes more than 100 SQL queries there are two
 solutions to this problem:
 
-1. Reduce the number of SQL queries that are executed.
-2. Whitelist the controller or API endpoint.
+- Reduce the number of SQL queries that are executed.
+- Whitelist the controller or API endpoint.
 
 You should only resort to whitelisting when an existing controller or endpoint
 is to blame as in this case reducing the number of SQL queries can take a lot of

@@ -8,7 +8,7 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
       let(:config) { { paths: %w[public/] } }
 
       describe '#value' do
-        it 'returns artifacs configuration' do
+        it 'returns artifacts configuration' do
           expect(entry.value).to eq config
         end
       end
@@ -16,6 +16,14 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
       describe '#valid?' do
         it 'is valid' do
           expect(entry).to be_valid
+        end
+      end
+
+      context "when value includes 'reports' keyword" do
+        let(:config) { { paths: %w[public/], reports: { junit: 'junit.xml' } } }
+
+        it 'returns general artifact and report-type artifacts configuration' do
+          expect(entry.value).to eq config
         end
       end
     end
@@ -37,6 +45,15 @@ describe Gitlab::Ci::Config::Entry::Artifacts do
           it 'reports error' do
             expect(entry.errors)
               .to include 'artifacts config contains unknown keys: test'
+          end
+        end
+
+        context "when 'reports' keyword is not hash" do
+          let(:config) { { paths: %w[public/], reports: 'junit.xml' } }
+
+          it 'reports error' do
+            expect(entry.errors)
+              .to include 'artifacts reports should be a hash'
           end
         end
       end

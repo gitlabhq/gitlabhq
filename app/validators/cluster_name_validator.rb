@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # ClusterNameValidator
 #
 # Custom validator for ClusterName.
