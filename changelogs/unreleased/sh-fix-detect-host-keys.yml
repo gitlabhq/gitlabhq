@@ -1,0 +1,5 @@
+---
+title: Fix Detect Host Keys not working
+merge_request: 24884
+author:
+type: fixed
