@@ -182,11 +182,11 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def serialize_environments(request, response, nested = false)
-    serializer = EnvironmentSerializer
+    EnvironmentSerializer
       .new(project: @project, current_user: @current_user)
+      .tap { |serializer| serializer.within_folders if nested }
       .with_pagination(request, response)
-    serializer = serializer.within_folders if nested
-    serializer.represent(@environments)
+      .represent(@environments)
   end
 
   def authorize_stop_environment!
