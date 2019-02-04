@@ -861,7 +861,7 @@ button.mini-pipeline-graph-dropdown-toggle {
         height: $ci-action-dropdown-svg-size;
         fill: $gl-text-color-secondary;
         position: relative;
-        top: 0;
+        top: 1px;
         vertical-align: initial;
       }
     }
@@ -869,7 +869,7 @@ button.mini-pipeline-graph-dropdown-toggle {
 
   // SVGs in the commit widget and mr widget
   a.ci-action-icon-container.ci-action-icon-wrapper svg {
-    top: 2px;
+    top: 4px;
   }
 
   .scrollable-menu {

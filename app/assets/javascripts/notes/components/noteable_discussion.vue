@@ -12,6 +12,7 @@ import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteableNote from './noteable_note.vue';
 import noteHeader from './note_header.vue';
+import resolveDiscussionButton from './discussion_resolve_button.vue';
 import toggleRepliesWidget from './toggle_replies_widget.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import noteEditedText from './note_edited_text.vue';
@@ -23,6 +24,7 @@ import autosave from '../mixins/autosave';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import discussionNavigation from '../mixins/discussion_navigation';
+import jumpToNextDiscussionButton from './discussion_jump_to_next_button.vue';
 
 export default {
   name: 'NoteableDiscussion',
@@ -34,6 +36,8 @@ export default {
     noteSignedOutWidget,
     noteEditedText,
     noteForm,
+    resolveDiscussionButton,
+    jumpToNextDiscussionButton,
     toggleRepliesWidget,
     placeholderNote,
     placeholderSystemNote,
@@ -451,16 +455,12 @@ Please check your network connection and try again.`;
                     >
                       Reply...
                     </button>
-                    <div v-if="discussion.resolvable">
-                      <button
-                        type="button"
-                        class="btn btn-default ml-sm-2"
-                        @click="resolveHandler()"
-                      >
-                        <i v-if="isResolving" aria-hidden="true" class="fa fa-spinner fa-spin"></i>
-                        {{ resolveButtonTitle }}
-                      </button>
-                    </div>
+                    <resolve-discussion-button
+                      v-if="discussion.resolvable"
+                      :is-resolving="isResolving"
+                      :button-title="resolveButtonTitle"
+                      @onClick="resolveHandler"
+                    />
                     <div
                       v-if="discussion.resolvable"
                       class="btn-group discussion-actions ml-sm-2"
@@ -476,16 +476,10 @@ Please check your network connection and try again.`;
                           <icon name="issue-new" />
                         </a>
                       </div>
-                      <div v-if="shouldShowJumpToNextDiscussion" class="btn-group" role="group">
-                        <button
-                          v-gl-tooltip
-                          class="btn btn-default discussion-next-btn"
-                          title="Jump to next unresolved discussion"
-                          @click="jumpToNextDiscussion"
-                        >
-                          <icon name="comment-next" />
-                        </button>
-                      </div>
+                      <jump-to-next-discussion-button
+                        v-if="shouldShowJumpToNextDiscussion"
+                        @onClick="jumpToNextDiscussion"
+                      />
                     </div>
                   </div>
                 </template>

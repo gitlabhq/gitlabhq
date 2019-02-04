@@ -7,6 +7,8 @@ describe API::Markdown do
     let(:user) {} # No-op. It gets overwritten in the contexts below.
 
     before do
+      stub_commonmark_sourcepos_disabled
+
       post api("/markdown", user), params: params
     end
 

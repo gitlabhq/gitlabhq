@@ -1,0 +1,5 @@
+---
+title: Fix Bitbucket Server import not allowing personal projects
+merge_request: 23601
+author:
+type: fixed

@@ -45,6 +45,15 @@ describe Notes::BuildService do
         end
       end
 
+      context 'when user has no access to discussion' do
+        it 'sets an error' do
+          another_user = create(:user)
+          new_note = described_class.new(project, another_user, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute
+
+          expect(new_note.errors[:base]).to include('Discussion to reply to cannot be found')
+        end
+      end
+
       context 'personal snippet note' do
         def reply(note, user = nil)
           user ||= create(:user)

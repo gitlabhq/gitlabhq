@@ -123,7 +123,10 @@ describe('Description component', () => {
           fieldName: 'description',
           selector: '.detail-page-description',
           onSuccess: jasmine.any(Function),
+          onError: jasmine.any(Function),
+          lockVersion: 0,
         });
+
         done();
       });
     });
@@ -183,5 +186,19 @@ describe('Description component', () => {
 
   it('sets data-update-url', () => {
     expect(vm.$el.querySelector('textarea').dataset.updateUrl).toEqual(gl.TEST_HOST);
+  });
+
+  describe('taskListUpdateError', () => {
+    it('should create flash notification and emit an event to parent', () => {
+      const msg =
+        'Someone edited this issue at the same time you did. The description has been updated and you will need to make your changes again.';
+      spyOn(window, 'Flash');
+      spyOn(vm, '$emit');
+
+      vm.taskListUpdateError();
+
+      expect(window.Flash).toHaveBeenCalledWith(msg);
+      expect(vm.$emit).toHaveBeenCalledWith('taskListUpdateFailed');
+    });
   });
 });

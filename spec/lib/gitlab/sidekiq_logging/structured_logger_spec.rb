@@ -16,7 +16,7 @@ describe Gitlab::SidekiqLogging::StructuredLogger do
         "correlation_id" => 'cid'
       }
     end
-    let(:logger) { double() }
+    let(:logger) { double }
     let(:start_payload) do
       job.merge(
         'message' => 'TestWorker JID-da883554ee4fe414012f5f42: start',

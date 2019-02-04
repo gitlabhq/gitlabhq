@@ -5,14 +5,6 @@ RSpec.describe 'Dashboard Help' do
     sign_in(create(:user))
   end
 
-  context 'help dropdown' do
-    it 'shows the "What\'s new?" menu item' do
-      visit root_dashboard_path
-
-      expect(page.find('.header-help .dropdown-menu')).to have_text("What's new?")
-    end
-  end
-
   context 'documentation' do
     it 'renders correctly markdown' do
       visit help_page_path("administration/raketasks/maintenance")

@@ -20,14 +20,6 @@ module Gitlab
       @patch = patch
     end
 
-    def minor_version?
-      minor.to_i > 0
-    end
-
-    def patch_version?
-      patch.to_i > 0
-    end
-
     def <=>(other)
       return unless other.is_a? VersionInfo
       return unless valid? && other.valid?

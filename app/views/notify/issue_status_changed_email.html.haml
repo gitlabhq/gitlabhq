@@ -1,2 +1,2 @@
 %p
-  Issue was #{@issue_status} by #{@updated_by.name}
+  Issue was #{@issue_status} by #{sanitize_name(@updated_by.name)}

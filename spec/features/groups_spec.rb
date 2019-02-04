@@ -203,7 +203,7 @@ describe 'Group' do
 
       visit path
 
-      expect(page).to have_css('.group-home-desc > p > strong')
+      expect(page).to have_css('.home-panel-description-markdown > p > strong')
     end
 
     it 'passes through html-pipeline' do
@@ -211,7 +211,7 @@ describe 'Group' do
 
       visit path
 
-      expect(page).to have_css('.group-home-desc > p > gl-emoji')
+      expect(page).to have_css('.home-panel-description-markdown > p > gl-emoji')
     end
 
     it 'sanitizes unwanted tags' do
@@ -219,7 +219,7 @@ describe 'Group' do
 
       visit path
 
-      expect(page).not_to have_css('.group-home-desc h1')
+      expect(page).not_to have_css('.home-panel-description-markdown h1')
     end
 
     it 'permits `rel` attribute on links' do
@@ -227,7 +227,7 @@ describe 'Group' do
 
       visit path
 
-      expect(page).to have_css('.group-home-desc a[rel]')
+      expect(page).to have_css('.home-panel-description-markdown a[rel]')
     end
   end
 

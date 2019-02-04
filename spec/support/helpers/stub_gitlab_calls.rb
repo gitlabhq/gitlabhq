@@ -62,6 +62,12 @@ module StubGitlabCalls
     end
   end
 
+  def stub_commonmark_sourcepos_disabled
+    allow_any_instance_of(Banzai::Filter::MarkdownEngines::CommonMark)
+      .to receive(:render_options)
+      .and_return(Banzai::Filter::MarkdownEngines::CommonMark::RENDER_OPTIONS)
+  end
+
   private
 
   def stub_container_registry_tag_manifest_content

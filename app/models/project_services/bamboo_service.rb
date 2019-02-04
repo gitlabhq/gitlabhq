@@ -80,19 +80,27 @@ class BambooService < CiService
 
   private
 
-  def get_build_result_index
-    # When Bamboo returns multiple results for a given changeset, arbitrarily assume the most relevant result to be the last one.
-    -1
+  def get_build_result(response)
+    return if response.code != 200
+
+    # May be nil if no result, a single result hash, or an array if multiple results for a given changeset.
+    result = response.dig('results', 'results', 'result')
+
+    # In case of multiple results, arbitrarily assume the last one is the most relevant.
+    return result.last if result.is_a?(Array)
+
+    result
   end
 
   def read_build_page(response)
+    result = get_build_result(response)
     key =
-      if response.code != 200 || response.dig('results', 'results', 'size') == '0'
+      if result.blank?
         # If actual build link can't be determined, send user to build summary page.
         build_key
       else
         # If actual build link is available, go to build result page.
-        response.dig('results', 'results', 'result', get_build_result_index, 'planResultKey', 'key')
+        result.dig('planResultKey', 'key')
       end
 
     build_url("browse/#{key}")
@@ -101,11 +109,15 @@ class BambooService < CiService
   def read_commit_status(response)
     return :error unless response.code == 200 || response.code == 404
 
-    status = if response.code == 404 || response.dig('results', 'results', 'size') == '0'
-               'Pending'
-             else
-               response.dig('results', 'results', 'result', get_build_result_index, 'buildState')
-             end
+    result = get_build_result(response)
+    status =
+      if result.blank?
+        'Pending'
+      else
+        result.dig('buildState')
+      end
+
+    return :error unless status.present?
 
     if status.include?('Success')
       'success'

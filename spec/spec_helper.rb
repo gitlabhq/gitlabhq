@@ -127,11 +127,6 @@ RSpec.configure do |config|
       .and_return(false)
   end
 
-  config.before(:suite) do
-    # Set latest release blog post URL for "What's new?" link
-    Gitlab::ReleaseBlogPost.instance.instance_variable_set(:@url, 'https://about.gitlab.com')
-  end
-
   config.before(:example, :quarantine) do
     # Skip tests in quarantine unless we explicitly focus on them.
     skip('In quarantine') unless config.inclusion_filter[:quarantine]

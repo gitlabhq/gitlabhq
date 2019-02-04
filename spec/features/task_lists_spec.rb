@@ -170,8 +170,11 @@ describe 'Task Lists' do
         expect(page).to have_content("2 of 7 tasks completed")
 
         page.find('li.task-list-item', text: 'Task b').find('input').click
+        wait_for_requests
         page.find('li.task-list-item ul li.task-list-item', text: 'Task a.2').find('input').click
+        wait_for_requests
         page.find('li.task-list-item ol li.task-list-item', text: 'Task 1.1').find('input').click
+        wait_for_requests
 
         expect(page).to have_content("5 of 7 tasks completed")
 
@@ -184,25 +187,24 @@ describe 'Task Lists' do
     end
 
     describe 'nested tasks', :js do
-      context 'with Redcarpet' do
-        let(:issue) { create(:issue, description: nested_tasks_markdown_redcarpet, author: user, project: project) }
+      let(:cache_version) { CacheMarkdownField::CACHE_COMMONMARK_VERSION }
+      let!(:issue) do
+        create(:issue, description: nested_tasks_markdown, author: user, project: project,
+                       cached_markdown_version: cache_version)
+      end
 
-        before do
-          allow_any_instance_of(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('Redcarpet')
-          visit_issue(project, issue)
-        end
+      before do
+        visit_issue(project, issue)
+      end
+
+      context 'with Redcarpet' do
+        let(:cache_version) { CacheMarkdownField::CACHE_REDCARPET_VERSION }
+        let(:nested_tasks_markdown) { nested_tasks_markdown_redcarpet }
 
         it_behaves_like 'shared nested tasks'
       end
 
       context 'with CommonMark' do
-        let(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project) }
-
-        before do
-          allow_any_instance_of(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('CommonMark')
-          visit_issue(project, issue)
-        end
-
         it_behaves_like 'shared nested tasks'
       end
     end

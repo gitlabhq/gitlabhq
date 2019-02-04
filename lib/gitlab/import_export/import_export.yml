@@ -166,6 +166,7 @@ excluded_attributes:
   error_tracking_setting:
     - :encrypted_token
     - :encrypted_token_iv
+    - :enabled
 
 methods:
   labels:

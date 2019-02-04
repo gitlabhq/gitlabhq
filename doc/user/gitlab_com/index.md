@@ -46,7 +46,7 @@ Below are the settings for [GitLab Pages].
 | Setting                 | GitLab.com        | Default       |
 | ----------------------- | ----------------  | ------------- |
 | Domain name             | `gitlab.io`       | -             |
-| IP address              | `52.167.214.135`  | -             |
+| IP address              | `35.185.44.232`   | -             |
 | Custom domains support  | yes               | no            |
 | TLS certificates support| yes               | no            |
 

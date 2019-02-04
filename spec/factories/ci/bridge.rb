@@ -10,6 +10,10 @@ FactoryBot.define do
 
     pipeline factory: :ci_pipeline
 
+    trait :variables do
+      yaml_variables [{ key: 'BRIDGE', value: 'cross', public: true }]
+    end
+
     transient { downstream nil }
 
     after(:build) do |bridge, evaluator|

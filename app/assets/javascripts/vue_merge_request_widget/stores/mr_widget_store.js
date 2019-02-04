@@ -1,5 +1,5 @@
 import Timeago from 'timeago.js';
-import getStateKey from './ee_switch_get_state_key';
+import getStateKey from 'ee_else_ce/vue_merge_request_widget/stores/get_state_key';
 import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 

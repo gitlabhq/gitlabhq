@@ -839,6 +839,20 @@ For example there can be an
 `app/assets/javascripts/protected_branches/protected_branches_bundle.js` and an
 EE counterpart
 `ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js`.
+The corresponding import statement would then look like this:
+
+```javascript
+// app/assets/javascripts/protected_branches/protected_branches_bundle.js
+import bundle from '~/protected_branches/protected_branches_bundle.js';
+
+// ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js
+// (only works in EE)
+import bundle from 'ee/protected_branches/protected_branches_bundle.js';
+
+// in CE: app/assets/javascripts/protected_branches/protected_branches_bundle.js
+// in EE: ee/app/assets/javascripts/protected_branches/protected_branches_bundle.js
+import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
+```
 
 See the frontend guide [performance section](./fe_guide/performance.md) for
 information on managing page-specific javascript within EE.

@@ -67,8 +67,6 @@ module QA
               email = user.email
             end
 
-            repository.try_add_credentials_to_netrc
-
             @output += repository.clone
             repository.configure_identity(username, email)
 

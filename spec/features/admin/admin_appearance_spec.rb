@@ -10,10 +10,10 @@ describe 'Admin Appearance' do
     fill_in 'appearance_title', with: 'MyCompany'
     fill_in 'appearance_description', with: 'dev server'
     fill_in 'appearance_new_project_guidelines', with: 'Custom project guidelines'
-    click_button 'Save'
+    click_button 'Update appearance settings'
 
     expect(current_path).to eq admin_appearances_path
-    expect(page).to have_content 'Appearance settings'
+    expect(page).to have_content 'Appearance'
 
     expect(page).to have_field('appearance_title', with: 'MyCompany')
     expect(page).to have_field('appearance_description', with: 'dev server')
@@ -57,7 +57,7 @@ describe 'Admin Appearance' do
     visit admin_appearances_path
 
     attach_file(:appearance_logo, logo_fixture)
-    click_button 'Save'
+    click_button 'Update appearance settings'
     expect(page).to have_css(logo_selector)
 
     click_link 'Remove logo'
@@ -69,7 +69,7 @@ describe 'Admin Appearance' do
     visit admin_appearances_path
 
     attach_file(:appearance_header_logo, logo_fixture)
-    click_button 'Save'
+    click_button 'Update appearance settings'
     expect(page).to have_css(header_logo_selector)
 
     click_link 'Remove header logo'
@@ -81,7 +81,7 @@ describe 'Admin Appearance' do
     visit admin_appearances_path
 
     attach_file(:appearance_favicon, logo_fixture)
-    click_button 'Save'
+    click_button 'Update appearance settings'
 
     expect(page).to have_css('.appearance-light-logo-preview')
 
@@ -91,7 +91,7 @@ describe 'Admin Appearance' do
 
     # allowed file types
     attach_file(:appearance_favicon, Rails.root.join('spec', 'fixtures', 'sanitized.svg'))
-    click_button 'Save'
+    click_button 'Update appearance settings'
 
     expect(page).to have_content 'Favicon You are not allowed to upload "svg" files, allowed types: png, ico'
   end

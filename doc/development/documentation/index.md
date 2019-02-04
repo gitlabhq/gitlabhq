@@ -27,7 +27,7 @@ The source of the documentation is maintained in the following repository locati
 | Project | Path |
 | --- | --- |
 | [GitLab Community Edition](https://gitlab.com/gitlab-org/gitlab-ce/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc) |
-| [GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ce/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc) |
+| [GitLab Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ee/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc) |
 | [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner/) | [`/docs`](https://gitlab.com/gitlab-org/gitlab-runner/tree/master/docs) |
 | [Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/) | [`/doc`](https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc) |
 

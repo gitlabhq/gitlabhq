@@ -97,7 +97,7 @@ DEPENDENCIES
   airborne (~> 0.2.13)
   capybara (~> 2.16.1)
   capybara-screenshot (~> 1.0.18)
-  nokogiri (~> 1.10.0)
+  nokogiri (~> 1.10.1)
   pry-byebug (~> 3.5.1)
   rake (~> 12.3.0)
   rspec (~> 3.7)

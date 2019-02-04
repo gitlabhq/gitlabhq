@@ -110,6 +110,9 @@
               %li
                 go test -cover (Go)
                 %code coverage: \d+.\d+% of statements
+              %li
+                nyc npm test (NodeJS) -
+                %code All files[^|]*\|[^|]*\s+([\d\.]+)
 
         = f.submit _('Save changes'), class: "btn btn-success"
 

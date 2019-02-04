@@ -1,17 +1,17 @@
 - empty_repo = @project.empty_repo?
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
 .project-home-panel{ class: ("empty-project" if empty_repo) }
-  .project-header.row.append-bottom-8
-    .project-title-row.col-md-12.col-lg-6.d-flex
-      .avatar-container.project-avatar.float-none
+  .row.append-bottom-8
+    .home-panel-title-row.col-md-12.col-lg-6.d-flex
+      .avatar-container.home-panel-avatar.append-right-default.float-none
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64)
       .d-flex.flex-column.flex-wrap.align-items-baseline
         .d-inline-flex.align-items-baseline
-          %h1.project-title.qa-project-name
+          %h1.home-panel-title.prepend-top-8.append-bottom-5.qa-project-name
             = @project.name
-            %span.project-visibility.prepend-left-8.d-inline-flex.align-items-baseline.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
+            %span.visibility-icon.text-secondary.prepend-left-4.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
-        .project-metadata.d-flex.align-items-center
+        .home-panel-metadata.d-flex.align-items-center.text-secondary
           - if can?(current_user, :read_project, @project)
             %span.text-secondary
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
@@ -19,7 +19,7 @@
             %span.access-request-links.prepend-left-8
               = render 'shared/members/access_request_links', source: @project
           - if @project.tag_list.present?
-            %span.project-topic-list.d-inline-flex.prepend-left-8.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.tag_list.join(', ') : nil }
+            %span.home-panel-topic-list.d-inline-flex.prepend-left-8.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.tag_list.join(', ') : nil }
               = sprite_icon('tag', size: 16, css_class: 'icon append-right-4')
               = @project.topics_to_show
               - if @project.has_extra_topics?
@@ -29,7 +29,7 @@
     .project-repo-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
       - if current_user
         .d-inline-flex
-          = render 'projects/buttons/notifications', notification_setting: @notification_setting, btn_class: 'btn-xs'
+          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn-xs'
 
       .count-buttons.d-inline-flex
         = render 'projects/buttons/star'
@@ -44,13 +44,13 @@
 
   - if can?(current_user, :download_code, @project)
     %nav.project-stats
-      .nav-links.quick-links.mt-3
+      .nav-links.quick-links
         = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
 
-  .project-home-desc.mt-1
+  .home-panel-home-desc.mt-1
     - if @project.description.present?
-      .project-description
-        .project-description-markdown.read-more-container
+      .home-panel-description
+        .home-panel-description-markdown.read-more-container
           = markdown_field(@project, :description)
         %button.btn.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")

@@ -13,7 +13,10 @@ class Import::BitbucketServerController < Import::BaseController
   # Repository names are limited to 128 characters. They must start with a
   # letter or number and may contain spaces, hyphens, underscores, and periods.
   # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
-  VALID_BITBUCKET_CHARS = /\A[\w\-_\.\s]+\z/
+  #
+  # Bitbucket Server starts personal project names with a tilde.
+  VALID_BITBUCKET_PROJECT_CHARS = /\A~?[\w\-\.\s]+\z/
+  VALID_BITBUCKET_CHARS = /\A[\w\-\.\s]+\z/
 
   def new
   end
@@ -91,7 +94,7 @@ class Import::BitbucketServerController < Import::BaseController
 
     return render_validation_error('Missing project key') unless @project_key.present? && @repo_slug.present?
     return render_validation_error('Missing repository slug') unless @repo_slug.present?
-    return render_validation_error('Invalid project key') unless @project_key =~ VALID_BITBUCKET_CHARS
+    return render_validation_error('Invalid project key') unless @project_key =~ VALID_BITBUCKET_PROJECT_CHARS
     return render_validation_error('Invalid repository slug') unless @repo_slug =~ VALID_BITBUCKET_CHARS
   end
 

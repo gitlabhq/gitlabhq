@@ -129,13 +129,13 @@ module IssuableCollections
     return sort_param if Gitlab::Database.read_only?
 
     if user_preference[issuable_sorting_field] != sort_param
-      user_preference.update_attribute(issuable_sorting_field, sort_param)
+      user_preference.update(issuable_sorting_field => sort_param)
     end
 
     sort_param
   end
 
-  # Implement default_sorting_field method on controllers
+  # Implement issuable_sorting_field method on controllers
   # to choose which column to store the sorting parameter.
   def issuable_sorting_field
     nil

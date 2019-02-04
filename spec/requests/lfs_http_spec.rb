@@ -1086,6 +1086,12 @@ describe 'Git LFS API and storage' do
             end
           end
 
+          context 'and request to finalize the upload is not sent by gitlab-workhorse' do
+            it 'fails with a JWT decode error' do
+              expect { put_finalize(lfs_tmp_file, verified: false) }.to raise_error(JWT::DecodeError)
+            end
+          end
+
           context 'and workhorse requests upload finalize for a new lfs object' do
             before do
               lfs_object.destroy
@@ -1347,9 +1353,13 @@ describe 'Git LFS API and storage' do
 
         context 'when pushing the same lfs object to the second project' do
           before do
+            finalize_headers = headers
+              .merge('X-Gitlab-Lfs-Tmp' => lfs_tmp_file)
+              .merge(workhorse_internal_api_request_header)
+
             put "#{second_project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}",
                 params: {},
-                headers: headers.merge('X-Gitlab-Lfs-Tmp' => lfs_tmp_file).compact
+                headers: finalize_headers
           end
 
           it 'responds with status 200' do
@@ -1370,7 +1380,7 @@ describe 'Git LFS API and storage' do
       put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", params: {}, headers: authorize_headers
     end
 
-    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, args: {})
+    def put_finalize(lfs_tmp = lfs_tmp_file, with_tempfile: false, verified: true, args: {})
       upload_path = LfsObjectUploader.workhorse_local_upload_path
       file_path = upload_path + '/' + lfs_tmp if lfs_tmp
 
@@ -1384,11 +1394,14 @@ describe 'Git LFS API and storage' do
         'file.name' => File.basename(file_path)
       }
 
-      put_finalize_with_args(args.merge(extra_args).compact)
+      put_finalize_with_args(args.merge(extra_args).compact, verified: verified)
     end
 
-    def put_finalize_with_args(args)
-      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", params: args, headers: headers
+    def put_finalize_with_args(args, verified:)
+      finalize_headers = headers
+      finalize_headers.merge!(workhorse_internal_api_request_header) if verified
+
+      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}", params: args, headers: finalize_headers
     end
 
     def lfs_tmp_file

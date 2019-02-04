@@ -120,35 +120,39 @@ export default class IssuableForm {
   }
 
   initTargetBranchDropdown() {
-    this.$targetBranchSelect.select2({
-      ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
-      ajax: {
-        url: this.$targetBranchSelect.data('endpoint'),
-        dataType: 'JSON',
-        quietMillis: 250,
-        data(search) {
-          return {
-            search,
-          };
-        },
-        results(data) {
-          return {
-            // `data` keys are translated so we can't just access them with a string based key
-            results: data[Object.keys(data)[0]].map(name => ({
-              id: name,
-              text: name,
-            })),
-          };
-        },
-      },
-      initSelection(el, callback) {
-        const val = el.val();
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(() => {
+        this.$targetBranchSelect.select2({
+          ...AutoWidthDropdownSelect.selectOptions('js-target-branch-select'),
+          ajax: {
+            url: this.$targetBranchSelect.data('endpoint'),
+            dataType: 'JSON',
+            quietMillis: 250,
+            data(search) {
+              return {
+                search,
+              };
+            },
+            results(data) {
+              return {
+                // `data` keys are translated so we can't just access them with a string based key
+                results: data[Object.keys(data)[0]].map(name => ({
+                  id: name,
+                  text: name,
+                })),
+              };
+            },
+          },
+          initSelection(el, callback) {
+            const val = el.val();
 
-        callback({
-          id: val,
-          text: val,
+            callback({
+              id: val,
+              text: val,
+            });
+          },
         });
-      },
-    });
+      })
+      .catch(() => {});
   }
 }

@@ -99,6 +99,7 @@ module QA
         autoload :LDAPNoTLS, 'qa/scenario/test/integration/ldap_no_tls'
         autoload :LDAPTLS, 'qa/scenario/test/integration/ldap_tls'
         autoload :InstanceSAML, 'qa/scenario/test/integration/instance_saml'
+        autoload :OAuth, 'qa/scenario/test/integration/oauth'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
         autoload :ObjectStorage, 'qa/scenario/test/integration/object_storage'
@@ -273,9 +274,11 @@ module QA
 
       module Settings
         autoload :Repository, 'qa/page/admin/settings/repository'
+        autoload :General, 'qa/page/admin/settings/general'
 
         module Component
           autoload :RepositoryStorage, 'qa/page/admin/settings/component/repository_storage'
+          autoload :AccountAndLimit, 'qa/page/admin/settings/component/account_and_limit'
         end
       end
     end
@@ -290,6 +293,7 @@ module QA
     #
     module Component
       autoload :ClonePanel, 'qa/page/component/clone_panel'
+      autoload :LazyLoader, 'qa/page/component/lazy_loader'
       autoload :LegacyClonePanel, 'qa/page/component/legacy_clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :GroupsFilter, 'qa/page/component/groups_filter'
@@ -339,6 +343,13 @@ module QA
       module Page
         autoload :Base, 'qa/vendor/saml_idp/page/base'
         autoload :Login, 'qa/vendor/saml_idp/page/login'
+      end
+    end
+
+    module Github
+      module Page
+        autoload :Base, 'qa/vendor/github/page/base'
+        autoload :Login, 'qa/vendor/github/page/login'
       end
     end
   end

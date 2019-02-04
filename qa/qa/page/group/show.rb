@@ -6,7 +6,7 @@ module QA
       class Show < Page::Base
         include Page::Component::GroupsFilter
 
-        view 'app/views/groups/show.html.haml' do
+        view 'app/views/groups/_home_panel.html.haml' do
           element :new_project_or_subgroup_dropdown
           element :new_project_or_subgroup_dropdown_toggle
           element :new_project_option

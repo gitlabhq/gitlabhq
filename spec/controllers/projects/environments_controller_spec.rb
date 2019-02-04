@@ -47,9 +47,43 @@ describe Projects::EnvironmentsController do
 
       let(:environments) { json_response['environments'] }
 
+      context 'with default parameters' do
+        before do
+          get :index, params: environment_params(format: :json)
+        end
+
+        it 'responds with a flat payload describing available environments' do
+          expect(environments.count).to eq 3
+          expect(environments.first['name']).to eq 'production'
+          expect(environments.second['name']).to eq 'staging/review-1'
+          expect(environments.third['name']).to eq 'staging/review-2'
+          expect(json_response['available_count']).to eq 3
+          expect(json_response['stopped_count']).to eq 1
+        end
+
+        it 'sets the polling interval header' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("3000")
+        end
+      end
+
+      context 'when a folder-based nested structure is requested' do
+        before do
+          get :index, params: environment_params(format: :json, nested: true)
+        end
+
+        it 'responds with a payload containing the latest environment for each folder' do
+          expect(environments.count).to eq 2
+          expect(environments.first['name']).to eq 'production'
+          expect(environments.second['name']).to eq 'staging'
+          expect(environments.second['size']).to eq 2
+          expect(environments.second['latest']['name']).to eq 'staging/review-2'
+        end
+      end
+
       context 'when requesting available environments scope' do
         before do
-          get :index, params: environment_params(format: :json, scope: :available)
+          get :index, params: environment_params(format: :json, nested: true, scope: :available)
         end
 
         it 'responds with a payload describing available environments' do
@@ -64,16 +98,11 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
-
-        it 'sets the polling interval header' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.headers['Poll-Interval']).to eq("3000")
-        end
       end
 
       context 'when requesting stopped environments scope' do
         before do
-          get :index, params: environment_params(format: :json, scope: :stopped)
+          get :index, params: environment_params(format: :json, nested: true, scope: :stopped)
         end
 
         it 'responds with a payload describing stopped environments' do

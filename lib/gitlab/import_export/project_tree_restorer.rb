@@ -107,7 +107,7 @@ module Gitlab
 
       def project_params
         @project_params ||= begin
-          attrs = json_params.merge(override_params)
+          attrs = json_params.merge(override_params).merge(visibility_level)
 
           # Cleaning all imported and overridden params
           Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
@@ -125,6 +125,13 @@ module Gitlab
           # return params that are not 1 to many or 1 to 1 relations
           value.respond_to?(:each) && !Project.column_names.include?(key)
         end
+      end
+
+      def visibility_level
+        level = override_params['visibility_level'] || json_params['visibility_level'] || @project.visibility_level
+        level = @project.group.visibility_level if @project.group && level > @project.group.visibility_level
+
+        { 'visibility_level' => level }
       end
 
       # Given a relation hash containing one or more models and its relationships,

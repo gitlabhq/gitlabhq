@@ -1,0 +1,5 @@
+---
+title: Add GitLab Pages predefined CI variables 'CI_PAGES_DOMAIN' and 'CI_PAGES_URL'
+merge_request: 24504
+author: Adrian Moisey
+type: added

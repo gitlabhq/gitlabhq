@@ -1,5 +1,5 @@
-- breadcrumb_title 'Kubernetes'
-- page_title "Kubernetes Clusters"
+- breadcrumb_title _('Kubernetes')
+- page_title _('Kubernetes Clusters')
 
 = render_gcp_signup_offer
 
@@ -9,12 +9,12 @@
   - else
     .top-area.adjust
       .nav-text
-        = s_("ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project")
+        = s_('ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project')
       = render 'clusters/clusters/buttons'
 
     - if @has_ancestor_clusters
       .bs-callout.bs-callout-info
-        = s_("ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters.")
+        = s_('ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters.')
         %strong
           = link_to _('More information'), help_page_path('user/group/clusters/', anchor: 'cluster-precedence')
 

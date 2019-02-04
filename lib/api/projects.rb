@@ -128,7 +128,7 @@ module API
       end
     end
 
-    resource :users, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    resource :users, requirements: API::USER_REQUIREMENTS do
       desc 'Get a user projects' do
         success Entities::BasicProjectDetails
       end

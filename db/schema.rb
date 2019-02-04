@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190124200344) do
+ActiveRecord::Schema.define(version: 20190131122559) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1574,10 +1574,12 @@ ActiveRecord::Schema.define(version: 20190124200344) do
   end
 
   create_table "project_error_tracking_settings", primary_key: "project_id", id: :integer, force: :cascade do |t|
-    t.boolean "enabled", default: true, null: false
-    t.string "api_url", null: false
+    t.boolean "enabled", default: false, null: false
+    t.string "api_url"
     t.string "encrypted_token"
     t.string "encrypted_token_iv"
+    t.string "project_name"
+    t.string "organization_name"
   end
 
   create_table "project_features", force: :cascade do |t|
@@ -2146,6 +2148,8 @@ ActiveRecord::Schema.define(version: 20190124200344) do
     t.integer "merge_request_notes_filter", limit: 2, default: 0, null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.string "issues_sort"
+    t.string "merge_requests_sort"
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
   end
 

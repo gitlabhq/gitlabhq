@@ -83,7 +83,7 @@ class Import::GithubController < Import::BaseController
   end
 
   def callback_import_url
-    public_send("callback_import_#{provider}_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
+    public_send("users_import_#{provider}_callback_url", extra_import_params) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def provider_unauthorized

@@ -107,7 +107,7 @@ Now it's time we set up [GitLab CI/CD](https://about.gitlab.com/features/gitlab-
 GitLab CI/CD uses a file in the root of the repo, named `.gitlab-ci.yml`, to read the definitions for jobs
 that will be executed by the configured GitLab Runners. You can read more about this file in the [GitLab Documentation](https://docs.gitlab.com/ee/ci/yaml/).
 
-First of all, remember to set up variables for your deployment. Navigate to your project's **Settings > CI/CD > Variables** page
+First of all, remember to set up variables for your deployment. Navigate to your project's **Settings > CI/CD > Environment variables** page
 and add the following ones (replace them with your current values, of course):
 
 - **MAVEN_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)

@@ -167,12 +167,14 @@
       font-weight: $gl-font-weight-normal;
       display: inline-block;
       color: $gl-text-color;
+      vertical-align: top;
     }
 
     .option-description,
     .option-disabled-reason {
       margin-left: 30px;
       color: $project-option-descr-color;
+      margin-top: -5px;
     }
 
     .option-disabled-reason {

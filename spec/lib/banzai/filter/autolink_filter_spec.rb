@@ -188,6 +188,22 @@ describe Banzai::Filter::AutolinkFilter do
       expect(doc.at_css('a')['class']).to eq 'custom'
     end
 
+    it 'escapes RTLO and other characters' do
+      # rendered text looks like "http://example.com/evilexe.mp3"
+      evil_link = "#{link}evil\u202E3pm.exe"
+      doc = filter("#{evil_link}")
+
+      expect(doc.at_css('a')['href']).to eq "http://about.gitlab.com/evil%E2%80%AE3pm.exe"
+    end
+
+    it 'encodes international domains' do
+      link     = "http://one😄two.com"
+      expected = "http://one%F0%9F%98%84two.com"
+      doc      = filter(link)
+
+      expect(doc.at_css('a')['href']).to eq expected
+    end
+
     described_class::IGNORE_PARENTS.each do |elem|
       it "ignores valid links contained inside '#{elem}' element" do
         exp = act = "<#{elem}>See #{link}</#{elem}>"

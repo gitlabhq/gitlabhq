@@ -25,6 +25,7 @@ if Gitlab::Tracing.enabled?
 
   # Instrument Rails
   Gitlab::Tracing::Rails::ActiveRecordSubscriber.instrument
+  Gitlab::Tracing::Rails::ActionViewSubscriber.instrument
 
   # In multi-processed clustered architectures (puma, unicorn) don't
   # start tracing until the worker processes are spawned. This works

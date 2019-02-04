@@ -8,6 +8,7 @@ describe Import::BitbucketController do
   let(:secret) { "sekrettt" }
   let(:refresh_token) { SecureRandom.hex(15) }
   let(:access_params) { { token: token, expires_at: nil, expires_in: nil, refresh_token: nil } }
+  let(:code) { SecureRandom.hex(8) }
 
   def assign_session_tokens
     session[:bitbucket_token] = token
@@ -32,10 +33,16 @@ describe Import::BitbucketController do
                             expires_in: expires_in,
                             refresh_token: refresh_token)
       allow_any_instance_of(OAuth2::Client)
-        .to receive(:get_token).and_return(access_token)
+        .to receive(:get_token)
+        .with(hash_including(
+                'grant_type' => 'authorization_code',
+                'code' => code,
+                redirect_uri: users_import_bitbucket_callback_url),
+              {})
+        .and_return(access_token)
       stub_omniauth_provider('bitbucket')
 
-      get :callback
+      get :callback, params: { code: code }
 
       expect(session[:bitbucket_token]).to eq(token)
       expect(session[:bitbucket_refresh_token]).to eq(refresh_token)

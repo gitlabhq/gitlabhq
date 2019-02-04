@@ -127,6 +127,10 @@ describe Notes::CreateService do
         create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
       end
 
+      before do
+        project_with_repo.add_maintainer(user)
+      end
+
       context 'when eligible to have a note diff file' do
         let(:new_opts) do
           opts.merge(in_reply_to_discussion_id: nil,

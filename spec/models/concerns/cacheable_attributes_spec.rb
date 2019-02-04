@@ -159,6 +159,10 @@ describe CacheableAttributes do
 
     describe 'edge cases' do
       describe 'caching behavior', :use_clean_rails_memory_store_caching do
+        before do
+          stub_commonmark_sourcepos_disabled
+        end
+
         it 'retrieves upload fields properly' do
           ar_record = create(:appearance, :with_logo)
           ar_record.cache!

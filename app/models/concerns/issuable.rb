@@ -270,26 +270,29 @@ module Issuable
 
   def to_hook_data(user, old_associations: {})
     changes = previous_changes
-    old_labels = old_associations.fetch(:labels, [])
-    old_assignees = old_associations.fetch(:assignees, [])
 
-    if old_labels != labels
-      changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
-    end
+    if old_associations
+      old_labels = old_associations.fetch(:labels, [])
+      old_assignees = old_associations.fetch(:assignees, [])
 
-    if old_assignees != assignees
-      if self.is_a?(Issue)
-        changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
-      else
-        changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+      if old_labels != labels
+        changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
       end
-    end
 
-    if self.respond_to?(:total_time_spent)
-      old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+      if old_assignees != assignees
+        if self.is_a?(Issue)
+          changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
+        else
+          changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+        end
+      end
 
-      if old_total_time_spent != total_time_spent
-        changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+      if self.respond_to?(:total_time_spent)
+        old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+
+        if old_total_time_spent != total_time_spent
+          changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+        end
       end
     end
 
