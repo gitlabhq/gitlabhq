@@ -389,6 +389,16 @@ class Project < ActiveRecord::Base
     with_project_feature.where(project_features: { access_level_attribute => level })
   }
 
+  # Picks projects which use the given programming language
+  scope :with_programming_language, ->(language_name) do
+    lang_id_query = ProgrammingLanguage
+        .with_name_case_insensitive(language_name)
+        .select(:id)
+
+    joins(:repository_languages)
+        .where(repository_languages: { programming_language_id: lang_id_query })
+  end
+
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
