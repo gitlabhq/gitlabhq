@@ -1844,6 +1844,26 @@ describe Ci::Build do
     context 'when there is no environment' do
       it { is_expected.to be_nil }
     end
+
+    context 'when build has a start environment' do
+      let(:build) { create(:ci_build, :deploy_to_production, pipeline: pipeline) }
+
+      it 'does not expand environment name' do
+        expect(build).not_to receive(:expanded_environment_name)
+
+        subject
+      end
+    end
+
+    context 'when build has a stop environment' do
+      let(:build) { create(:ci_build, :stop_review_app, pipeline: pipeline) }
+
+      it 'expands environment name' do
+        expect(build).to receive(:expanded_environment_name)
+
+        subject
+      end
+    end
   end
 
   describe '#play' do
