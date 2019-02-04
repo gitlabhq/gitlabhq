@@ -252,6 +252,13 @@ entry.
 - Update url placeholder for the sentry configuration page. !24338
 
 
+## 11.6.9 (2019-02-04)
+
+### Security (1 change)
+
+- Use sanitized user status message for user popover.
+
+
 ## 11.6.8 (2019-01-30)
 
 - No changes.
