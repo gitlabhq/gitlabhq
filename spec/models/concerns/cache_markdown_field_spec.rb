@@ -133,6 +133,15 @@ describe CacheMarkdownField do
     end
   end
 
+  context 'when a markdown field and html field are both changed' do
+    it do
+      expect(thing).not_to receive(:refresh_markdown_cache)
+      thing.foo = '_look over there!_'
+      thing.foo_html = '<em>look over there!</em>'
+      thing.save
+    end
+  end
+
   context 'a non-markdown field changed' do
     shared_examples 'with cache version' do |cache_version|
       let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
@@ -239,6 +248,30 @@ describe CacheMarkdownField do
     it 'returns default version when version is nil' do
       thing.cached_markdown_version = nil
       is_expected.to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
+    end
+  end
+
+  describe '#legacy_markdown?' do
+    subject { thing.legacy_markdown? }
+
+    it 'returns true for redcarpet versions' do
+      thing.cached_markdown_version = CacheMarkdownField::CACHE_COMMONMARK_VERSION_START - 1
+      is_expected.to be_truthy
+    end
+
+    it 'returns false for commonmark versions' do
+      thing.cached_markdown_version = CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if nil' do
+      thing.cached_markdown_version = nil
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if 0' do
+      thing.cached_markdown_version = 0
+      is_expected.to be_falsey
     end
   end
 

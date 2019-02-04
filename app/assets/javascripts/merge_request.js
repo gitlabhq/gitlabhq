@@ -35,6 +35,7 @@ function MergeRequest(opts) {
       dataType: 'merge_request',
       fieldName: 'description',
       selector: '.detail-page-description',
+      lockVersion: this.$el.data('lockVersion'),
       onSuccess: result => {
         document.querySelector('#task_status').innerText = result.task_status;
         document.querySelector('#task_status_short').innerText = result.task_status_short;

@@ -1,5 +1,6 @@
 <script>
 import $ from 'jquery';
+import { __ } from '~/locale';
 import animateMixin from '../mixins/animate';
 import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
@@ -35,6 +36,11 @@ export default {
       required: false,
       default: null,
     },
+    lockVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -67,8 +73,10 @@ export default {
         new TaskList({
           dataType: this.issuableType,
           fieldName: 'description',
+          lockVersion: this.lockVersion,
           selector: '.detail-page-description',
           onSuccess: this.taskListUpdateSuccess.bind(this),
+          onError: this.taskListUpdateError.bind(this),
         });
       }
     },
@@ -80,6 +88,16 @@ export default {
       } catch (error) {
         if (error && error.name === 'SpamError') this.openRecaptcha();
       }
+    },
+
+    taskListUpdateError() {
+      window.Flash(
+        __(
+          'Someone edited this issue at the same time you did. The description has been updated and you will need to make your changes again.',
+        ),
+      );
+
+      this.$emit('taskListUpdateFailed');
     },
 
     updateTaskStatusText() {

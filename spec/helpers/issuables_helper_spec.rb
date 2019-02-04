@@ -190,6 +190,7 @@ describe IssuablesHelper do
         markdownDocsPath: '/help/user/markdown',
         markdownVersion: CacheMarkdownField::CACHE_COMMONMARK_VERSION,
         issuableTemplates: [],
+        lockVersion: issue.lock_version,
         projectPath: @project.path,
         projectNamespace: @project.namespace.path,
         initialTitleHtml: issue.title,
