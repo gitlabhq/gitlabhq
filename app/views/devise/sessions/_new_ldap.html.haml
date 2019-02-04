@@ -1,3 +1,5 @@
+- server = local_assigns.fetch(:server)
+
 = form_tag(omniauth_callback_path(:user, server['provider_name']), id: 'new_ldap_user', class: "gl-show-field-errors") do
   .form-group
     = label_tag :username, "#{server['label']} Username"

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe ClusterApplicationEntity do
   describe '#as_json' do
-    let(:application) { build(:clusters_applications_helm) }
+    let(:application) { build(:clusters_applications_helm, version: '0.1.1') }
     subject { described_class.new(application).as_json }
 
     it 'has name' do
@@ -11,6 +11,10 @@ describe ClusterApplicationEntity do
 
     it 'has status' do
       expect(subject[:status]).to eq(:not_installable)
+    end
+
+    it 'has version' do
+      expect(subject[:version]).to eq('0.1.1')
     end
 
     it 'has no status_reason' do

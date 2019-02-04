@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/clusters`
+merge_request: 24666
+author: George Tsiolis
+type: other

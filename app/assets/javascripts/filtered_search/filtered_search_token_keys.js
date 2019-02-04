@@ -65,8 +65,10 @@ export default class FilteredSearchTokenKeys {
 
   searchByConditionKeyValue(key, value) {
     return (
-      this.conditions.find(condition => condition.tokenKey === key && condition.value === value) ||
-      null
+      this.conditions.find(
+        condition =>
+          condition.tokenKey === key && condition.value.toLowerCase() === value.toLowerCase(),
+      ) || null
     );
   }
 

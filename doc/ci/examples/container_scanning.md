@@ -22,7 +22,7 @@ container_scanning:
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
-    ## https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables
+    ## https://docs.gitlab.com/ee/ci/variables/#predefined-environment-variables
     CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
     CI_APPLICATION_TAG: $CI_COMMIT_SHA
   allow_failure: true
@@ -51,7 +51,7 @@ The above example will create a `container_scanning` job in your CI/CD pipeline,
 the image from the [Container Registry](../../user/project/container_registry.md)
 (whose name is defined from the two `CI_APPLICATION_` variables) and scan it
 for possible vulnerabilities. The report will be saved as a
-[Container Scanning report artifact](https://docs.gitlab.com/ee//ci/yaml/README.html#artifactsreportscontainer_scanning)
+[Container Scanning report artifact](../yaml/README.md#artifactsreportscontainer_scanning-ultimate)
 that you can later download and analyze.
 Due to implementation limitations we always take the latest Container Scanning artifact available.
 
@@ -87,7 +87,7 @@ container_scanning:
   variables:
     DOCKER_DRIVER: overlay2
     ## Define two new variables based on GitLab's CI/CD predefined variables
-    ## https://docs.gitlab.com/ee/ci/variables/#predefined-variables-environment-variables
+    ## https://docs.gitlab.com/ee/ci/variables/#predefined-environment-variables
     CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
     CI_APPLICATION_TAG: $CI_COMMIT_SHA
   allow_failure: true

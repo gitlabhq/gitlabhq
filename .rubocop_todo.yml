@@ -80,11 +80,6 @@ Lint/InterpolationCheck:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 1
-Lint/ReturnInVoidContext:
-  Exclude:
-    - 'app/models/project.rb'
-
 # Offense count: 9
 Lint/UriEscapeUnescape:
   Exclude:
@@ -436,11 +431,6 @@ Style/LineEndConcatenation:
     - 'spec/lib/gitlab/checks/project_moved_spec.rb'
     - 'spec/lib/gitlab/gfm/reference_rewriter_spec.rb'
     - 'spec/lib/gitlab/incoming_email_spec.rb'
-
-# Offense count: 39
-# Cop supports --auto-correct.
-Style/MethodCallWithoutArgsParentheses:
-  Enabled: false
 
 # Offense count: 18
 Style/MethodMissing:

@@ -9,9 +9,11 @@ require 'task_list/filter'
 #
 # Used by MergeRequest and Issue
 module Taskable
-  COMPLETED    = 'completed'.freeze
-  INCOMPLETE   = 'incomplete'.freeze
-  ITEM_PATTERN = %r{
+  COMPLETED          = 'completed'.freeze
+  INCOMPLETE         = 'incomplete'.freeze
+  COMPLETE_PATTERN   = /(\[[xX]\])/.freeze
+  INCOMPLETE_PATTERN = /(\[[\s]\])/.freeze
+  ITEM_PATTERN       = %r{
     ^
     \s*(?:[-+*]|(?:\d+\.)) # list prefix required - task item has to be always in a list
     \s+                       # whitespace prefix has to be always presented for a list item

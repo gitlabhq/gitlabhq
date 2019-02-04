@@ -1,6 +1,12 @@
 require_relative 'qa/tools/revoke_all_personal_access_tokens'
+require_relative 'qa/tools/delete_subgroups'
 
 desc "Revokes all personal access tokens"
 task :revoke_personal_access_tokens do
   QA::Tools::RevokeAllPersonalAccessTokens.new.run
+end
+
+desc "Deletes subgroups within a provided group"
+task :delete_subgroups do
+  QA::Tools::DeleteSubgroups.new.run
 end

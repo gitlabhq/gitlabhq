@@ -95,11 +95,7 @@ module QA
           Page::Project::Pipeline::Show.act { go_to_first_job }
 
           Page::Project::Job::Show.perform do |job|
-            job.wait(reload: false) do
-              job.completed? && !job.trace_loading?
-            end
-
-            expect(job.passed?).to be_truthy, "Job status did not become \"passed\"."
+            expect(job).to be_successful, "Job status did not become \"passed\"."
             expect(job.output).to include(sha1sum)
           end
         end

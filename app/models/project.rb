@@ -377,8 +377,10 @@ class Project < ActiveRecord::Base
 
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
-    access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED, ProjectFeature::PUBLIC] })
+    access_level_attribute = ProjectFeature.arel_table[ProjectFeature.access_level_attribute(feature)]
+    enabled_feature = access_level_attribute.gt(ProjectFeature::DISABLED).or(access_level_attribute.eq(nil))
+
+    with_project_feature.where(enabled_feature)
   }
 
   # Picks a feature where the level is exactly that given.
@@ -465,7 +467,8 @@ class Project < ActiveRecord::Base
   # logged in users to more efficiently get private projects with the given
   # feature.
   def self.with_feature_available_for_user(feature, user)
-    visible = [nil, ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
+    visible = [ProjectFeature::ENABLED, ProjectFeature::PUBLIC]
+    min_access_level = ProjectFeature.required_minimum_access_level(feature)
 
     if user&.admin?
       with_feature_enabled(feature)
@@ -473,10 +476,15 @@ class Project < ActiveRecord::Base
       column = ProjectFeature.quoted_access_level_column(feature)
 
       with_project_feature
-        .where("#{column} IN (?) OR (#{column} = ? AND EXISTS (?))",
-              visible,
-              ProjectFeature::PRIVATE,
-              user.authorizations_for_projects)
+        .where(
+          "(projects.visibility_level > :private AND (#{column} IS NULL OR #{column} >= (:public_visible) OR (#{column} = :private_visible AND EXISTS(:authorizations))))"\
+          " OR (projects.visibility_level = :private AND (#{column} IS NULL OR #{column} >= :private_visible) AND EXISTS(:authorizations))",
+          {
+            private: Gitlab::VisibilityLevel::PRIVATE,
+            public_visible: ProjectFeature::ENABLED,
+            private_visible: ProjectFeature::PRIVATE,
+            authorizations: user.authorizations_for_projects(min_access_level: min_access_level)
+          })
     else
       with_feature_access_level(feature, visible)
     end
@@ -530,6 +538,7 @@ class Project < ActiveRecord::Base
 
     def reference_pattern
       %r{
+        (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
         ((?<namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX})\/)?
         (?<project>#{Gitlab::PathRegex::PROJECT_PATH_FORMAT_REGEX})
       }x
@@ -566,6 +575,14 @@ class Project < ActiveRecord::Base
 
     def group_ids
       joins(:namespace).where(namespaces: { type: 'Group' }).select(:namespace_id)
+    end
+  end
+
+  def all_pipelines
+    if builds_enabled?
+      super
+    else
+      super.external
     end
   end
 
@@ -721,11 +738,13 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
-    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
-
-    import_url = Gitlab::UrlSanitizer.new(value)
-    super(import_url.sanitized_url)
-    create_or_update_import_data(credentials: import_url.credentials)
+    if Gitlab::UrlSanitizer.valid?(value)
+      import_url = Gitlab::UrlSanitizer.new(value)
+      super(import_url.sanitized_url)
+      create_or_update_import_data(credentials: import_url.credentials)
+    else
+      super(value)
+    end
   end
 
   def import_url
@@ -1049,7 +1068,7 @@ class Project < ActiveRecord::Base
   # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
-      params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
+      params = label.attributes.except('id', 'template', 'created_at', 'updated_at', 'type')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
@@ -1585,6 +1604,13 @@ class Project < ActiveRecord::Base
   def after_import
     repository.after_import
     wiki.repository.after_import
+
+    # The import assigns iid values on its own, e.g. by re-using GitHub ids.
+    # Flush existing InternalId records for this project for consistency reasons.
+    # Those records are going to be recreated with the next normal creation
+    # of a model instance (e.g. an Issue).
+    InternalId.flush_records!(project: self)
+
     import_state.finish
     import_state.remove_jid
     update_project_counter_caches
@@ -1689,9 +1715,17 @@ class Project < ActiveRecord::Base
       .append(key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path)
       .append(key: 'CI_PROJECT_URL', value: web_url)
       .append(key: 'CI_PROJECT_VISIBILITY', value: visibility)
+      .concat(pages_variables)
       .concat(container_registry_variables)
       .concat(auto_devops_variables)
       .concat(api_variables)
+  end
+
+  def pages_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      variables.append(key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host)
+      variables.append(key: 'CI_PAGES_URL', value: pages_url)
+    end
   end
 
   def api_variables

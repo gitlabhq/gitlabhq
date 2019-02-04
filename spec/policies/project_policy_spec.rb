@@ -12,7 +12,7 @@ describe ProjectPolicy do
   let(:base_guest_permissions) do
     %i[
       read_project read_board read_list read_wiki read_issue
-      read_project_for_iids read_issue_iid read_merge_request_iid read_label
+      read_project_for_iids read_issue_iid read_label
       read_milestone read_project_snippet read_project_member read_note
       create_project create_issue create_note upload_file create_merge_request_in
       award_emoji read_release
@@ -102,15 +102,27 @@ describe ProjectPolicy do
     expect(Ability).not_to be_allowed(user, :read_issue, project)
   end
 
-  context 'when the feature is disabled' do
+  context 'wiki feature' do
+    let(:permissions) { %i(read_wiki create_wiki update_wiki admin_wiki download_wiki_code) }
+
     subject { described_class.new(owner, project) }
 
-    before do
-      project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
-    end
+    context 'when the feature is disabled' do
+      before do
+        project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::DISABLED)
+      end
 
-    it 'does not include the wiki permissions' do
-      expect_disallowed :read_wiki, :create_wiki, :update_wiki, :admin_wiki, :download_wiki_code
+      it 'does not include the wiki permissions' do
+        expect_disallowed(*permissions)
+      end
+
+      context 'when there is an external wiki' do
+        it 'does not include the wiki permissions' do
+          allow(project).to receive(:has_external_wiki?).and_return(true)
+
+          expect_disallowed(*permissions)
+        end
+      end
     end
   end
 
@@ -152,22 +164,52 @@ describe ProjectPolicy do
     end
   end
 
+  context 'for a guest in a private project' do
+    let(:project) { create(:project, :private) }
+    subject { described_class.new(guest, project) }
+
+    it 'disallows the guest from reading the merge request and merge request iid' do
+      expect_disallowed(:read_merge_request)
+      expect_disallowed(:read_merge_request_iid)
+    end
+  end
+
   context 'builds feature' do
-    subject { described_class.new(owner, project) }
+    context 'when builds are disabled' do
+      subject { described_class.new(owner, project) }
 
-    it 'disallows all permissions when the feature is disabled' do
-      project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+      before do
+        project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+      end
 
-      builds_permissions = [
-        :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
-        :create_build, :read_build, :update_build, :admin_build, :destroy_build,
-        :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
-        :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
-        :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
-        :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
-      ]
+      it 'disallows all permissions except pipeline when the feature is disabled' do
+        builds_permissions = [
+          :create_build, :read_build, :update_build, :admin_build, :destroy_build,
+          :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
+          :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
+          :create_cluster, :read_cluster, :update_cluster, :admin_cluster, :destroy_cluster,
+          :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
+        ]
 
-      expect_disallowed(*builds_permissions)
+        expect_disallowed(*builds_permissions)
+      end
+    end
+
+    context 'when builds are disabled only for some users' do
+      subject { described_class.new(guest, project) }
+
+      before do
+        project.project_feature.update(builds_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'disallows pipeline and commit_status permissions' do
+        builds_permissions = [
+          :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
+          :create_commit_status, :update_commit_status, :admin_commit_status, :destroy_commit_status
+        ]
+
+        expect_disallowed(*builds_permissions)
+      end
     end
   end
 

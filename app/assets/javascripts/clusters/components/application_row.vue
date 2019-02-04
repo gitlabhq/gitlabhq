@@ -4,12 +4,7 @@ import { s__, sprintf } from '../../locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
-import {
-  APPLICATION_STATUS,
-  REQUEST_LOADING,
-  REQUEST_SUCCESS,
-  REQUEST_FAILURE,
-} from '../constants';
+import { APPLICATION_STATUS, REQUEST_SUBMITTED, REQUEST_FAILURE } from '../constants';
 
 export default {
   components: {
@@ -72,11 +67,30 @@ export default {
     isKnownStatus() {
       return Object.values(APPLICATION_STATUS).includes(this.status);
     },
+    isInstalling() {
+      return (
+        this.status === APPLICATION_STATUS.SCHEDULED ||
+        this.status === APPLICATION_STATUS.INSTALLING ||
+        (this.requestStatus === REQUEST_SUBMITTED && !this.statusReason && !this.isInstalled)
+      );
+    },
     isInstalled() {
       return (
         this.status === APPLICATION_STATUS.INSTALLED ||
         this.status === APPLICATION_STATUS.UPDATED ||
         this.status === APPLICATION_STATUS.UPDATING
+      );
+    },
+    canInstall() {
+      if (this.isInstalling) {
+        return false;
+      }
+
+      return (
+        this.status === APPLICATION_STATUS.NOT_INSTALLABLE ||
+        this.status === APPLICATION_STATUS.INSTALLABLE ||
+        this.status === APPLICATION_STATUS.ERROR ||
+        this.isUnknownStatus
       );
     },
     hasLogo() {
@@ -90,12 +104,7 @@ export default {
       return `js-cluster-application-row-${this.id}`;
     },
     installButtonLoading() {
-      return (
-        !this.status ||
-        this.status === APPLICATION_STATUS.SCHEDULED ||
-        this.status === APPLICATION_STATUS.INSTALLING ||
-        this.requestStatus === REQUEST_LOADING
-      );
+      return !this.status || this.status === APPLICATION_STATUS.SCHEDULED || this.isInstalling;
     },
     installButtonDisabled() {
       // Avoid the potential for the real-time data to say APPLICATION_STATUS.INSTALLABLE but
@@ -104,30 +113,17 @@ export default {
       return (
         ((this.status !== APPLICATION_STATUS.INSTALLABLE &&
           this.status !== APPLICATION_STATUS.ERROR) ||
-          this.requestStatus === REQUEST_LOADING ||
-          this.requestStatus === REQUEST_SUCCESS) &&
+          this.isInstalling) &&
         this.isKnownStatus
       );
     },
     installButtonLabel() {
       let label;
-      if (
-        this.status === APPLICATION_STATUS.NOT_INSTALLABLE ||
-        this.status === APPLICATION_STATUS.INSTALLABLE ||
-        this.status === APPLICATION_STATUS.ERROR ||
-        this.isUnknownStatus
-      ) {
+      if (this.canInstall) {
         label = s__('ClusterIntegration|Install');
-      } else if (
-        this.status === APPLICATION_STATUS.SCHEDULED ||
-        this.status === APPLICATION_STATUS.INSTALLING
-      ) {
+      } else if (this.isInstalling) {
         label = s__('ClusterIntegration|Installing');
-      } else if (
-        this.status === APPLICATION_STATUS.INSTALLED ||
-        this.status === APPLICATION_STATUS.UPDATED ||
-        this.status === APPLICATION_STATUS.UPDATING
-      ) {
+      } else if (this.isInstalled) {
         label = s__('ClusterIntegration|Installed');
       }
 
@@ -140,7 +136,10 @@ export default {
       return s__('ClusterIntegration|Manage');
     },
     hasError() {
-      return this.status === APPLICATION_STATUS.ERROR || this.requestStatus === REQUEST_FAILURE;
+      return (
+        !this.isInstalling &&
+        (this.status === APPLICATION_STATUS.ERROR || this.requestStatus === REQUEST_FAILURE)
+      );
     },
     generalErrorDescription() {
       return sprintf(s__('ClusterIntegration|Something went wrong while installing %{title}'), {

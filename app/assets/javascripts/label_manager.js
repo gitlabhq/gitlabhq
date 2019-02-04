@@ -70,7 +70,18 @@ export default class LabelManager {
 
     const $detachedLabel = $label.detach();
     this.toggleLabelPriorityBadge($detachedLabel, action);
-    $detachedLabel.appendTo($target);
+
+    const $labelEls = $target.find('li.label-list-item');
+
+    /*
+     * If there is a label element in the target, we'd want to
+     * append the new label just right next to it.
+     */
+    if ($labelEls.length) {
+      $labelEls.last().after($detachedLabel);
+    } else {
+      $detachedLabel.appendTo($target);
+    }
 
     if ($from.find('li').length) {
       $from.find('.empty-message').removeClass('hidden');

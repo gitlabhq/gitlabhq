@@ -653,15 +653,15 @@
     eslint-plugin-promise "^4.0.1"
     eslint-plugin-vue "^5.0.0"
 
-"@gitlab/svgs@^1.47.0":
-  version "1.47.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.47.0.tgz#c03dda41aefd3889cbfed95a391836106ae2ac4d"
-  integrity sha512-0Bx/HxqR8xpqqaLnZiFAHIh1jTAFQPFToVZ6Wi3QyhsAwmXRAbgw1SlkRMZ7w3e6l+G71Wnw+GnI4rx1gK8JLQ==
+"@gitlab/svgs@^1.48.0":
+  version "1.48.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.48.0.tgz#7b2e20e357d85aa46e905e6ca51b0b4184ae2794"
+  integrity sha512-9lRsfqN0W3JxopiXnTzvDY31O465jMTGNKpiOCXy7uAMfwZA6UsRsc7Pp369uKnOLR0duXUGOxOv4NGsK6AeXw==
 
-"@gitlab/ui@^1.20.0":
-  version "1.20.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.20.0.tgz#50bd4b092646a2c6337f0f462779af8e702dda05"
-  integrity sha512-EJgrqon/tYCUPoOgnNNAXbrDXOEAajJwKHr4aR2R6vkJI3kVZiq66RNIe5ftGIUoNqYCDnRIkpLyo7MqzJPgcw==
+"@gitlab/ui@^1.22.1":
+  version "1.22.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.22.1.tgz#92ed77216c5702776049b9ac41eb717c1acd864e"
+  integrity sha512-pWbEaXOOcp8Xt2TjJtPas3lXwWVvizrBOf0M8yN0XAn2GgIRCVnRMpjNEN7/oNeBcEM9CrmPYApEM/hZO+maqQ==
   dependencies:
     babel-standalone "^6.26.0"
     bootstrap-vue "^2.0.0-rc.11"
@@ -3032,10 +3032,10 @@ decamelize@^2.0.0:
   dependencies:
     xregexp "4.0.0"
 
-deckar01-task_list@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/deckar01-task_list/-/deckar01-task_list-2.0.1.tgz#fdcfb6ab5717055a82f29e863a49990a043a06a9"
-  integrity sha512-i5fT8QxJ9iV6dfgy5U0NHW91O5cKsvDc4u8JNMnZ6efQc356bA9vKuXO3732agSry+bO6TolzTmuqSRi4tkkeA==
+deckar01-task_list@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/deckar01-task_list/-/deckar01-task_list-2.2.0.tgz#5cc3ea06f01d3d786b1a667064a462eb5d069bd3"
+  integrity sha512-NUfu5ARoD9SC2k+fBT5cBer59iKfEdawPrmfqp5+zAahTECb8z9dsuS1Xnx7jzFAmCCLnEs3z/aYucYXzNrKkQ==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
@@ -3415,6 +3415,11 @@ elliptic@^6.0.0:
     inherits "^2.0.1"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
+
+emoji-regex@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-7.0.3.tgz#933a04052860c85e83c122479c4748a8e4c72156"
+  integrity sha512-CwBLREIQ7LvYFB0WyRvwhq5N5qPhc6PMjD6bYggFlI5YyDgl+0vxq5VHbMOFqLg7hfWzmu8T5Z1QofhmTIhItA==
 
 emoji-unicode-version@^0.2.1:
   version "0.2.1"

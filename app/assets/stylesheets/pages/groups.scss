@@ -29,9 +29,7 @@
   }
 }
 
-.group-nav-container .group-search,
 .group-nav-container .nav-controls {
-  display: flex;
   align-items: flex-start;
   padding: $gl-padding-top 0 0;
 
@@ -42,6 +40,52 @@
 
   .dropdown-menu-right {
     margin-top: 0;
+  }
+
+  @include media-breakpoint-down(sm) {
+    .dropdown,
+    .dropdown .dropdown-toggle,
+    .btn-success {
+      display: block;
+    }
+
+    .group-filter-form,
+    .dropdown {
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+
+    &,
+    .group-filter-form,
+    .group-filter-form-field,
+    .dropdown,
+    .dropdown .dropdown-toggle,
+    .btn-success {
+      width: 100%;
+    }
+
+    .dropdown .dropdown-toggle .fa-chevron-down {
+      position: absolute;
+      top: 11px;
+      right: 8px;
+    }
+  }
+}
+
+.home-panel-buttons {
+  .home-panel-action-button {
+    vertical-align: top;
+  }
+
+
+  .notification-dropdown {
+    .dropdown-menu {
+      @extend .dropdown-menu-right;
+    }
+
+    .icon {
+      fill: $gl-text-color-secondary;
+    }
   }
 
   .new-project-subgroup {
@@ -99,59 +143,27 @@
           font-weight: $gl-font-weight-bold;
         }
       }
-    }
-  }
 
-  @include media-breakpoint-down(sm) {
-    &,
-    .dropdown,
-    .dropdown .dropdown-toggle,
-    .btn-success {
-      display: block;
-    }
+      @include media-breakpoint-down(sm) {
+        display: flex;
+        align-items: flex-start;
 
-    .group-filter-form,
-    .dropdown {
-      margin-bottom: 10px;
-      margin-right: 0;
-    }
+        .dropdown-primary {
+          flex: 1;
+        }
 
-    .group-filter-form,
-    .dropdown .dropdown-toggle,
-    .btn-success {
-      width: 100%;
-    }
+        .dropdown-toggle {
+          width: auto;
+        }
 
-    .dropdown .dropdown-toggle .fa-chevron-down {
-      position: absolute;
-      top: 11px;
-      right: 8px;
-    }
-
-    .new-project-subgroup {
-      display: flex;
-      align-items: flex-start;
-
-      .dropdown-primary {
-        flex: 1;
-      }
-
-      .dropdown-toggle {
-        width: auto;
-      }
-
-      .dropdown-menu {
-        width: 100%;
-        max-width: inherit;
-        min-width: inherit;
+        .dropdown-menu {
+          width: 100%;
+          max-width: inherit;
+          min-width: inherit;
+        }
       }
     }
   }
-}
-
-.group-nav-container .group-search {
-  padding: $gl-padding 0;
-  border-bottom: 1px solid $border-color;
 }
 
 .groups-listing {

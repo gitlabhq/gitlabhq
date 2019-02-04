@@ -54,7 +54,47 @@ describe Banzai::Pipeline::FullPipeline do
     end
 
     it 'properly adds the necessary ids and classes' do
+      stub_commonmark_sourcepos_disabled
+
       expect(html.lines.map(&:strip).join("\n")).to eq filtered_footnote
+    end
+  end
+
+  describe 'links are detected as malicious' do
+    it 'has tooltips for malicious links' do
+      examples = %W[
+        http://example.com/evil\u202E3pm.exe
+        [evilexe.mp3](http://example.com/evil\u202E3pm.exe)
+        rdar://localhost.com/\u202E3pm.exe
+        http://one😄two.com
+        [Evil-Test](http://one😄two.com)
+        http://\u0261itlab.com
+        [Evil-GitLab-link](http://\u0261itlab.com)
+        ![Evil-GitLab-link](http://\u0261itlab.com.png)
+      ]
+
+      examples.each do |markdown|
+        result = described_class.call(markdown, project: nil)[:output]
+        link   = result.css('a').first
+
+        expect(link[:class]).to include('has-tooltip')
+      end
+    end
+
+    it 'has no tooltips for safe links' do
+      examples = %w[
+        http://example.com
+        [Safe-Test](http://example.com)
+        https://commons.wikimedia.org/wiki/File:اسكرام_2_-_تمنراست.jpg
+        [Wikipedia-link](https://commons.wikimedia.org/wiki/File:اسكرام_2_-_تمنراست.jpg)
+      ]
+
+      examples.each do |markdown|
+        result = described_class.call(markdown, project: nil)[:output]
+        link   = result.css('a').first
+
+        expect(link[:class]).to be_nil
+      end
     end
   end
 end

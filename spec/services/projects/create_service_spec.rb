@@ -16,7 +16,11 @@ describe Projects::CreateService, '#execute' do
     Label.create(title: "bug", template: true)
     project = create_project(user, opts)
 
-    expect(project.labels).not_to be_empty
+    created_label = project.reload.labels.last
+
+    expect(created_label.type).to eq('ProjectLabel')
+    expect(created_label.project_id).to eq(project.id)
+    expect(created_label.title).to eq('bug')
   end
 
   context 'user namespace' do

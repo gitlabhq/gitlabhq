@@ -7,11 +7,11 @@ describe Gitlab::Tracing::Rails::ActiveRecordSubscriber do
   using RSpec::Parameterized::TableSyntax
 
   describe '.instrument' do
-    it 'is unsubscribable' do
-      subscription = described_class.instrument
+    it 'is unsubscribeable' do
+      unsubscribe = described_class.instrument
 
-      expect(subscription).not_to be_nil
-      expect { ActiveSupport::Notifications.unsubscribe(subscription) }.not_to raise_error
+      expect(unsubscribe).not_to be_nil
+      expect { unsubscribe.call }.not_to raise_error
     end
   end
 

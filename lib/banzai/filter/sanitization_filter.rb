@@ -41,6 +41,9 @@ module Banzai
         whitelist[:elements].push('abbr')
         whitelist[:attributes]['abbr'] = %w(title)
 
+        # Allow the 'data-sourcepos' from CommonMark on all elements
+        whitelist[:attributes][:all].push('data-sourcepos')
+
         # Disallow `name` attribute globally, allow on `a`
         whitelist[:attributes][:all].delete('name')
         whitelist[:attributes]['a'].push('name')

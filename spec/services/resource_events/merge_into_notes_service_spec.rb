@@ -44,7 +44,7 @@ describe ResourceEvents::MergeIntoNotesService do
       create_event(created_at: time, user: user2)
       create_event(created_at: 1.day.ago, label: label2)
 
-      notes = described_class.new(resource, user).execute()
+      notes = described_class.new(resource, user).execute
 
       expected = [
         "added #{label.to_reference} label and removed #{label2.to_reference} label",
@@ -61,7 +61,7 @@ describe ResourceEvents::MergeIntoNotesService do
       event = create_event(created_at: 1.day.ago)
 
       notes = described_class.new(resource, user,
-                                  last_fetched_at: 2.days.ago.to_i).execute()
+                                  last_fetched_at: 2.days.ago.to_i).execute
 
       expect(notes.count).to eq 1
       expect(notes.first.discussion_id).to eq event.discussion_id

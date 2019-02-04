@@ -3,7 +3,8 @@
 require 'pathname'
 
 module QA
-  context 'Configure', :orchestrated, :kubernetes do
+  # Transient failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/68
+  context 'Configure', :orchestrated, :kubernetes, :quarantine do
     describe 'Auto DevOps support' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -74,9 +75,30 @@ module QA
             Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
 
             Page::Project::Pipeline::Show.perform do |pipeline|
-              expect(pipeline).to have_build('build', status: :success, wait: 600)
-              expect(pipeline).to have_build('test', status: :success, wait: 600)
-              expect(pipeline).to have_build('production', status: :success, wait: 1200)
+              pipeline.go_to_job('build')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('test')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('production')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 1200), "Job did not pass"
+
+              job.click_element(:pipeline_path)
             end
 
             Page::Project::Menu.act { click_operations_environments }
@@ -114,9 +136,30 @@ module QA
             Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
 
             Page::Project::Pipeline::Show.perform do |pipeline|
-              expect(pipeline).to have_build('build', status: :success, wait: 600)
-              expect(pipeline).to have_build('test', status: :success, wait: 600)
-              expect(pipeline).to have_build('production', status: :success, wait: 1200)
+              pipeline.go_to_job('build')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('test')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('production')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 1200), "Job did not pass"
+
+              job.click_element(:pipeline_path)
             end
 
             Page::Project::Menu.act { click_operations_environments }

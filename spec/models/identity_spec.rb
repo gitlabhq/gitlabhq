@@ -10,6 +10,40 @@ describe Identity do
     it { is_expected.to respond_to(:extern_uid) }
   end
 
+  describe 'validations' do
+    set(:user) { create(:user) }
+
+    context 'with existing user and provider' do
+      before do
+        create(:identity, provider: 'ldapmain', user_id: user.id)
+      end
+
+      it 'returns false for a duplicate entry' do
+        identity = user.identities.build(provider: 'ldapmain', user_id: user.id)
+
+        expect(identity.validate).to be_falsey
+      end
+
+      it 'returns true when a different provider is used' do
+        identity = user.identities.build(provider: 'gitlab', user_id: user.id)
+
+        expect(identity.validate).to be_truthy
+      end
+    end
+
+    context 'with newly-created user' do
+      before do
+        create(:identity, provider: 'ldapmain', user_id: nil)
+      end
+
+      it 'successfully validates even with a nil user_id' do
+        identity = user.identities.build(provider: 'ldapmain')
+
+        expect(identity.validate).to be_truthy
+      end
+    end
+  end
+
   describe '#is_ldap?' do
     let(:ldap_identity) { create(:identity, provider: 'ldapmain') }
     let(:other_identity) { create(:identity, provider: 'twitter') }

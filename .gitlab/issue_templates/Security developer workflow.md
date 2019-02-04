@@ -3,20 +3,17 @@
 
 Create this issue under https://dev.gitlab.org/gitlab/gitlabhq
 
-Set the title to: `[Security] Description of the original issue`
+Set the title to: `Description of the original issue`
 -->
 
-### Prior to the security release
+### Prior to starting the security release work
 
 - [ ] Read the [security process for developers] if you are not familiar with it.
 - [ ] Link to the original issue adding it to the [links section](#links)
 - [ ] Run `scripts/security-harness` in the CE, EE, and/or Omnibus to prevent pushing to any remote besides `dev.gitlab.org`
-- [ ] Create an MR targetting `org` `master`, prefixing your branch with `security-`
-- [ ] Label your MR with the ~security label, prefix the title with `WIP: [master]`
-- [ ] Add a link to the MR to the [links section](#links)
-- [ ] Add a link to an EE MR if required
-- [ ] Make sure the MR remains in-progress and gets approved after the review cycle, **but never merged**.
-- [ ] Add a link to this issue on the original security issue.
+- [ ] Create a new branch prefixing it with `security-`
+- [ ] Create a MR targeting `dev.gitlab.org` `master`
+- [ ] Add a link to this issue in the original security issue on `gitlab.com`.
 
 #### Backports
 

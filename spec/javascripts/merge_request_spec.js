@@ -41,15 +41,28 @@ describe('MergeRequest', function() {
     });
 
     it('submits an ajax request on tasklist:changed', done => {
-      $('.js-task-list-field').trigger('tasklist:changed');
+      const lineNumber = 8;
+      const lineSource = '- [ ] item 8';
+      const index = 3;
+      const checked = true;
+
+      $('.js-task-list-field').trigger({
+        type: 'tasklist:changed',
+        detail: { lineNumber, lineSource, index, checked },
+      });
 
       setTimeout(() => {
         expect(axios.patch).toHaveBeenCalledWith(
           `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
           {
-            merge_request: { description: '- [ ] Task List Item' },
+            merge_request: {
+              description: '- [ ] Task List Item',
+              lock_version: undefined,
+              update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
+            },
           },
         );
+
         done();
       });
     });

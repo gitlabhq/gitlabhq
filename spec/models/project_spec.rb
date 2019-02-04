@@ -405,6 +405,30 @@ describe Project do
     end
   end
 
+  describe '#all_pipelines' do
+    let(:project) { create(:project) }
+
+    before do
+      create(:ci_pipeline, project: project, ref: 'master', source: :web)
+      create(:ci_pipeline, project: project, ref: 'master', source: :external)
+    end
+
+    it 'has all pipelines' do
+      expect(project.all_pipelines.size).to eq(2)
+    end
+
+    context 'when builds are disabled' do
+      before do
+        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'should return .external pipelines' do
+        expect(project.all_pipelines).to all(have_attributes(source: 'external'))
+        expect(project.all_pipelines.size).to eq(1)
+      end
+    end
+  end
+
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryBot.create(:project, runners_token: '')
@@ -3074,6 +3098,66 @@ describe Project do
     end
   end
 
+  describe '.with_feature_available_for_user' do
+    let!(:user) { create(:user) }
+    let!(:feature) { MergeRequest }
+    let!(:project) { create(:project, :public, :merge_requests_enabled) }
+
+    subject { described_class.with_feature_available_for_user(feature, user) }
+
+    context 'when user has access to project' do
+      subject { described_class.with_feature_available_for_user(feature, user) }
+
+      before do
+        project.add_guest(user)
+      end
+
+      context 'when public project' do
+        context 'when feature is public' do
+          it 'returns project' do
+            is_expected.to include(project)
+          end
+        end
+
+        context 'when feature is private' do
+          let!(:project) { create(:project, :public, :merge_requests_private) }
+
+          it 'returns project when user has access to the feature' do
+            project.add_maintainer(user)
+
+            is_expected.to include(project)
+          end
+
+          it 'does not return project when user does not have the minimum access level required' do
+            is_expected.not_to include(project)
+          end
+        end
+      end
+
+      context 'when private project' do
+        let!(:project) { create(:project) }
+
+        it 'returns project when user has access to the feature' do
+          project.add_maintainer(user)
+
+          is_expected.to include(project)
+        end
+
+        it 'does not return project when user does not have the minimum access level required' do
+          is_expected.not_to include(project)
+        end
+      end
+    end
+
+    context 'when user does not have access to project' do
+      let!(:project) { create(:project) }
+
+      it 'does not return project when user cant access project' do
+        is_expected.not_to include(project)
+      end
+    end
+  end
+
   describe '#pages_available?' do
     let(:project) { create(:project, group: group) }
 
@@ -3767,6 +3851,7 @@ describe Project do
       expect(import_state).to receive(:remove_jid)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
+      expect(InternalId).to receive(:flush_records!).with(project: project)
 
       project.after_import
     end

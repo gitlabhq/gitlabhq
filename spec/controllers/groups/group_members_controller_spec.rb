@@ -126,7 +126,7 @@ describe Groups::GroupMembersController do
         it '[HTML] removes user from members' do
           delete :destroy, params: { group_id: group, id: member }
 
-          expect(response).to set_flash.to 'User was successfully removed from group.'
+          expect(response).to set_flash.to 'User was successfully removed from group and any subresources.'
           expect(response).to redirect_to(group_group_members_path(group))
           expect(group.members).not_to include member
         end

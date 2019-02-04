@@ -202,7 +202,7 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         dispatch(
           'setErrorMessage',
           {
-            text: __('An error accured whilst committing your changes.'),
+            text: __('An error occurred whilst committing your changes.'),
             action: () =>
               dispatch('commitChanges').then(() =>
                 dispatch('setErrorMessage', null, { root: true }),

@@ -173,6 +173,7 @@ describe IssuablesHelper do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).and_return(true)
+      stub_commonmark_sourcepos_disabled
     end
 
     it 'returns the correct json for an issue' do
@@ -189,6 +190,7 @@ describe IssuablesHelper do
         markdownDocsPath: '/help/user/markdown',
         markdownVersion: CacheMarkdownField::CACHE_COMMONMARK_VERSION,
         issuableTemplates: [],
+        lockVersion: issue.lock_version,
         projectPath: @project.path,
         projectNamespace: @project.namespace.path,
         initialTitleHtml: issue.title,

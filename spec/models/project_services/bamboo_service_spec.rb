@@ -144,7 +144,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     end
   end
 
-  describe '#calculate_reactive_cache' do
+  shared_examples 'reactive cache calculation' do
     context '#build_page' do
       subject { service.calculate_reactive_cache('123', 'unused')[:build_page] }
 
@@ -155,7 +155,7 @@ describe BambooService, :use_clean_rails_memory_store_caching do
       end
 
       it 'returns a specific URL when response has no results' do
-        stub_request(body: bamboo_response(size: 0))
+        stub_request(body: %q({"results":{"results":{"size":"0"}}}))
 
         is_expected.to eq('http://gitlab.com/bamboo/browse/foo')
       end
@@ -224,6 +224,24 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#calculate_reactive_cache' do
+    context 'when Bamboo API returns single result' do
+      let(:bamboo_response_template) do
+        %q({"results":{"results":{"size":"1","result":{"buildState":"%{build_state}","planResultKey":{"key":"42"}}}}})
+      end
+
+      it_behaves_like 'reactive cache calculation'
+    end
+
+    context 'when Bamboo API returns an array of results and we only consider the last one' do
+      let(:bamboo_response_template) do
+        %q({"results":{"results":{"size":"2","result":[{"buildState":"%{build_state}","planResultKey":{"key":"41"}},{"buildState":"%{build_state}","planResultKey":{"key":"42"}}]}}})
+      end
+
+      it_behaves_like 'reactive cache calculation'
+    end
+  end
+
   def stub_update_and_build_request(status: 200, body: nil)
     bamboo_full_url = 'http://gitlab.com/bamboo/updateAndBuild.action?buildKey=foo&os_authType=basic'
 
@@ -244,8 +262,8 @@ describe BambooService, :use_clean_rails_memory_store_caching do
     ).with(basic_auth: %w(mic password))
   end
 
-  def bamboo_response(result_key: 42, build_state: 'success', size: 1)
+  def bamboo_response(build_state: 'success')
     # reference: https://docs.atlassian.com/atlassian-bamboo/REST/6.2.5/#d2e786
-    %Q({"results":{"results":{"size":"#{size}","result":[{"buildState":"#{build_state}","planResultKey":{"key":"#{result_key}"}}]}}})
+    bamboo_response_template % { build_state: build_state }
   end
 end

@@ -2,6 +2,43 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.7.2 (2019-01-29)
+
+### Fixed (1 change)
+
+- Fix uninitialized constant with GitLab Pages.
+
+
+## 11.7.1 (2019-01-28)
+
+### Security (24 changes)
+
+- Make potentially malicious links more visible in the UI and scrub RTLO chars from links. !2770
+- Don't process MR refs for guests in the notes. !2771
+- Sanitize user full name to clean up any URL to prevent mail clients from auto-linking URLs. !2828
+- Fixed XSS content in KaTex links.
+- Disallows unauthorized users from accessing the pipelines section.
+- Verify that LFS upload requests are genuine.
+- Extract GitLab Pages using RubyZip.
+- Prevent awarding emojis to notes whose parent is not visible to user.
+- Prevent unauthorized replies when discussion is locked or confidential.
+- Disable git v2 protocol temporarily.
+- Fix showing ci status for guest users when public pipline are not set.
+- Fix contributed projects info still visible when user enable private profile.
+- Add subresources removal to member destroy service.
+- Add more LFS validations to prevent forgery.
+- Use common error for unauthenticated users when creating issues.
+- Fix slow regex in project reference pattern.
+- Fix private user email being visible in push (and tag push) webhooks.
+- Fix wiki access rights when external wiki is enabled.
+- Group guests are no longer able to see merge requests they don't have access to at group level.
+- Fix path disclosure on project import error.
+- Restrict project import visibility based on its group.
+- Expose CI/CD trigger token only to the trigger owner.
+- Notify only users who can access the project on project move.
+- Alias GitHub and BitBucket OAuth2 callback URLs.
+
+
 ## 11.7.0 (2019-01-22)
 
 ### Security (14 changes, 1 of them is from the community)
@@ -187,6 +224,10 @@ entry.
 - ActiveRecord::Migration -> ActiveRecord::Migration[5.0] for AddIndexesToCiBuildsAndPipelines. !24167 (Jasper Maes)
 - Update url placeholder for the sentry configuration page. !24338
 
+
+## 11.6.8 (2019-01-30)
+
+- No changes.
 
 ## 11.6.5 (2019-01-17)
 
@@ -526,6 +567,33 @@ entry.
 - Replaces tooltip directive with the new gl-tooltip directive for consistency in some ci/cd code.
 - Bump gpgme gem version from 2.0.13 to 2.0.18. (asaparov)
 - Enable Rubocop on lib/gitlab. (gfyoung)
+
+
+## 11.5.8 (2019-01-28)
+
+### Security (21 changes)
+
+- Make potentially malicious links more visible in the UI and scrub RTLO chars from links. !2770
+- Don't process MR refs for guests in the notes. !2771
+- Fixed XSS content in KaTex links.
+- Verify that LFS upload requests are genuine.
+- Extract GitLab Pages using RubyZip.
+- Prevent awarding emojis to notes whose parent is not visible to user.
+- Prevent unauthorized replies when discussion is locked or confidential.
+- Disable git v2 protocol temporarily.
+- Fix showing ci status for guest users when public pipline are not set.
+- Fix contributed projects info still visible when user enable private profile.
+- Disallows unauthorized users from accessing the pipelines section.
+- Add more LFS validations to prevent forgery.
+- Use common error for unauthenticated users when creating issues.
+- Fix slow regex in project reference pattern.
+- Fix private user email being visible in push (and tag push) webhooks.
+- Fix wiki access rights when external wiki is enabled.
+- Fix path disclosure on project import error.
+- Restrict project import visibility based on its group.
+- Expose CI/CD trigger token only to the trigger owner.
+- Notify only users who can access the project on project move.
+- Alias GitHub and BitBucket OAuth2 callback URLs.
 
 
 ## 11.5.5 (2018-12-20)

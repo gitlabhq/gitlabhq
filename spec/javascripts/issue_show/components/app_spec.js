@@ -18,9 +18,13 @@ describe('Issuable output', () => {
   let realtimeRequestCount = 0;
   let vm;
 
-  document.body.innerHTML = '<span id="task_status"></span>';
-
   beforeEach(done => {
+    setFixtures(`
+      <div>
+        <div class="flash-container"></div>
+        <span id="task_status"></span>
+      </div>
+    `);
     spyOn(eventHub, '$emit');
 
     const IssuableDescriptionComponent = Vue.extend(issuableApp);
@@ -43,6 +47,7 @@ describe('Issuable output', () => {
         initialTitleText: '',
         initialDescriptionHtml: 'test',
         initialDescriptionText: 'test',
+        lockVersion: 1,
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         projectNamespace: '/',
@@ -78,6 +83,7 @@ describe('Issuable output', () => {
         expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
         expect(editedText.querySelector('.author-link').href).toMatch(/\/some_user$/);
         expect(editedText.querySelector('time')).toBeTruthy();
+        expect(vm.state.lock_version).toEqual(1);
       })
       .then(() => {
         vm.poll.makeRequest();
@@ -95,6 +101,7 @@ describe('Issuable output', () => {
 
         expect(editedText.querySelector('.author-link').href).toMatch(/\/other_user$/);
         expect(editedText.querySelector('time')).toBeTruthy();
+        expect(vm.state.lock_version).toEqual(2);
       })
       .then(done)
       .catch(done.fail);
@@ -137,21 +144,17 @@ describe('Issuable output', () => {
 
   describe('updateIssuable', () => {
     it('fetches new data after update', done => {
+      spyOn(vm, 'updateStoreState').and.callThrough();
       spyOn(vm.service, 'getData').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                confidential: false,
-                web_url: window.location.pathname,
-              },
-            });
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: { web_url: window.location.pathname },
+        }),
       );
 
       vm.updateIssuable()
         .then(() => {
+          expect(vm.updateStoreState).toHaveBeenCalled();
           expect(vm.service.getData).toHaveBeenCalled();
         })
         .then(done)
@@ -159,11 +162,10 @@ describe('Issuable output', () => {
     });
 
     it('correctly updates issuable data', done => {
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve();
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: { web_url: window.location.pathname },
+        }),
       );
 
       vm.updateIssuable()
@@ -177,16 +179,13 @@ describe('Issuable output', () => {
 
     it('does not redirect if issue has not moved', done => {
       const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: window.location.pathname,
-                confidential: vm.isConfidential,
-              },
-            });
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: window.location.pathname,
+            confidential: vm.isConfidential,
+          },
+        }),
       );
 
       vm.updateIssuable();
@@ -199,16 +198,13 @@ describe('Issuable output', () => {
 
     it('redirects if returned web_url has changed', done => {
       const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/testing-issue-move',
-                confidential: vm.isConfidential,
-              },
-            });
-          }),
+      spyOn(vm.service, 'updateIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: '/testing-issue-move',
+            confidential: vm.isConfidential,
+          },
+        }),
       );
 
       vm.updateIssuable();
@@ -227,6 +223,7 @@ describe('Issuable output', () => {
         vm.handleBeforeUnloadEvent(e);
         Vue.nextTick(() => {
           expect(e.returnValue).not.toBeNull();
+
           done();
         });
       });
@@ -238,6 +235,7 @@ describe('Issuable output', () => {
         vm.handleBeforeUnloadEvent(e);
         Vue.nextTick(() => {
           expect(e.returnValue).not.toBeNull();
+
           done();
         });
       });
@@ -247,47 +245,59 @@ describe('Issuable output', () => {
         vm.handleBeforeUnloadEvent(e);
         Vue.nextTick(() => {
           expect(e.returnValue).toBeNull();
+
           done();
         });
       });
     });
 
     describe('error when updating', () => {
-      beforeEach(() => {
-        spyOn(window, 'Flash').and.callThrough();
-        spyOn(vm.service, 'updateIssuable').and.callFake(
-          () =>
-            new Promise((resolve, reject) => {
-              reject();
-            }),
-        );
-      });
-
       it('closes form on error', done => {
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.reject());
         vm.updateIssuable();
 
         setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-
-          expect(window.Flash).toHaveBeenCalledWith('Error updating issue');
+          expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `Error updating issue`,
+          );
 
           done();
         });
       });
 
       it('returns the correct error message for issuableType', done => {
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => Promise.reject());
         vm.issuableType = 'merge request';
 
         Vue.nextTick(() => {
           vm.updateIssuable();
 
           setTimeout(() => {
-            expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-
-            expect(window.Flash).toHaveBeenCalledWith('Error updating merge request');
+            expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+            expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+              `Error updating merge request`,
+            );
 
             done();
           });
+        });
+      });
+
+      it('shows error mesage from backend if exists', done => {
+        const msg = 'Custom error message from backend';
+        spyOn(vm.service, 'updateIssuable').and.callFake(
+          // eslint-disable-next-line prefer-promise-reject-errors
+          () => Promise.reject({ response: { data: { errors: [msg] } } }),
+        );
+
+        vm.updateIssuable();
+        setTimeout(() => {
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `${vm.defaultErrorMessage}. ${msg}`,
+          );
+
+          done();
         });
       });
     });
@@ -342,21 +352,19 @@ describe('Issuable output', () => {
   describe('deleteIssuable', () => {
     it('changes URL when deleted', done => {
       const visitUrl = spyOnDependency(issuableApp, 'visitUrl');
-      spyOn(vm.service, 'deleteIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/test',
-              },
-            });
-          }),
+      spyOn(vm.service, 'deleteIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: '/test',
+          },
+        }),
       );
 
       vm.deleteIssuable();
 
       setTimeout(() => {
         expect(visitUrl).toHaveBeenCalledWith('/test');
+
         done();
       });
     });
@@ -364,40 +372,33 @@ describe('Issuable output', () => {
     it('stops polling when deleting', done => {
       spyOnDependency(issuableApp, 'visitUrl');
       spyOn(vm.poll, 'stop').and.callThrough();
-      spyOn(vm.service, 'deleteIssuable').and.callFake(
-        () =>
-          new Promise(resolve => {
-            resolve({
-              data: {
-                web_url: '/test',
-              },
-            });
-          }),
+      spyOn(vm.service, 'deleteIssuable').and.returnValue(
+        Promise.resolve({
+          data: {
+            web_url: '/test',
+          },
+        }),
       );
 
       vm.deleteIssuable();
 
       setTimeout(() => {
         expect(vm.poll.stop).toHaveBeenCalledWith();
+
         done();
       });
     });
 
     it('closes form on error', done => {
-      spyOn(window, 'Flash').and.callThrough();
-      spyOn(vm.service, 'deleteIssuable').and.callFake(
-        () =>
-          new Promise((resolve, reject) => {
-            reject();
-          }),
-      );
+      spyOn(vm.service, 'deleteIssuable').and.returnValue(Promise.reject());
 
       vm.deleteIssuable();
 
       setTimeout(() => {
-        expect(eventHub.$emit).toHaveBeenCalledWith('close.form');
-
-        expect(window.Flash).toHaveBeenCalledWith('Error deleting issue');
+        expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
+        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+          'Error deleting issue',
+        );
 
         done();
       });
@@ -420,6 +421,7 @@ describe('Issuable output', () => {
         .then(vm.$nextTick)
         .then(() => {
           expect(vm.formState.lockedWarningVisible).toEqual(true);
+          expect(vm.formState.lock_version).toEqual(1);
           expect(vm.$el.querySelector('.alert')).not.toBeNull();
         })
         .then(done)
@@ -436,6 +438,36 @@ describe('Issuable output', () => {
       vm.showInlineEditButton = true;
 
       expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
+    });
+  });
+
+  describe('updateStoreState', () => {
+    it('should make a request and update the state of the store', done => {
+      const data = { foo: 1 };
+      spyOn(vm.store, 'updateState');
+      spyOn(vm.service, 'getData').and.returnValue(Promise.resolve({ data }));
+
+      vm.updateStoreState()
+        .then(() => {
+          expect(vm.service.getData).toHaveBeenCalled();
+          expect(vm.store.updateState).toHaveBeenCalledWith(data);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('should show error message if store update fails', done => {
+      spyOn(vm.service, 'getData').and.returnValue(Promise.reject());
+      vm.issuableType = 'merge request';
+
+      vm.updateStoreState()
+        .then(() => {
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            `Error updating ${vm.issuableType}`,
+          );
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

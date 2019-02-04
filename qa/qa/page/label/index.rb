@@ -1,17 +1,17 @@
+# frozen_string_literal: true
+
 module QA
   module Page
     module Label
       class Index < Page::Base
+        include Component::LazyLoader
+
         view 'app/views/shared/labels/_nav.html.haml' do
           element :label_create_new
         end
 
         view 'app/views/shared/empty_states/_labels.html.haml' do
           element :label_svg
-        end
-
-        view 'app/assets/javascripts/lazy_loader.js' do
-          element :js_lazy_loaded
         end
 
         def go_to_new_label

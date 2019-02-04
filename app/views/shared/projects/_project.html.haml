@@ -84,7 +84,7 @@
                 title: _('Issues'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('issues', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.open_issues_count)
-          - if pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
+          - if pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
             %span.icon-wrapper.pipeline-status
               = render_project_pipeline_status(project.pipeline_status, tooltip_placement: 'top')
         .updated-note

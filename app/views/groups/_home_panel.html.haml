@@ -1,17 +1,58 @@
-.group-home-panel.text-center.border-bottom
-  %div{ class: container_class }
-    .avatar-container.s70.group-avatar
-      = group_icon(@group, class: "avatar s70 avatar-tile")
-    %h1.group-title
-      = @group.name
-      %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
-        = visibility_level_icon(@group.visibility_level, fw: false)
+- can_create_subgroups = can?(current_user, :create_subgroup, @group)
 
-    - if @group.description.present?
-      .group-home-desc
-        = markdown_field(@group, :description)
+.group-home-panel
+  .row.mb-3
+    .home-panel-title-row.col-md-12.col-lg-6.d-flex
+      .avatar-container.home-panel-avatar.append-right-default.float-none
+        = group_icon(@group, class: 'avatar avatar-tile s64', width: 64, height: 64)
+      .d-flex.flex-column.flex-wrap.align-items-baseline
+        .d-inline-flex.align-items-baseline
+          %h1.home-panel-title.prepend-top-8.append-bottom-5
+            = @group.name
+            %span.visibility-icon.text-secondary.prepend-left-4.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+              = visibility_level_icon(@group.visibility_level, fw: false, options: {class: 'icon'})
+        .home-panel-metadata.d-flex.align-items-center.text-secondary
+          %span
+            = _("Group")
+          - if current_user
+            %span.access-request-links.prepend-left-8
+              = render 'shared/members/access_request_links', source: @group
 
-    - if current_user
-      .group-buttons.d-none.d-sm-block
-        = render 'shared/members/access_request_buttons', source: @group
-        = render 'shared/notifications/button', notification_setting: @notification_setting
+    .home-panel-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
+      - if current_user
+        .group-buttons
+          = render 'shared/notifications/new_button', notification_setting: @notification_setting, btn_class: 'btn'
+          - if can? current_user, :create_projects, @group
+            - new_project_label = _("New project")
+            - new_subgroup_label = _("New subgroup")
+            - if can_create_subgroups
+              .btn-group.new-project-subgroup.droplab-dropdown.home-panel-action-button.prepend-top-default.js-new-project-subgroup.qa-new-project-or-subgroup-dropdown{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
+                %input.btn.btn-success.dropdown-primary.js-new-group-child.qa-new-in-group-button{ type: "button", value: new_project_label, data: { action: "new-project" } }
+                %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle.qa-new-project-or-subgroup-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown", 'display' => 'static' } }
+                  = sprite_icon("arrow-down", css_class: "icon dropdown-btn-icon")
+                %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-right{ data: { dropdown: true } }
+                  %li.droplab-item-selected.qa-new-project-option{ role: "button", data: { value: "new-project", text: new_project_label } }
+                    .menu-item
+                      .icon-container
+                        = icon("check", class: "list-item-checkmark")
+                      .description
+                        %strong= new_project_label
+                        %span= s_("GroupsTree|Create a project in this group.")
+                  %li.divider.droplap-item-ignore
+                    %li.qa-new-subgroup-option{ role: "button", data: { value: "new-subgroup", text: new_subgroup_label } }
+                      .menu-item
+                        .icon-container
+                          = icon("check", class: "list-item-checkmark")
+                        .description
+                          %strong= new_subgroup_label
+                          %span= s_("GroupsTree|Create a subgroup in this group.")
+            - else
+              = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success"
+
+  - if @group.description.present?
+    .group-home-desc.mt-1
+      .home-panel-description
+        .home-panel-description-markdown.read-more-container
+          = markdown_field(@group, :description)
+        %button.btn.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
+          = _("Read more")

@@ -40,7 +40,7 @@ dast:
 The above example will create a `dast` job in your CI/CD pipeline which will run
 the tests on the URL defined in the `website` variable (change it to use your
 own) and scan it for possible vulnerabilities. The report will be saved as a
-[DAST report artifact](https://docs.gitlab.com/ee//ci/yaml/README.html#artifactsreportsdast)
+[DAST report artifact](../yaml/README.md#artifactsreportsdast-ultimate)
 that you can later download and analyze.
 Due to implementation limitations we always take the latest DAST artifact available.
 

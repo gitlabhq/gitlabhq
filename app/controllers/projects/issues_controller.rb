@@ -19,7 +19,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
-  prepend_before_action :authenticate_new_issue!, only: [:new]
+  prepend_before_action :authenticate_user!, only: [:new]
   prepend_before_action :store_uri, only: [:new, :show]
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
@@ -191,6 +191,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   protected
 
+  def issuable_sorting_field
+    Issue::SORTING_PREFERENCE_FIELD
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def issue
     return @issue if defined?(@issue)
@@ -242,15 +246,7 @@ class Projects::IssuesController < Projects::ApplicationController
       task_num
       lock_version
       discussion_locked
-    ] + [{ label_ids: [], assignee_ids: [] }]
-  end
-
-  def authenticate_new_issue!
-    return if current_user
-
-    notice = "Please sign in to create the new issue."
-
-    redirect_to new_user_session_path, notice: notice
+    ] + [{ label_ids: [], assignee_ids: [], update_task: [:index, :checked, :line_number, :line_source] }]
   end
 
   def store_uri
