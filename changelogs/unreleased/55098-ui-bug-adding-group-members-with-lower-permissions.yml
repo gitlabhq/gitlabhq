@@ -1,0 +1,5 @@
+---
+title: Resolve UI bug adding group members with lower permissions
+merge_request: 24820
+author:
+type: fixed
