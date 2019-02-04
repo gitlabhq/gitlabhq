@@ -1,6 +1,9 @@
 <script>
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
+import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
+
+let debouncedResize;
 
 export default {
   components: {
@@ -26,11 +29,21 @@ export default {
         );
       },
     },
+    containerWidth: {
+      type: Number,
+      required: true,
+    },
     alertData: {
       type: Object,
       required: false,
       default: () => ({}),
     },
+  },
+  data() {
+    return {
+      width: 0,
+      height: 0,
+    };
   },
   computed: {
     chartData() {
@@ -76,10 +89,25 @@ export default {
       return `${this.graphData.y_label} (${query.unit})`;
     },
   },
+  watch: {
+    containerWidth: 'onResize',
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', debouncedResize);
+  },
+  created() {
+    debouncedResize = debounceByAnimationFrame(this.onResize);
+    window.addEventListener('resize', debouncedResize);
+  },
   methods: {
     formatTooltipText(params) {
       const [date, value] = params;
       return [dateFormat(date, 'dd mmm yyyy, h:MMtt'), value.toFixed(3)];
+    },
+    onResize() {
+      const { width, height } = this.$refs.areaChart.$el.getBoundingClientRect();
+      this.width = width;
+      this.height = height;
     },
   },
 };
@@ -92,11 +120,14 @@ export default {
       <div class="prometheus-graph-widgets"><slot></slot></div>
     </div>
     <gl-area-chart
+      ref="areaChart"
       v-bind="$attrs"
       :data="chartData"
       :option="chartOptions"
       :format-tooltip-text="formatTooltipText"
       :thresholds="alertData"
+      :width="width"
+      :height="height"
     />
   </div>
 </template>

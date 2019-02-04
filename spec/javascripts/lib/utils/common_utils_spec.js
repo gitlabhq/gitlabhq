@@ -232,6 +232,21 @@ describe('common_utils', () => {
     });
   });
 
+  describe('debounceByAnimationFrame', () => {
+    it('debounces a function to allow a maximum of one call per animation frame', done => {
+      const spy = jasmine.createSpy('spy');
+      const debouncedSpy = commonUtils.debounceByAnimationFrame(spy);
+      window.requestAnimationFrame(() => {
+        debouncedSpy();
+        debouncedSpy();
+        window.requestAnimationFrame(() => {
+          expect(spy).toHaveBeenCalledTimes(1);
+          done();
+        });
+      });
+    });
+  });
+
   describe('getParameterByName', () => {
     beforeEach(() => {
       window.history.pushState({}, null, '?scope=all&p=2');

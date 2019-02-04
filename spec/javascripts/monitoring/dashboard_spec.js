@@ -29,7 +29,7 @@ describe('Dashboard', () => {
   beforeEach(() => {
     setFixtures(`
       <div class="prometheus-graphs"></div>
-      <div class="nav-sidebar"></div>
+      <div class="layout-page"></div>
     `);
     DashboardComponent = Vue.extend(Dashboard);
   });
@@ -164,16 +164,16 @@ describe('Dashboard', () => {
       jasmine.clock().uninstall();
     });
 
-    it('rerenders the dashboard when the sidebar is resized', done => {
+    it('sets elWidth to page width when the sidebar is resized', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showPanels: false },
       });
 
-      expect(component.forceRedraw).toEqual(0);
+      expect(component.elWidth).toEqual(0);
 
-      const navSidebarEl = document.querySelector('.nav-sidebar');
-      navSidebarEl.classList.add('nav-sidebar-collapsed');
+      const pageLayoutEl = document.querySelector('.layout-page');
+      pageLayoutEl.classList.add('page-with-icon-sidebar');
 
       Vue.nextTick()
         .then(() => {
@@ -181,7 +181,7 @@ describe('Dashboard', () => {
           return Vue.nextTick();
         })
         .then(() => {
-          expect(component.forceRedraw).toEqual(component.elWidth);
+          expect(component.elWidth).toEqual(pageLayoutEl.clientWidth);
           done();
         })
         .catch(done.fail);
