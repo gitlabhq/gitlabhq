@@ -142,8 +142,8 @@ export default {
     }
   },
   methods: {
-    createService(store) {
-      const endpoints = {
+    getServiceEndpoints(store) {
+      return {
         mergePath: store.mergePath,
         mergeCheckPath: store.mergeCheckPath,
         cancelAutoMergePath: store.cancelAutoMergePath,
@@ -154,7 +154,9 @@ export default {
         mergeActionsContentPath: store.mergeActionsContentPath,
         rebasePath: store.rebasePath,
       };
-      return new MRWidgetService(endpoints);
+    },
+    createService(store) {
+      return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
       return this.service
