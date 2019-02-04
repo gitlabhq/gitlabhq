@@ -13,7 +13,7 @@ function checkQueryEmptyData(query) {
     result: query.result.filter(timeSeries => {
       const newTimeSeries = timeSeries;
       const hasValue = series =>
-        !Number.isNaN(series.value) && (series.value !== null || series.value !== undefined);
+        !Number.isNaN(series[1]) && (series[1] !== null || series[1] !== undefined);
       const hasNonNullValue = timeSeries.values.find(hasValue);
 
       newTimeSeries.values = hasNonNullValue ? newTimeSeries.values : [];
@@ -33,10 +33,10 @@ function normalizeMetrics(metrics) {
       ...query,
       result: query.result.map(result => ({
         ...result,
-        values: result.values.map(([timestamp, value]) => ({
-          time: new Date(timestamp * 1000),
-          value: Number(value),
-        })),
+        values: result.values.map(([timestamp, value]) => [
+          new Date(timestamp * 1000).toISOString(),
+          Number(value),
+        ]),
       })),
     }));
 

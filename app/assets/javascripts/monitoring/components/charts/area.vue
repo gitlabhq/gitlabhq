@@ -35,13 +35,7 @@ export default {
   computed: {
     chartData() {
       return this.graphData.queries.reduce((accumulator, query) => {
-        const xLabel = `${query.unit}`;
-        accumulator[xLabel] = {};
-        query.result.forEach(res =>
-          res.values.forEach(v => {
-            accumulator[xLabel][v.time.toISOString()] = v.value;
-          }),
-        );
+        accumulator[query.unit] = query.result.reduce((acc, res) => acc.concat(res.values), []);
         return accumulator;
       }, {});
     },
@@ -51,14 +45,17 @@ export default {
           name: 'Time',
           type: 'time',
           axisLabel: {
-            formatter: date => dateFormat(date, 'h:MMtt'),
+            formatter: date => dateFormat(date, 'h:MM TT'),
+          },
+          axisPointer: {
+            snap: true,
           },
           nameTextStyle: {
             padding: [18, 0, 0, 0],
           },
         },
         yAxis: {
-          name: this.graphData.y_label,
+          name: this.yAxisLabel,
           axisLabel: {
             formatter: value => value.toFixed(3),
           },
@@ -74,6 +71,10 @@ export default {
     xAxisLabel() {
       return this.graphData.queries.map(query => query.label).join(', ');
     },
+    yAxisLabel() {
+      const [query] = this.graphData.queries;
+      return `${this.graphData.y_label} (${query.unit})`;
+    },
   },
   methods: {
     formatTooltipText(params) {
@@ -85,7 +86,7 @@ export default {
 </script>
 
 <template>
-  <div class="prometheus-graph">
+  <div class="prometheus-graph col-12 col-lg-6">
     <div class="prometheus-graph-header">
       <h5 class="prometheus-graph-title">{{ graphData.title }}</h5>
       <div class="prometheus-graph-widgets"><slot></slot></div>
