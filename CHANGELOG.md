@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.7.4 (2019-02-04)
+
+### Security (1 change)
+
+- Use sanitized user status message for user popover.
+
+
 ## 11.7.3 (2019-01-30)
 
 - No changes.
