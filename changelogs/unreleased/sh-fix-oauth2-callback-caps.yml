@@ -1,0 +1,5 @@
+---
+title: Downcase aliased OAuth2 callback providers
+merge_request: 24877
+author:
+type: fixed
