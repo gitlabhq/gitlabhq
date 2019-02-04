@@ -552,9 +552,6 @@ msgstr ""
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
 
-msgid "An error accured whilst committing your changes."
-msgstr ""
-
 msgid "An error has occurred"
 msgstr ""
 
@@ -637,6 +634,9 @@ msgid "An error occurred while saving assignees"
 msgstr ""
 
 msgid "An error occurred while validating username"
+msgstr ""
+
+msgid "An error occurred whilst committing your changes."
 msgstr ""
 
 msgid "An error occurred whilst fetching the job trace."
