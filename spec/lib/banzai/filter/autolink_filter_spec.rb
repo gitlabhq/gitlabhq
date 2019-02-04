@@ -121,6 +121,13 @@ describe Banzai::Filter::AutolinkFilter do
       expect(doc.to_s).to eq("See #{link}")
     end
 
+    it 'does not autolink bad URLs after we remove trailing punctuation' do
+      link = 'http://]'
+      doc = filter("See #{link}")
+
+      expect(doc.to_s).to eq("See #{link}")
+    end
+
     it 'does not include trailing punctuation' do
       ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
         doc = filter("See #{link}#{trailing_punctuation}")
