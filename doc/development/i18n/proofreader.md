@@ -85,7 +85,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Spanish
   - Pedro Garcia - [GitLab](https://gitlab.com/pedgarrod), [Crowdin](https://crowdin.com/profile/breaking_pitt)
 - Turkish
-  - Proofreaders needed.
+  - Ali Demirtaş - [GitLab](https://gitlab.com/alidemirtas), [Crowdin](https://crowdin.com/profile/alidemirtas)
 - Ukrainian
   - Volodymyr Sobotovych - [GitLab](https://gitlab.com/wheleph), [Crowdin](https://crowdin.com/profile/wheleph)
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)
