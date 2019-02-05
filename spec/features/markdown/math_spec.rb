@@ -1,7 +1,11 @@
 require 'spec_helper'
 
 describe 'Math rendering', :js do
+<<<<<<< HEAD
   let!(:project) { create(:project, :public) }
+=======
+  let!(:project)   { create(:project, :public) }
+>>>>>>> dev/master
 
   it 'renders inline and display math correctly' do
     description = <<~MATH

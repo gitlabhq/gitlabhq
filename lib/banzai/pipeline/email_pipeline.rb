@@ -12,8 +12,12 @@ module Banzai
       def self.transform_context(context)
         super(context).merge(
           only_path: false,
+<<<<<<< HEAD
           emailable_links: true,
           no_sourcepos: true
+=======
+          emailable_links: true
+>>>>>>> dev/master
         )
       end
     end
