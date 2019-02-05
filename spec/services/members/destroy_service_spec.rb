@@ -168,11 +168,7 @@ describe Members::DestroyService do
       end
 
       it_behaves_like 'a service destroying a member' do
-<<<<<<< HEAD
         let(:opts) { { skip_authorization: true, skip_subresources: true } }
-=======
-        let(:opts) { { skip_authorization: true, skip_subresources: true  } }
->>>>>>> dev/master
         let(:member) { group.requesters.find_by(user_id: member_user.id) }
       end
     end
