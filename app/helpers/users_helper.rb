@@ -30,7 +30,7 @@ module UsersHelper
 
     pattern, options = if settings.user_default_internal_regex_enabled?
                          regex = settings.user_default_internal_regex_instance
-                         JsRegex.new(regex, options: 'g').to_h.slice(:source, :options).values
+                         JsRegex.new(regex).to_h.slice(:source, :options).values
                        end
 
     { user_internal_regex_pattern: pattern, user_internal_regex_options: options }
