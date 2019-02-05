@@ -422,6 +422,79 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'GET #search' do
+    before do
+      create(:environment, name: 'staging', project: project)
+      create(:environment, name: 'review/patch-1', project: project)
+      create(:environment, name: 'review/patch-2', project: project)
+    end
+
+    let(:query) { 'pro' }
+
+    it 'responds with status code 200' do
+      get :search, params: environment_params(format: :json, query: query)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'returns matched results' do
+      get :search, params: environment_params(format: :json, query: query)
+
+      expect(json_response).to contain_exactly('production')
+    end
+
+    context 'when query is review' do
+      let(:query) { 'review' }
+
+      it 'returns matched results' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(json_response).to contain_exactly('review/patch-1', 'review/patch-2')
+      end
+    end
+
+    context 'when query is empty' do
+      let(:query) { '' }
+
+      it 'returns matched results' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(json_response)
+          .to contain_exactly('production', 'staging', 'review/patch-1', 'review/patch-2')
+      end
+    end
+
+    context 'when query is review/patch-3' do
+      let(:query) { 'review/patch-3' }
+
+      it 'responds with status code 204' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when query is partially matched in the middle of environment name' do
+      let(:query) { 'patch' }
+
+      it 'responds with status code 204' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when query contains a wildcard character' do
+      let(:query) { 'review%' }
+
+      it 'prevents wildcard injection' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,
