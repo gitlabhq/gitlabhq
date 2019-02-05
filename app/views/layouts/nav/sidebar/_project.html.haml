@@ -284,11 +284,7 @@
       - if project_nav_tab?(:wiki)
         - wiki_url = project_wiki_path(@project, :home)
         = nav_link(controller: :wikis) do
-<<<<<<< HEAD
           = link_to wiki_url, class: 'shortcuts-wiki qa-wiki-link' do
-=======
-          = link_to wiki_url, class: 'shortcuts-wiki' do
->>>>>>> dev/master
             .nav-icon-container
               = sprite_icon('book')
             %span.nav-item-name
