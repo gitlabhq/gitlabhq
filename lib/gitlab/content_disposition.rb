@@ -3,6 +3,13 @@
 # which will be available in Rails 6.
 module Gitlab
   class ContentDisposition # :nodoc:
+    # Make sure we remove this patch starting with Rails 6.0.
+    if Rails.version.start_with?('6.0')
+      raise <<~MSG
+        Please remove this file and use `ActionDispatch::Http::ContentDisposition` instead.
+      MSG
+    end
+
     def self.format(disposition:, filename:)
       new(disposition: disposition, filename: filename).to_s
     end
