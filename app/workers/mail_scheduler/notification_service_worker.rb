@@ -23,7 +23,7 @@ module MailScheduler
     end
 
     def self.perform_async(*args)
-      super(*ActiveJob::Arguments.serialize(args))
+      super(*Arguments.serialize(args))
     end
 
     private
@@ -37,6 +37,35 @@ module MailScheduler
           raise(ArgumentError, "Argument `#{arg}` cannot be deserialized because of its type")
         end
       end
+    end
+
+    # Permit ActionController::Parameters for serializable Hash
+    #
+    # Port of
+    # https://github.com/rails/rails/commit/945fdd76925c9f615bf016717c4c8db2b2955357#diff-fc90ec41ef75be8b2259526fe1a8b663
+    module Arguments
+      include ActiveJob::Arguments
+      extend self
+
+      private
+
+      def serialize_argument(argument)
+        case argument
+        when -> (arg) { arg.respond_to?(:permitted?) }
+          serialize_hash(argument.to_h).tap do |result|
+            result[WITH_INDIFFERENT_ACCESS_KEY] = serialize_argument(true)
+          end
+        else
+          super
+        end
+      end
+    end
+
+    # Make sure we remove this patch starting with Rails 6.0.
+    if Rails.version.start_with?('6.0')
+      raise <<~MSG
+        Please remove the patch `Arguments` module and use `ActiveJob::Arguments` again.
+      MSG
     end
   end
 end

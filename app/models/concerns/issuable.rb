@@ -136,10 +136,18 @@ module Issuable
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
     # query - The search query as a String
+    # matched_columns - Modify the scope of the query. 'title', 'description' or joining them with a comma.
     #
     # Returns an ActiveRecord::Relation.
-    def full_search(query)
-      fuzzy_search(query, [:title, :description])
+    def full_search(query, matched_columns: 'title,description')
+      allowed_columns = [:title, :description]
+      matched_columns = matched_columns.to_s.split(',').map(&:to_sym)
+      matched_columns &= allowed_columns
+
+      # Matching title or description if the matched_columns did not contain any allowed columns.
+      matched_columns = [:title, :description] if matched_columns.empty?
+
+      fuzzy_search(query, matched_columns)
     end
 
     def sort_by_attribute(method, excluded_labels: [])

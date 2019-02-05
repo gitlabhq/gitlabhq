@@ -31,6 +31,7 @@ GET /issues?iids[]=42&iids[]=43
 GET /issues?author_id=5
 GET /issues?assignee_id=5
 GET /issues?my_reaction_emoji=star
+GET /issues?search=foo&in=title
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
@@ -46,6 +47,7 @@ GET /issues?my_reaction_emoji=star
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
 | `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
+| `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`              |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                                                    |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |

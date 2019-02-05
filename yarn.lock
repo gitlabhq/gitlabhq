@@ -658,10 +658,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.48.0.tgz#7b2e20e357d85aa46e905e6ca51b0b4184ae2794"
   integrity sha512-9lRsfqN0W3JxopiXnTzvDY31O465jMTGNKpiOCXy7uAMfwZA6UsRsc7Pp369uKnOLR0duXUGOxOv4NGsK6AeXw==
 
-"@gitlab/ui@^1.22.1":
-  version "1.22.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-1.22.1.tgz#92ed77216c5702776049b9ac41eb717c1acd864e"
-  integrity sha512-pWbEaXOOcp8Xt2TjJtPas3lXwWVvizrBOf0M8yN0XAn2GgIRCVnRMpjNEN7/oNeBcEM9CrmPYApEM/hZO+maqQ==
+"@gitlab/ui@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-2.0.2.tgz#611571c931181fb783f57f712e1c2388059b301b"
+  integrity sha512-rUWVhWmM9EkwIEruYJEjizrQKe7TzNyKArwWY/nfEL4HptDtwbe+xHfR8IJHbpql3oI87cTO3BheMxYF6b2Ebg==
   dependencies:
     babel-standalone "^6.26.0"
     bootstrap-vue "^2.0.0-rc.11"
@@ -3264,10 +3264,12 @@ doctrine@^2.1.0:
   dependencies:
     esutils "^2.0.2"
 
-document-register-element@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/document-register-element/-/document-register-element-1.3.0.tgz#fb3babb523c74662be47be19c6bc33e71990d940"
-  integrity sha1-+zurtSPHRmK+R74Zxrwz5xmQ2UA=
+document-register-element@1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/document-register-element/-/document-register-element-1.13.1.tgz#dad8cb7be38e04ee3f56842e6cf81af46c1249ba"
+  integrity sha512-92ZyLDKg9j4rOll//NNXj25f+8rAzOkYsGJonhugKwXfeqH7bzs8Ucpvey0WzZ2ZzKdrvW9RnUw3UyOZ/uhBFw==
+  dependencies:
+    lightercollective "^0.1.0"
 
 dom-serialize@^2.2.0:
   version "2.2.1"

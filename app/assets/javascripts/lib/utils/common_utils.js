@@ -221,6 +221,22 @@ export const scrollToElement = element => {
 };
 
 /**
+ * Returns a function that can only be invoked once between
+ * each browser screen repaint.
+ * @param {Function} fn
+ */
+export const debounceByAnimationFrame = fn => {
+  let requestId;
+
+  return function debounced(...args) {
+    if (requestId) {
+      window.cancelAnimationFrame(requestId);
+    }
+    requestId = window.requestAnimationFrame(() => fn.apply(this, args));
+  };
+};
+
+/**
   this will take in the `name` of the param you want to parse in the url
   if the name does not exist this function will return `null`
   otherwise it will return the value of the param key provided

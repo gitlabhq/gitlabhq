@@ -26,6 +26,7 @@ class SshHostKey
   self.reactive_cache_lifetime = 10.minutes
 
   def self.find_by(opts = {})
+    opts = HashWithIndifferentAccess.new(opts)
     return nil unless opts.key?(:id)
 
     project_id, url = opts[:id].split(':', 2)
@@ -54,7 +55,7 @@ class SshHostKey
 
   # Needed for reactive caching
   def self.primary_key
-    'id'
+    :id
   end
 
   def id
