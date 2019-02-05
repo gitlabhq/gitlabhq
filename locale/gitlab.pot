@@ -8712,6 +8712,15 @@ msgstr ""
 msgid "notification emails"
 msgstr ""
 
+msgid "nounSeries|%{firstItem} and %{lastItem}"
+msgstr ""
+
+msgid "nounSeries|%{item}, %{nextItem}"
+msgstr ""
+
+msgid "nounSeries|%{item}, and %{lastItem}"
+msgstr ""
+
 msgid "or"
 msgstr ""
 
