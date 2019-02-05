@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-docs_paths_to_review =  helper.changes_by_category[:documentation]
+docs_paths_to_review = helper.changes_by_category[:documentation]
 
 unless docs_paths_to_review.empty?
   message 'This merge request adds or changes files that require a ' \

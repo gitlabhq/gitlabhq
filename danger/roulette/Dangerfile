@@ -1,0 +1,78 @@
+# frozen_string_literal: true
+
+MESSAGE = <<MARKDOWN
+## Reviewer roulette
+
+Changes that require review have been detected! A merge request is normally
+reviewed by both a reviewer and a maintainer in its primary category (e.g.
+~frontend or ~backend), and by a maintainer in all other categories.
+MARKDOWN
+
+CATEGORY_TABLE_HEADER = <<MARKDOWN
+
+To spread load more evenly across eligible reviewers, Danger has randomly picked
+a candidate for each review slot. Feel free to override this selection if you
+think someone else would be better-suited, or the chosen person is unavailable.
+
+Once you've decided who will review this merge request, mention them as you
+normally would! Danger does not (yet?) automatically notify them for you.
+
+| Category | Reviewer | Maintainer |
+| -------- | -------- | ---------- |
+MARKDOWN
+
+UNKNOWN_FILES_MESSAGE = <<MARKDOWN
+
+These files couldn't be categorised, so Danger was unable to suggest a reviewer.
+Please consider creating a merge request to
+[add support](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/danger/helper.rb)
+for them.
+MARKDOWN
+
+def spin(team, project, category)
+  reviewers = team.select { |member| member.reviewer?(project, category) }
+  maintainers = team.select { |member| member.maintainer?(project, category) }
+
+  # TODO: filter out people who are currently not in the office
+  # TODO: take CODEOWNERS into account?
+
+  reviewer = reviewers[rand(reviewers.size)]
+  maintainer = maintainers[rand(maintainers.size)]
+
+  "| #{helper.label_for_category(category)} | #{reviewer&.markdown_name} | #{maintainer&.markdown_name} |"
+end
+
+def build_list(items)
+  list = items.map { |filename| "* `#{filename}`" }.join("\n")
+
+  if items.size > 10
+    "\n<details>\n\n#{list}\n\n</details>"
+  else
+    list
+  end
+end
+
+changes = helper.changes_by_category
+categories = changes.keys - [:unknown]
+
+unless changes.empty?
+  team =
+    begin
+      helper.project_team
+    rescue => err
+      warn("Reviewer roulette failed to load team data: #{err.message}")
+      []
+    end
+
+  # Exclude the MR author from the team for selection purposes
+  team.delete_if { |teammate| teammate.username == gitlab.mr_author }
+
+  project = helper.project_name
+  unknown = changes.fetch(:unknown, [])
+
+  rows = categories.map { |category| spin(team, project, category) }
+
+  markdown(MESSAGE)
+  markdown(CATEGORY_TABLE_HEADER + rows.join("\n")) unless rows.empty?
+  markdown(UNKNOWN_FILES_MESSAGE + build_list(unknown)) unless unknown.empty?
+end
