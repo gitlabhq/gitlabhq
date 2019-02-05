@@ -130,7 +130,6 @@ describe PersonalSnippetPolicy do
       it do
         is_expected.to be_disallowed(:read_personal_snippet)
         is_expected.to be_disallowed(*comment_permissions)
-<<<<<<< HEAD
         is_expected.to be_disallowed(:award_emoji)
         is_expected.to be_disallowed(*author_permissions)
       end
@@ -142,8 +141,6 @@ describe PersonalSnippetPolicy do
       it do
         is_expected.to be_allowed(:read_personal_snippet)
         is_expected.to be_disallowed(:comment_personal_snippet)
-=======
->>>>>>> dev/master
         is_expected.to be_disallowed(:award_emoji)
         is_expected.to be_disallowed(*author_permissions)
       end
