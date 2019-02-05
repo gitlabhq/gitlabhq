@@ -56,7 +56,7 @@ The same tag is shown on the pipeline's details:
 
 ![Pipeline's details](img/pipeline_detail.png)
 
-## Making all jobs run for your MR pipelines 
+## Having all jobs always run, except for a few
 
 The behavior of the `only: merge_requests` rule is such that _only_ jobs with
 that rule are run in the context of a merge request; no other jobs will be run.
