@@ -7,6 +7,12 @@ class ApplicationRecord < ActiveRecord::Base
     where(id: ids)
   end
 
+  def self.safe_find_or_create_by!(*args)
+    safe_find_or_create_by(*args).tap do |record|
+      record.validate! unless record.persisted?
+    end
+  end
+
   def self.safe_find_or_create_by(*args)
     transaction(requires_new: true) do
       find_or_create_by(*args)
