@@ -1,0 +1,5 @@
+---
+title: Update last_activity_on for Users on some main GET endpoints
+merge_request: 24642
+author:
+type: changed

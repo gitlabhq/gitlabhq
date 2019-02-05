@@ -6,6 +6,7 @@ class ProjectsController < Projects::ApplicationController
   include ExtractsPath
   include PreviewMarkdown
   include SendFileUpload
+  include RecordUserLastActivity
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 
