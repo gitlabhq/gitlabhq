@@ -2,6 +2,7 @@
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
+import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 
 let debouncedResize;
 
@@ -48,6 +49,7 @@ export default {
     return {
       width: 0,
       height: 0,
+      scatterSymbol: undefined,
     };
   },
   computed: {
@@ -121,6 +123,8 @@ export default {
       return {
         type: 'scatter',
         data: this.recentDeployments.map(deployment => [deployment.createdAt, 0]),
+        symbol: this.scatterSymbol,
+        symbolSize: 14,
       };
     },
     xAxisLabel() {
@@ -140,11 +144,21 @@ export default {
   created() {
     debouncedResize = debounceByAnimationFrame(this.onResize);
     window.addEventListener('resize', debouncedResize);
+    this.getScatterSymbol();
   },
   methods: {
     formatTooltipText(params) {
       const [date, value] = params;
       return [dateFormat(date, 'dd mmm yyyy, h:MMtt'), value.toFixed(3)];
+    },
+    getScatterSymbol() {
+      getSvgIconPathContent('rocket')
+        .then(path => {
+          if (path) {
+            this.scatterSymbol = `path://${path}`;
+          }
+        })
+        .catch(() => {});
     },
     onResize() {
       const { width, height } = this.$refs.areaChart.$el.getBoundingClientRect();
