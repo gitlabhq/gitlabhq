@@ -31,12 +31,26 @@ The optional settings, custom domain, DNS records, and SSL/TLS certificates, are
 ## Project
 
 Your GitLab Pages project is a regular project created the
-same way you do for the other ones. To get started with GitLab Pages, you have two ways:
+same way you do for the other ones. To get started with GitLab Pages, you have three ways:
 
+- Use one of the popular templates already in the app,
 - Fork one of the templates from Page Examples, or
 - Create a new project from scratch
 
-Let's go over both options.
+Let's go over each option.
+
+### Use one of the popular Pages templates bundled with GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47857)
+in GitLab 11.8.
+
+The simplest way to create a GitLab Pages site is to use one of the most
+popular templates, which come already bundled and ready to go. To use one
+of these templates:
+
+1. From the top navigation, click the **+** button and select **New project**
+1. Select **Create from Template**
+1. Choose one of the templates starting with **Pages**
 
 ### Fork a project to get started from
 
