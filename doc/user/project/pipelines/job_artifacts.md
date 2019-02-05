@@ -38,8 +38,9 @@ turn are defined with the `paths` keyword. All paths to files and directories
 are relative to the repository that was cloned during the build. These uploaded
 artifacts will be kept in GitLab for 1 week as defined by the `expire_in`
 definition. You have the option to keep the artifacts from expiring via the
-[web interface](#browsing-job-artifacts). If you don't define an expiry date,
-the artifacts will be kept forever.
+[web interface](#browsing-job-artifacts). If the expiry time is not defined,
+it defaults to the [instance wide
+setting](../../admin_area/settings/continuous_integration.md#default-artifacts-expiration-core-only).
 
 For more examples on artifacts, follow the [artifacts reference in
 `.gitlab-ci.yml`](../../../ci/yaml/README.md#artifacts).
