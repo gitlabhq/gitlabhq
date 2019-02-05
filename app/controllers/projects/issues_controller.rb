@@ -246,11 +246,7 @@ class Projects::IssuesController < Projects::ApplicationController
       task_num
       lock_version
       discussion_locked
-<<<<<<< HEAD
     ] + [{ label_ids: [], assignee_ids: [], update_task: [:index, :checked, :line_number, :line_source] }]
-=======
-    ] + [{ label_ids: [], assignee_ids: [] }]
->>>>>>> dev/master
   end
 
   def store_uri
