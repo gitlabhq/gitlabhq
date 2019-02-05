@@ -45,7 +45,7 @@ describe 'Clusterable > Show page' do
         visit cluster_path
 
         within '#cluster-integration' do
-          expect(page).to have_content('Before setting a domain, you must first install Ingress on your cluster below.')
+          expect(page).not_to have_content('can be used instead of a custom domain.')
         end
       end
     end

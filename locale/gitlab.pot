@@ -846,15 +846,6 @@ msgstr ""
 msgid "Auto DevOps, runners and job artifacts"
 msgstr ""
 
-msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
-msgstr ""
-
-msgid "Auto Review Apps and Auto Deploy need a domain name and a %{kubernetes} to work correctly."
-msgstr ""
-
-msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
-msgstr ""
-
 msgid "Auto-cancel redundant, pending pipelines"
 msgstr ""
 
@@ -1221,9 +1212,6 @@ msgstr ""
 msgid "CICD|Deployment strategy"
 msgstr ""
 
-msgid "CICD|Deployment strategy needs a domain name to work correctly."
-msgstr ""
-
 msgid "CICD|Jobs"
 msgstr ""
 
@@ -1506,7 +1494,10 @@ msgstr ""
 msgid "Closed (moved)"
 msgstr ""
 
-msgid "ClusterIntegration| can be used instead of a custom domain. %{custom_domain_start}More information%{custom_domain_end}"
+msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
+msgstr ""
+
+msgid "ClusterIntegration| can be used instead of a custom domain."
 msgstr ""
 
 msgid "ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
@@ -1564,9 +1555,6 @@ msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluste
 msgstr ""
 
 msgid "ClusterIntegration|Base domain"
-msgstr ""
-
-msgid "ClusterIntegration|Before setting a domain, you must first install Ingress on your cluster below."
 msgstr ""
 
 msgid "ClusterIntegration|CA Certificate"
@@ -1893,7 +1881,7 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
 msgstr ""
 
-msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured to the Ingress IP Address below."
+msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
 msgstr ""
 
 msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
