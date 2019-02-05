@@ -4,6 +4,8 @@ GitLab can display messages to all users of a GitLab instance in a banner that a
 
 ![Broadcast Message](img/broadcast_messages.png)
 
+Broadcast messages can be managed using the [broadcast messages API](../../api/broadcast_messages.md).
+
 NOTE: **Note:**
 If more than one banner message is active at one time, they are displayed in a stack in order of creation.
 
