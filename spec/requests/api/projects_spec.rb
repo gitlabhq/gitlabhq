@@ -2178,7 +2178,8 @@ describe API::Projects do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.map { |p| p['starred_since'].present? && p['user'].present? })
+        expect(json_response[0]['starred_since']).to be_present
+        expect(json_response[0]['user']).to be_present
       end
 
       it 'returns the proper security headers' do
@@ -2188,8 +2189,8 @@ describe API::Projects do
       end
     end
 
-    let (:public_project) { create(:project, :public) }
-    let (:private_user) { create(:user, private_profile: true) }
+    let(:public_project) { create(:project, :public) }
+    let(:private_user) { create(:user, private_profile: true) }
 
     before do
       user.update(starred_projects: [public_project])
