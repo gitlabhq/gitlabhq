@@ -3,8 +3,7 @@
 # == RecordUserLastActivity
 #
 # Controller concern that updates the `last_activity_on` field of `users`
-# for any authenticated GET request. The DB update will only happen once per day
-# if the client supports cookies.
+# for any authenticated GET request. The DB update will only happen once per day.
 #
 # In order to determine if you should include this concern or not, please check the
 # description and discussion on this issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/54947
