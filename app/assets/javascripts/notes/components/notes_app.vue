@@ -44,11 +44,6 @@ export default {
       required: false,
       default: true,
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     helpPagePath: {
       type: String,
       required: false,
@@ -216,10 +211,6 @@ export default {
       </template>
     </ul>
 
-    <comment-form
-      v-if="!commentsDisabled"
-      :noteable-type="noteableType"
-      :markdown-version="markdownVersion"
-    />
+    <comment-form v-if="!commentsDisabled" :noteable-type="noteableType" />
   </div>
 </template>

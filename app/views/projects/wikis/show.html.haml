@@ -27,6 +27,6 @@
 
 .prepend-top-default.append-bottom-default
   .wiki.md{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
-    = render_wiki_content(@page, legacy_render_context(params))
+    = render_wiki_content(@page)
 
 = render 'sidebar'

@@ -26,11 +26,6 @@ export default {
       required: false,
       default: '',
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     saveButtonTitle: {
       type: String,
       required: false,
@@ -202,7 +197,6 @@ export default {
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
-        :markdown-version="markdownVersion"
         :quick-actions-docs-path="quickActionsDocsPath"
         :line="line"
         :note="discussionNote"

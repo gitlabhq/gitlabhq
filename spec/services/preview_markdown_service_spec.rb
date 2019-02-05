@@ -114,23 +114,4 @@ describe PreviewMarkdownService do
       expect(result[:commands]).to eq 'Tags this commit to v1.2.3 with "Stable release".'
     end
   end
-
-  it 'sets correct markdown engine' do
-    service = described_class.new(project, user, { markdown_version: CacheMarkdownField::CACHE_REDCARPET_VERSION })
-    result  = service.execute
-
-    expect(result[:markdown_engine]).to eq :redcarpet
-
-    service = described_class.new(project, user, { markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION })
-    result  = service.execute
-
-    expect(result[:markdown_engine]).to eq :common_mark
-  end
-
-  it 'honors the legacy_render parameter' do
-    service = described_class.new(project, user, { legacy_render: '1' })
-    result  = service.execute
-
-    expect(result[:markdown_engine]).to eq :redcarpet
-  end
 end

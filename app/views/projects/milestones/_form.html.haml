@@ -1,6 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @milestone],
-           html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' },
-           data: { markdown_version: @milestone.cached_markdown_version } do |f|
+           html: { class: 'milestone-form common-note-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@milestone)
   .row
     .col-md-6

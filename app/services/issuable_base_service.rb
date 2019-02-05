@@ -270,9 +270,7 @@ class IssuableBaseService < BaseService
     tasklist_toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
                                                  line_source: update_task_params[:line_source],
                                                  line_number: update_task_params[:line_number].to_i,
-                                                 toggle_as_checked: update_task_params[:checked],
-                                                 index: update_task_params[:index].to_i,
-                                                 sourcepos: !issuable.legacy_markdown?)
+                                                 toggle_as_checked: update_task_params[:checked])
 
     unless tasklist_toggler.execute
       # if we make it here, the data is much newer than we thought it was - fail fast

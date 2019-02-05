@@ -614,7 +614,6 @@ class Repository
     return unless readme
 
     context = { project: project }
-    context[:markdown_engine] = :redcarpet unless MarkupHelper.commonmark_for_repositories_enabled?
 
     MarkupHelper.markup_unsafe(readme.name, readme.data, context)
   end

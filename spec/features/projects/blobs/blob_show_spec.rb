@@ -5,8 +5,8 @@ describe 'File blob', :js do
 
   let(:project) { create(:project, :public, :repository) }
 
-  def visit_blob(path, anchor: nil, ref: 'master', legacy_render: nil)
-    visit project_blob_path(project, File.join(ref, path), anchor: anchor, legacy_render: legacy_render)
+  def visit_blob(path, anchor: nil, ref: 'master')
+    visit project_blob_path(project, File.join(ref, path), anchor: anchor)
 
     wait_for_requests
   end
@@ -168,21 +168,6 @@ describe 'File blob', :js do
         aggregate_failures do
           expect(page).to have_content("sublist")
           expect(page).not_to have_xpath("//ol//li//ul")
-        end
-      end
-    end
-
-    context 'when rendering legacy markdown' do
-      before do
-        visit_blob('files/commonmark/file.md', legacy_render: 1)
-
-        wait_for_requests
-      end
-
-      it 'renders using RedCarpet' do
-        aggregate_failures do
-          expect(page).to have_content("sublist")
-          expect(page).to have_xpath("//ol//li//ul")
         end
       end
     end

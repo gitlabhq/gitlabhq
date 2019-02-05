@@ -175,20 +175,6 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
         expect(page).to have_content("sublist")
         expect(page).not_to have_xpath("//ol//li//ul")
       end
-
-      it 'renders content with RedCarpet when legacy_render is set' do
-        wiki_page = create(:wiki_page,
-                           wiki: project.wiki,
-                           attrs: { title: 'home', content: "Empty content" })
-        visit(project_wiki_edit_path(project, wiki_page, legacy_render: 1))
-
-        fill_in :wiki_content, with: "1. one\n  - sublist\n"
-        click_on "Preview"
-
-        # the above generates a sublist list in RedCarpet
-        expect(page).to have_content("sublist")
-        expect(page).to have_xpath("//ol//li//ul")
-      end
     end
   end
 
