@@ -109,8 +109,8 @@ module API
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
         optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
-        optional :search, type: String, desc: 'Search merge requests for text present in the title, description or any combination of these'
-        optional :in, type: String, desc: '`title`, `description` or a string joined them with comma'
+        optional :search, type: String, desc: 'Search merge requests for text present in the title, description, or any combination of these'
+        optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
         optional :wip, type: String, values: %w[yes no], desc: 'Search merge requests for WIP in the title'
         use :pagination
       end

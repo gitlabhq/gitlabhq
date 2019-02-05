@@ -47,7 +47,7 @@ GET /issues?search=foo&in=title
 | `order_by`          | string           | no         | Return issues ordered by `created_at` or `updated_at` fields. Default is `created_at`                                                               |
 | `sort`              | string           | no         | Return issues sorted in `asc` or `desc` order. Default is `desc`                                                                                    |
 | `search`            | string           | no         | Search issues against their `title` and `description`                                                                                               |
-| `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joined them with comma. Default is `title,description`              |
+| `in`                | string           | no         | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`              |
 | `created_after`     | datetime         | no         | Return issues created on or after the given time                                                                                                    |
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |

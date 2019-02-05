@@ -140,7 +140,7 @@ describe Issuable do
       expect(issuable_class.full_search(searchable_issue2.description.downcase)).to eq([searchable_issue2])
     end
 
-    context 'when mathing columns is "title"' do
+    context 'when matching columns is "title"' do
       it 'returns issues with a matching title' do
         expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'title'))
           .to eq([searchable_issue])
@@ -152,7 +152,7 @@ describe Issuable do
       end
     end
 
-    context 'when mathing columns is "description"' do
+    context 'when matching columns is "description"' do
       it 'returns no issues with a matching title' do
         expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'description'))
           .to be_empty
@@ -164,7 +164,7 @@ describe Issuable do
       end
     end
 
-    context 'when mathing columns is "title,description"' do
+    context 'when matching columns is "title,description"' do
       it 'returns issues with a matching title' do
         expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'title,description'))
           .to eq([searchable_issue])
@@ -176,7 +176,7 @@ describe Issuable do
       end
     end
 
-    context 'when mathing columns is nil"' do
+    context 'when matching columns is nil"' do
       it 'returns issues with a matching title' do
         expect(issuable_class.full_search(searchable_issue.title, matched_columns: nil))
           .to eq([searchable_issue])
@@ -188,7 +188,7 @@ describe Issuable do
       end
     end
 
-    context 'when mathing columns is "invalid"' do
+    context 'when matching columns is "invalid"' do
       it 'returns issues with a matching title' do
         expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'invalid'))
           .to eq([searchable_issue])
@@ -200,7 +200,7 @@ describe Issuable do
       end
     end
 
-    context 'when mathing columns is "title,invalid"' do
+    context 'when matching columns is "title,invalid"' do
       it 'returns issues with a matching title' do
         expect(issuable_class.full_search(searchable_issue.title, matched_columns: 'title,invalid'))
           .to eq([searchable_issue])

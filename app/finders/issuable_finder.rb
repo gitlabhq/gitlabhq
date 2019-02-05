@@ -18,7 +18,7 @@
 #     assignee_id: integer or 'None' or 'Any'
 #     assignee_username: string
 #     search: string
-#     in: 'title', 'description' or a string joined them with comma
+#     in: 'title', 'description', or a string joining them with comma
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
