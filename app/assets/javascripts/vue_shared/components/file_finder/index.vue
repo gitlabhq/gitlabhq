@@ -1,45 +1,62 @@
 <script>
-import { mapActions, mapGetters, mapState } from 'vuex';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import Mousetrap from 'mousetrap';
 import VirtualList from 'vue-virtual-scroll-list';
 import Item from './item.vue';
-import router from '../../ide_router';
-import {
-  MAX_FILE_FINDER_RESULTS,
-  FILE_FINDER_ROW_HEIGHT,
-  FILE_FINDER_EMPTY_ROW_HEIGHT,
-} from '../../constants';
-import {
-  UP_KEY_CODE,
-  DOWN_KEY_CODE,
-  ENTER_KEY_CODE,
-  ESC_KEY_CODE,
-} from '../../../lib/utils/keycodes';
+import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
+
+export const MAX_FILE_FINDER_RESULTS = 40;
+export const FILE_FINDER_ROW_HEIGHT = 55;
+export const FILE_FINDER_EMPTY_ROW_HEIGHT = 33;
+
+const originalStopCallback = Mousetrap.stopCallback;
 
 export default {
   components: {
     Item,
     VirtualList,
   },
+  props: {
+    files: {
+      type: Array,
+      required: true,
+    },
+    visible: {
+      type: Boolean,
+      required: true,
+    },
+    loading: {
+      type: Boolean,
+      required: true,
+    },
+    showDiffStats: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    clearSearchOnClose: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
   data() {
     return {
-      focusedIndex: 0,
+      focusedIndex: -1,
       searchText: '',
       mouseOver: false,
       cancelMouseOver: false,
     };
   },
   computed: {
-    ...mapGetters(['allBlobs']),
-    ...mapState(['fileFindVisible', 'loading']),
     filteredBlobs() {
       const searchText = this.searchText.trim();
 
       if (searchText === '') {
-        return this.allBlobs.slice(0, MAX_FILE_FINDER_RESULTS);
+        return this.files.slice(0, MAX_FILE_FINDER_RESULTS);
       }
 
-      return fuzzaldrinPlus.filter(this.allBlobs, searchText, {
+      return fuzzaldrinPlus.filter(this.files, searchText, {
         key: 'path',
         maxResults: MAX_FILE_FINDER_RESULTS,
       });
@@ -58,10 +75,12 @@ export default {
     },
   },
   watch: {
-    fileFindVisible() {
+    visible() {
       this.$nextTick(() => {
-        if (!this.fileFindVisible) {
-          this.searchText = '';
+        if (!this.visible) {
+          if (this.clearSearchOnClose) {
+            this.searchText = '';
+          }
         } else {
           this.focusedIndex = 0;
 
@@ -72,7 +91,11 @@ export default {
       });
     },
     searchText() {
-      this.focusedIndex = 0;
+      this.focusedIndex = -1;
+
+      this.$nextTick(() => {
+        this.focusedIndex = 0;
+      });
     },
     focusedIndex() {
       if (!this.mouseOver) {
@@ -98,8 +121,25 @@ export default {
       }
     },
   },
+  mounted() {
+    if (this.files.length) {
+      this.focusedIndex = 0;
+    }
+
+    Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+
+      this.toggle(!this.visible);
+    });
+
+    Mousetrap.stopCallback = (e, el, combo) => this.mousetrapStopCallback(e, el, combo);
+  },
   methods: {
-    ...mapActions(['toggleFileFinder']),
+    toggle(visible) {
+      this.$emit('toggle', visible);
+    },
     clearSearchInput() {
       this.searchText = '';
 
@@ -139,15 +179,15 @@ export default {
           this.openFile(this.filteredBlobs[this.focusedIndex]);
           break;
         case ESC_KEY_CODE:
-          this.toggleFileFinder(false);
+          this.toggle(false);
           break;
         default:
           break;
       }
     },
     openFile(file) {
-      this.toggleFileFinder(false);
-      router.push(`/project${file.url}`);
+      this.toggle(false);
+      this.$emit('click', file);
     },
     onMouseOver(index) {
       if (!this.cancelMouseOver) {
@@ -159,14 +199,26 @@ export default {
       this.cancelMouseOver = false;
       this.onMouseOver(index);
     },
+    mousetrapStopCallback(e, el, combo) {
+      if (
+        (combo === 't' && el.classList.contains('dropdown-input-field')) ||
+        el.classList.contains('inputarea')
+      ) {
+        return true;
+      } else if (combo === 'command+p' || combo === 'ctrl+p') {
+        return false;
+      }
+
+      return originalStopCallback(e, el, combo);
+    },
   },
 };
 </script>
 
 <template>
-  <div class="ide-file-finder-overlay" @mousedown.self="toggleFileFinder(false)">
-    <div class="dropdown-menu diff-file-changes ide-file-finder show">
-      <div class="dropdown-input">
+  <div class="file-finder-overlay" @mousedown.self="toggle(false)">
+    <div class="dropdown-menu diff-file-changes file-finder show">
+      <div :class="{ 'has-value': showClearInputButton }" class="dropdown-input">
         <input
           ref="searchInput"
           v-model="searchText"
@@ -186,9 +238,6 @@ export default {
         ></i>
         <i
           :aria-label="__('Clear search input')"
-          :class="{
-            show: showClearInputButton,
-          }"
           role="button"
           class="fa fa-times dropdown-input-clear"
           @click="clearSearchInput"
@@ -203,6 +252,7 @@ export default {
                 :search-text="searchText"
                 :focused="index === focusedIndex"
                 :index="index"
+                :show-diff-stats="showDiffStats"
                 class="disable-hover"
                 @click="openFile"
                 @mouseover="onMouseOver"
@@ -225,3 +275,25 @@ export default {
     </div>
   </div>
 </template>
+
+<style scoped>
+.file-finder-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 200;
+}
+
+.file-finder {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.diff-file-changes {
+  top: 50px;
+  max-height: 327px;
+}
+</style>

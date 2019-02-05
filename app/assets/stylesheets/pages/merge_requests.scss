@@ -986,3 +986,9 @@
     width: $ci-action-icon-size-lg;
   }
 }
+
+.merge-request-details .file-finder-overlay.diff-file-finder {
+  position: fixed;
+  z-index: 99999;
+  background: $black-transparent;
+}

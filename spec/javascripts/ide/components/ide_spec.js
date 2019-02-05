@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import Mousetrap from 'mousetrap';
 import store from '~/ide/stores';
 import ide from '~/ide/components/ide.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
@@ -69,73 +68,6 @@ describe('ide component', () => {
       vm.onBeforeUnload(event);
 
       expect(event.returnValue).toBe('Are you sure you want to lose unsaved changes?');
-    });
-  });
-
-  describe('file finder', () => {
-    beforeEach(done => {
-      spyOn(vm, 'toggleFileFinder');
-
-      vm.$store.state.fileFindVisible = true;
-
-      vm.$nextTick(done);
-    });
-
-    it('calls toggleFileFinder on `t` key press', done => {
-      Mousetrap.trigger('t');
-
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.toggleFileFinder).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('calls toggleFileFinder on `command+p` key press', done => {
-      Mousetrap.trigger('command+p');
-
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.toggleFileFinder).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('calls toggleFileFinder on `ctrl+p` key press', done => {
-      Mousetrap.trigger('ctrl+p');
-
-      vm.$nextTick()
-        .then(() => {
-          expect(vm.toggleFileFinder).toHaveBeenCalled();
-        })
-        .then(done)
-        .catch(done.fail);
-    });
-
-    it('always allows `command+p` to trigger toggleFileFinder', () => {
-      expect(
-        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 'command+p'),
-      ).toBe(false);
-    });
-
-    it('always allows `ctrl+p` to trigger toggleFileFinder', () => {
-      expect(
-        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 'ctrl+p'),
-      ).toBe(false);
-    });
-
-    it('onlys handles `t` when focused in input-field', () => {
-      expect(
-        vm.mousetrapStopCallback(null, vm.$el.querySelector('.dropdown-input-field'), 't'),
-      ).toBe(true);
-    });
-
-    it('stops callback in monaco editor', () => {
-      setFixtures('<div class="inputarea"></div>');
-
-      expect(vm.mousetrapStopCallback(null, document.querySelector('.inputarea'), 't')).toBe(true);
     });
   });
 

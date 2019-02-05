@@ -129,6 +129,10 @@ export default {
   created() {
     this.adjustView();
     eventHub.$once('fetchedNotesData', this.setDiscussions);
+    eventHub.$once('fetchDiffData', this.fetchData);
+  },
+  beforeDestroy() {
+    eventHub.$off('fetchDiffData', this.fetchData);
   },
   methods: {
     ...mapActions(['startTaskList']),
