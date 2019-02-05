@@ -227,7 +227,7 @@
                   %span
                     = _('Environments')
 
-            - if project_nav_tab?(:error_tracking) && Feature.enabled?(:error_tracking, @project)
+            - if project_nav_tab?(:error_tracking)
               = nav_link(controller: :error_tracking) do
                 = link_to project_error_tracking_index_path(@project), title: _('Error Tracking'), class: 'shortcuts-tracking qa-operations-tracking-link' do
                   %span

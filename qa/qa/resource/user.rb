@@ -17,11 +17,11 @@ module QA
       end
 
       def username
-        @username ||= "qa-user-#{unique_id}"
+        @username || "qa-user-#{unique_id}"
       end
 
       def password
-        @password ||= 'password'
+        @password || 'password'
       end
 
       def name
@@ -29,7 +29,15 @@ module QA
       end
 
       def email
-        @email ||= api_resource&.dig(:email) || "#{username}@example.com"
+        @email ||= "#{username}@example.com"
+      end
+
+      def public_email
+        @public_email ||= begin
+          api_public_email = api_resource&.dig(:public_email)
+
+          api_public_email && api_public_email != '' ? api_public_email : Runtime::User.default_email
+        end
       end
 
       def credentials_given?

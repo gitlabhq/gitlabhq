@@ -13,8 +13,6 @@ describe 'projects/settings/operations/show' do
 
   describe 'Operations > Error Tracking' do
     before do
-      stub_feature_flags(error_tracking: true)
-
       project.add_reporter(user)
 
       allow(view).to receive(:error_tracking_setting)

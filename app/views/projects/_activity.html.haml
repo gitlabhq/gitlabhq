@@ -1,5 +1,5 @@
 %div{ class: container_class }
-  .nav-block.d-none.d-sm-block.activities
+  .nav-block.d-none.d-sm-flex.activities
     = render 'shared/event_filter'
     .controls
       = link_to project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'btn d-none d-sm-inline-block has-tooltip' do

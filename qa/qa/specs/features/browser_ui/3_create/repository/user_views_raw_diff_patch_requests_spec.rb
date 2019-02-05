@@ -2,7 +2,10 @@
 
 module QA
   context 'Create' do
-    describe 'Commit data' do
+    # failure reported: https://gitlab.com/gitlab-org/quality/nightly/issues/42
+    # also failing in staging until the fix is picked into the next release:
+    #  https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24533
+    describe 'Commit data', :quarantine do
       before(:context) do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
@@ -47,7 +50,7 @@ module QA
 
         Page::Project::Commit::Show.perform(&:select_email_patches)
 
-        expect(page).to have_content("From: #{user.name} <#{user.email}>")
+        expect(page).to have_content("From: #{user.name} <#{user.public_email}>")
         expect(page).to have_content('Subject: [PATCH] Add second file')
         expect(page).to have_content('diff --git a/second b/second')
       end
