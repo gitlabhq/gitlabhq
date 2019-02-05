@@ -9,7 +9,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 
 <!-- Mention the issue(s) this MR is related to -->
 
-## Author's checklist
+## Developer checklist
 
 - [ ] Link to the developer security workflow issue on `dev.gitlab.org`
 - [ ] MR targets `master` or `security-X-Y` for backports
@@ -20,7 +20,7 @@ See [the general developer security release guidelines](https://gitlab.com/gitla
 - [ ] Add a link to an EE MR if required
 - [ ] Assign to a reviewer
 
-## Reviewers checklist
+## Reviewer checklist
 
 - [ ] Correct milestone is applied and the title is matching across all backports
 - [ ] Assigned to `@gitlab-release-tools-bot` with passing CI pipelines
