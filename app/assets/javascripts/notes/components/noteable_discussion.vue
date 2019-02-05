@@ -24,6 +24,7 @@ import autosave from '../mixins/autosave';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import discussionNavigation from '../mixins/discussion_navigation';
+import ReplyPlaceholder from './discussion_reply_placeholder.vue';
 import jumpToNextDiscussionButton from './discussion_jump_to_next_button.vue';
 
 export default {
@@ -39,6 +40,7 @@ export default {
     resolveDiscussionButton,
     jumpToNextDiscussionButton,
     toggleRepliesWidget,
+    ReplyPlaceholder,
     placeholderNote,
     placeholderSystemNote,
     systemNote,
@@ -447,14 +449,7 @@ Please check your network connection and try again.`;
               >
                 <template v-if="!isReplying && canReply">
                   <div class="discussion-with-resolve-btn">
-                    <button
-                      type="button"
-                      class="js-vue-discussion-reply btn btn-text-field qa-discussion-reply"
-                      title="Add a reply"
-                      @click="showReplyForm"
-                    >
-                      Reply...
-                    </button>
+                    <reply-placeholder class="qa-discussion-reply" @onClick="showReplyForm" />
                     <resolve-discussion-button
                       v-if="discussion.resolvable"
                       :is-resolving="isResolving"

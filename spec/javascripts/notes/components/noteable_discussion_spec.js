@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_file';
@@ -57,27 +58,23 @@ describe('noteable_discussion component', () => {
   });
 
   describe('actions', () => {
-    it('should render reply button', () => {
-      expect(
-        wrapper
-          .find('.js-vue-discussion-reply')
-          .text()
-          .trim(),
-      ).toEqual('Reply...');
-    });
-
     it('should toggle reply form', done => {
-      wrapper.find('.js-vue-discussion-reply').trigger('click');
+      const replyPlaceholder = wrapper.find(ReplyPlaceholder);
 
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.vm.isReplying).toEqual(true);
+      wrapper.vm
+        .$nextTick()
+        .then(() => {
+          expect(wrapper.vm.isReplying).toEqual(false);
 
-        // There is a watcher for `isReplying` which will init autosave in the next tick
-        wrapper.vm.$nextTick(() => {
+          replyPlaceholder.vm.$emit('onClick');
+        })
+        .then(() => wrapper.vm.$nextTick())
+        .then(() => {
+          expect(wrapper.vm.isReplying).toEqual(true);
           expect(wrapper.vm.$refs.noteForm).not.toBeNull();
-          done();
-        });
-      });
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('does not render jump to discussion button', () => {
