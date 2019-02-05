@@ -152,6 +152,16 @@ describe Projects::ServicesController do
         expect(service.namespace).not_to eq('updated_namespace')
       end
     end
+
+    context 'when activating JIRA service from a template' do
+      let(:template_service) { create(:jira_service, project: project, template: true) }
+
+      it 'activate JIRA service from template' do
+        put :update, params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: { active: true } }
+
+        expect(flash[:notice]).to eq 'JIRA activated.'
+      end
+    end
   end
 
   describe "GET #edit" do
