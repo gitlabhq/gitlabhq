@@ -27,7 +27,7 @@ describe UsersHelper do
 
     context 'with public profile' do
       it 'includes all the expected tabs' do
-        expect(tabs).to include(:activity, :groups, :contributed, :projects, :snippets)
+        expect(tabs).to include(:activity, :groups, :contributed, :projects, :starred, :snippets)
       end
     end
 
