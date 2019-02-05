@@ -422,7 +422,7 @@ module API
 
     def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
-      header['Content-Disposition'] = "attachment; filename=#{filename}"
+      header['Content-Disposition'] = ::Gitlab::ContentDisposition.format(disposition: 'attachment', filename: filename)
       header['Content-Transfer-Encoding'] = 'binary'
       content_type content_type
 
@@ -496,7 +496,7 @@ module API
     def send_git_blob(repository, blob)
       env['api.format'] = :txt
       content_type 'text/plain'
-      header['Content-Disposition'] = content_disposition('inline', blob.name)
+      header['Content-Disposition'] = ::Gitlab::ContentDisposition.format(disposition: 'inline', filename: blob.name)
 
       # Let Workhorse examine the content and determine the better content disposition
       header[Gitlab::Workhorse::DETECT_HEADER] = "true"
@@ -532,12 +532,6 @@ module API
       return 'only' if params[:archived]
 
       params[:archived]
-    end
-
-    def content_disposition(disposition, filename)
-      disposition += %(; filename=#{filename.inspect}) if filename.present?
-
-      disposition
     end
   end
 end

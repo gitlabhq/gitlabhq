@@ -1584,7 +1584,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             context 'when artifacts are stored locally' do
               let(:download_headers) do
                 { 'Content-Transfer-Encoding' => 'binary',
-                  'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+                  'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
               end
 
               before do

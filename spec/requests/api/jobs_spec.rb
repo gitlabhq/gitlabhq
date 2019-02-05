@@ -403,7 +403,7 @@ describe API::Jobs do
     shared_examples 'downloads artifact' do
       let(:download_headers) do
         { 'Content-Transfer-Encoding' => 'binary',
-          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+          'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
       end
 
       it 'returns specific job artifacts' do
@@ -555,7 +555,7 @@ describe API::Jobs do
           let(:download_headers) do
             { 'Content-Transfer-Encoding' => 'binary',
               'Content-Disposition' =>
-                "attachment; filename=#{job.artifacts_file.filename}" }
+              %Q(attachment; filename="#{job.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}) }
           end
 
           it { expect(response).to have_http_status(:ok) }
