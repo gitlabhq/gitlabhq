@@ -3264,10 +3264,12 @@ doctrine@^2.1.0:
   dependencies:
     esutils "^2.0.2"
 
-document-register-element@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/document-register-element/-/document-register-element-1.3.0.tgz#fb3babb523c74662be47be19c6bc33e71990d940"
-  integrity sha1-+zurtSPHRmK+R74Zxrwz5xmQ2UA=
+document-register-element@1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/document-register-element/-/document-register-element-1.13.1.tgz#dad8cb7be38e04ee3f56842e6cf81af46c1249ba"
+  integrity sha512-92ZyLDKg9j4rOll//NNXj25f+8rAzOkYsGJonhugKwXfeqH7bzs8Ucpvey0WzZ2ZzKdrvW9RnUw3UyOZ/uhBFw==
+  dependencies:
+    lightercollective "^0.1.0"
 
 dom-serialize@^2.2.0:
   version "2.2.1"
