@@ -21,9 +21,14 @@
           - if @project.tag_list.present?
             %span.home-panel-topic-list.d-inline-flex.prepend-left-8.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.tag_list.join(', ') : nil }
               = sprite_icon('tag', size: 16, css_class: 'icon append-right-4')
-              = @project.topics_to_show
+
+              - @project.topics_to_show.each do |topic|
+                %a{ class: 'badge badge-pill badge-secondary append-right-5 str-truncated-30', href: explore_projects_path(tag: topic) }
+                  = topic.titleize
+
               - if @project.has_extra_topics?
-                = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown }
+                .text-nowrap
+                  = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown }
 
 
     .project-repo-buttons.col-md-12.col-lg-6.d-inline-flex.flex-wrap.justify-content-lg-end
