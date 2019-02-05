@@ -7,14 +7,17 @@ module Ci
     CreateError = Class.new(StandardError)
 
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
+                Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
                 Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
+                Gitlab::Ci::Pipeline::Chain::Limit::Size,
                 Gitlab::Ci::Pipeline::Chain::Populate,
-                Gitlab::Ci::Pipeline::Chain::Create].freeze
+                Gitlab::Ci::Pipeline::Chain::Create,
+                Gitlab::Ci::Pipeline::Chain::Limit::Activity].freeze
 
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, &block)
+    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, **options, &block)
       @pipeline = Ci::Pipeline.new
 
       command = Gitlab::Ci::Pipeline::Chain::Command.new(
@@ -32,7 +35,8 @@ module Ci
         variables_attributes: params[:variables_attributes],
         project: project,
         current_user: current_user,
-        push_options: params[:push_options])
+        push_options: params[:push_options],
+        **extra_options(**options))
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)
@@ -103,5 +107,9 @@ module Ci
       pipeline.project.source_of_merge_requests.opened.where(source_branch: pipeline.ref)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def extra_options
+      {} # overriden in EE
+    end
   end
 end
