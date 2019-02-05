@@ -1,0 +1,5 @@
+---
+title: Externalize strings from `/app/views/email_rejection_mailer`
+merge_request: 24869
+author: George Tsiolis
+type: other
