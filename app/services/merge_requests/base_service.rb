@@ -63,6 +63,7 @@ module MergeRequests
       # UpdateMergeRequestsWorker could be retried by an exception.
       # MR pipelines should not be recreated in such case.
       return if merge_request.merge_request_pipeline_exists?
+      return if merge_request.has_no_commits?
 
       Ci::CreatePipelineService
         .new(merge_request.source_project, user, ref: merge_request.source_branch)

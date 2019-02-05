@@ -150,11 +150,15 @@ describe MergeRequests::RefreshService do
           }
         end
 
-        it 'create merge request pipeline' do
+        it 'create merge request pipeline with commits' do
           expect { subject }
             .to change { @merge_request.merge_request_pipelines.count }.by(1)
             .and change { @fork_merge_request.merge_request_pipelines.count }.by(1)
-            .and change { @another_merge_request.merge_request_pipelines.count }.by(1)
+            .and change { @another_merge_request.merge_request_pipelines.count }.by(0)
+
+          expect(@merge_request.has_commits?).to be_truthy
+          expect(@fork_merge_request.has_commits?).to be_truthy
+          expect(@another_merge_request.has_commits?).to be_falsy
         end
 
         context "when branch pipeline was created before a merge request pipline has been created" do
