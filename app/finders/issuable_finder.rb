@@ -18,6 +18,7 @@
 #     assignee_id: integer or 'None' or 'Any'
 #     assignee_username: string
 #     search: string
+#     in: 'title', 'description', or a string joining them with comma
 #     label_name: string
 #     sort: string
 #     non_archived: boolean
@@ -56,6 +57,7 @@ class IssuableFinder
       milestone_title
       my_reaction_emoji
       search
+      in
     ]
   end
 
@@ -408,7 +410,7 @@ class IssuableFinder
       items = klass.with(cte.to_arel).from(klass.table_name)
     end
 
-    items.full_search(search)
+    items.full_search(search, matched_columns: params[:in])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

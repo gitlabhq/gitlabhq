@@ -1,0 +1,5 @@
+---
+title: Changed external wiki query method to prevent attribute caching
+merge_request: 24907
+author:
+type: fixed

@@ -49,6 +49,22 @@ describe('Api', () => {
     });
   });
 
+  describe('groupMembers', () => {
+    it('fetches group members', done => {
+      const groupId = '54321';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/members`;
+      const expectedData = [{ id: 7 }];
+      mock.onGet(expectedUrl).reply(200, expectedData);
+
+      Api.groupMembers(groupId)
+        .then(({ data }) => {
+          expect(data).toEqual(expectedData);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('groups', () => {
     it('fetches groups', done => {
       const query = 'dummy query';

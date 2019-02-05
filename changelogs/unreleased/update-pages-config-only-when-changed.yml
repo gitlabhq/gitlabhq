@@ -1,0 +1,5 @@
+---
+title: Do not reload daemon if configuration file of pages does not change
+merge_request:
+author:
+type: performance

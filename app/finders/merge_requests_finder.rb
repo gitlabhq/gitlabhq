@@ -15,6 +15,7 @@
 #     author_id: integer
 #     assignee_id: integer
 #     search: string
+#     in: 'title', 'description', or a string joining them with comma
 #     label_name: string
 #     sort: string
 #     non_archived: boolean

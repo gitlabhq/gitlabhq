@@ -24,6 +24,7 @@ GET /merge_requests?labels=bug,reproduced
 GET /merge_requests?author_id=5
 GET /merge_requests?my_reaction_emoji=star
 GET /merge_requests?scope=assigned_to_me
+GET /merge_requests?search=foo&in=title
 ```
 
 Parameters:
@@ -47,6 +48,7 @@ Parameters:
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
+| `in`                | string   | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
 | `wip`               | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
 ```json
