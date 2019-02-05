@@ -45,6 +45,29 @@ describe OmniauthCallbacksController, type: :controller do
       end
     end
 
+    context 'when sign in fails' do
+      include RoutesHelpers
+
+      let(:extern_uid) { 'my-uid' }
+      let(:provider) { :saml }
+
+      def stub_route_as(path)
+        allow(@routes).to receive(:generate_extras) { [path, []] }
+      end
+
+      it 'it calls through to the failure handler' do
+        request.env['omniauth.error'] = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
+        request.env['omniauth.error.strategy'] = OmniAuth::Strategies::SAML.new(nil)
+        stub_route_as('/users/auth/saml/callback')
+
+        ForgeryProtection.with_forgery_protection do
+          post :failure
+        end
+
+        expect(flash[:alert]).to match(/Fingerprint mismatch/)
+      end
+    end
+
     context 'when a redirect fragment is provided' do
       let(:provider) { :jwt }
       let(:extern_uid) { 'my-uid' }
