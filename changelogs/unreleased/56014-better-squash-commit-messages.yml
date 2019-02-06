@@ -1,0 +1,6 @@
+---
+title: Default squash commit message is now selected from the longest commit when
+  squashing merge requests
+merge_request: 24518
+author:
+type: changed

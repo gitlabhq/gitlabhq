@@ -82,6 +82,38 @@ describe MergeRequest do
     end
   end
 
+  describe '#default_squash_commit_message' do
+    let(:project) { subject.project }
+
+    def commit_collection(commit_hashes)
+      raw_commits = commit_hashes.map { |raw| Commit.from_hash(raw, project) }
+
+      CommitCollection.new(project, raw_commits)
+    end
+
+    it 'returns the oldest multiline commit message' do
+      commits = commit_collection([
+        { message: 'Singleline', parent_ids: [] },
+        { message: "Second multiline\nCommit message", parent_ids: [] },
+        { message: "First multiline\nCommit message", parent_ids: [] }
+      ])
+
+      expect(subject).to receive(:commits).and_return(commits)
+
+      expect(subject.default_squash_commit_message).to eq("First multiline\nCommit message")
+    end
+
+    it 'returns the merge request title if there are no multiline commits' do
+      commits = commit_collection([
+        { message: 'Singleline', parent_ids: [] }
+      ])
+
+      expect(subject).to receive(:commits).and_return(commits)
+
+      expect(subject.default_squash_commit_message).to eq(subject.title)
+    end
+  end
+
   describe 'modules' do
     subject { described_class }
 
@@ -920,18 +952,18 @@ describe MergeRequest do
     end
   end
 
-  describe '#merge_commit_message' do
+  describe '#default_merge_commit_message' do
     it 'includes merge information as the title' do
       request = build(:merge_request, source_branch: 'source', target_branch: 'target')
 
-      expect(request.merge_commit_message)
+      expect(request.default_merge_commit_message)
         .to match("Merge branch 'source' into 'target'\n\n")
     end
 
     it 'includes its title in the body' do
       request = build(:merge_request, title: 'Remove all technical debt')
 
-      expect(request.merge_commit_message)
+      expect(request.default_merge_commit_message)
         .to match("Remove all technical debt\n\n")
     end
 
@@ -943,34 +975,34 @@ describe MergeRequest do
       allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
       subject.cache_merge_request_closes_issues!
 
-      expect(subject.merge_commit_message)
+      expect(subject.default_merge_commit_message)
         .to match("Closes #{issue.to_reference}")
     end
 
     it 'includes its reference in the body' do
       request = build_stubbed(:merge_request)
 
-      expect(request.merge_commit_message)
+      expect(request.default_merge_commit_message)
         .to match("See merge request #{request.to_reference(full: true)}")
     end
 
     it 'excludes multiple linebreak runs when description is blank' do
       request = build(:merge_request, title: 'Title', description: nil)
 
-      expect(request.merge_commit_message).not_to match("Title\n\n\n\n")
+      expect(request.default_merge_commit_message).not_to match("Title\n\n\n\n")
     end
 
     it 'includes its description in the body' do
       request = build(:merge_request, description: 'By removing all code')
 
-      expect(request.merge_commit_message(include_description: true))
+      expect(request.default_merge_commit_message(include_description: true))
         .to match("By removing all code\n\n")
     end
 
     it 'does not includes its description in the body' do
       request = build(:merge_request, description: 'By removing all code')
 
-      expect(request.merge_commit_message)
+      expect(request.default_merge_commit_message)
         .not_to match("By removing all code\n\n")
     end
   end

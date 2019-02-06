@@ -939,7 +939,7 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.repository.branch_exists?(self.target_branch)
   end
 
-  def merge_commit_message(include_description: false)
+  def default_merge_commit_message(include_description: false)
     closes_issues_references = visible_closing_issues_for.map do |issue|
       issue.to_reference(target_project)
     end
@@ -959,6 +959,13 @@ class MergeRequest < ActiveRecord::Base
     message.join("\n\n")
   end
 
+  # Returns the oldest multi-line commit message, or the MR title if none found
+  def default_squash_commit_message
+    strong_memoize(:default_squash_commit_message) do
+      commits.without_merge_commits.reverse.find(&:description?)&.safe_message || title
+    end
+  end
+
   def reset_merge_when_pipeline_succeeds
     return unless merge_when_pipeline_succeeds?
 
@@ -967,6 +974,7 @@ class MergeRequest < ActiveRecord::Base
     if merge_params
       merge_params.delete('should_remove_source_branch')
       merge_params.delete('commit_message')
+      merge_params.delete('squash_commit_message')
     end
 
     self.save
