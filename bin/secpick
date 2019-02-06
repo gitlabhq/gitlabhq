@@ -10,7 +10,7 @@ using Rainbow
 
 module Secpick
   BRANCH_PREFIX = 'security'.freeze
-  STABLE_PREFIX = 'stable'.freeze
+  STABLE_SUFFIX = 'stable'.freeze
   DEFAULT_REMOTE = 'dev'.freeze
   NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/new'.freeze
 
@@ -38,7 +38,7 @@ module Secpick
     end
 
     def stable_branch
-      "#{STABLE_PREFIX}-#{@options[:version]}".tap do |name|
+      "#{@options[:version]}-#{STABLE_SUFFIX}".tap do |name|
         name << "-ee" if ee?
       end.freeze
     end
