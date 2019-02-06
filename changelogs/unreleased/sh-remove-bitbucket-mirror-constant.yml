@@ -1,5 +1,0 @@
----
-title: Fix import handling errors in Bitbucket Server importer
-merge_request: 24499
-author:
-type: fixed
