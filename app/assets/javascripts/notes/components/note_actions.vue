@@ -2,11 +2,13 @@
 import { mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import ReplyButton from './note_actions/reply_button.vue';
 
 export default {
   name: 'NoteActions',
   components: {
     Icon,
+    ReplyButton,
     GlLoadingIcon,
   },
   directives: {
@@ -20,6 +22,11 @@ export default {
     noteId: {
       type: [String, Number],
       required: true,
+    },
+    discussionId: {
+      type: String,
+      required: false,
+      default: '',
     },
     noteUrl: {
       type: String,
@@ -35,6 +42,10 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    showReply: {
+      type: Boolean,
+      required: true,
     },
     canEdit: {
       type: Boolean,
@@ -80,6 +91,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getUserDataByProp']),
+    showReplyButton() {
+      return gon.features && gon.features.replyToIndividualNotes && this.showReply;
+    },
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
     },
@@ -153,6 +167,12 @@ export default {
         <icon css-classes="link-highlight award-control-icon-super-positive" name="emoji_smiley" />
       </a>
     </div>
+    <reply-button
+      v-if="showReplyButton"
+      ref="replyButton"
+      class="js-reply-button"
+      :note-id="discussionId"
+    />
     <div v-if="canEdit" class="note-actions-item">
       <button
         v-gl-tooltip.bottom
