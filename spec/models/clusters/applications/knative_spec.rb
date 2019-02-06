@@ -9,6 +9,7 @@ describe Clusters::Applications::Knative do
   include_examples 'cluster application core specs', :clusters_applications_knative
   include_examples 'cluster application status specs', :clusters_applications_knative
   include_examples 'cluster application helm specs', :clusters_applications_knative
+  include_examples 'cluster application initial status specs'
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
@@ -32,20 +33,6 @@ describe Clusters::Applications::Knative do
     end
 
     it { is_expected.to contain_exactly(cluster) }
-  end
-
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_knative, :scheduled, version: '0.2.2') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('0.2.2')
-      end
-    end
   end
 
   describe '#make_installed' do
