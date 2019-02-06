@@ -1,0 +1,5 @@
+---
+title: Enable subquery for group issue search by default
+merge_request: 24978
+author:
+type: fixed
