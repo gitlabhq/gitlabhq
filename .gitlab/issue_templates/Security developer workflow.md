@@ -20,10 +20,9 @@ Set the title to: `Description of the original issue`
 - [ ] Once the MR is ready to be merged, create MRs targetting the last 3 releases, plus the current RC if between the 7th and 22nd of the month.
     - [ ] At this point, it might be easy to squash the commits from the MR into one
     - You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
-    - [ ] Create the branch `security-X-Y` from `X-Y-stable` if it doesn't exist (and make sure it's up to date with stable)
-    - [ ] Create each MR targetting the security branch `security-X-Y`
-    - [ ] Add the ~security label and prefix with the version `WIP: [X.Y]` the title of the MR
-- [ ] Add the ~"Merge into Security" label to all of the MRs.
+    - [ ] Create each MR targetting the stable branch `stable-X-Y`, using the "Security Release" merge request template.
+    - Every merge request will have its own set of TODOs, so make sure to
+      complete those.
 - [ ] Make sure all MRs have a link in the [links section](#links)
 
 [secpick documentation]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md#secpick-script
