@@ -14,6 +14,17 @@
 - skip_pagination = false unless local_assigns[:skip_pagination] == true
 - compact_mode = false unless local_assigns[:compact_mode] == true
 - css_classes = "#{'compact' if compact_mode} #{'explore' if explore_projects_tab?}"
+- contributed_projects_illustration_path = 'illustrations/profile-page/contributed-projects.svg'
+- contributed_projects_current_user_empty_message_header = s_('UserProfile|Explore public groups to find projects to contribute to.')
+- contributed_projects_visitor_empty_message = s_('UserProfile|This user hasn\'t contributed to any projects')
+- own_projects_illustration_path = 'illustrations/profile-page/personal-project.svg'
+- own_projects_current_user_empty_message_header = s_('UserProfile|You haven\'t created any personal projects.')
+- own_projects_current_user_empty_message_description = s_('UserProfile|Your projects can be available publicly, internally, or privately, at your choice.')
+- own_projects_visitor_empty_message = s_('UserProfile|This user doesn\'t have any personal projects')
+- primary_button_label = _('New project')
+- primary_button_link = new_project_path
+- secondary_button_label = _('Explore groups')
+- secondary_button_link = explore_groups_path
 
 .js-projects-list-holder
   - if any_projects?(projects)
@@ -33,9 +44,18 @@
           %span &nbsp;you have no access to.
     = paginate_collection(projects, remote: remote) unless skip_pagination
   - else
-    .nothing-here-block
-      .svg-content.svg-130
-        = image_tag 'illustrations/profile-page/personal-project.svg'
-      %div
-        %span
-          = s_('UserProfile|This user doesn\'t have any personal projects')
+    - if @contributed_projects
+      = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: contributed_projects_illustration_path,
+        current_user_empty_message_header: contributed_projects_current_user_empty_message_header,
+        primary_button_label: primary_button_label,
+        primary_button_link: primary_button_link,
+        secondary_button_label: secondary_button_label,
+        secondary_button_link: secondary_button_link,
+        visitor_empty_message: contributed_projects_visitor_empty_message }
+    - else
+      = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: own_projects_illustration_path,
+        current_user_empty_message_header: own_projects_current_user_empty_message_header,
+        current_user_empty_message_description: own_projects_current_user_empty_message_description,
+        primary_button_label: primary_button_label,
+        primary_button_link: primary_button_link,
+        visitor_empty_message: own_projects_visitor_empty_message }

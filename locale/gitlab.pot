@@ -4836,9 +4836,6 @@ msgstr ""
 msgid "Notes|Show history only"
 msgstr ""
 
-msgid "Nothing here."
-msgstr ""
-
 msgid "Notification events"
 msgstr ""
 
@@ -7833,10 +7830,22 @@ msgstr ""
 msgid "UserProfile|Edit profile"
 msgstr ""
 
+msgid "UserProfile|Explore public groups to find projects to contribute to."
+msgstr ""
+
 msgid "UserProfile|Groups"
 msgstr ""
 
+msgid "UserProfile|Groups are the best way to manage projects and members."
+msgstr ""
+
+msgid "UserProfile|Join or create a group to start contributing by commenting on issues or submitting merge requests!"
+msgstr ""
+
 msgid "UserProfile|Most Recent Activity"
+msgstr ""
+
+msgid "UserProfile|No snippets found."
 msgstr ""
 
 msgid "UserProfile|Overview"
@@ -7851,6 +7860,9 @@ msgstr ""
 msgid "UserProfile|Snippets"
 msgstr ""
 
+msgid "UserProfile|Snippets in GitLab can either be private, internal, or public."
+msgstr ""
+
 msgid "UserProfile|Subscribe"
 msgstr ""
 
@@ -7860,10 +7872,25 @@ msgstr ""
 msgid "UserProfile|This user has a private profile"
 msgstr ""
 
+msgid "UserProfile|This user hasn't contributed to any projects"
+msgstr ""
+
 msgid "UserProfile|View all"
 msgstr ""
 
 msgid "UserProfile|View user in admin area"
+msgstr ""
+
+msgid "UserProfile|You can create a group for several dependent projects."
+msgstr ""
+
+msgid "UserProfile|You haven't created any personal projects."
+msgstr ""
+
+msgid "UserProfile|You haven't created any snippets."
+msgstr ""
+
+msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
 msgstr ""
 
 msgid "Users"
