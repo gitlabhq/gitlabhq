@@ -1203,8 +1203,10 @@ ActiveRecord::Schema.define(version: 20190131122559) do
     t.string "b_mode", null: false
     t.text "new_path", null: false
     t.text "old_path", null: false
-    t.text "diff", null: false
+    t.text "diff"
     t.boolean "binary"
+    t.integer "external_diff_offset"
+    t.integer "external_diff_size"
     t.index ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_files_on_mr_diff_id_and_order", unique: true, using: :btree
   end
 
@@ -1218,6 +1220,9 @@ ActiveRecord::Schema.define(version: 20190131122559) do
     t.string "head_commit_sha"
     t.string "start_commit_sha"
     t.integer "commits_count"
+    t.string "external_diff"
+    t.integer "external_diff_store"
+    t.boolean "stored_externally"
     t.index ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
   end
 
