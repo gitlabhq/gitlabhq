@@ -3,6 +3,7 @@
 # A collection of Commit instances for a specific project and Git reference.
 class CommitCollection
   include Enumerable
+  include Gitlab::Utils::StrongMemoize
 
   attr_reader :project, :ref, :commits
 
@@ -20,9 +21,15 @@ class CommitCollection
   end
 
   def committers
-    emails = commits.reject(&:merge_commit?).map(&:committer_email).uniq
+    emails = without_merge_commits.map(&:committer_email).uniq
 
     User.by_any_email(emails)
+  end
+
+  def without_merge_commits
+    strong_memoize(:without_merge_commits) do
+      commits.reject(&:merge_commit?)
+    end
   end
 
   # Sets the pipeline status for every commit.

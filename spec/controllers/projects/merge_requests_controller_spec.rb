@@ -387,6 +387,23 @@ describe Projects::MergeRequestsController do
         end
       end
 
+      context 'when a squash commit message is passed' do
+        let(:message) { 'My custom squash commit message' }
+
+        it 'passes the same message to SquashService' do
+          params = { squash: '1', squash_commit_message: message }
+
+          expect_next_instance_of(MergeRequests::SquashService, project, user, params.merge(merge_request: merge_request)) do |squash_service|
+            expect(squash_service).to receive(:execute).and_return({
+              status: :success,
+              squash_sha: SecureRandom.hex(20)
+            })
+          end
+
+          merge_with_sha(params)
+        end
+      end
+
       context 'when the pipeline succeeds is passed' do
         let!(:head_pipeline) do
           create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)

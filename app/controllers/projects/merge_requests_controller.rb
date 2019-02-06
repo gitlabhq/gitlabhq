@@ -240,7 +240,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge_params_attributes
-    [:should_remove_source_branch, :commit_message, :squash]
+    [:should_remove_source_branch, :commit_message, :squash_commit_message, :squash]
   end
 
   def merge_when_pipeline_succeeds_active?
