@@ -1,10 +1,21 @@
 - link_project = local_assigns.fetch(:link_project, false)
+- illustration_path = 'illustrations/profile-page/activity.svg'
+- current_user_empty_message_header = s_('UserProfile|You haven\'t created any snippets.')
+- current_user_empty_message_description = s_('UserProfile|Snippets in GitLab can either be private, internal, or public.')
+- primary_button_label = _('New snippet')
+- primary_button_link = new_snippet_path
+- visitor_empty_message = s_('UserProfile|No snippets found.')
 
 .snippets-list-holder
   %ul.content-list
     = render partial: 'shared/snippets/snippet', collection: @snippets, locals: { link_project: link_project }
     - if @snippets.empty?
       %li
-        .nothing-here-block= _("Nothing here.")
+        = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: illustration_path,
+          current_user_empty_message_header: current_user_empty_message_header,
+          current_user_empty_message_description: current_user_empty_message_description,
+          primary_button_label: primary_button_label,
+          primary_button_link: primary_button_link,
+          visitor_empty_message: visitor_empty_message }
 
   = paginate @snippets, theme: 'gitlab'
