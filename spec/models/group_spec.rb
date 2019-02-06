@@ -625,10 +625,7 @@ describe Group do
       group.update!(description: 'foobar')
     end
 
-    it 'calls #update_two_factor_requirement on each group member' do
-      other_user = create(:user)
-      group.add_user(other_user, GroupMember::OWNER)
-
+    def expects_other_user_to_require_two_factors
       calls = 0
       allow_any_instance_of(User).to receive(:update_two_factor_requirement) do
         calls += 1
@@ -637,6 +634,29 @@ describe Group do
       group.update!(require_two_factor_authentication: true, two_factor_grace_period: 23)
 
       expect(calls).to eq 2
+    end
+
+    it 'calls #update_two_factor_requirement on each group member' do
+      other_user = create(:user)
+      group.add_user(other_user, GroupMember::OWNER)
+
+      expects_other_user_to_require_two_factors
+    end
+
+    it 'calls #update_two_factor_requirement on each subgroup member' do
+      subgroup = create(:group, :nested, parent: group)
+      subgroup_user = create(:user)
+      subgroup.add_user(subgroup_user, GroupMember::OWNER)
+
+      expects_other_user_to_require_two_factors
+    end
+
+    it 'calls #update_two_factor_requirement on each child project member' do
+      project = create(:project, group: group)
+      project_user = create(:user)
+      project.add_user(project_user, GroupMember::OWNER)
+
+      expects_other_user_to_require_two_factors
     end
   end
 
