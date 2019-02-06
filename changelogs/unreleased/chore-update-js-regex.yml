@@ -1,0 +1,5 @@
+---
+title: Upgrade js-regex gem to version 3.1
+merge_request: 24433
+author: rroger
+type: changed

@@ -51,7 +51,7 @@ describe UsersHelper do
       false | 'mockRegexPattern' | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
       true  | nil                | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
       true  | ''                 | { user_internal_regex_pattern: nil, user_internal_regex_options: nil }
-      true  | 'mockRegexPattern' | { user_internal_regex_pattern: 'mockRegexPattern', user_internal_regex_options: 'gi' }
+      true  | 'mockRegexPattern' | { user_internal_regex_pattern: 'mockRegexPattern', user_internal_regex_options: 'i' }
     end
 
     with_them do
