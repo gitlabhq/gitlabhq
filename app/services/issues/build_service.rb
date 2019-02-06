@@ -57,8 +57,10 @@ module Issues
     end
 
     def issue_params
-      @issue_params ||= issue_params_with_info_from_discussions.merge(whitelisted_issue_params)
+      @issue_params ||= build_issue_params
     end
+
+    private
 
     def whitelisted_issue_params
       if can?(current_user, :admin_issue, project)
@@ -66,6 +68,10 @@ module Issues
       else
         params.slice(:title, :description)
       end
+    end
+
+    def build_issue_params
+      issue_params_with_info_from_discussions.merge(whitelisted_issue_params)
     end
   end
 end
