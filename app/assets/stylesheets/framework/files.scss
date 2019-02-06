@@ -4,6 +4,7 @@
  */
 .file-holder {
   border: 1px solid $border-color;
+  border-top: 0;
   border-radius: $border-radius-default;
 
   &.file-holder-no-border {
@@ -328,6 +329,7 @@ span.idiff {
     justify-content: space-between;
     background-color: $gray-light;
     border-bottom: 1px solid $border-color;
+    border-top: 1px solid $border-color;
     padding: 5px $gl-padding;
     margin: 0;
     border-radius: $border-radius-default $border-radius-default 0 0;
