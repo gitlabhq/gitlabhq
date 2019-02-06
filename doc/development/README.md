@@ -123,3 +123,7 @@ description: 'Learn how to contribute to GitLab.'
 ## Compliance
 
 - [Licensing](licensing.md) for ensuring license compliance
+
+## Go guides
+
+- [Go Guidelines](go_guide/index.md)
