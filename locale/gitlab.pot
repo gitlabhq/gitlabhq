@@ -3953,6 +3953,9 @@ msgstr ""
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
 msgstr ""
 
+msgid "Import/Export illustration"
+msgstr ""
+
 msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
