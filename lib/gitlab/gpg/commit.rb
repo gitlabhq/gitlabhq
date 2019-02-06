@@ -88,9 +88,10 @@ module Gitlab
 
       def create_cached_signature!
         using_keychain do |gpg_key|
-          signature = GpgSignature.new(attributes(gpg_key))
-          signature.save! unless Gitlab::Database.read_only?
-          signature
+          attributes = attributes(gpg_key)
+          break GpgSignature.new(attributes) if Gitlab::Database.read_only?
+
+          GpgSignature.safe_create!(attributes)
         end
       end
 
