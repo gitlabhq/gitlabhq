@@ -423,7 +423,7 @@ class Group < Namespace
   def update_two_factor_requirement
     return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
-    users.find_each(&:update_two_factor_requirement)
+    User.from_union([users_with_descendants, project_users_with_descendants]).find_each(&:update_two_factor_requirement)
   end
 
   def path_changed_hook

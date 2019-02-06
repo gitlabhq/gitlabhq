@@ -654,7 +654,16 @@ describe Group do
     it 'calls #update_two_factor_requirement on each child project member' do
       project = create(:project, group: group)
       project_user = create(:user)
-      project.add_user(project_user, GroupMember::OWNER)
+      project.add_developer(project_user)
+
+      expects_other_user_to_require_two_factors
+    end
+
+    it 'calls #update_two_factor_requirement on each subgroups child project member' do
+      subgroup = create(:group, :nested, parent: group)
+      project = create(:project, group: subgroup)
+      project_user = create(:user)
+      project.add_developer(project_user)
 
       expects_other_user_to_require_two_factors
     end
