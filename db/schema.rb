@@ -2053,6 +2053,7 @@ ActiveRecord::Schema.define(version: 20190220150130) do
     t.string "name"
     t.integer "taggings_count", default: 0
     t.index ["name"], name: "index_tags_on_name", unique: true, using: :btree
+    t.index ["name"], name: "index_tags_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   end
 
   create_table "term_agreements", force: :cascade do |t|
