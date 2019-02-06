@@ -728,8 +728,8 @@ class User < ApplicationRecord
   end
 
   def expanded_groups_requiring_two_factor_authentication
-    Group.from_union([all_expanded_groups.where(require_two_factor_authentication: true),
-                      authorized_groups.where(require_two_factor_authentication: true)])
+    all_expanded_groups.where(require_two_factor_authentication: true).merge(
+      authorized_groups.where(require_two_factor_authentication: true))
   end
 
   # rubocop: disable CodeReuse/ServiceClass
