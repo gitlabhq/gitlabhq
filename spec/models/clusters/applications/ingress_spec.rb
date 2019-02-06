@@ -8,6 +8,7 @@ describe Clusters::Applications::Ingress do
   include_examples 'cluster application core specs', :clusters_applications_ingress
   include_examples 'cluster application status specs', :clusters_applications_ingress
   include_examples 'cluster application helm specs', :clusters_applications_ingress
+  include_examples 'cluster application initial status specs'
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)

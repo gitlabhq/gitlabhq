@@ -6,6 +6,7 @@ describe Clusters::Applications::Prometheus do
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :clusters_applications_prometheus
   include_examples 'cluster application helm specs', :clusters_applications_prometheus
+  include_examples 'cluster application initial status specs'
 
   describe '.installed' do
     subject { described_class.installed }

@@ -6,6 +6,7 @@ describe Clusters::Applications::Runner do
   include_examples 'cluster application core specs', :clusters_applications_runner
   include_examples 'cluster application status specs', :clusters_applications_runner
   include_examples 'cluster application helm specs', :clusters_applications_runner
+  include_examples 'cluster application initial status specs'
 
   it { is_expected.to belong_to(:runner) }
 
