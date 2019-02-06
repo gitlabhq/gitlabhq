@@ -116,8 +116,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:service_tickets][provider] = ticket
   end
 
+  def build_auth_user(auth_user_class)
+    auth_user_class.new(oauth)
+  end
+
   def sign_in_user_flow(auth_user_class)
-    auth_user = auth_user_class.new(oauth)
+    auth_user = build_auth_user(auth_user_class)
     user = auth_user.find_and_update!
 
     if auth_user.valid_sign_in?
