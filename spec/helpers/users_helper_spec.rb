@@ -100,4 +100,72 @@ describe UsersHelper do
       end
     end
   end
+
+  describe '#user_badges_in_admin_section' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'with a blocked user' do
+      it "returns the blocked badge" do
+        blocked_user = create(:user, state: 'blocked')
+
+        badges = helper.user_badges_in_admin_section(blocked_user)
+
+        expect(badges).to eq([text: "Blocked", variant: "danger"])
+      end
+    end
+
+    context 'with an admin user' do
+      it "returns the admin badge" do
+        admin_user = create(:admin)
+
+        badges = helper.user_badges_in_admin_section(admin_user)
+
+        expect(badges).to eq([text: "Admin", variant: "success"])
+      end
+    end
+
+    context 'with an external user' do
+      it 'returns the external badge' do
+        external_user = create(:user, external: true)
+
+        badges = helper.user_badges_in_admin_section(external_user)
+
+        expect(badges).to eq([text: "External", variant: "secondary"])
+      end
+    end
+
+    context 'with the current user' do
+      it 'returns the "It\'s You" badge' do
+        badges = helper.user_badges_in_admin_section(user)
+
+        expect(badges).to eq([text: "It's you!", variant: nil])
+      end
+    end
+
+    context 'with an external blocked admin' do
+      it 'returns the blocked, admin and external badges' do
+        user = create(:admin, state: 'blocked', external: true)
+
+        badges = helper.user_badges_in_admin_section(user)
+
+        expect(badges).to eq([
+          { text: "Blocked", variant: "danger" },
+          { text: "Admin", variant: "success" },
+          { text: "External", variant: "secondary" }
+        ])
+      end
+    end
+
+    context 'get badges for normal user' do
+      it 'returns no badges' do
+        user = create(:user)
+
+        badges = helper.user_badges_in_admin_section(user)
+
+        expect(badges).to be_empty
+      end
+    end
+  end
 end
