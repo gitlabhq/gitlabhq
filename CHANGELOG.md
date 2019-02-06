@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.7.5 (2019-02-06)
+
+### Fixed (8 changes)
+
+- Fix import handling errors in Bitbucket Server importer. !24499
+- Adjusts suggestions unable to be applied. !24603
+- Fix 500 errors with legacy appearance logos. !24615
+- Fix form functionality for edit tag page. !24645
+- Update Workhorse to v8.0.2. !24870
+- Downcase aliased OAuth2 callback providers. !24877
+- Fix Detect Host Keys not working. !24884
+- Changed external wiki query method to prevent attribute caching. !24907
+
+
 ## 11.7.2 (2019-01-29)
 
 ### Fixed (1 change)
