@@ -58,15 +58,6 @@ module API
           render_api_error!({ error: _("Scope not supported with disabled 'users_search' feature!") }, 400)
         end
       end
-
-      params :scope do |options|
-        values = SCOPE_ENTITY.stringify_keys.slice(*options[:values]).keys
-
-        requires :scope,
-          type: String,
-          desc: 'The scope of the search',
-          values: values
-      end
     end
 
     resource :search do
@@ -75,7 +66,10 @@ module API
       end
       params do
         requires :search, type: String, desc: 'The expression it should be searched for'
-        use :scope, values: Helpers::SearchHelpers.global_search_scopes
+        requires :scope,
+          type: String,
+          desc: 'The scope of the search',
+          values: Helpers::SearchHelpers.global_search_scopes
         use :pagination
       end
       get do
@@ -93,7 +87,10 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a group'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        use :scope, values: Helpers::SearchHelpers.group_search_scopes
+        requires :scope,
+          type: String,
+          desc: 'The scope of the search',
+          values: Helpers::SearchHelpers.group_search_scopes
         use :pagination
       end
       get ':id/(-/)search' do
@@ -111,7 +108,10 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
         requires :search, type: String, desc: 'The expression it should be searched for'
-        use :scope, Helpers::SearchHelpers.project_search_scopes
+        requires :scope,
+          type: String,
+          desc: 'The scope of the search',
+          values: Helpers::SearchHelpers.project_search_scopes
         use :pagination
       end
       get ':id/(-/)search' do
