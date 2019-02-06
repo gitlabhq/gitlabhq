@@ -10,6 +10,7 @@ using Rainbow
 
 module Secpick
   BRANCH_PREFIX = 'security'.freeze
+  STABLE_PREFIX = 'stable'.freeze
   DEFAULT_REMOTE = 'dev'.freeze
   NEW_MR_URL = 'https://dev.gitlab.org/gitlab/gitlabhq/merge_requests/new'.freeze
 
@@ -36,16 +37,16 @@ module Secpick
       branch.freeze
     end
 
-    def security_branch
-      "#{BRANCH_PREFIX}-#{@options[:version]}".tap do |name|
+    def stable_branch
+      "#{STABLE_PREFIX}-#{@options[:version]}".tap do |name|
         name << "-ee" if ee?
       end.freeze
     end
 
     def git_commands
-      ["git fetch #{@options[:remote]} #{security_branch}",
-       "git checkout #{security_branch}",
-       "git pull #{@options[:remote]} #{security_branch}",
+      ["git fetch #{@options[:remote]} #{stable_branch}",
+       "git checkout #{stable_branch}",
+       "git pull #{@options[:remote]} #{stable_branch}",
        "git checkout -B #{source_branch}",
        "git cherry-pick #{@options[:sha]}",
        "git push #{@options[:remote]} #{source_branch}",
@@ -56,9 +57,8 @@ module Secpick
       {
         merge_request: {
           source_branch: source_branch,
-          target_branch: security_branch,
-          title: "[#{@options[:version].tr('-', '.')}] ",
-          description: '/label ~security ~"Merge into Security"'
+          target_branch: stable_branch,
+          description: '/label ~security'
         }
       }
     end
