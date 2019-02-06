@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
-import { __ } from '~/locale';
+import { s__, sprintf } from '~/locale';
+import createFlash from '~/flash';
 import animateMixin from '../mixins/animate';
 import TaskList from '../../task_list';
 import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
@@ -91,9 +92,14 @@ export default {
     },
 
     taskListUpdateError() {
-      window.Flash(
-        __(
-          'Someone edited this issue at the same time you did. The description has been updated and you will need to make your changes again.',
+      createFlash(
+        sprintf(
+          s__(
+            'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
+          ),
+          {
+            issueType: this.issuableType,
+          },
         ),
       );
 
