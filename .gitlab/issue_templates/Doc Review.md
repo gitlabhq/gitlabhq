@@ -12,9 +12,9 @@ Merged MR that introduced documentation requiring review:
 
 Related issue(s): 
 
-## Details
+## Further Details
 
-Context, questions, or other notes for technical writer:
+<!-- Any additional context, questions, or notes for the technical writer. -->
 
 
 /label ~Documentation ~docs-review
