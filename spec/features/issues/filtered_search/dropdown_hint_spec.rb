@@ -66,7 +66,7 @@ describe 'Dropdown hint', :js do
       it 'filters with text' do
         filtered_search.set('a')
 
-        expect(find(js_dropdown_hint)).to have_selector('.filter-dropdown .filter-dropdown-item', count: 4)
+        expect(find(js_dropdown_hint)).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
       end
     end
 

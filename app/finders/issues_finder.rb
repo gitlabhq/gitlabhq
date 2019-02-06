@@ -69,8 +69,21 @@ class IssuesFinder < IssuableFinder
   end
 
   def filter_items(items)
-    by_due_date(super)
+    issues = by_due_date(super)
+    by_confidential(issues)
   end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def by_confidential(items)
+    if params[:confidential] == 'yes'
+      items.where('issues.confidential = TRUE')
+    elsif params[:confidential] == 'no'
+      items.where.not('issues.confidential = TRUE')
+    else
+      items
+    end
+  end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_due_date(items)
     if due_date?
