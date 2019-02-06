@@ -419,6 +419,14 @@ ActiveRecord::Schema.define(version: 20190131122559) do
     t.index ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
   end
 
+  create_table "ci_pipeline_chat_data", id: :bigserial, force: :cascade do |t|
+    t.integer "pipeline_id", null: false
+    t.integer "chat_name_id", null: false
+    t.text "response_url", null: false
+    t.index ["chat_name_id"], name: "index_ci_pipeline_chat_data_on_chat_name_id", using: :btree
+    t.index ["pipeline_id"], name: "index_ci_pipeline_chat_data_on_pipeline_id", unique: true, using: :btree
+  end
+
   create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
@@ -2341,6 +2349,8 @@ ActiveRecord::Schema.define(version: 20190131122559) do
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
+  add_foreign_key "ci_pipeline_chat_data", "chat_names", on_delete: :cascade
+  add_foreign_key "ci_pipeline_chat_data", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
