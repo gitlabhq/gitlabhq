@@ -1,0 +1,5 @@
+---
+title: Clean up unicorn sampler metric labels
+merge_request: 24626
+author: bjk-gitlab
+type: fixed
