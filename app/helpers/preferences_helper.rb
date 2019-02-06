@@ -50,10 +50,6 @@ module PreferencesHelper
     ]
   end
 
-  def default_first_day_of_week
-    first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.first_day_of_week).first
-  end
-
   def first_day_of_week_choices_with_default
     first_day_of_week_choices.unshift([_('System default (%{default})') % { default: default_first_day_of_week }, nil])
   end
@@ -80,5 +76,9 @@ module PreferencesHelper
   # EE would override this.
   def excluded_dashboard_choices
     ['operations']
+  end
+
+  def default_first_day_of_week
+    first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.first_day_of_week).first
   end
 end
