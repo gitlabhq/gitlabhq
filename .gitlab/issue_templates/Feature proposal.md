@@ -39,7 +39,7 @@ Existing personas are: (copy relevant personas out of this comment, and delete a
 
 ### What does success look like, and how can we measure that?
 
-<!--- Define both the success metrics and acceptance criteria. Note thet success metrics indicate the desired business outcomes, while acceptance criteria indicate when the solution is working correctly. If there is no way to measure success, link to an issue that will implement a way to measure this -->
+<!--- Define both the success metrics and acceptance criteria. Note that success metrics indicate the desired business outcomes, while acceptance criteria indicate when the solution is working correctly. If there is no way to measure success, link to an issue that will implement a way to measure this -->
 
 ### Links / references
 
