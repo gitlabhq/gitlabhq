@@ -158,6 +158,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  def search
+    respond_to do |format|
+      format.json do
+        environment_names = search_environment_names
+
+        render json: environment_names, status: environment_names.any? ? :ok : :no_content
+      end
+    end
+  end
+
   private
 
   def verify_api_request!
@@ -179,6 +189,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def search_environment_names
+    return [] unless params[:query]
+
+    project.environments.for_name_like(params[:query]).pluck_names
   end
 
   def serialize_environments(request, response, nested = false)
