@@ -10,9 +10,7 @@
 
 ## Related issues
 
-<!-- Link related issues below. Insert the issue link or reference after "Closes" if merging this should automatically close it. -->
-
-Closes 
+<!-- Link related issues below. Insert the issue link or reference after the word "Closes" if merging this should automatically close it. -->
 
 ## Author's checklist
 
