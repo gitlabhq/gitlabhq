@@ -16,7 +16,5 @@ Related issue(s):
 
 Context, questions, or other notes for technical writer:
 
-1. 
-
 
 /label ~Documentation ~docs-review
