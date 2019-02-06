@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module LegacyGithubImport
+  module BitbucketImport
     class WikiFormatter
       attr_reader :project
 
@@ -18,7 +18,7 @@ module Gitlab
       end
 
       def import_url
-        project.import_url.sub(/\.git\z/, ".wiki.git")
+        project.import_url.sub(/\.git\z/, ".git/wiki")
       end
     end
   end

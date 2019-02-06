@@ -96,7 +96,9 @@ class PoolRepository < ActiveRecord::Base
     @object_pool ||= Gitlab::Git::ObjectPool.new(
       shard.name,
       disk_path + '.git',
-      source_project.repository.raw)
+      source_project.repository.raw,
+      source_project.full_path
+    )
   end
 
   def inspect
