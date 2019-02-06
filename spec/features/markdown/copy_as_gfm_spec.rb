@@ -843,6 +843,7 @@ describe 'Copy as GFM', :js do
     def verify(selector, gfm, target: nil)
       html = html_for_selector(selector)
       output_gfm = html_to_gfm(html, 'transformCodeSelection', target: target)
+      wait_for_requests
       expect(output_gfm.strip).to eq(gfm.strip)
     end
   end
@@ -861,6 +862,9 @@ describe 'Copy as GFM', :js do
   def html_to_gfm(html, transformer = 'transformGFMSelection', target: nil)
     js = <<~JS
       (function(html) {
+        // Setting it off so the import already starts
+        window.CopyAsGFM.nodeToGFM(document.createElement('div'));
+
         var transformer = window.CopyAsGFM[#{transformer.inspect}];
 
         var node = document.createElement('div');
@@ -875,9 +879,18 @@ describe 'Copy as GFM', :js do
         node = transformer(node, target);
         if (!node) return null;
 
-        return window.CopyAsGFM.nodeToGFM(node);
+
+        window.gfmCopytestRes = null;
+        window.CopyAsGFM.nodeToGFM(node)
+        .then((res) => {
+          window.gfmCopytestRes = res;
+        });
       })("#{escape_javascript(html)}")
     JS
-    page.evaluate_script(js)
+    page.execute_script(js)
+
+    loop until page.evaluate_script('window.gfmCopytestRes !== null')
+
+    page.evaluate_script('window.gfmCopytestRes')
   end
 end
