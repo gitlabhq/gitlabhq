@@ -2623,6 +2623,9 @@ msgstr ""
 msgid "DeployTokens|Your new project deploy token has been created."
 msgstr ""
 
+msgid "Deployed"
+msgstr ""
+
 msgid "Deployed to"
 msgstr ""
 
