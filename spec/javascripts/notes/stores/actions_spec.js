@@ -585,4 +585,18 @@ describe('Actions Notes Store', () => {
       );
     });
   });
+
+  describe('convertToDiscussion', () => {
+    it('commits CONVERT_TO_DISCUSSION with noteId', done => {
+      const noteId = 'dummy-note-id';
+      testAction(
+        actions.convertToDiscussion,
+        noteId,
+        {},
+        [{ type: 'CONVERT_TO_DISCUSSION', payload: noteId }],
+        [],
+        done,
+      );
+    });
+  });
 });

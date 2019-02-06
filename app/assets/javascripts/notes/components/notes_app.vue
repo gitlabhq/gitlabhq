@@ -199,7 +199,12 @@ export default {
             :key="discussion.id"
             :note="discussion.notes[0]"
           />
-          <noteable-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+          <noteable-note
+            v-else
+            :key="discussion.id"
+            :note="discussion.notes[0]"
+            :discussion="discussion"
+          />
         </template>
         <noteable-discussion
           v-else

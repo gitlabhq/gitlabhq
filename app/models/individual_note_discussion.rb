@@ -13,6 +13,14 @@ class IndividualNoteDiscussion < Discussion
     true
   end
 
+  def can_convert_to_discussion?
+    noteable.supports_replying_to_individual_notes? && Feature.enabled?(:reply_to_individual_notes)
+  end
+
+  def convert_to_discussion!
+    first_note.becomes!(Discussion.note_class).to_discussion
+  end
+
   def reply_attributes
     super.tap { |attrs| attrs.delete(:discussion_id) }
   end

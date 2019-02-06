@@ -155,11 +155,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
     it_behaves_like "checks permissions on noteable"
   end
 
-  context "when everything is fine" do
-    before do
-      setup_attachment
-    end
-
+  shared_examples 'a reply to existing comment' do
     it "creates a comment" do
       expect { receiver.execute }.to change { noteable.notes.count }.by(1)
       new_note = noteable.notes.last
@@ -168,7 +164,21 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
       expect(new_note.position).to eq(note.position)
       expect(new_note.note).to include("I could not disagree more.")
       expect(new_note.in_reply_to?(note)).to be_truthy
+
+      if note.part_of_discussion?
+        expect(new_note.discussion_id).to eq(note.discussion_id)
+      else
+        expect(new_note.discussion_id).not_to eq(note.discussion_id)
+      end
     end
+  end
+
+  context "when everything is fine" do
+    before do
+      setup_attachment
+    end
+
+    it_behaves_like 'a reply to existing comment'
 
     it "adds all attachments" do
       receiver.execute
@@ -206,5 +216,11 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
         it_behaves_like 'an email that contains a mail key', 'References'
       end
     end
+  end
+
+  context "when note is not a discussion" do
+    let(:note) { create(:note_on_merge_request, project: project) }
+
+    it_behaves_like 'a reply to existing comment'
   end
 end

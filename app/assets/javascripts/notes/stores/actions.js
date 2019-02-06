@@ -426,5 +426,8 @@ export const submitSuggestion = (
     });
 };
 
+export const convertToDiscussion = ({ commit }, noteId) =>
+  commit(types.CONVERT_TO_DISCUSSION, noteId);
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
