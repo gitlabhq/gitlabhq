@@ -302,6 +302,7 @@ describe Gitlab::Git::Repository, :seed_helper do
         before do
           repository.create_branch('left-branch', 'master')
           repository.create_branch('right-branch', 'master')
+
           left.times do
             new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
           end
@@ -319,10 +320,10 @@ describe Gitlab::Git::Repository, :seed_helper do
         it 'returns the correct count bounding at max_count' do
           branch_a_sha = repository_rugged.branches['left-branch'].target.oid
           branch_b_sha = repository_rugged.branches['right-branch'].target.oid
-          expect(
-            repository.diverging_commit_count(
-              branch_a_sha, branch_b_sha, max_count: 1000)
-          ).to eq(expected)
+
+          count = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: 1000)
+
+          expect(count).to eq(expected)
         end
       end
     end
@@ -341,6 +342,7 @@ describe Gitlab::Git::Repository, :seed_helper do
         before do
           repository.create_branch('left-branch', 'master')
           repository.create_branch('right-branch', 'master')
+
           left.times do
             new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
           end
@@ -358,7 +360,9 @@ describe Gitlab::Git::Repository, :seed_helper do
         it 'returns the correct count bounding at max_count' do
           branch_a_sha = repository_rugged.branches['left-branch'].target.oid
           branch_b_sha = repository_rugged.branches['right-branch'].target.oid
+
           results = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: max_count)
+
           expect(results[0] + results[1]).to eq(max_count)
         end
       end

@@ -29,7 +29,8 @@ class Projects::BranchesController < Projects::ApplicationController
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           @max_commits = @branches.reduce(0) do |memo, branch|
             diverging_commit_counts = repository.diverging_commit_counts(branch)
-            [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
+            [memo, diverging_commit_counts.values_at(:behind, :ahead, :distance)]
+              .flatten.compact.max
           end
         end
 
