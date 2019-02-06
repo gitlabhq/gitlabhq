@@ -20,7 +20,7 @@ All labels, their meaning and priority are defined on the
 If you come across an issue that has none of these, and you're allowed to set
 labels, you can _always_ add the team and type, and often also the subject.
 
-[milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
+[milestones-page]: https://gitlab.com/groups/gitlab-org/-/milestones
 
 ## Type labels
 
