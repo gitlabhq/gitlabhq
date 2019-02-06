@@ -86,6 +86,9 @@ request is as follows:
    guidelines](../merge_request_performance_guidelines.md).
 1. For tests that use Capybara or PhantomJS, see this [article on how
    to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
+1. If your merge request introduces changes that require additional steps when
+   installing GitLab from source, add them to `doc/install/installation.md` in
+   the same merge request.
 
 Please keep the change in a single MR **as small as possible**. If you want to
 contribute a large feature think very hard what the minimum viable change is.
