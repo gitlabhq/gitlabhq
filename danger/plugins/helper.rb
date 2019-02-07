@@ -31,6 +31,11 @@ module Danger
         .sort
     end
 
+    # @return [Boolean]
+    def ee?
+      ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('../../CHANGELOG-EE.md')
+    end
+
     # @return [Hash<String,Array<String>>]
     def changes_by_category
       all_changed_files.inject(Hash.new { |h, k| h[k] = [] }) do |hsh, file|
