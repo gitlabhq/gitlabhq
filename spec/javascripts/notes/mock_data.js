@@ -165,7 +165,6 @@ export const note = {
   report_abuse_path:
     '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_546&user_id=1',
   path: '/gitlab-org/gitlab-ce/notes/546',
-  cached_markdown_version: 11,
 };
 
 export const discussionMock = {
