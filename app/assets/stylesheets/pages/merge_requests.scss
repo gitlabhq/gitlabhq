@@ -38,9 +38,7 @@
 }
 
 .mr-widget-section {
-  .media {
-    align-items: center;
-  }
+  border-radius: $border-radius-default $border-radius-default 0 0;
 
   .code-text {
     flex: 1;
@@ -56,6 +54,11 @@
 .mr-widget-extension {
   border-top: 1px solid $border-color;
   background-color: $gray-light;
+
+  &.clickable:hover {
+    background-color: $gl-gray-200;
+    cursor: pointer;
+  }
 }
 
 .mr-widget-workflow {
@@ -78,6 +81,7 @@
   border-top: 0;
 }
 
+.mr-widget-body,
 .mr-widget-section,
 .mr-widget-content,
 .mr-widget-footer {
@@ -87,9 +91,36 @@
 .mr-state-widget {
   color: $gl-text-color;
 
+  .commit-message-edit {
+    border-radius: $border-radius-default;
+  }
+
   .mr-widget-section,
   .mr-widget-footer {
     border-top: solid 1px $border-color;
+  }
+
+  .mr-fast-forward-message {
+    padding-left: $gl-padding-50;
+    padding-bottom: $gl-padding;
+  }
+
+  .commits-list {
+    > li {
+      padding: $gl-padding;
+
+      @include media-breakpoint-up(md) {
+        padding-left: $gl-padding-50;
+      }
+    }
+  }
+
+  .mr-commit-dropdown {
+    .dropdown-menu {
+      @include media-breakpoint-up(md) {
+        width: 150%;
+      }
+    }
   }
 
   .mr-widget-footer {
@@ -405,7 +436,7 @@
   }
 
   .mr-widget-help {
-    padding: 10px 16px 10px 48px;
+    padding: 10px 16px 10px $gl-padding-50;
     font-style: italic;
   }
 
@@ -421,10 +452,6 @@
       color: $gl-text-color;
     }
   }
-}
-
-.mr-widget-body-controls {
-  flex-wrap: wrap;
 }
 
 .mr_source_commit,
