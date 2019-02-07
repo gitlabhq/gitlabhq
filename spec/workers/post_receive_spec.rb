@@ -141,11 +141,18 @@ describe PostReceive do
     let(:gl_repository) { "wiki-#{project.id}" }
 
     it 'updates project activity' do
-      described_class.new.perform(gl_repository, key_id, base64_changes)
+      # Force Project#set_timestamps_for_create to initialize timestamps
+      project
 
-      expect { project.reload }
-        .to change(project, :last_activity_at)
-        .and change(project, :last_repository_updated_at)
+      # MySQL drops milliseconds in the timestamps, so advance at least
+      # a second to ensure we see changes.
+      Timecop.freeze(1.second.from_now) do
+        expect do
+          described_class.new.perform(gl_repository, key_id, base64_changes)
+          project.reload
+        end.to change(project, :last_activity_at)
+           .and change(project, :last_repository_updated_at)
+      end
     end
   end
 
