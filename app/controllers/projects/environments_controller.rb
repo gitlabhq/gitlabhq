@@ -11,11 +11,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
-  before_action do
-    push_frontend_feature_flag(:area_chart, project)
-  end
-
-  # Returns all environments or all folders based on the :nested param
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)
