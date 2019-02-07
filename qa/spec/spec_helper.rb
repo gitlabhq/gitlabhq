@@ -3,6 +3,18 @@ require_relative '../qa'
 Dir[::File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
+  ServerNotRespondingError = Class.new(RuntimeError)
+
+  # The login page could take some time to load the first time it is visited.
+  # We visit the login page and wait for it to properly load only once at the beginning of the suite.
+  config.before(:suite) do
+    QA::Runtime::Browser.visit(:gitlab, QA::Page::Main::Login)
+
+    unless QA::Page::Main::Login.perform(&:page_loaded?)
+      raise ServerNotRespondingError, "Login page did not load at #{QA::Page::Main::Login.perform(&:current_url)}"
+    end
+  end
+
   config.before do |example|
     QA::Runtime::Logger.debug("Starting test: #{example.full_description}") if QA::Runtime::Env.debug?
 
