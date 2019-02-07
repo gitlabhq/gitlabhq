@@ -39,11 +39,6 @@ export default {
       type: String,
       required: true,
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     projectPath: {
       type: String,
       required: true,
@@ -101,7 +96,6 @@ export default {
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :markdown-version="markdownVersion"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
     />

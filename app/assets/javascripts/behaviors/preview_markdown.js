@@ -28,16 +28,13 @@ MarkdownPreview.prototype.ajaxCache = {};
 
 MarkdownPreview.prototype.showPreview = function($form) {
   var mdText;
-  var markdownVersion;
-  var url;
   var preview = $form.find('.js-md-preview');
+  var url = preview.data('url');
   if (preview.hasClass('md-preview-loading')) {
     return;
   }
 
   mdText = $form.find('textarea.markdown-area').val();
-  markdownVersion = $form.attr('data-markdown-version');
-  url = this.versionedPreviewPath(preview.data('url'), markdownVersion);
 
   if (mdText.trim().length === 0) {
     preview.text(this.emptyMessage);
@@ -65,16 +62,6 @@ MarkdownPreview.prototype.showPreview = function($form) {
       }.bind(this),
     );
   }
-};
-
-MarkdownPreview.prototype.versionedPreviewPath = function(markdownPreviewPath, markdownVersion) {
-  if (typeof markdownVersion === 'undefined') {
-    return markdownPreviewPath;
-  }
-
-  return `${markdownPreviewPath}${
-    markdownPreviewPath.indexOf('?') === -1 ? '?' : '&'
-  }markdown_version=${markdownVersion}`;
 };
 
 MarkdownPreview.prototype.fetchMarkdownPreview = function(text, url, success) {

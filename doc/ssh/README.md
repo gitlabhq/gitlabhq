@@ -19,7 +19,7 @@ comes pre-installed on GNU/Linux and macOS, but not on Windows.
 Depending on your Windows version, there are different methods to work with
 SSH keys.
 
-### Installing the SSH client for Windows 10
+### Windows 10: Windows Subsystem for Linux
 
 Starting with Windows 10, you can
 [install the Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
@@ -27,10 +27,10 @@ where you can run Linux distributions directly on Windows, without the overhead
 of a virtual machine. Once installed and set up, you'll have the Git and SSH
 clients at your disposal.
 
-### Installing the SSH client for Windows 8.1 and Windows 7
+### Windows 10, 8.1, and 7: Git for Windows
 
 The easiest way to install Git and the SSH client on Windows 8.1 and Windows 7
-is [Git for Windows](https://gitforwindows.org). It provides a BASH
+is [Git for Windows](https://gitforwindows.org). It provides a Bash
 emulation (Git Bash) used for running Git from the command line and the
 `ssh-keygen` command that is useful to create SSH keys as you'll learn below.
 

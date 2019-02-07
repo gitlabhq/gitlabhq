@@ -89,6 +89,10 @@ hr {
 .str-truncated {
   @include str-truncated;
 
+  &-30 {
+    @include str-truncated(30%);
+  }
+
   &-60 {
     @include str-truncated(60%);
   }

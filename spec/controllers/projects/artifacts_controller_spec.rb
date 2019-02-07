@@ -26,8 +26,15 @@ describe Projects::ArtifactsController do
     end
 
     context 'when no file type is supplied' do
+      let(:filename) { job.artifacts_file.filename }
+
       it 'sends the artifacts file' do
-        expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(disposition: 'attachment')).and_call_original
+        # Notice the filename= is omitted from the disposition; this is because
+        # Rails 5 will append this header in send_file
+        expect(controller).to receive(:send_file)
+                          .with(
+                            job.artifacts_file.file.path,
+                            hash_including(disposition: %Q(attachment; filename*=UTF-8''#{filename}))).and_call_original
 
         download_artifact
       end
@@ -46,6 +53,7 @@ describe Projects::ArtifactsController do
 
       context 'when codequality file type is supplied' do
         let(:file_type) { 'codequality' }
+        let(:filename) { job.job_artifacts_codequality.filename }
 
         context 'when file is stored locally' do
           before do
@@ -53,7 +61,11 @@ describe Projects::ArtifactsController do
           end
 
           it 'sends the codequality report' do
-            expect(controller).to receive(:send_file).with(job.job_artifacts_codequality.file.path, hash_including(disposition: 'attachment')).and_call_original
+            # Notice the filename= is omitted from the disposition; this is because
+            # Rails 5 will append this header in send_file
+            expect(controller).to receive(:send_file)
+                              .with(job.job_artifacts_codequality.file.path,
+                                    hash_including(disposition: %Q(attachment; filename*=UTF-8''#{filename}))).and_call_original
 
             download_artifact(file_type: file_type)
           end

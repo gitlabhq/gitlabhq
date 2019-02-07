@@ -42,6 +42,13 @@ module StubObjectStorage
                                  **params)
   end
 
+  def stub_external_diffs_object_storage(uploader = described_class, **params)
+    stub_object_storage_uploader(config: Gitlab.config.external_diffs.object_store,
+                                 uploader: uploader,
+                                 remote_directory: 'external_diffs',
+                                 **params)
+  end
+
   def stub_lfs_object_storage(**params)
     stub_object_storage_uploader(config: Gitlab.config.lfs.object_store,
                                  uploader: LfsObjectUploader,

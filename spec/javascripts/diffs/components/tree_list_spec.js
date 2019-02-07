@@ -35,12 +35,6 @@ describe('Diffs tree list component', () => {
     vm.$destroy();
   });
 
-  it('renders diff stats', () => {
-    expect(vm.$el.textContent).toContain('1 changed file');
-    expect(vm.$el.textContent).toContain('10 additions');
-    expect(vm.$el.textContent).toContain('20 deletions');
-  });
-
   it('renders empty text', () => {
     expect(vm.$el.textContent).toContain('No files found');
   });
@@ -83,17 +77,6 @@ describe('Diffs tree list component', () => {
       expect(vm.$el.querySelectorAll('.file-row')[1].textContent).toContain('app');
     });
 
-    it('filters tree list to blobs matching search', done => {
-      vm.search = 'app/index';
-
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelectorAll('.file-row').length).toBe(1);
-        expect(vm.$el.querySelectorAll('.file-row')[0].textContent).toContain('index.js');
-
-        done();
-      });
-    });
-
     it('calls toggleTreeOpen when clicking folder', () => {
       spyOn(vm.$store, 'dispatch').and.stub();
 
@@ -128,16 +111,6 @@ describe('Diffs tree list component', () => {
 
         done();
       });
-    });
-  });
-
-  describe('clearSearch', () => {
-    it('resets search', () => {
-      vm.search = 'test';
-
-      vm.$el.querySelector('.tree-list-clear-icon').click();
-
-      expect(vm.search).toBe('');
     });
   });
 });

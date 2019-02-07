@@ -46,7 +46,7 @@ describe MergeRequestDiff do
     it { expect(first_diff.reload).not_to be_latest }
   end
 
-  describe '#diffs' do
+  shared_examples_for 'merge request diffs' do
     let(:merge_request) { create(:merge_request, :with_diffs) }
     let!(:diff) { merge_request.merge_request_diff.reload }
 
@@ -91,98 +91,110 @@ describe MergeRequestDiff do
         diff.diffs.diff_files
       end
     end
+
+    describe '#raw_diffs' do
+      context 'when the :ignore_whitespace_change option is set' do
+        it 'creates a new compare object instead of using preprocessed data' do
+          expect(diff_with_commits).not_to receive(:load_diffs)
+          expect(diff_with_commits.compare).to receive(:diffs).and_call_original
+
+          diff_with_commits.raw_diffs(ignore_whitespace_change: true)
+        end
+      end
+
+      context 'when the raw diffs are empty' do
+        before do
+          MergeRequestDiffFile.where(merge_request_diff_id: diff_with_commits.id).delete_all
+        end
+
+        it 'returns an empty DiffCollection' do
+          expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
+          expect(diff_with_commits.raw_diffs).to be_empty
+        end
+      end
+
+      context 'when the raw diffs exist' do
+        it 'returns the diffs' do
+          expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
+          expect(diff_with_commits.raw_diffs).not_to be_empty
+        end
+
+        context 'when the :paths option is set' do
+          let(:diffs) { diff_with_commits.raw_diffs(paths: ['files/ruby/popen.rb', 'files/ruby/popen.rb']) }
+
+          it 'only returns diffs that match the (old path, new path) given' do
+            expect(diffs.map(&:new_path)).to contain_exactly('files/ruby/popen.rb')
+          end
+
+          it 'only serializes diff files found by query' do
+            expect(diff_with_commits.merge_request_diff_files.count).to be > 10
+            expect_any_instance_of(MergeRequestDiffFile).to receive(:to_hash).once
+
+            diffs
+          end
+
+          it 'uses the preprocessed diffs' do
+            expect(diff_with_commits).to receive(:load_diffs)
+
+            diffs
+          end
+        end
+      end
+    end
+
+    describe '#save_diffs' do
+      it 'saves collected state' do
+        mr_diff = create(:merge_request).merge_request_diff
+
+        expect(mr_diff.collected?).to be_truthy
+      end
+
+      it 'saves overflow state' do
+        allow(Commit).to receive(:max_diff_options)
+          .and_return(max_lines: 0, max_files: 0)
+
+        mr_diff = create(:merge_request).merge_request_diff
+
+        expect(mr_diff.overflow?).to be_truthy
+      end
+
+      it 'saves empty state' do
+        allow_any_instance_of(described_class).to receive_message_chain(:compare, :commits)
+          .and_return([])
+
+        mr_diff = create(:merge_request).merge_request_diff
+
+        expect(mr_diff.empty?).to be_truthy
+      end
+
+      it 'expands collapsed diffs before saving' do
+        mr_diff = create(:merge_request, source_branch: 'expand-collapse-lines', target_branch: 'master').merge_request_diff
+        diff_file = mr_diff.merge_request_diff_files.find_by(new_path: 'expand-collapse/file-5.txt')
+
+        expect(diff_file.diff).not_to be_empty
+      end
+
+      it 'saves binary diffs correctly' do
+        path = 'files/images/icn-time-tracking.pdf'
+        mr_diff = create(:merge_request, source_branch: 'add-pdf-text-binary', target_branch: 'master').merge_request_diff
+        diff_file = mr_diff.merge_request_diff_files.find_by(new_path: path)
+
+        expect(diff_file).to be_binary
+        expect(diff_file.diff).to eq(mr_diff.compare.diffs(paths: [path]).to_a.first.diff)
+      end
+    end
   end
 
-  describe '#raw_diffs' do
-    context 'when the :ignore_whitespace_change option is set' do
-      it 'creates a new compare object instead of loading from the DB' do
-        expect(diff_with_commits).not_to receive(:load_diffs)
-        expect(diff_with_commits.compare).to receive(:diffs).and_call_original
-
-        diff_with_commits.raw_diffs(ignore_whitespace_change: true)
-      end
-    end
-
-    context 'when the raw diffs are empty' do
-      before do
-        MergeRequestDiffFile.where(merge_request_diff_id: diff_with_commits.id).delete_all
-      end
-
-      it 'returns an empty DiffCollection' do
-        expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
-        expect(diff_with_commits.raw_diffs).to be_empty
-      end
-    end
-
-    context 'when the raw diffs exist' do
-      it 'returns the diffs' do
-        expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
-        expect(diff_with_commits.raw_diffs).not_to be_empty
-      end
-
-      context 'when the :paths option is set' do
-        let(:diffs) { diff_with_commits.raw_diffs(paths: ['files/ruby/popen.rb', 'files/ruby/popen.rb']) }
-
-        it 'only returns diffs that match the (old path, new path) given' do
-          expect(diffs.map(&:new_path)).to contain_exactly('files/ruby/popen.rb')
-        end
-
-        it 'only serializes diff files found by query' do
-          expect(diff_with_commits.merge_request_diff_files.count).to be > 10
-          expect_any_instance_of(MergeRequestDiffFile).to receive(:to_hash).once
-
-          diffs
-        end
-
-        it 'uses the diffs from the DB' do
-          expect(diff_with_commits).to receive(:load_diffs)
-
-          diffs
-        end
-      end
-    end
+  describe 'internal diffs configured' do
+    include_examples 'merge request diffs'
   end
 
-  describe '#save_diffs' do
-    it 'saves collected state' do
-      mr_diff = create(:merge_request).merge_request_diff
-
-      expect(mr_diff.collected?).to be_truthy
+  describe 'external diffs configured' do
+    before do
+      stub_external_diffs_setting(enabled: true)
     end
 
-    it 'saves overflow state' do
-      allow(Commit).to receive(:max_diff_options)
-        .and_return(max_lines: 0, max_files: 0)
-
-      mr_diff = create(:merge_request).merge_request_diff
-
-      expect(mr_diff.overflow?).to be_truthy
-    end
-
-    it 'saves empty state' do
-      allow_any_instance_of(described_class).to receive_message_chain(:compare, :commits)
-        .and_return([])
-
-      mr_diff = create(:merge_request).merge_request_diff
-
-      expect(mr_diff.empty?).to be_truthy
-    end
-
-    it 'expands collapsed diffs before saving' do
-      mr_diff = create(:merge_request, source_branch: 'expand-collapse-lines', target_branch: 'master').merge_request_diff
-      diff_file = mr_diff.merge_request_diff_files.find_by(new_path: 'expand-collapse/file-5.txt')
-
-      expect(diff_file.diff).not_to be_empty
-    end
-
-    it 'saves binary diffs correctly' do
-      path = 'files/images/icn-time-tracking.pdf'
-      mr_diff = create(:merge_request, source_branch: 'add-pdf-text-binary', target_branch: 'master').merge_request_diff
-      diff_file = mr_diff.merge_request_diff_files.find_by(new_path: path)
-
-      expect(diff_file).to be_binary
-      expect(diff_file.diff).to eq(mr_diff.compare.diffs(paths: [path]).to_a.first.diff)
-    end
+    include_examples 'merge request diffs'
   end
 
   describe '#commit_shas' do
@@ -243,6 +255,57 @@ describe MergeRequestDiff do
 
     it 'returns affected file paths' do
       expect(subject.modified_paths).to eq(%w{foo bar baz})
+    end
+  end
+
+  describe '#opening_external_diff' do
+    subject(:diff) { diff_with_commits }
+
+    context 'external diffs disabled' do
+      it { expect(diff.external_diff).not_to be_exists }
+
+      it 'yields nil' do
+        expect { |b| diff.opening_external_diff(&b) }.to yield_with_args(nil)
+      end
+    end
+
+    context 'external diffs enabled' do
+      let(:test_dir) { 'tmp/tests/external-diffs' }
+
+      around do |example|
+        FileUtils.mkdir_p(test_dir)
+
+        begin
+          example.run
+        ensure
+          FileUtils.rm_rf(test_dir)
+        end
+      end
+
+      before do
+        stub_external_diffs_setting(enabled: true, storage_path: test_dir)
+      end
+
+      it { expect(diff.external_diff).to be_exists }
+
+      it 'yields an open file' do
+        expect { |b| diff.opening_external_diff(&b) }.to yield_with_args(File)
+      end
+
+      it 'is re-entrant' do
+        outer_file_a =
+          diff.opening_external_diff do |outer_file|
+            diff.opening_external_diff do |inner_file|
+              expect(outer_file).to eq(inner_file)
+            end
+
+            outer_file
+          end
+
+        diff.opening_external_diff do |outer_file_b|
+          expect(outer_file_a).not_to eq(outer_file_b)
+        end
+      end
     end
   end
 end

@@ -139,8 +139,8 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 The Ruby interpreter is required to run GitLab.
 
-**Note:** The current supported Ruby (MRI) version is 2.3.x. GitLab 9.0 dropped
-support for Ruby 2.1.x.
+**Note:** The current supported Ruby (MRI) version is 2.5.x. GitLab 11.6
+  dropped support for Ruby 2.4.x.
 
 The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
@@ -690,6 +690,11 @@ sudo nginx -t
 ```
 
 You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
+
+NOTE: **Note:**
+Verify that the installed version is greater than 1.12.1 by running `nginx -v`. If it's lower, you may receive the error below:
+`nginx: [emerg] unknown "start$temp=[filtered]$rest" variable
+nginx: configuration file /etc/nginx/nginx.conf test failed`
 
 ### Restart
 

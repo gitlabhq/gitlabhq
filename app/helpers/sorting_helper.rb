@@ -128,7 +128,9 @@ module SortingHelper
       sort_value_recently_created => sort_title_recently_created,
       sort_value_oldest_created => sort_title_oldest_created,
       sort_value_recently_updated => sort_title_recently_updated,
-      sort_value_oldest_updated => sort_title_oldest_updated
+      sort_value_oldest_updated => sort_title_oldest_updated,
+      sort_value_recently_last_activity => sort_title_recently_last_activity,
+      sort_value_oldest_last_activity => sort_title_oldest_last_activity
     }
   end
 
@@ -317,6 +319,14 @@ module SortingHelper
     s_('SortOptions|Most stars')
   end
 
+  def sort_title_oldest_last_activity
+    s_('SortOptions|Oldest last activity')
+  end
+
+  def sort_title_recently_last_activity
+    s_('SortOptions|Recent last activity')
+  end
+
   # Values.
   def sort_value_access_level_asc
     'access_level_asc'
@@ -444,5 +454,13 @@ module SortingHelper
 
   def sort_value_most_stars
     'stars_desc'
+  end
+
+  def sort_value_oldest_last_activity
+    'last_activity_on_asc'
+  end
+
+  def sort_value_recently_last_activity
+    'last_activity_on_desc'
   end
 end

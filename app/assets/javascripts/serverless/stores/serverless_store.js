@@ -1,7 +1,7 @@
 export default class ServerlessStore {
   constructor(knativeInstalled = false, clustersPath, helpPath) {
     this.state = {
-      functions: [],
+      functions: {},
       hasFunctionData: true,
       loadingData: true,
       installed: knativeInstalled,
@@ -10,8 +10,13 @@ export default class ServerlessStore {
     };
   }
 
-  updateFunctionsFromServer(functions = []) {
-    this.state.functions = functions;
+  updateFunctionsFromServer(upstreamFunctions = []) {
+    this.state.functions = upstreamFunctions.reduce((rv, func) => {
+      const envs = rv;
+      envs[func.environment_scope] = (rv[func.environment_scope] || []).concat([func]);
+
+      return envs;
+    }, {});
   }
 
   updateLoadingState(loadingData) {

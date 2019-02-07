@@ -326,6 +326,7 @@ export const metricsGroupsAPIResponse = {
         {
           id: 6,
           title: 'CPU usage',
+          y_label: 'CPU',
           weight: 1,
           queries: [
             {

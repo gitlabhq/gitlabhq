@@ -1,9 +1,12 @@
 <script>
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
+import Url from './url.vue';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 export default {
   components: {
     Timeago,
+    Url,
   },
   props: {
     func: {
@@ -16,13 +19,18 @@ export default {
       return this.func.name;
     },
     description() {
-      return this.func.description;
+      const desc = this.func.description.split('\n');
+      if (desc.length > 1) {
+        return desc[1];
+      }
+
+      return desc[0];
     },
     detailUrl() {
       return this.func.detail_url;
     },
-    environment() {
-      return this.func.environment_scope;
+    targetUrl() {
+      return this.func.url;
     },
     image() {
       return this.func.image;
@@ -31,25 +39,34 @@ export default {
       return this.func.created_at;
     },
   },
+  methods: {
+    checkClass(element) {
+      if (element.closest('.no-expand') === null) {
+        return true;
+      }
+
+      return false;
+    },
+    openDetails(e) {
+      if (this.checkClass(e.target)) {
+        visitUrl(this.detailUrl);
+      }
+    },
+  },
 };
 </script>
 
 <template>
-  <div class="gl-responsive-table-row">
-    <div class="table-section section-20 section-wrap">
-      <a :href="detailUrl">{{ name }}</a>
+  <li :id="name" class="group-row">
+    <div class="group-row-contents" role="button" @click="openDetails">
+      <p class="float-right text-right">
+        <span>{{ image }}</span
+        ><br />
+        <timeago :time="timestamp" />
+      </p>
+      <b>{{ name }}</b>
+      <div v-for="line in description.split('\n')" :key="line">{{ line }}</div>
+      <url :uri="targetUrl" class="prepend-top-8 no-expand" />
     </div>
-    <div class="table-section section-10">{{ environment }}</div>
-    <div class="table-section section-40 section-wrap">
-      <span class="line-break">{{ description }}</span>
-    </div>
-    <div class="table-section section-20">{{ image }}</div>
-    <div class="table-section section-10"><timeago :time="timestamp" /></div>
-  </div>
+  </li>
 </template>
-
-<style>
-.line-break {
-  white-space: pre;
-}
-</style>

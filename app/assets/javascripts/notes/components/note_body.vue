@@ -111,7 +111,6 @@ export default {
       :line="line"
       :note="note"
       :help-page-path="helpPagePath"
-      :markdown-version="note.cached_markdown_version"
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />

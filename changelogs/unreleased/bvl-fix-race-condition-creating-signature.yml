@@ -1,0 +1,5 @@
+---
+title: Avoid race conditions when creating GpgSignature
+merge_request: 24939
+author:
+type: fixed

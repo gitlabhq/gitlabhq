@@ -48,13 +48,23 @@ module Ci
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
 
     ##
-    # The "environment" field for builds is a String, and is the unexpanded name!
+    # Since Gitlab 11.5, deployments records started being created right after
+    # `ci_builds` creation. We can look up a relevant `environment` through
+    # `deployment` relation today. This is much more efficient than expanding
+    # environment name with variables.
+    # (See more https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22380)
     #
+    # However, we have to still expand environment name if it's a stop action,
+    # because `deployment` persists information for start action only.
+    #
+    # We will follow up this by persisting expanded name in build metadata or
+    # persisting stop action in database.
     def persisted_environment
       return unless has_environment?
 
       strong_memoize(:persisted_environment) do
-        Environment.find_by(name: expanded_environment_name, project: project)
+        deployment&.environment ||
+          Environment.find_by(name: expanded_environment_name, project: project)
       end
     end
 

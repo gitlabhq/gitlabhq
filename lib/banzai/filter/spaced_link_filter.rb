@@ -45,8 +45,6 @@ module Banzai
       ]).freeze
 
       def call
-        return doc if context[:markdown_engine] == :redcarpet
-
         doc.xpath(TEXT_QUERY).each do |node|
           content = node.to_html
 

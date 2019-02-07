@@ -11,11 +11,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
 
-  before_action do
-    push_frontend_feature_flag(:area_chart, project)
-  end
-
-  # Returns all environments or all folders based on the :nested param
   def index
     @environments = project.environments
       .with_state(params[:scope] || :available)
@@ -158,6 +153,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  def search
+    respond_to do |format|
+      format.json do
+        environment_names = search_environment_names
+
+        render json: environment_names, status: environment_names.any? ? :ok : :no_content
+      end
+    end
+  end
+
   private
 
   def verify_api_request!
@@ -179,6 +184,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def search_environment_names
+    return [] unless params[:query]
+
+    project.environments.for_name_like(params[:query]).pluck_names
   end
 
   def serialize_environments(request, response, nested = false)

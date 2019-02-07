@@ -7,21 +7,12 @@
     cursor: pointer;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
+      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height;
+
       position: -webkit-sticky;
       position: sticky;
-      top: $mr-version-controls-height + $header-height + $mr-tabs-height;
-      margin-left: -1px;
-      border-left: 1px solid $border-color;
+      top: $mr-file-header-top;
       z-index: 102;
-
-      &.is-commit {
-        top: $header-height + 36px;
-
-        .with-performance-bar & {
-          top: $header-height + 36px + $performance-bar-height;
-
-        }
-      }
 
       &::before {
         content: '';
@@ -35,7 +26,23 @@
       }
 
       .with-performance-bar & {
-        top: $header-height + $performance-bar-height + $mr-version-controls-height + $mr-tabs-height;
+        top: $mr-file-header-top + $performance-bar-height;
+      }
+
+      &.is-commit {
+        top: $header-height + $commit-stat-summary-height;
+
+        .with-performance-bar & {
+          top: $header-height + $commit-stat-summary-height + $performance-bar-height;
+        }
+      }
+
+      &.is-compare {
+        top: $header-height + $compare-branches-sticky-header-height;
+
+        .with-performance-bar & {
+          top: $performance-bar-height + $header-height + $compare-branches-sticky-header-height;
+        }
       }
     }
 
@@ -498,6 +505,25 @@
   .discussion-notes .discussion-notes {
     margin-left: 0;
     border-left: 0;
+  }
+}
+
+.diff-stats {
+  align-items: center;
+  padding: 0 .25rem;
+
+  .diff-stats-group {
+    padding: 0 .25rem;
+  }
+
+  svg.diff-stats-icon {
+    vertical-align: text-bottom;
+  }
+
+  &.is-compare-versions-header {
+    .diff-stats-group {
+      padding: 0 .5rem;
+    }
   }
 }
 

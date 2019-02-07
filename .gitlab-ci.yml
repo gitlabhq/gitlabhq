@@ -386,20 +386,25 @@ flaky-examples-check:
     - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
     - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
 
+.assets-compile-cache: &assets-compile-cache
+  cache:
+    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v3"
+    paths:
+      - vendor/ruby/
+      - .yarn-cache/
+      - tmp/cache/assets/sprockets
+
 compile-assets:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *use-pg
   stage: prepare
-  cache:
-    <<: *default-cache
   script:
     - node --version
-    - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
-    - date
     - free -m
     - bundle exec rake gitlab:assets:compile
+    - scripts/clean-old-cached-assets
   variables:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
@@ -408,6 +413,7 @@ compile-assets:
     paths:
       - node_modules
       - public/assets
+  <<: *assets-compile-cache
 
 setup-test-env:
   <<: *dedicated-runner
@@ -628,7 +634,9 @@ gitlab:setup-mysql:
 gitlab:assets:compile:
   <<: *dedicated-no-docs-pull-cache-job
   image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-71.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
-  dependencies: []
+  dependencies:
+    - setup-test-env
+    - compile-assets
   services:
     - docker:stable-dind
   variables:
@@ -642,18 +650,19 @@ gitlab:assets:compile:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
   script:
-    - date
+    - node --version
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
-    - date
     - free -m
     - bundle exec rake gitlab:assets:compile
-    - scripts/build_assets_image
+    - time scripts/build_assets_image
+    - scripts/clean-old-cached-assets
   artifacts:
     name: webpack-report
     expire_in: 31d
     paths:
       - webpack-report/
       - public/assets/
+  <<: *assets-compile-cache
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee

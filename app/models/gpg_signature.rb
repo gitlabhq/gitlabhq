@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class GpgSignature < ActiveRecord::Base
+class GpgSignature < ApplicationRecord
   include ShaAttribute
 
   sha_attribute :commit_sha
@@ -31,6 +31,11 @@ class GpgSignature < ActiveRecord::Base
         arel_table[:gpg_key_subkey_id].in(subkey_ids)
       )
     )
+  end
+
+  def self.safe_create!(attributes)
+    create_with(attributes)
+      .safe_find_or_create_by!(commit_sha: attributes[:commit_sha])
   end
 
   def gpg_key=(model)

@@ -197,6 +197,24 @@ describe MergeRequests::CreateService do
             expect(merge_request.actual_head_pipeline).to be_merge_request
           end
 
+          context 'when there are no commits between source branch and target branch' do
+            let(:opts) do
+              {
+                title: 'Awesome merge_request',
+                description: 'please fix',
+                source_branch: 'not-merged-branch',
+                target_branch: 'master'
+              }
+            end
+
+            it 'does not create a merge request pipeline' do
+              expect(merge_request).to be_persisted
+
+              merge_request.reload
+              expect(merge_request.merge_request_pipelines.count).to eq(0)
+            end
+          end
+
           context "when branch pipeline was created before a merge request pipline has been created" do
             before do
               create(:ci_pipeline, project: merge_request.source_project,

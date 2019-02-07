@@ -2,14 +2,38 @@ import Vue from 'vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
+import { TEST_HOST } from 'spec/test_constants';
 import { userDataMock } from '../mock_data';
 
 describe('noteActions', () => {
   let wrapper;
   let store;
+  let props;
+
+  const createWrapper = propsData => {
+    const localVue = createLocalVue();
+    return shallowMount(noteActions, {
+      store,
+      propsData,
+      localVue,
+      sync: false,
+    });
+  };
 
   beforeEach(() => {
     store = createStore();
+    props = {
+      accessLevel: 'Maintainer',
+      authorId: 26,
+      canDelete: true,
+      canEdit: true,
+      canAwardEmoji: true,
+      canReportAsAbuse: true,
+      noteId: '539',
+      noteUrl: `${TEST_HOST}/group/project/merge_requests/1#note_1`,
+      reportAbusePath: `${TEST_HOST}/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26`,
+      showReply: false,
+    };
   });
 
   afterEach(() => {
@@ -17,31 +41,10 @@ describe('noteActions', () => {
   });
 
   describe('user is logged in', () => {
-    let props;
-
     beforeEach(() => {
-      props = {
-        accessLevel: 'Maintainer',
-        authorId: 26,
-        canDelete: true,
-        canEdit: true,
-        canAwardEmoji: true,
-        canReportAsAbuse: true,
-        noteId: '539',
-        noteUrl: 'https://localhost:3000/group/project/merge_requests/1#note_1',
-        reportAbusePath:
-          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',
-      };
-
       store.dispatch('setUserData', userDataMock);
 
-      const localVue = createLocalVue();
-      wrapper = shallowMount(noteActions, {
-        store,
-        propsData: props,
-        localVue,
-        sync: false,
-      });
+      wrapper = createWrapper(props);
     });
 
     it('should render access level badge', () => {
@@ -91,28 +94,14 @@ describe('noteActions', () => {
   });
 
   describe('user is not logged in', () => {
-    let props;
-
     beforeEach(() => {
       store.dispatch('setUserData', {});
-      props = {
-        accessLevel: 'Maintainer',
-        authorId: 26,
+      wrapper = createWrapper({
+        ...props,
         canDelete: false,
         canEdit: false,
         canAwardEmoji: false,
         canReportAsAbuse: false,
-        noteId: '539',
-        noteUrl: 'https://localhost:3000/group/project/merge_requests/1#note_1',
-        reportAbusePath:
-          '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_539&user_id=26',
-      };
-      const localVue = createLocalVue();
-      wrapper = shallowMount(noteActions, {
-        store,
-        propsData: props,
-        localVue,
-        sync: false,
       });
     });
 
@@ -122,6 +111,90 @@ describe('noteActions', () => {
 
     it('should not render actions dropdown', () => {
       expect(wrapper.find('.more-actions').exists()).toBe(false);
+    });
+  });
+
+  describe('with feature flag replyToIndividualNotes enabled', () => {
+    beforeEach(() => {
+      gon.features = {
+        replyToIndividualNotes: true,
+      };
+    });
+
+    afterEach(() => {
+      gon.features = {};
+    });
+
+    describe('for showReply = true', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          ...props,
+          showReply: true,
+        });
+      });
+
+      it('shows a reply button', () => {
+        const replyButton = wrapper.find({ ref: 'replyButton' });
+
+        expect(replyButton.exists()).toBe(true);
+      });
+    });
+
+    describe('for showReply = false', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          ...props,
+          showReply: false,
+        });
+      });
+
+      it('does not show a reply button', () => {
+        const replyButton = wrapper.find({ ref: 'replyButton' });
+
+        expect(replyButton.exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('with feature flag replyToIndividualNotes disabled', () => {
+    beforeEach(() => {
+      gon.features = {
+        replyToIndividualNotes: false,
+      };
+    });
+
+    afterEach(() => {
+      gon.features = {};
+    });
+
+    describe('for showReply = true', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          ...props,
+          showReply: true,
+        });
+      });
+
+      it('does not show a reply button', () => {
+        const replyButton = wrapper.find({ ref: 'replyButton' });
+
+        expect(replyButton.exists()).toBe(false);
+      });
+    });
+
+    describe('for showReply = false', () => {
+      beforeEach(() => {
+        wrapper = createWrapper({
+          ...props,
+          showReply: false,
+        });
+      });
+
+      it('does not show a reply button', () => {
+        const replyButton = wrapper.find({ ref: 'replyButton' });
+
+        expect(replyButton.exists()).toBe(false);
+      });
     });
   });
 });

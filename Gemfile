@@ -116,7 +116,6 @@ gem 'html-pipeline', '~> 2.8'
 gem 'deckar01-task_list', '2.2.0'
 gem 'gitlab-markup', '~> 1.6.5'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
-gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 6.0'
@@ -188,7 +187,7 @@ gem 're2', '~> 1.1.1'
 gem 'version_sorter', '~> 2.1.0'
 
 # Export Ruby Regex to Javascript
-gem 'js_regex', '~> 2.2.1'
+gem 'js_regex', '~> 3.1'
 
 # User agent parsing
 gem 'device_detector'
@@ -423,7 +422,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.5.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.10.0', require: 'gitaly'
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

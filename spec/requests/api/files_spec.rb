@@ -191,7 +191,7 @@ describe API::Files do
 
         get api(url, current_user), params: params
 
-        expect(headers['Content-Disposition']).to eq('inline; filename="popen.rb"')
+        expect(headers['Content-Disposition']).to eq(%q(inline; filename="popen.rb"; filename*=UTF-8''popen.rb))
       end
 
       context 'when mandatory params are not given' do

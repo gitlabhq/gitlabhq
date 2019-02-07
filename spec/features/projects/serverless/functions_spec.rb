@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'Functions', :js do
+  include KubernetesHelpers
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -34,11 +38,14 @@ describe 'Functions', :js do
   end
 
   context 'when the user has a cluster and knative installed and visits the serverless page' do
-    let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:service) { cluster.platform_kubernetes }
     let(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
     let(:project) { knative.cluster.project }
 
     before do
+      stub_kubeclient_knative_services
+      stub_kubeclient_service_pods
       visit project_serverless_functions_path(project)
     end
 

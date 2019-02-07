@@ -12,6 +12,9 @@ module Gitlab
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
 
+    # OpenID Connect profile scopes
+    PROFILE_SCOPES = [:profile, :email].freeze
+
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
 
@@ -284,7 +287,7 @@ module Gitlab
 
       # Other available scopes
       def optional_scopes
-        available_scopes + OPENID_SCOPES - DEFAULT_SCOPES
+        available_scopes + OPENID_SCOPES + PROFILE_SCOPES - DEFAULT_SCOPES
       end
 
       def registry_scopes

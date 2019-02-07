@@ -8,6 +8,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include IssuesCalendar
   include SpammableActions
+  include RecordUserLastActivity
 
   def self.issue_except_actions
     %i[index calendar new create bulk_update import_csv]

@@ -254,6 +254,12 @@ install it manually.
 
 ## Installing applications
 
+NOTE: **Note:**
+Before starting the installation of applications, make sure that time is synchronized
+between your GitLab server and your Kubernetes cluster. Otherwise, installation could fail
+and you may get errors like `Error: remote error: tls: bad certificate` 
+in the `stdout` of pods created by GitLab in your Kubernetes cluster.
+
 GitLab provides a one-click install for various applications which can
 be added directly to your configured cluster. Those applications are
 needed for [Review Apps](../../../ci/review_apps/index.md) and

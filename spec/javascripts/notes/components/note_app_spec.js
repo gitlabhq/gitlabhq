@@ -1,57 +1,49 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
-import notesApp from '~/notes/components/notes_app.vue';
+import { mount, createLocalVue } from '@vue/test-utils';
+import NotesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
 import createStore from '~/notes/stores';
 import '~/behaviors/markdown/render_gfm';
-import { mountComponentWithStore } from 'spec/helpers';
 import * as mockData from '../mock_data';
-
-const vueMatchers = {
-  toIncludeElement() {
-    return {
-      compare(vm, selector) {
-        const result = {
-          pass: vm.$el.querySelector(selector) !== null,
-        };
-        return result;
-      },
-    };
-  },
-};
 
 describe('note_app', () => {
   let mountComponent;
-  let vm;
+  let wrapper;
   let store;
 
   beforeEach(() => {
-    jasmine.addMatchers(vueMatchers);
     $('body').attr('data-page', 'projects:merge_requests:show');
-
-    setFixtures('<div class="js-vue-notes-event"><div id="app"></div></div>');
-
-    const IssueNotesApp = Vue.extend(notesApp);
 
     store = createStore();
     mountComponent = data => {
-      const props = data || {
+      const propsData = data || {
         noteableData: mockData.noteableDataMock,
         notesData: mockData.notesDataMock,
         userData: mockData.userDataMock,
       };
+      const localVue = createLocalVue();
 
-      return mountComponentWithStore(IssueNotesApp, {
-        props,
-        store,
-        el: document.getElementById('app'),
-      });
+      return mount(
+        {
+          components: {
+            NotesApp,
+          },
+          template: '<div class="js-vue-notes-event"><notes-app v-bind="$attrs" /></div>',
+        },
+        {
+          propsData,
+          store,
+          localVue,
+          sync: false,
+        },
+      );
     };
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('set data', () => {
@@ -65,7 +57,7 @@ describe('note_app', () => {
 
     beforeEach(() => {
       Vue.http.interceptors.push(responseInterceptor);
-      vm = mountComponent();
+      wrapper = mountComponent();
     });
 
     afterEach(() => {
@@ -73,26 +65,26 @@ describe('note_app', () => {
     });
 
     it('should set notes data', () => {
-      expect(vm.$store.state.notesData).toEqual(mockData.notesDataMock);
+      expect(store.state.notesData).toEqual(mockData.notesDataMock);
     });
 
     it('should set issue data', () => {
-      expect(vm.$store.state.noteableData).toEqual(mockData.noteableDataMock);
+      expect(store.state.noteableData).toEqual(mockData.noteableDataMock);
     });
 
     it('should set user data', () => {
-      expect(vm.$store.state.userData).toEqual(mockData.userDataMock);
+      expect(store.state.userData).toEqual(mockData.userDataMock);
     });
 
     it('should fetch discussions', () => {
-      expect(vm.$store.state.discussions).toEqual([]);
+      expect(store.state.discussions).toEqual([]);
     });
   });
 
   describe('render', () => {
     beforeEach(() => {
       Vue.http.interceptors.push(mockData.individualNoteInterceptor);
-      vm = mountComponent();
+      wrapper = mountComponent();
     });
 
     afterEach(() => {
@@ -107,51 +99,50 @@ describe('note_app', () => {
 
       setTimeout(() => {
         expect(
-          vm.$el.querySelector('.main-notes-list .note-header-author-name').textContent.trim(),
+          wrapper
+            .find('.main-notes-list .note-header-author-name')
+            .text()
+            .trim(),
         ).toEqual(note.author.name);
 
-        expect(vm.$el.querySelector('.main-notes-list .note-text').innerHTML).toEqual(
-          note.note_html,
-        );
+        expect(wrapper.find('.main-notes-list .note-text').html()).toContain(note.note_html);
         done();
       }, 0);
     });
 
     it('should render form', () => {
-      expect(vm.$el.querySelector('.js-main-target-form').tagName).toEqual('FORM');
-      expect(
-        vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
-      ).toEqual('Write a comment or drag your files here…');
+      expect(wrapper.find('.js-main-target-form').name()).toEqual('form');
+      expect(wrapper.find('.js-main-target-form textarea').attributes('placeholder')).toEqual(
+        'Write a comment or drag your files here…',
+      );
     });
 
     it('should not render form when commenting is disabled', () => {
       store.state.commentsDisabled = true;
-      vm = mountComponent();
+      wrapper = mountComponent();
 
-      expect(vm.$el.querySelector('.js-main-target-form')).toEqual(null);
+      expect(wrapper.find('.js-main-target-form').exists()).toBe(false);
     });
 
     it('should render form comment button as disabled', () => {
-      expect(vm.$el.querySelector('.js-note-new-discussion').getAttribute('disabled')).toEqual(
-        'disabled',
-      );
+      expect(wrapper.find('.js-note-new-discussion').attributes('disabled')).toEqual('disabled');
     });
   });
 
   describe('while fetching data', () => {
     beforeEach(() => {
-      vm = mountComponent();
+      wrapper = mountComponent();
     });
 
     it('renders skeleton notes', () => {
-      expect(vm).toIncludeElement('.animation-container');
+      expect(wrapper.find('.animation-container').exists()).toBe(true);
     });
 
     it('should render form', () => {
-      expect(vm.$el.querySelector('.js-main-target-form').tagName).toEqual('FORM');
-      expect(
-        vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
-      ).toEqual('Write a comment or drag your files here…');
+      expect(wrapper.find('.js-main-target-form').name()).toEqual('form');
+      expect(wrapper.find('.js-main-target-form textarea').attributes('placeholder')).toEqual(
+        'Write a comment or drag your files here…',
+      );
     });
   });
 
@@ -160,9 +151,9 @@ describe('note_app', () => {
       beforeEach(done => {
         Vue.http.interceptors.push(mockData.individualNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
-        vm = mountComponent();
+        wrapper = mountComponent();
         setTimeout(() => {
-          vm.$el.querySelector('.js-note-edit').click();
+          wrapper.find('.js-note-edit').trigger('click');
           Vue.nextTick(done);
         }, 0);
       });
@@ -175,12 +166,12 @@ describe('note_app', () => {
       });
 
       it('renders edit form', () => {
-        expect(vm).toIncludeElement('.js-vue-issue-note-form');
+        expect(wrapper.find('.js-vue-issue-note-form').exists()).toBe(true);
       });
 
       it('calls the service to update the note', done => {
-        vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
-        vm.$el.querySelector('.js-vue-issue-save').click();
+        wrapper.find('.js-vue-issue-note-form').value = 'this is a note';
+        wrapper.find('.js-vue-issue-save').trigger('click');
 
         expect(service.updateNote).toHaveBeenCalled();
         // Wait for the requests to finish before destroying
@@ -194,10 +185,10 @@ describe('note_app', () => {
       beforeEach(done => {
         Vue.http.interceptors.push(mockData.discussionNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
-        vm = mountComponent();
+        wrapper = mountComponent();
 
         setTimeout(() => {
-          vm.$el.querySelector('.js-note-edit').click();
+          wrapper.find('.js-note-edit').trigger('click');
           Vue.nextTick(done);
         }, 0);
       });
@@ -210,12 +201,12 @@ describe('note_app', () => {
       });
 
       it('renders edit form', () => {
-        expect(vm).toIncludeElement('.js-vue-issue-note-form');
+        expect(wrapper.find('.js-vue-issue-note-form').exists()).toBe(true);
       });
 
       it('updates the note and resets the edit form', done => {
-        vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
-        vm.$el.querySelector('.js-vue-issue-save').click();
+        wrapper.find('.js-vue-issue-note-form').value = 'this is a note';
+        wrapper.find('.js-vue-issue-save').trigger('click');
 
         expect(service.updateNote).toHaveBeenCalled();
         // Wait for the requests to finish before destroying
@@ -228,30 +219,36 @@ describe('note_app', () => {
 
   describe('new note form', () => {
     beforeEach(() => {
-      vm = mountComponent();
+      wrapper = mountComponent();
     });
 
     it('should render markdown docs url', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
 
-      expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
-        'Markdown',
-      );
+      expect(
+        wrapper
+          .find(`a[href="${markdownDocsPath}"]`)
+          .text()
+          .trim(),
+      ).toEqual('Markdown');
     });
 
     it('should render quick action docs url', () => {
       const { quickActionsDocsPath } = mockData.notesDataMock;
 
-      expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual(
-        'quick actions',
-      );
+      expect(
+        wrapper
+          .find(`a[href="${quickActionsDocsPath}"]`)
+          .text()
+          .trim(),
+      ).toEqual('quick actions');
     });
   });
 
   describe('edit form', () => {
     beforeEach(() => {
       Vue.http.interceptors.push(mockData.individualNoteInterceptor);
-      vm = mountComponent();
+      wrapper = mountComponent();
     });
 
     afterEach(() => {
@@ -260,12 +257,15 @@ describe('note_app', () => {
 
     it('should render markdown docs url', done => {
       setTimeout(() => {
-        vm.$el.querySelector('.js-note-edit').click();
+        wrapper.find('.js-note-edit').trigger('click');
         const { markdownDocsPath } = mockData.notesDataMock;
 
         Vue.nextTick(() => {
           expect(
-            vm.$el.querySelector(`.edit-note a[href="${markdownDocsPath}"]`).textContent.trim(),
+            wrapper
+              .find(`.edit-note a[href="${markdownDocsPath}"]`)
+              .text()
+              .trim(),
           ).toEqual('Markdown is supported');
           done();
         });
@@ -274,13 +274,11 @@ describe('note_app', () => {
 
     it('should not render quick actions docs url', done => {
       setTimeout(() => {
-        vm.$el.querySelector('.js-note-edit').click();
+        wrapper.find('.js-note-edit').trigger('click');
         const { quickActionsDocsPath } = mockData.notesDataMock;
 
         Vue.nextTick(() => {
-          expect(vm.$el.querySelector(`.edit-note a[href="${quickActionsDocsPath}"]`)).toEqual(
-            null,
-          );
+          expect(wrapper.find(`.edit-note a[href="${quickActionsDocsPath}"]`).exists()).toBe(false);
           done();
         });
       }, 0);
@@ -295,12 +293,19 @@ describe('note_app', () => {
           noteId: 1,
         },
       });
+      const toggleAwardAction = jasmine.createSpy('toggleAward');
+      wrapper.vm.$store.hotUpdate({
+        actions: {
+          toggleAward: toggleAwardAction,
+        },
+      });
 
-      spyOn(vm.$store, 'dispatch');
+      wrapper.vm.$parent.$el.dispatchEvent(toggleAwardEvent);
 
-      vm.$el.parentElement.dispatchEvent(toggleAwardEvent);
+      expect(toggleAwardAction).toHaveBeenCalledTimes(1);
+      const [, payload] = toggleAwardAction.calls.argsFor(0);
 
-      expect(vm.$store.dispatch).toHaveBeenCalledWith('toggleAward', {
+      expect(payload).toEqual({
         awardName: 'test',
         noteId: 1,
       });

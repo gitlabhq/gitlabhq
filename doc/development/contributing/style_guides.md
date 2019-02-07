@@ -21,6 +21,7 @@
    of _prohibited this user from being saved due to the following errors:_ the
    text should be _sorry, we could not create your account because:_
 1. Code should be written in [US English][us-english]
+1. [Go](../go_guide/index.md)
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop) and [Hound CI](https://houndci.com).

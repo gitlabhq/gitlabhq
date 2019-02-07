@@ -35,6 +35,17 @@ describe CommitCollection do
     end
   end
 
+  describe '#without_merge_commits' do
+    it 'returns all commits except merge commits' do
+      collection = described_class.new(project, [
+        build(:commit),
+        build(:commit, :merge_commit)
+      ])
+
+      expect(collection.without_merge_commits.size).to eq(1)
+    end
+  end
+
   describe '#with_pipeline_status' do
     it 'sets the pipeline status for every commit so no additional queries are necessary' do
       create(

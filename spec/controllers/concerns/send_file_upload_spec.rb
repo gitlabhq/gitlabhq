@@ -53,17 +53,36 @@ describe SendFileUpload do
     end
 
     context 'with attachment' do
-      let(:params) { { attachment: 'test.js' } }
+      let(:filename) { 'test.js' }
+      let(:params) { { attachment: filename } }
 
       it 'sends a file with content-type of text/plain' do
+        # Notice the filename= is omitted from the disposition; this is because
+        # Rails 5 will append this header in send_file
         expected_params = {
           content_type: 'text/plain',
           filename: 'test.js',
-          disposition: 'attachment'
+          disposition: "attachment; filename*=UTF-8''test.js"
         }
         expect(controller).to receive(:send_file).with(uploader.path, expected_params)
 
         subject
+      end
+
+      context 'with non-ASCII encoded filename' do
+        let(:filename) { 'テスト.txt' }
+
+        # Notice the filename= is omitted from the disposition; this is because
+        # Rails 5 will append this header in send_file
+        it 'sends content-disposition for non-ASCII encoded filenames' do
+          expected_params = {
+            filename: filename,
+            disposition: "attachment; filename*=UTF-8''%E3%83%86%E3%82%B9%E3%83%88.txt"
+          }
+          expect(controller).to receive(:send_file).with(uploader.path, expected_params)
+
+          subject
+        end
       end
 
       context 'with a proxied file in object storage' do
@@ -76,7 +95,7 @@ describe SendFileUpload do
 
         it 'sends a file with a custom type' do
           headers = double
-          expected_headers = %r(response-content-disposition=attachment%3Bfilename%3D%22test.js%22&response-content-type=application/ecmascript)
+          expected_headers = %r(response-content-disposition=attachment%3B%20filename%3D%22test.js%22%3B%20filename%2A%3DUTF-8%27%27test.js&response-content-type=application/ecmascript)
           expect(Gitlab::Workhorse).to receive(:send_url).with(expected_headers).and_call_original
           expect(headers).to receive(:store).with(Gitlab::Workhorse::SEND_DATA_HEADER, /^send-url:/)
 

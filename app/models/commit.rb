@@ -379,7 +379,7 @@ class Commit
   end
 
   def merge_commit?
-    parents.size > 1
+    parent_ids.size > 1
   end
 
   def merged_merge_request(current_user)

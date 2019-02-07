@@ -5,17 +5,13 @@
 # We don't care if the text has changed above or below the specific checkbox, as long
 # the checkbox still exists at exactly the same line number and the text is equal.
 # If successful, new values are available in `updated_markdown` and `updated_markdown_html`
-#
-# Note: once we've removed RedCarpet support, we can remove the `index` and `sourcepos`
-# parameters
 class TaskListToggleService
   attr_reader :updated_markdown, :updated_markdown_html
 
-  def initialize(markdown, markdown_html, line_source:, line_number:, toggle_as_checked:, index:, sourcepos: true)
+  def initialize(markdown, markdown_html, line_source:, line_number:, toggle_as_checked:)
     @markdown, @markdown_html  = markdown, markdown_html
     @line_source, @line_number = line_source, line_number
     @toggle_as_checked         = toggle_as_checked
-    @index, @use_sourcepos     = index, sourcepos
 
     @updated_markdown, @updated_markdown_html = nil
   end
@@ -28,8 +24,8 @@ class TaskListToggleService
 
   private
 
-  attr_reader :markdown, :markdown_html, :index, :toggle_as_checked
-  attr_reader :line_source, :line_number, :use_sourcepos
+  attr_reader :markdown, :markdown_html, :toggle_as_checked
+  attr_reader :line_source, :line_number
 
   def toggle_markdown
     source_lines      = markdown.split("\n")
@@ -68,17 +64,8 @@ class TaskListToggleService
   end
 
   # When using CommonMark, we should be able to use the embedded `sourcepos` attribute to
-  # target the exact line in the DOM.  For RedCarpet, we need to use the index of the checkbox
-  # that was checked and match it with what we think is the same checkbox.
-  # The reason `sourcepos` is slightly more reliable is the case where a line of text is
-  # changed from a regular line into a checkbox (or vice versa).  Then the checked index
-  # in the UI will be off from the list of checkboxes we've calculated locally.
-  # It's a rare circumstance, but since we can account for it, we do.
+  # target the exact line in the DOM.
   def get_html_checkbox(html)
-    if use_sourcepos
-      html.css(".task-list-item[data-sourcepos^='#{line_number}:'] > input.task-list-item-checkbox").first
-    else
-      html.css('.task-list-item-checkbox')[index - 1]
-    end
+    html.css(".task-list-item[data-sourcepos^='#{line_number}:'] > input.task-list-item-checkbox").first
   end
 end

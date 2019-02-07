@@ -166,6 +166,23 @@ production: &base
     #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
     #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
 
+  ## Merge request external diff storage
+  external_diffs:
+    # If disabled (the default), the diffs are in-database. Otherwise, they can
+    # be stored on disk, or in object storage
+    enabled: false
+    # The location where external diffs are stored (default: shared/lfs-external-diffs).
+    # storage_path: shared/external-diffs
+    # object_store:
+    #   enabled: false
+    #   remote_directory: external-diffs
+    #   background_upload: false
+    #   proxy_download: false
+    #   connection:
+    #     provider: AWS
+    #     aws_access_key_id: AWS_ACCESS_KEY_ID
+    #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+    #     region: us-east-1
 
   ## Git LFS
   lfs:
@@ -733,6 +750,18 @@ test:
   <<: *base
   gravatar:
     enabled: true
+  external_diffs:
+    enabled: false
+    # The location where external diffs are stored (default: shared/external-diffs).
+    # storage_path: shared/external-diffs
+    object_store:
+      enabled: false
+      remote_directory: external-diffs # The bucket name
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
   lfs:
     enabled: false
     # The location where LFS objects are stored (default: shared/lfs-objects).

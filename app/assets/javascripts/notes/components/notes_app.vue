@@ -44,11 +44,6 @@ export default {
       required: false,
       default: true,
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     helpPagePath: {
       type: String,
       required: false,
@@ -204,7 +199,12 @@ export default {
             :key="discussion.id"
             :note="discussion.notes[0]"
           />
-          <noteable-note v-else :key="discussion.id" :note="discussion.notes[0]" />
+          <noteable-note
+            v-else
+            :key="discussion.id"
+            :note="discussion.notes[0]"
+            :discussion="discussion"
+          />
         </template>
         <noteable-discussion
           v-else
@@ -216,10 +216,6 @@ export default {
       </template>
     </ul>
 
-    <comment-form
-      v-if="!commentsDisabled"
-      :noteable-type="noteableType"
-      :markdown-version="markdownVersion"
-    />
+    <comment-form v-if="!commentsDisabled" :noteable-type="noteableType" />
   </div>
 </template>

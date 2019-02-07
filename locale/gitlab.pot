@@ -22,16 +22,6 @@ msgstr ""
 msgid " or "
 msgstr ""
 
-msgid "%d addition"
-msgid_plural "%d additions"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d changed file"
-msgid_plural "%d changed files"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] ""
@@ -39,11 +29,6 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d deleted"
-msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -468,7 +453,28 @@ msgstr ""
 msgid "AdminSettings|When creating a new environment variable it will be protected by default."
 msgstr ""
 
+msgid "AdminUsers|2FA Disabled"
+msgstr ""
+
+msgid "AdminUsers|2FA Enabled"
+msgstr ""
+
+msgid "AdminUsers|Active"
+msgstr ""
+
+msgid "AdminUsers|Admin"
+msgstr ""
+
+msgid "AdminUsers|Admins"
+msgstr ""
+
 msgid "AdminUsers|Block user"
+msgstr ""
+
+msgid "AdminUsers|Blocked"
+msgstr ""
+
+msgid "AdminUsers|Cannot unblock LDAP blocked users"
 msgstr ""
 
 msgid "AdminUsers|Delete User %{username} and contributions?"
@@ -483,10 +489,37 @@ msgstr ""
 msgid "AdminUsers|Delete user and contributions"
 msgstr ""
 
+msgid "AdminUsers|External"
+msgstr ""
+
+msgid "AdminUsers|It's you!"
+msgstr ""
+
+msgid "AdminUsers|New user"
+msgstr ""
+
+msgid "AdminUsers|No users found"
+msgstr ""
+
+msgid "AdminUsers|Search by name, email or username"
+msgstr ""
+
+msgid "AdminUsers|Search users"
+msgstr ""
+
+msgid "AdminUsers|Sort by"
+msgstr ""
+
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
 
 msgid "AdminUsers|To confirm, type %{username}"
+msgstr ""
+
+msgid "AdminUsers|User will be blocked"
+msgstr ""
+
+msgid "AdminUsers|Without projects"
 msgstr ""
 
 msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
@@ -711,6 +744,9 @@ msgstr ""
 msgid "Archived projects"
 msgstr ""
 
+msgid "Are you sure"
+msgstr ""
+
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr ""
 
@@ -909,6 +945,9 @@ msgstr ""
 msgid "Avatar for %{assigneeName}"
 msgstr ""
 
+msgid "Avatar for %{name}"
+msgstr ""
+
 msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
@@ -1012,6 +1051,9 @@ msgid "Bitbucket Server Import"
 msgstr ""
 
 msgid "Bitbucket import"
+msgstr ""
+
+msgid "Block"
 msgstr ""
 
 msgid "Blocked"
@@ -2348,6 +2390,9 @@ msgstr ""
 msgid "Created by me"
 msgstr ""
 
+msgid "Created on"
+msgstr ""
+
 msgid "Created on:"
 msgstr ""
 
@@ -2621,6 +2666,9 @@ msgid "DeployTokens|Your New Deploy Token"
 msgstr ""
 
 msgid "DeployTokens|Your new project deploy token has been created."
+msgstr ""
+
+msgid "Deployed"
 msgstr ""
 
 msgid "Deployed to"
@@ -3219,6 +3267,11 @@ msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
 msgstr ""
+
+msgid "File"
+msgid_plural "Files"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "File added"
 msgstr ""
@@ -4121,6 +4174,9 @@ msgstr[1] ""
 msgid "Last Pipeline"
 msgstr ""
 
+msgid "Last activity"
+msgstr ""
+
 msgid "Last commit"
 msgstr ""
 
@@ -4438,10 +4494,10 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
-msgid "MergeRequest|Filter files"
+msgid "MergeRequest|No files found"
 msgstr ""
 
-msgid "MergeRequest|No files found"
+msgid "MergeRequest|Search files"
 msgstr ""
 
 msgid "Merged"
@@ -4834,9 +4890,6 @@ msgid "Notes|Show comments only"
 msgstr ""
 
 msgid "Notes|Show history only"
-msgstr ""
-
-msgid "Nothing here."
 msgstr ""
 
 msgid "Notification events"
@@ -5959,6 +6012,9 @@ msgstr ""
 msgid "Reopen milestone"
 msgstr ""
 
+msgid "Reply to comment"
+msgstr ""
+
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
@@ -6360,9 +6416,6 @@ msgstr ""
 msgid "Serverless"
 msgstr ""
 
-msgid "ServerlessDetails|Copy URL to clipboard"
-msgstr ""
-
 msgid "ServerlessDetails|Kubernetes Pods"
 msgstr ""
 
@@ -6375,19 +6428,13 @@ msgstr ""
 msgid "ServerlessDetails|pods in use"
 msgstr ""
 
+msgid "ServerlessURL|Copy URL to clipboard"
+msgstr ""
+
 msgid "Serverless| In order to start using functions as a service, you must first install Knative on your Kubernetes cluster."
 msgstr ""
 
 msgid "Serverless|An error occurred while retrieving serverless components"
-msgstr ""
-
-msgid "Serverless|Cluster Env"
-msgstr ""
-
-msgid "Serverless|Description"
-msgstr ""
-
-msgid "Serverless|Function"
 msgstr ""
 
 msgid "Serverless|Getting started with serverless"
@@ -6399,16 +6446,10 @@ msgstr ""
 msgid "Serverless|Install Knative"
 msgstr ""
 
-msgid "Serverless|Last Update"
-msgstr ""
-
 msgid "Serverless|Learn more about Serverless"
 msgstr ""
 
 msgid "Serverless|No functions available"
-msgstr ""
-
-msgid "Serverless|Runtime"
 msgstr ""
 
 msgid "Serverless|There is currently no function data available from Knative. This could be for a variety of reasons including:"
@@ -6680,6 +6721,9 @@ msgstr ""
 msgid "SortOptions|Oldest joined"
 msgstr ""
 
+msgid "SortOptions|Oldest last activity"
+msgstr ""
+
 msgid "SortOptions|Oldest sign in"
 msgstr ""
 
@@ -6690,6 +6734,9 @@ msgid "SortOptions|Popularity"
 msgstr ""
 
 msgid "SortOptions|Priority"
+msgstr ""
+
+msgid "SortOptions|Recent last activity"
 msgstr ""
 
 msgid "SortOptions|Recent sign in"
@@ -7680,7 +7727,13 @@ msgstr ""
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
+msgid "Unblock"
+msgstr ""
+
 msgid "Undo"
+msgstr ""
+
+msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
 msgid "Unlock"
@@ -7830,10 +7883,22 @@ msgstr ""
 msgid "UserProfile|Edit profile"
 msgstr ""
 
+msgid "UserProfile|Explore public groups to find projects to contribute to."
+msgstr ""
+
 msgid "UserProfile|Groups"
 msgstr ""
 
+msgid "UserProfile|Groups are the best way to manage projects and members."
+msgstr ""
+
+msgid "UserProfile|Join or create a group to start contributing by commenting on issues or submitting merge requests!"
+msgstr ""
+
 msgid "UserProfile|Most Recent Activity"
+msgstr ""
+
+msgid "UserProfile|No snippets found."
 msgstr ""
 
 msgid "UserProfile|Overview"
@@ -7848,6 +7913,9 @@ msgstr ""
 msgid "UserProfile|Snippets"
 msgstr ""
 
+msgid "UserProfile|Snippets in GitLab can either be private, internal, or public."
+msgstr ""
+
 msgid "UserProfile|Subscribe"
 msgstr ""
 
@@ -7857,10 +7925,25 @@ msgstr ""
 msgid "UserProfile|This user has a private profile"
 msgstr ""
 
+msgid "UserProfile|This user hasn't contributed to any projects"
+msgstr ""
+
 msgid "UserProfile|View all"
 msgstr ""
 
 msgid "UserProfile|View user in admin area"
+msgstr ""
+
+msgid "UserProfile|You can create a group for several dependent projects."
+msgstr ""
+
+msgid "UserProfile|You haven't created any personal projects."
+msgstr ""
+
+msgid "UserProfile|You haven't created any snippets."
+msgstr ""
+
+msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
 msgstr ""
 
 msgid "Users"

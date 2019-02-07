@@ -1,3 +1,10 @@
+- illustration_path = 'illustrations/profile-page/groups.svg'
+- current_user_empty_message_header = s_('UserProfile|You can create a group for several dependent projects.')
+- current_user_empty_message_description = s_('UserProfile|Groups are the best way to manage projects and members.')
+- primary_button_label = _('New group')
+- primary_button_link = new_group_path
+- visitor_empty_message = s_('GroupsEmptyState|No groups found')
+
 - if groups.any?
   - user = local_assigns[:user]
 
@@ -5,4 +12,9 @@
     - groups.each_with_index do |group, i|
       = render "shared/groups/group", group: group, user: user
 - else
-  .nothing-here-block= s_("GroupsEmptyState|No groups found")
+  = render partial: 'shared/empty_states/profile_tabs', locals: { illustration_path: illustration_path,
+    current_user_empty_message_header: current_user_empty_message_header,
+    current_user_empty_message_description: current_user_empty_message_description,
+    primary_button_label: primary_button_label,
+    primary_button_link: primary_button_link,
+    visitor_empty_message: visitor_empty_message }
