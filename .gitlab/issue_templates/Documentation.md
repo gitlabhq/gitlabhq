@@ -11,14 +11,23 @@
 
 ### Type of issue
 
-Add the relevant label:
+<!-- Un-comment the lines for the applicable doc issue type and delete the others. -->
 
-- `docs:fix` - Correction or clarification needed.
-- `docs:new` - New doc needed to cover a new topic or use case.
-- `docs:improvement` - Improving an existing doc; e.g. adding a diagram, adding or rewording text, resolving redundancies, cross-linking, etc.
-- `docs:revamp` - Review a page or group of pages in order to plan and implement major improvements/rewrites.
-- `docs:other` - Anything else.
-   
+<!-- /label ~docs:fix
+     Correction or clarification needed. -->
+     
+<!-- /label ~docs:new
+     New doc needed to cover a new topic or use case. -->
+     
+<!-- /label ~docs:improvement
+     Improving an existing doc; e.g. adding a diagram, adding or rewording text, resolving redundancies, cross-linking, etc. -->
+     
+<!-- /label ~docs:revamp
+     Review a page or group of pages in order to plan and implement major improvements/rewrites. -->
+
+<!-- /label ~docs:other
+     Anything else. -->
+
 ### Problem to solve
 
 <!-- Include the following detail as necessary:
