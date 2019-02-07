@@ -79,8 +79,7 @@ Follow the process below unless otherwise agreed with the product manager and te
 
 - Include any new and edited docs in the MR introducing the code.
 - Use the Documentation requirements confirmed by the Product Manager in the
-issue. Discuss any ideas or changes to these requirements in the issue, before you begin,
-and in the MR, once you begin work.
+issue and discuss any further doc plans or ideas as needed.
    - If the new or changed doc requires extensive collaboration or conversation, a separate,
 linked issue can be used for the planning process.
    - We are trying to avoid using a separate MR, so that the docs stay with the code, but the
@@ -92,7 +91,8 @@ idea or outline, or request any other help, ping the Technical Writer for the re
 [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages)
 in your issue or MR, or write within `#docs` on the GitLab Slack.
 - The docs must be merged with the code **by the feature freeze date**, otherwise
-the feature cannot be included with the release.<!-- TODO: Policy for feature-flagged issues -->
+the feature cannot be included with the release. A policy for documenting feature-flagged
+issues is forthcoming and you are welcome to join the [discussion](https://gitlab.com/gitlab-org/gitlab-ce/issues/56813).
 
 **Reviews and merging**
 
