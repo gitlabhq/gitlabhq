@@ -322,6 +322,10 @@ FactoryBot.define do
     kubernetes_service
   end
 
+  factory :mock_deployment_project, parent: :project do
+    mock_deployment_service
+  end
+
   factory :prometheus_project, parent: :project do
     after :create do |project|
       project.create_prometheus_service(
