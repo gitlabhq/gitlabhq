@@ -4,6 +4,7 @@ import _ from 'underscore';
 import bp from './breakpoints';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
+const DESKTOP_BREAKPOINTS = ['xl', 'lg'];
 export default class ContextualSidebar {
   constructor() {
     this.initDomElements();
@@ -29,7 +30,7 @@ export default class ContextualSidebar {
     document.addEventListener('click', e => {
       if (
         !e.target.closest('.nav-sidebar') &&
-        !ContextualSidebar.isDesktopBreakpoint(bp.getBreakpointSize())
+        (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')
       ) {
         this.toggleCollapsedSidebar(true, true);
       }
@@ -54,7 +55,7 @@ export default class ContextualSidebar {
 
   // TODO: use the breakpoints from breakpoints.js once they have been updated for bootstrap 4
   // See related issue and discussion: https://gitlab.com/gitlab-org/gitlab-ce/issues/56745
-  static isDesktopBreakpoint = (_bp = '') => ['xl', 'lg'].indexOf(_bp) > -1;
+  static isDesktopBreakpoint = (_bp = '') => DESKTOP_BREAKPOINTS.indexOf(_bp) > -1;
   static setCollapsedCookie(value) {
     if (bp.getBreakpointSize() !== 'lg') {
       return;
@@ -70,6 +71,7 @@ export default class ContextualSidebar {
 
   toggleMobileCollapsedSidebar(collapsed) {
     this.$sidebar.toggleClass('sidebar-collapsed-mobile', collapsed);
+    this.$sidebar.toggleClass('sidebar-expanded-mobile', !collapsed);
     this.$sidebar.removeClass('sidebar-collapsed-desktop');
     this.$page.toggleClass('page-with-icon-sidebar', true);
     this.$page.toggleClass('page-with-contextual-sidebar', false);
