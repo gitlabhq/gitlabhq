@@ -71,6 +71,44 @@
   }
 }
 
+@mixin collapse-contextual-sidebar-content {
+  .context-header {
+    height: 60px;
+    width: $contextual-sidebar-collapsed-width;
+
+    a {
+      padding: 10px 4px;
+    }
+  }
+
+  .sidebar-top-level-items > li {
+    .sidebar-sub-level-items {
+      &:not(.flyout-list) {
+        display: none;
+      }
+    }
+  }
+
+  .nav-icon-container {
+    margin-right: 0;
+  }
+
+  .toggle-sidebar-button {
+    padding: 16px;
+    width: $contextual-sidebar-collapsed-width - 1px;
+
+    .collapse-text,
+    .icon-angle-double-left {
+      display: none;
+    }
+
+    .icon-angle-double-right {
+      display: block;
+      margin: 0;
+    }
+  }
+}
+
 .nav-sidebar {
   transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
   position: fixed;
@@ -117,13 +155,6 @@
 
   &.sidebar-collapsed-desktop {
     @include collapse-contextual-sidebar;
-  }
-
-  &.sidebar-collapsed-mobile {
-    // md = 768, xl = 1200px
-    @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
-      @include collapse-contextual-sidebar;
-    }
   }
 
   &.sidebar-expanded-mobile {
@@ -177,6 +208,13 @@
   svg {
     height: 16px;
     width: 16px;
+  }
+
+  &:not(.sidebar-expanded-mobile) {
+    @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
+      @include collapse-contextual-sidebar;
+      @include collapse-contextual-sidebar-content;
+    }
   }
 }
 
@@ -368,52 +406,8 @@
   overflow: hidden;
 }
 
-@mixin collapse-contextual-sidebar-content {
-  .context-header {
-    height: 60px;
-    width: $contextual-sidebar-collapsed-width;
-
-    a {
-      padding: 10px 4px;
-    }
-  }
-
-  .sidebar-top-level-items > li {
-    .sidebar-sub-level-items {
-      &:not(.flyout-list) {
-        display: none;
-      }
-    }
-  }
-
-  .nav-icon-container {
-    margin-right: 0;
-  }
-
-  .toggle-sidebar-button {
-    padding: 16px;
-    width: $contextual-sidebar-collapsed-width - 1px;
-
-    .collapse-text,
-    .icon-angle-double-left {
-      display: none;
-    }
-
-    .icon-angle-double-right {
-      display: block;
-      margin: 0;
-    }
-  }
-}
-
 .sidebar-collapsed-desktop {
   @include collapse-contextual-sidebar-content;
-}
-
-.sidebar-collapsed-mobile {
-  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
-    @include collapse-contextual-sidebar-content;
-  }
 }
 
 .fly-out-top-item {

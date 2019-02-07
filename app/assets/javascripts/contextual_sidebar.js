@@ -42,8 +42,7 @@ export default class ContextualSidebar {
       const breakpoint = bp.getBreakpointSize();
 
       if (!ContextualSidebar.isDesktopBreakpoint(breakpoint)) {
-        const collapsed = !this.$sidebar.hasClass('sidebar-collapsed-mobile');
-        this.toggleMobileCollapsedSidebar(collapsed);
+        this.toggleSidebarNav(!this.$sidebar.hasClass('sidebar-expanded-mobile'));
       } else if (breakpoint === 'lg') {
         const value = !this.$sidebar.hasClass('sidebar-collapsed-desktop');
         this.toggleCollapsedSidebar(value, true);
@@ -64,25 +63,22 @@ export default class ContextualSidebar {
   }
 
   toggleSidebarNav(show) {
-    this.$sidebar.toggleClass('sidebar-expanded-mobile', show);
-    this.$overlay.toggleClass('mobile-nav-open', show);
-    this.$sidebar.removeClass('sidebar-collapsed-desktop');
-  }
+    const breakpoint = bp.getBreakpointSize();
+    const dbp = ContextualSidebar.isDesktopBreakpoint(breakpoint);
 
-  toggleMobileCollapsedSidebar(collapsed) {
-    this.$sidebar.toggleClass('sidebar-collapsed-mobile', collapsed);
-    this.$sidebar.toggleClass('sidebar-expanded-mobile', !collapsed);
+    this.$sidebar.toggleClass('sidebar-expanded-mobile', !dbp ? show : false);
+    this.$overlay.toggleClass('mobile-nav-open', breakpoint === 'xs' ? show : false);
     this.$sidebar.removeClass('sidebar-collapsed-desktop');
-    this.$page.toggleClass('page-with-icon-sidebar', true);
-    this.$page.toggleClass('page-with-contextual-sidebar', false);
-    requestIdleCallback(() => this.toggleSidebarOverflow());
+    this.$page.toggleClass('page-with-contextual-sidebar', true);
   }
 
   toggleCollapsedSidebar(collapsed, saveCookie) {
     const breakpoint = bp.getBreakpointSize();
+    const dbp = ContextualSidebar.isDesktopBreakpoint(breakpoint);
 
     if (this.$sidebar.length) {
       this.$sidebar.toggleClass('sidebar-collapsed-desktop', collapsed);
+      this.$sidebar.toggleClass('sidebar-expanded-mobile', !dbp ? !collapsed : false);
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
       this.$page.toggleClass('page-with-contextual-sidebar', true);
     }
@@ -106,9 +102,8 @@ export default class ContextualSidebar {
     if (!this.$sidebar.length) return;
 
     const breakpoint = bp.getBreakpointSize();
-
     if (!ContextualSidebar.isDesktopBreakpoint(breakpoint)) {
-      this.toggleMobileCollapsedSidebar(true);
+      this.toggleSidebarNav(false);
     } else if (breakpoint === 'lg') {
       const collapse = parseBoolean(Cookies.get('sidebar_collapsed'));
       this.toggleCollapsedSidebar(collapse, false);
