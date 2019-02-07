@@ -508,6 +508,25 @@
   }
 }
 
+.diff-stats {
+  align-items: center;
+  padding: 0 .25rem;
+
+  .diff-stats-group {
+    padding: 0 .25rem;
+  }
+
+  svg.diff-stats-icon {
+    vertical-align: text-bottom;
+  }
+
+  &.is-compare-versions-header {
+    .diff-stats-group {
+      padding: 0 .5rem;
+    }
+  }
+}
+
 .file-content .diff-file {
   margin: 0;
   border: 0;

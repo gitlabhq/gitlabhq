@@ -9,6 +9,7 @@ import { GlTooltipDirective } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
 import EditButton from './edit_button.vue';
+import DiffStats from './diff_stats.vue';
 
 export default {
   components: {
@@ -16,6 +17,7 @@ export default {
     EditButton,
     Icon,
     FileIcon,
+    DiffStats,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -202,6 +204,7 @@ export default {
       v-if="!diffFile.submodule && addMergeRequestButtons"
       class="file-actions d-none d-sm-block"
     >
+      <diff-stats :added-lines="diffFile.added_lines" :removed-lines="diffFile.removed_lines" />
       <template v-if="diffFile.blob && diffFile.blob.readable_text">
         <button
           :disabled="!diffHasDiscussions(diffFile)"

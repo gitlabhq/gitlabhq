@@ -14,8 +14,8 @@ export default {
     FileRow,
   },
   computed: {
-    ...mapState('diffs', ['tree', 'addedLines', 'removedLines', 'renderTreeList']),
-    ...mapGetters('diffs', ['allBlobs', 'diffFilesLength']),
+    ...mapState('diffs', ['tree', 'renderTreeList']),
+    ...mapGetters('diffs', ['allBlobs']),
     filteredTreeList() {
       return this.renderTreeList ? this.tree : this.allBlobs;
     },
@@ -63,13 +63,6 @@ export default {
       <p v-else class="prepend-top-20 append-bottom-20 text-center">
         {{ s__('MergeRequest|No files found') }}
       </p>
-    </div>
-    <div v-once class="pt-3 pb-3 text-center">
-      {{ n__('%d changed file', '%d changed files', diffFilesLength) }}
-      <div>
-        <span class="cgreen"> {{ n__('%d addition', '%d additions', addedLines) }} </span>
-        <span class="cred"> {{ n__('%d deleted', '%d deletions', removedLines) }} </span>
-      </div>
     </div>
   </div>
 </template>

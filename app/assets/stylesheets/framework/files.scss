@@ -52,6 +52,7 @@
       position: absolute;
       top: 5px;
       right: 15px;
+      margin-left: auto;
 
       .btn {
         padding: 0 10px;
@@ -325,6 +326,7 @@ span.idiff {
   &,
   .file-holder & {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     background-color: $gray-light;
@@ -367,16 +369,12 @@ span.idiff {
     margin: 0 10px 0 0;
   }
 
-  .file-actions {
-    white-space: nowrap;
-
-    .btn {
-      padding: 0 10px;
-      font-size: 13px;
-      line-height: 28px;
-      display: inline-block;
-      float: none;
-    }
+  .file-actions .btn {
+    padding: 0 10px;
+    font-size: 13px;
+    line-height: 28px;
+    display: inline-block;
+    float: none;
   }
 
   @include media-breakpoint-down(xs) {

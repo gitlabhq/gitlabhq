@@ -24,6 +24,10 @@ describe('diff_file_header', () => {
 
   beforeEach(() => {
     const diffFile = diffDiscussionMock.diff_file;
+
+    diffFile.added_lines = 2;
+    diffFile.removed_lines = 1;
+
     props = {
       diffFile: { ...diffFile },
       canCurrentUserFork: false,
