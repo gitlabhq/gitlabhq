@@ -37,6 +37,6 @@ class Profiles::PreferencesController < Profiles::ApplicationController
   end
 
   def preferences_param_names
-    [:color_scheme_id, :layout, :dashboard, :project_view, :theme_id]
+    [:color_scheme_id, :layout, :dashboard, :project_view, :theme_id, :first_day_of_week]
   end
 end
