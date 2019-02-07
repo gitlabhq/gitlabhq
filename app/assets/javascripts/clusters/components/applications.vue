@@ -362,6 +362,9 @@ export default {
         :status-reason="applications.runner.statusReason"
         :request-status="applications.runner.requestStatus"
         :request-reason="applications.runner.requestReason"
+        :version="applications.runner.version"
+        :chart-repo="applications.runner.chartRepo"
+        :upgrade-available="applications.runner.upgradeAvailable"
         :disabled="!helmInstalled"
         title-link="https://docs.gitlab.com/runner/"
       >

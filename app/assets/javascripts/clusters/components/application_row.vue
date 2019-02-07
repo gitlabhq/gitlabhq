@@ -1,15 +1,24 @@
 <script>
 /* eslint-disable vue/require-default-prop */
+import { GlLink } from '@gitlab/ui';
+import TimeagoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 import { s__, sprintf } from '../../locale';
 import eventHub from '../event_hub';
 import identicon from '../../vue_shared/components/identicon.vue';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
-import { APPLICATION_STATUS, REQUEST_SUBMITTED, REQUEST_FAILURE } from '../constants';
+import {
+  APPLICATION_STATUS,
+  REQUEST_SUBMITTED,
+  REQUEST_FAILURE,
+  UPGRADE_REQUESTED,
+} from '../constants';
 
 export default {
   components: {
     loadingButton,
     identicon,
+    TimeagoTooltip,
+    GlLink,
   },
   props: {
     id: {
@@ -54,6 +63,18 @@ export default {
       type: String,
       required: false,
     },
+    version: {
+      type: String,
+      required: false,
+    },
+    chartRepo: {
+      type: String,
+      required: false,
+    },
+    upgradeAvailable: {
+      type: Boolean,
+      required: false,
+    },
     installApplicationRequestParams: {
       type: Object,
       required: false,
@@ -78,7 +99,8 @@ export default {
       return (
         this.status === APPLICATION_STATUS.INSTALLED ||
         this.status === APPLICATION_STATUS.UPDATED ||
-        this.status === APPLICATION_STATUS.UPDATING
+        this.status === APPLICATION_STATUS.UPDATING ||
+        this.status === APPLICATION_STATUS.UPDATE_ERRORED
       );
     },
     canInstall() {
@@ -146,6 +168,69 @@ export default {
         title: this.title,
       });
     },
+    versionLabel() {
+      if (this.upgradeFailed) {
+        return s__('ClusterIntegration|Upgrade failed');
+      } else if (this.isUpgrading) {
+        return s__('ClusterIntegration|Upgrading');
+      }
+
+      return s__('ClusterIntegration|Upgraded');
+    },
+    upgradeRequested() {
+      return this.requestStatus === UPGRADE_REQUESTED;
+    },
+    upgradeSuccessful() {
+      return this.status === APPLICATION_STATUS.UPDATED;
+    },
+    upgradeFailed() {
+      if (this.isUpgrading) {
+        return false;
+      }
+
+      return this.status === APPLICATION_STATUS.UPDATE_ERRORED;
+    },
+    upgradeFailureDescription() {
+      return sprintf(
+        s__(
+          'ClusterIntegration|Something went wrong when upgrading %{title}. Please check the logs and try again.',
+        ),
+        {
+          title: this.title,
+        },
+      );
+    },
+    upgradeSuccessDescription() {
+      return sprintf(s__('ClusterIntegration|%{title} upgraded successfully.'), {
+        title: this.title,
+      });
+    },
+    upgradeButtonLabel() {
+      let label;
+      if (this.upgradeAvailable && !this.upgradeFailed && !this.isUpgrading) {
+        label = s__('ClusterIntegration|Upgrade');
+      } else if (this.isUpgrading) {
+        label = s__('ClusterIntegration|Upgrading');
+      } else if (this.upgradeFailed) {
+        label = s__('ClusterIntegration|Retry upgrade');
+      }
+
+      return label;
+    },
+    isUpgrading() {
+      // Since upgrading is handled asynchronously on the backend we need this check to prevent any delay on the frontend
+      return (
+        this.status === APPLICATION_STATUS.UPDATING ||
+        (this.upgradeRequested && !this.upgradeSuccessful)
+      );
+    },
+  },
+  watch: {
+    status() {
+      if (this.status === APPLICATION_STATUS.UPDATE_ERRORED) {
+        eventHub.$emit('upgradeFailed', this.id);
+      }
+    },
   },
   methods: {
     installClicked() {
@@ -153,6 +238,15 @@ export default {
         id: this.id,
         params: this.installApplicationRequestParams,
       });
+    },
+    upgradeClicked() {
+      eventHub.$emit('upgradeApplication', {
+        id: this.id,
+        params: this.installApplicationRequestParams,
+      });
+    },
+    dismissUpgradeSuccess() {
+      eventHub.$emit('dismissUpgradeSuccess', this.id);
     },
   },
 };
@@ -207,6 +301,51 @@ export default {
             </li>
           </ul>
         </div>
+
+        <div
+          v-if="(upgradeSuccessful || upgradeFailed) && !upgradeAvailable"
+          class="form-text text-muted label p-0 js-cluster-application-upgrade-details"
+        >
+          {{ versionLabel }}
+
+          <span v-if="upgradeSuccessful"> to</span>
+
+          <gl-link
+            v-if="upgradeSuccessful"
+            :href="chartRepo"
+            target="_blank"
+            class="js-cluster-application-upgrade-version"
+          >
+            chart v{{ version }}
+          </gl-link>
+        </div>
+
+        <div
+          v-if="upgradeFailed && !isUpgrading"
+          class="bs-callout bs-callout-danger cluster-application-banner mt-2 mb-0 js-cluster-application-upgrade-failure-message"
+        >
+          {{ upgradeFailureDescription }}
+        </div>
+
+        <div
+          v-if="upgradeRequested && upgradeSuccessful"
+          class="bs-callout bs-callout-success cluster-application-banner mt-2 mb-0 p-0 pl-3"
+        >
+          {{ upgradeSuccessDescription }}
+
+          <button class="close cluster-application-banner-close" @click="dismissUpgradeSuccess">
+            &times;
+          </button>
+        </div>
+
+        <loading-button
+          v-if="upgradeAvailable || upgradeFailed || isUpgrading"
+          class="btn btn-primary js-cluster-application-upgrade-button mt-2"
+          :loading="isUpgrading"
+          :disabled="isUpgrading"
+          :label="upgradeButtonLabel"
+          @click="upgradeClicked"
+        />
       </div>
       <div
         :class="{ 'section-25': showManageButton, 'section-15': !showManageButton }"
