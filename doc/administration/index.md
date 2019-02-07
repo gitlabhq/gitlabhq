@@ -65,6 +65,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
+- [Invalidate markdown cache](invalidate_markdown_cache.md): Invalidate any cached markdown.
 
 #### Updating GitLab
 

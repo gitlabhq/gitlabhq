@@ -1019,12 +1019,17 @@ module API
         label.open_merge_requests_count(options[:current_user])
       end
 
-      expose :priority do |label, options|
-        label.priority(options[:project])
-      end
-
       expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user], options[:project])
+        label.subscribed?(options[:current_user], options[:parent])
+      end
+    end
+
+    class GroupLabel < Label
+    end
+
+    class ProjectLabel < Label
+      expose :priority do |label, options|
+        label.priority(options[:parent])
       end
     end
 

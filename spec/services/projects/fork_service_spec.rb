@@ -119,7 +119,7 @@ describe Projects::ForkService do
         let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
 
         before do
-          gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}")
+          gitlab_shell.create_repository(repository_storage, "#{@to_user.namespace.full_path}/#{@from_project.path}", "#{@to_user.namespace.full_path}/#{@from_project.path}")
         end
 
         after do

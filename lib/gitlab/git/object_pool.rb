@@ -10,12 +10,13 @@ module Gitlab
       delegate :exists?, :size, to: :repository
       delegate :unlink_repository, :delete, to: :object_pool_service
 
-      attr_reader :storage, :relative_path, :source_repository
+      attr_reader :storage, :relative_path, :source_repository, :gl_project_path
 
-      def initialize(storage, relative_path, source_repository)
+      def initialize(storage, relative_path, source_repository, gl_project_path)
         @storage = storage
         @relative_path = relative_path
         @source_repository = source_repository
+        @gl_project_path = gl_project_path
       end
 
       def create
@@ -31,12 +32,12 @@ module Gitlab
       end
 
       def to_gitaly_repository
-        Gitlab::GitalyClient::Util.repository(storage, relative_path, GL_REPOSITORY)
+        Gitlab::GitalyClient::Util.repository(storage, relative_path, GL_REPOSITORY, gl_project_path)
       end
 
       # Allows for reusing other RPCs by 'tricking' Gitaly to think its a repository
       def repository
-        @repository ||= Gitlab::Git::Repository.new(storage, relative_path, GL_REPOSITORY)
+        @repository ||= Gitlab::Git::Repository.new(storage, relative_path, GL_REPOSITORY, gl_project_path)
       end
 
       private

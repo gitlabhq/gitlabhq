@@ -62,7 +62,8 @@ Example response:
    "terms": "Hello world!",
    "performance_bar_allowed_group_id": 42,
    "instance_statistics_visibility_private": false,
-   "user_show_add_ssh_key_message": true
+   "user_show_add_ssh_key_message": true,
+   "local_markdown_version": 0
 }
 ```
 
@@ -119,7 +120,8 @@ Example response:
   "terms": "Hello world!",
   "performance_bar_allowed_group_id": 42,
   "instance_statistics_visibility_private": false,
-  "user_show_add_ssh_key_message": true
+  "user_show_add_ssh_key_message": true,
+  "local_markdown_version": 0
 }
 ```
 
@@ -238,3 +240,4 @@ are listed in the descriptions of the relevant settings.
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. |
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
+| `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached markdown should be invalidated. |

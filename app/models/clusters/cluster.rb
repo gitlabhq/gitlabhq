@@ -18,6 +18,7 @@ module Clusters
       Applications::Knative.application_name => Applications::Knative
     }.freeze
     DEFAULT_ENVIRONMENT = '*'.freeze
+    KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'.freeze
 
     belongs_to :user
 
@@ -49,7 +50,7 @@ module Clusters
 
     validates :name, cluster_name: true
     validates :cluster_type, presence: true
-    validates :domain, allow_nil: true, hostname: { allow_numeric_hostname: true, require_valid_tld: true }
+    validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true, require_valid_tld: true }
 
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?
@@ -65,6 +66,9 @@ module Clusters
     delegate :available?, to: :application_ingress, prefix: true, allow_nil: true
     delegate :available?, to: :application_prometheus, prefix: true, allow_nil: true
     delegate :available?, to: :application_knative, prefix: true, allow_nil: true
+    delegate :external_ip, to: :application_ingress, prefix: true, allow_nil: true
+
+    alias_attribute :base_domain, :domain
 
     enum cluster_type: {
       instance_type: 1,
@@ -193,7 +197,40 @@ module Clusters
       project_type?
     end
 
+    def kube_ingress_domain
+      @kube_ingress_domain ||= domain.presence || instance_domain || legacy_auto_devops_domain
+    end
+
+    def predefined_variables
+      Gitlab::Ci::Variables::Collection.new.tap do |variables|
+        break variables unless kube_ingress_domain
+
+        variables.append(key: KUBE_INGRESS_BASE_DOMAIN, value: kube_ingress_domain)
+      end
+    end
+
     private
+
+    def instance_domain
+      @instance_domain ||= Gitlab::CurrentSettings.auto_devops_domain
+    end
+
+    # To keep backward compatibility with AUTO_DEVOPS_DOMAIN
+    # environment variable, we need to ensure KUBE_INGRESS_BASE_DOMAIN
+    # is set if AUTO_DEVOPS_DOMAIN is set on any of the following options:
+    # ProjectAutoDevops#Domain, project variables or group variables,
+    # as the AUTO_DEVOPS_DOMAIN is needed for CI_ENVIRONMENT_URL
+    #
+    # This method should be removed on 12.0
+    def legacy_auto_devops_domain
+      if project_type?
+        project&.auto_devops&.domain.presence ||
+          project.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence ||
+          project.group&.variables&.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
+      elsif group_type?
+        group.variables.find_by(key: 'AUTO_DEVOPS_DOMAIN')&.value.presence
+      end
+    end
 
     def restrict_modification
       if provider&.on_creation?

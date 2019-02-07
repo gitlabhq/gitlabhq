@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Gitlab::Git::RemoteRepository, :seed_helper do
-  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   subject { described_class.new(repository) }
 
   describe '#empty?' do
     using RSpec::Parameterized::TableSyntax
 
     where(:repository, :result) do
-      Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '')       | false
-      Gitlab::Git::Repository.new('default', 'does-not-exist.git', '') | true
+      Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project')       | false
+      Gitlab::Git::Repository.new('default', 'does-not-exist.git', '', 'group/project') | true
     end
 
     with_them do
@@ -44,11 +44,11 @@ describe Gitlab::Git::RemoteRepository, :seed_helper do
     using RSpec::Parameterized::TableSyntax
 
     where(:other_repository, :result) do
-      repository                                                                     | true
-      Gitlab::Git::Repository.new(repository.storage, repository.relative_path, '')  | true
-      Gitlab::Git::Repository.new('broken', TEST_REPO_PATH, '')                      | false
-      Gitlab::Git::Repository.new(repository.storage, 'wrong/relative-path.git', '') | false
-      Gitlab::Git::Repository.new('broken', 'wrong/relative-path.git', '')           | false
+      repository                                                                                      | true
+      Gitlab::Git::Repository.new(repository.storage, repository.relative_path, '', 'group/project')  | true
+      Gitlab::Git::Repository.new('broken', TEST_REPO_PATH, '', 'group/project')                      | false
+      Gitlab::Git::Repository.new(repository.storage, 'wrong/relative-path.git', '', 'group/project') | false
+      Gitlab::Git::Repository.new('broken', 'wrong/relative-path.git', '', 'group/project')           | false
     end
 
     with_them do

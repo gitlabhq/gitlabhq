@@ -81,14 +81,14 @@ RSpec.describe ResourceLabelEvent, type: :model do
       expect(subject.outdated_markdown?).to be true
     end
 
-    it 'returns true markdown is outdated' do
-      subject.attributes = { cached_markdown_version: 0 }
+    it 'returns true if markdown is outdated' do
+      subject.attributes = { cached_markdown_version: ((CacheMarkdownField::CACHE_COMMONMARK_VERSION - 1) << 16) | 0 }
 
       expect(subject.outdated_markdown?).to be true
     end
 
     it 'returns false if label and reference are set' do
-      subject.attributes = { reference: 'whatever', cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION }
+      subject.attributes = { reference: 'whatever', cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION << 16 }
 
       expect(subject.outdated_markdown?).to be false
     end

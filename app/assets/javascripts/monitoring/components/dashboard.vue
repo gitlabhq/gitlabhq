@@ -160,7 +160,8 @@ export default {
       {{ s__('Metrics|Environment') }}
       <div class="dropdown prepend-left-10">
         <button class="dropdown-menu-toggle" data-toggle="dropdown" type="button">
-          <span> {{ currentEnvironmentName }} </span> <icon name="chevron-down" />
+          <span>{{ currentEnvironmentName }}</span>
+          <icon name="chevron-down" />
         </button>
         <div
           v-if="store.environmentsData.length > 0"
@@ -172,9 +173,8 @@ export default {
                 :href="environment.metrics_path"
                 :class="{ 'is-active': environment.name == currentEnvironmentName }"
                 class="dropdown-item"
+                >{{ environment.name }}</a
               >
-                {{ environment.name }}
-              </a>
             </li>
           </ul>
         </div>

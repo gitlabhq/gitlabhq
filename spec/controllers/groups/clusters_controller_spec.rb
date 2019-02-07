@@ -429,12 +429,14 @@ describe Groups::ClustersController do
     end
 
     let(:cluster) { create(:cluster, :provided_by_user, cluster_type: :group_type, groups: [group]) }
+    let(:domain) { 'test-domain.com' }
 
     let(:params) do
       {
         cluster: {
           enabled: false,
-          name: 'my-new-cluster-name'
+          name: 'my-new-cluster-name',
+          base_domain: domain
         }
       }
     end
@@ -447,6 +449,20 @@ describe Groups::ClustersController do
       expect(flash[:notice]).to eq('Kubernetes cluster was successfully updated.')
       expect(cluster.enabled).to be_falsey
       expect(cluster.name).to eq('my-new-cluster-name')
+      expect(cluster.domain).to eq('test-domain.com')
+    end
+
+    context 'when domain is invalid' do
+      let(:domain) { 'not-a-valid-domain' }
+
+      it 'should not update cluster attributes' do
+        go
+
+        cluster.reload
+        expect(response).to render_template(:show)
+        expect(cluster.name).not_to eq('my-new-cluster-name')
+        expect(cluster.domain).not_to eq('test-domain.com')
+      end
     end
 
     context 'when format is json' do
@@ -456,7 +472,8 @@ describe Groups::ClustersController do
             {
               cluster: {
                 enabled: false,
-                name: 'my-new-cluster-name'
+                name: 'my-new-cluster-name',
+                domain: domain
               }
             }
           end

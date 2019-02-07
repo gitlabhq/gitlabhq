@@ -22,16 +22,6 @@ msgstr ""
 msgid " or "
 msgstr ""
 
-msgid "%d addition"
-msgid_plural "%d additions"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d changed file"
-msgid_plural "%d changed files"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d commit"
 msgid_plural "%d commits"
 msgstr[0] ""
@@ -39,11 +29,6 @@ msgstr[1] ""
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d deleted"
-msgid_plural "%d deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -136,9 +121,6 @@ msgid "%{loadingIcon} Started"
 msgstr ""
 
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
-msgstr ""
-
-msgid "%{nip_domain} can be used as an alternative to a custom domain."
 msgstr ""
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
@@ -900,15 +882,6 @@ msgstr ""
 msgid "Auto DevOps, runners and job artifacts"
 msgstr ""
 
-msgid "Auto Review Apps and Auto Deploy need a %{kubernetes} to work correctly."
-msgstr ""
-
-msgid "Auto Review Apps and Auto Deploy need a domain name and a %{kubernetes} to work correctly."
-msgstr ""
-
-msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
-msgstr ""
-
 msgid "Auto-cancel redundant, pending pipelines"
 msgstr ""
 
@@ -1281,9 +1254,6 @@ msgstr ""
 msgid "CICD|Deployment strategy"
 msgstr ""
 
-msgid "CICD|Deployment strategy needs a domain name to work correctly."
-msgstr ""
-
 msgid "CICD|Jobs"
 msgstr ""
 
@@ -1293,7 +1263,7 @@ msgstr ""
 msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
 msgstr ""
 
-msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
+msgid "CICD|You must add a %{kubernetes_cluster_start}Kubernetes cluster integration%{kubernetes_cluster_end} to this project with a domain in order for your deployment strategy to work correctly."
 msgstr ""
 
 msgid "CICD|instance enabled"
@@ -1566,6 +1536,12 @@ msgstr ""
 msgid "Closed (moved)"
 msgstr ""
 
+msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
+msgstr ""
+
+msgid "ClusterIntegration| can be used instead of a custom domain."
+msgstr ""
+
 msgid "ClusterIntegration| is the default environment scope for this cluster. This means that all jobs, regardless of their environment, will use this cluster. %{environment_scope_start}More information%{environment_scope_end}"
 msgstr ""
 
@@ -1596,6 +1572,9 @@ msgstr ""
 msgid "ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}"
 msgstr ""
 
+msgid "ClusterIntegration|Alternatively"
+msgstr ""
+
 msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
 msgstr ""
 
@@ -1615,6 +1594,9 @@ msgid "ClusterIntegration|Apply for credit"
 msgstr ""
 
 msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster."
+msgstr ""
+
+msgid "ClusterIntegration|Base domain"
 msgstr ""
 
 msgid "ClusterIntegration|CA Certificate"
@@ -1939,6 +1921,9 @@ msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cl
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
+msgstr ""
+
+msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
 msgstr ""
 
 msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
@@ -3291,6 +3276,11 @@ msgstr ""
 
 msgid "Fields on this page are now uneditable, you can configure"
 msgstr ""
+
+msgid "File"
+msgid_plural "Files"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "File added"
 msgstr ""

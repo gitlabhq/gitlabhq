@@ -115,7 +115,28 @@ module CacheMarkdownField
   end
 
   def latest_cached_markdown_version
-    CacheMarkdownField::CACHE_COMMONMARK_VERSION
+    @latest_cached_markdown_version ||= (CacheMarkdownField::CACHE_COMMONMARK_VERSION << 16) | local_version
+  end
+
+  def local_version
+    # because local_markdown_version is stored in application_settings which
+    # uses cached_markdown_version too, we check explicitly to avoid
+    # endless loop
+    return local_markdown_version if has_attribute?(:local_markdown_version)
+
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    # Following migrations are not properly isolated and
+    # use real models (by calling .ghost method), in these migrations
+    # local_markdown_version attribute doesn't exist yet, so we
+    # use a default value:
+    # db/migrate/20170825104051_migrate_issues_to_ghost_user.rb
+    # db/migrate/20171114150259_merge_requests_author_id_foreign_key.rb
+    if settings.respond_to?(:local_markdown_version)
+      settings.local_markdown_version
+    else
+      0
+    end
   end
 
   included do
