@@ -189,8 +189,8 @@ export default {
 <template>
   <div class="prometheus-graph col-12 col-lg-6">
     <div class="prometheus-graph-header">
-      <h5 class="prometheus-graph-title">{{ graphData.title }}</h5>
-      <div class="prometheus-graph-widgets"><slot></slot></div>
+      <h5 ref="graphTitle" class="prometheus-graph-title">{{ graphData.title }}</h5>
+      <div ref="graphWidgets" class="prometheus-graph-widgets"><slot></slot></div>
     </div>
     <gl-area-chart
       ref="areaChart"
