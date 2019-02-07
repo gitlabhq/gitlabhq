@@ -30,5 +30,22 @@ module Danger
         .to_a
         .sort
     end
+
+    # @return [Hash<String,Array<String>>]
+    def changes_by_category
+      all_changed_files.inject(Hash.new { |h, k| h[k] = [] }) do |hsh, file|
+        hsh[category_for_file(file)] << file
+      end
+    end
+
+    def category_for_file(file)
+      _, category = CATEGORIES.find { |regexp, _| regexp.match?(file) }
+
+      category || :unknown
+    end
+
+    CATEGORIES = {
+      %r{\Adoc/} => :documentation
+    }
   end
 end
