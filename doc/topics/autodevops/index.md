@@ -140,8 +140,8 @@ in any of the following places:
 - or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`.
 
 NOTE: **Note**
-Auto DevOps base domain variable (`KUBE_INGRESS_BASE_DOMAIN`) follows the same order of precedence
-as other environment [varibles](../../ci/variables/README.md#priority-of-variables).
+The Auto DevOps base domain variable (`KUBE_INGRESS_BASE_DOMAIN`) follows the same order of precedence
+as other environment [variables](../../ci/variables/README.md#priority-of-variables).
 
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
@@ -685,7 +685,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 
 | **Variable**                 | **Description**                                                                                                                                                                                                               |
 | ------------                 | ---------------                                                                                                                                                                                                               |
-| `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain). By default, set automatically by the [Auto DevOps setting](#enabling-auto-devops). This variable is deprecated and [is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959) in GitLab 12.0. |
+| `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain). By default, set automatically by the [Auto DevOps setting](#enabling-auto-devops). This variable is deprecated and [is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959) in GitLab 12.0. Use `KUBE_INGRESS_BASE_DOMAIN` instead. |
 | `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/auto-deploy-app).                                                             |
 | `AUTO_DEVOPS_CHART_REPOSITORY` | The Helm Chart repository used to search for charts; defaults to `https://charts.gitlab.io`. |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |

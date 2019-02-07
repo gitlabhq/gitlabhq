@@ -61,8 +61,7 @@ differentiate the new cluster from the rest.
 
 ## Base domain
 
-NOTE: **Note:**
-[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
 
 Domains at the cluster level permit support for multiple domains
 per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,
