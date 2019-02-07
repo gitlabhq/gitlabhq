@@ -633,7 +633,11 @@ describe Group do
 
       group.update!(require_two_factor_authentication: true, two_factor_grace_period: 23)
 
-      expect(calls).to eq 2
+      if Group.supports_nested_objects?
+        expect(calls).to eq 2
+      else
+        expect(calls).to eq 1
+      end
     end
 
     it 'calls #update_two_factor_requirement on each group member' do
