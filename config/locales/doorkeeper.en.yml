@@ -64,6 +64,8 @@ en:
       read_registry: Grants permission to read container registry images
       openid: Authenticate using OpenID Connect
       sudo: Perform API actions as any user in the system
+      profile: Allows read-only access to the user's personal information using OpenID Connect
+      email: Allows read-only access to the user's primary email address using OpenID Connect
     scope_desc:
       api:
         Grants complete read/write access to the API, including all groups and projects.
@@ -77,6 +79,10 @@ en:
         Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
       sudo:
         Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
+      profile:
+        Grants read-only access to the user's profile data using OpenID Connect.
+      email:
+        Grants read-only access to the user's primary email address using OpenID Connect.
     flash:
       applications:
         create:

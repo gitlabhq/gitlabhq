@@ -188,9 +188,14 @@ describe MergeRequestWidgetEntity do
       .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}.diff")
   end
 
-  it 'has merge_commit_message_with_description' do
-    expect(subject[:merge_commit_message_with_description])
-      .to eq(resource.merge_commit_message(include_description: true))
+  it 'has default_merge_commit_message_with_description' do
+    expect(subject[:default_merge_commit_message_with_description])
+      .to eq(resource.default_merge_commit_message(include_description: true))
+  end
+
+  it 'has default_squash_commit_message' do
+    expect(subject[:default_squash_commit_message])
+      .to eq(resource.default_squash_commit_message)
   end
 
   describe 'new_blob_path' do
@@ -270,6 +275,17 @@ describe MergeRequestWidgetEntity do
       entity = described_class.new(merge_request, request: request).as_json
 
       expect(entity[:rebase_path]).to be_nil
+    end
+  end
+
+  describe 'commits_without_merge_commits' do
+    it 'should not include merge commits' do
+      # Mock all but the first 5 commits to be merge commits
+      resource.commits.each_with_index do |commit, i|
+        expect(commit).to receive(:merge_commit?).at_least(:once).and_return(i > 4)
+      end
+
+      expect(subject[:commits_without_merge_commits].size).to eq(5)
     end
   end
 end

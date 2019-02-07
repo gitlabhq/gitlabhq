@@ -28,7 +28,13 @@ shared_examples 'repository lfs file load' do
         end
 
         it 'serves the file' do
-          expect(controller).to receive(:send_file).with("#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897", filename: filename, disposition: 'attachment')
+          # Notice the filename= is omitted from the disposition; this is because
+          # Rails 5 will append this header in send_file
+          expect(controller).to receive(:send_file)
+                            .with(
+                              "#{LfsObjectUploader.root}/91/ef/f75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897",
+                              filename: filename,
+                              disposition: %Q(attachment; filename*=UTF-8''#{filename}))
 
           subject
 
@@ -56,7 +62,7 @@ shared_examples 'repository lfs file load' do
             file_uri = URI.parse(response.location)
             params = CGI.parse(file_uri.query)
 
-            expect(params["response-content-disposition"].first).to eq "attachment;filename=\"#{filename}\""
+            expect(params["response-content-disposition"].first).to eq(%q(attachment; filename="lfs_object.iso"; filename*=UTF-8''lfs_object.iso))
           end
         end
       end

@@ -7,6 +7,7 @@ class MergeRequestDiff < ActiveRecord::Base
   include IgnorableColumn
   include EachBatch
   include Gitlab::Utils::StrongMemoize
+  include ObjectStorage::BackgroundMove
 
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
@@ -15,9 +16,13 @@ class MergeRequestDiff < ActiveRecord::Base
                 :st_diffs
 
   belongs_to :merge_request
+
   manual_inverse_association :merge_request, :merge_request_diff
 
-  has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
+  has_many :merge_request_diff_files,
+    -> { order(:merge_request_diff_id, :relative_order) },
+    inverse_of: :merge_request_diff
+
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
 
   state_machine :state, initial: :empty do
@@ -45,9 +50,13 @@ class MergeRequestDiff < ActiveRecord::Base
 
   scope :recent, -> { order(id: :desc).limit(100) }
 
+  mount_uploader :external_diff, ExternalDiffUploader
+
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
+
+  after_save :update_external_diff_store, if: :external_diff_changed?
 
   def self.find_by_diff_refs(diff_refs)
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
@@ -241,10 +250,97 @@ class MergeRequestDiff < ActiveRecord::Base
     end
   end
 
+  # Carrierwave defines `write_uploader` dynamically on this class, so `super`
+  # does not work. Alias the carrierwave method so we can call it when needed
+  alias_method :carrierwave_write_uploader, :write_uploader
+
+  # The `external_diff`, `external_diff_store`, and `stored_externally`
+  # columns were introduced in GitLab 11.8, but some background migration specs
+  # use factories that rely on current code with an old schema. Without these
+  # `has_attribute?` guards, they fail with a `MissingAttributeError`.
+  #
+  # For more details, see: https://gitlab.com/gitlab-org/gitlab-ce/issues/44990
+
+  def write_uploader(column, identifier)
+    carrierwave_write_uploader(column, identifier) if has_attribute?(column)
+  end
+
+  def update_external_diff_store
+    update_column(:external_diff_store, external_diff.object_store) if
+      has_attribute?(:external_diff_store)
+  end
+
+  def external_diff_changed?
+    super if has_attribute?(:external_diff)
+  end
+
+  def stored_externally
+    super if has_attribute?(:stored_externally)
+  end
+  alias_method :stored_externally?, :stored_externally
+
+  # If enabled, yields the external file containing the diff. Otherwise, yields
+  # nil. This method is not thread-safe, but it *is* re-entrant, which allows
+  # multiple merge_request_diff_files to load their data efficiently
+  def opening_external_diff
+    return yield(nil) unless stored_externally?
+    return yield(@external_diff_file) if @external_diff_file
+
+    external_diff.open do |file|
+      begin
+        @external_diff_file = file
+
+        yield(@external_diff_file)
+      ensure
+        @external_diff_file = nil
+      end
+    end
+  end
+
   private
 
   def create_merge_request_diff_files(diffs)
-    rows = diffs.map.with_index do |diff, index|
+    rows =
+      if has_attribute?(:external_diff) && Gitlab.config.external_diffs.enabled
+        build_external_merge_request_diff_files(diffs)
+      else
+        build_merge_request_diff_files(diffs)
+      end
+
+    # Faster inserts
+    Gitlab::Database.bulk_insert('merge_request_diff_files', rows)
+  end
+
+  def build_external_merge_request_diff_files(diffs)
+    rows = build_merge_request_diff_files(diffs)
+    tempfile = build_external_diff_tempfile(rows)
+
+    self.external_diff = tempfile
+    self.stored_externally = true
+
+    rows
+  ensure
+    tempfile&.unlink
+  end
+
+  def build_external_diff_tempfile(rows)
+    Tempfile.open(external_diff.filename) do |file|
+      rows.inject(0) do |offset, row|
+        data = row.delete(:diff)
+        row[:external_diff_offset] = offset
+        row[:external_diff_size] = data.size
+
+        file.write(data)
+
+        offset + data.size
+      end
+
+      file
+    end
+  end
+
+  def build_merge_request_diff_files(diffs)
+    diffs.map.with_index do |diff, index|
       diff_hash = diff.to_hash.merge(
         binary: false,
         merge_request_diff_id: self.id,
@@ -261,18 +357,20 @@ class MergeRequestDiff < ActiveRecord::Base
         end
       end
     end
-
-    Gitlab::Database.bulk_insert('merge_request_diff_files', rows)
   end
 
   def load_diffs(options)
-    collection = merge_request_diff_files
+    # Ensure all diff files operate on the same external diff file instance if
+    # present. This reduces file open/close overhead.
+    opening_external_diff do
+      collection = merge_request_diff_files
 
-    if paths = options[:paths]
-      collection = collection.where('old_path IN (?) OR new_path IN (?)', paths, paths)
+      if paths = options[:paths]
+        collection = collection.where('old_path IN (?) OR new_path IN (?)', paths, paths)
+      end
+
+      Gitlab::Git::DiffCollection.new(collection.map(&:to_hash), options)
     end
-
-    Gitlab::Git::DiffCollection.new(collection.map(&:to_hash), options)
   end
 
   def load_commits

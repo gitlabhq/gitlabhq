@@ -34,7 +34,7 @@ describe 'Overview tab on a user profile', :js do
       it 'does not show any entries in the list of activities' do
         page.within('.activities-block') do
           expect(page).to have_selector('.loading', visible: false)
-          expect(page).to have_content('No activities found')
+          expect(page).to have_content('Join or create a group to start contributing by commenting on issues or submitting merge requests!')
           expect(page).not_to have_selector('.event-item')
         end
       end
@@ -96,7 +96,7 @@ describe 'Overview tab on a user profile', :js do
       it 'it shows an empty project list with an info message' do
         page.within('.projects-block') do
           expect(page).to have_selector('.loading', visible: false)
-          expect(page).to have_content('This user doesn\'t have any personal projects')
+          expect(page).to have_content('You haven\'t created any personal projects.')
           expect(page).not_to have_selector('.project-row')
         end
       end

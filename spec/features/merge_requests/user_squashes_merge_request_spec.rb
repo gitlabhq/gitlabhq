@@ -14,7 +14,7 @@ describe 'User squashes a merge request', :js do
       latest_master_commits = project.repository.commits_between(original_head.sha, 'master').map(&:raw)
 
       squash_commit = an_object_having_attributes(sha: a_string_matching(/\h{40}/),
-                                                  message: "Csv\n",
+                                                  message: a_string_starting_with(project.merge_requests.first.default_squash_commit_message),
                                                   author_name: user.name,
                                                   committer_name: user.name)
 

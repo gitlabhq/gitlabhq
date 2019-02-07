@@ -5,6 +5,7 @@ class GroupsController < Groups::ApplicationController
   include IssuableCollectionsAction
   include ParamsBackwardCompatibility
   include PreviewMarkdown
+  include RecordUserLastActivity
 
   respond_to :html
 

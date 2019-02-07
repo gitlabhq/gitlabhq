@@ -7,26 +7,6 @@ shared_examples 'cluster application status specs' do |application_name|
     it 'sets a default status' do
       expect(subject.status_name).to be(:not_installable)
     end
-
-    context 'when application helm is scheduled' do
-      before do
-        create(:clusters_applications_helm, :scheduled, cluster: cluster)
-      end
-
-      it 'defaults to :not_installable' do
-        expect(subject.status_name).to be(:not_installable)
-      end
-    end
-
-    context 'when application is scheduled' do
-      before do
-        create(:clusters_applications_helm, :installed, cluster: cluster)
-      end
-
-      it 'sets a default status' do
-        expect(subject.status_name).to be(:installable)
-      end
-    end
   end
 
   describe 'status state machine' do
@@ -58,6 +38,16 @@ shared_examples 'cluster application status specs' do |application_name|
 
         expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
       end
+
+      it 'sets the correct version of the application' do
+        subject.update!(version: '0.0.0')
+
+        subject.make_installed!
+
+        subject.reload
+
+        expect(subject.version).to eq(subject.class.const_get(:VERSION))
+      end
     end
 
     describe '#make_updated' do
@@ -77,6 +67,16 @@ shared_examples 'cluster application status specs' do |application_name|
         subject.cluster.application_helm.reload
 
         expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
+      end
+
+      it 'updates the version for the application' do
+        subject.update!(version: '0.0.0')
+
+        subject.make_updated!
+
+        subject.reload
+
+        expect(subject.version).to eq(subject.class.const_get(:VERSION))
       end
     end
 

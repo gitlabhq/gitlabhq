@@ -8,3 +8,5 @@
 
   .col-lg-9
     = render 'projects/services/prometheus/metrics', project: @project
+
+= render_if_exists 'projects/services/prometheus/external_alerts', project: @project

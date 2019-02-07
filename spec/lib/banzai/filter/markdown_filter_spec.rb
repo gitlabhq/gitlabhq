@@ -10,12 +10,6 @@ describe Banzai::Filter::MarkdownFilter do
       filter('test')
     end
 
-    it 'uses Redcarpet' do
-      expect_any_instance_of(Banzai::Filter::MarkdownEngines::Redcarpet).to receive(:render).and_return('test')
-
-      filter('test', { markdown_engine: :redcarpet })
-    end
-
     it 'uses CommonMark' do
       expect_any_instance_of(Banzai::Filter::MarkdownEngines::CommonMark).to receive(:render).and_return('test')
 
@@ -47,24 +41,6 @@ describe Banzai::Filter::MarkdownFilter do
         expect(result).to start_with('<pre><code lang="日">')
       end
     end
-
-    context 'using Redcarpet' do
-      before do
-        stub_const('Banzai::Filter::MarkdownFilter::DEFAULT_ENGINE', :redcarpet)
-      end
-
-      it 'adds language to lang attribute when specified' do
-        result = filter("```html\nsome code\n```")
-
-        expect(result).to start_with("\n<pre><code lang=\"html\">")
-      end
-
-      it 'does not add language to lang attribute when not specified' do
-        result = filter("```\nsome code\n```")
-
-        expect(result).to start_with("\n<pre><code>")
-      end
-    end
   end
 
   describe 'source line position' do
@@ -81,18 +57,6 @@ describe Banzai::Filter::MarkdownFilter do
 
       it 'disables data-sourcepos' do
         result = filter('test', no_sourcepos: true)
-
-        expect(result).to eq '<p>test</p>'
-      end
-    end
-
-    context 'using Redcarpet' do
-      before do
-        stub_const('Banzai::Filter::MarkdownFilter::DEFAULT_ENGINE', :redcarpet)
-      end
-
-      it 'does not support data-sourcepos' do
-        result = filter('test')
 
         expect(result).to eq '<p>test</p>'
       end

@@ -50,6 +50,14 @@ class Environment < ActiveRecord::Base
   end
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
+
+  ##
+  # Search environments which have names like the given query.
+  # Do not set a large limit unless you've confirmed that it works on gitlab.com scale.
+  scope :for_name_like, -> (query, limit: 5) do
+    where('name LIKE ?', "#{sanitize_sql_like(query)}%").limit(limit)
+  end
+
   scope :for_project, -> (project) { where(project_id: project) }
   scope :with_deployment, -> (sha) { where('EXISTS (?)', Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)) }
 
@@ -68,6 +76,10 @@ class Environment < ActiveRecord::Base
     after_transition do |environment|
       environment.expire_etag_cache
     end
+  end
+
+  def self.pluck_names
+    pluck(:name)
   end
 
   def predefined_variables

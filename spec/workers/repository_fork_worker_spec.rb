@@ -24,12 +24,7 @@ describe RepositoryForkWorker do
       end
 
       def expect_fork_repository
-        expect(shell).to receive(:fork_repository).with(
-          'default',
-          project.disk_path,
-          forked_project.repository_storage,
-          forked_project.disk_path
-        )
+        expect(shell).to receive(:fork_repository).with(project, forked_project)
       end
 
       describe 'when a worker was reset without cleanup' do

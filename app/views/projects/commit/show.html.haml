@@ -10,7 +10,7 @@
 .container-fluid{ class: [limited_container_width, container_class] }
   = render "commit_box"
   = render "ci_menu"
-  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, is_commit: true
+  = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, diff_page_context: "is-commit"
 
   .limited-width-notes
     = render "shared/notes/notes_with_form", :autocomplete => true

@@ -1239,15 +1239,13 @@ export default class Notes {
     var postUrl = $originalContentEl.data('postUrl');
     var targetId = $originalContentEl.data('targetId');
     var targetType = $originalContentEl.data('targetType');
-    var markdownVersion = $originalContentEl.data('markdownVersion');
 
     this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm
       .find('form')
       .attr('action', `${postUrl}?html=true`)
-      .attr('data-remote', 'true')
-      .attr('data-markdown-version', markdownVersion);
+      .attr('data-remote', 'true');
     $editForm.find('.js-form-target-id').val(targetId);
     $editForm.find('.js-form-target-type').val(targetType);
     $editForm

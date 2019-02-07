@@ -242,7 +242,11 @@ describe('Diffs Module Getters', () => {
         },
       };
 
-      expect(getters.allBlobs(localState)).toEqual([
+      expect(
+        getters.allBlobs(localState, {
+          flatBlobsList: getters.flatBlobsList(localState),
+        }),
+      ).toEqual([
         {
           isHeader: true,
           path: '/',

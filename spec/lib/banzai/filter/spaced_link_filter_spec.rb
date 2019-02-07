@@ -26,11 +26,6 @@ describe Banzai::Filter::SpacedLinkFilter do
       expect(doc.at_css('p')).to be_nil
     end
 
-    it 'does nothing when markdown_engine is redcarpet' do
-      exp = act = link
-      expect(filter(act, markdown_engine: :redcarpet).to_html).to eq exp
-    end
-
     it 'does nothing with empty text' do
       link = '[](page slug)'
       doc  = filter("See #{link}")

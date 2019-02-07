@@ -11,6 +11,8 @@ module Groups
 
       return false unless valid_share_with_group_lock_change?
 
+      before_assignment_hook(group, params)
+
       group.assign_attributes(params)
 
       begin
@@ -27,6 +29,10 @@ module Groups
     end
 
     private
+
+    def before_assignment_hook(group, params)
+      # overriden in EE
+    end
 
     def after_update
       if group.previous_changes.include?(:visibility_level) && group.private?

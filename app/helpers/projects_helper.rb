@@ -265,10 +265,6 @@ module ProjectsHelper
     link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
   end
 
-  def legacy_render_context(params)
-    params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
-  end
-
   def explore_projects_tab?
     current_page?(explore_projects_path) ||
       current_page?(trending_explore_projects_path) ||

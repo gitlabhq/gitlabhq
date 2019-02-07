@@ -43,6 +43,7 @@ de:
       default: "%d.%m.%Y"
       long: "%e. %B %Y"
       short: "%e. %b"
+      admin: "%e %b, %Y"
     month_names:
     -
     - Januar

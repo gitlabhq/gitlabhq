@@ -1,6 +1,4 @@
 - blob = viewer.blob
-- context = legacy_render_context(params)
-- unless context[:markdown_engine] == :redcarpet
-  - context[:rendered] = blob.rendered_markup if blob.respond_to?(:rendered_markup)
+- context = blob.respond_to?(:rendered_markup) ? { rendered: blob.rendered_markup } : {}
 .file-content.wiki.md{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
   = markup(blob.name, blob.data, context)
