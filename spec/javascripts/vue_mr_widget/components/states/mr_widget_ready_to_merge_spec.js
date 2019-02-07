@@ -1,10 +1,14 @@
 import Vue from 'vue';
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
+import CommitsHeader from '~/vue_merge_request_widget/components/states/commits_header.vue';
+import CommitEdit from '~/vue_merge_request_widget/components/states/commit_edit.vue';
+import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/commit_message_dropdown.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 
 const commitMessage = 'This is the commit message';
+const squashCommitMessage = 'This is the squash commit message';
 const commitMessageWithDescription = 'This is the commit message description';
 const createTestMr = customConfig => {
   const mr = {
@@ -19,9 +23,11 @@ const createTestMr = customConfig => {
     sha: '12345678',
     squash: false,
     commitMessage,
+    squashCommitMessage,
     commitMessageWithDescription,
     shouldRemoveSourceBranch: true,
     canRemoveSourceBranch: false,
+    targetBranch: 'master',
   };
 
   Object.assign(mr, customConfig.mr);
@@ -95,21 +101,6 @@ describe('ReadyToMerge', () => {
         vm.mr.isPipelineActive = false;
 
         expect(vm.shouldShowMergeWhenPipelineSucceedsText).toBeFalsy();
-      });
-    });
-
-    describe('commitMessageLinkTitle', () => {
-      const withDesc = 'Include description in commit message';
-      const withoutDesc = "Don't include description in commit message";
-
-      it('should return message with description', () => {
-        expect(vm.commitMessageLinkTitle).toEqual(withDesc);
-      });
-
-      it('should return message without description', () => {
-        vm.useCommitMessageWithDescription = true;
-
-        expect(vm.commitMessageLinkTitle).toEqual(withoutDesc);
       });
     });
 
@@ -279,52 +270,40 @@ describe('ReadyToMerge', () => {
         vm.mr.isMergeAllowed = false;
         vm.mr.isPipelineActive = false;
 
-        expect(vm.shouldShowMergeControls()).toBeFalsy();
+        expect(vm.shouldShowMergeControls).toBeFalsy();
       });
 
       it('should return true when the build succeeded or build not required to succeed', () => {
         vm.mr.isMergeAllowed = true;
         vm.mr.isPipelineActive = false;
 
-        expect(vm.shouldShowMergeControls()).toBeTruthy();
+        expect(vm.shouldShowMergeControls).toBeTruthy();
       });
 
       it('should return true when showing the MWPS button and a pipeline is running that needs to be successful', () => {
         vm.mr.isMergeAllowed = false;
         vm.mr.isPipelineActive = true;
 
-        expect(vm.shouldShowMergeControls()).toBeTruthy();
+        expect(vm.shouldShowMergeControls).toBeTruthy();
       });
 
       it('should return true when showing the MWPS button but not required for the pipeline to succeed', () => {
         vm.mr.isMergeAllowed = true;
         vm.mr.isPipelineActive = true;
 
-        expect(vm.shouldShowMergeControls()).toBeTruthy();
+        expect(vm.shouldShowMergeControls).toBeTruthy();
       });
     });
 
-    describe('updateCommitMessage', () => {
+    describe('updateMergeCommitMessage', () => {
       it('should revert flag and change commitMessage', () => {
-        expect(vm.useCommitMessageWithDescription).toBeFalsy();
         expect(vm.commitMessage).toEqual(commitMessage);
-        vm.updateCommitMessage();
+        vm.updateMergeCommitMessage(true);
 
-        expect(vm.useCommitMessageWithDescription).toBeTruthy();
         expect(vm.commitMessage).toEqual(commitMessageWithDescription);
-        vm.updateCommitMessage();
+        vm.updateMergeCommitMessage(false);
 
-        expect(vm.useCommitMessageWithDescription).toBeFalsy();
         expect(vm.commitMessage).toEqual(commitMessage);
-      });
-    });
-
-    describe('toggleCommitMessageEditor', () => {
-      it('should toggle showCommitMessageEditor flag', () => {
-        expect(vm.showCommitMessageEditor).toBeFalsy();
-        vm.toggleCommitMessageEditor();
-
-        expect(vm.showCommitMessageEditor).toBeTruthy();
       });
     });
 
@@ -623,7 +602,7 @@ describe('ReadyToMerge', () => {
     });
   });
 
-  describe('Squash checkbox component', () => {
+  describe('render children components', () => {
     let wrapper;
     const localVue = createLocalVue();
 
@@ -642,25 +621,101 @@ describe('ReadyToMerge', () => {
     });
 
     const findCheckboxElement = () => wrapper.find(SquashBeforeMerge);
+    const findCommitsHeaderElement = () => wrapper.find(CommitsHeader);
+    const findCommitEditElements = () => wrapper.findAll(CommitEdit);
+    const findCommitDropdownElement = () => wrapper.find(CommitMessageDropdown);
 
-    it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
-      createLocalComponent({
-        mr: { commitsCount: 2, enableSquashBeforeMerge: true },
+    describe('squash checkbox', () => {
+      it('should be rendered when squash before merge is enabled and there is more than 1 commit', () => {
+        createLocalComponent({
+          mr: { commitsCount: 2, enableSquashBeforeMerge: true },
+        });
+
+        expect(findCheckboxElement().exists()).toBeTruthy();
       });
 
-      expect(findCheckboxElement().exists()).toBeTruthy();
+      it('should not be rendered when squash before merge is disabled', () => {
+        createLocalComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: false } });
+
+        expect(findCheckboxElement().exists()).toBeFalsy();
+      });
+
+      it('should not be rendered when there is only 1 commit', () => {
+        createLocalComponent({ mr: { commitsCount: 1, enableSquashBeforeMerge: true } });
+
+        expect(findCheckboxElement().exists()).toBeFalsy();
+      });
     });
 
-    it('should not be rendered when squash before merge is disabled', () => {
-      createLocalComponent({ mr: { commitsCount: 2, enableSquashBeforeMerge: false } });
+    describe('commits count collapsible header', () => {
+      it('should be rendered if fast-forward is disabled', () => {
+        createLocalComponent();
 
-      expect(findCheckboxElement().exists()).toBeFalsy();
+        expect(findCommitsHeaderElement().exists()).toBeTruthy();
+      });
+
+      it('should not be rendered if fast-forward is enabled', () => {
+        createLocalComponent({ mr: { ffOnlyEnabled: true } });
+
+        expect(findCommitsHeaderElement().exists()).toBeFalsy();
+      });
     });
 
-    it('should not be rendered when there is only 1 commit', () => {
-      createLocalComponent({ mr: { commitsCount: 1, enableSquashBeforeMerge: true } });
+    describe('commits edit components', () => {
+      it('should have one edit component when squash is disabled', () => {
+        createLocalComponent();
 
-      expect(findCheckboxElement().exists()).toBeFalsy();
+        expect(findCommitEditElements().length).toBe(1);
+      });
+
+      const findFirstCommitEditLabel = () =>
+        findCommitEditElements()
+          .at(0)
+          .props('label');
+
+      it('should have two edit components when squash is enabled', () => {
+        createLocalComponent({
+          mr: {
+            commitsCount: 2,
+            squash: true,
+            enableSquashBeforeMerge: true,
+          },
+        });
+
+        expect(findCommitEditElements().length).toBe(2);
+      });
+
+      it('should have correct edit merge commit label', () => {
+        createLocalComponent();
+
+        expect(findFirstCommitEditLabel()).toBe('Merge commit message');
+      });
+
+      it('should have correct edit squash commit label', () => {
+        createLocalComponent({
+          mr: {
+            commitsCount: 2,
+            squash: true,
+            enableSquashBeforeMerge: true,
+          },
+        });
+
+        expect(findFirstCommitEditLabel()).toBe('Squash commit message');
+      });
+    });
+
+    describe('commits dropdown', () => {
+      it('should not be rendered if squash is disabled', () => {
+        createLocalComponent();
+
+        expect(findCommitDropdownElement().exists()).toBeFalsy();
+      });
+
+      it('should  be rendered if squash is enabled', () => {
+        createLocalComponent({ mr: { squash: true } });
+
+        expect(findCommitDropdownElement().exists()).toBeTruthy();
+      });
     });
   });
 
@@ -696,10 +751,6 @@ describe('ReadyToMerge', () => {
         expect(vm.$el.querySelector('.js-remove-source-branch-checkbox')).toBeNull();
       });
 
-      it('does not show  modify commit message button', () => {
-        expect(vm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
-      });
-
       it('shows message to resolve all items before being allowed to merge', () => {
         expect(vm.$el.querySelector('.js-resolve-mr-widget-items-message')).toBeDefined();
       });
@@ -712,7 +763,7 @@ describe('ReadyToMerge', () => {
         mr: { ffOnlyEnabled: false },
       });
 
-      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeNull();
+      expect(customVm.$el.querySelector('.mr-fast-forward-message')).toBeNull();
       expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
     });
 
@@ -721,7 +772,7 @@ describe('ReadyToMerge', () => {
         mr: { ffOnlyEnabled: true },
       });
 
-      expect(customVm.$el.querySelector('.js-fast-forward-message')).toBeDefined();
+      expect(customVm.$el.querySelector('.mr-fast-forward-message')).toBeDefined();
       expect(customVm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
     });
   });
