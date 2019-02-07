@@ -507,12 +507,6 @@
   }
 
   .template-option {
-    .logo {
-      .btn-template-icon {
-        width: 40px !important;
-      }
-    }
-
     padding: 16px 0;
 
     &:not(:first-child) {
@@ -551,9 +545,8 @@
     }
 
     .selected-icon {
-      svg {
+      img {
         display: none;
-        top: 7px;
         height: 20px;
         width: 20px;
       }

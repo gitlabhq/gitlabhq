@@ -3172,6 +3172,21 @@ msgstr ""
 msgid "Everyone can contribute"
 msgstr ""
 
+msgid "Everything you need to create a GitLab Pages site using GitBook."
+msgstr ""
+
+msgid "Everything you need to create a GitLab Pages site using Hexo."
+msgstr ""
+
+msgid "Everything you need to create a GitLab Pages site using Hugo."
+msgstr ""
+
+msgid "Everything you need to create a GitLab Pages site using Jekyll."
+msgstr ""
+
+msgid "Everything you need to create a GitLab Pages site using plain HTML."
+msgstr ""
+
 msgid "Except policy:"
 msgstr ""
 
@@ -3932,10 +3947,22 @@ msgstr ""
 msgid "Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>."
 msgstr ""
 
+msgid "Includes an MVC structure to help you get started."
+msgstr ""
+
+msgid "Includes an MVC structure, Gemfile, Rakefile, along with many others, to help you get started."
+msgstr ""
+
+msgid "Includes an MVC structure, mvnw and pom.xml to help you get started."
+msgstr ""
+
 msgid "Incompatible Project"
 msgstr ""
 
 msgid "Indicates whether this runner can pick jobs without tags"
+msgstr ""
+
+msgid "Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}."
 msgstr ""
 
 msgid "Inline"
@@ -5123,6 +5150,9 @@ msgid "Pages Domain"
 msgstr ""
 
 msgid "Pages Domains"
+msgstr ""
+
+msgid "Pages getting started guide"
 msgstr ""
 
 msgid "Pagination|Last »"

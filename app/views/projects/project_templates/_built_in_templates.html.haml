@@ -1,7 +1,7 @@
 - Gitlab::ProjectTemplate.all.each do |template|
   .template-option.d-flex.align-items-center
-    .logo.append-right-10
-      = custom_icon(template.logo, size: 40)
+    .logo.append-right-10.px-1
+      = image_tag template.logo, size: 32, class: "btn-template-icon icon-#{template.name}"
     .description
       %strong
         = template.title
