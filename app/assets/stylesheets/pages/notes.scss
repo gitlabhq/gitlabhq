@@ -550,6 +550,11 @@ $note-form-margin-left: 72px;
   .note-header-info {
     padding-bottom: 0;
   }
+
+  .timeline-content {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 }
 
 .unresolved {
