@@ -20,6 +20,8 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   let(:mutable_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '', 'group/project') }
+  let(:mutable_repository_path) { File.join(TestEnv.repos_path, mutable_repository.relative_path) }
+  let(:mutable_repository_rugged) { Rugged::Repository.new(mutable_repository_path) }
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
   let(:repository_path) { File.join(TestEnv.repos_path, repository.relative_path) }
   let(:repository_rugged) { Rugged::Repository.new(repository_path) }
@@ -497,6 +499,48 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#search_files_by_content' do
+    let(:repository) { mutable_repository }
+    let(:repository_rugged) { mutable_repository_rugged }
+
+    before do
+      repository.create_branch('search-files-by-content-branch', 'master')
+      new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'search-files-by-content-branch', 'committing something', 'search-files-by-content change')
+      new_commit_edit_new_file_on_branch(repository_rugged, 'anotherfile', 'search-files-by-content-branch', 'committing something', 'search-files-by-content change')
+    end
+
+    after do
+      ensure_seeds
+    end
+
+    shared_examples 'search files by content' do
+      it 'should have 2 items' do
+        expect(search_results.size).to eq(2)
+      end
+
+      it 'should have the correct matching line' do
+        expect(search_results).to contain_exactly("search-files-by-content-branch:encoding/CHANGELOG\u00001\u0000search-files-by-content change\n",
+                                                  "search-files-by-content-branch:anotherfile\u00001\u0000search-files-by-content change\n")
+      end
+    end
+
+    it_should_behave_like 'search files by content' do
+      let(:search_results) do
+        repository.search_files_by_content('search-files-by-content', 'search-files-by-content-branch')
+      end
+    end
+
+    it_should_behave_like 'search files by content' do
+      let(:search_results) do
+        repository.gitaly_repository_client.search_files_by_content(
+          'search-files-by-content-branch',
+          'search-files-by-content',
+          chunked_response: false
+        )
+      end
+    end
+  end
+
   describe '#find_remote_root_ref' do
     it 'gets the remote root ref from GitalyClient' do
       expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
@@ -544,7 +588,7 @@ describe Gitlab::Git::Repository, :seed_helper do
         # Add new commits so that there's a renamed file in the commit history
         @commit_with_old_name_id = new_commit_edit_old_file(repository_rugged).oid
         @rename_commit_id = new_commit_move_file(repository_rugged).oid
-        @commit_with_new_name_id = new_commit_edit_new_file(repository_rugged).oid
+        @commit_with_new_name_id = new_commit_edit_new_file(repository_rugged, "encoding/CHANGELOG", "Edit encoding/CHANGELOG", "I'm a new changelog with different text").oid
       end
 
       after do
@@ -1964,7 +2008,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   # Build the options hash that's passed to Rugged::Commit#create
-  def commit_options(repo, index, message)
+  def commit_options(repo, index, target, ref, message)
     options = {}
     options[:tree] = index.write_tree(repo)
     options[:author] = {
@@ -1978,8 +2022,8 @@ describe Gitlab::Git::Repository, :seed_helper do
       time: Time.gm(2014, "mar", 3, 20, 15, 1)
     }
     options[:message] ||= message
-    options[:parents] = repo.empty? ? [] : [repo.head.target].compact
-    options[:update_ref] = "HEAD"
+    options[:parents] = repo.empty? ? [] : [target].compact
+    options[:update_ref] = ref
 
     options
   end
@@ -1995,6 +2039,8 @@ describe Gitlab::Git::Repository, :seed_helper do
     options = commit_options(
       repo,
       index,
+      repo.head.target,
+      "HEAD",
       "Edit CHANGELOG in its original location"
     )
 
@@ -2003,17 +2049,22 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   # Writes a new commit to the repo and returns a Rugged::Commit.  Replaces the
-  # contents of encoding/CHANGELOG with new text.
-  def new_commit_edit_new_file(repo)
-    oid = repo.write("I'm a new changelog with different text", :blob)
+  # contents of the specified file_path with new text.
+  def new_commit_edit_new_file(repo, file_path, commit_message, text, branch = repo.head)
+    oid = repo.write(text, :blob)
     index = repo.index
-    index.read_tree(repo.head.target.tree)
-    index.add(path: "encoding/CHANGELOG", oid: oid, mode: 0100644)
-
-    options = commit_options(repo, index, "Edit encoding/CHANGELOG")
-
+    index.read_tree(branch.target.tree)
+    index.add(path: file_path, oid: oid, mode: 0100644)
+    options = commit_options(repo, index, branch.target, branch.canonical_name, commit_message)
     sha = Rugged::Commit.create(repo, options)
     repo.lookup(sha)
+  end
+
+  # Writes a new commit to the repo and returns a Rugged::Commit.  Replaces the
+  # contents of encoding/CHANGELOG with new text.
+  def new_commit_edit_new_file_on_branch(repo, file_path, branch_name, commit_message, text)
+    branch = repo.branches[branch_name]
+    new_commit_edit_new_file(repo, file_path, commit_message, text, branch)
   end
 
   # Writes a new commit to the repo and returns a Rugged::Commit.  Moves the
@@ -2027,7 +2078,7 @@ describe Gitlab::Git::Repository, :seed_helper do
     index.add(path: "encoding/CHANGELOG", oid: oid, mode: 0100644)
     index.remove("CHANGELOG")
 
-    options = commit_options(repo, index, "Move CHANGELOG to encoding/")
+    options = commit_options(repo, index, repo.head.target, "HEAD", "Move CHANGELOG to encoding/")
 
     sha = Rugged::Commit.create(repo, options)
     repo.lookup(sha)
