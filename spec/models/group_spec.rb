@@ -625,7 +625,7 @@ describe Group do
       group.update!(description: 'foobar')
     end
 
-    def expects_other_user_to_require_two_factors
+    def expects_other_user_to_require_two_factors(expected_calls_mysql_db = 1)
       calls = 0
       allow_any_instance_of(User).to receive(:update_two_factor_requirement) do
         calls += 1
@@ -636,7 +636,7 @@ describe Group do
       if Group.supports_nested_objects?
         expect(calls).to eq 2
       else
-        expect(calls).to eq 1
+        expect(calls).to eq expected_calls_mysql_db
       end
     end
 
@@ -644,7 +644,7 @@ describe Group do
       other_user = create(:user)
       group.add_user(other_user, GroupMember::OWNER)
 
-      expects_other_user_to_require_two_factors
+      expects_other_user_to_require_two_factors(2)
     end
 
     it 'calls #update_two_factor_requirement on each subgroup member' do
@@ -660,7 +660,7 @@ describe Group do
       project_user = create(:user)
       project.add_developer(project_user)
 
-      expects_other_user_to_require_two_factors
+      expects_other_user_to_require_two_factors(2)
     end
 
     it 'calls #update_two_factor_requirement on each subgroups child project member' do
