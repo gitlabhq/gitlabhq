@@ -16,8 +16,7 @@
 
 - [ ] Follow the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
 - [ ] Link docs to and from the higher-level index page, plus other related docs where helpful.
-- [ ] Apply the ~Documentation label and intended milestone.
-- [ ] [Port the MR to EE (or backport from CE)](https://docs.gitlab.com/ee/development/documentation/index.html#cherry-picking-from-ce-to-ee): _always recommended, required when the `ee-compat-check` job fails_.
+- [ ] Apply the ~Documentation label.
 
 ## Review checklist
 
