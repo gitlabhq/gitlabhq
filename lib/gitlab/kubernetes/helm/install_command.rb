@@ -42,8 +42,17 @@ module Gitlab
           'helm repo update' if repository
         end
 
+        # Uses `helm upgrade --install` which means we can use this for both
+        # installation and uprade of applications
         def install_command
-          command = ['helm', 'install', chart] + install_command_flags
+          command = ['helm', 'upgrade', name, chart] +
+            install_flag +
+            reset_values_flag +
+            optional_tls_flags +
+            optional_version_flag +
+            rbac_create_flag +
+            namespace_flag +
+            value_flag
 
           command.shelljoin
         end
@@ -56,17 +65,20 @@ module Gitlab
           postinstall.join("\n") if postinstall
         end
 
-        def install_command_flags
-          name_flag      = ['--name', name]
-          namespace_flag = ['--namespace', Gitlab::Kubernetes::Helm::NAMESPACE]
-          value_flag     = ['-f', "/data/helm/#{name}/config/values.yaml"]
+        def install_flag
+          ['--install']
+        end
 
-          name_flag +
-            optional_tls_flags +
-            optional_version_flag +
-            rbac_create_flag +
-            namespace_flag +
-            value_flag
+        def reset_values_flag
+          ['--reset-values']
+        end
+
+        def value_flag
+          ['-f', "/data/helm/#{name}/config/values.yaml"]
+        end
+
+        def namespace_flag
+          ['--namespace', Gitlab::Kubernetes::Helm::NAMESPACE]
         end
 
         def rbac_create_flag

@@ -1554,6 +1554,9 @@ msgstr ""
 msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which may incur additional costs depending on the hosting provider your Kubernetes cluster is installed on. If you are using Google Kubernetes Engine, you can %{pricingLink}."
 msgstr ""
 
+msgid "ClusterIntegration|%{title} upgraded successfully."
+msgstr ""
+
 msgid "ClusterIntegration|API URL"
 msgstr ""
 
@@ -1878,6 +1881,9 @@ msgstr ""
 msgid "ClusterIntegration|Request to begin installing failed"
 msgstr ""
 
+msgid "ClusterIntegration|Retry upgrade"
+msgstr ""
+
 msgid "ClusterIntegration|Save changes"
 msgstr ""
 
@@ -1920,6 +1926,9 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
+msgid "ClusterIntegration|Something went wrong when upgrading %{title}. Please check the logs and try again."
+msgstr ""
+
 msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine"
 msgstr ""
 
@@ -1942,6 +1951,18 @@ msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
+msgstr ""
+
+msgid "ClusterIntegration|Upgrade"
+msgstr ""
+
+msgid "ClusterIntegration|Upgrade failed"
+msgstr ""
+
+msgid "ClusterIntegration|Upgraded"
+msgstr ""
+
+msgid "ClusterIntegration|Upgrading"
 msgstr ""
 
 msgid "ClusterIntegration|Validating project billing status"

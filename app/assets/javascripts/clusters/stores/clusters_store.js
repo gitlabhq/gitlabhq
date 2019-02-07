@@ -1,6 +1,6 @@
 import { s__ } from '../../locale';
 import { parseBoolean } from '../../lib/utils/common_utils';
-import { INGRESS, JUPYTER, KNATIVE, CERT_MANAGER } from '../constants';
+import { INGRESS, JUPYTER, KNATIVE, CERT_MANAGER, RUNNER } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -40,6 +40,9 @@ export default class ClusterStore {
           statusReason: null,
           requestStatus: null,
           requestReason: null,
+          version: null,
+          chartRepo: 'https://gitlab.com/charts/gitlab-runner',
+          upgradeAvailable: null,
         },
         prometheus: {
           title: s__('ClusterIntegration|Prometheus'),
@@ -100,7 +103,13 @@ export default class ClusterStore {
     this.state.statusReason = serverState.status_reason;
 
     serverState.applications.forEach(serverAppEntry => {
-      const { name: appId, status, status_reason: statusReason } = serverAppEntry;
+      const {
+        name: appId,
+        status,
+        status_reason: statusReason,
+        version,
+        update_available: upgradeAvailable,
+      } = serverAppEntry;
 
       this.state.applications[appId] = {
         ...(this.state.applications[appId] || {}),
@@ -124,6 +133,9 @@ export default class ClusterStore {
           serverAppEntry.hostname || this.state.applications.knative.hostname;
         this.state.applications.knative.externalIp =
           serverAppEntry.external_ip || this.state.applications.knative.externalIp;
+      } else if (appId === RUNNER) {
+        this.state.applications.runner.version = version;
+        this.state.applications.runner.upgradeAvailable = upgradeAvailable;
       }
     });
   }
