@@ -13,7 +13,7 @@ describe 'Merge request < User customizes merge commit message', :js do
       description: "Description\n\nclosing #{issue_1.to_reference}, #{issue_2.to_reference}"
     )
   end
-  let(:textbox) { page.find(:css, '.js-commit-message', visible: false) }
+  let(:textbox) { page.find(:css, '#merge-message-edit', visible: false) }
   let(:default_message) do
     [
       "Merge branch 'feature' into 'master'",
@@ -38,16 +38,16 @@ describe 'Merge request < User customizes merge commit message', :js do
   end
 
   it 'toggles commit message between message with description and without description' do
-    expect(page).not_to have_selector('.js-commit-message')
-    click_button "Modify commit message"
+    expect(page).not_to have_selector('#merge-message-edit')
+    first('.js-mr-widget-commits-count').click
     expect(textbox).to be_visible
     expect(textbox.value).to eq(default_message)
 
-    click_link "Include description in commit message"
+    check('Include merge request description')
 
     expect(textbox.value).to eq(message_with_description)
 
-    click_link "Don't include description in commit message"
+    uncheck('Include merge request description')
 
     expect(textbox.value).to eq(default_message)
   end
