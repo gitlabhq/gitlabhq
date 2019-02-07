@@ -691,6 +691,11 @@ sudo nginx -t
 
 You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
 
+NOTE: **Note:**
+Verify that the installed version is greater than 1.12.1 by running `nginx -v`. If it's lower, you may receive the error below:
+`nginx: [emerg] unknown "start$temp=[filtered]$rest" variable
+nginx: configuration file /etc/nginx/nginx.conf test failed`
+
 ### Restart
 
 ```sh
