@@ -67,6 +67,17 @@ describe TaskListToggleService do
     expect(toggler.execute).to be_falsey
   end
 
+  it 'tolerates \r\n line endings' do
+    rn_markdown = markdown.gsub("\n", "\r\n")
+    toggler = described_class.new(rn_markdown, markdown_html,
+                                  toggle_as_checked: true,
+                                  line_source: '* [ ] Task 1', line_number: 1)
+
+    expect(toggler.execute).to be_truthy
+    expect(toggler.updated_markdown.lines[0]).to eq "* [x] Task 1\r\n"
+    expect(toggler.updated_markdown_html).to include('disabled checked> Task 1')
+  end
+
   it 'returns false if markdown is nil' do
     toggler = described_class.new(nil, markdown_html,
                                   toggle_as_checked: false,
