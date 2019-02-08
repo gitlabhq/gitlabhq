@@ -234,7 +234,7 @@ export default class UserTabs {
       data,
       calendarActivitiesPath,
       utcOffset,
-      0,
+      gon.first_day_of_week,
       monthsAgo,
     );
   }

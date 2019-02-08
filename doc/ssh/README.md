@@ -114,7 +114,8 @@ To create a new SSH key pair:
     and want to tell which is which. It is optional.
 
 1. Next, you will be prompted to input a file path to save your SSH key pair to.
-   If you don't already have an SSH key pair, use the suggested path by pressing
+   If you don't already have an SSH key pair and aren't generating a [deploy key](#deploy-keys),
+   use the suggested path by pressing
    <kbd>Enter</kbd>. Using the suggested path will normally allow your SSH client
    to automatically use the SSH key pair with no additional configuration.
 
@@ -128,7 +129,7 @@ To create a new SSH key pair:
    <kbd>Enter</kbd> twice.
 
     If, in any case, you want to add or change the password of your SSH key pair,
-    you can use the `-p`flag:
+    you can use the `-p` flag:
 
     ```
     ssh-keygen -p -o -f <keyname>
@@ -258,7 +259,8 @@ Integration (CI) server. By using deploy keys, you don't have to set up a
 dummy user account.
 
 If you are a project maintainer or owner, you can add a deploy key in the
-project settings under the section 'Repository'. Specify a title for the new
+project's **Settings > Repository** page by expanding the
+**Deploy Keys** section. Specify a title for the new
 deploy key and paste a public SSH key. After this, the machine that uses
 the corresponding private SSH key has read-only or read-write (if enabled)
 access to the project.
@@ -300,8 +302,8 @@ of broader usage for something like "Anywhere you need to give read access to
 your repository".
 
 Once a GitLab administrator adds the Global Deployment key, project maintainers
-and owners can add it in project's **Settings > Repository** section by expanding the
-**Deploy Key** section and clicking **Enable** next to the appropriate key listed
+and owners can add it in project's **Settings > Repository** page by expanding the
+**Deploy Keys** section and clicking **Enable** next to the appropriate key listed
 under **Public deploy keys available to any project**.
 
 NOTE: **Note:**

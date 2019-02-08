@@ -4,7 +4,7 @@ module Clusters
   module Applications
     class CheckInstallationProgressService < BaseHelmService
       def execute
-        return unless app.installing?
+        return unless operation_in_progress?
 
         case installation_phase
         when Gitlab::Kubernetes::Pod::SUCCEEDED
@@ -16,10 +16,15 @@ module Clusters
         end
       rescue Kubeclient::HttpError => e
         log_error(e)
-        app.make_errored!("Kubernetes error: #{e.error_code}") unless app.errored?
+
+        app.make_errored!("Kubernetes error: #{e.error_code}")
       end
 
       private
+
+      def operation_in_progress?
+        app.installing? || app.updating?
+      end
 
       def on_success
         app.make_installed!
@@ -28,13 +33,13 @@ module Clusters
       end
 
       def on_failed
-        app.make_errored!("Installation failed. Check pod logs for #{install_command.pod_name} for more details.")
+        app.make_errored!("Operation failed. Check pod logs for #{pod_name} for more details.")
       end
 
       def check_timeout
         if timeouted?
           begin
-            app.make_errored!("Installation timed out. Check pod logs for #{install_command.pod_name} for more details.")
+            app.make_errored!("Operation timed out. Check pod logs for #{pod_name} for more details.")
           end
         else
           ClusterWaitForAppInstallationWorker.perform_in(
@@ -42,20 +47,24 @@ module Clusters
         end
       end
 
+      def pod_name
+        install_command.pod_name
+      end
+
       def timeouted?
         Time.now.utc - app.updated_at.to_time.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
       end
 
       def remove_installation_pod
-        helm_api.delete_pod!(install_command.pod_name)
+        helm_api.delete_pod!(pod_name)
       end
 
       def installation_phase
-        helm_api.status(install_command.pod_name)
+        helm_api.status(pod_name)
       end
 
       def installation_errors
-        helm_api.log(install_command.pod_name)
+        helm_api.log(pod_name)
       end
     end
   end

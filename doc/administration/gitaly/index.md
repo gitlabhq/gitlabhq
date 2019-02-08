@@ -52,10 +52,10 @@ is used.
 ### Network architecture
 
 -   gitlab-rails shards repositories into "repository storages"
--   gitlab-rails/config/gitlab.yml contains a map from storage names to
+-   `gitlab-rails/config/gitlab.yml` contains a map from storage names to
     (Gitaly address, Gitaly token) pairs
 -   the `storage name` -\> `(Gitaly address, Gitaly token)` map in
-    gitlab.yml is the single source of truth for the Gitaly network
+    `gitlab.yml` is the single source of truth for the Gitaly network
     topology
 -   a (Gitaly address, Gitaly token) corresponds to a Gitaly server
 -   a Gitaly server hosts one or more storages
@@ -65,7 +65,7 @@ is used.
     gitlab-shell, and Gitaly itself
 -   special case: a Gitaly server must be able to make RPC calls **to
     itself** via its own (Gitaly address, Gitaly token) pair as
-    specified in gitlab-rails/config/gitlab.yml
+    specified in `gitlab-rails/config/gitlab.yml`
 -   Gitaly servers must not be exposed to the public internet
 
 Gitaly network traffic is unencrypted so you should use a firewall to
@@ -125,7 +125,7 @@ Omnibus installations:
 ```ruby
 # /etc/gitlab/gitlab.rb
 
-# Avoid running unnecessary services on the gitaly server
+# Avoid running unnecessary services on the Gitaly server
 postgresql['enable'] = false
 redis['enable'] = false
 nginx['enable'] = false
@@ -153,7 +153,7 @@ gitaly['storage'] = [
   { 'name' => 'storage1', 'path' => '/mnt/gitlab/storage1/repositories' },
 ]
 
-# To use tls for gitaly you need to add
+# To use TLS for Gitaly you need to add
 gitaly['tls_listen_addr'] = "0.0.0.0:9999"
 gitaly['certificate_path'] = "path/to/cert.pem"
 gitaly['key_path'] = "path/to/key.pem"
@@ -239,11 +239,11 @@ repository from your GitLab server over HTTP.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22602) in GitLab 11.7.
 
 Gitaly supports TLS credentials for GRPC authentication. To be able to communicate
-with a gitaly instance that listens for secure connections you will need to use `tls://` url
+with a Gitaly instance that listens for secure connections you will need to use `tls://` url
 scheme in the `gitaly_address` of the corresponding storage entry in the gitlab configuration.
 
 The admin needs to bring their own certificate as we do not provide that automatically.
-The certificate to be used needs to be installed on all gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+The certificate to be used needs to be installed on all Gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
 
 ### Example TLS configuration
 
@@ -261,7 +261,7 @@ git_data_dirs({
 gitlab_rails['gitaly_token'] = 'abc123secret'
 ```
 
-#### On gitaly server nodes:
+#### On Gitaly server nodes:
 
 ```ruby
 gitaly['tls_listen_addr'] = "0.0.0.0:9999"
@@ -289,7 +289,7 @@ gitlab:
     token: 'abc123secret'
 ```
 
-#### On gitaly server nodes:
+#### On Gitaly server nodes:
 
 ```toml
 # /home/git/gitaly/config.toml

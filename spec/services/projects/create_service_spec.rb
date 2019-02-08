@@ -116,7 +116,7 @@ describe Projects::CreateService, '#execute' do
 
     def wiki_repo(project)
       relative_path = ProjectWiki.new(project).disk_path + '.git'
-      Gitlab::Git::Repository.new(project.repository_storage, relative_path, 'foobar')
+      Gitlab::Git::Repository.new(project.repository_storage, relative_path, 'foobar', project.full_path)
     end
   end
 
@@ -198,7 +198,7 @@ describe Projects::CreateService, '#execute' do
 
       context 'with legacy storage' do
         before do
-          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing")
+          gitlab_shell.create_repository(repository_storage, "#{user.namespace.full_path}/existing", 'group/project')
         end
 
         after do
@@ -234,7 +234,7 @@ describe Projects::CreateService, '#execute' do
         end
 
         before do
-          gitlab_shell.create_repository(repository_storage, hashed_path)
+          gitlab_shell.create_repository(repository_storage, hashed_path, 'group/project')
         end
 
         after do

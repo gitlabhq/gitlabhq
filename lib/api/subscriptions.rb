@@ -2,49 +2,86 @@
 
 module API
   class Subscriptions < Grape::API
+    helpers ::API::Helpers::LabelHelpers
+
     before { authenticate! }
 
-    subscribable_types = {
-      'merge_requests' => proc { |id| find_merge_request_with_access(id, :update_merge_request) },
-      'issues' => proc { |id| find_project_issue(id) },
-      'labels' => proc { |id| find_project_label(id) }
-    }
+    subscribables = [
+      {
+        type: 'merge_requests',
+        entity: Entities::MergeRequest,
+        source: Project,
+        finder: ->(id) { find_merge_request_with_access(id, :update_merge_request) }
+      },
+      {
+        type: 'issues',
+        entity: Entities::Issue,
+        source: Project,
+        finder: ->(id) { find_project_issue(id) }
+      },
+      {
+        type: 'labels',
+        entity: Entities::ProjectLabel,
+        source: Project,
+        finder: ->(id) { find_label(user_project, id) }
+      },
+      {
+        type: 'labels',
+        entity: Entities::GroupLabel,
+        source: Group,
+        finder: ->(id) { find_label(user_group, id) }
+      }
+    ]
 
-    params do
-      requires :id, type: String, desc: 'The ID of a project'
-      requires :subscribable_id, type: String, desc: 'The ID of a resource'
-    end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      subscribable_types.each do |type, finder|
-        type_singularized = type.singularize
-        entity_class = Entities.const_get(type_singularized.camelcase)
+    subscribables.each do |subscribable|
+      source_type = subscribable[:source].name.underscore
 
+      params do
+        requires :id, type: String, desc: "The #{source_type} ID"
+        requires :subscribable_id, type: String, desc: 'The ID of a resource'
+      end
+      resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Subscribe to a resource' do
-          success entity_class
+          success subscribable[:entity]
         end
-        post ":id/#{type}/:subscribable_id/subscribe" do
-          resource = instance_exec(params[:subscribable_id], &finder)
+        post ":id/#{subscribable[:type]}/:subscribable_id/subscribe" do
+          parent = parent_resource(source_type)
+          resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 
-          if resource.subscribed?(current_user, user_project)
+          if resource.subscribed?(current_user, parent)
             not_modified!
           else
-            resource.subscribe(current_user, user_project)
-            present resource, with: entity_class, current_user: current_user, project: user_project
+            resource.subscribe(current_user, parent)
+            present resource, with: subscribable[:entity], current_user: current_user, project: parent, parent: parent
           end
         end
 
         desc 'Unsubscribe from a resource' do
-          success entity_class
+          success subscribable[:entity]
         end
-        post ":id/#{type}/:subscribable_id/unsubscribe" do
-          resource = instance_exec(params[:subscribable_id], &finder)
+        post ":id/#{subscribable[:type]}/:subscribable_id/unsubscribe" do
+          parent = parent_resource(source_type)
+          resource = instance_exec(params[:subscribable_id], &subscribable[:finder])
 
-          if !resource.subscribed?(current_user, user_project)
+          if !resource.subscribed?(current_user, parent)
             not_modified!
           else
-            resource.unsubscribe(current_user, user_project)
-            present resource, with: entity_class, current_user: current_user, project: user_project
+            resource.unsubscribe(current_user, parent)
+            present resource, with: subscribable[:entity], current_user: current_user, project: parent, parent: parent
           end
+        end
+      end
+    end
+
+    private
+
+    helpers do
+      def parent_resource(source_type)
+        case source_type
+        when 'project'
+          user_project
+        else
+          nil
         end
       end
     end

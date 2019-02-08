@@ -84,8 +84,8 @@ module API
       page || not_found!('Wiki Page')
     end
 
-    def available_labels_for(label_parent)
-      search_params = { include_ancestor_groups: true }
+    def available_labels_for(label_parent, include_ancestor_groups: true)
+      search_params = { include_ancestor_groups: include_ancestor_groups }
 
       if label_parent.is_a?(Project)
         search_params[:project_id] = label_parent.id
@@ -168,13 +168,6 @@ module API
       else
         render_api_error!('The branch refname is invalid', 400)
       end
-    end
-
-    def find_project_label(id)
-      labels = available_labels_for(user_project)
-      label = labels.find_by_id(id) || labels.find_by_title(id)
-
-      label || not_found!('Label')
     end
 
     # rubocop: disable CodeReuse/ActiveRecord

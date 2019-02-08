@@ -13,6 +13,7 @@ describe Clusters::Applications::CreateService do
   describe '#execute' do
     before do
       allow(ClusterInstallAppWorker).to receive(:perform_async)
+      allow(ClusterUpgradeAppWorker).to receive(:perform_async)
     end
 
     subject { service.execute(test_request) }
@@ -29,6 +30,22 @@ describe Clusters::Applications::CreateService do
       expect(ClusterInstallAppWorker).to receive(:perform_async).with('helm', anything).once
 
       subject
+    end
+
+    context 'application already installed' do
+      let!(:application) { create(:clusters_applications_helm, :installed, cluster: cluster) }
+
+      it 'does not create a new application' do
+        expect do
+          subject
+        end.not_to change(Clusters::Applications::Helm, :count)
+      end
+
+      it 'schedules an upgrade for the application' do
+        expect(Clusters::Applications::ScheduleInstallationService).to receive(:new).with(application).and_call_original
+
+        subject
+      end
     end
 
     context 'cert manager application' do

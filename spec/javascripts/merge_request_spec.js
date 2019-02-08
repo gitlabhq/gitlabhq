@@ -40,30 +40,51 @@ describe('MergeRequest', function() {
       expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
     });
 
-    it('submits an ajax request on tasklist:changed', done => {
+    describe('tasklist', () => {
       const lineNumber = 8;
       const lineSource = '- [ ] item 8';
       const index = 3;
       const checked = true;
 
-      $('.js-task-list-field').trigger({
-        type: 'tasklist:changed',
-        detail: { lineNumber, lineSource, index, checked },
+      it('submits an ajax request on tasklist:changed', done => {
+        $('.js-task-list-field').trigger({
+          type: 'tasklist:changed',
+          detail: { lineNumber, lineSource, index, checked },
+        });
+
+        setTimeout(() => {
+          expect(axios.patch).toHaveBeenCalledWith(
+            `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
+            {
+              merge_request: {
+                description: '- [ ] Task List Item',
+                lock_version: undefined,
+                update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
+              },
+            },
+          );
+
+          done();
+        });
       });
 
-      setTimeout(() => {
-        expect(axios.patch).toHaveBeenCalledWith(
-          `${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`,
-          {
-            merge_request: {
-              description: '- [ ] Task List Item',
-              lock_version: undefined,
-              update_task: { line_number: lineNumber, line_source: lineSource, index, checked },
-            },
-          },
-        );
+      it('shows an error notification when tasklist update failed', done => {
+        mock
+          .onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`)
+          .reply(409, {});
 
-        done();
+        $('.js-task-list-field').trigger({
+          type: 'tasklist:changed',
+          detail: { lineNumber, lineSource, index, checked },
+        });
+
+        setTimeout(() => {
+          expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
+            'Someone edited this merge request at the same time you did. Please refresh the page to see changes.',
+          );
+
+          done();
+        });
       });
     });
   });

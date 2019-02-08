@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/21
+  context 'Manage', :quarantine do
     describe 'Project activity' do
       it 'user creates an event in the activity page upon Git push' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

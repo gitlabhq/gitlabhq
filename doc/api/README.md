@@ -29,6 +29,7 @@ The following API resources are available:
   - [Group access requests](access_requests.md)
   - [Group badges](group_badges.md)
   - [Group issue boards](group_boards.md)
+  - [Group labels](group_labels.md)
   - [Group-level variables](group_level_variables.md)
   - [Group members](members.md)
   - [Group milestones](group_milestones.md)

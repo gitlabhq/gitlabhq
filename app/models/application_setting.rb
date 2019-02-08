@@ -193,6 +193,10 @@ class ApplicationSetting < ActiveRecord::Base
             allow_nil: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 1.day.seconds }
 
+  validates :local_markdown_version,
+            allow_nil: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than: 65536 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -246,6 +250,7 @@ class ApplicationSetting < ActiveRecord::Base
       dsa_key_restriction: 0,
       ecdsa_key_restriction: 0,
       ed25519_key_restriction: 0,
+      first_day_of_week: 0,
       gitaly_timeout_default: 55,
       gitaly_timeout_fast: 10,
       gitaly_timeout_medium: 30,
@@ -303,7 +308,8 @@ class ApplicationSetting < ActiveRecord::Base
       usage_stats_set_by_user_id: nil,
       diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
       commit_email_hostname: default_commit_email_hostname,
-      protected_ci_variables: false
+      protected_ci_variables: false,
+      local_markdown_version: 0
     }
   end
 

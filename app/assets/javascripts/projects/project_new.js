@@ -115,15 +115,35 @@ const bindEvents = () => {
     const templates = {
       rails: {
         text: 'Ruby on Rails',
-        icon: '.template-option svg.icon-rails',
+        icon: '.template-option .icon-rails',
       },
       express: {
         text: 'NodeJS Express',
-        icon: '.template-option svg.icon-node-express',
+        icon: '.template-option .icon-express',
       },
       spring: {
         text: 'Spring',
-        icon: '.template-option svg.icon-java-spring',
+        icon: '.template-option .icon-spring',
+      },
+      hugo: {
+        text: 'Pages/Hugo',
+        icon: '.template-option .icon-hugo',
+      },
+      jekyll: {
+        text: 'Pages/Jekyll',
+        icon: '.template-option .icon-jekyll',
+      },
+      plainhtml: {
+        text: 'Pages/Plain HTML',
+        icon: '.template-option .icon-plainhtml',
+      },
+      gitbook: {
+        text: 'Pages/GitBook',
+        icon: '.template-option .icon-gitbook',
+      },
+      hexo: {
+        text: 'Pages/Hexo',
+        icon: '.template-option .icon-hexo',
       },
     };
 

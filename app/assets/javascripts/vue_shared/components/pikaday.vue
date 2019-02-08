@@ -40,6 +40,7 @@ export default {
       toString: date => pikadayToString(date),
       onSelect: this.selected.bind(this),
       onClose: this.toggled.bind(this),
+      firstDay: gon.first_day_of_week,
     });
 
     this.$el.append(this.calendar.el);

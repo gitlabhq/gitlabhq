@@ -172,6 +172,17 @@ functionalities needed to successfully build and deploy a containerized
 application. Bear in mind that the same credentials are used for all the
 applications running on the cluster.
 
+## Base domain
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
+
+Domains at the cluster level permit support for multiple domains
+per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,
+this will be automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
+the [Auto DevOps](../../../topics/autodevops/index.md) stages.
+
+The domain should have a wildcard DNS configured to the Ingress IP address.
+
 ## Access controls
 
 When creating a cluster in GitLab, you will be asked if you would like to create an
@@ -253,6 +264,12 @@ you don't have it installed via the applications, and then use the
 install it manually.
 
 ## Installing applications
+
+NOTE: **Note:**
+Before starting the installation of applications, make sure that time is synchronized
+between your GitLab server and your Kubernetes cluster. Otherwise, installation could fail
+and you may get errors like `Error: remote error: tls: bad certificate` 
+in the `stdout` of pods created by GitLab in your Kubernetes cluster.
 
 GitLab provides a one-click install for various applications which can
 be added directly to your configured cluster. Those applications are
@@ -449,6 +466,7 @@ GitLab CI/CD build environment.
 | `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This config also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
+| `KUBE_INGRESS_BASE_DOMAIN` | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](#base-domain) for more information. | 
 
 NOTE: **NOTE:**
 Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main

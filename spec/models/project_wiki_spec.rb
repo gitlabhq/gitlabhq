@@ -7,7 +7,7 @@ describe ProjectWiki do
   let(:repository) { project.repository }
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project_wiki) { described_class.new(project, user) }
-  let(:raw_repository) { Gitlab::Git::Repository.new(project.repository_storage, subject.disk_path + '.git', 'foo') }
+  let(:raw_repository) { Gitlab::Git::Repository.new(project.repository_storage, subject.disk_path + '.git', 'foo', 'group/project.wiki') }
   let(:commit) { project_wiki.repository.head_commit }
 
   subject { project_wiki }
@@ -75,7 +75,7 @@ describe ProjectWiki do
       # Create a fresh project which will not have a wiki
       project_wiki = described_class.new(create(:project), user)
       gitlab_shell = double(:gitlab_shell)
-      allow(gitlab_shell).to receive(:create_repository)
+      allow(gitlab_shell).to receive(:create_wiki_repository)
       allow(project_wiki).to receive(:gitlab_shell).and_return(gitlab_shell)
 
       expect { project_wiki.send(:wiki) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)

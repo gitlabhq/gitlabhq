@@ -126,14 +126,22 @@ Auto Deploy, and Auto Monitoring will be silently skipped.
 
 ## Auto DevOps base domain
 
+NOTE: **Note**
+`AUTO_DEVOPS_DOMAIN` environment variable is deprecated and
+[is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959) in GitLab 12.0.
+
 The Auto DevOps base domain is required if you want to make use of [Auto
 Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It can be defined
-in three places:
+in any of the following places:
 
-- either under the project's CI/CD settings while [enabling Auto DevOps](#enabling-auto-devops)
+- either under the cluster's settings, whether for [projects](../../user/project/clusters/index.md#base-domain) or [groups](../../user/group/clusters/index.md#base-domain)
 - or in instance-wide settings in the **admin area > Settings** under the "Continuous Integration and Delivery" section
-- or at the project as a variable: `AUTO_DEVOPS_DOMAIN` (required if you want to use [multiple clusters](#using-multiple-kubernetes-clusters))
-- or at the group level as a variable: `AUTO_DEVOPS_DOMAIN`
+- or at the project level as a variable: `KUBE_INGRESS_BASE_DOMAIN`
+- or at the group level as a variable: `KUBE_INGRESS_BASE_DOMAIN`.
+
+NOTE: **Note**
+The Auto DevOps base domain variable (`KUBE_INGRESS_BASE_DOMAIN`) follows the same order of precedence
+as other environment [variables](../../ci/variables/README.md#priority-of-variables).
 
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
@@ -170,13 +178,13 @@ In the [Auto DevOps template](https://gitlab.com/gitlab-org/gitlab-ce/blob/maste
 Those environments are tied to jobs that use [Auto Deploy](#auto-deploy), so
 except for the environment scope, they would also need to have a different
 domain they would be deployed to. This is why you need to define a separate
-`AUTO_DEVOPS_DOMAIN` variable for all the above
+`KUBE_INGRESS_BASE_DOMAIN` variable for all the above
 [based on the environment](../../ci/variables/README.md#limiting-environment-scopes-of-variables).
 
 The following table is an example of how the three different clusters would
 be configured.
 
-| Cluster name | Cluster environment scope | `AUTO_DEVOPS_DOMAIN` variable value | Variable environment scope | Notes |
+| Cluster name | Cluster environment scope | `KUBE_INGRESS_BASE_DOMAIN` variable value | Variable environment scope | Notes |
 | ------------ | -------------- | ----------------------------- | ------------- | ------ |
 | review       |  `review/*`    | `review.example.com`  | `review/*`      | The review cluster which will run all [Review Apps](../../ci/review_apps/index.md). `*` is a wildcard, which means it will be used by every environment name starting with `review/`. |
 | staging      |  `staging`     | `staging.example.com` | `staging`       | (Optional) The staging cluster which will run the deployments of the staging environments. You need to [enable it first](#deploy-policy-for-staging-and-production-environments). |
@@ -190,14 +198,11 @@ To add a different cluster for each environment:
     ![Auto DevOps multiple clusters](img/autodevops_multiple_clusters.png)
 
 1. After the clusters are created, navigate to each one and install Helm Tiller
-   and Ingress.
+   and Ingress. Wait for the Ingress IP address to be assigned.
 1. Make sure you have [configured your DNS](#auto-devops-base-domain) with the
    specified Auto DevOps domains.
-1. Navigate to your project's **Settings > CI/CD > Environment variables** and add
-   the `AUTO_DEVOPS_DOMAIN` variables with their respective environment
-   scope.
-
-    ![Auto DevOps domain variables](img/autodevops_domain_variables.png)
+1. Navigate to each cluster's page, through **Operations > Kubernetes**,
+   and add the domain based on its Ingress IP address.
 
 Now that all is configured, you can test your setup by creating a merge request
 and verifying that your app is deployed as a review app in the Kubernetes
@@ -205,10 +210,9 @@ cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
 
 NOTE: **Note:**
-Auto DevOps is not supported for a group with multiple clusters, as it
-is not possible to set `AUTO_DEVOPS_DOMAIN` per environment on the group
-level. This will be resolved in the future with the [following issue](
-https://gitlab.com/gitlab-org/gitlab-ce/issues/52363).
+From GitLab 11.8, `KUBE_INGRESS_BASE_DOMAIN` replaces `AUTO_DEVOPS_DOMAIN`.
+`AUTO_DEVOPS_DOMAIN` [is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959)
+in GitLab 12.0.
 
 ## Enabling/Disabling Auto DevOps
 
@@ -681,7 +685,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 
 | **Variable**                 | **Description**                                                                                                                                                                                                               |
 | ------------                 | ---------------                                                                                                                                                                                                               |
-| `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain); by default set automatically by the [Auto DevOps setting](#enabling-auto-devops).                                                                                              |
+| `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-domain). By default, set automatically by the [Auto DevOps setting](#enabling-auto-devops). This variable is deprecated and [is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959) in GitLab 12.0. Use `KUBE_INGRESS_BASE_DOMAIN` instead. |
 | `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/auto-deploy-app).                                                             |
 | `AUTO_DEVOPS_CHART_REPOSITORY` | The Helm Chart repository used to search for charts; defaults to `https://charts.gitlab.io`. |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
@@ -711,6 +715,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `DAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `dast` job. If the variable is present, the job will not be created. |
 | `PERFORMANCE_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `performance` job. If the variable is present, the job will not be created. |
 | `K8S_SECRET_*`               | From GitLab 11.7, any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) will be made available by Auto DevOps as environment variables to the deployed application. |
+| `KUBE_INGRESS_BASE_DOMAIN`   | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/index.md#base-domain) for more information. |
 
 TIP: **Tip:**
 Set up the replica variables using a

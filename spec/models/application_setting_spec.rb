@@ -70,6 +70,13 @@ describe ApplicationSetting do
         .is_greater_than(0)
     end
 
+    it do
+      is_expected.to validate_numericality_of(:local_markdown_version)
+        .only_integer
+        .is_greater_than_or_equal_to(0)
+        .is_less_than(65536)
+    end
+
     context 'key restrictions' do
       it 'supports all key types' do
         expect(described_class::SUPPORTED_KEY_TYPES).to contain_exactly(:rsa, :dsa, :ecdsa, :ed25519)

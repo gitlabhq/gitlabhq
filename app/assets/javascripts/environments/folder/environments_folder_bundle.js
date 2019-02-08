@@ -18,7 +18,6 @@ export default () =>
         endpoint: environmentsData.environmentsDataEndpoint,
         folderName: environmentsData.environmentsDataFolderName,
         cssContainerClass: environmentsData.cssClass,
-        canCreateDeployment: parseBoolean(environmentsData.environmentsDataCanCreateDeployment),
         canReadEnvironment: parseBoolean(environmentsData.environmentsDataCanReadEnvironment),
       };
     },
@@ -28,7 +27,6 @@ export default () =>
           endpoint: this.endpoint,
           folderName: this.folderName,
           cssContainerClass: this.cssContainerClass,
-          canCreateDeployment: this.canCreateDeployment,
           canReadEnvironment: this.canReadEnvironment,
         },
       });

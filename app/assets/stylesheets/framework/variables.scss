@@ -243,6 +243,7 @@ $gl-padding-8: 8px;
 $gl-padding: 16px;
 $gl-padding-24: 24px;
 $gl-padding-32: 32px;
+$gl-padding-50: 50px;
 $gl-col-padding: 15px;
 $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
@@ -490,6 +491,7 @@ $builds-trace-bg: #111;
 */
 $commit-max-width-marker-color: rgba(0, 0, 0, 0);
 $commit-message-text-area-bg: rgba(0, 0, 0, 0);
+$commit-stat-summary-height: 36px;
 
 /*
 * Common
@@ -664,8 +666,14 @@ $priority-label-empty-state-width: 114px;
 Issues Analytics
 */
 $issues-analytics-popover-boarder-color: rgba(0, 0, 0, 0.15);
+
 /*
 Merge Requests
 */
 $mr-tabs-height: 51px;
 $mr-version-controls-height: 56px;
+
+/*
+Compare Branches
+*/
+$compare-branches-sticky-header-height: 68px;

@@ -2,6 +2,6 @@
 
 module ErrorTracking
   class ProjectSerializer < BaseSerializer
-    entity ProjectEntity
+    entity ErrorTracking::ProjectEntity
   end
 end

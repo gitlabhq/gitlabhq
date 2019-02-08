@@ -1,0 +1,5 @@
+---
+title: Fix code search when text is larger than max gRPC message size
+merge_request: 24111
+author:
+type: changed

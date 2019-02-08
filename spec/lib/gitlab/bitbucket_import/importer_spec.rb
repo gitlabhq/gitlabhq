@@ -218,7 +218,7 @@ describe Gitlab::BitbucketImport::Importer do
     describe 'wiki import' do
       it 'is skipped when the wiki exists' do
         expect(project.wiki).to receive(:repository_exists?) { true }
-        expect(importer.gitlab_shell).not_to receive(:import_repository)
+        expect(importer.gitlab_shell).not_to receive(:import_wiki_repository)
 
         importer.execute
 
@@ -227,11 +227,7 @@ describe Gitlab::BitbucketImport::Importer do
 
       it 'imports to the project disk_path' do
         expect(project.wiki).to receive(:repository_exists?) { false }
-        expect(importer.gitlab_shell).to receive(:import_repository).with(
-          project.repository_storage,
-          project.wiki.disk_path,
-          project.import_url + '/wiki'
-        )
+        expect(importer.gitlab_shell).to receive(:import_wiki_repository)
 
         importer.execute
 

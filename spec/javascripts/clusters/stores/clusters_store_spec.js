@@ -85,6 +85,9 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[2].status_reason,
             requestStatus: null,
             requestReason: null,
+            version: mockResponseData.applications[2].version,
+            upgradeAvailable: mockResponseData.applications[2].update_available,
+            chartRepo: 'https://gitlab.com/charts/gitlab-runner',
           },
           prometheus: {
             title: 'Prometheus',

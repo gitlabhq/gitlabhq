@@ -25,13 +25,20 @@ export default propsData;
 
 describe('Dashboard', () => {
   let DashboardComponent;
+  let mock;
 
   beforeEach(() => {
     setFixtures(`
       <div class="prometheus-graphs"></div>
       <div class="layout-page"></div>
     `);
+
+    mock = new MockAdapter(axios);
     DashboardComponent = Vue.extend(Dashboard);
+  });
+
+  afterEach(() => {
+    mock.restore();
   });
 
   describe('no metrics are available yet', () => {
@@ -47,14 +54,8 @@ describe('Dashboard', () => {
   });
 
   describe('requests information to the server', () => {
-    let mock;
     beforeEach(() => {
-      mock = new MockAdapter(axios);
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
-    });
-
-    afterEach(() => {
-      mock.restore();
     });
 
     it('shows up a loading state', done => {
@@ -152,15 +153,12 @@ describe('Dashboard', () => {
   });
 
   describe('when the window resizes', () => {
-    let mock;
     beforeEach(() => {
-      mock = new MockAdapter(axios);
       mock.onGet(mockApiEndpoint).reply(200, metricsGroupsAPIResponse);
       jasmine.clock().install();
     });
 
     afterEach(() => {
-      mock.restore();
       jasmine.clock().uninstall();
     });
 
