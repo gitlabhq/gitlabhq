@@ -11,7 +11,6 @@ module EnvironmentsHelper
     {
       "endpoint" => folder_project_environments_path(@project, @folder, format: :json),
       "folder-name" => @folder,
-      "can-create-deployment" => can?(current_user, :create_deployment, @project).to_s,
       "can-read-environment" => can?(current_user, :read_environment, @project).to_s
     }
   end

@@ -1,14 +1,22 @@
 require 'spec_helper'
 
 describe DeploymentEntity do
-  let(:user) { create(:user) }
+  let(:user) { developer }
+  let(:developer) { create(:user) }
+  let(:reporter) { create(:user) }
+  let(:project) { create(:project) }
   let(:request) { double('request') }
-  let(:deployment) { create(:deployment) }
+  let(:deployment) { create(:deployment, deployable: build, project: project) }
+  let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+  let(:pipeline) { create(:ci_pipeline, project: project, user: user) }
   let(:entity) { described_class.new(deployment, request: request) }
   subject { entity.as_json }
 
   before do
+    project.add_developer(developer)
+    project.add_reporter(reporter)
     allow(request).to receive(:current_user).and_return(user)
+    allow(request).to receive(:project).and_return(project)
   end
 
   it 'exposes internal deployment id' do
@@ -21,6 +29,24 @@ describe DeploymentEntity do
 
   it 'exposes creation date' do
     expect(subject).to include(:created_at)
+  end
+
+  context 'when the pipeline has another manual action' do
+    let(:other_build) { create(:ci_build, :manual, name: 'another deploy', pipeline: pipeline) }
+    let!(:other_deployment) { create(:deployment, deployable: other_build) }
+
+    it 'returns another manual action' do
+      expect(subject[:manual_actions].count).to eq(1)
+      expect(subject[:manual_actions].first[:name]).to eq('another deploy')
+    end
+
+    context 'when user is a reporter' do
+      let(:user) { reporter }
+
+      it 'returns another manual action' do
+        expect(subject[:manual_actions]).not_to be_present
+      end
+    end
   end
 
   describe 'scheduled_actions' do
