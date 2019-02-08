@@ -95,7 +95,7 @@ always run. `C` specifies that it should only run for merge requests, so for any
 pipeline except a merge request pipeline, it will not run.
 
 As you can see, this will help you avoid a lot of boilerplate where you'd need
-to add that only rule to all of your jobs in order to make them always run. You
+to add that `only:` rule to all of your jobs in order to make them always run. You
 can use this for scenarios like having only pipelines with merge requests get a
 Review App set up, helping to save resources.
 
