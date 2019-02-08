@@ -735,7 +735,7 @@ module Ci
 
     # Virtual deployment status depending on the environment status.
     def deployment_status
-      return nil unless starts_environment?
+      return unless starts_environment?
 
       if success?
         return successful_deployment_status
