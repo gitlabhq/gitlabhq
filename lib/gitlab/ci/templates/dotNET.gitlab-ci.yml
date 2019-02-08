@@ -57,6 +57,7 @@ test_job:
   script:
     - '& "$env:NUNIT_PATH" ".\$env:TEST_FOLDER\Tests.dll"' # running NUnit tests
   artifacts:
+    when: always # save test results even when the task fails
     expire_in: 1 week # save gitlab server space, we copy the files we need to deploy folder later on
     paths:
       - '.\TestResult.xml' # saving NUnit results to copy to deploy folder
