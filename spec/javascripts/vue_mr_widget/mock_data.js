@@ -215,12 +215,14 @@ export default {
   project_archived: false,
   default_merge_commit_message_with_description:
     "Merge branch 'daaaa' into 'master'\n\nUpdate README.md\n\nSee merge request !22",
+  default_squash_commit_message: 'Test squash commit message',
   diverged_commits_count: 0,
   only_allow_merge_if_pipeline_succeeds: false,
   commit_change_content_path: '/root/acets-app/merge_requests/22/commit_change_content',
   merge_commit_path:
     'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
   troubleshooting_docs_path: 'help',
+  squash: true,
 };
 
 export const mockStore = {

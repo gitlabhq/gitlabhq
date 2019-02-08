@@ -7,56 +7,9 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
     assign :project, project
   end
 
-  context 'when kubernetes is not active' do
-    context 'when auto devops domain is not defined' do
-      it 'shows warning message' do
-        render
+  it 'shows a warning message about Kubernetes cluster' do
+    render
 
-        expect(rendered).to have_css('.auto-devops-warning-message')
-        expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a domain name and a')
-        expect(rendered).to have_link('Kubernetes cluster')
-      end
-    end
-
-    context 'when auto devops domain is defined' do
-      before do
-        project.build_auto_devops(domain: 'example.com')
-      end
-
-      it 'shows warning message' do
-        render
-
-        expect(rendered).to have_css('.auto-devops-warning-message')
-        expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a')
-        expect(rendered).to have_link('Kubernetes cluster')
-      end
-    end
-  end
-
-  context 'when kubernetes is active' do
-    before do
-      create(:kubernetes_service, project: project)
-    end
-
-    context 'when auto devops domain is not defined' do
-      it 'shows warning message' do
-        render
-
-        expect(rendered).to have_css('.auto-devops-warning-message')
-        expect(rendered).to have_text('Auto Review Apps and Auto Deploy need a domain name to work correctly.')
-      end
-    end
-
-    context 'when auto devops domain is defined' do
-      before do
-        project.build_auto_devops(domain: 'example.com')
-      end
-
-      it 'does not show warning message' do
-        render
-
-        expect(rendered).not_to have_css('.auto-devops-warning-message')
-      end
-    end
+    expect(rendered).to have_text('You must add a Kubernetes cluster integration to this project with a domain in order for your deployment strategy to work correctly.')
   end
 end

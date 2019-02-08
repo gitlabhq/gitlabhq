@@ -34,7 +34,8 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :task_num,
       :title,
       :discussion_locked,
-      label_ids: []
+      label_ids: [],
+      update_task: [:index, :checked, :line_number, :line_source]
     ]
   end
 

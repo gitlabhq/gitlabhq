@@ -79,14 +79,6 @@ describe 'Snippet', :js do
             expect(page).not_to have_xpath("//ol//li//ul")
           end
         end
-
-        context 'with cached CommonMark html' do
-          let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
-
-          it 'renders correctly' do
-            expect(page).not_to have_xpath("//ol//li//ul")
-          end
-        end
       end
 
       context 'switching to the simple viewer' do

@@ -60,6 +60,10 @@ describe CacheMarkdownField do
         changes_applied
       end
     end
+
+    def has_attribute?(attr_name)
+      attribute_names.include?(attr_name)
+    end
   end
 
   def thing_subclass(new_attr)
@@ -72,8 +76,8 @@ describe CacheMarkdownField do
   let(:updated_markdown) { '`Bar`' }
   let(:updated_html)     { '<p dir="auto"><code>Bar</code></p>' }
 
-  let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
-  let(:cache_version) { CacheMarkdownField::CACHE_COMMONMARK_VERSION }
+  let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
+  let(:cache_version) { CacheMarkdownField::CACHE_COMMONMARK_VERSION << 16 }
 
   before do
     stub_commonmark_sourcepos_disabled
@@ -94,11 +98,11 @@ describe CacheMarkdownField do
     it { expect(thing.foo).to eq(markdown) }
     it { expect(thing.foo_html).to eq(html) }
     it { expect(thing.foo_html_changed?).not_to be_truthy }
-    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+    it { expect(thing.cached_markdown_version).to eq(cache_version) }
   end
 
   context 'a changed markdown field' do
-    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
+    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version - 1) }
 
     before do
       thing.foo = updated_markdown
@@ -139,7 +143,7 @@ describe CacheMarkdownField do
   end
 
   context 'a non-markdown field changed' do
-    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version) }
+    let(:thing) { ThingWithMarkdownFields.new(foo: markdown, foo_html: html, cached_markdown_version: cache_version - 1) }
 
     before do
       thing.bar = 'OK'
@@ -160,7 +164,7 @@ describe CacheMarkdownField do
     end
 
     it { expect(thing.foo_html).to eq(updated_html) }
-    it { expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+    it { expect(thing.cached_markdown_version).to eq(cache_version) }
   end
 
   describe '#cached_html_up_to_date?' do
@@ -174,20 +178,34 @@ describe CacheMarkdownField do
       is_expected.to be_falsy
     end
 
-    it 'returns false when the version is too early' do
-      thing.cached_markdown_version -= 1
+    it 'returns false when the cached version is too old' do
+      thing.cached_markdown_version = cache_version - 1
 
       is_expected.to be_falsy
     end
 
-    it 'returns false when the version is too late' do
-      thing.cached_markdown_version += 1
+    it 'returns false when the cached version is in future' do
+      thing.cached_markdown_version = cache_version + 1
 
       is_expected.to be_falsy
     end
 
-    it 'returns true when the version is just right' do
+    it 'returns false when the local version was bumped' do
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:local_markdown_version).and_return(2)
       thing.cached_markdown_version = cache_version
+
+      is_expected.to be_falsy
+    end
+
+    it 'returns true when the local version is default' do
+      thing.cached_markdown_version = cache_version
+
+      is_expected.to be_truthy
+    end
+
+    it 'returns true when the cached version is just right' do
+      allow(Gitlab::CurrentSettings.current_application_settings).to receive(:local_markdown_version).and_return(2)
+      thing.cached_markdown_version = cache_version + 2
 
       is_expected.to be_truthy
     end
@@ -221,14 +239,9 @@ describe CacheMarkdownField do
   describe '#latest_cached_markdown_version' do
     subject { thing.latest_cached_markdown_version }
 
-    it 'returns commonmark version' do
-      thing.cached_markdown_version = CacheMarkdownField::CACHE_COMMONMARK_VERSION_START + 1
-      is_expected.to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
-    end
-
-    it 'returns default version when version is nil' do
+    it 'returns default version' do
       thing.cached_markdown_version = nil
-      is_expected.to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
+      is_expected.to eq(cache_version)
     end
   end
 
@@ -255,7 +268,7 @@ describe CacheMarkdownField do
       thing.cached_markdown_version = nil
       thing.refresh_markdown_cache
 
-      expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
+      expect(thing.cached_markdown_version).to eq(cache_version)
     end
   end
 
@@ -336,7 +349,7 @@ describe CacheMarkdownField do
 
         expect(thing.foo_html).to eq(updated_html)
         expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
+        expect(thing.cached_markdown_version).to eq(cache_version)
       end
     end
 
@@ -356,7 +369,7 @@ describe CacheMarkdownField do
 
         expect(thing.foo_html).to eq(updated_html)
         expect(thing.baz_html).to eq(updated_html)
-        expect(thing.cached_markdown_version).to eq(CacheMarkdownField::CACHE_COMMONMARK_VERSION)
+        expect(thing.cached_markdown_version).to eq(cache_version)
       end
     end
   end

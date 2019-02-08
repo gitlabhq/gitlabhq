@@ -12,21 +12,20 @@
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
 - cache_key = project_list_cache_key(project)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
-- css_details_class = compact_mode ? "d-flex flex-column flex-sm-row flex-md-row align-items-sm-center" : "align-items-center flex-md-fill flex-lg-column d-sm-flex d-lg-block"
-- css_controls_class = compact_mode ? "" : "align-items-md-end align-items-lg-center flex-lg-row"
+- css_controls_class = compact_mode ? "" : "flex-lg-row justify-content-lg-between"
 
 %li.project-row.d-flex{ class: css_class }
   = cache(cache_key) do
     - if avatar
-      .avatar-container.s64.flex-grow-0.flex-shrink-0
+      .avatar-container.s48.flex-grow-0.flex-shrink-0
         = link_to project_path(project), class: dom_class(project) do
           - if project.creator && use_creator_avatar
-            = image_tag avatar_icon_for_user(project.creator, 64), class: "avatar s65", alt:''
+            = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s65", alt:''
           - else
-            = project_icon(project, alt: '', class: 'avatar project-avatar s64', width: 64, height: 64)
-    .project-details.flex-sm-fill{ class: css_details_class }
-      .flex-wrapper.flex-fill
-        .d-flex.align-items-center.flex-wrap
+            = project_icon(project, alt: '', class: 'avatar project-avatar s48', width: 48, height: 48)
+    .project-details.d-sm-flex.flex-sm-fill.align-items-center
+      .flex-wrapper
+        .d-flex.align-items-center.flex-wrap.project-title
           %h2.d-flex.prepend-top-8
             = link_to project_path(project), class: 'text-plain' do
               %span.project-full-name.append-right-8><
@@ -52,13 +51,13 @@
               %span.user-access-role.d-block= Gitlab::Access.human_access(access)
 
         - if show_last_commit_as_description
-          .description.d-none.d-sm-block.prepend-top-8.append-right-default
+          .description.d-none.d-sm-block.append-right-default
             = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
         - elsif project.description.present?
-          .description.d-none.d-sm-block.prepend-top-8.append-right-default
+          .description.d-none.d-sm-block.append-right-default
             = markdown_field(project, :description)
 
-      .controls.d-flex.flex-row.flex-sm-column.flex-md-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0{ class: css_controls_class }
+      .controls.d-flex.flex-sm-column.align-items-center.align-items-sm-end.flex-wrap.flex-shrink-0{ class: css_controls_class }
         .icon-container.d-flex.align-items-center
           - if project.archived
             %span.d-flex.icon-wrapper.badge.badge-warning archived
@@ -74,13 +73,13 @@
               = number_with_delimiter(project.forks_count)
           - if show_merge_request_count?(disabled: !merge_requests, compact_mode: compact_mode)
             = link_to project_merge_requests_path(project),
-                class: "d-none d-lg-flex align-items-center icon-wrapper merge-requests has-tooltip",
+                class: "d-none d-xl-flex align-items-center icon-wrapper merge-requests has-tooltip",
                 title: _('Merge Requests'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('git-merge', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.open_merge_requests_count)
           - if show_issue_count?(disabled: !issues, compact_mode: compact_mode)
             = link_to project_issues_path(project),
-                class: "d-none d-lg-flex align-items-center icon-wrapper issues has-tooltip",
+                class: "d-none d-xl-flex align-items-center icon-wrapper issues has-tooltip",
                 title: _('Issues'), data: { container: 'body', placement: 'top' } do
               = sprite_icon('issues', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.open_issues_count)
@@ -89,19 +88,3 @@
               = render_project_pipeline_status(project.pipeline_status, tooltip_placement: 'top')
         .updated-note
           %span Updated #{updated_tooltip}
-
-    .d-none.d-lg-flex.align-item-stretch
-      - unless compact_mode
-        - if current_user
-          %button.star-button.btn.btn-default.d-flex.align-items-center.star-btn.toggle-star{ type: "button", data: { endpoint: toggle_star_project_path(project, :json) } }
-            - if current_user.starred?(project)
-              = sprite_icon('star', { css_class: 'icon' })
-              %span.starred= s_('ProjectOverview|Unstar')
-            - else
-              = sprite_icon('star-o', { css_class: 'icon' })
-              %span= s_('ProjectOverview|Star')
-
-        - else
-          = link_to new_user_session_path, class: 'btn btn-default has-tooltip count-badge-button d-flex align-items-center star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
-            = sprite_icon('star-o', { css_class: 'icon' })
-            %span= s_('ProjectOverview|Star')

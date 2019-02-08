@@ -57,11 +57,13 @@ Example response:
    "dsa_key_restriction": 0,
    "ecdsa_key_restriction": 0,
    "ed25519_key_restriction": 0,
+   "first_day_of_week": 0,
    "enforce_terms": true,
    "terms": "Hello world!",
    "performance_bar_allowed_group_id": 42,
    "instance_statistics_visibility_private": false,
-   "user_show_add_ssh_key_message": true
+   "user_show_add_ssh_key_message": true,
+   "local_markdown_version": 0
 }
 ```
 
@@ -113,11 +115,13 @@ Example response:
   "dsa_key_restriction": 0,
   "ecdsa_key_restriction": 0,
   "ed25519_key_restriction": 0,
+  "first_day_of_week": 0,
   "enforce_terms": true,
   "terms": "Hello world!",
   "performance_bar_allowed_group_id": 42,
   "instance_statistics_visibility_private": false,
-  "user_show_add_ssh_key_message": true
+  "user_show_add_ssh_key_message": true,
+  "local_markdown_version": 0
 }
 ```
 
@@ -157,6 +161,7 @@ are listed in the descriptions of the relevant settings.
 | `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
 | `enabled_git_access_protocol`            | string           | no                                   | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
 | `enforce_terms`                          | boolean          | no                                   | (**If enabled, requires:** `terms`) Enforce application ToS to all users. |
+| `first_day_of_week`            | integer          | no                                   | Start day of the week for calendar views and date pickers. Valid values are `0` (default) for Sunday and `1` for Monday. |
 | `gitaly_timeout_default`                 | integer          | no                                   | Default Gitaly timeout, in seconds. This timeout is not enforced for git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts. |
 | `gitaly_timeout_fast`                    | integer          | no                                   | Gitaly fast operation timeout, in seconds. Some Gitaly operations are expected to be fast. If they exceed this threshold, there may be a problem with a storage shard and 'failing fast' can help maintain the stability of the GitLab instance. Set to `0` to disable timeouts. |
 | `gitaly_timeout_medium`                  | integer          | no                                   | Medium Gitaly timeout, in seconds. This should be a value between the Fast and the Default timeout. Set to `0` to disable timeouts. |
@@ -235,3 +240,4 @@ are listed in the descriptions of the relevant settings.
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. |
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
+| `local_markdown_version`                 | integer          | no                                   | Increase this value when any cached markdown should be invalidated. |

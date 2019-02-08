@@ -40,17 +40,9 @@ module QA
           element :login_page
         end
 
-        def initialize
-          # The login page is usually the entry point for all the scenarios so
-          # we need to wait for the instance to start. That said, in some cases
-          # we are already logged-in so we check both cases here.
-          # Check if we're already logged in first. If we don't then we have to
-          # wait 10 seconds for the check for the login page to fail every time
-          # we use this class when we're already logged in (E.g., whenever we
-          # create a personal access token to use for API access).
-          wait(max: 500) do
-            Page::Main::Menu.act { has_personal_area?(wait: 0) } ||
-              has_element?(:login_page)
+        def page_loaded?
+          wait(max: 60) do
+            has_element?(:login_page)
           end
         end
 

@@ -42,7 +42,8 @@ describe Profiles::PreferencesController do
         prefs = {
           color_scheme_id: '1',
           dashboard: 'stars',
-          theme_id: '2'
+          theme_id: '2',
+          first_day_of_week: '1'
         }.with_indifferent_access
 
         expect(user).to receive(:assign_attributes).with(ActionController::Parameters.new(prefs).permit!)

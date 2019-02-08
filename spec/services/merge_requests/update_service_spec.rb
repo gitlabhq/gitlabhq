@@ -466,6 +466,8 @@ describe MergeRequests::UpdateService, :mailer do
 
       it { expect(@merge_request.tasks?).to eq(true) }
 
+      it_behaves_like 'updating a single task'
+
       context 'when tasks are marked as completed' do
         before do
           update_merge_request({ description: "- [x] Task 1\n- [X] Task 2" })

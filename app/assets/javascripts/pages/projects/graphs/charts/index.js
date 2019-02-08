@@ -43,10 +43,26 @@ document.addEventListener('DOMContentLoaded', () => {
     ],
   });
 
+  const reorderWeekDays = (weekDays, firstDayOfWeek = 0) => {
+    if (firstDayOfWeek === 0) {
+      return weekDays;
+    }
+
+    return Object.keys(weekDays).reduce((acc, dayName, idx, arr) => {
+      const reorderedDayName = arr[(idx + firstDayOfWeek) % arr.length];
+
+      return {
+        ...acc,
+        [reorderedDayName]: weekDays[reorderedDayName],
+      };
+    }, {});
+  };
+
   const hourData = chartData(projectChartData.hour);
   responsiveChart($('#hour-chart'), hourData);
 
-  const dayData = chartData(projectChartData.weekDays);
+  const weekDays = reorderWeekDays(projectChartData.weekDays, gon.first_day_of_week);
+  const dayData = chartData(weekDays);
   responsiveChart($('#weekday-chart'), dayData);
 
   const monthData = chartData(projectChartData.month);

@@ -64,7 +64,8 @@ describe API::Settings, 'Settings' do
             performance_bar_allowed_group_path: group.full_path,
             instance_statistics_visibility_private: true,
             diff_max_patch_bytes: 150_000,
-            default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE
+            default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
+            local_markdown_version: 3
           }
 
         expect(response).to have_gitlab_http_status(200)
@@ -90,6 +91,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['instance_statistics_visibility_private']).to be(true)
         expect(json_response['diff_max_patch_bytes']).to eq(150_000)
         expect(json_response['default_branch_protection']).to eq(Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+        expect(json_response['local_markdown_version']).to eq(3)
       end
     end
 

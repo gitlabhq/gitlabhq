@@ -315,7 +315,7 @@ export default {
         :endpoint="mr.testResultsPath"
       />
 
-      <div class="mr-widget-section">
+      <div class="mr-widget-section p-0">
         <component :is="componentName" :mr="mr" :service="service" />
 
         <section v-if="shouldRenderCollaborationStatus" class="mr-info-list mr-links">
