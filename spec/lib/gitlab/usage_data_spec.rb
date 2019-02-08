@@ -128,6 +128,11 @@ describe Gitlab::UsageData do
       ))
     end
 
+    it 'does not gather user preferences usage data when the feature is disabled' do
+      stub_feature_flags(group_overview_security_dashboard: false)
+      expect(subject[:counts].keys).not_to include(:user_preferences)
+    end
+
     it 'gathers projects data correctly' do
       count_data = subject[:counts]
 
