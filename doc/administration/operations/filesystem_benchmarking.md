@@ -21,7 +21,7 @@ application nodes that talk to the NFS server.
 To install:
 
 - On Ubuntu: `apt install fio`.
-- On `yum`-managed environments: `yum install fio`
+- On `yum`-managed environments: `yum install fio`.
 
 Then run the following:
 
