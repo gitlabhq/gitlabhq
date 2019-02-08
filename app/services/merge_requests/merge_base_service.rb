@@ -15,10 +15,7 @@ module MergeRequests
 
     # Overridden in EE.
     def hooks_validation_error(_merge_request)
-<<<<<<< HEAD
       # No-op
-=======
->>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
     end
 
     def source
@@ -31,7 +28,6 @@ module MergeRequests
 
     private
 
-<<<<<<< HEAD
     # Overridden in EE.
     def error_check!
       # No-op
@@ -41,8 +37,6 @@ module MergeRequests
       raise MergeError, message
     end
 
-=======
->>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
     def handle_merge_error(*args)
       # No-op
     end

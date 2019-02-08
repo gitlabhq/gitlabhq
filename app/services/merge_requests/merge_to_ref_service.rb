@@ -14,19 +14,11 @@ module MergeRequests
     def execute(merge_request)
       @merge_request = merge_request
 
-<<<<<<< HEAD
       validate!
 
       commit_id = commit
 
       raise_error('Conflicts detected during merge') unless commit_id
-=======
-      error_check!
-
-      commit_id = commit
-
-      raise MergeError, 'Conflicts detected during merge' unless commit_id
->>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
 
       success(commit_id: commit_id)
     rescue MergeError => error
@@ -35,7 +27,6 @@ module MergeRequests
 
     private
 
-<<<<<<< HEAD
     def validate!
       authorization_check!
       error_check!
@@ -48,11 +39,6 @@ module MergeRequests
         if Feature.disabled?(:merge_to_tmp_merge_ref_path, project)
           'Feature is not enabled'
         elsif !merge_method_supported?
-=======
-    def error_check!
-      error =
-        if !merge_method_supported?
->>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
           "#{project.human_merge_method} to #{target_ref} is currently not supported."
         elsif !hooks_validation_pass?(merge_request)
           hooks_validation_error(merge_request)
@@ -64,7 +50,6 @@ module MergeRequests
           'No source for merge'
         end
 
-<<<<<<< HEAD
       raise_error(error) if error
     end
 
@@ -72,9 +57,6 @@ module MergeRequests
       unless Ability.allowed?(current_user, :admin_merge_request, project)
         raise_error("You are not allowed to merge to this ref")
       end
-=======
-      raise MergeError, error if error
->>>>>>> 89c57ca2673... Support merge to ref for merge-commit and squash
     end
 
     def target_ref
