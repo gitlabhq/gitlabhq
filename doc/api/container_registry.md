@@ -1,5 +1,7 @@
 # Container Registry API
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/55978) in GitLab 11.8.
+
 This is the API docs of the [GitLab Container Registry](../user/project/container_registry.md).
 
 ## List registry repositories
@@ -42,7 +44,7 @@ Example response:
 
 ## Delete registry repository
 
-Get a list of repository commits in a project.
+Delete a repository in registry.
 
 This operation is executed asynchronously and might take some time to get executed.
 
