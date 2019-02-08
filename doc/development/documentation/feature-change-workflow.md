@@ -41,6 +41,27 @@ When revamping documentation, if unrelated to the feature change, this should be
 in its own MR (using the [documentation improvement workflow](improvement-workflow.md))
 so that we can ensure the more time-sensitive doc updates are merged with code by the freeze.
 
+## Documentation requirements
+
+Requirements for the documentation of a feature should be included as part of the
+issue for planning that feature, in a Documentation section within the issue description.
+
+This section is provided as part of the Feature Proposal template and should be added
+to the issue if it is not already present.
+
+Anyone can add these details, but the product manager who assigns the issue to a specific release
+milestone will ensure these details are present and finalized by the time of that milestone's kickoff.
+Developers, technical writers, and others may help further refine this plan at any time.
+
+### Details to include
+
+- What concepts and procedures should the docs guide and enable the user to understand or accomplish?
+- To this end, what new page(s) are needed, if any? What pages/subsections need updates? Consider user, admin, and API doc changes and additions.
+- For any guide or instruction set, should it help address a single use case, or be flexible to address a certain range of use cases?
+- Do we need to update a previously recommended workflow? Should we link the new feature from various relevant locations? Consider all ways documentation should be affected.
+- Are there any key terms or task descriptions that should be included so that the docs are found in relevant searches?
+- Include suggested titles of any pages or subsections, if applicable.
+
 ## Documenting a new or changed feature
 
 To follow a consistent workflow every month, documentation changes
@@ -52,20 +73,19 @@ and default merge request template will assist you with following this process.
 
 ### 1. Product Manager's role
 
-The Product Manager (PM) should confirm or add the following items in the issue:
+For issues requiring any new or updated documentation, the Product Manager (PM)
+must:
 
-- New or updated feature name, overview/description, and use cases, all required per the [Documentation structure and template](structure.md) (if applicable).
-- The documentation requirements for the developer working on the docs.
-  - What concepts and procedures should the docs guide and enable the user to understand and accomplish?
-  - To this end, what new page(s) are needed, if any? What pages/subsections need updates? Consider user, admin, and API doc changes and additions.
-  - For any guide or instruction set, should it help address one or more use cases?
-  - Consider whether we need to update a previously recommended workflow, and if we should link the new feature from various relevant places. Consider all ways documentation should be affected.
-  - Include suggested titles of any pages or subsections, if applicable.
-- Add the `Documentation` label to the issue.
+- Add the `Documentation` label.
+- Confirm or add the [documentation requirements](#documentation-requirements).
+- Ensure the issue contains any new or updated feature name, overview/description,
+and use cases, as required per the [documentation structure and template](structure.md), when applicable.
 
-Anyone is welcome to draft the items above in the issue, but a product manager must:
-- Review and update any such content whenever the issue is assigned a specific milestone.
-- Finalize this content by the kickoff. 
+Everyone is encouraged to draft the requirements in the issue, but a product manager will
+do the following:
+
+- When the issue is assigned a release milestone, review and update the Documentation details.
+- By the kickoff, finalizie the Documentation details.
 
 ### 2. Developer roles
 
