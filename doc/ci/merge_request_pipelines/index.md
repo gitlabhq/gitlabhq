@@ -91,7 +91,7 @@ C:
 ```
 
 Since A and B are getting the `only:` rule to execute in all cases, they will
-always run. C specifies that it should only run for merge requests, so for any
+always run. `C` specifies that it should only run for merge requests, so for any
 pipeline except a merge request pipeline, it will not run.
 
 As you can see, this will help you avoid a lot of boilerplate where you'd need
