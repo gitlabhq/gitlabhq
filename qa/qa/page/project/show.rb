@@ -51,6 +51,16 @@ module QA
           element :branches_dropdown
         end
 
+        view 'app/views/projects/blob/viewers/_loading.html.haml' do
+          element :spinner
+        end
+
+        def wait_for_viewers_to_load
+          wait(reload: false) do
+            has_no_element?(:spinner)
+          end
+        end
+
         def create_first_new_file!
           within_element(:quick_actions) do
             click_link_with_text 'New file'
