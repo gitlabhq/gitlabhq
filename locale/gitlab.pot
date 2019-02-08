@@ -4817,6 +4817,9 @@ msgstr ""
 msgid "New Pages Domain"
 msgstr ""
 
+msgid "New Password"
+msgstr ""
+
 msgid "New Pipeline Schedule"
 msgstr ""
 
@@ -6614,6 +6617,9 @@ msgstr ""
 msgid "Set max session time for web terminal."
 msgstr ""
 
+msgid "Set new password"
+msgstr ""
+
 msgid "Set notification email for abuse reports."
 msgstr ""
 
@@ -6630,6 +6636,9 @@ msgid "Set up a specific Runner automatically"
 msgstr ""
 
 msgid "Set up new U2F device"
+msgstr ""
+
+msgid "Set up new password"
 msgstr ""
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
