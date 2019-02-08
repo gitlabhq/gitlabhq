@@ -410,18 +410,6 @@ describe Gitlab::Database do
     end
   end
 
-  describe '.terminate_all_connections' do
-    it 'returns true for PostgreSQL', :postgresql do
-      expect(described_class.terminate_all_connections).to be_truthy
-    end
-
-    it 'returns false for MySQL' do
-      expect(described_class).to receive(:postgresql?).and_return(false)
-
-      expect(described_class.terminate_all_connections).to be_falsey
-    end
-  end
-
   describe '#true_value' do
     it 'returns correct value for PostgreSQL' do
       expect(described_class).to receive(:postgresql?).and_return(true)

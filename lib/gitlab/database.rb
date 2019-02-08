@@ -235,28 +235,6 @@ module Gitlab
       connection.schema_cache.data_source_exists?(table_name)
     end
 
-    # WARNING: Only run this if you know what you're doing.
-    #
-    # If there are any clients connected to the DB, PostgreSQL won't let
-    # you drop the database. It's possible that Sidekiq, Unicorn, or
-    # some other client will be hanging onto a connection, preventing
-    # the DROP DATABASE from working. To workaround this problem, this
-    # method terminates all the connections so that a subsequent DROP
-    # will work.
-    def self.terminate_all_connections
-      return false unless Gitlab::Database.postgresql?
-
-      cmd = <<~SQL
-        SELECT pg_terminate_backend(pg_stat_activity.pid)
-        FROM pg_stat_activity
-        WHERE datname = current_database()
-        AND pid <> pg_backend_pid();
-      SQL
-
-      connection.execute(cmd)&.result_status == PG::PGRES_TUPLES_OK
-    rescue ActiveRecord::NoDatabaseError
-    end
-
     private_class_method :connection
 
     def self.database_version
