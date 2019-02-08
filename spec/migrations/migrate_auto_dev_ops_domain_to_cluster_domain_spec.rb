@@ -55,8 +55,8 @@ describe MigrateAutoDevOpsDomainToClusterDomain, :migration do
       expect(clusters_with_domain.count).to eq(20)
 
       project_auto_devops_with_domain.each do |project_auto_devops|
-        cluster_project = Clusters::Project.find_by(project_id: project_auto_devops.project_id)
-        cluster = Clusters::Cluster.find(cluster_project.cluster_id)
+        cluster_project = find_cluster_project(project_auto_devops.project_id)
+        cluster = find_cluster(cluster_project.cluster_id)
 
         expect(cluster.domain).to be_present
       end
@@ -64,8 +64,8 @@ describe MigrateAutoDevOpsDomainToClusterDomain, :migration do
       expect(clusters_without_domain.count).to eq(25)
 
       project_auto_devops_without_domain.each do |project_auto_devops|
-        cluster_project = Clusters::Project.find_by(project_id: project_auto_devops.project_id)
-        cluster = Clusters::Cluster.find(cluster_project.cluster_id)
+        cluster_project = find_cluster_project(project_auto_devops.project_id)
+        cluster = find_cluster(cluster_project.cluster_id)
 
         expect(cluster.domain).not_to be_present
       end
@@ -86,6 +86,14 @@ describe MigrateAutoDevOpsDomainToClusterDomain, :migration do
         domain: specific_domain
       )
     end
+  end
+
+  def find_cluster_project(project_id)
+    cluster_projects_table.where(project_id: project_id).first
+  end
+
+  def find_cluster(cluster_id)
+    clusters_table.where(id: cluster_id).first
   end
 
   def project_auto_devops_with_domain

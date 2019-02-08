@@ -221,7 +221,8 @@ module Clusters
     # ProjectAutoDevops#Domain, project variables or group variables,
     # as the AUTO_DEVOPS_DOMAIN is needed for CI_ENVIRONMENT_URL
     #
-    # This method should be removed on 12.0
+    # This method should is scheduled to be removed on
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/56959
     def legacy_auto_devops_domain
       if project_type?
         project&.auto_devops&.domain.presence ||
