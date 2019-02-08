@@ -18,13 +18,19 @@ Based on your installation, choose a section below that fits your needs.
 
 ## Installation from source
 
-- [Upgrading Community Edition from source][source-ce] - The individual
-  upgrade guides are for those who have installed GitLab CE from source.
-- [Upgrading Enterprise Edition from source][source-ee] - The individual
-  upgrade guides are for those who have installed GitLab EE from source.
+- [Upgrading Community Edition and Enterprise Edition from
+  source](upgrading_from_source.md) - The guidelines for upgrading Community
+  Edition and Enterprise Edition from source.
 - [Patch versions](patch_versions.md) guide includes the steps needed for a
   patch version, eg. 6.2.0 to 6.2.1, and apply to both Community and Enterprise
   Editions.
+
+In the past we used separate documents for the upgrading instructions, but we
+have since switched to using a single document. The old upgrading guidelines
+can still be found in the Git repository:
+
+- [Old upgrading guidelines for Community Edition][old-ce-upgrade-docs]
+- [Old upgrading guidelines for Enterprise Edition][old-ee-upgrade-docs]
 
 ## Installation using Docker
 
@@ -138,8 +144,8 @@ possible.
   upgrading a PostgreSQL database with minimal downtime.
 
 [omnidocker]: http://docs.gitlab.com/omnibus/docker/README.html
-[source-ee]: https://gitlab.com/gitlab-org/gitlab-ee/tree/master/doc/update
-[source-ce]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
+[old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/11-8-stable-ee/doc/update
+[old-ce-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/11-8-stable/doc/update
 [ee-ce]: ../downgrade_ee_to_ce/README.md
 [ce]: https://about.gitlab.com/features/#community
 [ee]: https://about.gitlab.com/features/#enterprise
