@@ -119,6 +119,15 @@ describe 'Dropdown hint', :js do
         expect_tokens([{ name: 'my-reaction' }])
         expect_filtered_search_input_empty
       end
+
+      it 'opens the yes-no dropdown when you click on confidential' do
+        click_hint('confidential')
+
+        expect(page).to have_css(js_dropdown_hint, visible: false)
+        expect(page).to have_css('#js-dropdown-confidential', visible: true)
+        expect_tokens([{ name: 'confidential' }])
+        expect_filtered_search_input_empty
+      end
     end
 
     describe 'selecting from dropdown with some input' do
