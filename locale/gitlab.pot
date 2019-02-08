@@ -8543,6 +8543,12 @@ msgstr ""
 msgid "ProjectOverview|Star"
 msgstr ""
 
+msgid "ProjectOverview|Starrer"
+msgstr ""
+
+msgid "ProjectOverview|Starrers"
+msgstr ""
+
 msgid "ProjectOverview|Unstar"
 msgstr ""
 
@@ -10286,6 +10292,9 @@ msgstr ""
 msgid "SortOptions|Recent sign in"
 msgstr ""
 
+msgid "SortOptions|Recently starred"
+msgstr ""
+
 msgid "SortOptions|Sort direction"
 msgstr ""
 
@@ -10377,6 +10386,9 @@ msgid "StarredProjectsEmptyState|Visit a project page and press on a star icon. 
 msgstr ""
 
 msgid "StarredProjectsEmptyState|You don't have starred projects yet."
+msgstr ""
+
+msgid "Starrers"
 msgstr ""
 
 msgid "Stars"
@@ -12219,6 +12231,9 @@ msgid "UserProfile|Snippets"
 msgstr ""
 
 msgid "UserProfile|Snippets in GitLab can either be private, internal, or public."
+msgstr ""
+
+msgid "UserProfile|Starred projects"
 msgstr ""
 
 msgid "UserProfile|Subscribe"

@@ -844,7 +844,7 @@ describe API::Projects do
     end
 
     it 'returns error when user not found' do
-      get api('/users/9999/projects/')
+      get api('/users/9999/starred_projects/')
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')

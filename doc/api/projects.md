@@ -475,21 +475,27 @@ GET /users/:user_id/starred_projects
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `user_id` | string | yes | The ID or username of the user |
-| `archived` | boolean | no | Limit by archived status |
-| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private` |
-| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
-| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
-| `search` | string | no | Return list of projects matching the search criteria |
-| `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
-| `owned` | boolean | no | Limit by projects explicitly owned by the current user |
-| `membership` | boolean | no | Limit by projects that the current user is a member of |
-| `starred` | boolean | no | Limit by projects starred by the current user |
-| `statistics` | boolean | no | Include project statistics |
-| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
-| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
-| `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
+| `user_id` | string | yes | The ID or username of the user. |
+| `archived` | boolean | no | Limit by archived status. |
+| `visibility` | string | no | Limit by visibility `public`, `internal`, or `private`. |
+| `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
+| `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc`. |
+| `search` | string | no | Return list of projects matching the search criteria. |
+| `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned.. |
+| `owned` | boolean | no | Limit by projects explicitly owned by the current user. |
+| `membership` | boolean | no | Limit by projects that the current user is a member of. |
+| `starred` | boolean | no | Limit by projects starred by the current user. |
+| `statistics` | boolean | no | Include project statistics. |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only). |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature. |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature. |
+| `min_access_level` | integer | no | Limit by current user minimal [access level](members.md). |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/users/5/starred_projects"
+```
+
+Example response:
 
 ```json
 [
@@ -1339,7 +1345,7 @@ Example response:
 
 ## List Starrers of a project
 
-List the users who starred the the specified project
+List the users who starred the specified project.
 
 ```
 GET /projects/:id/starrers
@@ -1347,7 +1353,7 @@ GET /projects/:id/starrers
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `search` | string | no | Search for specific users |
+| `search` | string | no | Search for specific users. |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/starrers"
