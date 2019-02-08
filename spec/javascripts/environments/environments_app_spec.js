@@ -9,7 +9,6 @@ describe('Environment', () => {
   const mockData = {
     endpoint: 'environments.json',
     canCreateEnvironment: true,
-    canCreateDeployment: true,
     canReadEnvironment: true,
     cssContainerClass: 'container',
     newEnvironmentPath: 'environments/new',
