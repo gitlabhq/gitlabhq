@@ -284,11 +284,11 @@ class User < ApplicationRecord
   scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
   scope :with_visible_profile, -> (user) {
     if user.nil?
-      where(private_profile: [false, nil])
+      where(private_profile: false)
     elsif user.admin?
       all
     else
-      where(private_profile: [false, nil]).or where(id: user.id)
+      where(private_profile: false).or where(id: user.id)
     end
   }
 
