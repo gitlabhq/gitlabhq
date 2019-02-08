@@ -13,18 +13,21 @@
   %p.light
     = _("Pipelines for last week")
     (#{date_from_to(Date.today - 7.days, Date.today)})
-  %canvas#weekChart{ height: 200 }
+  %div
+    %canvas#weekChart{ height: 200 }
 
 .prepend-top-default
   %p.light
     = _("Pipelines for last month")
     (#{date_from_to(Date.today - 30.days, Date.today)})
-  %canvas#monthChart{ height: 200 }
+  %div
+    %canvas#monthChart{ height: 200 }
 
 .prepend-top-default
   %p.light
     = _("Pipelines for last year")
-  %canvas#yearChart.padded{ height: 250 }
+  %div
+    %canvas#yearChart.padded{ height: 250 }
 
 -# haml-lint:disable InlineJavaScript
 %script#pipelinesChartsData{ type: "application/json" }
