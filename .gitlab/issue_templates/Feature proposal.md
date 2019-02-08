@@ -39,11 +39,8 @@ Existing personas are: (copy relevant personas out of this comment, and delete a
 
 ### Documentation
 
-<!-- See the Documentation Workflows https://docs.gitlab.com/ee/development/documentation/workflow.html and specify the following:
-What doc pages need to be created or updated across user, admin, and API docs?
-What concepts, procedures, or information is needed in each area? Is there an 'old way' that should be deprecated in the docs?
-If applicable, specify a new or updated feature name, description, benefits, and use cases, which may all be used in the documentation or features.yml.
-Which use cases or scenarios would benefit from a set of instructions or a guide, whether unique to each use case or flexible enough to cover multiple use cases. -->
+<!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html
+Add all known Documentation Requirements here, per https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#documentation-requirements -->
 
 ### What does success look like, and how can we measure that?
 
