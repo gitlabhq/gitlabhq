@@ -87,3 +87,11 @@ You can choose between 3 options:
 - Files and Readme (default)
 - Readme
 - Activity
+
+## Localization
+
+### First day of the week
+
+The first day of the week can be customised for calendar views and date pickers.
+
+You can choose **Sunday** or **Monday** as the first day of the week. If you select **System Default**, the system-wide default setting will be used.

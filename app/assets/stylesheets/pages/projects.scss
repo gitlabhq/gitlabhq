@@ -507,12 +507,6 @@
   }
 
   .template-option {
-    .logo {
-      .btn-template-icon {
-        width: 40px !important;
-      }
-    }
-
     padding: 16px 0;
 
     &:not(:first-child) {
@@ -551,9 +545,8 @@
     }
 
     .selected-icon {
-      svg {
+      img {
         display: none;
-        top: 7px;
         height: 20px;
         width: 20px;
       }
@@ -946,6 +939,11 @@ pre.light-well {
     .flex-wrapper {
       min-width: 0;
       margin-top: -$gl-padding-8; // negative margin required for flex-wrap
+      flex: 1 1 100%;
+
+      .project-title {
+        line-height: 20px;
+      }
     }
 
     p,
@@ -984,14 +982,16 @@ pre.light-well {
   }
 
   .controls {
-    margin-top: $gl-padding-8;
+    @include media-breakpoint-down(xs) {
+      margin-top: $gl-padding-8;
+    }
 
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-up(sm) {
       margin-top: 0;
     }
 
-    @include media-breakpoint-down(xs) {
-      margin-top: $gl-padding-8;
+    @include media-breakpoint-up(lg) {
+      flex: 1 1 40%;
     }
 
     .icon-wrapper {
@@ -1041,7 +1041,7 @@ pre.light-well {
       min-height: 40px;
       min-width: 40px;
 
-      .identicon.s64 {
+      .identicon.s48 {
         font-size: 16px;
       }
     }

@@ -1,0 +1,5 @@
+---
+title: API allows setting the squash commit message when squashing a merge request
+merge_request: 24784
+author:
+type: added

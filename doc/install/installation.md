@@ -345,11 +345,15 @@ cd /home/git
 
 ```sh
 # Clone GitLab repository
-sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-7-stable gitlab
+sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b X-Y-stable gitlab
 ```
 
+Make sure to replace `X-Y-stable` with the stable branch that matches the
+version you want to install. For example, if you want to install 11.8 you would
+use the branch name `11-8-stable`.
+
 CAUTION: **Caution:**
-You can change `11-7-stable` to `master` if you want the *bleeding edge* version, but never install `master` on a production server!
+You can change `X-Y-stable` to `master` if you want the *bleeding edge* version, but never install `master` on a production server!
 
 ### Configure It
 

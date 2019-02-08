@@ -23,11 +23,14 @@ The squashed commit's commit message will be either:
 - Taken from the first multi-line commit message in the merge.
 - The merge request's title if no multi-line commit message is found.
 
-Note that the squashed commit is still followed by a merge commit,
-as the merge method for this example repository uses a merge commit.
-Squashing also works with the fast-forward merge strategy, see
-[squashing and fast-forward merge](#squash-and-fast-forward-merge) for more
-details.
+It can be customized before merging a merge request.
+
+![A squash commit message editor](img/squash_mr_message.png)
+
+NOTE: **Note:**
+The squashed commit in this example is followed by a merge commit, as the merge method for this example repository uses a merge commit.
+
+Squashing also works with the fast-forward merge strategy, see [squashing and fast-forward merge](#squash-and-fast-forward-merge) for more details.
 
 ## Use cases
 
@@ -60,7 +63,7 @@ This can then be overridden at the time of accepting the merge request:
 
 The squashed commit has the following metadata:
 
-- Message: the message of the squash commit.
+- Message: the message of the squash commit, or a customized message.
 - Author: the author of the merge request.
 - Committer: the user who initiated the squash.
 

@@ -228,6 +228,9 @@ class User < ApplicationRecord
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :notes_filter_for, to: :user_preference
   delegate :set_notes_filter, to: :user_preference
+  delegate :first_day_of_week, :first_day_of_week=, to: :user_preference
+
+  accepts_nested_attributes_for :user_preference, update_only: true
 
   state_machine :state, initial: :active do
     event :block do

@@ -305,7 +305,7 @@ class IssuableFinder
   def use_subquery_for_search?
     strong_memoize(:use_subquery_for_search) do
       attempt_group_search_optimizations? &&
-        Feature.enabled?(:use_subquery_for_group_issues_search, default_enabled: false)
+        Feature.enabled?(:use_subquery_for_group_issues_search, default_enabled: true)
     end
   end
 

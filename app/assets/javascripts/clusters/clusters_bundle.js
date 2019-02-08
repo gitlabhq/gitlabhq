@@ -6,7 +6,13 @@ import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
-import { APPLICATION_STATUS, REQUEST_SUBMITTED, REQUEST_FAILURE } from './constants';
+import {
+  APPLICATION_STATUS,
+  REQUEST_SUBMITTED,
+  REQUEST_FAILURE,
+  UPGRADE_REQUESTED,
+  UPGRADE_REQUEST_FAILURE,
+} from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
@@ -120,11 +126,17 @@ export default class Clusters {
   addListeners() {
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
+    eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
+    eventHub.$on('upgradeFailed', appId => this.upgradeFailed(appId));
+    eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
   }
 
   removeListeners() {
     if (this.showTokenButton) this.showTokenButton.removeEventListener('click', this.showToken);
     eventHub.$off('installApplication', this.installApplication);
+    eventHub.$off('upgradeApplication', this.upgradeApplication);
+    eventHub.$off('upgradeFailed', this.upgradeFailed);
+    eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
   }
 
   initPolling() {
@@ -243,6 +255,21 @@ export default class Clusters {
         s__('ClusterIntegration|Request to begin installing failed'),
       );
     });
+  }
+
+  upgradeApplication(data) {
+    const appId = data.id;
+    this.store.updateAppProperty(appId, 'requestStatus', UPGRADE_REQUESTED);
+    this.store.updateAppProperty(appId, 'status', APPLICATION_STATUS.UPDATING);
+    this.service.installApplication(appId, data.params).catch(() => this.upgradeFailed(appId));
+  }
+
+  upgradeFailed(appId) {
+    this.store.updateAppProperty(appId, 'requestStatus', UPGRADE_REQUEST_FAILURE);
+  }
+
+  dismissUpgradeSuccess(appId) {
+    this.store.updateAppProperty(appId, 'requestStatus', null);
   }
 
   destroy() {

@@ -12,6 +12,10 @@ module Clusters
           end
         end
       end
+
+      def update_available?
+        version != self.class.const_get(:VERSION)
+      end
     end
   end
 end

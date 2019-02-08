@@ -391,6 +391,11 @@ img.emoji {
 .flex-no-shrink { flex-shrink: 0; }
 .ws-initial { white-space: initial; }
 .overflow-auto { overflow: auto; }
+.d-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 /** COMMON SIZING CLASSES **/
 .w-0 { width: 0; }
@@ -401,6 +406,10 @@ img.emoji {
 .mw-6em { max-width: 6em; }
 
 .min-height-0 { min-height: 0; }
+
+.w-3 { width: #{3 * $grid-size}; }
+
+.h-3 { width: #{3 * $grid-size}; }
 
 /** COMMON SPACING CLASSES **/
 .gl-pl-0 { padding-left: 0; }

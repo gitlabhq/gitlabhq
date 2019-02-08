@@ -33,6 +33,7 @@ export default function memberExpirationDate(selector = '.js-access-expiration-d
 
         toggleClearInput.call($input);
       },
+      firstDay: gon.first_day_of_week,
     });
 
     calendar.setDate(parsePikadayDate($input.val()));

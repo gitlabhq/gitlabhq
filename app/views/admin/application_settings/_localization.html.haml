@@ -1,0 +1,11 @@
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-localization-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :first_day_of_week, _('Default first day of the week'), class: 'label-bold'
+      = f.select :first_day_of_week, first_day_of_week_choices, {}, class: 'form-control'
+      .form-text.text-muted
+        = _('Default first day of the week in calendars and date pickers.')
+
+  = f.submit _('Save changes'), class: "btn btn-success"
