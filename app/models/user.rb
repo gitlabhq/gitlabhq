@@ -275,6 +275,7 @@ class User < ApplicationRecord
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
+  scope :with_emails, -> { preload(:emails) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #
