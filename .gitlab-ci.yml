@@ -388,11 +388,13 @@ flaky-examples-check:
 
 .assets-compile-cache: &assets-compile-cache
   cache:
-    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v3"
+    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v4"
     paths:
       - vendor/ruby/
       - .yarn-cache/
-      - tmp/cache/assets/sprockets
+      # We have disabled caching of sprockets for now, as it fails to pick up changes in SCSS:
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/57431
+      # - tmp/cache/assets/sprockets
 
 compile-assets:
   <<: *dedicated-runner
