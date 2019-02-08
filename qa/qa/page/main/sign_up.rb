@@ -23,7 +23,7 @@ module QA
 
           check_element :new_user_accept_terms if has_element?(:new_user_accept_terms)
 
-          signed_in = with_retry do
+          signed_in = retry_until do
             click_element :new_user_register_button
 
             Page::Main::Menu.act { has_personal_area? }

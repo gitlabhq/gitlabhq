@@ -33,7 +33,7 @@ module QA
         false
       end
 
-      def with_retry(max_attempts: 3, reload: false)
+      def retry_until(max_attempts: 3, reload: false)
         attempts = 0
 
         while attempts < max_attempts
@@ -46,6 +46,21 @@ module QA
         end
 
         false
+      end
+
+      def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.0)
+        attempts = 0
+
+        begin
+          yield
+        rescue StandardError
+          sleep sleep_interval
+          refresh if reload
+          attempts += 1
+
+          retry if attempts < max_attempts
+          raise
+        end
       end
 
       def scroll_to(selector, text: nil)
