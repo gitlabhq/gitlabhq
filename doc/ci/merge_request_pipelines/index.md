@@ -64,7 +64,7 @@ that rule are run in the context of a merge request; no other jobs will be run.
 This behavior may not be intuitive when you want all of your jobs to run _except_
 for one or two. Consider the following pipeline, with jobs A B and C. If you want
 all pipelines to always run A and B, but only want C to run for a merge request,
-you can set things up like this to make that work:
+you can configure your `.gitlab-ci.yml` file as follows:
 
 ``` yaml
 .only-default: &only-default
