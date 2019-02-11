@@ -12,7 +12,7 @@ In addition to this page, the following resources to help craft and contribute d
 - [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
 - [Workflow](workflow.md) - A landing page for our key workflows:
   - [Feature-change documentation workflow](feature-change-workflow.md) - Adding required documentation when developing a GitLab feature.
-  - [Documentation improvement worflow](improvement-workflow.md) - New content not associated with a new feature.
+  - [Documentation improvement workflow](improvement-workflow.md) - New content not associated with a new feature.
 - [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
 - [Site architecture](site_architecture/index.md) - How docs.gitlab.com is built.
 
