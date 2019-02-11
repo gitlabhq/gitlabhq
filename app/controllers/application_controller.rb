@@ -137,6 +137,8 @@ class ApplicationController < ActionController::Base
     if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
       payload[:response] = response.body
     end
+
+    payload[:queue_duration] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
   end
 
   ##
