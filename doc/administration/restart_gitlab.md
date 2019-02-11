@@ -62,7 +62,8 @@ sudo gitlab-ctl status
 
 Notice that all services say `ok: run`.
 
-Sometimes, components time out during the restart and sometimes they get stuck.
+Sometimes, components time out (look for `timeout` in the logs) during the
+restart and sometimes they get stuck.
 In that case, you can use `gitlab-ctl kill <service>` to send the `SIGKILL`
 signal to the service, for example `sidekiq`. After that, a restart should
 perform fine.
