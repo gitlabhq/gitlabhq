@@ -2501,6 +2501,9 @@ msgstr ""
 msgid "Data is still calculating..."
 msgstr ""
 
+msgid "Date picker"
+msgstr ""
+
 msgid "Debug"
 msgstr ""
 
