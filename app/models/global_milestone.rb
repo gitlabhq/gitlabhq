@@ -9,6 +9,8 @@ class GlobalMilestone
   attr_accessor :title, :milestones
   alias_attribute :name, :title
 
+  delegate :milestoneish_id, to: :milestone
+
   def for_display
     @first_milestone
   end
@@ -46,6 +48,10 @@ class GlobalMilestone
     @name = title
     @milestones = milestones
     @first_milestone = milestones.find {|m| m.description.present? } || milestones.first
+  end
+
+  def milestone
+    milestones.first
   end
 
   def milestoneish_ids
