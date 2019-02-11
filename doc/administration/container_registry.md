@@ -600,9 +600,16 @@ The Docker daemon running the command expects a cert signed by a recognized CA,
 thus the error above.
 
 While GitLab doesn't support using self-signed certificates with Container
-Registry out of the box, it is possible to make it work if you follow
-[Docker's documentation][docker-insecure-self-signed]. You may find some additional
-information in [issue 18239][ce-18239].
+Registry out of the box, it is possible to make it work by [instructing the docker-daemon to trust the self-signed certificates][docker-insecure-self-signed], mounting the docker-daemon and setting `privileged = false` in the runner's `config.toml`. Setting `privileged = true` takes precedence over the docker-daemon.
+
+```
+  [runners.docker]
+    image = "ruby:2.1"
+    privileged = false
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+```
+
+You may find some additional information in [issue 18239][ce-18239].
 
 ## Troubleshooting
 
