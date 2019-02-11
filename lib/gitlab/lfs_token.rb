@@ -47,11 +47,12 @@ module Gitlab
       user? ? :lfs_token : :lfs_deploy_token
     end
 
-    def for_gitlab_shell(repository_http_path)
+    def authentication_payload(repository_http_path)
       {
         username: actor_name,
         lfs_token: token,
-        repository_http_path: repository_http_path
+        repository_http_path: repository_http_path,
+        expires_in: DEFAULT_EXPIRE_TIME
       }
     end
 

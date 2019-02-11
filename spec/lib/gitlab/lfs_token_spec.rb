@@ -227,17 +227,17 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe '#for_gitlab_shell' do
-    let(:actor) { create(:user) }
-    let(:lfs_token) { described_class.new(actor) }
-    let(:repo_http_path) { 'http://localhost/user/repo.git' }
+  describe '#authentication_payload' do
+    it 'returns a Hash designed for gitlab-shell' do
+      actor = create(:user)
+      lfs_token = described_class.new(actor)
+      repo_http_path = 'http://localhost/user/repo.git'
+      authentication_payload = lfs_token.authentication_payload(repo_http_path)
 
-    it 'returns a Hash desgined for gitlab-shell' do
-      hash = lfs_token.for_gitlab_shell(repo_http_path)
-
-      expect(hash[:username]).to eq(actor.username)
-      expect(hash[:repository_http_path]).to eq(repo_http_path)
-      expect(hash[:lfs_token]).to be_a String
+      expect(authentication_payload[:username]).to eq(actor.username)
+      expect(authentication_payload[:repository_http_path]).to eq(repo_http_path)
+      expect(authentication_payload[:lfs_token]).to be_a String
+      expect(authentication_payload[:expires_in]).to eq(described_class::DEFAULT_EXPIRE_TIME)
     end
   end
 end
