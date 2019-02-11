@@ -27,7 +27,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
-    it { is_expected.to be_allowed_for(project_guest) }
+    it { is_expected.to be_denied_for(project_guest) }
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
@@ -42,7 +42,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
-    it { is_expected.to be_allowed_for(project_guest) }
+    it { is_expected.to be_denied_for(project_guest) }
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
@@ -58,7 +58,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
-    it { is_expected.to be_allowed_for(project_guest) }
+    it { is_expected.to be_denied_for(project_guest) }
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
@@ -73,7 +73,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
-    it { is_expected.to be_allowed_for(project_guest) }
+    it { is_expected.to be_denied_for(project_guest) }
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:external) }
     it { is_expected.to be_denied_for(:visitor) }
@@ -92,5 +92,29 @@ describe 'Private Group access' do
     it { is_expected.to be_denied_for(:user) }
     it { is_expected.to be_denied_for(:visitor) }
     it { is_expected.to be_denied_for(:external) }
+  end
+
+  describe 'GET /groups/:path for shared projects' do
+    let(:project) { create(:project, :public) }
+    before do
+      Projects::GroupLinks::CreateService.new(
+        project,
+        create(:user),
+        link_group_access: ProjectGroupLink::DEVELOPER
+      ).execute(group)
+    end
+
+    subject { group_path(group) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(group) }
+    it { is_expected.to be_allowed_for(:maintainer).of(group) }
+    it { is_expected.to be_allowed_for(:developer).of(group) }
+    it { is_expected.to be_allowed_for(:reporter).of(group) }
+    it { is_expected.to be_allowed_for(:guest).of(group) }
+    it { is_expected.to be_denied_for(project_guest) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
   end
 end

@@ -85,6 +85,7 @@ describe Projects::GroupLinksController do
                       project_id: project,
                       link_group_id: group2.id,
                       link_group_access: ProjectGroupLink.default_access)
+
       end
 
       it 'does not share project with selected group' do
