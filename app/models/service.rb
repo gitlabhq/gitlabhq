@@ -255,7 +255,6 @@ class Service < ActiveRecord::Base
       external_wiki
       flowdock
       hangouts_chat
-      hipchat
       irker
       jira
       kubernetes
