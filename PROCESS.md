@@ -210,11 +210,11 @@ Once the stable branch is frozen, the only MRs that can be cherry-picked into
 the stable branch are:
 
 * Fixes for [regressions](#regressions) where the affected version `xx.x` in `regression:xx.x` is the current release. See [Managing bugs](#managing-bugs) section.
-* Fixes for security issues
-* Fixes or improvements to automated QA scenarios
-* [Essential documentation improvements](https://docs.gitlab.com/ee/development/documentation/workflow.html) for changes in the same release
-* New or updated translations (as long as they do not touch application code)
-* Changes that are behind a feature flag and have the ~"feature flag" label
+* Fixes for security issues.
+* Fixes or improvements to automated QA scenarios.
+* [Documentation improvements](https://docs.gitlab.com/ee/development/documentation/workflow.html) for feature changes made in the same release, though initial docs for these features should have already been merged by the freeze, as required.
+* New or updated translations (as long as they do not touch application code).
+* Changes that are behind a feature flag and have the ~"feature flag" label.
 
 During the feature freeze all merge requests that are meant to go into the
 upcoming release should have the correct milestone assigned _and_ the
