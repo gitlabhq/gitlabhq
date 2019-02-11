@@ -14,11 +14,11 @@ module MergeRequests
     def execute(merge_request)
       @merge_request = merge_request
 
-      error_check!
+      validate!
 
       commit_id = commit
 
-      raise MergeError, 'Conflicts detected during merge' unless commit_id
+      raise_error('Conflicts detected during merge') unless commit_id
 
       success(commit_id: commit_id)
     rescue MergeError => error
@@ -26,6 +26,11 @@ module MergeRequests
     end
 
     private
+
+    def validate!
+      authorization_check!
+      error_check!
+    end
 
     def error_check!
       error =
@@ -41,7 +46,13 @@ module MergeRequests
           'No source for merge'
         end
 
-      raise MergeError, error if error
+      raise_error(error) if error
+    end
+
+    def authorization_check!
+      unless Ability.allowed?(current_user, :admin_merge_request, project)
+        raise_error("You are not allowed to merge to this ref")
+      end
     end
 
     def target_ref

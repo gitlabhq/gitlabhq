@@ -3,6 +3,22 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeToRefService do
+  shared_examples_for 'MergeService for target ref' do
+    it 'target_ref has the same state of target branch' do
+      repo = merge_request.target_project.repository
+
+      process_merge_to_ref
+      merge_service.execute(merge_request)
+
+      ref_commits = repo.commits(merge_request.merge_ref_path, limit: 3)
+      target_branch_commits = repo.commits(merge_request.target_branch, limit: 3)
+
+      ref_commits.zip(target_branch_commits).each do |ref_commit, target_branch_commit|
+        expect(ref_commit.parents).to eq(target_branch_commit.parents)
+      end
+    end
+  end
+
   set(:user) { create(:user) }
   let(:merge_request) { create(:merge_request, :simple) }
   let(:project) { merge_request.project }
@@ -74,22 +90,6 @@ describe MergeRequests::MergeToRefService do
 
       let(:merge_service) do
         MergeRequests::MergeService.new(project, user, {})
-      end
-
-      shared_examples_for 'MergeService for target ref' do
-        it 'target_ref has the same state of target branch' do
-          repo = merge_request.target_project.repository
-
-          process_merge_to_ref
-          merge_service.execute(merge_request)
-
-          ref_commits = repo.commits(merge_request.merge_ref_path, limit: 3)
-          target_branch_commits = repo.commits(merge_request.target_branch, limit: 3)
-
-          ref_commits.zip(target_branch_commits).each do |ref_commit, target_branch_commit|
-            expect(ref_commit.parents).to eq(target_branch_commit.parents)
-          end
-        end
       end
 
       context 'when merge commit' do
@@ -175,6 +175,18 @@ describe MergeRequests::MergeToRefService do
       end
 
       it { expect(todo).not_to be_done }
+    end
+
+    it 'returns error when user has no authorization to admin the merge request' do
+      unauthorized_user = create(:user)
+      project.add_reporter(unauthorized_user)
+
+      service = described_class.new(project, unauthorized_user)
+
+      result = service.execute(merge_request)
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('You are not allowed to merge to this ref')
     end
   end
 end

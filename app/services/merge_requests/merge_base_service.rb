@@ -27,6 +27,10 @@ module MergeRequests
 
     private
 
+    def raise_error(message)
+      raise MergeError, message
+    end
+
     def handle_merge_error(*args)
       # No-op
     end

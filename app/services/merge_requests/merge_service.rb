@@ -18,7 +18,7 @@ module MergeRequests
 
       @merge_request = merge_request
 
-      error_check!
+      validate!
 
       merge_request.in_locked_state do
         if commit
@@ -34,6 +34,17 @@ module MergeRequests
 
     private
 
+    def validate!
+      authorization_check!
+      error_check!
+    end
+
+    def authorization_check!
+      unless @merge_request.can_be_merged_by?(current_user)
+        raise_error('You are not allowed to merge this merge request')
+      end
+    end
+
     def error_check!
       error =
         if @merge_request.should_be_rebased?
@@ -44,7 +55,7 @@ module MergeRequests
           'No source for merge'
         end
 
-      raise MergeError, error if error
+      raise_error(error) if error
     end
 
     def commit
@@ -54,7 +65,7 @@ module MergeRequests
       if commit_id
         log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
       else
-        raise MergeError, 'Conflicts detected during merge'
+        raise_error('Conflicts detected during merge')
       end
 
       merge_request.update!(merge_commit_sha: commit_id)
@@ -64,10 +75,10 @@ module MergeRequests
       repository.merge(current_user, source, merge_request, commit_message)
     rescue Gitlab::Git::PreReceiveError => e
       handle_merge_error(log_message: e.message)
-      raise MergeError, 'Something went wrong during merge pre-receive hook'
+      raise_error('Something went wrong during merge pre-receive hook')
     rescue => e
       handle_merge_error(log_message: e.message)
-      raise MergeError, 'Something went wrong during merge'
+      raise_error('Something went wrong during merge')
     ensure
       merge_request.update!(in_progress_merge_commit_sha: nil)
     end
