@@ -119,11 +119,10 @@ The following guides are for subscribers of the Enterprise Edition only.
 If you wish to upgrade your GitLab installation from Community to Enterprise
 Edition, follow the guides below based on the installation method:
 
-- [Source CE to EE update guides][source-ee] - Find your version, and follow the
-  `-ce-to-ee.md` guide. The steps are very similar to a version upgrade: stop
-  the server, get the code, update config files for the new functionality,
-  install libraries and do migrations, update the init script, start the
-  application and check its status.
+- [Source CE to EE update guides][source-ce-to-ee] - The steps are very similar
+  to a version upgrade: stop the server, get the code, update config files for
+  the new functionality, install libraries and do migrations, update the init
+  script, start the application and check its status.
 - [Omnibus CE to EE][omni-ce-ee] - Follow this guide to update your Omnibus
   GitLab Community Edition to the Enterprise Edition.
 
@@ -146,6 +145,7 @@ possible.
 [omnidocker]: http://docs.gitlab.com/omnibus/docker/README.html
 [old-ee-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ee/tree/11-8-stable-ee/doc/update
 [old-ce-upgrade-docs]: https://gitlab.com/gitlab-org/gitlab-ce/tree/11-8-stable/doc/update
+[source-ce-to-ee]: upgrading_from_ce_to_ee.md
 [ee-ce]: ../downgrade_ee_to_ce/README.md
 [ce]: https://about.gitlab.com/features/#community
 [ee]: https://about.gitlab.com/features/#enterprise
