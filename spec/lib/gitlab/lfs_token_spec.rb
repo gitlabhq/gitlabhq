@@ -4,10 +4,8 @@ require 'spec_helper'
 
 describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
   describe '#token' do
-    shared_examples 'an LFS token generator' do
+    shared_examples 'a valid LFS token' do
       it 'returns a computed token' do
-        expect(Settings).to receive(:attr_encrypted_db_key_base).and_return('fbnbv6hdjweo53qka7kza8v8swxc413c05pb51qgtfte0bygh1p2e508468hfsn5ntmjcyiz7h1d92ashpet5pkdyejg7g8or3yryhuso4h8o5c73h429d9c3r6bjnet').twice
-
         token = lfs_token.token
 
         expect(token).not_to be_nil
@@ -20,11 +18,7 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
       let(:actor) { create(:user, username: 'test_user_lfs_1') }
       let(:lfs_token) { described_class.new(actor) }
 
-      before do
-        allow(actor).to receive(:encrypted_password).and_return('$2a$04$ETfzVS5spE9Hexn9wh6NUenCHG1LyZ2YdciOYxieV1WLSa8DHqOFO')
-      end
-
-      it_behaves_like 'an LFS token generator'
+      it_behaves_like 'a valid LFS token'
 
       it 'returns the correct username' do
         expect(lfs_token.actor_name).to eq(actor.username)
@@ -40,11 +34,7 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
       let(:actor) { create(:key, user: user) }
       let(:lfs_token) { described_class.new(actor) }
 
-      before do
-        allow(user).to receive(:encrypted_password).and_return('$2a$04$C1GAMKsOKouEbhKy2JQoe./3LwOfQAZc.hC8zW2u/wt8xgukvnlV.')
-      end
-
-      it_behaves_like 'an LFS token generator'
+      it_behaves_like 'a valid LFS token'
 
       it 'returns the correct username' do
         expect(lfs_token.actor_name).to eq(user.username)
@@ -65,7 +55,7 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
         allow(actor).to receive(:id).and_return(actor_id)
       end
 
-      it_behaves_like 'an LFS token generator'
+      it_behaves_like 'a valid LFS token'
 
       it 'returns the correct username' do
         expect(lfs_token.actor_name).to eq("lfs+deploy-key-#{actor_id}")
@@ -86,10 +76,6 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
   describe '#token_valid?' do
     let(:actor) { create(:user, username: 'test_user_lfs_1') }
     let(:lfs_token) { described_class.new(actor) }
-
-    before do
-      allow(actor).to receive(:encrypted_password).and_return('$2a$04$ETfzVS5spE9Hexn9wh6NUenCHG1LyZ2YdciOYxieV1WLSa8DHqOFO')
-    end
 
     context 'for an HMAC token' do
       before do
