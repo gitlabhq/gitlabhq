@@ -97,7 +97,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     let(:platform) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem, token: token) }
 
     let(:api_url) { 'https://kube.domain.com' }
-    let(:ca_pem) { 'CA PEM DATA' }
+    let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
     let(:token) { 'token' }
 
     let(:kubeconfig) do
