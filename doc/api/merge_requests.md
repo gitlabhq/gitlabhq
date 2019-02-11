@@ -24,6 +24,7 @@ GET /merge_requests?labels=bug,reproduced
 GET /merge_requests?author_id=5
 GET /merge_requests?my_reaction_emoji=star
 GET /merge_requests?scope=assigned_to_me
+GET /merge_requests?search=foo&in=title
 ```
 
 Parameters:
@@ -47,6 +48,7 @@ Parameters:
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
+| `in`                | string   | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
 | `wip`               | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
 ```json
@@ -182,6 +184,7 @@ Parameters:
 | `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
 | `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
 | `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
+| `wip`               | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
 ```json
 [
@@ -991,6 +994,8 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required)            - Internal ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
+- `squash_commit_message` (optional)        - Custom squash commit message
+- `squash` (optional)                       - if `true` the commits will be squashed into a single commit on merge
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
 - `merge_when_pipeline_succeeds` (optional) - if `true` the MR is merged when the pipeline succeeds
 - `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail

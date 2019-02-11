@@ -18,12 +18,13 @@ module MembersHelper
         "remove #{member.user.name} from"
       end
 
-    "#{text} #{action} the #{member.source.human_name} #{member.real_source_type.humanize(capitalize: false)}?"
+    "#{text} #{action} the #{member.source.human_name} #{source_text(member)}?"
   end
 
   def remove_member_title(member)
     action = member.request? ? 'Deny access request' : 'Remove user'
-    "#{action} from #{member.real_source_type.humanize(capitalize: false)}"
+
+    "#{action} from #{source_text(member)}"
   end
 
   def leave_confirmation_message(member_source)
@@ -34,5 +35,15 @@ module MembersHelper
   def filter_group_project_member_path(options = {})
     options = params.slice(:search, :sort).merge(options).permit!
     "#{request.path}?#{options.to_param}"
+  end
+
+  private
+
+  def source_text(member)
+    type = member.real_source_type.humanize(capitalize: false)
+
+    return type if member.request? || member.invite? || type != 'group'
+
+    'group and any subresources'
   end
 end

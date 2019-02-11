@@ -1,13 +1,11 @@
 <script>
 import PodBox from './pod_box.vue';
-import ClipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import Icon from '~/vue_shared/components/icon.vue';
+import Url from './url.vue';
 
 export default {
   components: {
-    Icon,
     PodBox,
-    ClipboardButton,
+    Url,
   },
   props: {
     func: {
@@ -36,24 +34,9 @@ export default {
   <section id="serverless-function-details">
     <h3>{{ name }}</h3>
     <div class="append-bottom-default">
-      <div v-for="line in description.split('\n')" :key="line">{{ line }}<br /></div>
+      <div v-for="(line, index) in description.split('\n')" :key="index">{{ line }}</div>
     </div>
-    <div class="clipboard-group append-bottom-default">
-      <div class="label label-monospace">{{ funcUrl }}</div>
-      <clipboard-button
-        :text="String(funcUrl)"
-        :title="s__('ServerlessDetails|Copy URL to clipboard')"
-        class="input-group-text js-clipboard-btn"
-      />
-      <a
-        :href="funcUrl"
-        target="_blank"
-        rel="noopener noreferrer nofollow"
-        class="input-group-text btn btn-default"
-      >
-        <icon name="external-link" />
-      </a>
-    </div>
+    <url :uri="funcUrl" />
 
     <h4>{{ s__('ServerlessDetails|Kubernetes Pods') }}</h4>
     <div v-if="podCount > 0">

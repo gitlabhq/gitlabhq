@@ -1,0 +1,5 @@
+---
+title: Fix template labels not being created on new projects
+merge_request: 24803
+author:
+type: fixed

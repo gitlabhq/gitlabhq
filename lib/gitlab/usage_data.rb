@@ -81,6 +81,7 @@ module Gitlab
             pages_domains: count(PagesDomain),
             projects: count(Project),
             projects_imported_from_github: count(Project.where(import_type: 'github')),
+            projects_with_repositories_enabled: count(ProjectFeature.where('repository_access_level > ?', ProjectFeature::DISABLED)),
             protected_branches: count(ProtectedBranch),
             releases: count(Release),
             remote_mirrors: count(RemoteMirror),

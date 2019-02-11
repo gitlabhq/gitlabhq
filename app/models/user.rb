@@ -228,6 +228,9 @@ class User < ApplicationRecord
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :notes_filter_for, to: :user_preference
   delegate :set_notes_filter, to: :user_preference
+  delegate :first_day_of_week, :first_day_of_week=, to: :user_preference
+
+  accepts_nested_attributes_for :user_preference, update_only: true
 
   state_machine :state, initial: :active do
     event :block do
@@ -267,6 +270,8 @@ class User < ApplicationRecord
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
+  scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
+  scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
@@ -337,6 +342,8 @@ class User < ApplicationRecord
       case order_method.to_s
       when 'recent_sign_in' then order_recent_sign_in
       when 'oldest_sign_in' then order_oldest_sign_in
+      when 'last_activity_on_desc' then order_recent_last_activity
+      when 'last_activity_on_asc' then order_oldest_last_activity
       else
         order_by(order_method)
       end
@@ -754,8 +761,12 @@ class User < ApplicationRecord
   #
   # Example use:
   # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
-  def authorizations_for_projects
-    project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+  def authorizations_for_projects(min_access_level: nil)
+    authorizations = project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+
+    return authorizations unless min_access_level.present?
+
+    authorizations.where('project_authorizations.access_level >= ?', min_access_level)
   end
 
   # Returns the projects this user has reporter (or greater) access to, limited

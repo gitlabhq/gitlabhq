@@ -258,7 +258,7 @@ describe MergeRequests::MergeService do
         it 'logs and saves error if there is an error when squashing' do
           error_message = 'Failed to squash. Should be done manually'
 
-          allow_any_instance_of(MergeRequests::SquashService).to receive(:squash).and_return(nil)
+          allow_any_instance_of(MergeRequests::SquashService).to receive(:squash!).and_return(nil)
           merge_request.update(squash: true)
 
           service.execute(merge_request)

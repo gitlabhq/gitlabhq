@@ -23,11 +23,11 @@ class ProjectFeature < ActiveRecord::Base
   PUBLIC   = 30
 
   FEATURES = %i(issues merge_requests wiki snippets builds repository pages).freeze
+  PRIVATE_FEATURES_MIN_ACCESS_LEVEL = { merge_requests: Gitlab::Access::REPORTER }.freeze
 
   class << self
     def access_level_attribute(feature)
-      feature = feature.model_name.plural.to_sym if feature.respond_to?(:model_name)
-      raise ArgumentError, "invalid project feature: #{feature}" unless FEATURES.include?(feature)
+      feature = ensure_feature!(feature)
 
       "#{feature}_access_level".to_sym
     end
@@ -37,6 +37,21 @@ class ProjectFeature < ActiveRecord::Base
       table = connection.quote_table_name(table_name)
 
       "#{table}.#{attribute}"
+    end
+
+    def required_minimum_access_level(feature)
+      feature = ensure_feature!(feature)
+
+      PRIVATE_FEATURES_MIN_ACCESS_LEVEL.fetch(feature, Gitlab::Access::GUEST)
+    end
+
+    private
+
+    def ensure_feature!(feature)
+      feature = feature.model_name.plural.to_sym if feature.respond_to?(:model_name)
+      raise ArgumentError, "invalid project feature: #{feature}" unless FEATURES.include?(feature)
+
+      feature
     end
   end
 

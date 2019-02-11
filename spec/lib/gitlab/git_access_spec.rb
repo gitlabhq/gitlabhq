@@ -776,9 +776,12 @@ describe Gitlab::GitAccess do
         it "has the correct permissions for #{role}s" do
           if role == :admin
             user.update_attribute(:admin, true)
+            project.add_guest(user)
           else
             project.add_role(user, role)
           end
+
+          protected_branch.save
 
           aggregate_failures do
             matrix.each do |action, allowed|
@@ -861,25 +864,19 @@ describe Gitlab::GitAccess do
 
     [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
-        before do
-          create(:protected_branch, name: protected_branch_name, project: project)
-        end
+        let(:protected_branch) { create(:protected_branch, :maintainers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix)
       end
 
       context "when developers are allowed to push into the #{protected_branch_type} protected branch" do
-        before do
-          create(:protected_branch, :developers_can_push, name: protected_branch_name, project: project)
-        end
+        let(:protected_branch) { create(:protected_branch, :developers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
 
       context "developers are allowed to merge into the #{protected_branch_type} protected branch" do
-        before do
-          create(:protected_branch, :developers_can_merge, name: protected_branch_name, project: project)
-        end
+        let(:protected_branch) { create(:protected_branch, :developers_can_merge, name: protected_branch_name, project: project) }
 
         context "when a merge request exists for the given source/target branch" do
           context "when the merge request is in progress" do
@@ -906,17 +903,13 @@ describe Gitlab::GitAccess do
       end
 
       context "when developers are allowed to push and merge into the #{protected_branch_type} protected branch" do
-        before do
-          create(:protected_branch, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project)
-        end
+        let(:protected_branch) { create(:protected_branch, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
 
       context "when no one is allowed to push to the #{protected_branch_name} protected branch" do
-        before do
-          create(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project)
-        end
+        let(:protected_branch) { build(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             maintainer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },

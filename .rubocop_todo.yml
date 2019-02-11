@@ -80,11 +80,6 @@ Lint/InterpolationCheck:
 Lint/MissingCopEnableDirective:
   Enabled: false
 
-# Offense count: 1
-Lint/ReturnInVoidContext:
-  Exclude:
-    - 'app/models/project.rb'
-
 # Offense count: 9
 Lint/UriEscapeUnescape:
   Exclude:
@@ -273,7 +268,6 @@ Rails/Presence:
     - 'app/models/clusters/platforms/kubernetes.rb'
     - 'app/models/concerns/mentionable.rb'
     - 'app/models/concerns/token_authenticatable.rb'
-    - 'app/models/project_services/hipchat_service.rb'
     - 'app/models/project_services/irker_service.rb'
     - 'app/models/project_services/jira_service.rb'
     - 'app/models/project_services/kubernetes_service.rb'

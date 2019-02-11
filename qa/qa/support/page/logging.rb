@@ -10,15 +10,11 @@ module QA
           super
         end
 
-        def wait(max: 60, time: 0.1, reload: true)
-          log("with wait: max #{max}; time #{time}; reload #{reload}")
-          now = Time.now
+        def wait(max: 60, interval: 0.1, reload: true)
+          log("next wait uses reload: #{reload}")
+          # Logging of wait start/end/duration is handled by QA::Support::Waiter
 
-          element = super
-
-          log("ended wait after #{Time.now - now} seconds")
-
-          element
+          super
         end
 
         def scroll_to(selector, text: nil)

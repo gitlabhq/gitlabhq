@@ -47,9 +47,9 @@ namespace :gitlab do
 
           # Drop all tables Load the schema to ensure we don't have any newer tables
           # hanging out from a failed upgrade
-          progress.puts 'Cleaning the database ... '.color(:blue)
+          puts_time 'Cleaning the database ... '.color(:blue)
           Rake::Task['gitlab:db:drop_tables'].invoke
-          progress.puts 'done'.color(:green)
+          puts_time 'done'.color(:green)
           Rake::Task['gitlab:backup:db:restore'].invoke
         rescue Gitlab::TaskAbortedByUserError
           puts "Quitting...".color(:red)
@@ -72,163 +72,167 @@ namespace :gitlab do
 
     namespace :repo do
       task create: :gitlab_environment do
-        progress.puts "Dumping repositories ...".color(:blue)
+        puts_time "Dumping repositories ...".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("repositories")
-          progress.puts "[SKIPPED]".color(:cyan)
+          puts_time "[SKIPPED]".color(:cyan)
         else
           Backup::Repository.new(progress).dump
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring repositories ...".color(:blue)
+        puts_time "Restoring repositories ...".color(:blue)
         Backup::Repository.new(progress).restore
-        progress.puts "done".color(:green)
+        puts_time "done".color(:green)
       end
     end
 
     namespace :db do
       task create: :gitlab_environment do
-        progress.puts "Dumping database ... ".color(:blue)
+        puts_time "Dumping database ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("db")
-          progress.puts "[SKIPPED]".color(:cyan)
+          puts_time "[SKIPPED]".color(:cyan)
         else
           Backup::Database.new(progress).dump
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring database ... ".color(:blue)
+        puts_time "Restoring database ... ".color(:blue)
         Backup::Database.new(progress).restore
-        progress.puts "done".color(:green)
+        puts_time "done".color(:green)
       end
     end
 
     namespace :builds do
       task create: :gitlab_environment do
-        progress.puts "Dumping builds ... ".color(:blue)
+        puts_time "Dumping builds ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("builds")
-          progress.puts "[SKIPPED]".color(:cyan)
+          puts_time "[SKIPPED]".color(:cyan)
         else
           Backup::Builds.new(progress).dump
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring builds ... ".color(:blue)
+        puts_time "Restoring builds ... ".color(:blue)
         Backup::Builds.new(progress).restore
-        progress.puts "done".color(:green)
+        puts_time "done".color(:green)
       end
     end
 
     namespace :uploads do
       task create: :gitlab_environment do
-        progress.puts "Dumping uploads ... ".color(:blue)
+        puts_time "Dumping uploads ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("uploads")
-          progress.puts "[SKIPPED]".color(:cyan)
+          puts_time "[SKIPPED]".color(:cyan)
         else
           Backup::Uploads.new(progress).dump
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring uploads ... ".color(:blue)
+        puts_time "Restoring uploads ... ".color(:blue)
         Backup::Uploads.new(progress).restore
-        progress.puts "done".color(:green)
+        puts_time "done".color(:green)
       end
     end
 
     namespace :artifacts do
       task create: :gitlab_environment do
-        progress.puts "Dumping artifacts ... ".color(:blue)
+        puts_time "Dumping artifacts ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("artifacts")
-          progress.puts "[SKIPPED]".color(:cyan)
+          puts_time "[SKIPPED]".color(:cyan)
         else
           Backup::Artifacts.new(progress).dump
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring artifacts ... ".color(:blue)
+        puts_time "Restoring artifacts ... ".color(:blue)
         Backup::Artifacts.new(progress).restore
-        progress.puts "done".color(:green)
+        puts_time "done".color(:green)
       end
     end
 
     namespace :pages do
       task create: :gitlab_environment do
-        progress.puts "Dumping pages ... ".color(:blue)
+        puts_time "Dumping pages ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("pages")
-          progress.puts "[SKIPPED]".color(:cyan)
+          puts_time "[SKIPPED]".color(:cyan)
         else
           Backup::Pages.new(progress).dump
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring pages ... ".color(:blue)
+        puts_time "Restoring pages ... ".color(:blue)
         Backup::Pages.new(progress).restore
-        progress.puts "done".color(:green)
+        puts_time "done".color(:green)
       end
     end
 
     namespace :lfs do
       task create: :gitlab_environment do
-        progress.puts "Dumping lfs objects ... ".color(:blue)
+        puts_time "Dumping lfs objects ... ".color(:blue)
 
         if ENV["SKIP"] && ENV["SKIP"].include?("lfs")
-          progress.puts "[SKIPPED]".color(:cyan)
+          puts_time "[SKIPPED]".color(:cyan)
         else
           Backup::Lfs.new(progress).dump
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring lfs objects ... ".color(:blue)
+        puts_time "Restoring lfs objects ... ".color(:blue)
         Backup::Lfs.new(progress).restore
-        progress.puts "done".color(:green)
+        puts_time "done".color(:green)
       end
     end
 
     namespace :registry do
       task create: :gitlab_environment do
-        progress.puts "Dumping container registry images ... ".color(:blue)
+        puts_time "Dumping container registry images ... ".color(:blue)
 
         if Gitlab.config.registry.enabled
           if ENV["SKIP"] && ENV["SKIP"].include?("registry")
-            progress.puts "[SKIPPED]".color(:cyan)
+            puts_time "[SKIPPED]".color(:cyan)
           else
             Backup::Registry.new(progress).dump
-            progress.puts "done".color(:green)
+            puts_time "done".color(:green)
           end
         else
-          progress.puts "[DISABLED]".color(:cyan)
+          puts_time "[DISABLED]".color(:cyan)
         end
       end
 
       task restore: :gitlab_environment do
-        progress.puts "Restoring container registry images ... ".color(:blue)
+        puts_time "Restoring container registry images ... ".color(:blue)
 
         if Gitlab.config.registry.enabled
           Backup::Registry.new(progress).restore
-          progress.puts "done".color(:green)
+          puts_time "done".color(:green)
         else
-          progress.puts "[DISABLED]".color(:cyan)
+          puts_time "[DISABLED]".color(:cyan)
         end
       end
+    end
+
+    def puts_time(msg)
+      progress.puts "#{Time.now} -- #{msg}"
     end
 
     def progress

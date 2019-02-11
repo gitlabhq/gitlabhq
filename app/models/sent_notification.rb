@@ -48,7 +48,7 @@ class SentNotification < ActiveRecord::Base
     end
 
     def record_note(note, recipient_id, reply_key = self.reply_key, attrs = {})
-      attrs[:in_reply_to_discussion_id] = note.discussion_id
+      attrs[:in_reply_to_discussion_id] = note.discussion_id if note.part_of_discussion?
 
       record(note.noteable, recipient_id, reply_key, attrs)
     end
@@ -99,29 +99,12 @@ class SentNotification < ActiveRecord::Base
   private
 
   def reply_params
-    attrs = {
+    {
       noteable_type: self.noteable_type,
       noteable_id: self.noteable_id,
-      commit_id: self.commit_id
+      commit_id: self.commit_id,
+      in_reply_to_discussion_id: self.in_reply_to_discussion_id
     }
-
-    if self.in_reply_to_discussion_id.present?
-      attrs[:in_reply_to_discussion_id] = self.in_reply_to_discussion_id
-    else
-      # Remove in GitLab 10.0, when we will not support replying to SentNotifications
-      # that don't have `in_reply_to_discussion_id` anymore.
-      attrs.merge!(
-        type: self.note_type,
-
-        # LegacyDiffNote
-        line_code: self.line_code,
-
-        # DiffNote
-        position: self.position.to_json
-      )
-    end
-
-    attrs
   end
 
   def note_valid

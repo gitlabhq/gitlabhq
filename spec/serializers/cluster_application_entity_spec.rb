@@ -21,6 +21,14 @@ describe ClusterApplicationEntity do
       expect(subject[:status_reason]).to be_nil
     end
 
+    context 'non-helm application' do
+      let(:application) { build(:clusters_applications_runner, version: '0.0.0') }
+
+      it 'has update_available' do
+        expect(subject[:update_available]).to be_truthy
+      end
+    end
+
     context 'when application is errored' do
       let(:application) { build(:clusters_applications_helm, :errored) }
 

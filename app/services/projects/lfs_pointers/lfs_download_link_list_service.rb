@@ -41,16 +41,17 @@ module Projects
       end
 
       def parse_response_links(objects_response)
-        objects_response.each_with_object({}) do |entry, link_list|
+        objects_response.each_with_object([]) do |entry, link_list|
           begin
-            oid = entry['oid']
             link = entry.dig('actions', DOWNLOAD_ACTION, 'href')
 
             raise DownloadLinkNotFound unless link
 
-            link_list[oid] = add_credentials(link)
-          rescue DownloadLinkNotFound, URI::InvalidURIError
-            Rails.logger.error("Link for Lfs Object with oid #{oid} not found or invalid.")
+            link_list << LfsDownloadObject.new(oid: entry['oid'],
+                                               size: entry['size'],
+                                               link: add_credentials(link))
+          rescue DownloadLinkNotFound, Addressable::URI::InvalidURIError
+            log_error("Link for Lfs Object with oid #{entry['oid']} not found or invalid.")
           end
         end
       end
@@ -70,7 +71,7 @@ module Projects
       end
 
       def add_credentials(link)
-        uri = URI.parse(link)
+        uri = Addressable::URI.parse(link)
 
         if should_add_credentials?(uri)
           uri.user = remote_uri.user

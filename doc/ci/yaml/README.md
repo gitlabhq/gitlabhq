@@ -11,7 +11,7 @@ If you want a quick introduction to GitLab CI, follow our
 [quick start guide](../quick_start/README.md).
 
 NOTE: **Note:**
-If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -776,7 +776,7 @@ In the above example we set up the `review_app` job to deploy to the `review`
 environment, and we also defined a new `stop_review_app` job under `on_stop`.
 Once the `review_app` job is successfully finished, it will trigger the
 `stop_review_app` job based on what is defined under `when`. In this case we
-set it up to `manual` so it will need a [manual action](#manual-actions) via
+set it up to `manual` so it will need a [manual action](#whenmanual) via
 GitLab's web interface in order to run.
 
 The `stop_review_app` job is **required** to have the following keywords defined:

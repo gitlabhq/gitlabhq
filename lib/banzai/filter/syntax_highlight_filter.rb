@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rouge/plugins/common_mark'
-require 'rouge/plugins/redcarpet'
 
 # Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/code_block.js
 module Banzai

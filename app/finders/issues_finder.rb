@@ -14,6 +14,7 @@
 #     milestone_title: string
 #     assignee_id: integer
 #     search: string
+#     in: 'title', 'description', or a string joining them with comma
 #     label_name: string
 #     sort: string
 #     my_reaction_emoji: string

@@ -55,7 +55,7 @@ When push mirroring is enabled, only push commits directly to the mirrored repos
 mirror diverging. All changes will end up in the mirrored repository whenever:
 
 - Commits are pushed to GitLab.
-- A [forced update](#forcing-an-update) is initiated.
+- A [forced update](#forcing-an-update-core) is initiated.
 
 Changes pushed to files in the repository are automatically pushed to the remote mirror at least:
 
@@ -87,6 +87,14 @@ To set up a mirror from GitLab to GitHub, you need to follow these steps:
 The mirrored repository will be listed. For example, `https://*****:*****@github.com/<your_github_group>/<your_github_project>.git`. 
 
 The repository will push soon. To force a push, click the appropriate button.
+
+## Setting up a push mirror to another GitLab instance with 2FA activated
+
+1. On the destination GitLab instance, create a [personal access token](../user/profile/personal_access_tokens.md) with `API` scope.
+1. On the source GitLab instance:
+    1. Fill in the **Git repository URL** field using this format: `https://oauth2@<destination host>/<your_gitlab_group_or_name>/<your_gitlab_project>.git`.
+    1. Fill in **Password** field with the GitLab personal access token created on the destination GitLab instance.
+    1. Click the **Mirror repository** button.
 
 ## Pulling from a remote repository **[STARTER]**
 
@@ -122,7 +130,7 @@ directly to the repository on GitLab. Instead, any commits should be pushed to t
 Changes pushed to the upstream repository will be pulled into the GitLab repository, either:
 
 - Automatically within a certain period of time.
-- When a [forced update](#forcing-an-update) is initiated.
+- When a [forced update](#forcing-an-update-core) is initiated.
 
 CAUTION: **Caution:**
 If you do manually update a branch in the GitLab repository, the branch will become diverged from
@@ -259,7 +267,7 @@ failed. This will become visible in either the:
 - Pull mirror settings page.
 
 When a project is hard failed, it will no longer get picked up for mirroring. A user can resume the
-project mirroring again by [Forcing an update](#forcing-an-update).
+project mirroring again by [Forcing an update](#forcing-an-update-core).
 
 ### Trigger update using API **[STARTER]**
 
@@ -292,8 +300,8 @@ them and how they will be resolved.
 Rewriting any mirrored commit on either remote will cause conflicts and mirroring to fail. This can
 be prevented by:
 
-- [Pulling only protected branches](#pull-only-protected-branches).
-- [Pushing only protected branches](#push-only-protected-branches).
+- [Pulling only protected branches](#only-mirror-protected-branches-starter).
+- [Pushing only protected branches](#push-only-protected-branches-core).
 
 You should [protect the branches](../user/project/protected_branches.md) you wish to mirror on both
 remotes to prevent conflicts caused by rewriting history.

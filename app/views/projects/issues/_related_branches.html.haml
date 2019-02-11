@@ -6,7 +6,7 @@
       %li
         - target = @project.repository.find_branch(branch).dereferenced_target
         - pipeline = @project.pipeline_for(branch, target.sha) if target
-        - if pipeline
+        - if can?(current_user, :read_pipeline, pipeline)
           %span.related-branch-ci-status
             = render_pipeline_status(pipeline)
         %span.related-branch-info

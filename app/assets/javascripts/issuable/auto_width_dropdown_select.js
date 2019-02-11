@@ -11,10 +11,14 @@ class AutoWidthDropdownSelect {
 
   init() {
     const { dropdownClass } = this;
-    this.$selectElement.select2({
-      dropdownCssClass: dropdownClass,
-      ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),
-    });
+    import(/* webpackChunkName: 'select2' */ 'select2/select2')
+      .then(() => {
+        this.$selectElement.select2({
+          dropdownCssClass: dropdownClass,
+          ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),
+        });
+      })
+      .catch(() => {});
 
     return this;
   }

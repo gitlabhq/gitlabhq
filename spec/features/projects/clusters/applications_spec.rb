@@ -48,9 +48,9 @@ describe 'Clusters Applications', :js do
 
         it 'they see status transition' do
           page.within('.js-cluster-application-row-helm') do
-            # FE sends request and gets the response, then the buttons is "Install"
+            # FE sends request and gets the response, then the buttons is "Installing"
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
             wait_until_helm_created!
 
@@ -118,7 +118,7 @@ describe 'Clusters Applications', :js do
 
           page.within('.js-cluster-application-row-cert_manager') do
             expect(email_form_value).to eq(cluster.user.email)
-            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
+            expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
             page.find('.js-email').set("new_email@example.org")
             Clusters::Cluster.last.application_cert_manager.make_installing!
@@ -153,9 +153,9 @@ describe 'Clusters Applications', :js do
 
           it 'they see status transition' do
             page.within('.js-cluster-application-row-ingress') do
-              # FE sends request and gets the response, then the buttons is "Install"
+              # FE sends request and gets the response, then the buttons is "Installing"
               expect(page).to have_css('.js-cluster-application-install-button[disabled]')
-              expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
+              expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
               Clusters::Cluster.last.application_ingress.make_installing!
 

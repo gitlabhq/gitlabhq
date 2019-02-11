@@ -36,19 +36,6 @@ describe 'Task Lists' do
     MARKDOWN
   end
 
-  let(:nested_tasks_markdown_redcarpet) do
-    <<-EOT.strip_heredoc
-    - [ ] Task a
-      - [x] Task a.1
-      - [ ] Task a.2
-    - [ ] Task b
-
-    1. [ ] Task 1
-      1. [ ] Task 1.1
-      1. [x] Task 1.2
-    EOT
-  end
-
   let(:nested_tasks_markdown) do
     <<-EOT.strip_heredoc
     - [ ] Task a
@@ -151,59 +138,6 @@ describe 'Task Lists' do
         visit project_issues_path(project)
 
         expect(page).to have_content("1 of 1 task completed")
-      end
-    end
-
-    shared_examples 'shared nested tasks' do
-      before do
-        allow(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('Redcarpet')
-        visit_issue(project, issue)
-      end
-      it 'renders' do
-        expect(page).to have_selector('ul.task-list',      count: 2)
-        expect(page).to have_selector('li.task-list-item', count: 7)
-        expect(page).to have_selector('ul input[checked]', count: 1)
-        expect(page).to have_selector('ol input[checked]', count: 1)
-      end
-
-      it 'solves tasks' do
-        expect(page).to have_content("2 of 7 tasks completed")
-
-        page.find('li.task-list-item', text: 'Task b').find('input').click
-        page.find('li.task-list-item ul li.task-list-item', text: 'Task a.2').find('input').click
-        page.find('li.task-list-item ol li.task-list-item', text: 'Task 1.1').find('input').click
-
-        expect(page).to have_content("5 of 7 tasks completed")
-
-        visit_issue(project, issue) # reload to see new system notes
-
-        expect(page).to have_content('marked the task Task b as complete')
-        expect(page).to have_content('marked the task Task a.2 as complete')
-        expect(page).to have_content('marked the task Task 1.1 as complete')
-      end
-    end
-
-    describe 'nested tasks', :js do
-      context 'with Redcarpet' do
-        let(:issue) { create(:issue, description: nested_tasks_markdown_redcarpet, author: user, project: project) }
-
-        before do
-          allow_any_instance_of(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('Redcarpet')
-          visit_issue(project, issue)
-        end
-
-        it_behaves_like 'shared nested tasks'
-      end
-
-      context 'with CommonMark' do
-        let(:issue) { create(:issue, description: nested_tasks_markdown, author: user, project: project) }
-
-        before do
-          allow_any_instance_of(Banzai::Filter::MarkdownFilter).to receive(:engine).and_return('CommonMark')
-          visit_issue(project, issue)
-        end
-
-        it_behaves_like 'shared nested tasks'
       end
     end
   end

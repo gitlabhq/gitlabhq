@@ -26,6 +26,12 @@ FactoryBot.define do
     })
   end
 
+  factory :mock_deployment_service do
+    project
+    type 'MockDeploymentService'
+    active true
+  end
+
   factory :prometheus_service do
     project
     active true
@@ -55,11 +61,5 @@ FactoryBot.define do
       password: 'my-secret-password',
       project_key: 'jira-key'
     )
-  end
-
-  factory :hipchat_service do
-    project
-    type 'HipchatService'
-    token 'test_token'
   end
 end

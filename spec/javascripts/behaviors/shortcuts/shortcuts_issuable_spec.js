@@ -3,16 +3,25 @@
 */
 
 import $ from 'jquery';
-import initCopyAsGFM from '~/behaviors/markdown/copy_as_gfm';
+import initCopyAsGFM, { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import ShortcutsIssuable from '~/behaviors/shortcuts/shortcuts_issuable';
-
-initCopyAsGFM();
 
 const FORM_SELECTOR = '.js-main-target-form .js-vue-comment-form';
 
 describe('ShortcutsIssuable', function() {
   const fixtureName = 'snippets/show.html.raw';
   preloadFixtures(fixtureName);
+
+  beforeAll(done => {
+    initCopyAsGFM();
+
+    // Fake call to nodeToGfm so the import of lazy bundle happened
+    CopyAsGFM.nodeToGFM(document.createElement('div'))
+      .then(() => {
+        done();
+      })
+      .catch(done.fail);
+  });
 
   beforeEach(() => {
     loadFixtures(fixtureName);
@@ -63,17 +72,22 @@ describe('ShortcutsIssuable', function() {
         stubSelection('<p>Selected text.</p>');
       });
 
-      it('leaves existing input intact', () => {
+      it('leaves existing input intact', done => {
         $(FORM_SELECTOR).val('This text was already here.');
 
         expect($(FORM_SELECTOR).val()).toBe('This text was already here.');
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe('This text was already here.\n\n> Selected text.\n\n');
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe(
+            'This text was already here.\n\n> Selected text.\n\n',
+          );
+          done();
+        });
       });
 
-      it('triggers `input`', () => {
+      it('triggers `input`', done => {
         let triggered = false;
         $(FORM_SELECTOR).on('input', () => {
           triggered = true;
@@ -81,36 +95,48 @@ describe('ShortcutsIssuable', function() {
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(triggered).toBe(true);
+        setTimeout(() => {
+          expect(triggered).toBe(true);
+          done();
+        });
       });
 
-      it('triggers `focus`', () => {
+      it('triggers `focus`', done => {
         const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(spy).toHaveBeenCalled();
+        setTimeout(() => {
+          expect(spy).toHaveBeenCalled();
+          done();
+        });
       });
     });
 
     describe('with a one-line selection', () => {
-      it('quotes the selection', () => {
+      it('quotes the selection', done => {
         stubSelection('<p>This text has been selected.</p>');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe('> This text has been selected.\n\n');
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe('> This text has been selected.\n\n');
+          done();
+        });
       });
     });
 
     describe('with a multi-line selection', () => {
-      it('quotes the selected lines as a group', () => {
+      it('quotes the selected lines as a group', done => {
         stubSelection(
           '<p>Selected line one.</p>\n<p>Selected line two.</p>\n<p>Selected line three.</p>',
         );
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe(
-          '> Selected line one.\n>\n> Selected line two.\n>\n> Selected line three.\n\n',
-        );
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe(
+            '> Selected line one.\n>\n> Selected line two.\n>\n> Selected line three.\n\n',
+          );
+          done();
+        });
       });
     });
 
@@ -119,17 +145,23 @@ describe('ShortcutsIssuable', function() {
         stubSelection('<p>Selected text.</p>', true);
       });
 
-      it('does not add anything to the input', () => {
+      it('does not add anything to the input', done => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe('');
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe('');
+          done();
+        });
       });
 
-      it('triggers `focus`', () => {
+      it('triggers `focus`', done => {
         const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(spy).toHaveBeenCalled();
+        setTimeout(() => {
+          expect(spy).toHaveBeenCalled();
+          done();
+        });
       });
     });
 
@@ -138,20 +170,26 @@ describe('ShortcutsIssuable', function() {
         stubSelection('<div class="md">Selected text.</div><p>Invalid selected text.</p>', true);
       });
 
-      it('only adds the valid part to the input', () => {
+      it('only adds the valid part to the input', done => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe('> Selected text.\n\n');
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe('> Selected text.\n\n');
+          done();
+        });
       });
 
-      it('triggers `focus`', () => {
+      it('triggers `focus`', done => {
         const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(spy).toHaveBeenCalled();
+        setTimeout(() => {
+          expect(spy).toHaveBeenCalled();
+          done();
+        });
       });
 
-      it('triggers `input`', () => {
+      it('triggers `input`', done => {
         let triggered = false;
         $(FORM_SELECTOR).on('input', () => {
           triggered = true;
@@ -159,7 +197,10 @@ describe('ShortcutsIssuable', function() {
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(triggered).toBe(true);
+        setTimeout(() => {
+          expect(triggered).toBe(true);
+          done();
+        });
       });
     });
 
@@ -183,20 +224,26 @@ describe('ShortcutsIssuable', function() {
         });
       });
 
-      it('adds the quoted selection to the input', () => {
+      it('adds the quoted selection to the input', done => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe('> *Selected text.*\n\n');
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe('> *Selected text.*\n\n');
+          done();
+        });
       });
 
-      it('triggers `focus`', () => {
+      it('triggers `focus`', done => {
         const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(spy).toHaveBeenCalled();
+        setTimeout(() => {
+          expect(spy).toHaveBeenCalled();
+          done();
+        });
       });
 
-      it('triggers `input`', () => {
+      it('triggers `input`', done => {
         let triggered = false;
         $(FORM_SELECTOR).on('input', () => {
           triggered = true;
@@ -204,7 +251,10 @@ describe('ShortcutsIssuable', function() {
 
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(triggered).toBe(true);
+        setTimeout(() => {
+          expect(triggered).toBe(true);
+          done();
+        });
       });
     });
 
@@ -228,17 +278,23 @@ describe('ShortcutsIssuable', function() {
         });
       });
 
-      it('does not add anything to the input', () => {
+      it('does not add anything to the input', done => {
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect($(FORM_SELECTOR).val()).toBe('');
+        setTimeout(() => {
+          expect($(FORM_SELECTOR).val()).toBe('');
+          done();
+        });
       });
 
-      it('triggers `focus`', () => {
+      it('triggers `focus`', done => {
         const spy = spyOn(document.querySelector(FORM_SELECTOR), 'focus');
         ShortcutsIssuable.replyWithSelectedText(true);
 
-        expect(spy).toHaveBeenCalled();
+        setTimeout(() => {
+          expect(spy).toHaveBeenCalled();
+          done();
+        });
       });
     });
   });

@@ -3,7 +3,7 @@
 
 <%  discussion = note.discussion if note.part_of_discussion? -%>
 <%  if discussion && !discussion.individual_note? -%>
-<%=   note.author_name -%>
+<%=   sanitize_name(note.author_name) -%>
 <%    if discussion.new_discussion? -%>
 <%=     " started a new discussion" -%>
 <%    else -%>
@@ -16,7 +16,7 @@
 
 
 <%  elsif Gitlab::CurrentSettings.email_author_in_body -%>
-<%=     "#{note.author_name} commented:" -%>
+<%=     "#{sanitize_name(note.author_name)} commented:" -%>
 
 
 <%  end -%>

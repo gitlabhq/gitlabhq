@@ -8,7 +8,7 @@ module QA
     describe 'Auto DevOps support' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
       end
 
       [true, false].each do |rbac|
@@ -38,8 +38,6 @@ module QA
               push.commit_message = 'Create Auto DevOps compatible rack application'
             end
 
-            Page::Project::Show.act { wait_for_push }
-
             # Create and connect K8s cluster
             @cluster = Service::KubernetesCluster.new(rbac: rbac).create!
             kubernetes_cluster = Resource::KubernetesCluster.fabricate! do |cluster|
@@ -52,13 +50,13 @@ module QA
             end
 
             kubernetes_cluster.populate(:ingress_ip)
-
             @project.visit!
-            Page::Project::Menu.act { click_ci_cd_settings }
+            Page::Project::Menu.perform(&:click_ci_cd_settings)
             Page::Project::Settings::CICD.perform do |p|
-              p.enable_auto_devops_with_domain(
-                "#{kubernetes_cluster.ingress_ip}.nip.io")
+              p.enable_auto_devops
             end
+
+            kubernetes_cluster.populate(:domain)
           end
 
           after(:all) do
@@ -71,16 +69,37 @@ module QA
 
           it 'runs auto devops' do
             @project.visit!
-            Page::Project::Menu.act { click_ci_cd_pipelines }
-            Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+            Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+            Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
 
             Page::Project::Pipeline::Show.perform do |pipeline|
-              expect(pipeline).to have_build('build', status: :success, wait: 600)
-              expect(pipeline).to have_build('test', status: :success, wait: 600)
-              expect(pipeline).to have_build('production', status: :success, wait: 1200)
+              pipeline.go_to_job('build')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
             end
 
-            Page::Project::Menu.act { click_operations_environments }
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('test')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('production')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 1200), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Menu.perform(&:click_operations_environments)
             Page::Project::Operations::Environments::Index.perform do |index|
               index.go_to_environment('production')
             end
@@ -111,16 +130,37 @@ module QA
             end
 
             @project.visit!
-            Page::Project::Menu.act { click_ci_cd_pipelines }
-            Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+            Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+            Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
 
             Page::Project::Pipeline::Show.perform do |pipeline|
-              expect(pipeline).to have_build('build', status: :success, wait: 600)
-              expect(pipeline).to have_build('test', status: :success, wait: 600)
-              expect(pipeline).to have_build('production', status: :success, wait: 1200)
+              pipeline.go_to_job('build')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
             end
 
-            Page::Project::Menu.act { click_operations_environments }
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('test')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Pipeline::Show.perform do |pipeline|
+              pipeline.go_to_job('production')
+            end
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_sucessful(timeout: 1200), "Job did not pass"
+
+              job.click_element(:pipeline_path)
+            end
+
+            Page::Project::Menu.perform(&:click_operations_environments)
 
             Page::Project::Operations::Environments::Index.perform do |index|
               index.go_to_environment('production')

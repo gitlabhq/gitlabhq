@@ -2,6 +2,7 @@
 
 class Dashboard::ApplicationController < ApplicationController
   include ControllerWithCrossProjectAccessCheck
+  include RecordUserLastActivity
 
   layout 'dashboard'
 

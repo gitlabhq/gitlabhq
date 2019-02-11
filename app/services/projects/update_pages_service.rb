@@ -7,7 +7,11 @@ module Projects
 
     BLOCK_SIZE = 32.kilobytes
     MAX_SIZE = 1.terabyte
-    SITE_PATH = 'public/'.freeze
+    PUBLIC_DIR = 'public'.freeze
+
+    # this has to be invalid group name,
+    # as it shares the namespace with groups
+    TMP_EXTRACT_PATH = '@pages.tmp'.freeze
 
     attr_reader :build
 
@@ -27,12 +31,11 @@ module Projects
       raise InvalidStateError, 'pages are outdated' unless latest?
 
       # Create temporary directory in which we will extract the artifacts
-      FileUtils.mkdir_p(tmp_path)
-      Dir.mktmpdir(nil, tmp_path) do |archive_path|
+      make_secure_tmp_dir(tmp_path) do |archive_path|
         extract_archive!(archive_path)
 
         # Check if we did extract public directory
-        archive_public_path = File.join(archive_path, 'public')
+        archive_public_path = File.join(archive_path, PUBLIC_DIR)
         raise InvalidStateError, 'pages miss the public folder' unless Dir.exist?(archive_public_path)
         raise InvalidStateError, 'pages are outdated' unless latest?
 
@@ -85,22 +88,18 @@ module Projects
       raise InvalidStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
 
       # Calculate page size after extract
-      public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
+      public_entry = build.artifacts_metadata_entry(PUBLIC_DIR + '/', recursive: true)
 
       if public_entry.total_size > max_size
         raise InvalidStateError, "artifacts for pages are too large: #{public_entry.total_size}"
       end
 
-      # Requires UnZip at least 6.00 Info-ZIP.
-      # -qq be (very) quiet
-      # -n  never overwrite existing files
-      # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
-      site_path = File.join(SITE_PATH, '*')
       build.artifacts_file.use_file do |artifacts_path|
-        unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
-          raise FailedToExtractError, 'pages failed to extract'
-        end
+        SafeZip::Extract.new(artifacts_path)
+          .extract(directories: [PUBLIC_DIR], to: temp_path)
       end
+    rescue SafeZip::Extract::Error => e
+      raise FailedToExtractError, e.message
     end
 
     def deploy_page!(archive_public_path)
@@ -139,7 +138,7 @@ module Projects
     end
 
     def tmp_path
-      @tmp_path ||= File.join(::Settings.pages.path, 'tmp')
+      @tmp_path ||= File.join(::Settings.pages.path, TMP_EXTRACT_PATH)
     end
 
     def pages_path
@@ -147,11 +146,11 @@ module Projects
     end
 
     def public_path
-      @public_path ||= File.join(pages_path, 'public')
+      @public_path ||= File.join(pages_path, PUBLIC_DIR)
     end
 
     def previous_public_path
-      @previous_public_path ||= File.join(pages_path, "public.#{SecureRandom.hex}")
+      @previous_public_path ||= File.join(pages_path, "#{PUBLIC_DIR}.#{SecureRandom.hex}")
     end
 
     def ref
@@ -187,6 +186,16 @@ module Projects
 
     def pages_deployments_failed_total_counter
       @pages_deployments_failed_total_counter ||= Gitlab::Metrics.counter(:pages_deployments_failed_total, "Counter of GitLab Pages deployments which failed")
+    end
+
+    def make_secure_tmp_dir(tmp_path)
+      FileUtils.mkdir_p(tmp_path)
+      path = Dir.mktmpdir(nil, tmp_path)
+      begin
+        yield(path)
+      ensure
+        FileUtils.remove_entry_secure(path)
+      end
     end
   end
 end

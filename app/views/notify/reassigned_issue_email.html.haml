@@ -2,7 +2,7 @@
   Assignee changed
   - if @previous_assignees.any?
     from
-    %strong= @previous_assignees.map(&:name).to_sentence
+    %strong= sanitize_name(@previous_assignees.map(&:name).to_sentence)
   to
   - if @issue.assignees.any?
     %strong= @issue.assignee_list

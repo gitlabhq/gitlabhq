@@ -28,6 +28,7 @@ describe NotePolicy, mdoels: true do
           expect(policy).to be_disallowed(:admin_note)
           expect(policy).to be_disallowed(:resolve_note)
           expect(policy).to be_disallowed(:read_note)
+          expect(policy).to be_disallowed(:award_emoji)
         end
       end
 
@@ -40,6 +41,7 @@ describe NotePolicy, mdoels: true do
           expect(policy).to be_allowed(:admin_note)
           expect(policy).to be_allowed(:resolve_note)
           expect(policy).to be_allowed(:read_note)
+          expect(policy).to be_allowed(:award_emoji)
         end
       end
     end

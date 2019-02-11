@@ -1,0 +1,5 @@
+---
+title: Add `with_programming_language` filter for projects to API
+merge_request: 24377
+author: Dylan MacKenzie
+type: added

@@ -603,5 +603,6 @@ ResourceLabelEvent:
 ErrorTracking::ProjectErrorTrackingSetting:
 - id
 - api_url
-- enabled
 - project_id
+- project_name
+- organization_name

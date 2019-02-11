@@ -1,0 +1,5 @@
+---
+title: Update metrics environment dropdown to show complete option set
+merge_request: 24441
+author:
+type: fixed

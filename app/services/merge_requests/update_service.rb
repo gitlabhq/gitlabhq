@@ -21,7 +21,7 @@ module MergeRequests
       end
 
       handle_wip_event(merge_request)
-      update(merge_request)
+      update_task_event(merge_request) || update(merge_request)
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -82,6 +82,11 @@ module MergeRequests
       end
     end
     # rubocop:enable Metrics/AbcSize
+
+    def handle_task_changes(merge_request)
+      todo_service.mark_pending_todos_as_done(merge_request, current_user)
+      todo_service.update_merge_request(merge_request, current_user)
+    end
 
     def merge_from_quick_action(merge_request)
       last_diff_sha = params.delete(:merge)

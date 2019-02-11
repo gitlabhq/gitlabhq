@@ -36,7 +36,7 @@ code_quality:
 
 The above example will create a `code_quality` job in your CI/CD pipeline which
 will scan your source code for code quality issues. The report will be saved as a
-[Code Quality report artifact](../../ci/yaml/README.md#artifactsreportscodequality)
+[Code Quality report artifact](../yaml/README.md#artifactsreportscodequality-starter)
 that you can later download and analyze.
 Due to implementation limitations we always take the latest Code Quality artifact available.
 

@@ -47,9 +47,43 @@ describe Projects::EnvironmentsController do
 
       let(:environments) { json_response['environments'] }
 
+      context 'with default parameters' do
+        before do
+          get :index, params: environment_params(format: :json)
+        end
+
+        it 'responds with a flat payload describing available environments' do
+          expect(environments.count).to eq 3
+          expect(environments.first['name']).to eq 'production'
+          expect(environments.second['name']).to eq 'staging/review-1'
+          expect(environments.third['name']).to eq 'staging/review-2'
+          expect(json_response['available_count']).to eq 3
+          expect(json_response['stopped_count']).to eq 1
+        end
+
+        it 'sets the polling interval header' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response.headers['Poll-Interval']).to eq("3000")
+        end
+      end
+
+      context 'when a folder-based nested structure is requested' do
+        before do
+          get :index, params: environment_params(format: :json, nested: true)
+        end
+
+        it 'responds with a payload containing the latest environment for each folder' do
+          expect(environments.count).to eq 2
+          expect(environments.first['name']).to eq 'production'
+          expect(environments.second['name']).to eq 'staging'
+          expect(environments.second['size']).to eq 2
+          expect(environments.second['latest']['name']).to eq 'staging/review-2'
+        end
+      end
+
       context 'when requesting available environments scope' do
         before do
-          get :index, params: environment_params(format: :json, scope: :available)
+          get :index, params: environment_params(format: :json, nested: true, scope: :available)
         end
 
         it 'responds with a payload describing available environments' do
@@ -64,16 +98,11 @@ describe Projects::EnvironmentsController do
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
-
-        it 'sets the polling interval header' do
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.headers['Poll-Interval']).to eq("3000")
-        end
       end
 
       context 'when requesting stopped environments scope' do
         before do
-          get :index, params: environment_params(format: :json, scope: :stopped)
+          get :index, params: environment_params(format: :json, nested: true, scope: :stopped)
         end
 
         it 'responds with a payload describing stopped environments' do
@@ -389,6 +418,79 @@ describe Projects::EnvironmentsController do
         expect(json_response['success']).to be(true)
         expect(json_response['data']).to eq({})
         expect(json_response['last_update']).to eq(42)
+      end
+    end
+  end
+
+  describe 'GET #search' do
+    before do
+      create(:environment, name: 'staging', project: project)
+      create(:environment, name: 'review/patch-1', project: project)
+      create(:environment, name: 'review/patch-2', project: project)
+    end
+
+    let(:query) { 'pro' }
+
+    it 'responds with status code 200' do
+      get :search, params: environment_params(format: :json, query: query)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    it 'returns matched results' do
+      get :search, params: environment_params(format: :json, query: query)
+
+      expect(json_response).to contain_exactly('production')
+    end
+
+    context 'when query is review' do
+      let(:query) { 'review' }
+
+      it 'returns matched results' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(json_response).to contain_exactly('review/patch-1', 'review/patch-2')
+      end
+    end
+
+    context 'when query is empty' do
+      let(:query) { '' }
+
+      it 'returns matched results' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(json_response)
+          .to contain_exactly('production', 'staging', 'review/patch-1', 'review/patch-2')
+      end
+    end
+
+    context 'when query is review/patch-3' do
+      let(:query) { 'review/patch-3' }
+
+      it 'responds with status code 204' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when query is partially matched in the middle of environment name' do
+      let(:query) { 'patch' }
+
+      it 'responds with status code 204' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when query contains a wildcard character' do
+      let(:query) { 'review%' }
+
+      it 'prevents wildcard injection' do
+        get :search, params: environment_params(format: :json, query: query)
+
+        expect(response).to have_gitlab_http_status(:no_content)
       end
     end
   end

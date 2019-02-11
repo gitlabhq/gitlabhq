@@ -579,101 +579,109 @@ function UsersSelect(currentUser, els, options = {}) {
       };
     })(this),
   );
-  $('.ajax-users-select').each(
-    (function(_this) {
-      return function(i, select) {
-        var firstUser, showAnyUser, showEmailUser, showNullUser;
-        var options = {};
-        options.skipLdap = $(select).hasClass('skip_ldap');
-        options.projectId = $(select).data('projectId');
-        options.groupId = $(select).data('groupId');
-        options.showCurrentUser = $(select).data('currentUser');
-        options.authorId = $(select).data('authorId');
-        options.skipUsers = $(select).data('skipUsers');
-        showNullUser = $(select).data('nullUser');
-        showAnyUser = $(select).data('anyUser');
-        showEmailUser = $(select).data('emailUser');
-        firstUser = $(select).data('firstUser');
-        return $(select).select2({
-          placeholder: 'Search for a user',
-          multiple: $(select).hasClass('multiselect'),
-          minimumInputLength: 0,
-          query: function(query) {
-            return _this.users(query.term, options, function(users) {
-              var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
-              data = {
-                results: users,
-              };
-              if (query.term.length === 0) {
-                if (firstUser) {
-                  // Move current user to the front of the list
-                  ref = data.results;
+  import(/* webpackChunkName: 'select2' */ 'select2/select2')
+    .then(() => {
+      $('.ajax-users-select').each(
+        (function(_this) {
+          return function(i, select) {
+            var firstUser, showAnyUser, showEmailUser, showNullUser;
+            var options = {};
+            options.skipLdap = $(select).hasClass('skip_ldap');
+            options.projectId = $(select).data('projectId');
+            options.groupId = $(select).data('groupId');
+            options.showCurrentUser = $(select).data('currentUser');
+            options.authorId = $(select).data('authorId');
+            options.skipUsers = $(select).data('skipUsers');
+            showNullUser = $(select).data('nullUser');
+            showAnyUser = $(select).data('anyUser');
+            showEmailUser = $(select).data('emailUser');
+            firstUser = $(select).data('firstUser');
+            return $(select).select2({
+              placeholder: 'Search for a user',
+              multiple: $(select).hasClass('multiselect'),
+              minimumInputLength: 0,
+              query: function(query) {
+                return _this.users(query.term, options, function(users) {
+                  var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
+                  data = {
+                    results: users,
+                  };
+                  if (query.term.length === 0) {
+                    if (firstUser) {
+                      // Move current user to the front of the list
+                      ref = data.results;
 
-                  for (index = 0, len = ref.length; index < len; index += 1) {
-                    obj = ref[index];
-                    if (obj.username === firstUser) {
-                      data.results.splice(index, 1);
-                      data.results.unshift(obj);
-                      break;
+                      for (index = 0, len = ref.length; index < len; index += 1) {
+                        obj = ref[index];
+                        if (obj.username === firstUser) {
+                          data.results.splice(index, 1);
+                          data.results.unshift(obj);
+                          break;
+                        }
+                      }
+                    }
+                    if (showNullUser) {
+                      nullUser = {
+                        name: 'Unassigned',
+                        id: 0,
+                      };
+                      data.results.unshift(nullUser);
+                    }
+                    if (showAnyUser) {
+                      name = showAnyUser;
+                      if (name === true) {
+                        name = 'Any User';
+                      }
+                      anyUser = {
+                        name: name,
+                        id: null,
+                      };
+                      data.results.unshift(anyUser);
                     }
                   }
-                }
-                if (showNullUser) {
-                  nullUser = {
-                    name: 'Unassigned',
-                    id: 0,
-                  };
-                  data.results.unshift(nullUser);
-                }
-                if (showAnyUser) {
-                  name = showAnyUser;
-                  if (name === true) {
-                    name = 'Any User';
+                  if (
+                    showEmailUser &&
+                    data.results.length === 0 &&
+                    query.term.match(/^[^@]+@[^@]+$/)
+                  ) {
+                    var trimmed = query.term.trim();
+                    emailUser = {
+                      name: 'Invite "' + trimmed + '" by email',
+                      username: trimmed,
+                      id: trimmed,
+                      invite: true,
+                    };
+                    data.results.unshift(emailUser);
                   }
-                  anyUser = {
-                    name: name,
-                    id: null,
-                  };
-                  data.results.unshift(anyUser);
-                }
-              }
-              if (showEmailUser && data.results.length === 0 && query.term.match(/^[^@]+@[^@]+$/)) {
-                var trimmed = query.term.trim();
-                emailUser = {
-                  name: 'Invite "' + trimmed + '" by email',
-                  username: trimmed,
-                  id: trimmed,
-                  invite: true,
-                };
-                data.results.unshift(emailUser);
-              }
-              return query.callback(data);
+                  return query.callback(data);
+                });
+              },
+              initSelection: function() {
+                var args;
+                args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                return _this.initSelection.apply(_this, args);
+              },
+              formatResult: function() {
+                var args;
+                args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                return _this.formatResult.apply(_this, args);
+              },
+              formatSelection: function() {
+                var args;
+                args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
+                return _this.formatSelection.apply(_this, args);
+              },
+              dropdownCssClass: 'ajax-users-dropdown',
+              // we do not want to escape markup since we are displaying html in results
+              escapeMarkup: function(m) {
+                return m;
+              },
             });
-          },
-          initSelection: function() {
-            var args;
-            args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-            return _this.initSelection.apply(_this, args);
-          },
-          formatResult: function() {
-            var args;
-            args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-            return _this.formatResult.apply(_this, args);
-          },
-          formatSelection: function() {
-            var args;
-            args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-            return _this.formatSelection.apply(_this, args);
-          },
-          dropdownCssClass: 'ajax-users-dropdown',
-          // we do not want to escape markup since we are displaying html in results
-          escapeMarkup: function(m) {
-            return m;
-          },
-        });
-      };
-    })(this),
-  );
+          };
+        })(this),
+      );
+    })
+    .catch(() => {});
 }
 
 UsersSelect.prototype.initSelection = function(element, callback) {

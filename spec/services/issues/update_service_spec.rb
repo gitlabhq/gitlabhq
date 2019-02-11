@@ -471,6 +471,8 @@ describe Issues::UpdateService, :mailer do
 
       it { expect(issue.tasks?).to eq(true) }
 
+      it_behaves_like 'updating a single task'
+
       context 'when tasks are marked as completed' do
         before do
           update_issue(description: "- [x] Task 1\n- [X] Task 2")

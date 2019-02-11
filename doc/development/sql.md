@@ -256,32 +256,12 @@ violation, for example.
 
 Using transactions does not solve this problem.
 
-The following pattern should be used to avoid the problem:
+To solve this we've added the `ApplicationRecord.safe_find_or_create_by`.
 
-```ruby
-Project.transaction do
-  begin
-    User.find_or_create_by(username: "foo")
-  rescue ActiveRecord::RecordNotUnique
-    retry
-  end
-end
-```
+This method can be used just as you would the normal
+`find_or_create_by` but it wraps the call in a *new* transaction and
+retries if it were to fail because of an
+`ActiveRecord::RecordNotUnique` error.
 
-If the above block is run inside a transaction and hits the race
-condition, the transaction is aborted and we cannot simply retry (any
-further queries inside the aborted transaction are going to fail). We
-can employ [nested transactions](http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#module-ActiveRecord::Transactions::ClassMethods-label-Nested+transactions)
-here to only rollback the "inner transaction". Note that `requires_new: true` is required here.
-
-```ruby
-Project.transaction do
-  begin
-    User.transaction(requires_new: true) do
-      User.find_or_create_by(username: "foo")
-    end
-  rescue ActiveRecord::RecordNotUnique
-    retry
-  end
-end
-```
+To be able to use this method, make sure the model you want to use
+this on inherits from `ApplicationRecord`.

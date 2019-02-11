@@ -8,7 +8,7 @@ module Issues
       handle_move_between_ids(issue)
       filter_spam_check_params
       change_issue_duplicate(issue)
-      move_issue_to_new_project(issue) || update(issue)
+      move_issue_to_new_project(issue) || update_task_event(issue) || update(issue)
     end
 
     def update(issue)
@@ -63,6 +63,11 @@ module Issues
       end
     end
 
+    def handle_task_changes(issuable)
+      todo_service.mark_pending_todos_as_done(issuable, current_user)
+      todo_service.update_issue(issuable, current_user)
+    end
+
     def handle_move_between_ids(issue)
       return unless params[:move_between_ids]
 
@@ -78,6 +83,8 @@ module Issues
     # rubocop: disable CodeReuse/ActiveRecord
     def change_issue_duplicate(issue)
       canonical_issue_id = params.delete(:canonical_issue_id)
+      return unless canonical_issue_id
+
       canonical_issue = IssuesFinder.new(current_user).find_by(id: canonical_issue_id)
 
       if canonical_issue

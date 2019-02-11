@@ -12,28 +12,22 @@ includes, except [GitLab administrator](../README.md#administrator-documentation
 settings, unless you have admin privileges to install, configure,
 and upgrade your GitLab instance.
 
-For GitLab.com, admin privileges are restricted to the GitLab team.
+Admin privileges for [GitLab.com](https://gitlab.com/) are restricted to the GitLab team.
 
-If you run your own GitLab instance and are looking for the administration settings,
-please refer to the [administration](../README.md#administrator-documentation)
-documentation.
+For more information on configuring GitLab self-managed instances, see [Administrator documentation](../README.md#administrator-documentation).
 
 ## Overview
 
-GitLab is a fully integrated software development platform that enables you
-and your team to work cohesively, faster, transparently, and effectively,
-since the discussion of a new idea until taking that idea to production all
-the way through, from within the same platform.
+GitLab is a fully integrated software development platform that enables your team to be transparent, fast, effective, and cohesive from discussion on a new idea to production, all on the same platform.
 
-Please check this page for an overview on [GitLab's features](https://about.gitlab.com/features/).
+For more information, see [All GitLab Features](https://about.gitlab.com/features/).
 
 ### Concepts
 
-For an overview on concepts involved when developing code on GitLab,
-read the articles on:
+To get familiar with the concepts needed to develop code on GitLab, read the following articles:
 
-- [Mastering Code Review With GitLab](https://about.gitlab.com/2017/03/17/demo-mastering-code-review-with-gitlab/).
-- [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
+- [Demo: Mastering Code Review With GitLab](https://about.gitlab.com/2017/03/17/demo-mastering-code-review-with-gitlab/).
+- [GitLab Workflow: An Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
 - [Tutorial: It's all connected in GitLab](https://about.gitlab.com/2016/03/08/gitlab-tutorial-its-all-connected/): an overview on code collaboration with GitLab.
 - [Trends in Version Control Land: Microservices](https://about.gitlab.com/2016/08/16/trends-in-version-control-land-microservices/).
 - [Trends in Version Control Land: Innersourcing](https://about.gitlab.com/2016/07/07/trends-version-control-innersourcing/).
@@ -42,16 +36,16 @@ read the articles on:
 
 GitLab is a Git-based platform that integrates a great number of essential tools for software development and deployment, and project management:
 
-- Code hosting in repositories with version control
-- Track proposals for new implementations, bug reports, and feedback with a
+- Hosting code in repositories with version control
+- Tracking proposals for new implementations, bug reports, and feedback with a
 fully featured [Issue Tracker](project/issues/index.md#issue-tracker)
-- Organize and prioritize with [Issue Boards](project/issues/index.md#issue-boards)
-- Code review in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
+- Organizing and prioritizing with [Issue Boards](project/issues/index.md#issue-boards)
+- Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
 branch with [Review Apps](../ci/review_apps/index.md)
-- Build, test and deploy with built-in [Continuous Integration](../ci/README.md)
-- Deploy your personal and professional static websites with [GitLab Pages](project/pages/index.md)
-- Integrate with Docker with [GitLab Container Registry](project/container_registry.md)
-- Track the development lifecycle with [GitLab Cycle Analytics](project/cycle_analytics.md)
+- Building, testing and deploying with built-in [Continuous Integration](../ci/README.md)
+- Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md)
+- Integrating with Docker by using [GitLab Container Registry](project/container_registry.md)
+- Tracking the development lifecycle by usingn [GitLab Cycle Analytics](project/cycle_analytics.md)
 
 With GitLab Enterprise Edition, you can also:
 
@@ -68,15 +62,17 @@ and [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.
 - [Export issues as CSV](https://docs.gitlab.com/ee/user/project/issues/csv_export.html)
 - View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html)
 - [Lock files](https://docs.gitlab.com/ee/user/project/file_lock.html) to prevent conflicts
-- View of the current health and status of each CI environment running on Kubernetes with [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
-- Leverage your continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
+- View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
+- Leverage continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
 
-You can also [integrate](project/integrations/project_services.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, HipChat, Trello, Slack, Bamboo CI, JIRA, and a lot more.
+You can also [integrate](project/integrations/project_services.md) GitLab with
+numerous third-party applications, such as Mattermost, Microsoft Teams, Trello,
+Slack, Bamboo CI, JIRA, and a lot more.
 
 ## Projects
 
-In GitLab, you can create [projects](project/index.md) for numerous reasons, such as, host
-your code, use it as an issue tracker, collaborate on code, and continuously
+In GitLab, you can create [projects](project/index.md) to host
+your code, track issues, collaborate on code, and continuously
 build, test, and deploy your app with built-in GitLab CI/CD. Or, you can do
 it all at once, from one single project.
 

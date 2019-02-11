@@ -11,6 +11,7 @@ describe Commit do
     it { is_expected.to include_module(Participable) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(StaticModel) }
+    it { is_expected.to include_module(Presentable) }
   end
 
   describe '.lazy' do

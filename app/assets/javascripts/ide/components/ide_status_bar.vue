@@ -107,16 +107,23 @@ export default {
         class="commit-sha"
         >{{ lastCommit.short_id }}</a
       >
-      by {{ lastCommit.author_name }}
+      by
+      <user-avatar-image
+        css-classes="ide-status-avatar"
+        :size="18"
+        :img-src="latestPipeline && latestPipeline.commit.author_gravatar_url"
+        :img-alt="lastCommit.author_name"
+        :tooltip-text="lastCommit.author_name"
+      />
+      {{ lastCommit.author_name }}
       <time
         v-tooltip
         :datetime="lastCommit.committed_date"
         :title="tooltipTitle(lastCommit.committed_date)"
         data-placement="top"
         data-container="body"
+        >{{ lastCommitFormatedAge }}</time
       >
-        {{ lastCommitFormatedAge }}
-      </time>
     </div>
     <div v-if="file" class="ide-status-file">{{ file.name }}</div>
     <div v-if="file" class="ide-status-file">{{ file.eol }}</div>

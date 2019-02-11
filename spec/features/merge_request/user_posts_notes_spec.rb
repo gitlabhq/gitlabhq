@@ -66,6 +66,38 @@ describe 'Merge request > User posts notes', :js do
         is_expected.to have_css('.js-note-text', visible: true)
       end
     end
+
+    describe 'when reply_to_individual_notes feature flag is not set' do
+      before do
+        stub_feature_flags(reply_to_individual_notes: false)
+        visit project_merge_request_path(project, merge_request)
+      end
+
+      it 'does not show a reply button' do
+        expect(page).to have_no_selector('.js-reply-button')
+      end
+    end
+
+    describe 'when reply_to_individual_notes feature flag is set' do
+      before do
+        stub_feature_flags(reply_to_individual_notes: true)
+        visit project_merge_request_path(project, merge_request)
+      end
+
+      it 'shows a reply button' do
+        reply_button = find('.js-reply-button', match: :first)
+
+        expect(reply_button).to have_selector('.ic-comment')
+      end
+
+      it 'shows reply placeholder when clicking reply button' do
+        reply_button = find('.js-reply-button', match: :first)
+
+        reply_button.click
+
+        expect(page).to have_selector('.discussion-reply-holder')
+      end
+    end
   end
 
   describe 'when previewing a note' do

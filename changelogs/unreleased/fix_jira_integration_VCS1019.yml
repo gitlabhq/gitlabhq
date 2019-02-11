@@ -1,0 +1,5 @@
+---
+title: Fix Jira Service password validation on project integration services.
+merge_request: 24896
+author: Daniel Juarez
+type: fixed

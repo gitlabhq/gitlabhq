@@ -2,6 +2,8 @@
 
 module Search
   class GlobalService
+    include Gitlab::Utils::StrongMemoize
+
     attr_accessor :current_user, :params
     attr_reader :default_project_filter
 
@@ -19,11 +21,15 @@ module Search
       @projects ||= ProjectsFinder.new(current_user: current_user).execute
     end
 
-    def scope
-      @scope ||= begin
-        allowed_scopes = %w[issues merge_requests milestones]
+    def allowed_scopes
+      strong_memoize(:allowed_scopes) do
+        %w[issues merge_requests milestones]
+      end
+    end
 
-        allowed_scopes.delete(params[:scope]) { 'projects' }
+    def scope
+      strong_memoize(:scope) do
+        allowed_scopes.include?(params[:scope]) ? params[:scope] : 'projects'
       end
     end
   end

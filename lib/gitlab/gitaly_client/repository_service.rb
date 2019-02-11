@@ -324,12 +324,39 @@ module Gitlab
         GitalyClient.call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
       end
 
-      def search_files_by_content(ref, query)
-        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query)
-        GitalyClient.call(@storage, :repository_service, :search_files_by_content, request).flat_map(&:matches)
+      def search_files_by_content(ref, query, chunked_response: true)
+        request = Gitaly::SearchFilesByContentRequest.new(repository: @gitaly_repo, ref: ref, query: query, chunked_response: chunked_response)
+        response = GitalyClient.call(@storage, :repository_service, :search_files_by_content, request)
+
+        search_results_from_response(response)
       end
 
       private
+
+      def search_results_from_response(gitaly_response)
+        matches = []
+        current_match = +""
+
+        gitaly_response.each do |message|
+          next if message.nil?
+
+          # Old client will ignore :chunked_response flag
+          # and return messages with `matches` key.
+          # This code path will be removed post 12.0 release
+          if message.matches.any?
+            matches += message.matches
+          else
+            current_match << message.match_data
+
+            if message.end_of_match
+              matches << current_match
+              current_match = +""
+            end
+          end
+        end
+
+        matches
+      end
 
       def gitaly_fetch_stream_to_file(save_path, rpc_name, request_class, timeout)
         request = request_class.new(repository: @gitaly_repo)

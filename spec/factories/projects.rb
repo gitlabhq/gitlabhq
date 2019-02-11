@@ -1,7 +1,7 @@
 require_relative '../support/helpers/test_env'
 
 FactoryBot.define do
-  PAGES_ACCESS_LEVEL_SCHEMA_VERSION = 20180423204600
+  PAGES_ACCESS_LEVEL_SCHEMA_VERSION ||= 20180423204600
 
   # Project without repository
   #
@@ -320,6 +320,10 @@ FactoryBot.define do
 
   factory :kubernetes_project, parent: :project do
     kubernetes_service
+  end
+
+  factory :mock_deployment_project, parent: :project do
+    mock_deployment_service
   end
 
   factory :prometheus_project, parent: :project do

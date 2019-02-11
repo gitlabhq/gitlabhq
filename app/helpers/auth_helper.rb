@@ -16,6 +16,13 @@ module AuthHelper
     PROVIDERS_WITH_ICONS.include?(name.to_s)
   end
 
+  def qa_class_for_provider(provider)
+    {
+      saml: 'qa-saml-login-button',
+      github: 'qa-github-login-button'
+    }[provider.to_sym]
+  end
+
   def auth_providers
     Gitlab::Auth::OAuth::Provider.providers
   end

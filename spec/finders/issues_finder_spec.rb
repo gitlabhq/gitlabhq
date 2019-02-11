@@ -314,6 +314,14 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by issue term in title' do
+        let(:params) { { search: 'git', in: 'title' } }
+
+        it 'returns issues with title match for search term' do
+          expect(issues).to contain_exactly(issue1)
+        end
+      end
+
       context 'filtering by issues iids' do
         let(:params) { { iids: issue3.iid } }
 

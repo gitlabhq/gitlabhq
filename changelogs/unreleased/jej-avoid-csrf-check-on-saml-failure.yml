@@ -1,0 +1,5 @@
+---
+title: Display SAML failure messages instead of expecting CSRF token
+merge_request: 24509
+author:
+type: fixed

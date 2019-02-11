@@ -6,6 +6,7 @@ import { polyfillSticky } from '~/lib/utils/sticky';
 import Icon from '~/vue_shared/components/icon.vue';
 import CompareVersionsDropdown from './compare_versions_dropdown.vue';
 import SettingsDropdown from './settings_dropdown.vue';
+import DiffStats from './diff_stats.vue';
 
 export default {
   components: {
@@ -14,6 +15,7 @@ export default {
     GlLink,
     GlButton,
     SettingsDropdown,
+    DiffStats,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -35,8 +37,15 @@ export default {
     },
   },
   computed: {
-    ...mapState('diffs', ['commit', 'showTreeList', 'startVersion', 'latestVersionPath']),
-    ...mapGetters('diffs', ['hasCollapsedFile']),
+    ...mapGetters('diffs', ['hasCollapsedFile', 'diffFilesLength']),
+    ...mapState('diffs', [
+      'commit',
+      'showTreeList',
+      'startVersion',
+      'latestVersionPath',
+      'addedLines',
+      'removedLines',
+    ]),
     comparableDiffs() {
       return this.mergeRequestDiffs.slice(1);
     },
@@ -104,6 +113,11 @@ export default {
         <gl-link :href="commit.commit_url" class="monospace">{{ commit.short_id }}</gl-link>
       </div>
       <div class="inline-parallel-buttons d-none d-md-flex ml-auto">
+        <diff-stats
+          :diff-files-length="diffFilesLength"
+          :added-lines="addedLines"
+          :removed-lines="removedLines"
+        />
         <gl-button
           v-if="commit || startVersion"
           :href="latestVersionPath"

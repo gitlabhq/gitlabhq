@@ -15,9 +15,11 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
 
   describe 'Validations' do
     context 'when api_url is over 255 chars' do
-      it 'fails validation' do
+      before do
         subject.api_url = 'https://' + 'a' * 250
+      end
 
+      it 'fails validation' do
         expect(subject).not_to be_valid
         expect(subject.errors.messages[:api_url]).to include('is too long (maximum is 255 characters)')
       end
@@ -28,6 +30,34 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         subject.api_url = "https://replaceme.com/'><script>alert(document.cookie)</script>"
 
         expect(subject).not_to be_valid
+      end
+    end
+
+    context 'presence validations' do
+      using RSpec::Parameterized::TableSyntax
+
+      valid_api_url = 'http://example.com/api/0/projects/org-slug/proj-slug/'
+      valid_token = 'token'
+
+      where(:enabled, :token, :api_url, :valid?) do
+        true  | nil         | nil           | false
+        true  | nil         | valid_api_url | false
+        true  | valid_token | nil           | false
+        true  | valid_token | valid_api_url | true
+        false | nil         | nil           | true
+        false | nil         | valid_api_url | true
+        false | valid_token | nil           | true
+        false | valid_token | valid_api_url | true
+      end
+
+      with_them do
+        before do
+          subject.enabled = enabled
+          subject.token = token
+          subject.api_url = api_url
+        end
+
+        it { expect(subject.valid?).to eq(valid?) }
       end
     end
 
@@ -43,6 +73,16 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         subject.api_url = 'http://gitlab.com/api/0/projects/project1/something'
 
         expect(subject).to be_valid
+      end
+    end
+
+    context 'non ascii chars in api_url' do
+      before do
+        subject.api_url = 'http://gitlab.com/api/0/projects/project1/something€'
+      end
+
+      it 'fails validation' do
+        expect(subject).not_to be_valid
       end
     end
   end
@@ -103,6 +143,140 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         expect(subject).not_to receive(:sentry_client)
 
         expect(result).to be_nil
+      end
+    end
+  end
+
+  describe '#list_sentry_projects' do
+    let(:projects) { [:list, :of, :projects] }
+    let(:sentry_client) { spy(:sentry_client) }
+
+    it 'calls sentry client' do
+      expect(subject).to receive(:sentry_client).and_return(sentry_client)
+      expect(sentry_client).to receive(:list_projects).and_return(projects)
+
+      result = subject.list_sentry_projects
+
+      expect(result).to eq(projects: projects)
+    end
+  end
+
+  context 'slugs' do
+    shared_examples_for 'slug from api_url' do |method, slug|
+      context 'when api_url is correct' do
+        before do
+          subject.api_url = 'http://gitlab.com/api/0/projects/org-slug/project-slug/'
+        end
+
+        it 'returns slug' do
+          expect(subject.public_send(method)).to eq(slug)
+        end
+      end
+
+      context 'when api_url is blank' do
+        before do
+          subject.api_url = nil
+        end
+
+        it 'returns nil' do
+          expect(subject.public_send(method)).to be_nil
+        end
+      end
+    end
+
+    it_behaves_like 'slug from api_url', :project_slug, 'project-slug'
+    it_behaves_like 'slug from api_url', :organization_slug, 'org-slug'
+  end
+
+  context 'names from api_url' do
+    shared_examples_for 'name from api_url' do |name, titleized_slug|
+      context 'name is present in DB' do
+        it 'returns name from DB' do
+          subject[name] = 'Sentry name'
+          subject.api_url = 'http://gitlab.com/api/0/projects/org-slug/project-slug'
+
+          expect(subject.public_send(name)).to eq('Sentry name')
+        end
+      end
+
+      context 'name is null in DB' do
+        it 'titleizes and returns slug from api_url' do
+          subject[name] = nil
+          subject.api_url = 'http://gitlab.com/api/0/projects/org-slug/project-slug'
+
+          expect(subject.public_send(name)).to eq(titleized_slug)
+        end
+
+        it 'returns nil when api_url is incorrect' do
+          subject[name] = nil
+          subject.api_url = 'http://gitlab.com/api/0/projects/'
+
+          expect(subject.public_send(name)).to be_nil
+        end
+
+        it 'returns nil when api_url is blank' do
+          subject[name] = nil
+          subject.api_url = nil
+
+          expect(subject.public_send(name)).to be_nil
+        end
+      end
+    end
+
+    it_behaves_like 'name from api_url', :organization_name, 'Org Slug'
+    it_behaves_like 'name from api_url', :project_name, 'Project Slug'
+  end
+
+  describe '.build_api_url_from' do
+    it 'correctly builds api_url with slugs' do
+      api_url = described_class.build_api_url_from(
+        api_host: 'http://sentry.com/',
+        organization_slug: 'org-slug',
+        project_slug: 'proj-slug'
+      )
+
+      expect(api_url).to eq('http://sentry.com/api/0/projects/org-slug/proj-slug/')
+    end
+
+    it 'correctly builds api_url without slugs' do
+      api_url = described_class.build_api_url_from(
+        api_host: 'http://sentry.com/',
+        organization_slug: nil,
+        project_slug: nil
+      )
+
+      expect(api_url).to eq('http://sentry.com/api/0/projects/')
+    end
+
+    it 'does not raise exception with invalid url' do
+      api_url = described_class.build_api_url_from(
+        api_host: ':::',
+        organization_slug: 'org-slug',
+        project_slug: 'proj-slug'
+      )
+
+      expect(api_url).to eq(':::')
+    end
+  end
+
+  describe '#api_host' do
+    context 'when api_url exists' do
+      before do
+        subject.api_url = 'https://example.com/api/0/projects/org-slug/proj-slug/'
+      end
+
+      it 'extracts the api_host from api_url' do
+        expect(subject.api_host).to eq('https://example.com/')
+      end
+    end
+
+    context 'when api_url is nil' do
+      before do
+        subject.api_url = nil
+      end
+
+      it 'returns nil' do
+        expect(subject.api_url).to eq(nil)
       end
     end
   end

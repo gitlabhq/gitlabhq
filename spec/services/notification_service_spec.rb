@@ -1646,6 +1646,23 @@ describe NotificationService, :mailer do
         should_not_email(@u_guest_custom)
         should_not_email(@u_disabled)
       end
+
+      context 'users not having access to the new location' do
+        it 'does not send email' do
+          old_user = create(:user)
+          ProjectAuthorization.create!(project: project, user: old_user, access_level: Gitlab::Access::GUEST)
+
+          build_group(project)
+          reset_delivered_emails!
+
+          notification.project_was_moved(project, "gitlab/gitlab")
+
+          should_email(@g_watcher)
+          should_email(@g_global_watcher)
+          should_email(project.creator)
+          should_not_email(old_user)
+        end
+      end
     end
 
     context 'user with notifications disabled' do
@@ -2232,8 +2249,8 @@ describe NotificationService, :mailer do
 
   # Users in the project's group but not part of project's team
   # with different notification settings
-  def build_group(project)
-    group = create_nested_group
+  def build_group(project, visibility: :public)
+    group = create_nested_group(visibility)
     project.update(namespace_id: group.id)
 
     # Group member: global=disabled, group=watch
@@ -2249,10 +2266,10 @@ describe NotificationService, :mailer do
 
   # Creates a nested group only if supported
   # to avoid errors on MySQL
-  def create_nested_group
+  def create_nested_group(visibility)
     if Group.supports_nested_objects?
-      parent_group = create(:group, :public)
-      child_group = create(:group, :public, parent: parent_group)
+      parent_group = create(:group, visibility)
+      child_group = create(:group, visibility, parent: parent_group)
 
       # Parent group member: global=disabled, parent_group=watch, child_group=global
       @pg_watcher ||= create_user_with_notification(:watch, 'parent_group_watcher', parent_group)
@@ -2272,7 +2289,7 @@ describe NotificationService, :mailer do
 
       child_group
     else
-      create(:group, :public)
+      create(:group, visibility)
     end
   end
 

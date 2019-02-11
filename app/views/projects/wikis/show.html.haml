@@ -2,7 +2,7 @@
 - breadcrumb_title @page.human_title
 - wiki_breadcrumb_dropdown_links(@page.slug)
 - page_title @page.human_title, _("Wiki")
-- add_to_breadcrumbs _("Wiki"), get_project_wiki_path(@project)
+- add_to_breadcrumbs _("Wiki"), project_wiki_path(@project, :home)
 
 .wiki-page-header.has-sidebar-toggle
   %button.btn.btn-default.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
@@ -27,6 +27,6 @@
 
 .prepend-top-default.append-bottom-default
   .wiki.md{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
-    = render_wiki_content(@page, legacy_render_context(params))
+    = render_wiki_content(@page)
 
 = render 'sidebar'

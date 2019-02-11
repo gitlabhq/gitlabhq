@@ -1,0 +1,5 @@
+---
+title: Append prioritized label before pagination
+merge_request: 24815
+author:
+type: fixed

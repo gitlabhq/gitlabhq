@@ -179,7 +179,7 @@ describe API::Helpers do
 
       context 'when blob name is not null' do
         it 'returns disposition with the blob name' do
-          expect(send_git_blob['Content-Disposition']).to eq 'inline; filename="foobar"'
+          expect(send_git_blob['Content-Disposition']).to eq %q(inline; filename="foobar"; filename*=UTF-8''foobar)
         end
       end
     end

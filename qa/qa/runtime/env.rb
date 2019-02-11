@@ -100,6 +100,14 @@ module QA
         ENV['GITLAB_ADMIN_PASSWORD']
       end
 
+      def github_username
+        ENV['GITHUB_USERNAME']
+      end
+
+      def github_password
+        ENV['GITHUB_PASSWORD']
+      end
+
       def forker?
         !!(forker_username && forker_password)
       end

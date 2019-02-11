@@ -35,7 +35,9 @@ module MembershipActions
 
     respond_to do |format|
       format.html do
-        message = "User was successfully removed from #{source_type}."
+        source = source_type == 'group' ? 'group and any subresources' : source_type
+
+        message = "User was successfully removed from #{source}."
         redirect_to members_page_url, notice: message
       end
 

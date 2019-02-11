@@ -1,0 +1,5 @@
+---
+title: Add 'in' filter that modifies scope of 'search' filter to issues and merge requests API
+merge_request: 24350
+author: Hiroyuki Sato
+type: added

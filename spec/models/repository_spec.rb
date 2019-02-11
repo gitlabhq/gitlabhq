@@ -1237,6 +1237,27 @@ describe Repository do
     end
   end
 
+  describe '#blobs_at' do
+    let(:empty_repository) { create(:project_empty_repo).repository }
+
+    it 'returns empty array for an empty repository' do
+      # rubocop:disable Style/WordArray
+      expect(empty_repository.blobs_at(['master', 'foobar'])).to eq([])
+      # rubocop:enable Style/WordArray
+    end
+
+    it 'returns blob array for a non-empty repository' do
+      repository.create_file(User.last, 'foobar', 'CONTENT', message: 'message', branch_name: 'master')
+
+      # rubocop:disable Style/WordArray
+      blobs = repository.blobs_at([['master', 'foobar']])
+      # rubocop:enable Style/WordArray
+
+      expect(blobs.first.name).to eq('foobar')
+      expect(blobs.size).to eq(1)
+    end
+  end
+
   describe '#root_ref' do
     it 'returns a branch name' do
       expect(repository.root_ref).to be_an_instance_of(String)
@@ -2270,6 +2291,7 @@ describe Repository do
       expect(subject).to be_a(Gitlab::Git::Repository)
       expect(subject.relative_path).to eq(project.disk_path + '.git')
       expect(subject.gl_repository).to eq("project-#{project.id}")
+      expect(subject.gl_project_path).to eq(project.full_path)
     end
 
     context 'with a wiki repository' do
@@ -2279,6 +2301,7 @@ describe Repository do
         expect(subject).to be_a(Gitlab::Git::Repository)
         expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
         expect(subject.gl_repository).to eq("wiki-#{project.id}")
+        expect(subject.gl_project_path).to eq(project.full_path)
       end
     end
   end

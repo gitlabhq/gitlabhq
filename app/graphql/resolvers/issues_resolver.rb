@@ -4,6 +4,10 @@ module Resolvers
   class IssuesResolver < BaseResolver
     extend ActiveSupport::Concern
 
+    argument :iids, [GraphQL::ID_TYPE],
+              required: false,
+              description: 'The list of IIDs of issues, e.g., [1, 2]'
+
     argument :search, GraphQL::STRING_TYPE,
               required: false
     argument :sort, Types::Sort,

@@ -5,7 +5,9 @@ describe Clusters::Applications::Prometheus do
 
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :clusters_applications_prometheus
+  include_examples 'cluster application version specs', :clusters_applications_prometheus
   include_examples 'cluster application helm specs', :clusters_applications_prometheus
+  include_examples 'cluster application initial status specs'
 
   describe '.installed' do
     subject { described_class.installed }
@@ -17,20 +19,6 @@ describe Clusters::Applications::Prometheus do
     end
 
     it { is_expected.to contain_exactly(cluster) }
-  end
-
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_prometheus, :scheduled, version: '6.7.2') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('6.7.3')
-      end
-    end
   end
 
   describe 'transition to installed' do
@@ -219,8 +207,8 @@ describe Clusters::Applications::Prometheus do
     let(:prometheus) { build(:clusters_applications_prometheus) }
     let(:values) { prometheus.values }
 
-    it 'returns an instance of Gitlab::Kubernetes::Helm::GetCommand' do
-      expect(prometheus.upgrade_command(values)).to be_an_instance_of(::Gitlab::Kubernetes::Helm::UpgradeCommand)
+    it 'returns an instance of Gitlab::Kubernetes::Helm::InstallCommand' do
+      expect(prometheus.upgrade_command(values)).to be_an_instance_of(::Gitlab::Kubernetes::Helm::InstallCommand)
     end
 
     it 'should be initialized with 3 arguments' do

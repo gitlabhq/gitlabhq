@@ -79,11 +79,14 @@ running on your instance).
 
 ![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated_2018.png)
 
-NOTE: **Note:**
-Note that if you use your root domain for your GitLab Pages website **only**, and if
-your domain registrar supports this feature, you can add a DNS apex `CNAME`
-record instead of an `A` record. The main advantage of doing so is that when GitLab Pages
-IP on GitLab.com changes for whatever reason, you don't need to update your `A` record.
+CAUTION: **Caution:**
+Note that if you use your root domain for your GitLab Pages website
+**only**, and if your domain registrar supports this feature, you can
+add a DNS apex `CNAME` record instead of an `A` record. The main
+advantage of doing so is that when GitLab Pages IP on GitLab.com
+changes for whatever reason, you don't need to update your `A` record.
+There may be a few exceptions, but **this method is not recommended**
+as it most likely won't work if you set an `MX` record for your root domain.
 
 #### DNS CNAME record
 
@@ -114,14 +117,16 @@ co-exist, so you need to place the TXT record in a special subdomain of its own.
 
 #### TL;DR
 
-If the domain has multiple uses (e.g., you host email on it as well):
+For root domains (`domain.com`), set a DNS `A` record and verify your
+domain's ownership with a TXT record:
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
 | domain.com | A | 35.185.44.232 |
 | domain.com | TXT | gitlab-pages-verification-code=00112233445566778899aabbccddeeff |
 
-If the domain is dedicated to GitLab Pages use and no other services run on it:
+For subdomains (`subdomain.domain.com`), set a DNS `CNAME` record and
+verify your domain's ownership with a TXT record:
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
@@ -264,7 +269,7 @@ your Pages project are the same.
 
 1. A PEM certificate
 1. An intermediate certificate
-1. A public key
+1. A private key
 
 ![Pages project - adding certificates](img/add_certificate_to_pages.png)
 
@@ -280,7 +285,7 @@ Usually it's combined with the PEM certificate, but there are
 some cases in which you need to add them manually.
 [CloudFlare certs](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/)
 are one of these cases.
-- A public key is an encrypted key which validates
+- A private key is an encrypted key which validates
 your PEM against your domain.
 
 ### Now what?
@@ -293,7 +298,7 @@ of this, it's simple:
 and paste the root certificate (usually available from your CA website)
 and paste it in the [same field as your PEM certificate](https://about.gitlab.com/2017/02/07/setting-up-gitlab-pages-with-cloudflare-certificates/),
 just jumping a line between them.
-- Copy your public key and paste it in the last field
+- Copy your private key and paste it in the last field
 
 >**Note:**
 **Do not** open certificates or encryption keys in

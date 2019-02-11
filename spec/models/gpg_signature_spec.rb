@@ -23,6 +23,41 @@ RSpec.describe GpgSignature do
     it { is_expected.to validate_presence_of(:gpg_key_primary_keyid) }
   end
 
+  describe '.safe_create!' do
+    let(:attributes) do
+      {
+        commit_sha: commit_sha,
+        project: project,
+        gpg_key_primary_keyid: gpg_key.keyid
+      }
+    end
+
+    it 'finds a signature by commit sha if it existed' do
+      gpg_signature
+
+      expect(described_class.safe_create!(commit_sha: commit_sha)).to eq(gpg_signature)
+    end
+
+    it 'creates a new signature if it was not found' do
+      expect { described_class.safe_create!(attributes) }.to change { described_class.count }.by(1)
+    end
+
+    it 'assigns the correct attributes when creating' do
+      signature = described_class.safe_create!(attributes)
+
+      expect(signature.project).to eq(project)
+      expect(signature.commit_sha).to eq(commit_sha)
+      expect(signature.gpg_key_primary_keyid).to eq(gpg_key.keyid)
+    end
+
+    it 'does not raise an error in case of a race condition' do
+      expect(described_class).to receive(:find_or_create_by).and_raise(ActiveRecord::RecordNotUnique)
+      allow(described_class).to receive(:find_or_create_by).and_call_original
+
+      described_class.safe_create!(attributes)
+    end
+  end
+
   describe '#commit' do
     it 'fetches the commit through the project' do
       expect_any_instance_of(Project).to receive(:commit).with(commit_sha).and_return(commit)

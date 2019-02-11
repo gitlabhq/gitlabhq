@@ -134,6 +134,13 @@ export default {
           >ms / <span title="Invoke Count">{{ currentRequest.details.gc.invokes }}</span> gc
         </span>
       </div>
+      <div
+        v-if="currentRequest.details && currentRequest.details.tracing"
+        id="peek-view-trace"
+        class="view"
+      >
+        <a :href="currentRequest.details.tracing.tracing_url"> trace </a>
+      </div>
       <request-selector
         v-if="currentRequest"
         :current-request="currentRequest"

@@ -24,6 +24,12 @@ class DeploymentEntity < Grape::Entity
   expose :user, using: UserEntity
   expose :commit, using: CommitEntity
   expose :deployable, using: JobEntity
-  expose :manual_actions, using: JobEntity
-  expose :scheduled_actions, using: JobEntity
+  expose :manual_actions, using: JobEntity, if: -> (*) { can_create_deployment? }
+  expose :scheduled_actions, using: JobEntity, if: -> (*) { can_create_deployment? }
+
+  private
+
+  def can_create_deployment?
+    can?(request.current_user, :create_deployment, request.project)
+  end
 end

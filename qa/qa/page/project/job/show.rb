@@ -16,11 +16,19 @@ module QA::Page
         element :status_badge
       end
 
+      view 'app/assets/javascripts/jobs/components/stages_dropdown.vue' do
+        element :pipeline_path
+      end
+
       def completed?
         COMPLETED_STATUSES.include?(status_badge)
       end
 
-      def passed?
+      def successful?(timeout: 60)
+        wait(reload: false, max: timeout) do
+          completed? && !trace_loading?
+        end
+
         status_badge == PASSED_STATUS
       end
 

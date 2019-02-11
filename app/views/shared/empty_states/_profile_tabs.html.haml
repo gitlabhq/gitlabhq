@@ -1,0 +1,19 @@
+- current_user_empty_message_description = local_assigns.fetch(:current_user_empty_message_description, nil)
+- secondary_button_link = local_assigns.fetch(:secondary_button_link, nil)
+
+.nothing-here-block
+  .svg-content
+    = image_tag illustration_path, size: '75'
+    .text-content
+      - if user_profile? and current_user.present? and current_user.username == params[:username]
+        %h5= current_user_empty_message_header
+
+        - if current_user_empty_message_description.present?
+          %p= current_user_empty_message_description
+
+        - if secondary_button_link.present?
+          = link_to secondary_button_label, secondary_button_link, class: 'btn btn-create btn-inverted'
+
+        = link_to primary_button_label, primary_button_link, class: 'btn btn-success'
+      - else
+        %h5= visitor_empty_message

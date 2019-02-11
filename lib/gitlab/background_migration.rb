@@ -16,11 +16,18 @@ module Gitlab
     # re-raises the exception.
     #
     # steal_class - The name of the class for which to steal jobs.
-    def self.steal(steal_class)
-      enqueued = Sidekiq::Queue.new(self.queue)
-      scheduled = Sidekiq::ScheduledSet.new
+    def self.steal(steal_class, retry_dead_jobs: false)
+      queues = [
+        Sidekiq::ScheduledSet.new,
+        Sidekiq::Queue.new(self.queue)
+      ]
 
-      [scheduled, enqueued].each do |queue|
+      if retry_dead_jobs
+        queues << Sidekiq::RetrySet.new
+        queues << Sidekiq::DeadSet.new
+      end
+
+      queues.each do |queue|
         queue.each do |job|
           migration_class, migration_args = job.args
 

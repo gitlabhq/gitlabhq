@@ -12,8 +12,6 @@ describe JsRegexValidator do
       ''             | []
       '(?#comment)'  | ['Regex Pattern (?#comment) can not be expressed in Javascript']
       '(?(a)b|c)'    | ['invalid conditional pattern: /(?(a)b|c)/i']
-      '[a-z&&[^uo]]' | ["Dropped unsupported set intersection '[a-z&&[^uo]]' at index 0",
-                        "Dropped unsupported nested negative set data '[^uo]' at index 6"]
     end
 
     with_them do

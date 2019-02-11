@@ -5,24 +5,27 @@ describe Projects::UpdatePagesService do
   set(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
   set(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
   let(:invalid_file) { fixture_file_upload('spec/fixtures/dk.png') }
-  let(:extension) { 'zip' }
 
-  let(:file) { fixture_file_upload("spec/fixtures/pages.#{extension}") }
-  let(:empty_file) { fixture_file_upload("spec/fixtures/pages_empty.#{extension}") }
-  let(:metadata) do
-    filename = "spec/fixtures/pages.#{extension}.meta"
-    fixture_file_upload(filename) if File.exist?(filename)
-  end
+  let(:file) { fixture_file_upload("spec/fixtures/pages.zip") }
+  let(:empty_file) { fixture_file_upload("spec/fixtures/pages_empty.zip") }
+  let(:metadata_filename) { "spec/fixtures/pages.zip.meta" }
+  let(:metadata) { fixture_file_upload(metadata_filename) if File.exist?(metadata_filename) }
 
   subject { described_class.new(project, build) }
 
   before do
+    stub_feature_flags(safezip_use_rubyzip: true)
+
     project.remove_pages
   end
 
-  context 'legacy artifacts' do
-    let(:extension) { 'zip' }
+  context '::TMP_EXTRACT_PATH' do
+    subject { described_class::TMP_EXTRACT_PATH }
 
+    it { is_expected.not_to match(Gitlab::PathRegex.namespace_format_regex) }
+  end
+
+  context 'legacy artifacts' do
     before do
       build.update(legacy_artifacts_file: file)
       build.update(legacy_artifacts_metadata: metadata)
@@ -129,6 +132,20 @@ describe Projects::UpdatePagesService do
         it 'fails to extract' do
           expect { execute }
             .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
+        end
+      end
+
+      context 'when using pages with non-writeable public' do
+        let(:file) { fixture_file_upload("spec/fixtures/pages_non_writeable.zip") }
+
+        context 'when using RubyZip' do
+          before do
+            stub_feature_flags(safezip_use_rubyzip: true)
+          end
+
+          it 'succeeds to extract' do
+            expect(execute).to eq(:success)
+          end
         end
       end
 

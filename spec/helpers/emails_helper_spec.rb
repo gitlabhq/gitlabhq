@@ -1,6 +1,20 @@
 require 'spec_helper'
 
 describe EmailsHelper do
+  describe 'sanitize_name' do
+    context 'when name contains a valid URL string' do
+      it 'returns name with `.` replaced with `_` to prevent mail clients from auto-linking URLs' do
+        expect(sanitize_name('https://about.gitlab.com')).to eq('https://about_gitlab_com')
+        expect(sanitize_name('www.gitlab.com')).to eq('www_gitlab_com')
+        expect(sanitize_name('//about.gitlab.com/handbook/security/#best-practices')).to eq('//about_gitlab_com/handbook/security/#best-practices')
+      end
+
+      it 'returns name as it is when it does not contain a URL' do
+        expect(sanitize_name('Foo Bar')).to eq('Foo Bar')
+      end
+    end
+  end
+
   describe 'password_reset_token_valid_time' do
     def validate_time_string(time_limit, expected_string)
       Devise.reset_password_within = time_limit

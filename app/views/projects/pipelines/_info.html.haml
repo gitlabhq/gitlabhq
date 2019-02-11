@@ -6,23 +6,22 @@
       = preserve(markdown(commit.description, pipeline: :single_line))
 
 .info-well
-  - if commit.status
-    .well-segment.pipeline-info
-      .icon-container
-        = icon('clock-o')
-      = pluralize @pipeline.total_size, "job"
-      - if @pipeline.ref
-        from
-        - if @pipeline.ref_exists?
-          = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
-        - else
-          %span.ref-name
-            = @pipeline.ref
-      - if @pipeline.duration
-        in
-        = time_interval_in_words(@pipeline.duration)
-      - if @pipeline.queued_duration
-        = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
+  .well-segment.pipeline-info
+    .icon-container
+      = icon('clock-o')
+    = pluralize @pipeline.total_size, "job"
+    - if @pipeline.ref
+      from
+      - if @pipeline.ref_exists?
+        = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
+      - else
+        %span.ref-name
+          = @pipeline.ref
+    - if @pipeline.duration
+      in
+      = time_interval_in_words(@pipeline.duration)
+    - if @pipeline.queued_duration
+      = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
 
   .well-segment
     .icon-container

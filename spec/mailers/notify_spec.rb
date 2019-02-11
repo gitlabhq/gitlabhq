@@ -9,8 +9,10 @@ describe Notify do
 
   include_context 'gitlab email notification'
 
+  let(:current_user_sanitized) { 'www_example_com' }
+
   set(:user) { create(:user) }
-  set(:current_user) { create(:user, email: "current@email.com") }
+  set(:current_user) { create(:user, email: "current@email.com", name: 'www.example.com') }
   set(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
 
   set(:merge_request) do
@@ -182,7 +184,7 @@ describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(issue, reply: true)
             is_expected.to have_body_text(status)
-            is_expected.to have_body_text(current_user.name)
+            is_expected.to have_body_text(current_user_sanitized)
             is_expected.to have_body_text(project_issue_path project, issue)
           end
         end
@@ -361,7 +363,7 @@ describe Notify do
           aggregate_failures do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text(status)
-            is_expected.to have_body_text(current_user.name)
+            is_expected.to have_body_text(current_user_sanitized)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
           end
         end

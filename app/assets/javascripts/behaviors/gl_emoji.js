@@ -1,11 +1,10 @@
-import installCustomElements from 'document-register-element';
+import 'document-register-element';
 import isEmojiUnicodeSupported from '../emoji/support';
 
-installCustomElements(window);
+class GlEmoji extends HTMLElement {
+  constructor() {
+    super();
 
-export default function installGlEmojiElement() {
-  const GlEmojiElementProto = Object.create(HTMLElement.prototype);
-  GlEmojiElementProto.createdCallback = function createdCallback() {
     const emojiUnicode = this.textContent.trim();
     const { name, unicodeVersion, fallbackSrc, fallbackSpriteClass } = this.dataset;
 
@@ -43,9 +42,11 @@ export default function installGlEmojiElement() {
           });
       }
     }
-  };
+  }
+}
 
-  document.registerElement('gl-emoji', {
-    prototype: GlEmojiElementProto,
-  });
+export default function installGlEmojiElement() {
+  if (!customElements.get('gl-emoji')) {
+    customElements.define('gl-emoji', GlEmoji);
+  }
 }

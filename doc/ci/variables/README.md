@@ -65,12 +65,12 @@ future GitLab releases.**
 | **CI_COMMIT_TITLE**                       | 10.8   | all    | The title of the commit - the full first line of the message |
 | **CI_CONFIG_PATH**                        | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
 | **CI_DEBUG_TRACE**                        | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
-| **CI_DEPLOY_PASSWORD**                    | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
+| **CI_DEPLOY_PASSWORD**                    | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | **CI_DEPLOY_USER**                        | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | **CI_DISPOSABLE_ENVIRONMENT**             | all    | 10.1   | Marks that the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |
-| **CI_ENVIRONMENT_NAME**                   | 8.15   | all    | The name of the environment for this job |
-| **CI_ENVIRONMENT_SLUG**                   | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
-| **CI_ENVIRONMENT_URL**                    | 9.3    | all    | The URL of the environment for this job |
+| **CI_ENVIRONMENT_NAME**                   | 8.15   | all    | The name of the environment for this job. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
+| **CI_ENVIRONMENT_SLUG**                   | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. Only present if [`environment:name`](../yaml/README.md#environmentname) is set. |
+| **CI_ENVIRONMENT_URL**                    | 9.3    | all    | The URL of the environment for this job. Only present if [`environment:url`](../yaml/README.md#environmenturl) is set. |
 | **CI_JOB_ID**                             | 9.0    | all    | The unique id of the current job that GitLab CI uses internally |
 | **CI_JOB_MANUAL**                         | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_JOB_NAME**                           | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
@@ -98,7 +98,7 @@ future GitLab releases.**
 | **CI_PIPELINE_SOURCE**                    | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
 | **CI_PIPELINE_TRIGGERED**                 | all    | all    | The flag to indicate that job was [triggered] |
 | **CI_PIPELINE_URL**                       | 11.1   | 0.5    | Pipeline details URL |
-| **CI_PROJECT_DIR**                        | all    | all    | The full path where the repository is cloned and where the job is run |
+| **CI_PROJECT_DIR**                        | all    | all    | The full path where the repository is cloned and where the job is run. If the GitLab Runner `builds_dir` parameter is set, this variable is set relative to the value of `builds_dir`. For more information, see [Advanced configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) for GitLab Runner. |
 | **CI_PROJECT_ID**                         | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**                       | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
 | **CI_PROJECT_NAMESPACE**                  | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |

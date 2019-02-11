@@ -48,6 +48,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
 - [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 - [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
+- [Merge request diffs](merge_request_diffs.md): Configure the diffs shown on merge requests
 - [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages to GitLab users through the UI.
 
 #### Customizing GitLab's appearance
@@ -64,6 +65,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
+- [Invalidate markdown cache](invalidate_markdown_cache.md): Invalidate any cached markdown.
 
 #### Updating GitLab
 

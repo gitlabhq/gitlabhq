@@ -1,0 +1,5 @@
+---
+title: Use sanitized user status message for user popover
+merge_request:
+author:
+type: security

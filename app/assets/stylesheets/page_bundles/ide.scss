@@ -395,6 +395,11 @@ $ide-commit-header-height: 48px;
   svg {
     vertical-align: sub;
   }
+
+  .ide-status-avatar {
+    float: none;
+    margin: 0 0 1px;
+  }
 }
 
 .ide-status-file {
@@ -809,26 +814,6 @@ $ide-commit-header-height: 48px;
   position: relative;
   flex: 0 0 $ide-activity-bar-width;
   z-index: 1;
-}
-
-.ide-file-finder-overlay {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 100;
-}
-
-.ide-file-finder {
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-
-  .highlighted {
-    color: $blue-500;
-    font-weight: $gl-font-weight-bold;
-  }
 }
 
 .ide-commit-message-field {

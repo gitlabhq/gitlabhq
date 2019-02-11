@@ -43,6 +43,7 @@ module Clusters
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
       validates :api_url, url: true, presence: true
       validates :token, presence: true
+      validates :ca_cert, certificate: true, allow_blank: true, if: :ca_cert_changed?
 
       validate :prevent_modification, on: :update
 
@@ -98,6 +99,8 @@ module Clusters
               .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
               .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
           end
+
+          variables.concat(cluster.predefined_variables)
         end
       end
 

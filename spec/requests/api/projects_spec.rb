@@ -21,7 +21,7 @@ describe API::Projects do
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:project2) { create(:project, namespace: user.namespace) }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
-  let(:user4) { create(:user) }
+  let(:user4) { create(:user, username: 'user.with.dot') }
   let(:project3) do
     create(:project,
     :private,
@@ -47,6 +47,27 @@ describe API::Projects do
     path: 'third_project',
     creator_id: user4.id,
     namespace: user4.namespace)
+  end
+
+  shared_context 'with language detection' do
+    let(:ruby) { create(:programming_language, name: 'Ruby') }
+    let(:javascript) { create(:programming_language, name: 'JavaScript') }
+    let(:html) { create(:programming_language, name: 'HTML') }
+
+    let(:mock_repo_languages) do
+      {
+        project => { ruby => 0.5, html => 0.5 },
+        project3 => { html => 0.7, javascript => 0.3 }
+      }
+    end
+
+    before do
+      mock_repo_languages.each do |proj, lang_shares|
+        lang_shares.each do |lang, share|
+          create(:repository_language, project: proj, programming_language: lang, share: share)
+        end
+      end
+    end
   end
 
   describe 'GET /projects' do
@@ -341,6 +362,19 @@ describe API::Projects do
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response.map { |p| p['id'] }).to contain_exactly(public_project.id)
+        end
+      end
+
+      context 'and using the programming language filter' do
+        include_context 'with language detection'
+
+        it 'filters case-insensitively by programming language' do
+          get api('/projects', user), params: { with_programming_language: 'javascript' }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |p| p['id'] }).to contain_exactly(project3.id)
         end
       end
 
@@ -724,8 +758,17 @@ describe API::Projects do
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
-    it 'returns projects filtered by user' do
+    it 'returns projects filtered by user id' do
       get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+    end
+
+    it 'returns projects filtered by username' do
+      get api("/users/#{user4.username}/projects/", user)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
@@ -745,6 +788,19 @@ describe API::Projects do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |project| project['id'] }).to contain_exactly(private_project1.id)
+    end
+
+    context 'and using the programming language filter' do
+      include_context 'with language detection'
+
+      it 'filters case-insensitively by programming language' do
+        get api('/projects', user), params: { with_programming_language: 'ruby' }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.map { |p| p['id'] }).to contain_exactly(project.id)
+      end
     end
   end
 

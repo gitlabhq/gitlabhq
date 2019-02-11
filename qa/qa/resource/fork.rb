@@ -5,12 +5,12 @@ module QA
     class Fork < Base
       attribute :project do
         Resource::Project.fabricate! do |resource|
-          resource.name = push.project.name
-          resource.path_with_namespace = "#{user.name}/#{push.project.name}"
+          resource.name = upstream.project.name
+          resource.path_with_namespace = "#{user.name}/#{upstream.project.name}"
         end
       end
 
-      attribute :push do
+      attribute :upstream do
         Repository::ProjectPush.fabricate!
       end
 
@@ -24,7 +24,7 @@ module QA
       end
 
       def fabricate!
-        populate(:push, :user)
+        populate(:upstream, :user)
 
         # Sign out as admin and sign is as the fork user
         Page::Main::Menu.perform(&:sign_out)
@@ -33,7 +33,7 @@ module QA
           login.sign_in_using_credentials(user)
         end
 
-        push.project.visit!
+        upstream.project.visit!
 
         Page::Project::Show.perform(&:fork_project)
 

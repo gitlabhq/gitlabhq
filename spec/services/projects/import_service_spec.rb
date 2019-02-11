@@ -136,12 +136,12 @@ describe Projects::ImportService do
         end
 
         it 'fails if repository import fails' do
-          expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_raise(Gitlab::Shell::Error.new('Failed to import the repository'))
+          expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).and_raise(Gitlab::Shell::Error.new('Failed to import the repository /a/b/c'))
 
           result = subject.execute
 
           expect(result[:status]).to eq :error
-          expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - Failed to import the repository"
+          expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - Failed to import the repository [FILTERED]"
         end
 
         context 'when repository import scheduled' do
@@ -152,8 +152,11 @@ describe Projects::ImportService do
 
           it 'downloads lfs objects if lfs_enabled is enabled for project' do
             allow(project).to receive(:lfs_enabled?).and_return(true)
+
+            service = double
             expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(oid_download_links)
-            expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).to receive(:execute).twice
+            expect(Projects::LfsPointers::LfsDownloadService).to receive(:new).and_return(service).twice
+            expect(service).to receive(:execute).twice
 
             subject.execute
           end
@@ -211,8 +214,10 @@ describe Projects::ImportService do
         it 'does not have a custom repository importer downloads lfs objects' do
           allow(Gitlab::GithubImport::ParallelImporter).to receive(:imports_repository?).and_return(false)
 
+          service = double
           expect_any_instance_of(Projects::LfsPointers::LfsImportService).to receive(:execute).and_return(oid_download_links)
-          expect_any_instance_of(Projects::LfsPointers::LfsDownloadService).to receive(:execute)
+          expect(Projects::LfsPointers::LfsDownloadService).to receive(:new).and_return(service).twice
+          expect(service).to receive(:execute).twice
 
           subject.execute
         end

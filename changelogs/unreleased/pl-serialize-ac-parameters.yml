@@ -1,0 +1,5 @@
+---
+title: Make `ActionController::Parameters` serializable for sidekiq jobs
+merge_request: 24864
+author:
+type: fixed

@@ -4,7 +4,12 @@ With GitLab Snippets you can store and share bits of code and text with other us
 
 ![GitLab Snippet](img/gitlab_snippet.png)
 
-There are 2 types of snippets, personal snippets and project snippets.
+Snippets can be maintained using [snippets API](../api/snippets.md).
+
+There are two types of snippets:
+
+- Personal snippets.
+- Project snippets.
 
 ## Personal snippets
 

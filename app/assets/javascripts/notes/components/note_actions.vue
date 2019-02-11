@@ -2,11 +2,13 @@
 import { mapGetters } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import ReplyButton from './note_actions/reply_button.vue';
 
 export default {
   name: 'NoteActions',
   components: {
     Icon,
+    ReplyButton,
     GlLoadingIcon,
   },
   directives: {
@@ -20,6 +22,11 @@ export default {
     noteId: {
       type: [String, Number],
       required: true,
+    },
+    discussionId: {
+      type: String,
+      required: false,
+      default: '',
     },
     noteUrl: {
       type: String,
@@ -35,6 +42,10 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    showReply: {
+      type: Boolean,
+      required: true,
     },
     canEdit: {
       type: Boolean,
@@ -80,6 +91,9 @@ export default {
   },
   computed: {
     ...mapGetters(['getUserDataByProp']),
+    showReplyButton() {
+      return gon.features && gon.features.replyToIndividualNotes && this.showReply;
+    },
     shouldShowActionsDropdown() {
       return this.currentUserId && (this.canEdit || this.canReportAsAbuse);
     },
@@ -121,6 +135,7 @@ export default {
     <span v-if="accessLevel" class="note-role user-access-role">{{ accessLevel }}</span>
     <div v-if="canResolve" class="note-actions-item">
       <button
+        ref="resolveButton"
         v-gl-tooltip
         :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
         :title="resolveButtonTitle"
@@ -137,10 +152,9 @@ export default {
     </div>
     <div v-if="canAwardEmoji" class="note-actions-item">
       <a
-        v-gl-tooltip.bottom
+        v-gl-tooltip
         :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
         class="note-action-button note-emoji-button js-add-award js-note-emoji"
-        data-position="right"
         href="#"
         title="Add reaction"
       >
@@ -153,9 +167,15 @@ export default {
         <icon css-classes="link-highlight award-control-icon-super-positive" name="emoji_smiley" />
       </a>
     </div>
+    <reply-button
+      v-if="showReplyButton"
+      ref="replyButton"
+      class="js-reply-button"
+      :note-id="discussionId"
+    />
     <div v-if="canEdit" class="note-actions-item">
       <button
-        v-gl-tooltip.bottom
+        v-gl-tooltip
         type="button"
         title="Edit comment"
         class="note-action-button js-note-edit btn btn-transparent"
@@ -166,7 +186,7 @@ export default {
     </div>
     <div v-if="showDeleteAction" class="note-actions-item">
       <button
-        v-gl-tooltip.bottom
+        v-gl-tooltip
         type="button"
         title="Delete comment"
         class="note-action-button js-note-delete btn btn-transparent"
@@ -177,7 +197,7 @@ export default {
     </div>
     <div v-else-if="shouldShowActionsDropdown" class="dropdown more-actions note-actions-item">
       <button
-        v-gl-tooltip.bottom
+        v-gl-tooltip
         type="button"
         title="More actions"
         class="note-action-button more-actions-toggle btn btn-transparent"

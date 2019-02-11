@@ -2,6 +2,10 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20171216111734_clean_up_for_members.rb')
 
 describe CleanUpForMembers, :migration do
+  before do
+    stub_feature_flags(enforced_sso: false)
+  end
+
   let(:migration) { described_class.new }
   let(:groups) { table(:namespaces) }
   let!(:group_member) { create_group_member }

@@ -18,12 +18,12 @@
     .table-mobile-content
       = link_to runner.short_sha, admin_runner_path(runner)
 
-  .table-section.section-15
+  .table-section.section-20
     .table-mobile-header{ role: 'rowheader' }= _('Description')
     .table-mobile-content.str-truncated.has-tooltip{ title: runner.description }
       = runner.description
 
-  .table-section.section-15
+  .table-section.section-10
     .table-mobile-header{ role: 'rowheader' }= _('Version')
     .table-mobile-content.str-truncated.has-tooltip{ title: runner.version }
       = runner.version

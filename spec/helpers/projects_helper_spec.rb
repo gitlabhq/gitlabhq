@@ -354,8 +354,35 @@ describe ProjectsHelper do
         allow(project).to receive(:builds_enabled?).and_return(false)
       end
 
-      it "do not include pipelines tab" do
-        is_expected.not_to include(:pipelines)
+      context 'when user has access to builds' do
+        it "does include pipelines tab" do
+          is_expected.to include(:pipelines)
+        end
+      end
+
+      context 'when user does not have access to builds' do
+        before do
+          allow(helper).to receive(:can?) { false }
+        end
+
+        it "does not include pipelines tab" do
+          is_expected.not_to include(:pipelines)
+        end
+      end
+    end
+
+    context 'when project has external wiki' do
+      it 'includes external wiki tab' do
+        project.create_external_wiki_service(active: true, properties: { 'external_wiki_url' => 'https://gitlab.com' })
+
+        is_expected.to include(:external_wiki)
+      end
+    end
+
+    context 'when project does not have external wiki' do
+      it 'does not include external wiki tab' do
+        expect(project.external_wiki).to be_nil
+        is_expected.not_to include(:external_wiki)
       end
     end
   end
@@ -505,18 +532,6 @@ describe ProjectsHelper do
 
         expect(result).to be_html_safe
       end
-    end
-  end
-
-  describe '#legacy_render_context' do
-    it 'returns the redcarpet engine' do
-      params = { legacy_render: '1' }
-
-      expect(helper.legacy_render_context(params)).to include(markdown_engine: :redcarpet)
-    end
-
-    it 'returns nothing' do
-      expect(helper.legacy_render_context({})).to be_empty
     end
   end
 

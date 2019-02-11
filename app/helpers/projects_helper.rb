@@ -265,10 +265,6 @@ module ProjectsHelper
     link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
   end
 
-  def legacy_render_context(params)
-    params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
-  end
-
   def explore_projects_tab?
     current_page?(explore_projects_path) ||
       current_page?(trending_explore_projects_path) ||
@@ -305,16 +301,13 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
-    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+    # Pipelines feature is tied to presence of builds
+    if can?(current_user, :read_build, project)
       nav_tabs << :pipelines
     end
 
     if can?(current_user, :read_environment, project) || can?(current_user, :read_cluster, project)
       nav_tabs << :operations
-    end
-
-    if project.external_issue_tracker
-      nav_tabs << :external_issue_tracker
     end
 
     tab_ability_map.each do |tab, ability|
@@ -323,7 +316,16 @@ module ProjectsHelper
       end
     end
 
+    nav_tabs << external_nav_tabs(project)
+
     nav_tabs.flatten
+  end
+
+  def external_nav_tabs(project)
+    [].tap do |tabs|
+      tabs << :external_issue_tracker if project.external_issue_tracker
+      tabs << :external_wiki if project.external_wiki
+    end
   end
 
   def tab_ability_map

@@ -11,7 +11,7 @@ module QA::Page
 
       view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
         element :job_component, /class.*ci-job-component.*/ # rubocop:disable QA/ElementWithPattern
-        element :job_link, /class.*js-pipeline-graph-job-link.*/ # rubocop:disable QA/ElementWithPattern
+        element :job_link
       end
 
       view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
@@ -30,6 +30,10 @@ module QA::Page
             has_selector?(".ci-status-icon-#{status}", { wait: wait }.compact)
           end
         end
+      end
+
+      def go_to_job(job_name)
+        find_element(:job_link, job_name).click
       end
 
       def go_to_first_job

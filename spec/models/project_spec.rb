@@ -41,7 +41,6 @@ describe Project do
     it { is_expected.to have_one(:pipelines_email_service) }
     it { is_expected.to have_one(:irker_service) }
     it { is_expected.to have_one(:pivotaltracker_service) }
-    it { is_expected.to have_one(:hipchat_service) }
     it { is_expected.to have_one(:flowdock_service) }
     it { is_expected.to have_one(:assembla_service) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
@@ -401,6 +400,30 @@ describe Project do
         project = build(:project, path: 'foo.')
 
         expect(project).to be_valid
+      end
+    end
+  end
+
+  describe '#all_pipelines' do
+    let(:project) { create(:project) }
+
+    before do
+      create(:ci_pipeline, project: project, ref: 'master', source: :web)
+      create(:ci_pipeline, project: project, ref: 'master', source: :external)
+    end
+
+    it 'has all pipelines' do
+      expect(project.all_pipelines.size).to eq(2)
+    end
+
+    context 'when builds are disabled' do
+      before do
+        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'should return .external pipelines' do
+        expect(project.all_pipelines).to all(have_attributes(source: 'external'))
+        expect(project.all_pipelines.size).to eq(1)
       end
     end
   end
@@ -1741,7 +1764,7 @@ describe Project do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:create_repository)
-          .with(project.repository_storage, project.disk_path)
+          .with(project.repository_storage, project.disk_path, project.full_path)
           .and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -1751,7 +1774,7 @@ describe Project do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:create_repository)
-          .with(project.repository_storage, project.disk_path)
+          .with(project.repository_storage, project.disk_path, project.full_path)
           .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
@@ -1784,7 +1807,7 @@ describe Project do
         .and_return(false)
 
       allow(shell).to receive(:create_repository)
-        .with(project.repository_storage, project.disk_path)
+        .with(project.repository_storage, project.disk_path, project.full_path)
         .and_return(true)
 
       expect(project).to receive(:create_repository).with(force: true)
@@ -1808,7 +1831,7 @@ describe Project do
         .and_return(false)
 
       expect(shell).to receive(:create_repository)
-        .with(project.repository_storage, project.disk_path)
+        .with(project.repository_storage, project.disk_path, project.full_path)
         .and_return(true)
 
       project.ensure_repository
@@ -2524,6 +2547,14 @@ describe Project do
       end
     end
 
+    context 'when project uses mock deployment service' do
+      let(:project) { create(:mock_deployment_project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
     context 'when project has a deployment service' do
       shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         it 'returns variables from this service' do
@@ -3070,6 +3101,66 @@ describe Project do
         projects = described_class.all.public_or_visible_to_user
 
         expect(projects).to eq([public_project])
+      end
+    end
+  end
+
+  describe '.with_feature_available_for_user' do
+    let!(:user) { create(:user) }
+    let!(:feature) { MergeRequest }
+    let!(:project) { create(:project, :public, :merge_requests_enabled) }
+
+    subject { described_class.with_feature_available_for_user(feature, user) }
+
+    context 'when user has access to project' do
+      subject { described_class.with_feature_available_for_user(feature, user) }
+
+      before do
+        project.add_guest(user)
+      end
+
+      context 'when public project' do
+        context 'when feature is public' do
+          it 'returns project' do
+            is_expected.to include(project)
+          end
+        end
+
+        context 'when feature is private' do
+          let!(:project) { create(:project, :public, :merge_requests_private) }
+
+          it 'returns project when user has access to the feature' do
+            project.add_maintainer(user)
+
+            is_expected.to include(project)
+          end
+
+          it 'does not return project when user does not have the minimum access level required' do
+            is_expected.not_to include(project)
+          end
+        end
+      end
+
+      context 'when private project' do
+        let!(:project) { create(:project) }
+
+        it 'returns project when user has access to the feature' do
+          project.add_maintainer(user)
+
+          is_expected.to include(project)
+        end
+
+        it 'does not return project when user does not have the minimum access level required' do
+          is_expected.not_to include(project)
+        end
+      end
+    end
+
+    context 'when user does not have access to project' do
+      let!(:project) { create(:project) }
+
+      it 'does not return project when user cant access project' do
+        is_expected.not_to include(project)
       end
     end
   end

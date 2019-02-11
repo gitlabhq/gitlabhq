@@ -10,6 +10,8 @@ module Groups
     def execute
       @group = Group.new(params)
 
+      after_build_hook(@group, params)
+
       unless can_use_visibility_level? && can_create_group?
         return @group
       end
@@ -29,6 +31,10 @@ module Groups
     end
 
     private
+
+    def after_build_hook(group, params)
+      # overriden in EE
+    end
 
     def create_chat_team?
       Gitlab.config.mattermost.enabled && @chat_team && group.chat_team.nil?

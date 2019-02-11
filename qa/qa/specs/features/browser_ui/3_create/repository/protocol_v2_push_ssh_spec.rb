@@ -70,7 +70,7 @@ module QA
         end
 
         project.visit!
-        Page::Project::Show.perform(&:wait_for_push)
+        project.wait_for_push_new_branch
 
         # Check that the push worked
         expect(page).to have_content(file_name)

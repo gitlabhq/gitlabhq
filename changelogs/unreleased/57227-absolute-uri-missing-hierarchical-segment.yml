@@ -1,0 +1,5 @@
+---
+title: Fix potential Addressable::URI::InvalidURIError
+merge_request: 24908
+author:
+type: fixed

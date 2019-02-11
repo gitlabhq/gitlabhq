@@ -35,7 +35,7 @@ describe 'OpenID Connect requests' do
       'name'           => 'Alice',
       'nickname'       => 'alice',
       'email'          => 'public@example.com',
-      'email_verified' => true,
+      'email_verified' => false,
       'website'        => 'https://example.com',
       'profile'        => 'http://localhost/alice',
       'picture'        => "http://localhost/uploads/-/system/user/avatar/#{user.id}/dk.png",
@@ -111,6 +111,18 @@ describe 'OpenID Connect requests' do
       it 'does not include any unknown claims' do
         expect(json_response.keys).to eq %w[sub sub_legacy] + user_info_claims.keys
       end
+
+      it 'includes email and email_verified claims' do
+        expect(json_response.keys).to include('email', 'email_verified')
+      end
+
+      it 'has public email in email claim' do
+        expect(json_response['email']).to eq(user.public_email)
+      end
+
+      it 'has false in email_verified claim' do
+        expect(json_response['email_verified']).to eq(false)
+      end
     end
 
     context 'ID token payload' do
@@ -175,7 +187,35 @@ describe 'OpenID Connect requests' do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['issuer']).to eq('http://localhost')
       expect(json_response['jwks_uri']).to eq('http://www.example.com/oauth/discovery/keys')
-      expect(json_response['scopes_supported']).to eq(%w[api read_user sudo read_repository openid])
+      expect(json_response['scopes_supported']).to eq(%w[api read_user sudo read_repository openid profile email])
+    end
+  end
+
+  context 'Application with OpenID and email scopes' do
+    let(:application) { create :oauth_application, scopes: 'openid email' }
+
+    it 'token response includes an ID token' do
+      request_access_token!
+
+      expect(json_response).to include 'id_token'
+    end
+
+    context 'UserInfo payload' do
+      before do
+        request_user_info!
+      end
+
+      it 'includes the email and email_verified claims' do
+        expect(json_response.keys).to include('email', 'email_verified')
+      end
+
+      it 'has private email in email claim' do
+        expect(json_response['email']).to eq(user.email)
+      end
+
+      it 'has true in email_verified claim' do
+        expect(json_response['email_verified']).to eq(true)
+      end
     end
   end
 end

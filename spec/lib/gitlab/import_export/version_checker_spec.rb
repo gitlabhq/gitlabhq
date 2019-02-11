@@ -2,7 +2,7 @@ require 'spec_helper'
 include ImportExport::CommonUtil
 
 describe Gitlab::ImportExport::VersionChecker do
-  let(:shared) { Gitlab::ImportExport::Shared.new(nil) }
+  let!(:shared) { Gitlab::ImportExport::Shared.new(nil) }
 
   describe 'bundle a project Git repo' do
     let(:version) { Gitlab::ImportExport.version }

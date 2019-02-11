@@ -1,43 +1,100 @@
 # Snippets API
 
-> [Introduced][ce-6373] in GitLab 8.15.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6373) in GitLab 8.15.
+
+Snippets API operates on [snippets](../user/snippets.md).
 
 ## Snippet visibility level
 
 Snippets in GitLab can be either private, internal, or public.
 You can set it with the `visibility` field in the snippet.
 
-Constants for snippet visibility levels are:
+Valid values for snippet visibility levels are:
 
-| Visibility | Description |
-| ---------- | ----------- |
-| `private`  | The snippet is visible only to the snippet creator |
-| `internal` | The snippet is visible for any logged in user |
-| `public`   | The snippet can be accessed without any authentication |
+| Visibility | Description                                         |
+|:-----------|:----------------------------------------------------|
+| `private`  | Snippet is visible only to the snippet creator.     |
+| `internal` | Snippet is visible for any logged in user.          |
+| `public`   | Snippet can be accessed without any authentication. |
 
-## List snippets
+## List all snippets for a user
 
-Get a list of current user's snippets.
+Get a list of the current user's snippets.
 
-```
+```text
 GET /snippets
 ```
 
-## Single snippet
+Example request:
+
+```sh
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets
+```
+
+Example response:
+
+```json
+[
+    {
+        "id": 42,
+        "title": "Voluptatem iure ut qui aut et consequatur quaerat.",
+        "file_name": "mclaughlin.rb",
+        "description": null,
+        "visibility": "internal",
+        "author": {
+            "id": 22,
+            "name": "User 0",
+            "username": "user0",
+            "state": "active",
+            "avatar_url": "https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80&d=identicon",
+            "web_url": "http://localhost:3000/user0"
+        },
+        "updated_at": "2018-09-18T01:12:26.383Z",
+        "created_at": "2018-09-18T01:12:26.383Z",
+        "project_id": null,
+        "web_url": "http://localhost:3000/snippets/42",
+        "raw_url": "http://localhost:3000/snippets/42/raw"
+    },
+    {
+        "id": 41,
+        "title": "Ut praesentium non et atque.",
+        "file_name": "ondrickaemard.rb",
+        "description": null,
+        "visibility": "internal",
+        "author": {
+            "id": 22,
+            "name": "User 0",
+            "username": "user0",
+            "state": "active",
+            "avatar_url": "https://www.gravatar.com/avatar/52e4ce24a915fb7e51e1ad3b57f4b00a?s=80&d=identicon",
+            "web_url": "http://localhost:3000/user0"
+        },
+        "updated_at": "2018-09-18T01:12:26.360Z",
+        "created_at": "2018-09-18T01:12:26.360Z",
+        "project_id": null,
+        "web_url": "http://localhost:3000/snippets/41",
+        "raw_url": "http://localhost:3000/snippets/41/raw"
+    }
+]
+```
+
+## Get a single snippet
 
 Get a single snippet.
 
-```
+```text
 GET /snippets/:id
 ```
 
 Parameters:
 
-| Attribute          | Type    | Required | Description                   |
-| ---------          | ----    | -------- | -----------                   |
-| `id`               | Integer | yes      | The ID of a snippet           |
+| Attribute | Type    | Required | Description                |
+|:----------|:--------|:---------|:---------------------------|
+| `id`      | integer | yes      | ID of snippet to retrieve. |
 
-```bash
+Example request:
+
+```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1
 ```
 
@@ -69,46 +126,52 @@ Example response:
 
 Get a single snippet's raw contents.
 
-```
+```text
 GET /snippets/:id/raw
 ```
 
 Parameters:
 
-| Attribute          | Type    | Required | Description                   |
-| ---------          | ----    | -------- | -----------                   |
-| `id`               | Integer | yes      | The ID of a snippet           |
+| Attribute | Type    | Required | Description                |
+|:----------|:--------|:---------|:---------------------------|
+| `id`      | integer | yes      | ID of snippet to retrieve. |
 
-```bash
+Example request:
+
+```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/raw
 ```
 
 Example response:
 
-```
+```text
 Hello World snippet
 ```
 
 ## Create new snippet
 
-Creates a new snippet. The user must have permission to create new snippets.
+Create a new snippet.
 
-```
+NOTE: **Note:**
+The user must have permission to create new snippets.
+
+```text
 POST /snippets
 ```
 
 Parameters:
 
-| Attribute          | Type    | Required | Description                  |
-| ---------          | ----    | -------- | -----------                  |
-| `title`            | String  | yes      | The title of a snippet       |
-| `file_name`        | String  | yes      | The name of a snippet file   |
-| `content`          | String  | yes      | The content of a snippet     |
-| `description`      | String  | no       | The description of a snippet |
-| `visibility`       | String  | no       | The snippet's visibility     |
+| Attribute     | Type   | Required | Description                                        |
+|:--------------|:-------|:---------|:---------------------------------------------------|
+| `title`       | string | yes      | Title of a snippet.                                |
+| `file_name`   | string | yes      | Name of a snippet file.                            |
+| `content`     | string | yes      | Content of a snippet.                              |
+| `description` | string | no       | Description of a snippet.                          |
+| `visibility`  | string | no       | Snippet's [visibility](#snippet-visibility-level). |
 
+Example request:
 
-```bash
+```sh
 curl --request POST \
      --data '{"title": "This is a snippet", "content": "Hello world", "description": "Hello World snippet", "file_name": "test.txt", "visibility": "internal" }' \
      --header 'Content-Type: application/json' \
@@ -142,25 +205,29 @@ Example response:
 
 ## Update snippet
 
-Updates an existing snippet. The user must have permission to change an existing snippet.
+Update an existing snippet.
 
-```
+NOTE: **Note:**
+The user must have permission to change an existing snippet.
+
+```text
 PUT /snippets/:id
 ```
 
 Parameters:
 
-| Attribute          | Type    | Required | Description                  |
-| ---------          | ----    | -------- | -----------                  |
-| `id`               | Integer | yes      | The ID of a snippet          |
-| `title`            | String  | no       | The title of a snippet       |
-| `file_name`        | String  | no       | The name of a snippet file   |
-| `description`      | String  | no       | The description of a snippet |
-| `content`          | String  | no       | The content of a snippet     |
-| `visibility`       | String  | no       | The snippet's visibility     |
+| Attribute     | Type    | Required | Description                                        |
+|:--------------|:--------|:---------|:---------------------------------------------------|
+| `id`          | integer | yes      | ID of snippet to update.                           |
+| `title`       | string  | no       | Title of a snippet.                                |
+| `file_name`   | string  | no       | Name of a snippet file.                            |
+| `description` | string  | no       | Description of a snippet.                          |
+| `content`     | string  | no       | Content of a snippet.                              |
+| `visibility`  | string  | no       | Snippet's [visibility](#snippet-visibility-level). |
 
+Example request:
 
-```bash
+```sh
 curl --request PUT \
      --data '{"title": "foo", "content": "bar"}' \
      --header 'Content-Type: application/json' \
@@ -194,38 +261,49 @@ Example response:
 
 ## Delete snippet
 
-Deletes an existing snippet.
+Delete an existing snippet.
 
-```
+```text
 DELETE /snippets/:id
 ```
 
 Parameters:
 
-| Attribute          | Type    | Required | Description                   |
-| ---------          | ----    | -------- | -----------                   |
-| `id`               | Integer | yes      | The ID of a snippet           |
+| Attribute | Type    | Required | Description              |
+|:----------|:--------|:---------|:-------------------------|
+| `id`      | integer | yes      | ID of snippet to delete. |
 
+Example request:
 
-```
+```sh
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/snippets/1"
 ```
 
-upon successful delete a `204 No content` HTTP code shall be expected, with no data,
-but if the snippet is non-existent, a `404 Not Found` will be returned.
+The following are possible return codes:
 
-## Explore all public snippets
+| Code  | Description                                 |
+|:------|:--------------------------------------------|
+| `204` | Delete was successful. No data is returned. |
+| `404` | The snippet wasn't found.                   |
 
-```
+## List all public snippets
+
+List all public snippets.
+
+```text
 GET /snippets/public
 ```
 
-| Attribute  | Type    | Required | Description                           |
-| ---------  | ----    | -------- | -----------                           |
-| `per_page` | Integer | no       | number of snippets to return per page |
-| `page`     | Integer | no       | the page to retrieve                  |
+Parameters:
 
-```bash
+| Attribute  | Type    | Required | Description                            |
+|:-----------|:--------|:---------|:---------------------------------------|
+| `per_page` | integer | no       | Number of snippets to return per page. |
+| `page`     | integer | no       | Page to retrieve.                      |
+
+Example request:
+
+```sh
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/public?per_page=2&page=1
 ```
 
@@ -273,21 +351,22 @@ Example response:
 
 ## Get user agent details
 
-> **Notes:**
-> [Introduced][ce-29508] in GitLab 9.4.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12655) in GitLab 9.4.
 
+NOTE: **Note:**
+Available only for administrators.
 
-Available only for admins.
-
-```
+```text
 GET /snippets/:id/user_agent_detail
 ```
 
-| Attribute   | Type    | Required | Description                          |
-|-------------|---------|----------|--------------------------------------|
-| `id`        | Integer | yes      | The ID of a snippet                  |
+| Attribute | Type    | Required | Description    |
+|:----------|:--------|:---------|:---------------|
+| `id`      | integer | yes      | ID of snippet. |
 
-```bash
+Example request:
+
+```sh
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/snippets/1/user_agent_detail
 ```
 
@@ -300,6 +379,3 @@ Example response:
   "akismet_submitted": false
 }
 ```
-
-[ce-6373]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6373
-[ce-29508]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12655

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Release' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/26
+  context 'Release', :quarantine do
     describe 'Deploy key creation' do
       it 'user adds a deploy key' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

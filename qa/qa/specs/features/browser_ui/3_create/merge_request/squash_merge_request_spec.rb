@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/31
+  context 'Create', :quarantine do
     describe 'Merge request squashing' do
       it 'user squashes commits while merging' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -25,7 +26,6 @@ module QA
           push.file_content = "Test with unicode characters ❤✓€❄"
         end
 
-        Page::Project::Show.perform(&:wait_for_push)
         merge_request.visit!
 
         expect(page).to have_text('to be squashed')
@@ -37,9 +37,7 @@ module QA
           merge_request.project.visit!
 
           Git::Repository.perform do |repository|
-            repository.uri = Page::Project::Show.act do
-              repository_clone_http_location.uri
-            end
+            repository.uri = merge_request.project.repository_http_location.uri
 
             repository.use_default_credentials
 

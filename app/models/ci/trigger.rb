@@ -4,6 +4,7 @@ module Ci
   class Trigger < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include IgnorableColumn
+    include Presentable
 
     ignore_column :deleted_at
 
@@ -29,7 +30,7 @@ module Ci
     end
 
     def short_token
-      token[0...4]
+      token[0...4] if token.present?
     end
 
     def legacy?

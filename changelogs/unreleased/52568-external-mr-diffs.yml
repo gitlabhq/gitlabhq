@@ -1,0 +1,5 @@
+---
+title: Allow merge request diffs to be placed into an object store
+merge_request: 24276
+author:
+type: added
