@@ -26,7 +26,6 @@ describe('Environment table', () => {
 
     vm = mountComponent(Component, {
       environments: [mockItem],
-      canCreateDeployment: false,
       canReadEnvironment: true,
     });
 

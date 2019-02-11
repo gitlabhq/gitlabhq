@@ -173,7 +173,7 @@ if Gitlab::Metrics.enabled? && !Rails.env.test? && !(Rails.env.development? && d
     def connect(*args)
       val = super
 
-      if current_transaction = Gitlab::Metrics::Transaction.current
+      if current_transaction = ::Gitlab::Metrics::Transaction.current
         current_transaction.increment(:new_redis_connections, 1)
       end
 

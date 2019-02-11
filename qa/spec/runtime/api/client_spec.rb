@@ -1,5 +1,5 @@
 describe QA::Runtime::API::Client do
-  include Support::StubENV
+  include Helpers::StubENV
 
   describe 'initialization' do
     it 'defaults to :gitlab address' do

@@ -4,6 +4,7 @@ import datePicker from '../pikaday.vue';
 import toggleSidebar from './toggle_sidebar.vue';
 import collapsedCalendarIcon from './collapsed_calendar_icon.vue';
 import { dateInWords } from '../../../lib/utils/datetime_utility';
+import { __ } from '~/locale';
 
 export default {
   name: 'SidebarDatePicker',
@@ -42,7 +43,7 @@ export default {
     label: {
       type: String,
       required: false,
-      default: 'Date picker',
+      default: __('Date picker'),
     },
     selectedDate: {
       type: Date,

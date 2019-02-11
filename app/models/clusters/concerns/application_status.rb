@@ -41,11 +41,6 @@ module Clusters
             transition [:installed, :updated, :update_errored, :scheduled] => :updating
           end
 
-          # Deprecated
-          event :make_updated do
-            transition [:updating] => :updated
-          end
-
           event :make_update_errored do
             transition any => :update_errored
           end

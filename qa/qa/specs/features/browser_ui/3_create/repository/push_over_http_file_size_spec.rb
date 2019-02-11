@@ -31,7 +31,7 @@ module QA
         set_file_size_limit(5)
         expect(page).to have_content("Application settings saved successfully")
 
-        push = push_new_file('oversize_file_1.bin')
+        push = push_new_file('oversize_file_1.bin', wait_for_push: true)
         expect(push.output).not_to have_content 'remote: fatal: pack exceeds maximum allowed size'
       end
 
@@ -39,7 +39,7 @@ module QA
         set_file_size_limit(1)
         expect(page).to have_content("Application settings saved successfully")
 
-        push = push_new_file('oversize_file_2.bin')
+        push = push_new_file('oversize_file_2.bin', wait_for_push: false)
         expect(push.output).to have_content 'remote: fatal: pack exceeds maximum allowed size'
       end
 
@@ -55,7 +55,7 @@ module QA
         end
       end
 
-      def push_new_file(file_name)
+      def push_new_file(file_name, wait_for_push: true)
         @project.visit!
 
         Resource::Repository::ProjectPush.fabricate! do |p|
@@ -63,6 +63,7 @@ module QA
           p.file_name = file_name
           p.file_content = SecureRandom.random_bytes(2000000)
           p.commit_message = 'Adding a new file'
+          p.wait_for_push = wait_for_push
         end
       end
     end

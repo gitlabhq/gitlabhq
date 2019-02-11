@@ -231,11 +231,11 @@ This makes use of [`Intl.DateTimeFormat`].
 - In Ruby/HAML, we have two ways of adding format to dates and times:
 
   1. **Through the `l` helper**, i.e. `l(active_session.created_at, format: :short)`. We have some predefined formats for
-[dates](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.7.0/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.7.0/config/locales/en.yml#L261).
+  [dates](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.7.0/config/locales/en.yml#L54) and [times](https://gitlab.com/gitlab-org/gitlab-ce/blob/v11.7.0/config/locales/en.yml#L261).
   If you need to add a new format, because other parts of the code could benefit from it,
   you'll need to add it to [en.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/locales/en.yml) file.
-  2. **Through `strftime`**, i.e. `milestone.start_date.strftime('%b %-d')`. We use `strftime` in case none of the formats
-  defined on [en.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/locales/en.yml) matches the date/time 
+  1. **Through `strftime`**, i.e. `milestone.start_date.strftime('%b %-d')`. We use `strftime` in case none of the formats
+  defined on [en.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/locales/en.yml) matches the date/time
   specifications we need, and if there is no need to add it as a new format because is very particular (i.e. it's only used in a single view).
 
 ## Best practices

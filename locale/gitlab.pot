@@ -2501,6 +2501,9 @@ msgstr ""
 msgid "Data is still calculating..."
 msgstr ""
 
+msgid "Date picker"
+msgstr ""
+
 msgid "Debug"
 msgstr ""
 
@@ -4579,6 +4582,9 @@ msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{lin
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
+msgstr ""
+
+msgid "MergeRequest|Filter files"
 msgstr ""
 
 msgid "MergeRequest|No files found"

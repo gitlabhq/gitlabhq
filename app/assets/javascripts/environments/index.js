@@ -20,7 +20,6 @@ export default () =>
         helpPagePath: environmentsData.helpPagePath,
         cssContainerClass: environmentsData.cssClass,
         canCreateEnvironment: parseBoolean(environmentsData.canCreateEnvironment),
-        canCreateDeployment: parseBoolean(environmentsData.canCreateDeployment),
         canReadEnvironment: parseBoolean(environmentsData.canReadEnvironment),
       };
     },
@@ -32,7 +31,6 @@ export default () =>
           helpPagePath: this.helpPagePath,
           cssContainerClass: this.cssContainerClass,
           canCreateEnvironment: this.canCreateEnvironment,
-          canCreateDeployment: this.canCreateDeployment,
           canReadEnvironment: this.canReadEnvironment,
         },
       });
