@@ -4602,6 +4602,21 @@ describe Project do
     end
   end
 
+  describe '#has_pool_repsitory?' do
+    it 'returns false when it does not have a pool repository' do
+      subject = create(:project, :repository)
+
+      expect(subject.has_pool_repository?).to be false
+    end
+
+    it 'returns true when it has a pool repository' do
+      pool    = create(:pool_repository, :ready)
+      subject = create(:project, :repository, pool_repository: pool)
+
+      expect(subject.has_pool_repository?).to be true
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
   end
