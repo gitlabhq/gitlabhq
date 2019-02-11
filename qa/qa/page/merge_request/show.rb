@@ -148,7 +148,7 @@ module QA
         end
 
         def add_comment_to_diff(text)
-          wait(time: 5) do
+          wait(interval: 5) do
             has_text?("No newline at end of file")
           end
           all_elements(:new_diff_line).first.hover

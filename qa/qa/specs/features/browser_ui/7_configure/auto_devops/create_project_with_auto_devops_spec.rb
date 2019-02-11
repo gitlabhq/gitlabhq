@@ -8,7 +8,7 @@ module QA
     describe 'Auto DevOps support' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
       end
 
       [true, false].each do |rbac|
@@ -38,8 +38,6 @@ module QA
               push.commit_message = 'Create Auto DevOps compatible rack application'
             end
 
-            Page::Project::Show.act { wait_for_push }
-
             # Create and connect K8s cluster
             @cluster = Service::KubernetesCluster.new(rbac: rbac).create!
             kubernetes_cluster = Resource::KubernetesCluster.fabricate! do |cluster|
@@ -53,7 +51,7 @@ module QA
 
             kubernetes_cluster.populate(:ingress_ip)
             @project.visit!
-            Page::Project::Menu.act { click_ci_cd_settings }
+            Page::Project::Menu.perform(&:click_ci_cd_settings)
             Page::Project::Settings::CICD.perform do |p|
               p.enable_auto_devops
             end
@@ -71,8 +69,8 @@ module QA
 
           it 'runs auto devops' do
             @project.visit!
-            Page::Project::Menu.act { click_ci_cd_pipelines }
-            Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+            Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+            Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
 
             Page::Project::Pipeline::Show.perform do |pipeline|
               pipeline.go_to_job('build')
@@ -101,7 +99,7 @@ module QA
               job.click_element(:pipeline_path)
             end
 
-            Page::Project::Menu.act { click_operations_environments }
+            Page::Project::Menu.perform(&:click_operations_environments)
             Page::Project::Operations::Environments::Index.perform do |index|
               index.go_to_environment('production')
             end
@@ -132,8 +130,8 @@ module QA
             end
 
             @project.visit!
-            Page::Project::Menu.act { click_ci_cd_pipelines }
-            Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+            Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+            Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
 
             Page::Project::Pipeline::Show.perform do |pipeline|
               pipeline.go_to_job('build')
@@ -162,7 +160,7 @@ module QA
               job.click_element(:pipeline_path)
             end
 
-            Page::Project::Menu.act { click_operations_environments }
+            Page::Project::Menu.perform(&:click_operations_environments)
 
             Page::Project::Operations::Environments::Index.perform do |index|
               index.go_to_environment('production')
