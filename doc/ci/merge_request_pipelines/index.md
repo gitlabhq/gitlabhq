@@ -90,7 +90,7 @@ C:
     - merge_requests
 ```
 
-Since A and B are getting the `only:` rule to execute in all cases, they will
+Since `A` and `B` are getting the `only:` rule to execute in all cases, they will
 always run. `C` specifies that it should only run for merge requests, so for any
 pipeline except a merge request pipeline, it will not run.
 
