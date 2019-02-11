@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddFirstDayOfWeekToUserPreferences < ActiveRecord::Migration
+class AddFirstDayOfWeekToUserPreferences < ActiveRecord::Migration[5.0]
   DOWNTIME = false
 
   def change
