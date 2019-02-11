@@ -27,6 +27,10 @@ module QA
         attributes.each(&method(:public_send))
       end
 
+      def wait(max: 60, interval: 0.1)
+        QA::Support::Waiter.wait(max: max, interval: interval)
+      end
+
       private
 
       def populate_attribute(name, block)

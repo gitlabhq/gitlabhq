@@ -60,7 +60,7 @@ To get a better understanding of Review Apps, review documentation on how enviro
 1. Learn about [environments](../environments.md) and their role in the development workflow.
 1. Learn about [CI variables](../variables/README.md) and how they can be used in your CI jobs.
 1. Explore the [`environment` syntax](../yaml/README.md#environment) as defined in `.gitlab-ci.yml`. This will become a primary reference.
-1. Additionally, find out about [manual actions](../environments.md#manual-actions) and how you can use them to deploy to critical environments like production with the push of a button.
+1. Additionally, find out about [manual actions](../environments.md#manually-deploying-to-environments) and how you can use them to deploy to critical environments like production with the push of a button.
 1. Follow the [example tutorials](#examples). These will guide you through setting up infrastructure and using Review Apps.
 
 ### Configuring dynamic environments

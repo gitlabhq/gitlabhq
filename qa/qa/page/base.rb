@@ -18,19 +18,10 @@ module QA
         page.refresh
       end
 
-      def wait(max: 60, time: 0.1, reload: true)
-        start = Time.now
-
-        while Time.now - start < max
-          result = yield
-          return result if result
-
-          sleep(time)
-
-          refresh if reload
+      def wait(max: 60, interval: 0.1, reload: true)
+        QA::Support::Waiter.wait(max: max, interval: interval) do
+          yield || (reload && refresh && false)
         end
-
-        false
       end
 
       def with_retry(max_attempts: 3, reload: false)
@@ -73,7 +64,7 @@ module QA
           xhr.send();
         JS
 
-        return false unless wait(time: 0.5, max: 60, reload: false) do
+        return false unless wait(interval: 0.5, max: 60, reload: false) do
           page.evaluate_script('xhr.readyState == XMLHttpRequest.DONE')
         end
 

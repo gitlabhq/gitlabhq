@@ -80,36 +80,6 @@ shared_examples 'cluster application status specs' do |application_name|
       end
     end
 
-    describe '#make_updated' do
-      subject { create(application_name, :updating) }
-
-      it 'is updated' do
-        subject.make_updated!
-
-        expect(subject).to be_updated
-      end
-
-      it 'updates helm version' do
-        subject.cluster.application_helm.update!(version: '1.2.3')
-
-        subject.make_updated!
-
-        subject.cluster.application_helm.reload
-
-        expect(subject.cluster.application_helm.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
-      end
-
-      it 'updates the version for the application' do
-        subject.update!(version: '0.0.0')
-
-        subject.make_updated!
-
-        subject.reload
-
-        expect(subject.version).to eq(subject.class.const_get(:VERSION))
-      end
-    end
-
     describe '#make_errored' do
       subject { create(application_name, :installing) }
       let(:reason) { 'some errors' }

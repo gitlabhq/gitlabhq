@@ -5,6 +5,8 @@ require 'securerandom'
 module QA
   module Resource
     class Project < Base
+      include Events::Project
+
       attribute :name
       attribute :description
 

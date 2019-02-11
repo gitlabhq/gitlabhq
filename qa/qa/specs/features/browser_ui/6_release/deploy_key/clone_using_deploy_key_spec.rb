@@ -8,7 +8,7 @@ module QA
     describe 'Git clone using a deploy key' do
       def login
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
       end
 
       before(:all) do
@@ -29,7 +29,7 @@ module QA
           resource.image = 'gitlab/gitlab-runner:ubuntu'
         end
 
-        Page::Main::Menu.act { sign_out }
+        Page::Main::Menu.perform(&:sign_out)
       end
 
       after(:all) do
@@ -90,10 +90,9 @@ module QA
 
           sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
 
-          Page::Project::Show.act { wait_for_push }
-          Page::Project::Menu.act { click_ci_cd_pipelines }
-          Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
-          Page::Project::Pipeline::Show.act { go_to_first_job }
+          Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+          Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
+          Page::Project::Pipeline::Show.perform(&:go_to_first_job)
 
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful, "Job status did not become \"passed\"."

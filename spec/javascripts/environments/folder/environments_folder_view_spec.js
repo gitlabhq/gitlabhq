@@ -13,7 +13,6 @@ describe('Environments Folder View', () => {
   const mockData = {
     endpoint: 'environments.json',
     folderName: 'review',
-    canCreateDeployment: true,
     canReadEnvironment: true,
     cssContainerClass: 'container',
   };
