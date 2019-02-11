@@ -1,5 +1,5 @@
 describe QA::Git::Repository do
-  include Support::StubENV
+  include Helpers::StubENV
 
   shared_context 'git directory' do
     let(:repository) { described_class.new }

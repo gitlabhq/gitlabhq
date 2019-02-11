@@ -20,8 +20,6 @@ module QA
         end
         source_project_push.project.visit!
 
-        Page::Project::Show.perform(&:wait_for_push)
-
         Page::Project::Menu.perform(&:click_repository_settings)
         Page::Project::Settings::Repository.perform do |settings|
           settings.expand_mirroring_repositories do |mirror_settings|

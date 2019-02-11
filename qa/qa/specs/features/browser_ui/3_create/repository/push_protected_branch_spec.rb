@@ -63,6 +63,7 @@ module QA
           resource.commit_message = 'Add new_file.md'
           resource.branch_name = branch_name
           resource.new_branch = false
+          resource.wait_for_push = false
         end
       end
     end

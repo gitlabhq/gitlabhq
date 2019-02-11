@@ -11,7 +11,7 @@ module QA
 
       it 'users creates a pipeline which gets processed' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         project = Resource::Project.fabricate! do |project|
           project.name = 'project-with-pipelines'
@@ -60,11 +60,9 @@ module QA
           EOF
         end
 
-        Page::Project::Show.act { wait_for_push }
-
         expect(page).to have_content('Add .gitlab-ci.yml')
 
-        Page::Project::Menu.act { click_ci_cd_pipelines }
+        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
 
         expect(page).to have_content('All 1')
         expect(page).to have_content('Add .gitlab-ci.yml')
@@ -72,7 +70,7 @@ module QA
         puts 'Waiting for the runner to process the pipeline'
         sleep 15 # Runner should process all jobs within 15 seconds.
 
-        Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+        Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
 
         Page::Project::Pipeline::Show.perform do |pipeline|
           expect(pipeline).to be_running

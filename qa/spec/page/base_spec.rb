@@ -59,4 +59,34 @@ describe QA::Page::Base do
       end
     end
   end
+
+  describe '#wait' do
+    subject { Class.new(described_class).new }
+
+    context 'when the condition is true' do
+      it 'does not refresh' do
+        expect(subject).not_to receive(:refresh)
+
+        subject.wait(max: 0.01) { true }
+      end
+
+      it 'returns true' do
+        expect(subject.wait(max: 0.1) { true }).to be_truthy
+      end
+    end
+
+    context 'when the condition is false' do
+      it 'refreshes' do
+        expect(subject).to receive(:refresh).at_least(:once)
+
+        subject.wait(max: 0.01) { false }
+      end
+
+      it 'returns false' do
+        allow(subject).to receive(:refresh)
+
+        expect(subject.wait(max: 0.01) { false }).to be_falsey
+      end
+    end
+  end
 end
