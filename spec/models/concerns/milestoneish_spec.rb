@@ -48,11 +48,56 @@ describe Milestone, 'Milestoneish' do
       merge_request_2 = create(:labeled_merge_request, labels: [label_1], source_project: project, source_branch: 'branch_2', milestone: milestone)
       merge_request_3 = create(:labeled_merge_request, labels: [label_3], source_project: project, source_branch: 'branch_3', milestone: milestone)
 
-      merge_requests = milestone.sorted_merge_requests
+      merge_requests = milestone.sorted_merge_requests(member)
 
       expect(merge_requests.first).to eq(merge_request_2)
       expect(merge_requests.second).to eq(merge_request_1)
       expect(merge_requests.third).to eq(merge_request_3)
+    end
+  end
+
+  describe '#merge_requests_visible_to_user' do
+    let(:merge_request) { create(:merge_request, source_project: project, milestone: milestone) }
+
+    context 'when project is private' do
+      before do
+        project.update(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'does not return any merge request for a non member' do
+        merge_requests = milestone.merge_requests_visible_to_user(non_member)
+        expect(merge_requests).to be_empty
+      end
+
+      it 'returns milestone merge requests for a member' do
+        merge_requests = milestone.merge_requests_visible_to_user(member)
+        expect(merge_requests).to contain_exactly(merge_request)
+      end
+    end
+
+    context 'when project is public' do
+      context 'when merge requests are available to anyone' do
+        it 'returns milestone merge requests for a non member' do
+          merge_requests = milestone.merge_requests_visible_to_user(non_member)
+          expect(merge_requests).to contain_exactly(merge_request)
+        end
+      end
+
+      context 'when merge requests are available to project members' do
+        before do
+          project.project_feature.update(merge_requests_access_level: ProjectFeature::PRIVATE)
+        end
+
+        it 'does not return any merge request for a non member' do
+          merge_requests = milestone.merge_requests_visible_to_user(non_member)
+          expect(merge_requests).to be_empty
+        end
+
+        it 'returns milestone merge requests for a member' do
+          merge_requests = milestone.merge_requests_visible_to_user(member)
+          expect(merge_requests).to contain_exactly(merge_request)
+        end
+      end
     end
   end
 
