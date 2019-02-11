@@ -62,7 +62,7 @@ The behavior of the `only: merge_requests` rule is such that _only_ jobs with
 that rule are run in the context of a merge request; no other jobs will be run.
 
 However, you may what to reverse this behaviour, having all of your jobs to run _except_
-for one or two. Consider the following pipeline, with jobs A B and C. If you want
+for one or two. Consider the following pipeline, with jobs `A`, `B`, and `C`. If you want
 all pipelines to always run `A` and `B`, but only want `C` to run for a merge request,
 you can configure your `.gitlab-ci.yml` file as follows:
 
