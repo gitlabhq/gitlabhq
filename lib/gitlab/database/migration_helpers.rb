@@ -1033,7 +1033,7 @@ into similar problems in the future (e.g. when new tables are created).
           # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
           # the same time, which is not helpful in most cases where we wish to
           # spread the work over time.
-          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
+          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id, model_class])
         end
       end
 
