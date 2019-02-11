@@ -26,7 +26,7 @@ module QA
         def choose_test_namespace
           click_element :project_namespace_select
 
-          select_item(Runtime::Namespace.path)
+          search_and_select(Runtime::Namespace.path)
         end
 
         def go_to_import_project
