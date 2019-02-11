@@ -47,6 +47,14 @@ module Gitlab
       user? ? :lfs_token : :lfs_deploy_token
     end
 
+    def for_gitlab_shell(repository_http_path)
+      {
+        username: actor_name,
+        lfs_token: token,
+        repository_http_path: repository_http_path
+      }
+    end
+
     private # rubocop:disable Lint/UselessAccessModifier
 
     class HMACToken

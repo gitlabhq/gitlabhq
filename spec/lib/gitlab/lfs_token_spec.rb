@@ -226,4 +226,18 @@ describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
       end
     end
   end
+
+  describe '#for_gitlab_shell' do
+    let(:actor) { create(:user) }
+    let(:lfs_token) { described_class.new(actor) }
+    let(:repo_http_path) { 'http://localhost/user/repo.git' }
+
+    it 'returns a Hash desgined for gitlab-shell' do
+      hash = lfs_token.for_gitlab_shell(repo_http_path)
+
+      expect(hash[:username]).to eq(actor.username)
+      expect(hash[:repository_http_path]).to eq(repo_http_path)
+      expect(hash[:lfs_token]).to be_a String
+    end
+  end
 end
