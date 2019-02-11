@@ -67,6 +67,8 @@ describe Projects::GroupLinksController do
 
     context 'when project group id equal link group id' do
       before do
+        group2.add_developer(user)
+
         post(:create, params: {
                         namespace_id: project.namespace,
                         project_id: project,
