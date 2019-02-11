@@ -9,7 +9,7 @@ module Gitlab
       def file_digest(path)
         if stat = self.stat(path)
           digest = self.stat_digest(path, stat)
-          integrity_uri = self.hexdigest_integrity_uri(digest)
+          integrity_uri = self.integrity_uri(digest)
 
           key = Sprockets::UnloadedAsset.new(path, self).file_digest_key(integrity_uri)
           cache.fetch(key) do
