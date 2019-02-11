@@ -4581,6 +4581,9 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
+msgid "MergeRequest|Filter files"
+msgstr ""
+
 msgid "MergeRequest|No files found"
 msgstr ""
 
