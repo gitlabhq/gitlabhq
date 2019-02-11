@@ -587,7 +587,9 @@ notifications:
       backoff: 1000
 ```
 
-## Using self-signed certificates with Container Registry
+## Troubleshooting
+
+### Using self-signed certificates with Container Registry
 
 If you're using a self-signed certificate with your Container Registry, you
 might encounter issues during the CI jobs like the following:
@@ -599,8 +601,7 @@ Error response from daemon: Get registry.example.com/v1/users/: x509: certificat
 The Docker daemon running the command expects a cert signed by a recognized CA,
 thus the error above.
 
-While GitLab doesn't support using self-signed certificates with Container
-Registry out of the box, it is possible to make it work by [instructing the docker-daemon to trust the self-signed certificates][docker-insecure-self-signed], mounting the docker-daemon and setting `privileged = false` in the runner's `config.toml`. Setting `privileged = true` takes precedence over the docker-daemon.
+While GitLab doesn't support using self-signed certificates with Container Registry out of the box, it is possible to make it work by [instructing the docker-daemon to trust the self-signed certificates][docker-insecure-self-signed], mounting the docker-daemon and setting `privileged = false` in the runner's `config.toml`. Setting `privileged = true` takes precedence over the docker-daemon.
 
 ```
   [runners.docker]
@@ -609,9 +610,9 @@ Registry out of the box, it is possible to make it work by [instructing the dock
     volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
 ```
 
-You may find some additional information in [issue 18239][ce-18239].
+Additional information about this: [issue 18239][ce-18239].
 
-## Troubleshooting
+### AWS S3 with the GitLab registry error when pushing large images
 
 When using AWS S3 with the GitLab registry, an error may occur when pushing
 large images. Look in the Registry log for the following error:
