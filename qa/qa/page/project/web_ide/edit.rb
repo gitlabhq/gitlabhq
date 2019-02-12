@@ -80,7 +80,7 @@ module QA
             # Retry the attempt to click :commit_button just in case part of the
             # animation is still in process even when the buttons have the
             # expected visibility.
-            commit_success_msg_shown = with_retry do
+            commit_success_msg_shown = retry_until do
               click_element :commit_button
 
               wait(reload: false) do

@@ -4722,6 +4722,9 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+msgid "More than %{number_commits_distance} commits different with %{default_branch}"
+msgstr ""
+
 msgid "Most stars"
 msgstr ""
 

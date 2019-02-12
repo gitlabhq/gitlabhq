@@ -348,8 +348,8 @@ This can be achieved by including a `script:` command like this in your
 pages:
   # Other directives
   script:
-    - # build the public/ directory first
-    - find public -type f -iregex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -execdir gzip -f --keep {} \;
+    # Build the public/ directory first
+    - find public -type f -regex '.*\.\(htm\|html\|txt\|text\|js\|css\)$' -exec gzip -f -k {} \;
 ```
 
 By pre-compressing the files and including both versions in the artifact, Pages

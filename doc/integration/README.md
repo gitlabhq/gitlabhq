@@ -30,8 +30,8 @@ Bitbucket.org account
 
 ## Project services
 
-Integration with services such as Campfire, Flowdock, HipChat,
-Pivotal Tracker, and Slack are available in the form of a [Project Service][].
+Integration with services such as Campfire, Flowdock, Pivotal Tracker, and Slack
+are available in the form of a [Project Service][].
 
 [Project Service]: ../user/project/integrations/project_services.md
 

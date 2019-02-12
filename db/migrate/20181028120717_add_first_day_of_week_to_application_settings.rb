@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AddFirstDayOfWeekToApplicationSettings < ActiveRecord::Migration
+class AddFirstDayOfWeekToApplicationSettings < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
 
