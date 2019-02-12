@@ -256,7 +256,8 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     elsif repository.contribution_guide.present?
       AnchorData.new(false,
                      statistic_icon('doc-text') + _('CONTRIBUTING'),
-                     contribution_guide_path)
+                     contribution_guide_path,
+                     'default')
     end
   end
 
