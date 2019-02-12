@@ -89,7 +89,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               description: 'This is my pull request',
               source_project_id: project.id,
               target_project_id: project.id,
-              source_branch: 'alice:feature',
+              source_branch: 'github/fork/alice/feature',
               target_branch: 'master',
               state: :merged,
               milestone_id: milestone.id,
@@ -134,7 +134,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
               description: "*Created by: alice*\n\nThis is my pull request",
               source_project_id: project.id,
               target_project_id: project.id,
-              source_branch: 'alice:feature',
+              source_branch: 'github/fork/alice/feature',
               target_branch: 'master',
               state: :merged,
               milestone_id: milestone.id,
@@ -257,6 +257,40 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         .to receive(:assignee_id_for)
         .with(pull_request)
         .and_return(user.id)
+    end
+
+    it 'does not create the source branch if merge request is merged' do
+      mr, exists = importer.create_merge_request
+
+      importer.insert_git_data(mr, exists)
+
+      expect(project.repository.branch_exists?(mr.source_branch)).to be_falsey
+      expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+    end
+
+    it 'creates the source branch if merge request is open' do
+      mr, exists = importer.create_merge_request
+      mr.state = 'opened'
+      mr.save
+
+      importer.insert_git_data(mr, exists)
+
+      expect(project.repository.branch_exists?(mr.source_branch)).to be_truthy
+      expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+    end
+
+    it 'ignores Git errors when creating a branch' do
+      mr, exists = importer.create_merge_request
+      mr.state = 'opened'
+      mr.save
+
+      expect(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::CommandError)
+      expect(Gitlab::Sentry).to receive(:track_acceptable_exception).and_call_original
+
+      importer.insert_git_data(mr, exists)
+
+      expect(project.repository.branch_exists?(mr.source_branch)).to be_falsey
+      expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
     end
 
     it 'creates the merge request diffs' do
