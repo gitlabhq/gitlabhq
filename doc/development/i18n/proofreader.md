@@ -47,6 +47,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Hungarian
   - Proofreaders needed.
 - Indonesian
+  - Adi Ferdian - [GitLab](https://gitlab.com/adiferd), [Crowdin](https://crowdin.com/profile/adiferd)
   - Ahmad Naufal Mukhtar - [GitLab](https://gitlab.com/anaufalm), [Crowdin](https://crowdin.com/profile/anaufalm)
 - Italian
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
