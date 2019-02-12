@@ -150,6 +150,17 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :count_commits, request, timeout: GitalyClient.medium_timeout).count
       end
 
+      def diverging_commit_count(from, to, max_count:)
+        request = Gitaly::CountDivergingCommitsRequest.new(
+          repository: @gitaly_repo,
+          from: encode_binary(from),
+          to: encode_binary(to),
+          max_count: max_count
+        )
+        response = GitalyClient.call(@repository.storage, :commit_service, :count_diverging_commits, request, timeout: GitalyClient.medium_timeout)
+        [response.left_count, response.right_count]
+      end
+
       def list_last_commits_for_tree(revision, path, offset: 0, limit: 25)
         request = Gitaly::ListLastCommitsForTreeRequest.new(
           repository: @gitaly_repo,

@@ -2,6 +2,7 @@
 - commit = @repository.commit(branch.dereferenced_target)
 - bar_graph_width_factor = @max_commits > 0 ? 100.0/@max_commits : 0
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
+- number_commits_distance = diverging_commit_counts[:distance]
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
 - merge_project = merge_request_source_project_for_project(@project)
@@ -28,16 +29,23 @@
         = s_('Branches|Cant find HEAD commit for this branch')
 
   - if branch.name != @repository.root_ref
-    .divergence-graph.d-none.d-md-block{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),
-      default_branch: @repository.root_ref,
-      number_commits_ahead: diverging_count_label(number_commits_ahead) } }
-      .graph-side
-        .bar.bar-behind{ style: "width: #{number_commits_behind * bar_graph_width_factor}%" }
-        %span.count.count-behind= diverging_count_label(number_commits_behind)
-      .graph-separator
-      .graph-side
-        .bar.bar-ahead{ style: "width: #{number_commits_ahead * bar_graph_width_factor}%" }
-        %span.count.count-ahead= diverging_count_label(number_commits_ahead)
+    - if number_commits_distance.nil?
+      .divergence-graph.d-none.d-md-block{ title: s_('%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead') % { number_commits_behind: diverging_count_label(number_commits_behind),
+        default_branch: @repository.root_ref,
+        number_commits_ahead: diverging_count_label(number_commits_ahead) } }
+        .graph-side
+          .bar.bar-behind{ style: "width: #{number_commits_behind * bar_graph_width_factor}%" }
+          %span.count.count-behind= diverging_count_label(number_commits_behind)
+        .graph-separator
+        .graph-side
+          .bar.bar-ahead{ style: "width: #{number_commits_ahead * bar_graph_width_factor}%" }
+          %span.count.count-ahead= diverging_count_label(number_commits_ahead)
+    - else
+      .divergence-graph.d-none.d-md-block{ title: s_('More than %{number_commits_distance} commits different with %{default_branch}') % { number_commits_distance: diverging_count_label(number_commits_distance),
+        default_branch: @repository.root_ref} }
+        .graph-side.full
+          .bar{ style: "width: #{number_commits_distance * bar_graph_width_factor}%" }
+          %span.count= diverging_count_label(number_commits_distance)
 
   .controls.d-none.d-md-block<
     - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
