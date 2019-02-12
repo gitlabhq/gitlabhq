@@ -46,6 +46,8 @@ module MergeRequests
     end
 
     def error_check!
+      super
+
       error =
         if @merge_request.should_be_rebased?
           'Only fast-forward merge is allowed for your project. Please update your source branch'

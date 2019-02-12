@@ -9,6 +9,10 @@ module MergeRequests
     attr_reader :merge_request
 
     # Overridden in EE.
+    def error_check!
+    end
+
+    # Overridden in EE.
     def hooks_validation_pass?(_merge_request)
       true
     end

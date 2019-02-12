@@ -33,6 +33,8 @@ module MergeRequests
     end
 
     def error_check!
+      super
+
       error =
         if Feature.disabled?(:merge_to_tmp_merge_ref_path, project)
           'Feature is not enabled'
