@@ -4428,6 +4428,9 @@ msgstr ""
 msgid "Manifest file import"
 msgstr ""
 
+msgid "Manual job"
+msgstr ""
+
 msgid "Map a FogBugz account ID to a GitLab user"
 msgstr ""
 
