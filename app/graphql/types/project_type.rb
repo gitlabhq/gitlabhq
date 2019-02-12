@@ -85,6 +85,11 @@ module Types
           null: true,
           resolver: Resolvers::IssuesResolver
 
+    field :issue,
+          Types::IssueType,
+          null: true,
+          resolver: Resolvers::IssuesResolver.single
+
     field :pipelines,
           Types::Ci::PipelineType.connection_type,
           null: false,

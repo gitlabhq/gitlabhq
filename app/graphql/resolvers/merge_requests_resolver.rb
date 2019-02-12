@@ -3,8 +3,8 @@
 module Resolvers
   class MergeRequestsResolver < BaseResolver
     argument :iid, GraphQL::ID_TYPE,
-             required: false,
-             description: 'The IID of the merge request, e.g., "1"'
+              required: false,
+              description: 'The IID of the merge request, e.g., "1"'
 
     argument :iids, [GraphQL::ID_TYPE],
               required: false,
@@ -17,7 +17,7 @@ module Resolvers
     def resolve(**args)
       return unless project.present?
 
-      args[:iids] ||= [args[:iid]]
+      args[:iids] ||= [args[:iid]].compact
 
       args[:iids].map(&method(:batch_load))
         .select(&:itself) # .compact doesn't work on BatchLoader
