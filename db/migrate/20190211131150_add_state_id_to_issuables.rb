@@ -1,5 +1,6 @@
 class AddStateIdToIssuables < ActiveRecord::Migration[5.0]
   include Gitlab::Database::MigrationHelpers
+  #include AfterCommitQueue
 
   DOWNTIME = false
   MIGRATION = 'SyncIssuablesStateId'.freeze
@@ -26,8 +27,13 @@ class AddStateIdToIssuables < ActiveRecord::Migration[5.0]
     add_column :issues, :state_id, :integer, limit: 1
     add_column :merge_requests, :state_id, :integer, limit: 1
 
-    queue_background_migration_jobs_by_range_at_intervals(Issue.where(state_id: nil), MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
-    queue_background_migration_jobs_by_range_at_intervals(MergeRequest.where(state_id: nil), MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
+    # Is this safe?
+    # Added to avoid an warning about jobs running inside transactions.
+    # Since we only add a column this should be ok
+    Sidekiq::Worker.skipping_transaction_check do
+      queue_background_migration_jobs_by_range_at_intervals(Issue.where(state_id: nil), MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
+      queue_background_migration_jobs_by_range_at_intervals(MergeRequest.where(state_id: nil), MIGRATION, DELAY_INTERVAL, batch_size: BATCH_SIZE)
+    end
   end
 
   def down
