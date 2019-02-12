@@ -23,6 +23,7 @@ in `.gitlab-ci.yml`.
 ## Timeout
 
 Timeout defines the maximum amount of time in minutes that a job is able run.
+This is configureable under your project's **Settings > CI/CD > General pipelines settings**. 
 The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
