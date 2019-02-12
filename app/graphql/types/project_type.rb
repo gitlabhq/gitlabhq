@@ -70,7 +70,7 @@ module Types
           Types::MergeRequestType.connection_type,
           null: true,
           resolver: Resolvers::MergeRequestsResolver do
-      # authorize :read_merge_request
+      authorize :read_merge_request
     end
 
     field :merge_request,
