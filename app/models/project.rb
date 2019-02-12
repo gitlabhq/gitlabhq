@@ -2073,6 +2073,10 @@ class Project < ActiveRecord::Base
     pool_repository&.link_repository(repository)
   end
 
+  def has_pool_repository?
+    pool_repository.present?
+  end
+
   private
 
   def merge_requests_allowing_collaboration(source_branch = nil)
