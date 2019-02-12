@@ -8,6 +8,17 @@ describe Admin::UsersController do
     sign_in(admin)
   end
 
+  describe 'GET :id' do
+    it 'finds a user case-insensitively' do
+      user = create(:user, username: 'CaseSensitive')
+
+      get :show, params: { id: user.username.downcase }
+
+      expect(response).to be_redirect
+      expect(response.location).to end_with(user.username)
+    end
+  end
+
   describe 'DELETE #user with projects' do
     let(:project) { create(:project, namespace: user.namespace) }
     let!(:issue) { create(:issue, author: user) }
