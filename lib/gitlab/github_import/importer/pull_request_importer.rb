@@ -67,6 +67,36 @@ module Gitlab
 
         def insert_git_data(merge_request, already_exists)
           insert_or_replace_git_data(merge_request, pull_request.source_branch_sha, pull_request.target_branch_sha, already_exists)
+          # We need to create the branch after the merge request is
+          # populated to ensure the merge request is in the right state
+          # when the branch is created.
+          create_source_branch_if_not_exists(merge_request)
+        end
+
+        # An imported merge request will not be mergeable unless the
+        # source branch exists. For pull requests from forks, the source
+        # branch will be in the form of
+        # "github/fork/{project-name}/{source_branch}". This branch will never
+        # exist, so we create it here.
+        #
+        # Note that we only create the branch if the merge request is still open.
+        # For projects that have many pull requests, we assume that if it's closed
+        # the branch has already been deleted.
+        def create_source_branch_if_not_exists(merge_request)
+          return unless merge_request.open?
+
+          source_branch = pull_request.formatted_source_branch
+
+          return if project.repository.branch_exists?(source_branch)
+
+          project.repository.add_branch(merge_request.author, source_branch, pull_request.source_branch_sha)
+        rescue Gitlab::Git::CommandError => e
+          Gitlab::Sentry.track_acceptable_exception(e,
+                                                    extra: {
+                                                      source_branch: source_branch,
+                                                      project_id: merge_request.project.id,
+                                                      merge_request_id: merge_request.id
+                                                    })
         end
       end
     end
