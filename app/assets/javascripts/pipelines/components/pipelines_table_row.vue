@@ -243,7 +243,7 @@ export default {
   methods: {
     handleCancelClick() {
       eventHub.$emit('openConfirmationModal', {
-        pipelineId: this.pipeline.id,
+        pipeline: this.pipeline,
         endpoint: this.pipeline.cancel_path,
       });
     },
