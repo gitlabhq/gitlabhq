@@ -436,27 +436,24 @@ module API
       end
       params do
         requires :group_id, type: Integer, desc: 'The ID of a group'
-        requires :group_access, type: Integer, values: Gitlab::Access.values, desc: 'The group access level'
+        requires :group_access, type: Integer, values: Gitlab::Access.values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
       post ":id/share" do
         authorize! :admin_project, user_project
         group = Group.find_by_id(params[:group_id])
 
-        unless group && can?(current_user, :read_group, group)
-          not_found!('Group')
-        end
-
         unless user_project.allowed_to_share_with_group?
           break render_api_error!("The project sharing with group is disabled", 400)
         end
 
-        link = user_project.project_group_links.new(declared_params(include_missing: false))
+        result = ::Projects::GroupLinks::CreateService.new(user_project, current_user, declared_params(include_missing: false))
+          .execute(group)
 
-        if link.save
-          present link, with: Entities::ProjectGroupLink
+        if result[:status] == :success
+          present result[:link], with: Entities::ProjectGroupLink
         else
-          render_api_error!(link.errors.full_messages.first, 409)
+          render_api_error!(result[:message], result[:http_status])
         end
       end
 
