@@ -9,16 +9,13 @@ module MergeRequests
     attr_reader :merge_request
 
     # Overridden in EE.
-    def error_check!
-    end
-
-    # Overridden in EE.
     def hooks_validation_pass?(_merge_request)
       true
     end
 
     # Overridden in EE.
     def hooks_validation_error(_merge_request)
+      # No-op
     end
 
     def source
@@ -30,6 +27,11 @@ module MergeRequests
     end
 
     private
+
+    # Overridden in EE.
+    def error_check!
+      # No-op
+    end
 
     def raise_error(message)
       raise MergeError, message
