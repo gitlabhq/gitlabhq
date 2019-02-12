@@ -27,6 +27,7 @@ describe 'Project > Members > Invite group', :js do
 
       before do
         project.add_maintainer(maintainer)
+        group_to_share_with.add_guest(maintainer)
         sign_in(maintainer)
       end
 
@@ -112,6 +113,7 @@ describe 'Project > Members > Invite group', :js do
 
     before do
       project.add_maintainer(maintainer)
+      group.add_guest(maintainer)
       sign_in(maintainer)
 
       visit project_settings_members_path(project)
