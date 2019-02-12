@@ -72,6 +72,16 @@ Gitlab::Profiler.print_by_total_time(result, max_percent: 60, min_percent: 2)
 #   0.02      0.865     0.000     0.000     0.864      638  *Enumerable#inject
 ```
 
+To print the profile in HTML format, use the following example:
+
+
+```ruby
+result = Gitlab::Profiler.profile('/my-user')
+
+printer = RubyProf::CallStackPrinter.new(result)
+printer.print(File.open('/tmp/profile.html', 'w'))
+```
+
 [GitLab-Profiler](https://gitlab.com/gitlab-com/gitlab-profiler) is a project
 that builds on this to add some additional niceties, such as allowing
 configuration with a single Yaml file for multiple URLs, and uploading of the
