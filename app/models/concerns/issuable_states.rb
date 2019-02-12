@@ -2,7 +2,7 @@
 
 # == IssuableStates concern
 #
-# Defines statuses shared by issuables which are persisted on state column
+# Defines states shared by issuables which are persisted on state_id column
 # using the state machine.
 #
 # Used by EE::Epic, Issue and MergeRequest
@@ -14,10 +14,6 @@ module IssuableStates
   # Check MergeRequest::AVAILABLE_STATES
   AVAILABLE_STATES = { opened: 1, closed: 2 }.freeze
 
-  included do
-    before_save :set_state_id
-  end
-
   class_methods do
     def states
       @states ||= OpenStruct.new(self::AVAILABLE_STATES)
@@ -26,7 +22,11 @@ module IssuableStates
 
   # The state:string column is being migrated to state_id:integer column
   # This is a temporary hook to populate state_id column with new values
-  # and can be removed after the complete migration is done.
+  # and can be removed after the state column is removed.
+  included do
+    before_save :set_state_id
+  end
+
   def set_state_id
     return if state.nil? || state.empty?
 

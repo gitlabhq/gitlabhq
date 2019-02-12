@@ -22,7 +22,6 @@ class MergeRequest < ActiveRecord::Base
   self.reactive_cache_lifetime = 10.minutes
 
   SORTING_PREFERENCE_FIELD = :merge_requests_sort
-  MERGE_REQUEST_STATES =
   AVAILABLE_STATES = AVAILABLE_STATES.merge(merged: 3, locked: 4).freeze
 
   ignore_column :locked_at,

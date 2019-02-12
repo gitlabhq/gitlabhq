@@ -5,10 +5,12 @@ class AddStateIdToIssuables < ActiveRecord::Migration[5.0]
   DOWNTIME = false
   MIGRATION = 'SyncIssuablesStateId'.freeze
 
-  # TODO - find out how many issues and merge requests in production
-  # to adapt the batch size and delay interval
-  # Keep in mind that the migration will be scheduled for issues and merge requests.
-  BATCH_SIZE = 5000
+  # 2019-02-12 Gitlab.com issuable numbers
+  # issues count: 13587305
+  # merge requests count: 18925274
+  # Using this 50000 as batch size should take around 13 hours
+  # to migrate both issues and merge requests
+  BATCH_SIZE = 50000
   DELAY_INTERVAL = 5.minutes.to_i
 
   class Issue < ActiveRecord::Base
