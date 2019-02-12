@@ -14,10 +14,9 @@ class HelpController < ApplicationController
     @help_index = File.read(Rails.root.join('doc', 'README.md')).sub(YAML_FRONT_MATTER_REGEXP, '')
 
     # Prefix Markdown links with `help/` unless they are external links.
-    # RFC3986 allows alphanumeric, '+', '-' and '.' for URL schema;
     # '//' not necessarily part of URL, e.g., mailto:mail@example.com
-    # See https://rubular.com/r/C5wTz0gE5r6x0f
-    @help_index.gsub!(%r{(?<delim>\]\()(?![a-zA-Z0-9.+-]+:)(?!/)(?<link>[^\)\(]+\))}) do
+    # See https://rubular.com/r/DFHZl5w8d3bpzV
+    @help_index.gsub!(%r{(?<delim>\]\()(?!\w+:)(?!/)(?<link>[^\)\(]+\))}) do
       "#{$~[:delim]}#{Gitlab.config.gitlab.relative_url_root}/help/#{$~[:link]}"
     end
   end
