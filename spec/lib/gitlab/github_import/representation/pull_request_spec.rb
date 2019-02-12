@@ -238,7 +238,7 @@ describe Gitlab::GithubImport::Representation::PullRequest do
           target_repository_id: 2
         )
 
-        expect(pr.formatted_source_branch).to eq('foo:branch')
+        expect(pr.formatted_source_branch).to eq('github/fork/foo/branch')
       end
     end
 
