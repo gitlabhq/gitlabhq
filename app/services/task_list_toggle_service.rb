@@ -67,6 +67,6 @@ class TaskListToggleService
   # When using CommonMark, we should be able to use the embedded `sourcepos` attribute to
   # target the exact line in the DOM.
   def get_html_checkbox(html)
-    html.css(".task-list-item[data-sourcepos^='#{line_number}:'] > input.task-list-item-checkbox").first
+    html.css(".task-list-item[data-sourcepos^='#{line_number}:'] input.task-list-item-checkbox").first
   end
 end
