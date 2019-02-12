@@ -6,6 +6,8 @@ describe Groups::SharedProjectsController do
   end
 
   def share_project(project)
+    group.add_developer(user)
+
     Projects::GroupLinks::CreateService.new(
       project,
       user,
