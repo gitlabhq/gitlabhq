@@ -34,7 +34,9 @@ module MergeRequests
 
     def error_check!
       error =
-        if !merge_method_supported?
+        if Feature.disabled?(:merge_to_tmp_merge_ref_path, project)
+          'Feature is not enabled'
+        elsif !merge_method_supported?
           "#{project.human_merge_method} to #{target_ref} is currently not supported."
         elsif !hooks_validation_pass?(merge_request)
           hooks_validation_error(merge_request)
