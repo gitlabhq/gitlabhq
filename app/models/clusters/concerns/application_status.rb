@@ -80,6 +80,10 @@ module Clusters
         installed? || updated?
       end
 
+      def ready?
+        installed? || updating? || updated? || update_errored?
+      end
+
       def update_in_progress?
         updating?
       end
