@@ -15,7 +15,7 @@
   margin-top: 3px;
   padding: $gl-padding;
   z-index: 300;
-  width: 300px;
+  width: $award-emoji-width;
   font-size: 14px;
   background-color: $white-light;
   border: 1px solid $border-white-light;
@@ -54,6 +54,10 @@
     &:hover {
       transform: none;
     }
+  }
+
+  @include media-breakpoint-down(xs) {
+    width: $award-emoji-width-xs;
   }
 }
 
