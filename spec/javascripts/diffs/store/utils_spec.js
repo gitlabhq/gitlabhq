@@ -14,7 +14,7 @@ import { MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
 import diffFileMockData from '../mock_data/diff_file';
 import { noteableDataMock } from '../../notes/mock_data';
 
-const getDiffFileMock = () => Object.assign({}, diffFileMockData);
+const getDiffFileMock = () => JSON.parse(JSON.stringify(diffFileMockData));
 
 describe('DiffsStoreUtils', () => {
   describe('findDiffFile', () => {
@@ -80,30 +80,44 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('addContextLines', () => {
-    it('should add context lines properly with bottom parameter', () => {
+    it('should add context lines', () => {
       const diffFile = getDiffFileMock();
       const inlineLines = diffFile.highlighted_diff_lines;
       const parallelLines = diffFile.parallel_diff_lines;
       const lineNumbers = { oldLineNumber: 3, newLineNumber: 5 };
-      const contextLines = [{ lineNumber: 42 }];
-      const options = { inlineLines, parallelLines, contextLines, lineNumbers, bottom: true };
+      const contextLines = [{ lineNumber: 42, line_code: '123' }];
+      const options = { inlineLines, parallelLines, contextLines, lineNumbers };
       const inlineIndex = utils.findIndexInInlineLines(inlineLines, lineNumbers);
       const parallelIndex = utils.findIndexInParallelLines(parallelLines, lineNumbers);
       const normalizedParallelLine = {
         left: options.contextLines[0],
         right: options.contextLines[0],
+        line_code: '123',
+      };
+
+      utils.addContextLines(options);
+
+      expect(inlineLines[inlineIndex]).toEqual(contextLines[0]);
+      expect(parallelLines[parallelIndex]).toEqual(normalizedParallelLine);
+    });
+
+    it('should add context lines properly with bottom parameter', () => {
+      const diffFile = getDiffFileMock();
+      const inlineLines = diffFile.highlighted_diff_lines;
+      const parallelLines = diffFile.parallel_diff_lines;
+      const lineNumbers = { oldLineNumber: 3, newLineNumber: 5 };
+      const contextLines = [{ lineNumber: 42, line_code: '123' }];
+      const options = { inlineLines, parallelLines, contextLines, lineNumbers, bottom: true };
+      const normalizedParallelLine = {
+        left: options.contextLines[0],
+        right: options.contextLines[0],
+        line_code: '123',
       };
 
       utils.addContextLines(options);
 
       expect(inlineLines[inlineLines.length - 1]).toEqual(contextLines[0]);
       expect(parallelLines[parallelLines.length - 1]).toEqual(normalizedParallelLine);
-
-      delete options.bottom;
-      utils.addContextLines(options);
-
-      expect(inlineLines[inlineIndex]).toEqual(contextLines[0]);
-      expect(parallelLines[parallelIndex]).toEqual(normalizedParallelLine);
     });
   });
 
