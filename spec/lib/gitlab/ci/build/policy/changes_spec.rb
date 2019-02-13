@@ -73,9 +73,9 @@ describe Gitlab::Ci::Build::Policy::Changes do
         expect(policy).not_to be_satisfied_by(pipeline, seed)
       end
 
-      context 'when pipelines does not run for a branch update' do
+      context 'when modified paths can not be evaluated' do
         before do
-          pipeline.before_sha = Gitlab::Git::BLANK_SHA
+          allow(pipeline).to receive(:modified_paths) { nil }
         end
 
         it 'is always satisfied' do
@@ -113,6 +113,58 @@ describe Gitlab::Ci::Build::Policy::Changes do
         policy = described_class.new(%w[files/js/commit.js])
 
         expect(policy).not_to be_satisfied_by(pipeline, seed)
+      end
+    end
+
+    context 'when branch is created' do
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project,
+                                   ref: 'feature',
+                                   source: source,
+                                   sha: '0b4bc9a4',
+                                   before_sha: Gitlab::Git::BLANK_SHA,
+                                   merge_request: merge_request)
+      end
+
+      let(:ci_build) do
+        build(:ci_build, pipeline: pipeline, project: project, ref: 'feature')
+      end
+
+      let(:seed) { double('build seed', to_resource: ci_build) }
+
+      context 'when source is merge request' do
+        let(:source) { :merge_request }
+
+        let(:merge_request) do
+          create(:merge_request,
+                 source_project: project,
+                 source_branch: 'feature',
+                 target_project: project,
+                 target_branch: 'master')
+        end
+
+        it 'is satified by changes in the merge request' do
+          policy = described_class.new(%w[files/ruby/feature.rb])
+
+          expect(policy).to be_satisfied_by(pipeline, seed)
+        end
+
+        it 'is not satified by changes not in the merge request' do
+          policy = described_class.new(%w[foo.rb])
+
+          expect(policy).not_to be_satisfied_by(pipeline, seed)
+        end
+      end
+
+      context 'when source is push' do
+        let(:source) { :push }
+        let(:merge_request) { nil }
+
+        it 'is always satified' do
+          policy = described_class.new(%w[foo.rb])
+
+          expect(policy).to be_satisfied_by(pipeline, seed)
+        end
       end
     end
   end
