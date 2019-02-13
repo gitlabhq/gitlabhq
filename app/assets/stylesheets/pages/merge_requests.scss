@@ -738,6 +738,8 @@
   z-index: 103;
   background: $gray-light;
   color: $gl-text-color;
+  margin-top: -1px;
+  border-top: 1px solid $border-color;
 
   .mr-version-menus-container {
     display: flex;
@@ -789,7 +791,6 @@
     position: sticky;
     top: $header-height + $mr-tabs-height;
     width: 100%;
-    border-top: 1px solid $border-color;
 
     &.is-fileTreeOpen {
       margin-left: -16px;
@@ -810,10 +811,7 @@
   top: $header-height;
   z-index: 200;
   background-color: $white-light;
-
-  @include media-breakpoint-down(md) {
-    border-bottom: 1px solid $border-color;
-  }
+  border-bottom: 1px solid $border-color;
 
   @include media-breakpoint-up(sm) {
     position: sticky;
