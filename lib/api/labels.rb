@@ -62,6 +62,31 @@ module API
       delete ':id/labels' do
         delete_label(user_project)
       end
+
+      desc 'Promote a label to a group label' do
+        detail 'This feature was added in GitLab 11.9'
+        success Entities::GroupLabel
+      end
+      params do
+        requires :name, type: String, desc: 'The name of the label to be promoted'
+      end
+      post ':id/labels/promote' do
+        authorize! :admin_label, parent
+
+        label = find_label(parent, params[:name], include_ancestor_groups: false)
+
+        begin
+          group_label = Labels::PromoteService.new(user_project, current_user).execute(label)
+
+          if group_label
+            present group_label, with: Entities::GroupLabel, current_user: current_user, parent: user_project.group
+          else
+            render_api_error!('Failed to promote project label to group label', 400)
+          end
+        rescue => error
+          render_api_error!(error.to_s, 400)
+        end
+      end
     end
   end
 end
