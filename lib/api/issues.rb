@@ -311,7 +311,7 @@ module API
 
         merge_requests =
           if merge_request_iids.present?
-            MergeRequestsFinder.new(current_user, project_id: user_project.id, iids: merge_request_iids).execute
+            MergeRequest.all.where(iid: merge_request_iids)
           else
             MergeRequest.none
           end

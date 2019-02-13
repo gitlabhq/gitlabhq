@@ -1792,7 +1792,7 @@ describe API::Issues do
         description: "See #{issue.to_reference}"
       }
       create(:merge_request, attributes).tap do |merge_request|
-        create(:note, :system, project: project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
+        create(:note, :system, project: issue.project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
       end
     end
 
@@ -1827,6 +1827,15 @@ describe API::Issues do
       get_related_merge_requests(project.id, issue.iid, user)
 
       expect_paginated_array_response(related_mr.id)
+    end
+
+    it 'returns merge requests cross-project wide' do
+      project2 = create(:project, :public, creator_id: user.id, namespace: user.namespace)
+      merge_request = create_referencing_mr(user, project2, issue)
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(merge_request.id)
     end
 
     context 'no merge request mentioned a issue' do
