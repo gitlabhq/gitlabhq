@@ -412,7 +412,7 @@ Google GSuite team collaboration tool.
 Set Hangouts Chat service for a project.
 
 ```
-PUT /projects/:id/services/hangouts_chat
+PUT /projects/:id/services/hangouts-chat
 ```
 
 >**Note:** Specific event parameters (e.g. `push_events` flag) were [introduced in v10.4][11435]
@@ -438,7 +438,7 @@ Parameters:
 Delete Hangouts Chat service for a project.
 
 ```
-DELETE /projects/:id/services/hangouts_chat
+DELETE /projects/:id/services/hangouts-chat
 ```
 
 ### Get Hangouts Chat service settings
@@ -446,7 +446,7 @@ DELETE /projects/:id/services/hangouts_chat
 Get Hangouts Chat service settings for a project.
 
 ```
-GET /projects/:id/services/hangouts_chat
+GET /projects/:id/services/hangouts-chat
 ```
 
 ## Irker (IRC gateway)
