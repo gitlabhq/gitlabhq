@@ -473,6 +473,29 @@ describe API::Labels do
     end
   end
 
+  describe 'POST /projects/:id/labels/promote' do
+    it 'returns 200 if label is promoted' do
+      post api("/projects/#{project.id}/labels/promote", user), params: { name: 'label1' }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['name']).to eq(label1.name)
+      expect(json_response['color']).to eq('#FFFFFF')
+    end
+
+    it 'returns 404 if label does not exist' do
+      post api("/projects/#{project.id}/labels/promote", user), params: { name: 'unknown' }
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it 'returns 400 if no label name given' do
+      post api("/projects/#{project.id}/labels/promote", user)
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['error']).to eq('name is missing')
+    end
+  end
+
   describe "POST /projects/:id/labels/:label_id/subscribe" do
     context "when label_id is a label title" do
       it "subscribes to the label" do

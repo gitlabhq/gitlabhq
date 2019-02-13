@@ -71,12 +71,12 @@ module API
         requires :name, type: String, desc: 'The name of the label to be promoted'
       end
       post ':id/labels/promote' do
-        authorize! :admin_label, parent
+        authorize! :admin_label, user_project
 
-        label = find_label(parent, params[:name], include_ancestor_groups: false)
+        label = find_label(user_project, params[:name], include_ancestor_groups: false)
 
         begin
-          group_label = Labels::PromoteService.new(user_project, current_user).execute(label)
+          group_label = ::Labels::PromoteService.new(user_project, current_user).execute(label)
 
           if group_label
             present group_label, with: Entities::GroupLabel, current_user: current_user, parent: user_project.group
