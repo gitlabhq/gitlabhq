@@ -50,7 +50,7 @@ review the list of changed files. Click on each file to review the changes and
 click the tick icon to stage the file.
 
 Once you have staged some changes, you can add a commit message and commit the
-staged changes. Unstaged changes will not be commited.
+staged changes. Unstaged changes will not be committed.
 
 ![Commit changes](img/commit_changes.png)
 
