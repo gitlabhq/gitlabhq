@@ -29,7 +29,8 @@ Example response:
     "closed_issues_count": 0,
     "open_merge_requests_count": 1,
     "subscribed": false,
-    "priority": 10
+    "priority": 10,
+    "is_project_label": true
   },
   {
     "id" : 4,
@@ -40,7 +41,8 @@ Example response:
     "closed_issues_count": 5,
     "open_merge_requests_count": 0,
     "subscribed": false,
-    "priority": null
+    "priority": null,
+    "is_project_label": true
   },
   {
     "id" : 7,
@@ -51,7 +53,8 @@ Example response:
     "closed_issues_count": 3,
     "open_merge_requests_count": 1,
     "subscribed": false,
-    "priority": null
+    "priority": null,
+    "is_project_label": true
   },
   {
     "id" : 8,
@@ -62,7 +65,8 @@ Example response:
     "closed_issues_count": 0,
     "open_merge_requests_count": 2,
     "subscribed": false,
-    "priority": null
+    "priority": null,
+    "is_project_label": false
   },
   {
     "id" : 9,
@@ -73,7 +77,8 @@ Example response:
     "closed_issues_count": 0,
     "open_merge_requests_count": 1,
     "subscribed": true,
-    "priority": null
+    "priority": null,
+    "is_project_label": true
   }
 ]
 ```
@@ -110,7 +115,8 @@ Example response:
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
   "subscribed": false,
-  "priority": null
+  "priority": null,
+    "is_project_label": true
 }
 ```
 
@@ -166,7 +172,8 @@ Example response:
   "closed_issues_count": 0,
   "open_merge_requests_count": 2,
   "subscribed": false,
-  "priority": null
+  "priority": null,
+  "is_project_label": true
 }
 ```
 
@@ -201,7 +208,8 @@ Example response:
   "closed_issues_count": 0,
   "open_merge_requests_count": 1,
   "subscribed": true,
-  "priority": null
+  "priority": null,
+  "is_project_label": true
 }
 ```
 
