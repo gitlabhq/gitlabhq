@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe FileMover do
   let(:filename) { 'banana_sample.gif' }
-  let(:file) { fixture_file_upload(File.join('spec', 'fixtures', filename)) }
   let(:temp_file_path) { File.join('uploads/-/system/temp', 'secret55', filename) }
 
   let(:temp_description) do
@@ -12,7 +11,7 @@ describe FileMover do
   let(:file_path) { File.join('uploads/-/system/personal_snippet', snippet.id.to_s, 'secret55', filename) }
   let(:snippet) { create(:personal_snippet, description: temp_description) }
 
-  subject { described_class.new(file_path, snippet).execute }
+  subject { described_class.new(temp_file_path, snippet).execute }
 
   describe '#execute' do
     before do
