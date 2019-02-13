@@ -237,7 +237,7 @@ describe API::Commits do
     end
 
     describe 'create' do
-      let(:message) { 'Created file' }
+      let(:message) { 'Created a new file with a very very looooooooooooooooooooooooooooooooooooooooooooooong commit message' }
       let(:invalid_c_params) do
         {
           branch: 'master',
