@@ -45,15 +45,12 @@ module Gitlab
               end
             end
 
-            checked =
-              case value
-              when Array
-                value.all?(&check)
-              else
-                check.call(value)
-              end
-
-            value if checked
+            case value
+            when Array
+              value.select(&check)
+            else
+              value if check.call(value)
+            end
           end
         end
       end
