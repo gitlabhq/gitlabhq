@@ -161,6 +161,7 @@ export function addContextLines(options) {
   const normalizedParallelLines = contextLines.map(line => ({
     left: line,
     right: line,
+    line_code: line.line_code,
   }));
 
   if (options.bottom) {
