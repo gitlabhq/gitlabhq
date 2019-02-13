@@ -35,7 +35,7 @@ module Notes
 
       if !only_commands && note.save
         if note.part_of_discussion? && note.discussion.can_convert_to_discussion?
-          note.discussion.convert_to_discussion!.save(touch: false)
+          note.discussion.convert_to_discussion!(save: true)
         end
 
         todo_service.new_note(note, current_user)
