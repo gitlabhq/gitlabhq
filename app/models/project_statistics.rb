@@ -4,9 +4,16 @@ class ProjectStatistics < ApplicationRecord
   belongs_to :project
   belongs_to :namespace
 
+  default_value_for :wiki_size, 0
+
+  # older migrations fail due to non-existent attribute without this
+  def wiki_size
+    has_attribute?(:wiki_size) ? super : 0
+  end
+
   before_save :update_storage_size
 
-  COLUMNS_TO_REFRESH = [:repository_size, :lfs_objects_size, :commit_count].freeze
+  COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count].freeze
   INCREMENTABLE_COLUMNS = { build_artifacts_size: %i[storage_size], packages_size: %i[storage_size] }.freeze
 
   def total_repository_size
@@ -27,9 +34,12 @@ class ProjectStatistics < ApplicationRecord
     self.commit_count = project.repository.commit_count
   end
 
-  # Repository#size needs to be converted from MB to Byte.
   def update_repository_size
     self.repository_size = project.repository.size * 1.megabyte
+  end
+
+  def update_wiki_size
+    self.wiki_size = project.wiki.repository.size * 1.megabyte
   end
 
   def update_lfs_objects_size
@@ -42,7 +52,7 @@ class ProjectStatistics < ApplicationRecord
   end
 
   def update_storage_size
-    self.storage_size = repository_size + lfs_objects_size + build_artifacts_size + packages_size
+    self.storage_size = repository_size + wiki_size + lfs_objects_size + build_artifacts_size + packages_size
   end
 
   # Since this incremental update method does not call update_storage_size above,

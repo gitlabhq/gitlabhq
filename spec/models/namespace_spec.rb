@@ -147,6 +147,7 @@ describe Namespace do
              namespace: namespace,
              statistics: build(:project_statistics,
                                repository_size:      101,
+                               wiki_size:            505,
                                lfs_objects_size:     202,
                                build_artifacts_size: 303,
                                packages_size:        404))
@@ -157,6 +158,7 @@ describe Namespace do
              namespace: namespace,
              statistics: build(:project_statistics,
                                repository_size:      10,
+                               wiki_size:            50,
                                lfs_objects_size:     20,
                                build_artifacts_size: 30,
                                packages_size:        40))
@@ -167,8 +169,9 @@ describe Namespace do
       project2
       statistics = described_class.with_statistics.find(namespace.id)
 
-      expect(statistics.storage_size).to eq 1110
+      expect(statistics.storage_size).to eq 1665
       expect(statistics.repository_size).to eq 111
+      expect(statistics.wiki_size).to eq 555
       expect(statistics.lfs_objects_size).to eq 222
       expect(statistics.build_artifacts_size).to eq 333
       expect(statistics.packages_size).to eq 444
@@ -179,6 +182,7 @@ describe Namespace do
 
       expect(statistics.storage_size).to eq 0
       expect(statistics.repository_size).to eq 0
+      expect(statistics.wiki_size).to eq 0
       expect(statistics.lfs_objects_size).to eq 0
       expect(statistics.build_artifacts_size).to eq 0
       expect(statistics.packages_size).to eq 0

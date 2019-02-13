@@ -16,9 +16,11 @@ class ProjectCacheWorker
   def perform(project_id, files = [], statistics = [])
     project = Project.find_by(id: project_id)
 
-    return unless project && project.repository.exists?
+    return unless project
 
     update_statistics(project, statistics)
+
+    return unless project.repository.exists?
 
     project.repository.refresh_method_caches(files.map(&:to_sym))
 

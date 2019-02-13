@@ -68,6 +68,7 @@ GET /groups?statistics=true
     "statistics": {
       "storage_size" : 212,
       "repository_size" : 33,
+      "wiki_size" : 100,
       "lfs_objects_size" : 123,
       "job_artifacts_size" : 57
 
