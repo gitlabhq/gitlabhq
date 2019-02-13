@@ -11,9 +11,7 @@ module API
         }
       end
 
-      params :wiki_page_params do
-        requires :content, type: String, desc: 'Content of a wiki page'
-        requires :title, type: String, desc: 'Title of a wiki page'
+      params :common_wiki_page_params do
         optional :format,
           type: String,
           values: ProjectWiki::MARKUPS.values.map(&:to_s),
@@ -54,7 +52,9 @@ module API
         success Entities::WikiPage
       end
       params do
-        use :wiki_page_params
+        requires :title, type: String, desc: 'Title of a wiki page'
+        requires :content, type: String, desc: 'Content of a wiki page'
+        use :common_wiki_page_params
       end
       post ':id/wikis' do
         authorize! :create_wiki, user_project
@@ -72,7 +72,10 @@ module API
         success Entities::WikiPage
       end
       params do
-        use :wiki_page_params
+        optional :title, type: String, desc: 'Title of a wiki page'
+        optional :content, type: String, desc: 'Content of a wiki page'
+        use :common_wiki_page_params
+        at_least_one_of :content, :title, :format
       end
       put ':id/wikis/:slug' do
         authorize! :create_wiki, user_project
