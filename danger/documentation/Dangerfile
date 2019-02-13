@@ -1,17 +1,6 @@
 # frozen_string_literal: true
 
-# All the files/directories that should be reviewed by the Docs team.
-DOCS_FILES = [
-  'doc/'
-].freeze
-
-def docs_paths_requiring_review(files)
-  files.select do |file|
-    DOCS_FILES.any? { |pattern| file.start_with?(pattern) }
-  end
-end
-
-docs_paths_to_review = docs_paths_requiring_review(helper.all_changed_files)
+docs_paths_to_review = helper.changes_by_category[:documentation]
 
 unless docs_paths_to_review.empty?
   message 'This merge request adds or changes files that require a ' \
