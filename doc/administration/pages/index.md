@@ -11,7 +11,7 @@ description: 'Learn how to administer GitLab Pages.'
 > - This guide is for Omnibus GitLab installations. If you have installed
 >   GitLab from source, follow the [Pages source installation document](source.md).
 > - To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
-> - Does NOT support subgroups. See [this issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) for more information and status.
+> - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
 This document describes how to set up the _latest_ GitLab Pages feature. Make
 sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
