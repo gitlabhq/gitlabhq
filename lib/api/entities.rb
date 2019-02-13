@@ -1031,6 +1031,9 @@ module API
       expose :priority do |label, options|
         label.priority(options[:parent])
       end
+      expose :is_project_label do |label, options|
+        label.is_a?(::ProjectLabel)
+      end
     end
 
     class List < Grape::Entity
