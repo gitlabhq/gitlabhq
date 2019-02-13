@@ -1,7 +1,7 @@
 # Frontend Development Guidelines
 
 > **Notice:**
-We are currently in the process of re-writing our development guide to make it easier to find information. The new guide is still WIP but viewable in [development/new_fe_guide](../new_fe_guide/index.md)
+> We are currently in the process of re-writing our development guide to make it easier to find information. The new guide is still WIP but viewable in [development/new_fe_guide](../new_fe_guide/index.md)
 
 This document describes various guidelines to ensure consistency and quality
 across GitLab's frontend team.
@@ -32,32 +32,41 @@ For our currently-supported browsers, see our [requirements][requirements].
 ---
 
 ## [Development Process](development_process.md)
+
 How we plan and execute the work on the frontend.
 
 ## [Architecture](architecture.md)
+
 How we go about making fundamental design decisions in GitLab's frontend team
 or make changes to our frontend development guidelines.
 
 ## [Testing](../testing_guide/frontend_testing.md)
+
 How we write frontend tests, run the GitLab test suite, and debug test related
 issues.
 
 ## [Design Patterns](design_patterns.md)
+
 Common JavaScript design patterns in GitLab's codebase.
 
 ## [Vue.js Best Practices](vue.md)
+
 Vue specific design patterns and practices.
 
 ## [Vuex](vuex.md)
+
 Vuex specific design patterns and practices.
 
 ## [Axios](axios.md)
+
 Axios specific practices and gotchas.
 
 ## [GraphQL](graphql.md)
+
 How to use GraphQL
 
 ## [Icons and Illustrations](icons.md)
+
 How we use SVG for our Icons and Illustrations.
 
 ## [Components](components.md)
@@ -70,7 +79,7 @@ How we use UI components.
 
 ### [JavaScript Style Guide](style_guide_js.md)
 
-We use eslint to enforce our JavaScript style guides.  Our guide is based on
+We use eslint to enforce our JavaScript style guides. Our guide is based on
 the excellent [Airbnb][airbnb-js-style-guide] style guide with a few small
 changes.
 
@@ -81,22 +90,25 @@ Our SCSS conventions which are enforced through [scss-lint][scss-lint].
 ---
 
 ## [Performance](performance.md)
+
 Best practices for monitoring and maximizing frontend performance.
 
 ---
 
 ## [Security](security.md)
+
 Frontend security practices.
 
 ---
 
 ## [Accessibility](accessibility.md)
+
 Our accessibility standards and resources.
 
 ## [Internationalization (i18n) and Translations](../i18n/externalization.md)
+
 Frontend internationalization support is described in [this document](../i18n/).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
-
 
 [rails]: http://rubyonrails.org/
 [haml]: http://haml.info/
@@ -116,6 +128,7 @@ The [externalization part of the guide](../i18n/externalization.md) explains the
 ---
 
 ## [DropLab](droplab/droplab.md)
+
 Our internal `DropLab` dropdown library.
 
 - [DropLab](droplab/droplab.md)

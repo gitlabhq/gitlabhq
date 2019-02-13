@@ -27,6 +27,10 @@ Learn about all the internal JavaScript modules that make up our frontend.
 
 Style guides to keep our code consistent.
 
+## [Event Tracking with Snowplow](event_tracking.md)
+
+How we use Snowplow to track custom events.
+
 ## [Tips](tips.md)
 
 Tips from our frontend team to develop more efficiently and effectively.
