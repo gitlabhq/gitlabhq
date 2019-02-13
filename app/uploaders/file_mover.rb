@@ -11,6 +11,8 @@ class FileMover
   end
 
   def execute
+    return unless valid?
+
     move
 
     if update_markdown
@@ -20,6 +22,12 @@ class FileMover
   end
 
   private
+
+  def valid?
+    Pathname.new(temp_file_path).realpath.to_path.start_with?(
+      (Pathname(temp_file_uploader.root) + temp_file_uploader.base_dir).to_path
+    )
+  end
 
   def move
     FileUtils.mkdir_p(File.dirname(file_path))
