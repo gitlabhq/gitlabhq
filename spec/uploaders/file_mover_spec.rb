@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe FileMover do
+  include FileMoverHelpers
+
   let(:filename) { 'banana_sample.gif' }
   let(:temp_file_path) { File.join('uploads/-/system/temp', 'secret55', filename) }
 
@@ -19,6 +21,8 @@ describe FileMover do
       expect(FileUtils).to receive(:move).with(a_string_including(temp_file_path), a_string_including(file_path))
       allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:exists?).and_return(true)
       allow_any_instance_of(CarrierWave::SanitizedFile).to receive(:size).and_return(10)
+
+      stub_file_mover(temp_file_path)
     end
 
     context 'when move and field update successful' do
@@ -62,6 +66,32 @@ describe FileMover do
 
       it 'does not create a new update record' do
         expect { subject }.not_to change { Upload.count }
+      end
+    end
+  end
+
+  context 'security' do
+    context 'when relative path is involved' do
+      let(:temp_file_path) { File.join('uploads/-/system/temp', '..', 'another_subdir_of_temp') }
+
+      it 'does not trigger move if path is outside designated directory' do
+        stub_file_mover('uploads/-/system/another_subdir_of_temp')
+        expect(FileUtils).not_to receive(:move)
+
+        subject
+
+        expect(snippet.reload.description).to eq(temp_description)
+      end
+    end
+
+    context 'when symlink is involved' do
+      it 'does not trigger move if path is outside designated directory' do
+        stub_file_mover(temp_file_path, stub_real_path: Pathname('/etc'))
+        expect(FileUtils).not_to receive(:move)
+
+        subject
+
+        expect(snippet.reload.description).to eq(temp_description)
       end
     end
   end
