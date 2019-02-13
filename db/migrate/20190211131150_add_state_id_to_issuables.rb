@@ -8,9 +8,9 @@ class AddStateIdToIssuables < ActiveRecord::Migration[5.0]
   # 2019-02-12 Gitlab.com issuable numbers
   # issues count: 13587305
   # merge requests count: 18925274
-  # Using this 50000 as batch size should take around 13 hours
+  # Using this 25000 as batch size should take around 26 hours
   # to migrate both issues and merge requests
-  BATCH_SIZE = 50000
+  BATCH_SIZE = 25000
   DELAY_INTERVAL = 5.minutes.to_i
 
   class Issue < ActiveRecord::Base
@@ -26,8 +26,8 @@ class AddStateIdToIssuables < ActiveRecord::Migration[5.0]
   end
 
   def up
-    add_column :issues, :state_id, :integer, limit: 1
-    add_column :merge_requests, :state_id, :integer, limit: 1
+    add_column :issues, :state_id, :integer, limit: 2
+    add_column :merge_requests, :state_id, :integer, limit: 2
 
     # Is this safe?
     # Added to avoid an warning about jobs running inside transactions.
