@@ -501,6 +501,9 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
+      expose :percentage_complete do |milestone, options|
+        milestone.percent_complete(options[:current_user])
+      end
 
       expose :web_url do |milestone, _options|
         Gitlab::UrlBuilder.build(milestone)
