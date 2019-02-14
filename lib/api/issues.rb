@@ -304,19 +304,14 @@ module API
       get ':id/issues/:issue_iid/related_merge_requests' do
         issue = find_project_issue(params[:issue_iid])
 
-        merge_request_iids = ::Issues::ReferencedMergeRequestsService.new(user_project, current_user)
+        merge_requests = ::Issues::ReferencedMergeRequestsService.new(user_project, current_user)
           .execute(issue)
           .flatten
-          .map(&:iid)
 
-        merge_requests =
-          if merge_request_iids.present?
-            MergeRequest.all.where(iid: merge_request_iids)
-          else
-            MergeRequest.none
-          end
-
-        present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project
+        present paginate(::Kaminari.paginate_array(merge_requests)),
+          with: Entities::MergeRequestBasic,
+          current_user: current_user,
+          project: user_project
       end
 
       desc 'List merge requests closing issue' do

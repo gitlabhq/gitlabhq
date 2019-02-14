@@ -1835,7 +1835,7 @@ describe API::Issues do
 
       get_related_merge_requests(project.id, issue.iid, user)
 
-      expect_paginated_array_response(merge_request.id)
+      expect_paginated_array_response([related_mr.id, merge_request.id])
     end
 
     context 'no merge request mentioned a issue' do
