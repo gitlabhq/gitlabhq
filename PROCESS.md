@@ -156,12 +156,12 @@ on behalf of the community member.
 
 Every new feature or change should be shipped with its corresponding documentation
 in accordance with the
-[documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html)
+[documentation process](https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html)
 and [structure](https://docs.gitlab.com/ee/development/documentation/structure.html) guides.
 Note that a technical writer will review all changes to documentation. This can occur
-in the same MR as the feature code, but if there is not sufficient time, it can
-be planned via a follow-up issue for doc review, and another MR if needed.
-Regardless, complete docs must be merged with code by the freeze.
+in the same MR as the feature code, but [if there is not sufficient time or need,
+it can be planned via a follow-up issue for doc review](https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#1-product-managers-role),
+and another MR, if needed. Regardless, complete docs must be merged with code by the freeze.
 
 #### What happens if these deadlines are missed?
 
