@@ -53,10 +53,10 @@ module Secpick
 
     def gitlab_params
       {
+        issuable_template: 'Security Release',
         merge_request: {
           source_branch: source_branch,
-          target_branch: stable_branch,
-          description: '/label ~security'
+          target_branch: stable_branch
         }
       }
     end
