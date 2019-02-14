@@ -1029,12 +1029,11 @@ into similar problems in the future (e.g. when new tables are created).
 
         model_class.each_batch(of: batch_size) do |relation, index|
           start_id, end_id = relation.pluck('MIN(id), MAX(id)').first
-          table_name = relation.base_class.table_name
 
           # `BackgroundMigrationWorker.bulk_perform_in` schedules all jobs for
           # the same time, which is not helpful in most cases where we wish to
           # spread the work over time.
-          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id, table_name])
+          BackgroundMigrationWorker.perform_in(delay_interval * index, job_class_name, [start_id, end_id])
         end
       end
 

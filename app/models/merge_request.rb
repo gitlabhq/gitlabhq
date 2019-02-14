@@ -194,7 +194,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def self.available_states
-    @states ||= super.merge(locked: 3, merged: 4)
+    @states ||= super.merge(merged: 3, locked: 4)
   end
 
   def rebase_in_progress?

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20190211131150_add_state_id_to_issuables.rb')
+require Rails.root.join('db', 'post_migrate', '20190214112022_schedule_sync_issuables_state_id.rb')
 
-describe AddStateIdToIssuables, :migration do
+describe ScheduleSyncIssuablesStateId, :migration do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:merge_requests) { table(:merge_requests) }
@@ -25,8 +25,8 @@ describe AddStateIdToIssuables, :migration do
 
         migrate!
 
-        expect(opened_issue.reload.state_id).to eq(Issue.states.opened)
-        expect(closed_issue.reload.state_id).to eq(Issue.states.closed)
+        expect(opened_issue.reload.state_id).to eq(Issue.available_states[:opened])
+        expect(closed_issue.reload.state_id).to eq(Issue.available_states[:closed])
         expect(invalid_state_issue.reload.state_id).to be_nil
         expect(nil_state_issue.reload.state_id).to be_nil
       end
@@ -42,10 +42,10 @@ describe AddStateIdToIssuables, :migration do
 
         migrate!
 
-        expect(opened_merge_request.reload.state_id).to eq(MergeRequest.states.opened)
-        expect(closed_merge_request.reload.state_id).to eq(MergeRequest.states.closed)
-        expect(merged_merge_request.reload.state_id).to eq(MergeRequest.states.merged)
-        expect(locked_merge_request.reload.state_id).to eq(MergeRequest.states.locked)
+        expect(opened_merge_request.reload.state_id).to eq(MergeRequest.available_states[:opened])
+        expect(closed_merge_request.reload.state_id).to eq(MergeRequest.available_states[:closed])
+        expect(merged_merge_request.reload.state_id).to eq(MergeRequest.available_states[:merged])
+        expect(locked_merge_request.reload.state_id).to eq(MergeRequest.available_states[:locked])
         expect(invalid_state_merge_request.reload.state_id).to be_nil
       end
     end
