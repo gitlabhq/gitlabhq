@@ -146,9 +146,9 @@ Any party can raise the item to the PM for review at any point: the dev, the tec
 #### Planning
 
 - The technical writer monitors the documentation needs of issues assigned to the current and next milestone
-for their DevOps stage(s), and participates in any needed discussion on docs planning
+for their DevOps stage(s), and participates in any needed discussion on docs planning and requirements refinement
 with the dev, PM, and others.
-- The technical writer will review these again upon the kickoff and provide feedback, as needed.
+- The technical writer will review these requirements again upon the kickoff and provide feedback, as needed.
 This is not a blocking review and developers should not wait to work on docs.
 
 #### Collaboration
