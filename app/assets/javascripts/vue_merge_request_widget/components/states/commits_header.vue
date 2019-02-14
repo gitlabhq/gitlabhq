@@ -73,14 +73,14 @@ export default {
       <gl-button
         :aria-label="ariaLabel"
         variant="blank"
-        class="commit-edit-toggle mr-2"
+        class="commit-edit-toggle square s24 mr-2"
         @click.stop="toggle()"
       >
         <icon :name="collapseIcon" :size="16" />
       </gl-button>
       <span v-if="expanded">{{ __('Collapse') }}</span>
       <span v-else>
-        <span v-html="message"></span>
+        <span class="vertical-align-middle" v-html="message"></span>
         <gl-button variant="link" class="modify-message-button">
           {{ modifyLinkMessage }}
         </gl-button>
