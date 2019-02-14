@@ -138,32 +138,6 @@ shared_examples 'cluster application status specs' do |application_name|
     end
   end
 
-  describe '#ready?' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:trait, :ready) do
-      :not_installable  | false
-      :installable      | false
-      :scheduled        | false
-      :installing       | false
-      :installed        | true
-      :updating         | true
-      :updated          | true
-      :errored          | false
-      :update_errored   | true
-    end
-
-    with_them do
-      subject { build(application_name, trait) }
-
-      if params[:ready]
-        it { is_expected.to be_ready }
-      else
-        it { is_expected.not_to be_ready }
-      end
-    end
-  end
-
   describe '#available?' do
     using RSpec::Parameterized::TableSyntax
 
