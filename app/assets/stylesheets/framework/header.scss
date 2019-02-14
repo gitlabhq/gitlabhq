@@ -565,15 +565,14 @@
 }
 
 .navbar-empty {
+  justify-content: center;
   height: $header-height;
   background: $white-light;
   border-bottom: 1px solid $white-normal;
 
-  .mx-auto {
-    .tanuki-logo,
-    img {
-      height: 36px;
-    }
+  .tanuki-logo,
+  .brand-header-logo {
+    max-height: 100%;
   }
 }
 

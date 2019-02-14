@@ -1,13 +1,14 @@
 import _ from 'underscore';
 import Vue from 'vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import { TEST_HOST } from 'spec/test_constants';
 
 describe('User Avatar Link Component', function() {
   beforeEach(function() {
     this.propsData = {
-      linkHref: 'myavatarurl.com',
+      linkHref: `${TEST_HOST}/myavatarurl.com`,
       imgSize: 99,
-      imgSrc: 'myavatarurl.com',
+      imgSrc: `${TEST_HOST}/myavatarurl.com`,
       imgAlt: 'mydisplayname',
       imgCssClasses: 'myextraavatarclass',
       tooltipText: 'tooltip text',
@@ -37,11 +38,18 @@ describe('User Avatar Link Component', function() {
   });
 
   it('should render <a> as a child element', function() {
-    expect(this.userAvatarLink.$el.tagName).toBe('A');
+    const link = this.userAvatarLink.$el;
+
+    expect(link.tagName).toBe('A');
+    expect(link.href).toBe(this.propsData.linkHref);
   });
 
-  it('should have <img> as a child element', function() {
-    expect(this.userAvatarLink.$el.querySelector('img')).not.toBeNull();
+  it('renders imgSrc with imgSize as image', function() {
+    const { imgSrc, imgSize } = this.propsData;
+    const image = this.userAvatarLink.$el.querySelector('img');
+
+    expect(image).not.toBeNull();
+    expect(image.src).toBe(`${imgSrc}?width=${imgSize}`);
   });
 
   it('should return necessary props as defined', function() {

@@ -20,7 +20,7 @@ describe API::Labels do
       create(:labeled_merge_request, labels: [priority_label], author: user, source_project: project )
 
       expected_keys = %w(
-        id name color description
+        id name color text_color description
         open_issues_count closed_issues_count open_merge_requests_count
         subscribed priority
       )
@@ -43,6 +43,7 @@ describe API::Labels do
       expect(label1_response['open_merge_requests_count']).to eq(0)
       expect(label1_response['name']).to eq(label1.name)
       expect(label1_response['color']).to be_present
+      expect(label1_response['text_color']).to be_present
       expect(label1_response['description']).to be_nil
       expect(label1_response['priority']).to be_nil
       expect(label1_response['subscribed']).to be_falsey
@@ -52,6 +53,7 @@ describe API::Labels do
       expect(group_label_response['open_merge_requests_count']).to eq(0)
       expect(group_label_response['name']).to eq(group_label.name)
       expect(group_label_response['color']).to be_present
+      expect(group_label_response['text_color']).to be_present
       expect(group_label_response['description']).to be_nil
       expect(group_label_response['priority']).to be_nil
       expect(group_label_response['subscribed']).to be_falsey
@@ -61,6 +63,7 @@ describe API::Labels do
       expect(priority_label_response['open_merge_requests_count']).to eq(1)
       expect(priority_label_response['name']).to eq(priority_label.name)
       expect(priority_label_response['color']).to be_present
+      expect(priority_label_response['text_color']).to be_present
       expect(priority_label_response['description']).to be_nil
       expect(priority_label_response['priority']).to eq(3)
       expect(priority_label_response['subscribed']).to be_falsey

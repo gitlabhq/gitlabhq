@@ -44,26 +44,6 @@ shared_examples_for 'model with uploads' do |supports_fileuploads|
           model_object.destroy
         end
       end
-
-      describe 'destroy strategy depending on feature flag' do
-        let!(:upload) { create(:upload, uploader: FileUploader, model: model_object) }
-
-        it 'does not destroy uploads by default' do
-          expect(model_object).to receive(:delete_uploads)
-          expect(model_object).not_to receive(:destroy_uploads)
-
-          model_object.destroy
-        end
-
-        it 'uses before destroy callback if feature flag is disabled' do
-          stub_feature_flags(fast_destroy_uploads: false)
-
-          expect(model_object).to receive(:destroy_uploads)
-          expect(model_object).not_to receive(:delete_uploads)
-
-          model_object.destroy
-        end
-      end
     end
   end
 end

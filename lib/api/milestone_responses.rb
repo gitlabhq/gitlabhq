@@ -35,19 +35,19 @@ module API
           milestones = filter_by_iid(milestones, params[:iids]) if params[:iids].present?
           milestones = filter_by_search(milestones, params[:search]) if params[:search]
 
-          present paginate(milestones), with: Entities::Milestone
+          present paginate(milestones), with: Entities::Milestone, current_user: current_user
         end
 
         def get_milestone_for(parent)
           milestone = parent.milestones.find(params[:milestone_id])
-          present milestone, with: Entities::Milestone
+          present milestone, with: Entities::Milestone, current_user: current_user
         end
 
         def create_milestone_for(parent)
           milestone = ::Milestones::CreateService.new(parent, current_user, declared_params).execute
 
           if milestone.valid?
-            present milestone, with: Entities::Milestone
+            present milestone, with: Entities::Milestone, current_user: current_user
           else
             render_api_error!("Failed to create milestone #{milestone.errors.messages}", 400)
           end
@@ -60,7 +60,7 @@ module API
           milestone = ::Milestones::UpdateService.new(parent, current_user, milestone_params).execute(milestone)
 
           if milestone.valid?
-            present milestone, with: Entities::Milestone
+            present milestone, with: Entities::Milestone, current_user: current_user
           else
             render_api_error!("Failed to update milestone #{milestone.errors.messages}", 400)
           end

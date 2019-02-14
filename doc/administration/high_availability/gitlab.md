@@ -58,6 +58,7 @@ for each GitLab application server in your environment.
 
     # Disable components that will not be on the GitLab application server
     roles ['application_role']
+    nginx['enable'] = true
 
     # PostgreSQL connection details
     gitlab_rails['db_adapter'] = 'postgresql'
@@ -90,6 +91,8 @@ for each GitLab application server in your environment.
     certificates are not present, Nginx will fail to start. See
     [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
     for more information.
+    >
+    > **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.
 
 ## First GitLab application server
 
@@ -108,8 +111,9 @@ Additional GitLab servers (servers configured **after** the first GitLab server)
 need some extra configuration.
 
 1. Configure shared secrets. These values can be obtained from the primary
-   GitLab server in `/etc/gitlab/gitlab-secrets.json`. Add these to
-   `/etc/gitlab/gitlab.rb` **prior to** running the first `reconfigure`.
+   GitLab server in `/etc/gitlab/gitlab-secrets.json`. Copy this file to the
+   secondary servers **prior to** running the first `reconfigure` in the steps
+   above.
 
     ```ruby
     gitlab_shell['secret_token'] = 'fbfb19c355066a9afb030992231c4a363357f77345edd0f2e772359e5be59b02538e1fa6cae8f93f7d23355341cea2b93600dab6d6c3edcdced558fc6d739860'
