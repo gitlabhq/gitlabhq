@@ -53,6 +53,9 @@ def build_list(items)
 end
 
 changes = helper.changes_by_category
+
+# Ignore any files that are known but uncategoried. Prompt for any unknown files
+changes.delete(:none)
 categories = changes.keys - [:unknown]
 
 unless changes.empty?
