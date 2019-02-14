@@ -29,21 +29,30 @@ module Banzai
         # Sanitization stripped off the section wrapper - add it back in
         first_footnote.parent.wrap('<section class="footnotes">')
         rand_suffix = "-#{random_number}"
+        modified_footnotes = {}
 
         doc.css('sup > a[id]').each do |link_node|
           ref_num       = link_node[:id].delete_prefix(FOOTNOTE_LINK_ID_PREFIX)
           footnote_node = doc.at_css("li[id=#{fn_id(ref_num)}]")
-          backref_node  = footnote_node.at_css("a[href=\"##{fnref_id(ref_num)}\"]")
 
-          if ref_num =~ INTEGER_PATTERN && footnote_node && backref_node
-            link_node[:href]    += rand_suffix
-            link_node[:id]      += rand_suffix
-            footnote_node[:id]  += rand_suffix
-            backref_node[:href] += rand_suffix
+          if INTEGER_PATTERN.match?(ref_num) && (footnote_node || modified_footnotes[ref_num])
+            link_node[:href] += rand_suffix
+            link_node[:id]   += rand_suffix
 
             # Sanitization stripped off class - add it back in
             link_node.parent.append_class('footnote-ref')
-            backref_node.append_class('footnote-backref')
+
+            unless modified_footnotes[ref_num]
+              footnote_node[:id] += rand_suffix
+              backref_node        = footnote_node.at_css("a[href=\"##{fnref_id(ref_num)}\"]")
+
+              if backref_node
+                backref_node[:href] += rand_suffix
+                backref_node.append_class('footnote-backref')
+              end
+
+              modified_footnotes[ref_num] = true
+            end
           end
         end
 
