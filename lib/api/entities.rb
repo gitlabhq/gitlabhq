@@ -732,6 +732,12 @@ module API
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
       end
+
+      expose :user do
+        expose :can_merge do |merge_request, options|
+          merge_request.can_be_merged_by?(options[:current_user])
+        end
+      end
     end
 
     class MergeRequestChanges < MergeRequest
