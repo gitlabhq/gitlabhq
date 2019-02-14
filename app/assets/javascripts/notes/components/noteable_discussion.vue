@@ -93,6 +93,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'convertedDisscussionIds',
       'getNoteableData',
       'nextUnresolvedDiscussionId',
       'unresolvedDiscussionsCount',
@@ -300,6 +301,10 @@ export default {
         target_type: this.getNoteableData.targetType,
         note: { note: noteText },
       };
+
+      if (this.convertedDisscussionIds.includes(this.discussion.id)) {
+        postData.return_discussion = true;
+      }
 
       if (this.discussion.for_commit) {
         postData.note_project_id = this.discussion.project_id;

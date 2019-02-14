@@ -527,17 +527,13 @@ describe('Notes Store mutations', () => {
         id: 42,
         individual_note: true,
       };
-      state = { discussions: [discussion] };
+      state = { convertedDisscussionIds: [] };
     });
 
-    it('toggles individual_note', () => {
+    it('adds a disucssion to convertedDisscussionIds', () => {
       mutations.CONVERT_TO_DISCUSSION(state, discussion.id);
 
-      expect(discussion.individual_note).toBe(false);
-    });
-
-    it('throws if discussion was not found', () => {
-      expect(() => mutations.CONVERT_TO_DISCUSSION(state, 99)).toThrow();
+      expect(state.convertedDisscussionIds).toContain(discussion.id);
     });
   });
 });
