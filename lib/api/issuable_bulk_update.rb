@@ -11,6 +11,7 @@ module API
           detail 'This feature was introduced in 11.9'
         end
         params do
+          requires :issuable_ids, type: Array[Integer], desc: "Array or #{issuable.pluralize} IDs to be updates"
           optional :state_event, type: String, values: %w(reopen close), desc: 'Reopens or closes a resource'
           optional :milestone_id, type: Integer, desc: 'The milestone ID number'
           optional :add_label_ids, type: Array[Integer], desc: 'IDs of labels to be added'
@@ -28,16 +29,18 @@ module API
                             :subscription_event, :assignee_id
           end
         end
-        put ":id/#{issuable}/bulk_update" do
+        put ":id/#{issuable.pluralize}/bulk_update" do
+          authorize! :"admin_#{issuable}", user_project
+
           update_params = declared_params(include_missing: false)
 
           result = Issuable::BulkUpdateService.new(user_project, current_user, update_params)
             .execute(issuable)
-          quantity = result[:count]
 
           if result[:success]
             status 200
-            { notice: "#{quantity} #{issuable.pluralize(quantity)} updated" }
+            quantity = result[:count]
+            { message: "#{quantity} #{issuable.pluralize(quantity)} updated" }
           else
             render_api_error!('Bulk update failed', 400)
           end
