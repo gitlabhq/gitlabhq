@@ -44,10 +44,6 @@ module ImportHelper
     _('Please wait while we import the repository for you. Refresh at will.')
   end
 
-  def import_github_title
-    _('Import repositories from GitHub')
-  end
-
   def import_github_authorize_message
     _('To import GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:')
   end
@@ -70,13 +66,5 @@ module ImportHelper
     else
       _('Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token.').html_safe % { github_integration_link: github_integration_link }
     end
-  end
-
-  def import_githubish_choose_repository_message
-    _('Choose which repositories you want to import.')
-  end
-
-  def import_all_githubish_repositories_button_label
-    _('Import all repositories')
   end
 end
