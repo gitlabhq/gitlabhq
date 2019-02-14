@@ -19,7 +19,7 @@ module Resolvers
 
       args[:iids] ||= [args[:iid]].compact
 
-      args[:iids].map(&method(:batch_load))
+      args[:iids].map { |iid| batch_load(iid) }
         .select(&:itself) # .compact doesn't work on BatchLoader
     end
 

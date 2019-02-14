@@ -75,11 +75,9 @@ describe 'getting an issue list for a project' do
     end
 
     context 'when the user can see confidential issues' do
-      before do
-        project.add_developer(current_user)
-      end
-
       it 'returns issues with confidential issues' do
+        project.add_developer(current_user)
+
         post_graphql(query, current_user: current_user)
 
         expect(issues_data.size).to eq(3)
