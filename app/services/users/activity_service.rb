@@ -26,12 +26,15 @@ module Users
     def record_activity
       return if Gitlab::Database.read_only?
 
+      today = Date.today
+
+      return if @user.last_activity_on == today
+
       lease = Gitlab::ExclusiveLease.new("acitvity_service:#{@user.id}",
                                          timeout: LEASE_TIMEOUT)
       return unless lease.try_obtain
 
-      @user.update_attribute(:last_activity_on, Date.today)
-      Rails.logger.debug("Recorded activity: #{@activity} for User ID: #{@user.id} (username: #{@user.username})")
+      @user.update_attribute(:last_activity_on, today)
     end
   end
 end
