@@ -8,17 +8,12 @@ shared_examples_for 'group and project milestones' do |route_definition|
 
   describe "GET #{route_definition}" do
     it 'returns milestones list' do
-      create(:issue, project: project, milestone: milestone)
-      create(:closed_issue, project: project, milestone: milestone)
-      create(:closed_issue, project: project, milestone: milestone)
-
       get api(route, user)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(milestone.title)
-      expect(json_response.first['percentage_complete']).to eq(66)
     end
 
     it 'returns a 401 error if user not authenticated' do

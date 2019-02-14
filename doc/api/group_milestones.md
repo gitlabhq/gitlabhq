@@ -42,7 +42,6 @@ Example Response:
     "due_date": "2013-11-29",
     "start_date": "2013-11-10",
     "state": "active",
-    "percentage_complete" : 66,
     "updated_at": "2013-10-02T09:24:18Z",
     "created_at": "2013-10-02T09:24:18Z"
   }
