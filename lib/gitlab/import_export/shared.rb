@@ -61,7 +61,7 @@ module Gitlab
       def log_base_data
         {
           importer: 'Import/Export',
-          import_jid: @project&.import_state&.import_jid,
+          import_jid: @project&.import_state&.jid,
           project_id: @project&.id,
           project_path: @project&.full_path
         }
