@@ -228,7 +228,7 @@
 
   .cur {
     .avatar {
-      @include disableAllAnimation;
+      @include disable-all-animation;
       border: 1px solid $white-light;
     }
   }

@@ -90,7 +90,7 @@ $solarized-light-vg: #268bd2;
 $solarized-light-vi: #268bd2;
 $solarized-light-il: #2aa198;
 
-@mixin matchLine {
+@mixin match-line {
   color: $black-transparent;
   background: $solarized-light-matchline-bg;
 }
@@ -125,7 +125,7 @@ $solarized-light-il: #2aa198;
     &.match .line_content,
     &.old-nonewline .line_content,
     &.new-nonewline .line_content {
-      @include matchLine;
+      @include match-line;
     }
 
     td.diff-line-num.hll:not(.empty-cell),
@@ -136,7 +136,7 @@ $solarized-light-il: #2aa198;
 
     .diff-line-num.new,
     .line_content.new {
-      @include diff_background($solarized-light-new-bg,
+      @include diff-background($solarized-light-new-bg,
       $solarized-light-new-idiff, $solarized-light-border);
 
       &::before,
@@ -147,7 +147,7 @@ $solarized-light-il: #2aa198;
 
     .diff-line-num.old,
     .line_content.old {
-      @include diff_background($solarized-light-old-bg, $solarized-light-old-idiff, $solarized-light-border);
+      @include diff-background($solarized-light-old-bg, $solarized-light-old-idiff, $solarized-light-border);
 
       &::before,
       a {
@@ -168,7 +168,7 @@ $solarized-light-il: #2aa198;
     }
 
     .line_content.match {
-      @include matchLine;
+      @include match-line;
     }
 
     &:not(.diff-expanded) + .diff-expanded,
