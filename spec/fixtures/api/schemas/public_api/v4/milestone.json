@@ -8,6 +8,7 @@
     "title": { "type": "string" },
     "description": { "type": ["string", "null"] },
     "state": { "type": "string" },
+    "percentage_complete": { "type": "integer" },
     "created_at": { "type": "date" },
     "updated_at": { "type": "date" },
     "start_date": { "type": "date" },

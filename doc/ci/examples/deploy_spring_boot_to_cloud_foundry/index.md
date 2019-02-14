@@ -112,7 +112,7 @@ on GitLab CI/CD. To set the environment variables, navigate to your project's
 ![Variable Settings in GitLab](img/cloud_foundry_variables.png)
 
 Once set up, GitLab CI/CD will deploy your app to CF at every push to your
-repository's deafult branch. To see the build logs or watch your builds running
+repository's default branch. To see the build logs or watch your builds running
 live, navigate to **CI/CD > Pipelines**.
 
 CAUTION: **Caution:**

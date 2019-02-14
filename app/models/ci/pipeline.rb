@@ -687,9 +687,18 @@ module Ci
       end
     end
 
+    # Returns the modified paths.
+    #
+    # The returned value is
+    # * Array: List of modified paths that should be evaluated
+    # * nil: Modified path can not be evaluated
     def modified_paths
       strong_memoize(:modified_paths) do
-        push_details.modified_paths
+        if merge_request?
+          merge_request.modified_paths
+        elsif branch_updated?
+          push_details.modified_paths
+        end
       end
     end
 

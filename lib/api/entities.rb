@@ -369,8 +369,9 @@ module API
     end
 
     class Commit < Grape::Entity
-      expose :id, :short_id, :title, :created_at
+      expose :id, :short_id, :created_at
       expose :parent_ids
+      expose :full_title, as: :title
       expose :safe_message, as: :message
       expose :author_name, :author_email, :authored_date
       expose :committer_name, :committer_email, :committed_date
@@ -501,6 +502,9 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
+      expose :percentage_complete do |milestone, options|
+        milestone.percent_complete(options[:current_user])
+      end
 
       expose :web_url do |milestone, _options|
         Gitlab::UrlBuilder.build(milestone)
@@ -1003,7 +1007,7 @@ module API
     end
 
     class LabelBasic < Grape::Entity
-      expose :id, :name, :color, :description
+      expose :id, :name, :color, :description, :text_color
     end
 
     class Label < LabelBasic

@@ -36,7 +36,7 @@ module Ci
         project: project,
         current_user: current_user,
         push_options: params[:push_options],
-        **extra_options(**options))
+        **extra_options(options))
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)
@@ -108,7 +108,12 @@ module Ci
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def extra_options
+    def extra_options(options = {})
+      # In Ruby 2.4, even when options is empty, f(**options) doesn't work when f
+      # doesn't have any parameters. We reproduce the Ruby 2.5 behavior by
+      # checking explicitely that no arguments are given.
+      raise ArgumentError if options.any?
+
       {} # overriden in EE
     end
   end

@@ -144,6 +144,7 @@ export default {
 
             if (left || right) {
               return {
+                ...line,
                 left: line.left ? mapDiscussions(line.left) : null,
                 right: line.right ? mapDiscussions(line.right, () => !left) : null,
               };

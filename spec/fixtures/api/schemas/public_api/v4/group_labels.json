@@ -6,6 +6,7 @@
       "id" : { "type": "integer" },
       "name" : { "type": "string "},
       "color" : { "type": "string "},
+      "text_color" : { "type": "string "},
       "description" : { "type": "string "},
       "open_issues_count" : { "type": "integer "},
       "closed_issues_count" : { "type": "integer "},

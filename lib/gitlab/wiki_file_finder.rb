@@ -2,8 +2,6 @@
 
 module Gitlab
   class WikiFileFinder < FileFinder
-    BATCH_SIZE = 100
-
     attr_reader :repository
 
     def initialize(project, ref)
@@ -19,7 +17,7 @@ module Gitlab
       safe_query = Regexp.new(safe_query, Regexp::IGNORECASE)
       filenames = repository.ls_files(ref)
 
-      filenames.grep(safe_query).first(BATCH_SIZE)
+      filenames.grep(safe_query)
     end
   end
 end

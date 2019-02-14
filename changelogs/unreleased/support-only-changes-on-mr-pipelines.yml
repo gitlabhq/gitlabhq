@@ -1,0 +1,5 @@
+---
+title: 'Support `only: changes:` on MR pipelines'
+merge_request: 24490
+author: Hiroyuki Sato
+type: added

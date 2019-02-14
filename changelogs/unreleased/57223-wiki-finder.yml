@@ -1,0 +1,5 @@
+---
+title: Remove BATCH_SIZE from WikiFileFinder
+merge_request: 24933
+author:
+type: other

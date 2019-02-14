@@ -66,7 +66,7 @@ publish any website written directly in plain HTML, CSS, and JavaScript.</p>
 If you're using GitLab.com, your website will be publicly available to the internet.
 If you're using self-managed instances (Core, Starter, Premium, or Ultimate),
 your websites will be published on your own server, according to the
-[Pages admin settings](../../../administration/pages/index.md) chosen by your sysdamin,
+[Pages admin settings](../../../administration/pages/index.md) chosen by your sysadmin,
 who can opt for making them public or internal to your server.
 
 ### How it works

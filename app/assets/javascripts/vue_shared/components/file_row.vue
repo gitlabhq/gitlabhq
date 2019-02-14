@@ -136,6 +136,7 @@ export default {
     <div
       v-else
       :class="fileClass"
+      :title="file.name"
       class="file-row"
       role="button"
       @click="clickFile"
