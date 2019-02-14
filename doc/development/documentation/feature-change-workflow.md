@@ -25,10 +25,10 @@ improvements that are not associated with a new or changed feature. See the [Doc
 
 Documentation must be delivered whenever:
 
-- A new or enhanced feature is shipped that impacts the user/admin experience
-- There are changes to the UI or API
-- A process, workflow, or previously documented feature is changed
-- A feature is deprecated or removed
+- A new or enhanced feature is shipped that impacts the user/admin experience.
+- There are changes to the UI or API.
+- A process, workflow, or previously documented feature is changed.
+- A feature is deprecated or removed.
 
 Documentation is not required when a feature is changed on the backend
 only and does not directly affect the way that any user or
@@ -41,7 +41,7 @@ When revamping documentation, if unrelated to the feature change, this should be
 in its own MR (using the [documentation improvement workflow](improvement-workflow.md))
 so that we can ensure the more time-sensitive doc updates are merged with code by the freeze.
 
-## Documentation requirements
+## Documentation requirements in feature issues
 
 Requirements for the documentation of a feature should be included as part of the
 issue for planning that feature, in a Documentation section within the issue description.
@@ -87,9 +87,9 @@ do the following:
 - When the issue is assigned a release milestone, review and update the Documentation details.
 - By the kickoff, finalizie the Documentation details.
 
-### 2. Developer roles
+### 2. Developer and maintainer roles
 
-**Authoring**
+#### Authoring
 
 As a developer, you must ship the documentation with the code of the feature that
 you are creating or updating. The documentation is an essential part of the product.
@@ -114,11 +114,12 @@ in your issue or MR, or write within `#docs` on the GitLab Slack.
 the feature cannot be included with the release. A policy for documenting feature-flagged
 issues is forthcoming and you are welcome to join the [discussion](https://gitlab.com/gitlab-org/gitlab-ce/issues/56813).
 
-**Reviews and merging**
+#### Reviews and merging
 
 All reviewers can help ensure accuracy, clarity, completeness, and adherence to the plans in the issue, as well as the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
 
 - Prior to merge, documentation changes committed by the developer must be reviewed by:
+
    1. **The code reviewer** for the MR, to confirm accuracy, clarity, and completeness.
    1. Optionally: Others involved in the work, such as other devs or the PM.
    1. Optionally: The technical writer for the DevOps stage. If not prior to merging, the technical writer will review after the merge.
@@ -131,23 +132,35 @@ the maintainer can merge the current doc changes (if complete) and create a foll
       - The technical writer can also help decide what docs to merge before the freeze and whether to work on further changes in a follow up MR.
    1. **The maintainer** who is assigned to merge the MR, to verify clarity, completeness, and quality, to the best of their ability.
 
-- Upon merging, if a technical writer review has not been performed, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review).
+- Upon merging, if a technical writer review has not been performed, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review)
+if one was not already created by the developer or reviewer.
 
 - After merging, documentation changes are reviewed by:
-  1. The technical writer--**if** their review was not performed prior to the merge.
-  2. Optionally: by the PM (for accuracy and to ensure it's consistent with the vision for how the product will be used).
+
+   1. The technical writer--**if** their review was not performed prior to the merge.
+   2. Optionally: by the PM (for accuracy and to ensure it's consistent with the vision for how the product will be used).
 Any party can raise the item to the PM for review at any point: the dev, the technical writer, or the PM, who can request/plan a review at the outset.
 
 ### 3. Technical Writer's role
 
-**Planning**
+#### Planning
+
 - The technical writer monitors the documentation needs of issues assigned to the current and next milestone
 for their DevOps stage(s), and participates in any needed discussion on docs planning
 with the dev, PM, and others.
 - The technical writer will review these again upon the kickoff and provide feedback, as needed.
 This is not a blocking review and developers should not wait to work on docs.
 
-**Review**
+#### Collaboration
+
+By default, the developer will work on documentation changes independently, but
+the developer, PM, or technicial writer can propose a broader collaboration for
+any given issue.
+
+Additionally, technical writers are available for questions at any time.
+
+#### Review
+
 - Techncial writers provide non-blocking reviews of all documentation changes,
 before or after the change is merged. However, if the docs are ready in the MR while
 there's time before the freeze, the technical writer's review can commence early, on request.
