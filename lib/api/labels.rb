@@ -70,7 +70,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the label to be promoted'
       end
-      post ':id/labels/promote' do
+      put ':id/labels/promote' do
         authorize! :admin_label, user_project
 
         label = find_label(user_project, params[:name], include_ancestor_groups: false)
