@@ -71,7 +71,7 @@ and the technical writer for the DevOps stage. Each role is described below.
 The Documentation items in the GitLab CE/EE [Feature Proposal issue template](https://gitlab.com/gitlab-org/gitlab-ce/raw/template-improvements-for-documentation/.gitlab/issue_templates/Feature%20proposal.md)
 and default merge request template will assist you with following this process.
 
-### 1. Product Manager's role
+### Product Manager's role
 
 For issues requiring any new or updated documentation, the Product Manager (PM)
 must:
@@ -87,7 +87,7 @@ do the following:
 - When the issue is assigned a release milestone, review and update the Documentation details.
 - By the kickoff, finalizie the Documentation details.
 
-### 2. Developer and maintainer roles
+### Developer and maintainer roles
 
 #### Authoring
 
@@ -141,7 +141,7 @@ if one was not already created by the developer or reviewer.
    2. Optionally: by the PM (for accuracy and to ensure it's consistent with the vision for how the product will be used).
 Any party can raise the item to the PM for review at any point: the dev, the technical writer, or the PM, who can request/plan a review at the outset.
 
-### 3. Technical Writer's role
+### Technical Writer's role
 
 #### Planning
 
