@@ -602,7 +602,7 @@
   }
 }
 
-@mixin diff_background($background, $idiff, $border) {
+@mixin diff-background($background, $idiff, $border) {
   background: $background;
 
   &.line_content span.idiff {

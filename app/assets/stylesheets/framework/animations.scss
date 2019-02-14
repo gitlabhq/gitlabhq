@@ -63,15 +63,15 @@
 //
 // Pass in any number of transitions
 @mixin transition($transitions...) {
-  $unfoldedTransitions: ();
+  $unfolded-transitions: ();
   @each $transition in $transitions {
-    $unfoldedTransitions: append($unfoldedTransitions, unfoldTransition($transition), comma);
+    $unfolded-transitions: append($unfolded-transitions, unfold-transition($transition), comma);
   }
 
-  transition: $unfoldedTransitions;
+  transition: $unfolded-transitions;
 }
 
-@mixin disableAllAnimation {
+@mixin disable-all-animation {
   /*CSS transitions*/
   -o-transition-property: none !important;
   -moz-transition-property: none !important;
@@ -92,27 +92,27 @@
   animation: none !important;
 }
 
-@function unfoldTransition ($transition) {
+@function unfold-transition ($transition) {
   // Default values
   $property: all;
   $duration: $general-hover-transition-duration;
   $easing: $general-hover-transition-curve; // Browser default is ease, which is what we want
   $delay: null; // Browser default is 0, which is what we want
-  $defaultProperties: ($property, $duration, $easing, $delay);
+  $default-properties: ($property, $duration, $easing, $delay);
 
   // Grab transition properties if they exist
-  $unfoldedTransition: ();
-  @for $i from 1 through length($defaultProperties) {
+  $unfolded-transition: ();
+  @for $i from 1 through length($default-properties) {
     $p: null;
     @if $i <= length($transition) {
       $p: nth($transition, $i);
     } @else {
-      $p: nth($defaultProperties, $i);
+      $p: nth($default-properties, $i);
     }
-    $unfoldedTransition: append($unfoldedTransition, $p);
+    $unfolded-transition: append($unfolded-transition, $p);
   }
 
-  @return $unfoldedTransition;
+  @return $unfolded-transition;
 }
 
 .btn {
