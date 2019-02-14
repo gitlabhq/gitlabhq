@@ -147,6 +147,13 @@ module Gitlab
     config.assets.precompile << "errors.css"
     config.assets.precompile << "csslab.css"
 
+    config.assets.precompile << "highlight/dark.css"
+    config.assets.precompile << "highlight/monokai.css"
+    config.assets.precompile << "highlight/solarized-dark.css"
+    config.assets.precompile << "highlight/solarized-light.css"
+    config.assets.precompile << "highlight/white.css"
+    config.assets.precompile << "highlight/none.css"
+
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"
     config.assets.precompile << "icons.svg"

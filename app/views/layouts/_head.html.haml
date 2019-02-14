@@ -38,6 +38,8 @@
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
   = stylesheet_link_tag 'csslab' if Feature.enabled?(:csslab)
 
+  = stylesheet_link_tag "highlight/#{user_color_scheme}", media: "all"
+
   = Gon::Base.render_data
 
   - if content_for?(:library_javascripts)

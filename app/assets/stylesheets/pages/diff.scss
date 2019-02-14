@@ -602,18 +602,6 @@
   }
 }
 
-@mixin diff-background($background, $idiff, $border) {
-  background: $background;
-
-  &.line_content span.idiff {
-    background: $idiff;
-  }
-
-  &.diff-line-num {
-    border-color: $border;
-  }
-}
-
 .files {
   .diff-file:last-child {
     margin-bottom: 0;
