@@ -5,20 +5,6 @@ require_relative '../qa'
 end
 
 RSpec.configure do |config|
-  ServerNotRespondingError = Class.new(RuntimeError)
-
-  # The login page could take some time to load the first time it is visited.
-  # We visit the login page and wait for it to properly load only once at the beginning of the suite.
-  config.before(:suite) do
-    if QA::Runtime::Scenario.respond_to?(:gitlab_address)
-      QA::Runtime::Browser.visit(:gitlab, QA::Page::Main::Login)
-
-      unless QA::Page::Main::Login.perform(&:page_loaded?)
-        raise ServerNotRespondingError, "Login page did not load at #{QA::Page::Main::Login.perform(&:current_url)}"
-      end
-    end
-  end
-
   config.before(:context) do
     if self.class.metadata.keys.include?(:quarantine)
       skip_or_run_quarantined_tests(self.class.metadata.keys, config.inclusion_filter.rules.keys)
