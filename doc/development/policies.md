@@ -66,7 +66,51 @@ Within the rule DSL, you can use:
 
 To see how the rules get evaluated into a judgment, it is useful in a console to use `policy.debug(:some_ability)`. This will print the rules in the order they are evaluated.
 
-When a policy is asked whether a particular ability is allowed (`policy.allowed?(:some_ability)`), it does not necessarily have to compute all the conditions on the policy. First, only the rules relevant to that particular ability are selected. Then, the execution model takes advantage of short-circuiting, and attempts to sort rules based on a heuristic of how expensive they will be to calculate. The sorting is dynamic and cache-aware, so that previously calculated conditions will be considered first, before computing other conditions.
+For example, let's say you wanted to debug `IssuePolicy`. You might run
+the debugger in this way:
+
+```ruby
+user = User.find_by(username: 'john')
+issue = Issue.first
+policy = IssuePolicy.new(user, issue)
+policy.debug(:read_issue)
+```
+
+An example debug output would look as follows:
+
+```ruby
+- [0] prevent when all?(confidential, ~can_read_confidential) ((@john : Issue/1))
+- [0] prevent when archived ((@john : Project/4))
+- [0] prevent when issues_disabled ((@john : Project/4))
+- [0] prevent when all?(anonymous, ~public_project) ((@john : Project/4))
++ [32] enable when can?(:reporter_access) ((@john : Project/4))
+```
+
+Each line represents a rule that was evaluated. There are a few things to note:
+
+1. The `-` or `+` symbol indicates whether the rule block was evaluated to be
+`false` or `true`, respectively.
+2. The number inside the brackets indicates the score.
+3. The last part of the line (e.g. `@john : Issue/1`) shows the username
+and subject for that rule.
+
+Here you can see that the first four rules were evaluated `false` for
+which user and subject. For example, you can see in the last line that
+the rule was activated because the user `root` had at reporter access to
+the `Project/4`.
+
+When a policy is asked whether a particular ability is allowed
+(`policy.allowed?(:some_ability)`), it does not necessarily have to
+compute all the conditions on the policy. First, only the rules relevant
+to that particular ability are selected. Then, the execution model takes
+advantage of short-circuiting, and attempts to sort rules based on a
+heuristic of how expensive they will be to calculate. The sorting is
+dynamic and cache-aware, so that previously calculated conditions will
+be considered first, before computing other conditions.
+
+Note that the score is chosen by a developer via the `score:` parameter
+in a `condition` to denote how expensive evaluating this rule would be
+relative to other rules.
 
 ## Scope
 
