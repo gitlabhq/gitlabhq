@@ -4,10 +4,11 @@ describe Projects::MergeRequests::DiffsController do
   include ProjectForksHelper
 
   let(:project) { create(:project, :repository) }
-  let(:user)    { project.owner }
+  let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
 
   before do
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -112,16 +113,6 @@ describe Projects::MergeRequests::DiffsController do
             paths = JSON.parse(response.body)["diff_files"].map { |file| file['new_path'] }
 
             expect(paths).to include(existing_path)
-          end
-        end
-
-        context 'when the path does not exist in the diff' do
-          before do
-            diff_for_path(old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb')
-          end
-
-          it 'returns a 404' do
-            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
