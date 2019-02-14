@@ -221,7 +221,7 @@ export default class UserTabs {
     const monthsAgo = UserTabs.getVisibleCalendarPeriod($calendarWrap);
     const calendarActivitiesPath = $calendarWrap.data('calendarActivitiesPath');
     const utcOffset = $calendarWrap.data('utcOffset');
-    const calendarHint = __('Issues, merge requests, pushes and comments.');
+    const calendarHint = __('Issues, merge requests, pushes, and comments.');
 
     $calendarWrap.html(CALENDAR_TEMPLATE);
 
