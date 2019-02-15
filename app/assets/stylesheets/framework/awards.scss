@@ -233,10 +233,10 @@
       height: $default-icon-size;
       width: $default-icon-size;
       border-radius: 50%;
+    }
 
-      path {
-        fill: $border-gray-normal;
-      }
+    path {
+      fill: $border-gray-normal;
     }
   }
 
@@ -247,6 +247,10 @@
     left: 10px;
     bottom: 6px;
     opacity: 0;
+
+    path {
+      fill: $award-emoji-positive-add-lines;
+    }
   }
 
   .award-control-text {
