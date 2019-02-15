@@ -163,7 +163,7 @@ export default class FilteredSearchVisualTokens {
     const tokenValueElement = tokenValueContainer.querySelector('.value');
     tokenValueElement.innerText = tokenValue;
 
-    if (tokenValue === 'none' || tokenValue === 'any') {
+    if (['none', 'any'].includes(tokenValue.toLowerCase())) {
       return;
     }
 
