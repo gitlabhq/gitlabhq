@@ -12,9 +12,6 @@ class MergeRequestDiff < ActiveRecord::Base
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
 
-  ignore_column :st_commits,
-                :st_diffs
-
   belongs_to :merge_request
 
   manual_inverse_association :merge_request, :merge_request_diff
