@@ -1,0 +1,5 @@
+---
+title: Return bottom border on MR Tabs
+merge_request: !25198
+author:
+type: fixed

@@ -21,6 +21,7 @@ describe('mrWidgetOptions', () => {
   const COLLABORATION_MESSAGE = 'Allows commits from members who can merge to the target branch';
 
   beforeEach(() => {
+    gon.features = { approvalRules: false };
     // Prevent component mounting
     delete mrWidgetOptions.el;
 
@@ -31,6 +32,7 @@ describe('mrWidgetOptions', () => {
   });
 
   afterEach(() => {
+    gon.features = null;
     vm.$destroy();
   });
 

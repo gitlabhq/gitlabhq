@@ -64,7 +64,7 @@ module Gitlab
         end
 
         def metric_cache_operation_duration_seconds
-          @metric_cache_operation_duration_seconds ||= Gitlab::Metrics.histogram(
+          @metric_cache_operation_duration_seconds ||= ::Gitlab::Metrics.histogram(
             :gitlab_cache_operation_duration_seconds,
             'Cache access time',
             Transaction::BASE_LABELS.merge({ action: nil }),
@@ -73,7 +73,7 @@ module Gitlab
         end
 
         def metric_cache_misses_total
-          @metric_cache_misses_total ||= Gitlab::Metrics.counter(
+          @metric_cache_misses_total ||= ::Gitlab::Metrics.counter(
             :gitlab_cache_misses_total,
             'Cache read miss',
             Transaction::BASE_LABELS

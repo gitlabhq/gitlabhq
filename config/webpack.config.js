@@ -150,6 +150,7 @@ module.exports = {
             loader: 'worker-loader',
             options: {
               name: '[name].[hash:8].worker.js',
+              inline: IS_DEV_SERVER,
             },
           },
           'babel-loader',

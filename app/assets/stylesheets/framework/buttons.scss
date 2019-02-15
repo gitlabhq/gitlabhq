@@ -166,7 +166,8 @@
       @include btn-outline($white-light, $green-600, $green-500, $green-500, $white-light, $green-600, $green-600, $green-700);
     }
 
-    &.btn-remove {
+    &.btn-remove,
+    &.btn-danger {
       @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
     }
 

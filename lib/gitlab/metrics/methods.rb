@@ -58,11 +58,11 @@ module Gitlab
         def build_metric!(type, name, options)
           case type
           when :gauge
-            Gitlab::Metrics.gauge(name, options.docstring, options.base_labels, options.multiprocess_mode)
+            ::Gitlab::Metrics.gauge(name, options.docstring, options.base_labels, options.multiprocess_mode)
           when :counter
-            Gitlab::Metrics.counter(name, options.docstring, options.base_labels)
+            ::Gitlab::Metrics.counter(name, options.docstring, options.base_labels)
           when :histogram
-            Gitlab::Metrics.histogram(name, options.docstring, options.base_labels, options.buckets)
+            ::Gitlab::Metrics.histogram(name, options.docstring, options.base_labels, options.buckets)
           when :summary
             raise NotImplementedError, "summary metrics are not currently supported"
           else

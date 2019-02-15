@@ -4,6 +4,10 @@ describe 'Project' do
   include ProjectForksHelper
   include MobileHelpers
 
+  before do
+    stub_feature_flags(approval_rules: false)
+  end
+
   describe 'creating from template' do
     let(:user) { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }

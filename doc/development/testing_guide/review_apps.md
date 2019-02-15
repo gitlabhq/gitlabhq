@@ -143,16 +143,20 @@ thousands of unused Docker images.**
 **How big are the Kubernetes clusters (`review-apps-ce` and `review-apps-ee`)?**
 
   > The clusters are currently set up with a single pool of preemptible nodes,
-  with a minimum of 1 node and a maximum of 100 nodes.
+  with a minimum of 1 node and a maximum of 50 nodes.
 
 **What are the machine running on the cluster?**
 
-  > We're currently using `n1-standard-4` (4 vCPUs, 15 GB memory) machines.
+  > We're currently using `n1-standard-16` (16 vCPUs, 60 GB memory) machines.
 
 **How do we secure this from abuse? Apps are open to the world so we need to
 find a way to limit it to only us.**
 
   > This isn't enabled for forks.
+
+## Other resources
+
+* [Review Apps integration for CE/EE (presentation)](https://docs.google.com/presentation/d/1QPLr6FO4LduROU8pQIPkX1yfGvD13GEJIBOenqoKxR8/edit?usp=sharing)
 
 [charts-1068]: https://gitlab.com/charts/gitlab/issues/1068
 [gitlab-pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipelines/44362587

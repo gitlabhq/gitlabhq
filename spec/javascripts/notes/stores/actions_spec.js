@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import $ from 'jquery';
 import _ from 'underscore';
+import { TEST_HOST } from 'spec/test_constants';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import * as actions from '~/notes/stores/actions';
+import * as mutationTypes from '~/notes/stores/mutation_types';
+import * as notesConstants from '~/notes/constants';
 import createStore from '~/notes/stores';
 import mrWidgetEventHub from '~/vue_merge_request_widget/event_hub';
 import testAction from '../../helpers/vuex_action_helper';
@@ -594,6 +597,141 @@ describe('Actions Notes Store', () => {
         noteId,
         {},
         [{ type: 'CONVERT_TO_DISCUSSION', payload: noteId }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('updateOrCreateNotes', () => {
+    let commit;
+    let dispatch;
+    let state;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy('commit');
+      dispatch = jasmine.createSpy('dispatch');
+      state = {};
+    });
+
+    afterEach(() => {
+      commit.calls.reset();
+      dispatch.calls.reset();
+    });
+
+    it('Updates existing note', () => {
+      const note = { id: 1234 };
+      const getters = { notesById: { 1234: note } };
+
+      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+
+      expect(commit.calls.allArgs()).toEqual([[mutationTypes.UPDATE_NOTE, note]]);
+    });
+
+    it('Creates a new note if none exisits', () => {
+      const note = { id: 1234 };
+      const getters = { notesById: {} };
+      actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [note]);
+
+      expect(commit.calls.allArgs()).toEqual([[mutationTypes.ADD_NEW_NOTE, note]]);
+    });
+
+    describe('Discussion notes', () => {
+      let note;
+      let getters;
+
+      beforeEach(() => {
+        note = { id: 1234 };
+        getters = { notesById: {} };
+      });
+
+      it('Adds a reply to an existing discussion', () => {
+        state = { discussions: [note] };
+        const discussionNote = {
+          ...note,
+          type: notesConstants.DISCUSSION_NOTE,
+          discussion_id: 1234,
+        };
+
+        actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [discussionNote]);
+
+        expect(commit.calls.allArgs()).toEqual([
+          [mutationTypes.ADD_NEW_REPLY_TO_DISCUSSION, discussionNote],
+        ]);
+      });
+
+      it('fetches discussions for diff notes', () => {
+        state = { discussions: [], notesData: { discussionsPath: 'Hello world' } };
+        const diffNote = { ...note, type: notesConstants.DIFF_NOTE, discussion_id: 1234 };
+
+        actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [diffNote]);
+
+        expect(dispatch.calls.allArgs()).toEqual([
+          ['fetchDiscussions', { path: state.notesData.discussionsPath }],
+        ]);
+      });
+
+      it('Adds a new note', () => {
+        state = { discussions: [] };
+        const discussionNote = {
+          ...note,
+          type: notesConstants.DISCUSSION_NOTE,
+          discussion_id: 1234,
+        };
+
+        actions.updateOrCreateNotes({ commit, state, getters, dispatch }, [discussionNote]);
+
+        expect(commit.calls.allArgs()).toEqual([[mutationTypes.ADD_NEW_NOTE, discussionNote]]);
+      });
+    });
+  });
+
+  describe('replyToDiscussion', () => {
+    let res = { discussion: { notes: [] } };
+    const payload = { endpoint: TEST_HOST, data: {} };
+    const interceptor = (request, next) => {
+      next(
+        request.respondWith(JSON.stringify(res), {
+          status: 200,
+        }),
+      );
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(interceptor);
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+    });
+
+    it('updates discussion if response contains disussion', done => {
+      testAction(
+        actions.replyToDiscussion,
+        payload,
+        {
+          notesById: {},
+        },
+        [{ type: mutationTypes.UPDATE_DISCUSSION, payload: res.discussion }],
+        [
+          { type: 'updateMergeRequestWidget' },
+          { type: 'startTaskList' },
+          { type: 'updateResolvableDiscussonsCounts' },
+        ],
+        done,
+      );
+    });
+
+    it('adds a reply to a discussion', done => {
+      res = {};
+
+      testAction(
+        actions.replyToDiscussion,
+        payload,
+        {
+          notesById: {},
+        },
+        [{ type: mutationTypes.ADD_NEW_REPLY_TO_DISCUSSION, payload: res }],
         [],
         done,
       );
