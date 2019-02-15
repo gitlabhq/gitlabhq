@@ -113,12 +113,14 @@ corresponding exception request to be created.
 A level of common sense should be applied when deciding whether to have a feature 
 behind a feature flag off or on by default.
 
-The following guideliness can be applied to help making this decision:
+The following guideliness can be applied to help make this decision:
 
-* If the feature is not fully ready or functioning, feature flag should be disabled by default
-* If the feature is ready but there are concerns with performance or impact, feature flag should be enabled by default but feature flag
-disabled via chatops before deploy on GitLab.com environments. If the performance concern is confirmed, the final release should have the feature disabled
-* In most other cases, feature flag can be enabled by default
+* If the feature is not fully ready or functioning, the feature flag should be disabled by default.
+* If the feature is ready but there are concerns about performance or impact, the feature flag should be enabled by default, but 
+disabled via chatops before deployment on GitLab.com environments. If the performance concern is confirmed, the final release should have the feature flag disabled by default.
+* In most other cases, the feature flag can be enabled by default.
+
+For more information on rolling out changes using feature flags, read [through the documentation](https://docs.gitlab.com/ee/development/rolling_out_changes_using_feature_flags.html).
 
 In order to build the final package and present the feature for self-hosted
 customers, the feature flag should be removed. This should happen before the
