@@ -293,6 +293,10 @@ module Gitlab
         end
       end
 
+      def viewer
+        rich_viewer || simple_viewer
+      end
+
       def simple_viewer
         @simple_viewer ||= simple_viewer_class.new(self)
       end

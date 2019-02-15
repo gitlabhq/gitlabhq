@@ -222,6 +222,11 @@ describe 'Merge request > User creates image diff notes', :js do
   end
 
   def create_image_diff_note
+    expand_text = 'Click to expand it.'
+    page.all('a', text: expand_text).each do |element|
+      element.click
+    end
+
     find('.js-add-image-diff-note-button', match: :first).click
     find('.diff-content .note-textarea').native.send_keys('image diff test comment')
     click_button 'Comment'

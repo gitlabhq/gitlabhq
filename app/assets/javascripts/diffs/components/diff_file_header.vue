@@ -8,6 +8,7 @@ import FileIcon from '~/vue_shared/components/file_icon.vue';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
+import { diffViewerModes } from '~/ide/constants';
 import EditButton from './edit_button.vue';
 import DiffStats from './diff_stats.vue';
 
@@ -118,6 +119,12 @@ export default {
     gfmCopyText() {
       return `\`${this.diffFile.file_path}\``;
     },
+    isFileRenamed() {
+      return this.diffFile.viewer.name === diffViewerModes.renamed;
+    },
+    isModeChanged() {
+      return this.diffFile.viewer.name === diffViewerModes.mode_changed;
+    },
   },
   mounted() {
     polyfillSticky(this.$refs.header);
@@ -165,7 +172,7 @@ export default {
           aria-hidden="true"
           css-classes="js-file-icon append-right-5"
         />
-        <span v-if="diffFile.renamed_file">
+        <span v-if="isFileRenamed">
           <strong
             v-gl-tooltip
             :title="diffFile.old_path"
@@ -193,7 +200,7 @@ export default {
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
-      <small v-if="diffFile.mode_changed" ref="fileMode">
+      <small v-if="isModeChanged" ref="fileMode">
         {{ diffFile.a_mode }} → {{ diffFile.b_mode }}
       </small>
 
