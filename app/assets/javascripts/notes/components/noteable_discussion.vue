@@ -363,30 +363,32 @@ Please check your network connection and try again.`;
               :img-size="40"
             />
           </div>
-          <note-header
-            :author="author"
-            :created-at="initialDiscussion.created_at"
-            :note-id="initialDiscussion.id"
-            :include-toggle="true"
-            :expanded="discussion.expanded"
-            @toggleHandler="toggleDiscussionHandler"
-          >
-            <span v-html="actionText"></span>
-          </note-header>
-          <note-edited-text
-            v-if="discussion.resolved"
-            :edited-at="discussion.resolved_at"
-            :edited-by="discussion.resolved_by"
-            :action-text="resolvedText"
-            class-name="discussion-headline-light js-discussion-headline"
-          />
-          <note-edited-text
-            v-else-if="lastUpdatedAt"
-            :edited-at="lastUpdatedAt"
-            :edited-by="lastUpdatedBy"
-            action-text="Last updated"
-            class-name="discussion-headline-light js-discussion-headline"
-          />
+          <div class="timeline-content">
+            <note-header
+              :author="author"
+              :created-at="initialDiscussion.created_at"
+              :note-id="initialDiscussion.id"
+              :include-toggle="true"
+              :expanded="discussion.expanded"
+              @toggleHandler="toggleDiscussionHandler"
+            >
+              <span v-html="actionText"></span>
+            </note-header>
+            <note-edited-text
+              v-if="discussion.resolved"
+              :edited-at="discussion.resolved_at"
+              :edited-by="discussion.resolved_by"
+              :action-text="resolvedText"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+            <note-edited-text
+              v-else-if="lastUpdatedAt"
+              :edited-at="lastUpdatedAt"
+              :edited-by="lastUpdatedBy"
+              action-text="Last updated"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+          </div>
         </div>
         <div v-if="shouldShowDiscussions" class="discussion-body">
           <component
