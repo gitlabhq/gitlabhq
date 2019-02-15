@@ -3,11 +3,9 @@ require 'spec_helper'
 describe Dashboard::MilestonesController do
   let(:project) { create(:project) }
   let(:group) { create(:group) }
-  let(:public_group) { create(:group, :public) }
   let(:user) { create(:user) }
   let(:project_milestone) { create(:milestone, project: project) }
   let(:group_milestone) { create(:milestone, group: group) }
-  let!(:public_milestone) { create(:milestone, group: public_group) }
   let(:milestone) do
     DashboardMilestone.build(
       [project],
@@ -45,6 +43,9 @@ describe Dashboard::MilestonesController do
   end
 
   describe "#index" do
+    let(:public_group) { create(:group, :public) }
+    let!(:public_milestone) { create(:milestone, group: public_group) }
+
     render_views
 
     it 'returns group and project milestones to which the user belongs' do
@@ -74,10 +75,10 @@ describe Dashboard::MilestonesController do
       expect(response.body).not_to include(project_milestone.title)
     end
 
-    it 'should contain group and project milestones to which the user belongs to' do
+    it 'should show counts of group and project milestones to which the user belongs to' do
       get :index
 
-      expect(response.body).to include("Open\n<span class=\"badge badge-pill\">3</span>")
+      expect(response.body).to include("Open\n<span class=\"badge badge-pill\">2</span>")
       expect(response.body).to include("Closed\n<span class=\"badge badge-pill\">0</span>")
     end
   end
