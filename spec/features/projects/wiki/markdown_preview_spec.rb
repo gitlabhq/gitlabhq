@@ -3,6 +3,7 @@ require 'spec_helper'
 describe 'Projects > Wiki > User previews markdown changes', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
+  let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: '[some link](other-page)' }) }
   let(:wiki_content) do
     <<-HEREDOC
 [regular link](regular)
@@ -18,9 +19,7 @@ describe 'Projects > Wiki > User previews markdown changes', :js do
 
     sign_in(user)
 
-    visit project_path(project)
-    find('.shortcuts-wiki').click
-    click_link "Create your first page"
+    visit project_wiki_path(project, wiki_page)
   end
 
   context "while creating a new wiki page" do
