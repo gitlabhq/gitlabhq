@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+Dir[Rails.root.join("lib/gitlab/background_migration/concerns/*.rb")].each { |f| require f }
+
 module Gitlab
   module BackgroundMigration
     def self.queue
