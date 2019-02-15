@@ -49,6 +49,19 @@ describe('ProviderRepoTableRow', () => {
     expect(vm.$el.querySelector('.js-import-button')).not.toBeNull();
   });
 
+  it('renders a select2 namespace select', () => {
+    vm = createComponent();
+
+    const dropdownTrigger = vm.$el.querySelector('.js-namespace-select');
+
+    expect(dropdownTrigger).not.toBeNull();
+    expect(dropdownTrigger.classList.contains('select2-container')).toBe(true);
+
+    dropdownTrigger.click();
+
+    expect(vm.$el.querySelector('.select2-drop')).not.toBeNull();
+  });
+
   it('imports repo when clicking import button', done => {
     const importPath = '/import-path';
     const defaultTargetNamespace = 'user';
