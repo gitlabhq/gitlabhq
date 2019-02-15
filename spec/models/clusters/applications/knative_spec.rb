@@ -24,30 +24,6 @@ describe Clusters::Applications::Knative do
     it { expect(knative_no_rbac).to be_not_installable }
   end
 
-  describe '.installed' do
-    subject { described_class.installed }
-
-    let!(:cluster) { create(:clusters_applications_knative, :installed) }
-
-    before do
-      create(:clusters_applications_knative, :errored)
-    end
-
-    it { is_expected.to contain_exactly(cluster) }
-  end
-
-  describe '#make_installed' do
-    subject { described_class.installed }
-
-    let!(:cluster) { create(:clusters_applications_knative, :installed) }
-
-    before do
-      create(:clusters_applications_knative, :errored)
-    end
-
-    it { is_expected.to contain_exactly(cluster) }
-  end
-
   describe 'make_installed with external_ip' do
     before do
       application.make_installed!
