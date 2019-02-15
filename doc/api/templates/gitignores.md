@@ -1,8 +1,8 @@
-# Gitignores API
+# `.gitignore` API
 
-## List gitignore templates
+## List `.gitignore` templates
 
-Get all gitignore templates.
+Get all `.gitignore` templates.
 
 ```
 GET /templates/gitignores
@@ -99,9 +99,9 @@ Example response:
 ]
 ```
 
-## Single gitignore template
+## Single `.gitignore` template
 
-Get a single gitignore template.
+Get a single `.gitignore` template.
 
 ```
 GET /templates/gitignores/:key
@@ -109,7 +109,7 @@ GET /templates/gitignores/:key
 
 | Attribute  | Type   | Required | Description |
 | ---------- | ------ | -------- | ----------- |
-| `key`      | string | yes      | The key of the gitignore template |
+| `key`      | string | yes      | The key of the `.gitignore` template |
 
 ```bash
 curl https://gitlab.example.com/api/v4/templates/gitignores/Ruby
