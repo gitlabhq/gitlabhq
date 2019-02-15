@@ -4,6 +4,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
 import { GlLoadingIcon } from '@gitlab/ui';
+import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -11,6 +12,13 @@ import NoChanges from './no_changes.vue';
 import HiddenFilesWarning from './hidden_files_warning.vue';
 import CommitWidget from './commit_widget.vue';
 import TreeList from './tree_list.vue';
+import {
+  TREE_LIST_WIDTH_STORAGE_KEY,
+  INITIAL_TREE_WIDTH,
+  MIN_TREE_WIDTH,
+  MAX_TREE_WIDTH,
+  TREE_HIDE_STATS_WIDTH,
+} from '../constants';
 
 export default {
   name: 'DiffsApp',
@@ -23,6 +31,7 @@ export default {
     CommitWidget,
     TreeList,
     GlLoadingIcon,
+    PanelResizer,
   },
   props: {
     endpoint: {
@@ -54,8 +63,12 @@ export default {
     },
   },
   data() {
+    const treeWidth =
+      parseInt(localStorage.getItem(TREE_LIST_WIDTH_STORAGE_KEY), 10) || INITIAL_TREE_WIDTH;
+
     return {
       assignedDiscussions: false,
+      treeWidth,
     };
   },
   computed: {
@@ -95,6 +108,9 @@ export default {
         (this.startVersion &&
           this.startVersion.version_index === this.mergeRequestDiff.version_index)
       );
+    },
+    hideFileStats() {
+      return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
   },
   watch: {
@@ -142,6 +158,7 @@ export default {
       'startRenderDiffsQueue',
       'assignDiscussionsToDiff',
       'setHighlightedRow',
+      'cacheTreeListWidth',
     ]),
     fetchData() {
       this.fetchDiffFiles()
@@ -184,6 +201,8 @@ export default {
       }
     },
   },
+  minTreeWidth: MIN_TREE_WIDTH,
+  maxTreeWidth: MAX_TREE_WIDTH,
 };
 </script>
 
@@ -209,7 +228,21 @@ export default {
         :data-can-create-note="getNoteableData.current_user.can_create_note"
         class="files d-flex prepend-top-default"
       >
-        <div v-show="showTreeList" class="diff-tree-list"><tree-list /></div>
+        <div
+          v-show="showTreeList"
+          :style="{ width: `${treeWidth}px` }"
+          class="diff-tree-list js-diff-tree-list"
+        >
+          <panel-resizer
+            :size.sync="treeWidth"
+            :start-size="treeWidth"
+            :min-size="$options.minTreeWidth"
+            :max-size="$options.maxTreeWidth"
+            side="right"
+            @resize-end="cacheTreeListWidth"
+          />
+          <tree-list :hide-file-stats="hideFileStats" />
+        </div>
         <div class="diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" />
           <template v-if="renderDiffFiles">

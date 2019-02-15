@@ -16,6 +16,7 @@ import {
   MR_TREE_SHOW_KEY,
   TREE_LIST_STORAGE_KEY,
   WHITESPACE_STORAGE_KEY,
+  TREE_LIST_WIDTH_STORAGE_KEY,
 } from '../constants';
 
 export const setBaseConfig = ({ commit }, options) => {
@@ -298,6 +299,10 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
 
 export const toggleFileFinder = ({ commit }, visible) => {
   commit(types.TOGGLE_FILE_FINDER_VISIBLE, visible);
+};
+
+export const cacheTreeListWidth = (_, size) => {
+  localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
