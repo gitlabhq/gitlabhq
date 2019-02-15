@@ -40,7 +40,7 @@ module QA
 
             # Create and connect K8s cluster
             @cluster = Service::KubernetesCluster.new(rbac: rbac).create!
-            kubernetes_cluster = Resource::KubernetesCluster.fabricate! do |cluster|
+            Resource::KubernetesCluster.fabricate! do |cluster|
               cluster.project = @project
               cluster.cluster = @cluster
               cluster.install_helm_tiller = true
@@ -49,14 +49,11 @@ module QA
               cluster.install_runner = true
             end
 
-            kubernetes_cluster.populate(:ingress_ip)
             @project.visit!
             Page::Project::Menu.perform(&:click_ci_cd_settings)
             Page::Project::Settings::CICD.perform do |p|
               p.enable_auto_devops
             end
-
-            kubernetes_cluster.populate(:domain)
           end
 
           after(:all) do
