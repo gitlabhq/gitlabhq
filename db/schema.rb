@@ -1516,6 +1516,7 @@ ActiveRecord::Schema.define(version: 20190527194900) do
     t.boolean "success_pipeline"
     t.boolean "push_to_merge_request"
     t.boolean "issue_due"
+    t.string "notification_email"
     t.index ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree
     t.index ["user_id", "source_id", "source_type"], name: "index_notifications_on_user_id_and_source_id_and_source_type", unique: true, using: :btree
     t.index ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
