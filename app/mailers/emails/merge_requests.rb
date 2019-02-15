@@ -110,7 +110,7 @@ module Emails
     def merge_request_thread_options(sender_id, recipient_id, reason = nil)
       {
         from: sender(sender_id),
-        to: recipient(recipient_id),
+        to: recipient(recipient_id, @project.group),
         subject: subject("#{@merge_request.title} (#{@merge_request.to_reference})"),
         'X-GitLab-NotificationReason' => reason
       }

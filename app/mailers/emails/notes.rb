@@ -51,7 +51,7 @@ module Emails
     def note_thread_options(recipient_id)
       {
         from: sender(@note.author_id),
-        to: recipient(recipient_id),
+        to: recipient(recipient_id, @group),
         subject: subject("#{@note.noteable.title} (#{@note.noteable.reference_link_text})")
       }
     end

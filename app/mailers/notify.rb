@@ -73,12 +73,31 @@ class Notify < BaseMailer
 
   # Look up a User by their ID and return their email address
   #
-  # recipient_id - User ID
+  # recipient_id       - User ID
+  # notification_group - The parent group of the notification
   #
   # Returns a String containing the User's email address.
-  def recipient(recipient_id)
+  def recipient(recipient_id, notification_group = nil)
     @current_user = User.find(recipient_id)
-    @current_user.notification_email
+
+    if notification_group
+      group_notification_email = nil
+
+      # Get notification group's and ancestors' notification settings
+      group_ids = notification_group.self_and_ancestors_ids
+      notification_settings = notification_group.notification_settings.where(user: @current_user) # rubocop: disable CodeReuse/ActiveRecord
+
+      # Exploit notification_group.self_and_ancestors_ids being ordered from
+      # most nested to least nested to iterate through group ancestors
+      group_ids.each do |group_id|
+        group_notification_email = notification_settings.find { |ns| ns.source_id == group_id }&.notification_email
+        break if group_notification_email.present?
+      end
+    end
+
+    # Return group-specific email address if present, otherwise return global
+    # email address
+    group_notification_email.presence || @current_user.notification_email
   end
 
   # Formats arguments into a String suitable for use as an email subject
