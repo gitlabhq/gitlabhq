@@ -601,7 +601,7 @@ describe('DiffsStoreUtils', () => {
     it('returns mode_changed if key has no match', () => {
       expect(
         utils.getDiffMode({
-          mode_changed: true,
+          viewer: { name: 'mode_changed' },
         }),
       ).toBe('mode_changed');
     });
