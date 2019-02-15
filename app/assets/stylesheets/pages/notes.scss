@@ -611,6 +611,10 @@ $note-form-margin-left: 72px;
     color: $gl-text-color-disabled;
   }
 
+  .note-timestamp {
+    white-space: nowrap;
+  }
+
   a:hover {
     text-decoration: underline;
   }
