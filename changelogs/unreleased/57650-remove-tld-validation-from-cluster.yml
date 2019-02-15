@@ -1,0 +1,5 @@
+---
+title: Fixes incorrect TLD validation errors for Kubernetes cluster domain
+merge_request: 25262
+author:
+type: fixed

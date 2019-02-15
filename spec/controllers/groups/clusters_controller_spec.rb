@@ -453,7 +453,7 @@ describe Groups::ClustersController do
     end
 
     context 'when domain is invalid' do
-      let(:domain) { 'not-a-valid-domain' }
+      let(:domain) { 'http://not-a-valid-domain' }
 
       it 'should not update cluster attributes' do
         go
