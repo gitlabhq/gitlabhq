@@ -494,11 +494,6 @@ $note-form-margin-left: 72px;
   .discussion-notes {
     margin-left: 0;
     border-left: 0;
-
-    .notes {
-      position: relative;
-      @include vertical-line(52px);
-    }
   }
 
   .note-wrapper {
