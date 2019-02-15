@@ -167,6 +167,7 @@ describe API::Internal do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq(user.username)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+        expect(json_response['expires_in']).to eq(Gitlab::LfsToken::DEFAULT_EXPIRE_TIME)
         expect(Gitlab::LfsToken.new(key).token_valid?(json_response['lfs_token'])).to be_truthy
       end
 
