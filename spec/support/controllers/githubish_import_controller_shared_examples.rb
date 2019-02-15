@@ -58,36 +58,54 @@ end
 shared_examples 'a GitHub-ish import controller: GET status' do
   let(:new_import_url) { public_send("new_import_#{provider}_url") }
   let(:user) { create(:user) }
-  let(:repo) { OpenStruct.new(login: 'vim', full_name: 'asd/vim') }
+  let(:repo) { OpenStruct.new(login: 'vim', full_name: 'asd/vim', name: 'vim', owner: { login: 'owner' }) }
   let(:org) { OpenStruct.new(login: 'company') }
-  let(:org_repo) { OpenStruct.new(login: 'company', full_name: 'company/repo') }
-  let(:extra_assign_expectations) { {} }
+  let(:org_repo) { OpenStruct.new(login: 'company', full_name: 'company/repo', name: 'repo', owner: { login: 'owner' }) }
 
   before do
     assign_session_token(provider)
   end
 
-  it "assigns variables" do
-    project = create(:project, import_type: provider, namespace: user.namespace)
+  it "returns variables for json request" do
+    project = create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+    group = create(:group)
+    group.add_owner(user)
     stub_client(repos: [repo, org_repo], orgs: [org], org_repos: [org_repo])
 
-    get :status
+    get :status, format: :json
 
-    expect(assigns(:already_added_projects)).to eq([project])
-    expect(assigns(:repos)).to eq([repo, org_repo])
-    extra_assign_expectations.each do |key, value|
-      expect(assigns(key)).to eq(value)
-    end
+    expect(response).to have_gitlab_http_status(200)
+    expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
+    expect(json_response.dig("provider_repos", 0, "id")).to eq(repo.id)
+    expect(json_response.dig("provider_repos", 1, "id")).to eq(org_repo.id)
+    expect(json_response.dig("namespaces", 0, "id")).to eq(group.id)
   end
 
   it "does not show already added project" do
-    project = create(:project, import_type: provider, namespace: user.namespace, import_source: 'asd/vim')
+    project = create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'asd/vim')
     stub_client(repos: [repo], orgs: [])
+
+    get :status, format: :json
+
+    expect(json_response.dig("imported_projects", 0, "id")).to eq(project.id)
+    expect(json_response.dig("provider_repos")).to eq([])
+  end
+
+  it "touches the etag cache store" do
+    expect(stub_client(repos: [], orgs: [])).to receive(:repos)
+    expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
+      expect(store).to receive(:touch) { "realtime_changes_import_#{provider}_path" }
+    end
+
+    get :status, format: :json
+  end
+
+  it "requests provider repos list" do
+    expect(stub_client(repos: [], orgs: [])).to receive(:repos)
 
     get :status
 
-    expect(assigns(:already_added_projects)).to eq([project])
-    expect(assigns(:repos)).to eq([])
+    expect(response).to have_gitlab_http_status(200)
   end
 
   it "handles an invalid access token" do
@@ -100,13 +118,32 @@ shared_examples 'a GitHub-ish import controller: GET status' do
     expect(controller).to redirect_to(new_import_url)
     expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.")
   end
+
+  it "does not produce N+1 database queries" do
+    stub_client(repos: [repo], orgs: [])
+    group_a = create(:group)
+    group_a.add_owner(user)
+    create(:project, :import_started, import_type: provider, namespace: user.namespace)
+
+    control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+      get :status, format: :json
+    end.count
+
+    stub_client(repos: [repo, org_repo], orgs: [])
+    group_b = create(:group)
+    group_b.add_owner(user)
+    create(:project, :import_started, import_type: provider, namespace: user.namespace)
+
+    expect { get :status, format: :json }
+      .not_to exceed_all_query_limit(control_count)
+  end
 end
 
 shared_examples 'a GitHub-ish import controller: POST create' do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
   let(:provider_username) { user.username }
   let(:provider_user) { OpenStruct.new(login: provider_username) }
+  let(:project) { create(:project, import_type: provider, import_status: :finished, import_source: "#{provider_username}/vim") }
   let(:provider_repo) do
     OpenStruct.new(
       name: 'vim',
@@ -143,6 +180,17 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
     expect(response).to have_gitlab_http_status(422)
     expect(json_response['errors']).to eq('Name is invalid, Path is old')
+  end
+
+  it "touches the etag cache store" do
+    allow(Gitlab::LegacyGithubImport::ProjectCreator)
+      .to receive(:new).with(provider_repo, provider_repo.name, user.namespace, user, access_params, type: provider)
+        .and_return(double(execute: project))
+    expect_next_instance_of(Gitlab::EtagCaching::Store) do |store|
+      expect(store).to receive(:touch) { "realtime_changes_import_#{provider}_path" }
+    end
+
+    post :create, format: :json
   end
 
   context "when the repository owner is the provider user" do
@@ -351,7 +399,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'does not create a new namespace under the user namespace' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
-                    .and_return(double(execute: build_stubbed(:project)))
+                    .and_return(double(execute: project))
 
         expect { post :create, params: { target_namespace: "#{user.namespace_path}/test_group", new_name: test_name }, format: :js }
             .not_to change { Namespace.count }
@@ -365,7 +413,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'does not take the selected namespace and name' do
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, user.namespace, user, access_params, type: provider)
-                    .and_return(double(execute: build_stubbed(:project)))
+                    .and_return(double(execute: project))
 
         post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :js
       end
@@ -373,7 +421,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
       it 'does not create the namespaces' do
         allow(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, kind_of(Namespace), user, access_params, type: provider)
-                    .and_return(double(execute: build_stubbed(:project)))
+                    .and_return(double(execute: project))
 
         expect { post :create, params: { target_namespace: 'foo/foobar/bar', new_name: test_name }, format: :js }
             .not_to change { Namespace.count }
@@ -390,7 +438,7 @@ shared_examples 'a GitHub-ish import controller: POST create' do
 
         expect(Gitlab::LegacyGithubImport::ProjectCreator)
             .to receive(:new).with(provider_repo, test_name, group, user, access_params, type: provider)
-                    .and_return(double(execute: build_stubbed(:project)))
+                    .and_return(double(execute: project))
 
         post :create, params: { target_namespace: 'foo', new_name: test_name }, format: :js
       end
@@ -405,5 +453,22 @@ shared_examples 'a GitHub-ish import controller: POST create' do
         expect(response).to have_gitlab_http_status(422)
       end
     end
+  end
+end
+
+shared_examples 'a GitHub-ish import controller: GET realtime_changes' do
+  let(:user) { create(:user) }
+
+  before do
+    assign_session_token(provider)
+  end
+
+  it 'sets a Poll-Interval header' do
+    project = create(:project, import_type: provider, namespace: user.namespace, import_status: :finished, import_source: 'example/repo')
+
+    get :realtime_changes
+
+    expect(json_response).to eq([{ "id" => project.id, "import_status" => project.import_status }])
+    expect(Integer(response.headers['Poll-Interval'])).to be > -1
   end
 end
