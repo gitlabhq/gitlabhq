@@ -1322,7 +1322,7 @@ class MergeRequest < ActiveRecord::Base
   def base_pipeline
     @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)
-      .find_by(sha: diff_base_sha)
+      .find_by(sha: diff_base_sha, ref: target_branch)
   end
 
   def discussions_rendered_on_frontend?
