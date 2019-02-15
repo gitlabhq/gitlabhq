@@ -435,6 +435,7 @@ describe MergeRequest do
       it 'does not cache issues from external trackers' do
         issue  = ExternalIssue.new('JIRA-123', subject.project)
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+
         allow(subject).to receive(:commits).and_return([commit])
 
         expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to raise_error
@@ -1023,23 +1024,23 @@ describe MergeRequest do
     end
   end
 
-  describe '#committers' do
-    it 'returns all the committers of every commit in the merge request' do
-      users = subject.commits.map(&:committer_email).uniq.map do |email|
+  describe '#commit_authors' do
+    it 'returns all the authors of every commit in the merge request' do
+      users = subject.commits.map(&:author_email).uniq.map do |email|
         create(:user, email: email)
       end
 
-      expect(subject.committers).to match_array(users)
+      expect(subject.commit_authors).to match_array(users)
     end
 
-    it 'returns an empty array if no committer is associated with a user' do
-      expect(subject.committers).to be_empty
+    it 'returns an empty array if no author is associated with a user' do
+      expect(subject.commit_authors).to be_empty
     end
   end
 
   describe '#authors' do
-    it 'returns a list with all the committers in the merge request and author' do
-      users = subject.commits.map(&:committer_email).uniq.map do |email|
+    it 'returns a list with all the commit authors in the merge request and author' do
+      users = subject.commits.map(&:author_email).uniq.map do |email|
         create(:user, email: email)
       end
 
