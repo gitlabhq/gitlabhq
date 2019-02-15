@@ -11,7 +11,7 @@ module Gitlab
         link_method_call('homepage', URL_REGEX, &:itself)
         link_method_call('license', &method(:license_url))
 
-        link_method_call(%w[name add_dependency add_runtime_dependency add_development_dependency]) do |name|
+        link_method_call(%w[add_dependency add_runtime_dependency add_development_dependency]) do |name|
           "https://rubygems.org/gems/#{name}"
         end
       end

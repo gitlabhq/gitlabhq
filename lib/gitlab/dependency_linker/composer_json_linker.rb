@@ -8,8 +8,8 @@ module Gitlab
       private
 
       def link_packages
-        link_packages_at_key("require", &method(:package_url))
-        link_packages_at_key("require-dev", &method(:package_url))
+        link_packages_at_key("require")
+        link_packages_at_key("require-dev")
       end
 
       def package_url(name)
