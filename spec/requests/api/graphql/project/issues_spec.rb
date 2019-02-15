@@ -56,4 +56,38 @@ describe 'getting an issue list for a project' do
       expect(issues_data).to eq []
     end
   end
+
+  context 'when there is a confidential issue' do
+    let!(:confidential_issue) do
+      create(:issue, :confidential, project: project)
+    end
+
+    context 'when the user cannot see confidential issues' do
+      it 'returns issues without confidential issues' do
+        post_graphql(query, current_user: current_user)
+
+        expect(issues_data.size).to eq(2)
+
+        issues_data.each do |issue|
+          expect(issue.dig('node', 'confidential')).to eq(false)
+        end
+      end
+    end
+
+    context 'when the user can see confidential issues' do
+      it 'returns issues with confidential issues' do
+        project.add_developer(current_user)
+
+        post_graphql(query, current_user: current_user)
+
+        expect(issues_data.size).to eq(3)
+
+        confidentials = issues_data.map do |issue|
+          issue.dig('node', 'confidential')
+        end
+
+        expect(confidentials).to eq([true, false, false])
+      end
+    end
+  end
 end

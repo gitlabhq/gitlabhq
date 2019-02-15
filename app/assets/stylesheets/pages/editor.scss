@@ -182,9 +182,8 @@
 
 .template-selector-dropdowns-wrap {
   display: inline-block;
-  margin-left: 8px;
-  vertical-align: top;
   margin: 5px 0 0 8px;
+  vertical-align: top;
 
   @media(max-width: map-get($grid-breakpoints, md)-1) {
     display: block;

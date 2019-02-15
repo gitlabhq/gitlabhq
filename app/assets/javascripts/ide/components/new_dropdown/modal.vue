@@ -51,8 +51,11 @@ export default {
 
       return __('Create file');
     },
-    isCreatingNew() {
-      return this.entryModal.type !== modalTypes.rename;
+    isCreatingNewFile() {
+      return this.entryModal.type === 'blob';
+    },
+    placeholder() {
+      return this.isCreatingNewFile ? 'dir/file_name' : 'dir/';
     },
   },
   methods: {
@@ -107,9 +110,12 @@ export default {
           v-model="entryName"
           type="text"
           class="form-control qa-full-file-path"
-          placeholder="/dir/file_name"
+          :placeholder="placeholder"
         />
-        <ul v-if="isCreatingNew" class="prepend-top-default list-inline qa-template-list">
+        <ul
+          v-if="isCreatingNewFile"
+          class="file-templates prepend-top-default list-inline qa-template-list"
+        >
           <li v-for="(template, index) in templateTypes" :key="index" class="list-inline-item">
             <button
               type="button"

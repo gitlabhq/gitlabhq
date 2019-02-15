@@ -23,6 +23,11 @@ one of the [Merge request coaches][team].
 If you need assistance with security scans or comments, feel free to include the 
 Security Team (`@gitlab-com/gl-security`) in the review.
 
+The `danger-review` CI job will randomly pick a reviewer and a maintainer for
+each area of the codebase that your merge request seems to touch. It only makes
+recommendations - feel free to override it if you think someone else is a better
+fit!
+
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 

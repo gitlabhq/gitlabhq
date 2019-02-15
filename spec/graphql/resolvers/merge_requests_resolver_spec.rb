@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Resolvers::MergeRequestResolver do
+describe Resolvers::MergeRequestsResolver do
   include GraphqlHelpers
 
   set(:project) { create(:project, :repository) }
@@ -16,9 +16,17 @@ describe Resolvers::MergeRequestResolver do
   let(:other_iid) { other_merge_request.iid }
 
   describe '#resolve' do
-    it 'batch-resolves merge requests by target project full path and IID' do
+    it 'batch-resolves by target project full path and individual IID' do
       result = batch(max_queries: 2) do
-        [resolve_mr(project, iid_1), resolve_mr(project, iid_2)]
+        resolve_mr(project, iid: iid_1) + resolve_mr(project, iid: iid_2)
+      end
+
+      expect(result).to contain_exactly(merge_request_1, merge_request_2)
+    end
+
+    it 'batch-resolves by target project full path and IIDS' do
+      result = batch(max_queries: 2) do
+        resolve_mr(project, iids: [iid_1, iid_2])
       end
 
       expect(result).to contain_exactly(merge_request_1, merge_request_2)
@@ -26,20 +34,28 @@ describe Resolvers::MergeRequestResolver do
 
     it 'can batch-resolve merge requests from different projects' do
       result = batch(max_queries: 3) do
-        [resolve_mr(project, iid_1), resolve_mr(project, iid_2), resolve_mr(other_project, other_iid)]
+        resolve_mr(project, iid: iid_1) +
+          resolve_mr(project, iid: iid_2) +
+          resolve_mr(other_project, iid: other_iid)
       end
 
       expect(result).to contain_exactly(merge_request_1, merge_request_2, other_merge_request)
     end
 
-    it 'resolves an unknown iid to nil' do
-      result = batch { resolve_mr(project, -1) }
+    it 'resolves an unknown iid to be empty' do
+      result = batch { resolve_mr(project, iid: -1) }
 
-      expect(result).to be_nil
+      expect(result).to be_empty
+    end
+
+    it 'resolves empty iids to be empty' do
+      result = batch { resolve_mr(project, iids: []) }
+
+      expect(result).to be_empty
     end
   end
 
-  def resolve_mr(project, iid)
-    resolve(described_class, obj: project, args: { iid: iid })
+  def resolve_mr(project, args)
+    resolve(described_class, obj: project, args: args)
   end
 end

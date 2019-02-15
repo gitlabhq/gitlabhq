@@ -435,6 +435,9 @@ Parameters:
     "avatar_url": null,
     "web_url" : "https://gitlab.example.com/admin"
   },
+  "user" : {
+    "can_merge" : false
+   }
   "assignee": {
     "id": 1,
     "name": "Administrator",

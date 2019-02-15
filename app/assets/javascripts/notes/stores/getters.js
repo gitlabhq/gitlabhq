@@ -4,6 +4,8 @@ import { collapseSystemNotes } from './collapse_utils';
 
 export const discussions = state => collapseSystemNotes(state.discussions);
 
+export const convertedDisscussionIds = state => state.convertedDisscussionIds;
+
 export const targetNoteHash = state => state.targetNoteHash;
 
 export const getNotesData = state => state.notesData;

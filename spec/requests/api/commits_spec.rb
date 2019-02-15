@@ -1457,4 +1457,42 @@ describe API::Commits do
       expect(response).to have_gitlab_http_status(404)
     end
   end
+
+  describe 'GET /projects/:id/repository/commits/:sha/signature' do
+    let!(:project) { create(:project, :repository, :public) }
+    let(:project_id) { project.id }
+    let(:commit_id) { project.repository.commit.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/signature" }
+
+    context 'when commit does not exist' do
+      let(:commit_id) { 'unknown' }
+
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 Commit Not Found' }
+      end
+    end
+
+    context 'unsigned commit' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 GPG Signature Not Found'}
+      end
+    end
+
+    context 'signed commit' do
+      let(:commit) { project.repository.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
+      let(:commit_id) { commit.id }
+
+      it 'returns correct JSON' do
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['gpg_key_id']).to eq(commit.signature.gpg_key_id)
+        expect(json_response['gpg_key_subkey_id']).to eq(commit.signature.gpg_key_subkey_id)
+        expect(json_response['gpg_key_primary_keyid']).to eq(commit.signature.gpg_key_primary_keyid)
+        expect(json_response['verification_status']).to eq(commit.signature.verification_status)
+      end
+    end
+  end
 end

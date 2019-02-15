@@ -6,7 +6,7 @@ class ReactiveCachingWorker
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(class_name, id, *args)
     klass = begin
-      Kernel.const_get(class_name)
+      class_name.constantize
     rescue NameError
       nil
     end

@@ -35,10 +35,22 @@ module Gitlab
         private
 
         def build_checker(current_user, abilities)
-          proc do |obj|
+          lambda do |value|
             # Load the elements if they weren't loaded by BatchLoader yet
-            obj = obj.sync if obj.respond_to?(:sync)
-            obj if abilities.all? { |ability| Ability.allowed?(current_user, ability, obj) }
+            value = value.sync if value.respond_to?(:sync)
+
+            check = lambda do |object|
+              abilities.all? do |ability|
+                Ability.allowed?(current_user, ability, object)
+              end
+            end
+
+            case value
+            when Array
+              value.select(&check)
+            else
+              value if check.call(value)
+            end
           end
         end
       end

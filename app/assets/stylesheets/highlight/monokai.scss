@@ -125,7 +125,7 @@ $monokai-gi: #a6e22e;
 
     .diff-line-num.new,
     .line_content.new {
-      @include diff_background($monokai-new-bg, $monokai-new-idiff, $monokai-diff-border);
+      @include diff-background($monokai-new-bg, $monokai-new-idiff, $monokai-diff-border);
 
       &::before,
       a {
@@ -135,7 +135,7 @@ $monokai-gi: #a6e22e;
 
     .diff-line-num.old,
     .line_content.old {
-      @include diff_background($monokai-old-bg, $monokai-old-idiff, $monokai-diff-border);
+      @include diff-background($monokai-old-bg, $monokai-old-idiff, $monokai-diff-border);
 
       &::before,
       a {

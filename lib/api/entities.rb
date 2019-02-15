@@ -392,6 +392,13 @@ module API
       expose :project_id
     end
 
+    class CommitSignature < Grape::Entity
+      expose :gpg_key_id
+      expose :gpg_key_primary_keyid, :gpg_key_user_name, :gpg_key_user_email
+      expose :verification_status
+      expose :gpg_key_subkey_id
+    end
+
     class BasicRef < Grape::Entity
       expose :type, :name
     end
@@ -502,9 +509,6 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
-      expose :percentage_complete do |milestone, options|
-        milestone.percent_complete(options[:current_user])
-      end
 
       expose :web_url do |milestone, _options|
         Gitlab::UrlBuilder.build(milestone)
@@ -734,6 +738,12 @@ module API
 
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
+      end
+
+      expose :user do
+        expose :can_merge do |merge_request, options|
+          merge_request.can_be_merged_by?(options[:current_user])
+        end
       end
     end
 
@@ -1034,6 +1044,9 @@ module API
     class ProjectLabel < Label
       expose :priority do |label, options|
         label.priority(options[:parent])
+      end
+      expose :is_project_label do |label, options|
+        label.is_a?(::ProjectLabel)
       end
     end
 

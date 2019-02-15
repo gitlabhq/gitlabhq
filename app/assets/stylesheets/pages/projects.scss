@@ -704,8 +704,8 @@
   .scrolling-tabs-container {
     .scrolling-tabs {
       margin-top: $gl-padding-8;
-      margin-bottom: $gl-padding-8 - $browserScrollbarSize;
-      padding-bottom: $browserScrollbarSize;
+      margin-bottom: $gl-padding-8 - $browser-scrollbar-size;
+      padding-bottom: $browser-scrollbar-size;
       flex-wrap: wrap;
       border-bottom: 0;
     }
@@ -713,7 +713,7 @@
     .fade-left,
     .fade-right {
       top: 0;
-      height: calc(100% - #{$browserScrollbarSize});
+      height: calc(100% - #{$browser-scrollbar-size});
 
       .fa {
         top: 50%;

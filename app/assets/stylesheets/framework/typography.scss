@@ -49,13 +49,6 @@
     word-wrap: normal;
   }
 
-  // Multi-line code blocks should scroll horizontally
-  pre {
-    code {
-      white-space: pre;
-    }
-  }
-
   kbd {
     display: inline-block;
     padding: 3px 5px;
@@ -166,6 +159,10 @@
     overflow-x: auto;
     border-radius: 2px;
 
+    // Multi-line code blocks should scroll horizontally
+    code {
+      white-space: pre;
+    }
 
     &.plain-readme {
       background: none;
@@ -303,11 +300,10 @@ body {
 }
 
 .page-title-empty {
-  margin-top: 0;
+  margin: 12px 0;
   line-height: 1.3;
   font-size: 1.25em;
   font-weight: $gl-font-weight-bold;
-  margin: 12px 0;
 }
 
 h1,

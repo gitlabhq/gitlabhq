@@ -368,8 +368,9 @@ module API
           name: :webhook,
           type: String,
           desc: 'The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces…'
-        }
-      ],
+        },
+        CHAT_NOTIFICATION_EVENTS
+      ].flatten,
       'irker' => [
         {
           required: true,
