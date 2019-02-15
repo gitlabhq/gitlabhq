@@ -99,7 +99,7 @@ module Clusters
       where('NOT EXISTS (?)', subquery)
     end
 
-    scope :with_knative_installed, -> { joins(:application_knative).merge(Clusters::Applications::Knative.installed) }
+    scope :with_knative_installed, -> { joins(:application_knative).merge(Clusters::Applications::Knative.available) }
 
     scope :preload_knative, -> {
       preload(
