@@ -14,9 +14,12 @@
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
       = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
-      %span.d-none.d-sm-block
+      .d-none.d-sm-block
         - if @issue.moved?
-          = _("Closed (moved)")
+          - moved_link_start = "<a href=\"#{issue_path(@issue.moved_to)}\">".html_safe
+          - moved_link_end = '</a>'.html_safe
+          = s_('IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})').html_safe % {moved_link_start: moved_link_start,
+            moved_link_end: moved_link_end}
         - else
           = _("Closed")
     .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }

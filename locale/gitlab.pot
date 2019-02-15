@@ -1542,9 +1542,6 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-msgid "Closed (moved)"
-msgstr ""
-
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
 msgstr ""
 
@@ -4095,6 +4092,9 @@ msgid "Invoke Count"
 msgstr ""
 
 msgid "Invoke Time"
+msgstr ""
+
+msgid "IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})"
 msgstr ""
 
 msgid "Issue"

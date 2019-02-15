@@ -21,12 +21,24 @@ describe 'projects/issues/show' do
       allow(issue).to receive(:closed?).and_return(true)
     end
 
-    it 'shows "Closed (moved)" if an issue has been moved' do
-      allow(issue).to receive(:moved?).and_return(true)
+    context 'when the issue was moved' do
+      let(:new_issue) { create(:issue, project: project, author: user) }
 
-      render
+      before do
+        issue.moved_to = new_issue
+      end
 
-      expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
+      it 'shows "Closed (moved)" if an issue has been moved' do
+        render
+
+        expect(rendered).to have_selector('.status-box-issue-closed:not(.hidden)', text: 'Closed (moved)')
+      end
+
+      it 'links "moved" to the new issue the original issue was moved to' do
+        render
+
+        expect(rendered).to have_selector("a[href=\"#{issue_path(new_issue)}\"]", text: 'moved')
+      end
     end
 
     it 'shows "Closed" if an issue has not been moved' do
