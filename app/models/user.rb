@@ -388,7 +388,7 @@ class User < ApplicationRecord
       find_by(id: user_id)
     end
 
-    def filter(filter_name)
+    def filter_items(filter_name)
       case filter_name
       when 'admins'
         admins
