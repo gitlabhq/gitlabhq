@@ -397,13 +397,11 @@ module API
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def order_options_with_tie_breaker
-      {params[:order_by] => params[:sort]}.tap do |order|
-        order['id'] ||= 'desc'
-      end
+      order_options = { params[:order_by] => params[:sort] }
+      order_options['id'] ||= 'desc'
+      order_options
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def project_finder_params
       finder_params = { without_deleted: true }
