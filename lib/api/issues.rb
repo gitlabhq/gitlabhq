@@ -29,8 +29,7 @@ module API
 
         issues = IssuesFinder.new(current_user, args).execute
           .preload(:assignees, :labels, :notes, :timelogs, :project, :author, :closed_by)
-
-        issues.reorder(args[:order_by] => args[:sort])
+        issues.reorder(order_options_with_tie_breaker)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

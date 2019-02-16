@@ -393,7 +393,15 @@ module API
 
     # rubocop: disable CodeReuse/ActiveRecord
     def reorder_projects(projects)
-      projects.reorder(params[:order_by] => params[:sort])
+      projects.reorder(order_options_with_tie_breaker)
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def order_options_with_tie_breaker
+      {params[:order_by] => params[:sort]}.tap do |order|
+        order['id'] ||= 'desc'
+      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
