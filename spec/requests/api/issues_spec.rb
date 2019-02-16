@@ -359,10 +359,38 @@ describe API::Issues do
         expect_paginated_array_response([])
       end
 
-      it 'sorts by created_at descending by default' do
-        get api('/issues', user)
+      context 'without sort params' do
+        it 'sorts by created_at descending by default' do
+          get api('/issues', user)
 
-        expect_paginated_array_response([issue.id, closed_issue.id])
+          expect_paginated_array_response([issue.id, closed_issue.id])
+        end
+
+        context 'with 2 issues with same created_at' do
+          let!(:closed_issue2) do
+            create :closed_issue,
+                   author: user,
+                   assignees: [user],
+                   project: project,
+                   milestone: milestone,
+                   created_at: closed_issue.created_at,
+                   updated_at: 1.hour.ago,
+                   title: issue_title,
+                   description: issue_description
+          end
+
+          it 'page breaks first page correctly' do
+            get api('/issues?per_page=2', user)
+
+            expect_paginated_array_response([issue.id, closed_issue2.id])
+          end
+
+          it 'page breaks second page correctly' do
+            get api('/issues?per_page=2&page=2', user)
+
+            expect_paginated_array_response([closed_issue.id])
+          end
+        end
       end
 
       it 'sorts ascending when requested' do
