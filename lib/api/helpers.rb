@@ -299,6 +299,12 @@ module API
       items.search(text)
     end
 
+    def order_options_with_tie_breaker
+      order_options = { params[:order_by] => params[:sort] }
+      order_options['id'] ||= 'desc'
+      order_options
+    end
+
     # error helpers
 
     def forbidden!(reason = nil)
@@ -396,12 +402,6 @@ module API
       projects.reorder(order_options_with_tie_breaker)
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    def order_options_with_tie_breaker
-      order_options = { params[:order_by] => params[:sort] }
-      order_options['id'] ||= 'desc'
-      order_options
-    end
 
     def project_finder_params
       finder_params = { without_deleted: true }
