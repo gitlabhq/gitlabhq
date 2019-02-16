@@ -77,6 +77,7 @@ module API
         when ::Gitlab::GitAccessResult::Success
           payload = {
             gl_repository: gl_repository,
+            gl_project_path: gl_project_path,
             gl_id: Gitlab::GlId.gl_id(user),
             gl_username: user&.username,
             git_config_options: [],
