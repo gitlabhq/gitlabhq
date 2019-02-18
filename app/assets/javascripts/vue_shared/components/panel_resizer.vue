@@ -28,11 +28,12 @@ export default {
   data() {
     return {
       size: this.startSize,
+      isDragging: false,
     };
   },
   computed: {
     className() {
-      return `drag-${this.side}`;
+      return [`position-${this.side}-0`, { 'is-dragging': this.isDragging }];
     },
     cursorStyle() {
       if (this.enabled) {
@@ -57,6 +58,7 @@ export default {
     startDrag(e) {
       if (this.enabled) {
         e.preventDefault();
+        this.isDragging = true;
         this.startPos = e.clientX;
         this.currentStartSize = this.size;
         document.addEventListener('mousemove', this.drag);
@@ -80,6 +82,7 @@ export default {
     },
     endDrag(e) {
       e.preventDefault();
+      this.isDragging = false;
       document.removeEventListener('mousemove', this.drag);
       this.$emit('resize-end', this.size);
     },
@@ -91,7 +94,7 @@ export default {
   <div
     :class="className"
     :style="cursorStyle"
-    class="drag-handle"
+    class="position-absolute position-top-0 position-bottom-0 drag-handle"
     @mousedown="startDrag"
     @dblclick="resetSize"
   ></div>

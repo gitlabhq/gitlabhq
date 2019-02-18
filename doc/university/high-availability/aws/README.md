@@ -80,7 +80,6 @@ our newly created VPC.
 
 ![Route Table](img/route_table.png)
 
-
 ### Internet Gateway
 
 Now still on the same dashboard head over to Internet Gateways and
@@ -238,7 +237,6 @@ running reconfigure we need to make sure all our services are tied down
 so just leave the reconfigure command until after we edit our gitlab.rb
 file.
 
-
 ### Extension for PostgreSQL
 
 Connect to your new RDS instance to verify access and to install
@@ -276,8 +274,6 @@ username, and password.
 
 Next, we only need to configure the Redis section by adding the host and
 uncommenting the port.
-
-
 
 The last configuration step is to [change the default file locations ](http://docs.gitlab.com/ee/administration/high_availability/nfs.html)
 to make the EFS integration easier to manage.
@@ -343,7 +339,6 @@ the Advanced Details section where we have a [User Data](http://docs.aws.amazon.
 text area that allows us to add a lot of custom configurations which
 allows you to add a custom script for when launching an instance. Let's
 add the following script to the User Data section:
-
 
     #cloud-config
     package_upgrade: true

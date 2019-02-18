@@ -12,13 +12,13 @@ namespace :import do
     post :personal_access_token
     get :status
     get :callback
-    get :jobs
+    get :realtime_changes
   end
 
   resource :gitea, only: [:create, :new], controller: :gitea do
     post :personal_access_token
     get :status
-    get :jobs
+    get :realtime_changes
   end
 
   resource :gitlab, only: [:create], controller: :gitlab do

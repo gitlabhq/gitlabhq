@@ -163,7 +163,6 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
 
-
 ## Create a new release
 
 Add release notes to the existing git tag. If there

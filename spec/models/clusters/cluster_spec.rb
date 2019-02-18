@@ -265,12 +265,12 @@ describe Clusters::Cluster do
         it { is_expected.to be_valid }
       end
 
-      context 'when cluster has an invalid domain' do
-        let(:cluster) { build(:cluster, domain: 'not-valid-domain') }
+      context 'when cluster is not a valid hostname' do
+        let(:cluster) { build(:cluster, domain: 'http://not.a.valid.hostname') }
 
         it 'should add an error on domain' do
           expect(subject).not_to be_valid
-          expect(subject.errors[:domain].first).to eq('is not a fully qualified domain name')
+          expect(subject.errors[:domain].first).to eq('contains invalid characters (valid characters: [a-z0-9\\-])')
         end
       end
 

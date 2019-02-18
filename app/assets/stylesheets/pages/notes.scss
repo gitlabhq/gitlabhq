@@ -494,11 +494,6 @@ $note-form-margin-left: 72px;
   .discussion-notes {
     margin-left: 0;
     border-left: 0;
-
-    .notes {
-      position: relative;
-      @include vertical-line(52px);
-    }
   }
 
   .note-wrapper {
@@ -550,6 +545,11 @@ $note-form-margin-left: 72px;
   .note-header-info {
     padding-bottom: 0;
   }
+
+  .timeline-content {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 }
 
 .unresolved {
@@ -597,7 +597,6 @@ $note-form-margin-left: 72px;
 
 .note-headline-meta {
   display: inline-block;
-  white-space: nowrap;
 
   .system-note-message {
     white-space: normal;
@@ -605,6 +604,10 @@ $note-form-margin-left: 72px;
 
   .system-note-separator {
     color: $gl-text-color-disabled;
+  }
+
+  .note-timestamp {
+    white-space: nowrap;
   }
 
   a:hover {

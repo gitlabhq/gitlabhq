@@ -124,4 +124,3 @@ Feature.enable(:feature_flag_name)
 ## Enabling a feature flag (in production)
 
 Check how to [roll out changes using feature flags](rolling_out_changes_using_feature_flags.md).
-

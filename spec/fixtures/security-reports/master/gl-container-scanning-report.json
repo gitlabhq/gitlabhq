@@ -1,11 +1,14 @@
 {
   "image": "registry.gitlab.com/groulot/container-scanning-test/master:5f21de6956aee99ddb68ae49498662d9872f50ff",
   "unapproved": [
-    "CVE-2017-18018",
-    "CVE-2016-2781",
-    "CVE-2017-12424",
-    "CVE-2007-5686",
-    "CVE-2013-4235"
+    "CVE-2017-18269",
+    "CVE-2017-16997",
+    "CVE-2018-1000001",
+    "CVE-2016-10228",
+    "CVE-2018-18520",
+    "CVE-2010-4052",
+    "CVE-2018-16869",
+    "CVE-2018-18311"
   ],
   "vulnerabilities": [
     {
@@ -87,6 +90,16 @@
       "link": "https://security-tracker.debian.org/tracker/CVE-2018-18311",
       "severity": "Unknown",
       "fixedby": "5.24.1-3+deb9u5"
+    },
+    {
+      "featurename": "foo",
+      "featureversion": "1.3",
+      "vulnerability": "CVE-2018-666",
+      "namespace": "debian:9",
+      "description": "Foo has a vulnerability nobody cares about and whitelist.",
+      "link": "https://security-tracker.debian.org/tracker/CVE-2018-666",
+      "severity": "Unknown",
+      "fixedby": "1.4"
     }
   ]
 }

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/72
-  context 'Manage', :smoke, :quarantine do
+  context 'Manage', :smoke do
     describe 'Project creation' do
       it 'user creates a new project' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

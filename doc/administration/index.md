@@ -4,23 +4,26 @@ description: 'Learn how to install, configure, update, and maintain your GitLab 
 
 # Administrator documentation **[CORE ONLY]**
 
-Learn how to administer your GitLab instance (Community Edition and
-Enterprise Edition).
-Regular users don't have access to GitLab administration tools and settings.
+Learn how to administer your self-managed GitLab instance.
 
-GitLab has two product distributions: the open source
-[GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
-and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
-available through [different subscriptions](https://about.gitlab.com/pricing/).
+GitLab has two product distributions available through [different subscriptions](https://about.gitlab.com/pricing/):
 
-You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
-but the features you'll have access to depend on the subscription you choose
-(Core, Starter, Premium, or Ultimate). GitLab Community Edition installations
-only have access to Core features.
+- The open source [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce).
+- The open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee).
+
+You can [install either GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/).
+However, the features you'll have access to depend on the subscription you choose
+(Core, Starter, Premium, or Ultimate).
+
+NOTE: **Note:**
+GitLab Community Edition installations only have access to Core features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
 [user documentation](../user/index.html).
+
+NOTE: **Note:**
+Non-administrator users don’t have access to GitLab administration tools and settings.
 
 ## Installing and maintaining GitLab
 

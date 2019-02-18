@@ -10,12 +10,11 @@ module QA
             element :list_repos_button, "submit_tag _('List your GitHub repositories')" # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/views/import/_githubish_status.html.haml' do
-            element :project_import_row, 'data: { qa: { repo_path: repo.full_name } }' # rubocop:disable QA/ElementWithPattern
+          view 'app/assets/javascripts/import_projects/components/provider_repo_table_row.vue' do
+            element :project_import_row
             element :project_namespace_select
-            element :project_namespace_field, 'select_tag :namespace_id' # rubocop:disable QA/ElementWithPattern
-            element :project_path_field, 'text_field_tag :path, sanitize_project_name(repo.name)' # rubocop:disable QA/ElementWithPattern
-            element :import_button, "_('Import')" # rubocop:disable QA/ElementWithPattern
+            element :project_path_field
+            element :import_button
           end
 
           def add_personal_access_token(personal_access_token)

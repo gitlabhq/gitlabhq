@@ -448,7 +448,6 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
   port.
 - We are assuming the password for the bind_dn user is in bind_dn_password.txt.
 
-
 ### Invalid credentials when logging in
 
 - Make sure the user you are binding with has enough permissions to read the user's

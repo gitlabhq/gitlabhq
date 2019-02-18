@@ -184,7 +184,7 @@ describe Gitlab::Danger::Helper do
 
   describe '#changes_by_category' do
     it 'categorizes changed files' do
-      expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/foo qa/foo] }
+      expect(fake_git).to receive(:added_files) { %w[foo foo.md foo.rb foo.js db/foo qa/foo ee/changelogs/foo.yml] }
       allow(fake_git).to receive(:modified_files) { [] }
       allow(fake_git).to receive(:renamed_files) { [] }
 
@@ -193,6 +193,7 @@ describe Gitlab::Danger::Helper do
         database: %w[db/foo],
         docs: %w[foo.md],
         frontend: %w[foo.js],
+        none: %w[ee/changelogs/foo.yml],
         qa: %w[qa/foo],
         unknown: %w[foo]
       )
@@ -260,6 +261,9 @@ describe Gitlab::Danger::Helper do
       'ee/db/foo' | :database
       'ee/qa/foo' | :qa
 
+      'changelogs/foo'    | :none
+      'ee/changelogs/foo' | :none
+
       'FOO'          | :unknown
       'foo'          | :unknown
 
@@ -283,6 +287,7 @@ describe Gitlab::Danger::Helper do
       :docs      | '~Documentation'
       :foo       | '~foo'
       :frontend  | '~frontend'
+      :none      | ''
       :qa        | '~QA'
     end
 

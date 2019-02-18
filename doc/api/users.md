@@ -1043,7 +1043,6 @@ Will return `201 OK` on success, `404 User Not Found` is user cannot be found or
 
 Please refer to the [Events API documentation](events.md#get-user-contribution-events)
 
-
 ## Get all impersonation tokens of a user
 
 > Requires admin permissions.

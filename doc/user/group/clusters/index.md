@@ -95,7 +95,6 @@ For example, let's say we have the following Kubernetes clusters:
 | Test       | `test`              | Group     |
 | Development| `*`                 | Group     |
 
-
 And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
 ```yaml

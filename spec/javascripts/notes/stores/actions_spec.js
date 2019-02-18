@@ -737,4 +737,18 @@ describe('Actions Notes Store', () => {
       );
     });
   });
+
+  describe('removeConvertedDiscussion', () => {
+    it('commits CONVERT_TO_DISCUSSION with noteId', done => {
+      const noteId = 'dummy-id';
+      testAction(
+        actions.removeConvertedDiscussion,
+        noteId,
+        {},
+        [{ type: 'REMOVE_CONVERTED_DISCUSSION', payload: noteId }],
+        [],
+        done,
+      );
+    });
+  });
 });

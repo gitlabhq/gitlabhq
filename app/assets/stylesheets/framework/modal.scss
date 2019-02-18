@@ -111,10 +111,11 @@ body.modal-open {
       flex-grow: 1;
       height: 56px;
       padding: $gl-btn-padding $gl-btn-padding 0;
+      text-align: right;
 
-      > svg {
-        float: right;
-        height: 100%;
+      .illustration {
+        height: inherit;
+        width: initial;
       }
     }
   }

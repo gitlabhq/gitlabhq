@@ -339,7 +339,6 @@ afterEach(() => {
 
 Some regressions only affect a specific browser version. We can install and test in particular browsers with either Firefox or Browserstack using the following steps:
 
-
 ### Browserstack
 
 [Browserstack](https://www.browserstack.com/) allows you to test more than 1200 mobile devices and browsers.

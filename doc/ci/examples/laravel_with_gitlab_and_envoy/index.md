@@ -68,7 +68,6 @@ Since we have our app up and running locally, it's time to push the codebase to 
 Let's create [a new project](../../../gitlab-basics/create-project.md) in GitLab named `laravel-sample`.
 After that, follow the command line instructions displayed on the project's homepage to initiate the repository on our machine and push the first commit.
 
-
 ```bash
 cd laravel-sample
 git init
@@ -126,7 +125,6 @@ We'll use this variable in the `.gitlab-ci.yml` later, to easily connect to our 
 ![variables page](img/variables_page.png)
 
 We also need to add the public key to **Project** > **Settings** > **Repository** as a [Deploy Key](../../../ssh/README.md#deploy-keys), which gives us the ability to access our repository from the server through [SSH protocol](../../../gitlab-basics/command-line-commands.md#start-working-on-your-project).
-
 
 ```bash
 # As the deployer user on the server
@@ -186,7 +184,6 @@ To use Envoy, we should first install it on our local machine [using the given i
 The pros of Envoy is that it doesn't require Blade engine, it just uses Blade syntax to define tasks.
 To start, we create an `Envoy.blade.php` in the root of our app with a simple task to test Envoy.
 
-
 ```php
 @servers(['web' => 'remote_username@remote_host'])
 
@@ -220,7 +217,6 @@ Our deployment plan is to clone the latest release from GitLab repository, insta
 The first step of our deployment process is to define a set of variables within [@setup](https://laravel.com/docs/envoy/#setup) directive.
 You may change the `app` to your application's name:
 
-
 ```php
 ...
 
@@ -245,7 +241,6 @@ You may change the `app` to your application's name:
 
 The [@story](https://laravel.com/docs/envoy/#stories) directive allows us define a list of tasks that can be run as a single task.
 Here we have three tasks called `clone_repository`, `run_composer`, `update_symlinks`. These variables are usable to making our task's codes more cleaner:
-
 
 ```php
 ...
@@ -618,7 +613,7 @@ Lastly, `when: manual` is used to turn the job from running automatically to a m
 
 deploy_production:
   script:
-    # Add the private SSH key to the build environment 
+    # Add the private SSH key to the build environment
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
     - ssh-add <(echo "$SSH_PRIVATE_KEY")

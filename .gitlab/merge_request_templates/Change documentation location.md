@@ -26,7 +26,7 @@ https://docs.gitlab.com/ce/development/documentation/index.html#changing-documen
       to the new document if there are any Disqus comments on the old document thread.
 - [ ] Update the link in `features.yml` (if applicable)
 - [ ] If working on CE and the `ee-compat-check` jobs fails, submit an MR to EE
-      with the changes as well (https://docs.gitlab.com/ce/development/writing_documentation.html#cherry-picking-from-ce-to-ee).
+      with the changes as well (https://docs.gitlab.com/ce/development/documentation/index.html#cherry-picking-from-ce-to-ee).
 - [ ] Ping one of the technical writers for review.
 
 /label ~Documentation

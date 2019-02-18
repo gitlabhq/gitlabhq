@@ -23,11 +23,6 @@ export default {
       type: [String, Number],
       required: true,
     },
-    discussionId: {
-      type: String,
-      required: false,
-      default: '',
-    },
     noteUrl: {
       type: String,
       required: false,
@@ -176,7 +171,7 @@ export default {
       v-if="showReplyButton"
       ref="replyButton"
       class="js-reply-button"
-      :note-id="discussionId"
+      @startReplying="$emit('startReplying')"
     />
     <div v-if="canEdit" class="note-actions-item">
       <button

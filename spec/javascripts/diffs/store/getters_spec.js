@@ -51,13 +51,13 @@ describe('Diffs Module Getters', () => {
 
   describe('hasCollapsedFile', () => {
     it('returns true when all files are collapsed', () => {
-      localState.diffFiles = [{ collapsed: true }, { collapsed: true }];
+      localState.diffFiles = [{ viewer: { collapsed: true } }, { viewer: { collapsed: true } }];
 
       expect(getters.hasCollapsedFile(localState)).toEqual(true);
     });
 
     it('returns true when at least one file is collapsed', () => {
-      localState.diffFiles = [{ collapsed: false }, { collapsed: true }];
+      localState.diffFiles = [{ viewer: { collapsed: false } }, { viewer: { collapsed: true } }];
 
       expect(getters.hasCollapsedFile(localState)).toEqual(true);
     });

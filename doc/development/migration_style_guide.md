@@ -48,7 +48,6 @@ various database operations, such as
 
 and whether they require downtime and how to work around that whenever possible.
 
-
 ## Downtime Tagging
 
 Every migration must specify if it requires downtime or not, and if it should

@@ -25,7 +25,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
     def result
       with_reactive_cache do |data|
-        data / 2
+        data
       end
     end
   end
@@ -64,7 +64,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         stub_reactive_cache(instance, 4)
       end
 
-      it { is_expected.to eq(2) }
+      it { is_expected.to eq(4) }
 
       it 'does not enqueue a background worker' do
         expect(ReactiveCachingWorker).not_to receive(:perform_async)
@@ -93,6 +93,14 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
           instance.with_reactive_cache { raise described_class::InvalidateReactiveCache }
         end
       end
+    end
+
+    context 'when cache contains non-nil but blank value' do
+      before do
+        stub_reactive_cache(instance, false)
+      end
+
+      it { is_expected.to eq(false) }
     end
   end
 
