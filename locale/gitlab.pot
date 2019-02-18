@@ -4058,6 +4058,9 @@ msgstr ""
 msgid "Introducing Your Conversational Development Index"
 msgstr ""
 
+msgid "Invalid input, please avoid emojis"
+msgstr ""
+
 msgid "Invitation"
 msgstr ""
 
@@ -5468,6 +5471,9 @@ msgid "Please convert them to %{link_to_git}, and go through the %{link_to_impor
 msgstr ""
 
 msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please create a username with only alphanumeric characters."
 msgstr ""
 
 msgid "Please fill in a descriptive name for your group."
@@ -7385,6 +7391,9 @@ msgid "This directory"
 msgstr ""
 
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
+msgstr ""
+
+msgid "This field is required."
 msgstr ""
 
 msgid "This group"
