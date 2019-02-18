@@ -5,9 +5,9 @@
 %hr
 = form_for @user, url: profile_password_path, method: :post do |f|
   %p.slead
-    Please set a new password before proceeding.
+    = _('Please set a new password before proceeding.')
     %br
-    After a successful password update you will be redirected to login screen.
+    = _('After a successful password update you will be redirected to login screen.')
 
   = form_errors(@user)
 

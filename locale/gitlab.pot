@@ -528,6 +528,9 @@ msgstr ""
 msgid "Advanced settings"
 msgstr ""
 
+msgid "After a successful password update you will be redirected to login screen."
+msgstr ""
+
 msgid "All"
 msgstr ""
 
@@ -5489,6 +5492,9 @@ msgid "Please note that this application is not provided by GitLab and you shoul
 msgstr ""
 
 msgid "Please select at least one filter to see results"
+msgstr ""
+
+msgid "Please set a new password before proceeding."
 msgstr ""
 
 msgid "Please solve the reCAPTCHA"
