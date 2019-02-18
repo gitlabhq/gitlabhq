@@ -28,8 +28,7 @@ describe('DiffFile', () => {
       expect(el.querySelector('.file-title-name').innerText.indexOf(file_path)).toBeGreaterThan(-1);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
 
-      expect(vm.renderIt).toEqual(false);
-      vm.renderIt = true;
+      vm.file.renderIt = true;
 
       vm.$nextTick(() => {
         expect(el.querySelectorAll('.line_content').length).toBeGreaterThan(5);
@@ -41,7 +40,7 @@ describe('DiffFile', () => {
         expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(1);
         expect(vm.isCollapsed).toEqual(false);
         vm.isCollapsed = true;
-        vm.renderIt = true;
+        vm.file.renderIt = true;
 
         vm.$nextTick(() => {
           expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(0);

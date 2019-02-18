@@ -130,6 +130,8 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
   return checkItem();
 };
 
+export const setRenderIt = ({ commit }, file) => commit(types.RENDER_FILE, file);
+
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
 

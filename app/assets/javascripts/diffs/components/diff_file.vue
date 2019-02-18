@@ -35,7 +35,6 @@ export default {
       isLoadingCollapsedDiff: false,
       forkMessageVisible: false,
       isCollapsed: this.file.viewer.collapsed || false,
-      renderIt: this.file.renderIt,
     };
   },
   computed: {
@@ -53,7 +52,7 @@ export default {
       );
     },
     showLoadingIcon() {
-      return this.isLoadingCollapsedDiff || (!this.renderIt && !this.isCollapsed);
+      return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
     },
     hasDiffLines() {
       return (
@@ -80,13 +79,13 @@ export default {
     eventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.handleLoadCollapsedDiff);
   },
   methods: {
-    ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff']),
+    ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff', 'setRenderIt']),
     handleToggle() {
       if (!this.hasDiffLines) {
         this.handleLoadCollapsedDiff();
       } else {
         this.isCollapsed = !this.isCollapsed;
-        this.renderIt = true;
+        this.setRenderIt(this.file);
       }
     },
     handleLoadCollapsedDiff() {
@@ -96,7 +95,7 @@ export default {
         .then(() => {
           this.isLoadingCollapsedDiff = false;
           this.isCollapsed = false;
-          this.renderIt = true;
+          this.setRenderIt(this.file);
         })
         .then(() => {
           requestIdleCallback(
