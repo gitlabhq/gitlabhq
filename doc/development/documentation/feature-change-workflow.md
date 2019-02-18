@@ -118,7 +118,7 @@ issues is forthcoming and you are welcome to join the [discussion](https://gitla
 
 All reviewers can help ensure accuracy, clarity, completeness, and adherence to the plans in the issue, as well as the [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide.html).
 
-- Prior to merge, documentation changes committed by the developer must be reviewed by:
+- **Prior to merging**, documentation changes committed by the developer must be reviewed by:
 
    1. **The code reviewer** for the MR, to confirm accuracy, clarity, and completeness.
    1. Optionally: Others involved in the work, such as other devs or the PM.
@@ -130,10 +130,12 @@ and your degree of confidence in having users of an RC use your docs as written.
       - You can request a review and if there is not sufficient time to complete it prior to the freeze,
 the maintainer can merge the current doc changes (if complete) and create a follow-up doc review issue.
       - The technical writer can also help decide what docs to merge before the freeze and whether to work on further changes in a follow up MR.
+      - **To request a pre-merge technical writer review**, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
+      - **To request a post-merge technical writer review**, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review) and link it from the MR that makes the doc change.
    1. **The maintainer** who is assigned to merge the MR, to verify clarity, completeness, and quality, to the best of their ability.
 
-- Upon merging, if a technical writer review has not been performed, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review)
-if one was not already created by the developer or reviewer.
+- Upon merging, if a technical writer review has not been performed and there is not yet a linked issue for a follow-up review, the maintainer should [create an issue using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review), link it from the MR, and
+mention the original MR author in the new issue. Alternatively, the mainitainer can ask the MR author to create and link this issue before the MR is merged.
 
 - After merging, documentation changes are reviewed by:
 
