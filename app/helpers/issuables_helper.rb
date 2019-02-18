@@ -191,7 +191,7 @@ module IssuablesHelper
 
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline")
-      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
+      author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-inline d-sm-none")
 
       if status = user_status(issuable.author)
         author_output << "#{status}".html_safe
