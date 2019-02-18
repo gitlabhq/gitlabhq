@@ -958,7 +958,7 @@ Must include at least one non-required attribute from above.
 
 ## Bulk update merge requests
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21368) in GitLab 11.8.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21368) in GitLab 11.9.
 
 Update multiple merge requests using a single API call. Returns the number of successfully updated merge requests.
 

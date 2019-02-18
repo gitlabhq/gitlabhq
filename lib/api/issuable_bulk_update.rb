@@ -11,7 +11,7 @@ module API
           detail 'This feature was introduced in 11.9'
         end
         params do
-          requires :issuable_ids, type: Array[Integer], desc: "Array or #{issuable.pluralize} IDs to be updates"
+          requires :issuable_ids, type: Array[Integer], desc: "Array of #{issuable.pluralize} IDs to be updated"
           optional :state_event, type: String, values: %w(reopen close), desc: 'Reopens or closes a resource'
           optional :milestone_id, type: Integer, desc: 'The milestone ID number'
           optional :add_label_ids, type: Array[Integer], desc: 'IDs of labels to be added'
@@ -20,7 +20,7 @@ module API
                                         desc: 'Subscribes or unsubscribes from a resource'
 
           if issuable == 'issue'
-            optional :assignee_ids, type: Array[Integer], desc: 'List of assignees IDs'
+            optional :assignee_ids, type: Array[Integer], desc: 'List of assignee IDs'
             at_least_one_of :state_event, :milestone_id, :add_label_ids, :remove_label_ids,
                             :subscription_event, :assignee_ids
           else
