@@ -1995,6 +1995,11 @@ describe API::Projects do
     let(:project) do
       create(:project, :repository, creator: user, namespace: user.namespace)
     end
+
+    let(:project2) do
+      create(:project, :repository, creator: user, namespace: user.namespace)
+    end
+
     let(:group) { create(:group) }
     let(:group2) do
       group = create(:group, name: 'group2_name')
@@ -2010,6 +2015,7 @@ describe API::Projects do
 
     before do
       project.add_reporter(user2)
+      project2.add_reporter(user2)
     end
 
     context 'when authenticated' do
@@ -2123,6 +2129,48 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['namespace']['name']).to eq(group.name)
+      end
+
+      it 'accepts a path for the target project' do
+        post api("/projects/#{project.id}/fork", user2), params: { path: 'foobar' }
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(project.name)
+        expect(json_response['path']).to eq('foobar')
+        expect(json_response['owner']['id']).to eq(user2.id)
+        expect(json_response['namespace']['id']).to eq(user2.namespace.id)
+        expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('scheduled')
+        expect(json_response).to include("import_error")
+      end
+
+      it 'fails to fork if path is already taken' do
+        post api("/projects/#{project.id}/fork", user2), params: { path: 'foobar' }
+        post api("/projects/#{project2.id}/fork", user2), params: { path: 'foobar' }
+
+        expect(response).to have_gitlab_http_status(409)
+        expect(json_response['message']['path']).to eq(['has already been taken'])
+      end
+
+      it 'accepts a name for the target project' do
+        post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project' }
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq('My Random Project')
+        expect(json_response['path']).to eq(project.path)
+        expect(json_response['owner']['id']).to eq(user2.id)
+        expect(json_response['namespace']['id']).to eq(user2.namespace.id)
+        expect(json_response['forked_from_project']['id']).to eq(project.id)
+        expect(json_response['import_status']).to eq('scheduled')
+        expect(json_response).to include("import_error")
+      end
+
+      it 'fails to fork if name is already taken' do
+        post api("/projects/#{project.id}/fork", user2), params: { name: 'My Random Project' }
+        post api("/projects/#{project2.id}/fork", user2), params: { name: 'My Random Project' }
+
+        expect(response).to have_gitlab_http_status(409)
+        expect(json_response['message']['name']).to eq(['has already been taken'])
       end
     end
 
