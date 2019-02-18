@@ -1235,7 +1235,7 @@ Typically, this is because the root certificate isn't issued by a trusted certif
 determined by [CAcert.org](http://www.cacert.org/).
 
 Should that not be the case, consider using [SSL Checker](https://www.sslshopper.com/ssl-checker.html) to identify faults.
-Missing intermediate certificates are a commong point of verification failure.
+Missing intermediate certificates are a common point of verification failure.
 
 ## Example webhook receiver
 
