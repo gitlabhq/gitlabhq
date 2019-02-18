@@ -24,7 +24,7 @@ The following files will require a review from the [Technical Writing](https://a
 
 * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
-Per the [documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html), the review may occur prior to merging this MR **or** after a maintainer has decided to review and merge this MR without a tech writer review. (Meanwhile, you are welcome to involve a technical writer at any time if you have questions about writing or updating the documentation. GitLabbers are also welcome to use the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) channel on Slack.)
+Per the [documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html), the review may occur prior to merging this MR **or** after a maintainer has agreed to review and merge this MR without a tech writer review. (Meanwhile, you are welcome to involve a technical writer at any time if you have questions about writing or updating the documentation. GitLabbers are also welcome to use the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) channel on Slack.)
 
 The technical writer who, by default, will review this content or collaborate as needed is dependent on the [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages) to which the content applies:
 
