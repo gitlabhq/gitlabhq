@@ -14,7 +14,7 @@ module Gitlab
         extend ActiveSupport::Concern
 
         def reschedule_if_needed(args, &block)
-          if should_reschedule?
+          if need_reschedule?
             BackgroundMigrationWorker.perform_in(vacuum_wait_time, self.class.name.demodulize, args)
           else
             yield
@@ -22,9 +22,9 @@ module Gitlab
         end
 
         # Override this on base class if you need a different reschedule condition
-        def should_reschedule?
-          raise NotImplementedError, "#{self.class} does not implement #{__method__}"
-        end
+        # def need_reschedule?
+        #   raise NotImplementedError, "#{self.class} does not implement #{__method__}"
+        # end
 
         def wait_for_deadtuple_vacuum?(table_name)
           return false unless Gitlab::Database.postgresql?

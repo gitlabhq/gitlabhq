@@ -27,7 +27,7 @@ module Gitlab
 
       private
 
-      def should_reschedule?
+      def need_reschedule?
         wait_for_deadtuple_vacuum?(MergeRequestDiffFile.table_name)
       end
 
