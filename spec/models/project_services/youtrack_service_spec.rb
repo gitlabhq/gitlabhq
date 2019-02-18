@@ -35,7 +35,7 @@ describe YoutrackService do
     it_behaves_like 'allows project key on reference pattern'
 
     it 'does allow project prefix on the reference' do
-      expect(described_class.reference_pattern.match('YT-123')[:issue]).to eq('YK-123')
+      expect(described_class.reference_pattern.match('YT-123')[:issue]).to eq('YT-123')
     end
   end
 end
