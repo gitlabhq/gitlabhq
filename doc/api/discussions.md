@@ -641,7 +641,6 @@ Parameters:
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/11/discussions/6a9c1750b37d513a43987b574953fceb50b03ce7?resolved=true
 ```
 
-
 ### Add note to existing merge request discussion
 
 Adds a new note to the discussion.

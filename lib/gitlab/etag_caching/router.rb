@@ -52,6 +52,14 @@ module Gitlab
         Gitlab::EtagCaching::Router::Route.new(
           %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/environments\.json\z),
           'environments'
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
+          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/import/github/realtime_changes\.json\z),
+          'realtime_changes_import_github'
+        ),
+        Gitlab::EtagCaching::Router::Route.new(
+          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/import/gitea/realtime_changes\.json\z),
+          'realtime_changes_import_gitea'
         )
       ].freeze
 

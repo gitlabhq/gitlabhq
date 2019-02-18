@@ -9,6 +9,19 @@ shared_examples 'cluster application status specs' do |application_name|
     end
   end
 
+  describe '.available' do
+    subject { described_class.available }
+
+    let!(:installed_cluster) { create(application_name, :installed) }
+    let!(:updated_cluster) { create(application_name, :updated) }
+
+    before do
+      create(application_name, :errored)
+    end
+
+    it { is_expected.to contain_exactly(installed_cluster, updated_cluster) }
+  end
+
   describe 'status state machine' do
     describe '#make_installing' do
       subject { create(application_name, :scheduled) }

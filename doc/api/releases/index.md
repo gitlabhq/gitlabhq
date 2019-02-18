@@ -2,7 +2,7 @@
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41766) in GitLab 11.7.
 > - Using this API you can manipulate GitLab's [Release](../../user/project/releases/index.md) entries.
-> - For manipulating links as a release asset, see [Release Links API](links.md)
+> - For manipulating links as a release asset, see [Release Links API](links.md).
 
 ## List Releases
 

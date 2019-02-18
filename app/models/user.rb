@@ -1168,6 +1168,10 @@ class User < ApplicationRecord
     Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
   end
 
+  def manageable_groups_with_routes
+    manageable_groups.eager_load(:route).order('routes.path')
+  end
+
   def namespaces
     namespace_ids = groups.pluck(:id)
     namespace_ids.push(namespace.id)

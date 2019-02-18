@@ -93,7 +93,6 @@ To get the credentials (a pair of Client ID and Client Secret), you must registe
         args: { scope: 'user:email' } }
     ```
 
-
     For GitHub Enterprise:
 
     ```

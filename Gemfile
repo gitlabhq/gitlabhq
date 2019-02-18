@@ -143,7 +143,7 @@ gem 'diffy', '~> 3.1.0'
 gem 'rack', '2.0.6'
 
 group :unicorn do
-  gem 'unicorn', '~> 5.1.0'
+  gem 'unicorn', '~> 5.4.1'
   gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 

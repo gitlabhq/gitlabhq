@@ -40,4 +40,12 @@ describe Import::GiteaController do
       end
     end
   end
+
+  describe "GET realtime_changes" do
+    it_behaves_like 'a GitHub-ish import controller: GET realtime_changes' do
+      before do
+        assign_host_url
+      end
+    end
+  end
 end

@@ -48,7 +48,6 @@ Example Response:
 ]
 ```
 
-
 ## Get single milestone
 
 Gets a single group milestone.

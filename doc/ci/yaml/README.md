@@ -96,9 +96,9 @@ This can be an array or a multi-line string.
 jobs, including failed ones. This has to be an array or a multi-line string.
 
 The `before_script` and the main `script` are concatenated and run in a single context/container.
-The `after_script` is run separately, so depending on the executor, changes done
-outside of the working tree might not be visible, e.g. software installed in the
-`before_script`.
+The `after_script` is run separately. The current working directory is set back to
+default. Depending on the executor, changes done outside of the working tree might
+not be visible, e.g. software installed in the `before_script`.
 
 It's possible to overwrite the globally defined `before_script` and `after_script`
 if you set it per-job:

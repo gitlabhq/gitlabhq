@@ -31,7 +31,7 @@ Parameters:
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
 
 Example request:
 
@@ -93,7 +93,7 @@ Parameters:
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
 | `award_id`     | integer        | yes      | ID of the award emoji.                                                       |
 
 Example request:
@@ -138,7 +138,7 @@ Parameters:
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
 | `name`         | string         | yes      | Name of the emoji without colons.                                            |
 
 ```sh
@@ -184,7 +184,7 @@ Parameters:
 | Attribute      | Type           | Required | Description                                                                  |
 |:---------------|:---------------|:---------|:-----------------------------------------------------------------------------|
 | `id`           | integer/string | yes      | ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
-| `awardable_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
+| `issue_iid`/`merge_request_iid`/`snippet_id` | integer        | yes      | ID (`iid` for merge requests/issues, `id` for snippets) of an awardable.     |
 | `award_id`     | integer        | yes      | ID of an award emoji.                                                        |
 
 ```sh
@@ -197,7 +197,8 @@ Comments (also known as notes) are a sub-resource of issues, merge requests, and
 
 NOTE: **Note:**
 The examples below describe working with award emoji on comments for an issue, but can be
-easily adapted for comments on a merge request.
+easily adapted for comments on a merge request or on a snippet. Therefore, you have to replace
+`issue_iid` either with `merge_request_iid` or with the `snippet_id`.
 
 ### List a comment's award emoji
 

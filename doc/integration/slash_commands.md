@@ -8,7 +8,6 @@ We suggest you use the project name as the trigger term for simplicity and clari
 
 Taking the trigger term as `project-name`, the commands are:
 
-
 | Command | Effect |
 | ------- | ------ |
 | `/project-name help` | Shows all available slash commands |

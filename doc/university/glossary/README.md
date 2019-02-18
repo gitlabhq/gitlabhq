@@ -706,4 +706,3 @@ Files that have been modified but are not committed. Check them by using the com
 ### YAML
 
 A human-readable data serialization [language](http://www.yaml.org/about.html) that takes concepts from programming languages such as C, Perl, and Python, and ideas from XML and the data format of electronic mail.
-

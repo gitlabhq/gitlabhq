@@ -3,12 +3,12 @@
     = form_for(resource, as: "new_#{resource_name}", url: registration_path(resource_name), html: { class: "new_new_user gl-show-field-errors", "aria-live" => "assertive" }) do |f|
       .devise-errors
         = devise_error_messages!
-      .form-group
+      .name.form-group
         = f.label :name, 'Full name', class: 'label-bold'
-        = f.text_field :name, class: "form-control top qa-new-user-name", required: true, title: "This field is required."
+        = f.text_field :name, class: "form-control top qa-new-user-name js-block-emoji", required: true, title: _("This field is required.")
       .username.form-group
         = f.label :username, class: 'label-bold'
-        = f.text_field :username, class: "form-control middle qa-new-user-username", pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: 'Please create a username with only alphanumeric characters.'
+        = f.text_field :username, class: "form-control middle qa-new-user-username js-block-emoji", pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS, required: true, title: _("Please create a username with only alphanumeric characters.")
         %p.validation-error.hide Username is already taken.
         %p.validation-success.hide Username is available.
         %p.validation-pending.hide Checking username availability...

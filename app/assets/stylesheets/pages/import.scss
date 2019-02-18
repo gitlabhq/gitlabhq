@@ -1,20 +1,51 @@
-.import-jobs-from-col,
 .import-jobs-to-col {
-  width: 40%;
+  width: 39%;
 }
 
 .import-jobs-status-col {
-  width: 20%;
+  width: 15%;
 }
 
-.btn-import {
-  .loading-icon {
-    display: none;
-  }
+.import-jobs-cta-col {
+  width: 1%;
+}
 
-  &.is-loading {
-    .loading-icon {
-      display: inline-block;
-    }
+.import-project-name-input {
+  border-radius: 0 $border-radius-default $border-radius-default 0;
+  position: relative;
+  left: -1px;
+  max-width: 300px;
+}
+
+.import-namespace-select {
+  width: auto !important;
+
+  > .select2-choice {
+    border-radius: $border-radius-default 0 0 $border-radius-default;
+    position: relative;
+    left: 1px;
   }
+}
+
+.import-slash-divider {
+  background-color: $gray-lightest;
+  border: 1px solid $border-color;
+}
+
+.import-row {
+  height: 55px;
+}
+
+.import-table {
+  .import-jobs-from-col,
+  .import-jobs-to-col,
+  .import-jobs-status-col,
+  .import-jobs-cta-col {
+    border-bottom-width: 1px;
+    padding-left: $gl-padding;
+  }
+}
+
+.import-projects-loading-icon {
+  margin-top: $gl-padding-32;
 }

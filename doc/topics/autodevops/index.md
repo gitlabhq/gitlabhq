@@ -553,7 +553,7 @@ Herokuish](https://github.com/gliderlabs/herokuish#paths)
 
 > [Introduced][ce-19507] in GitLab 11.0.
 
-For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
+For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
 will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
 can be used for permanent access to the registry.
 

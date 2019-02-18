@@ -2,7 +2,7 @@
 
 > [Introduced][ce-5953] in GitLab 8.12.
 
-Checks if your .gitlab-ci.yml file is valid.
+Checks if your `.gitlab-ci.yml` file is valid.
 
 ```
 POST /lint

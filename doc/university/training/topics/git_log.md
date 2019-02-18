@@ -40,7 +40,6 @@ Git log lists commit history. It allows searching and filtering.
     git log --since=1.month.ago --until=3.weeks.ago
     ```
 
-
 ----------
 
 ## Git Log Workflow

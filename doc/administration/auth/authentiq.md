@@ -50,7 +50,6 @@ Authentiq will generate a Client ID and the accompanying Client Secret for you t
       }
     ```
 
-
 1. The `scope` is set to request the user's name, email (required and signed), and permission to send push notifications to sign in on subsequent visits.
 See [OmniAuth Authentiq strategy](https://github.com/AuthentiqID/omniauth-authentiq/wiki/Scopes,-callback-url-configuration-and-responses) for more information on scopes and modifiers.
 

@@ -1228,6 +1228,15 @@ by uncommenting or adding the following setting to your `/etc/gitlab/gitlab.rb`:
 gitlab_rails['webhook_timeout'] = 10
 ```
 
+### Troubleshooting: "Unable to get local issuer certificate"
+
+When SSL verification is enabled, this error indicates that GitLab isn't able to verify the SSL certificate of the webhook endpoint.
+Typically, this is because the root certificate isn't issued by a trusted certification authority as
+determined by [CAcert.org](http://www.cacert.org/).
+
+Should that not be the case, consider using [SSL Checker](https://www.sslshopper.com/ssl-checker.html) to identify faults.
+Missing intermediate certificates are a common point of verification failure.
+
 ## Example webhook receiver
 
 If you want to see GitLab's webhooks in action for testing purposes you can use

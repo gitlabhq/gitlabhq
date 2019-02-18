@@ -81,6 +81,14 @@ module API
         Gitlab::GlRepository.gl_repository(project, wiki?)
       end
 
+      def gl_project_path
+        if wiki?
+          project.wiki.full_path
+        else
+          project.full_path
+        end
+      end
+
       # Return the repository depending on whether we want the wiki or the
       # regular repository
       def repository

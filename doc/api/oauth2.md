@@ -206,4 +206,3 @@ or you can put the token to the Authorization header:
 ```
 curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v4/user
 ```
-

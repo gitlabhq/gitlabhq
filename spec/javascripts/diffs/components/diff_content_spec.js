@@ -6,6 +6,7 @@ import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
 import '~/behaviors/markdown/render_gfm';
 import diffFileMockData from '../mock_data/diff_file';
 import discussionsMockData from '../mock_data/diff_discussions';
+import { diffViewerModes } from '~/ide/constants';
 
 describe('DiffContent', () => {
   const Component = Vue.extend(DiffContentComponent);
@@ -52,26 +53,39 @@ describe('DiffContent', () => {
 
   describe('empty files', () => {
     beforeEach(() => {
-      vm.diffFile.empty = true;
       vm.diffFile.highlighted_diff_lines = [];
       vm.diffFile.parallel_diff_lines = [];
     });
 
-    it('should render a message', done => {
+    it('should render a no preview message if viewer returns no preview', done => {
+      vm.diffFile.viewer.name = diffViewerModes.no_preview;
       vm.$nextTick(() => {
         const block = vm.$el.querySelector('.diff-viewer .nothing-here-block');
 
         expect(block).not.toBe(null);
-        expect(block.textContent.trim()).toContain('Empty file');
+        expect(block.textContent.trim()).toContain('No preview for this file type');
+
+        done();
+      });
+    });
+
+    it('should render a not diffable message if viewer returns not diffable', done => {
+      vm.diffFile.viewer.name = diffViewerModes.not_diffable;
+      vm.$nextTick(() => {
+        const block = vm.$el.querySelector('.diff-viewer .nothing-here-block');
+
+        expect(block).not.toBe(null);
+        expect(block.textContent.trim()).toContain(
+          'This diff was suppressed by a .gitattributes entry',
+        );
 
         done();
       });
     });
 
     it('should not render multiple messages', done => {
-      vm.diffFile.mode_changed = true;
       vm.diffFile.b_mode = '100755';
-      vm.diffFile.viewer.name = 'mode_changed';
+      vm.diffFile.viewer.name = diffViewerModes.mode_changed;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelectorAll('.nothing-here-block').length).toBe(1);
@@ -81,6 +95,7 @@ describe('DiffContent', () => {
     });
 
     it('should not render diff table', done => {
+      vm.diffFile.viewer.name = diffViewerModes.no_preview;
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('table')).toBe(null);
 
@@ -157,6 +172,7 @@ describe('DiffContent', () => {
         vm.diffFile.new_sha = 'DEF';
         vm.diffFile.old_path = 'test.abc';
         vm.diffFile.old_sha = 'ABC';
+        vm.diffFile.viewer.name = diffViewerModes.added;
 
         vm.$nextTick(() => {
           expect(el.querySelectorAll('.js-diff-inline-view').length).toEqual(0);

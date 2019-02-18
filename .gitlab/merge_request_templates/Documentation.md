@@ -16,7 +16,7 @@ Closes
 
 ## Author's checklist
 
-- [ ] [Apply the correct labels and milestone](https://docs.gitlab.com/ee/development/documentation/workflow.html#2-developer-s-role-in-the-documentation-process)
+- [ ] [Apply the correct labels and milestone](https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#1-product-managers-role)
 - [ ] Crosslink the document from the higher-level index
 - [ ] Crosslink the document from other subject-related docs
 - [ ] Feature moving tiers? Make sure the change is also reflected in [`features.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/features.yml)

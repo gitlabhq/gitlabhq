@@ -4,7 +4,6 @@ This guide covers the building dependencies of a PHP project while compiling ass
 
 While is possible to create your own image with custom PHP and Node JS versions, for brevity, we will use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and NodeJS installed.
 
-
 ```yaml
 image: tetraweb/php
 ```
