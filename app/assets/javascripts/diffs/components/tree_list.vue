@@ -13,6 +13,12 @@ export default {
     Icon,
     FileRow,
   },
+  props: {
+    hideFileStats: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       search: '',
@@ -40,6 +46,9 @@ export default {
         return acc;
       }, []);
     },
+    fileRowExtraComponent() {
+      return this.hideFileStats ? null : FileRowStats;
+    },
   },
   methods: {
     ...mapActions('diffs', ['toggleTreeOpen', 'scrollToFile', 'toggleFileFinder']),
@@ -48,7 +57,6 @@ export default {
     },
   },
   shortcutKeyCharacter: `${/Mac/i.test(navigator.userAgent) ? '&#8984;' : 'Ctrl'}+P`,
-  FileRowStats,
   diffTreeFiltering: gon.features && gon.features.diffTreeFiltering,
 };
 </script>
@@ -98,7 +106,7 @@ export default {
           :file="file"
           :level="0"
           :hide-extra-on-tree="true"
-          :extra-component="$options.FileRowStats"
+          :extra-component="fileRowExtraComponent"
           :show-changed-icon="true"
           @toggleTreeOpen="toggleTreeOpen"
           @clickFile="scrollToFile"

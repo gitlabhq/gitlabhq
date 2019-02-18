@@ -735,7 +735,7 @@
 
 .mr-version-controls {
   position: relative;
-  z-index: 103;
+  z-index: 203;
   background: $gray-light;
   color: $gl-text-color;
   margin-top: -1px;
@@ -809,7 +809,7 @@
 
 .merge-request-tabs-holder {
   top: $header-height;
-  z-index: 200;
+  z-index: 300;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
