@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Projects::MergeRequests::DiffsController < Projects::MergeRequests::ApplicationController
-  include DiffForPath
   include DiffHelper
   include RendersNotes
 
