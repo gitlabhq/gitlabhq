@@ -253,8 +253,9 @@ to newer issues or merge requests.
 - The people participating in the discussion are trolling, abusive, or otherwise
 being unproductive.
 
-In these cases, a user with Maintainer permissions or higher in the project can lock (and unlock)
-an issue or a merge request, using the "Lock" section in the sidebar:
+In these cases, a user with Developer permissions or higher in the project can lock (and unlock)
+an issue or a merge request, using the "Lock" section in the sidebar. For issues,
+a user with Reporter permissions can lock (and unlock).
 
 | Unlock | Lock |
 | :-----------: | :----------: |
