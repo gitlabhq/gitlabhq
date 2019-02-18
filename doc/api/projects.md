@@ -771,6 +771,8 @@ POST /projects/:id/fork
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `namespace` | integer/string | yes | The ID or path of the namespace that the project will be forked to |
+| `path` | string | no | The path that will be assigned to the resultant project after forking |
+| `name` | string | no | The name that will be assigned to the resultant project after forking |
 
 ## List Forks of a project
 
