@@ -51,7 +51,6 @@ comments: false
 1. Pull for updates
 1. Push changes
 
-
 ----------
 
 ## Commands

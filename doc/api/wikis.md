@@ -119,7 +119,6 @@ PUT /projects/:id/wikis/:slug
 | `format` | string  | no       | The format of the wiki page. Available formats are: `markdown` (default), `rdoc`, and `asciidoc` |
 | `slug` | string  | yes       | The slug (a unique string) of the wiki page |
 
-
 ```bash
 curl --request PUT --data "format=rdoc&content=documentation&title=Docs" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/wikis/foo"
 ```

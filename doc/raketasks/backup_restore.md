@@ -442,7 +442,6 @@ backups will be copied to, and will be created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, just use `.` instead.
 
-
 For Omnibus GitLab packages:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -563,7 +562,6 @@ For installations from source:
     ```
 
 1. [Restart GitLab] for the changes to take effect.
-
 
 ```sh
 sudo -u git crontab -e # Edit the crontab for the git user

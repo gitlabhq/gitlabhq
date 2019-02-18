@@ -137,7 +137,6 @@ If you are using other init systems, like systemd, you can check the
 [GitLab Recipes][gl-recipes] repository for some unofficial services. These are
 **not** officially supported so use them at your own risk.
 
-
 [omnibus-dl]: https://about.gitlab.com/downloads/ "Download the Omnibus packages"
 [install]: ../install/installation.md "Documentation to install GitLab from source"
 [mailroom]: reply_by_email.md "Used for replying by email in GitLab issues and merge requests"

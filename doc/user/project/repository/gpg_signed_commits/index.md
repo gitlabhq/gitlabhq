@@ -190,7 +190,6 @@ key to use.
 
     Replace `30F2B65B9246B6CA` with your GPG key ID.
 
-
 1. (Optional) If Git is using `gpg` and you get errors like `secret key not available`
    or `gpg: signing failed: secret key not available`, run the following command to
    change to `gpg2`:

@@ -101,7 +101,6 @@ GET /projects/:id/templates/:type/:key
 
 Example response (Dockerfile):
 
-
 ```json
 {
   "name": "Binary",

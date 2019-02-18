@@ -46,7 +46,6 @@ needed to compile the project:
   with stages and shared artifacts before investing time in changes to the
   setup.
 
-
 It's sometimes confusing because the name artifact sounds like something that
 is only useful outside of the job, like for downloading a final image. But
 artifacts are also available in between stages within a pipeline. So if you

@@ -542,7 +542,6 @@ Read more about the Container Registry notifications config options in the
 >**Note:**
 Multiple endpoints can be configured for the Container Registry.
 
-
 **Omnibus GitLab installations**
 
 To configure a notification endpoint in Omnibus:

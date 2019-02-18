@@ -20,7 +20,6 @@ There are many places where file uploading is used, according to contexts:
   - LFS Objects
   - Merge request diffs
 
-
 ## Disk storage
 
 GitLab started saving everything on local disk. While directory location changed from previous versions,

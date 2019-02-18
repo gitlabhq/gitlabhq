@@ -8,7 +8,6 @@ The policy used is based on the subject's class name - so `Ability.allowed?(user
 
 Permissions are broken into two parts: `conditions` and `rules`. Conditions are boolean expressions that can access the database and the environment, while rules are statically configured combinations of expressions and other rules that enable or prevent certain abilities. For an ability to be allowed, it must be enabled by at least one rule, and not prevented by any.
 
-
 ### Conditions
 
 Conditions are defined by the `condition` method, and are given a name and a block. The block will be executed in the context of the policy object - so it can access `@user` and `@subject`, as well as call any methods defined on the policy. Note that `@user` may be nil (in the anonymous case), but `@subject` is guaranteed to be a real instance of the subject class.

@@ -90,7 +90,6 @@ const list = document.getElementById('list');
 droplab.addHook(trigger, list);
 ```
 
-
 ### Dynamic data
 
 Adding `data-dynamic` to your dropdown element will enable dynamic list rendering.

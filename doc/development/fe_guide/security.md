@@ -77,7 +77,6 @@ Inline styles should be avoided in almost all cases, they should only be used
 when no alternatives can be found. This allows reusability of styles as well as
 readability.
 
-
 [observatory-cli]: https://github.com/mozilla/http-observatory-cli
 [qualys-ssl]: https://www.ssllabs.com/ssltest/analyze.html
 [secure_headers]: https://github.com/twitter/secureheaders

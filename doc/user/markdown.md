@@ -288,7 +288,6 @@ On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/he
 Ubuntu 18.04 (like many modern Linux distros) has this font installed by default.
 ```
 
-
 Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/monkey.png" width="20px" height="20px"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/star2.png" width="20px" height="20px"> to your <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/speech_balloon.png" width="20px" height="20px">. Well we have a gift for you:
 
 <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/zap.png" width="20px" height="20px">You can use emoji anywhere GFM is supported. <img src="https://gitlab.com/gitlab-org/gitlab-ce/raw/master/app/assets/images/emoji/v.png" width="20px" height="20px">
@@ -453,14 +452,14 @@ Color written inside backticks will be followed by a color "chip".
 
 Examples:
 
-    `#F00`  
-    `#F00A`  
-    `#FF0000`  
-    `#FF0000AA`  
-    `RGB(0,255,0)`  
-    `RGB(0%,100%,0%)`  
-    `RGBA(0,255,0,0.7)`  
-    `HSL(540,70%,50%)`  
+    `#F00`
+    `#F00A`
+    `#FF0000`
+    `#FF0000AA`
+    `RGB(0,255,0)`
+    `RGB(0%,100%,0%)`
+    `RGBA(0,255,0,0.7)`
+    `HSL(540,70%,50%)`
     `HSLA(540,70%,50%,0.7)`
 
 Becomes:
@@ -986,7 +985,6 @@ while the equation for the theory of relativity is E = mc<sup>2</sup>.
 ```
 
 The formula for water is H<sub>2</sub>O while the equation for the theory of relativity is E = mc<sup>2</sup>.
-
 
 ## Wiki-specific Markdown
 

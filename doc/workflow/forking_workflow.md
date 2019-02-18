@@ -10,7 +10,6 @@ document more information about using branches to work together.
 
 Forking a project is in most cases a two-step process.
 
-
 1.  Click on the fork button located in the middle of the page or a project's
     home page right next to the stars button.
 
