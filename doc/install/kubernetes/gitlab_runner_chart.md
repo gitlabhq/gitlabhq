@@ -11,7 +11,7 @@ This chart configures the Runner to:
 - For each new job it receives from [GitLab CI](https://about.gitlab.com/features/gitlab-ci-cd/), it will provision a
   new pod within the specified namespace to run it.
 
-For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+For more information on available GitLab Helm Charts, please see our [overview](index.md).
 
 ## Prerequisites
 
@@ -33,7 +33,7 @@ In order for GitLab Runner to function, your config file **must** specify the fo
 
  - `gitlabUrl`  - the GitLab Server URL (with protocol) to register the runner against
  - `runnerRegistrationToken` - The Registration Token for adding new Runners to the GitLab Server. This must be
-    retrieved from your GitLab Instance. See the [GitLab Runner Documentation](../../ci/runners/README.md#creating-and-registering-a-runner) for more information.
+    retrieved from your GitLab Instance. See the [GitLab Runner Documentation](../../ci/runners/README.md) for more information.
 
 Unless you need to specify additional configuration, you are [ready to install](#installing-gitlab-runner-using-the-helm-chart).
 
@@ -51,7 +51,7 @@ gitlabUrl: http://gitlab.your-domain.com/
 
 ## The Registration Token for adding new Runners to the GitLab Server. This must
 ## be retrieved from your GitLab Instance.
-## ref: https://docs.gitlab.com/ce/ci/runners/README.html#creating-and-registering-a-runner
+## ref: https://docs.gitlab.com/ee/ci/runners/README.html
 ##
 runnerRegistrationToken: ""
 
@@ -227,7 +227,7 @@ helm repo add gitlab https://charts.gitlab.io
 helm init
 ```
 
-Once you [have configured](#configuration) GitLab Runner in your `values.yml` file,
+Once you [have configured](#configuring-gitlab-runner-using-the-helm-chart) GitLab Runner in your `values.yml` file,
 run the following:
 
 ```bash
@@ -236,7 +236,7 @@ helm install --namespace <NAMESPACE> --name gitlab-runner -f <CONFIG_VALUES_FILE
 
 - `<NAMESPACE>` is the Kubernetes namespace where you want to install the GitLab Runner.
 - `<CONFIG_VALUES_FILE>` is the path to values file containing your custom configuration. See the
-  [Configuration](#configuration) section to create it.
+  [Configuring GitLab Runner using the Helm Chart](#configuring-gitlab-runner-using-the-helm-chart) section to create it.
 
 ## Updating GitLab Runner using the Helm Chart
 
@@ -247,11 +247,12 @@ helm upgrade --namespace <NAMESPACE> -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitl
 ```
 
 Where:
+
 - `<NAMESPACE>` is the Kubernetes namespace where GitLab Runner is installed
 - `<CONFIG_VALUES_FILE>` is the path to values file containing your custom configuration. See the
-  [Configuration](#configuration) section to create it.
+  [Configuring GitLab Runner using the Helm Chart](#configuring-gitlab-runner-using-the-helm-chart) section to create it.
 - `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing) we called it `gitlab-runner`.
+  In the [Installing GitLab Runner using the Helm Chart](#installing-gitlab-runner-using-the-helm-chart) section, we called it `gitlab-runner`.
 
 ## Uninstalling GitLab Runner using the Helm Chart
 
@@ -265,4 +266,4 @@ where:
 
 - `<NAMESPACE>` is the Kubernetes namespace where GitLab Runner is installed
 - `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing) we called it `gitlab-runner`.
+  In the [Installing GitLab Runner using the Helm Chart](#installing-gitlab-runner-using-the-helm-chart) section, we called it `gitlab-runner`.

@@ -26,7 +26,7 @@ With EKS, there are a few important details to keep in mind:
 
 The easiest way to solve this and still utilize dynamic provisioning is to utilize, or create, a Storage Class that is locked to a specific zone.
 
-> **Note**: Restricting volumes to specific zone will cause GitLab and any other application using this Storage Class to only reside in that zone. For multiple zone support, utilize [manually provisioned volumes](#manual-provisioning-of-volumes).
+> **Note**: Restricting volumes to specific zone will cause GitLab and any other application using this Storage Class to only reside in that zone. For multiple zone support, utilize [manually provisioned volumes](#manual-provisioning-of-volumes-recommended).
 
 To create the storage class, download and edit Amazon EKS's [sample Storage Class](https://docs.aws.amazon.com/eks/latest/userguide/storage-classes.html) and add the following parameter:
 
