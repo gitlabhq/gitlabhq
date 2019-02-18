@@ -69,16 +69,14 @@ module Types
     field :merge_requests,
           Types::MergeRequestType.connection_type,
           null: true,
-          resolver: Resolvers::MergeRequestsResolver do
-      authorize :read_merge_request
-    end
+          resolver: Resolvers::MergeRequestsResolver,
+          authorize: :read_merge_request
 
     field :merge_request,
           Types::MergeRequestType,
           null: true,
-          resolver: Resolvers::MergeRequestsResolver.single do
-      authorize :read_merge_request
-    end
+          resolver: Resolvers::MergeRequestsResolver.single,
+          authorize: :read_merge_request
 
     field :issues,
           Types::IssueType.connection_type,
