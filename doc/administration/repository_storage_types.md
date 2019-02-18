@@ -41,7 +41,6 @@ Registry, etc.
 
 ## Hashed Storage
 
-
 Hashed Storage is the new storage behavior we rolled out with 10.0. Instead
 of coupling project URL and the folder structure where the repository will be
 stored on disk, we are coupling a hash, based on the project's ID. This makes

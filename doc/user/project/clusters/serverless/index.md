@@ -138,7 +138,6 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
         FUNCTION: echo
    ```
 
-
 The `serverless.yml` file references both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`),
 which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it
 contains three sections with distinct parameters:
@@ -149,7 +148,6 @@ contains three sections with distinct parameters:
 |-----------|-------------|
 | `service` | Name for the Knative service which will serve the function. |
 | `description` | A short description of the `service`. |
-
 
 ### `provider`
 

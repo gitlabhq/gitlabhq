@@ -169,7 +169,6 @@ General tips:
 - [Profiling with Chrome DevTools][google-devtools-profiling]
 - [Browser Diet][browser-diet] is a community-built guide that catalogues practical tips for improving web page performance.
 
-
 [web-page-test]: http://www.webpagetest.org/
 [pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
 [google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en

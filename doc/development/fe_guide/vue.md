@@ -229,7 +229,6 @@ One should apply to be a Vue.js expert by opening an MR when the Merge Request's
 - Vuex code follows the [documented pattern](./vuex.md#actions-pattern-request-and-receive-namespaces)
 - Knowledge about the existing Vue and Vuex applications and existing reusable components
 
-
 [vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
 [environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments

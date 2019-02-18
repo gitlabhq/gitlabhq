@@ -46,7 +46,7 @@ You can see that there are seven stages in total:
 ## How the data is measured
 
 Cycle Analytics records cycle time and data based on the project issues with the
-exception of the staging and production stages, where only data deployed to 
+exception of the staging and production stages, where only data deployed to
 production are measured.
 
 Specifically, if your CI is not set up and you have not defined a `production`
@@ -85,7 +85,6 @@ So, the Cycle Analytics dashboard won't present any data:
 - For issues not assigned a milestone.
 - For staging and production stages, if the project has no `production` or `production/*`
   environment.
-
 
 ## Example workflow
 
@@ -158,7 +157,6 @@ Learn more about Cycle Analytics in the following resources:
 - [Cycle Analytics feature page](https://about.gitlab.com/features/cycle-analytics/)
 - [Cycle Analytics feature preview](https://about.gitlab.com/2016/09/16/feature-preview-introducing-cycle-analytics/)
 - [Cycle Analytics feature highlight](https://about.gitlab.com/2016/09/21/cycle-analytics-feature-highlight/)
-
 
 [board]: issue_board.md#creating-a-new-list
 [ce-5986]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5986

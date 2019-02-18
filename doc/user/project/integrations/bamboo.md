@@ -59,4 +59,3 @@ Bamboo under 'Trigger IP addresses'.
 
 > **Note:**
 > - Starting with GitLab 8.14.0, builds are triggered on push events.
-

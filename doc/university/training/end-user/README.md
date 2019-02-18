@@ -2,7 +2,6 @@
 comments: false
 ---
 
-
 # Training
 
 This training material is the markdown used to generate training slides
@@ -205,7 +204,6 @@ git push origin squash_some_bugs
 - Anyone can comment, not just the assignee
 - Push corrections to the same branch
 
-
 ---
 
 ### Merge request example
@@ -394,7 +392,6 @@ Don't reset after pushing
 git revert vs git reset
 Reset removes the commit while revert removes the changes but leaves the commit
 Revert is safer considering we can revert a revert
-
 
     # Changed file
     git commit -am "bug introduced"

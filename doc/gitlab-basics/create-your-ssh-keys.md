@@ -27,7 +27,6 @@
 
     ![SSH key single page](img/profile_settings_ssh_keys_single_key.png)
 
-
 >**Note:**
 Once you add a key, you cannot edit it, only remove it. In case the paste
 didn't work, you will have to remove the offending key and re-add it.
