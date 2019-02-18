@@ -19,7 +19,7 @@ Peek.into Peek::Views::Gitaly
 Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::Redis
 Peek.into Peek::Views::GC
-Peek.into Peek::Views::Tracing if Gitlab::Tracing.tracing_url_enabled?
+Peek.into Peek::Views::Tracing if Labkit::Tracing.tracing_url_enabled?
 
 # rubocop:disable Naming/ClassAndModuleCamelCase
 class PEEK_DB_CLIENT

@@ -10,7 +10,7 @@ module Gitlab
       data = {}
       data[:severity] = severity
       data[:time] = timestamp.utc.iso8601(3)
-      data[Gitlab::CorrelationId::LOG_KEY] = Gitlab::CorrelationId.current_id
+      data[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
 
       case message
       when String

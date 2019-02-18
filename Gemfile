@@ -274,6 +274,9 @@ gem 'sentry-raven', '~> 2.7'
 
 gem 'premailer-rails', '~> 1.9.7'
 
+# LabKit: Tracing and Correlation
+gem 'gitlab-labkit', '~> 0.1.2'
+
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
 gem 'rails-i18n', '~> 5.1'
@@ -299,12 +302,6 @@ group :metrics do
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
-end
-
-group :tracing do
-  # OpenTracing
-  gem 'opentracing', '~> 0.4.3'
-  gem 'jaeger-client', '~> 0.10.0'
 end
 
 group :development do
