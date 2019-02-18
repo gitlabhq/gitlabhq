@@ -48,6 +48,10 @@
   color: $brand-info;
 }
 
+.text-break-word {
+  word-break: break-all;
+}
+
 .hint { font-style: italic; color: $gl-gray-400; }
 .light { color: $gl-text-color; }
 
