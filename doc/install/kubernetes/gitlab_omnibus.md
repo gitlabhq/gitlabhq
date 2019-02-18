@@ -4,7 +4,7 @@ CAUTION: **Caution:**
 This chart is **deprecated**. We recommend using the [`gitlab` chart](gitlab_chart.md)
 instead. A comparison of the two charts is available in [this video](https://youtu.be/Z6jWR8Z8dv8).
 
-For more information on available GitLab Helm Charts, see the [charts overview](index.md#chart-overview).
+For more information on available GitLab Helm Charts, see [Installing GitLab on Kubernetes](index.md).
 
 - This GitLab-Omnibus chart has been tested on Google Kubernetes Engine and Azure Container Service.
 - This work is based partially on: <https://github.com/lwolf/kubernetes-gitlab/>. GitLab would like to thank Sergey Nuzhdin for his work.
@@ -39,7 +39,7 @@ The deployment includes:
 - _At least_ 4 GB of RAM available on your cluster. 41GB of storage and 2 CPU are also required.
 - Kubernetes 1.4+ with Beta APIs enabled
 - [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) provisioner support in the underlying infrastructure
-- A [wildcard DNS entry](#networking-prerequisites), which resolves to the external IP address
+- A [wildcard DNS entry](#networking-requirements), which resolves to the external IP address
 - The `kubectl` CLI installed locally and authenticated for the cluster
 - The [Helm client](https://github.com/kubernetes/helm/blob/master/docs/quickstart.md) installed locally on your machine
 
@@ -52,7 +52,7 @@ and [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/).
 
 To support the GitLab services and dynamic environments, a wildcard DNS entry
 is required which resolves to the [load balancer](#load-balancer-ip) or
-[external IP](#external-ip). Configuration of the DNS entry will depend upon
+[external IP](#external-ip-recommended). Configuration of the DNS entry will depend upon
 the DNS service being used.
 
 #### External IP (recommended)
@@ -84,13 +84,13 @@ to configure the Wildcard DNS entry. For more information on creating a wildcard
 DNS entry, consult the documentation for the DNS server you are using.
 
 For production deployments of GitLab, we strongly recommend using a
-[external IP](#external-ip).
+[external IP](#external-ip-recommended).
 
 ## Configuring and Installing GitLab
 
 For most installations, two parameters are required:
 
-- `baseDomain`: the [base domain](#networking-prerequisites) of the wildcard host entry. For example, `mycompany.io` if the wild card entry is `*.mycompany.io`.
+- `baseDomain`: the [base domain](#networking-requirements) of the wildcard host entry. For example, `mycompany.io` if the wild card entry is `*.mycompany.io`.
 - `legoEmail`: Email address to use when requesting new SSL certificates from Let's Encrypt.
 
 Other common configuration options:
@@ -105,7 +105,7 @@ For additional configuration options, consult the
 
 ### Choosing a different GitLab release version
 
-The version of GitLab installed is based on the `gitlab` setting (see [section](#choosing-gitlab-edition) above), and
+The version of GitLab installed is based on the `gitlab` setting (see [section](#configuring-and-installing-gitLab) above), and
 the value of the corresponding helm setting: `gitlabCEImage` or `gitabEEImage`.
 
 ```yaml
