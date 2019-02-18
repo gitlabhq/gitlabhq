@@ -5,9 +5,9 @@ module Gitlab
     module Helpers
       # == Reschedulable helper
       #
-      # Allows background migrations to be reschedule if a condition is not met.
+      # Allows background migrations to be reschedule itself if a condition is not met.
       #
-      # Check DeleteDiffFiles migration which reschedules itself if dead tuple count
+      # For example, check DeleteDiffFiles migration which is rescheduled if dead tuple count
       # on DB is not acceptable.
       #
       module Reschedulable
