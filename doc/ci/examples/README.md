@@ -40,6 +40,7 @@ There's also a collection of repositories with [example projects](https://gitlab
 
 ### Miscellaneous
 
+- [End-to-end testing with GitLab CI/CD and WebdriverIO](end_to_end_testing_webdriverio/index.md)
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
