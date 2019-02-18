@@ -592,6 +592,32 @@ module API
           desc: 'The description of the tracker'
         }
       ],
+      'youtrack' => [
+        {
+          required: true,
+          name: :new_issue_url,
+          type: String,
+          desc: 'The new issue URL'
+        },
+        {
+          required: true,
+          name: :project_url,
+          type: String,
+          desc: 'The project URL'
+        },
+        {
+          required: true,
+          name: :issues_url,
+          type: String,
+          desc: 'The issues URL'
+        },
+        {
+          required: false,
+          name: :description,
+          type: String,
+          desc: 'The description of the tracker'
+        }
+      ],
       'slack' => [
         CHAT_NOTIFICATION_SETTINGS,
         CHAT_NOTIFICATION_FLAGS,
@@ -665,6 +691,7 @@ module API
       PrometheusService,
       PushoverService,
       RedmineService,
+      YoutrackService,
       SlackService,
       MattermostService,
       MicrosoftTeamsService,
