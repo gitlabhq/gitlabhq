@@ -95,6 +95,7 @@ module Gitlab
 
       CATEGORY_LABELS = {
         docs: "~Documentation",
+        none: "",
         qa: "~QA"
       }.freeze
 
@@ -119,6 +120,9 @@ module Gitlab
 
         %r{\A(ee/)?db/} => :database,
         %r{\A(ee/)?qa/} => :qa,
+
+        # Files that don't fit into any category are marked with :none
+        %r{\A(ee/)?changelogs/} => :none,
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,
