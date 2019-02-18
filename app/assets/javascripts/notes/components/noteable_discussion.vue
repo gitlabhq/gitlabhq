@@ -26,6 +26,7 @@ import resolvable from '../mixins/resolvable';
 import discussionNavigation from '../mixins/discussion_navigation';
 import ReplyPlaceholder from './discussion_reply_placeholder.vue';
 import jumpToNextDiscussionButton from './discussion_jump_to_next_button.vue';
+import eventHub from '../event_hub';
 
 export default {
   name: 'NoteableDiscussion',
@@ -246,6 +247,12 @@ export default {
       }
     },
   },
+  created() {
+    eventHub.$on('startReplying', this.onStartReplying);
+  },
+  beforeDestroy() {
+    eventHub.$off('startReplying', this.onStartReplying);
+  },
   methods: {
     ...mapActions([
       'saveNote',
@@ -350,6 +357,11 @@ Please check your network connection and try again.`;
     deleteNoteHandler(note) {
       this.$emit('noteDeleted', this.discussion, note);
     },
+    onStartReplying(discussionId) {
+      if (this.discussion.id === discussionId) {
+        this.showReplyForm();
+      }
+    },
   },
 };
 </script>
@@ -412,6 +424,7 @@ Please check your network connection and try again.`;
                     :help-page-path="helpPagePath"
                     :show-reply-button="canReply"
                     @handleDeleteNote="deleteNoteHandler"
+                    @startReplying="showReplyForm"
                   >
                     <note-edited-text
                       v-if="discussion.resolved"
