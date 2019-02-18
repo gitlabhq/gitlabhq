@@ -121,7 +121,7 @@ NOTE: **Note:**
 GitLab administrators can use the admin interface to move any project to any
 namespace if needed.
 
-[permissions]: ../../permissions.md##project-members-permissions
+[permissions]: ../../permissions.md#project-members-permissions
 
 ## Operations settings
 

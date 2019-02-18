@@ -1,0 +1,5 @@
+---
+title: Log queue duration in production_json.log
+merge_request: 25075
+author:
+type: other

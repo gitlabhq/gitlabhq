@@ -25,7 +25,6 @@ To report abuse from a user's comment:
 1. Complete an abuse report.
 1. Click the **Send report** button.
 
-
 NOTE: **Note:**
 A URL to the reported user's comment will be
 pre-filled in the abuse report's **Message** field.

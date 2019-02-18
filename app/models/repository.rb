@@ -288,13 +288,16 @@ class Repository
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
       number_commits_behind, number_commits_ahead =
-        raw_repository.count_commits_between(
+        raw_repository.diverging_commit_count(
           @root_ref_hash,
           branch.dereferenced_target.sha,
-          left_right: true,
           max_count: MAX_DIVERGING_COUNT)
 
-      { behind: number_commits_behind, ahead: number_commits_ahead }
+      if number_commits_behind + number_commits_ahead >= MAX_DIVERGING_COUNT
+        { distance: MAX_DIVERGING_COUNT }
+      else
+        { behind: number_commits_behind, ahead: number_commits_ahead }
+      end
     end
   end
 

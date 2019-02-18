@@ -22,7 +22,7 @@ describe DiffFileEntity do
     let(:request) { EntityRequest.new(project: project, current_user: user) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let(:entity) { described_class.new(diff_file, request: request, merge_request: merge_request) }
-    let(:exposed_urls) { %i(load_collapsed_diff_url edit_path view_path context_lines_path) }
+    let(:exposed_urls) { %i(edit_path view_path context_lines_path) }
 
     it_behaves_like 'diff file entity'
 
@@ -37,6 +37,12 @@ describe DiffFileEntity do
       exposed_urls.each do |attribute|
         expect(response[attribute]).to include(merge_request.target_project.to_param)
       end
+    end
+
+    it 'exposes load_collapsed_diff_url if the file viewer is collapsed' do
+      allow(diff_file.viewer).to receive(:collapsed?) { true }
+
+      expect(subject).to include(:load_collapsed_diff_url)
     end
   end
 

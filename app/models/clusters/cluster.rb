@@ -50,7 +50,7 @@ module Clusters
 
     validates :name, cluster_name: true
     validates :cluster_type, presence: true
-    validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true, require_valid_tld: true }
+    validates :domain, allow_blank: true, hostname: { allow_numeric_hostname: true }
 
     validate :restrict_modification, on: :update
     validate :no_groups, unless: :group_type?
@@ -99,7 +99,7 @@ module Clusters
       where('NOT EXISTS (?)', subquery)
     end
 
-    scope :with_knative_installed, -> { joins(:application_knative).merge(Clusters::Applications::Knative.installed) }
+    scope :with_knative_installed, -> { joins(:application_knative).merge(Clusters::Applications::Knative.available) }
 
     scope :preload_knative, -> {
       preload(

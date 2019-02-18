@@ -80,4 +80,3 @@ exit
 Once the migration is successfully marked, run the rake `db:migrate` task again.
 You will likely have to repeat this process several times until all failed
 migrations are marked complete.
-

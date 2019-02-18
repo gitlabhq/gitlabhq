@@ -4,15 +4,15 @@ import diffsModule from '~/diffs/store/modules';
 import notesModule from '~/notes/stores/modules';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import diffDiscussionsMockData from '../mock_data/diff_discussions';
+import { diffViewerModes } from '~/ide/constants';
 
 Vue.use(Vuex);
-
-const discussionFixture = 'merge_requests/diff_discussion.json';
 
 describe('diff_file_header', () => {
   let vm;
   let props;
-  const diffDiscussionMock = getJSONFixture(discussionFixture)[0];
+  const diffDiscussionMock = diffDiscussionsMockData;
   const Component = Vue.extend(DiffFileHeader);
 
   const store = new Vuex.Store({
@@ -303,13 +303,13 @@ describe('diff_file_header', () => {
       });
 
       it('displays old and new path if the file was renamed', () => {
-        props.diffFile.renamed_file = true;
+        props.diffFile.viewer.name = diffViewerModes.renamed;
 
         vm = mountComponentWithStore(Component, { props, store });
 
         expect(filePaths()).toHaveLength(2);
-        expect(filePaths()[0]).toHaveText(props.diffFile.old_path);
-        expect(filePaths()[1]).toHaveText(props.diffFile.new_path);
+        expect(filePaths()[0]).toHaveText(props.diffFile.old_path_html);
+        expect(filePaths()[1]).toHaveText(props.diffFile.new_path_html);
       });
     });
 
@@ -319,14 +319,12 @@ describe('diff_file_header', () => {
       const button = vm.$el.querySelector('.btn-clipboard');
 
       expect(button).not.toBe(null);
-      expect(button.dataset.clipboardText).toBe(
-        '{"text":"files/ruby/popen.rb","gfm":"`files/ruby/popen.rb`"}',
-      );
+      expect(button.dataset.clipboardText).toBe('{"text":"CHANGELOG.rb","gfm":"`CHANGELOG.rb`"}');
     });
 
     describe('file mode', () => {
       it('it displays old and new file mode if it changed', () => {
-        props.diffFile.mode_changed = true;
+        props.diffFile.viewer.name = diffViewerModes.mode_changed;
 
         vm = mountComponentWithStore(Component, { props, store });
 
@@ -338,7 +336,7 @@ describe('diff_file_header', () => {
       });
 
       it('does not display the file mode if it has not changed', () => {
-        props.diffFile.mode_changed = false;
+        props.diffFile.viewer.name = diffViewerModes.text;
 
         vm = mountComponentWithStore(Component, { props, store });
 

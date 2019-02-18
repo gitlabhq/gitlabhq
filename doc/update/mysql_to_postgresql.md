@@ -97,7 +97,6 @@ Now, you can use pgloader to migrate the data from MySQL to PostgreSQL:
 1. Once the migration finishes, you should see a summary table that looks like
 the following:
 
-
     ```
                                      table name       read   imported     errors      total time
     -----------------------------------------------  ---------  ---------  ---------  --------------
@@ -245,7 +244,6 @@ Now, you can use pgloader to migrate the data from MySQL to PostgreSQL:
 1. Once the migration finishes, you should see a summary table that looks like
 the following:
 
-
     ```
                                      table name       read   imported     errors      total time
     -----------------------------------------------  ---------  ---------  ---------  --------------
@@ -286,4 +284,3 @@ If you experience 500 errors after the migration, try to clear the cache:
 ``` bash
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
-

@@ -52,6 +52,23 @@ describe SendFileUpload do
       end
     end
 
+    context 'with inline image' do
+      let(:filename) { 'test.png' }
+      let(:params) { { disposition: 'inline', attachment: filename } }
+
+      it 'sends a file with inline disposition' do
+        # Notice the filename= is omitted from the disposition; this is because
+        # Rails 5 will append this header in send_file
+        expected_params = {
+          filename: 'test.png',
+          disposition: "inline; filename*=UTF-8''test.png"
+        }
+        expect(controller).to receive(:send_file).with(uploader.path, expected_params)
+
+        subject
+      end
+    end
+
     context 'with attachment' do
       let(:filename) { 'test.js' }
       let(:params) { { attachment: filename } }

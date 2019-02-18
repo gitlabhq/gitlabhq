@@ -8,6 +8,8 @@ describe "User creates a merge request", :js do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(approval_rules: false)
+
     project.add_maintainer(user)
     sign_in(user)
   end

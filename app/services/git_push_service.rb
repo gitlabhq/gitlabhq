@@ -140,7 +140,7 @@ class GitPushService < BaseService
       .perform_async(project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
     EventCreateService.new.push(project, current_user, build_push_data)
-    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(:push)
+    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(:push, pipeline_options)
 
     project.execute_hooks(build_push_data.dup, :push_hooks)
     project.execute_services(build_push_data.dup, :push_hooks)
@@ -230,5 +230,11 @@ class GitPushService < BaseService
 
   def last_pushed_commits
     @last_pushed_commits ||= @push_commits.last(PROCESS_COMMIT_LIMIT)
+  end
+
+  private
+
+  def pipeline_options
+    {} # to be overriden in EE
   end
 end

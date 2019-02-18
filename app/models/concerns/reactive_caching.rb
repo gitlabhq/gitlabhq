@@ -76,7 +76,7 @@ module ReactiveCaching
 
       begin
         data = Rails.cache.read(full_reactive_cache_key(*args))
-        yield data if data.present?
+        yield data unless data.nil?
       rescue InvalidateReactiveCache
         refresh_reactive_cache!(*args)
         nil

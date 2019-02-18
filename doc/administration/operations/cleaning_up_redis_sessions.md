@@ -20,7 +20,6 @@ configuration settings if you have used the advanced Redis
 settings outlined in
 [Configuration Files Documentation](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/README.md).
 
-
 First we define a shell function with the proper Redis connection details.
 
 ```

@@ -93,4 +93,3 @@ Possible fixes
 
 [ce-4981]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4981
 [gitlab-ce-templates]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/.gitlab
-

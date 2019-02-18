@@ -18,7 +18,6 @@ GET /projects/:id/repository/commits
 | `all` | boolean | no | Retrieve every commit from the repository |
 | `with_stats` | boolean | no | Stats about each commit will be added to the response |
 
-
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
 ```
@@ -80,7 +79,6 @@ POST /projects/:id/repository/commits
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
 | `stats` | boolean | no | Include commit stats. Default is true |
-
 
 | `actions[]` Attribute | Type | Required | Description |
 | --------------------- | ---- | -------- | ----------- |
@@ -601,7 +599,6 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha`     | string  | yes   | The commit SHA
 
-
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
 ```
@@ -654,6 +651,46 @@ Example response:
       }
    }
 ]
+```
+
+## Get GPG signature of a commit
+
+Get the [GPG signature from a commit](../user/project/repository/gpg_signed_commits/index.md),
+if it is signed. For unsigned commits, it results in a 404 response.
+
+```
+GET /projects/:id/repository/commits/:sha/signature
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `sha` | string | yes | The commit hash or name of a repository branch or tag |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository/commits/da738facbc19eb2fc2cef57c49be0e6038570352/signature"
+```
+
+Example response if commit is signed:
+
+```json
+{
+  "gpg_key_id": 1,
+  "gpg_key_primary_keyid": "8254AAB3FBD54AC9",
+  "gpg_key_user_name": "John Doe",
+  "gpg_key_user_email": "johndoe@example.com",
+  "verification_status": "verified",
+  "gpg_key_subkey_id": null
+}
+```
+
+Example response if commit is unsigned:
+```json
+{
+  "message": "404 GPG Signature Not Found"
+}
 ```
 
 [ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"

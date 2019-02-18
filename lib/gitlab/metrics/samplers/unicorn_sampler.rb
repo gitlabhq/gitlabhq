@@ -9,11 +9,11 @@ module Gitlab
         end
 
         def unicorn_active_connections
-          @unicorn_active_connections ||= Gitlab::Metrics.gauge(:unicorn_active_connections, 'Unicorn active connections', {}, :max)
+          @unicorn_active_connections ||= ::Gitlab::Metrics.gauge(:unicorn_active_connections, 'Unicorn active connections', {}, :max)
         end
 
         def unicorn_queued_connections
-          @unicorn_queued_connections ||= Gitlab::Metrics.gauge(:unicorn_queued_connections, 'Unicorn queued connections', {}, :max)
+          @unicorn_queued_connections ||= ::Gitlab::Metrics.gauge(:unicorn_queued_connections, 'Unicorn queued connections', {}, :max)
         end
 
         def enabled?

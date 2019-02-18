@@ -8,7 +8,7 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 Get a list of all pages domains. The user must have admin permissions.
 
-```http
+```text
 GET /pages/domains
 ```
 
@@ -34,7 +34,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Get a list of project pages domains. The user must have permissions to view pages domains.
 
-```http
+```text
 GET /projects/:id/pages/domains
 ```
 
@@ -69,7 +69,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Get a single project pages domain. The user must have permissions to view pages domains.
 
-```http
+```text
 GET /projects/:id/pages/domains/:domain
 ```
 
@@ -110,7 +110,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/ap
 
 Creates a new pages domain. The user must have permissions to create new pages domains.
 
-```http
+```text
 POST /projects/:id/pages/domains
 ```
 
@@ -146,7 +146,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain
 
 Updates an existing project pages domain. The user must have permissions to change an existing pages domains.
 
-```http
+```text
 PUT /projects/:id/pages/domains/:domain
 ```
 
@@ -182,7 +182,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certifi
 
 Deletes an existing project pages domain.
 
-```http
+```text
 DELETE /projects/:id/pages/domains/:domain
 ```
 

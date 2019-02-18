@@ -42,7 +42,7 @@ module ExclusiveLeaseGuard
 
   def lease_timeout
     raise NotImplementedError,
-          "#{self.class.name} does not implement #{__method__}"
+      "#{self.class.name} does not implement #{__method__}"
   end
 
   def lease_release?

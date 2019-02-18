@@ -35,7 +35,7 @@ run: redis: (pid 30560) 14274s; run: log: (pid 13807) 2432047s
 run: redis-exporter: (pid 30946) 14205s; run: log: (pid 13869) 2432045s
 run: sidekiq: (pid 30953) 14205s; run: log: (pid 13810) 2432047s
 run: unicorn: (pid 30960) 14204s; run: log: (pid 13809) 2432047s
-``` 
+```
 
 ### Layers
 
@@ -51,11 +51,11 @@ GitLab can be considered to have two layers from a process perspective:
 - Omnibus configuration options
 - Layer: Monitoring
 
-[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue gitlab-ce#45740](https://gitlab.com/gitlab-org/gitlab-ce/issues/45740) about what we will be alerting on. 
+[Alert manager](https://prometheus.io/docs/alerting/alertmanager/) is a tool provided by prometheus that _"handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts."_ You can read more in [issue gitlab-ce#45740](https://gitlab.com/gitlab-org/gitlab-ce/issues/45740) about what we will be alerting on.
 
 ### gitaly
 
-- [Omnibus configuration options](https://gitlab.com/gitlab-org/gitaly/tree/master/doc/configuration) 
+- [Omnibus configuration options](https://gitlab.com/gitlab-org/gitaly/tree/master/doc/configuration)
 - Layer: Core Service (Data)
 
 Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab. (Think GitLab.com or High Availablity Deployments) As of 11.3.0, This service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).
@@ -63,7 +63,7 @@ Gitaly is a service designed by GitLab to remove our need for NFS for Git storag
 ### gitlab-monitor
 
 - Omnibus configuration options
-- Layer: Monitoring 
+- Layer: Monitoring
 
 GitLab Monitor is a process disigned in house that allows us to export metrics about GitLab application internals to prometheus. You can read more [in the project's readme](https://gitlab.com/gitlab-org/gitlab-monitor)
 
@@ -100,14 +100,14 @@ Nginx as an ingress port for all HTTP requests and routes them to the approriate
 - [Omnibus configuration options](https://docs.gitlab.com/ee/administration/monitoring/prometheus/postgres_exporter.html)
 - Layer: Monitoring
 
-[Postgres-exporter](https://github.com/wrouesnel/postgres_exporter) is the community provided Prometheus exporter that will deliver data about Postgres to prometheus for use in Grafana Dashboards. 
+[Postgres-exporter](https://github.com/wrouesnel/postgres_exporter) is the community provided Prometheus exporter that will deliver data about Postgres to prometheus for use in Grafana Dashboards.
 
 ### postgresql
 
 - [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/database.html)
 - Layer: Core Service (Data)
 
-GitLab packages the popular Database to provide storage for Application meta data and user information.  
+GitLab packages the popular Database to provide storage for Application meta data and user information.
 
 ### prometheus
 
@@ -121,11 +121,11 @@ Prometheus is a time-series tool that helps GitLab administrators expose metrics
 - [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/redis.html)
 - Layer: Core Service (Data)
 
-Redis is packaged to provide a place to store: 
+Redis is packaged to provide a place to store:
 
 - session data
 - temporary cache information
-- background job queues. 
+- background job queues.
 
 ### redis-exporter
 
@@ -146,7 +146,7 @@ Sidekiq is a Ruby background job processor that pulls jobs from the redis queue 
 - [Omnibus configuration options](https://docs.gitlab.com/omnibus/settings/unicorn.html)
 - Layer: Core Service (Processor)
 
-[Unicorn](https://bogomips.org/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version. 
+[Unicorn](https://bogomips.org/unicorn/) is a Ruby application server that is used to run the core Rails Application that provides the user facing features in GitLab. Often process output you will see this as `bundle` or `config.ru` depending on the GitLab version.
 
 ### Additional Processes
 
@@ -175,7 +175,6 @@ When making a request to an HTTP Endpoint (Think `/users/sign_in`) the request w
 - gitlab-workhorse - This determines if it needs to go to the Rails application or somewhere else to reduce load on unicorn.
 - unicorn - Since this is a web request, and it needs to access the application it will go to Unicorn.
 - Postgres/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retreive data.
-
 
 ### GitLab Git Request Cycle
 

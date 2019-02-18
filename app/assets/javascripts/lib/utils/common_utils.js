@@ -130,7 +130,7 @@ export const isInViewport = (el, offset = {}) => {
     rect.top >= (top || 0) &&
     rect.left >= (left || 0) &&
     rect.bottom <= window.innerHeight &&
-    rect.right <= window.innerWidth
+    parseInt(rect.right, 10) <= window.innerWidth
   );
 };
 

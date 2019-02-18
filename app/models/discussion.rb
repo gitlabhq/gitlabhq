@@ -17,8 +17,6 @@ class Discussion
             :for_commit?,
             :for_merge_request?,
 
-            :save,
-
             to: :first_note
 
   def project_id

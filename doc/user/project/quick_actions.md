@@ -55,7 +55,6 @@ discussions, and descriptions:
 | `/merge`                   | Merge (when pipeline succeeds) |       | ✓             |
 | `/create_merge_request <branch name>` | Create a new merge request starting from the current issue | ✓ | |
 
-
 ## Quick actions for commit messages
 
 The following quick actions are applicable for commit messages:

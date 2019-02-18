@@ -855,7 +855,6 @@ To make sure your configuration is correct:
     You should see a different port after a few seconds delay
     (the failover/reconnect time).
 
-
 ## Changelog
 
 Changes to Redis HA over time.

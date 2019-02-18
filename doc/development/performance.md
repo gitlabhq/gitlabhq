@@ -336,7 +336,6 @@ the same method won't end up retrieving data from Redis upon every call. When
 memoizing cached data in an instance variable, make sure to also reset the
 instance variable when flushing the cache. An example:
 
-
 ```ruby
 def first_branch
   @first_branch ||= cache.fetch(:first_branch) { branches.first }

@@ -23,7 +23,8 @@ unless Sidekiq.server?
         remote_ip: event.payload[:remote_ip],
         user_id: event.payload[:user_id],
         username: event.payload[:username],
-        ua: event.payload[:ua]
+        ua: event.payload[:ua],
+        queue_duration: event.payload[:queue_duration]
       }
 
       gitaly_calls = Gitlab::GitalyClient.get_request_count

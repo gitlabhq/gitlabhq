@@ -110,7 +110,7 @@ export default {
     <div class="sidebar-container">
       <div class="blocks-container">
         <div class="block d-flex flex-nowrap align-items-center">
-          <h4 class="my-0 mr-2">{{ job.name }}</h4>
+          <h4 class="my-0 mr-2 text-break-word">{{ job.name }}</h4>
           <div class="flex-grow-1 flex-shrink-0 text-right">
             <gl-link
               v-if="job.retry_path"

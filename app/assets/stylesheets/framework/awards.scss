@@ -15,7 +15,7 @@
   margin-top: 3px;
   padding: $gl-padding;
   z-index: 300;
-  width: 300px;
+  width: $award-emoji-width;
   font-size: 14px;
   background-color: $white-light;
   border: 1px solid $border-white-light;
@@ -54,6 +54,10 @@
     &:hover {
       transform: none;
     }
+  }
+
+  @include media-breakpoint-down(xs) {
+    width: $award-emoji-width-xs;
   }
 }
 
@@ -229,10 +233,10 @@
       height: $default-icon-size;
       width: $default-icon-size;
       border-radius: 50%;
+    }
 
-      path {
-        fill: $border-gray-normal;
-      }
+    path {
+      fill: $border-gray-normal;
     }
   }
 
@@ -243,6 +247,10 @@
     left: 10px;
     bottom: 6px;
     opacity: 0;
+
+    path {
+      fill: $award-emoji-positive-add-lines;
+    }
   }
 
   .award-control-text {

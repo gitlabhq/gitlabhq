@@ -112,7 +112,7 @@ table_display_block: true
 ## Emphasis
 
 - Use double asterisks (`**`) to mark a word or text in bold (`**bold**`).
-- Use undescore (`_`) for text in italics (`_italic_`).
+- Use underscore (`_`) for text in italics (`_italic_`).
 - Use greater than (`>`) for blockquotes.
 
 ## Punctuation

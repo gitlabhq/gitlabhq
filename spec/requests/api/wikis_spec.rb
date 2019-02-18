@@ -100,12 +100,24 @@ describe API::Wikis do
 
   shared_examples_for 'updates wiki page' do
     it 'updates the wiki page' do
+      put(api(url, user), params: payload)
+
       expect(response).to have_gitlab_http_status(200)
       expect(json_response.size).to eq(4)
       expect(json_response.keys).to match_array(expected_keys_with_content)
       expect(json_response['content']).to eq(payload[:content])
       expect(json_response['slug']).to eq(payload[:title].tr(' ', '-'))
       expect(json_response['title']).to eq(payload[:title])
+    end
+
+    [:title, :content, :format].each do |part|
+      it "it updates with wiki with missing #{part}" do
+        payload.delete(part)
+
+        put(api(url, user), params: payload)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
     end
   end
 
@@ -528,14 +540,16 @@ describe API::Wikis do
       context 'when user is developer' do
         before do
           project.add_developer(user)
-
-          put(api(url, user), params: payload)
         end
 
         include_examples 'updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            put(api(url, user), params: payload)
+          end
 
           include_examples '404 Wiki Page Not Found'
         end
@@ -544,14 +558,16 @@ describe API::Wikis do
       context 'when user is maintainer' do
         before do
           project.add_maintainer(user)
-
-          put(api(url, user), params: payload)
         end
 
         include_examples 'updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            put(api(url, user), params: payload)
+          end
 
           include_examples '404 Wiki Page Not Found'
         end
@@ -572,14 +588,16 @@ describe API::Wikis do
       context 'when user is developer' do
         before do
           project.add_developer(user)
-
-          put(api(url, user), params: payload)
         end
 
         include_examples 'updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            put(api(url, user), params: payload)
+          end
 
           include_examples '404 Wiki Page Not Found'
         end
@@ -588,14 +606,16 @@ describe API::Wikis do
       context 'when user is maintainer' do
         before do
           project.add_maintainer(user)
-
-          put(api(url, user), params: payload)
         end
 
         include_examples 'updates wiki page'
 
         context 'when page is not existing' do
           let(:url) { "/projects/#{project.id}/wikis/unknown" }
+
+          before do
+            put(api(url, user), params: payload)
+          end
 
           include_examples '404 Wiki Page Not Found'
         end
@@ -604,10 +624,6 @@ describe API::Wikis do
 
     context 'when wiki belongs to a group project' do
       let(:project) { create(:project, :wiki_repo, namespace: group) }
-
-      before do
-        put(api(url, user), params: payload)
-      end
 
       include_examples 'updates wiki page'
     end

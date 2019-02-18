@@ -40,6 +40,12 @@ module QA
           element :login_page
         end
 
+        def assert_page_loaded
+          unless page_loaded?
+            raise QA::Runtime::Browser::NotRespondingError, "Login page did not load at #{QA::Page::Main::Login.perform(&:current_url)}"
+          end
+        end
+
         def page_loaded?
           wait(max: 60) do
             has_element?(:login_page)

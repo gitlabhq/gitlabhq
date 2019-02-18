@@ -283,6 +283,96 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#diverging_commit_count' do
+    it 'counts 0 for the same branch' do
+      expect(repository.diverging_commit_count('master', 'master', max_count: 1000)).to eq([0, 0])
+    end
+
+    context 'max count does not truncate results' do
+      where(:left, :right, :expected) do
+        1 | 1 | [1, 1]
+        4 | 4 | [4, 4]
+        2 | 2 | [2, 2]
+        2 | 4 | [2, 4]
+        4 | 2 | [4, 2]
+        10 | 10 | [10, 10]
+      end
+
+      with_them do
+        before do
+          repository.create_branch('left-branch', 'master')
+          repository.create_branch('right-branch', 'master')
+
+          left.times do
+            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
+          end
+
+          right.times do
+            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'right-branch', 'some more content for b', 'some stuff')
+          end
+        end
+
+        after do
+          repository.delete_branch('left-branch')
+          repository.delete_branch('right-branch')
+        end
+
+        it 'returns the correct count bounding at max_count' do
+          branch_a_sha = repository_rugged.branches['left-branch'].target.oid
+          branch_b_sha = repository_rugged.branches['right-branch'].target.oid
+
+          count = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: 1000)
+
+          expect(count).to eq(expected)
+        end
+      end
+    end
+
+    context 'max count truncates results' do
+      where(:left, :right, :max_count) do
+        1 | 1 | 1
+        4 | 4 | 4
+        2 | 2 | 3
+        2 | 4 | 3
+        4 | 2 | 5
+        10 | 10 | 10
+      end
+
+      with_them do
+        before do
+          repository.create_branch('left-branch', 'master')
+          repository.create_branch('right-branch', 'master')
+
+          left.times do
+            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'left-branch', 'some more content for a', 'some stuff')
+          end
+
+          right.times do
+            new_commit_edit_new_file_on_branch(repository_rugged, 'encoding/CHANGELOG', 'right-branch', 'some more content for b', 'some stuff')
+          end
+        end
+
+        after do
+          repository.delete_branch('left-branch')
+          repository.delete_branch('right-branch')
+        end
+
+        it 'returns the correct count bounding at max_count' do
+          branch_a_sha = repository_rugged.branches['left-branch'].target.oid
+          branch_b_sha = repository_rugged.branches['right-branch'].target.oid
+
+          results = repository.diverging_commit_count(branch_a_sha, branch_b_sha, max_count: max_count)
+
+          expect(results[0] + results[1]).to eq(max_count)
+        end
+      end
+    end
+
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::CommitService, :diverging_commit_count do
+      subject { repository.diverging_commit_count('master', 'master', max_count: 1000) }
+    end
+  end
+
   describe '#has_local_branches?' do
     context 'check for local branches' do
       it { expect(repository.has_local_branches?).to eq(true) }

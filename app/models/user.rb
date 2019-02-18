@@ -275,6 +275,7 @@ class User < ApplicationRecord
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
+  scope :with_emails, -> { preload(:emails) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #
@@ -1165,6 +1166,10 @@ class User < ApplicationRecord
 
   def manageable_groups
     Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+  end
+
+  def manageable_groups_with_routes
+    manageable_groups.eager_load(:route).order('routes.path')
   end
 
   def namespaces

@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, createLocalVue, createWrapper } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import noteActions from '~/notes/components/note_actions.vue';
 import { TEST_HOST } from 'spec/test_constants';
@@ -10,7 +10,7 @@ describe('noteActions', () => {
   let store;
   let props;
 
-  const createWrapper = propsData => {
+  const shallowMountNoteActions = propsData => {
     const localVue = createLocalVue();
     return shallowMount(noteActions, {
       store,
@@ -44,7 +44,7 @@ describe('noteActions', () => {
     beforeEach(() => {
       store.dispatch('setUserData', userDataMock);
 
-      wrapper = createWrapper(props);
+      wrapper = shallowMountNoteActions(props);
     });
 
     it('should render access level badge', () => {
@@ -90,13 +90,27 @@ describe('noteActions', () => {
       it('should be possible to delete comment', () => {
         expect(wrapper.find('.js-note-delete').exists()).toBe(true);
       });
+
+      it('closes tooltip when dropdown opens', done => {
+        wrapper.find('.more-actions-toggle').trigger('click');
+
+        const rootWrapper = createWrapper(wrapper.vm.$root);
+        Vue.nextTick()
+          .then(() => {
+            const emitted = Object.keys(rootWrapper.emitted());
+
+            expect(emitted).toEqual(['bv::hide::tooltip']);
+            done();
+          })
+          .catch(done.fail);
+      });
     });
   });
 
   describe('user is not logged in', () => {
     beforeEach(() => {
       store.dispatch('setUserData', {});
-      wrapper = createWrapper({
+      wrapper = shallowMountNoteActions({
         ...props,
         canDelete: false,
         canEdit: false,
@@ -127,7 +141,7 @@ describe('noteActions', () => {
 
     describe('for showReply = true', () => {
       beforeEach(() => {
-        wrapper = createWrapper({
+        wrapper = shallowMountNoteActions({
           ...props,
           showReply: true,
         });
@@ -142,7 +156,7 @@ describe('noteActions', () => {
 
     describe('for showReply = false', () => {
       beforeEach(() => {
-        wrapper = createWrapper({
+        wrapper = shallowMountNoteActions({
           ...props,
           showReply: false,
         });
@@ -169,7 +183,7 @@ describe('noteActions', () => {
 
     describe('for showReply = true', () => {
       beforeEach(() => {
-        wrapper = createWrapper({
+        wrapper = shallowMountNoteActions({
           ...props,
           showReply: true,
         });
@@ -184,7 +198,7 @@ describe('noteActions', () => {
 
     describe('for showReply = false', () => {
       beforeEach(() => {
-        wrapper = createWrapper({
+        wrapper = shallowMountNoteActions({
           ...props,
           showReply: false,
         });

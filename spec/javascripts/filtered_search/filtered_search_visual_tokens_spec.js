@@ -755,6 +755,17 @@ describe('Filtered Search Visual Tokens', () => {
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
     });
 
+    it('does not update user token appearance for `None` filter', () => {
+      const { tokenNameElement } = findElements(authorToken);
+
+      const tokenName = tokenNameElement.innerText;
+      const tokenValue = 'None';
+
+      subject.renderVisualTokenValue(authorToken, tokenName, tokenValue);
+
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
+    });
+
     it('does not update user token appearance for `none` filter', () => {
       const { tokenNameElement } = findElements(authorToken);
 

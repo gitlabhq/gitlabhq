@@ -24,56 +24,66 @@ Example response:
     "id" : 1,
     "name" : "bug",
     "color" : "#d9534f",
+    "text_color" : "#FFFFFF",
     "description": "Bug reported by user",
     "open_issues_count": 1,
     "closed_issues_count": 0,
     "open_merge_requests_count": 1,
     "subscribed": false,
-    "priority": 10
+    "priority": 10,
+    "is_project_label": true
   },
   {
     "id" : 4,
     "color" : "#d9534f",
+    "text_color" : "#FFFFFF",
     "name" : "confirmed",
     "description": "Confirmed issue",
     "open_issues_count": 2,
     "closed_issues_count": 5,
     "open_merge_requests_count": 0,
     "subscribed": false,
-    "priority": null
+    "priority": null,
+    "is_project_label": true
   },
   {
     "id" : 7,
     "name" : "critical",
     "color" : "#d9534f",
+    "text_color" : "#FFFFFF",
     "description": "Critical issue. Need fix ASAP",
     "open_issues_count": 1,
     "closed_issues_count": 3,
     "open_merge_requests_count": 1,
     "subscribed": false,
-    "priority": null
+    "priority": null,
+    "is_project_label": true
   },
   {
     "id" : 8,
     "name" : "documentation",
     "color" : "#f0ad4e",
+    "text_color" : "#FFFFFF",
     "description": "Issue about documentation",
     "open_issues_count": 1,
     "closed_issues_count": 0,
     "open_merge_requests_count": 2,
     "subscribed": false,
-    "priority": null
+    "priority": null,
+    "is_project_label": false
   },
   {
     "id" : 9,
     "color" : "#5cb85c",
+    "text_color" : "#FFFFFF",
     "name" : "enhancement",
     "description": "Enhancement proposal",
     "open_issues_count": 1,
     "closed_issues_count": 0,
     "open_merge_requests_count": 1,
     "subscribed": true,
-    "priority": null
+    "priority": null,
+    "is_project_label": true
   }
 ]
 ```
@@ -105,12 +115,14 @@ Example response:
   "id" : 10,
   "name" : "feature",
   "color" : "#5843AD",
+  "text_color" : "#FFFFFF",
   "description":null,
   "open_issues_count": 0,
   "closed_issues_count": 0,
   "open_merge_requests_count": 0,
   "subscribed": false,
-  "priority": null
+  "priority": null,
+    "is_project_label": true
 }
 ```
 
@@ -149,7 +161,6 @@ PUT /projects/:id/labels
 | `description`   | string  | no                                | The new description of the label |
 | `priority`    | integer | no       | The new priority of the label. Must be greater or equal than zero or `null` to remove the priority. |
 
-
 ```bash
 curl --request PUT --data "name=documentation&new_name=docs&color=#8E44AD&description=Documentation" --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/labels"
 ```
@@ -161,12 +172,14 @@ Example response:
   "id" : 8,
   "name" : "docs",
   "color" : "#8E44AD",
+  "text_color" : "#FFFFFF",
   "description": "Documentation",
   "open_issues_count": 1,
   "closed_issues_count": 0,
   "open_merge_requests_count": 2,
   "subscribed": false,
-  "priority": null
+  "priority": null,
+  "is_project_label": true
 }
 ```
 
@@ -196,12 +209,14 @@ Example response:
   "id" : 1,
   "name" : "bug",
   "color" : "#d9534f",
+  "text_color" : "#FFFFFF",
   "description": "Bug reported by user",
   "open_issues_count": 1,
   "closed_issues_count": 0,
   "open_merge_requests_count": 1,
   "subscribed": true,
-  "priority": null
+  "priority": null,
+  "is_project_label": true
 }
 ```
 

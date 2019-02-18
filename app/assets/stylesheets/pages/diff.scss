@@ -602,7 +602,7 @@
   }
 }
 
-@mixin diff_background($background, $idiff, $border) {
+@mixin diff-background($background, $idiff, $border) {
   background: $background;
 
   &.line_content span.idiff {
@@ -1038,12 +1038,30 @@
 }
 
 .diff-tree-list {
-  width: 320px;
+  position: -webkit-sticky;
+  position: sticky;
+  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  max-height: calc(100vh - #{$top-pos});
+  padding-right: $gl-padding;
+  z-index: 202;
+
+  .with-performance-bar & {
+    $performance-bar-top-pos: $performance-bar-height + $top-pos;
+    top: $performance-bar-top-pos;
+    max-height: calc(100vh - #{$performance-bar-top-pos});
+  }
+
+  .drag-handle {
+    bottom: 16px;
+    transform: translateX(-6px);
+  }
 }
 
 .diff-files-holder {
   flex: 1;
   min-width: 0;
+  z-index: 201;
 }
 
 .compare-versions-container {
@@ -1051,22 +1069,11 @@
 }
 
 .tree-list-holder {
-  position: -webkit-sticky;
-  position: sticky;
-  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
-  top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
-  max-height: calc(100vh - #{$top-pos});
-  padding-right: $gl-padding;
+  height: 100%;
 
   .file-row {
     margin-left: 0;
     margin-right: 0;
-  }
-
-  .with-performance-bar & {
-    $performance-bar-top-pos: $performance-bar-height + $top-pos;
-    top: $performance-bar-top-pos;
-    max-height: calc(100vh - #{$performance-bar-top-pos});
   }
 }
 

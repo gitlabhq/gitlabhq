@@ -4,7 +4,7 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 ## Issues Functionalities
 
-The image bellow illustrates how an issue looks like:
+The image below illustrates what an issue looks like:
 
 ![Issue view](img/issues_main_view_numbered.jpg)
 
@@ -13,7 +13,7 @@ You can find all the information on that issue on one screen.
 ### Issue screen
 
 An issue starts with its status (open or closed), followed by its author,
-and includes many other functionalities, numbered on the image above to
+and includes many other functionalities, numbered in the image above to
 explain what they mean, one by one.
 
 Many of the elements of the issue screen refresh automatically, such as the title and description, when they are changed by another user.
@@ -27,7 +27,7 @@ Comments and system notes also appear automatically in response to various actio
 
 #### 2. Todos
 
-- Add todo: add that issue to your [GitLab Todo](../../../workflow/todos.html) list
+- Add todo: add that issue to your [GitLab Todo](../../../workflow/todos.md) list
 - Mark todo as done: mark that issue as done (reflects on the Todo list)
 
 #### 3. Assignee
@@ -43,14 +43,14 @@ assigned to them if they created the issue themselves.
 
 ##### 3.1. Multiple Assignees **[STARTER]**
 
-Often multiple people likely work on the same issue together,
-which can especially be difficult to track in large teams
+Often multiple people work on the same issue together,
+which can be especially difficult to track in large teams
 where there is shared ownership of an issue.
 
-In [GitLab Starter](https://about.gitlab.com/pricing/), you can also
-select multiple assignees to an issue.
+In [GitLab Starter](https://about.gitlab.com/pricing/), you can
+assign multiple people to an issue.
 
-Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
+Learn more in the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
 
 #### 4. Milestone
 
@@ -58,40 +58,39 @@ Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/
 
 #### 5. Time Tracking
 
-- Estimate time: add an estimate time in which the issue will be implemented
-- Spend: add the time spent on the implementation of that issue
+- Estimate time: add an estimate of the time it will take to resolve the issue.
+- Spend: add the time spent on the resolution of the issue
 
 > **Note:**
 Both estimate and spend times are set via [GitLab Quick Actions](../quick_actions.md).
 
-Learn more on the [Time Tracking documentation](../../../workflow/time_tracking.md).
+Learn more in the [Time Tracking documentation](../../../workflow/time_tracking.md).
 
 #### 6. Due date
 
-When you work on a tight schedule, and it's important to
-have a way to set up a deadline for implementations and for solving
-problems. This can be facilitated by the [due date](due_dates.md)). Due dates
+When you work on a tight schedule, it's important to
+have a way to set a deadline for implementations and for solving
+problems. This can be done in the [due date](due_dates.md) element. Due dates
 can be changed as many times as needed.
 
 #### 7. Labels
 
 Categorize issues by giving them [labels](../labels.md). They help to
-organize team's workflows, once they enable you to work with the
-[GitLab Issue Board](index.md#gitlab-issue-board).
+organize workflows, and they enable you to work with the
+[GitLab Issue Board](index.md#issue-board).
 
-Group Labels, which allow you to use the same labels per
+Group Labels, which allow you to use the same labels for a
 group of projects, can be also given to issues. They work exactly the same,
 but they are immediately available to all projects in the group.
 
 > **Tip:**
-if the label doesn't exist yet, when you click **Edit**, it opens a dropdown menu from which you can select **Create new label**.
+If a label doesn't exist yet, you can click **Edit**, and it opens a dropdown menu from which you can select **Create new label**.
 
 #### 8. Weight **[STARTER]**
 
-- Attribute a weight (in a 0 to 9 range) to that issue. Easy to complete
-should weight 1 and very hard to complete should weight 9.
+- Assign a weight. Larger values are used to indicate more effort is required to complete the issue. Only positive values or zero are allowed.
 
-Learn more on the [Issue Weight documentation](https://docs.gitlab.com/ee/workflow/issue_weight.html).
+Learn more in the [Issue Weight documentation](https://docs.gitlab.com/ee/workflow/issue_weight.html).
 
 #### 9. Participants
 
@@ -102,32 +101,33 @@ Learn more on the [Issue Weight documentation](https://docs.gitlab.com/ee/workfl
 - Subscribe: if you are not a participant of the discussion on that issue, but
 want to receive notifications on each new input, subscribe to it.
 - Unsubscribe: if you are receiving notifications on that issue but no
-longer want to receive them, unsubscribe to it.
+longer want to receive them, unsubscribe from it.
 
-Read more on the [notifications documentation](../../../workflow/notifications.md#issue-merge-request-events).
+Read more in the [notifications documentation](../../../workflow/notifications.md#issue--merge-request-events).
 
 #### 11. Reference
 
-- A quick "copy to clipboard" button to that issue's reference, `foo/bar#xxx`, where `foo` is the `username` or `groupname`, `bar`
+- A quick "copy to clipboard" button for that issue's reference, `foo/bar#xxx`, where `foo` is the `username` or `groupname`, `bar`
 is the `project-name`, and `xxx` is the issue number.
 
 #### 12. Title and description
 
-- Title: a plain text title describing the issue's subject.
-- Description: a text field which fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+- Title: a plain text title for describing the subject of the issue.
+- Description: a large text field which fully supports [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm),
+  to describe all the details of the issue.
 
-#### 13. @mentions
+#### 13. Mentions
 
-- You can either `@mention` a user or a group present in your
-  GitLab instance and they will be notified via todos and email, unless that
-  person has disabled all notifications in their profile settings.
-- Mentions for yourself (the current logged in user),will be distinctly highlighted
+- You can mention a user or a group present in your GitLab instance with
+  `@username` or `@groupname` and they will be notified via todos and email, unless
+  they have disabled all notifications in their profile settings.
+- Mentions for yourself (the current logged in user), will be highlighted
   in a different color, allowing you to easily see which comments involve you,
   helping you focus on them quickly.
 
-To change your [notification settings](../../../workflow/notifications.md) navigate to
+To change your [notification settings](../../../workflow/notifications.md), navigate to
 **Profile Settings** > **Notifications** > **Global notification level**
-and choose your preferences from the dropdown menu.
+and choose your preference from the dropdown menu.
 
 > **Tip:**
 Avoid mentioning `@all` in issues and merge requests,
@@ -138,14 +138,14 @@ interpreted as spam.
 #### 14. Related Merge Requests
 
 - Any merge requests mentioned in that issue's description
-or in the issue thread.
+or in the issue discussion thread.
 
 #### 15. Award emoji
 
 - Award an emoji to that issue.
 
 > **Tip:**
-Posting "+1" as comments in threads spam all
+Posting "+1" as a comment in a thread spams all subscribed
 participants of that issue. Awarding an emoji is a way to let them
 know you like it without spamming them.
 
@@ -157,7 +157,7 @@ These text fields also fully support
 
 #### 17. Comment, start a discussion, or comment and close
 
-Once you wrote your comment, you can either:
+Once you write a comment, you can either:
 
 - Click "Comment" and your comment will be published.
 - Click "Start discussion": start a thread within that issue's thread to discuss specific points.
@@ -167,6 +167,6 @@ Once you wrote your comment, you can either:
 
 - Create a new merge request (with a new source branch named after the issue) in one action.
 The merge request will automatically inherit the milestone and labels of the issue. The merge
-request will automatically close that issue as soon as merged.
+request will automatically close that issue when it is merged.
 - Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
 named after that issue.

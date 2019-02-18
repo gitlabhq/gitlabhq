@@ -13,7 +13,6 @@ to update the `input` element with.
 
 You can also set the `InputSetter` config to an array of objects, which will allow you to update multiple elements.
 
-
 ```html
 <input id="input" value="">
 <div id="div" data-selected-id=""></div>

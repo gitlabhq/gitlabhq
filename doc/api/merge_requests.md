@@ -160,7 +160,6 @@ will be the same. In the case of a merge request from a fork,
 `target_project_id` and `project_id` will be the same and
 `source_project_id` will be the fork project's ID.
 
-
 Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                                    |
@@ -435,6 +434,9 @@ Parameters:
     "avatar_url": null,
     "web_url" : "https://gitlab.example.com/admin"
   },
+  "user" : {
+    "can_merge" : false
+   }
   "assignee": {
     "id": 1,
     "name": "Administrator",
@@ -528,7 +530,6 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
 
-
 ```json
 [
   {
@@ -562,7 +563,6 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
-
 
 ```json
 [

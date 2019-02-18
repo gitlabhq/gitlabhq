@@ -26,6 +26,12 @@ describe Users::ActivityService do
                 .from(last_activity_on)
                 .to(Date.today)
       end
+
+      it 'tries to obtain ExclusiveLease' do
+        expect(Gitlab::ExclusiveLease).to receive(:new).and_call_original
+
+        subject.execute
+      end
     end
 
     context 'when a bad object is passed' do
@@ -45,6 +51,12 @@ describe Users::ActivityService do
 
       it 'does not update last_activity_on' do
         expect { subject.execute }.not_to change(user, :last_activity_on)
+      end
+
+      it 'does not try to obtain ExclusiveLease' do
+        expect(Gitlab::ExclusiveLease).not_to receive(:new)
+
+        subject.execute
       end
     end
 

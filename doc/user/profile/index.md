@@ -89,7 +89,6 @@ To enable private profile:
 1. Check the "Private profile" option.
 1. Hit **Update profile settings**.
 
-
 NOTE: **Note:**
 You and GitLab admins can see your the abovementioned information on your profile even if it is private.
 

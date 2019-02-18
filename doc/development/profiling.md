@@ -74,7 +74,6 @@ Gitlab::Profiler.print_by_total_time(result, max_percent: 60, min_percent: 2)
 
 To print the profile in HTML format, use the following example:
 
-
 ```ruby
 result = Gitlab::Profiler.profile('/my-user')
 
@@ -91,7 +90,6 @@ For GitLab.com, currently the latest profiling data has been [moved from
 Redash to Looker](https://gitlab.com/gitlab-com/Product/issues/5#note_121194467).
 We are [currently investigating how to make this data
 public](https://gitlab.com/meltano/looker/issues/294).
-
 
 ## Sherlock
 

@@ -48,6 +48,10 @@
   color: $brand-info;
 }
 
+.text-break-word {
+  word-break: break-all;
+}
+
 .hint { font-style: italic; color: $gl-gray-400; }
 .light { color: $gl-text-color; }
 
@@ -442,3 +446,15 @@ img.emoji {
 .position-left-0 { left: 0; }
 .position-right-0 { right: 0; }
 .position-top-0 { top: 0; }
+
+.drag-handle {
+  width: 4px;
+
+  &:hover {
+    background-color: $white-normal;
+  }
+
+  &.is-dragging {
+    background-color: $gray-600;
+  }
+}

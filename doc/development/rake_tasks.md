@@ -151,7 +151,6 @@ following:
 bundle exec rake gemojione:digests
 ```
 
-
 This will update the file `fixtures/emojis/digests.json` based on the currently
 available Emoji.
 

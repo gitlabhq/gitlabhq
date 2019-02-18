@@ -84,7 +84,10 @@ export default (
     done();
   };
 
-  const result = action({ commit, state, dispatch, rootState: state, rootGetters: state }, payload);
+  const result = action(
+    { commit, state, dispatch, rootState: state, rootGetters: state, getters: state },
+    payload,
+  );
 
   return new Promise(resolve => {
     setImmediate(resolve);

@@ -1,0 +1,5 @@
+---
+title: Fix 403 errors when adding an assignee list in project boards
+merge_request: 25263
+author:
+type: fixed

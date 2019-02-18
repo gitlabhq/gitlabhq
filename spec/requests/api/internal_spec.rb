@@ -167,6 +167,7 @@ describe API::Internal do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq(user.username)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+        expect(json_response['expires_in']).to eq(Gitlab::LfsToken::DEFAULT_EXPIRE_TIME)
         expect(Gitlab::LfsToken.new(key).token_valid?(json_response['lfs_token'])).to be_truthy
       end
 
@@ -324,6 +325,7 @@ describe API::Internal do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
+          expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to be_nil
         end
@@ -336,6 +338,7 @@ describe API::Internal do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
+          expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
@@ -349,6 +352,7 @@ describe API::Internal do
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          expect(json_response["gl_project_path"]).to eq(project.full_path)
           expect(json_response["gitaly"]).not_to be_nil
           expect(json_response["gitaly"]["repository"]).not_to be_nil
           expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
@@ -368,6 +372,7 @@ describe API::Internal do
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq('/')
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gl_project_path"]).to eq(project.full_path)
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)

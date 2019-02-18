@@ -149,4 +149,3 @@ Example response:
   }
 }
 ```
-
