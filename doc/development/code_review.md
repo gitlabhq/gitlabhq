@@ -137,6 +137,14 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a domain expert and/or reviewer, it is recommended that they are not also picked
 as the maintainer to ultimately approve and merge it.
 
+Try to review in a timely manner; doing so allows everyone involved in the merge
+request to iterate faster as the context is fresh in memory. Further, this 
+improves contributors' experiences significantly. Reviewers should aim to review
+within two working days from the date they were assigned the merge request. If 
+you don't think you'll be able to review a merge request within that time, let 
+the author know as soon as possible. When the author of the merge request has not
+heard anything after two days, a new reviewer should be assigned.
+
 Maintainers should check before merging if the merge request is approved by the
 required approvers.
 
