@@ -4,7 +4,7 @@
 module Gitlab
   module BackgroundMigration
     class DeleteDiffFiles
-      include Reschedulable
+      include Helpers::Reschedulable
 
       class MergeRequestDiff < ActiveRecord::Base
         self.table_name = 'merge_request_diffs'

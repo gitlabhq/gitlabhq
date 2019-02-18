@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Dir[Rails.root.join("lib/gitlab/background_migration/concerns/*.rb")].each { |f| require f }
+Dir[Rails.root.join("lib/gitlab/background_migration/helpers/*.rb")].each { |f| require f }
 
 module Gitlab
   module BackgroundMigration
