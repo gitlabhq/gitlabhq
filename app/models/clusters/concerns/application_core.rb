@@ -30,6 +30,12 @@ module Clusters
           # Override if you need extra data synchronized
           # from K8s after installation
         end
+
+        def update_command
+          command = install_command
+          command.version = version
+          command
+        end
       end
     end
   end
