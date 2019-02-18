@@ -64,6 +64,7 @@ export default {
       'getNotesDataByProp',
       'isLoading',
       'commentsDisabled',
+      'getNoteableData',
     ]),
     noteableType() {
       return this.noteableData.noteableType;
@@ -78,6 +79,9 @@ export default {
       }
 
       return this.discussions;
+    },
+    canReply() {
+      return this.getNoteableData.current_user.can_create_note && !this.commentsDisabled;
     },
   },
   watch: {
@@ -129,6 +133,7 @@ export default {
       'setNotesFetchedState',
       'expandDiscussion',
       'startTaskList',
+      'convertToDiscussion',
     ]),
     fetchNotes() {
       if (this.isFetching) return null;
@@ -176,6 +181,11 @@ export default {
         }
       }
     },
+    startReplying(discussionId) {
+      return this.convertToDiscussion(discussionId)
+        .then(() => this.$nextTick())
+        .then(() => eventHub.$emit('startReplying', discussionId));
+    },
   },
   systemNote: constants.SYSTEM_NOTE,
 };
@@ -206,7 +216,8 @@ export default {
             v-else
             :key="discussion.id"
             :note="discussion.notes[0]"
-            :discussion="discussion"
+            :show-reply-button="canReply"
+            @startReplying="startReplying(discussion.id)"
           />
         </template>
         <noteable-discussion
