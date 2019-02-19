@@ -1,0 +1,5 @@
+---
+title: Prevent Auto DevOps from trying to deploy without a domain name
+merge_request: 25308
+author:
+type: fixed
