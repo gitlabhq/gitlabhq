@@ -93,6 +93,12 @@ class UrlValidator < ActiveModel::EachValidator
   end
 
   def allow_setting_local_requests?
+    # We cannot use Gitlab::CurrentSettings as ApplicationSetting itself
+    # uses UrlValidator to validate urls. This ends up in a cycle
+    # when Gitlab::CurrentSettings creates an ApplicationSetting which then
+    # calls this validator.
+    #
+    # See https://gitlab.com/gitlab-org/gitlab-ee/issues/9833
     ApplicationSetting.current&.allow_local_requests_from_hooks_and_services?
   end
 end
