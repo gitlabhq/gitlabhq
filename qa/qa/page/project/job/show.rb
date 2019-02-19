@@ -20,15 +20,19 @@ module QA::Page
         element :pipeline_path
       end
 
-      def completed?
-        COMPLETED_STATUSES.include?(status_badge)
+      def loaded?(wait: 60)
+        has_element?(:build_trace, wait: wait)
       end
 
-      def successful?(timeout: 60)
+      # Reminder: You should check #loaded? first
+      def completed?(timeout: 60)
         wait(reload: false, max: timeout) do
-          completed? && !trace_loading?
+          COMPLETED_STATUSES.include?(status_badge)
         end
+      end
 
+      # Reminder: You should check #completed? and #loaded? first
+      def successful?
         status_badge == PASSED_STATUS
       end
 

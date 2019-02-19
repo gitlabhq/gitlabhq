@@ -40,7 +40,7 @@ module QA
 
             # Create and connect K8s cluster
             @cluster = Service::KubernetesCluster.new(rbac: rbac).create!
-            kubernetes_cluster = Resource::KubernetesCluster.fabricate! do |cluster|
+            Resource::KubernetesCluster.fabricate! do |cluster|
               cluster.project = @project
               cluster.cluster = @cluster
               cluster.install_helm_tiller = true
@@ -49,14 +49,11 @@ module QA
               cluster.install_runner = true
             end
 
-            kubernetes_cluster.populate(:ingress_ip)
             @project.visit!
             Page::Project::Menu.perform(&:click_ci_cd_settings)
             Page::Project::Settings::CICD.perform do |p|
               p.enable_auto_devops
             end
-
-            kubernetes_cluster.populate(:domain)
           end
 
           after(:all) do
@@ -76,7 +73,9 @@ module QA
               pipeline.go_to_job('build')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+              expect(job).to be_loaded
+              expect(job).to be_completed(timeout: 600)
+              expect(job).to be_successful
 
               job.click_element(:pipeline_path)
             end
@@ -85,7 +84,9 @@ module QA
               pipeline.go_to_job('test')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+              expect(job).to be_loaded
+              expect(job).to be_completed(timeout: 600)
+              expect(job).to be_successful
 
               job.click_element(:pipeline_path)
             end
@@ -94,7 +95,9 @@ module QA
               pipeline.go_to_job('production')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_sucessful(timeout: 1200), "Job did not pass"
+              expect(job).to be_loaded
+              expect(job).to be_completed(timeout: 1200)
+              expect(job).to be_successful
 
               job.click_element(:pipeline_path)
             end
@@ -137,7 +140,9 @@ module QA
               pipeline.go_to_job('build')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+              expect(job).to be_loaded
+              expect(job).to be_completed(timeout: 600)
+              expect(job).to be_successful
 
               job.click_element(:pipeline_path)
             end
@@ -146,7 +151,9 @@ module QA
               pipeline.go_to_job('test')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_sucessful(timeout: 600), "Job did not pass"
+              expect(job).to be_loaded
+              expect(job).to be_completed(timeout: 600)
+              expect(job).to be_successful
 
               job.click_element(:pipeline_path)
             end
@@ -155,7 +162,9 @@ module QA
               pipeline.go_to_job('production')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_sucessful(timeout: 1200), "Job did not pass"
+              expect(job).to be_loaded
+              expect(job).to be_completed(timeout: 1200)
+              expect(job).to be_successful
 
               job.click_element(:pipeline_path)
             end
