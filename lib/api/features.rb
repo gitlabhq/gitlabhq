@@ -42,6 +42,7 @@ module API
         requires :value, type: String, desc: '`true` or `false` to enable/disable, an integer for percentage of time'
         optional :feature_group, type: String, desc: 'A Feature group name'
         optional :user, type: String, desc: 'A GitLab username'
+        optional :group, type: String, desc: "A GitLab group's path, such as 'gitlab-org'"
         optional :project, type: String, desc: 'A projects path, like gitlab-org/gitlab-ce'
       end
       post ':name' do

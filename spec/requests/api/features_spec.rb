@@ -163,6 +163,40 @@ describe API::Features do
         end
       end
 
+      context 'when enabling for a group by path' do
+        context 'when the group exists' do
+          it 'sets the feature gate' do
+            group = create(:group)
+
+            post api("/features/#{feature_name}", admin), params: { value: 'true', group: group.full_path }
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to eq(
+              'name' => 'my_feature',
+              'state' => 'conditional',
+              'gates' => [
+                { 'key' => 'boolean', 'value' => false },
+                { 'key' => 'actors', 'value' => ["Group:#{group.id}"] }
+              ])
+          end
+        end
+
+        context 'when the group does not exist' do
+          it 'sets no new values and keeps the feature disabled' do
+            post api("/features/#{feature_name}", admin), params: { value: 'true', group: 'not/a/group' }
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to eq(
+              "name" => "my_feature",
+              "state" => "off",
+              "gates" => [
+                { "key" => "boolean", "value" => false }
+              ]
+            )
+          end
+        end
+      end
+
       it 'creates a feature with the given percentage if passed an integer' do
         post api("/features/#{feature_name}", admin), params: { value: '50' }
 
