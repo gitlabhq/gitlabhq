@@ -28,7 +28,7 @@ module AppearancesHelper
 
   def brand_header_logo
     if current_appearance&.header_logo?
-      image_tag current_appearance.header_logo_path
+      image_tag current_appearance.header_logo_path, class: 'brand-header-logo'
     else
       render 'shared/logo.svg'
     end

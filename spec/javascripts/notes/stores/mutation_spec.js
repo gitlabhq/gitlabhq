@@ -527,17 +527,32 @@ describe('Notes Store mutations', () => {
         id: 42,
         individual_note: true,
       };
-      state = { discussions: [discussion] };
+      state = { convertedDisscussionIds: [] };
     });
 
-    it('toggles individual_note', () => {
+    it('adds a disucssion to convertedDisscussionIds', () => {
       mutations.CONVERT_TO_DISCUSSION(state, discussion.id);
 
-      expect(discussion.individual_note).toBe(false);
+      expect(state.convertedDisscussionIds).toContain(discussion.id);
+    });
+  });
+
+  describe('REMOVE_CONVERTED_DISCUSSION', () => {
+    let discussion;
+    let state;
+
+    beforeEach(() => {
+      discussion = {
+        id: 42,
+        individual_note: true,
+      };
+      state = { convertedDisscussionIds: [41, 42] };
     });
 
-    it('throws if discussion was not found', () => {
-      expect(() => mutations.CONVERT_TO_DISCUSSION(state, 99)).toThrow();
+    it('removes a disucssion from convertedDisscussionIds', () => {
+      mutations.REMOVE_CONVERTED_DISCUSSION(state, discussion.id);
+
+      expect(state.convertedDisscussionIds).not.toContain(discussion.id);
     });
   });
 });

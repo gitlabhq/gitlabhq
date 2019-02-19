@@ -68,6 +68,32 @@ describe('diffs/components/app', () => {
     });
   });
 
+  describe('resizable', () => {
+    afterEach(() => {
+      localStorage.removeItem('mr_tree_list_width');
+    });
+
+    it('sets initial width when no localStorage has been set', () => {
+      createComponent();
+
+      expect(vm.vm.treeWidth).toEqual(320);
+    });
+
+    it('sets initial width to localStorage size', () => {
+      localStorage.setItem('mr_tree_list_width', '200');
+
+      createComponent();
+
+      expect(vm.vm.treeWidth).toEqual(200);
+    });
+
+    it('sets width of tree list', () => {
+      createComponent();
+
+      expect(vm.find('.js-diff-tree-list').element.style.width).toEqual('320px');
+    });
+  });
+
   describe('empty state', () => {
     it('renders empty state when no diff files exist', () => {
       createComponent();

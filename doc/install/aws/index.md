@@ -471,7 +471,6 @@ gitlab_rails['redis_port'] = 6379
 
 Finally, reconfigure GitLab for the change to take effect:
 
-
 ```sh
 sudo gitlab-ctl reconfigure
 ```

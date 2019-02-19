@@ -47,7 +47,6 @@ to enable it.
 > - To move or rename a repository with a container registry you will have to
 >   delete all existing images.
 
-
 If you visit the **Registry** link under your project's menu, you can see the
 explicit instructions to login to the Container Registry using your GitLab
 credentials.

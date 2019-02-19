@@ -249,7 +249,6 @@ If you want some SAML authentication methods to count as 2FA on a per session ba
 
 1. Save the file and [restart GitLab][] for the changes ot take effect
 
-
 In addition to the changes in GitLab, make sure that your Idp is returning the
 `AuthnContext`. For example:
 

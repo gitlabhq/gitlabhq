@@ -41,6 +41,15 @@ describe('new file modal component', () => {
         expect(vm.$el.querySelector('.label-bold').textContent.trim()).toBe('Name');
       });
 
+      it(`${type === 'tree' ? 'does not show' : 'shows'} file templates`, () => {
+        const templateFilesEl = vm.$el.querySelector('.file-templates');
+        if (type === 'tree') {
+          expect(templateFilesEl).toBeNull();
+        } else {
+          expect(templateFilesEl instanceof Element).toBeTruthy();
+        }
+      });
+
       describe('createEntryInStore', () => {
         it('$emits create', () => {
           spyOn(vm, 'createTempEntry');

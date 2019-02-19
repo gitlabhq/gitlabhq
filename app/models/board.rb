@@ -21,6 +21,10 @@ class Board < ActiveRecord::Base
     group_id.present?
   end
 
+  def project_board?
+    project_id.present?
+  end
+
   def backlog_list
     lists.merge(List.backlog).take
   end

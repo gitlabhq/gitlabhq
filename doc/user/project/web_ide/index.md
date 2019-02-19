@@ -3,8 +3,8 @@
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/4539) in [GitLab Ultimate][ee] 10.4.
 > [Brought to GitLab Core](https://gitlab.com/gitlab-org/gitlab-ce/issues/44157) in 10.7.
 
-The Web IDE makes it faster and easier to contribute changes to your projects
-by providing an advanced editor with commit staging.
+The Web IDE editor makes it faster and easier to contribute changes to your
+projects by providing an advanced editor with commit staging.
 
 ## Open the Web IDE
 
@@ -22,7 +22,7 @@ searching. The file finder is launched using the keyboard shortcut `Command-p`,
 `Control-p`, or `t` (when editor is not in focus). Type the filename or
 file path fragments to start seeing results.
 
-## Syntax highligting
+## Syntax highlighting
 
 As expected from an IDE, syntax highlighting for many languages within 
 the Web IDE will make your direct editing even easier.
@@ -47,10 +47,10 @@ Single file editing is based on the [Ace Editor](https://ace.c9.io).
 
 After making your changes, click the Commit button in the bottom left to
 review the list of changed files. Click on each file to review the changes and
-click the tick icon to stage the file. 
+click the tick icon to stage the file.
 
 Once you have staged some changes, you can add a commit message and commit the
-staged changes. Unstaged changes will not be commited.
+staged changes. Unstaged changes will not be committed.
 
 ![Commit changes](img/commit_changes.png)
 
@@ -80,7 +80,7 @@ left.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19318) in [GitLab Core][ce] 11.0.
 
 Switching between your authored and assigned merge requests can be done without
-leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
+leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list
 of merge requests. You will need to commit or discard all your changes before
 switching to a different merge request.
 
@@ -89,7 +89,7 @@ switching to a different merge request.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20850) in [GitLab Core][ce] 11.2.
 
 Switching between branches of the current project repository can be done without
-leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
+leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list
 of branches. You will need to commit or discard all your changes before
 switching to a different branch.
 

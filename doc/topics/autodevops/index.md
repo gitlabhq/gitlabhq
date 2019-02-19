@@ -58,15 +58,15 @@ project in a simple and automatic way:
 
 1. [Auto Build](#auto-build)
 1. [Auto Test](#auto-test)
-1. [Auto Code Quality](#auto-code-quality) **[STARTER]**
-1. [Auto SAST (Static Application Security Testing)](#auto-sast) **[ULTIMATE]**
-1. [Auto Dependency Scanning](#auto-dependency-scanning) **[ULTIMATE]**
-1. [Auto License Management](#auto-license-management) **[ULTIMATE]**
+1. [Auto Code Quality](#auto-code-quality-starter) **[STARTER]**
+1. [Auto SAST (Static Application Security Testing)](#auto-sast-ultimate) **[ULTIMATE]**
+1. [Auto Dependency Scanning](#auto-dependency-scanning-ultimate) **[ULTIMATE]**
+1. [Auto License Management](#auto-license-management-ultimate) **[ULTIMATE]**
 1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
-1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast) **[ULTIMATE]**
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast-ultimate) **[ULTIMATE]**
 1. [Auto Deploy](#auto-deploy)
-1. [Auto Browser Performance Testing](#auto-browser-performance-testing) **[PREMIUM]**
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing-premium) **[PREMIUM]**
 1. [Auto Monitoring](#auto-monitoring)
 
 As Auto DevOps relies on many different components, it's good to have a basic
@@ -553,7 +553,7 @@ Herokuish](https://github.com/gliderlabs/herokuish#paths)
 
 > [Introduced][ce-19507] in GitLab 11.0.
 
-For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md###gitlab-deploy-token)
+For internal and private projects a [GitLab Deploy Token](../../user/project/deploy_tokens/index.md#gitlab-deploy-token)
 will be automatically created, when Auto DevOps is enabled and the Auto DevOps settings are saved. This Deploy Token
 can be used for permanent access to the registry.
 

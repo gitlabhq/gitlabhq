@@ -3,6 +3,7 @@
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41766) in GitLab 11.7.
 
 Using this API you can manipulate GitLab's [Release](../../user/project/releases/index.md) links. For manipulating other Release assets, see [Release API](index.md).
+GitLab supports links links to `http`, `https`, and `ftp` assets.
 
 ## Get links
 

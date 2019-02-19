@@ -38,13 +38,14 @@ Adding time entries (time spent or estimates) is limited to project members.
 
 To enter an estimate, write `/estimate`, followed by the time. For example, if
 you need to enter an estimate of 3 days, 5 hours and 10 minutes, you would write
-`/estimate 3d 5h 10m`.
+`/estimate 3d 5h 10m`. Time units that we support are listed at the bottom of
+this help page.
 
 Every time you enter a new time estimate, any previous time estimates will be
 overridden by this new value. There should only be one valid estimate in an
 issue or a merge request.
 
-To remove an estimation entirely, use `/remove_estimation`.
+To remove an estimation entirely, use `/remove_estimate`.
 
 ### Time spent
 
@@ -72,5 +73,8 @@ The following time units are available:
 
 Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
-[landing]: https://about.gitlab.com/features/time-tracking
+Other interesting links:
+
+- [Time Tracking landing page on about.gitlab.com](https://about.gitlab.com/features/time-tracking)
+
 [quick actions]: ../user/project/quick_actions.md

@@ -191,5 +191,9 @@ artifacts and the job's trace.
 1. Click the trash icon at the top right of the job's trace.
 1. Confirm the deletion.
 
+## Retrieve artifacts of private projects when using GitLab CI 
+
+In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../../api/jobs.md#get-job-artifacts) the artifacts.
+
 [expiry date]: ../../../ci/yaml/README.md#artifacts-expire_in
 [ce-14399]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14399

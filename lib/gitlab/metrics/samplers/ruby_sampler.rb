@@ -24,14 +24,14 @@ module Gitlab
 
         def init_metrics
           metrics = {}
-          metrics[:sampler_duration] = Metrics.counter(with_prefix(:sampler, :duration_seconds_total), 'Sampler time', labels)
-          metrics[:total_time] = Metrics.counter(with_prefix(:gc, :duration_seconds_total), 'Total GC time', labels)
+          metrics[:sampler_duration] = ::Gitlab::Metrics.counter(with_prefix(:sampler, :duration_seconds_total), 'Sampler time', labels)
+          metrics[:total_time] = ::Gitlab::Metrics.counter(with_prefix(:gc, :duration_seconds_total), 'Total GC time', labels)
           GC.stat.keys.each do |key|
-            metrics[key] = Metrics.gauge(with_prefix(:gc_stat, key), to_doc_string(key), labels, :livesum)
+            metrics[key] = ::Gitlab::Metrics.gauge(with_prefix(:gc_stat, key), to_doc_string(key), labels, :livesum)
           end
 
-          metrics[:memory_usage] = Metrics.gauge(with_prefix(:memory, :bytes), 'Memory used', labels, :livesum)
-          metrics[:file_descriptors] = Metrics.gauge(with_prefix(:file, :descriptors), 'File descriptors used', labels, :livesum)
+          metrics[:memory_usage] = ::Gitlab::Metrics.gauge(with_prefix(:memory, :bytes), 'Memory used', labels, :livesum)
+          metrics[:file_descriptors] = ::Gitlab::Metrics.gauge(with_prefix(:file, :descriptors), 'File descriptors used', labels, :livesum)
 
           metrics
         end

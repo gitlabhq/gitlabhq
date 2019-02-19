@@ -190,7 +190,6 @@ key to use.
 
     Replace `30F2B65B9246B6CA` with your GPG key ID.
 
-
 1. (Optional) If Git is using `gpg` and you get errors like `secret key not available`
    or `gpg: signing failed: secret key not available`, run the following command to
    change to `gpg2`:
@@ -266,3 +265,7 @@ To remove a GPG key from your account:
 
 You can configure your project to reject commits that aren't GPG-signed
 via [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html).
+
+## GPG signing API
+
+Learn how to [get the GPG signature from a commit via API](../../../../api/commits.md#get-gpg-signature-of-a-commit).

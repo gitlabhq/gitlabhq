@@ -251,7 +251,7 @@ $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
 $gl-bar-padding: 3px;
 $input-horizontal-padding: 12px;
-$browserScrollbarSize: 10px;
+$browser-scrollbar-size: 10px;
 
 /*
  * Misc
@@ -405,6 +405,8 @@ $status-icon-size: 22px;
 $award-emoji-menu-shadow: rgba(0, 0, 0, 0.175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
+$award-emoji-width: 376px;
+$award-emoji-width-xs: 300px;
 
 /*
  * Search Box

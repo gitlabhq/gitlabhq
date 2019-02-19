@@ -831,6 +831,29 @@ should remain working as-is when EE is running without a license.
 
 Instead place EE specs in the `ee/spec` folder.
 
+### Code in `spec/factories`
+
+Use `FactoryBot.modify` to extend factories already defined in CE.
+
+Note that you cannot define new factories (even nested ones) inside the `FactoryBot.modify` block. You can do so in a
+separate `FactoryBot.define` block as shown in the example below:
+
+```ruby
+# ee/spec/factories/notes.rb
+FactoryBot.modify do
+  factory :note do
+    trait :on_epic do
+      noteable { create(:epic) }
+      project nil
+    end
+  end
+end
+
+FactoryBot.define do
+  factory :note_on_epic, parent: :note, traits: [:on_epic]
+end
+```
+
 ## JavaScript code in `assets/javascripts/`
 
 To separate EE-specific JS-files we should also move the files into an `ee` folder.

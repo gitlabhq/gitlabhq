@@ -2,7 +2,7 @@
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/41766) in GitLab 11.7.
 > - Using this API you can manipulate GitLab's [Release](../../user/project/releases/index.md) entries.
-> - For manipulating links as a release asset, see [Release Links API](links.md)
+> - For manipulating links as a release asset, see [Release Links API](links.md).
 
 ## List Releases
 
@@ -14,7 +14,7 @@ GET /projects/:id/releases
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 
 Example request:
 
@@ -160,7 +160,7 @@ GET /projects/:id/releases/:tag_name
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag where the release will be created from. |
 
 Example request:
@@ -239,10 +239,10 @@ POST /projects/:id/releases
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `name`        | string         | yes      | The release name.                       |
 | `tag_name`    | string         | yes      | The tag where the release will be created from. |
-| `description` | string         | yes      | The description of the release. You can use [markdown](../user/markdown.md). |
+| `description` | string         | yes      | The description of the release. You can use [markdown](../../user/markdown.md). |
 | `ref`         | string         | no       | If `tag_name` doesn't exist, the release will be created from `ref`. It can be a commit SHA, another tag name, or a branch name. |
 | `assets:links`| array of hash  | no       | An array of assets links.               |
 | `assets:links:name`| string    | no (if `assets:links` specified, it's required)    | The name of the link. |
@@ -331,10 +331,10 @@ PUT /projects/:id/releases/:tag_name
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag where the release will be created from. |
 | `name`        | string         | no       | The release name.                       |
-| `description` | string         | no       | The description of the release. You can use [markdown](../user/markdown.md). |
+| `description` | string         | no       | The description of the release. You can use [markdown](../../user/markdown.md). |
 
 Example request:
 
@@ -412,7 +412,7 @@ DELETE /projects/:id/releases/:tag_name
 
 | Attribute     | Type           | Required | Description                             |
 | ------------- | -------------- | -------- | --------------------------------------- |
-| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding). |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the project](../README.md#namespaced-path-encoding). |
 | `tag_name`    | string         | yes      | The tag where the release will be created from. |
 
 Example request:

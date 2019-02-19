@@ -1,5 +1,5 @@
 <script>
-import { GlLink, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlTooltipDirective } from '@gitlab/ui';
 import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
@@ -9,7 +9,6 @@ export default {
   components: {
     Icon,
     GlLink,
-    GlButton,
   },
   props: {
     artifacts: {
@@ -21,20 +20,22 @@ export default {
 </script>
 <template>
   <div class="btn-group" role="group">
-    <gl-button
+    <button
       v-gl-tooltip
-      class="dropdown-toggle build-artifacts js-pipeline-dropdown-download"
-      title="Artifacts"
+      type="button"
+      class="dropdown-toggle build-artifacts btn btn-default js-pipeline-dropdown-download"
+      :title="__('Artifacts')"
       data-toggle="dropdown"
-      aria-label="Artifacts"
+      :aria-label="__('Artifacts')"
     >
-      <icon name="download" /> <i class="fa fa-caret-down" aria-hidden="true"> </i>
-    </gl-button>
+      <icon name="download" />
+      <i class="fa fa-caret-down" aria-hidden="true"></i>
+    </button>
     <ul class="dropdown-menu dropdown-menu-right">
       <li v-for="(artifact, i) in artifacts" :key="i">
-        <gl-link :href="artifact.path" rel="nofollow" download>
-          Download {{ artifact.name }} artifacts
-        </gl-link>
+        <gl-link :href="artifact.path" rel="nofollow" download
+          >Download {{ artifact.name }} artifacts</gl-link
+        >
       </li>
     </ul>
   </div>

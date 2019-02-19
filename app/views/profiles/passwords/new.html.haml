@@ -1,12 +1,13 @@
-- page_title    "New Password"
-- header_title  "New Password"
-%h3.page-title Set up new password
+- page_title _('New Password')
+- breadcrumb_title _('New Password')
+
+%h3.page-title= _('Set up new password')
 %hr
 = form_for @user, url: profile_password_path, method: :post do |f|
   %p.slead
-    Please set a new password before proceeding.
+    = _('Please set a new password before proceeding.')
     %br
-    After a successful password update you will be redirected to login screen.
+    = _('After a successful password update you will be redirected to login screen.')
 
   = form_errors(@user)
 
@@ -22,4 +23,4 @@
     .col-sm-10
       = f.password_field :password_confirmation, required: true, class: 'form-control'
   .form-actions
-    = f.submit 'Set new password', class: "btn btn-success"
+    = f.submit _('Set new password'), class: 'btn btn-success'

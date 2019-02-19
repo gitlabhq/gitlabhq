@@ -29,6 +29,7 @@ import actions, {
   renderFileForDiscussionId,
   setRenderTreeList,
   setShowWhitespace,
+  setRenderIt,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -262,12 +263,16 @@ describe('DiffsStoreActions', () => {
           {
             id: 1,
             renderIt: false,
-            collapsed: false,
+            viewer: {
+              collapsed: false,
+            },
           },
           {
             id: 2,
             renderIt: false,
-            collapsed: false,
+            viewer: {
+              collapsed: false,
+            },
           },
         ],
       };
@@ -766,7 +771,9 @@ describe('DiffsStoreActions', () => {
       diffFiles: [
         {
           file_hash: 'HASH',
-          collapsed,
+          viewer: {
+            collapsed,
+          },
           renderIt,
         },
       ],
@@ -847,6 +854,12 @@ describe('DiffsStoreActions', () => {
       setShowWhitespace({ commit() {} }, { showWhitespace: true, pushState: true });
 
       expect(window.history.pushState).toHaveBeenCalled();
+    });
+  });
+
+  describe('setRenderIt', () => {
+    it('commits RENDER_FILE', done => {
+      testAction(setRenderIt, 'file', {}, [{ type: types.RENDER_FILE, payload: 'file' }], [], done);
     });
   });
 });

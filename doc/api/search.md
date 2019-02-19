@@ -281,7 +281,6 @@ Example response:
 ]
 ```
 
-
 ## Group Search API
 
 Search within the specified group.
@@ -519,7 +518,6 @@ GET /projects/:id/search
 Search the expression within the specified scope. Currently these scopes are supported: issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs.
 
 The response depends on the requested scope.
-
 
 ### Scope: issues
 

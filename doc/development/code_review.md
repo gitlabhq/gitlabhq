@@ -23,6 +23,11 @@ one of the [Merge request coaches][team].
 If you need assistance with security scans or comments, feel free to include the 
 Security Team (`@gitlab-com/gl-security`) in the review.
 
+The `danger-review` CI job will randomly pick a reviewer and a maintainer for
+each area of the codebase that your merge request seems to touch. It only makes
+recommendations - feel free to override it if you think someone else is a better
+fit!
+
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 
@@ -131,6 +136,14 @@ experts, in favor of focusing on their primary responsibilities.
 If a developer who happens to also be a maintainer was involved in a merge request
 as a domain expert and/or reviewer, it is recommended that they are not also picked
 as the maintainer to ultimately approve and merge it.
+
+Try to review in a timely manner; doing so allows everyone involved in the merge
+request to iterate faster as the context is fresh in memory. Further, this 
+improves contributors' experiences significantly. Reviewers should aim to review
+within two working days from the date they were assigned the merge request. If 
+you don't think you'll be able to review a merge request within that time, let 
+the author know as soon as possible. When the author of the merge request has not
+heard anything after two days, a new reviewer should be assigned.
 
 Maintainers should check before merging if the merge request is approved by the
 required approvers.

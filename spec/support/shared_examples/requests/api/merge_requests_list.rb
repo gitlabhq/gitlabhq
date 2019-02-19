@@ -257,6 +257,38 @@ shared_examples 'merge requests list' do
         expect(response_dates).to eq(response_dates.sort.reverse)
       end
 
+      context '2 merge requests with equal created_at' do
+        let!(:closed_mr2) do
+          create :merge_request,
+                 state: 'closed',
+                 milestone: milestone1,
+                 author: user,
+                 assignee: user,
+                 source_project: project,
+                 target_project: project,
+                 title: "Test",
+                 created_at: @mr_earlier.created_at
+        end
+
+        it 'page breaks first page correctly' do
+          get api("#{endpoint_path}?sort=desc&per_page=4", user)
+
+          response_ids = json_response.map { |merge_request| merge_request['id'] }
+
+          expect(response_ids).to include(closed_mr2.id)
+          expect(response_ids).not_to include(@mr_earlier.id)
+        end
+
+        it 'page breaks second page correctly' do
+          get api("#{endpoint_path}?sort=desc&per_page=4&page=2", user)
+
+          response_ids = json_response.map { |merge_request| merge_request['id'] }
+
+          expect(response_ids).not_to include(closed_mr2.id)
+          expect(response_ids).to include(@mr_earlier.id)
+        end
+      end
+
       it 'returns an array of merge_requests ordered by updated_at' do
         path = endpoint_path + '?order_by=updated_at'
 

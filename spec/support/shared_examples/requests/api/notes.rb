@@ -8,13 +8,45 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         create_list(:note, 3, params)
       end
 
-      it 'sorts by created_at in descending order by default' do
-        get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user)
+      context 'without sort params' do
+        it 'sorts by created_at in descending order by default' do
+          get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes", user)
 
-        response_dates = json_response.map { |note| note['created_at'] }
+          response_dates = json_response.map { |note| note['created_at'] }
 
-        expect(json_response.length).to eq(4)
-        expect(response_dates).to eq(response_dates.sort.reverse)
+          expect(json_response.length).to eq(4)
+          expect(response_dates).to eq(response_dates.sort.reverse)
+        end
+
+        context '2 notes with equal created_at' do
+          before do
+            @first_note = Note.first
+
+            params = { noteable: noteable, author: user }
+            params[:project] = parent if parent.is_a?(Project)
+            params[:created_at] = @first_note.created_at
+
+            @note2 = create(:note, params)
+          end
+
+          it 'page breaks first page correctly' do
+            get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes?per_page=4", user)
+
+            response_ids = json_response.map { |note| note['id'] }
+
+            expect(response_ids).to include(@note2.id)
+            expect(response_ids).not_to include(@first_note.id)
+          end
+
+          it 'page breaks second page correctly' do
+            get api("/#{parent_type}/#{parent.id}/#{noteable_type}/#{noteable[id_name]}/notes?per_page=4&page=2", user)
+
+            response_ids = json_response.map { |note| note['id'] }
+
+            expect(response_ids).not_to include(@note2.id)
+            expect(response_ids).to include(@first_note.id)
+          end
+        end
       end
 
       it 'sorts by ascending order when requested' do

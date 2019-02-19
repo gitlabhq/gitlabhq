@@ -31,6 +31,15 @@ describe Gitlab::SQL::RecursiveCTE, :postgresql do
 
       expect(cte.alias_to(table).to_sql).to eq("#{source_name} AS #{alias_name}")
     end
+
+    it 'replaces dots with an underscore' do
+      table = Arel::Table.new('gitlab.kittens')
+
+      source_name = ActiveRecord::Base.connection.quote_table_name(:cte_name)
+      alias_name = ActiveRecord::Base.connection.quote_table_name(:gitlab_kittens)
+
+      expect(cte.alias_to(table).to_sql).to eq("#{source_name} AS #{alias_name}")
+    end
   end
 
   describe '#apply_to' do

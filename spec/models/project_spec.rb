@@ -41,7 +41,6 @@ describe Project do
     it { is_expected.to have_one(:pipelines_email_service) }
     it { is_expected.to have_one(:irker_service) }
     it { is_expected.to have_one(:pivotaltracker_service) }
-    it { is_expected.to have_one(:hipchat_service) }
     it { is_expected.to have_one(:flowdock_service) }
     it { is_expected.to have_one(:assembla_service) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
@@ -4600,6 +4599,21 @@ describe Project do
 
         expect(project.errors).to be_empty
       end
+    end
+  end
+
+  describe '#has_pool_repsitory?' do
+    it 'returns false when it does not have a pool repository' do
+      subject = create(:project, :repository)
+
+      expect(subject.has_pool_repository?).to be false
+    end
+
+    it 'returns true when it has a pool repository' do
+      pool    = create(:pool_repository, :ready)
+      subject = create(:project, :repository, pool_repository: pool)
+
+      expect(subject.has_pool_repository?).to be true
     end
   end
 

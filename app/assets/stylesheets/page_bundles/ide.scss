@@ -682,25 +682,6 @@ $ide-commit-header-height: 48px;
   flex: 1;
 }
 
-.drag-handle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-
-  &:hover {
-    background-color: $white-normal;
-  }
-
-  &.drag-right {
-    right: 0;
-  }
-
-  &.drag-left {
-    left: 0;
-  }
-}
-
 .ide-commit-list-container {
   display: flex;
   flex: 1;

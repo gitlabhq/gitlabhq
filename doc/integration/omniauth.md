@@ -231,7 +231,6 @@ In order to enable/disable an OmniAuth provider, go to Admin Area -> Settings ->
 
 ![Enabled OAuth Sign-In sources](img/enabled-oauth-sign-in-sources.png)
 
-
 ## Disabling Omniauth
 
 Starting from version 11.4 of GitLab, Omniauth is enabled by default. This only

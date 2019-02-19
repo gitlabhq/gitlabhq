@@ -369,8 +369,9 @@ module API
     end
 
     class Commit < Grape::Entity
-      expose :id, :short_id, :title, :created_at
+      expose :id, :short_id, :created_at
       expose :parent_ids
+      expose :full_title, as: :title
       expose :safe_message, as: :message
       expose :author_name, :author_email, :authored_date
       expose :committer_name, :committer_email, :committed_date
@@ -389,6 +390,13 @@ module API
       expose :status
       expose :last_pipeline, using: 'API::Entities::PipelineBasic'
       expose :project_id
+    end
+
+    class CommitSignature < Grape::Entity
+      expose :gpg_key_id
+      expose :gpg_key_primary_keyid, :gpg_key_user_name, :gpg_key_user_email
+      expose :verification_status
+      expose :gpg_key_subkey_id
     end
 
     class BasicRef < Grape::Entity
@@ -548,6 +556,15 @@ module API
 
       expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |issue|
         issue
+      end
+
+      expose :merge_requests_count do |issue, options|
+        if options[:issuable_metadata]
+          # Avoids an N+1 query when metadata is included
+          options[:issuable_metadata][issue.id].merge_requests_count
+        else
+          issue.merge_requests_closing_issues.count
+        end
       end
     end
 
@@ -730,6 +747,12 @@ module API
 
       def build_available?(options)
         options[:project]&.feature_available?(:builds, options[:current_user])
+      end
+
+      expose :user do
+        expose :can_merge do |merge_request, options|
+          merge_request.can_be_merged_by?(options[:current_user])
+        end
       end
     end
 
@@ -1003,7 +1026,7 @@ module API
     end
 
     class LabelBasic < Grape::Entity
-      expose :id, :name, :color, :description
+      expose :id, :name, :color, :description, :text_color
     end
 
     class Label < LabelBasic
@@ -1030,6 +1053,9 @@ module API
     class ProjectLabel < Label
       expose :priority do |label, options|
         label.priority(options[:parent])
+      end
+      expose :is_project_label do |label, options|
+        label.is_a?(::ProjectLabel)
       end
     end
 

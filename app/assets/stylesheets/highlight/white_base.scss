@@ -70,7 +70,7 @@ $white-gc-color: #999;
 $white-gc-bg: #eaf2f5;
 
 
-@mixin matchLine {
+@mixin match-line {
   color: $black-transparent;
   background-color: $gray-light;
 }
@@ -105,7 +105,7 @@ pre.code,
   &.match .line_content,
   .new-nonewline.line_content,
   .old-nonewline.line_content {
-    @include matchLine;
+    @include match-line;
   }
 
   .diff-line-num {
@@ -185,7 +185,7 @@ pre.code,
     }
 
     &.match {
-      @include matchLine;
+      @include match-line;
     }
 
     &.hll:not(.empty-cell) {

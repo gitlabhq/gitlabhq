@@ -34,7 +34,6 @@ To use Akismet:
 
 ![Screenshot of Akismet settings](img/akismet_settings.png)
 
-
 ## Training
 
 > *Note:* Training the Akismet filter is only available in 8.11 and above.

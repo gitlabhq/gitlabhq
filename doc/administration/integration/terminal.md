@@ -64,8 +64,9 @@ narrower set of rules, you can restrict it to URLs ending with `/terminal.ws`
 (although this may still have a few false positives).
 
 If you installed from source, or have made any configuration changes to your
-Omnibus installation before upgrading to 8.15, you may need to make some
-changes to your configuration. See the  [8.14 to 8.15 upgrade](../../update/8.14-to-8.15.md#nginx-configuration)
+Omnibus installation before upgrading to 8.15, you may need to make some changes
+to your configuration. See the [Upgrading Community Edition and Enterprise
+Edition from source](../../update/upgrading_from_source.md#nginx-configuration)
 document for more details.
 
 If you'd like to disable web terminal support in GitLab, just stop passing

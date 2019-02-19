@@ -290,12 +290,12 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def committers
-    @committers ||= commits.committers
+  def commit_authors
+    @commit_authors ||= commits.authors
   end
 
   def authors
-    User.from_union([committers, User.where(id: self.author_id)])
+    User.from_union([commit_authors, User.where(id: self.author_id)])
   end
 
   # Verifies if title has changed not taking into account WIP prefix
@@ -1326,7 +1326,7 @@ class MergeRequest < ActiveRecord::Base
   def base_pipeline
     @base_pipeline ||= project.ci_pipelines
       .order(id: :desc)
-      .find_by(sha: diff_base_sha)
+      .find_by(sha: diff_base_sha, ref: target_branch)
   end
 
   def discussions_rendered_on_frontend?

@@ -26,7 +26,7 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         def reorder_users(users)
           if params[:order_by] && params[:sort]
-            users.reorder(params[:order_by] => params[:sort])
+            users.reorder(order_options_with_tie_breaker)
           else
             users
           end

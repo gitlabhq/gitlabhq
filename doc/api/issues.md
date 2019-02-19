@@ -110,6 +110,7 @@ Example response:
       "labels" : [],
       "upvotes": 4,
       "downvotes": 0,
+      "merge_requests_count": 0,
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
@@ -168,7 +169,6 @@ GET /groups/:id/issues?my_reaction_emoji=star
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
 
-
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/issues
 ```
@@ -220,6 +220,7 @@ Example response:
       "labels" : [],
       "upvotes": 4,
       "downvotes": 0,
+      "merge_requests_count": 0,
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
@@ -335,6 +336,7 @@ Example response:
       "labels" : [],
       "upvotes": 4,
       "downvotes": 0,
+      "merge_requests_count": 0,
       "id" : 41,
       "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
       "updated_at" : "2016-01-04T15:31:46.176Z",
@@ -431,6 +433,7 @@ Example response:
    "labels" : [],
    "upvotes": 4,
    "downvotes": 0,
+   "merge_requests_count": 0,
    "id" : 41,
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
    "updated_at" : "2016-01-04T15:31:46.176Z",
@@ -506,6 +509,7 @@ Example response:
    ],
    "upvotes": 4,
    "downvotes": 0,
+   "merge_requests_count": 0,
    "author" : {
       "name" : "Alexandra Bashirian",
       "avatar_url" : null,
@@ -568,7 +572,6 @@ PUT /projects/:id/issues/:issue_iid
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
 
-
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
 ```
@@ -606,6 +609,7 @@ Example response:
    ],
    "upvotes": 4,
    "downvotes": 0,
+   "merge_requests_count": 0,
    "id" : 85,
    "assignees" : [],
    "assignee" : null,
@@ -692,6 +696,7 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
+  "merge_requests_count": 0,
   "milestone": null,
   "assignees": [{
     "name": "Miss Monserrate Beier",
@@ -776,6 +781,7 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
+  "merge_requests_count": 0,
   "milestone": null,
   "assignees": [{
     "name": "Miss Monserrate Beier",
@@ -822,7 +828,6 @@ Example response:
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
-
 **Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Unsubscribe from an issue
@@ -859,6 +864,7 @@ Example response:
   "labels": [],
   "upvotes": 4,
   "downvotes": 0,
+  "merge_requests_count": 0,
   "milestone": null,
   "assignee": {
     "name": "Edwardo Grady",
@@ -976,6 +982,7 @@ Example response:
     "user_notes_count": 7,
     "upvotes": 0,
     "downvotes": 0,
+    "merge_requests_count": 0,
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
     "confidential": false,
@@ -989,7 +996,6 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
-
 
 **Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
@@ -1288,7 +1294,6 @@ Example response:
 ]
 ```
 
-
 ## Participants on issues
 
 ```
@@ -1326,7 +1331,6 @@ Example response:
   }
 ]
 ```
-
 
 ## Comments on issues
 

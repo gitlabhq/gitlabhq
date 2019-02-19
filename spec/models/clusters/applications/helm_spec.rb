@@ -3,16 +3,17 @@ require 'rails_helper'
 describe Clusters::Applications::Helm do
   include_examples 'cluster application core specs', :clusters_applications_helm
 
-  describe '.installed' do
-    subject { described_class.installed }
+  describe '.available' do
+    subject { described_class.available }
 
     let!(:installed_cluster) { create(:clusters_applications_helm, :installed) }
+    let!(:updated_cluster) { create(:clusters_applications_helm, :updated) }
 
     before do
       create(:clusters_applications_helm, :errored)
     end
 
-    it { is_expected.to contain_exactly(installed_cluster) }
+    it { is_expected.to contain_exactly(installed_cluster, updated_cluster) }
   end
 
   describe '#issue_client_cert' do

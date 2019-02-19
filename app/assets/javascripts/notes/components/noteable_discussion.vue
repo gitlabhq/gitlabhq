@@ -26,6 +26,7 @@ import resolvable from '../mixins/resolvable';
 import discussionNavigation from '../mixins/discussion_navigation';
 import ReplyPlaceholder from './discussion_reply_placeholder.vue';
 import jumpToNextDiscussionButton from './discussion_jump_to_next_button.vue';
+import eventHub from '../event_hub';
 
 export default {
   name: 'NoteableDiscussion',
@@ -93,6 +94,7 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'convertedDisscussionIds',
       'getNoteableData',
       'nextUnresolvedDiscussionId',
       'unresolvedDiscussionsCount',
@@ -245,6 +247,12 @@ export default {
       }
     },
   },
+  created() {
+    eventHub.$on('startReplying', this.onStartReplying);
+  },
+  beforeDestroy() {
+    eventHub.$off('startReplying', this.onStartReplying);
+  },
   methods: {
     ...mapActions([
       'saveNote',
@@ -252,6 +260,7 @@ export default {
       'removePlaceholderNotes',
       'toggleResolveNote',
       'expandDiscussion',
+      'removeConvertedDiscussion',
     ]),
     truncateSha,
     componentName(note) {
@@ -291,6 +300,10 @@ export default {
         }
       }
 
+      if (this.convertedDisscussionIds.includes(this.discussion.id)) {
+        this.removeConvertedDiscussion(this.discussion.id);
+      }
+
       this.isReplying = false;
       this.resetAutoSave();
     },
@@ -300,6 +313,10 @@ export default {
         target_type: this.getNoteableData.targetType,
         note: { note: noteText },
       };
+
+      if (this.convertedDisscussionIds.includes(this.discussion.id)) {
+        postData.return_discussion = true;
+      }
 
       if (this.discussion.for_commit) {
         postData.note_project_id = this.discussion.project_id;
@@ -340,6 +357,11 @@ Please check your network connection and try again.`;
     deleteNoteHandler(note) {
       this.$emit('noteDeleted', this.discussion, note);
     },
+    onStartReplying(discussionId) {
+      if (this.discussion.id === discussionId) {
+        this.showReplyForm();
+      }
+    },
   },
 };
 </script>
@@ -358,30 +380,32 @@ Please check your network connection and try again.`;
               :img-size="40"
             />
           </div>
-          <note-header
-            :author="author"
-            :created-at="initialDiscussion.created_at"
-            :note-id="initialDiscussion.id"
-            :include-toggle="true"
-            :expanded="discussion.expanded"
-            @toggleHandler="toggleDiscussionHandler"
-          >
-            <span v-html="actionText"></span>
-          </note-header>
-          <note-edited-text
-            v-if="discussion.resolved"
-            :edited-at="discussion.resolved_at"
-            :edited-by="discussion.resolved_by"
-            :action-text="resolvedText"
-            class-name="discussion-headline-light js-discussion-headline"
-          />
-          <note-edited-text
-            v-else-if="lastUpdatedAt"
-            :edited-at="lastUpdatedAt"
-            :edited-by="lastUpdatedBy"
-            action-text="Last updated"
-            class-name="discussion-headline-light js-discussion-headline"
-          />
+          <div class="timeline-content">
+            <note-header
+              :author="author"
+              :created-at="initialDiscussion.created_at"
+              :note-id="initialDiscussion.id"
+              :include-toggle="true"
+              :expanded="discussion.expanded"
+              @toggleHandler="toggleDiscussionHandler"
+            >
+              <span v-html="actionText"></span>
+            </note-header>
+            <note-edited-text
+              v-if="discussion.resolved"
+              :edited-at="discussion.resolved_at"
+              :edited-by="discussion.resolved_by"
+              :action-text="resolvedText"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+            <note-edited-text
+              v-else-if="lastUpdatedAt"
+              :edited-at="lastUpdatedAt"
+              :edited-by="lastUpdatedBy"
+              action-text="Last updated"
+              class-name="discussion-headline-light js-discussion-headline"
+            />
+          </div>
         </div>
         <div v-if="shouldShowDiscussions" class="discussion-body">
           <component
@@ -400,6 +424,7 @@ Please check your network connection and try again.`;
                     :help-page-path="helpPagePath"
                     :show-reply-button="canReply"
                     @handleDeleteNote="deleteNoteHandler"
+                    @startReplying="showReplyForm"
                   >
                     <note-edited-text
                       v-if="discussion.resolved"

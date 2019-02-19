@@ -19,7 +19,7 @@ module Gitlab
 
       # Returns the name of the series to use for storing method calls.
       def self.series
-        @series ||= "#{Metrics.series_prefix}method_calls"
+        @series ||= "#{::Gitlab::Metrics.series_prefix}method_calls"
       end
 
       # Instruments a class method.
@@ -118,7 +118,7 @@ module Gitlab
       # mod  - The module containing the method.
       # name - The name of the method to instrument.
       def self.instrument(type, mod, name)
-        return unless Metrics.enabled?
+        return unless ::Gitlab::Metrics.enabled?
 
         name = name.to_sym
         target = type == :instance ? mod : mod.singleton_class

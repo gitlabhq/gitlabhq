@@ -72,6 +72,15 @@ Gitlab::Profiler.print_by_total_time(result, max_percent: 60, min_percent: 2)
 #   0.02      0.865     0.000     0.000     0.864      638  *Enumerable#inject
 ```
 
+To print the profile in HTML format, use the following example:
+
+```ruby
+result = Gitlab::Profiler.profile('/my-user')
+
+printer = RubyProf::CallStackPrinter.new(result)
+printer.print(File.open('/tmp/profile.html', 'w'))
+```
+
 [GitLab-Profiler](https://gitlab.com/gitlab-com/gitlab-profiler) is a project
 that builds on this to add some additional niceties, such as allowing
 configuration with a single Yaml file for multiple URLs, and uploading of the
@@ -81,7 +90,6 @@ For GitLab.com, currently the latest profiling data has been [moved from
 Redash to Looker](https://gitlab.com/gitlab-com/Product/issues/5#note_121194467).
 We are [currently investigating how to make this data
 public](https://gitlab.com/meltano/looker/issues/294).
-
 
 ## Sherlock
 

@@ -24,7 +24,7 @@ module QA
         end
       end
 
-      def with_retry(max_attempts: 3, reload: false)
+      def retry_until(max_attempts: 3, reload: false)
         attempts = 0
 
         while attempts < max_attempts
@@ -37,6 +37,12 @@ module QA
         end
 
         false
+      end
+
+      def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.5)
+        QA::Support::Retrier.retry_on_exception(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
+          yield
+        end
       end
 
       def scroll_to(selector, text: nil)
@@ -145,6 +151,10 @@ module QA
 
       def click_link_with_text(text)
         click_link text
+      end
+
+      def click_body
+        find('body').click
       end
 
       def self.path

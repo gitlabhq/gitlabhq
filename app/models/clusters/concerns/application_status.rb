@@ -6,7 +6,14 @@ module Clusters
       extend ActiveSupport::Concern
 
       included do
-        scope :installed, -> { where(status: self.state_machines[:status].states[:installed].value) }
+        scope :available, -> do
+          where(
+            status: [
+              self.state_machines[:status].states[:installed].value,
+              self.state_machines[:status].states[:updated].value
+            ]
+          )
+        end
 
         state_machine :status, initial: :not_installable do
           state :not_installable, value: -2

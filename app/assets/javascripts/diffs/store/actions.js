@@ -16,7 +16,9 @@ import {
   MR_TREE_SHOW_KEY,
   TREE_LIST_STORAGE_KEY,
   WHITESPACE_STORAGE_KEY,
+  TREE_LIST_WIDTH_STORAGE_KEY,
 } from '../constants';
+import { diffViewerModes } from '~/ide/constants';
 
 export const setBaseConfig = ({ commit }, options) => {
   const { endpoint, projectPath } = options;
@@ -91,7 +93,7 @@ export const renderFileForDiscussionId = ({ commit, rootState, state }, discussi
         commit(types.RENDER_FILE, file);
       }
 
-      if (file.collapsed) {
+      if (file.viewer.collapsed) {
         eventHub.$emit(`loadCollapsedDiff/${file.file_hash}`);
         scrollToElement(document.getElementById(file.file_hash));
       } else {
@@ -105,7 +107,8 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
   const checkItem = () =>
     new Promise(resolve => {
       const nextFile = state.diffFiles.find(
-        file => !file.renderIt && (!file.collapsed || !file.text),
+        file =>
+          !file.renderIt && (!file.viewer.collapsed || !file.viewer.name === diffViewerModes.text),
       );
 
       if (nextFile) {
@@ -127,6 +130,8 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
 
   return checkItem();
 };
+
+export const setRenderIt = ({ commit }, file) => commit(types.RENDER_FILE, file);
 
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
@@ -298,6 +303,10 @@ export const setShowWhitespace = ({ commit }, { showWhitespace, pushState = fals
 
 export const toggleFileFinder = ({ commit }, visible) => {
   commit(types.TOGGLE_FILE_FINDER_VISIBLE, visible);
+};
+
+export const cacheTreeListWidth = (_, size) => {
+  localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

@@ -3,7 +3,7 @@ comments: false
 description: Read through the GitLab installation methods.
 ---
 
-# Installation
+# Installation **[CORE ONLY]**
 
 GitLab can be installed in most GNU/Linux distributions and in a number
 of cloud providers. To get the best experience from GitLab you need to balance

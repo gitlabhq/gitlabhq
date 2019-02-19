@@ -37,6 +37,46 @@ describe HelpController do
         expect(assigns[:help_index]).to eq '[external](https://some.external.link)'
       end
     end
+
+    context 'when relative url with external on same line' do
+      it 'prefix it with /help/' do
+        stub_readme("[API](api/README.md) [external](https://some.external.link)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[API](/help/api/README.md) [external](https://some.external.link)'
+      end
+    end
+
+    context 'when relative url with http:// in query' do
+      it 'prefix it with /help/' do
+        stub_readme("[API](api/README.md?go=https://example.com/)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[API](/help/api/README.md?go=https://example.com/)'
+      end
+    end
+
+    context 'when mailto URL' do
+      it 'do not change it' do
+        stub_readme("[report bug](mailto:bugs@example.com)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[report bug](mailto:bugs@example.com)'
+      end
+    end
+
+    context 'when protocol-relative link' do
+      it 'do not change it' do
+        stub_readme("[protocol-relative](//example.com)")
+
+        get :index
+
+        expect(assigns[:help_index]).to eq '[protocol-relative](//example.com)'
+      end
+    end
   end
 
   describe 'GET #show' do

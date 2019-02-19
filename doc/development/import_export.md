@@ -60,12 +60,12 @@ class StuckImportJobsWorker
 Marked stuck import jobs as failed. JIDs: xyz
 ```
 
-```                                         
+```
   +-----------+    +-----------------------------------+
   |Export Job |--->| Calls ActiveRecord `as_json` and  |
   +-----------+    | `to_json` on all project models   |
                    +-----------------------------------+
-                   
+
   +-----------+    +-----------------------------------+
   |Import Job |--->| Loads all JSON in memory, then    |
   +-----------+    | inserts into the DB in batches    |
@@ -109,13 +109,13 @@ The `AttributeCleaner` removes any prohibited keys:
 # Removes all `_ids` and other prohibited keys
     class AttributeCleaner
       ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES + ['group_id']
-    
+
       def clean
         @relation_hash.reject do |key, _value|
           prohibited_key?(key) || !@relation_class.attribute_method?(key) || excluded_key?(key)
         end.except('id')
       end
-      
+
       ...
 
 ```
@@ -133,7 +133,7 @@ The `AttributeConfigurationSpec` checks and confirms the addition of new columns
 
   SAFE_MODEL_ATTRIBUTES: #{File.expand_path(safe_attributes_file)}
   IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
-MSG 
+MSG
 ```
 
 The `ModelConfigurationSpec` checks and confirms the addition of new models:
@@ -157,7 +157,7 @@ The `ExportFileSpec` detects encrypted or sensitive columns:
 ```ruby
 # ExportFileSpec
 <<-MSG
-  Found a new sensitive word <#{key_found}>, which is part of the hash #{parent.inspect}    
+  Found a new sensitive word <#{key_found}>, which is part of the hash #{parent.inspect}
   If you think this information shouldn't get exported, please exclude the model or attribute in
   IMPORT_EXPORT_CONFIG.
 
@@ -214,7 +214,6 @@ We do not need to bump the version up in any of the following cases:
 - Remove a column or model (unless there is a DB constraint)
 - Export new things (such as a new type of upload)
 
-
 Every time we bump the version, the integration specs will fail and can be fixed with:
 
 ```bash
@@ -231,7 +230,7 @@ meaning that we want to bump the version up in the next version (or patch releas
 For example:
 
 1. Add rename to `RelationRenameService` in X.Y
-2. Remove it from `RelationRenameService` in X.Y + 1 
+2. Remove it from `RelationRenameService` in X.Y + 1
 3. Bump Import/Export version in X.Y + 1
 
 ```ruby
@@ -270,8 +269,8 @@ included_attributes:
   user:
     - :id
     - :email
-  ...      
-      
+  ...
+
 ```
 
 Do not include the following attributes for the models specified:
@@ -319,7 +318,7 @@ module Gitlab
       ensure
         remove_import_file
       end
-      
+
       def restorers
         [repo_restorer, wiki_restorer, project_tree, avatar_restorer,
          uploads_restorer, lfs_restorer, statistics_restorer]
@@ -346,7 +345,7 @@ module Projects
       end
 
       def save_services
-        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, 
+        [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver,
            wiki_repo_saver, lfs_saver].all?(&:save)
       end
 ```

@@ -37,18 +37,25 @@ module QA
           end
 
           def select_comments_only_filter
-            click_element :discussion_filter
-            find_element(:filter_options, "Show comments only").click
+            select_filter_with_text('Show comments only')
           end
 
           def select_history_only_filter
-            click_element :discussion_filter
-            find_element(:filter_options, "Show history only").click
+            select_filter_with_text('Show history only')
           end
 
           def select_all_activities_filter
-            click_element :discussion_filter
-            find_element(:filter_options, "Show all activity").click
+            select_filter_with_text('Show all activity')
+          end
+
+          private
+
+          def select_filter_with_text(text)
+            retry_on_exception do
+              click_body
+              click_element :discussion_filter
+              find_element(:filter_options, text).click
+            end
           end
         end
       end

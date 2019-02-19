@@ -57,7 +57,7 @@ module QA
         end
 
         def go_to_profile_settings
-          with_retry(reload: false) do
+          retry_until(reload: false) do
             within_user_menu do
               click_link 'Settings'
             end

@@ -125,7 +125,7 @@ $dark-il: #de935f;
 
     .diff-line-num.new,
     .line_content.new {
-      @include diff_background($dark-new-bg, $dark-new-idiff, $dark-border);
+      @include diff-background($dark-new-bg, $dark-new-idiff, $dark-border);
 
       &::before,
       a {
@@ -135,7 +135,7 @@ $dark-il: #de935f;
 
     .diff-line-num.old,
     .line_content.old {
-      @include diff_background($dark-old-bg, $dark-old-idiff, $dark-border);
+      @include diff-background($dark-old-bg, $dark-old-idiff, $dark-border);
 
       &::before,
       a {

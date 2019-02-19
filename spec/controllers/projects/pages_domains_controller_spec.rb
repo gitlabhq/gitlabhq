@@ -23,11 +23,26 @@ describe Projects::PagesDomainsController do
   end
 
   describe 'GET show' do
-    it "displays the 'show' page" do
+    def make_request
       get(:show, params: request_params.merge(id: pages_domain.domain))
+    end
 
+    it "displays the 'show' page" do
+      make_request
       expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template('show')
+    end
+
+    context 'when user is developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'renders 404 page' do
+        make_request
+
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
   end
 

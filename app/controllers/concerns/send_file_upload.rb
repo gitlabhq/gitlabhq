@@ -3,7 +3,7 @@
 module SendFileUpload
   def send_upload(file_upload, send_params: {}, redirect_params: {}, attachment: nil, proxy: false, disposition: 'attachment')
     if attachment
-      response_disposition = ::Gitlab::ContentDisposition.format(disposition: 'attachment', filename: attachment)
+      response_disposition = ::Gitlab::ContentDisposition.format(disposition: disposition, filename: attachment)
 
       # Response-Content-Type will not override an existing Content-Type in
       # Google Cloud Storage, so the metadata needs to be cleared on GCS for
