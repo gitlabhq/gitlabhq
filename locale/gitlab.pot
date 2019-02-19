@@ -531,6 +531,9 @@ msgstr ""
 msgid "Advanced settings"
 msgstr ""
 
+msgid "After a successful password update you will be redirected to login screen."
+msgstr ""
+
 msgid "All"
 msgstr ""
 
@@ -4832,6 +4835,9 @@ msgstr ""
 msgid "New Pages Domain"
 msgstr ""
 
+msgid "New Password"
+msgstr ""
+
 msgid "New Pipeline Schedule"
 msgstr ""
 
@@ -5501,6 +5507,9 @@ msgid "Please note that this application is not provided by GitLab and you shoul
 msgstr ""
 
 msgid "Please select at least one filter to see results"
+msgstr ""
+
+msgid "Please set a new password before proceeding."
 msgstr ""
 
 msgid "Please solve the reCAPTCHA"
@@ -6632,6 +6641,9 @@ msgstr ""
 msgid "Set max session time for web terminal."
 msgstr ""
 
+msgid "Set new password"
+msgstr ""
+
 msgid "Set notification email for abuse reports."
 msgstr ""
 
@@ -6648,6 +6660,9 @@ msgid "Set up a specific Runner automatically"
 msgstr ""
 
 msgid "Set up new U2F device"
+msgstr ""
+
+msgid "Set up new password"
 msgstr ""
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."

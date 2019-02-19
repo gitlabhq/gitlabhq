@@ -315,7 +315,7 @@ module Ci
     def ordered_stages
       return legacy_stages unless complete?
 
-      if Feature.enabled?('ci_pipeline_persisted_stages')
+      if Feature.enabled?('ci_pipeline_persisted_stages', default_enabled: true)
         stages
       else
         legacy_stages
