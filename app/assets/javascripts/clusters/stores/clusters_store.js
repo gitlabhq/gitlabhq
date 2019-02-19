@@ -66,6 +66,7 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
           hostname: null,
+          isEditingHostName: false,
           externalIp: null,
         },
       },
@@ -129,8 +130,10 @@ export default class ClusterStore {
             ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
             : '');
       } else if (appId === KNATIVE) {
-        this.state.applications.knative.hostname =
-          serverAppEntry.hostname || this.state.applications.knative.hostname;
+        if (!this.state.applications.knative.isEditingHostName) {
+          this.state.applications.knative.hostname =
+            serverAppEntry.hostname || this.state.applications.knative.hostname;
+        }
         this.state.applications.knative.externalIp =
           serverAppEntry.external_ip || this.state.applications.knative.externalIp;
       } else if (appId === RUNNER) {

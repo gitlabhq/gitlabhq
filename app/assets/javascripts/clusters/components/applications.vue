@@ -15,11 +15,14 @@ import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
 import { CLUSTER_TYPE, APPLICATION_STATUS, INGRESS } from '../constants';
+import LoadingButton from '~/vue_shared/components/loading_button.vue';
+import eventHub from '~/clusters/event_hub';
 
 export default {
   components: {
     applicationRow,
     clipboardButton,
+    LoadingButton,
   },
   props: {
     type: {
@@ -173,15 +176,54 @@ export default {
     jupyterHostname() {
       return this.applications.jupyter.hostname;
     },
+    knative() {
+      return this.applications.knative;
+    },
     knativeInstalled() {
-      return this.applications.knative.status === APPLICATION_STATUS.INSTALLED;
+      return (
+        this.knative.status === APPLICATION_STATUS.INSTALLED ||
+        this.knativeUpgrading ||
+        this.knativeUpgradeFailed ||
+        this.knative.status === APPLICATION_STATUS.UPDATED
+      );
+    },
+    knativeUpgrading() {
+      return (
+        this.knative.status === APPLICATION_STATUS.UPDATING ||
+        this.knative.status === APPLICATION_STATUS.SCHEDULED
+      );
+    },
+    knativeUpgradeFailed() {
+      return this.knative.status === APPLICATION_STATUS.UPDATE_ERRORED;
     },
     knativeExternalIp() {
-      return this.applications.knative.externalIp;
+      return this.knative.externalIp;
+    },
+    canUpdateKnativeEndpoint() {
+      return this.knativeExternalIp && !this.knativeUpgradeFailed && !this.knativeUpgrading;
+    },
+    knativeHostname: {
+      get() {
+        return this.knative.hostname;
+      },
+      set(hostname) {
+        eventHub.$emit('setKnativeHostname', {
+          id: 'knative',
+          hostname,
+        });
+      },
     },
   },
   created() {
     this.helmInstallIllustration = helmInstallIllustration;
+  },
+  methods: {
+    saveKnativeDomain() {
+      eventHub.$emit('saveKnativeDomain', {
+        id: 'knative',
+        params: { hostname: this.knative.hostname },
+      });
+    },
   },
 };
 </script>
@@ -471,76 +513,88 @@ export default {
             }}
           </p>
 
-          <template v-if="knativeInstalled">
-            <div class="form-group">
-              <label for="knative-domainname">
-                {{ s__('ClusterIntegration|Knative Domain Name:') }}
-              </label>
-              <input
-                id="knative-domainname"
-                v-model="applications.knative.hostname"
-                type="text"
-                class="form-control js-domainname"
-                readonly
-              />
-            </div>
-          </template>
-          <template v-else-if="helmInstalled && rbac">
-            <div class="form-group">
-              <label for="knative-domainname">
-                {{ s__('ClusterIntegration|Knative Domain Name:') }}
-              </label>
-              <input
-                id="knative-domainname"
-                v-model="applications.knative.hostname"
-                type="text"
-                class="form-control js-domainname"
-              />
-            </div>
-          </template>
-          <template v-if="knativeInstalled">
-            <div class="form-group">
-              <label for="knative-ip-address">
-                {{ s__('ClusterIntegration|Knative IP Address:') }}
-              </label>
-              <div v-if="knativeExternalIp" class="input-group">
+          <div class="row">
+            <template v-if="knativeInstalled || (helmInstalled && rbac)">
+              <div
+                :class="{ 'col-md-6': knativeInstalled, 'col-12': helmInstalled && rbac }"
+                class="form-group col-sm-12 mb-0"
+              >
+                <label for="knative-domainname">
+                  <strong>
+                    {{ s__('ClusterIntegration|Knative Domain Name:') }}
+                  </strong>
+                </label>
                 <input
-                  id="knative-ip-address"
-                  :value="knativeExternalIp"
+                  id="knative-domainname"
+                  v-model="knativeHostname"
                   type="text"
-                  class="form-control js-ip-address"
-                  readonly
+                  class="form-control js-knative-domainname"
                 />
-                <span class="input-group-append">
-                  <clipboard-button
-                    :text="knativeExternalIp"
-                    :title="s__('ClusterIntegration|Copy Knative IP Address to clipboard')"
-                    class="input-group-text js-clipboard-btn"
-                  />
-                </span>
               </div>
-              <input v-else type="text" class="form-control js-ip-address" readonly value="?" />
-            </div>
+            </template>
+            <template v-if="knativeInstalled">
+              <div class="form-group col-sm-12 col-md-6 pl-md-0 mb-0 mt-3 mt-md-0">
+                <label for="knative-ip-address">
+                  <strong>
+                    {{ s__('ClusterIntegration|Knative Endpoint:') }}
+                  </strong>
+                </label>
+                <div v-if="knativeExternalIp" class="input-group">
+                  <input
+                    id="knative-ip-address"
+                    :value="knativeExternalIp"
+                    type="text"
+                    class="form-control js-knative-ip-address"
+                    readonly
+                  />
+                  <span class="input-group-append">
+                    <clipboard-button
+                      :text="knativeExternalIp"
+                      :title="s__('ClusterIntegration|Copy Knative Endpoint to clipboard')"
+                      class="input-group-text js-knative-ip-clipboard-btn"
+                    />
+                  </span>
+                </div>
+                <input
+                  v-else
+                  type="text"
+                  class="form-control js-knative-ip-address"
+                  readonly
+                  value="?"
+                />
+              </div>
 
-            <p v-if="!knativeExternalIp" class="settings-message js-no-ip-message">
-              {{
-                s__(`ClusterIntegration|The IP address is in
-              the process of being assigned. Please check your Kubernetes
-              cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
-              }}
-            </p>
+              <p class="form-text text-muted col-12">
+                {{
+                  s__(
+                    `ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint.`,
+                  )
+                }}
+                <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
+                  {{ __('More information') }}
+                </a>
+              </p>
 
-            <p>
-              {{
-                s__(`ClusterIntegration|Point a wildcard DNS to this
-              generated IP address in order to access
-              your application after it has been deployed.`)
-              }}
-              <a :href="ingressDnsHelpPath" target="_blank" rel="noopener noreferrer">
-                {{ __('More information') }}
-              </a>
-            </p>
-          </template>
+              <p
+                v-if="!knativeExternalIp"
+                class="settings-message js-no-knative-ip-message mt-2 mr-3 mb-0 ml-3 "
+              >
+                {{
+                  s__(`ClusterIntegration|The IP address is in
+                the process of being assigned. Please check your Kubernetes
+                cluster or Quotas on Google Kubernetes Engine if it takes a long time.`)
+                }}
+              </p>
+
+              <button
+                v-if="canUpdateKnativeEndpoint"
+                class="btn btn-success js-knative-save-domain-button mt-3 ml-3"
+                @click="saveKnativeDomain"
+              >
+                {{ s__('ClusterIntegration|Save changes') }}
+              </button>
+            </template>
+          </div>
         </div>
       </application-row>
     </div>

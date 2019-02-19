@@ -12,6 +12,9 @@ export default class ClusterService {
       jupyter: this.options.installJupyterEndpoint,
       knative: this.options.installKnativeEndpoint,
     };
+    this.appUpdateEndpointMap = {
+      knative: this.options.updateKnativeEndpoint,
+    };
   }
 
   fetchData() {
@@ -20,6 +23,10 @@ export default class ClusterService {
 
   installApplication(appId, params) {
     return axios.post(this.appInstallEndpointMap[appId], params);
+  }
+
+  updateApplication(appId, params) {
+    return axios.patch(this.appUpdateEndpointMap[appId], params);
   }
 
   static updateCluster(endpoint, data) {
