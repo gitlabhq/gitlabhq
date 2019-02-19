@@ -95,8 +95,6 @@ module QA
           Page::Project::Pipeline::Show.perform(&:go_to_first_job)
 
           Page::Project::Job::Show.perform do |job|
-            expect(job).to be_loaded
-            expect(job).to be_completed
             expect(job).to be_successful
             expect(job.output).to include(sha1sum)
           end
