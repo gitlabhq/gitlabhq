@@ -73,9 +73,7 @@ module QA
               pipeline.go_to_job('build')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_loaded
-              expect(job).to be_completed(timeout: 600)
-              expect(job).to be_successful
+              expect(job).to be_successful(timeout: 600)
 
               job.click_element(:pipeline_path)
             end
@@ -84,9 +82,7 @@ module QA
               pipeline.go_to_job('test')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_loaded
-              expect(job).to be_completed(timeout: 600)
-              expect(job).to be_successful
+              expect(job).to be_successful(timeout: 600)
 
               job.click_element(:pipeline_path)
             end
@@ -95,9 +91,7 @@ module QA
               pipeline.go_to_job('production')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_loaded
-              expect(job).to be_completed(timeout: 1200)
-              expect(job).to be_successful
+              expect(job).to be_successful(timeout: 1200)
 
               job.click_element(:pipeline_path)
             end
@@ -140,9 +134,7 @@ module QA
               pipeline.go_to_job('build')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_loaded
-              expect(job).to be_completed(timeout: 600)
-              expect(job).to be_successful
+              expect(job).to be_successful(timeout: 600)
 
               job.click_element(:pipeline_path)
             end
@@ -151,9 +143,7 @@ module QA
               pipeline.go_to_job('test')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_loaded
-              expect(job).to be_completed(timeout: 600)
-              expect(job).to be_successful
+              expect(job).to be_successful(timeout: 600)
 
               job.click_element(:pipeline_path)
             end
@@ -162,9 +152,7 @@ module QA
               pipeline.go_to_job('production')
             end
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_loaded
-              expect(job).to be_completed(timeout: 1200)
-              expect(job).to be_successful
+              expect(job).to be_successful(timeout: 1200)
 
               job.click_element(:pipeline_path)
             end

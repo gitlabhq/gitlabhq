@@ -4,10 +4,6 @@ module QA::Page
       COMPLETED_STATUSES = %w[passed failed canceled blocked skipped manual].freeze # excludes created, pending, running
       PASSED_STATUS = 'passed'.freeze
 
-      view 'app/assets/javascripts/jobs/components/job_app.vue' do
-        element :loading_animation
-      end
-
       view 'app/assets/javascripts/jobs/components/job_log.vue' do
         element :build_trace
       end
@@ -20,24 +16,11 @@ module QA::Page
         element :pipeline_path
       end
 
-      def loaded?(wait: 60)
-        has_element?(:build_trace, wait: wait)
-      end
+      def successful?(timeout: 60)
+        raise "Timed out waiting for the build trace to load" unless loaded?
+        raise "Timed out waiting for the status to be a valid completed state" unless completed?(timeout: timeout)
 
-      # Reminder: You should check #loaded? first
-      def completed?(timeout: 60)
-        wait(reload: false, max: timeout) do
-          COMPLETED_STATUSES.include?(status_badge)
-        end
-      end
-
-      # Reminder: You should check #completed? and #loaded? first
-      def successful?
         status_badge == PASSED_STATUS
-      end
-
-      def trace_loading?
-        has_element?(:loading_animation)
       end
 
       # Reminder: You may wish to wait for a particular job status before checking output
@@ -46,6 +29,16 @@ module QA::Page
       end
 
       private
+
+      def loaded?(wait: 60)
+        has_element?(:build_trace, wait: wait)
+      end
+
+      def completed?(timeout: 60)
+        wait(reload: false, max: timeout) do
+          COMPLETED_STATUSES.include?(status_badge)
+        end
+      end
 
       def status_badge
         find_element(:status_badge).text
