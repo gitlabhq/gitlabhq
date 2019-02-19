@@ -29,7 +29,7 @@
 
   - if dashboard_nav_link?(:snippets)
     = nav_link(controller: 'dashboard/snippets', html_options: { class: ["d-none d-xl-block", ("d-lg-block" unless has_extra_nav_icons?)] }) do
-      = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets', title: _('Snippets') do
+      = link_to dashboard_snippets_path, class: 'dashboard-shortcuts-snippets qa-snippets-link', title: _('Snippets') do
         = _('Snippets')
 
   - if any_dashboard_nav_link?([:groups, :milestones, :activity, :snippets])
