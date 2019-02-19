@@ -12,7 +12,7 @@ To support the GitLab services and dynamic environments, a wildcard DNS entry is
 
 To provision an external IP on GCP and Azure, simply request a new address from the Networking section. Ensure that the region matches the region your container cluster is created in. Note, it is important that the IP is not assigned at this point in time. It will be automatically assigned once the Helm chart is installed, to the Load Balancer.
 
-Set `global.hosts.externalIP` to this IP address when [deploying GitLab](../gitlab_chart.md#configuring-and-installing-gitlab).
+Set `global.hosts.externalIP` to this IP address when [deploying GitLab](../gitlab_chart.md#installing-gitlab-using-the-helm-chart).
 
 Then, create a [wildcard DNS record](#wildcard-dns-entry) which resolves to this IP address.
 
@@ -35,4 +35,4 @@ Please consult the documentation for your DNS service for more information on cr
 - [Google Domains](https://support.google.com/domains/answer/3290350?hl=en)
 - [GoDaddy](https://www.godaddy.com/help/add-an-a-record-19238)
 
-Set `global.hosts.domain` to this DNS name when [deploying GitLab](../gitlab_chart.md#configuring-and-installing-gitlab).
+Set `global.hosts.domain` to this DNS name when [deploying GitLab](../gitlab_chart.md#installing-gitlab-using-the-helm-chart).
