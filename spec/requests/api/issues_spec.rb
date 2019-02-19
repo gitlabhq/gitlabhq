@@ -1894,7 +1894,7 @@ describe API::Issues do
         description: "See #{issue.to_reference}"
       }
       create(:merge_request, attributes).tap do |merge_request|
-        create(:note, :system, project: project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
+        create(:note, :system, project: issue.project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
       end
     end
 
@@ -1925,6 +1925,24 @@ describe API::Issues do
             source_project: project,
             target_project: project,
             description: "Some description")
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(related_mr.id)
+    end
+
+    it 'returns merge requests cross-project wide' do
+      project2 = create(:project, :public, creator_id: user.id, namespace: user.namespace)
+      merge_request = create_referencing_mr(user, project2, issue)
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response([related_mr.id, merge_request.id])
+    end
+
+    it 'does not generate references to projects with no access' do
+      private_project = create(:project, :private)
+      create_referencing_mr(private_project.creator, private_project, issue)
 
       get_related_merge_requests(project.id, issue.iid, user)
 
