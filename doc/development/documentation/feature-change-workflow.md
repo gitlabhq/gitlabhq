@@ -16,7 +16,7 @@ writer for discussion or collaboration, and can be called upon themselves as a d
 - **Technical Writers**: Review doc requirements in issues, track issues and MRs
 that contain docs changes, help with any questions throughout the authoring/editing process,
 work on special projects related to the documentation, and review all new and updated
-docs content after it's merged (unless a pre-merge review request is made).
+docs content, whether before or after it is merged.
 
 Beyond this process, any member of the GitLab community can also author or request documentation
 improvements that are not associated with a new or changed feature. See the [Documentation improvement workflow](improvement-workflow.md).
@@ -30,11 +30,12 @@ Documentation must be delivered whenever:
 - A process, workflow, or previously documented feature is changed.
 - A feature is deprecated or removed.
 
+For example, a UI restyling that offers no difference in functionality may require
+documentation updates if screenshots are now needed, or need to be updated.
+
 Documentation is not required when a feature is changed on the backend
-only and does not directly affect the way that any user or
-administrator would interact with GitLab. For example, a UI restyling that offers
-no difference in functionality may require documentation updates if screenshots
-are now needed, or need to be updated.
+only and does not directly affect the way that any user or administrator would
+interact with GitLab. 
 
 NOTE: **Note:**
 When revamping documentation, if unrelated to the feature change, this should be submitted
@@ -71,7 +72,7 @@ and the technical writer for the DevOps stage. Each role is described below.
 The Documentation items in the GitLab CE/EE [Feature Proposal issue template](https://gitlab.com/gitlab-org/gitlab-ce/raw/template-improvements-for-documentation/.gitlab/issue_templates/Feature%20proposal.md)
 and default merge request template will assist you with following this process.
 
-### Product Manager's role
+### Product Manager role
 
 For issues requiring any new or updated documentation, the Product Manager (PM)
 must:
@@ -143,7 +144,7 @@ mention the original MR author in the new issue. Alternatively, the mainitainer 
    2. Optionally: by the PM (for accuracy and to ensure it's consistent with the vision for how the product will be used).
 Any party can raise the item to the PM for review at any point: the dev, the technical writer, or the PM, who can request/plan a review at the outset.
 
-### Technical Writer's role
+### Technical Writer role
 
 #### Planning
 
