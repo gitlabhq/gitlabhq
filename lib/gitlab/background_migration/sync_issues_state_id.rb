@@ -4,7 +4,7 @@
 module Gitlab
   module BackgroundMigration
     class SyncIssuesStateId
-      include Helpers::Reschedulable
+      include Reschedulable
 
       def perform(start_id, end_id)
         Rails.logger.info("Issues - Populating state_id: #{start_id} - #{end_id}")

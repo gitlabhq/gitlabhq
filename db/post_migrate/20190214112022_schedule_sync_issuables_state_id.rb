@@ -18,6 +18,8 @@ class ScheduleSyncIssuablesStateId < ActiveRecord::Migration[5.0]
   ISSUES_MIGRATION = 'SyncIssuesStateId'.freeze
   MERGE_REQUESTS_MIGRATION = 'SyncMergeRequestsStateId'.freeze
 
+  disable_ddl_transaction!
+
   class Issue < ActiveRecord::Base
     include EachBatch
 
@@ -31,19 +33,19 @@ class ScheduleSyncIssuablesStateId < ActiveRecord::Migration[5.0]
   end
 
   def up
-    Sidekiq::Worker.skipping_transaction_check do
-      queue_background_migration_jobs_by_range_at_intervals(Issue.where(state_id: nil),
-                                                            ISSUES_MIGRATION,
-                                                            DELAY_INTERVAL,
-                                                            batch_size: BATCH_SIZE
-                                                           )
+    queue_background_migration_jobs_by_range_at_intervals(
+      Issue.where(state_id: nil),
+      ISSUES_MIGRATION,
+      DELAY_INTERVAL,
+      batch_size: BATCH_SIZE
+    )
 
-      queue_background_migration_jobs_by_range_at_intervals(MergeRequest.where(state_id: nil),
-                                                            MERGE_REQUESTS_MIGRATION,
-                                                            DELAY_INTERVAL,
-                                                            batch_size: BATCH_SIZE
-                                                           )
-    end
+    queue_background_migration_jobs_by_range_at_intervals(
+      MergeRequest.where(state_id: nil),
+      MERGE_REQUESTS_MIGRATION,
+      DELAY_INTERVAL,
+      batch_size: BATCH_SIZE
+    )
   end
 
   def down

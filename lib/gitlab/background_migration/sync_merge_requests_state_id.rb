@@ -4,7 +4,7 @@
 module Gitlab
   module BackgroundMigration
     class SyncMergeRequestsStateId
-      include Helpers::Reschedulable
+      include Reschedulable
 
       def perform(start_id, end_id)
         Rails.logger.info("Merge Requests - Populating state_id: #{start_id} - #{end_id}")

@@ -40,14 +40,14 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, sch
       end
     end
 
-    it 'reschedules itself when should wait for dead tuple vacuum' do
+    it 'reschedules itself when should_wait_deadtuple_vacuum' do
       merge_request = create(:merge_request, :merged)
       first_diff = merge_request.merge_request_diff
       second_diff = merge_request.create_merge_request_diff
 
       Sidekiq::Testing.fake! do
         worker = described_class.new
-        allow(worker).to receive(:wait_for_deadtuple_vacuum?) { true }
+        allow(worker).to receive(:should_wait_deadtuple_vacuum?) { true }
 
         worker.perform([first_diff.id, second_diff.id])
 
@@ -57,10 +57,10 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, sch
     end
   end
 
-  describe '#wait_for_deadtuple_vacuum?' do
+  describe '#should_wait_deadtuple_vacuum?' do
     it 'returns true when hitting merge_request_diff_files hits DEAD_TUPLES_THRESHOLD', :postgresql do
       worker = described_class.new
-      threshold_query_result = [{ "n_dead_tup" => 50_000 }]
+      threshold_query_result = [{ "n_dead_tup" => described_class::DEAD_TUPLES_THRESHOLD.to_s }]
       normal_query_result = [{ "n_dead_tup" => '3' }]
 
       allow(worker)
@@ -68,7 +68,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, sch
         .with(/SELECT n_dead_tup */)
         .and_return(threshold_query_result, normal_query_result)
 
-      expect(worker.wait_for_deadtuple_vacuum?('merge_request_diff_files')).to be(true)
+      expect(worker.should_wait_deadtuple_vacuum?).to be(true)
     end
   end
 end
