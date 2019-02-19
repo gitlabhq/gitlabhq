@@ -70,9 +70,8 @@ subgraph GCP `gitlab-review-apps` project
       you get a dedicated environment for your branch that's very close to what
       it would look in production.
 1. Once the [`review-deploy`][review-deploy] job succeeds, you should be able to
-  use your Review App thanks to the direct link to it from the MR widget. The
-  default username is `root` and its password can be found in the 1Password
-  secure note named **gitlab-{ce,ee} Review App's root password**.
+  use your Review App thanks to the direct link to it from the MR widget. To log
+  into the Review App, see "Log into my Review App?" below.
 
 **Additional notes:**
 
@@ -97,6 +96,17 @@ You can also manually start the `review-qa-all`: it runs the full QA suite.
 Note that both jobs first wait for the `review-deploy` job to be finished.
 
 ## How to?
+
+### Log into my Review App?
+
+The default username is `root` and its password can be found in the 1Password
+secure note named **gitlab-{ce,ee} Review App's root password**.
+
+### Enable a feature flag for my Review App?
+
+1. Open your Review App and log in as documented above.
+1. Create a personal access token.
+1. Enable the feature flag using the [Feature flag API](../../api/features.md).
 
 ### Find my Review App slug?
 
