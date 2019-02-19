@@ -1,0 +1,5 @@
+---
+title: 'API: Sort tie breaker with id DESC'
+merge_request: 25311
+author: Nermin Vehabovic
+type: changed
