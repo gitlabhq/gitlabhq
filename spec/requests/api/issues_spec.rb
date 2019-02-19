@@ -1838,6 +1838,15 @@ describe API::Issues do
       expect_paginated_array_response([related_mr.id, merge_request.id])
     end
 
+    it 'does not generate references to projects with no access' do
+      private_project = create(:project, :private)
+      create_referencing_mr(private_project.creator, private_project, issue)
+
+      get_related_merge_requests(project.id, issue.iid, user)
+
+      expect_paginated_array_response(related_mr.id)
+    end
+
     context 'no merge request mentioned a issue' do
       it 'returns empty array' do
         get_related_merge_requests(project.id, closed_issue.iid, user)
