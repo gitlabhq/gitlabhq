@@ -421,6 +421,24 @@ describe API::Issues do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/issues')
       end
+
+      it 'returns a related merge request count of 0 if there are no related merge requests' do
+        get api('/issues', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/issues')
+        expect(json_response.first).to include('merge_requests_count' => 0)
+      end
+
+      it 'returns a related merge request count > 0 if there are related merge requests' do
+        create(:merge_requests_closing_issues, issue: issue)
+
+        get api('/issues', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/issues')
+        expect(json_response.first).to include('merge_requests_count' => 1)
+      end
     end
   end
 
