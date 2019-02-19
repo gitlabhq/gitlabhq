@@ -54,6 +54,8 @@ variables:
 
   DOCKER_DRIVER: overlay2
 
+  ROLLOUT_RESOURCE_TYPE: deployment
+
 stages:
   - build
   - test
@@ -740,7 +742,7 @@ rollout 100%:
         chart/
     fi
 
-    kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
+    kubectl rollout status -n "$KUBE_NAMESPACE" -w "$ROLLOUT_RESOURCE_TYPE/$name"
   }
 
   function scale() {
