@@ -93,6 +93,6 @@ class UrlValidator < ActiveModel::EachValidator
   end
 
   def allow_setting_local_requests?
-    Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services?
+    ApplicationSetting.current&.allow_local_requests_from_hooks_and_services?
   end
 end

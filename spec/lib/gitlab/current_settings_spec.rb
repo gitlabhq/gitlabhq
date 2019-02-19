@@ -14,8 +14,9 @@ describe Gitlab::CurrentSettings do
 
   describe '#current_application_settings', :use_clean_rails_memory_store_caching do
     it 'allows keys to be called directly' do
-      db_settings = ApplicationSetting.first || create(:application_setting)
-      db_settings.update!(home_page_url: 'http://mydomain.com', signup_enabled: false)
+      db_settings = create(:application_setting,
+        home_page_url: 'http://mydomain.com',
+        signup_enabled: false)
 
       expect(described_class.home_page_url).to eq(db_settings.home_page_url)
       expect(described_class.signup_enabled?).to be_falsey
@@ -108,7 +109,7 @@ describe Gitlab::CurrentSettings do
 
         context 'with pending migrations' do
           before do
-            allow(ActiveRecord::Migrator).to receive(:needs_migration?).and_return(true)
+            expect(ActiveRecord::Migrator).to receive(:needs_migration?).and_return(true)
           end
 
           shared_examples 'a non-persisted ApplicationSetting object' do
