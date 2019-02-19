@@ -20,14 +20,14 @@ module Gitlab
       def perform(ids)
         @ids = ids
 
-        reschedule_if_needed([ids]) do
+        reschedule_if_needed(ids) do
           prune_diff_files
         end
       end
 
       private
 
-      def need_reschedule?
+      def should_reschedule?
         wait_for_deadtuple_vacuum?(MergeRequestDiffFile.table_name)
       end
 

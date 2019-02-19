@@ -9,8 +9,8 @@ module Gitlab
       def perform(start_id, end_id)
         Rails.logger.info("Issues - Populating state_id: #{start_id} - #{end_id}")
 
-        reschedule_if_needed([start_id, end_id]) do
-          ActiveRecord::Base.connection.execute <<~SQL
+        reschedule_if_needed(start_id, end_id) do
+          execute_statement <<~SQL
             UPDATE issues
             SET state_id =
               CASE state
@@ -25,7 +25,7 @@ module Gitlab
 
       private
 
-      def need_reschedule?
+      def should_reschedule?
         wait_for_deadtuple_vacuum?('issues')
       end
     end

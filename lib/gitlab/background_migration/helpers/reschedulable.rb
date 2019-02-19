@@ -5,7 +5,8 @@ module Gitlab
     module Helpers
       # == Reschedulable helper
       #
-      # Allows background migrations to be reschedule itself if a condition is not met.
+      # Allows background migrations to be rescheduled if a condition is met,
+      # the condition should be overridden in classes in #should_reschedule? method.
       #
       # For example, check DeleteDiffFiles migration which is rescheduled if dead tuple count
       # on DB is not acceptable.
@@ -13,18 +14,34 @@ module Gitlab
       module Reschedulable
         extend ActiveSupport::Concern
 
-        def reschedule_if_needed(args, &block)
-          if need_reschedule?
-            BackgroundMigrationWorker.perform_in(vacuum_wait_time, self.class.name.demodulize, args)
+        # Use this method to perform the background migration and it will be rescheduled
+        # if #should_reschedule? returns true.
+        def reschedule_if_needed(*args, &block)
+          if should_reschedule?
+            BackgroundMigrationWorker.perform_in(wait_time, self.class.name.demodulize, args)
           else
             yield
           end
         end
 
         # Override this on base class if you need a different reschedule condition
-        # def need_reschedule?
-        #   raise NotImplementedError, "#{self.class} does not implement #{__method__}"
-        # end
+        def should_reschedule?
+          raise NotImplementedError, "#{self.class} does not implement #{__method__}"
+        end
+
+        # Override in subclass if a different dead tuple threshold
+        def dead_tuples_threshold
+          @dead_tuples_threshold ||= 50_000
+        end
+
+        # Override in subclass if a different wait time
+        def wait_time
+          @wait_time ||= 5.minutes
+        end
+
+        def execute_statement(sql)
+          ActiveRecord::Base.connection.execute(sql)
+        end
 
         def wait_for_deadtuple_vacuum?(table_name)
           return false unless Gitlab::Database.postgresql?
@@ -38,20 +55,6 @@ module Gitlab
                               "WHERE relname = '#{table_name}'")[0]
 
           dead_tuple&.fetch('n_dead_tup', 0).to_i
-        end
-
-        def execute_statement(sql)
-          ActiveRecord::Base.connection.execute(sql)
-        end
-
-        # Override in subclass if you need a different dead tuple threshold
-        def dead_tuples_threshold
-          @dead_tuples_threshold ||= 50_000
-        end
-
-        # Override in subclass if you need a different vacuum wait time
-        def vacuum_wait_time
-          @vacuum_wait_time ||= 5.minutes
         end
       end
     end
