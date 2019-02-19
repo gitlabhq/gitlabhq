@@ -46,9 +46,7 @@ describe LfsDownloadObject do
         subject { described_class.new(oid: oid, size: size, link: 'http://192.168.1.1') }
 
         before do
-          allow(ApplicationSetting)
-            .to receive(:current)
-              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: setting))
+          stub_application_setting(allow_local_requests_from_hooks_and_services: setting)
         end
 
         context 'are allowed' do
