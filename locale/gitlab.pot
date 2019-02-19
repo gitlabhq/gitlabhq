@@ -7003,6 +7003,12 @@ msgstr ""
 msgid "Starred projects"
 msgstr ""
 
+msgid "StarredProjectsEmptyState|Visit a project page and press on a star icon. Then, you can find the project on this page."
+msgstr ""
+
+msgid "StarredProjectsEmptyState|You don't have starred projects yet."
+msgstr ""
+
 msgid "Stars"
 msgstr ""
 
