@@ -2,7 +2,7 @@
 - page_title "Groups"
 - header_title "Groups", dashboard_groups_path
 
-= render_if_exists "shared/gold_trial_callout"
+= render_dashboard_gold_trial(current_user)
 = render 'dashboard/groups_head'
 
 - if params[:filter].blank? && @groups.empty?
