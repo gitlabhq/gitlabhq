@@ -83,6 +83,9 @@ def lint_commits(commits)
     # separate from enforcing good commit messages.
     next if commit.message.start_with?('Merge branch')
 
+    # We ignore revert commits as they are well structured by Git already
+    next if commit.message.start_with?('Revert "')
+
     subject, separator, details = commit.message.split("\n", 3)
 
     if subject.split.length < 3
