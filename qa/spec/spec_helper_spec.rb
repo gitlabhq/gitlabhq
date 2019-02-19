@@ -28,6 +28,22 @@ describe 'rspec config tests' do
     end
   end
 
+  let(:group_2) do
+    RSpec.describe do
+      before(:all) do
+        @expectations = [1, 2, 3]
+      end
+
+      example 'not in quarantine' do
+        expect(@expectations.shift).to be(3)
+      end
+
+      example 'in quarantine', :quarantine do
+        expect(@expectations.shift).to be(3)
+      end
+    end
+  end
+
   context 'with no tags focussed' do
     before do
       group.run
@@ -298,6 +314,41 @@ describe 'rspec config tests' do
 
         ex = examples.find { |e| e.description == "not in quarantine" }
         expect(ex.execution_result.status).to eq(:passed)
+      end
+    end
+  end
+
+  context 'rspec retry' do
+    context 'in an untagged context' do
+      before do
+        group_2.run
+      end
+
+      it 'should run example :retry times' do
+        examples = group_2.descendant_filtered_examples
+        ex = examples.find { |e| e.description == 'not in quarantine' }
+        expect(ex.execution_result.status).to eq(:passed)
+      end
+    end
+
+    context 'with :quarantine focussed' do
+      before do
+        RSpec.configure do |config|
+          config.inclusion_filter = :quarantine
+        end
+        group_2.run
+      end
+
+      after do
+        RSpec.configure do |config|
+          config.inclusion_filter.clear
+        end
+      end
+
+      it 'should run example once only' do
+        examples = group_2.descendant_filtered_examples
+        ex = examples.find { |e| e.description == 'in quarantine' }
+        expect(ex.execution_result.status).to eq(:failed)
       end
     end
   end
