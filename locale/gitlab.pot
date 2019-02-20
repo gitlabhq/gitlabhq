@@ -4271,6 +4271,9 @@ msgstr ""
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
 msgstr ""
 
+msgid "Language"
+msgstr ""
+
 msgid "Large File Storage"
 msgstr ""
 
@@ -5530,6 +5533,9 @@ msgstr ""
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+msgid "Preferences|This feature is experimental and translations are not complete yet"
+msgstr ""
+
 msgid "Press Enter or click to search"
 msgstr ""
 
@@ -5720,9 +5726,6 @@ msgid "Profiles|This email will be used for web based operations, such as edits 
 msgstr ""
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
-msgstr ""
-
-msgid "Profiles|This feature is experimental and translations are not complete yet"
 msgstr ""
 
 msgid "Profiles|This information will appear on your profile"
