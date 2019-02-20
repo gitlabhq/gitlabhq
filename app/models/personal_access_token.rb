@@ -2,8 +2,11 @@
 
 class PersonalAccessToken < ActiveRecord::Base
   include Expirable
+  include IgnorableColumn
   include TokenAuthenticatable
-  add_authentication_token_field :token, digest: true, fallback: true
+
+  add_authentication_token_field :token, digest: true
+  ignore_column :token
 
   REDIS_EXPIRY_TIME = 3.minutes
 

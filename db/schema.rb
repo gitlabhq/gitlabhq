@@ -1515,7 +1515,6 @@ ActiveRecord::Schema.define(version: 20190204115450) do
 
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.string "token"
     t.string "name", null: false
     t.boolean "revoked", default: false
     t.date "expires_at"
@@ -1524,7 +1523,6 @@ ActiveRecord::Schema.define(version: 20190204115450) do
     t.string "scopes", default: "--- []\n", null: false
     t.boolean "impersonation", default: false, null: false
     t.string "token_digest"
-    t.index ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
     t.index ["token_digest"], name: "index_personal_access_tokens_on_token_digest", unique: true, using: :btree
     t.index ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
   end
