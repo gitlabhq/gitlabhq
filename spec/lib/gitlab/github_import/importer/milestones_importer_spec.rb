@@ -4,6 +4,7 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
   let(:project) { create(:project, import_source: 'foo/bar') }
   let(:client) { double(:client) }
   let(:importer) { described_class.new(project, client) }
+  let(:due_on) { Time.new(2017, 2, 1, 12, 00) }
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
 
@@ -14,6 +15,7 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
       title: '1.0',
       description: 'The first release',
       state: 'open',
+      due_on: due_on,
       created_at: created_at,
       updated_at: updated_at
     )
@@ -96,6 +98,10 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
 
       it 'includes the milestone state' do
         expect(milestone_hash[:state]).to eq(:active)
+      end
+
+      it 'includes the due date' do
+        expect(milestone_hash[:due_date]).to eq(due_on.to_date)
       end
 
       it 'includes the created timestamp' do
