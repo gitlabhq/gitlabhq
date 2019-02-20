@@ -8,9 +8,9 @@ class YoutrackService < IssueTrackerService
   # {PROJECT-KEY}-{NUMBER} Examples: YT-1, PRJ-1
   def self.reference_pattern(only_long: false)
     if only_long
-      /(?<issue>\b[A-Z][A-Z0-9_]*-\d+)/
+      /(?<issue>\b[A-Z][A-Za-z0-9_]*-\d+)/
     else
-      /(?<issue>\b[A-Z][A-Z0-9_]*-\d+)|(#{Issue.reference_prefix}(?<issue>\d+))/
+      /(?<issue>\b[A-Z][A-Za-z0-9_]*-\d+)|(#{Issue.reference_prefix}(?<issue>\d+))/
     end
   end
 

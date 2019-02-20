@@ -87,6 +87,7 @@ describe 'User activates issue tracker', :js do
   end
 
   it_behaves_like 'external issue tracker activation', tracker: 'Redmine'
+  it_behaves_like 'external issue tracker activation', tracker: 'YouTrack'
   it_behaves_like 'external issue tracker activation', tracker: 'Bugzilla'
   it_behaves_like 'external issue tracker activation', tracker: 'Custom Issue Tracker'
 end
