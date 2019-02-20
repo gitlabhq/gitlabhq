@@ -93,6 +93,12 @@ You can choose between 3 options:
 
 ## Localization
 
+### Language
+
+Select your preferred language from a list of supported languages.
+
+*This feature is experimental and translations are not complete yet.*
+
 ### First day of the week
 
 The first day of the week can be customised for calendar views and date pickers.
