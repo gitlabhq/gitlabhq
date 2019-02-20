@@ -363,7 +363,7 @@ Now that the Redis servers are all set up, let's configure the Sentinel
 servers.
 
 If you are not sure if your Redis servers are working and replicating
-correctly, please read the [Troubleshooting Replication](#troubleshooting-replication)
+correctly, please read the [Troubleshooting Replication](#troubleshooting-redis-replication)
 and fix it before proceeding with Sentinel setup.
 
 You must have at least `3` Redis Sentinel servers, and they need to

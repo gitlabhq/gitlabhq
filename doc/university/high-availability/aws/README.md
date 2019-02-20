@@ -3,7 +3,7 @@ comments: false
 ---
 
 > **Note**: We **do not** recommend using the AWS Elastic File System (EFS), as it can result
-in [significantly degraded performance](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/high_availability/nfs.md#aws-elastic-file-system).
+in [significantly degraded performance](../../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 # High Availability on AWS
 
@@ -182,7 +182,7 @@ Another option is to build a simple NFS server using a vanilla Linux server back
 by AWS Elastic Block Storage (EBS).
 
 > **Note:** GitLab does not recommend using AWS Elastic File System (EFS). See
-  details in [High Availability NFS documentation](../../../administration/high_availability/nfs.md#aws-elastic-file-system)
+  details in [High Availability NFS documentation](../../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
 
 ***
 
