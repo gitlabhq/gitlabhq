@@ -12,6 +12,7 @@ describe Ci::CreatePipelineService do
   end
 
   describe '#execute' do
+    # rubocop:disable Metrics/ParameterLists
     def execute_service(
       source: :push,
       after: project.commit.id,
@@ -20,17 +21,22 @@ describe Ci::CreatePipelineService do
       trigger_request: nil,
       variables_attributes: nil,
       merge_request: nil,
-      push_options: nil)
+      push_options: nil,
+      source_sha: nil,
+      target_sha: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }],
                  variables_attributes: variables_attributes,
-                 push_options: push_options }
+                 push_options: push_options,
+                 source_sha: source_sha,
+                 target_sha: target_sha }
 
       described_class.new(project, user, params).execute(
         source, trigger_request: trigger_request, merge_request: merge_request)
     end
+    # rubocop:enable Metrics/ParameterLists
 
     context 'valid params' do
       let(:pipeline) { execute_service }
@@ -679,7 +685,11 @@ describe Ci::CreatePipelineService do
 
     describe 'Merge request pipelines' do
       let(:pipeline) do
-        execute_service(source: source, merge_request: merge_request, ref: ref_name)
+        execute_service(source: source,
+                        merge_request: merge_request,
+                        ref: ref_name,
+                        source_sha: source_sha,
+                        target_sha: target_sha)
       end
 
       before do
@@ -687,6 +697,8 @@ describe Ci::CreatePipelineService do
       end
 
       let(:ref_name) { 'refs/heads/feature' }
+      let(:source_sha) { project.commit(ref_name).id }
+      let(:target_sha) { nil }
 
       context 'when source is merge request' do
         let(:source) { :merge_request }
@@ -725,6 +737,22 @@ describe Ci::CreatePipelineService do
               expect(pipeline).to be_merge_request
               expect(pipeline.merge_request).to eq(merge_request)
               expect(pipeline.builds.order(:stage_id).map(&:name)).to eq(%w[test])
+            end
+
+            it 'persists the specified source sha' do
+              expect(pipeline.source_sha).to eq(source_sha)
+            end
+
+            it 'does not persist target sha for detached merge request pipeline' do
+              expect(pipeline.target_sha).to be_nil
+            end
+
+            context 'when target sha is specified' do
+              let(:target_sha) { merge_request.target_branch_sha }
+
+              it 'persists the target sha' do
+                expect(pipeline.target_sha).to eq(target_sha)
+              end
             end
 
             context 'when ref is tag' do
