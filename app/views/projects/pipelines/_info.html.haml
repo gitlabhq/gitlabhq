@@ -23,7 +23,7 @@
     - if @pipeline.queued_duration
       = "(queued for #{time_interval_in_words(@pipeline.queued_duration)})"
 
-  .well-segment
+  .well-segment.qa-pipeline-badges
     .icon-container
       = sprite_icon('flag')
     - if @pipeline.latest?
