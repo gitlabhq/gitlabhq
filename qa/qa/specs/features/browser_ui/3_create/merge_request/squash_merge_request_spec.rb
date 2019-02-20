@@ -2,7 +2,7 @@
 
 module QA
   # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/31
-  context 'Create', :quarantine do
+  context 'Create' do
     describe 'Merge request squashing' do
       it 'user squashes commits while merging' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

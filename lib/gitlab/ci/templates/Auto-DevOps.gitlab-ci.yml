@@ -826,7 +826,7 @@ rollout 100%:
 
   # Function to ensure backwards compatibility with AUTO_DEVOPS_DOMAIN
   function ensure_kube_ingress_base_domain() {
-    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ]; then
+    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ] && [ -n "$AUTO_DEVOPS_DOMAIN" ] ; then
       export KUBE_INGRESS_BASE_DOMAIN=$AUTO_DEVOPS_DOMAIN
     fi
   }
