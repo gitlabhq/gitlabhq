@@ -15,6 +15,14 @@ module API
 
       params :issue_params_ee do
       end
+
+      def convert_confidential_param(args)
+        confidential = args.delete(:confidential)
+        return args if confidential.nil?
+
+        args[:confidential] = confidential ? 'yes' : 'no'
+        args
+      end
     end
 
     helpers do
@@ -26,6 +34,7 @@ module API
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
+        args = convert_confidential_param(args)
 
         issues = IssuesFinder.new(current_user, args).execute
           .preload(:assignees, :labels, :notes, :timelogs, :project, :author, :closed_by)
@@ -54,6 +63,7 @@ module API
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
                          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+        optional :confidential, type: Boolean, desc: 'Filter confidential or public issues'
         use :pagination
 
         use :issues_params_ee
