@@ -410,6 +410,21 @@ there's nothing stopping somebody from doing this elsewhere in the code:
 SOME_CONSTANT = 'bar'
 ```
 
+## How to seed a database with millions of rows
+
+You might want millions of project rows in your local database, for example,
+in order to compare relative query performance, or to reproduce a bug. You could
+do this by hand with SQL commands, but since you have ActiveRecord models, you
+might find using these gems more convenient:
+
+- [BulkInsert gem](https://github.com/jamis/bulk_insert)
+- [ActiveRecord::PgGenerateSeries gem](https://github.com/ryu39/active_record-pg_generate_series)
+
+### Examples
+
+You may find some useful examples in this snippet:
+https://gitlab.com/gitlab-org/gitlab-ce/snippets/33946
+
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
 [yorickpeterse]: https://gitlab.com/yorickpeterse
 [anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern
