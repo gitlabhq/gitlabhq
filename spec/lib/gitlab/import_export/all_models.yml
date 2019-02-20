@@ -131,6 +131,7 @@ ci_pipelines:
 - merge_request
 - deployments
 - environments
+- chat_data
 pipeline_variables:
 - pipeline
 stages:
