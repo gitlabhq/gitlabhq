@@ -1,4 +1,4 @@
-# Pipeline Schedules
+# Pipeline schedules
 
 > **Notes**:
 > - This feature was introduced in 9.1 as [Trigger Schedule][ce-10533].
