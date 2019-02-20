@@ -380,7 +380,7 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
-  gem 'webmock', '~> 2.3.2'
+  gem 'webmock', '~> 3.5.1'
   gem 'rails-controller-testing'
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.1'

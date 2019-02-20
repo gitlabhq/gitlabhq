@@ -28,7 +28,7 @@
 
   .form-group
     %h5= s_('ClusterIntegration|Base domain')
-    = field.text_field :base_domain, class: 'col-md-6 form-control js-select-on-focus'
+    = field.text_field :base_domain, class: 'col-md-6 form-control js-select-on-focus qa-base-domain'
     .form-text.text-muted
       - auto_devops_url = help_page_path('topics/autodevops/index')
       - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }
@@ -43,4 +43,4 @@
 
   - if can?(current_user, :update_cluster, @cluster)
     .form-group
-      = field.submit _('Save changes'), class: 'btn btn-success'
+      = field.submit _('Save changes'), class: 'btn btn-success qa-save-domain'

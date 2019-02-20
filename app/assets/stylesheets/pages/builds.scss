@@ -75,7 +75,11 @@
     @include build-trace-top-bar(35px);
 
     &.has-archived-block {
-      top: $header-height + $performance-bar-height + 28px;
+      top: $header-height + 28px;
+
+      .with-performance-bar & {
+        top: $header-height + $performance-bar-height + 28px;
+      }
     }
 
     &.affix {

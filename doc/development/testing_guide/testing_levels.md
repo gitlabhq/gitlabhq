@@ -159,6 +159,10 @@ Every new feature should come with a [test plan].
 
 > See [end-to-end tests](end_to_end_tests.md) for more information.
 
+Note that `qa/spec` contains unit tests of the QA framework itself, not to be
+confused with the application's [unit tests](#unit-tests) or 
+[end-to-end tests](#black-box-tests-at-the-system-level-aka-end-to-end-tests).
+
 [multiple pieces]: ../architecture.md#components
 [GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
 [GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse

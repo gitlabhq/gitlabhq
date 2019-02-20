@@ -102,7 +102,7 @@ describe WebHookService do
         exception = exception_class.new('Exception message')
 
         WebMock.stub_request(:post, project_hook.url).to_raise(exception)
-        expect(service_instance.execute).to eq({ status: :error, message: exception.message })
+        expect(service_instance.execute).to eq({ status: :error, message: exception.to_s })
         expect { service_instance.execute }.not_to raise_error
       end
     end

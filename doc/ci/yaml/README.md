@@ -1,7 +1,7 @@
-# Configuration of your jobs with .gitlab-ci.yml
+# Configuration of your pipelines with .gitlab-ci.yml
 
 This document describes the usage of `.gitlab-ci.yml`, the file that is used by
-GitLab Runner to manage your project's jobs.
+GitLab Runner to manage your project's pipelines.
 
 From version 7.12, GitLab CI uses a [YAML](https://en.wikipedia.org/wiki/YAML)
 file (`.gitlab-ci.yml`) for the project configuration. It is placed in the root
