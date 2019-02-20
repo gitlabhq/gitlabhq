@@ -11,7 +11,7 @@ module Users
     def noteable_owner
       return [] unless noteable && noteable.author.present?
 
-      [as_hash(noteable.author)]
+      [user_as_hash(noteable.author)]
     end
 
     def participants_in_noteable
@@ -23,21 +23,24 @@ module Users
 
     def sorted(users)
       users.uniq.to_a.compact.sort_by(&:username).map do |user|
-        as_hash(user)
+        user_as_hash(user)
       end
     end
 
     def groups
       current_user.authorized_groups.sort_by(&:path).map do |group|
-        count = group.users.count
-        { username: group.full_path, name: group.full_name, count: count, avatar_url: group.avatar_url }
+        group_as_hash(group)
       end
     end
 
     private
 
-    def as_hash(user)
-      { username: user.username, name: user.name, avatar_url: user.avatar_url }
+    def user_as_hash(user)
+      { type: user.class.name, username: user.username, name: user.name, avatar_url: user.avatar_url }
+    end
+
+    def group_as_hash(group)
+      { type: group.class.name, username: group.full_path, name: group.full_name, avatar_url: group.avatar_url, count: group.users.count }
     end
   end
 end

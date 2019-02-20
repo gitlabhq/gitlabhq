@@ -49,10 +49,12 @@ variables:
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
 
-  KUBERNETES_VERSION: 1.11.6
-  HELM_VERSION: 2.12.2
+  KUBERNETES_VERSION: 1.11.7
+  HELM_VERSION: 2.12.3
 
   DOCKER_DRIVER: overlay2
+
+  ROLLOUT_RESOURCE_TYPE: deployment
 
 stages:
   - build
@@ -740,7 +742,7 @@ rollout 100%:
         chart/
     fi
 
-    kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/$name"
+    kubectl rollout status -n "$KUBE_NAMESPACE" -w "$ROLLOUT_RESOURCE_TYPE/$name"
   }
 
   function scale() {
@@ -826,7 +828,7 @@ rollout 100%:
 
   # Function to ensure backwards compatibility with AUTO_DEVOPS_DOMAIN
   function ensure_kube_ingress_base_domain() {
-    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ]; then
+    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ] && [ -n "$AUTO_DEVOPS_DOMAIN" ] ; then
       export KUBE_INGRESS_BASE_DOMAIN=$AUTO_DEVOPS_DOMAIN
     fi
   }

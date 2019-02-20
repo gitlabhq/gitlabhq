@@ -1,4 +1,5 @@
 require_relative '../qa'
+require 'rspec/retry'
 
 %w[helpers shared_examples].each do |d|
   Dir[::File.join(__dir__, d, '**', '*.rb')].each { |f| require f }
@@ -31,6 +32,17 @@ RSpec.configure do |config|
   config.profile_examples = 10
   config.order = :random
   Kernel.srand config.seed
+
+  # show retry status in spec process
+  config.verbose_retry = true
+
+  # show exception that triggers a retry if verbose_retry is set to true
+  config.display_try_failure_messages = true
+
+  config.around do |example|
+    retry_times = example.metadata.keys.include?(:quarantine) ? 1 : 3
+    example.run_with_retry retry: retry_times
+  end
 end
 
 # Skip tests in quarantine unless we explicitly focus on them.

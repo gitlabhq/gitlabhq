@@ -130,7 +130,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Job traces](job_traces.md): Information about the job traces (logs).
 - [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for Shared Runners.
-- [Enable/disable Auto DevOps](../topics/autodevops/index.md#enabling-auto-devops): Enable or disable Auto DevOps for your instance.
+- [Enable/disable Auto DevOps](../topics/autodevops/index.md#enablingdisabling-auto-devops): Enable or disable Auto DevOps for your instance.
 
 ## Git configuration options
 

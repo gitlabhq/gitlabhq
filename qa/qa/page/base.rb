@@ -39,18 +39,9 @@ module QA
         false
       end
 
-      def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.0)
-        attempts = 0
-
-        begin
+      def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.5)
+        QA::Support::Retrier.retry_on_exception(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
           yield
-        rescue StandardError
-          sleep sleep_interval
-          refresh if reload
-          attempts += 1
-
-          retry if attempts < max_attempts
-          raise
         end
       end
 
@@ -160,6 +151,10 @@ module QA
 
       def click_link_with_text(text)
         click_link text
+      end
+
+      def click_body
+        find('body').click
       end
 
       def self.path

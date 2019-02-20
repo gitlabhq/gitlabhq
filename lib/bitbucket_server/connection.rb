@@ -77,6 +77,7 @@ module BitbucketServer
     private
 
     def check_errors!(response)
+      return if ActionDispatch::Response::NO_CONTENT_CODES.include?(response.code)
       raise ConnectionError, "Response is not valid JSON" unless response.parsed_response.is_a?(Hash)
 
       return if response.code >= 200 && response.code < 300

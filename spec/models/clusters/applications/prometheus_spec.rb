@@ -27,65 +27,6 @@ describe Clusters::Applications::Prometheus do
     end
   end
 
-  describe '#ready' do
-    let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, projects: [project]) }
-
-    it 'returns true when installed' do
-      application = build(:clusters_applications_prometheus, :installed, cluster: cluster)
-
-      expect(application).to be_ready
-    end
-
-    it 'returns false when not_installable' do
-      application = build(:clusters_applications_prometheus, :not_installable, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when installable' do
-      application = build(:clusters_applications_prometheus, :installable, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when scheduled' do
-      application = build(:clusters_applications_prometheus, :scheduled, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when installing' do
-      application = build(:clusters_applications_prometheus, :installing, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when errored' do
-      application = build(:clusters_applications_prometheus, :errored, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns true when updating' do
-      application = build(:clusters_applications_prometheus, :updating, cluster: cluster)
-
-      expect(application).to be_ready
-    end
-
-    it 'returns true when updated' do
-      application = build(:clusters_applications_prometheus, :updated, cluster: cluster)
-
-      expect(application).to be_ready
-    end
-
-    it 'returns true when errored' do
-      application = build(:clusters_applications_prometheus, :update_errored, cluster: cluster)
-
-      expect(application).to be_ready
-    end
-  end
-
   describe '#prometheus_client' do
     context 'cluster is nil' do
       it 'returns nil' do

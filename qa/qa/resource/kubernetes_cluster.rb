@@ -12,10 +12,6 @@ module QA
         Page::Project::Operations::Kubernetes::Show.perform(&:ingress_ip)
       end
 
-      attribute :domain do
-        "#{ingress_ip}.nip.io"
-      end
-
       def fabricate!
         @project.visit!
 
@@ -53,6 +49,12 @@ module QA
             page.await_installed(:ingress) if @install_ingress
             page.await_installed(:prometheus) if @install_prometheus
             page.await_installed(:runner) if @install_runner
+
+            if @install_ingress
+              populate(:ingress_ip)
+              page.set_domain("#{ingress_ip}.nip.io")
+              page.save_domain
+            end
           end
         end
       end

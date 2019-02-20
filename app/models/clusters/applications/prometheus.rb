@@ -6,7 +6,6 @@ module Clusters
       include PrometheusAdapter
 
       VERSION = '6.7.3'
-      READY_STATUS = [:installed, :updating, :updated, :update_errored].freeze
 
       self.table_name = 'clusters_applications_prometheus'
 
@@ -23,10 +22,6 @@ module Clusters
             project.find_or_initialize_service('prometheus').update(active: true)
           end
         end
-      end
-
-      def ready?
-        READY_STATUS.include?(status_name)
       end
 
       def chart
