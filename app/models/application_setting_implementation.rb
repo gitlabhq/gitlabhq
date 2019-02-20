@@ -23,8 +23,9 @@ module ApplicationSettingImplementation
         akismet_enabled: false,
         allow_local_requests_from_web_hooks_and_services: false,
         allow_local_requests_from_system_hooks: true,
-        dns_rebinding_protection_enabled: true,
+        asset_proxy_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
+        commit_email_hostname: default_commit_email_hostname,
         container_registry_token_expire_delay: 5,
         default_artifacts_expire_in: '30 days',
         default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -33,7 +34,9 @@ module ApplicationSettingImplementation
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+        diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
         disabled_oauth_sign_in_sources: [],
+        dns_rebinding_protection_enabled: true,
         domain_whitelist: Settings.gitlab['domain_whitelist'],
         dsa_key_restriction: 0,
         ecdsa_key_restriction: 0,
@@ -52,9 +55,11 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        local_markdown_version: 0,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         mirror_available: true,
+        outbound_local_requests_whitelist: [],
         password_authentication_enabled_for_git: true,
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
@@ -63,6 +68,8 @@ module ApplicationSettingImplementation
         plantuml_url: nil,
         polling_interval_multiplier: 1,
         project_export_enabled: true,
+        protected_ci_variables: false,
+        raw_blob_request_limit: 300,
         recaptcha_enabled: false,
         repository_checks_enabled: true,
         repository_storages: ['default'],
@@ -95,16 +102,10 @@ module ApplicationSettingImplementation
         user_default_internal_regex: nil,
         user_show_add_ssh_key_message: true,
         usage_stats_set_by_user_id: nil,
-        diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
-        commit_email_hostname: default_commit_email_hostname,
         snowplow_collector_hostname: nil,
         snowplow_cookie_domain: nil,
         snowplow_enabled: false,
-        snowplow_site_id: nil,
-        protected_ci_variables: false,
-        local_markdown_version: 0,
-        outbound_local_requests_whitelist: [],
-        raw_blob_request_limit: 300
+        snowplow_site_id: nil
       }
     end
 
@@ -196,6 +197,15 @@ module ApplicationSettingImplementation
 
       [ip_whitelist, domain_whitelist]
     end
+  end
+
+  def asset_proxy_whitelist=(values)
+    values = domain_strings_to_array(values) if values.is_a?(String)
+
+    # make sure we always whitelist the running host
+    values << Gitlab.config.gitlab.host unless values.include?(Gitlab.config.gitlab.host)
+
+    self[:asset_proxy_whitelist] = values
   end
 
   def repository_storages
@@ -306,6 +316,7 @@ module ApplicationSettingImplementation
 
     values
       .split(DOMAIN_LIST_SEPARATOR)
+      .map(&:strip)
       .reject(&:empty?)
       .uniq
   end
