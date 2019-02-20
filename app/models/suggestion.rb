@@ -19,11 +19,6 @@ class Suggestion < ApplicationRecord
     position.file_path
   end
 
-  def diff_file
-    repository = project.repository
-    position.diff_file(repository)
-  end
-
   # For now, suggestions only serve as a way to send patches that
   # will change a single line (being able to apply multiple in the same place),
   # which explains `from_line` and `to_line` being the same line.

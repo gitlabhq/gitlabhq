@@ -41,6 +41,15 @@ class DiffNote < Note
     create_note_diff_file(creation_params)
   end
 
+  # Returns the diff file from `position`
+  def latest_diff_file
+    strong_memoize(:latest_diff_file) do
+      repository = project.repository
+      position.diff_file(repository)
+    end
+  end
+
+  # Returns the diff file from `original_position`
   def diff_file
     strong_memoize(:diff_file) do
       enqueue_diff_file_creation_job if should_create_diff_file?
