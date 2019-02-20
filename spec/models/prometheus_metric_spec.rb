@@ -4,7 +4,6 @@ require 'spec_helper'
 
 describe PrometheusMetric do
   subject { build(:prometheus_metric) }
-  let(:other_project) { build(:project) }
 
   it_behaves_like 'having unique enum values'
 
@@ -16,17 +15,17 @@ describe PrometheusMetric do
   describe 'common metrics' do
     using RSpec::Parameterized::TableSyntax
 
-    where(:common, :project, :result) do
-      false | other_project | true
-      false | nil           | false
-      true  | other_project | false
-      true  | nil           | true
+    where(:common, :with_project, :result) do
+      false | true | true
+      false | false | false
+      true  | true | false
+      true  | false | true
     end
 
     with_them do
       before do
         subject.common = common
-        subject.project = project
+        subject.project = with_project ? build(:project) : nil
       end
 
       it { expect(subject.valid?).to eq(result) }
