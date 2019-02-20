@@ -64,7 +64,7 @@ describe BitbucketServer::Client do
     let(:url) { "#{base_uri}rest/api/1.0/projects/SOME-PROJECT/repos/my-repo/branches" }
 
     it 'requests Bitbucket to create a branch' do
-      stub_request(:post, url).to_return(status: 204, headers: headers, body: '{}')
+      stub_request(:post, url).to_return(status: 204, headers: headers, body: nil)
 
       subject.create_branch(project, repo_slug, branch, sha)
 
@@ -78,7 +78,7 @@ describe BitbucketServer::Client do
     let(:url) { "#{base_uri}rest/branch-utils/1.0/projects/SOME-PROJECT/repos/my-repo/branches" }
 
     it 'requests Bitbucket to create a branch' do
-      stub_request(:delete, url).to_return(status: 204, headers: headers, body: '{}')
+      stub_request(:delete, url).to_return(status: 204, headers: headers, body: nil)
 
       subject.delete_branch(project, repo_slug, branch, sha)
 
