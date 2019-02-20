@@ -1085,7 +1085,7 @@ describe API::Projects do
         let(:project) { create(:project, :public, :repository, :repository_private) }
 
         it "does not include statistics if user is not a member" do
-          get api("/projects/#{project.id}", user), params: { statistics: true }
+          get api("/projects/#{project.id}", user), statistics: true
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response).not_to include 'statistics'
@@ -1094,7 +1094,7 @@ describe API::Projects do
         it "includes statistics if user is a member" do
           project.add_developer(user)
 
-          get api("/projects/#{project.id}", user), params: { statistics: true }
+          get api("/projects/#{project.id}", user), statistics: true
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response).to include 'statistics'
