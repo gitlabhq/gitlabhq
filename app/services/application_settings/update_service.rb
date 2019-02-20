@@ -6,6 +6,8 @@ module ApplicationSettings
 
     attr_reader :params, :application_setting
 
+    MARKDOWN_CACHE_INVALIDATING_PARAMS = %w(asset_proxy_enabled asset_proxy_url asset_proxy_secret_key asset_proxy_whitelist).freeze
+
     def execute
       validate_classification_label(application_setting, :external_authorization_service_default_label)
 
@@ -23,13 +25,24 @@ module ApplicationSettings
         params[:usage_stats_set_by_user_id] = current_user.id
       end
 
-      @application_setting.update(@params)
+      @application_setting.assign_attributes(params)
+
+      if invalidate_markdown_cache?
+        @application_setting[:local_markdown_version] = @application_setting.local_markdown_version + 1
+      end
+
+      @application_setting.save
     end
 
     private
 
     def usage_stats_updated?
       params.key?(:usage_ping_enabled) || params.key?(:version_check_enabled)
+    end
+
+    def invalidate_markdown_cache?
+      !params.key?(:local_markdown_version) &&
+        (@application_setting.changes.keys & MARKDOWN_CACHE_INVALIDATING_PARAMS).any?
     end
 
     def update_terms(terms)

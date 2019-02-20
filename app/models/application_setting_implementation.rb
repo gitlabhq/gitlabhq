@@ -21,8 +21,9 @@ module ApplicationSettingImplementation
         after_sign_up_text: nil,
         akismet_enabled: false,
         allow_local_requests_from_hooks_and_services: false,
-        dns_rebinding_protection_enabled: true,
+        asset_proxy_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
+        commit_email_hostname: default_commit_email_hostname,
         container_registry_token_expire_delay: 5,
         default_artifacts_expire_in: '30 days',
         default_branch_protection: Settings.gitlab['default_branch_protection'],
@@ -31,7 +32,9 @@ module ApplicationSettingImplementation
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+        diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
         disabled_oauth_sign_in_sources: [],
+        dns_rebinding_protection_enabled: true,
         domain_whitelist: Settings.gitlab['domain_whitelist'],
         dsa_key_restriction: 0,
         ecdsa_key_restriction: 0,
@@ -50,6 +53,7 @@ module ApplicationSettingImplementation
         housekeeping_gc_period: 200,
         housekeeping_incremental_repack_period: 10,
         import_sources: Settings.gitlab['import_sources'],
+        local_markdown_version: 0,
         max_artifacts_size: Settings.artifacts['max_size'],
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         mirror_available: true,
@@ -61,6 +65,7 @@ module ApplicationSettingImplementation
         plantuml_url: nil,
         polling_interval_multiplier: 1,
         project_export_enabled: true,
+        protected_ci_variables: false,
         recaptcha_enabled: false,
         repository_checks_enabled: true,
         repository_storages: ['default'],
@@ -91,11 +96,7 @@ module ApplicationSettingImplementation
         user_default_external: false,
         user_default_internal_regex: nil,
         user_show_add_ssh_key_message: true,
-        usage_stats_set_by_user_id: nil,
-        diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
-        commit_email_hostname: default_commit_email_hostname,
-        protected_ci_variables: false,
-        local_markdown_version: 0
+        usage_stats_set_by_user_id: nil
       }
     end
 
@@ -138,17 +139,20 @@ module ApplicationSettingImplementation
   end
 
   def domain_whitelist_raw=(values)
-    self.domain_whitelist = []
-    self.domain_whitelist = values.split(DOMAIN_LIST_SEPARATOR)
-    self.domain_whitelist.reject! { |d| d.empty? }
-    self.domain_whitelist
+    self.domain_whitelist = domain_string_to_array(values)
   end
 
   def domain_blacklist_raw=(values)
-    self.domain_blacklist = []
-    self.domain_blacklist = values.split(DOMAIN_LIST_SEPARATOR)
-    self.domain_blacklist.reject! { |d| d.empty? }
-    self.domain_blacklist
+    self.domain_blacklist = domain_string_to_array(values)
+  end
+
+  def asset_proxy_whitelist=(values)
+    values = domain_string_to_array(values) if values.is_a?(String)
+
+    # make sure we always whitelist the running host
+    values << Gitlab.config.gitlab.host unless values.include?(Gitlab.config.gitlab.host)
+
+    self[:asset_proxy_whitelist] = values
   end
 
   def domain_blacklist_file=(file)
@@ -295,5 +299,11 @@ module ApplicationSettingImplementation
 
   def expire_performance_bar_allowed_user_ids_cache
     Gitlab::PerformanceBar.expire_allowed_user_ids_cache
+  end
+
+  def domain_string_to_array(values)
+    domain_list = values.split(DOMAIN_LIST_SEPARATOR).map(&:strip)
+    domain_list.reject! { |d| d.empty? }
+    domain_list
   end
 end

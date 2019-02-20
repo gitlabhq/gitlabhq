@@ -23,6 +23,14 @@ module Banzai
             "'.#{ext}' = substring(@src, string-length(@src) - #{ext.size})"
           end
 
+          if context[:asset_proxy_enabled].present?
+            src_query.concat(
+              UploaderHelper::VIDEO_EXT.map do |ext|
+                "'.#{ext}' = substring(@data-canonical-src, string-length(@data-canonical-src) - #{ext.size})"
+              end
+            )
+          end
+
           "descendant-or-self::img[not(ancestor::a) and (#{src_query.join(' or ')})]"
         end
       end
@@ -48,6 +56,13 @@ module Banzai
           target: '_blank',
           rel: 'noopener noreferrer',
           title: "Download '#{element['title'] || element['alt']}'")
+
+        # make sure the original non-proxied src carries over
+        if element['data-canonical-src']
+          video['data-canonical-src'] = element['data-canonical-src']
+          link['data-canonical-src']  = element['data-canonical-src']
+        end
+
         download_paragraph = doc.document.create_element('p')
         download_paragraph.children = link
 

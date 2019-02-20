@@ -36,6 +36,10 @@ module API
       given akismet_enabled: ->(val) { val } do
         requires :akismet_api_key, type: String, desc: 'Generate API key at http://www.akismet.com'
       end
+      optional :asset_proxy_enabled, type: Boolean, desc: 'Enable proxying of assets'
+      optional :asset_proxy_url, type: String, desc: 'URL of the asset proxy server'
+      optional :asset_proxy_secret_key, type: String, desc: 'Shared secret with the asset proxy server'
+      optional :asset_proxy_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted.'
       optional :clientside_sentry_enabled, type: Boolean, desc: 'Sentry can also be used for reporting and logging clientside exceptions. https://sentry.io/for/javascript/'
       given clientside_sentry_enabled: ->(val) { val } do
         requires :clientside_sentry_dsn, type: String, desc: 'Clientside Sentry Data Source Name'
@@ -129,7 +133,7 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
-      optional :local_markdown_version, type: Integer, desc: "Local markdown version, increase this value when any cached markdown should be invalidated"
+      optional :local_markdown_version, type: Integer, desc: 'Local markdown version, increase this value when any cached markdown should be invalidated'
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",
