@@ -305,6 +305,7 @@ class Project < ActiveRecord::Base
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
   delegate :group_clusters_enabled?, to: :group, allow_nil: true
   delegate :root_ancestor, to: :namespace, allow_nil: true
+  delegate :last_pipeline, to: :commit, allow_nil: true
 
   # Validations
   validates :creator, presence: true, on: :create
