@@ -83,6 +83,8 @@ describe('note_app', () => {
 
   describe('render', () => {
     beforeEach(() => {
+      setFixtures('<div class="js-discussions-count"></div>');
+
       Vue.http.interceptors.push(mockData.individualNoteInterceptor);
       wrapper = mountComponent();
     });
@@ -126,6 +128,14 @@ describe('note_app', () => {
 
     it('should render form comment button as disabled', () => {
       expect(wrapper.find('.js-note-new-discussion').attributes('disabled')).toEqual('disabled');
+    });
+
+    it('updates discussions badge', done => {
+      setTimeout(() => {
+        expect(document.querySelector('.js-discussions-count').textContent).toEqual('2');
+
+        done();
+      });
     });
   });
 
