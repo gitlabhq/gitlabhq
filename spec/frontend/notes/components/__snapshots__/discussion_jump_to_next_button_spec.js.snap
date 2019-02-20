@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`JumpToNextDiscussionButton matches the snapshot 1`] = `
+<div
+  class="btn-group"
+  role="group"
+>
+  <button
+    class="btn btn-default discussion-next-btn"
+    data-original-title="Jump to next unresolved discussion"
+    title=""
+  >
+    <icon-stub
+      cssclasses=""
+      name="comment-next"
+      size="16"
+    />
+  </button>
+</div>
+`;
