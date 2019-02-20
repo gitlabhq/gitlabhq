@@ -228,6 +228,11 @@ ActiveRecord::Schema.define(version: 2019_07_15_114644) do
     t.boolean "lock_memberships_to_ldap", default: false, null: false
     t.boolean "time_tracking_limit_to_hours", default: false, null: false
     t.string "grafana_url", default: "/-/grafana", null: false
+    t.boolean "asset_proxy_enabled", default: false, null: false
+    t.string "asset_proxy_url"
+    t.text "asset_proxy_whitelist"
+    t.text "encrypted_asset_proxy_secret_key"
+    t.string "encrypted_asset_proxy_secret_key_iv"
     t.index ["custom_project_templates_group_id"], name: "index_application_settings_on_custom_project_templates_group_id", using: :btree
     t.index ["file_template_project_id"], name: "index_application_settings_on_file_template_project_id", using: :btree
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree

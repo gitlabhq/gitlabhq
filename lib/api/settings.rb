@@ -36,6 +36,10 @@ module API
       given akismet_enabled: ->(val) { val } do
         requires :akismet_api_key, type: String, desc: 'Generate API key at http://www.akismet.com'
       end
+      optional :asset_proxy_enabled, type: Boolean, desc: 'Enable proxying of assets'
+      optional :asset_proxy_url, type: String, desc: 'URL of the asset proxy server'
+      optional :asset_proxy_secret_key, type: String, desc: 'Shared secret with the asset proxy server'
+      optional :asset_proxy_whitelist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Assets that match these domain(s) will NOT be proxied. Wildcards allowed. Your GitLab installation URL is automatically whitelisted.'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
       optional :default_project_creation, type: Integer, values: ::Gitlab::Access.project_creation_values, desc: 'Determine if developers can create projects in the group'
@@ -59,7 +63,7 @@ module API
       optional :grafana_url, type: String, desc: 'Grafana URL'
       optional :gravatar_enabled, type: Boolean, desc: 'Flag indicating if the Gravatar service is enabled'
       optional :help_page_hide_commercial_content, type: Boolean, desc: 'Hide marketing-related entries from help'
-      optional :help_page_support_url, type: String, desc: 'Alternate support URL for help page'
+      optional :help_page_support_url, type: String, desc: 'Alternate support URL for help page and help dropdown'
       optional :help_page_text, type: String, desc: 'Custom text displayed on the help page'
       optional :home_page_url, type: String, desc: 'We will redirect non-logged in users to this page'
       optional :housekeeping_enabled, type: Boolean, desc: 'Enable automatic repository housekeeping (git repack, git gc)'
@@ -123,7 +127,7 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
-      optional :local_markdown_version, type: Integer, desc: "Local markdown version, increase this value when any cached markdown should be invalidated"
+      optional :local_markdown_version, type: Integer, desc: 'Local markdown version, increase this value when any cached markdown should be invalidated'
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

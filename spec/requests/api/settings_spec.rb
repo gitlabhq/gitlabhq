@@ -158,5 +158,33 @@ describe API::Settings, 'Settings' do
         expect(json_response['error']).to eq('plantuml_url is missing')
       end
     end
+
+    context 'asset_proxy settings' do
+      it 'updates application settings' do
+        put api('/application/settings', admin),
+          params: {
+            asset_proxy_enabled: true,
+            asset_proxy_url: 'http://assets.example.com',
+            asset_proxy_secret_key: 'shared secret',
+            asset_proxy_whitelist: ['example.com', '*.example.com']
+          }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['asset_proxy_enabled']).to be(true)
+        expect(json_response['asset_proxy_url']).to eq('http://assets.example.com')
+        expect(json_response['asset_proxy_secret_key']).to be_nil
+        expect(json_response['asset_proxy_whitelist']).to eq(['example.com', '*.example.com', 'localhost'])
+      end
+
+      it 'allows a string for asset_proxy_whitelist' do
+        put api('/application/settings', admin),
+          params: {
+            asset_proxy_whitelist: 'example.com, *.example.com'
+          }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['asset_proxy_whitelist']).to eq(['example.com', '*.example.com', 'localhost'])
+      end
+    end
   end
 end
