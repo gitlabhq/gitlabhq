@@ -81,7 +81,7 @@
         = link_to '#', class: 'dashboard-shortcuts-web-ide', title: _('Web IDE') do
           = _('Web IDE')
 
-  = render_if_exists 'dashboard/operations/nav_link_icon'
+  = render_if_exists 'dashboard/operations/nav_link'
   - if can?(current_user, :read_instance_statistics)
     = nav_link(controller: [:conversational_development_index, :cohorts], html_options: { class: "d-none d-lg-block d-xl-block"}) do
       = link_to instance_statistics_root_path, title: _('Instance Statistics'), aria: { label: _('Instance Statistics') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
