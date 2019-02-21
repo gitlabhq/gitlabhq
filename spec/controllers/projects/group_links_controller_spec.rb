@@ -81,12 +81,10 @@ describe Projects::GroupLinksController do
       before do
         group2.add_developer(user)
 
-        post(:create, params: {
-                        namespace_id: project.namespace,
-                        project_id: project,
-                        link_group_id: group2.id,
-                        link_group_access: ProjectGroupLink.default_access
-                      })
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
+                      link_group_id: group2.id,
+                      link_group_access: ProjectGroupLink.default_access)
       end
 
       it 'does not share project with selected group' do
