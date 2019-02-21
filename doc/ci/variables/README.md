@@ -53,6 +53,8 @@ future GitLab releases.**
 | Variable                                  | GitLab | Runner | Description |
 |-------------------------------------------|--------|--------|-------------|
 | **ARTIFACT_DOWNLOAD_ATTEMPTS**            | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
+| **CHAT_INPUT**                            | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command |
+| **CHAT_CHANNEL**                          | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command |
 | **CI**                                    | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_BEFORE_SHA**                  | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | **CI_COMMIT_DESCRIPTION**                 | 10.8   | all    | The description of the commit: the message without first line, if the title is shorter than 100 characters; full message in other case. |
