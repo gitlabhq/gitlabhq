@@ -205,7 +205,7 @@ first time.
 - Try to respond to every comment.
 - The merge request author resolves only the discussions they have fully
   addressed. If there's an open reply, an open discussion, a suggestion,
-  a question, or anything else, the discussion must be left to be resolved
+  a question, or anything else, the discussion should be left to be resolved
   by the reviewer.
 - Push commits based on earlier rounds of feedback as isolated commits to the
   branch. Do not squash until the branch is ready to merge. Reviewers should be
