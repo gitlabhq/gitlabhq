@@ -35,6 +35,7 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
 
   before do
     sign_in(admin)
+    allow(Discussion).to receive(:build_discussion_id).and_return(['discussionid:ceterumcenseo'])
   end
 
   after do
@@ -54,8 +55,10 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
   end
 
   it 'merge_requests/merged_merge_request.html.raw' do |example|
-    allow_any_instance_of(MergeRequest).to receive(:source_branch_exists?).and_return(true)
-    allow_any_instance_of(MergeRequest).to receive(:can_remove_source_branch?).and_return(true)
+    expect_next_instance_of(MergeRequest) do |merge_request|
+      allow(merge_request).to receive(:source_branch_exists?).and_return(true)
+      allow(merge_request).to receive(:can_remove_source_branch?).and_return(true)
+    end
     render_merge_request(example.description, merged_merge_request)
   end
 
