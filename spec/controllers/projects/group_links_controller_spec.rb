@@ -118,12 +118,10 @@ describe Projects::GroupLinksController do
         allow(::Projects::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
           .and_return({ status: :error, http_status: 409, message: 'error' })
 
-        post(:create, params: {
-                        namespace_id: project.namespace,
-                        project_id: project,
-                        link_group_id: group.id,
-                        link_group_access: ProjectGroupLink.default_access
-                      })
+        post(:create, namespace_id: project.namespace,
+                      project_id: project,
+                      link_group_id: group.id,
+                      link_group_access: ProjectGroupLink.default_access)
       end
 
       it 'redirects to project group links page' do
