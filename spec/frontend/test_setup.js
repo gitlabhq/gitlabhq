@@ -1,3 +1,5 @@
+import axios from '~/lib/utils/axios_utils';
+
 const testTimeoutInMs = 300;
 jest.setTimeout(testTimeoutInMs);
 
@@ -13,4 +15,16 @@ afterEach(() => {
   if (elapsedTimeInMs > testTimeoutInMs) {
     throw new Error(`Test took too long (${elapsedTimeInMs}ms > ${testTimeoutInMs}ms)!`);
   }
+});
+
+// fail tests for unmocked requests
+beforeEach(done => {
+  axios.defaults.adapter = config => {
+    const error = new Error(`Unexpected unmocked request: ${JSON.stringify(config, null, 2)}`);
+    error.config = config;
+    done.fail(error);
+    return Promise.reject(error);
+  };
+
+  done();
 });
