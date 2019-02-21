@@ -227,6 +227,10 @@ module LabelsHelper
     "#{action} at #{level} level"
   end
 
+  def labels_sorted_by_title(labels)
+    labels.sort_by(&:title)
+  end
+
   # Required for Banzai::Filter::LabelReferenceFilter
   module_function :render_colored_label, :text_color_for_bg, :escape_once
 end
