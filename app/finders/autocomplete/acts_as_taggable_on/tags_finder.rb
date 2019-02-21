@@ -10,34 +10,34 @@ module Autocomplete
       end
 
       def execute
-        @tags = ::ActsAsTaggableOn::Tag.all
-
-        search!
-        limit!
-
-        @tags
+        tags = all_tags
+        tags = filter_by_name(tags)
+        limit(tags)
       end
 
-      def search!
-        search = @params[:search]
+      private
 
-        return unless search
+      def all_tags
+        ::ActsAsTaggableOn::Tag.all
+      end
 
-        if search.empty?
-          @tags = ::ActsAsTaggableOn::Tag.none
-          return
+      def filter_by_name(tags)
+        return tags unless search
+        return tags.none if search.empty?
+
+        if search.length >= Gitlab::SQL::Pattern::MIN_CHARS_FOR_PARTIAL_MATCHING
+          tags.named_like(search)
+        else
+          tags.named(search)
         end
-
-        @tags =
-          if search.length >= Gitlab::SQL::Pattern::MIN_CHARS_FOR_PARTIAL_MATCHING
-            @tags.named_like(search)
-          else
-            @tags.named(search)
-          end
       end
 
-      def limit!
-        @tags = @tags.limit(LIMIT) # rubocop: disable CodeReuse/ActiveRecord
+      def limit(tags)
+        tags.limit(LIMIT) # rubocop: disable CodeReuse/ActiveRecord
+      end
+
+      def search
+        @params[:search]
       end
     end
   end
