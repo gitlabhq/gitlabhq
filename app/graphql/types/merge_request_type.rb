@@ -12,7 +12,7 @@ module Types
     field :iid, GraphQL::ID_TYPE, null: false
     field :title, GraphQL::STRING_TYPE, null: false
     field :description, GraphQL::STRING_TYPE, null: true
-    field :state, GraphQL::STRING_TYPE, null: true
+    field :state, MergeRequestStateEnum, null: false
     field :created_at, Types::TimeType, null: false
     field :updated_at, Types::TimeType, null: false
     field :source_project, Types::ProjectType, null: true
