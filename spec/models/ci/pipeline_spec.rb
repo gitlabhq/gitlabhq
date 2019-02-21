@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::Pipeline, :mailer do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   set(:project) { create(:project) }
 
@@ -2114,66 +2116,81 @@ describe Ci::Pipeline, :mailer do
 
   describe "#all_merge_requests" do
     let(:project) { create(:project) }
-    let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master') }
 
-    it "returns all merge requests having the same source branch" do
-      merge_request = create(:merge_request, source_project: project, source_branch: pipeline.ref)
+    shared_examples 'a method that returns all merge requests for a given pipeline' do
+      let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: pipeline_project, ref: 'master') }
 
-      expect(pipeline.all_merge_requests).to eq([merge_request])
-    end
+      it "returns all merge requests having the same source branch" do
+        merge_request = create(:merge_request, source_project: pipeline_project, target_project: project, source_branch: pipeline.ref)
 
-    it "doesn't return merge requests having a different source branch" do
-      create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
-
-      expect(pipeline.all_merge_requests).to be_empty
-    end
-
-    context 'when there is a merge request pipeline' do
-      let(:source_branch) { 'feature' }
-      let(:target_branch) { 'master' }
-
-      let!(:pipeline) do
-        create(:ci_pipeline,
-               source: :merge_request,
-               project: project,
-               ref: source_branch,
-               merge_request: merge_request)
-      end
-
-      let(:merge_request) do
-        create(:merge_request,
-               source_project: project,
-               source_branch: source_branch,
-               target_project: project,
-               target_branch: target_branch)
-      end
-
-      it 'returns an associated merge request' do
         expect(pipeline.all_merge_requests).to eq([merge_request])
       end
 
-      context 'when there is another merge request pipeline that targets a different branch' do
-        let(:target_branch_2) { 'merge-test' }
+      it "doesn't return merge requests having a different source branch" do
+        create(:merge_request, source_project: pipeline_project, target_project: project, source_branch: 'feature', target_branch: 'master')
 
-        let!(:pipeline_2) do
+        expect(pipeline.all_merge_requests).to be_empty
+      end
+
+      context 'when there is a merge request pipeline' do
+        let(:source_branch) { 'feature' }
+        let(:target_branch) { 'master' }
+
+        let!(:pipeline) do
           create(:ci_pipeline,
                  source: :merge_request,
-                 project: project,
+                 project: pipeline_project,
                  ref: source_branch,
-                 merge_request: merge_request_2)
+                 merge_request: merge_request)
         end
 
-        let(:merge_request_2) do
+        let(:merge_request) do
           create(:merge_request,
-                 source_project: project,
+                 source_project: pipeline_project,
                  source_branch: source_branch,
                  target_project: project,
-                 target_branch: target_branch_2)
+                 target_branch: target_branch)
         end
 
-        it 'does not return an associated merge request' do
-          expect(pipeline.all_merge_requests).not_to include(merge_request_2)
+        it 'returns an associated merge request' do
+          expect(pipeline.all_merge_requests).to eq([merge_request])
         end
+
+        context 'when there is another merge request pipeline that targets a different branch' do
+          let(:target_branch_2) { 'merge-test' }
+
+          let!(:pipeline_2) do
+            create(:ci_pipeline,
+                   source: :merge_request,
+                   project: pipeline_project,
+                   ref: source_branch,
+                   merge_request: merge_request_2)
+          end
+
+          let(:merge_request_2) do
+            create(:merge_request,
+                   source_project: pipeline_project,
+                   source_branch: source_branch,
+                   target_project: project,
+                   target_branch: target_branch_2)
+          end
+
+          it 'does not return an associated merge request' do
+            expect(pipeline.all_merge_requests).not_to include(merge_request_2)
+          end
+        end
+      end
+    end
+
+    it_behaves_like 'a method that returns all merge requests for a given pipeline' do
+      let(:pipeline_project) { project }
+    end
+
+    context 'for a fork' do
+      let(:fork) { fork_project(project) }
+
+      it_behaves_like 'a method that returns all merge requests for a given pipeline' do
+        let(:pipeline_project) { fork }
       end
     end
   end
