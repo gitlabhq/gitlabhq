@@ -668,6 +668,9 @@ gitlab:assets:compile:
     - //@gitlab-org/gitlab-ee
     - //@gitlab/gitlabhq
     - //@gitlab/gitlab-ee
+  tags:
+    - docker
+    - gitlab-org
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
