@@ -1450,7 +1450,7 @@ describe API::Projects do
       allow(::Projects::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
         .and_return({ status: :error, http_status: 409, message: 'error' })
 
-      post api("/projects/#{project.id}/share", user), params: { group_id: group.id, group_access: Gitlab::Access::DEVELOPER }
+      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
 
       expect(response).to have_gitlab_http_status(409)
     end
