@@ -6,12 +6,12 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
   describe '#execute' do
     context 'with empty params' do
       it 'returns all tags' do
-        ActsAsTaggableOn::Tag.create!(name: 'tag1')
-        ActsAsTaggableOn::Tag.create!(name: 'tag2')
+        tag1 = ActsAsTaggableOn::Tag.create!(name: 'tag1')
+        tag2 = ActsAsTaggableOn::Tag.create!(name: 'tag2')
 
-        tags = described_class.new(params: {}).execute.map(&:name)
+        tags = described_class.new(params: {}).execute
 
-        expect(tags).to match_array %w(tag1 tag2)
+        expect(tags).to match_array [tag1, tag2]
       end
     end
 
@@ -21,7 +21,7 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
           ActsAsTaggableOn::Tag.create!(name: 'tag1')
           ActsAsTaggableOn::Tag.create!(name: 'tag2')
 
-          tags = described_class.new(params: { search: '' }).execute.map(&:name)
+          tags = described_class.new(params: { search: '' }).execute
 
           expect(tags).to be_empty
         end
@@ -29,23 +29,23 @@ describe Autocomplete::ActsAsTaggableOn::TagsFinder do
 
       context 'with a search containing 2 characters' do
         it 'returns the tag that strictly matches the search term' do
-          ActsAsTaggableOn::Tag.create!(name: 't1')
+          tag1 = ActsAsTaggableOn::Tag.create!(name: 't1')
           ActsAsTaggableOn::Tag.create!(name: 't11')
 
-          tags = described_class.new(params: { search: 't1' }).execute.map(&:name)
+          tags = described_class.new(params: { search: 't1' }).execute
 
-          expect(tags).to match_array ['t1']
+          expect(tags).to match_array [tag1]
         end
       end
 
       context 'with a search containing 3 characters' do
         it 'returns the tag that partially matches the search term' do
-          ActsAsTaggableOn::Tag.create!(name: 'tag1')
-          ActsAsTaggableOn::Tag.create!(name: 'tag11')
+          tag1 = ActsAsTaggableOn::Tag.create!(name: 'tag1')
+          tag2 = ActsAsTaggableOn::Tag.create!(name: 'tag11')
 
-          tags = described_class.new(params: { search: 'ag1' }).execute.map(&:name)
+          tags = described_class.new(params: { search: 'ag1' }).execute
 
-          expect(tags).to match_array %w(tag1 tag11)
+          expect(tags).to match_array [tag1, tag2]
         end
       end
     end
