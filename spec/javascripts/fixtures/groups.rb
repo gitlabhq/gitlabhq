@@ -4,7 +4,7 @@ describe 'Groups (JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
   let(:admin) { create(:admin) }
-  let(:group) { create(:group, name: 'frontend-fixtures-group' )}
+  let(:group) { create(:group, name: 'frontend-fixtures-group', runners_token: 'runnerstoken:intabulasreferre')}
 
   render_views
 
