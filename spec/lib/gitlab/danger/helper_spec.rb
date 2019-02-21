@@ -217,6 +217,7 @@ describe Gitlab::Danger::Helper do
       'app/views/foo'        | :frontend
       'public/foo'           | :frontend
       'spec/javascripts/foo' | :frontend
+      'spec/frontend/bar'    | :frontend
       'vendor/assets/foo'    | :frontend
       'jest.config.js'       | :frontend
       'package.json'         | :frontend
@@ -225,6 +226,7 @@ describe Gitlab::Danger::Helper do
       'ee/app/assets/foo'       | :frontend
       'ee/app/views/foo'        | :frontend
       'ee/spec/javascripts/foo' | :frontend
+      'ee/spec/frontend/bar'    | :frontend
 
       'app/models/foo' | :backend
       'bin/foo'        | :backend
