@@ -145,6 +145,24 @@ describe ErrorTracking::ProjectErrorTrackingSetting do
         expect(result).to be_nil
       end
     end
+
+    context 'when sentry client raises exception' do
+      let(:sentry_client) { spy(:sentry_client) }
+
+      before do
+        synchronous_reactive_cache(subject)
+
+        allow(subject).to receive(:sentry_client).and_return(sentry_client)
+        allow(sentry_client).to receive(:list_issues).with(opts)
+          .and_raise(Sentry::Client::Error, 'error message')
+      end
+
+      it 'returns error' do
+        expect(result).to eq(error: 'error message')
+        expect(subject).to have_received(:sentry_client)
+        expect(sentry_client).to have_received(:list_issues)
+      end
+    end
   end
 
   describe '#list_sentry_projects' do

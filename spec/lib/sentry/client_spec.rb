@@ -36,7 +36,7 @@ describe Sentry::Client do
     end
 
     it 'does not follow redirects' do
-      expect { subject }.to raise_exception(Sentry::Client::Error, 'Sentry response error: 302')
+      expect { subject }.to raise_exception(Sentry::Client::Error, 'Sentry response status code: 302')
       expect(redirect_req_stub).to have_been_requested
       expect(redirected_req_stub).not_to have_been_requested
     end
