@@ -32,11 +32,6 @@
   &.status-box-issue-closed,
   &.status-box-mr-merged {
     background-color: $blue-500;
-
-    a {
-      color: inherit;
-      text-decoration: underline;
-    }
   }
 
   &.status-box-open {
