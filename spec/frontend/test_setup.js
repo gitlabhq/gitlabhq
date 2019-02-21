@@ -1,3 +1,5 @@
+import Vue from 'vue';
+import Translate from '~/vue_shared/translate';
 import axios from '~/lib/utils/axios_utils';
 
 const testTimeoutInMs = 300;
@@ -28,3 +30,5 @@ beforeEach(done => {
 
   done();
 });
+
+Vue.use(Translate);

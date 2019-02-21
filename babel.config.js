@@ -1,3 +1,5 @@
+/* eslint-disable import/no-commonjs, filenames/match-regex */
+
 const BABEL_ENV = process.env.BABEL_ENV || process.env.NODE_ENV || null;
 
 const presets = [
