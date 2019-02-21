@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let(:admin) { create(:admin) }
+  let(:admin) { create(:admin, feed_token: 'feedtoken:coldfeed') }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'issues-project') }
 
