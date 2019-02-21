@@ -595,12 +595,6 @@ module API
       'youtrack' => [
         {
           required: true,
-          name: :new_issue_url,
-          type: String,
-          desc: 'The new issue URL'
-        },
-        {
-          required: true,
           name: :project_url,
           type: String,
           desc: 'The project URL'

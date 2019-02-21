@@ -10,7 +10,6 @@ in the table below.
     | `description`   | A name for the issue tracker (to differentiate between instances, for example) |
     | `project_url`   | The URL to the project in YouTrack which is being linked to this GitLab project |
     | `issues_url`    | The URL to the issue in YouTrack project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. |
-    | `new_issue_url` | This is the URL to create a new issue in YouTrack for the project linked to this GitLab project. **This is currently not being used and will be removed in a future release.** |
 
     Once you have configured and enabled YouTrack you'll see the YouTrack link on the GitLab project pages that takes you to the appropriate YouTrack project.
 

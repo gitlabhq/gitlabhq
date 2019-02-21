@@ -321,8 +321,7 @@ FactoryBot.define do
         active: true,
         properties: {
           'project_url' => 'http://youtrack/projects/project_guid_in_youtrack',
-          'issues_url' => 'http://youtrack/issues/:id',
-          'new_issue_url' => 'http://youtrack/newIssue'
+          'issues_url' => 'http://youtrack/issues/:id'
         }
       )
     end
