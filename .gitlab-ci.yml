@@ -668,9 +668,6 @@ gitlab:assets:compile:
     - //@gitlab-org/gitlab-ee
     - //@gitlab/gitlabhq
     - //@gitlab/gitlab-ee
-  tags:
-    - gitlab-org-delivery
-    - high-cpu
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
