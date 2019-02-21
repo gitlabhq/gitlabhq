@@ -11,7 +11,6 @@ describe 'User activates issue tracker', :js do
 
     fill_in 'service_project_url', with: url
     fill_in 'service_issues_url', with: "#{url}/:id"
-    fill_in 'service_new_issue_url', with: url
   end
 
   before do
@@ -86,7 +85,5 @@ describe 'User activates issue tracker', :js do
     end
   end
 
-  it_behaves_like 'external issue tracker activation', tracker: 'Redmine'
-  it_behaves_like 'external issue tracker activation', tracker: 'Bugzilla'
-  it_behaves_like 'external issue tracker activation', tracker: 'Custom Issue Tracker'
+  it_behaves_like 'external issue tracker activation', tracker: 'YouTrack'
 end

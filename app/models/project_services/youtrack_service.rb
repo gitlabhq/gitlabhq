@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 class YoutrackService < IssueTrackerService
-  validates :project_url, :issues_url, :new_issue_url, presence: true, public_url: true, if: :activated?
+  validates :project_url, :issues_url, presence: true, public_url: true, if: :activated?
 
-  prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
+  prop_accessor :title, :description, :project_url, :issues_url
 
   # {PROJECT-KEY}-{NUMBER} Examples: YT-1, PRJ-1
   def self.reference_pattern(only_long: false)
@@ -15,11 +15,7 @@ class YoutrackService < IssueTrackerService
   end
 
   def title
-    if self.properties && self.properties['title'].present?
-      self.properties['title']
-    else
-      'YouTrack'
-    end
+    'YouTrack'
   end
 
   def description
@@ -32,5 +28,13 @@ class YoutrackService < IssueTrackerService
 
   def self.to_param
     'youtrack'
+  end
+
+  def fields
+    [
+      { type: 'text', name: 'description', placeholder: description },
+      { type: 'text', name: 'project_url', placeholder: 'Project url', required: true },
+      { type: 'text', name: 'issues_url', placeholder: 'Issue url', required: true }
+    ]
   end
 end
