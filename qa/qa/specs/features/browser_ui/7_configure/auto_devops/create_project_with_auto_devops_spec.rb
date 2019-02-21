@@ -4,13 +4,13 @@ require 'pathname'
 
 module QA
   # Transient failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/68
-  context 'Configure', :orchestrated, :kubernetes, :quarantine do
-    describe 'Auto DevOps support' do
-      def login
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.perform(&:sign_in_using_credentials)
-      end
+  context 'Configure' do
+    def login
+      Runtime::Browser.visit(:gitlab, Page::Main::Login)
+      Page::Main::Login.perform(&:sign_in_using_credentials)
+    end
 
+    describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
       [true, false].each do |rbac|
         context "when rbac is #{rbac ? 'enabled' : 'disabled'}" do
           before(:all) do
@@ -170,6 +170,39 @@ module QA
               end
             end
           end
+        end
+      end
+    end
+
+    describe 'Auto DevOps', :smoke do
+      it 'enables AutoDevOps by default' do
+        login
+
+        project = Resource::Project.fabricate! do |p|
+          p.name = Runtime::Env.auto_devops_project_name || 'project-with-autodevops'
+          p.description = 'Project with AutoDevOps'
+        end
+
+        project.visit!
+
+        Page::Alert::AutoDevopsAlert.perform do |alert|
+          expect(alert).to have_text(/.*The Auto DevOps pipeline has been enabled.*/)
+        end
+
+        # Create AutoDevOps repo
+        Resource::Repository::ProjectPush.fabricate! do |push|
+          push.project = project
+          push.directory = Pathname
+            .new(__dir__)
+            .join('../../../../../fixtures/auto_devops_rack')
+          push.commit_message = 'Create AutoDevOps compatible Project'
+        end
+
+        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+        Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
+
+        Page::Project::Pipeline::Show.perform do |pipeline|
+          expect(pipeline).to have_tag('Auto DevOps')
         end
       end
     end

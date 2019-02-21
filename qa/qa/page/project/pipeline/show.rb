@@ -18,6 +18,10 @@ module QA::Page
         element :status_icon, 'ci-status-icon-${status}' # rubocop:disable QA/ElementWithPattern
       end
 
+      view 'app/views/projects/pipelines/_info.html.haml' do
+        element :pipeline_badges
+      end
+
       def running?
         within('.ci-header-container') do
           page.has_content?('running')
@@ -29,6 +33,12 @@ module QA::Page
           within('.ci-job-component', text: name) do
             has_selector?(".ci-status-icon-#{status}", { wait: wait }.compact)
           end
+        end
+      end
+
+      def has_tag?(tag_name)
+        within_element(:pipeline_badges) do
+          has_selector?('.badge', text: tag_name)
         end
       end
 
