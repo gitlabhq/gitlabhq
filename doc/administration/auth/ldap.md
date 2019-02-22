@@ -451,7 +451,7 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
 ### Invalid credentials when logging in
 
 - Make sure the user you are binding with has enough permissions to read the user's
-tree and traverse it.
+  tree and traverse it.
 - Check that the `user_filter` is not blocking otherwise valid users.
 - Run the following check command to make sure that the LDAP settings are
   correct and GitLab can see your users:

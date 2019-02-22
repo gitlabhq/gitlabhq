@@ -21,10 +21,10 @@ to accomplish their work with GitLab.
 ## How to update the docs
 
 1. Click "Edit this Page" at the bottom of any page on docs.gitlab.com, or navigate to
-one of the repositories and doc paths listed on the [GitLab Documentation guidelines](index.md) page.
-Work in a fork if you do not have developer access to the GitLab project.
+   one of the repositories and doc paths listed on the [GitLab Documentation guidelines](index.md) page.
+   Work in a fork if you do not have developer access to the GitLab project.
 1. Follow the described standards and processes listed on that Guidelines page,
-including the linked resources: the [Structure and template](structure.md) page, [Style Guide](styleguide.md), and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/). 
+   including the linked resources: the [Structure and template](structure.md) page, [Style Guide](styleguide.md), and [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
 1. Follow GitLab's [Merge Request Guidelines](../contributing/merge_request_workflow.md#merge-request-guidelines).
 
 If you need any help to choose the correct place for a doc, discuss a documentation
@@ -45,7 +45,7 @@ before merging, mention the writer who is assigned to the relevant [DevOps stage
 The process can involve the following parties/phases, and is replicated in the `Documentation` MR template for GitLab CE and EE, to help with following the process.
 
 **1. Primary Reviewer** - Review by a [code reviewer](https://about.gitlab.com/handbook/engineering/projects/) or other appropriate colleague to confirm accuracy, clarity, and completeness. This can be skipped for minor fixes without substantive content changes.
- 
+
 **2. Technical Writer** - Optional - If not requested for this MR, must be scheduled post-merge. To request a pre-merge review, assign the writer listed for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages).
 To request a post-merge review, [create an issue for one using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review) and link it from the MR that makes the doc change.
 

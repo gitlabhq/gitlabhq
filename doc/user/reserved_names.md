@@ -5,6 +5,7 @@ existing routes used by GitLab.
 
 For a list of words that are not allowed to be used as group or project names, see the
 [`path_regex.rb` file][reserved] under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists:
+
 - `TOP_LEVEL_ROUTES`: are names that are reserved as usernames or top level groups
 - `PROJECT_WILDCARD_ROUTES`: are names that are reserved for child groups or projects.
 - `GROUP_ROUTES`: are names that are reserved for all groups or projects.

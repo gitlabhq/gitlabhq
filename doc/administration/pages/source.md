@@ -88,12 +88,13 @@ since that is needed in all configurations.
 
 ### Wildcard domains
 
->**Requirements:**
-> - [Wildcard DNS setup](#dns-configuration)
->
-> ---
->
-> URL scheme: `http://page.example.io`
+**Requirements:**
+
+- [Wildcard DNS setup](#dns-configuration)
+
+---
+
+URL scheme: `http://page.example.io`
 
 This is the minimum setup that you can use Pages with. It is the base for all
 other setups as described below. Nginx will proxy all requests to the daemon.

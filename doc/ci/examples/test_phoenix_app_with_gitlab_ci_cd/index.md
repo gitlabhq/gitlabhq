@@ -75,7 +75,7 @@ When we call `mix` command, we'll pass two arguments:
 
 - The task we want it to run: `phoenix.new`
 - And the parameter `phoenix.new` requires, which is the name of the new project. In this case,
-we're calling it `hello_gitlab_ci`, but you're free to set your own name:
+  we're calling it `hello_gitlab_ci`, but you're free to set your own name:
 
 ```bash
 mix phoenix.new hello_gitlab_ci
@@ -249,7 +249,7 @@ project.
     ![Set up CI](img/setup-ci.png)
 
 - On next screen, we can select a template ready to go. Click on **Apply a GitLab CI/CD Yaml
-template** and select **Elixir**:
+  template** and select **Elixir**:
 
     ![Select template](img/select-template.png)
 

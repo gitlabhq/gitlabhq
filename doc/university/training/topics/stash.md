@@ -30,7 +30,7 @@ and we need to change to a different branch.
 ----------
 
 - Every time we save a stash it gets stacked so by using list we can see all our
-stashes.
+  stashes.
 
     ```
     git stash list
