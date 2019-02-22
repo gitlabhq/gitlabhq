@@ -22,6 +22,10 @@ class SlackSlashCommandsService < SlashCommandsService
     end
   end
 
+  def chat_responder
+    ::Gitlab::Chat::Responder::Slack
+  end
+
   private
 
   def format(text)

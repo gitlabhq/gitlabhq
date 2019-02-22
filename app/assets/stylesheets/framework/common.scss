@@ -52,6 +52,11 @@
   word-break: break-all;
 }
 
+.text-underline,
+.text-underline:hover {
+  text-decoration: underline;
+}
+
 .hint { font-style: italic; color: $gl-gray-400; }
 .light { color: $gl-text-color; }
 

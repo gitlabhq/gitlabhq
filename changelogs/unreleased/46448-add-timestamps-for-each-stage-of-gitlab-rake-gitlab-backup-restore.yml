@@ -1,5 +1,0 @@
----
-title: Display timestamps to messages printed by gitlab:backup:restore rake tasks
-merge_request:
-author: Will Chandler
-type: changed

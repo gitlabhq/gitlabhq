@@ -53,11 +53,11 @@ describe ErrorTracking::ListProjectsService do
       context 'sentry client raises exception' do
         before do
           expect(error_tracking_setting).to receive(:list_sentry_projects)
-            .and_raise(Sentry::Client::Error, 'Sentry response error: 500')
+            .and_raise(Sentry::Client::Error, 'Sentry response status code: 500')
         end
 
         it 'returns error response' do
-          expect(result[:message]).to eq('Sentry response error: 500')
+          expect(result[:message]).to eq('Sentry response status code: 500')
           expect(result[:http_status]).to eq(:bad_request)
         end
       end

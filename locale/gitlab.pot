@@ -1542,9 +1542,6 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-msgid "Closed (moved)"
-msgstr ""
-
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
 msgstr ""
 
@@ -3295,7 +3292,7 @@ msgstr ""
 msgid "Failed to load emoji list."
 msgstr ""
 
-msgid "Failed to load errors from Sentry"
+msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -4097,6 +4094,9 @@ msgstr ""
 msgid "Invoke Time"
 msgstr ""
 
+msgid "IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})"
+msgstr ""
+
 msgid "Issue"
 msgstr ""
 
@@ -4115,7 +4115,7 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
-msgid "Issues, merge requests, pushes and comments."
+msgid "Issues, merge requests, pushes, and comments."
 msgstr ""
 
 msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
@@ -4269,6 +4269,9 @@ msgid "Labels|Promote Label"
 msgstr ""
 
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
+msgstr ""
+
+msgid "Language"
 msgstr ""
 
 msgid "Large File Storage"
@@ -5530,6 +5533,9 @@ msgstr ""
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+msgid "Preferences|This feature is experimental and translations are not complete yet"
+msgstr ""
+
 msgid "Press Enter or click to search"
 msgstr ""
 
@@ -5720,9 +5726,6 @@ msgid "Profiles|This email will be used for web based operations, such as edits 
 msgstr ""
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
-msgstr ""
-
-msgid "Profiles|This feature is experimental and translations are not complete yet"
 msgstr ""
 
 msgid "Profiles|This information will appear on your profile"

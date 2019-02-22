@@ -307,6 +307,28 @@ you should be careful as GitLab cannot detect it. In this case, installing
 Tiller via the applications will result in the cluster having it twice, which
 can lead to confusion during deployments.
 
+### Upgrading applications
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24789)
+in GitLab 11.8.
+
+Users can perform a one-click upgrade for the GitLab Runner application,
+when there is an upgrade available.
+
+To upgrade the GitLab Runner application:
+
+1. Navigate to your project's **Operations > Kubernetes**.
+1. Select your cluster.
+1. Click the **Upgrade** button for the Runnner application.
+
+The **Upgrade** button will not be shown if there is no upgrade
+available.
+
+NOTE: **Note:**
+Upgrades will reset values back to the values built into the `runner`
+chart plus the values set by
+[`values.yaml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/vendor/runner/values.yaml)
+
 ## Getting the external IP address
 
 NOTE: **Note:**

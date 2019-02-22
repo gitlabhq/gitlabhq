@@ -101,6 +101,7 @@
 
 - authorized_projects
 - background_migration
+- chat_notification
 - create_gpg_signature
 - delete_merged_branches
 - delete_user

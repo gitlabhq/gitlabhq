@@ -11,7 +11,7 @@ module Types
     field :iid, GraphQL::ID_TYPE, null: false
     field :title, GraphQL::STRING_TYPE, null: false
     field :description, GraphQL::STRING_TYPE, null: true
-    field :state, GraphQL::STRING_TYPE, null: false
+    field :state, IssueStateEnum, null: false
 
     field :author, Types::UserType,
           null: false,

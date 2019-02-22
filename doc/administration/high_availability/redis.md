@@ -359,6 +359,12 @@ following section assumes you are using Omnibus GitLab Enterprise Edition.
 For the Omnibus Community Edition and installations from source, follow the
 [Redis HA source install](redis_source.md) guide.
 
+NOTE: **Note:** If you are using an external Redis Sentinel instance, be sure
+to exclude the `requirepass` parameter from the Sentinel
+configuration. This parameter will cause clients to report `NOAUTH
+Authentication required.`. [Redis Sentinel 3.2.x does not support
+password authentication](https://github.com/antirez/redis/issues/3279).
+
 Now that the Redis servers are all set up, let's configure the Sentinel
 servers.
 

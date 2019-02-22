@@ -1,5 +1,0 @@
----
-title: Fix failed LDAP logins when nil user_id present
-merge_request: 24749
-author:
-type: fixed

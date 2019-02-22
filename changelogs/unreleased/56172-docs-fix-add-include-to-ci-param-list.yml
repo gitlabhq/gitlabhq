@@ -1,5 +1,0 @@
----
-title: Update CI YAML param table with include
-merge_request: !24309
-author:
-type: fixed

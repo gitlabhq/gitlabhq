@@ -104,7 +104,6 @@ class ProfilesController < Profiles::ApplicationController
       :username,
       :website_url,
       :organization,
-      :preferred_language,
       :private_profile,
       :include_private_contributions,
       status: [:emoji, :message]

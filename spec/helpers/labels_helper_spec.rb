@@ -236,4 +236,17 @@ describe LabelsHelper do
       expect(labels_filter_path(format: :json)).to eq(dashboard_labels_path(format: :json))
     end
   end
+
+  describe 'labels_sorted_by_title' do
+    it 'sorts labels alphabetically' do
+      label1 = double(:label, title: 'a')
+      label2 = double(:label, title: 'B')
+      label3 = double(:label, title: 'c')
+      label4 = double(:label, title: 'D')
+      labels = [label1, label2, label3, label4]
+
+      expect(labels_sorted_by_title(labels))
+        .to match_array([label2, label4, label1, label3])
+    end
+  end
 end

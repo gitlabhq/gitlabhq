@@ -95,97 +95,8 @@ for a real-world example of this exploit.
 
 ### Omnibus package installations
 
-1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the
-  feature and fill in the details for your specific IMAP server and email account:
-
-    Configuration for Postfix mail server, assumes mailbox
-    incoming@gitlab.example.com
-
-    ```ruby
-    gitlab_rails['incoming_email_enabled'] = true
-
-    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
-    gitlab_rails['incoming_email_address'] = "incoming+%{key}@gitlab.example.com"
-
-    # Email account username
-    # With third party providers, this is usually the full email address.
-    # With self-hosted email servers, this is usually the user part of the email address.
-    gitlab_rails['incoming_email_email'] = "incoming"
-    # Email account password
-    gitlab_rails['incoming_email_password'] = "[REDACTED]"
-
-    # IMAP server host
-    gitlab_rails['incoming_email_host'] = "gitlab.example.com"
-    # IMAP server port
-    gitlab_rails['incoming_email_port'] = 143
-    # Whether the IMAP server uses SSL
-    gitlab_rails['incoming_email_ssl'] = false
-    # Whether the IMAP server uses StartTLS
-    gitlab_rails['incoming_email_start_tls'] = false
-
-    # The mailbox where incoming mail will end up. Usually "inbox".
-    gitlab_rails['incoming_email_mailbox_name'] = "inbox"
-    # The IDLE command timeout.
-    gitlab_rails['incoming_email_idle_timeout'] = 60
-    ```
-
-    Configuration for Gmail / Google Apps, assumes mailbox
-    gitlab-incoming@gmail.com
-
-    ```ruby
-    gitlab_rails['incoming_email_enabled'] = true
-
-    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
-    gitlab_rails['incoming_email_address'] = "gitlab-incoming+%{key}@gmail.com"
-
-    # Email account username
-    # With third party providers, this is usually the full email address.
-    # With self-hosted email servers, this is usually the user part of the email address.
-    gitlab_rails['incoming_email_email'] = "gitlab-incoming@gmail.com"
-    # Email account password
-    gitlab_rails['incoming_email_password'] = "[REDACTED]"
-
-    # IMAP server host
-    gitlab_rails['incoming_email_host'] = "imap.gmail.com"
-    # IMAP server port
-    gitlab_rails['incoming_email_port'] = 993
-    # Whether the IMAP server uses SSL
-    gitlab_rails['incoming_email_ssl'] = true
-    # Whether the IMAP server uses StartTLS
-    gitlab_rails['incoming_email_start_tls'] = false
-
-    # The mailbox where incoming mail will end up. Usually "inbox".
-    gitlab_rails['incoming_email_mailbox_name'] = "inbox"
-    # The IDLE command timeout.
-    gitlab_rails['incoming_email_idle_timeout'] = 60
-    ```
-
-    Configuration for Microsoft Exchange mail server w/ IMAP enabled, assumes the
-    catch-all mailbox incoming@exchange.example.com
-
-    ```ruby
-    gitlab_rails['incoming_email_enabled'] = true
-
-    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
-    # Exchange does not support sub-addressing, so a catch-all mailbox must be used.
-    gitlab_rails['incoming_email_address'] = "incoming-%{key}@exchange.example.com"
-
-    # Email account username
-    # Typically this is the userPrincipalName (UPN)
-    gitlab_rails['incoming_email_email'] = "incoming@ad-domain.example.com"
-    # Email account password
-    gitlab_rails['incoming_email_password'] = "[REDACTED]"
-
-    # IMAP server host
-    gitlab_rails['incoming_email_host'] = "exchange.example.com"
-    # IMAP server port
-    gitlab_rails['incoming_email_port'] = 993
-    # Whether the IMAP server uses SSL
-    gitlab_rails['incoming_email_ssl'] = true
-    ```
+1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature
+    and fill in the details for your specific IMAP server and email account (see [examples](#config-examples) below).
 
 1. Reconfigure GitLab for the changes to take effect:
 
@@ -200,7 +111,7 @@ for a real-world example of this exploit.
     sudo gitlab-rake gitlab:incoming_email:check
     ```
 
-1. Reply by email should now be working.
+Reply by email should now be working.
 
 ### Installations from source
 
@@ -211,110 +122,7 @@ for a real-world example of this exploit.
     ```
 
 1. Find the `incoming_email` section in `config/gitlab.yml`, enable the feature
-  and fill in the details for your specific IMAP server and email account:
-
-    ```sh
-    sudo editor config/gitlab.yml
-    ```
-
-    Configuration for Postfix mail server, assumes mailbox
-    incoming@gitlab.example.com
-
-    ```yaml
-    incoming_email:
-      enabled: true
-
-      # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-      # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
-      address: "incoming+%{key}@gitlab.example.com"
-
-      # Email account username
-      # With third party providers, this is usually the full email address.
-      # With self-hosted email servers, this is usually the user part of the email address.
-      user: "incoming"
-      # Email account password
-      password: "[REDACTED]"
-
-      # IMAP server host
-      host: "gitlab.example.com"
-      # IMAP server port
-      port: 143
-      # Whether the IMAP server uses SSL
-      ssl: false
-      # Whether the IMAP server uses StartTLS
-      start_tls: false
-
-      # The mailbox where incoming mail will end up. Usually "inbox".
-      mailbox: "inbox"
-      # The IDLE command timeout.
-      idle_timeout: 60
-    ```
-
-    Configuration for Gmail / Google Apps, assumes mailbox
-    gitlab-incoming@gmail.com
-
-    ```yaml
-    incoming_email:
-      enabled: true
-
-      # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-      # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
-      address: "gitlab-incoming+%{key}@gmail.com"
-
-      # Email account username
-      # With third party providers, this is usually the full email address.
-      # With self-hosted email servers, this is usually the user part of the email address.
-      user: "gitlab-incoming@gmail.com"
-      # Email account password
-      password: "[REDACTED]"
-
-      # IMAP server host
-      host: "imap.gmail.com"
-      # IMAP server port
-      port: 993
-      # Whether the IMAP server uses SSL
-      ssl: true
-      # Whether the IMAP server uses StartTLS
-      start_tls: false
-
-      # The mailbox where incoming mail will end up. Usually "inbox".
-      mailbox: "inbox"
-      # The IDLE command timeout.
-      idle_timeout: 60
-    ```
-
-    Configuration for Microsoft Exchange mail server w/ IMAP enabled, assumes the
-    catch-all mailbox incoming@exchange.example.com
-
-    ```yaml
-    incoming_email:
-      enabled: true
-
-      # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
-      # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
-      # Exchange does not support sub-addressing, so a catch-all mailbox must be used.
-      address: "incoming-%{key}@exchange.example.com"
-
-      # Email account username
-      # Typically this is the userPrincipalName (UPN)
-      user: "incoming@ad-domain.example.com"
-      # Email account password
-      password: "[REDACTED]"
-
-      # IMAP server host
-      host: "exchange.example.com"
-      # IMAP server port
-      port: 993
-      # Whether the IMAP server uses SSL
-      ssl: true
-      # Whether the IMAP server uses StartTLS
-      start_tls: false
-
-      # The mailbox where incoming mail will end up. Usually "inbox".
-      mailbox: "inbox"
-      # The IDLE command timeout.
-      idle_timeout: 60
-    ```
+  and fill in the details for your specific IMAP server and email account (see [examples](#config-examples) below).
 
 1. Enable `mail_room` in the init script at `/etc/default/gitlab`:
 
@@ -335,4 +143,201 @@ for a real-world example of this exploit.
     sudo -u git -H bundle exec rake gitlab:incoming_email:check RAILS_ENV=production
     ```
 
-1. Reply by email should now be working.
+Reply by email should now be working.
+
+### Config examples
+
+#### Postfix
+
+Example configuration for Postfix mail server. Assumes mailbox incoming@gitlab.example.com.
+
+Example for Omnibus installs:
+
+```ruby
+gitlab_rails['incoming_email_enabled'] = true
+
+# The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+# The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+gitlab_rails['incoming_email_address'] = "incoming+%{key}@gitlab.example.com"
+
+# Email account username
+# With third party providers, this is usually the full email address.
+# With self-hosted email servers, this is usually the user part of the email address.
+gitlab_rails['incoming_email_email'] = "incoming"
+# Email account password
+gitlab_rails['incoming_email_password'] = "[REDACTED]"
+
+# IMAP server host
+gitlab_rails['incoming_email_host'] = "gitlab.example.com"
+# IMAP server port
+gitlab_rails['incoming_email_port'] = 143
+# Whether the IMAP server uses SSL
+gitlab_rails['incoming_email_ssl'] = false
+# Whether the IMAP server uses StartTLS
+gitlab_rails['incoming_email_start_tls'] = false
+
+# The mailbox where incoming mail will end up. Usually "inbox".
+gitlab_rails['incoming_email_mailbox_name'] = "inbox"
+# The IDLE command timeout.
+gitlab_rails['incoming_email_idle_timeout'] = 60
+```
+
+Example for source installs:
+
+```yaml
+incoming_email:
+    enabled: true
+
+    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+    address: "incoming+%{key}@gitlab.example.com"
+
+    # Email account username
+    # With third party providers, this is usually the full email address.
+    # With self-hosted email servers, this is usually the user part of the email address.
+    user: "incoming"
+    # Email account password
+    password: "[REDACTED]"
+
+    # IMAP server host
+    host: "gitlab.example.com"
+    # IMAP server port
+    port: 143
+    # Whether the IMAP server uses SSL
+    ssl: false
+    # Whether the IMAP server uses StartTLS
+    start_tls: false
+
+    # The mailbox where incoming mail will end up. Usually "inbox".
+    mailbox: "inbox"
+    # The IDLE command timeout.
+    idle_timeout: 60
+```
+
+#### Gmail
+
+Example configuration for Gmail/G Suite. Assumes mailbox gitlab-incoming@gmail.com.
+
+Example for Omnibus installs:
+
+```ruby
+gitlab_rails['incoming_email_enabled'] = true
+
+# The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+# The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+gitlab_rails['incoming_email_address'] = "gitlab-incoming+%{key}@gmail.com"
+
+# Email account username
+# With third party providers, this is usually the full email address.
+# With self-hosted email servers, this is usually the user part of the email address.
+gitlab_rails['incoming_email_email'] = "gitlab-incoming@gmail.com"
+# Email account password
+gitlab_rails['incoming_email_password'] = "[REDACTED]"
+
+# IMAP server host
+gitlab_rails['incoming_email_host'] = "imap.gmail.com"
+# IMAP server port
+gitlab_rails['incoming_email_port'] = 993
+# Whether the IMAP server uses SSL
+gitlab_rails['incoming_email_ssl'] = true
+# Whether the IMAP server uses StartTLS
+gitlab_rails['incoming_email_start_tls'] = false
+
+# The mailbox where incoming mail will end up. Usually "inbox".
+gitlab_rails['incoming_email_mailbox_name'] = "inbox"
+# The IDLE command timeout.
+gitlab_rails['incoming_email_idle_timeout'] = 60
+```
+
+Example for source installs:
+
+```yaml
+incoming_email:
+    enabled: true
+
+    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+    address: "gitlab-incoming+%{key}@gmail.com"
+
+    # Email account username
+    # With third party providers, this is usually the full email address.
+    # With self-hosted email servers, this is usually the user part of the email address.
+    user: "gitlab-incoming@gmail.com"
+    # Email account password
+    password: "[REDACTED]"
+
+    # IMAP server host
+    host: "imap.gmail.com"
+    # IMAP server port
+    port: 993
+    # Whether the IMAP server uses SSL
+    ssl: true
+    # Whether the IMAP server uses StartTLS
+    start_tls: false
+
+    # The mailbox where incoming mail will end up. Usually "inbox".
+    mailbox: "inbox"
+    # The IDLE command timeout.
+    idle_timeout: 60
+```
+
+#### MS Exchange
+
+Example configuration for Microsoft Exchange mail server with IMAP enabled. Assumes the
+catch-all mailbox incoming@exchange.example.com.
+
+Example for Omnibus installs:
+
+```ruby
+gitlab_rails['incoming_email_enabled'] = true
+
+# The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+# The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+# Exchange does not support sub-addressing, so a catch-all mailbox must be used.
+gitlab_rails['incoming_email_address'] = "incoming-%{key}@exchange.example.com"
+
+# Email account username
+# Typically this is the userPrincipalName (UPN)
+gitlab_rails['incoming_email_email'] = "incoming@ad-domain.example.com"
+# Email account password
+gitlab_rails['incoming_email_password'] = "[REDACTED]"
+
+# IMAP server host
+gitlab_rails['incoming_email_host'] = "exchange.example.com"
+# IMAP server port
+gitlab_rails['incoming_email_port'] = 993
+# Whether the IMAP server uses SSL
+gitlab_rails['incoming_email_ssl'] = true
+```
+
+Example for source installs:
+
+```yaml
+incoming_email:
+    enabled: true
+
+    # The email address including the `%{key}` placeholder that will be replaced to reference the item being replied to.
+    # The placeholder can be omitted but if present, it must appear in the "user" part of the address (before the `@`).
+    # Exchange does not support sub-addressing, so a catch-all mailbox must be used.
+    address: "incoming-%{key}@exchange.example.com"
+
+    # Email account username
+    # Typically this is the userPrincipalName (UPN)
+    user: "incoming@ad-domain.example.com"
+    # Email account password
+    password: "[REDACTED]"
+
+    # IMAP server host
+    host: "exchange.example.com"
+    # IMAP server port
+    port: 993
+    # Whether the IMAP server uses SSL
+    ssl: true
+    # Whether the IMAP server uses StartTLS
+    start_tls: false
+
+    # The mailbox where incoming mail will end up. Usually "inbox".
+    mailbox: "inbox"
+    # The IDLE command timeout.
+    idle_timeout: 60
+```
