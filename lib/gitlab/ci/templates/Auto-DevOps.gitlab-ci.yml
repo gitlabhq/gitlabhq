@@ -48,6 +48,7 @@ variables:
   POSTGRES_PASSWORD: testing-password
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+  POSTGRES_VERSION: 9.6.2
 
   KUBERNETES_VERSION: 1.11.6
   HELM_VERSION: 2.12.2
@@ -700,6 +701,7 @@ rollout 100%:
         --set postgresql.postgresUser="$POSTGRES_USER" \
         --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
         --set postgresql.postgresDatabase="$POSTGRES_DB" \
+        --set postgresql.imageTag="$POSTGRES_VERSION" \
         --set application.initializeCommand="$DB_INITIALIZE" \
         --namespace="$KUBE_NAMESPACE" \
         "$name" \
