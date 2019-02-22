@@ -107,70 +107,70 @@ To add an existing Kubernetes cluster to your project:
       [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
       privileges.** To create this service account:
 
-      1. Create a file called `eks-admin-service-account.yaml` with contents:
+      1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
           ```yaml
           apiVersion: v1
           kind: ServiceAccount
           metadata:
-            name: eks-admin
+            name: gitlab-admin
             namespace: kube-system
           ```
 
       2. Apply the service account to your cluster:
 
           ```bash
-          kubectl apply -f eks-admin-service-account.yaml
+          kubectl apply -f gitlab-admin-service-account.yaml
           ```
 
           Output:
 
             ```bash
-            serviceaccount "eks-admin" created
+            serviceaccount "gitlab-admin" created
             ```
 
-      3. Create a file called `eks-admin-cluster-role-binding.yaml` with contents:
+      3. Create a file called `gitlab-admin-cluster-role-binding.yaml` with contents:
 
           ```yaml
           apiVersion: rbac.authorization.k8s.io/v1beta1
           kind: ClusterRoleBinding
           metadata:
-            name: eks-admin
+            name: gitlab-admin
           roleRef:
             apiGroup: rbac.authorization.k8s.io
             kind: ClusterRole
             name: cluster-admin
           subjects:
           - kind: ServiceAccount
-            name: eks-admin
+            name: gitlab-admin
             namespace: kube-system
           ```
 
       4. Apply the cluster role binding to your cluster:
 
           ```bash
-          kubectl apply -f eks-admin-cluster-role-binding.yaml
+          kubectl apply -f gitlab-admin-cluster-role-binding.yaml
           ```
 
           Output:
 
           ```bash
-          clusterrolebinding "eks-admin" created
+          clusterrolebinding "gitlab-admin" created
           ```
 
-      5. Retrieve the token for the `eks-admin` service account:
+      5. Retrieve the token for the `gitlab-admin` service account:
 
           ```bash
-          kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep eks-admin | awk '{print $1}')
+          kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
           ```
 
       Copy the `<authentication_token>` value from the output:
 
       ```yaml
-      Name:         eks-admin-token-b5zv4
+      Name:         gitlab-admin-token-b5zv4
       Namespace:    kube-system
       Labels:       <none>
-      Annotations:  kubernetes.io/service-account.name=eks-admin
+      Annotations:  kubernetes.io/service-account.name=gitlab-admin
                     kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
 
       Type:  kubernetes.io/service-account-token
