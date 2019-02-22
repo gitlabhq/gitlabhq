@@ -78,11 +78,11 @@ export default {
         <gl-button
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)"
-          class="js-pipeline-action-link no-btn btn"
+          class="js-pipeline-action-link no-btn btn d-flex align-items-center justify-content-between flex-wrap"
           @click="onClickAction(action)"
         >
           {{ action.name }}
-          <span v-if="action.scheduled_at" class="pull-right">
+          <span v-if="action.scheduled_at">
             <icon name="clock" />
             <gl-countdown :end-date-string="action.scheduled_at" />
           </span>
