@@ -1,4 +1,5 @@
 import flash from '~/flash';
+import { sprintf, __ } from '../../locale';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
 // `js-render-mermaid` class.
@@ -13,6 +14,9 @@ import flash from '~/flash';
 //    C-- > D;
 // </pre>
 //
+
+// This is an arbitary number; Can be iterated upon when suitable.
+const MAX_CHAR_LIMIT = 5000;
 
 export default function renderMermaid($els) {
   if (!$els.length) return;
@@ -33,6 +37,21 @@ export default function renderMermaid($els) {
 
       $els.each((i, el) => {
         const source = el.textContent;
+
+        /**
+         * Restrict the rendering to a certain amount of character to
+         * prevent mermaidjs from hanging up the entire thread and
+         * causing a DoS.
+         */
+        if (source && source.length > MAX_CHAR_LIMIT) {
+          el.textContent = sprintf(
+            __(
+              'Cannot render the image. Maximum character count (%{charLimit}) has been exceeded.',
+            ),
+            { charLimit: MAX_CHAR_LIMIT },
+          );
+          return;
+        }
 
         // Remove any extra spans added by the backend syntax highlighting.
         Object.assign(el, { textContent: source });
