@@ -44,7 +44,7 @@ describe 'Dashboard shortcuts', :js do
       find('body').send_keys([:shift, 'S'])
 
       find('.nothing-here-block')
-      expect(page).to have_selector('.snippets-list-holder')
+      expect(page).to have_content('No snippets found')
 
       find('body').send_keys([:shift, 'P'])
 
