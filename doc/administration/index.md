@@ -53,6 +53,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
 - [Merge request diffs storage](merge_request_diffs.md): Configure merge requests diffs external storage.
 - [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages to GitLab users through the UI.
+- [Admin Area](../user/admin_area/index.md): for self-managed instance-wide configuration and maintenance.
 
 #### Customizing GitLab's appearance
 
