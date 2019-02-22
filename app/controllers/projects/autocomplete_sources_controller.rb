@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
+  before_action :authorize_read_milestone!, only: :milestones
+
   def members
     render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)
   end
