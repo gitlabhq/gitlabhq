@@ -1,5 +1,0 @@
----
-title: Prevent unload when Recaptcha is open
-merge_request: 24625
-author:
-type: fixed

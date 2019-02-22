@@ -1,5 +1,0 @@
----
-title: Avoid overwriting default jaeger values with nil
-merge_request: 24482
-author:
-type: fixed
