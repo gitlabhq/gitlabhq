@@ -13,10 +13,11 @@ if (process.env.CI) {
 
 // eslint-disable-next-line import/no-commonjs
 module.exports = {
-  testMatch: ['<rootDir>/spec/frontend/**/*_spec.js'],
+  testMatch: ['<rootDir>/spec/frontend/**/*_spec.js', '<rootDir>/ee/spec/frontend/**/*_spec.js'],
   moduleFileExtensions: ['js', 'json', 'vue'],
   moduleNameMapper: {
     '^~(.*)$': '<rootDir>/app/assets/javascripts$1',
+    '^ee(.*)$': '<rootDir>/ee/app/assets/javascripts$1',
     '^helpers(.*)$': '<rootDir>/spec/frontend/helpers$1',
   },
   collectCoverageFrom: ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'],
