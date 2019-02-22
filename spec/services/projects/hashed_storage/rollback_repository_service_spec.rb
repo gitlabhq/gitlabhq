@@ -34,6 +34,16 @@ describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis
       end
     end
 
+    context 'when repository doesnt exist on disk' do
+      let(:project) { create(:project) }
+
+      it 'skips the disk change but decrease the version' do
+        service.execute
+
+        expect(project.legacy_storage?).to be_truthy
+      end
+    end
+
     context 'when succeeds' do
       it 'renames project and wiki repositories' do
         service.execute

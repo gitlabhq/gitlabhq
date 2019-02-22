@@ -32,6 +32,16 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       end
     end
 
+    context 'when repository doesnt exist on disk' do
+      let(:project) { create(:project, :legacy_storage) }
+
+      it 'skips the disk change but increase the version' do
+        service.execute
+
+        expect(project.hashed_storage?(:repository)).to be_truthy
+      end
+    end
+
     context 'when succeeds' do
       it 'renames project and wiki repositories' do
         service.execute

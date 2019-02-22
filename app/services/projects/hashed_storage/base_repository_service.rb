@@ -38,7 +38,8 @@ module Projects
         # project was not originally empty.
         if !from_exists && !to_exists
           logger.warn "Can't find a repository on either source or target paths for #{project.full_path} (ID=#{project.id}) ..."
-          return false
+
+          return true
         elsif !from_exists
           # Repository have been moved already.
           return true
