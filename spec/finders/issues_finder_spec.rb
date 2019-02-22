@@ -470,7 +470,7 @@ describe IssuesFinder do
         end
 
         context 'user filters confidential issues' do
-          let(:params) { { confidential: 'yes' } }
+          let(:params) { { confidential: true } }
 
           it 'returns only confdential issues' do
             expect(issues).to contain_exactly(confidential_issue)
@@ -478,7 +478,7 @@ describe IssuesFinder do
         end
 
         context 'user filters only public issues' do
-          let(:params) { { confidential: 'no' } }
+          let(:params) { { confidential: false } }
 
           it 'returns only confdential issues' do
             expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)

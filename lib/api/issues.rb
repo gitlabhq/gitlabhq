@@ -15,14 +15,6 @@ module API
 
       params :issue_params_ee do
       end
-
-      def convert_confidential_param(args)
-        confidential = args.delete(:confidential)
-        return args if confidential.nil?
-
-        args[:confidential] = confidential ? 'yes' : 'no'
-        args
-      end
     end
 
     helpers do
@@ -34,7 +26,6 @@ module API
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
-        args = convert_confidential_param(args)
 
         issues = IssuesFinder.new(current_user, args).execute
           .preload(:assignees, :labels, :notes, :timelogs, :project, :author, :closed_by)
