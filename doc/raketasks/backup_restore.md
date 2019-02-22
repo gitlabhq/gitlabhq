@@ -442,6 +442,8 @@ backups will be copied to, and will be created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, just use `.` instead.
 
+NOTE: **Note:** Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
+
 For Omnibus GitLab packages:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
