@@ -25,12 +25,12 @@ To run Knative on Gitlab, you will need:
 
 1. **Kubernetes Cluster:** An RBAC-enabled Kubernetes cluster is required to deploy Knative.
     The simplest way to get started is to add a cluster using [GitLab's GKE integration](../index.md#adding-and-creating-a-new-gke-cluster-via-gitlab).
-    Minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB memory.
+    The set of minimum recommended cluster specifications to run Knative is 3 nodes, 6 vCPUs, and 22.50 GB memory.
 1. **Helm Tiller:** Helm is a package manager for Kubernetes and is required to install
     Knative.
 1. **GitLab Runner:** A runner is required to run the CI jobs that will deploy serverless
     applications or functions onto your cluster. You can install the GitLab Runner
-    onto the existing kubernetes cluster. See [Installing Applications](../index.md#installing-applications) for more information.
+    onto the existing Kubernetes cluster. See [Installing Applications](../index.md#installing-applications) for more information.
 1. **Domain Name:** Knative will provide its own load balancer using Istio. It will provide an
     external IP address for all the applications served by Knative. You will be prompted to enter a
     wildcard domain where your applications will be served. Configure your DNS server to use the
@@ -51,7 +51,7 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
 1. [Add a Kubernetes cluster](../index.md) and [install Helm](../index.md#installing-applications).
 1. Once Helm has been successfully installed, scroll down to the Knative app section. Enter the domain to be used with
-    your application/functions (ie. `example.com`) and click "Install".
+    your application/functions (e.g. `example.com`) and click **Install**.
 
     ![install-knative](img/install-knative.png)
 
@@ -79,7 +79,7 @@ NOTE: **Note:**
 You can deploy either [functions](#deploying-functions) or [serverless applications](#deploying-serverless-applications)
 on a given project but not both. The current implementation makes use of a `serverless.yml` file to signal a FaaS project.
 
-## Deploying Functions
+## Deploying functions
 
 > Introduced in GitLab 11.6.
 

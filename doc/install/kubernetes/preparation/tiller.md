@@ -54,13 +54,13 @@ Some clusters require authentication to use `kubectl` to create the Tiller roles
 
 #### Upload the RBAC config as an admin user (GKE)
 
-For GKE, you need to grab the admin credentials. This command will output the admin password:
+For GKE, you need to obtain the admin credentials. This command will output the admin password:
 
 ```
 gcloud container clusters describe <cluster-name> --zone <zone> --project <project-id> --format='value(masterAuth.password)'
 ```
 
-Use the admin password to set the admin credentials (replace password below with output value from above step):
+Use the admin password to set the admin credentials. Replace the password value below with the output value from the above step:
 
 ```
 kubectl config set-credentials admin --username=admin --password=xxxxxxxxxxxxxx
