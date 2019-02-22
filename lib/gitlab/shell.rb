@@ -280,7 +280,10 @@ module Gitlab
     #   add_namespace("default", "gitlab")
     #
     def add_namespace(storage, name)
-      Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/58012
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        Gitlab::GitalyClient::NamespaceService.new(storage).add(name)
+      end
     rescue GRPC::InvalidArgument => e
       raise ArgumentError, e.message
     end
