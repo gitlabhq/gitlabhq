@@ -28,7 +28,7 @@ module Gitlab
 
     PEM_REGEX = /\-+BEGIN CERTIFICATE\-+.+?\-+END CERTIFICATE\-+/m
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'
-    MAXIMUM_GITALY_CALLS = 35
+    MAXIMUM_GITALY_CALLS = 30
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
