@@ -42,6 +42,7 @@ server's timezone.
 Issues with due dates can also be exported as an iCalendar feed. The URL of the
 feed can be added to calendar applications. The feed is accessible by clicking
 on the _Subscribe to calendar_ button on the following pages:
+
 - on the **Assigned Issues** page that is linked on the right-hand side of the
   GitLab header
 - on the **Project Issues** page

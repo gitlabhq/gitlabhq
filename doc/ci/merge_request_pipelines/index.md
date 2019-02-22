@@ -106,10 +106,10 @@ flow, external contributors follow the following steps:
 
 1. Fork a parent project.
 1. Create a merge request from the forked project that targets the `master` branch
-in the parent project.
+   in the parent project.
 1. A pipeline runs on the merge request.
 1. A maintainer from the parent project checks the pipeline result, and merge
-into a target branch if the latest pipeline has passed.
+   into a target branch if the latest pipeline has passed.
 
 Currently, those pipelines are created in a **forked** project, not in the
 parent project. This means you cannot completely trust the pipeline result,

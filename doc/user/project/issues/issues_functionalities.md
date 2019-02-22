@@ -99,16 +99,16 @@ Learn more in the [Issue Weight documentation](https://docs.gitlab.com/ee/workfl
 #### 10. Notifications
 
 - Subscribe: if you are not a participant of the discussion on that issue, but
-want to receive notifications on each new input, subscribe to it.
+  want to receive notifications on each new input, subscribe to it.
 - Unsubscribe: if you are receiving notifications on that issue but no
-longer want to receive them, unsubscribe from it.
+  longer want to receive them, unsubscribe from it.
 
 Read more in the [notifications documentation](../../../workflow/notifications.md#issue--merge-request-events).
 
 #### 11. Reference
 
 - A quick "copy to clipboard" button for that issue's reference, `foo/bar#xxx`, where `foo` is the `username` or `groupname`, `bar`
-is the `project-name`, and `xxx` is the issue number.
+  is the `project-name`, and `xxx` is the issue number.
 
 #### 12. Title and description
 
@@ -138,7 +138,7 @@ interpreted as spam.
 #### 14. Related Merge Requests
 
 - Any merge requests mentioned in that issue's description
-or in the issue discussion thread.
+  or in the issue discussion thread.
 
 #### 15. Award emoji
 
@@ -152,8 +152,8 @@ know you like it without spamming them.
 #### 16. Thread
 
 - Comments: collaborate to that issue by posting comments in its thread.
-These text fields also fully support
-[GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
+  These text fields also fully support
+  [GitLab Flavored Markdown](../../markdown.md#gitlab-flavored-markdown-gfm).
 
 #### 17. Comment, start a discussion, or comment and close
 
@@ -166,7 +166,7 @@ Once you write a comment, you can either:
 #### 18. New Merge Request
 
 - Create a new merge request (with a new source branch named after the issue) in one action.
-The merge request will automatically inherit the milestone and labels of the issue. The merge
-request will automatically close that issue when it is merged.
+  The merge request will automatically inherit the milestone and labels of the issue. The merge
+  request will automatically close that issue when it is merged.
 - Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
-named after that issue.
+  named after that issue.

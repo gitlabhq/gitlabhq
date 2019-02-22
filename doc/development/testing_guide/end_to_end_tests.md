@@ -41,24 +41,24 @@ Currently, we are using _multi-project pipeline_-like approach to run QA
 pipelines.
 
 1. Developer triggers a manual action, that can be found in CE / EE merge
-requests. This starts a chain of pipelines in multiple projects.
+   requests. This starts a chain of pipelines in multiple projects.
 
 1. The script being executed triggers a pipeline in [Omnibus GitLab][omnibus-gitlab]
-and waits for the resulting status. We call this a _status attribution_.
+   and waits for the resulting status. We call this a _status attribution_.
 
 1. GitLab packages are being built in the [Omnibus GitLab][omnibus-gitlab]
-pipeline. Packages are then pushed to its Container Registry.
+   pipeline. Packages are then pushed to its Container Registry.
 
 1. When packages are ready, and available in the registry, a final step in the
-[Omnibus GitLab][omnibus-gitlab] pipeline, triggers a new
-[GitLab QA pipeline][gitlab-qa-pipelines]. It also waits for a resulting status.
+   [Omnibus GitLab][omnibus-gitlab] pipeline, triggers a new
+   [GitLab QA pipeline][gitlab-qa-pipelines]. It also waits for a resulting status.
 
 1. GitLab QA pulls images from the registry, spins-up containers and runs tests
-against a test environment that has been just orchestrated by the `gitlab-qa`
-tool.
+   against a test environment that has been just orchestrated by the `gitlab-qa`
+   tool.
 
 1. The result of the [GitLab QA pipeline][gitlab-qa-pipelines] is being
-propagated upstream, through Omnibus, back to the CE / EE merge request.
+   propagated upstream, through Omnibus, back to the CE / EE merge request.
 
 #### How do I write tests?
 

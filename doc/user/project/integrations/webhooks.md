@@ -48,9 +48,9 @@ Navigate to the webhooks page by going to your project's
 ## Use-cases
 
 - You can set up a webhook in GitLab to send a notification to
-[Slack](https://api.slack.com/incoming-webhooks) every time a build fails, for example
+  [Slack](https://api.slack.com/incoming-webhooks) every time a build fails, for example
 - You can [integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
-every time an issue is created for a specific project or group within GitLab
+  every time an issue is created for a specific project or group within GitLab
 - You can use them to [automatically assign labels to merge requests](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/).
 
 ## Webhook endpoint tips

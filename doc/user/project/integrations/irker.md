@@ -30,12 +30,12 @@ need to follow the firsts steps of the next section.
 1. Click "Irker".
 1. Select the "Active" checkbox.
 1. Enter the server host address where `irkerd` runs (defaults to `localhost`)
-in the `Server host` field on the Web page
+   in the `Server host` field on the Web page
 1. Enter the server port of `irkerd` (e.g. defaults to 6659) in the
-`Server port` field on the Web page.
+   `Server port` field on the Web page.
 1. Optional: if `Default IRC URI` is set, it has to be in the format
-`irc[s]://domain.name` and will be prepend to each and every channel provided
-by the user which is not a full URI.
+   `irc[s]://domain.name` and will be prepend to each and every channel provided
+   by the user which is not a full URI.
 1. Specify the recipients (e.g. #channel1, user1, etc.)
 1. Save or optionally click "Test Settings".
 

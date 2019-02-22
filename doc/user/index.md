@@ -38,10 +38,10 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 
 - Hosting code in repositories with version control
 - Tracking proposals for new implementations, bug reports, and feedback with a
-fully featured [Issue Tracker](project/issues/index.md#issue-tracker)
+  fully featured [Issue Tracker](project/issues/index.md#issue-tracker)
 - Organizing and prioritizing with [Issue Boards](project/issues/index.md#issue-boards)
 - Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
-branch with [Review Apps](../ci/review_apps/index.md)
+  branch with [Review Apps](../ci/review_apps/index.md)
 - Building, testing and deploying with built-in [Continuous Integration](../ci/README.md)
 - Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md)
 - Integrating with Docker by using [GitLab Container Registry](project/container_registry.md)
@@ -51,9 +51,9 @@ With GitLab Enterprise Edition, you can also:
 
 - Provide support with [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html)
 - Improve collaboration with
-[Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/index.html#merge-request-approvals),
-[Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
-and [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards)
+  [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/index.html#merge-request-approvals),
+  [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
+  and [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards)
 - Create formal relationships between issues with [Related Issues](https://docs.gitlab.com/ee/user/project/issues/related_issues.html)
 - Use [Burndown Charts](https://docs.gitlab.com/ee/user/project/milestones/burndown_charts.html) to track progress during a sprint or while working on a new version of their software.
 - Leverage [Elasticsearch](https://docs.gitlab.com/ee/integration/elasticsearch.html) with [Advanced Global Search](https://docs.gitlab.com/ee/user/search/advanced_global_search.html) and [Advanced Syntax Search](https://docs.gitlab.com/ee/user/search/advanced_search_syntax.html) for faster, more advanced code search across your entire GitLab instance
@@ -77,12 +77,12 @@ build, test, and deploy your app with built-in GitLab CI/CD. Or, you can do
 it all at once, from one single project.
 
 - [Repositories](project/repository/index.md): Host your codebase in
-repositories with version control and as part of a fully integrated platform.
+  repositories with version control and as part of a fully integrated platform.
 - [Issues](project/issues/index.md): Explore the best of GitLab Issues' features.
 - [Merge Requests](project/merge_requests/index.md): Collaborate on code,
-reviews, live preview changes per branch, and request approvals with Merge Requests.
+  reviews, live preview changes per branch, and request approvals with Merge Requests.
 - [Milestones](project/milestones/index.md): Work on multiple issues and merge
-requests towards the same target date with Milestones.
+  requests towards the same target date with Milestones.
 
 ## GitLab CI/CD
 
@@ -92,9 +92,9 @@ directly from GitLab. No third-party integrations needed.
 - [GitLab Auto Deploy](../ci/autodeploy/index.md): Deploy your application out-of-the-box with GitLab Auto Deploy.
 - [Review Apps](../ci/review_apps/index.md): Live-preview the changes introduced by a merge request with Review Apps.
 - [GitLab Pages](project/pages/index.md): Publish your static site directly from
-GitLab with GitLab Pages. You can build, test, and deploy any Static Site Generator with Pages.
+  GitLab with GitLab Pages. You can build, test, and deploy any Static Site Generator with Pages.
 - [GitLab Container Registry](project/container_registry.md): Build and deploy Docker
-images with Container Registry.
+  images with Container Registry.
 
 ## Account
 
@@ -102,13 +102,13 @@ There is a lot you can customize and configure
 to enjoy the best of GitLab.
 
 - [Settings](profile/index.md): Manage your user settings to change your personal info,
-personal access tokens, authorized applications, etc.
+  personal access tokens, authorized applications, etc.
 - [Authentication](../topics/authentication/index.md): Read through the authentication
-methods available in GitLab.
+  methods available in GitLab.
 - [Permissions](permissions.md): Learn the different set of permissions levels for each
-user type (guest, reporter, developer, maintainer, owner).
+  user type (guest, reporter, developer, maintainer, owner).
 - [Feature highlight](feature_highlight.md): Learn more about the little blue dots
-around the app that explain certain features
+  around the app that explain certain features
 - [Abuse reports](abuse_reports.md): Report abuse from users to GitLab administrators
 
 ## Groups

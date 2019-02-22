@@ -19,7 +19,7 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
   - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
 - [Repositories](repository/index.md): Host your code in a fully
-integrated platform
+  integrated platform
   - [Branches](repository/branches/index.md): use Git branching strategies to
   collaborate on code
   - [Protected branches](protected_branches.md): Prevent collaborators
@@ -29,7 +29,7 @@ integrated platform
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
 - [Merge Requests](merge_requests/index.md): Apply your branching
-strategy and get reviewed by your team
+  strategy and get reviewed by your team
   - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html): Ask for approval before
   implementing a change **[STARTER]**
   - [Fix merge conflicts from the UI](merge_requests/resolve_conflicts.md):
@@ -38,13 +38,13 @@ strategy and get reviewed by your team
   of the changes proposed in a merge request in a per-branch basis
 - [Labels](labels.md): Organize issues and merge requests by labels
 - [Time Tracking](../../workflow/time_tracking.md): Track estimate time
-and time spent on
+  and time spent on
   the conclusion of an issue or merge request
 - [Milestones](milestones/index.md): Work towards a target date
 - [Description templates](description_templates.md): Define context-specific
-templates for issue and merge request description fields for your project
+  templates for issue and merge request description fields for your project
 - [Slash commands (quick actions)](quick_actions.md): Textual shortcuts for
-common actions on issues or merge requests
+  common actions on issues or merge requests
 - [Web IDE](web_ide/index.md)
 
 **GitLab CI/CD:**
@@ -68,7 +68,7 @@ common actions on issues or merge requests
   - [Kubernetes cluster integration](clusters/index.md): Connecting your GitLab project
     with a Kubernetes cluster
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
-website with GitLab Pages
+  website with GitLab Pages
 
 **Other features:**
 
@@ -76,11 +76,11 @@ website with GitLab Pages
 - [Snippets](../snippets.md): store, share and collaborate on code snippets.
 - [Cycle Analytics](cycle_analytics.md): review your development lifecycle.
 - [Syntax highlighting](highlighting.md): an alternative to customize
-your code blocks, overriding GitLab's default choice of language.
+  your code blocks, overriding GitLab's default choice of language.
 - [Badges](badges.md): badges for the project overview.
 - [Releases](releases/index.md): a way to track deliverables in your project as snapshot in time of
-the source, build output, and other metadata or artifacts
-associated with a released version of your code.
+  the source, build output, and other metadata or artifacts
+  associated with a released version of your code.
 
 ### Project's integrations
 
@@ -96,7 +96,7 @@ Learn how to [create a new project](../../gitlab-basics/create-project.md) in Gi
 You can [fork a project](../../gitlab-basics/fork-project.md) in order to:
 
 - Collaborate on code by forking a project and creating a merge request
-from your fork to the upstream project
+  from your fork to the upstream project
 - Fork a sample project to work on the top of that
 
 ## Project settings
