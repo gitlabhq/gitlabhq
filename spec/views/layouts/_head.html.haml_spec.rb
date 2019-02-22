@@ -67,7 +67,7 @@ describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match('<link rel="stylesheet" media="all" href="/stylesheets/highlight/solarised-light.css" />')
+    expect(rendered).to match('<link rel="stylesheet" media="all" href="/stylesheets/highlight/themes/solarised-light.css" />')
   end
 
   def stub_helper_with_safe_string(method)
