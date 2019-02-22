@@ -951,6 +951,9 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
+msgid "Background Color"
+msgstr ""
+
 msgid "Background Jobs"
 msgstr ""
 
@@ -2450,6 +2453,9 @@ msgstr ""
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
 
+msgid "Customize colors"
+msgstr ""
+
 msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
@@ -3432,6 +3438,12 @@ msgstr ""
 msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
 
+msgid "Font Color"
+msgstr ""
+
+msgid "Footer message"
+msgstr ""
+
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
@@ -3757,6 +3769,9 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
+msgstr ""
+
+msgid "Header message"
 msgstr ""
 
 msgid "Health Check"
@@ -7051,6 +7066,9 @@ msgstr ""
 msgid "Starts at (UTC)"
 msgstr ""
 
+msgid "State your message to activate"
+msgstr ""
+
 msgid "Status"
 msgstr ""
 
@@ -7130,6 +7148,9 @@ msgid "System Info"
 msgstr ""
 
 msgid "System default (%{default})"
+msgstr ""
+
+msgid "System header and footer"
 msgstr ""
 
 msgid "System metrics (Custom)"
