@@ -103,7 +103,7 @@ the Git SHA and environment name.
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
 - All branches will run the `test` and `build` jobs.
-- The `deploy_staging` job will run [only](yaml/README.md#only) on the `master`
+- The `deploy_staging` job will run [only](yaml/README.md#only-and-except-simplified) on the `master`
   branch which means all merge requests that are created from branches don't
   get to deploy to the staging server
 - When a merge request is merged, all jobs will run and the `deploy_staging`
@@ -401,7 +401,7 @@ Let's briefly see where URL that's defined in the environments is exposed.
 
 ## Making use of the environment URL
 
-The [environment URL](yaml/README.md#environments-url) is exposed in a few
+The [environment URL](yaml/README.md#environmenturl) is exposed in a few
 places within GitLab.
 
 | In a merge request widget as a link | In the Environments view as a button | In the Deployments view as a button |
@@ -619,9 +619,9 @@ Below are some links you may find interesting:
 [deployments]: #deployments
 [permissions]: ../user/permissions.md
 [variables]: variables/README.md
-[env-name]: yaml/README.md#environment-name
-[only]: yaml/README.md#only-and-except
-[onstop]: yaml/README.md#environment-on_stop
+[env-name]: yaml/README.md#environmentname
+[only]: yaml/README.md#only-and-except-simplified
+[onstop]: yaml/README.md#environmenton_stop
 [ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
 [gitlab-flow]: ../workflow/gitlab_flow.md
 [gitlab runner]: https://docs.gitlab.com/runner/

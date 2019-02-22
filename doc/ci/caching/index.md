@@ -52,7 +52,7 @@ artifacts are also available in between stages within a pipeline. So if you
 build your application by downloading all the required modules, you might want
 to declare them as artifacts so that each subsequent stage can depend on them
 being there. There are some optimizations like declaring an
-[expiry time](../yaml/README.md#artifacts-expire_in) so you don't keep artifacts
+[expiry time](../yaml/README.md#artifactsexpire_in) so you don't keep artifacts
 around too long, and using [dependencies](../yaml/README.md#dependencies) to
 control exactly where artifacts are passed around.
 
@@ -87,7 +87,7 @@ cache, when declaring `cache` in your jobs, use one or a mix of the following:
   that share their cache.
 - [Use sticky Runners](../runners/README.md#locking-a-specific-runner-from-being-enabled-for-other-projects)
   that will be only available to a particular project.
-- [Use a `key`](../yaml/README.md#cache-key) that fits your workflow (e.g.,
+- [Use a `key`](../yaml/README.md#cachekey) that fits your workflow (e.g.,
   different caches on each branch). For that, you can take advantage of the
   [CI/CD predefined variables](../variables/README.md#predefined-environment-variables).
 
@@ -169,7 +169,7 @@ job:
 ```
 
 For more fine tuning, read also about the
-[`cache: policy`](../yaml/README.md#cache-policy).
+[`cache: policy`](../yaml/README.md#cachepolicy).
 
 ## Common use cases
 
