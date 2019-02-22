@@ -196,9 +196,20 @@ The function details can be retrieved directly from Knative on the cluster:
 kubectl -n "$KUBE_NAMESPACE" get services.serving.knative.dev
 ```
 
-The sample function can now be triggered from any HTTP client using a simple `POST` call.
+The sample function can now be triggered from any HTTP client using a simple `POST` call:
 
-![function exection](img/function-execution.png)
+  1. Using curl
+
+      ```bash
+      curl \
+      --header "Content-Type: application/json" \
+      --request POST \
+      --data '{"GitLab":"FaaS"}' \
+      http://functions-echo.functions-1.functions.example.net/
+      ```
+  2. Using a web-based tool (ie. postman, restlet, etc)
+
+      ![function exection](img/function-execution.png)
 
 ## Deploying Serverless applications
 
@@ -244,11 +255,7 @@ With all the pieces in place, the next time a CI pipeline runs, the Knative appl
 
 ### Obtain the URL for the Knative deployment
 
-Go to the **Operations > Serverless** page to find the URL for your deployment in the **Domain** column.
-
-![app domain](img/app-domain.png)
-
-Alternatively, use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
+Go to the **CI/CD > Pipelines** and click on the pipeline that deployed your app. Once all the stages of the pipeline finish, click the **deploy** stage.
 
 ![deploy stage](img/deploy-stage.png)
 
@@ -270,7 +277,7 @@ registry.staging.gitlab.com/danielgruesso/knative
 $ tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
 Deployment started. Run "tm -n knative-4342902 describe service knative" to see the details
 Waiting for ready state.......
-Service domain: knative.knative-4342902.knative.info
+Service domain: knative.knative-4342902.example.com
 Job succeeded
 ```
 
