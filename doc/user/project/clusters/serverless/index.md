@@ -25,8 +25,12 @@ To run Knative on Gitlab, you will need:
 
 1. **Kubernetes Cluster:** An RBAC-enabled Kubernetes cluster is required to deploy Knative.
     The simplest way to get started is to add a cluster using [GitLab's GKE integration](../index.md#adding-and-creating-a-new-gke-cluster-via-gitlab).
+    Minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB memory.
 1. **Helm Tiller:** Helm is a package manager for Kubernetes and is required to install
     Knative.
+1. **GitLab Runner:** A runner is required to run the CI jobs that will deploy serverless
+    applications or functions onto your cluster. You can install the GitLab Runner
+    onto the existing kubernetes cluster. See [Installing Applications](../index.md#installing-applications) for more information.
 1. **Domain Name:** Knative will provide its own load balancer using Istio. It will provide an
     external IP address for all the applications served by Knative. You will be prompted to enter a
     wildcard domain where your applications will be served. Configure your DNS server to use the
@@ -45,9 +49,9 @@ To run Knative on Gitlab, you will need:
 NOTE: **Note:**
 The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB memory. **RBAC must be enabled.**
 
-1. [Add a Kubernetes cluster](../index.md) and install Helm.
-1. Once Helm has been successfully installed, on the Knative app section, enter the domain to be used with
-    your application and click "Install".
+1. [Add a Kubernetes cluster](../index.md) and [install Helm](../index.md#installing-applications).
+1. Once Helm has been successfully installed, scroll down to the Knative app section. Enter the domain to be used with
+    your application/functions (ie. `example.com`) and click "Install".
 
     ![install-knative](img/install-knative.png)
 
@@ -66,10 +70,14 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
 1. The ingress is now available at this address and will route incoming requests to the proper service based on the DNS
    name in the request. To support this, a wildcard DNS A record should be created for the desired domain name. For example,
-   if your Knative base domain is `knative.info` then you need to create an A record with domain `*.knative.info`
+   if your Knative base domain is `example.com` then you need to create an A record with domain `*.example.com`
    pointing the ip address of the ingress.
 
     ![dns entry](img/dns-entry.png)
+
+NOTE: **Note:**
+You can deploy either [functions](#deploying-functions) or [serverless applications](#deploying-serverless-applications)
+on a given project but not both. The current implementation makes use of a `serverless.yml` file to signal a FaaS project.
 
 ## Deploying Functions
 
@@ -84,7 +92,7 @@ Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are 
 - node.js
 - kaniko
 
-You can find all the files referenced in this doc in the [functions example project](https://gitlab.com/knative-examples/functions).
+You can find and import all the files referenced in this doc in the **[functions example project](https://gitlab.com/knative-examples/functions)**.
 
 Follow these steps to deploy a function using the Node.js runtime to your Knative instance:
 
@@ -197,7 +205,7 @@ The sample function can now be triggered from any HTTP client using a simple `PO
 > Introduced in GitLab 11.5.
 
 NOTE: **Note:**
-You can reference the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
+You can reference and import the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
 
 Add the following `.gitlab-ci.yml` to the root of your repository
 (you may skip this step if using the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) mentioned above):
