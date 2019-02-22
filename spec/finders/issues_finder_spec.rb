@@ -416,6 +416,36 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by closed_at' do
+        let!(:closed_issue1) { create(:issue, project: project1, state: :closed, closed_at: 1.week.ago) }
+        let!(:closed_issue2) { create(:issue, project: project2, state: :closed, closed_at: 1.week.from_now) }
+        let!(:closed_issue3) { create(:issue, project: project2, state: :closed, closed_at: 2.weeks.from_now) }
+
+        context 'through closed_after' do
+          let(:params) { { state: :closed, closed_after: closed_issue3.closed_at } }
+
+          it 'returns issues closed on or after the given date' do
+            expect(issues).to contain_exactly(closed_issue3)
+          end
+        end
+
+        context 'through closed_before' do
+          let(:params) { { state: :closed, closed_before: closed_issue1.closed_at } }
+
+          it 'returns issues closed on or before the given date' do
+            expect(issues).to contain_exactly(closed_issue1)
+          end
+        end
+
+        context 'through closed_after and closed_before' do
+          let(:params) { { state: :closed, closed_after: closed_issue2.closed_at, closed_before: closed_issue3.closed_at } }
+
+          it 'returns issues closed between the given dates' do
+            expect(issues).to contain_exactly(closed_issue2, closed_issue3)
+          end
+        end
+      end
+
       context 'filtering by reaction name' do
         context 'user searches by no reaction' do
           let(:params) { { my_reaction_emoji: 'None' } }

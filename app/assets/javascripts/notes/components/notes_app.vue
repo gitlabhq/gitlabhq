@@ -90,8 +90,15 @@ export default {
         this.fetchNotes();
       }
     },
+    allDiscussions() {
+      if (this.discussonsCount) {
+        this.discussonsCount.textContent = this.allDiscussions.length;
+      }
+    },
   },
   created() {
+    this.discussonsCount = document.querySelector('.js-discussions-count');
+
     this.setNotesData(this.notesData);
     this.setNoteableData(this.noteableData);
     this.setUserData(this.userData);

@@ -1,5 +1,0 @@
----
-title: Update Helm to 2.12.2 to address Helm client vulnerability
-merge_request: 24418
-author: Takuya Noguchi
-type: security

@@ -15,6 +15,7 @@ describe Projects::BlobController, '(JavaScript fixtures)', type: :controller do
 
   before do
     sign_in(admin)
+    allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
   end
 
   after do

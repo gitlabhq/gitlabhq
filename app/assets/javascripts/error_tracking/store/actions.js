@@ -2,7 +2,7 @@ import Service from '../services';
 import * as types from './mutation_types';
 import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 let eTagPoll;
 
@@ -19,9 +19,17 @@ export function startPolling({ commit }, endpoint) {
       commit(types.SET_EXTERNAL_URL, data.external_url);
       commit(types.SET_LOADING, false);
     },
-    errorCallback: () => {
+    errorCallback: response => {
+      let errorMessage = '';
+      if (response && response.data && response.data.message) {
+        errorMessage = response.data.message;
+      }
       commit(types.SET_LOADING, false);
-      createFlash(__('Failed to load errors from Sentry'));
+      createFlash(
+        sprintf(__(`Failed to load errors from Sentry. Error message: %{errorMessage}`), {
+          errorMessage,
+        }),
+      );
     },
   });
 

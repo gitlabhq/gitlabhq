@@ -1,5 +1,0 @@
----
-title: Remove unused button classes `btn-create` and `comment-btn`
-merge_request: 23232
-author: George Tsiolis
-type: performance

@@ -37,7 +37,7 @@ Example response:
       "web_url": "http://example.com/diaspora/diaspora-project-site"
     },
     "milestone":   {
-      "id": 12
+      "id": 12,
       "title": "10.0"
     },
     "lists" : [
@@ -95,7 +95,7 @@ Example response:
 ```json
   {
     "id": 1,
-    "name:": "project issue board",
+    "name": "project issue board",
     "project": {
       "id": 5,
       "name": "Diaspora Project Site",
@@ -106,7 +106,7 @@ Example response:
       "web_url": "http://example.com/diaspora/diaspora-project-site"
     },
     "milestone":   {
-      "id": 12
+      "id": 12,
       "title": "10.0"
     },
     "lists" : [

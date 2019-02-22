@@ -62,6 +62,10 @@ module PreferencesHelper
     Gitlab::ColorSchemes.for_user(current_user).css_class
   end
 
+  def language_choices
+    Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] }
+  end
+
   private
 
   # Ensure that anyone adding new options updates `DASHBOARD_CHOICES` too

@@ -1,6 +1,6 @@
 # Public access
 
-GitLab allows you to change your projects' visibility in order be accessed
+GitLab allows [Owners](../user/permissions.md) to change a projects' visibility in order to be accessed
 **publicly** or **internally**.
 
 Projects with either of these visibility levels will be listed in the

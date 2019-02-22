@@ -3,13 +3,13 @@ require 'spec_helper'
 describe 'Projects (JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
+  runners_token = 'runnerstoken:intabulasreferre'
+
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
-  let(:project) { create(:project, namespace: namespace, path: 'builds-project') }
+  let(:project) { create(:project, namespace: namespace, path: 'builds-project', runners_token: runners_token) }
   let(:project_with_repo) { create(:project, :repository, description: 'Code and stuff') }
-  let(:project_variable_populated) { create(:project, namespace: namespace, path: 'builds-project2') }
-  let!(:variable1) { create(:ci_variable, project: project_variable_populated) }
-  let!(:variable2) { create(:ci_variable, project: project_variable_populated) }
+  let(:project_variable_populated) { create(:project, namespace: namespace, path: 'builds-project2', runners_token: runners_token) }
 
   render_views
 
@@ -20,6 +20,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
   before do
     project.add_maintainer(admin)
     sign_in(admin)
+    allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
   end
 
   after do
@@ -70,6 +71,9 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
     end
 
     it 'projects/ci_cd_settings_with_variables.html.raw' do |example|
+      create(:ci_variable, project: project_variable_populated)
+      create(:ci_variable, project: project_variable_populated)
+
       get :show, params: {
         namespace_id: project_variable_populated.namespace.to_param,
         project_id: project_variable_populated

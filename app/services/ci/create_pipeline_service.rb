@@ -36,6 +36,7 @@ module Ci
         project: project,
         current_user: current_user,
         push_options: params[:push_options],
+        chat_data: params[:chat_data],
         **extra_options(options))
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence

@@ -58,7 +58,7 @@ module ErrorTracking
 
     def list_sentry_issues(opts = {})
       with_reactive_cache('list_issues', opts.stringify_keys) do |result|
-        { issues: result }
+        result
       end
     end
 
@@ -69,8 +69,10 @@ module ErrorTracking
     def calculate_reactive_cache(request, opts)
       case request
       when 'list_issues'
-        sentry_client.list_issues(**opts.symbolize_keys)
+        { issues: sentry_client.list_issues(**opts.symbolize_keys) }
       end
+    rescue Sentry::Client::Error => e
+      { error: e.message }
     end
 
     # http://HOST/api/0/projects/ORG/PROJECT

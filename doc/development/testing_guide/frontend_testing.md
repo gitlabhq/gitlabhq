@@ -141,14 +141,15 @@ module. GitLab has a custom `spyOnDependency` method which utilizes
 [babel-plugin-rewire](https://github.com/speedskater/babel-plugin-rewire) to
 achieve this. It can be used like so:
 
-```javascript
+```js
 // my_module.js
 import { visitUrl } from '~/lib/utils/url_utility';
 
 export default function doSomething() {
   visitUrl('/foo/bar');
 }
-
+```
+```js
 // my_module_spec.js
 import doSomething from '~/my_module';
 

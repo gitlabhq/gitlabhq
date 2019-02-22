@@ -134,7 +134,7 @@ Endpoints are available for:
 ## Road to GraphQL
 
 Going forward, we will start on moving to
-[GraphQL](http://graphql.org/learn/best-practices/) and deprecate the use of
+[GraphQL](graphql/index.md) and deprecate the use of
 controller-specific endpoints. GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.

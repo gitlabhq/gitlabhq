@@ -260,6 +260,10 @@ module QA
       autoload :Sidebar, 'qa/page/issuable/sidebar'
     end
 
+    module Alert
+      autoload :AutoDevopsAlert, 'qa/page/alert/auto_devops_alert'
+    end
+
     module Layout
       autoload :Banner, 'qa/page/layout/banner'
     end

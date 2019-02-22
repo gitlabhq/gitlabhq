@@ -73,6 +73,12 @@
         = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'localization'), target: '_blank'
   .col-lg-8
     .form-group
+      = f.label :preferred_language, class: 'label-bold' do
+        = _('Language')
+      = f.select :preferred_language, language_choices, {}, class: 'select2'
+      .form-text.text-muted
+        = s_('Preferences|This feature is experimental and translations are not complete yet')
+    .form-group
       = f.label :first_day_of_week, class: 'label-bold' do
         = _('First day of the week')
       = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'form-control'

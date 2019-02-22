@@ -93,6 +93,7 @@ use of advanced features:
 | [Triggering pipelines through the API](triggers/README.md)                       | Use the GitLab API to trigger a pipeline.                                                                                    |
 | [Pipeline schedules](../user/project/pipelines/schedules.md)                     | Trigger pipelines on a schedule.                                                                                             |
 | [Connecting GitLab with a Kubernetes cluster](../user/project/clusters/index.md) | Integrate one or more Kubernetes clusters to your project.                                                                   |
+| [ChatOps](chatops/README.md)                                                     | Trigger CI jobs from chat, with results sent back to the channel.                                                            |
 | [Interactive web terminals](interactive_web_terminal/index.md)                   | Open an interactive web terminal to debug the running jobs.                                                                  |
 
 ### GitLab Pages

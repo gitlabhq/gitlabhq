@@ -94,6 +94,7 @@ class IssuableFinder
     items = by_scope(items)
     items = by_created_at(items)
     items = by_updated_at(items)
+    items = by_closed_at(items)
     items = by_state(items)
     items = by_group(items)
     items = by_assignee(items)
@@ -349,6 +350,13 @@ class IssuableFinder
   def by_updated_at(items)
     items = items.updated_after(params[:updated_after]) if params[:updated_after].present?
     items = items.updated_before(params[:updated_before]) if params[:updated_before].present?
+
+    items
+  end
+
+  def by_closed_at(items)
+    items = items.closed_after(params[:closed_after]) if params[:closed_after].present?
+    items = items.closed_before(params[:closed_before]) if params[:closed_before].present?
 
     items
   end
