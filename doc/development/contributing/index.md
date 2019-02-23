@@ -4,7 +4,7 @@ Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is easy for everyone.
 
 We want to create a welcoming environment for everyone who is interested in contributing.
-Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our committment to an open and welcoming environment.
+Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our commitment to an open and welcoming environment.
 
 For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).

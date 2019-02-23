@@ -478,7 +478,7 @@ Example response:
 
 ## Delete a registered Runner
 
-Deletes a registed Runner.
+Deletes a registered Runner.
 
 ```
 DELETE /runners

@@ -92,7 +92,7 @@ To add an existing Kubernetes cluster to your project:
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
       e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-    - **CA certificate** (requried) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default. 
+    - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default.
       -  List the secrets with `kubectl get secrets`, and one should named similar to
        `default-token-xxxxx`. Copy that token name for use below.
       -  Get the certificate by running this command:

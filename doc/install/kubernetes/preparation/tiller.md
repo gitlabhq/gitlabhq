@@ -15,7 +15,7 @@ cannot be normally deployed.
 
 Tiller is deployed into the cluster and interacts with the Kubernetes API to deploy your applications. If role based access control (RBAC) is enabled, Tiller will need to be [granted permissions](#preparing-for-helm-with-rbac) to allow it to talk to the Kubernetes API.
 
-If RBAC is not enabled, skip to [initalizing Helm](#initialize-helm).
+If RBAC is not enabled, skip to [initializing Helm](#initialize-helm).
 
 If you are not sure whether RBAC is enabled in your cluster, or to learn more, read through our [RBAC documentation](rbac.md).
 
