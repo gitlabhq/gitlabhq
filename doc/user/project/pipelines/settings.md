@@ -134,7 +134,7 @@ Depending on the status of your job, a badge can have the following values:
 You can access a pipeline status badge image using the following link:
 
 ```text
-https://example.gitlab.com/<namespace>/<project>/badges/<branch>/build.svg
+https://example.gitlab.com/<namespace>/<project>/badges/<branch>/pipeline.svg
 ```
 
 ### Test coverage report badge
