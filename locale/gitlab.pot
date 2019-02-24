@@ -6464,6 +6464,9 @@ msgstr ""
 msgid "SSL Verification"
 msgstr ""
 
+msgid "Saturday"
+msgstr ""
+
 msgid "Save"
 msgstr ""
 
