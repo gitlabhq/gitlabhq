@@ -42,6 +42,18 @@ describe Projects::PagesController do
 
       expect(response).to have_gitlab_http_status(302)
     end
+
+    context 'when user is developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns 404 status' do
+        delete :destroy, params: request_params
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
   end
 
   context 'pages disabled' do
