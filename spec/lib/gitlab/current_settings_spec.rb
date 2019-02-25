@@ -143,7 +143,7 @@ describe Gitlab::CurrentSettings do
 
             it_behaves_like 'a non-persisted ApplicationSetting object'
 
-            it 'uses the value from the DB attribute if present and not overriden by an accessor' do
+            it 'uses the value from the DB attribute if present and not overridden by an accessor' do
               expect(current_settings.home_page_url).to eq(db_settings.home_page_url)
             end
           end
