@@ -428,6 +428,30 @@ describe Project do
     end
   end
 
+  describe '#ci_pipelines' do
+    let(:project) { create(:project) }
+
+    before do
+      create(:ci_pipeline, project: project, ref: 'master', source: :web)
+      create(:ci_pipeline, project: project, ref: 'master', source: :external)
+    end
+
+    it 'has ci pipelines' do
+      expect(project.ci_pipelines.size).to eq(2)
+    end
+
+    context 'when builds are disabled' do
+      before do
+        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'should return .external pipelines' do
+        expect(project.ci_pipelines).to all(have_attributes(source: 'external'))
+        expect(project.ci_pipelines.size).to eq(1)
+      end
+    end
+  end
+
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryBot.create(:project, runners_token: '')
