@@ -417,7 +417,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               'ref' => job.ref,
               'sha' => job.sha,
               'before_sha' => job.before_sha,
-              'ref_type' => 'branch' }
+              'ref_type' => 'branch',
+              'refspecs' => %w[+refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*],
+              'depth' => 0 }
           end
 
           let(:expected_steps) do
@@ -489,6 +491,29 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
               expect(response).to have_gitlab_http_status(201)
               expect(json_response['git_info']['ref_type']).to eq('tag')
             end
+
+            context 'when GIT_DEPTH is specified' do
+              before do
+                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+              end
+
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs']).to include("+refs/tags/#{job.ref}:refs/tags/#{job.ref}")
+              end
+            end
+
+            context 'when GIT_DEPTH is not specified' do
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs'])
+                  .to contain_exactly('+refs/tags/*:refs/tags/*', '+refs/heads/*:refs/remotes/origin/*')
+              end
+            end
           end
 
           context 'when job is made for branch' do
@@ -497,6 +522,55 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               expect(response).to have_gitlab_http_status(201)
               expect(json_response['git_info']['ref_type']).to eq('branch')
+            end
+
+            context 'when GIT_DEPTH is specified' do
+              before do
+                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+              end
+
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs']).to include("+refs/heads/#{job.ref}:refs/remotes/origin/#{job.ref}")
+              end
+            end
+
+            context 'when GIT_DEPTH is not specified' do
+              it 'specifies refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['refspecs'])
+                  .to contain_exactly('+refs/tags/*:refs/tags/*', '+refs/heads/*:refs/remotes/origin/*')
+              end
+            end
+          end
+
+          context 'when job is made for merge request' do
+            let(:pipeline) { create(:ci_pipeline_without_jobs, source: :merge_request, project: project, ref: 'feature', merge_request: merge_request) }
+            let!(:job) { create(:ci_build, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
+            let(:merge_request) { create(:merge_request) }
+
+            it 'sets branch as ref_type' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(201)
+              expect(json_response['git_info']['ref_type']).to eq('branch')
+            end
+
+            context 'when GIT_DEPTH is specified' do
+              before do
+                create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: pipeline)
+              end
+
+              it 'returns the overwritten git depth for merge request refspecs' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(json_response['git_info']['depth']).to eq(1)
+              end
             end
           end
 
