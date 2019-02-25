@@ -1,16 +1,12 @@
 require 'spec_helper'
 
 describe Gitlab::Serializer::Pagination do
-  let(:request) { spy('request') }
+  let(:request) { double(url: "#{Gitlab.config.gitlab.url}:8080/api/v4/projects?#{query.to_query}", query_parameters: query) }
   let(:response) { spy('response') }
   let(:headers) { spy('headers') }
 
   before do
-    allow(request).to receive(:query_parameters)
-      .and_return(params)
-
-    allow(response).to receive(:headers)
-      .and_return(headers)
+    allow(response).to receive(:headers).and_return(headers)
   end
 
   let(:pagination) { described_class.new(request, response) }
@@ -19,7 +15,7 @@ describe Gitlab::Serializer::Pagination do
     subject { pagination.paginate(resource) }
 
     let(:resource) { User.all }
-    let(:params) { { page: 1, per_page: 2 } }
+    let(:query) { { page: 1, per_page: 2 } }
 
     context 'when a multiple resources are present in relation' do
       before do

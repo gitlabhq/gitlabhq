@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe API::Helpers::Pagination do
   let(:resource) { Project.all }
+  let(:incoming_api_projects_url) { "#{Gitlab.config.gitlab.url}:8080/api/v4/projects" }
+  let(:canonical_api_projects_url) { "#{Gitlab.config.gitlab.url}/api/v4/projects" }
 
   subject do
     Class.new.include(described_class).new
@@ -9,13 +11,19 @@ describe API::Helpers::Pagination do
 
   describe '#paginate (keyset pagination)' do
     let(:value) { spy('return value') }
+    let(:base_query) do
+      {
+        pagination: 'keyset',
+        foo: 'bar',
+        bar: 'baz'
+      }
+    end
+    let(:query) { base_query }
 
     before do
-      allow(value).to receive(:to_query).and_return(value)
-
       allow(subject).to receive(:header).and_return(value)
-      allow(subject).to receive(:params).and_return(value)
-      allow(subject).to receive(:request).and_return(value)
+      allow(subject).to receive(:params).and_return(query)
+      allow(subject).to receive(:request).and_return(double(url: "#{incoming_api_projects_url}?#{query.to_query}"))
     end
 
     context 'when resource can be paginated' do
@@ -28,10 +36,7 @@ describe API::Helpers::Pagination do
       end
 
       describe 'first page' do
-        before do
-          allow(subject).to receive(:params)
-            .and_return({ pagination: 'keyset', per_page: 2 })
-        end
+        let(:query) { base_query.merge(per_page: 2) }
 
         it 'returns appropriate amount of resources' do
           expect(subject.paginate(resource).count).to eq 2
@@ -43,7 +48,7 @@ describe API::Helpers::Pagination do
 
         it 'adds appropriate headers' do
           expect_header('X-Per-Page', '2')
-          expect_header('X-Next-Page', "#{value}?ks_prev_id=#{projects[1].id}&pagination=keyset&per_page=2")
+          expect_header('X-Next-Page', "#{canonical_api_projects_url}?#{query.merge(ks_prev_id: projects[1].id).to_query}")
 
           expect_header('Link', anything) do |_key, val|
             expect(val).to include('rel="next"')
@@ -54,10 +59,7 @@ describe API::Helpers::Pagination do
       end
 
       describe 'second page' do
-        before do
-          allow(subject).to receive(:params)
-            .and_return({ pagination: 'keyset', per_page: 2, ks_prev_id: projects[1].id })
-        end
+        let(:query) { base_query.merge(per_page: 2, ks_prev_id: projects[1].id) }
 
         it 'returns appropriate amount of resources' do
           expect(subject.paginate(resource).count).to eq 1
@@ -69,7 +71,7 @@ describe API::Helpers::Pagination do
 
         it 'adds appropriate headers' do
           expect_header('X-Per-Page', '2')
-          expect_header('X-Next-Page', "#{value}?ks_prev_id=#{projects[2].id}&pagination=keyset&per_page=2")
+          expect_header('X-Next-Page', "#{canonical_api_projects_url}?#{query.merge(ks_prev_id: projects[2].id).to_query}")
 
           expect_header('Link', anything) do |_key, val|
             expect(val).to include('rel="next"')
@@ -80,10 +82,7 @@ describe API::Helpers::Pagination do
       end
 
       describe 'third page' do
-        before do
-          allow(subject).to receive(:params)
-            .and_return({ pagination: 'keyset', per_page: 2, ks_prev_id: projects[2].id })
-        end
+        let(:query) { base_query.merge(per_page: 2, ks_prev_id: projects[2].id) }
 
         it 'returns appropriate amount of resources' do
           expect(subject.paginate(resource).count).to eq 0
@@ -91,6 +90,7 @@ describe API::Helpers::Pagination do
 
         it 'adds appropriate headers' do
           expect_header('X-Per-Page', '2')
+          expect_no_header('X-Next-Page')
           expect(subject).not_to receive(:header).with('Link')
 
           subject.paginate(resource)
@@ -99,10 +99,7 @@ describe API::Helpers::Pagination do
 
       context 'if order' do
         context 'is not present' do
-          before do
-            allow(subject).to receive(:params)
-              .and_return({ pagination: 'keyset', per_page: 2 })
-          end
+          let(:query) { base_query.merge(per_page: 2) }
 
           it 'is not present it adds default order(:id) desc' do
             resource.order_values = []
@@ -144,9 +141,7 @@ describe API::Helpers::Pagination do
             # (key is the id)
           end
 
-          it 'it also orders by primary key' do
-            allow(subject).to receive(:params)
-              .and_return({ pagination: 'keyset', per_page: 2 })
+          it 'also orders by primary key' do
             paginated_relation = subject.paginate(resource)
 
             expect(paginated_relation.order_values).to be_present
@@ -157,46 +152,45 @@ describe API::Helpers::Pagination do
             expect(paginated_relation.order_values.second.expr.name).to eq :id
           end
 
-          it 'it returns the right records (first page)' do
-            allow(subject).to receive(:params)
-              .and_return({ pagination: 'keyset', per_page: 2 })
+          it 'returns the right records (first page)' do
             result = subject.paginate(resource)
 
             expect(result.first).to eq(projects[1])
             expect(result.second).to eq(projects[3])
           end
 
-          it 'it returns the right records (second page)' do
-            allow(subject).to receive(:params)
-              .and_return({ pagination: 'keyset', ks_prev_id: projects[3].id, ks_prev_name: projects[3].name, per_page: 2 })
-            result = subject.paginate(resource)
+          describe 'second page' do
+            let(:query) { base_query.merge(ks_prev_id: projects[3].id, ks_prev_name: projects[3].name, per_page: 2) }
 
-            expect(result.first).to eq(projects[2])
-            expect(result.second).to eq(projects[6])
-          end
+            it 'returns the right records (second page)' do
+              result = subject.paginate(resource)
 
-          it 'it returns the right records (third page), note increased per_page' do
-            allow(subject).to receive(:params)
-              .and_return({ pagination: 'keyset', ks_prev_id: projects[6].id, ks_prev_name: projects[6].name, per_page: 5 })
-            result = subject.paginate(resource)
-
-            expect(result.size).to eq(3)
-            expect(result.first).to eq(projects[0])
-            expect(result.second).to eq(projects[4])
-            expect(result.last).to eq(projects[5])
-          end
-
-          it 'it returns the right link to the next page' do
-            allow(subject).to receive(:params)
-              .and_return({ pagination: 'keyset', ks_prev_id: projects[3].id, ks_prev_name: projects[3].name, per_page: 2 })
-
-            expect_header('X-Per-Page', '2')
-            expect_header('X-Next-Page', "#{value}?ks_prev_id=#{projects[6].id}&ks_prev_name=#{projects[6].name}&pagination=keyset&per_page=2")
-            expect_header('Link', anything) do |_key, val|
-              expect(val).to include('rel="next"')
+              expect(result.first).to eq(projects[2])
+              expect(result.second).to eq(projects[6])
             end
 
-            subject.paginate(resource)
+            it 'returns the right link to the next page' do
+              expect_header('X-Per-Page', '2')
+              expect_header('X-Next-Page', "#{canonical_api_projects_url}?#{query.merge(ks_prev_id: projects[6].id, ks_prev_name: projects[6].name).to_query}")
+              expect_header('Link', anything) do |_key, val|
+                expect(val).to include('rel="next"')
+              end
+
+              subject.paginate(resource)
+            end
+          end
+
+          describe 'third page' do
+            let(:query) { base_query.merge(ks_prev_id: projects[6].id, ks_prev_name: projects[6].name, per_page: 5) }
+
+            it 'returns the right records (third page), note increased per_page' do
+              result = subject.paginate(resource)
+
+              expect(result.size).to eq(3)
+              expect(result.first).to eq(projects[0])
+              expect(result.second).to eq(projects[4])
+              expect(result.last).to eq(projects[5])
+            end
           end
         end
       end
@@ -205,25 +199,13 @@ describe API::Helpers::Pagination do
 
   describe '#paginate (default offset-based pagination)' do
     let(:value) { spy('return value') }
+    let(:base_query) { { foo: 'bar', bar: 'baz' } }
+    let(:query) { base_query }
 
     before do
-      allow(value).to receive(:to_query).and_return(value)
-
       allow(subject).to receive(:header).and_return(value)
-      allow(subject).to receive(:params).and_return(value)
-      allow(subject).to receive(:request).and_return(value)
-    end
-
-    describe 'required instance methods' do
-      let(:return_spy) { spy }
-
-      it 'requires some instance methods' do
-        expect_message(:header)
-        expect_message(:params)
-        expect_message(:request)
-
-        subject.paginate(resource)
-      end
+      allow(subject).to receive(:params).and_return(query)
+      allow(subject).to receive(:request).and_return(double(url: "#{incoming_api_projects_url}?#{query.to_query}"))
     end
 
     context 'when resource can be paginated' do
@@ -232,11 +214,6 @@ describe API::Helpers::Pagination do
       end
 
       describe 'first page' do
-        before do
-          allow(subject).to receive(:params)
-            .and_return({ page: 1, per_page: 2 })
-        end
-
         shared_examples 'response with pagination headers' do
           it 'adds appropriate headers' do
             expect_header('X-Total', '3')
@@ -247,9 +224,9 @@ describe API::Helpers::Pagination do
             expect_header('X-Prev-Page', '')
 
             expect_header('Link', anything) do |_key, val|
-              expect(val).to include('rel="first"')
-              expect(val).to include('rel="last"')
-              expect(val).to include('rel="next"')
+              expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+              expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
+              expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
               expect(val).not_to include('rel="prev"')
             end
 
@@ -266,6 +243,8 @@ describe API::Helpers::Pagination do
             expect { subject.paginate(resource) }.to make_queries_matching(/SELECT COUNT/, 1)
           end
         end
+
+        let(:query) { base_query.merge(page: 1, per_page: 2) }
 
         context 'when the api_kaminari_count_with_limit feature flag is unset' do
           it_behaves_like 'paginated response'
@@ -311,9 +290,9 @@ describe API::Helpers::Pagination do
               expect_header('X-Prev-Page', '')
 
               expect_header('Link', anything) do |_key, val|
-                expect(val).to include('rel="first"')
+                expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+                expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
                 expect(val).not_to include('rel="last"')
-                expect(val).to include('rel="next"')
                 expect(val).not_to include('rel="prev"')
               end
 
@@ -324,10 +303,7 @@ describe API::Helpers::Pagination do
       end
 
       describe 'second page' do
-        before do
-          allow(subject).to receive(:params)
-            .and_return({ page: 2, per_page: 2 })
-        end
+        let(:query) { base_query.merge(page: 2, per_page: 2) }
 
         it 'returns appropriate amount of resources' do
           expect(subject.paginate(resource).count).to eq 1
@@ -342,9 +318,9 @@ describe API::Helpers::Pagination do
           expect_header('X-Prev-Page', '1')
 
           expect_header('Link', anything) do |_key, val|
-            expect(val).to include('rel="first"')
-            expect(val).to include('rel="last"')
-            expect(val).to include('rel="prev"')
+            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="last"))
+            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="prev"))
             expect(val).not_to include('rel="next"')
           end
 
@@ -376,10 +352,7 @@ describe API::Helpers::Pagination do
 
     context 'when resource empty' do
       describe 'first page' do
-        before do
-          allow(subject).to receive(:params)
-            .and_return({ page: 1, per_page: 2 })
-        end
+        let(:query) { base_query.merge(page: 1, per_page: 2) }
 
         it 'returns appropriate amount of resources' do
           expect(subject.paginate(resource).count).to eq 0
@@ -394,8 +367,8 @@ describe API::Helpers::Pagination do
           expect_header('X-Prev-Page', '')
 
           expect_header('Link', anything) do |_key, val|
-            expect(val).to include('rel="first"')
-            expect(val).to include('rel="last"')
+            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+            expect(val).to include(%Q(<#{canonical_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="last"))
             expect(val).not_to include('rel="prev"')
             expect(val).not_to include('rel="next"')
             expect(val).not_to include('page=0')
