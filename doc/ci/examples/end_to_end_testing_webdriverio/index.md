@@ -89,7 +89,7 @@ page and to interact with them - for example, to click on the link back to the h
 The simple test shown above
 can already give us a lot of confidence if it passes: we know our deployment has succeeded, that the
 elements are visible on the page and that actual browsers can interact with it, and that routing
-works as expected. And all that in just 10 lines with gratituous whitespace! Add to that succeeding
+works as expected. And all that in just 10 lines with gratuitous whitespace! Add to that succeeding
 unit tests and a successfully completed pipeline, and you can be fairly confident that the
 dependency upgrade did not break anything without even having to look at your website.
 

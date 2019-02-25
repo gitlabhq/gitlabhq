@@ -209,7 +209,7 @@ The sample function can now be triggered from any HTTP client using a simple `PO
       ```
   2. Using a web-based tool (ie. postman, restlet, etc)
 
-      ![function exection](img/function-execution.png)
+      ![function execution](img/function-execution.png)
 
 ## Deploying Serverless applications
 
