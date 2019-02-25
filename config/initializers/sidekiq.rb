@@ -11,6 +11,10 @@ queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 # Default is to retry 25 times with exponential backoff. That's too much.
 Sidekiq.default_worker_options = { retry: 3 }
 
+if Rails.env.development?
+  Sidekiq.default_worker_options[:backtrace] = true
+end
+
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 
 Sidekiq.configure_server do |config|
