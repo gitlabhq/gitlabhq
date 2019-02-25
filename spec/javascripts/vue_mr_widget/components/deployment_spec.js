@@ -6,32 +6,36 @@ import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Deployment component', () => {
   const Component = Vue.extend(deploymentComponent);
-  const deploymentMockData = {
-    id: 15,
-    name: 'review/diplo',
-    url: '/root/review-apps/environments/15',
-    stop_url: '/root/review-apps/environments/15/stop',
-    metrics_url: '/root/review-apps/environments/15/deployments/1/metrics',
-    metrics_monitoring_url: '/root/review-apps/environments/15/metrics',
-    external_url: 'http://gitlab.com.',
-    external_url_formatted: 'gitlab',
-    deployed_at: '2017-03-22T22:44:42.258Z',
-    deployed_at_formatted: 'Mar 22, 2017 10:44pm',
-    changes: [
-      {
-        path: 'index.html',
-        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
-      },
-      {
-        path: 'imgs/gallery.html',
-        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
-      },
-      {
-        path: 'about/',
-        external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
-      },
-    ],
-  };
+  let deploymentMockData;
+
+  beforeEach(() => {
+    deploymentMockData = {
+      id: 15,
+      name: 'review/diplo',
+      url: '/root/review-apps/environments/15',
+      stop_url: '/root/review-apps/environments/15/stop',
+      metrics_url: '/root/review-apps/environments/15/deployments/1/metrics',
+      metrics_monitoring_url: '/root/review-apps/environments/15/metrics',
+      external_url: 'http://gitlab.com.',
+      external_url_formatted: 'gitlab',
+      deployed_at: '2017-03-22T22:44:42.258Z',
+      deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+      changes: [
+        {
+          path: 'index.html',
+          external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/index.html',
+        },
+        {
+          path: 'imgs/gallery.html',
+          external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/imgs/gallery.html',
+        },
+        {
+          path: 'about/',
+          external_url: 'http://root-master-patch-91341.volatile-watch.surge.sh/about/',
+        },
+      ],
+    };
+  });
 
   let vm;
 
@@ -204,6 +208,31 @@ describe('Deployment component', () => {
     it('renders the link to the review app without dropdown', () => {
       expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
       expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
+    });
+  });
+
+  describe('with a single change', () => {
+    beforeEach(() => {
+      deploymentMockData.changes = deploymentMockData.changes.slice(0, 1);
+
+      vm = mountComponent(Component, {
+        deployment: { ...deploymentMockData },
+        showMetrics: true,
+      });
+    });
+
+    it('renders the link to the review app without dropdown', () => {
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
+      expect(vm.$el.querySelector('.js-deploy-url-feature-flag')).not.toBeNull();
+    });
+
+    it('renders the link to the review app linked to to the first change', () => {
+      const expectedUrl = deploymentMockData.changes[0].external_url;
+      const deployUrl = vm.$el.querySelector('.js-deploy-url-feature-flag');
+
+      expect(vm.$el.querySelector('.js-mr-wigdet-deployment-dropdown')).toBeNull();
+      expect(deployUrl).not.toBeNull();
+      expect(deployUrl.href).toEqual(expectedUrl);
     });
   });
 
