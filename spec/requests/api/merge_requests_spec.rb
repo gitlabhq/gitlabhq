@@ -984,6 +984,21 @@ describe API::MergeRequests do
         expect(squash_commit.message).to eq(merge_request.default_squash_commit_message)
       end
     end
+
+    describe "the should_remove_source_branch param" do
+      let(:source_repository) { merge_request.source_project.repository }
+      let(:source_branch) { merge_request.source_branch }
+
+      it 'removes the source branch when set' do
+        put(
+          api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user),
+          params: { should_remove_source_branch: true }
+        )
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(source_repository.branch_exists?(source_branch)).to be_falsy
+      end
+    end
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_iid" do
