@@ -120,17 +120,13 @@ module Gitlab
 
           private
 
-          def look_like_regexp?(value)
-            value.is_a?(String) && value.start_with?('/') &&
-              value.end_with?('/')
+          def matches_syntax?(value)
+            Gitlab::UntrustedRegexp::RubySyntax.matches_syntax?(value)
           end
 
           def validate_regexp(value)
-            look_like_regexp?(value) &&
-              Regexp.new(value.to_s[1...-1]) &&
-              true
-          rescue RegexpError
-            false
+            matches_syntax?(value) &&
+              Gitlab::UntrustedRegexp::RubySyntax.valid?(value)
           end
         end
 
@@ -149,7 +145,7 @@ module Gitlab
 
           def validate_string_or_regexp(value)
             return false unless value.is_a?(String)
-            return validate_regexp(value) if look_like_regexp?(value)
+            return validate_regexp(value) if matches_syntax?(value)
 
             true
           end
