@@ -2,6 +2,7 @@ import { shallowMount, createLocalVue } from '@vue/test-utils';
 import createStore from '~/notes/stores';
 import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_file';
@@ -236,6 +237,44 @@ describe('noteable_discussion component', () => {
           done();
         });
       });
+    });
+  });
+
+  describe('for resolved discussion', () => {
+    beforeEach(() => {
+      const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
+      wrapper.setProps({ discussion });
+    });
+
+    it('does not display a button to resolve with issue', () => {
+      const button = wrapper.find(ResolveWithIssueButton);
+
+      expect(button.exists()).toBe(false);
+    });
+  });
+
+  describe('for unresolved discussion', () => {
+    beforeEach(done => {
+      const discussion = {
+        ...getJSONFixture(discussionWithTwoUnresolvedNotes)[0],
+        expanded: true,
+      };
+      discussion.notes = discussion.notes.map(note => ({
+        ...note,
+        resolved: false,
+      }));
+
+      wrapper.setProps({ discussion });
+      wrapper.vm
+        .$nextTick()
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('displays a button to resolve with issue', () => {
+      const button = wrapper.find(ResolveWithIssueButton);
+
+      expect(button.exists()).toBe(true);
     });
   });
 });
