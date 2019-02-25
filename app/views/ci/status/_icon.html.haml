@@ -1,7 +1,7 @@
 - status = local_assigns.fetch(:status)
 - size   = local_assigns.fetch(:size, 16)
 - link   = local_assigns.fetch(:link, true)
-- title  = local_assigns.fetch(:title, nil)
+- title  = local_assigns.fetch(:title, "Pipeline: #{status.label}")
 - css_classes = "ci-status-link ci-status-icon ci-status-icon-#{status.group} #{'has-tooltip' if title.present?}"
 
 - if link && status.has_details?
