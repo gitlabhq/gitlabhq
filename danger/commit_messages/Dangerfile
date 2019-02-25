@@ -199,7 +199,7 @@ def lint_commit(commit)
 end
 
 def lint_commits(commits)
-  failed = commits.reject do |commit|
+  failed = commits.select do |commit|
     lint_commit(commit)
   end
 

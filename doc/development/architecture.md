@@ -58,7 +58,7 @@ GitLab can be considered to have two layers from a process perspective:
 - [Omnibus configuration options](https://gitlab.com/gitlab-org/gitaly/tree/master/doc/configuration)
 - Layer: Core Service (Data)
 
-Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab. (Think GitLab.com or High Availablity Deployments) As of 11.3.0, This service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).
+Gitaly is a service designed by GitLab to remove our need for NFS for Git storage in distributed deployments of GitLab (Think GitLab.com or High Availability Deployments). As of 11.3.0, this service handles all Git level access in GitLab. You can read more about the project [in the project's readme](https://gitlab.com/gitlab-org/gitaly).
 
 ### gitlab-monitor
 
@@ -174,7 +174,7 @@ When making a request to an HTTP Endpoint (Think `/users/sign_in`) the request w
 - nginx - Acts as our first line reverse proxy
 - gitlab-workhorse - This determines if it needs to go to the Rails application or somewhere else to reduce load on unicorn.
 - unicorn - Since this is a web request, and it needs to access the application it will go to Unicorn.
-- Postgres/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retreive data.
+- Postgres/Gitaly/Redis - Depending on the type of request, it may hit these services to store or retrieve data.
 
 ### GitLab Git Request Cycle
 

@@ -21,14 +21,14 @@ First, you'll need an account on Azure. There are three ways to do this:
 
 - If your company (or you) already has an account, then you are ready to go!
 - You can also open your own Azure account for free. _At time of writing_, you get $200
-of credit to spend on Azure services for 30 days. You can use this credit to try out paid Azure
-services, exploring Microsoft's cloud for free. Even after the first 30 days, you never have to pay
-anything unless you decide to transition to paid services with a Pay-As-You-Go Azure subscription.
-This is a great way to try out Azure and cloud computing, and you can
-[read more in their comprehensive FAQ][Azure-Free-Account-FAQ].
+  of credit to spend on Azure services for 30 days. You can use this credit to try out paid Azure
+  services, exploring Microsoft's cloud for free. Even after the first 30 days, you never have to pay
+  anything unless you decide to transition to paid services with a Pay-As-You-Go Azure subscription.
+  This is a great way to try out Azure and cloud computing, and you can
+  [read more in their comprehensive FAQ][Azure-Free-Account-FAQ].
 - If you have an MSDN subscription, you can activate your Azure subscriber benefits. Your MSDN
-subscription gives you recurring Azure credits every month, so why not put those credits to use and
-try out GitLab right now?
+  subscription gives you recurring Azure credits every month, so why not put those credits to use and
+  try out GitLab right now?
 
 ## Working with Azure
 
@@ -216,10 +216,10 @@ Like all servers, our VM will be running many services. However, we want to open
 ports to enable public internet access to two services in particular:
 
 1. **HTTP** (port 80) - opening port 80 will enable our VM to respond to HTTP requests, allowing
-public access to the instance of GitLab running on our VM.
+   public access to the instance of GitLab running on our VM.
 1. **SSH** (port 22) - opening port 22 will enable our VM to respond to SSH connection requests,
-allowing public access (with authentication) to remote terminal sessions
-_(you'll see why we need [SSH] access to our VM [later on in this tutorial](#maintaining-your-gitlab-instance))_
+   allowing public access (with authentication) to remote terminal sessions
+   _(you'll see why we need [SSH] access to our VM [later on in this tutorial](#maintaining-your-gitlab-instance))_
 
 ### Open HTTP on Port 80
 

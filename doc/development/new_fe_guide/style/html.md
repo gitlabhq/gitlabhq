@@ -3,6 +3,7 @@
 ## Buttons
 
 <a name="button-type"></a><a name="1.1"></a>
+
 - [1.1](#button-type) **Use button type** Button tags requires a `type` attribute according to the [W3C HTML specification][button-type-spec].
 
 ```
@@ -14,6 +15,7 @@
 ```
 
 <a name="button-role"></a><a name="1.2"></a>
+
 - [1.2](#button-role) **Use button role for non buttons** If an HTML element has an onClick handler but is not a button, it should have `role="button"`. This is more [accessible][button-role-accessible].
 
 ```
@@ -27,6 +29,7 @@
 ## Links
 
 <a name="blank-links"></a><a name="2.1"></a>
+
 - [2.1](#blank-links) **Use rel for target blank** Use `rel="noopener noreferrer"` whenever your links open in a new window i.e. `target="_blank"`. This prevents [the following][jitbit-target-blank] security vulnerability documented by JitBit
 
 ```
@@ -38,6 +41,7 @@
 ```
 
 <a name="fake-links"></a><a name="2.2"></a>
+
 - [2.2](#fake-links) **Do not use fake links** Use a button tag if a link only invokes JavaScript click event handlers. This is more semantic.
 
 ```

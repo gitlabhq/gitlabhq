@@ -9,7 +9,7 @@ Add the `Filter` object to the plugins array of a `DropLab.prototype.init` or `D
 
 - `Filter` requires a config value for `template`.
 - `template` should be the key of the objects within your data array that you want to compare
-to the user input string, for filtering.
+  to the user input string, for filtering.
 
 ```html
 <input href="#" id="trigger" data-dropdown-trigger="#list">

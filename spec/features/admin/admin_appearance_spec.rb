@@ -39,6 +39,38 @@ describe 'Admin Appearance' do
     expect_custom_new_project_appearance(appearance)
   end
 
+  context 'Custom system header and footer' do
+    before do
+      sign_in(create(:admin))
+    end
+
+    context 'when system header and footer messages are empty' do
+      it 'shows custom system header and footer fields' do
+        visit admin_appearances_path
+
+        expect(page).to have_field('appearance_header_message', with: '')
+        expect(page).to have_field('appearance_footer_message', with: '')
+        expect(page).to have_field('appearance_message_background_color')
+        expect(page).to have_field('appearance_message_font_color')
+      end
+    end
+
+    context 'when system header and footer messages are not empty' do
+      before do
+        appearance.update(header_message: 'Foo', footer_message: 'Bar')
+      end
+
+      it 'shows custom system header and footer fields' do
+        visit admin_appearances_path
+
+        expect(page).to have_field('appearance_header_message', with: appearance.header_message)
+        expect(page).to have_field('appearance_footer_message', with: appearance.footer_message)
+        expect(page).to have_field('appearance_message_background_color')
+        expect(page).to have_field('appearance_message_font_color')
+      end
+    end
+  end
+
   it 'Custom sign-in page' do
     visit new_user_session_path
 

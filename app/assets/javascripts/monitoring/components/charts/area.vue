@@ -139,8 +139,7 @@ export default {
       return this.graphData.queries.map(query => query.label).join(', ');
     },
     yAxisLabel() {
-      const [query] = this.graphData.queries;
-      return `${this.graphData.y_label} (${query.unit})`;
+      return `${this.graphData.y_label}`;
     },
   },
   watch: {

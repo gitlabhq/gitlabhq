@@ -23,6 +23,6 @@ users to GitLab users.
   ![Import Project](img/fogbugz_import_select_project.png)
 
 1. Once the import has finished click the link to take you to the project
-dashboard. Follow the directions to push your existing repository.
+   dashboard. Follow the directions to push your existing repository.
 
   ![Finished](img/fogbugz_import_finished.png)

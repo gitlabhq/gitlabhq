@@ -23,7 +23,7 @@ runbooks. A sample runbook is provided, showcasing common operations.
 
 **<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch this [video](https://www.youtube.com/watch?v=Q_OqHIIUPjE)
-for an overview of how this is acomplished in GitLab!**
+for an overview of how this is accomplished in GitLab!**
 
 ## Requirements
 

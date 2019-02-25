@@ -456,21 +456,6 @@ export const historyPushState = newUrl => {
 export const parseBoolean = value => (value && value.toString()) === 'true';
 
 /**
- * Converts permission provided as strings to booleans.
- *
- * @param  {String} string
- * @returns {Boolean}
- */
-export const convertPermissionToBoolean = permission => {
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.warn('convertPermissionToBoolean is deprecated! Please use parseBoolean instead.');
-  }
-
-  return parseBoolean(permission);
-};
-
-/**
  * @callback backOffCallback
  * @param {Function} next
  * @param {Function} stop

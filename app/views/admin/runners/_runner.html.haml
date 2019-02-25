@@ -44,7 +44,7 @@
   .table-section.section-5
     .table-mobile-header{ role: 'rowheader' }= _('Jobs')
     .table-mobile-content
-      = runner.builds.count(:all)
+      = limited_counter_with_delimiter(runner.builds)
 
   .table-section.section-10.section-wrap
     .table-mobile-header{ role: 'rowheader' }= _('Tags')

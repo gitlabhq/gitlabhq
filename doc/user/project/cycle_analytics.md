@@ -80,6 +80,7 @@ Here's a little explanation of how this works behind the scenes:
 
 To sum up, anything that doesn't follow the [GitLab flow] won't be tracked at all.
 So, the Cycle Analytics dashboard won't present any data:
+
 - For merge requests that do not close an issue.
 - For issues not labeled with a label present in the Issue Board.
 - For issues not assigned a milestone.

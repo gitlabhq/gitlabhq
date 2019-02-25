@@ -19,6 +19,7 @@ module.exports = {
     '^~(.*)$': '<rootDir>/app/assets/javascripts$1',
     '^ee(.*)$': '<rootDir>/ee/app/assets/javascripts$1',
     '^helpers(.*)$': '<rootDir>/spec/frontend/helpers$1',
+    '^vendor(.*)$': '<rootDir>/vendor/assets/javascripts$1',
   },
   collectCoverageFrom: ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'],
   coverageDirectory: '<rootDir>/coverage-frontend/',

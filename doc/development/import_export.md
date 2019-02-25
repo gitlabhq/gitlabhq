@@ -222,7 +222,7 @@ bundle exec rake gitlab:import_export:bump_version
 
 ### Renaming columns or models
 
-This is a relatively common occurence that will require a version bump.
+This is a relatively common occurrence that will require a version bump.
 
 There is also the _RC problem_ - GitLab.com runs an RC, prior to any customers,
 meaning that we want to bump the version up in the next version (or patch release).

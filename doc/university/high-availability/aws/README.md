@@ -125,10 +125,10 @@ image below we have the settings for this article but note the
 following two options which are of particular interest for HA:
 
 1. Multi-AZ-Deployment is recommended as redundancy. Read more at
-[High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
+   [High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
 1. While we chose a General Purpose (SSD) for this article a Provisioned
-IOPS (SSD) is best suited for HA. Read more about it at
-[Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html)
+   IOPS (SSD) is best suited for HA. Read more about it at
+   [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html)
 
 ![RDS Instance Specs](img/instance_specs.png)
 

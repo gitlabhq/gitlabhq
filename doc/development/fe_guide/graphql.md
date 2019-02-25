@@ -9,7 +9,7 @@ read more about [Feature Flags][feature-flags].
 ## Apollo Client
 
 To save duplicated clients getting created in different apps, we have a
-[default client][defualt-client] that should be used. This setups the
+[default client][default-client] that should be used. This setups the
 Apollo client with the correct URL and also sets the CSRF headers.
 
 ## GraphQL Queries

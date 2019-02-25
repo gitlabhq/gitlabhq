@@ -113,11 +113,6 @@
   }
 }
 
-@mixin dark-diff-match-line {
-  color: $dark-diff-match-bg;
-  background: $dark-diff-match-color;
-}
-
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;

@@ -8,11 +8,18 @@ class Appearance < ActiveRecord::Base
 
   cache_markdown_field :description
   cache_markdown_field :new_project_guidelines
+  cache_markdown_field :header_message, pipeline: :broadcast_message
+  cache_markdown_field :footer_message, pipeline: :broadcast_message
 
   validates :logo,        file_size: { maximum: 1.megabyte }
   validates :header_logo, file_size: { maximum: 1.megabyte }
+  validates :message_background_color, allow_blank: true, color: true
+  validates :message_font_color, allow_blank: true, color: true
 
   validate :single_appearance_row, on: :create
+
+  default_value_for :message_background_color, '#E75E40'
+  default_value_for :message_font_color, '#FFFFFF'
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
@@ -39,6 +46,14 @@ class Appearance < ActiveRecord::Base
 
   def favicon_path
     logo_system_path(favicon, 'favicon')
+  end
+
+  def show_header?
+    header_message.present?
+  end
+
+  def show_footer?
+    footer_message.present?
   end
 
   private

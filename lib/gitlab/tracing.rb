@@ -27,10 +27,11 @@ module Gitlab
     def self.tracing_url
       return unless tracing_url_enabled?
 
-      tracing_url_template % {
-        correlation_id: Gitlab::CorrelationId.current_id.to_s,
-        service: Gitlab.process_name
-      }
+      # Avoid using `format` since it can throw TypeErrors
+      # which we want to avoid on unsanitised env var input
+      tracing_url_template.to_s
+        .gsub(/\{\{\s*correlation_id\s*\}\}/, Gitlab::CorrelationId.current_id.to_s)
+        .gsub(/\{\{\s*service\s*\}\}/, Gitlab.process_name)
     end
   end
 end
