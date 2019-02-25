@@ -1,5 +1,9 @@
 # YouTrack Service
 
+JetBrains YouTrack is a web-based issue tracking and project management platform.
+Please refer official [documentation]([YouTrack](https://www.jetbrains.com/help/youtrack/standalone/YouTrack-Documentation.html)) for details about YouTrack itself.
+
+
 1. To enable the YouTrack integration in a project, navigate to the
 [Integrations page](project_services.md#accessing-the-project-services), click
 the **YouTrack** service, and fill in the required details on the page as described
@@ -20,8 +24,8 @@ in the table below.
 ## Referencing issues in YouTrack
 
 Issues in YouTrack can be referenced as `<PROJECT>-<ID>` where `<PROJECT>`
-starts with a capital letter which is then followed by capital letters, numbers
-or underscores, and `<ID>` is a number (example `API_32-143`).
+starts with a capital letter which is then followed by capital or lower case
+letters, numbers or underscores, and `<ID>` is a number (example `Api_32-143`).
 
 `<PROJECT>` part is included into issue_id and links can point any YouTrack
 project (`issues_url` + issue_id)
