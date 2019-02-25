@@ -66,6 +66,14 @@ module API
           .execute
       end
 
+      def update_group(group)
+        # This is a separate method so that EE can extend its behaviour, without
+        # having to modify this code directly.
+        ::Groups::UpdateService
+          .new(group, current_user, declared_params(include_missing: false))
+          .execute
+      end
+
       def find_group_projects(params)
         group = find_group!(params[:id])
         options = {
@@ -161,7 +169,7 @@ module API
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
-        if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
+        if update_group(group)
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_validation_error!(group)
