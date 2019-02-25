@@ -32,7 +32,6 @@ GET /issues?author_id=5
 GET /issues?assignee_id=5
 GET /issues?my_reaction_emoji=star
 GET /issues?search=foo&in=title
-GET /issues?confidential=true
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                                                                         |
@@ -53,7 +52,6 @@ GET /issues?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                                                   |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                                                    |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                                                   |
-| `confidential `     | Boolean          | no        | Filter confidential or public issues.                                                                                                                |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/issues
@@ -150,7 +148,6 @@ GET /groups/:id/issues?search=issue+title+or+description
 GET /groups/:id/issues?author_id=5
 GET /groups/:id/issues?assignee_id=5
 GET /groups/:id/issues?my_reaction_emoji=star
-GET /groups/:id/issues?confidential=true
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                                                   |
@@ -171,7 +168,6 @@ GET /groups/:id/issues?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
-| `confidential `     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/4/issues
@@ -268,7 +264,6 @@ GET /projects/:id/issues?search=issue+title+or+description
 GET /projects/:id/issues?author_id=5
 GET /projects/:id/issues?assignee_id=5
 GET /projects/:id/issues?my_reaction_emoji=star
-GET /projects/:id/issues?confidential=true
 ```
 
 | Attribute           | Type             | Required   | Description                                                                                                                   |
@@ -289,8 +284,6 @@ GET /projects/:id/issues?confidential=true
 | `created_before`    | datetime         | no         | Return issues created on or before the given time                                                                             |
 | `updated_after`     | datetime         | no         | Return issues updated on or after the given time                                                                              |
 | `updated_before`    | datetime         | no         | Return issues updated on or before the given time                                                                             |
-| `confidential `     | Boolean          | no         | Filter confidential or public issues.                                                                                         |
-
 
 ```bash
 curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues
