@@ -4,12 +4,38 @@ require 'spec_helper'
 shared_examples 'languages and percentages JSON response' do
   let(:expected_languages) { project.repository.languages.map { |language| language.values_at(:label, :value)}.to_h }
 
+  before do
+    allow(project.repository).to receive(:languages).and_return(
+      [{ value: 66.69, label: "Ruby", color: "#701516", highlight: "#701516" },
+       { value: 22.98, label: "JavaScript", color: "#f1e05a", highlight: "#f1e05a" },
+       { value: 7.91, label: "HTML", color: "#e34c26", highlight: "#e34c26" },
+       { value: 2.42, label: "CoffeeScript", color: "#244776", highlight: "#244776" }]
+    )
+  end
+
   it 'returns expected language values' do
     get api("/projects/#{project.id}/languages", user)
 
     expect(response).to have_gitlab_http_status(:ok)
     expect(json_response).to eq(expected_languages)
     expect(json_response.count).to be > 1
+  end
+
+  context 'when the languages were detected before' do
+    before do
+      Projects::DetectRepositoryLanguagesService.new(project, project.owner).execute
+    end
+
+    it 'returns the detection from the database' do
+      # Allow this to happen once, so the expected languages can be determined
+      expect(project.repository).to receive(:languages).once
+
+      get api("/projects/#{project.id}/languages", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq(expected_languages)
+      expect(json_response.count).to be > 1
+    end
   end
 end
 
