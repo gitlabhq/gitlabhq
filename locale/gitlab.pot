@@ -285,6 +285,9 @@ msgstr ""
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
+msgid "A .NET Core console application template, customizable for any .NET Core project"
+msgstr ""
+
 msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
