@@ -27,7 +27,6 @@
 
   .controls {
     @include media-breakpoint-up(sm) {
-      display: -webkit-flex;
       display: flex;
     }
 
