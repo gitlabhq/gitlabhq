@@ -258,6 +258,8 @@ module API
       end
       params do
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
+        optional :path, type: String, desc: 'The path that will be assigned to the fork'
+        optional :name, type: String, desc: 'The name that will be assigned to the fork'
       end
       post ':id/fork' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
