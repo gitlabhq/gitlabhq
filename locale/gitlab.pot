@@ -5413,9 +5413,6 @@ msgstr ""
 msgid "Pipeline"
 msgstr ""
 
-msgid "Pipeline Health"
-msgstr ""
-
 msgid "Pipeline Schedule"
 msgstr ""
 
@@ -6200,6 +6197,9 @@ msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
 msgstr ""
 
 msgid "Real-time features"
+msgstr ""
+
+msgid "Recent Project Activity"
 msgstr ""
 
 msgid "Recent searches"
