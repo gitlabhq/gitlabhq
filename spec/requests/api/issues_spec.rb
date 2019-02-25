@@ -183,6 +183,18 @@ describe API::Issues do
         expect_paginated_array_response([issue.id, confidential_issue.id, closed_issue.id])
       end
 
+      it 'returns only confidential issues' do
+        get api('/issues', user), params: { confidential: true, scope: 'all' }
+
+        expect_paginated_array_response(confidential_issue.id)
+      end
+
+      it 'returns only public issues' do
+        get api('/issues', user), params: { confidential: false }
+
+        expect_paginated_array_response([issue.id, closed_issue.id])
+      end
+
       it 'returns issues reacted by the authenticated user' do
         issue2 = create(:issue, project: project, author: user, assignees: [user])
         create(:award_emoji, awardable: issue2, user: user2, name: 'star')
@@ -557,6 +569,18 @@ describe API::Issues do
         expect_paginated_array_response([group_confidential_issue.id, group_issue.id])
       end
 
+      it 'returns only confidential issues' do
+        get api(base_url, user), params: { confidential: true }
+
+        expect_paginated_array_response(group_confidential_issue.id)
+      end
+
+      it 'returns only public issues' do
+        get api(base_url, user), params: { confidential: false }
+
+        expect_paginated_array_response([group_closed_issue.id, group_issue.id])
+      end
+
       it 'returns an array of labeled group issues' do
         get api(base_url, user), params: { labels: group_label.title }
 
@@ -780,6 +804,18 @@ describe API::Issues do
       get api("#{base_url}/issues", author)
 
       expect_paginated_array_response([issue.id, confidential_issue.id, closed_issue.id])
+    end
+
+    it 'returns only confidential issues' do
+      get api("#{base_url}/issues", author), params: { confidential: true }
+
+      expect_paginated_array_response(confidential_issue.id)
+    end
+
+    it 'returns only public issues' do
+      get api("#{base_url}/issues", author), params: { confidential: false }
+
+      expect_paginated_array_response([issue.id, closed_issue.id])
     end
 
     it 'returns project confidential issues for assignee' do

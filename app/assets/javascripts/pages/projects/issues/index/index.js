@@ -9,6 +9,8 @@ import { FILTERED_SEARCH } from '~/pages/constants';
 import { ISSUABLE_INDEX } from '~/pages/projects/constants';
 
 document.addEventListener('DOMContentLoaded', () => {
+  IssuableFilteredSearchTokenKeys.addExtraTokensForIssues();
+
   initFilteredSearch({
     page: FILTERED_SEARCH.ISSUES,
     filteredSearchTokenKeys: IssuableFilteredSearchTokenKeys,

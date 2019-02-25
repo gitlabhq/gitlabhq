@@ -66,7 +66,7 @@ describe 'Dropdown hint', :js do
       it 'filters with text' do
         filtered_search.set('a')
 
-        expect(find(js_dropdown_hint)).to have_selector('.filter-dropdown .filter-dropdown-item', count: 4)
+        expect(find(js_dropdown_hint)).to have_selector('.filter-dropdown .filter-dropdown-item', count: 5)
       end
     end
 
@@ -117,6 +117,15 @@ describe 'Dropdown hint', :js do
         expect(page).to have_css(js_dropdown_hint, visible: false)
         expect(page).to have_css('#js-dropdown-my-reaction', visible: true)
         expect_tokens([{ name: 'my-reaction' }])
+        expect_filtered_search_input_empty
+      end
+
+      it 'opens the yes-no dropdown when you click on confidential' do
+        click_hint('confidential')
+
+        expect(page).to have_css(js_dropdown_hint, visible: false)
+        expect(page).to have_css('#js-dropdown-confidential', visible: true)
+        expect_tokens([{ name: 'confidential' }])
         expect_filtered_search_input_empty
       end
     end
