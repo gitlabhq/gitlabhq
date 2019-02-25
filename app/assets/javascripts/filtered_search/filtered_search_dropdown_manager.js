@@ -96,6 +96,11 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownNonUser,
         element: this.container.querySelector('#js-dropdown-wip'),
       },
+      confidential: {
+        reference: null,
+        gl: DropdownNonUser,
+        element: this.container.querySelector('#js-dropdown-confidential'),
+      },
       status: {
         reference: null,
         gl: NullDropdown,

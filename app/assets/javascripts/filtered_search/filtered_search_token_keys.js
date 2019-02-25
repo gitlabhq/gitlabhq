@@ -72,6 +72,23 @@ export default class FilteredSearchTokenKeys {
     );
   }
 
+  addExtraTokensForIssues() {
+    const confidentialToken = {
+      key: 'confidential',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'eye-slash',
+      tag: 'Yes or No',
+      lowercaseValueOnSubmit: true,
+      uppercaseTokenName: false,
+      capitalizeTokenValue: true,
+    };
+
+    this.tokenKeys.push(confidentialToken);
+    this.tokenKeysWithAlternative.push(confidentialToken);
+  }
+
   addExtraTokensForMergeRequests() {
     const wipToken = {
       key: 'wip',

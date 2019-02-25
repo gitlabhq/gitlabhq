@@ -490,6 +490,32 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by confidential' do
+        set(:confidential_issue) { create(:issue, project: project1, confidential: true) }
+
+        context 'no filtering' do
+          it 'returns all issues' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, confidential_issue)
+          end
+        end
+
+        context 'user filters confidential issues' do
+          let(:params) { { confidential: true } }
+
+          it 'returns only confdential issues' do
+            expect(issues).to contain_exactly(confidential_issue)
+          end
+        end
+
+        context 'user filters only public issues' do
+          let(:params) { { confidential: false } }
+
+          it 'returns only confdential issues' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
+          end
+        end
+      end
+
       context 'when the user is unauthorized' do
         let(:search_user) { nil }
 
@@ -556,7 +582,7 @@ describe IssuesFinder do
     it 'returns the number of rows for the default state' do
       finder = described_class.new(user)
 
-      expect(finder.row_count).to eq(4)
+      expect(finder.row_count).to eq(5)
     end
 
     it 'returns the number of rows for a given state' do

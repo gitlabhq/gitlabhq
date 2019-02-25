@@ -91,6 +91,7 @@ module IssuableCollections
     options = {
       scope: params[:scope],
       state: params[:state],
+      confidential: Gitlab::Utils.to_boolean(params[:confidential]),
       sort: set_sort_order
     }
 
