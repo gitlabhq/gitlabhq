@@ -15,6 +15,12 @@ module API
         status code
         { status: success, message: message }.merge(extra_options).compact
       end
+
+      def lfs_authentication_url(project)
+        # This is a separate method so that EE can alter its behaviour more
+        # easily.
+        project.http_url_to_repo
+      end
     end
 
     namespace 'internal' do
@@ -118,7 +124,9 @@ module API
           raise ActiveRecord::RecordNotFound.new("No key_id or user_id passed!")
         end
 
-        Gitlab::LfsToken.new(actor).authentication_payload(project.http_url_to_repo)
+        Gitlab::LfsToken
+          .new(actor)
+          .authentication_payload(lfs_authentication_url(project))
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
