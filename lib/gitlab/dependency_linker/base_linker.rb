@@ -45,6 +45,10 @@ module Gitlab
 
       private
 
+      def package_url(_name)
+        raise NotImplementedError
+      end
+
       def link_dependencies
         raise NotImplementedError
       end
