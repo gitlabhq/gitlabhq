@@ -956,6 +956,37 @@ Must include at least one non-required attribute from above.
 }
 ```
 
+## Bulk update merge requests
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21368) in GitLab 11.9.
+
+Update multiple merge requests using a single API call. Returns the number of successfully updated merge requests.
+
+```
+PUT /projects/:id/merge_requests/bulk_update
+```
+
+| Attribute      | Type    | Required | Description                                                                                          ****      |
+|----------------|---------|----------|------------------------------------------------------------------------------------------------------------|
+| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
+| `issuable_ids`  | Array[integer] | yes     | The IDs of merge requests to be updated.                                                                       |
+| `assignee_ids`  | Array[integer] | no      | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees.  |
+| `milestone_id`  | integer        | no      | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
+| `add_label_ids`      | Array[integer] | no | Comma-separated label IDs to be added. |
+| `remove_label_ids`   | Array[integer] | no | Comma-separated label IDs to be added. |
+| `state_event`        | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it.                      |
+| `subscription_event` | string  | no  | The subscription_event event of an issue. Set `subscribe` to subscribe to the issue and `unsubscribe` to unsubscribe from it. |
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/merge_requests/bulk_update?issuable_ids[]=1&issuable_ids[]=2&state_event=close
+```
+
+Example response:
+
+```json
+{ "message": "2 merge_requests updated" }
+```
+
 ## Delete a merge request
 
 Only for admins and project owners. Soft deletes the merge request in question.

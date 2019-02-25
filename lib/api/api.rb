@@ -115,6 +115,7 @@ module API
     mount ::API::GroupVariables
     mount ::API::ImportGithub
     mount ::API::Internal
+    mount ::API::IssuableBulkUpdate
     mount ::API::Issues
     mount ::API::JobArtifacts
     mount ::API::Jobs
