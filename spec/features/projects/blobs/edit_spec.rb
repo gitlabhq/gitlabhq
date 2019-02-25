@@ -77,7 +77,7 @@ describe 'Editing file blob', :js do
         click_link 'Preview'
         wait_for_requests
 
-        # the above generates two seperate lists (not embedded) in CommonMark
+        # the above generates two separate lists (not embedded) in CommonMark
         expect(page).to have_content("sublist")
         expect(page).not_to have_xpath("//ol//li//ul")
       end
