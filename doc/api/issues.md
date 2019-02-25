@@ -639,37 +639,6 @@ Example response:
 
 **Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
-## Bulk update issues
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21368) in GitLab 11.9.
-
-Update multiple issues using a single API call. Returns the number of successfully updated issues.
-
-```
-PUT /projects/:id/issues/bulk_update
-```
-
-| Attribute      | Type    | Required | Description                                                                                          ****      |
-|----------------|---------|----------|------------------------------------------------------------------------------------------------------------|
-| `id`           | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user. |
-| `issuable_ids`  | Array[integer] | yes     | The IDs of issues to be updated.                                                                       |
-| `assignee_ids`  | Array[integer] | no      | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id`  | integer        | no      | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
-| `add_label_ids`      | Array[integer] | no | Comma-separated label IDs to be added. |
-| `remove_label_ids`   | Array[integer] | no | Comma-separated label IDs to be added. |
-| `state_event`        | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it.                      |
-| `subscription_event` | string  | no  | The subscription_event event of an issue. Set `subscribe` to subscribe to the issue and `unsubscribe` to unsubscribe from it. |
-
-```bash
-curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/issues/bulk_update?issuable_ids[]=1&issuable_ids[]=2&state_event=close
-```
-
-Example response:
-
-```json
-{ "message": "2 issues updated" }
-```
-
 ## Delete an issue
 
 Only for admins and project owners. Soft deletes the issue in question.
