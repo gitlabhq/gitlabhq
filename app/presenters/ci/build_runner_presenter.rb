@@ -35,7 +35,7 @@ module Ci
       specs = []
 
       if git_depth > 0
-        specs << refspec_for_branch(ref) if branch? || merge_request?
+        specs << refspec_for_branch(ref) if branch? || merge_request_event?
         specs << refspec_for_tag(ref) if tag?
       else
         specs << refspec_for_branch

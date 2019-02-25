@@ -23,7 +23,7 @@ describe Ci::Build do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
-  it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
+  it { is_expected.to delegate_method(:merge_request_event?).to(:pipeline) }
 
   it { is_expected.to be_a(ArtifactMigratable) }
 

@@ -1333,7 +1333,7 @@ describe MergeRequest do
 
       let!(:merge_request_pipeline) do
         create(:ci_pipeline,
-               source: :merge_request,
+               source: :merge_request_event,
                project: project,
                ref: source_ref,
                sha: shas.second,
@@ -1372,7 +1372,7 @@ describe MergeRequest do
 
         let!(:merge_request_pipeline_2) do
           create(:ci_pipeline,
-                 source: :merge_request,
+                 source: :merge_request_event,
                  project: project,
                  ref: source_ref,
                  sha: shas.first,
@@ -1399,7 +1399,7 @@ describe MergeRequest do
 
         let!(:merge_request_pipeline_2) do
           create(:ci_pipeline,
-                 source: :merge_request,
+                 source: :merge_request_event,
                  project: project,
                  ref: source_ref,
                  sha: shas.first,
