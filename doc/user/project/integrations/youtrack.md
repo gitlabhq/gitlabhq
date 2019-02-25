@@ -1,7 +1,7 @@
 # YouTrack Service
 
 JetBrains YouTrack is a web-based issue tracking and project management platform.
-Please refer official [documentation]([YouTrack](https://www.jetbrains.com/help/youtrack/standalone/YouTrack-Documentation.html)) for details about YouTrack itself.
+Please refer official [documentation](https://www.jetbrains.com/help/youtrack/standalone/YouTrack-Documentation.html) for details about YouTrack itself.
 
 
 1. To enable the YouTrack integration in a project, navigate to the
