@@ -145,6 +145,26 @@ const bindEvents = () => {
         text: 'Pages/Hexo',
         icon: '.template-option .icon-hexo',
       },
+      nfhugo: {
+        text: 'Netlify/Hugo',
+        icon: '.template-option .icon-netlify',
+      },
+      nfjekyll: {
+        text: 'Netlify/Jekyll',
+        icon: '.template-option .icon-netlify',
+      },
+      nfplainhtml: {
+        text: 'Netlify/Plain HTML',
+        icon: '.template-option .icon-netlify',
+      },
+      nfgitbook: {
+        text: 'Netlify/GitBook',
+        icon: '.template-option .icon-netlify',
+      },
+      nfhexo: {
+        text: 'Netlify/Hexo',
+        icon: '.template-option .icon-netlify',
+      },
     };
 
     const selectedTemplate = templates[value];

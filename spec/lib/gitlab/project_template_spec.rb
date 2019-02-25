@@ -11,7 +11,12 @@ describe Gitlab::ProjectTemplate do
         described_class.new('jekyll', 'Pages/Jekyll', 'Everything you need to get started using a Jekyll Pages site.', 'https://gitlab.com/pages/jekyll'),
         described_class.new('plainhtml', 'Pages/Plain HTML', 'Everything you need to get started using a plain HTML Pages site.', 'https://gitlab.com/pages/plain-html'),
         described_class.new('gitbook', 'Pages/GitBook', 'Everything you need to get started using a GitBook Pages site.', 'https://gitlab.com/pages/gitbook'),
-        described_class.new('hexo', 'Pages/Hexo', 'Everything you need to get started using a plan Hexo Pages site.', 'https://gitlab.com/pages/hexo')
+        described_class.new('hexo', 'Pages/Hexo', 'Everything you need to get started using a Hexo Pages site.', 'https://gitlab.com/pages/hexo'),
+        described_class.new('nfhugo', 'Netlify/Hugo', _('A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfhugo'),
+        described_class.new('nfjekyll', 'Netlify/Jekyll', _('A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfjekyll'),
+        described_class.new('nfplainhtml', 'Netlify/Plain HTML', _('A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfplain-html'),
+        described_class.new('nfgitbook', 'Netlify/GitBook', _('A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfgitbook'),
+        described_class.new('nfhexo', 'Netlify/Hexo', _('A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features.'), 'https://gitlab.com/pages/nfhexo')
       ]
 
       expect(described_class.all).to be_an(Array)
