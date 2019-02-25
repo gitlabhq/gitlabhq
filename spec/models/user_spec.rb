@@ -976,43 +976,43 @@ describe User do
     end
   end
 
-  describe '.filter' do
+  describe '.filter_items' do
     let(:user) { double }
 
     it 'filters by active users by default' do
       expect(described_class).to receive(:active).and_return([user])
 
-      expect(described_class.filter(nil)).to include user
+      expect(described_class.filter_items(nil)).to include user
     end
 
     it 'filters by admins' do
       expect(described_class).to receive(:admins).and_return([user])
 
-      expect(described_class.filter('admins')).to include user
+      expect(described_class.filter_items('admins')).to include user
     end
 
     it 'filters by blocked' do
       expect(described_class).to receive(:blocked).and_return([user])
 
-      expect(described_class.filter('blocked')).to include user
+      expect(described_class.filter_items('blocked')).to include user
     end
 
     it 'filters by two_factor_disabled' do
       expect(described_class).to receive(:without_two_factor).and_return([user])
 
-      expect(described_class.filter('two_factor_disabled')).to include user
+      expect(described_class.filter_items('two_factor_disabled')).to include user
     end
 
     it 'filters by two_factor_enabled' do
       expect(described_class).to receive(:with_two_factor).and_return([user])
 
-      expect(described_class.filter('two_factor_enabled')).to include user
+      expect(described_class.filter_items('two_factor_enabled')).to include user
     end
 
     it 'filters by wop' do
       expect(described_class).to receive(:without_projects).and_return([user])
 
-      expect(described_class.filter('wop')).to include user
+      expect(described_class.filter_items('wop')).to include user
     end
   end
 
