@@ -149,14 +149,6 @@
     margin: 10px 0;
   }
 
-  // Border around images in issue and MR comments.
-  img:not(.emoji) {
-    border: 1px solid $white-normal;
-    padding: 5px;
-    margin: 5px 0;
-    // Ensure that image does not exceed viewport
-    max-height: calc(100vh - 100px);
-  }
 
   table:not(.js-syntax-highlight) {
     @include markdown-table;

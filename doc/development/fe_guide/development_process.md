@@ -61,17 +61,19 @@ Please use your best judgement when to use it and please contribute new points t
 ---
 
 ### Share your work early
+
 1. Before writing code, ensure your vision of the architecture is aligned with
-GitLab's architecture.
+   GitLab's architecture.
 1. Add a diagram to the issue and ask a frontend architect in the slack channel `#fe_architectural` about it.
 
   ![Diagram of Issue Boards Architecture](img/boards_diagram.png)
 
 1. Don't take more than one week between starting work on a feature and
-sharing a Merge Request with a reviewer or a maintainer.
+   sharing a Merge Request with a reviewer or a maintainer.
 
 ### Vue features
+
 1. Follow the steps in [Vue.js Best Practices](vue.md)
 1. Follow the style guide.
 1. Only a handful of people are allowed to merge Vue related features.
-Reach out to one of Vue experts early in this process.
+   Reach out to one of Vue experts early in this process.

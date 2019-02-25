@@ -44,12 +44,15 @@ describe Gitlab::Tracing do
 
   describe '.tracing_url' do
     where(:tracing_url_enabled?, :tracing_url_template, :correlation_id, :process_name, :tracing_url) do
-      false | "https://localhost"                                  | "123" | "web" | nil
-      true  | "https://localhost"                                  | "123" | "web" | "https://localhost"
-      true  | "https://localhost?service=%{service}"               | "123" | "web" | "https://localhost?service=web"
-      true  | "https://localhost?c=%{correlation_id}"              | "123" | "web" | "https://localhost?c=123"
-      true  | "https://localhost?c=%{correlation_id}&s=%{service}" | "123" | "web" | "https://localhost?c=123&s=web"
-      true  | "https://localhost?c=%{correlation_id}"              | nil   | "web" | "https://localhost?c="
+      false | "https://localhost"                                              | "123" | "web" | nil
+      true  | "https://localhost"                                              | "123" | "web" | "https://localhost"
+      true  | "https://localhost?service={{ service }}"                        | "123" | "web" | "https://localhost?service=web"
+      true  | "https://localhost?c={{ correlation_id }}"                       | "123" | "web" | "https://localhost?c=123"
+      true  | "https://localhost?c={{ correlation_id }}&s={{ service }}"       | "123" | "web" | "https://localhost?c=123&s=web"
+      true  | "https://localhost?c={{ correlation_id }}"                       | nil   | "web" | "https://localhost?c="
+      true  | "https://localhost?c={{ correlation_id }}&s=%22{{ service }}%22" | "123" | "web" | "https://localhost?c=123&s=%22web%22"
+      true  | "https://localhost?c={{correlation_id}}&s={{service}}"           | "123" | "web" | "https://localhost?c=123&s=web"
+      true  | "https://localhost?c={{correlation_id }}&s={{ service}}"         | "123" | "web" | "https://localhost?c=123&s=web"
     end
 
     with_them do

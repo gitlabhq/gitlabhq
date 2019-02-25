@@ -14,9 +14,9 @@ See [our current .eslintrc](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/
 #### ESlint
 
 1. **Never** disable eslint rules unless you have a good reason.
-You may see a lot of legacy files with `/* eslint-disable some-rule, some-other-rule */`
-at the top, but legacy files are a special case.  Any time you develop a new feature or
-refactor an existing one, you should abide by the eslint rules.
+   You may see a lot of legacy files with `/* eslint-disable some-rule, some-other-rule */`
+   at the top, but legacy files are a special case.  Any time you develop a new feature or
+   refactor an existing one, you should abide by the eslint rules.
 
 1. **Never Ever EVER** disable eslint globally for a file
 
@@ -53,7 +53,7 @@ refactor an existing one, you should abide by the eslint rules.
    1. [class-methods-use-this][eslint-this]
 
 1. When they are needed _always_ place ESlint directive comment blocks on the first line of a script,
-followed by any global declarations, then a blank newline prior to any imports or code.
+   followed by any global declarations, then a blank newline prior to any imports or code.
 
     ```javascript
       // bad
@@ -125,8 +125,8 @@ followed by any global declarations, then a blank newline prior to any imports o
     ```
 
 1. Relative paths: when importing a module in the same directory, a child
-directory, or an immediate parent directory prefer relative paths.  When
-importing a module which is two or more levels up, prefer either `~/` or `ee/`.
+   directory, or an immediate parent directory prefer relative paths.  When
+   importing a module which is two or more levels up, prefer either `~/` or `ee/`.
 
     In **app/assets/javascripts/my-feature/subdir**:
 
@@ -163,9 +163,9 @@ importing a module which is two or more levels up, prefer either `~/` or `ee/`.
     ```
 
 1. Avoid using IIFE. Although we have a lot of examples of files which wrap their
-contents in IIFEs (immediately-invoked function expressions),
-this is no longer necessary after the transition from Sprockets to webpack.
-Do not use them anymore and feel free to remove them when refactoring legacy code.
+   contents in IIFEs (immediately-invoked function expressions),
+   this is no longer necessary after the transition from Sprockets to webpack.
+   Do not use them anymore and feel free to remove them when refactoring legacy code.
 
 1. Avoid adding to the global namespace.
     ```javascript
@@ -484,8 +484,8 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     ```
 
 1. Default key should be provided if the prop is not required.
-_Note:_ There are some scenarios where we need to check for the existence of the property.
-On those a default key should not be provided.
+   _Note:_ There are some scenarios where we need to check for the existence of the property.
+   On those a default key should not be provided.
 
     ```javascript
       // good

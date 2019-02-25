@@ -23,7 +23,7 @@ in `.gitlab-ci.yml`.
 ## Timeout
 
 Timeout defines the maximum amount of time in minutes that a job is able run.
-This is configureable under your project's **Settings > CI/CD > General pipelines settings**. 
+This is configurable under your project's **Settings > CI/CD > General pipelines settings**.
 The default value is 60 minutes. Decrease the time limit if you want to impose
 a hard limit on your jobs' running time or increase it otherwise. In any case,
 if the job surpasses the threshold, it is marked as failed.
@@ -134,7 +134,7 @@ Depending on the status of your job, a badge can have the following values:
 You can access a pipeline status badge image using the following link:
 
 ```text
-https://example.gitlab.com/<namespace>/<project>/badges/<branch>/build.svg
+https://example.gitlab.com/<namespace>/<project>/badges/<branch>/pipeline.svg
 ```
 
 ### Test coverage report badge

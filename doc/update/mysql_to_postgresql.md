@@ -95,7 +95,7 @@ Now, you can use pgloader to migrate the data from MySQL to PostgreSQL:
     ```
 
 1. Once the migration finishes, you should see a summary table that looks like
-the following:
+   the following:
 
     ```
                                      table name       read   imported     errors      total time
@@ -242,7 +242,7 @@ Now, you can use pgloader to migrate the data from MySQL to PostgreSQL:
     ```
 
 1. Once the migration finishes, you should see a summary table that looks like
-the following:
+   the following:
 
     ```
                                      table name       read   imported     errors      total time

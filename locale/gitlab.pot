@@ -285,6 +285,18 @@ msgstr ""
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
+msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
@@ -298,6 +310,9 @@ msgid "A member of GitLab's abuse team will review your report as soon as possib
 msgstr ""
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
+msgstr ""
+
+msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
@@ -949,6 +964,9 @@ msgid "Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Average per day: %{average}"
+msgstr ""
+
+msgid "Background Color"
 msgstr ""
 
 msgid "Background Jobs"
@@ -2450,6 +2468,9 @@ msgstr ""
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
 
+msgid "Customize colors"
+msgstr ""
+
 msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
@@ -3432,6 +3453,12 @@ msgstr ""
 msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
 
+msgid "Font Color"
+msgstr ""
+
+msgid "Footer message"
+msgstr ""
+
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr ""
 
@@ -3757,6 +3784,9 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
+msgstr ""
+
+msgid "Header message"
 msgstr ""
 
 msgid "Health Check"
@@ -4845,9 +4875,6 @@ msgid "New Pipeline Schedule"
 msgstr ""
 
 msgid "New Snippet"
-msgstr ""
-
-msgid "New Snippets"
 msgstr ""
 
 msgid "New branch"
@@ -6775,6 +6802,24 @@ msgstr ""
 msgid "Snippets"
 msgstr ""
 
+msgid "SnippetsEmptyState|Explore public snippets"
+msgstr ""
+
+msgid "SnippetsEmptyState|New snippet"
+msgstr ""
+
+msgid "SnippetsEmptyState|No snippets found"
+msgstr ""
+
+msgid "SnippetsEmptyState|Snippets are small pieces of code or notes that you want to keep."
+msgstr ""
+
+msgid "SnippetsEmptyState|There are no snippets to show."
+msgstr ""
+
+msgid "SnippetsEmptyState|They can be either public or private."
+msgstr ""
+
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
 msgstr ""
 
@@ -7051,6 +7096,9 @@ msgstr ""
 msgid "Starts at (UTC)"
 msgstr ""
 
+msgid "State your message to activate"
+msgstr ""
+
 msgid "Status"
 msgstr ""
 
@@ -7130,6 +7178,9 @@ msgid "System Info"
 msgstr ""
 
 msgid "System default (%{default})"
+msgstr ""
+
+msgid "System header and footer"
 msgstr ""
 
 msgid "System metrics (Custom)"

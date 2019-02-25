@@ -11,7 +11,7 @@ Time Tracking lets you:
 
 - Record the time spent working on an issue or a merge request.
 - Add an estimate of the amount of time needed to complete an issue or a merge
-request.
+  request.
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
 

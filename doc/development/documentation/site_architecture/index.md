@@ -44,7 +44,7 @@ read through the [global navigation](global_nav.md) doc.
 The docs site is deployed to production with GitLab Pages, and previewed in
 merge requests with Review Apps.
 
-The deployment aspects will be soon transfered from the [original document](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md)
+The deployment aspects will be soon transferred from the [original document](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md)
 to this page.
 
 <!--

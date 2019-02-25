@@ -78,9 +78,9 @@ with labels, and from there organize and prioritize them with Issue Boards.
 For example, let's consider this simplified development workflow:
 
 1. You have a repository hosting your app's codebase
-and your team actively contributing to code
+   and your team actively contributing to code
 1. Your **backend** team starts working a new
-implementation, gathers feedback and approval, and pass it over to **frontend**
+   implementation, gathers feedback and approval, and pass it over to **frontend**
 1. When frontend is complete, the new feature is deployed to **staging** to be tested
 1. When successful, it is deployed to **production**
 
@@ -88,7 +88,7 @@ If we have the labels "**backend**", "**frontend**", "**staging**", and
 "**production**", and an Issue Board with a list for each, we can:
 
 - Visualize the entire flow of implementations since the
-beginning of the development lifecycle until deployed to production
+  beginning of the development lifecycle until deployed to production
 - Prioritize the issues in a list by moving them vertically
 - Move issues between lists to organize them according to the labels you've set
 - Add multiple issues to lists in the board by selecting one or more existing issues
@@ -177,7 +177,7 @@ menu from where you can create another Issue Board and rename or delete the
 existing one.
 Using the search box at the top of the menu, you can filter the listed boards.
 
-When you're revisiting an issue board in a project or group with multiple boards, 
+When you're revisiting an issue board in a project or group with multiple boards,
 GitLab will automatically load the last board you visited.
 
 NOTE: **Note:**
@@ -234,7 +234,7 @@ group-level objects are available.
 
 NOTE: **Note:**
 Multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards) and
-one group issue board per group was made available in GitLab 10.6 Core. 
+one group issue board per group was made available in GitLab 10.6 Core.
 
 ![Group issue board](img/group_issue_board.png)
 

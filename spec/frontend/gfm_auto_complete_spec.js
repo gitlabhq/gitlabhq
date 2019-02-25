@@ -6,58 +6,62 @@ import GfmAutoComplete from '~/gfm_auto_complete';
 import 'vendor/jquery.caret';
 import 'vendor/jquery.atwho';
 
-describe('GfmAutoComplete', function() {
+describe('GfmAutoComplete', () => {
   const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
     fetchData: () => {},
   });
 
-  describe('DefaultOptions.sorter', function() {
-    describe('assets loading', function() {
-      beforeEach(function() {
-        spyOn(GfmAutoComplete, 'isLoading').and.returnValue(true);
+  let atwhoInstance;
+  let items;
+  let sorterValue;
 
-        this.atwhoInstance = { setting: {} };
-        this.items = [];
+  describe('DefaultOptions.sorter', () => {
+    describe('assets loading', () => {
+      beforeEach(() => {
+        jest.spyOn(GfmAutoComplete, 'isLoading').mockReturnValue(true);
 
-        this.sorterValue = gfmAutoCompleteCallbacks.sorter.call(this.atwhoInstance, '', this.items);
+        atwhoInstance = { setting: {} };
+        items = [];
+
+        sorterValue = gfmAutoCompleteCallbacks.sorter.call(atwhoInstance, '', items);
       });
 
-      it('should disable highlightFirst', function() {
-        expect(this.atwhoInstance.setting.highlightFirst).toBe(false);
+      it('should disable highlightFirst', () => {
+        expect(atwhoInstance.setting.highlightFirst).toBe(false);
       });
 
-      it('should return the passed unfiltered items', function() {
-        expect(this.sorterValue).toEqual(this.items);
+      it('should return the passed unfiltered items', () => {
+        expect(sorterValue).toEqual(items);
       });
     });
 
-    describe('assets finished loading', function() {
-      beforeEach(function() {
-        spyOn(GfmAutoComplete, 'isLoading').and.returnValue(false);
-        spyOn($.fn.atwho.default.callbacks, 'sorter');
+    describe('assets finished loading', () => {
+      beforeEach(() => {
+        jest.spyOn(GfmAutoComplete, 'isLoading').mockReturnValue(false);
+        jest.spyOn($.fn.atwho.default.callbacks, 'sorter').mockImplementation(() => {});
       });
 
-      it('should enable highlightFirst if alwaysHighlightFirst is set', function() {
-        const atwhoInstance = { setting: { alwaysHighlightFirst: true } };
+      it('should enable highlightFirst if alwaysHighlightFirst is set', () => {
+        atwhoInstance = { setting: { alwaysHighlightFirst: true } };
 
         gfmAutoCompleteCallbacks.sorter.call(atwhoInstance);
 
         expect(atwhoInstance.setting.highlightFirst).toBe(true);
       });
 
-      it('should enable highlightFirst if a query is present', function() {
-        const atwhoInstance = { setting: {} };
+      it('should enable highlightFirst if a query is present', () => {
+        atwhoInstance = { setting: {} };
 
         gfmAutoCompleteCallbacks.sorter.call(atwhoInstance, 'query');
 
         expect(atwhoInstance.setting.highlightFirst).toBe(true);
       });
 
-      it('should call the default atwho sorter', function() {
-        const atwhoInstance = { setting: {} };
+      it('should call the default atwho sorter', () => {
+        atwhoInstance = { setting: {} };
 
         const query = 'query';
-        const items = [];
+        items = [];
         const searchKey = 'searchKey';
 
         gfmAutoCompleteCallbacks.sorter.call(atwhoInstance, query, items, searchKey);
@@ -71,7 +75,9 @@ describe('GfmAutoComplete', function() {
     const beforeInsert = (context, value) =>
       gfmAutoCompleteCallbacks.beforeInsert.call(context, value);
 
-    const atwhoInstance = { setting: { skipSpecialCharacterTest: false } };
+    beforeEach(() => {
+      atwhoInstance = { setting: { skipSpecialCharacterTest: false } };
+    });
 
     it('should not quote if value only contains alphanumeric charecters', () => {
       expect(beforeInsert(atwhoInstance, '@user1')).toBe('@user1');
@@ -96,7 +102,7 @@ describe('GfmAutoComplete', function() {
     });
   });
 
-  describe('DefaultOptions.matcher', function() {
+  describe('DefaultOptions.matcher', () => {
     const defaultMatcher = (context, flag, subtext) =>
       gfmAutoCompleteCallbacks.matcher.call(context, flag, subtext);
 
@@ -108,7 +114,10 @@ describe('GfmAutoComplete', function() {
       hash[el] = null;
       return hash;
     }, {});
-    const atwhoInstance = { setting: {}, app: { controllers: flagsHash } };
+
+    beforeEach(() => {
+      atwhoInstance = { setting: {}, app: { controllers: flagsHash } };
+    });
 
     const minLen = 1;
     const maxLen = 20;
@@ -182,38 +191,38 @@ describe('GfmAutoComplete', function() {
     });
   });
 
-  describe('isLoading', function() {
-    it('should be true with loading data object item', function() {
+  describe('isLoading', () => {
+    it('should be true with loading data object item', () => {
       expect(GfmAutoComplete.isLoading({ name: 'loading' })).toBe(true);
     });
 
-    it('should be true with loading data array', function() {
+    it('should be true with loading data array', () => {
       expect(GfmAutoComplete.isLoading(['loading'])).toBe(true);
     });
 
-    it('should be true with loading data object array', function() {
+    it('should be true with loading data object array', () => {
       expect(GfmAutoComplete.isLoading([{ name: 'loading' }])).toBe(true);
     });
 
-    it('should be false with actual array data', function() {
+    it('should be false with actual array data', () => {
       expect(
         GfmAutoComplete.isLoading([{ title: 'Foo' }, { title: 'Bar' }, { title: 'Qux' }]),
       ).toBe(false);
     });
 
-    it('should be false with actual data item', function() {
+    it('should be false with actual data item', () => {
       expect(GfmAutoComplete.isLoading({ title: 'Foo' })).toBe(false);
     });
   });
 
-  describe('Issues.insertTemplateFunction', function() {
-    it('should return default template', function() {
+  describe('Issues.insertTemplateFunction', () => {
+    it('should return default template', () => {
       expect(GfmAutoComplete.Issues.insertTemplateFunction({ id: 5, title: 'Some Issue' })).toBe(
         '${atwho-at}${id}', // eslint-disable-line no-template-curly-in-string
       );
     });
 
-    it('should return reference when reference is set', function() {
+    it('should return reference when reference is set', () => {
       expect(
         GfmAutoComplete.Issues.insertTemplateFunction({
           id: 5,
@@ -224,14 +233,14 @@ describe('GfmAutoComplete', function() {
     });
   });
 
-  describe('Issues.templateFunction', function() {
-    it('should return html with id and title', function() {
+  describe('Issues.templateFunction', () => {
+    it('should return html with id and title', () => {
       expect(GfmAutoComplete.Issues.templateFunction({ id: 5, title: 'Some Issue' })).toBe(
         '<li><small>5</small> Some Issue</li>',
       );
     });
 
-    it('should replace id with reference if reference is set', function() {
+    it('should replace id with reference if reference is set', () => {
       expect(
         GfmAutoComplete.Issues.templateFunction({
           id: 5,

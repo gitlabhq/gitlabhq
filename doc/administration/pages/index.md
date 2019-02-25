@@ -337,10 +337,10 @@ The default is 100MB.
 You may want to run GitLab Pages daemon on a separate server in order to decrease the load on your main application server.
 Follow the steps below to configure GitLab Pages in a separate server.
 
-1. Suppose you have the main GitLab application server named `app1`. Prepare 
-new Linux server (let's call it `app2`), create NFS share there and configure access to 
-this share from `app1`. Let's use the default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages` 
-as the shared folder on `app2` and mount it to `/mnt/pages` on `app1`.
+1. Suppose you have the main GitLab application server named `app1`. Prepare
+   new Linux server (let's call it `app2`), create NFS share there and configure access to
+   this share from `app1`. Let's use the default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
+   as the shared folder on `app2` and mount it to `/mnt/pages` on `app1`.
 
 1. On `app2` install GitLab omnibus and modify `/etc/gitlab/gitlab.rb` this way:
 
@@ -365,7 +365,7 @@ as the shared folder on `app2` and mount it to `/mnt/pages` on `app1`.
     pages_external_url "http://<your-pages-domain>"
     gitlab_rails['pages_path'] = "/mnt/pages"
     ```
-    
+
 1. Run `sudo gitlab-ctl reconfigure`.
 
 ## Backup

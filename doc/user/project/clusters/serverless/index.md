@@ -25,8 +25,12 @@ To run Knative on Gitlab, you will need:
 
 1. **Kubernetes Cluster:** An RBAC-enabled Kubernetes cluster is required to deploy Knative.
     The simplest way to get started is to add a cluster using [GitLab's GKE integration](../index.md#adding-and-creating-a-new-gke-cluster-via-gitlab).
+    The set of minimum recommended cluster specifications to run Knative is 3 nodes, 6 vCPUs, and 22.50 GB memory.
 1. **Helm Tiller:** Helm is a package manager for Kubernetes and is required to install
     Knative.
+1. **GitLab Runner:** A runner is required to run the CI jobs that will deploy serverless
+    applications or functions onto your cluster. You can install the GitLab Runner
+    onto the existing Kubernetes cluster. See [Installing Applications](../index.md#installing-applications) for more information.
 1. **Domain Name:** Knative will provide its own load balancer using Istio. It will provide an
     external IP address for all the applications served by Knative. You will be prompted to enter a
     wildcard domain where your applications will be served. Configure your DNS server to use the
@@ -45,9 +49,9 @@ To run Knative on Gitlab, you will need:
 NOTE: **Note:**
 The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.50 GB memory. **RBAC must be enabled.**
 
-1. [Add a Kubernetes cluster](../index.md) and install Helm.
-1. Once Helm has been successfully installed, on the Knative app section, enter the domain to be used with
-    your application and click "Install".
+1. [Add a Kubernetes cluster](../index.md) and [install Helm](../index.md#installing-applications).
+1. Once Helm has been successfully installed, scroll down to the Knative app section. Enter the domain to be used with
+    your application/functions (e.g. `example.com`) and click **Install**.
 
     ![install-knative](img/install-knative.png)
 
@@ -66,12 +70,16 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
 1. The ingress is now available at this address and will route incoming requests to the proper service based on the DNS
    name in the request. To support this, a wildcard DNS A record should be created for the desired domain name. For example,
-   if your Knative base domain is `knative.info` then you need to create an A record with domain `*.knative.info`
+   if your Knative base domain is `example.com` then you need to create an A record with domain `*.example.com`
    pointing the ip address of the ingress.
 
     ![dns entry](img/dns-entry.png)
 
-## Deploying Functions
+NOTE: **Note:**
+You can deploy either [functions](#deploying-functions) or [serverless applications](#deploying-serverless-applications)
+on a given project but not both. The current implementation makes use of a `serverless.yml` file to signal a FaaS project.
+
+## Deploying functions
 
 > Introduced in GitLab 11.6.
 
@@ -84,7 +92,7 @@ Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are 
 - node.js
 - kaniko
 
-You can find all the files referenced in this doc in the [functions example project](https://gitlab.com/knative-examples/functions).
+You can find and import all the files referenced in this doc in the **[functions example project](https://gitlab.com/knative-examples/functions)**.
 
 Follow these steps to deploy a function using the Node.js runtime to your Knative instance:
 
@@ -188,16 +196,27 @@ The function details can be retrieved directly from Knative on the cluster:
 kubectl -n "$KUBE_NAMESPACE" get services.serving.knative.dev
 ```
 
-The sample function can now be triggered from any HTTP client using a simple `POST` call.
+The sample function can now be triggered from any HTTP client using a simple `POST` call:
 
-![function exection](img/function-execution.png)
+  1. Using curl
+
+      ```bash
+      curl \
+      --header "Content-Type: application/json" \
+      --request POST \
+      --data '{"GitLab":"FaaS"}' \
+      http://functions-echo.functions-1.functions.example.net/
+      ```
+  2. Using a web-based tool (ie. postman, restlet, etc)
+
+      ![function execution](img/function-execution.png)
 
 ## Deploying Serverless applications
 
 > Introduced in GitLab 11.5.
 
 NOTE: **Note:**
-You can reference the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
+You can reference and import the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
 
 Add the following `.gitlab-ci.yml` to the root of your repository
 (you may skip this step if using the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) mentioned above):
@@ -236,11 +255,7 @@ With all the pieces in place, the next time a CI pipeline runs, the Knative appl
 
 ### Obtain the URL for the Knative deployment
 
-Go to the **Operations > Serverless** page to find the URL for your deployment in the **Domain** column.
-
-![app domain](img/app-domain.png)
-
-Alternatively, use the CI/CD deployment job output to obtain the deployment URL. Once all the stages of the pipeline finish, click the **deploy** stage.
+Go to the **CI/CD > Pipelines** and click on the pipeline that deployed your app. Once all the stages of the pipeline finish, click the **deploy** stage.
 
 ![deploy stage](img/deploy-stage.png)
 
@@ -262,7 +277,7 @@ registry.staging.gitlab.com/danielgruesso/knative
 $ tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
 Deployment started. Run "tm -n knative-4342902 describe service knative" to see the details
 Waiting for ready state.......
-Service domain: knative.knative-4342902.knative.info
+Service domain: knative.knative-4342902.example.com
 Job succeeded
 ```
 

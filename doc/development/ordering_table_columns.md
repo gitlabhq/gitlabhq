@@ -19,7 +19,7 @@ The space between rows is also subject to alignment padding. The `user_id`
 column takes only 4 bytes, and on 64-bit platform, 4 zeroes will be added for
 alignment padding, to allow storing the next row beginning with the "clear" word.
 
-As a result, the actual size of each column would be (ommiting variable length
+As a result, the actual size of each column would be (omitting variable length
 data and 24-byte tuple header): 8 bytes, variable, 8 bytes. This means that
 each row will require at least 16 bytes for the two 4-byte integers. If a table
 has a few rows this is not an issue. However, once you start storing millions of

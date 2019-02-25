@@ -20,7 +20,7 @@ Every feature or use case document should include the following content in the f
 with exceptions and details noted below and in the template included on this page.
 
 - **Title**: Top-level heading with the feature name, or a use case name, which would start with
-a verb, like Configuring, Enabling, etc.
+  a verb, like Configuring, Enabling, etc.
 - **Introduction**: A couple sentences about the subject matter and what's to be found on this page.
 - **Overview** Describe what it is, what it does, and in what context it should be used.
 - **Use cases**: describes real use case scenarios for that feature/configuration.
@@ -95,7 +95,7 @@ Link each one to an appropriate place for more information.
 "Instructions" is usually not the name of the heading.
 This is the part of the document where you can include one or more sets of instructions, each to accomplish a specific task.
 Headers should describe the task the reader will achieve by following the instructions within, typically starting with a verb.
-Larger instruction sets may have subsections covering specific phases of the process. 
+Larger instruction sets may have subsections covering specific phases of the process.
 
 - Write a step-by-step guide, with no gaps between the steps.
 - Start with an h2 (`##`), break complex steps into small steps using

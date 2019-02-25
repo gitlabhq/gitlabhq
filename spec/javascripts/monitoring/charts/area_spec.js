@@ -127,7 +127,7 @@ describe('Area component', () => {
         });
 
         it('formats tooltip content', () => {
-          expect(areaChart.vm.tooltip.content).toBe('CPU (Cores) 5.556');
+          expect(areaChart.vm.tooltip.content).toBe('CPU 5.556');
         });
       });
 
@@ -213,7 +213,7 @@ describe('Area component', () => {
 
     describe('yAxisLabel', () => {
       it('constructs a label for the chart y-axis', () => {
-        expect(areaChart.vm.yAxisLabel).toBe('CPU (Cores)');
+        expect(areaChart.vm.yAxisLabel).toBe('CPU');
       });
     });
   });
