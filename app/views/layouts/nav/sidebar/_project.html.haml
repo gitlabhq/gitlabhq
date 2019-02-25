@@ -3,7 +3,7 @@
     - can_edit = can?(current_user, :admin_project, @project)
     .context-header
       = link_to project_path(@project), title: @project.name do
-        .avatar-container.s40.project-avatar
+        .avatar-container.rect-avatar.s40.project-avatar
           = project_icon(@project, alt: @project.name, class: 'avatar s40 avatar-tile', width: 40, height: 40)
         .sidebar-context-title
           = @project.name

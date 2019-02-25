@@ -124,6 +124,30 @@
   &.s64 { min-width: 64px; min-height: 64px; }
 }
 
+.rect-avatar {
+  border-radius: $border-radius-small;
+  &.s16 { border-radius: $border-radius-small; }
+  &.s18 { border-radius: $border-radius-small; }
+  &.s19 { border-radius: $border-radius-small; }
+  &.s20 { border-radius: $border-radius-small; }
+  &.s24 { border-radius: $border-radius-default; }
+  &.s26 { border-radius: $border-radius-default; }
+  &.s32 { border-radius: $border-radius-default; }
+  &.s36 { border-radius: $border-radius-default; }
+  &.s40 { border-radius: $border-radius-default; }
+  &.s46 { border-radius: $border-radius-default; }
+  &.s48 { border-radius: $border-radius-large; }
+  &.s60 { border-radius: $border-radius-large; }
+  &.s64 { border-radius: $border-radius-large; }
+  &.s70 { border-radius: $border-radius-large; }
+  &.s90 { border-radius: $border-radius-large; }
+  &.s96 { border-radius: $border-radius-large; }
+  &.s100 { border-radius: $border-radius-large; }
+  &.s110 { border-radius: $border-radius-large; }
+  &.s140 { border-radius: $border-radius-large; }
+  &.s160 { border-radius: $border-radius-large; }
+}
+
 .avatar-counter {
   background-color: $gray-darkest;
   color: $white-light;
