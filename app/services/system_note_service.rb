@@ -360,7 +360,7 @@ module SystemNoteService
   # author      - User performing the change
   # branch_type - 'source' or 'target'
   # old_branch  - old branch name
-  # new_branch  - new branch nmae
+  # new_branch  - new branch name
   #
   # Example Note text:
   #

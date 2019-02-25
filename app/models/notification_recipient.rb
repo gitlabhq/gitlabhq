@@ -153,7 +153,7 @@ class NotificationRecipient
     user.global_notification_setting
   end
 
-  # Returns the notificaton_setting of the lowest group in hierarchy with non global level
+  # Returns the notification_setting of the lowest group in hierarchy with non global level
   def closest_non_global_group_notification_settting
     return unless @group
     return if indexed_group_notification_settings.empty?
