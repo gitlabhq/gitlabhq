@@ -97,6 +97,7 @@ module Ci
 
     scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
+    scope :with_tags, -> { preload(:tags) }
 
     validate :tag_constraints
     validates :access_level, presence: true

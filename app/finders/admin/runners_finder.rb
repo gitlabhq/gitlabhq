@@ -14,7 +14,7 @@ class Admin::RunnersFinder < UnionFinder
     sort!
     paginate!
 
-    @runners
+    @runners.with_tags
   end
 
   def sort_key
