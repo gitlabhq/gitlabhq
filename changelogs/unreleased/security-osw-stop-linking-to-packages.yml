@@ -1,0 +1,5 @@
+---
+title: Stop linking to unrecognized package sources
+merge_request: 55518
+author:
+type: security
