@@ -6,7 +6,7 @@ describe Gitlab::Ci::Variables::Collection::Item do
   let(:expected_value) { variable_value }
 
   let(:variable) do
-    { key: variable_key, value: variable_value, public: true, masked: false }
+    { key: variable_key, value: variable_value, public: true }
   end
 
   describe '.new' do
@@ -88,7 +88,7 @@ describe Gitlab::Ci::Variables::Collection::Item do
       resource = described_class.fabricate(variable)
 
       expect(resource).to be_a(described_class)
-      expect(resource).to eq(key: 'CI_VAR', value: '123', public: false, masked: false)
+      expect(resource).to eq(key: 'CI_VAR', value: '123', public: false)
     end
 
     it 'supports using another collection item' do
@@ -134,21 +134,7 @@ describe Gitlab::Ci::Variables::Collection::Item do
           .to_runner_variable
 
         expect(runner_variable)
-          .to eq(key: 'VAR', value: 'value', public: true, file: true, masked: false)
-      end
-    end
-
-    context 'when variable masking is disabled' do
-      before do
-        stub_feature_flags(variable_masking: false)
-      end
-
-      it 'does not expose the masked field to the runner' do
-        runner_variable = described_class
-          .new(key: 'VAR', value: 'value', masked: true)
-          .to_runner_variable
-
-        expect(runner_variable).to eq(key: 'VAR', value: 'value', public: true)
+          .to eq(key: 'VAR', value: 'value', public: true, file: true)
       end
     end
   end
