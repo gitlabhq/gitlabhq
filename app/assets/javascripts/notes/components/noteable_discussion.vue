@@ -106,7 +106,7 @@ export default {
       'showJumpToNextDiscussion',
     ]),
     author() {
-      return this.initialDiscussion.author;
+      return this.firstNote.author;
     },
     canReply() {
       return this.getNoteableData.current_user.can_create_note;
@@ -117,7 +117,7 @@ export default {
     hasReplies() {
       return this.discussion.notes.length > 1;
     },
-    initialDiscussion() {
+    firstNote() {
       return this.discussion.notes.slice(0, 1)[0];
     },
     replies() {
@@ -247,7 +247,7 @@ export default {
       if (this.isReplying) {
         this.$nextTick(() => {
           // Pass an extra key to separate reply and note edit forms
-          this.initAutoSave({ ...this.initialDiscussion, ...this.discussion }, ['Reply']);
+          this.initAutoSave({ ...this.firstNote, ...this.discussion }, ['Reply']);
         });
       } else {
         this.disposeAutoSave();
@@ -390,8 +390,8 @@ Please check your network connection and try again.`;
           <div class="timeline-content">
             <note-header
               :author="author"
-              :created-at="initialDiscussion.created_at"
-              :note-id="initialDiscussion.id"
+              :created-at="firstNote.created_at"
+              :note-id="firstNote.id"
               :include-toggle="true"
               :expanded="discussion.expanded"
               @toggleHandler="toggleDiscussionHandler"
@@ -424,8 +424,8 @@ Please check your network connection and try again.`;
               <ul class="notes">
                 <template v-if="shouldGroupReplies">
                   <component
-                    :is="componentName(initialDiscussion)"
-                    :note="componentData(initialDiscussion)"
+                    :is="componentName(firstNote)"
+                    :note="componentData(firstNote)"
                     :line="line"
                     :commit="commit"
                     :help-page-path="helpPagePath"
