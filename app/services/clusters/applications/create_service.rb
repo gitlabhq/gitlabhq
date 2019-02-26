@@ -27,9 +27,11 @@ module Clusters
             application.oauth_application = create_oauth_application(application, request)
           end
 
-          application.save!
+          worker = application.updateable? ? ClusterUpgradeAppWorker : ClusterInstallAppWorker
 
-          Clusters::Applications::ScheduleInstallationService.new(application).execute
+          application.make_scheduled!
+
+          worker.perform_async(application.name, application.id)
         end
       end
 
