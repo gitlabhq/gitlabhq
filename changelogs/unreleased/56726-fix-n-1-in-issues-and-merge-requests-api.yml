@@ -1,5 +1,0 @@
----
-title: Fix N+1 query in Issues and MergeRequest API when issuable_metadata is present
-merge_request: 25042
-author: Alex Koval
-type: other

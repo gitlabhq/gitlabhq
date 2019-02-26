@@ -263,10 +263,6 @@ class Issue < ActiveRecord::Base
   end
   # rubocop: enable CodeReuse/ServiceClass
 
-  def merge_requests_count
-    merge_requests_closing_issues.count
-  end
-
   private
 
   def ensure_metrics
