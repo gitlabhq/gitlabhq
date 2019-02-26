@@ -78,6 +78,14 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['releases']).not_to be_empty
       end
 
+      it 'has no author on releases' do
+        expect(saved_project_json['releases'].first['author']).to be_nil
+      end
+
+      it 'has the author ID on releases' do
+        expect(saved_project_json['releases'].first['author_id']).not_to be_nil
+      end
+
       it 'has issues' do
         expect(saved_project_json['issues']).not_to be_empty
       end

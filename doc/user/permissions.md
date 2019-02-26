@@ -97,7 +97,7 @@ The following table depicts the various user permission levels in a project.
 | Manage variables                      |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
-| Remove GitLab Pages                   |         |            |             |          | ✓      |
+| Remove GitLab Pages                   |         |            |             | ✓        | ✓      |
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control-core-only) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
 | Manage license policy **[ULTIMATE]**  |         |            |             | ✓        | ✓      |
@@ -107,7 +107,6 @@ The following table depicts the various user permission levels in a project.
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Delete issues                         |         |            |             |          | ✓      |
-| Remove pages                          |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
 | View project Audit Events             |         |            |             | ✓        | ✓      |

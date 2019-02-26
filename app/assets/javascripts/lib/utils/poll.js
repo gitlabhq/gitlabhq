@@ -63,6 +63,10 @@ export default class Poll {
     const headers = normalizeHeaders(response.headers);
     const pollInterval = parseInt(headers[this.intervalHeader], 10);
     if (pollInterval > 0 && successCodes.indexOf(response.status) !== -1 && this.canPoll) {
+      if (this.timeoutID) {
+        clearTimeout(this.timeoutID);
+      }
+
       this.timeoutID = setTimeout(() => {
         this.makeRequest();
       }, pollInterval);
@@ -101,15 +105,25 @@ export default class Poll {
   }
 
   /**
-   * Restarts polling after it has been stoped
+   * Enables polling after it has been stopped
    */
-  restart(options) {
-    // update data
+  enable(options) {
     if (options && options.data) {
       this.options.data = options.data;
     }
 
     this.canPoll = true;
+
+    if (options && options.response) {
+      this.checkConditions(options.response);
+    }
+  }
+
+  /**
+   * Restarts polling after it has been stopped and makes a request
+   */
+  restart(options) {
+    this.enable(options);
     this.makeRequest();
   }
 }
