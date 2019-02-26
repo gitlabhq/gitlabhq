@@ -50,6 +50,7 @@ describe Project do
     it { is_expected.to have_one(:teamcity_service) }
     it { is_expected.to have_one(:jira_service) }
     it { is_expected.to have_one(:redmine_service) }
+    it { is_expected.to have_one(:youtrack_service) }
     it { is_expected.to have_one(:custom_issue_tracker_service) }
     it { is_expected.to have_one(:bugzilla_service) }
     it { is_expected.to have_one(:gitlab_issue_tracker_service) }

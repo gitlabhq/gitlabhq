@@ -233,6 +233,7 @@ project:
 - pushover_service
 - jira_service
 - redmine_service
+- youtrack_service
 - custom_issue_tracker_service
 - bugzilla_service
 - gitlab_issue_tracker_service
