@@ -3,8 +3,12 @@
 - type              = local_assigns.fetch(:type, 'pipeline')
 - title             = local_assigns.fetch(:title, "#{type.titleize}: #{status.label}")
 - tooltip_placement = local_assigns.fetch(:tooltip_placement, "left")
+- path              = local_assigns.fetch(:path, status.has_details? ? status.details_path : nil)
 - css_classes       = "ci-status-link ci-status-icon ci-status-icon-#{status.group} has-tooltip"
 
 - if status.has_details?
-  = link_to status.details_path, class: css_classes, title: title, data: { html: true, placement: tooltip_placement } do
+  = link_to path, class: css_classes, title: title, data: { html: true, placement: tooltip_placement } do
+    = sprite_icon(status.icon, size: size)
+- else
+  %span{ class: css_classes, title: title, data: { html: true, placement: tooltip_placement } }
     = sprite_icon(status.icon, size: size)
