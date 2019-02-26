@@ -1,17 +1,34 @@
 require 'spec_helper'
 
 describe Admin::RunnersController do
-  let(:runner) { create(:ci_runner) }
+  let!(:runner) { create(:ci_runner) }
 
   before do
     sign_in(create(:admin))
   end
 
   describe '#index' do
+    render_views
+
     it 'lists all runners' do
       get :index
 
       expect(response).to have_gitlab_http_status(200)
+    end
+
+    it 'avoids N+1 queries', :request_store do
+      get :index
+
+      control_count = ActiveRecord::QueryRecorder.new { get :index }.count
+
+      create(:ci_runner, :tagged_only)
+
+      # There is still an N+1 query for `runner.builds.count`
+      expect { get :index }.not_to exceed_query_limit(control_count + 1)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response.body).to have_content('tag1')
+      expect(response.body).to have_content('tag2')
     end
   end
 
