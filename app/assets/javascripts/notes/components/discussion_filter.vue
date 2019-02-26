@@ -7,7 +7,9 @@ import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
   HISTORY_ONLY_FILTER_VALUE,
   DISCUSSION_TAB_LABEL,
+  DISCUSSION_FILTER_TYPES,
 } from '../constants';
+import notesEventHub from '../event_hub';
 
 export default {
   components: {
@@ -46,6 +48,7 @@ export default {
       this.toggleFilters(currentTab);
     }
 
+    notesEventHub.$on('dropdownSelect', this.selectFilter);
     window.addEventListener('hashchange', this.handleLocationHash);
     this.handleLocationHash();
   },
@@ -53,6 +56,7 @@ export default {
     this.toggleCommentsForm();
   },
   destroyed() {
+    notesEventHub.$off('dropdownSelect', this.selectFilter);
     window.removeEventListener('hashchange', this.handleLocationHash);
   },
   methods: {
@@ -86,12 +90,23 @@ export default {
         this.setTargetNoteHash(hash);
       }
     },
+    filterType(value) {
+      if (value === 0) {
+        return DISCUSSION_FILTER_TYPES.ALL;
+      } else if (value === 1) {
+        return DISCUSSION_FILTER_TYPES.COMMENTS;
+      }
+      return DISCUSSION_FILTER_TYPES.HISTORY;
+    },
   },
 };
 </script>
 
 <template>
-  <div v-if="displayFilters" class="discussion-filter-container d-inline-block align-bottom">
+  <div
+    v-if="displayFilters"
+    class="discussion-filter-container js-discussion-filter-container d-inline-block align-bottom"
+  >
     <button
       id="discussion-filter-dropdown"
       ref="dropdownToggle"
@@ -102,12 +117,17 @@ export default {
       {{ currentFilter.title }} <icon name="chevron-down" />
     </button>
     <div
+      ref="dropdownMenu"
       class="dropdown-menu dropdown-menu-selectable dropdown-menu-right"
       aria-labelledby="discussion-filter-dropdown"
     >
       <div class="dropdown-content">
         <ul>
-          <li v-for="filter in filters" :key="filter.value">
+          <li
+            v-for="filter in filters"
+            :key="filter.value"
+            :data-filter-type="filterType(filter.value)"
+          >
             <button
               :class="{ 'is-active': filter.value === currentValue }"
               class="qa-filter-options"
