@@ -468,11 +468,17 @@ module API
       end
     end
 
-    class ProjectEntity < Grape::Entity
+    class IssueableEntity < Grape::Entity
       expose :id, :iid
       expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
       expose :state, :created_at, :updated_at
+
+      # Avoids an N+1 query when metadata is included
+      def issuable_metadata(subject, options, method)
+        cached_subject = options.dig(:issuable_metadata, subject.id)
+        (cached_subject || subject).public_send(method) # rubocop: disable GitlabSecurity/PublicSend
+      end
     end
 
     class Diff < Grape::Entity
@@ -515,56 +521,34 @@ module API
       end
     end
 
-    class IssueBasic < ProjectEntity
+    class IssueBasic < IssueableEntity
       expose :closed_at
       expose :closed_by, using: Entities::UserBasic
-      expose :labels do |issue, options|
+      expose :labels do |issue|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
       end
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
 
-      expose :assignee, using: ::API::Entities::UserBasic do |issue, options|
+      expose :assignee, using: ::API::Entities::UserBasic do |issue|
         issue.assignees.first
       end
 
-      expose :user_notes_count
-      expose :upvotes do |issue, options|
-        if options[:issuable_metadata]
-          # Avoids an N+1 query when metadata is included
-          options[:issuable_metadata][issue.id].upvotes
-        else
-          issue.upvotes
-        end
-      end
-      expose :downvotes do |issue, options|
-        if options[:issuable_metadata]
-          # Avoids an N+1 query when metadata is included
-          options[:issuable_metadata][issue.id].downvotes
-        else
-          issue.downvotes
-        end
-      end
+      expose(:user_notes_count)     { |issue, options| issuable_metadata(issue, options, :user_notes_count) }
+      expose(:merge_requests_count) { |issue, options| issuable_metadata(issue, options, :merge_requests_count) }
+      expose(:upvotes)              { |issue, options| issuable_metadata(issue, options, :upvotes) }
+      expose(:downvotes)            { |issue, options| issuable_metadata(issue, options, :downvotes) }
       expose :due_date
       expose :confidential
       expose :discussion_locked
 
-      expose :web_url do |issue, options|
+      expose :web_url do |issue|
         Gitlab::UrlBuilder.build(issue)
       end
 
       expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |issue|
         issue
-      end
-
-      expose :merge_requests_count do |issue, options|
-        if options[:issuable_metadata]
-          # Avoids an N+1 query when metadata is included
-          options[:issuable_metadata][issue.id].merge_requests_count
-        else
-          issue.merge_requests_closing_issues.count
-        end
       end
     end
 
@@ -628,14 +612,14 @@ module API
       end
     end
 
-    class MergeRequestSimple < ProjectEntity
+    class MergeRequestSimple < IssueableEntity
       expose :title
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
       end
     end
 
-    class MergeRequestBasic < ProjectEntity
+    class MergeRequestBasic < IssueableEntity
       expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.merged_by
       end
@@ -659,23 +643,12 @@ module API
         MarkupHelper.markdown_field(entity, :description)
       end
       expose :target_branch, :source_branch
-      expose :upvotes do |merge_request, options|
-        if options[:issuable_metadata]
-          options[:issuable_metadata][merge_request.id].upvotes
-        else
-          merge_request.upvotes
-        end
-      end
-      expose :downvotes do |merge_request, options|
-        if options[:issuable_metadata]
-          options[:issuable_metadata][merge_request.id].downvotes
-        else
-          merge_request.downvotes
-        end
-      end
+      expose(:user_notes_count) { |merge_request, options| issuable_metadata(merge_request, options, :user_notes_count) }
+      expose(:upvotes)          { |merge_request, options| issuable_metadata(merge_request, options, :upvotes) }
+      expose(:downvotes)        { |merge_request, options| issuable_metadata(merge_request, options, :downvotes) }
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
-      expose :labels do |merge_request, options|
+      expose :labels do |merge_request|
         # Avoids an N+1 query since labels are preloaded
         merge_request.labels.map(&:title).sort
       end
@@ -693,7 +666,6 @@ module API
       end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
-      expose :user_notes_count
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
@@ -701,7 +673,7 @@ module API
       # Deprecated
       expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
-      expose :web_url do |merge_request, options|
+      expose :web_url do |merge_request|
         Gitlab::UrlBuilder.build(merge_request)
       end
 
