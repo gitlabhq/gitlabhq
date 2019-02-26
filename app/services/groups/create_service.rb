@@ -33,7 +33,7 @@ module Groups
     private
 
     def after_build_hook(group, params)
-      # overridden in EE
+      # overriden in EE
     end
 
     def create_chat_team?
