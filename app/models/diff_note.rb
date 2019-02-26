@@ -44,8 +44,7 @@ class DiffNote < Note
   # Returns the diff file from `position`
   def latest_diff_file
     strong_memoize(:latest_diff_file) do
-      repository = project.repository
-      position.diff_file(repository)
+      position.diff_file(project.repository)
     end
   end
 
