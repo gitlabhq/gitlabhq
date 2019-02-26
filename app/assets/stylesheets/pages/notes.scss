@@ -4,7 +4,7 @@ $note-form-margin-left: 72px;
 
 @mixin vertical-line($left) {
   &::before {
-    content: '';
+    content: "";
     border-left: 2px solid $gray-100;
     position: absolute;
     top: 0;
@@ -53,12 +53,12 @@ $note-form-margin-left: 72px;
     &.note-form {
       margin-left: 0;
 
-      @include notes-media('min', map-get($grid-breakpoints, md)) {
+      @include notes-media("min", map-get($grid-breakpoints, md)) {
         margin-left: $note-form-margin-left;
       }
 
       .timeline-icon {
-        @include notes-media('min', map-get($grid-breakpoints, sm)) {
+        @include notes-media("min", map-get($grid-breakpoints, sm)) {
           margin-left: -$note-icon-gutter-width;
         }
       }
@@ -242,7 +242,7 @@ $note-form-margin-left: 72px;
     }
 
     .note-header {
-      @include notes-media('max', map-get($grid-breakpoints, xs)) {
+      @include notes-media("max", map-get($grid-breakpoints, xs)) {
         .inline {
           display: block;
         }
@@ -303,28 +303,8 @@ $note-form-margin-left: 72px;
       }
     }
 
-    .timeline-icon {
-      float: left;
-      display: flex;
-      align-items: center;
-      background-color: $white-light;
-      width: $system-note-icon-size;
-      height: $system-note-icon-size;
-      border: 1px solid $border-color;
-      border-radius: $system-note-icon-size;
-      margin: -6px $gl-padding 0 0;
-
-      svg {
-        width: $system-note-svg-size;
-        height: $system-note-svg-size;
-        fill: $gray-darkest;
-        display: block;
-        margin: 0 auto;
-      }
-    }
-
     .timeline-content {
-      @include notes-media('min', map-get($grid-breakpoints, sm)) {
+      @include notes-media("min", map-get($grid-breakpoints, sm)) {
         margin-left: 30px;
       }
     }
@@ -368,7 +348,7 @@ $note-form-margin-left: 72px;
           }
 
           &::after {
-            content: '';
+            content: "";
             height: 70px;
             position: absolute;
             left: $gl-padding-24;
@@ -378,6 +358,37 @@ $note-form-margin-left: 72px;
           }
         }
       }
+    }
+  }
+
+  .system-note,
+  .discussion-filter-note {
+    .timeline-icon {
+      float: left;
+      display: flex;
+      align-items: center;
+      background-color: $white-light;
+      width: $system-note-icon-size;
+      height: $system-note-icon-size;
+      border: 1px solid $border-color;
+      border-radius: $system-note-icon-size;
+      margin: -6px $gl-padding 0 0;
+
+      svg {
+        width: $system-note-svg-size;
+        height: $system-note-svg-size;
+        fill: $gray-darkest;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .discussion-filter-note {
+    .timeline-icon {
+      width: $system-note-icon-size + 6;
+      height: $system-note-icon-size + 6;
+      margin-top: -8px;
     }
   }
 }
@@ -579,7 +590,7 @@ $note-form-margin-left: 72px;
 .note-headline-light {
   display: inline;
 
-  @include notes-media('max', map-get($grid-breakpoints, xs)) {
+  @include notes-media("max", map-get($grid-breakpoints, xs)) {
     display: block;
   }
 }
@@ -645,7 +656,7 @@ $note-form-margin-left: 72px;
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
+  @include notes-media("max", map-get($grid-breakpoints, sm) - 1) {
     float: none;
     margin-left: 0;
   }
@@ -764,7 +775,7 @@ $note-form-margin-left: 72px;
 }
 
 .line-resolve-all-container {
-  @include notes-media('min', map-get($grid-breakpoints, sm)) {
+  @include notes-media("min", map-get($grid-breakpoints, sm)) {
     margin-right: 0;
   }
 
@@ -905,7 +916,6 @@ $note-form-margin-left: 72px;
 }
 
 .discussion-filter-container {
-
   .btn > svg {
     width: $gl-col-padding;
     height: $gl-col-padding;
@@ -927,7 +937,6 @@ $note-form-margin-left: 72px;
 //This needs to be deleted when Snippet/Commit comments are convered to Vue
 // See https://gitlab.com/gitlab-org/gitlab-ce/issues/53918#note_117038785
 .unstyled-comments {
-
   .discussion-header {
     padding: $gl-padding;
     border-bottom: 1px solid $border-color;

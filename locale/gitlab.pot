@@ -6743,7 +6743,13 @@ msgstr ""
 msgid "Sherlock Transactions"
 msgstr ""
 
+msgid "Show all activity"
+msgstr ""
+
 msgid "Show command"
+msgstr ""
+
+msgid "Show comments only"
 msgstr ""
 
 msgid "Show complete raw log"
@@ -8652,6 +8658,9 @@ msgid "You won't be able to pull or push project code via SSH until you add an S
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're only seeing %{startTag}other activity%{endTag} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 
 msgid "You're receiving this email because %{reason}."
