@@ -18,7 +18,7 @@ module Ci
     FailedToPersistDataError = Class.new(StandardError)
 
     # Note: The ordering of this enum is related to the precedence of persist store.
-    # The bottom item takes the higest precedence, and the top item takes the lowest precedence.
+    # The bottom item takes the highest precedence, and the top item takes the lowest precedence.
     enum data_store: {
       redis: 1,
       database: 2,

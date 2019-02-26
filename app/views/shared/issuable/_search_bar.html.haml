@@ -128,6 +128,14 @@
                 %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
                   %button.btn.btn-link{ type: 'button' }
                     = _('No')
+            #js-dropdown-confidential.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'yes', capitalize: true } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('Yes')
+                %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
+                  %button.btn.btn-link{ type: 'button' }
+                    = _('No')
 
             = render_if_exists 'shared/issuable/filter_weight', type: type
 

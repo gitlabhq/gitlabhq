@@ -38,11 +38,11 @@ module Ci
     end
 
     def create_pipeline_from_job(job)
-      # overriden in EE
+      # overridden in EE
     end
 
     def job_from_token
-      # overriden in EE
+      # overridden in EE
     end
 
     def variables
