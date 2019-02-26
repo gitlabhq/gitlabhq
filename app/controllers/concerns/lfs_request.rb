@@ -123,7 +123,7 @@ module LfsRequest
     (authentication_abilities || []).include?(capability)
   end
 
-  # Overriden in EE
+  # Overridden in EE
   def limit_exceeded?
     false
   end

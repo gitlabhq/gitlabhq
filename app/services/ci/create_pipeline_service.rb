@@ -112,10 +112,10 @@ module Ci
     def extra_options(options = {})
       # In Ruby 2.4, even when options is empty, f(**options) doesn't work when f
       # doesn't have any parameters. We reproduce the Ruby 2.5 behavior by
-      # checking explicitely that no arguments are given.
+      # checking explicitly that no arguments are given.
       raise ArgumentError if options.any?
 
-      {} # overriden in EE
+      {} # overridden in EE
     end
   end
 end

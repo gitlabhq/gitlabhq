@@ -37,9 +37,9 @@ class ExpirePipelineCacheWorker
     Gitlab::Routing.url_helpers.project_new_merge_request_path(project, format: :json)
   end
 
-  def each_pipelines_merge_request_path(project, pipeline)
+  def each_pipelines_merge_request_path(pipeline)
     pipeline.all_merge_requests.each do |merge_request|
-      path = Gitlab::Routing.url_helpers.pipelines_project_merge_request_path(project, merge_request, format: :json)
+      path = Gitlab::Routing.url_helpers.pipelines_project_merge_request_path(merge_request.target_project, merge_request, format: :json)
 
       yield(path)
     end
@@ -59,7 +59,7 @@ class ExpirePipelineCacheWorker
     store.touch(project_pipeline_path(project, pipeline))
     store.touch(commit_pipelines_path(project, pipeline.commit)) unless pipeline.commit.nil?
     store.touch(new_merge_request_pipelines_path(project))
-    each_pipelines_merge_request_path(project, pipeline) do |path|
+    each_pipelines_merge_request_path(pipeline) do |path|
       store.touch(path)
     end
   end

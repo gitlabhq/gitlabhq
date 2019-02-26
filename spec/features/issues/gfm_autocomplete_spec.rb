@@ -278,7 +278,7 @@ describe 'GFM autocomplete', :js do
     end
   end
 
-  # This context has jsut one example in each contexts in order to improve spec performance.
+  # This context has just one example in each contexts in order to improve spec performance.
   context 'labels', :quarantine do
     let!(:backend)          { create(:label, project: project, title: 'backend') }
     let!(:bug)              { create(:label, project: project, title: 'bug') }
