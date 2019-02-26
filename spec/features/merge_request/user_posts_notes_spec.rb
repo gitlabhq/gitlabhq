@@ -67,7 +67,7 @@ describe 'Merge request > User posts notes', :js do
       end
     end
 
-    describe 'when reply_to_individual_notes feature flag is not set' do
+    describe 'when reply_to_individual_notes feature flag is disabled' do
       before do
         stub_feature_flags(reply_to_individual_notes: false)
         visit project_merge_request_path(project, merge_request)
@@ -78,9 +78,8 @@ describe 'Merge request > User posts notes', :js do
       end
     end
 
-    describe 'when reply_to_individual_notes feature flag is set' do
+    describe 'when reply_to_individual_notes feature flag is not set' do
       before do
-        stub_feature_flags(reply_to_individual_notes: true)
         visit project_merge_request_path(project, merge_request)
       end
 
