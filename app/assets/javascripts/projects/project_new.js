@@ -125,6 +125,10 @@ const bindEvents = () => {
         text: 'Spring',
         icon: '.template-option .icon-spring',
       },
+      dotnetcore: {
+        text: '.NET Core',
+        icon: '.template-option .icon-dotnet',
+      },
       hugo: {
         text: 'Pages/Hugo',
         icon: '.template-option .icon-hugo',

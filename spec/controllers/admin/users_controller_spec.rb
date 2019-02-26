@@ -8,6 +8,20 @@ describe Admin::UsersController do
     sign_in(admin)
   end
 
+  describe 'GET #index' do
+    it 'retrieves all users' do
+      get :index
+
+      expect(assigns(:users)).to match_array([user, admin])
+    end
+
+    it 'filters by admins' do
+      get :index, params: { filter: 'admins' }
+
+      expect(assigns(:users)).to eq([admin])
+    end
+  end
+
   describe 'GET :id' do
     it 'finds a user case-insensitively' do
       user = create(:user, username: 'CaseSensitive')

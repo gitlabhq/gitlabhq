@@ -258,6 +258,8 @@ module API
       end
       params do
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
+        optional :path, type: String, desc: 'The path that will be assigned to the fork'
+        optional :name, type: String, desc: 'The name that will be assigned to the fork'
       end
       post ':id/fork' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
@@ -386,7 +388,11 @@ module API
 
       desc 'Get languages in project repository'
       get ':id/languages' do
-        user_project.repository.languages.map { |language| language.values_at(:label, :value) }.to_h
+        if user_project.repository_languages.present?
+          user_project.repository_languages.map { |l| [l.name, l.share] }.to_h
+        else
+          user_project.repository.languages.map { |language| language.values_at(:label, :value) }.to_h
+        end
       end
 
       desc 'Remove a project'

@@ -152,7 +152,6 @@ class ProjectPolicy < BasePolicy
     enable :remove_fork_project
     enable :destroy_merge_request
     enable :destroy_issue
-    enable :remove_pages
 
     enable :set_issue_iid
     enable :set_issue_created_at
@@ -271,6 +270,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_pages
     enable :read_pages
     enable :update_pages
+    enable :remove_pages
     enable :read_cluster
     enable :add_cluster
     enable :create_cluster

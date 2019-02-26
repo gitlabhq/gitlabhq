@@ -13,14 +13,15 @@
 - cache_key = project_list_cache_key(project)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
 - css_controls_class = compact_mode ? "" : "flex-lg-row justify-content-lg-between"
+- avatar_container_class = project.creator && use_creator_avatar ? '' : 'rect-avatar'
 
 %li.project-row.d-flex{ class: css_class }
   = cache(cache_key) do
     - if avatar
-      .avatar-container.s48.flex-grow-0.flex-shrink-0
+      .avatar-container.s48.flex-grow-0.flex-shrink-0{ class: avatar_container_class }
         = link_to project_path(project), class: dom_class(project) do
           - if project.creator && use_creator_avatar
-            = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s65", alt:''
+            = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s48", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s48', width: 48, height: 48)
     .project-details.d-sm-flex.flex-sm-fill.align-items-center

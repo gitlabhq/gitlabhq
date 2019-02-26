@@ -94,8 +94,7 @@ export default {
           this.isLoading = false;
           this.successCallback(response);
 
-          // restart polling
-          this.poll.restart({ data: this.requestData });
+          this.poll.enable({ data: this.requestData, response });
         })
         .catch(() => {
           this.isLoading = false;

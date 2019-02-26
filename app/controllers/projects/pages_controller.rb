@@ -5,7 +5,8 @@ class Projects::PagesController < Projects::ApplicationController
 
   before_action :require_pages_enabled!
   before_action :authorize_read_pages!, only: [:show]
-  before_action :authorize_update_pages!, except: [:show]
+  before_action :authorize_update_pages!, except: [:show, :destroy]
+  before_action :authorize_remove_pages!, only: [:destroy]
 
   # rubocop: disable CodeReuse/ActiveRecord
   def show

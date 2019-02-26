@@ -369,11 +369,11 @@ module API
 
         merge_request.update(squash: params[:squash]) if params[:squash]
 
-        merge_params = {
+        merge_params = HashWithIndifferentAccess.new(
           commit_message: params[:merge_commit_message],
           squash_commit_message: params[:squash_commit_message],
           should_remove_source_branch: params[:should_remove_source_branch]
-        }
+        )
 
         if merge_when_pipeline_succeeds && merge_request.head_pipeline && merge_request.head_pipeline.active?
           ::MergeRequests::MergeWhenPipelineSucceedsService

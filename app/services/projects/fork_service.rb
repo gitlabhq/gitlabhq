@@ -38,8 +38,8 @@ module Projects
       new_params = {
         visibility_level:       allowed_visibility_level,
         description:            @project.description,
-        name:                   @project.name,
-        path:                   @project.path,
+        name:                   target_name,
+        path:                   target_path,
         shared_runners_enabled: @project.shared_runners_enabled,
         namespace_id:           target_namespace.id,
         fork_network:           fork_network,
@@ -92,6 +92,14 @@ module Projects
 
     def refresh_forks_count
       Projects::ForksCountService.new(@project).refresh_cache
+    end
+
+    def target_path
+      @target_path ||= @params[:path] || @project.path
+    end
+
+    def target_name
+      @target_name ||= @params[:name] || @project.name
     end
 
     def target_namespace

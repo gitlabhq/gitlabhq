@@ -38,15 +38,9 @@ describe PipelineSerializer do
     end
 
     context 'when used with pagination' do
-      let(:request) { spy('request') }
+      let(:request) { double(url: "#{Gitlab.config.gitlab.url}:8080/api/v4/projects?#{query.to_query}", query_parameters: query) }
       let(:response) { spy('response') }
-      let(:pagination) { {} }
-
-      before do
-        allow(request)
-          .to receive(:query_parameters)
-          .and_return(pagination)
-      end
+      let(:query) { {} }
 
       let(:serializer) do
         described_class.new(current_user: user)
@@ -60,7 +54,7 @@ describe PipelineSerializer do
       context 'when resource is not paginatable' do
         context 'when a single pipeline object is being serialized' do
           let(:resource) { create(:ci_empty_pipeline) }
-          let(:pagination) { { page: 1, per_page: 1 } }
+          let(:query) { { page: 1, per_page: 1 } }
 
           it 'raises error' do
             expect { subject }.to raise_error(
@@ -71,7 +65,7 @@ describe PipelineSerializer do
 
       context 'when resource is paginatable relation' do
         let(:resource) { Ci::Pipeline.all }
-        let(:pagination) { { page: 1, per_page: 2 } }
+        let(:query) { { page: 1, per_page: 2 } }
 
         context 'when a single pipeline object is present in relation' do
           before do

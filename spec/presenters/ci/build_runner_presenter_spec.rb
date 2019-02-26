@@ -98,4 +98,72 @@ describe Ci::BuildRunnerPresenter do
       end
     end
   end
+
+  describe '#ref_type' do
+    subject { presenter.ref_type }
+
+    let(:build) { create(:ci_build, tag: tag) }
+    let(:tag) { true }
+
+    it 'returns the correct ref type' do
+      is_expected.to eq('tag')
+    end
+
+    context 'when tag is false' do
+      let(:tag) { false }
+
+      it 'returns the correct ref type' do
+        is_expected.to eq('branch')
+      end
+    end
+  end
+
+  describe '#git_depth' do
+    subject { presenter.git_depth }
+
+    let(:build) { create(:ci_build) }
+
+    it 'returns the correct git depth' do
+      is_expected.to eq(0)
+    end
+
+    context 'when GIT_DEPTH variable is specified' do
+      before do
+        create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: build.pipeline)
+      end
+
+      it 'returns the correct git depth' do
+        is_expected.to eq(1)
+      end
+    end
+  end
+
+  describe '#refspecs' do
+    subject { presenter.refspecs }
+
+    let(:build) { create(:ci_build) }
+
+    it 'returns the correct refspecs' do
+      is_expected.to contain_exactly('+refs/tags/*:refs/tags/*',
+                                     '+refs/heads/*:refs/remotes/origin/*')
+    end
+
+    context 'when GIT_DEPTH variable is specified' do
+      before do
+        create(:ci_pipeline_variable, key: 'GIT_DEPTH', value: 1, pipeline: build.pipeline)
+      end
+
+      it 'returns the correct refspecs' do
+        is_expected.to contain_exactly("+refs/heads/#{build.ref}:refs/remotes/origin/#{build.ref}")
+      end
+
+      context 'when ref is tag' do
+        let(:build) { create(:ci_build, :tag) }
+
+        it 'returns the correct refspecs' do
+          is_expected.to contain_exactly("+refs/tags/#{build.ref}:refs/tags/#{build.ref}")
+        end
+      end
+    end
+  end
 end
