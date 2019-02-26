@@ -6,7 +6,7 @@ stages:
   - build
   - deploy
 
-.serverless:build:dockerfile:
+.serverless:build:image:
   variables:
     DOCKERFILE: "Dockerfile"
   stage: build
@@ -14,7 +14,8 @@ stages:
     name: gcr.io/kaniko-project/executor:debug
     entrypoint: [""]
   only:
-    - master
+    refs:
+      - master
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/$DOCKERFILE --destination $CI_REGISTRY_IMAGE
@@ -23,7 +24,8 @@ stages:
   stage: deploy
   image: gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5
   only:
-    - master
+    refs:
+      - master
   environment: development
   script:
     - echo "$CI_REGISTRY_IMAGE"
@@ -37,3 +39,10 @@ stages:
    - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN" --push
    - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_DEPLOY_USER" --password "$CI_DEPLOY_PASSWORD" --pull
    - tm -n "$KUBE_NAMESPACE" deploy --wait
+
+deploy-functions:
+  extends: .serverless:deploy:functions
+  environment: production
+  only:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[serverless deploy-functions\]/
