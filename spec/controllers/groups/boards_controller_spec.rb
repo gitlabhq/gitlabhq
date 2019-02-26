@@ -33,10 +33,8 @@ describe Groups::BoardsController do
 
       it 'renders template if visited board is not found' do
         temporary_board = create(:board, group: group)
-        visited = create(:board_group_recent_visit, group: temporary_board.group, board: temporary_board, user: user)
+        create(:board_group_recent_visit, group: temporary_board.group, board: temporary_board, user: user)
         temporary_board.delete
-
-        allow_any_instance_of(Boards::Visits::LatestService).to receive(:execute).and_return(visited)
 
         list_boards
 
