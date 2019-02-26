@@ -43,7 +43,11 @@ export default {
     saveData(resp) {
       this.isLoading = false;
 
-      if (_.isEqual(resp.config.params, this.requestData)) {
+      // Prevent the absence of the nested flag from causing mismatches
+      const response = _.omit(resp.config.params, _.isUndefined);
+      const request = _.omit(this.requestData, _.isUndefined);
+
+      if (_.isEqual(response, request)) {
         this.store.storeAvailableCount(resp.data.available_count);
         this.store.storeStoppedCount(resp.data.stopped_count);
         this.store.storeEnvironments(resp.data.environments);
@@ -64,10 +68,9 @@ export default {
       // fetch new data
       return this.service
         .fetchEnvironments(this.requestData)
-        .then(response => this.successCallback(response))
-        .then(() => {
-          // restart polling
-          this.poll.restart({ data: this.requestData });
+        .then(response => {
+          this.successCallback(response);
+          this.poll.enable({ data: this.requestData, response });
         })
         .catch(() => {
           this.errorCallback();
