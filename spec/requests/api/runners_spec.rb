@@ -241,7 +241,7 @@ describe API::Runners do
       end
 
       it 'returns 404 if runner does not exists' do
-        get api('/runners/9999', admin)
+        get api('/runners/0', admin)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -394,7 +394,7 @@ describe API::Runners do
       end
 
       it 'returns 404 if runner does not exists' do
-        update_runner(9999, admin, description: 'test')
+        update_runner(0, admin, description: 'test')
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -468,7 +468,7 @@ describe API::Runners do
       end
 
       it 'returns 404 if runner does not exists' do
-        delete api('/runners/9999', admin)
+        delete api('/runners/0', admin)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -573,7 +573,7 @@ describe API::Runners do
 
       context "when runner doesn't exist" do
         it 'returns 404' do
-          get api('/runners/9999/jobs', admin)
+          get api('/runners/0/jobs', admin)
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -626,7 +626,7 @@ describe API::Runners do
 
       context "when runner doesn't exist" do
         it 'returns 404' do
-          get api('/runners/9999/jobs', user)
+          get api('/runners/0/jobs', user)
 
           expect(response).to have_gitlab_http_status(404)
         end
@@ -857,7 +857,7 @@ describe API::Runners do
       end
 
       it 'returns 404 is runner is not found' do
-        delete api("/projects/#{project.id}/runners/9999", user)
+        delete api("/projects/#{project.id}/runners/0", user)
 
         expect(response).to have_gitlab_http_status(404)
       end

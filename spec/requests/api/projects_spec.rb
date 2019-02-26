@@ -778,7 +778,7 @@ describe API::Projects do
     let!(:public_project) { create(:project, :public, name: 'public_project', creator_id: user4.id, namespace: user4.namespace) }
 
     it 'returns error when user not found' do
-      get api('/users/9999/projects/')
+      get api('/users/0/projects/')
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -1385,7 +1385,7 @@ describe API::Projects do
         end
 
         it 'fails if forked_from project which does not exist' do
-          post api("/projects/#{project_fork_target.id}/fork/9999", admin)
+          post api("/projects/#{project_fork_target.id}/fork/0", admin)
           expect(response).to have_gitlab_http_status(404)
         end
 
@@ -1936,7 +1936,7 @@ describe API::Projects do
       end
 
       it 'returns not_found(404) for not existing project' do
-        get api("/projects/9999999999/languages", user)
+        get api("/projects/0/languages", user)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end
