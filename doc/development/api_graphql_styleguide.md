@@ -12,24 +12,34 @@ add a `HTTP_PRIVATE_TOKEN` header.
 ### Authorization
 
 Fields can be authorized using the same abilities used in the Rails
-app. This can be done using the `authorize` helper:
+app. This can be done by supplying the `authorize` option:
 
 ```ruby
 module Types
   class QueryType < BaseObject
     graphql_name 'Query'
 
-    field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver do
-      authorize :read_project
-    end
+    field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver, authorize: :read_project
   end
+end
+```
+
+Fields can be authorized against multiple abilities, in which case all
+ability checks must pass. This requires explicitly passing a block to `field`:
+
+```ruby
+field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver do
+  authorize [:read_project, :another_ability]
+end
 ```
 
 The object found by the resolve call is used for authorization.
 
-This works for authorizing a single record, for authorizing
-collections, we should only load what the currently authenticated user
-is allowed to view. Preferably we use our existing finders for that.
+TIP: **Tip:**
+When authorizing collections, try to load only what the currently
+authenticated user is allowed to view with our existing finders first.
+This minimizes database queries and unnecessary authorization checks of
+the loaded records.
 
 ## Types
 
