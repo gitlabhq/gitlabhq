@@ -1830,7 +1830,7 @@ class Project < ActiveRecord::Base
   # Set repository as writable again
   def set_repository_writable!
     with_lock do
-      update_column(repository_read_only, false)
+      update_column(:repository_read_only, false)
     end
   end
 
