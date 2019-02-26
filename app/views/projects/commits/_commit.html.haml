@@ -25,7 +25,7 @@
         = commit.short_id
       - if commit_status
         .d-block.d-sm-none
-          = render_commit_status(commit, ref: ref)
+          = render 'ci/status/icon', status: commit.last_pipeline.detailed_status(current_user), type: 'commit', size: 24
       - if commit.description?
         %button.text-expander.js-toggle-button
           = sprite_icon('ellipsis_h', size: 12)
@@ -47,7 +47,7 @@
         = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
 
       - if commit_status
-        = render_commit_status(commit, ref: ref)
+        = render 'ci/status/icon', status: commit.last_pipeline.detailed_status(current_user), type: 'commit', size: 24
 
       .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 

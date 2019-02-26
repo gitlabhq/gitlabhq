@@ -100,43 +100,6 @@ module CiStatusHelper
     "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
   end
 
-  def render_project_pipeline_status(pipeline_status, tooltip_placement: 'left')
-    project = pipeline_status.project
-    path = pipelines_project_commit_path(project, pipeline_status.sha, ref: pipeline_status.ref)
-
-    render_status_with_link(
-      'commit',
-      pipeline_status.status,
-      path,
-      tooltip_placement: tooltip_placement)
-  end
-
-  def render_commit_status(commit, ref: nil, tooltip_placement: 'left')
-    project = commit.project
-    path = pipelines_project_commit_path(project, commit, ref: ref)
-
-    render_status_with_link(
-      'commit',
-      commit.status(ref),
-      path,
-      tooltip_placement: tooltip_placement,
-      icon_size: 24)
-  end
-
-  def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)
-    klass = "ci-status-link ci-status-icon-#{status.dasherize} #{cssclass}"
-    title = "#{type.titleize}: #{ci_label_for_status(status)}"
-    data = { toggle: 'tooltip', placement: tooltip_placement, container: container }
-
-    if path
-      link_to ci_icon_for_status(status, size: icon_size), path,
-              class: klass, title: title, data: data
-    else
-      content_tag :span, ci_icon_for_status(status, size: icon_size),
-              class: klass, title: title, data: data
-    end
-  end
-
   def detailed_status?(status)
     status.respond_to?(:text) &&
       status.respond_to?(:label) &&
