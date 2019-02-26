@@ -366,7 +366,7 @@ describe API::Issues do
       end
 
       it 'returns an empty array if iid does not exist' do
-        get api("/issues", user), params: { iids: [99999] }
+        get api("/issues", user), params: { iids: [0] }
 
         expect_paginated_array_response([])
       end
@@ -627,7 +627,7 @@ describe API::Issues do
       end
 
       it 'returns an empty array if iid does not exist' do
-        get api(base_url, user), params: { iids: [99999] }
+        get api(base_url, user), params: { iids: [0] }
 
         expect_paginated_array_response([])
       end
@@ -873,7 +873,7 @@ describe API::Issues do
     end
 
     it 'returns an empty array if iid does not exist' do
-      get api("#{base_url}/issues", user), params: { iids: [99999] }
+      get api("#{base_url}/issues", user), params: { iids: [0] }
 
       expect_paginated_array_response([])
     end
@@ -1909,7 +1909,7 @@ describe API::Issues do
     end
 
     it "returns 404 when issue doesn't exists" do
-      get api("/projects/#{project.id}/issues/9999/closed_by", user)
+      get api("/projects/#{project.id}/issues/0/closed_by", user)
 
       expect(response).to have_gitlab_http_status(404)
     end
@@ -1994,7 +1994,7 @@ describe API::Issues do
     end
 
     it "returns 404 when issue doesn't exists" do
-      get_related_merge_requests(project.id, 999999, user)
+      get_related_merge_requests(project.id, 0, user)
 
       expect(response).to have_gitlab_http_status(404)
     end
