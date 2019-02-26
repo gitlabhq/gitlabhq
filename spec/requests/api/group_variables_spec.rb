@@ -87,12 +87,12 @@ describe API::GroupVariables do
 
       it 'creates variable' do
         expect do
-          post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true }
+          post api("/groups/#{group.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true }
         end.to change {group.variables.count}.by(1)
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
-        expect(json_response['value']).to eq('PROTECTED_VALUE_2')
+        expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_truthy
       end
 

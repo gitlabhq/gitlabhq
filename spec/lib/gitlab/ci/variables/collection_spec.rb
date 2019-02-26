@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Variables::Collection do
   describe '.new' do
     it 'can be initialized with an array' do
-      variable = { key: 'VAR', value: 'value', public: true, masked: false }
+      variable = { key: 'VAR', value: 'value', public: true }
 
       collection = described_class.new([variable])
 
@@ -93,7 +93,7 @@ describe Gitlab::Ci::Variables::Collection do
       collection = described_class.new([{ key: 'TEST', value: '1' }])
 
       expect(collection.to_runner_variables)
-        .to eq [{ key: 'TEST', value: '1', public: true, masked: false }]
+        .to eq [{ key: 'TEST', value: '1', public: true }]
     end
   end
 

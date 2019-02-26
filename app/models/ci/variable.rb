@@ -5,7 +5,6 @@ module Ci
     extend Gitlab::Ci::Model
     include HasVariable
     include Presentable
-    include Maskable
 
     belongs_to :project
 
