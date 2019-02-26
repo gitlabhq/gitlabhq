@@ -1925,6 +1925,14 @@ class Project < ActiveRecord::Base
     persisted? && path_changed?
   end
 
+  def human_merge_method
+    if merge_method == :ff
+      'Fast-forward'
+    else
+      merge_method.to_s.humanize
+    end
+  end
+
   def merge_method
     if self.merge_requests_ff_only_enabled
       :ff
