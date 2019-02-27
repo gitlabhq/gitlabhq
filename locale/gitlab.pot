@@ -3612,6 +3612,9 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go Micro is a framework for micro service development."
+msgstr ""
+
 msgid "Go back"
 msgstr ""
 
