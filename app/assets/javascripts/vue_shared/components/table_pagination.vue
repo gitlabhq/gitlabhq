@@ -149,9 +149,9 @@ export default {
         }"
         class="page-item"
       >
-        <a class="page-link" @click.prevent="changePage(item.title, item.disabled)">
+        <button type="button" class="page-link" @click="changePage(item.title, item.disabled)">
           {{ item.title }}
-        </a>
+        </button>
       </li>
     </ul>
   </div>

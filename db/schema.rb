@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190204115450) do
+ActiveRecord::Schema.define(version: 20190220150130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -405,6 +405,7 @@ ActiveRecord::Schema.define(version: 20190204115450) do
     t.boolean "protected", default: false, null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.boolean "masked", default: false, null: false
     t.index ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
   end
 
@@ -497,6 +498,8 @@ ActiveRecord::Schema.define(version: 20190204115450) do
     t.integer "failure_reason"
     t.integer "iid"
     t.integer "merge_request_id"
+    t.binary "source_sha"
+    t.binary "target_sha"
     t.index ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
     t.index ["merge_request_id"], name: "index_ci_pipelines_on_merge_request_id", where: "(merge_request_id IS NOT NULL)", using: :btree
     t.index ["pipeline_schedule_id"], name: "index_ci_pipelines_on_pipeline_schedule_id", using: :btree
@@ -600,6 +603,7 @@ ActiveRecord::Schema.define(version: 20190204115450) do
     t.integer "project_id", null: false
     t.boolean "protected", default: false, null: false
     t.string "environment_scope", default: "*", null: false
+    t.boolean "masked", default: false, null: false
     t.index ["project_id", "key", "environment_scope"], name: "index_ci_variables_on_project_id_and_key_and_environment_scope", unique: true, using: :btree
   end
 
@@ -1584,6 +1588,13 @@ ActiveRecord::Schema.define(version: 20190204115450) do
     t.index ["project_id", "key"], name: "index_project_custom_attributes_on_project_id_and_key", unique: true, using: :btree
   end
 
+  create_table "project_daily_statistics", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "fetch_count", null: false
+    t.date "date"
+    t.index ["project_id", "date"], name: "index_project_daily_statistics_on_project_id_and_date", unique: true, order: { date: :desc }, using: :btree
+  end
+
   create_table "project_deploy_tokens", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "deploy_token_id", null: false
@@ -2467,6 +2478,7 @@ ActiveRecord::Schema.define(version: 20190204115450) do
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
   add_foreign_key "project_ci_cd_settings", "projects", name: "fk_24c15d2f2e", on_delete: :cascade
   add_foreign_key "project_custom_attributes", "projects", on_delete: :cascade
+  add_foreign_key "project_daily_statistics", "projects", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade
   add_foreign_key "project_error_tracking_settings", "projects", on_delete: :cascade

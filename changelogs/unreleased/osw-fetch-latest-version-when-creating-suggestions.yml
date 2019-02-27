@@ -1,0 +1,5 @@
+---
+title: Always fetch MR latest version when creating suggestions
+merge_request: 25441
+author:
+type: fixed

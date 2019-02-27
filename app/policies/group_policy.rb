@@ -54,6 +54,7 @@ class GroupPolicy < BasePolicy
 
   rule { has_projects }.policy do
     enable :read_group
+    enable :read_list
     enable :read_label
   end
 

@@ -130,6 +130,132 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.detached_merge_request_pipelines' do
+    subject { described_class.detached_merge_request_pipelines(merge_request) }
+
+    let!(:pipeline) do
+      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+    end
+
+    let(:merge_request) { create(:merge_request) }
+    let(:target_sha) { nil }
+
+    it 'returns detached merge request pipelines' do
+      is_expected.to eq([pipeline])
+    end
+
+    context 'when target sha exists' do
+      let(:target_sha) { merge_request.target_branch_sha }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#detached_merge_request_pipeline?' do
+    subject { pipeline.detached_merge_request_pipeline? }
+
+    let!(:pipeline) do
+      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+    end
+
+    let(:merge_request) { create(:merge_request) }
+    let(:target_sha) { nil }
+
+    it { is_expected.to be_truthy }
+
+    context 'when target sha exists' do
+      let(:target_sha) { merge_request.target_branch_sha }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '.merge_request_pipelines' do
+    subject { described_class.merge_request_pipelines(merge_request) }
+
+    let!(:pipeline) do
+      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+    end
+
+    let(:merge_request) { create(:merge_request) }
+    let(:target_sha) { merge_request.target_branch_sha }
+
+    it 'returns merge pipelines' do
+      is_expected.to eq([pipeline])
+    end
+
+    context 'when target sha is empty' do
+      let(:target_sha) { nil }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#merge_request_pipeline?' do
+    subject { pipeline.merge_request_pipeline? }
+
+    let!(:pipeline) do
+      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+    end
+
+    let(:merge_request) { create(:merge_request) }
+    let(:target_sha) { merge_request.target_branch_sha }
+
+    it { is_expected.to be_truthy }
+
+    context 'when target sha is empty' do
+      let(:target_sha) { nil }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '.mergeable_merge_request_pipelines' do
+    subject { described_class.mergeable_merge_request_pipelines(merge_request) }
+
+    let!(:pipeline) do
+      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+    end
+
+    let(:merge_request) { create(:merge_request) }
+    let(:target_sha) { merge_request.target_branch_sha }
+
+    it 'returns mergeable merge pipelines' do
+      is_expected.to eq([pipeline])
+    end
+
+    context 'when target sha does not point the head of the target branch' do
+      let(:target_sha) { merge_request.diff_head_sha }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '#mergeable_merge_request_pipeline?' do
+    subject { pipeline.mergeable_merge_request_pipeline? }
+
+    let!(:pipeline) do
+      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+    end
+
+    let(:merge_request) { create(:merge_request) }
+    let(:target_sha) { merge_request.target_branch_sha }
+
+    it { is_expected.to be_truthy }
+
+    context 'when target sha does not point the head of the target branch' do
+      let(:target_sha) { merge_request.diff_head_sha }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '.merge_request' do
     subject { described_class.merge_request }
 
@@ -400,10 +526,12 @@ describe Ci::Pipeline, :mailer do
             'CI_MERGE_REQUEST_PROJECT_PATH' => merge_request.project.full_path,
             'CI_MERGE_REQUEST_PROJECT_URL' => merge_request.project.web_url,
             'CI_MERGE_REQUEST_TARGET_BRANCH_NAME' => merge_request.target_branch.to_s,
+            'CI_MERGE_REQUEST_TARGET_BRANCH_SHA' => pipeline.target_sha.to_s,
             'CI_MERGE_REQUEST_SOURCE_PROJECT_ID' => merge_request.source_project.id.to_s,
             'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH' => merge_request.source_project.full_path,
             'CI_MERGE_REQUEST_SOURCE_PROJECT_URL' => merge_request.source_project.web_url,
-            'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s)
+            'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
+            'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => pipeline.source_sha.to_s)
       end
 
       context 'when source project does not exist' do

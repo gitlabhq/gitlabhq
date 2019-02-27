@@ -411,7 +411,7 @@ describe('Badges store actions', () => {
 
     it('escapes user input', done => {
       spyOn(axios, 'get').and.callFake(() => Promise.resolve({ data: createDummyBadgeResponse() }));
-      badgeInForm.imageUrl = '&make-sandwhich=true';
+      badgeInForm.imageUrl = '&make-sandwich=true';
       badgeInForm.linkUrl = '<script>I am dangerous!</script>';
 
       actions
@@ -422,7 +422,7 @@ describe('Badges store actions', () => {
 
           expect(url).toMatch(`^${dummyEndpointUrl}/render?`);
           expect(url).toMatch('\\?link_url=%3Cscript%3EI%20am%20dangerous!%3C%2Fscript%3E&');
-          expect(url).toMatch('&image_url=%26make-sandwhich%3Dtrue$');
+          expect(url).toMatch('&image_url=%26make-sandwich%3Dtrue$');
         })
         .then(done)
         .catch(done.fail);

@@ -58,7 +58,7 @@ namespace :gitlab do
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab::Auth.omniauth_enabled?
 
       # check Gitolite version
-      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.hooks_path}/../VERSION"
+      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.path}/VERSION"
       if File.readable?(gitlab_shell_version_file)
         gitlab_shell_version = File.read(gitlab_shell_version_file)
       end
@@ -72,7 +72,7 @@ namespace :gitlab do
           puts "- #{name}: \t#{repository_storage.legacy_disk_path}"
         end
       end
-      puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
+      puts "GitLab Shell path:\t\t#{Gitlab.config.gitlab_shell.path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"
     end
   end

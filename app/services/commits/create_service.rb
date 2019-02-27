@@ -45,7 +45,7 @@ module Commits
     def validate!
       validate_permissions!
       validate_on_branch!
-      validate_branch_existance!
+      validate_branch_existence!
 
       validate_new_branch_name! if different_branch?
     end
@@ -64,7 +64,7 @@ module Commits
       end
     end
 
-    def validate_branch_existance!
+    def validate_branch_existence!
       if !project.empty_repo? && different_branch? && repository.branch_exists?(@branch_name)
         raise_error("A branch called '#{@branch_name}' already exists. Switch to that branch in order to make changes")
       end

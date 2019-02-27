@@ -300,6 +300,18 @@ module API
       expose :build_artifacts_size, as: :job_artifacts_size
     end
 
+    class ProjectDailyFetches < Grape::Entity
+      expose :fetch_count, as: :count
+      expose :date
+    end
+
+    class ProjectDailyStatistics < Grape::Entity
+      expose :fetches do
+        expose :total_fetch_count, as: :total
+        expose :fetches, as: :days, using: ProjectDailyFetches
+      end
+    end
+
     class Member < Grape::Entity
       expose :user, merge: true, using: UserBasic
       expose :access_level
@@ -468,7 +480,7 @@ module API
       end
     end
 
-    class IssueableEntity < Grape::Entity
+    class ProjectEntity < Grape::Entity
       expose :id, :iid
       expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
@@ -521,7 +533,7 @@ module API
       end
     end
 
-    class IssueBasic < IssueableEntity
+    class IssueBasic < ProjectEntity
       expose :closed_at
       expose :closed_by, using: Entities::UserBasic
       expose :labels do |issue|
@@ -612,14 +624,14 @@ module API
       end
     end
 
-    class MergeRequestSimple < IssueableEntity
+    class MergeRequestSimple < ProjectEntity
       expose :title
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
       end
     end
 
-    class MergeRequestBasic < IssueableEntity
+    class MergeRequestBasic < ProjectEntity
       expose :merged_by, using: Entities::UserBasic do |merge_request, _options|
         merge_request.metrics&.merged_by
       end

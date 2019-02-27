@@ -639,6 +639,10 @@ class Project < ActiveRecord::Base
     auto_devops&.enabled.nil? && !(Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
   end
 
+  def daily_statistics_enabled?
+    Feature.enabled?(:project_daily_statistics, self, default_enabled: true)
+  end
+
   def empty_repo?
     repository.empty?
   end

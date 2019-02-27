@@ -45,7 +45,7 @@ module QA
         private
 
         def select_kind(kind)
-          retry_on_exception(sleep_interval: 1.0) do
+          QA::Support::Retrier.retry_on_exception(sleep_interval: 1.0) do
             within_element(:new_project_or_subgroup_dropdown) do
               # May need to click again because it is possible to click the button quicker than the JS is bound
               wait(reload: false) do

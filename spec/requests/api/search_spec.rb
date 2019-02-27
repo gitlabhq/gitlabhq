@@ -126,7 +126,7 @@ describe API::Search do
 
     context 'when group does not exist' do
       it 'returns 404 error' do
-        get api('/groups/9999/search', user), params: { scope: 'issues', search: 'awesome' }
+        get api('/groups/0/search', user), params: { scope: 'issues', search: 'awesome' }
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -222,7 +222,7 @@ describe API::Search do
 
     context 'when project does not exist' do
       it 'returns 404 error' do
-        get api('/projects/9999/search', user), params: { scope: 'issues', search: 'awesome' }
+        get api('/projects/0/search', user), params: { scope: 'issues', search: 'awesome' }
 
         expect(response).to have_gitlab_http_status(404)
       end
