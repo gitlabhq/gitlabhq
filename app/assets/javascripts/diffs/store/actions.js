@@ -52,7 +52,9 @@ export const fetchDiffFiles = ({ state, commit }) => {
 };
 
 export const setHighlightedRow = ({ commit }, lineCode) => {
+  const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
+  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
 };
 
 // This is adding line discussions to the actual lines in the diff tree
@@ -262,8 +264,6 @@ export const scrollToFile = ({ state, commit }, path) => {
   document.location.hash = fileHash;
 
   commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
-
-  setTimeout(() => commit(types.UPDATE_CURRENT_DIFF_FILE_ID, ''), 1000);
 };
 
 export const toggleShowTreeList = ({ commit, state }) => {
