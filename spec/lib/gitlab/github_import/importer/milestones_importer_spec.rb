@@ -21,6 +21,19 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
     )
   end
 
+  let(:milestone2) do
+    double(
+      :milestone,
+      number: 1,
+      title: '1.0',
+      description: 'The first release',
+      state: 'open',
+      due_on: nil,
+      created_at: created_at,
+      updated_at: updated_at
+    )
+  end
+
   describe '#execute' do
     it 'imports the milestones in bulk' do
       milestone_hash = { number: 1, title: '1.0' }
@@ -111,6 +124,14 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
       it 'includes the updated timestamp' do
         expect(milestone_hash[:updated_at]).to eq(updated_at)
       end
+    end
+  end
+
+  describe '#nil_due_on' do
+    let(:milestone_hash) { importer.build(milestone2) }
+
+    it 'should handle missing due_on correctly' do
+      expect(milestone_hash[:due_date]).to be nil
     end
   end
 
