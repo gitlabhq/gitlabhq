@@ -38,7 +38,7 @@ module QA
           end
 
           # Create and connect K8s cluster
-          @cluster = Service::KubernetesCluster.new(rbac: true).create!
+          @cluster = Service::KubernetesCluster.new.create!
           Resource::KubernetesCluster.fabricate! do |cluster|
             cluster.project = @project
             cluster.cluster = @cluster
