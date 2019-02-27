@@ -5,7 +5,8 @@ class ActiveSession
 
   attr_accessor :created_at, :updated_at,
     :session_id, :ip_address,
-    :browser, :os, :device_name, :device_type
+    :browser, :os, :device_name, :device_type,
+    :is_impersonated
 
   def current?(session)
     return false if session_id.nil? || session.id.nil?
@@ -31,7 +32,8 @@ class ActiveSession
         device_type: client.device_type,
         created_at: user.current_sign_in_at || timestamp,
         updated_at: timestamp,
-        session_id: session_id
+        session_id: session_id,
+        is_impersonated: request.session[:impersonator_id].present?
       )
 
       redis.pipelined do
