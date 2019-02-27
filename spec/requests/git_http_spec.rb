@@ -104,6 +104,70 @@ describe 'Git HTTP requests' do
     end
   end
 
+  shared_examples_for 'project path without .git suffix' do
+    context "GET info/refs" do
+      let(:path) { "/#{project_path}/info/refs" }
+
+      context "when no params are added" do
+        before do
+          get path
+        end
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project_path}.git/info/refs")
+        end
+      end
+
+      context "when the upload-pack service is requested" do
+        let(:params) { { service: 'git-upload-pack' } }
+
+        before do
+          get path, params: params
+        end
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project_path}.git/info/refs?service=#{params[:service]}")
+        end
+      end
+
+      context "when the receive-pack service is requested" do
+        let(:params) { { service: 'git-receive-pack' } }
+
+        before do
+          get path, params: params
+        end
+
+        it "redirects to the .git suffix version" do
+          expect(response).to redirect_to("/#{project_path}.git/info/refs?service=#{params[:service]}")
+        end
+      end
+
+      context "when the params are anything else" do
+        let(:params) { { service: 'git-implode-pack' } }
+
+        before do
+          get path, params: params
+        end
+
+        it "redirects to the sign-in page" do
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+    end
+
+    context "POST git-upload-pack" do
+      it "fails to find a route" do
+        expect { clone_post(project_path) }.to raise_error(ActionController::RoutingError)
+      end
+    end
+
+    context "POST git-receive-pack" do
+      it "fails to find a route" do
+        expect { push_post(project_path) }.to raise_error(ActionController::RoutingError)
+      end
+    end
+  end
+
   describe "User with no identities" do
     let(:user) { create(:user) }
 
@@ -142,6 +206,10 @@ describe 'Git HTTP requests' do
 
             expect(response).to have_gitlab_http_status(:unprocessable_entity)
           end
+        end
+
+        it_behaves_like 'project path without .git suffix' do
+          let(:project_path) { "#{user.namespace.path}/project.git-project" }
         end
       end
     end
@@ -706,70 +774,8 @@ describe 'Git HTTP requests' do
         end
       end
 
-      context "when the project path doesn't end in .git" do
-        let(:project) { create(:project, :repository, :public, path: 'project.git-project') }
-
-        context "GET info/refs" do
-          let(:path) { "/#{project.full_path}/info/refs" }
-
-          context "when no params are added" do
-            before do
-              get path
-            end
-
-            it "redirects to the .git suffix version" do
-              expect(response).to redirect_to("/#{project.full_path}.git/info/refs")
-            end
-          end
-
-          context "when the upload-pack service is requested" do
-            let(:params) { { service: 'git-upload-pack' } }
-
-            before do
-              get path, params: params
-            end
-
-            it "redirects to the .git suffix version" do
-              expect(response).to redirect_to("/#{project.full_path}.git/info/refs?service=#{params[:service]}")
-            end
-          end
-
-          context "when the receive-pack service is requested" do
-            let(:params) { { service: 'git-receive-pack' } }
-
-            before do
-              get path, params: params
-            end
-
-            it "redirects to the .git suffix version" do
-              expect(response).to redirect_to("/#{project.full_path}.git/info/refs?service=#{params[:service]}")
-            end
-          end
-
-          context "when the params are anything else" do
-            let(:params) { { service: 'git-implode-pack' } }
-
-            before do
-              get path, params: params
-            end
-
-            it "redirects to the sign-in page" do
-              expect(response).to redirect_to(new_user_session_path)
-            end
-          end
-        end
-
-        context "POST git-upload-pack" do
-          it "fails to find a route" do
-            expect { clone_post(project.full_path) }.to raise_error(ActionController::RoutingError)
-          end
-        end
-
-        context "POST git-receive-pack" do
-          it "fails to find a route" do
-            expect { push_post(project.full_path) }.to raise_error(ActionController::RoutingError)
-          end
-        end
+      it_behaves_like 'project path without .git suffix' do
+        let(:project_path) { create(:project, :repository, :public, path: 'project.git-project').full_path }
       end
 
       context "retrieving an info/refs file" do
