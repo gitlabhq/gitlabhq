@@ -46,19 +46,19 @@ module Milestoneish
     end
   end
 
-  def merge_requests_visible_to_user(user)
-    memoize_per_user(user, :merge_requests_visible_to_user) do
-      MergeRequestsFinder.new(user, {})
-        .execute.where(milestone_id: milestoneish_id)
-    end
-  end
-
   def sorted_issues(user)
     issues_visible_to_user(user).preload_associations.sort_by_attribute('label_priority')
   end
 
   def sorted_merge_requests(user)
     merge_requests_visible_to_user(user).sort_by_attribute('label_priority')
+  end
+
+  def merge_requests_visible_to_user(user)
+    memoize_per_user(user, :merge_requests_visible_to_user) do
+      MergeRequestsFinder.new(user, issues_finder_params)
+        .execute.where(milestone_id: milestoneish_id)
+    end
   end
 
   def upcoming?
