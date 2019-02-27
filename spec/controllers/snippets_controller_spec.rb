@@ -205,6 +205,8 @@ describe SnippetsController do
     end
 
     context 'when the snippet description contains a file' do
+      include FileMoverHelpers
+
       let(:picture_file) { '/-/system/temp/secret56/picture.jpg' }
       let(:text_file) { '/-/system/temp/secret78/text.txt' }
       let(:description) do
@@ -215,6 +217,8 @@ describe SnippetsController do
       before do
         allow(FileUtils).to receive(:mkdir_p)
         allow(FileUtils).to receive(:move)
+        stub_file_mover(text_file)
+        stub_file_mover(picture_file)
       end
 
       subject { create_snippet({ description: description }, { files: [picture_file, text_file] }) }
