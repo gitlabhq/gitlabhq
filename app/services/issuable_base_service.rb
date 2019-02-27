@@ -387,4 +387,10 @@ class IssuableBaseService < BaseService
   def parent
     project
   end
+
+  # we need to check this because milestone from milestone_id param is displayed on "new" page
+  # where private project milestone could leak without this check
+  def ensure_milestone_available(issuable)
+    issuable.milestone_id = nil unless issuable.milestone_available?
+  end
 end

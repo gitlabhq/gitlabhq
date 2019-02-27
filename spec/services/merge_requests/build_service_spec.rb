@@ -229,6 +229,15 @@ describe MergeRequests::BuildService do
             end
           end
         end
+
+        context 'when a milestone is from another project' do
+          let(:milestone) { create(:milestone, project: create(:project)) }
+          let(:milestone_id) { milestone.id }
+
+          it 'sets milestone to nil' do
+            expect(merge_request.milestone).to be_nil
+          end
+        end
       end
     end
 
