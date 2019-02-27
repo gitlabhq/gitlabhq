@@ -87,6 +87,7 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
 
   describe '#build' do
     let(:milestone_hash) { importer.build(milestone) }
+    let(:milestone_hash2) { importer.build(milestone2) }
 
     it 'returns the attributes of the milestone as a Hash' do
       expect(milestone_hash).to be_an_instance_of(Hash)
@@ -117,6 +118,10 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
         expect(milestone_hash[:due_date]).to eq(due_on.to_date)
       end
 
+      it 'responds correctly to no due date value' do
+        expect(milestone_hash2[:due_date]).to be nil
+      end
+
       it 'includes the created timestamp' do
         expect(milestone_hash[:created_at]).to eq(created_at)
       end
@@ -124,14 +129,6 @@ describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis
       it 'includes the updated timestamp' do
         expect(milestone_hash[:updated_at]).to eq(updated_at)
       end
-    end
-  end
-
-  describe '#nil_due_on' do
-    let(:milestone_hash) { importer.build(milestone2) }
-
-    it 'should handle missing due_on correctly' do
-      expect(milestone_hash[:due_date]).to be nil
     end
   end
 
