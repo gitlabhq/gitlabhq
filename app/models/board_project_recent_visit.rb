@@ -10,7 +10,7 @@ class BoardProjectRecentVisit < ActiveRecord::Base
   validates :project, presence: true
   validates :board,   presence: true
 
-  scope :by_user_project, -> (user, project) { where(user: user, project: project).order(:updated_at) }
+  scope :by_user_project, -> (user, project) { where(user: user, project: project) }
 
   def self.visited!(user, board)
     visit = find_or_create_by(user: user, project: board.project, board: board)
@@ -19,7 +19,10 @@ class BoardProjectRecentVisit < ActiveRecord::Base
     retry
   end
 
-  def self.latest(user, project)
-    by_user_project(user, project).last
+  def self.latest(user, project, count: nil)
+    visits = by_user_project(user, project).order(updated_at: :desc)
+    visits = visits.preload(:board) if count && count > 1
+
+    visits.first(count)
   end
 end
