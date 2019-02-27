@@ -662,7 +662,6 @@ production: &base
   ## GitLab Shell settings
   gitlab_shell:
     path: /home/git/gitlab-shell/
-    hooks_path: /home/git/gitlab-shell/hooks/
 
     # File that contains the secret key for verifying access for gitlab-shell.
     # Default is '.gitlab_shell_secret' relative to Rails.root (i.e. root of the GitLab app).
@@ -820,7 +819,6 @@ test:
     path: tmp/tests/backups
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
-    hooks_path: tmp/tests/gitlab-shell/hooks/
   issues_tracker:
     redmine:
       title: "Redmine"
