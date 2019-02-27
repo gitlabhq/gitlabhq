@@ -13,18 +13,17 @@ class SessionsController < Devise::SessionsController
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
-    if: :two_factor_enabled?, only: [:create]
+    if: -> { action_name == 'create' && two_factor_enabled? }
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :ldap_servers, only: [:new, :create]
   prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
-  prepend_before_action :ensure_password_authentication_enabled!, if: :password_based_login?, only: [:create]
+  prepend_before_action :ensure_password_authentication_enabled!, if: -> { action_name == 'create' && password_based_login? }
 
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
-  after_action :log_failed_login, only: [:new], if: :failed_login?
-
+  after_action :log_failed_login, if: -> { action_name == 'new' && failed_login? }
   helper_method :captcha_enabled?
 
   CAPTCHA_HEADER = 'X-GitLab-Show-Login-Captcha'.freeze
