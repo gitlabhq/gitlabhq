@@ -129,6 +129,10 @@ const bindEvents = () => {
         text: '.NET Core',
         icon: '.template-option .icon-dotnet',
       },
+      gomicro: {
+        text: 'Go Micro',
+        icon: '.template-option .icon-gomicro',
+      },
       hugo: {
         text: 'Pages/Hugo',
         icon: '.template-option .icon-hugo',
