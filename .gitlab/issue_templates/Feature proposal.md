@@ -37,6 +37,10 @@ Existing personas are: (copy relevant personas out of this comment, and delete a
 
 <!-- How are we going to solve the problem? Try to include the user journey! https://about.gitlab.com/handbook/journeys/#user-journey -->
 
+### Permissions and Security
+
+What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)?
+
 ### Documentation
 
 <!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html
