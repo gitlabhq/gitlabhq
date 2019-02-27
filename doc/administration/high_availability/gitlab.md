@@ -146,6 +146,14 @@ the share is exported and exists on the NFS server and try to remount.
 
 ---
 
+## Upgrading GitLab HA
+
+GitLab HA installations can be upgraded with no downtime, but the
+upgrade process must be carefully coordinated to avoid failures. See the
+[Omnibus GitLab multi-node upgrade
+document](https://docs.gitlab.com/omnibus/update/#multi-node--ha-deployment)
+for more details.
+
 Read more on high-availability configuration:
 
 1. [Configure the database](database.md)
