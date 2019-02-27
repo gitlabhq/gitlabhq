@@ -1,0 +1,75 @@
+﻿# This is a simple example illustrating how to build and test .NET Core project
+# with GitLab Continuous Integration / Continuous Delivery.
+#
+# Structure of a sample project would look like this:
+#
+# Project
+# ├── src
+# │   └── ConsoleApp
+# │       └── Program.cs
+# └── test
+#     └── UnitTests
+#         └── BasicUnitTests.cs
+
+# Specify the Docker image
+#
+# Instead of installing .NET Core SDK manually, a docker image is used 
+# with already pre-installed .NET Core SDK. 
+# The 'latest' tag targets the latest available version of .NET Core SDK image. 
+# If preferred, you can explicitly specify version of .NET Core e.g. using '2.2-sdk' tag.
+#
+# See other available tags for .NET Core: https://hub.docker.com/r/microsoft/dotnet
+# Learn more about Docker tags: https://docs.docker.com/glossary/?term=tag
+# and the Docker itself: https://opensource.com/resources/what-docker
+image: microsoft/dotnet:latest
+
+# Define stage list
+#
+# In this example there are only two stages. 
+# Initially, the project will be built and then tested.
+stages:
+ - build
+ - test
+ 
+build:
+ stage: build
+# Restore project dependencies
+#
+# Before building the project all dependencies (e.g. third-party NuGet packages) 
+# must be restored. 
+#
+# Jobs on GitLab.com's Shared Runners are executed on autoscaled machines. 
+# Each machine is used only once (for security reasons) and after this it is removed. 
+# What that means is that before every job a dependency restore must be performed 
+# because restored dependencies are removed along with machines. There are ways 
+# to transfer restored packages and other output binaries, but this example 
+# does not cover that.
+#
+# Learn more about GitLab job artifacts: https://docs.gitlab.com/ee/user/project/pipelines/job_artifacts.html
+ before_script:
+  - 'dotnet restore' 
+# Build all projects discovered from solution file. 
+#
+# Note: this may fail in case you have at least one not .NET Core based project 
+# defined in your solution file e.g. WCF service, which is based on .NET Framework
+# not .NET Core. In such scenario you will need to build .NET Core project 
+# by explicitly specifying a relative path to the directory where it is located
+# e.g. 'dotnet build ./src/ConsoleApp'
+# Only one project path can be passed as a parameter to 'dotnet build' command.
+ script:
+  - 'dotnet build'
+  
+unit tests:
+ stage: test
+# Despite the fact that the project was already built and restored, 
+# a dependency restore must be performed again.
+ before_script:
+  - 'dotnet restore'
+# Run the tests
+#
+# You can either run tests only for specific project (like shown below)
+# or run tests for all test projects that are defined in a solution file 
+# with 'dotnet test'. You may want to define separate jobs for separate
+# testing projects e.g. IntegrationTests, UnitTests etc.
+ script:
+ - 'dotnet test ./test/UnitTests' 
