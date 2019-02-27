@@ -19,6 +19,7 @@ module MergeRequests
       merge_request.target_project  = find_target_project
       merge_request.target_branch   = find_target_branch
       merge_request.can_be_created  = projects_and_branches_valid?
+      ensure_milestone_available(merge_request)
 
       # compare branches only if branches are valid, otherwise
       # compare_branches may raise an error

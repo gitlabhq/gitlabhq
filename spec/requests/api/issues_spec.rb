@@ -49,7 +49,7 @@ describe API::Issues do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
   let!(:label_link) { create(:label_link, label: label, target: issue) }
-  set(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  let(:milestone) { create(:milestone, title: '1.0.0', project: project) }
   set(:empty_milestone) do
     create(:milestone, title: '2.0.0', project: project)
   end
