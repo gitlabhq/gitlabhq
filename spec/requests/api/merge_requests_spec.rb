@@ -441,7 +441,7 @@ describe API::MergeRequests do
     end
 
     it "returns a 404 error if merge_request_iid not found" do
-      get api("/projects/#{project.id}/merge_requests/999", user)
+      get api("/projects/#{project.id}/merge_requests/0", user)
       expect(response).to have_gitlab_http_status(404)
     end
 
@@ -531,7 +531,7 @@ describe API::MergeRequests do
     end
 
     it 'returns a 404 when merge_request_iid not found' do
-      get api("/projects/#{project.id}/merge_requests/999/commits", user)
+      get api("/projects/#{project.id}/merge_requests/0/commits", user)
       expect(response).to have_gitlab_http_status(404)
     end
 
@@ -551,7 +551,7 @@ describe API::MergeRequests do
     end
 
     it 'returns a 404 when merge_request_iid not found' do
-      get api("/projects/#{project.id}/merge_requests/999/changes", user)
+      get api("/projects/#{project.id}/merge_requests/0/changes", user)
       expect(response).to have_gitlab_http_status(404)
     end
 

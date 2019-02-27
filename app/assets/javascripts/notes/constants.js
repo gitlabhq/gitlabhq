@@ -24,3 +24,9 @@ export const NOTEABLE_TYPE_MAPPING = {
   MergeRequest: MERGE_REQUEST_NOTEABLE_TYPE,
   Epic: EPIC_NOTEABLE_TYPE,
 };
+
+export const DISCUSSION_FILTER_TYPES = {
+  ALL: 'all',
+  COMMENTS: 'comments',
+  HISTORY: 'history',
+};

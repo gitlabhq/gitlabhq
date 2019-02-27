@@ -100,6 +100,25 @@ module Gitlab
         end
       end
 
+      def user_merge_to_ref(user, source_sha, branch, target_ref, message)
+        request = Gitaly::UserMergeToRefRequest.new(
+          repository: @gitaly_repo,
+          source_sha: source_sha,
+          branch: encode_binary(branch),
+          target_ref: encode_binary(target_ref),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          message: message
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_merge_to_ref, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
+        end
+
+        response.commit_id
+      end
+
       def user_merge_branch(user, source_sha, target_branch, message)
         request_enum = QueueEnumerator.new
         response_enum = GitalyClient.call(

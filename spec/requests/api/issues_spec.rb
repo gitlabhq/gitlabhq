@@ -183,6 +183,18 @@ describe API::Issues do
         expect_paginated_array_response([issue.id, confidential_issue.id, closed_issue.id])
       end
 
+      it 'returns only confidential issues' do
+        get api('/issues', user), params: { confidential: true, scope: 'all' }
+
+        expect_paginated_array_response(confidential_issue.id)
+      end
+
+      it 'returns only public issues' do
+        get api('/issues', user), params: { confidential: false }
+
+        expect_paginated_array_response([issue.id, closed_issue.id])
+      end
+
       it 'returns issues reacted by the authenticated user' do
         issue2 = create(:issue, project: project, author: user, assignees: [user])
         create(:award_emoji, awardable: issue2, user: user2, name: 'star')
@@ -354,7 +366,7 @@ describe API::Issues do
       end
 
       it 'returns an empty array if iid does not exist' do
-        get api("/issues", user), params: { iids: [99999] }
+        get api("/issues", user), params: { iids: [0] }
 
         expect_paginated_array_response([])
       end
@@ -557,6 +569,18 @@ describe API::Issues do
         expect_paginated_array_response([group_confidential_issue.id, group_issue.id])
       end
 
+      it 'returns only confidential issues' do
+        get api(base_url, user), params: { confidential: true }
+
+        expect_paginated_array_response(group_confidential_issue.id)
+      end
+
+      it 'returns only public issues' do
+        get api(base_url, user), params: { confidential: false }
+
+        expect_paginated_array_response([group_closed_issue.id, group_issue.id])
+      end
+
       it 'returns an array of labeled group issues' do
         get api(base_url, user), params: { labels: group_label.title }
 
@@ -603,7 +627,7 @@ describe API::Issues do
       end
 
       it 'returns an empty array if iid does not exist' do
-        get api(base_url, user), params: { iids: [99999] }
+        get api(base_url, user), params: { iids: [0] }
 
         expect_paginated_array_response([])
       end
@@ -782,6 +806,18 @@ describe API::Issues do
       expect_paginated_array_response([issue.id, confidential_issue.id, closed_issue.id])
     end
 
+    it 'returns only confidential issues' do
+      get api("#{base_url}/issues", author), params: { confidential: true }
+
+      expect_paginated_array_response(confidential_issue.id)
+    end
+
+    it 'returns only public issues' do
+      get api("#{base_url}/issues", author), params: { confidential: false }
+
+      expect_paginated_array_response([issue.id, closed_issue.id])
+    end
+
     it 'returns project confidential issues for assignee' do
       get api("#{base_url}/issues", assignee)
 
@@ -837,7 +873,7 @@ describe API::Issues do
     end
 
     it 'returns an empty array if iid does not exist' do
-      get api("#{base_url}/issues", user), params: { iids: [99999] }
+      get api("#{base_url}/issues", user), params: { iids: [0] }
 
       expect_paginated_array_response([])
     end
@@ -1873,7 +1909,7 @@ describe API::Issues do
     end
 
     it "returns 404 when issue doesn't exists" do
-      get api("/projects/#{project.id}/issues/9999/closed_by", user)
+      get api("/projects/#{project.id}/issues/0/closed_by", user)
 
       expect(response).to have_gitlab_http_status(404)
     end
@@ -1958,7 +1994,7 @@ describe API::Issues do
     end
 
     it "returns 404 when issue doesn't exists" do
-      get_related_merge_requests(project.id, 999999, user)
+      get_related_merge_requests(project.id, 0, user)
 
       expect(response).to have_gitlab_http_status(404)
     end

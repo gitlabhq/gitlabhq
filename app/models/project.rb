@@ -160,6 +160,7 @@ class Project < ActiveRecord::Base
   has_one :pushover_service
   has_one :jira_service
   has_one :redmine_service
+  has_one :youtrack_service
   has_one :custom_issue_tracker_service
   has_one :bugzilla_service
   has_one :gitlab_issue_tracker_service, inverse_of: :project
@@ -248,10 +249,10 @@ class Project < ActiveRecord::Base
   has_many :container_repositories, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :commit_statuses
-  # The relation :all_pipelines is intented to be used when we want to get the
+  # The relation :all_pipelines is intended to be used when we want to get the
   # whole list of pipelines associated to the project
   has_many :all_pipelines, class_name: 'Ci::Pipeline', inverse_of: :project
-  # The relation :ci_pipelines is intented to be used when we want to get only
+  # The relation :ci_pipelines is intended to be used when we want to get only
   # those pipeline which are directly related to CI. There are
   # other pipelines, like webide ones, that we won't retrieve
   # if we use this relation.
@@ -1215,7 +1216,7 @@ class Project < ActiveRecord::Base
     "#{web_url}.git"
   end
 
-  # Is overriden in EE
+  # Is overridden in EE
   def lfs_http_url_to_repo(_)
     http_url_to_repo
   end
@@ -1838,7 +1839,7 @@ class Project < ActiveRecord::Base
   # Set repository as writable again
   def set_repository_writable!
     with_lock do
-      update_column(repository_read_only, false)
+      update_column(:repository_read_only, false)
     end
   end
 
@@ -1923,6 +1924,14 @@ class Project < ActiveRecord::Base
 
   def renamed?
     persisted? && path_changed?
+  end
+
+  def human_merge_method
+    if merge_method == :ff
+      'Fast-forward'
+    else
+      merge_method.to_s.humanize
+    end
   end
 
   def merge_method

@@ -20,6 +20,7 @@ module.exports = {
     '^ee(.*)$': '<rootDir>/ee/app/assets/javascripts$1',
     '^helpers(.*)$': '<rootDir>/spec/frontend/helpers$1',
     '^vendor(.*)$': '<rootDir>/vendor/assets/javascripts$1',
+    '\\.(jpg|jpeg|png|svg)$': '<rootDir>/spec/frontend/__mocks__/file_mock.js',
   },
   collectCoverageFrom: ['<rootDir>/app/assets/javascripts/**/*.{js,vue}'],
   coverageDirectory: '<rootDir>/coverage-frontend/',
@@ -30,6 +31,7 @@ module.exports = {
   setupTestFrameworkScriptFile: '<rootDir>/spec/frontend/test_setup.js',
   restoreMocks: true,
   transform: {
+    '^.+\\.(gql|graphql)$': 'jest-transform-graphql',
     '^.+\\.js$': 'babel-jest',
     '^.+\\.vue$': 'vue-jest',
   },

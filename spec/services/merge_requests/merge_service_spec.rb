@@ -224,6 +224,18 @@ describe MergeRequests::MergeService do
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 
+      it 'logs and saves error if user is not authorized' do
+        unauthorized_user = create(:user)
+        project.add_reporter(unauthorized_user)
+
+        service = described_class.new(project, unauthorized_user)
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error)
+          .to eq('You are not allowed to merge this merge request')
+      end
+
       it 'logs and saves error if there is an PreReceiveError exception' do
         error_message = 'error message'
 

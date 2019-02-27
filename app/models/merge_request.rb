@@ -764,6 +764,16 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  def mergeable_to_ref?
+    return false if merged?
+    return false if broken?
+
+    # Given the `merge_ref_path` will have the same
+    # state the `target_branch` would have. Ideally
+    # we need to check if it can be merged to it.
+    project.repository.can_be_merged?(diff_head_sha, target_branch)
+  end
+
   def ff_merge_possible?
     project.repository.ancestor?(target_branch_sha, diff_head_sha)
   end
@@ -1075,6 +1085,10 @@ class MergeRequest < ActiveRecord::Base
 
   def ref_path
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
+  end
+
+  def merge_ref_path
+    "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/merge"
   end
 
   def in_locked_state

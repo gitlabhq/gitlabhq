@@ -212,7 +212,7 @@ describe 'Pages' do
 
     it 'tries to change the setting' do
       visit project_pages_path(project)
-      expect(page).to have_content("Force domains with SSL certificates to use HTTPS")
+      expect(page).to have_content("Force HTTPS (requires valid certificates)")
 
       uncheck :project_pages_https_only
 
@@ -261,7 +261,7 @@ describe 'Pages' do
         visit project_pages_path(project)
 
         expect(page).not_to have_field(:project_pages_https_only)
-        expect(page).not_to have_content('Force domains with SSL certificates to use HTTPS')
+        expect(page).not_to have_content('Force HTTPS (requires valid certificates)')
         expect(page).not_to have_button('Save')
       end
     end

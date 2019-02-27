@@ -66,6 +66,7 @@ class Issue < ActiveRecord::Base
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   scope :public_only, -> { where(confidential: false) }
+  scope :confidential_only, -> { where(confidential: true) }
 
   after_save :expire_etag_cache
   after_save :ensure_metrics, unless: :imported?

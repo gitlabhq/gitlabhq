@@ -48,9 +48,7 @@ module Types
     field :downvotes, GraphQL::INT_TYPE, null: false
     field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false
 
-    field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline do
-      authorize :read_pipeline
-    end
+    field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline, authorize: :read_pipeline
     field :pipelines, Types::Ci::PipelineType.connection_type,
           resolver: Resolvers::MergeRequestPipelinesResolver
   end

@@ -11,7 +11,7 @@ export const requestReleases = ({ commit }) => commit(types.REQUEST_RELEASES);
 /**
  * Fetches the main endpoint.
  * Will dispatch requestNamespace action before starting the request.
- * Will dispatch receiveNamespaceSuccess if the request is successfull
+ * Will dispatch receiveNamespaceSuccess if the request is successful
  * Will dispatch receiveNamesapceError if the request returns an error
  *
  * @param {String} projectId
