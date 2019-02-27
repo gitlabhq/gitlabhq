@@ -146,3 +146,4 @@
 - repository_cleanup
 - delete_stored_files
 - import_issues_csv
+- project_daily_statistics

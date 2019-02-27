@@ -300,6 +300,18 @@ module API
       expose :build_artifacts_size, as: :job_artifacts_size
     end
 
+    class ProjectDailyFetches < Grape::Entity
+      expose :fetch_count, as: :count
+      expose :date
+    end
+
+    class ProjectDailyStatistics < Grape::Entity
+      expose :fetches do
+        expose :total_fetch_count, as: :total
+        expose :fetches, as: :days, using: ProjectDailyFetches
+      end
+    end
+
     class Member < Grape::Entity
       expose :user, merge: true, using: UserBasic
       expose :access_level

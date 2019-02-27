@@ -1586,6 +1586,13 @@ ActiveRecord::Schema.define(version: 20190220150130) do
     t.index ["project_id", "key"], name: "index_project_custom_attributes_on_project_id_and_key", unique: true, using: :btree
   end
 
+  create_table "project_daily_statistics", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "fetch_count", null: false
+    t.date "date"
+    t.index ["project_id", "date"], name: "index_project_daily_statistics_on_project_id_and_date", unique: true, order: { date: :desc }, using: :btree
+  end
+
   create_table "project_deploy_tokens", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "deploy_token_id", null: false
@@ -2469,6 +2476,7 @@ ActiveRecord::Schema.define(version: 20190220150130) do
   add_foreign_key "project_auto_devops", "projects", on_delete: :cascade
   add_foreign_key "project_ci_cd_settings", "projects", name: "fk_24c15d2f2e", on_delete: :cascade
   add_foreign_key "project_custom_attributes", "projects", on_delete: :cascade
+  add_foreign_key "project_daily_statistics", "projects", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "deploy_tokens", on_delete: :cascade
   add_foreign_key "project_deploy_tokens", "projects", on_delete: :cascade
   add_foreign_key "project_error_tracking_settings", "projects", on_delete: :cascade
