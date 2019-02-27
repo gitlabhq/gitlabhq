@@ -89,6 +89,7 @@ describe API::Projects do
     end
 
     let!(:public_project) { create(:project, :public, name: 'public_project') }
+
     before do
       project
       project2
@@ -886,8 +887,16 @@ describe API::Projects do
 
   describe 'GET /projects/:id' do
     context 'when unauthenticated' do
-      it 'returns the public projects' do
-        public_project = create(:project, :public)
+      it 'does not return private projects' do
+        private_project = create(:project, :private)
+
+        get api("/projects/#{private_project.id}")
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns public projects' do
+        public_project = create(:project, :repository, :public)
 
         get api("/projects/#{public_project.id}")
 
@@ -895,7 +904,33 @@ describe API::Projects do
         expect(json_response['id']).to eq(public_project.id)
         expect(json_response['description']).to eq(public_project.description)
         expect(json_response['default_branch']).to eq(public_project.default_branch)
+        expect(json_response['ci_config_path']).to eq(public_project.ci_config_path)
         expect(json_response.keys).not_to include('permissions')
+      end
+
+      context 'and the project has a private repository' do
+        let(:project) { create(:project, :repository, :public, :repository_private) }
+        let(:protected_attributes) { %w(default_branch ci_config_path) }
+
+        it 'hides protected attributes of private repositories if user is not a member' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          protected_attributes.each do |attribute|
+            expect(json_response.keys).not_to include(attribute)
+          end
+        end
+
+        it 'exposes protected attributes of private repositories if user is a member' do
+          project.add_developer(user)
+
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          protected_attributes.each do |attribute|
+            expect(json_response.keys).to include(attribute)
+          end
+        end
       end
     end
 
@@ -1044,6 +1079,26 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to include 'statistics'
+      end
+
+      context "and the project has a private repository" do
+        let(:project) { create(:project, :public, :repository, :repository_private) }
+
+        it "does not include statistics if user is not a member" do
+          get api("/projects/#{project.id}", user), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).not_to include 'statistics'
+        end
+
+        it "includes statistics if user is a member" do
+          project.add_developer(user)
+
+          get api("/projects/#{project.id}", user), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'statistics'
+        end
       end
 
       it "includes import_error if user can admin project" do
