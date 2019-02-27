@@ -9,8 +9,10 @@ describe Milestone, 'Milestoneish' do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, project: project) }
-  let!(:issue) { create(:issue, project: project, milestone: milestone) }
-  let!(:security_issue_1) { create(:issue, :confidential, project: project, author: author, milestone: milestone) }
+  let(:label1) { create(:label, project: project) }
+  let(:label2) { create(:label, project: project) }
+  let!(:issue) { create(:issue, project: project, milestone: milestone, assignees: [member], labels: [label1]) }
+  let!(:security_issue_1) { create(:issue, :confidential, project: project, author: author, milestone: milestone, labels: [label2]) }
   let!(:security_issue_2) { create(:issue, :confidential, project: project, assignees: [assignee], milestone: milestone) }
   let!(:closed_issue_1) { create(:issue, :closed, project: project, milestone: milestone) }
   let!(:closed_issue_2) { create(:issue, :closed, project: project, milestone: milestone) }
@@ -39,6 +41,95 @@ describe Milestone, 'Milestoneish' do
       expect(issues.first).to eq(issue)
       expect(issues.second).to eq(security_issue_1)
       expect(issues.third).not_to eq(closed_issue_1)
+    end
+  end
+
+  context 'attributes visibility' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:users) do
+      {
+        anonymous: nil,
+        non_member: non_member,
+        guest: guest,
+        member: member,
+        assignee: assignee
+      }
+    end
+
+    let(:project_visibility_levels) do
+      {
+        public: Gitlab::VisibilityLevel::PUBLIC,
+        internal: Gitlab::VisibilityLevel::INTERNAL,
+        private: Gitlab::VisibilityLevel::PRIVATE
+      }
+    end
+
+    describe '#issue_participants_visible_by_user' do
+      where(:visibility, :user_role, :result) do
+        :public   | nil         | [:member]
+        :public   | :non_member | [:member]
+        :public   | :guest      | [:member]
+        :public   | :member     | [:member, :assignee]
+        :internal | nil         | []
+        :internal | :non_member | [:member]
+        :internal | :guest      | [:member]
+        :internal | :member     | [:member, :assignee]
+        :private  | nil         | []
+        :private  | :non_member | []
+        :private  | :guest      | [:member]
+        :private  | :member     | [:member, :assignee]
+      end
+
+      with_them do
+        before do
+          project.update(visibility_level: project_visibility_levels[visibility])
+        end
+
+        it 'returns the proper participants' do
+          user = users[user_role]
+          participants = result.map { |role| users[role] }
+
+          expect(milestone.issue_participants_visible_by_user(user)).to match_array(participants)
+        end
+      end
+    end
+
+    describe '#issue_labels_visible_by_user' do
+      let(:labels) do
+        {
+          label1: label1,
+          label2: label2
+        }
+      end
+
+      where(:visibility, :user_role, :result) do
+        :public   | nil         | [:label1]
+        :public   | :non_member | [:label1]
+        :public   | :guest      | [:label1]
+        :public   | :member     | [:label1, :label2]
+        :internal | nil         | []
+        :internal | :non_member | [:label1]
+        :internal | :guest      | [:label1]
+        :internal | :member     | [:label1, :label2]
+        :private  | nil         | []
+        :private  | :non_member | []
+        :private  | :guest      | [:label1]
+        :private  | :member     | [:label1, :label2]
+      end
+
+      with_them do
+        before do
+          project.update(visibility_level: project_visibility_levels[visibility])
+        end
+
+        it 'returns the proper participants' do
+          user = users[user_role]
+          expected_labels = result.map { |label| labels[label] }
+
+          expect(milestone.issue_labels_visible_by_user(user)).to match_array(expected_labels)
+        end
+      end
     end
   end
 
