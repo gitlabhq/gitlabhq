@@ -98,6 +98,22 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it { expect(kubernetes.save).to be_truthy }
       end
+
+      context 'when api_url is localhost' do
+        let(:api_url) { 'http://localhost:22' }
+
+        it { expect(kubernetes.save).to be_falsey }
+
+        context 'Application settings allows local requests' do
+          before do
+            allow(ApplicationSetting)
+              .to receive(:current)
+              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: true))
+          end
+
+          it { expect(kubernetes.save).to be_truthy }
+        end
+      end
     end
 
     context 'when validates token' do
