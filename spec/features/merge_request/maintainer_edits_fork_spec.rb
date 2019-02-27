@@ -18,6 +18,8 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
   end
 
   before do
+    stub_feature_flags(web_ide_default: false)
+
     target_project.add_maintainer(user)
     sign_in(user)
 
