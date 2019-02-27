@@ -44,8 +44,8 @@ export default {
       this.isLoading = false;
 
       // Prevent the absence of the nested flag from causing mismatches
-      const response = _.omit(resp.config.params, _.isUndefined);
-      const request = _.omit(this.requestData, _.isUndefined);
+      const response = this.filterNilValues(resp.config.params);
+      const request = this.filterNilValues(this.requestData);
 
       if (_.isEqual(response, request)) {
         this.store.storeAvailableCount(resp.data.available_count);
@@ -53,6 +53,10 @@ export default {
         this.store.storeEnvironments(resp.data.environments);
         this.store.setPagination(resp.headers);
       }
+    },
+
+    filterNilValues(obj) {
+      return _.omit(obj, value => _.isUndefined(value) || _.isNull(value));
     },
 
     /**

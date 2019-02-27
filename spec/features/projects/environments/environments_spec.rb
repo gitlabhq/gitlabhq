@@ -38,6 +38,23 @@ describe 'Environments page', :js do
         end
       end
 
+      describe 'with environments spanning multiple pages', :js do
+        before do
+          allow(Kaminari.config).to receive(:default_per_page).and_return(3)
+          create_list(:environment, 4, project: project, state: :available)
+        end
+
+        it 'should render second page of pipelines' do
+          visit_environments(project, scope: 'available')
+
+          find('.js-next-button').click
+          wait_for_requests
+
+          expect(page).to have_selector('.gl-pagination .page', count: 2)
+          expect(find('.gl-pagination .page-item.active .page-link').text).to eq("2")
+        end
+      end
+
       describe 'in stopped tab page' do
         it 'should show no environments' do
           visit_environments(project, scope: 'stopped')
