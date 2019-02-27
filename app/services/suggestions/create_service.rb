@@ -9,6 +9,10 @@ module Suggestions
     def execute
       return unless @note.supports_suggestion?
 
+      diff_file = @note.latest_diff_file
+
+      return unless diff_file
+
       suggestions = Banzai::SuggestionsParser.parse(@note.note)
 
       # For single line suggestion we're only looking forward to
@@ -20,7 +24,7 @@ module Suggestions
 
       rows =
         suggestions.map.with_index do |suggestion, index|
-          from_content = changing_lines(comment_line, comment_line)
+          from_content = changing_lines(diff_file, comment_line, comment_line)
 
           # The parsed suggestion doesn't have information about the correct
           # ending characters (we may have a line break, or not), so we take
@@ -44,8 +48,8 @@ module Suggestions
 
     private
 
-    def changing_lines(from_line, to_line)
-      @note.diff_file.new_blob_lines_between(from_line, to_line).join
+    def changing_lines(diff_file, from_line, to_line)
+      diff_file.new_blob_lines_between(from_line, to_line).join
     end
 
     def line_break_chars(line)
