@@ -65,7 +65,11 @@ class Projects::CommitController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def merge_requests
-    @merge_requests = @commit.merge_requests.map do |mr|
+    @merge_requests = MergeRequestsFinder.new(
+      current_user,
+      project_id: @project.id,
+      commit_sha: @commit.sha
+    ).execute.map do |mr|
       { iid: mr.iid, path: merge_request_path(mr), title: mr.title }
     end
 

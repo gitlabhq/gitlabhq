@@ -31,7 +31,7 @@ describe MergeRequestsFinder do
       p
     end
   end
-  let(:project4) { create_project_without_n_plus_1(group: subgroup) }
+  let(:project4) { create_project_without_n_plus_1(:repository, group: subgroup) }
   let(:project5) { create_project_without_n_plus_1(group: subgroup) }
   let(:project6) { create_project_without_n_plus_1(group: subgroup) }
 
@@ -66,6 +66,15 @@ describe MergeRequestsFinder do
       params = { project_id: project1.id, scope: 'authored', state: 'opened' }
       merge_requests = described_class.new(user, params).execute
       expect(merge_requests.size).to eq(2)
+    end
+
+    it 'filters by commit sha' do
+      merge_requests = described_class.new(
+        user,
+        commit_sha: merge_request5.merge_request_diff.last_commit_sha
+      ).execute
+
+      expect(merge_requests).to contain_exactly(merge_request5)
     end
 
     context 'filtering by group' do
@@ -267,6 +276,21 @@ describe MergeRequestsFinder do
         merge_requests = described_class.new(user, params).execute
 
         expect(merge_requests).to contain_exactly(old_merge_request, new_merge_request)
+      end
+    end
+
+    context 'when project restricts merge requests' do
+      let(:non_member) { create(:user) }
+      let(:project) { create(:project, :repository, :public, :merge_requests_private) }
+      let!(:merge_request) { create(:merge_request, source_project: project) }
+
+      it "returns nothing to to non members" do
+        merge_requests = described_class.new(
+          non_member,
+          project_id: project.id
+        ).execute
+
+        expect(merge_requests).to be_empty
       end
     end
   end
