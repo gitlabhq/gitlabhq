@@ -235,6 +235,8 @@ Ci::Pipeline:
 - ref
 - sha
 - before_sha
+- source_sha
+- target_sha
 - push_data
 - created_at
 - updated_at

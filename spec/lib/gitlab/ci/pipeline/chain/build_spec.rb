@@ -101,6 +101,8 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
         checkout_sha: project.commit.id,
         after_sha: nil,
         before_sha: nil,
+        source_sha: merge_request.diff_head_sha,
+        target_sha: merge_request.target_branch_sha,
         trigger_request: nil,
         schedule: nil,
         merge_request: merge_request,
@@ -117,6 +119,11 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
     it 'correctly indicated that this is a merge request pipeline' do
       expect(pipeline).to be_merge_request
       expect(pipeline.merge_request).to eq(merge_request)
+    end
+
+    it 'correctly sets souce sha and target sha to pipeline' do
+      expect(pipeline.source_sha).to eq(merge_request.diff_head_sha)
+      expect(pipeline.target_sha).to eq(merge_request.target_branch_sha)
     end
   end
 end

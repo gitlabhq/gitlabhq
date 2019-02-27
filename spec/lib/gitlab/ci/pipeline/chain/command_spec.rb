@@ -161,6 +161,54 @@ describe Gitlab::Ci::Pipeline::Chain::Command do
     end
   end
 
+  describe '#source_sha' do
+    subject { command.source_sha }
+
+    let(:command) do
+      described_class.new(project: project,
+                          source_sha: source_sha,
+                          merge_request: merge_request)
+    end
+
+    let(:merge_request) do
+      create(:merge_request, target_project: project, source_project: project)
+    end
+
+    let(:source_sha) { nil }
+
+    context 'when source_sha is specified' do
+      let(:source_sha) { 'abc' }
+
+      it 'returns the specified value' do
+        is_expected.to eq('abc')
+      end
+    end
+  end
+
+  describe '#target_sha' do
+    subject { command.target_sha }
+
+    let(:command) do
+      described_class.new(project: project,
+                          target_sha: target_sha,
+                          merge_request: merge_request)
+    end
+
+    let(:merge_request) do
+      create(:merge_request, target_project: project, source_project: project)
+    end
+
+    let(:target_sha) { nil }
+
+    context 'when target_sha is specified' do
+      let(:target_sha) { 'abc' }
+
+      it 'returns the specified value' do
+        is_expected.to eq('abc')
+      end
+    end
+  end
+
   describe '#protected_ref?' do
     let(:command) { described_class.new(project: project, origin_ref: 'my-branch') }
 
