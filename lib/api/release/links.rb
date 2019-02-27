@@ -8,6 +8,8 @@ module API
       RELEASE_ENDPOINT_REQUIREMETS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
         .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
+      before { authorize! :read_release, user_project }
+
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
