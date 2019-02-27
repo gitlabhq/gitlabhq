@@ -49,6 +49,16 @@ describe CommitStatus do
 
       commit_status.success!
     end
+
+    describe 'transitioning to running' do
+      let(:commit_status) { create(:commit_status, :pending, started_at: nil) }
+
+      it 'records the started at time' do
+        commit_status.run!
+
+        expect(commit_status.started_at).to be_present
+      end
+    end
   end
 
   describe '#started?' do
@@ -555,6 +565,7 @@ describe CommitStatus do
 
     before do
       allow(Time).to receive(:now).and_return(current_time)
+      expect(commit_status.any_unmet_prerequisites?).to eq false
     end
 
     shared_examples 'commit status enqueued' do
@@ -565,6 +576,12 @@ describe CommitStatus do
 
     context 'when initial state is :created' do
       let(:commit_status) { create(:commit_status, :created) }
+
+      it_behaves_like 'commit status enqueued'
+    end
+
+    context 'when initial state is :preparing' do
+      let(:commit_status) { create(:commit_status, :preparing) }
 
       it_behaves_like 'commit status enqueued'
     end

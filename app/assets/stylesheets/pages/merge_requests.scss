@@ -166,6 +166,7 @@
       float: left;
 
       .accept-merge-request {
+        &.ci-preparing,
         &.ci-pending,
         &.ci-running {
           @include btn-blue;

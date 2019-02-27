@@ -15,6 +15,7 @@ module Gitlab
           failed: '#e05d44',
           running: '#dfb317',
           pending: '#dfb317',
+          preparing: '#dfb317',
           canceled: '#9f9f9f',
           skipped: '#9f9f9f',
           unknown: '#9f9f9f'

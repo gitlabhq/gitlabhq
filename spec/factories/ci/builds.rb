@@ -75,6 +75,10 @@ FactoryBot.define do
       status 'created'
     end
 
+    trait :preparing do
+      status 'preparing'
+    end
+
     trait :scheduled do
       schedulable
       status 'scheduled'

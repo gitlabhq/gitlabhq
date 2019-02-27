@@ -66,7 +66,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :enqueue do
-      transition [:created, :skipped, :manual, :scheduled] => :pending
+      transition [:created, :preparing, :skipped, :manual, :scheduled] => :pending
     end
 
     event :run do
@@ -74,26 +74,26 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :skip do
-      transition [:created, :pending] => :skipped
+      transition [:created, :preparing, :pending] => :skipped
     end
 
     event :drop do
-      transition [:created, :pending, :running, :scheduled] => :failed
+      transition [:created, :preparing, :pending, :running, :scheduled] => :failed
     end
 
     event :success do
-      transition [:created, :pending, :running] => :success
+      transition [:created, :preparing, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:created, :pending, :running, :manual, :scheduled] => :canceled
+      transition [:created, :preparing, :pending, :running, :manual, :scheduled] => :canceled
     end
 
-    before_transition [:created, :skipped, :manual, :scheduled] => :pending do |commit_status|
+    before_transition [:created, :preparing, :skipped, :manual, :scheduled] => :pending do |commit_status|
       commit_status.queued_at = Time.now
     end
 
-    before_transition [:created, :pending] => :running do |commit_status|
+    before_transition [:created, :preparing, :pending] => :running do |commit_status|
       commit_status.started_at = Time.now
     end
 
