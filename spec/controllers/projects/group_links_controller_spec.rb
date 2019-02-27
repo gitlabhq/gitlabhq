@@ -65,8 +65,24 @@ describe Projects::GroupLinksController do
       end
     end
 
+    context 'when user does not have access to the public group' do
+      let(:group) { create(:group, :public) }
+
+      include_context 'link project to group'
+
+      it 'renders 404' do
+        expect(response.status).to eq 404
+      end
+
+      it 'does not share project with that group' do
+        expect(group.shared_projects).not_to include project
+      end
+    end
+
     context 'when project group id equal link group id' do
       before do
+        group2.add_developer(user)
+
         post(:create, params: {
                         namespace_id: project.namespace,
                         project_id: project,
@@ -100,6 +116,27 @@ describe Projects::GroupLinksController do
           project_project_members_path(project)
         )
         expect(flash[:alert]).to eq('Please select a group.')
+      end
+    end
+
+    context 'when link is not persisted in the database' do
+      before do
+        allow(::Projects::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
+          .and_return({ status: :error, http_status: 409, message: 'error' })
+
+        post(:create, params: {
+                        namespace_id: project.namespace,
+                        project_id: project,
+                        link_group_id: group.id,
+                        link_group_access: ProjectGroupLink.default_access
+                      })
+      end
+
+      it 'redirects to project group links page' do
+        expect(response).to redirect_to(
+          project_project_members_path(project)
+        )
+        expect(flash[:alert]).to eq('error')
       end
     end
   end
