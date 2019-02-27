@@ -39,6 +39,8 @@ module Projects
         if !from_exists && !to_exists
           logger.warn "Can't find a repository on either source or target paths for #{project.full_path} (ID=#{project.id}) ..."
 
+          # We return true so we still reflect the change in the database.
+          # Next time the repository is (re)created it will be under the new storage layout
           return true
         elsif !from_exists
           # Repository have been moved already.
