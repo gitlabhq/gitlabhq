@@ -9,8 +9,8 @@
   - title = s_("PipelineStatusTooltip|Commit: %{ci_status}") % {ci_status: status.label}
 
 - if path
-  = link_to path, class: css_classes, title: title, data: { html: true, placement: tooltip_placement } do
+  = link_to path, class: css_classes, title: title, data: { placement: tooltip_placement } do
     = sprite_icon(status.icon, size: size)
 - else
-  %span{ class: css_classes, title: title, data: { html: true, placement: tooltip_placement } }
+  %span{ class: css_classes, title: title, data: { placement: tooltip_placement } }
     = sprite_icon(status.icon, size: size)
