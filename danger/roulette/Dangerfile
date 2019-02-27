@@ -58,7 +58,9 @@ changes = helper.changes_by_category
 changes.delete(:none)
 categories = changes.keys - [:unknown]
 
-unless changes.empty?
+# Single codebase MRs are reviewed using a slightly different process, so we
+# disable the review roulette for such MRs.
+if changes.any? && !gitlab.mr_labels.include?('single codebase')
   team =
     begin
       helper.project_team
