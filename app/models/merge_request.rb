@@ -69,7 +69,7 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
-  after_create :ensure_merge_request_diff, unless: :importing?
+  after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_save :ensure_metrics

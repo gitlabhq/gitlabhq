@@ -18,7 +18,7 @@ describe UpdateHeadPipelineForMergeRequestWorker do
 
       context 'when merge request sha does not equal pipeline sha' do
         before do
-          merge_request.merge_request_diff.update(head_commit_sha: 'different_sha')
+          merge_request.merge_request_diff.update(head_commit_sha: Digest::SHA1.hexdigest(SecureRandom.hex))
         end
 
         it 'does not update head pipeline' do

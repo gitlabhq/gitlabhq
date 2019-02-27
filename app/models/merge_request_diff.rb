@@ -20,6 +20,8 @@ class MergeRequestDiff < ActiveRecord::Base
   has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
 
+  validates :base_commit_sha, :head_commit_sha, :start_commit_sha, sha: true
+
   state_machine :state, initial: :empty do
     event :clean do
       transition any => :without_files
