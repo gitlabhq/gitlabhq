@@ -39,7 +39,7 @@ Existing personas are: (copy relevant personas out of this comment, and delete a
 
 ### Permissions and Security
 
-What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)?
+<!-- What permissions are required to perform the described actions? Are they consistent with the existing permissions as documented for users, groups, and projects as appropriate? Is the proposed behavior consistent between the UI, API, and other access methods (e.g. email replies)? -->
 
 ### Documentation
 
