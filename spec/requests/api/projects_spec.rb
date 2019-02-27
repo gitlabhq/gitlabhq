@@ -1392,6 +1392,9 @@ describe API::Projects do
 
   describe "POST /projects/:id/share" do
     let(:group) { create(:group) }
+    before do
+      group.add_developer(user)
+    end
 
     it "shares project with group" do
       expires_at = 10.days.from_now.to_date
@@ -1441,6 +1444,15 @@ describe API::Projects do
 
       expect(response).to have_gitlab_http_status(400)
       expect(json_response['error']).to eq 'group_access does not have a valid value'
+    end
+
+    it "returns a 409 error when link is not saved" do
+      allow(::Projects::GroupLinks::CreateService).to receive_message_chain(:new, :execute)
+        .and_return({ status: :error, http_status: 409, message: 'error' })
+
+      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: Gitlab::Access::DEVELOPER
+
+      expect(response).to have_gitlab_http_status(409)
     end
   end
 
