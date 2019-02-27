@@ -619,16 +619,6 @@ describe Gitlab::Git::Repository, :seed_helper do
         repository.search_files_by_content('search-files-by-content', 'search-files-by-content-branch')
       end
     end
-
-    it_should_behave_like 'search files by content' do
-      let(:search_results) do
-        repository.gitaly_repository_client.search_files_by_content(
-          'search-files-by-content-branch',
-          'search-files-by-content',
-          chunked_response: false
-        )
-      end
-    end
   end
 
   describe '#find_remote_root_ref' do
