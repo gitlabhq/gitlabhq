@@ -3,9 +3,4 @@
   This project manages its dependencies using
   %strong= viewer.manager_name
 
-  - if viewer.package_name
-    and defines a #{viewer.package_type} named
-    %strong<
-      = link_to_if viewer.package_url.present?, viewer.package_name, viewer.package_url, target: '_blank', rel: 'noopener noreferrer'
-
 = link_to 'Learn more', viewer.manager_url, target: '_blank', rel: 'noopener noreferrer'
