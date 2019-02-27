@@ -115,7 +115,7 @@ module Ci
       current_data = get_data
 
       unless current_data&.bytesize.to_i == CHUNK_SIZE
-        raise FailedToPersistDataError, 'Data is not fullfilled in a bucket'
+        raise FailedToPersistDataError, 'Data is not fulfilled in a bucket'
       end
 
       old_store_class = self.class.get_store_class(data_store)
