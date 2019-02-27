@@ -22,4 +22,8 @@ class GroupMilestone < GlobalMilestone
   def legacy_group_milestone?
     true
   end
+
+  def milestone
+    @milestone ||= milestones.find { |m| m.description.present? } || milestones.first
+  end
 end

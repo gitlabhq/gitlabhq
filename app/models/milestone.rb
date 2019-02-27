@@ -73,6 +73,7 @@ class Milestone < ActiveRecord::Base
   end
 
   alias_attribute :name, :title
+  alias_attribute :milestoneish_id, :milestoneish_ids
 
   class << self
     # Searches for milestones matching the given query.
