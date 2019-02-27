@@ -485,7 +485,7 @@ describe 'Pipelines', :js do
         it 'should show updated content' do
           visit project_pipelines_path(project)
           wait_for_requests
-          page.find('.js-next-button a').click
+          page.find('.js-next-button .page-link').click
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
