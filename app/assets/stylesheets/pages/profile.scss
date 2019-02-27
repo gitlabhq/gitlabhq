@@ -270,11 +270,9 @@
       position: static;
       padding: 0 16px;
       margin-bottom: 20px;
-      display: -webkit-flex;
       display: flex;
 
       .btn {
-        -webkit-flex-grow: 1;
         flex-grow: 1;
 
         &:first-child {

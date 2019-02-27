@@ -39,7 +39,6 @@
 
   .header-content {
     width: 100%;
-    display: -webkit-flex;
     display: flex;
     justify-content: space-between;
     position: relative;
@@ -47,11 +46,8 @@
     padding-left: 0;
 
     .title-container {
-      display: -webkit-flex;
       display: flex;
-      -webkit-align-items: stretch;
       align-items: stretch;
-      -webkit-flex: 1 1 auto;
       flex: 1 1 auto;
       padding-top: 0;
       overflow: visible;
@@ -60,7 +56,6 @@
     .title {
       padding-right: 0;
       color: currentColor;
-      display: -webkit-flex;
       display: flex;
       position: relative;
       margin: 0;
@@ -85,7 +80,6 @@
       }
 
       a {
-        display: -webkit-flex;
         display: flex;
         align-items: center;
         padding: 2px 8px;
@@ -173,7 +167,6 @@
 
     .navbar-nav {
       @include media-breakpoint-down(xs) {
-        display: -webkit-flex;
         display: flex;
         padding-right: 10px;
         flex-direction: row;
@@ -258,7 +251,6 @@
   > li {
     > a,
     > button {
-      display: -webkit-flex;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -294,7 +286,6 @@
 }
 
 .navbar-sub-nav {
-  display: -webkit-flex;
   display: flex;
   margin: 0 0 0 6px;
 
@@ -326,14 +317,12 @@
 }
 
 .breadcrumbs {
-  display: -webkit-flex;
   display: flex;
   min-height: $breadcrumb-min-height;
   color: $gl-text-color;
 }
 
 .breadcrumbs-container {
-  display: -webkit-flex;
   display: flex;
   width: 100%;
   position: relative;
@@ -344,7 +333,6 @@
 }
 
 .breadcrumbs-links {
-  -webkit-flex: 1;
   flex: 1;
   min-width: 0;
   align-self: center;
@@ -379,7 +367,6 @@
 }
 
 .breadcrumbs-list {
-  display: -webkit-flex;
   display: flex;
   margin-bottom: 0;
   line-height: 16px;
@@ -430,7 +417,6 @@
 }
 
 .breadcrumbs-extra {
-  display: -webkit-flex;
   display: flex;
   flex: 0 0 auto;
   margin-left: auto;

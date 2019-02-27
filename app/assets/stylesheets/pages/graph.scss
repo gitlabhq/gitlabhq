@@ -71,12 +71,10 @@
 
 .svg-graph-container-with-grab {
   cursor: grab;
-  cursor: -webkit-grab;
 }
 
 .svg-graph-container-grabbed {
   cursor: grabbing;
-  cursor: -webkit-grabbing;
 }
 
 @keyframes flickerAnimation {

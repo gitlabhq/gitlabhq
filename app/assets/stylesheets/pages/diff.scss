@@ -9,7 +9,6 @@
     @media (min-width: map-get($grid-breakpoints, md)) {
       $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height;
 
-      position: -webkit-sticky;
       position: sticky;
       top: $mr-file-header-top;
       z-index: 102;
@@ -239,22 +238,18 @@
 
       img {
         border: 1px solid $white-light;
-        background-image: linear-gradient(
-            45deg,
-            $border-color 25%,
-            transparent 25%,
-            transparent 75%,
-            $border-color 75%,
-            $border-color 100%
-          ),
-          linear-gradient(
-            45deg,
-            $border-color 25%,
-            transparent 25%,
-            transparent 75%,
-            $border-color 75%,
-            $border-color 100%
-          );
+        background-image: linear-gradient(45deg,
+        $border-color 25%,
+        transparent 25%,
+        transparent 75%,
+        $border-color 75%,
+        $border-color 100%),
+          linear-gradient(45deg,
+        $border-color 25%,
+        transparent 25%,
+        transparent 75%,
+        $border-color 75%,
+        $border-color 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
@@ -510,10 +505,10 @@
 
 .diff-stats {
   align-items: center;
-  padding: 0 .25rem;
+  padding: 0 0.25rem;
 
   .diff-stats-group {
-    padding: 0 .25rem;
+    padding: 0 0.25rem;
   }
 
   svg.diff-stats-icon {
@@ -522,7 +517,7 @@
 
   &.is-compare-versions-header {
     .diff-stats-group {
-      padding: 0 .5rem;
+      padding: 0 0.5rem;
     }
   }
 }
@@ -726,7 +721,6 @@
   }
 
   @include media-breakpoint-up(sm) {
-    position: -webkit-sticky;
     position: sticky;
     top: $header-height;
     background-color: $white-light;
@@ -834,34 +828,26 @@
     width: 100%;
     height: 10px;
     background-color: $white-light;
-    background-image: linear-gradient(
-        45deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      ),
-      linear-gradient(
-        225deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      ),
-      linear-gradient(
-        135deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      ),
-      linear-gradient(
-        -45deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      );
+    background-image: linear-gradient(45deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%),
+      linear-gradient(225deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%),
+      linear-gradient(135deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%),
+      linear-gradient(-45deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%);
     background-position: 5px 5px, 0 5px, 0 5px, 5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;
@@ -904,7 +890,7 @@
   }
 }
 
-.files:not([data-can-create-note="true"]) .frame {
+.files:not([data-can-create-note='true']) .frame {
   cursor: auto;
 }
 
@@ -913,15 +899,14 @@
 .btn-transparent.image-diff-overlay-add-comment {
   position: relative;
   cursor: image-url('illustrations/image_comment_light_cursor.svg')
-      $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+    $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
     auto;
 
   // Retina cursor
-  cursor: -webkit-image-set(
-        image-url('illustrations/image_comment_light_cursor.svg') 1x,
-        image-url('illustrations/image_comment_light_cursor@2x.svg') 2x
-      )
-      $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+  // scss-lint:disable DuplicateProperty
+  cursor: image-set(image-url('illustrations/image_comment_light_cursor.svg') 1x,
+  image-url('illustrations/image_comment_light_cursor@2x.svg') 2x)
+    $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
     auto;
 
   .comment-indicator {
@@ -1026,7 +1011,6 @@
 }
 
 .diff-tree-list {
-  position: -webkit-sticky;
   position: sticky;
   $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
   top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
