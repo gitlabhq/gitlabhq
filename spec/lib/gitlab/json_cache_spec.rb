@@ -297,13 +297,39 @@ describe Gitlab::JsonCache do
           expect(result).to eq(broadcast_message)
         end
 
+        context 'when the cached value is an instance of ActiveRecord::Base' do
+          it 'returns a persisted record when id is set' do
+            backend.write(expanded_key, broadcast_message.to_json)
+
+            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+            expect(result).to be_persisted
+          end
+
+          it 'returns a new record when id is nil' do
+            backend.write(expanded_key, build(:broadcast_message).to_json)
+
+            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+            expect(result).to be_new_record
+          end
+
+          it 'returns a new record when id is missing' do
+            backend.write(expanded_key, build(:broadcast_message).attributes.except('id').to_json)
+
+            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+            expect(result).to be_new_record
+          end
+        end
+
         it "returns the result of the block when 'as' option is nil" do
           result = cache.fetch(key, as: nil) { 'block result' }
 
           expect(result).to eq('block result')
         end
 
-        it "returns the result of the block when 'as' option is not informed" do
+        it "returns the result of the block when 'as' option is missing" do
           result = cache.fetch(key) { 'block result' }
 
           expect(result).to eq('block result')
