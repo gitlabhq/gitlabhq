@@ -340,14 +340,14 @@ module Gitlab
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
+    def hooks_path
+      File.join(gitlab_shell_path, 'hooks')
+    end
+
     protected
 
     def gitlab_shell_path
       File.expand_path(Gitlab.config.gitlab_shell.path)
-    end
-
-    def gitlab_shell_hooks_path
-      File.expand_path(Gitlab.config.gitlab_shell.hooks_path)
     end
 
     def gitlab_shell_user_home
