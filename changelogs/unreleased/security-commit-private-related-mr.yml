@@ -1,5 +1,0 @@
----
-title: Don't allow non-members to see private related MRs.
-merge_request:
-author:
-type: security
