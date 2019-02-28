@@ -1,5 +1,6 @@
 - empty_repo = @project.empty_repo?
 - show_auto_devops_callout = show_auto_devops_callout?(@project)
+- max_project_topic_length = 15
 .project-home-panel{ class: ("empty-project" if empty_repo) }
   .row.append-bottom-8
     .home-panel-title-row.col-md-12.col-lg-6.d-flex
@@ -19,15 +20,21 @@
             %span.access-request-links.prepend-left-8
               = render 'shared/members/access_request_links', source: @project
           - if @project.tag_list.present?
-            %span.home-panel-topic-list.d-inline-flex.prepend-left-8.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.tag_list.join(', ') : nil }
+            %span.home-panel-topic-list.d-inline-flex.prepend-left-8
               = sprite_icon('tag', size: 16, css_class: 'icon append-right-4')
 
               - @project.topics_to_show.each do |topic|
-                %a{ class: 'badge badge-pill badge-secondary append-right-5 str-truncated-30', href: explore_projects_path(tag: topic) }
-                  = topic.titleize
+                - project_topics_classes = "badge badge-pill badge-secondary append-right-5"
+                - explore_project_topic_path = explore_projects_path(tag: topic)
+                - if topic.length > max_project_topic_length
+                  %a{ class: "#{ project_topics_classes } str-truncated-30 has-tooltip", data: { container: "body" }, title: topic, href: explore_project_topic_path }
+                    = topic.titleize
+                - else
+                  %a{ class: project_topics_classes, href: explore_project_topic_path }
+                    = topic.titleize
 
               - if @project.has_extra_topics?
-                .text-nowrap
+                .text-nowrap.has-tooltip{ data: { container: 'body' }, title: @project.has_extra_topics? ? @project.topics_not_shown.join(', ') : nil }
                   = _("+ %{count} more") % { count: @project.count_of_extra_topics_not_shown }
 
 
