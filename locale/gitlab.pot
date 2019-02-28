@@ -393,6 +393,9 @@ msgstr ""
 msgid "Add a table"
 msgstr ""
 
+msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
+msgstr ""
+
 msgid "Add image comment"
 msgstr ""
 
@@ -2960,6 +2963,9 @@ msgid "Enable for this project"
 msgstr ""
 
 msgid "Enable group Runners"
+msgstr ""
+
+msgid "Enable header and footer in emails"
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."

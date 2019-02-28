@@ -13,6 +13,15 @@
     .form-group
       = form.label :footer_message, _('Footer message'), class: 'col-form-label label-bold'
       = form.text_area :footer_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
+    .form-group
+      .form-check
+        = form.check_box :email_header_and_footer_enabled, class: 'form-check-input'
+        = form.label :email_header_and_footer_enabled, class: 'label-bold' do
+          = _('Enable header and footer in emails')
+
+        .hint
+          = _('Add header and footer to emails. Please note that color settings will only be applied within the application interface')
+
     .form-group.js-toggle-colors-container
       %button.btn.btn-link.js-toggle-colors-link{ type: 'button' }
         = _('Customize colors')

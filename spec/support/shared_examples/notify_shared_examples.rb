@@ -252,3 +252,31 @@ shared_examples 'a note email' do
     end
   end
 end
+
+shared_examples 'appearance header and footer enabled' do
+  it "contains header and footer" do
+    create :appearance, header_message: "Foo", footer_message: "Bar", email_header_and_footer_enabled: true
+
+    aggregate_failures do
+      expect(subject.html_part).to have_body_text("<div class=\"header-message\" style=\"\"><p>Foo</p></div>")
+      expect(subject.html_part).to have_body_text("<div class=\"footer-message\" style=\"\"><p>Bar</p></div>")
+
+      expect(subject.text_part).to have_body_text(/^Foo/)
+      expect(subject.text_part).to have_body_text(/Bar$/)
+    end
+  end
+end
+
+shared_examples 'appearance header and footer not enabled' do
+  it "does not contain header and footer" do
+    create :appearance, header_message: "Foo", footer_message: "Bar", email_header_and_footer_enabled: false
+
+    aggregate_failures do
+      expect(subject.html_part).not_to have_body_text("<div class=\"header-message\" style=\"\"><p>Foo</p></div>")
+      expect(subject.html_part).not_to have_body_text("<div class=\"footer-message\" style=\"\"><p>Bar</p></div>")
+
+      expect(subject.text_part).not_to have_body_text(/^Foo/)
+      expect(subject.text_part).not_to have_body_text(/Bar$/)
+    end
+  end
+end
