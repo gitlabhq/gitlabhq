@@ -36,11 +36,13 @@ module Gitlab
           # Wait `SHUTDOWN_WAIT` to give already fetched jobs time to finish.
           # Then, tell Sidekiq to gracefully shut down by giving jobs a few more
           # moments to finish, killing and requeuing them if they didn't, and
-          # then terminating itself.
+          # then terminating itself. Sidekiq will replicate the TERM to all its
+          # children if it can.
           wait_and_signal(SHUTDOWN_WAIT, 'SIGTERM', 'gracefully shut down')
 
           # Wait for Sidekiq to shutdown gracefully, and kill it if it didn't.
-          wait_and_signal(Sidekiq.options[:timeout] + 2, 'SIGKILL', 'die')
+          # Kill the whole pgroup, so we can be sure no children are left behind
+          wait_and_signal_pgroup(Sidekiq.options[:timeout] + 2, 'SIGKILL', 'die')
         end
       end
 
@@ -51,6 +53,17 @@ module Gitlab
         return 0 unless status.zero?
 
         output.to_i
+      end
+
+      # If this sidekiq process is pgroup leader, signal to the whole pgroup
+      def wait_and_signal_pgroup(time, signal, explanation)
+        return wait_and_signal(time, signal, explanation) unless Process.getpgrp == pid
+
+        Sidekiq.logger.warn "waiting #{time} seconds before sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})"
+        sleep(time)
+
+        Sidekiq.logger.warn "sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})"
+        Process.kill(signal, "-#{pid}")
       end
 
       def wait_and_signal(time, signal, explanation)
