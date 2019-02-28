@@ -1005,7 +1005,7 @@ DEPENDENCIES
   flowdock (~> 0.7)
   fog-aliyun (~> 0.3)
   fog-aws (~> 3.3)
-  fog-core (~> 2.1)
+  fog-core (= 2.1.0)
   fog-google (~> 1.8)
   fog-local (~> 0.6)
   fog-openstack (~> 1.0)
