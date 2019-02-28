@@ -81,7 +81,6 @@ describe 'Dashboard > Activity' do
         expect(page).to have_content('commented on')
         expect(page).to have_content('closed milestone')
         expect(page).to have_content('opened issue')
-
       end
     end
 
@@ -110,7 +109,6 @@ describe 'Dashboard > Activity' do
         expect(page).not_to have_content('closed')
         expect(page).not_to have_content('commented on')
         expect(page).not_to have_content('opened issue')
-
       end
     end
 
