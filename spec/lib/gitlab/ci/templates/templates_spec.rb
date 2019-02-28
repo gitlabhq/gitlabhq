@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe "CI YML Templates" do
-  ABSTRACT_TEMPLATES = %w[Serverless]
+  ABSTRACT_TEMPLATES = %w[Serverless].freeze
 
   def self.concrete_templates
     Gitlab::Template::GitlabCiYmlTemplate.all.reject do |template|
