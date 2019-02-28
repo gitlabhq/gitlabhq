@@ -40,8 +40,7 @@ if (BABEL_ENV === 'karma' || BABEL_ENV === 'coverage') {
 
 // Jest is running in node environment
 if (BABEL_ENV === 'jest') {
-  plugins.push('transform-es2015-modules-commonjs');
-  plugins.push('dynamic-import-node');
+  plugins.push('@babel/plugin-transform-modules-commonjs');
 }
 
 module.exports = { presets, plugins };
