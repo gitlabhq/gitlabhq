@@ -807,9 +807,10 @@ describe SystemNoteService do
           expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
             body: hash_including(
               GlobalID: "GitLab",
+              relationship: 'mentioned on',
               object: {
                 url: project_commit_url(project, commit),
-                title: "GitLab: Mentioned on commit - #{commit.title}",
+                title: "Commit - #{commit.title}",
                 icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
@@ -833,9 +834,10 @@ describe SystemNoteService do
           expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
             body: hash_including(
               GlobalID: "GitLab",
+              relationship: 'mentioned on',
               object: {
                 url: project_issue_url(project, issue),
-                title: "GitLab: Mentioned on issue - #{issue.title}",
+                title: "Issue - #{issue.title}",
                 icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
@@ -859,9 +861,10 @@ describe SystemNoteService do
           expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
             body: hash_including(
               GlobalID: "GitLab",
+              relationship: 'mentioned on',
               object: {
                 url: project_snippet_url(project, snippet),
-                title: "GitLab: Mentioned on snippet - #{snippet.title}",
+                title: "Snippet - #{snippet.title}",
                 icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
