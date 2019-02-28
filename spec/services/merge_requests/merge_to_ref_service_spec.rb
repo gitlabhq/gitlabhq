@@ -52,6 +52,7 @@ describe MergeRequests::MergeToRefService do
 
       expect(result[:status]).to eq(:success)
       expect(result[:commit_id]).to be_present
+      expect(result[:source_id]).to eq(merge_request.source_branch_sha)
       expect(repository.ref_exists?(target_ref)).to be(true)
       expect(ref_head.id).to eq(result[:commit_id])
     end
@@ -115,41 +116,7 @@ describe MergeRequests::MergeToRefService do
     end
 
     context 'merge pre-condition checks' do
-      before do
-        merge_request.project.update!(merge_method: merge_method)
-      end
-
-      context 'when semi-linear merge method' do
-        let(:merge_method) { :rebase_merge }
-
-        it 'return error when MR should be able to fast-forward' do
-          allow(merge_request).to receive(:should_be_rebased?) { true }
-
-          error_message = 'Fast-forward merge is not possible. Please update your source branch.'
-
-          result = service.execute(merge_request)
-
-          expect(result[:status]).to eq(:error)
-          expect(result[:message]).to eq(error_message)
-        end
-      end
-
-      context 'when fast-forward merge method' do
-        let(:merge_method) { :ff }
-
-        it 'returns error' do
-          error_message = "Fast-forward to #{merge_request.merge_ref_path} is currently not supported."
-
-          result = service.execute(merge_request)
-
-          expect(result[:status]).to eq(:error)
-          expect(result[:message]).to eq(error_message)
-        end
-      end
-
       context 'when MR is not mergeable to ref' do
-        let(:merge_method) { :merge }
-
         it 'returns error' do
           allow(merge_request).to receive(:mergeable_to_ref?) { false }
 
