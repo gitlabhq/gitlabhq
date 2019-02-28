@@ -236,11 +236,15 @@ export default {
       <a
         v-if="diffFile.replaced_view_path"
         :href="diffFile.replaced_view_path"
-        class="btn view-file js-view-file"
+        class="btn view-file js-view-replaced-file"
         v-html="viewReplacedFileButtonText"
       >
       </a>
-      <a :href="diffFile.view_path" class="btn view-file js-view-file" v-html="viewFileButtonText">
+      <a
+        :href="diffFile.view_path"
+        class="btn view-file js-view-file-button"
+        v-html="viewFileButtonText"
+      >
       </a>
 
       <a
@@ -250,7 +254,7 @@ export default {
         :title="`View on ${diffFile.formatted_external_url}`"
         target="_blank"
         rel="noopener noreferrer"
-        class="btn btn-file-option"
+        class="btn btn-file-option js-external-url"
       >
         <icon name="external-link" />
       </a>
