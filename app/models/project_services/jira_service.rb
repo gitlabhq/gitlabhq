@@ -215,7 +215,7 @@ class JiraService < IssueTrackerService
   end
 
   def add_issue_solved_comment(issue, commit_id, commit_url)
-    link_title   = "GitLab: Solved by commit #{commit_id}."
+    link_title   = "Solved by commit #{commit_id}."
     comment      = "Issue solved with [#{commit_id}|#{commit_url}]."
     link_props   = build_remote_link_props(url: commit_url, title: link_title, resolved: true)
     send_message(issue, comment, link_props)
@@ -230,7 +230,7 @@ class JiraService < IssueTrackerService
     project_name = data[:project][:name]
 
     message      = "[#{user_name}|#{user_url}] mentioned this issue in [a #{entity_name} of #{project_name}|#{entity_url}]:\n'#{entity_title.chomp}'"
-    link_title   = "GitLab: Mentioned on #{entity_name} - #{entity_title}"
+    link_title   = "#{entity_name.capitalize} - #{entity_title}"
     link_props   = build_remote_link_props(url: entity_url, title: link_title)
 
     unless comment_exists?(issue, message)
@@ -278,6 +278,7 @@ class JiraService < IssueTrackerService
 
     {
       GlobalID: 'GitLab',
+      relationship: 'mentioned on',
       object: {
         url: url,
         title: title,

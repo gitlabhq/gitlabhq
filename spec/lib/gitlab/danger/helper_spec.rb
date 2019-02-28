@@ -265,6 +265,7 @@ describe Gitlab::Danger::Helper do
 
       'changelogs/foo'    | :none
       'ee/changelogs/foo' | :none
+      'locale/gitlab.pot' | :none
 
       'FOO'          | :unknown
       'foo'          | :unknown

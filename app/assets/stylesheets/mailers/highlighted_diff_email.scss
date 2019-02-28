@@ -1,4 +1,4 @@
-@import "framework/variables";
+@import 'framework/variables';
 
 // This file is largely copied from `highlight/white.scss`, but modified to
 // avoid all descendant selectors (`table td`). This is because the CSS inlining
@@ -40,16 +40,16 @@ $highlighted-kt: #458;
 $highlighted-m: #099;
 $highlighted-s: #d14;
 $highlighted-n: #333;
-$highlighted-na: teal;
+$highlighted-na: #008080;
 $highlighted-nb: #0086b3;
 $highlighted-nc: #458;
-$highlighted-no: teal;
-$highlighted-ni: purple;
+$highlighted-no: #008080;
+$highlighted-ni: #800080;
 $highlighted-ne: #900;
 $highlighted-nf: #900;
 $highlighted-nn: #555;
-$highlighted-nt: navy;
-$highlighted-nv: teal;
+$highlighted-nt: #000080;
+$highlighted-nv: #008080;
 $highlighted-w: #bbb;
 $highlighted-mf: #099;
 $highlighted-mh: #099;
@@ -67,9 +67,9 @@ $highlighted-sr: #009926;
 $highlighted-s1: #d14;
 $highlighted-ss: #990073;
 $highlighted-bp: #999;
-$highlighted-vc: teal;
-$highlighted-vg: teal;
-$highlighted-vi: teal;
+$highlighted-vc: #008080;
+$highlighted-vg: #008080;
+$highlighted-vi: #008080;
 $highlighted-il: #099;
 $highlighted-gc: #999;
 $highlighted-gc-bg: #eaf2f5;
@@ -151,14 +151,27 @@ span.highlight_word {
 }
 
 .hll { background-color: $highlighted-hll-bg; }
-.c { color: $highlighted-c; font-style: italic; }
-.err { color: $highlighted-err; background-color: $highlighted-err-bg; }
+
+.c { color: $highlighted-c;
+  font-style: italic; }
+
+.err { color: $highlighted-err;
+  background-color: $highlighted-err-bg; }
 .k { font-weight: $gl-font-weight-bold; }
 .o { font-weight: $gl-font-weight-bold; }
-.cm { color: $highlighted-cm; font-style: italic; }
-.cp { color: $highlighted-cp; font-weight: $gl-font-weight-bold; }
-.c1 { color: $highlighted-c1; font-style: italic; }
-.cs { color: $highlighted-cs; font-weight: $gl-font-weight-bold; font-style: italic; }
+
+.cm { color: $highlighted-cm;
+  font-style: italic; }
+
+.cp { color: $highlighted-cp;
+  font-weight: $gl-font-weight-bold; }
+
+.c1 { color: $highlighted-c1;
+  font-style: italic; }
+
+.cs { color: $highlighted-cs;
+  font-weight: $gl-font-weight-bold;
+  font-style: italic; }
 
 .gd {
   color: $highlighted-gd;
@@ -187,24 +200,34 @@ span.highlight_word {
 .go { color: $highlighted-go; }
 .gp { color: $highlighted-gp; }
 .gs { font-weight: $gl-font-weight-bold; }
-.gu { color: $highlighted-gu; font-weight: $gl-font-weight-bold; }
+
+.gu { color: $highlighted-gu;
+  font-weight: $gl-font-weight-bold; }
 .gt { color: $highlighted-gt; }
 .kc { font-weight: $gl-font-weight-bold; }
 .kd { font-weight: $gl-font-weight-bold; }
 .kn { font-weight: $gl-font-weight-bold; }
 .kp { font-weight: $gl-font-weight-bold; }
 .kr { font-weight: $gl-font-weight-bold; }
-.kt { color: $highlighted-kt; font-weight: $gl-font-weight-bold; }
+
+.kt { color: $highlighted-kt;
+  font-weight: $gl-font-weight-bold; }
 .m { color: $highlighted-m; }
 .s { color: $highlighted-s; }
 .n { color: $highlighted-n; }
 .na { color: $highlighted-na; }
 .nb { color: $highlighted-nb; }
-.nc { color: $highlighted-nc; font-weight: $gl-font-weight-bold; }
+
+.nc { color: $highlighted-nc;
+  font-weight: $gl-font-weight-bold; }
 .no { color: $highlighted-no; }
 .ni { color: $highlighted-ni; }
-.ne { color: $highlighted-ne; font-weight: $gl-font-weight-bold; }
-.nf { color: $highlighted-nf; font-weight: $gl-font-weight-bold; }
+
+.ne { color: $highlighted-ne;
+  font-weight: $gl-font-weight-bold; }
+
+.nf { color: $highlighted-nf;
+  font-weight: $gl-font-weight-bold; }
 .nn { color: $highlighted-nn; }
 .nt { color: $highlighted-nt; }
 .nv { color: $highlighted-nv; }
@@ -230,4 +253,6 @@ span.highlight_word {
 .vg { color: $highlighted-vg; }
 .vi { color: $highlighted-vi; }
 .il { color: $highlighted-il; }
-.gc { color: $highlighted-gc; background-color: $highlighted-gc-bg; }
+
+.gc { color: $highlighted-gc;
+  background-color: $highlighted-gc-bg; }

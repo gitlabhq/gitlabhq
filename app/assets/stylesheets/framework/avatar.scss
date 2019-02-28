@@ -45,7 +45,6 @@
     display: inline-block;
     margin-left: 2px;
     flex-shrink: 0;
-    -webkit-flex-shrink: 0;
 
     &.s16 { margin-right: 4px; }
     &.s24 { margin-right: 4px; }
@@ -74,20 +73,48 @@
   background-color: $gray-darker;
 
   // Sizes
-  &.s16 { font-size: 12px; line-height: 1.33; }
-  &.s24 { font-size: 13px; line-height: 1.8; }
-  &.s26 { font-size: 20px; line-height: 1.33; }
-  &.s32 { font-size: 20px; line-height: 30px; }
-  &.s40 { font-size: 16px; line-height: 38px; }
-  &.s48 { font-size: 20px; line-height: 46px; }
-  &.s60 { font-size: 32px; line-height: 58px; }
-  &.s64 { font-size: 32px; line-height: 64px; }
-  &.s70 { font-size: 34px; line-height: 70px; }
-  &.s90 { font-size: 36px; line-height: 88px; }
-  &.s100 { font-size: 36px; line-height: 98px; }
-  &.s110 { font-size: 40px; line-height: 108px; font-weight: $gl-font-weight-normal; }
-  &.s140 { font-size: 72px; line-height: 138px; }
-  &.s160 { font-size: 96px; line-height: 158px; }
+  &.s16 { font-size: 12px;
+    line-height: 1.33; }
+
+  &.s24 { font-size: 13px;
+    line-height: 1.8; }
+
+  &.s26 { font-size: 20px;
+    line-height: 1.33; }
+
+  &.s32 { font-size: 20px;
+    line-height: 30px; }
+
+  &.s40 { font-size: 16px;
+    line-height: 38px; }
+
+  &.s48 { font-size: 20px;
+    line-height: 46px; }
+
+  &.s60 { font-size: 32px;
+    line-height: 58px; }
+
+  &.s64 { font-size: 32px;
+    line-height: 64px; }
+
+  &.s70 { font-size: 34px;
+    line-height: 70px; }
+
+  &.s90 { font-size: 36px;
+    line-height: 88px; }
+
+  &.s100 { font-size: 36px;
+    line-height: 98px; }
+
+  &.s110 { font-size: 40px;
+    line-height: 108px;
+    font-weight: $gl-font-weight-normal; }
+
+  &.s140 { font-size: 72px;
+    line-height: 138px; }
+
+  &.s160 { font-size: 96px;
+    line-height: 158px; }
 
   // Background colors
   &.bg1 { background-color: $identicon-red; }
@@ -120,8 +147,11 @@
     align-self: center;
   }
 
-  &.s40 { min-width: 40px; min-height: 40px; }
-  &.s64 { min-width: 64px; min-height: 64px; }
+  &.s40 { min-width: 40px;
+    min-height: 40px; }
+
+  &.s64 { min-width: 64px;
+    min-height: 64px; }
 }
 
 .rect-avatar {

@@ -86,10 +86,8 @@ that builds on this to add some additional niceties, such as allowing
 configuration with a single Yaml file for multiple URLs, and uploading of the
 profile and log output to S3.
 
-For GitLab.com, currently the latest profiling data has been [moved from
-Redash to Looker](https://gitlab.com/gitlab-com/Product/issues/5#note_121194467).
-We are [currently investigating how to make this data
-public](https://gitlab.com/meltano/looker/issues/294).
+For GitLab.com, you can find the latest results here:
+<http://redash.gitlab.com/dashboard/gitlab-profiler-statistics>
 
 ## Sherlock
 
