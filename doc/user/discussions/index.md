@@ -356,7 +356,7 @@ Clicking on the **Reply to comment** button will bring the reply area into focus
 Relying to a non-discussion comment will convert the non-discussion comment to a 
 threaded discussion once the reply is submitted.
 
-This feature only exists for Issues, Merge requests, and Epics.  Commits, Snippets and Merge request diff discussions are not supported.
+This feature only exists for Issues, Merge requests, and Epics.  Commits, Snippets and Merge request diff discussions are not supported yet.
 
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
