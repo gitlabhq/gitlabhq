@@ -4,6 +4,10 @@ Runbooks are a collection of documented procedures that explain how to
 carry out a particular process, be it starting, stopping, debugging, 
 or troubleshooting a particular system.
 
+Using [Jupyter Notebooks](https://jupyter.org/) and the [Rubix library](https://github.com/Nurtch/rubix),
+users can get started writing their own executable runbooks.
+
+
 ## Overview
 
 Historically, runbooks took the form of a decision tree or a detailed 
@@ -36,7 +40,7 @@ To create an executable runbook, you will need:
     can run the helm CLI in a safe environment.
 1. **Ingress** - Ingress can provide load balancing, SSL termination, and name-based 
     virtual hosting. It acts as a web proxy for your applications.
-1. **JupyterHub** - JupyterHub is a multi-user service for managing notebooks across 
+1. **JupyterHub** - [JupyterHub](https://jupyterhub.readthedocs.io/) is a multi-user service for managing notebooks across 
     a team. Jupyter Notebooks provide a web-based interactive programming environment 
     used for data analysis, visualization, and machine learning.
 
