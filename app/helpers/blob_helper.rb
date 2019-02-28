@@ -37,7 +37,7 @@ module BlobHelper
   end
 
   def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
-    return unless Feature.enabled?(:web_ide_default)
+    return if Feature.enabled?(:web_ide_default)
     return unless blob = readable_blob(options, path, project, ref)
 
     edit_button_tag(blob,
