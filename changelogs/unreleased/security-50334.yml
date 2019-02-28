@@ -1,5 +1,0 @@
----
-title: Fix git clone revealing private repo's presence
-merge_request:
-author:
-type: security
