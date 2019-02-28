@@ -880,6 +880,29 @@ import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 See the frontend guide [performance section](./fe_guide/performance.md) for
 information on managing page-specific javascript within EE.
 
+## Vue code in `assets/javascript`
+
+To seperate Vue template differences we should async import the components.
+Doing this allows for us to load the correct component in EE whilst in CE
+we can load a empty component that renders nothing. This code **should**
+exist in the CE repository as well as the EE repository.
+
+```html
+<script>
+export default {
+  components: {
+    EEComponent: () => import('ee_component/components/test.vue'),
+  },
+};
+</script>
+
+<template>
+  <div>
+    <ee-component />
+  </div>
+</template>
+```
+
 ## SCSS code in `assets/stylesheets`
 
 To separate EE-specific styles in SCSS files, if a component you're adding styles for
