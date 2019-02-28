@@ -9,7 +9,8 @@ On heavily used GitLab instances the memory usage of the Sidekiq background work
 
 Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/operations/sidekiq_memory_killer.md) if it uses too much memory.
 After this termination Runit will detect Sidekiq is not running and will start it.
-Since installations from source don't have Runit, Sidekiq can't be terminated and its memory usage will grow over time.
+Since installations from source don't use Runit for process supervision, Sidekiq
+can't be terminated and its memory usage will grow over time.
 
 ## Select Version to Install
 
@@ -72,7 +73,8 @@ Install the required packages (needed to compile Ruby and native extensions to R
 ```sh
 sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libre2-dev \
   libreadline-dev libncurses5-dev libffi-dev curl openssh-server checkinstall libxml2-dev \
-  libxslt-dev libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake
+  libxslt-dev libcurl4-openssl-dev libicu-dev logrotate rsync python-docutils pkg-config cmake \
+  runit
 ```
 
 Ubuntu 14.04 (Trusty Tahr) doesn't have the `libre2-dev` package available, but
