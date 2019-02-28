@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/import_projects/store';
+import createStore from '~/import_projects/store';
 import importProjectsTable from '~/import_projects/components/import_projects_table.vue';
 import STATUS_MAP from '~/import_projects/constants';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
@@ -9,6 +9,7 @@ import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 describe('ImportProjectsTable', () => {
   let vm;
   let mock;
+  let store;
   const reposPath = '/repos-path';
   const jobsPath = '/jobs-path';
   const providerTitle = 'THE PROVIDER';
@@ -31,12 +32,13 @@ describe('ImportProjectsTable', () => {
       },
     }).$mount();
 
-    component.$store.dispatch('stopJobsPolling');
+    store.dispatch('stopJobsPolling');
 
     return component;
   }
 
   beforeEach(() => {
+    store = createStore();
     store.dispatch('setInitialData', { reposPath });
     mock = new MockAdapter(axios);
   });
@@ -167,7 +169,7 @@ describe('ImportProjectsTable', () => {
         expect(vm.$el.querySelector(`.ic-status_${statusObject.icon}`)).not.toBeNull();
 
         mock.onGet(jobsPath).replyOnce(200, updatedProjects);
-        return vm.$store.dispatch('restartJobsPolling');
+        return store.dispatch('restartJobsPolling');
       })
       .then(() => setTimeoutPromise())
       .then(() => {
