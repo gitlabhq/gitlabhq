@@ -38,6 +38,7 @@ GitLab provides built-in tools to help improve performance and availability:
 
 - [Profiling](profiling.md).
   - [Sherlock](profiling.md#sherlock).
+- [Distributed Tracing](distributed_tracing.md)
 - [GitLab Performance Monitoring](../administration/monitoring/performance/index.md).
 - [Request Profiling](../administration/monitoring/performance/request_profiling.md).
 - [QueryRecoder](query_recorder.md) for preventing `N+1` regressions.
