@@ -114,8 +114,8 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
     - Public, continue to the next step.
     - Private, you will need to [create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token) with `gitlab-deploy-token` as the name and the `read_registry` scope.
 
-1. `.gitlab-ci.yml`: this configuration allows to define the environment to be
-   used to deploy your functions. It must be included at the root of your repository:
+1. `.gitlab-ci.yml`: this defines a pipeline used to deploy your functions.
+   It must be included at the root of your repository:
 
    ```yaml
    include:
@@ -126,8 +126,14 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
      environment: production
    ```
 
-    This `.gitlab-ci.yml` creates a `Deploy` stage with the `functions` job
-    that invokes some predefined commands to deploy your functions to Knative.
+    This `.gitlab-ci.yml` creates a `functions` job that invokes some
+    predefined commands to deploy your functions to Knative.
+
+    `Serverless.gitlab-ci.yml` is a template that allows customization.
+    You can either import it with `include` parameter and use `extends` to
+    customize your jobs, or you can inline entire template by choosing it
+    from "Apply a template" dropdown when editing `.gitlab-ci.yml` file through
+    the User Interface.
 
 2. `serverless.yml`: this file contains the metadata for your functions,
    such as name, runtime, and environment.
@@ -246,9 +252,10 @@ deploy:
 ```
 
 `Serverless.gitlab-ci.yml` is a template that allows customization.
-You can either import it with `include:` directive and use `extends` to
+You can either import it with `include` parameter and use `extends` to
 customize your jobs, or you can inline entire template by choosing it
-from "Templates" dropdown. (TODO: link to docs about templates).
+from "Apply a template" dropdown when editing `.gitlab-ci.yml` file through
+the User Interface.
 
 ### Deploy the application with Knative
 
