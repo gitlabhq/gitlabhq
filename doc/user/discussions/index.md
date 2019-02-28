@@ -339,6 +339,25 @@ and push the suggested change directly into the codebase in the merge request's 
 Custom commit messages will be introduced by
 [#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
 
+## Start a discussion from a non-discussion comment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30299) in GitLab 11.9
+
+To reply a non-discussion comment, you can use the **Reply to comment** button.
+
+![Reply to comment button](img/reply_to_comment_button.png)
+
+The **Reply to comment** button is only displayed if you have permissions to reply to an existing discussion, or start a discussion from a standalone comment.
+
+Clicking on the **Reply to comment** button will bring the reply area into focus and you can type your reply.
+
+![Reply to comment feature](img/reply_to_comment.gif)
+
+Relying to a non-discussion comment will convert the non-discussion comment to a 
+threaded discussion once the reply is submitted.
+
+This feature only exists for Issues, Merge requests, and Epics.  Commits, Snippets and Merge request diff discussions are not supported.
+
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
 [ce-7527]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7527
