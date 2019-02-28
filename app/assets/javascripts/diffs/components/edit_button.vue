@@ -1,5 +1,15 @@
 <script>
+import { GlTooltipDirective, GlButton } from '@gitlab/ui';
+import Icon from '~/vue_shared/components/icon.vue';
+
 export default {
+  components: {
+    GlButton,
+    Icon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     editPath: {
       type: String,
@@ -27,5 +37,13 @@ export default {
 </script>
 
 <template>
-  <a :href="editPath" class="btn btn-default js-edit-blob" @click="handleEditClick"> Edit </a>
+  <gl-button
+    v-gl-tooltip.bottom
+    :href="editPath"
+    :title="__('Edit file')"
+    class="js-edit-blob"
+    @click.native="handleEditClick"
+  >
+    <icon name="pencil" />
+  </gl-button>
 </template>

@@ -309,5 +309,40 @@ export const cacheTreeListWidth = (_, size) => {
   localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
 };
 
+export const requestFullDiff = ({ commit }, filePath) => commit(types.REQUEST_FULL_DIFF, filePath);
+export const receiveFullDiffSucess = ({ commit }, { filePath, data }) =>
+  commit(types.RECEIVE_FULL_DIFF_SUCCESS, { filePath, data });
+export const receiveFullDiffError = ({ commit }, filePath) => {
+  commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
+  createFlash(s__('MergeRequest|Error loading full diff. Please try again.'));
+};
+
+export const fetchFullDiff = ({ dispatch }, file) =>
+  axios
+    .get(file.context_lines_path, {
+      params: {
+        full: true,
+        from_merge_request: true,
+      },
+    })
+    .then(({ data }) => dispatch('receiveFullDiffSucess', { filePath: file.file_path, data }))
+    .then(() => scrollToElement(`#${file.file_hash}`))
+    .catch(() => dispatch('receiveFullDiffError', file.file_path));
+
+export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
+  const file = state.diffFiles.find(f => f.file_path === filePath);
+
+  dispatch('requestFullDiff', filePath);
+
+  if (file.isShowingFullFile) {
+    dispatch('loadCollapsedDiff', file)
+      .then(() => dispatch('assignDiscussionsToDiff', getters.getDiffFileDiscussions(file)))
+      .then(() => scrollToElement(`#${file.file_hash}`))
+      .catch(() => dispatch('receiveFullDiffError', filePath));
+  } else {
+    dispatch('fetchFullDiff', file);
+  }
+};
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

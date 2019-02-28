@@ -329,6 +329,16 @@ module Gitlab
         lines
       end
 
+      def fully_expanded?
+        return true if binary?
+
+        lines = diff_lines_for_serializer
+
+        return true if lines.nil?
+
+        lines.none? { |line| line.type.to_s == 'match' }
+      end
+
       private
 
       def total_blob_lines(blob)
