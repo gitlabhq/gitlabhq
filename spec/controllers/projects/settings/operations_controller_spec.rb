@@ -74,38 +74,55 @@ describe Projects::Settings::OperationsController do
         {
           error_tracking_setting_attributes: {
             enabled: '1',
-            api_url: 'http://url',
-            token: 'token'
+            api_host: 'http://url',
+            token: 'token',
+            project: {
+              slug: 'sentry-project',
+              name: 'Sentry Project',
+              organization_slug: 'sentry-org',
+              organization_name: 'Sentry Org'
+            }
           }
         }
       end
+
       let(:error_tracking_permitted) do
         ActionController::Parameters.new(error_tracking_params).permit!
       end
 
-      context 'when update succeeds' do
-        before do
-          stub_operations_update_service_returning(status: :success)
+      context 'format json' do
+        context 'when update succeeds' do
+          before do
+            stub_operations_update_service_returning(status: :success)
+          end
+
+          it 'returns success status' do
+            patch :update,
+              params: project_params(project, error_tracking_params),
+              format: :json
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to eq('status' => 'success')
+            expect(flash[:notice]).to eq('Your changes have been saved')
+          end
         end
 
-        it 'shows a notice' do
-          patch :update, params: project_params(project, error_tracking_params)
+        context 'when update fails' do
+          before do
+            stub_operations_update_service_returning(
+              status: :error,
+              message: 'error message'
+            )
+          end
 
-          expect(response).to redirect_to(operations_url)
-          expect(flash[:notice]).to eq _('Your changes have been saved')
-        end
-      end
+          it 'returns error' do
+            patch :update,
+              params: project_params(project, error_tracking_params),
+              format: :json
 
-      context 'when update fails' do
-        before do
-          stub_operations_update_service_returning(status: :error)
-        end
-
-        it 'renders show page' do
-          patch :update, params: project_params(project, error_tracking_params)
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:show)
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response['message']).not_to be_nil
+          end
         end
       end
 

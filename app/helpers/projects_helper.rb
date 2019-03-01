@@ -284,6 +284,20 @@ module ProjectsHelper
     can?(current_user, :read_environment, @project)
   end
 
+  def error_tracking_setting_project_json
+    setting = @project.error_tracking_setting
+
+    return if setting.blank? || setting.project_slug.blank? ||
+        setting.organization_slug.blank?
+
+    {
+      name: setting.project_name,
+      organization_name: setting.organization_name,
+      organization_slug: setting.organization_slug,
+      slug: setting.project_slug
+    }.to_json
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
