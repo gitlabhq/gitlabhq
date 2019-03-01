@@ -31,7 +31,7 @@ module Gitlab
 
           # Wait `GRACE_TIME` to give the memory intensive job time to finish.
           # Then, tell Sidekiq to stop fetching new jobs.
-          wait_and_signal(GRACE_TIME, 'SIGSTP', 'stop fetching new jobs')
+          wait_and_signal(GRACE_TIME, 'SIGTSTP', 'stop fetching new jobs')
 
           # Wait `SHUTDOWN_WAIT` to give already fetched jobs time to finish.
           # Then, tell Sidekiq to gracefully shut down by giving jobs a few more
