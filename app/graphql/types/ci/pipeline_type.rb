@@ -13,6 +13,10 @@ module Types
       field :sha, GraphQL::STRING_TYPE, null: false
       field :before_sha, GraphQL::STRING_TYPE, null: true
       field :status, PipelineStatusEnum, null: false
+      field :detailed_status,
+            Types::Ci::DetailedStatusType,
+            null: false,
+            resolve: -> (obj, _args, ctx) { obj.detailed_status(ctx[:current_user]) }
       field :duration,
             GraphQL::INT_TYPE,
             null: true,
