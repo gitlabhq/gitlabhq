@@ -19,27 +19,7 @@ describe MergeRequests::MergeToRefService do
     end
   end
 
-  set(:user) { create(:user) }
-  let(:merge_request) { create(:merge_request, :simple) }
-  let(:project) { merge_request.project }
-
-  before do
-    project.add_maintainer(user)
-  end
-
-  describe '#execute' do
-    let(:service) do
-      described_class.new(project, user,
-                          commit_message: 'Awesome message',
-                          'should_remove_source_branch' => true)
-    end
-
-    def process_merge_to_ref
-      perform_enqueued_jobs do
-        service.execute(merge_request)
-      end
-    end
-
+  shared_examples_for 'successfully merges to ref with merge method' do
     it 'writes commit to merge ref' do
       repository = project.repository
       target_ref = merge_request.merge_ref_path
@@ -53,8 +33,29 @@ describe MergeRequests::MergeToRefService do
       expect(result[:status]).to eq(:success)
       expect(result[:commit_id]).to be_present
       expect(result[:source_id]).to eq(merge_request.source_branch_sha)
+      expect(result[:target_id]).to eq(merge_request.target_branch_sha)
       expect(repository.ref_exists?(target_ref)).to be(true)
       expect(ref_head.id).to eq(result[:commit_id])
+    end
+  end
+
+  shared_examples_for 'successfully evaluates pre-condition checks' do
+    it 'returns error when feature is disabled' do
+      stub_feature_flags(merge_to_tmp_merge_ref_path: false)
+
+      result = service.execute(merge_request)
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Feature is not enabled')
+    end
+
+    it 'returns an error when the failing to process the merge' do
+      allow(project.repository).to receive(:merge_to_ref).and_return(nil)
+
+      result = service.execute(merge_request)
+
+      expect(result[:status]).to eq(:error)
+      expect(result[:message]).to eq('Conflicts detected during merge')
     end
 
     it 'does not send any mail' do
@@ -74,24 +75,30 @@ describe MergeRequests::MergeToRefService do
 
       process_merge_to_ref
     end
+  end
 
-    it 'returns error when feature is disabled' do
-      stub_feature_flags(merge_to_tmp_merge_ref_path: false)
+  set(:user) { create(:user) }
+  let(:merge_request) { create(:merge_request, :simple) }
+  let(:project) { merge_request.project }
 
-      result = service.execute(merge_request)
+  before do
+    project.add_maintainer(user)
+  end
 
-      expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq('Feature is not enabled')
+  describe '#execute' do
+    let(:service) do
+      described_class.new(project, user, commit_message: 'Awesome message',
+                                         should_remove_source_branch: true)
     end
 
-    it 'returns an error when the failing to process the merge' do
-      allow(project.repository).to receive(:merge_to_ref).and_return(nil)
-
-      result = service.execute(merge_request)
-
-      expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq('Conflicts detected during merge')
+    def process_merge_to_ref
+      perform_enqueued_jobs do
+        service.execute(merge_request)
+      end
     end
+
+    it_behaves_like 'successfully merges to ref with merge method'
+    it_behaves_like 'successfully evaluates pre-condition checks'
 
     context 'commit history comparison with regular MergeService' do
       let(:merge_ref_service) do
@@ -116,7 +123,27 @@ describe MergeRequests::MergeToRefService do
     end
 
     context 'merge pre-condition checks' do
+      before do
+        merge_request.project.update!(merge_method: merge_method)
+      end
+
+      context 'when semi-linear merge method' do
+        let(:merge_method) { :rebase_merge }
+
+        it_behaves_like 'successfully merges to ref with merge method'
+        it_behaves_like 'successfully evaluates pre-condition checks'
+      end
+
+      context 'when fast-forward merge method' do
+        let(:merge_method) { :ff }
+
+        it_behaves_like 'successfully merges to ref with merge method'
+        it_behaves_like 'successfully evaluates pre-condition checks'
+      end
+
       context 'when MR is not mergeable to ref' do
+        let(:merge_method) { :merge }
+
         it 'returns error' do
           allow(merge_request).to receive(:mergeable_to_ref?) { false }
 
