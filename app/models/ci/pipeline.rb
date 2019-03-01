@@ -417,10 +417,6 @@ module Ci
       @commit ||= Commit.lazy(project, sha)
     end
 
-    def branch?
-      super && !merge_request?
-    end
-
     def stuck?
       pending_builds.any?(&:stuck?)
     end
