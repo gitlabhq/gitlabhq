@@ -227,9 +227,7 @@ describe GroupsController do
 
     context 'searching' do
       before do
-        # Remove in https://gitlab.com/gitlab-org/gitlab-ce/issues/54643
-        stub_feature_flags(use_cte_for_group_issues_search: false)
-        stub_feature_flags(use_subquery_for_group_issues_search: true)
+        stub_feature_flags(attempt_group_search_optimizations: true)
       end
 
       it 'works with popularity sort' do
