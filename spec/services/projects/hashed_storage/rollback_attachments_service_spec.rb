@@ -1,30 +1,32 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe Projects::HashedStorage::MigrateAttachmentsService do
-  subject(:service) { described_class.new(project, project.full_path, logger: nil) }
+describe Projects::HashedStorage::RollbackAttachmentsService do
+  subject(:service) { described_class.new(project, logger: nil) }
 
-  let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
+  let(:project) { create(:project, :repository, skip_disk_validation: true) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
 
   let!(:upload) { Upload.find_by(path: file_uploader.upload_path) }
   let(:file_uploader) { build(:file_uploader, project: project) }
-  let(:old_disk_path) { File.join(base_path(legacy_storage), upload.path) }
-  let(:new_disk_path) { File.join(base_path(hashed_storage), upload.path) }
+  let(:old_disk_path) { File.join(base_path(hashed_storage), upload.path) }
+  let(:new_disk_path) { File.join(base_path(legacy_storage), upload.path) }
 
   context '#execute' do
     context 'when succeeds' do
-      it 'moves attachments to hashed storage layout' do
+      it 'moves attachments to legacy storage layout' do
         expect(File.file?(old_disk_path)).to be_truthy
         expect(File.file?(new_disk_path)).to be_falsey
-        expect(File.exist?(base_path(legacy_storage))).to be_truthy
-        expect(File.exist?(base_path(hashed_storage))).to be_falsey
-        expect(FileUtils).to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage)).and_call_original
+        expect(File.exist?(base_path(hashed_storage))).to be_truthy
+        expect(File.exist?(base_path(legacy_storage))).to be_falsey
+        expect(FileUtils).to receive(:mv).with(base_path(hashed_storage), base_path(legacy_storage)).and_call_original
 
         service.execute
 
-        expect(File.exist?(base_path(hashed_storage))).to be_truthy
-        expect(File.exist?(base_path(legacy_storage))).to be_falsey
+        expect(File.exist?(base_path(legacy_storage))).to be_truthy
+        expect(File.exist?(base_path(hashed_storage))).to be_falsey
         expect(File.file?(old_disk_path)).to be_falsey
         expect(File.file?(new_disk_path)).to be_truthy
       end
@@ -42,15 +44,15 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
 
     context 'when original folder does not exist anymore' do
       before do
-        FileUtils.rm_rf(base_path(legacy_storage))
+        FileUtils.rm_rf(base_path(hashed_storage))
       end
 
       it 'skips moving folders and go to next' do
-        expect(FileUtils).not_to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage))
+        expect(FileUtils).not_to receive(:mv).with(base_path(hashed_storage), base_path(legacy_storage))
 
         service.execute
 
-        expect(File.exist?(base_path(hashed_storage))).to be_falsey
+        expect(File.exist?(base_path(legacy_storage))).to be_falsey
         expect(File.file?(new_disk_path)).to be_falsey
       end
 
@@ -67,7 +69,7 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
 
     context 'when target folder already exists' do
       before do
-        FileUtils.mkdir_p(base_path(hashed_storage))
+        FileUtils.mkdir_p(base_path(legacy_storage))
       end
 
       it 'raises AttachmentCannotMoveError' do
@@ -80,7 +82,7 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
 
   context '#old_disk_path' do
     it 'returns old disk_path for project' do
-      expect(service.old_disk_path).to eq(project.full_path)
+      expect(service.old_disk_path).to eq(project.disk_path)
     end
   end
 
@@ -88,7 +90,7 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
     it 'returns new disk_path for project' do
       service.execute
 
-      expect(service.new_disk_path).to eq(project.disk_path)
+      expect(service.new_disk_path).to eq(project.full_path)
     end
   end
 

@@ -47,6 +47,9 @@
 - github_importer:github_import_stage_import_repository
 
 - hashed_storage:hashed_storage_migrator
+- hashed_storage:hashed_storage_rollbacker
+- hashed_storage:hashed_storage_project_migrate
+- hashed_storage:hashed_storage_project_rollback
 
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
@@ -126,7 +129,6 @@
 - project_cache
 - project_destroy
 - project_export
-- project_migrate_hashed_storage
 - project_service
 - propagate_service_template
 - reactive_caching

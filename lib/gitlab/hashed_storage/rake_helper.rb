@@ -24,8 +24,18 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def self.project_id_batches(&block)
+      def self.project_id_batches_migration(&block)
         Project.with_unmigrated_storage.in_batches(of: batch_size, start: range_from, finish: range_to) do |relation| # rubocop: disable Cop/InBatches
+          ids = relation.pluck(:id)
+
+          yield ids.min, ids.max
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def self.project_id_batches_rollback(&block)
+        Project.with_storage_feature(:repository).in_batches(of: batch_size, start: range_from, finish: range_to) do |relation| # rubocop: disable Cop/InBatches
           ids = relation.pluck(:id)
 
           yield ids.min, ids.max

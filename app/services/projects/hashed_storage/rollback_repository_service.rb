@@ -2,12 +2,12 @@
 
 module Projects
   module HashedStorage
-    class MigrateRepositoryService < BaseRepositoryService
+    class RollbackRepositoryService < BaseRepositoryService
       def execute
         try_to_set_repository_read_only!
 
         @old_storage_version = project.storage_version
-        project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:repository]
+        project.storage_version = nil
         project.ensure_storage_path_exists
 
         @new_disk_path = project.disk_path
@@ -23,7 +23,7 @@ module Projects
           project.track_project_repository
         else
           rollback_folder_move
-          project.storage_version = nil
+          project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:repository]
         end
 
         project.repository_read_only = false
