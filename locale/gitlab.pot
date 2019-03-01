@@ -384,19 +384,37 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add a bullet list"
+msgstr ""
+
 msgid "Add a general comment to this %{noteable_name}."
 msgstr ""
 
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
+msgid "Add a link"
+msgstr ""
+
+msgid "Add a numbered list"
+msgstr ""
+
 msgid "Add a table"
+msgstr ""
+
+msgid "Add a task list"
+msgstr ""
+
+msgid "Add bold text"
 msgstr ""
 
 msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
 msgid "Add image comment"
+msgstr ""
+
+msgid "Add italic text"
 msgstr ""
 
 msgid "Add license"
@@ -3627,6 +3645,9 @@ msgstr ""
 msgid "Go back"
 msgstr ""
 
+msgid "Go full screen"
+msgstr ""
+
 msgid "Go to"
 msgstr ""
 
@@ -4068,6 +4089,12 @@ msgid "Input host keys manually"
 msgstr ""
 
 msgid "Input your repository URL"
+msgstr ""
+
+msgid "Insert a quote"
+msgstr ""
+
+msgid "Insert code"
 msgstr ""
 
 msgid "Insert suggestion"
@@ -4540,36 +4567,6 @@ msgid "Markdown"
 msgstr ""
 
 msgid "Markdown enabled"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a bullet list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a link"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a numbered list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a table"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a task list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add bold text"
-msgstr ""
-
-msgid "MarkdownToolbar|Add italic text"
-msgstr ""
-
-msgid "MarkdownToolbar|Go full screen"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert a quote"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert code"
 msgstr ""
 
 msgid "Max access level"
@@ -8526,6 +8523,9 @@ msgid "Will deploy to"
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid "Write"
 msgstr ""
 
 msgid "Write a comment or drag your files here…"
