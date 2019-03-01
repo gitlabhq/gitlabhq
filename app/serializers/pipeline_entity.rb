@@ -28,12 +28,17 @@ class PipelineEntity < Grape::Entity
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable
     expose :failure_reason?, as: :failure_reason
+    expose :detached_merge_request_pipeline?, as: :detached
   end
 
   expose :details do
     expose :detailed_status, as: :status, with: DetailedStatusEntity
     expose :duration
     expose :finished_at
+  end
+
+  expose :merge_request, if: -> (*) { has_presentable_merge_request? }, with: MergeRequestForPipelineEntity do |pipeline|
+    pipeline.merge_request.present(current_user: request.current_user)
   end
 
   expose :ref do
@@ -79,6 +84,11 @@ class PipelineEntity < Grape::Entity
   def can_cancel?
     can?(request.current_user, :update_pipeline, pipeline) &&
       pipeline.cancelable?
+  end
+
+  def has_presentable_merge_request?
+    pipeline.triggered_by_merge_request? &&
+      can?(request.current_user, :read_merge_request, pipeline.merge_request)
   end
 
   def detailed_status
