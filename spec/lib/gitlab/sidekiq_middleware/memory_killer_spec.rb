@@ -37,7 +37,7 @@ describe Gitlab::SidekiqMiddleware::MemoryKiller do
 
     it 'sends the STP, TERM and KILL signals at expected times' do
       expect(subject).to receive(:sleep).with(15 * 60).ordered
-      expect(Process).to receive(:kill).with('SIGSTP', pid).ordered
+      expect(Process).to receive(:kill).with('SIGTSTP', pid).ordered
 
       expect(subject).to receive(:sleep).with(30).ordered
       expect(Process).to receive(:kill).with('SIGTERM', pid).ordered
