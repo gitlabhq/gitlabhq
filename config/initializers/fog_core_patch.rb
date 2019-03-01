@@ -37,7 +37,7 @@ module Fog
     def service_provider_constant(service_name, provider_name)
       args = service_provider_search_args(service_name, provider_name)
       Fog.const_get(args.first).const_get(*const_get_args(args.second))
-    rescue NameError  # Try to find the constant from in an alternate location
+    rescue NameError # Try to find the constant from in an alternate location
       Fog.const_get(args.second).const_get(*const_get_args(args.first))
     end
 
