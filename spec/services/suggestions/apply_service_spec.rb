@@ -362,6 +362,17 @@ describe Suggestions::ApplyService do
       project.add_maintainer(user)
     end
 
+    context 'diff file was not found' do
+      it 'returns error message' do
+        expect(suggestion.note).to receive(:latest_diff_file) { nil }
+
+        result = subject.execute(suggestion)
+
+        expect(result).to eq(message: 'The file was not found',
+                             status: :error)
+      end
+    end
+
     context 'suggestion was already applied' do
       it 'returns success status' do
         result = subject.execute(suggestion)

@@ -43,7 +43,7 @@ module QA::Page
       end
 
       def go_to_job(job_name)
-        find_element(:job_link, job_name).click
+        find_element(:job_link, text: job_name).click
       end
 
       def go_to_first_job

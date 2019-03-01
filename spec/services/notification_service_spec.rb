@@ -177,7 +177,7 @@ describe NotificationService, :mailer do
       end
     end
 
-    context 'when recieving a non-existent method' do
+    context 'when receiving a non-existent method' do
       it 'raises NoMethodError' do
         expect { async.foo(key) }.to raise_error(NoMethodError)
       end

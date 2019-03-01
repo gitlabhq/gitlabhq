@@ -120,6 +120,10 @@ namespace :admin do
       get :resume
       get :pause
     end
+
+    collection do
+      get :tag_list, format: :json
+    end
   end
 
   resources :jobs, only: :index do

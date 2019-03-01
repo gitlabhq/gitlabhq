@@ -62,10 +62,10 @@ describe QA::Support::Page::Logging do
       .to output(/found :element/).to_stdout_from_any_process
   end
 
-  it 'logs find_element with text_filter' do
-    expect { subject.find_element(:element, 'foo') }
-      .to output(/finding :element with text_filter "foo"/).to_stdout_from_any_process
-    expect { subject.find_element(:element, 'foo') }
+  it 'logs find_element with text' do
+    expect { subject.find_element(:element, text: 'foo') }
+      .to output(/finding :element with text "foo"/).to_stdout_from_any_process
+    expect { subject.find_element(:element, text: 'foo') }
       .to output(/found :element/).to_stdout_from_any_process
   end
 
@@ -81,7 +81,12 @@ describe QA::Support::Page::Logging do
 
   it 'logs has_element?' do
     expect { subject.has_element?(:element) }
-      .to output(/has_element\? :element returned true/).to_stdout_from_any_process
+      .to output(/has_element\? :element \(wait: 2\) returned: true/).to_stdout_from_any_process
+  end
+
+  it 'logs has_element? with text' do
+    expect { subject.has_element?(:element, text: "some text") }
+      .to output(/has_element\? :element with text \"some text\" \(wait: 2\) returned: true/).to_stdout_from_any_process
   end
 
   it 'logs has_no_element?' do

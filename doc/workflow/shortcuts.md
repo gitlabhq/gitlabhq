@@ -82,6 +82,8 @@ You can see GitLab's keyboard shortcuts by using 'shift + ?'
 | <kbd>r</kbd> | Reply (quoting selected text) |
 | <kbd>e</kbd> | Edit issue/merge request |
 | <kbd>l</kbd> | Change label |
+| <kbd>]</kbd> or <kbd>j</kbd> | Move to next file |
+| <kbd>[</kbd> or <kbd>k</kbd> | Move to previous file |
 
 ## Wiki pages
 

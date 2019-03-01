@@ -31,7 +31,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   describe '.create_hooks' do
     let(:repo_path) { File.join(storage_path, 'hook-test.git') }
     let(:hooks_dir) { File.join(repo_path, 'hooks') }
-    let(:target_hooks_dir) { Gitlab.config.gitlab_shell.hooks_path }
+    let(:target_hooks_dir) { Gitlab::Shell.new.hooks_path }
     let(:existing_target) { File.join(repo_path, 'foobar') }
 
     before do
@@ -1945,7 +1945,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       imported_repo.create_from_bundle(valid_bundle_path)
       hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
 
-      expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+      expect(File.readlink(hooks_path)).to eq(Gitlab::Shell.new.hooks_path)
     end
 
     it 'raises an error if the bundle is an attempted malicious payload' do

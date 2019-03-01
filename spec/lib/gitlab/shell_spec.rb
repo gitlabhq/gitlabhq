@@ -393,7 +393,6 @@ describe Gitlab::Shell do
 
     before do
       allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
-      allow(Gitlab.config.gitlab_shell).to receive(:hooks_path).and_return(gitlab_shell_hooks_path)
       allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
     end
 

@@ -53,7 +53,7 @@ describe('Pagination component', () => {
           component.$el.querySelector('.js-previous-button').classList.contains('disabled'),
         ).toEqual(true);
 
-        component.$el.querySelector('.js-previous-button a').click();
+        component.$el.querySelector('.js-previous-button .page-link').click();
 
         expect(spy).not.toHaveBeenCalled();
       });
@@ -71,7 +71,7 @@ describe('Pagination component', () => {
           change: spy,
         });
 
-        component.$el.querySelector('.js-previous-button a').click();
+        component.$el.querySelector('.js-previous-button .page-link').click();
 
         expect(spy).toHaveBeenCalledWith(1);
       });
@@ -91,7 +91,7 @@ describe('Pagination component', () => {
           change: spy,
         });
 
-        const button = component.$el.querySelector('.js-first-button a');
+        const button = component.$el.querySelector('.js-first-button .page-link');
 
         expect(button.textContent.trim()).toEqual('« First');
 
@@ -115,7 +115,7 @@ describe('Pagination component', () => {
           change: spy,
         });
 
-        const button = component.$el.querySelector('.js-last-button a');
+        const button = component.$el.querySelector('.js-last-button .page-link');
 
         expect(button.textContent.trim()).toEqual('Last »');
 
@@ -141,7 +141,7 @@ describe('Pagination component', () => {
 
         expect(component.$el.querySelector('.js-next-button').textContent.trim()).toEqual('Next');
 
-        component.$el.querySelector('.js-next-button a').click();
+        component.$el.querySelector('.js-next-button .page-link').click();
 
         expect(spy).not.toHaveBeenCalled();
       });
@@ -159,7 +159,7 @@ describe('Pagination component', () => {
           change: spy,
         });
 
-        component.$el.querySelector('.js-next-button a').click();
+        component.$el.querySelector('.js-next-button .page-link').click();
 
         expect(spy).toHaveBeenCalledWith(4);
       });

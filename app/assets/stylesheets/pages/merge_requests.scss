@@ -491,11 +491,9 @@
   .merge-request {
     padding: 10px 0 10px 15px;
     position: relative;
-    display: -webkit-flex;
     display: flex;
 
     .issuable-info-container {
-      -webkit-flex: 1;
       flex: 1;
     }
 
@@ -786,7 +784,6 @@
   }
 
   @include media-breakpoint-up(md) {
-    position: -webkit-sticky;
     position: sticky;
     top: $header-height + $mr-tabs-height;
     width: 100%;
@@ -814,7 +811,6 @@
 
   @include media-breakpoint-up(sm) {
     position: sticky;
-    position: -webkit-sticky;
   }
 
   &.affix {

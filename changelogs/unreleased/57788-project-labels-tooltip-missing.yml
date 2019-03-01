@@ -1,0 +1,5 @@
+---
+title: Fix bug where project topics truncate
+merge_request: 25398
+author:
+type: fixed

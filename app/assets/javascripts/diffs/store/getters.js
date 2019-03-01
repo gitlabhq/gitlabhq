@@ -100,5 +100,12 @@ export const diffFilesLength = state => state.diffFiles.length;
 export const getCommentFormForDiffFile = state => fileHash =>
   state.commentForms.find(form => form.fileHash === fileHash);
 
+/**
+ * Returns index of a currently selected diff in diffFiles
+ * @returns {number}
+ */
+export const currentDiffIndex = state =>
+  Math.max(0, state.diffFiles.findIndex(diff => diff.file_hash === state.currentDiffFileId));
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

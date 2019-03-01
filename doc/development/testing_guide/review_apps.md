@@ -95,6 +95,14 @@ You can also manually start the `review-qa-all`: it runs the full QA suite.
 
 Note that both jobs first wait for the `review-deploy` job to be finished.
 
+## Performance Metrics
+
+On every [pipeline][gitlab-pipeline] during the `test` stage, the
+`review-performance` job is automatically started: this job does basic
+browser performance testing using [Sitespeed.io Container](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html) .
+
+This job waits for the `review-deploy` job to be finished.
+
 ## How to?
 
 ### Log into my Review App?

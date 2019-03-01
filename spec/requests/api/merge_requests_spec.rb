@@ -320,6 +320,18 @@ describe API::MergeRequests do
       expect(json_response.first['title']).to eq merge_request_closed.title
       expect(json_response.first['id']).to eq merge_request_closed.id
     end
+
+    it 'avoids N+1 queries' do
+      control = ActiveRecord::QueryRecorder.new do
+        get api("/projects/#{project.id}/merge_requests", user)
+      end.count
+
+      create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, created_at: base_time)
+
+      expect do
+        get api("/projects/#{project.id}/merge_requests", user)
+      end.not_to exceed_query_limit(control)
+    end
   end
 
   describe "GET /groups/:id/merge_requests" do
@@ -998,6 +1010,67 @@ describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(200)
         expect(source_repository.branch_exists?(source_branch)).to be_falsy
       end
+    end
+  end
+
+  describe "PUT /projects/:id/merge_requests/:merge_request_iid/merge_to_ref" do
+    let(:pipeline) { create(:ci_pipeline_without_jobs) }
+    let(:url) do
+      "/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge_to_ref"
+    end
+
+    it 'returns the generated ID from the merge service in case of success' do
+      put api(url, user), params: { merge_commit_message: 'Custom message' }
+
+      commit = project.commit(json_response['commit_id'])
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['commit_id']).to be_present
+      expect(commit.message).to eq('Custom message')
+    end
+
+    it "returns 400 if branch can't be merged" do
+      merge_request.update!(state: 'merged')
+
+      put api(url, user)
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['message'])
+        .to eq("Merge request is not mergeable to #{merge_request.merge_ref_path}")
+    end
+
+    it 'returns 403 if user has no permissions to merge to the ref' do
+      user2 = create(:user)
+      project.add_reporter(user2)
+
+      put api(url, user2)
+
+      expect(response).to have_gitlab_http_status(403)
+      expect(json_response['message']).to eq('403 Forbidden')
+    end
+
+    it 'returns 404 for an invalid merge request IID' do
+      put api("/projects/#{project.id}/merge_requests/12345/merge_to_ref", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it "returns 404 if the merge request id is used instead of iid" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it "returns 400 when merge method is not supported" do
+      merge_request.project.update!(merge_method: 'ff')
+
+      put api(url, user)
+
+      expected_error =
+        'Fast-forward to refs/merge-requests/1/merge is currently not supported.'
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['message']).to eq(expected_error)
     end
   end
 

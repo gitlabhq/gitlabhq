@@ -43,12 +43,20 @@ export default {
     saveData(resp) {
       this.isLoading = false;
 
-      if (_.isEqual(resp.config.params, this.requestData)) {
+      // Prevent the absence of the nested flag from causing mismatches
+      const response = this.filterNilValues(resp.config.params);
+      const request = this.filterNilValues(this.requestData);
+
+      if (_.isEqual(response, request)) {
         this.store.storeAvailableCount(resp.data.available_count);
         this.store.storeStoppedCount(resp.data.stopped_count);
         this.store.storeEnvironments(resp.data.environments);
         this.store.setPagination(resp.headers);
       }
+    },
+
+    filterNilValues(obj) {
+      return _.omit(obj, value => _.isUndefined(value) || _.isNull(value));
     },
 
     /**
@@ -64,10 +72,9 @@ export default {
       // fetch new data
       return this.service
         .fetchEnvironments(this.requestData)
-        .then(response => this.successCallback(response))
-        .then(() => {
-          // restart polling
-          this.poll.restart({ data: this.requestData });
+        .then(response => {
+          this.successCallback(response);
+          this.poll.enable({ data: this.requestData, response });
         })
         .catch(() => {
           this.errorCallback();

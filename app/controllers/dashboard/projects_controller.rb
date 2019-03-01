@@ -13,7 +13,13 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = load_projects(params.merge(non_public: true))
 
     respond_to do |format|
-      format.html
+      format.html do
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37434
+        # Also https://gitlab.com/gitlab-org/gitlab-ce/issues/40260
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
+      end
       format.atom do
         load_events
         render layout: 'xml.atom'

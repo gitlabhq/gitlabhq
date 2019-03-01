@@ -50,12 +50,20 @@ describe BlobHelper do
     end
 
     it 'returns a link with the proper route' do
+      stub_feature_flags(web_ide_default: false)
       link = edit_blob_button(project, 'master', 'README.md')
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md")
     end
 
+    it 'returns a link with a Web IDE route' do
+      link = edit_blob_button(project, 'master', 'README.md')
+
+      expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/-/ide/project/#{project.full_path}/edit/master/-/README.md")
+    end
+
     it 'returns a link with the passed link_opts on the expected route' do
+      stub_feature_flags(web_ide_default: false)
       link = edit_blob_button(project, 'master', 'README.md', link_opts: { mr_id: 10 })
 
       expect(Capybara.string(link).find_link('Edit')[:href]).to eq("/#{project.full_path}/edit/master/README.md?mr_id=10")

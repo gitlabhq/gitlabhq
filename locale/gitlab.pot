@@ -612,10 +612,10 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
-msgid "An error occured while fetching the releases. Please try again."
+msgid "An error occurred creating the new branch."
 msgstr ""
 
-msgid "An error occurred creating the new branch."
+msgid "An error occurred fetching the dropdown data."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -652,6 +652,9 @@ msgid "An error occurred while fetching the jobs."
 msgstr ""
 
 msgid "An error occurred while fetching the pipeline."
+msgstr ""
+
+msgid "An error occurred while fetching the releases. Please try again."
 msgstr ""
 
 msgid "An error occurred while getting projects"
@@ -1605,10 +1608,10 @@ msgstr ""
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
-msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
+msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
 msgstr ""
 
-msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
+msgid "ClusterIntegration|An error occurred while trying to fetch project zones: %{error}"
 msgstr ""
 
 msgid "ClusterIntegration|An error occurred while trying to fetch your projects: %{error}"
@@ -3612,6 +3615,9 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go Micro is a framework for micro service development."
+msgstr ""
+
 msgid "Go back"
 msgstr ""
 
@@ -4938,6 +4944,9 @@ msgid "No"
 msgstr ""
 
 msgid "No %{providerTitle} repositories available to import"
+msgstr ""
+
+msgid "No Tag"
 msgstr ""
 
 msgid "No activities found"
