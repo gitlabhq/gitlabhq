@@ -1,0 +1,5 @@
+---
+title: "Improve the JS pagination to handle the case when the `X-Total` and `X-Total-Pages` headers aren't present"
+merge_request: 25601
+author:
+type: fixed
