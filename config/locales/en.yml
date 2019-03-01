@@ -10,6 +10,10 @@ en:
         target: Target issue
       group:
         path: Group URL
+      project/error_tracking_setting:
+        token: "Auth Token"
+        project: "Project"
+        api_url: "Sentry API URL"
   errors:
     messages:
       label_already_exists_at_group_level: "already exists at group level for %{group}. Please choose another one."

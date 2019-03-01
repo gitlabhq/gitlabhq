@@ -14,15 +14,36 @@ module Projects
       def update
         result = ::Projects::Operations::UpdateService.new(project, current_user, update_params).execute
 
-        if result[:status] == :success
-          flash[:notice] = _('Your changes have been saved')
-          redirect_to project_settings_operations_path(@project)
-        else
-          render 'show'
-        end
+        render_update_response(result)
       end
 
       private
+
+      # overridden in EE
+      def render_update_response(result)
+        respond_to do |format|
+          format.json do
+            render_update_json_response(result)
+          end
+        end
+      end
+
+      def render_update_json_response(result)
+        if result[:status] == :success
+          flash[:notice] = _('Your changes have been saved')
+          render json: {
+            status: result[:status]
+          }
+        else
+          render(
+            status: result[:http_status] || :bad_request,
+            json: {
+              status: result[:status],
+              message: result[:message]
+            }
+          )
+        end
+      end
 
       def error_tracking_setting
         @error_tracking_setting ||= project.error_tracking_setting ||
@@ -35,7 +56,14 @@ module Projects
 
       # overridden in EE
       def permitted_project_params
-        { error_tracking_setting_attributes: [:enabled, :api_url, :token] }
+        {
+          error_tracking_setting_attributes: [
+            :enabled,
+            :api_host,
+            :token,
+            project: [:slug, :name, :organization_slug, :organization_name]
+          ]
+        }
       end
 
       def check_license
