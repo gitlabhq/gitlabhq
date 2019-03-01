@@ -4,12 +4,14 @@ describe PipelineEntity do
   include Gitlab::Routing
 
   set(:user) { create(:user) }
+  set(:project) { create(:project) }
   let(:request) { double('request') }
 
   before do
     stub_not_protect_default_branch
 
     allow(request).to receive(:current_user).and_return(user)
+    allow(request).to receive(:project).and_return(project)
   end
 
   let(:entity) do

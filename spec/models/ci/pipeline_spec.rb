@@ -130,22 +130,118 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.for_sha' do
+    subject { described_class.for_sha(sha) }
+
+    let(:sha) { 'abc' }
+    let!(:pipeline) { create(:ci_pipeline, sha: 'abc') }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+
+    context 'when argument is array' do
+      let(:sha) { %w[abc def] }
+      let!(:pipeline_2) { create(:ci_pipeline, sha: 'def') }
+
+      it 'returns the pipelines' do
+        is_expected.to contain_exactly(pipeline, pipeline_2)
+      end
+    end
+
+    context 'when sha is empty' do
+      let(:sha) { nil }
+
+      it 'does not return anything' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.for_source_sha' do
+    subject { described_class.for_source_sha(source_sha) }
+
+    let(:source_sha) { 'abc' }
+    let!(:pipeline) { create(:ci_pipeline, source_sha: 'abc') }
+
+    it 'returns the pipeline' do
+      is_expected.to contain_exactly(pipeline)
+    end
+
+    context 'when argument is array' do
+      let(:source_sha) { %w[abc def] }
+      let!(:pipeline_2) { create(:ci_pipeline, source_sha: 'def') }
+
+      it 'returns the pipelines' do
+        is_expected.to contain_exactly(pipeline, pipeline_2)
+      end
+    end
+
+    context 'when source_sha is empty' do
+      let(:source_sha) { nil }
+
+      it 'does not return anything' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.for_sha_or_source_sha' do
+    subject { described_class.for_sha_or_source_sha(sha) }
+
+    let(:sha) { 'abc' }
+
+    context 'when sha is matched' do
+      let!(:pipeline) { create(:ci_pipeline, sha: sha) }
+
+      it 'returns the pipeline' do
+        is_expected.to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when source sha is matched' do
+      let!(:pipeline) { create(:ci_pipeline, source_sha: sha) }
+
+      it 'returns the pipeline' do
+        is_expected.to contain_exactly(pipeline)
+      end
+    end
+
+    context 'when both sha and source sha are not matched' do
+      let!(:pipeline) { create(:ci_pipeline, sha: 'bcd', source_sha: 'bcd') }
+
+      it 'does not return anything' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.detached_merge_request_pipelines' do
-    subject { described_class.detached_merge_request_pipelines(merge_request) }
+    subject { described_class.detached_merge_request_pipelines(merge_request, sha) }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, sha: merge_request.diff_head_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
-    let(:target_sha) { nil }
+    let(:sha) { merge_request.diff_head_sha }
 
     it 'returns detached merge request pipelines' do
       is_expected.to eq([pipeline])
     end
 
-    context 'when target sha exists' do
-      let(:target_sha) { merge_request.target_branch_sha }
+    context 'when sha does not exist' do
+      let(:sha) { 'abc' }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when pipeline is merge request pipeline' do
+      let!(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, source_sha: merge_request.diff_head_sha)
+      end
 
       it 'returns empty array' do
         is_expected.to be_empty
@@ -173,21 +269,31 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '.merge_request_pipelines' do
-    subject { described_class.merge_request_pipelines(merge_request) }
+    subject { described_class.merge_request_pipelines(merge_request, source_sha) }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, source_sha: merge_request.diff_head_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
-    let(:target_sha) { merge_request.target_branch_sha }
+    let(:source_sha) { merge_request.diff_head_sha }
 
     it 'returns merge pipelines' do
       is_expected.to eq([pipeline])
     end
 
-    context 'when target sha is empty' do
-      let(:target_sha) { nil }
+    context 'when source sha is empty' do
+      let(:source_sha) { nil }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when pipeline is detached merge request pipeline' do
+      let!(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, sha: merge_request.diff_head_sha)
+      end
 
       it 'returns empty array' do
         is_expected.to be_empty
@@ -253,6 +359,50 @@ describe Ci::Pipeline, :mailer do
       let(:target_sha) { merge_request.diff_head_sha }
 
       it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '.triggered_for_branch' do
+    subject { described_class.triggered_for_branch(ref) }
+
+    let(:project) { create(:project, :repository) }
+    let(:ref) { 'feature' }
+    let!(:pipeline) { create(:ci_pipeline, ref: ref) }
+
+    it 'returns the pipeline' do
+      is_expected.to eq([pipeline])
+    end
+
+    context 'when sha is not specified' do
+      it 'returns the pipeline' do
+        expect(described_class.triggered_for_branch(ref)).to eq([pipeline])
+      end
+    end
+
+    context 'when pipeline is triggered for tag' do
+      let(:ref) { 'v1.1.0' }
+      let!(:pipeline) { create(:ci_pipeline, ref: ref, tag: true) }
+
+      it 'does not return the pipeline' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when pipeline is triggered for merge_request' do
+      let!(:merge_request) do
+        create(:merge_request,
+          :with_merge_request_pipeline,
+          source_project: project,
+          source_branch: ref,
+          target_project: project,
+          target_branch: 'master')
+      end
+
+      let(:pipeline) { merge_request.merge_request_pipelines.first }
+
+      it 'does not return the pipeline' do
+        is_expected.to be_empty
+      end
     end
   end
 
