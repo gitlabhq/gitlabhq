@@ -41,7 +41,7 @@ integration, make sure the following requirements are met:
 
 - A [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
   is set up and you have permissions to access it.
-- The Kubernetes Engine API is enabled. Follow the steps as outlined in the
+- The Kubernetes Engine API and related service are enabled. It should work immediately but may take up to 10 minutes after you create a project. For more information see the
   ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
 
 ### Creating the cluster
@@ -69,6 +69,7 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
+   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#role-based-access-control-rbac-core-only) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
@@ -226,12 +227,19 @@ applications running on the cluster.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
 
-Domains at the cluster level permit support for multiple domains
-per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,
-this will be automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
-the [Auto DevOps](../../../topics/autodevops/index.md) stages.
+NOTE: **Note:**
+You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
+will be specified as part of the Knative installation. See [Installing Applications](#installing-applications).
 
-The domain should have a wildcard DNS configured to the Ingress IP address.
+Specifying a base domain will automatically set `KUBE_INGRESS_BASE_DOMAIN` as an environment variable.
+If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain will be used for the different
+stages. For example, Auto Review Apps and Auto Deploy.
+
+The domain should have a wildcard DNS configured to the Ingress IP address. After ingress has been installed (see [Installing Applications](#installing-applications)),
+you can either:
+
+- Create an `A` record that points to the Ingress IP address with your domain provider.
+- Enter a wildcard DNS address using a service such as nip.io or xip.io. For example, `192.168.1.1.xip.io`.
 
 ## Access controls
 
