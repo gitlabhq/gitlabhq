@@ -94,13 +94,15 @@ gem 'carrierwave', '~> 1.3'
 gem 'mini_magick'
 
 # for backups
-gem 'fog-aws', '~> 2.0.1'
-gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.7.1'
-gem 'fog-local', '~> 0.3'
-gem 'fog-openstack', '~> 0.1'
+gem 'fog-aws', '~> 3.3'
+# Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.
+# Also see config/initializers/fog_core_patch.rb.
+gem 'fog-core', '= 2.1.0'
+gem 'fog-google', '~> 1.8'
+gem 'fog-local', '~> 0.6'
+gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.2.0'
+gem 'fog-aliyun', '~> 0.3'
 
 # for Google storage
 gem 'google-api-client', '~> 0.23'
