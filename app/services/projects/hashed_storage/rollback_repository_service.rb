@@ -35,18 +35,6 @@ module Projects
 
         result
       end
-
-      private
-
-      def try_to_set_repository_read_only!
-        # Mitigate any push operation to start during migration
-        unless project.set_repository_read_only!
-          migration_error = "Target repository '#{old_disk_path}' cannot be made read-only as there is a git transfer in progress"
-          logger.error migration_error
-
-          raise RepositoryRollbackError, migration_error
-        end
-      end
     end
   end
 end

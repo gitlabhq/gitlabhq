@@ -2,11 +2,8 @@
 
 module Projects
   module HashedStorage
-    # Returned when there is an error with the Hashed Storage migration
-    RepositoryMigrationError = Class.new(StandardError)
-
-    # Returned when there is an error with the Hashed Storage rollback
-    RepositoryRollbackError = Class.new(StandardError)
+    # Returned when repository can't be made read-only because there is already a git transfer in progress
+    RepositoryInUseError = Class.new(StandardError)
 
     class BaseRepositoryService < BaseService
       include Gitlab::ShellAdapter
@@ -54,6 +51,16 @@ module Projects
       def rollback_folder_move
         move_repository(new_disk_path, old_disk_path)
         move_repository("#{new_disk_path}.wiki", old_wiki_disk_path)
+      end
+
+      def try_to_set_repository_read_only!
+        # Mitigate any push operation to start during migration
+        unless project.set_repository_read_only!
+          migration_error = "Target repository '#{old_disk_path}' cannot be made read-only as there is a git transfer in progress"
+          logger.error migration_error
+
+          raise RepositoryInUseError, migration_error
+        end
       end
     end
   end

@@ -30,7 +30,7 @@ describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis
       it 'fails when a git operation is in progress' do
         allow(project).to receive(:repo_reference_count) { 1 }
 
-        expect { service.execute }.to raise_error(Projects::HashedStorage::RepositoryRollbackError)
+        expect { service.execute }.to raise_error(Projects::HashedStorage::RepositoryInUseError)
       end
     end
 
