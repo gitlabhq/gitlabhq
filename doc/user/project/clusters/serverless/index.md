@@ -254,7 +254,7 @@ deploy:
 `Serverless.gitlab-ci.yml` is a template that allows customization.
 You can either import it with `include` parameter and use `extends` to
 customize your jobs, or you can inline entire template by choosing it
-from "Apply a template" dropdown when editing `.gitlab-ci.yml` file through
+from **Apply a template** dropdown when editing the `.gitlab-ci.yml` file through
 the user interface.
 
 ### Deploy the application with Knative
