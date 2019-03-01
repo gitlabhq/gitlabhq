@@ -22,7 +22,7 @@ Sidekiq.configure_server do |config|
 
   config.server_middleware do |chain|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
-    chain.add Gitlab::SidekiqMiddleware::Shutdown
+    chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
     chain.add Gitlab::SidekiqMiddleware::BatchLoader
     chain.add Gitlab::SidekiqMiddleware::CorrelationLogger

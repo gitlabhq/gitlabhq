@@ -199,8 +199,8 @@ export default class LabelsSelect {
             .catch(() => flash(__('Error fetching labels.')));
         },
         renderRow: function(label, instance) {
-          var $a,
-            $li,
+          var linkEl,
+            listItemEl,
             color,
             colorEl,
             indeterminate,
@@ -209,12 +209,11 @@ export default class LabelsSelect {
             spacing,
             i,
             marked,
-            dropdownName,
             dropdownValue;
-          $li = $('<li>');
-          $a = $('<a href="#">');
+
           selectedClass = [];
           removesAll = label.id <= 0 || label.id == null;
+
           if ($dropdown.hasClass('js-filter-bulk-update')) {
             indeterminate = $dropdown.data('indeterminate') || [];
             marked = $dropdown.data('marked') || [];
@@ -233,7 +232,6 @@ export default class LabelsSelect {
             }
           } else {
             if (this.id(label)) {
-              dropdownName = $dropdown.data('fieldName');
               dropdownValue = this.id(label)
                 .toString()
                 .replace(/'/g, "\\'");
@@ -241,7 +239,7 @@ export default class LabelsSelect {
               if (
                 $form.find(
                   "input[type='hidden'][name='" +
-                    dropdownName +
+                    this.fieldName +
                     "'][value='" +
                     dropdownValue +
                     "']",
@@ -251,24 +249,34 @@ export default class LabelsSelect {
               }
             }
 
-            if ($dropdown.hasClass('js-multiselect') && removesAll) {
+            if (this.multiSelect && removesAll) {
               selectedClass.push('dropdown-clear-active');
             }
           }
+
           if (label.color) {
             colorEl =
               "<span class='dropdown-label-box' style='background: " + label.color + "'></span>";
           } else {
             colorEl = '';
           }
+
+          linkEl = document.createElement('a');
+          linkEl.href = '#';
+
           // We need to identify which items are actually labels
           if (label.id) {
             selectedClass.push('label-item');
-            $a.attr('data-label-id', label.id);
+            linkEl.dataset.labelId = label.id;
           }
-          $a.addClass(selectedClass.join(' ')).html(`${colorEl} ${_.escape(label.title)}`);
-          // Return generated html
-          return $li.html($a).prop('outerHTML');
+
+          linkEl.className = selectedClass.join(' ');
+          linkEl.innerHTML = `${colorEl} ${_.escape(label.title)}`;
+
+          listItemEl = document.createElement('li');
+          listItemEl.appendChild(linkEl);
+
+          return listItemEl;
         },
         search: {
           fields: ['title'],

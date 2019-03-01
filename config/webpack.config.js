@@ -245,6 +245,17 @@ module.exports = {
       jQuery: 'jquery',
     }),
 
+    new webpack.NormalModuleReplacementPlugin(/^ee_component\/(.*)\.vue/, function(resource) {
+      if (Object.keys(module.exports.resolve.alias).indexOf('ee') >= 0) {
+        resource.request = resource.request.replace(/^ee_component/, 'ee');
+      } else {
+        resource.request = path.join(
+          ROOT_PATH,
+          'app/assets/javascripts/vue_shared/components/empty_component.js'
+        );
+      }
+    }),
+
     // compression can require a lot of compute time and is disabled in CI
     IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),
 

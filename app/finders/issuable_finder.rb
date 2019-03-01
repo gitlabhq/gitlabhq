@@ -78,13 +78,15 @@ class IssuableFinder
     items = init_collection
     items = filter_items(items)
 
-    # This has to be last as we may use a CTE as an optimization fence
-    # by passing the attempt_group_search_optimizations param and
-    # enabling the use_cte_for_group_issues_search feature flag
+    # This has to be last as we use a CTE as an optimization fence
+    # for counts by passing the force_cte param and enabling the
+    # attempt_group_search_optimizations feature flag
     # https://www.postgresql.org/docs/current/static/queries-with.html
     items = by_search(items)
 
-    sort(items)
+    items = sort(items) unless use_cte_for_count?
+
+    items
   end
 
   def filter_items(items)
@@ -117,8 +119,9 @@ class IssuableFinder
   #
   # rubocop: disable CodeReuse/ActiveRecord
   def count_by_state
-    count_params = params.merge(state: nil, sort: nil)
+    count_params = params.merge(state: nil, sort: nil, force_cte: true)
     finder = self.class.new(current_user, count_params)
+
     counts = Hash.new(0)
 
     # Searching by label includes a GROUP BY in the query, but ours will be last
@@ -128,8 +131,11 @@ class IssuableFinder
     #
     # This does not apply when we are using a CTE for the search, as the labels
     # GROUP BY is inside the subquery in that case, so we set labels_count to 1.
+    #
+    # We always use CTE when searching in Groups if the feature flag is enabled,
+    # but never when searching in Projects.
     labels_count = label_names.any? ? label_names.count : 1
-    labels_count = 1 if use_cte_for_search?
+    labels_count = 1 if use_cte_for_count?
 
     finder.execute.reorder(nil).group(:state).count.each do |key, value|
       counts[count_key(key)] += value / labels_count
@@ -305,27 +311,31 @@ class IssuableFinder
 
   def use_subquery_for_search?
     strong_memoize(:use_subquery_for_search) do
-      attempt_group_search_optimizations? &&
-        Feature.enabled?(:use_subquery_for_group_issues_search, default_enabled: true)
+      !force_cte? && attempt_group_search_optimizations?
     end
   end
 
-  def use_cte_for_search?
-    strong_memoize(:use_cte_for_search) do
-      attempt_group_search_optimizations? &&
-        !use_subquery_for_search? &&
-        Feature.enabled?(:use_cte_for_group_issues_search, default_enabled: true)
+  def use_cte_for_count?
+    strong_memoize(:use_cte_for_count) do
+      force_cte? && attempt_group_search_optimizations?
     end
   end
 
   private
+
+  def force_cte?
+    !!params[:force_cte]
+  end
 
   def init_collection
     klass.all
   end
 
   def attempt_group_search_optimizations?
-    search && Gitlab::Database.postgresql? && params[:attempt_group_search_optimizations]
+    search &&
+      Gitlab::Database.postgresql? &&
+      params[:attempt_group_search_optimizations] &&
+      Feature.enabled?(:attempt_group_search_optimizations, default_enabled: true)
   end
 
   def count_key(value)
@@ -411,7 +421,7 @@ class IssuableFinder
   def by_search(items)
     return items unless search
 
-    if use_cte_for_search?
+    if use_cte_for_count?
       cte = Gitlab::SQL::RecursiveCTE.new(klass.table_name)
       cte << items
 

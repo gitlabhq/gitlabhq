@@ -1,10 +1,9 @@
 # How to create your SSH Keys
 
-1. The first thing you need to do is go to your [command line](start-using-git.md)
-   and follow the [instructions](../ssh/README.md) to generate your SSH key pair.
+1. Go to your [command line](start-using-git.md) and follow the [instructions](../ssh/README.md) to generate your SSH key pair.
 
-1. Once you do that, login to GitLab with your credentials.
-1. On the upper right corner, click on your avatar and go to your **Profile settings**.
+1. Log in to GitLab with your credentials.
+1. In the upper-right corner, click your avatar and then click **Settings**.
 
     ![Profile settings dropdown](img/profile_settings.png)
 
@@ -22,8 +21,8 @@
 
     ![SSH key title](img/profile_settings_ssh_keys_title.png)
 
-1. Finally, click on **Add key** to add it to GitLab. You will be able to see
-   its fingerprint, its title and creation date.
+1. Finally, click **Add key** to add it to GitLab. You will be able to see
+   its fingerprint, title, and creation date.
 
     ![SSH key single page](img/profile_settings_ssh_keys_single_key.png)
 

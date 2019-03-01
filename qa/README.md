@@ -42,6 +42,9 @@ following call would login to a local [GDK] instance and run all specs in
 bin/qa Test::Instance::All http://localhost:3000
 ```
 
+Note: If you want to run tests requiring SSH against GDK, you
+will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
+
 ### Writing tests
 
 1. [Using page objects](qa/page/README.md)

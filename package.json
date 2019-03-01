@@ -128,17 +128,13 @@
     "xterm": "^3.5.0"
   },
   "devDependencies": {
+    "@babel/plugin-transform-modules-commonjs": "^7.2.0",
     "@gitlab/eslint-config": "^1.4.0",
     "@vue/test-utils": "^1.0.0-beta.25",
     "axios-mock-adapter": "^1.15.0",
-    "babel-core": "^7.0.0-bridge",
-    "babel-jest": "^23.6.0",
-    "babel-plugin-dynamic-import-node": "^2.2.0",
+    "babel-jest": "^24.1.0",
     "babel-plugin-istanbul": "^5.1.0",
     "babel-plugin-rewire": "^1.2.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
-    "babel-template": "^6.26.0",
-    "babel-types": "^6.26.0",
     "chalk": "^2.4.1",
     "commander": "^2.18.0",
     "docdash": "^1.0.2",
@@ -148,7 +144,7 @@
     "eslint-plugin-html": "5.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jasmine": "^2.10.1",
-    "eslint-plugin-jest": "^22.1.0",
+    "eslint-plugin-jest": "^22.3.0",
     "gettext-extractor": "^3.3.2",
     "gettext-extractor-vue": "^4.0.1",
     "graphql-tag": "^2.10.0",
@@ -156,8 +152,8 @@
     "jasmine-core": "^2.9.0",
     "jasmine-diff": "^0.1.3",
     "jasmine-jquery": "^2.1.1",
-    "jest": "^23.6.0",
-    "jest-junit": "^5.2.0",
+    "jest": "^24.1.0",
+    "jest-junit": "^6.3.0",
     "jsdoc": "^3.5.5",
     "jsdoc-vue": "^1.0.0",
     "karma": "^3.0.0",
@@ -175,9 +171,12 @@
     "stylelint": "^9.10.1",
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-scss": "^3.5.3",
-    "vue-jest": "^3.0.2",
+    "vue-jest": "^4.0.0-beta.2",
     "webpack-dev-server": "^3.1.14",
     "yarn-deduplicate": "^1.1.0"
+  },
+  "resolutions": {
+    "vue-jest/ts-jest": "24.0.0"
   },
   "engines": {
     "node": ">=8.10.0",

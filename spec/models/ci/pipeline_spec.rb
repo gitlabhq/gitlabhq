@@ -80,11 +80,11 @@ describe Ci::Pipeline, :mailer do
 
     context 'when merge request pipelines exist' do
       let!(:merge_request_pipeline_1) do
-        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
       end
 
       let!(:merge_request_pipeline_2) do
-        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
       end
 
       let(:merge_request) do
@@ -106,11 +106,11 @@ describe Ci::Pipeline, :mailer do
       let!(:branch_pipeline_2) { create(:ci_pipeline, source: :push) }
 
       let!(:merge_request_pipeline_1) do
-        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
       end
 
       let!(:merge_request_pipeline_2) do
-        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
       end
 
       let(:merge_request) do
@@ -134,7 +134,7 @@ describe Ci::Pipeline, :mailer do
     subject { described_class.detached_merge_request_pipelines(merge_request) }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
@@ -157,7 +157,7 @@ describe Ci::Pipeline, :mailer do
     subject { pipeline.detached_merge_request_pipeline? }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
@@ -176,7 +176,7 @@ describe Ci::Pipeline, :mailer do
     subject { described_class.merge_request_pipelines(merge_request) }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
@@ -199,7 +199,7 @@ describe Ci::Pipeline, :mailer do
     subject { pipeline.merge_request_pipeline? }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
@@ -218,7 +218,7 @@ describe Ci::Pipeline, :mailer do
     subject { described_class.mergeable_merge_request_pipelines(merge_request) }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
@@ -241,7 +241,7 @@ describe Ci::Pipeline, :mailer do
     subject { pipeline.mergeable_merge_request_pipeline? }
 
     let!(:pipeline) do
-      create(:ci_pipeline, source: :merge_request, merge_request: merge_request, target_sha: target_sha)
+      create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, target_sha: target_sha)
     end
 
     let(:merge_request) { create(:merge_request) }
@@ -256,11 +256,11 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '.merge_request' do
-    subject { described_class.merge_request }
+  describe '.merge_request_event' do
+    subject { described_class.merge_request_event }
 
     context 'when there is a merge request pipeline' do
-      let!(:pipeline) { create(:ci_pipeline, source: :merge_request, merge_request: merge_request) }
+      let!(:pipeline) { create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request) }
       let(:merge_request) { create(:merge_request) }
 
       it 'returns merge request pipeline first' do
@@ -281,7 +281,7 @@ describe Ci::Pipeline, :mailer do
     let(:pipeline) { build(:ci_pipeline, source: source, merge_request: merge_request) }
 
     context 'when source is merge request' do
-      let(:source) { :merge_request }
+      let(:source) { :merge_request_event }
 
       context 'when merge request is specified' do
         let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'feature', target_project: project, target_branch: 'master') }
@@ -505,7 +505,7 @@ describe Ci::Pipeline, :mailer do
 
     context 'when source is merge request' do
       let(:pipeline) do
-        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
       end
 
       let(:merge_request) do
@@ -1097,7 +1097,7 @@ describe Ci::Pipeline, :mailer do
 
       context 'when source is merge request' do
         let(:pipeline) do
-          create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+          create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
         end
 
         let(:merge_request) do
@@ -1147,7 +1147,7 @@ describe Ci::Pipeline, :mailer do
     context 'when ref is merge request' do
       let(:pipeline) do
         create(:ci_pipeline,
-               source: :merge_request,
+               source: :merge_request_event,
                merge_request: merge_request)
       end
 
@@ -1310,7 +1310,7 @@ describe Ci::Pipeline, :mailer do
 
     context 'when source is merge request' do
       let(:pipeline) do
-        create(:ci_pipeline, source: :merge_request, merge_request: merge_request)
+        create(:ci_pipeline, source: :merge_request_event, merge_request: merge_request)
       end
 
       let(:merge_request) do
@@ -2266,7 +2266,7 @@ describe Ci::Pipeline, :mailer do
 
         let!(:pipeline) do
           create(:ci_pipeline,
-                 source: :merge_request,
+                 source: :merge_request_event,
                  project: pipeline_project,
                  ref: source_branch,
                  merge_request: merge_request)
@@ -2289,7 +2289,7 @@ describe Ci::Pipeline, :mailer do
 
           let!(:pipeline_2) do
             create(:ci_pipeline,
-                   source: :merge_request,
+                   source: :merge_request_event,
                    project: pipeline_project,
                    ref: source_branch,
                    merge_request: merge_request_2)

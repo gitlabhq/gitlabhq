@@ -23,7 +23,7 @@ describe Ci::Build do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
-  it { is_expected.to delegate_method(:merge_request?).to(:pipeline) }
+  it { is_expected.to delegate_method(:merge_request_event?).to(:pipeline) }
 
   it { is_expected.to be_a(ArtifactMigratable) }
 
@@ -2730,6 +2730,122 @@ describe Ci::Build do
         build.scoped_variables.map { |env| env[:key] }.tap do |names|
           expect(names).not_to include(*keys)
         end
+      end
+    end
+  end
+
+  describe '#secret_group_variables' do
+    subject { build.secret_group_variables }
+
+    let!(:variable) { create(:ci_group_variable, protected: true, group: group) }
+
+    context 'when ref is branch' do
+      let(:build) { create(:ci_build, ref: 'master', tag: false, project: project) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_branch, :developers_can_merge, name: 'master', project: project)
+        end
+
+        it { is_expected.to include(variable) }
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+
+    context 'when ref is tag' do
+      let(:build) { create(:ci_build, ref: 'v1.1.0', tag: true, project: project) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_tag, project: project, name: 'v*')
+        end
+
+        it { is_expected.to include(variable) }
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+
+    context 'when ref is merge request' do
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:build) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline, project: project) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_branch, :developers_can_merge, name: merge_request.source_branch, project: project)
+        end
+
+        it 'does not return protected variables as it is not supported for merge request pipelines' do
+          is_expected.not_to include(variable)
+        end
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+  end
+
+  describe '#secret_project_variables' do
+    subject { build.secret_project_variables }
+
+    let!(:variable) { create(:ci_variable, protected: true, project: project) }
+
+    context 'when ref is branch' do
+      let(:build) { create(:ci_build, ref: 'master', tag: false, project: project) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_branch, :developers_can_merge, name: 'master', project: project)
+        end
+
+        it { is_expected.to include(variable) }
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+
+    context 'when ref is tag' do
+      let(:build) { create(:ci_build, ref: 'v1.1.0', tag: true, project: project) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_tag, project: project, name: 'v*')
+        end
+
+        it { is_expected.to include(variable) }
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
+      end
+    end
+
+    context 'when ref is merge request' do
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:pipeline) { merge_request.merge_request_pipelines.first }
+      let(:build) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline, project: project) }
+
+      context 'when ref is protected' do
+        before do
+          create(:protected_branch, :developers_can_merge, name: merge_request.source_branch, project: project)
+        end
+
+        it 'does not return protected variables as it is not supported for merge request pipelines' do
+          is_expected.not_to include(variable)
+        end
+      end
+
+      context 'when ref is not protected' do
+        it { is_expected.not_to include(variable) }
       end
     end
   end

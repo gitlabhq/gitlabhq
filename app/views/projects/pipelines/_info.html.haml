@@ -48,7 +48,7 @@
         content: "<a class='autodevops-link' href='#{popover_content_url}' target='_blank' rel='noopener noreferrer nofollow'>#{popover_content_text}</a>",
       } }
         Auto DevOps
-    - if @pipeline.merge_request?
+    - if @pipeline.merge_request_event?
       %span.js-pipeline-url-mergerequest.badge.badge-info.has-tooltip{ title: "This pipeline is run in a merge request context" }
         merge request
     - if @pipeline.stuck?

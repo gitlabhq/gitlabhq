@@ -666,7 +666,7 @@ describe 'Pipeline', :js do
 
       let(:pipeline) do
         create(:ci_pipeline,
-               source: :merge_request,
+               source: :merge_request_event,
                project: merge_request.source_project,
                ref: 'feature',
                sha: merge_request.diff_head_sha,

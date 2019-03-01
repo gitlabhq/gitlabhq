@@ -1,0 +1,5 @@
+---
+title: Fixes issue with AWS V4 signatures not working with some S3 providers
+merge_request: 21788
+author:
+type: fixed

@@ -1,0 +1,5 @@
+---
+title: Error tracking configuration - add a Sentry project selection dropdown
+merge_request: 24701
+author:
+type: changed

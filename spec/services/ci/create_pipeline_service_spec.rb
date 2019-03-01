@@ -701,7 +701,7 @@ describe Ci::CreatePipelineService do
       let(:target_sha) { nil }
 
       context 'when source is merge request' do
-        let(:source) { :merge_request }
+        let(:source) { :merge_request_event }
 
         context "when config has merge_requests keywords" do
           let(:config) do
@@ -734,7 +734,7 @@ describe Ci::CreatePipelineService do
 
             it 'creates a merge request pipeline' do
               expect(pipeline).to be_persisted
-              expect(pipeline).to be_merge_request
+              expect(pipeline).to be_merge_request_event
               expect(pipeline.merge_request).to eq(merge_request)
               expect(pipeline.builds.order(:stage_id).map(&:name)).to eq(%w[test])
             end

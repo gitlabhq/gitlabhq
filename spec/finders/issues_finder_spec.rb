@@ -715,7 +715,7 @@ describe IssuesFinder do
 
     before do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-      stub_feature_flags(use_subquery_for_group_issues_search: true)
+      stub_feature_flags(attempt_group_search_optimizations: true)
     end
 
     context 'when there is no search param' do
@@ -746,12 +746,20 @@ describe IssuesFinder do
       end
     end
 
-    context 'when the use_subquery_for_group_issues_search flag is disabled' do
+    context 'when the attempt_group_search_optimizations flag is disabled' do
       let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
 
       before do
-        stub_feature_flags(use_subquery_for_group_issues_search: false)
+        stub_feature_flags(attempt_group_search_optimizations: false)
       end
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when force_cte? is true' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true, force_cte: true } }
 
       it 'returns false' do
         expect(finder.use_subquery_for_search?).to be_falsey
@@ -767,72 +775,59 @@ describe IssuesFinder do
     end
   end
 
-  describe '#use_cte_for_search?' do
+  describe '#use_cte_for_count?' do
     let(:finder) { described_class.new(nil, params) }
 
     before do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-      stub_feature_flags(use_cte_for_group_issues_search: true)
-      stub_feature_flags(use_subquery_for_group_issues_search: false)
+      stub_feature_flags(attempt_group_search_optimizations: true)
     end
 
     context 'when there is no search param' do
-      let(:params) { { attempt_group_search_optimizations: true } }
+      let(:params) { { attempt_group_search_optimizations: true, force_cte: true } }
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
     context 'when the database is not Postgres' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+      let(:params) { { search: 'foo', force_cte: true, attempt_group_search_optimizations: true } }
 
       before do
         allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
       end
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
-    context 'when the attempt_group_search_optimizations param is falsey' do
+    context 'when the force_cte param is falsey' do
       let(:params) { { search: 'foo' } }
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
-    context 'when the use_cte_for_group_issues_search flag is disabled' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+    context 'when the attempt_group_search_optimizations flag is disabled' do
+      let(:params) { { search: 'foo', force_cte: true, attempt_group_search_optimizations: true } }
 
       before do
-        stub_feature_flags(use_cte_for_group_issues_search: false)
+        stub_feature_flags(attempt_group_search_optimizations: false)
       end
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
-      end
-    end
-
-    context 'when use_subquery_for_search? is true' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
-
-      before do
-        stub_feature_flags(use_subquery_for_group_issues_search: true)
-      end
-
-      it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
     context 'when all conditions are met' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+      let(:params) { { search: 'foo', force_cte: true, attempt_group_search_optimizations: true } }
 
       it 'returns true' do
-        expect(finder.use_cte_for_search?).to be_truthy
+        expect(finder.use_cte_for_count?).to be_truthy
       end
     end
   end

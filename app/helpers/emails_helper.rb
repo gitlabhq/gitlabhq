@@ -131,4 +131,42 @@ module EmailsHelper
 
     project.id.to_s + "." + project_path_as_domain + "." + Gitlab.config.gitlab.host
   end
+
+  def html_header_message
+    return unless show_header?
+
+    render_message(:header_message, style: '')
+  end
+
+  def html_footer_message
+    return unless show_footer?
+
+    render_message(:footer_message, style: '')
+  end
+
+  def text_header_message
+    return unless show_header?
+
+    strip_tags(render_message(:header_message, style: ''))
+  end
+
+  def text_footer_message
+    return unless show_footer?
+
+    strip_tags(render_message(:footer_message, style: ''))
+  end
+
+  private
+
+  def show_footer?
+    email_header_and_footer_enabled? && current_appearance&.show_footer?
+  end
+
+  def show_header?
+    email_header_and_footer_enabled? && current_appearance&.show_header?
+  end
+
+  def email_header_and_footer_enabled?
+    current_appearance&.email_header_and_footer_enabled?
+  end
 end

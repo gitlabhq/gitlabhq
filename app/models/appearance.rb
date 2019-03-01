@@ -20,6 +20,7 @@ class Appearance < ActiveRecord::Base
 
   default_value_for :message_background_color, '#E75E40'
   default_value_for :message_font_color, '#FFFFFF'
+  default_value_for :email_header_and_footer_enabled, false
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
