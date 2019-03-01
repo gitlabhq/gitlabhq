@@ -133,7 +133,7 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
     You can either import it with `include` parameter and use `extends` to
     customize your jobs, or you can inline entire template by choosing it
     from "Apply a template" dropdown when editing `.gitlab-ci.yml` file through
-    the User Interface.
+    the user interface.
 
 2. `serverless.yml`: this file contains the metadata for your functions,
    such as name, runtime, and environment.
