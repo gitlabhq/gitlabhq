@@ -2,6 +2,12 @@
 require 'spec_helper'
 
 describe 'projects/issues/_merge_requests_status.html.haml' do
+  around do |ex|
+    Timecop.freeze(Date.new(2018, 7, 22)) do
+      ex.run
+    end
+  end
+
   it 'shows date of status change in tooltip' do
     merge_request = create(:merge_request, created_at: 1.month.ago)
 
