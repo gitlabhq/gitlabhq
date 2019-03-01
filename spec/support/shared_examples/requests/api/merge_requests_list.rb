@@ -186,6 +186,37 @@ shared_examples 'merge requests list' do
       expect(json_response.length).to eq(0)
     end
 
+    it 'returns an array of labeled merge requests where all labels match' do
+      path = endpoint_path + "?labels[]=#{label.title}&labels[]=#{label2.title}"
+
+      get api(path, user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label2.title, label.title])
+    end
+
+    it 'returns an array of merge requests with any label when filtering by any label' do
+      get api(endpoint_path, user), params: { labels: [" #{label.title} ", " #{label2.title} "] }
+
+      expect_paginated_array_response
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label2.title, label.title])
+      expect(json_response.first['id']).to eq(merge_request.id)
+    end
+
+    it 'returns an array of merge requests with any label when filtering by any label' do
+      get api(endpoint_path, user), params: { labels: ["#{label.title} , #{label2.title}"] }
+
+      expect_paginated_array_response
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label2.title, label.title])
+      expect(json_response.first['id']).to eq(merge_request.id)
+    end
+
     it 'returns an array of merge requests with any label when filtering by any label' do
       get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_ANY }
 
