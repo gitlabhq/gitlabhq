@@ -618,9 +618,9 @@ action fails, the pipeline will eventually succeed.
 
 Manual actions are considered to be write actions, so permissions for
 [protected branches](../../user/project/protected_branches.md) are used when
-user wants to trigger an action. In other words, in order to trigger a manual
-action assigned to a branch that the pipeline is running for, user needs to
-have ability to merge to this branch.
+a user wants to trigger an action. In other words, in order to trigger a manual
+action assigned to a branch that the pipeline is running for, the user needs to
+have the ability to merge to this branch.
 
 ### `when:delayed`
 
