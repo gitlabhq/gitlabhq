@@ -17,10 +17,14 @@ module Projects
         @new_disk_path = FileUploader.base_dir(project)
 
         result = move_folder!(origin, target)
-        project.save!
 
-        if result && block_given?
-          yield
+        if result
+          project.save!
+
+          yield if block_given?
+        else
+          # Rollback changes
+          project.rollback!
         end
 
         result
