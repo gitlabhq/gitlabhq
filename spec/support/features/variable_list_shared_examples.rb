@@ -8,7 +8,7 @@ shared_examples 'variable list' do
   it 'adds new CI variable' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
-      find('.js-ci-variable-input-value').set('key value')
+      find('.js-ci-variable-input-value').set('key_value')
     end
 
     click_button('Save variables')
@@ -19,7 +19,7 @@ shared_examples 'variable list' do
     # We check the first row because it re-sorts to alphabetical order on refresh
     page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key value')
+      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
     end
   end
 
@@ -44,7 +44,7 @@ shared_examples 'variable list' do
   it 'adds new protected variable' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
-      find('.js-ci-variable-input-value').set('key value')
+      find('.js-ci-variable-input-value').set('key_value')
       find('.ci-variable-protected-item .js-project-feature-toggle').click
 
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
@@ -58,7 +58,7 @@ shared_examples 'variable list' do
     # We check the first row because it re-sorts to alphabetical order on refresh
     page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key value')
+      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
     end
   end

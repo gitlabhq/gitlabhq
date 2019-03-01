@@ -20,6 +20,7 @@
     "state": { "type": "string" },
     "external_url": { "$ref": "types/nullable_string.json" },
     "environment_type": { "$ref": "types/nullable_string.json" },
+    "name_without_type": { "type": "string" },
     "has_stop_action": { "type": "boolean" },
     "environment_path": { "type": "string" },
     "stop_path": { "type": "string" },

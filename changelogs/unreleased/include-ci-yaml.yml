@@ -1,0 +1,5 @@
+---
+title: Validate 'include' keywords in gitlab-ci.yml configuration files.
+merge_request: 24098
+author: Paul Bonaud
+type: fixed

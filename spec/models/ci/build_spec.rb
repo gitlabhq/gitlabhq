@@ -2114,55 +2114,55 @@ describe Ci::Build do
     context 'returns variables' do
       let(:predefined_variables) do
         [
-          { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
-          { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true },
-          { key: 'CI_JOB_ID', value: build.id.to_s, public: true },
-          { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true },
-          { key: 'CI_JOB_TOKEN', value: 'my-token', public: false },
-          { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
-          { key: 'CI_BUILD_TOKEN', value: 'my-token', public: false },
-          { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },
-          { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false },
-          { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false },
-          { key: 'CI', value: 'true', public: true },
-          { key: 'GITLAB_CI', value: 'true', public: true },
-          { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true },
-          { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-          { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-          { key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s, public: true },
-          { key: 'CI_SERVER_VERSION_MINOR', value: Gitlab.version_info.minor.to_s, public: true },
-          { key: 'CI_SERVER_VERSION_PATCH', value: Gitlab.version_info.patch.to_s, public: true },
-          { key: 'CI_SERVER_REVISION', value: Gitlab.revision, public: true },
-          { key: 'CI_JOB_NAME', value: 'test', public: true },
-          { key: 'CI_JOB_STAGE', value: 'test', public: true },
-          { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
-          { key: 'CI_COMMIT_SHORT_SHA', value: build.short_sha, public: true },
-          { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true },
-          { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
-          { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
-          { key: 'CI_NODE_TOTAL', value: '1', public: true },
-          { key: 'CI_BUILD_REF', value: build.sha, public: true },
-          { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
-          { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true },
-          { key: 'CI_BUILD_REF_SLUG', value: build.ref_slug, public: true },
-          { key: 'CI_BUILD_NAME', value: 'test', public: true },
-          { key: 'CI_BUILD_STAGE', value: 'test', public: true },
-          { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
-          { key: 'CI_PROJECT_NAME', value: project.path, public: true },
-          { key: 'CI_PROJECT_PATH', value: project.full_path, public: true },
-          { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true },
-          { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
-          { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
-          { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
-          { key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host, public: true },
-          { key: 'CI_PAGES_URL', value: project.pages_url, public: true },
-          { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true },
-          { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
-          { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
-          { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true },
-          { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true },
-          { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true },
-          { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true }
+          { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true, masked: false },
+          { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true, masked: false },
+          { key: 'CI_JOB_ID', value: build.id.to_s, public: true, masked: false },
+          { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true, masked: false },
+          { key: 'CI_JOB_TOKEN', value: 'my-token', public: false, masked: false },
+          { key: 'CI_BUILD_ID', value: build.id.to_s, public: true, masked: false },
+          { key: 'CI_BUILD_TOKEN', value: 'my-token', public: false, masked: false },
+          { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true, masked: false },
+          { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false, masked: false },
+          { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
+          { key: 'CI', value: 'true', public: true, masked: false },
+          { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
+          { key: 'GITLAB_FEATURES', value: project.licensed_features.join(','), public: true, masked: false },
+          { key: 'CI_SERVER_NAME', value: 'GitLab', public: true, masked: false },
+          { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true, masked: false },
+          { key: 'CI_SERVER_VERSION_MAJOR', value: Gitlab.version_info.major.to_s, public: true, masked: false },
+          { key: 'CI_SERVER_VERSION_MINOR', value: Gitlab.version_info.minor.to_s, public: true, masked: false },
+          { key: 'CI_SERVER_VERSION_PATCH', value: Gitlab.version_info.patch.to_s, public: true, masked: false },
+          { key: 'CI_SERVER_REVISION', value: Gitlab.revision, public: true, masked: false },
+          { key: 'CI_JOB_NAME', value: 'test', public: true, masked: false },
+          { key: 'CI_JOB_STAGE', value: 'test', public: true, masked: false },
+          { key: 'CI_COMMIT_SHA', value: build.sha, public: true, masked: false },
+          { key: 'CI_COMMIT_SHORT_SHA', value: build.short_sha, public: true, masked: false },
+          { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true, masked: false },
+          { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true, masked: false },
+          { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true, masked: false },
+          { key: 'CI_NODE_TOTAL', value: '1', public: true, masked: false },
+          { key: 'CI_BUILD_REF', value: build.sha, public: true, masked: false },
+          { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true, masked: false },
+          { key: 'CI_BUILD_REF_NAME', value: build.ref, public: true, masked: false },
+          { key: 'CI_BUILD_REF_SLUG', value: build.ref_slug, public: true, masked: false },
+          { key: 'CI_BUILD_NAME', value: 'test', public: true, masked: false },
+          { key: 'CI_BUILD_STAGE', value: 'test', public: true, masked: false },
+          { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true, masked: false },
+          { key: 'CI_PROJECT_NAME', value: project.path, public: true, masked: false },
+          { key: 'CI_PROJECT_PATH', value: project.full_path, public: true, masked: false },
+          { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true, masked: false },
+          { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true, masked: false },
+          { key: 'CI_PROJECT_URL', value: project.web_url, public: true, masked: false },
+          { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true, masked: false },
+          { key: 'CI_PAGES_DOMAIN', value: Gitlab.config.pages.host, public: true, masked: false },
+          { key: 'CI_PAGES_URL', value: project.pages_url, public: true, masked: false },
+          { key: 'CI_API_V4_URL', value: 'http://localhost/api/v4', public: true, masked: false },
+          { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true, masked: false },
+          { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true, masked: false },
+          { key: 'CI_PIPELINE_SOURCE', value: pipeline.source, public: true, masked: false },
+          { key: 'CI_COMMIT_MESSAGE', value: pipeline.git_commit_message, public: true, masked: false },
+          { key: 'CI_COMMIT_TITLE', value: pipeline.git_commit_title, public: true, masked: false },
+          { key: 'CI_COMMIT_DESCRIPTION', value: pipeline.git_commit_description, public: true, masked: false }
         ]
       end
 
@@ -2175,10 +2175,10 @@ describe Ci::Build do
 
       describe 'variables ordering' do
         context 'when variables hierarchy is stubbed' do
-          let(:build_pre_var) { { key: 'build', value: 'value', public: true } }
-          let(:project_pre_var) { { key: 'project', value: 'value', public: true } }
-          let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true } }
-          let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true } }
+          let(:build_pre_var) { { key: 'build', value: 'value', public: true, masked: false } }
+          let(:project_pre_var) { { key: 'project', value: 'value', public: true, masked: false } }
+          let(:pipeline_pre_var) { { key: 'pipeline', value: 'value', public: true, masked: false } }
+          let(:build_yaml_var) { { key: 'yaml', value: 'value', public: true, masked: false } }
 
           before do
             allow(build).to receive(:predefined_variables) { [build_pre_var] }
@@ -2200,7 +2200,7 @@ describe Ci::Build do
                project_pre_var,
                pipeline_pre_var,
                build_yaml_var,
-               { key: 'secret', value: 'value', public: false }])
+               { key: 'secret', value: 'value', public: false, masked: false }])
           end
         end
 
@@ -2233,10 +2233,10 @@ describe Ci::Build do
     context 'when build has user' do
       let(:user_variables) do
         [
-          { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true },
-          { key: 'GITLAB_USER_EMAIL', value: user.email, public: true },
-          { key: 'GITLAB_USER_LOGIN', value: user.username, public: true },
-          { key: 'GITLAB_USER_NAME', value: user.name, public: true }
+          { key: 'GITLAB_USER_ID', value: user.id.to_s, public: true, masked: false },
+          { key: 'GITLAB_USER_EMAIL', value: user.email, public: true, masked: false },
+          { key: 'GITLAB_USER_LOGIN', value: user.username, public: true, masked: false },
+          { key: 'GITLAB_USER_NAME', value: user.name, public: true, masked: false }
         ]
       end
 
@@ -2250,8 +2250,8 @@ describe Ci::Build do
     context 'when build has an environment' do
       let(:environment_variables) do
         [
-          { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true },
-          { key: 'CI_ENVIRONMENT_SLUG', value: 'prod-slug',  public: true }
+          { key: 'CI_ENVIRONMENT_NAME', value: 'production', public: true, masked: false },
+          { key: 'CI_ENVIRONMENT_SLUG', value: 'prod-slug',  public: true, masked: false }
         ]
       end
 
@@ -2286,7 +2286,7 @@ describe Ci::Build do
 
         before do
           environment_variables <<
-            { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+            { key: 'CI_ENVIRONMENT_URL', value: url, public: true, masked: false }
         end
 
         context 'when the URL was set from the job' do
@@ -2323,7 +2323,7 @@ describe Ci::Build do
       end
 
       let(:manual_variable) do
-        { key: 'CI_JOB_MANUAL', value: 'true', public: true }
+        { key: 'CI_JOB_MANUAL', value: 'true', public: true, masked: false }
       end
 
       it { is_expected.to include(manual_variable) }
@@ -2331,7 +2331,7 @@ describe Ci::Build do
 
     context 'when build is for tag' do
       let(:tag_variable) do
-        { key: 'CI_COMMIT_TAG', value: 'master', public: true }
+        { key: 'CI_COMMIT_TAG', value: 'master', public: true, masked: false }
       end
 
       before do
@@ -2343,7 +2343,7 @@ describe Ci::Build do
 
     context 'when CI variable is defined' do
       let(:ci_variable) do
-        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+        { key: 'SECRET_KEY', value: 'secret_value', public: false, masked: false }
       end
 
       before do
@@ -2358,7 +2358,7 @@ describe Ci::Build do
       let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + build.ref }
 
       let(:protected_variable) do
-        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false, masked: false }
       end
 
       before do
@@ -2390,7 +2390,7 @@ describe Ci::Build do
 
     context 'when group CI variable is defined' do
       let(:ci_variable) do
-        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+        { key: 'SECRET_KEY', value: 'secret_value', public: false, masked: false }
       end
 
       before do
@@ -2405,7 +2405,7 @@ describe Ci::Build do
       let(:ref) { Gitlab::Git::BRANCH_REF_PREFIX + build.ref }
 
       let(:protected_variable) do
-        { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
+        { key: 'PROTECTED_KEY', value: 'protected_value', public: false, masked: false }
       end
 
       before do
@@ -2444,11 +2444,11 @@ describe Ci::Build do
       let(:trigger_request) { create(:ci_trigger_request, pipeline: pipeline, trigger: trigger) }
 
       let(:user_trigger_variable) do
-        { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1', public: false }
+        { key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1', public: false, masked: false }
       end
 
       let(:predefined_trigger_variable) do
-        { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true }
+        { key: 'CI_PIPELINE_TRIGGERED', value: 'true', public: true, masked: false }
       end
 
       before do
@@ -2480,7 +2480,7 @@ describe Ci::Build do
     context 'when pipeline has a variable' do
       let!(:pipeline_variable) { create(:ci_pipeline_variable, pipeline: pipeline) }
 
-      it { is_expected.to include(pipeline_variable.to_runner_variable) }
+      it { is_expected.to include(key: pipeline_variable.key, value: pipeline_variable.value, public: false, masked: false) }
     end
 
     context 'when a job was triggered by a pipeline schedule' do
@@ -2497,16 +2497,16 @@ describe Ci::Build do
         pipeline_schedule.reload
       end
 
-      it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
+      it { is_expected.to include(key: pipeline_schedule_variable.key, value: pipeline_schedule_variable.value, public: false, masked: false) }
     end
 
     context 'when container registry is enabled' do
       let(:container_registry_enabled) { true }
       let(:ci_registry) do
-        { key: 'CI_REGISTRY', value: 'registry.example.com', public: true }
+        { key: 'CI_REGISTRY', value: 'registry.example.com', public: true, masked: false }
       end
       let(:ci_registry_image) do
-        { key: 'CI_REGISTRY_IMAGE', value: project.container_registry_url, public: true }
+        { key: 'CI_REGISTRY_IMAGE', value: project.container_registry_url, public: true, masked: false }
       end
 
       context 'and is disabled for project' do
@@ -2535,13 +2535,13 @@ describe Ci::Build do
         build.update(runner: runner)
       end
 
-      it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true }) }
-      it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true }) }
-      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true, masked: false }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true, masked: false }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true, masked: false }) }
     end
 
     context 'when build is for a deployment' do
-      let(:deployment_variable) { { key: 'KUBERNETES_TOKEN', value: 'TOKEN', public: false } }
+      let(:deployment_variable) { { key: 'KUBERNETES_TOKEN', value: 'TOKEN', public: false, masked: false } }
 
       before do
         build.environment = 'production'
@@ -2555,7 +2555,7 @@ describe Ci::Build do
     end
 
     context 'when project has custom CI config path' do
-      let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true } }
+      let(:ci_config_path) { { key: 'CI_CONFIG_PATH', value: 'custom', public: true, masked: false } }
 
       before do
         project.update(ci_config_path: 'custom')
@@ -2572,7 +2572,7 @@ describe Ci::Build do
 
         it "includes AUTO_DEVOPS_DOMAIN" do
           is_expected.to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true })
+            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
         end
       end
 
@@ -2583,7 +2583,7 @@ describe Ci::Build do
 
         it "includes AUTO_DEVOPS_DOMAIN" do
           is_expected.not_to include(
-            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true })
+            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true, masked: false })
         end
       end
     end
@@ -2598,9 +2598,9 @@ describe Ci::Build do
         variables = subject.reverse.uniq { |variable| variable[:key] }.reverse
 
         expect(variables)
-          .not_to include(key: 'MYVAR', value: 'myvar', public: true)
+          .not_to include(key: 'MYVAR', value: 'myvar', public: true, masked: false)
         expect(variables)
-          .to include(key: 'MYVAR', value: 'pipeline value', public: false)
+          .to include(key: 'MYVAR', value: 'pipeline value', public: false, masked: false)
       end
     end
 
@@ -2616,13 +2616,13 @@ describe Ci::Build do
 
       it 'includes CI_NODE_INDEX' do
         is_expected.to include(
-          { key: 'CI_NODE_INDEX', value: index.to_s, public: true }
+          { key: 'CI_NODE_INDEX', value: index.to_s, public: true, masked: false }
         )
       end
 
       it 'includes correct CI_NODE_TOTAL' do
         is_expected.to include(
-          { key: 'CI_NODE_TOTAL', value: total.to_s, public: true }
+          { key: 'CI_NODE_TOTAL', value: total.to_s, public: true, masked: false }
         )
       end
     end
@@ -2641,7 +2641,7 @@ describe Ci::Build do
       it 'returns static predefined variables' do
         expect(build.variables.size).to be >= 28
         expect(build.variables)
-          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
         expect(build).not_to be_persisted
       end
     end
@@ -2651,8 +2651,8 @@ describe Ci::Build do
 
       let(:deploy_token_variables) do
         [
-          { key: 'CI_DEPLOY_USER', value: deploy_token.username, public: true },
-          { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: false }
+          { key: 'CI_DEPLOY_USER', value: deploy_token.username, public: true, masked: false },
+          { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: false, masked: false }
         ]
       end
 
@@ -2711,7 +2711,7 @@ describe Ci::Build do
         end
 
         expect(variables)
-          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true)
+          .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
       end
 
       it 'does not return prohibited variables' do

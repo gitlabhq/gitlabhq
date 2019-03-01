@@ -1102,3 +1102,39 @@ GET /projects/:id/services/mock-ci
 ```
 
 [11435]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11435
+
+## YouTrack
+
+YouTrack issue tracker
+
+### Create/Edit YouTrack service
+
+Set YouTrack service for a project.
+
+```
+PUT /projects/:id/services/youtrack
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `issues_url` | string | true | Issue url |
+| `project_url` | string | true | Project url |
+| `description` | string | false | Description |
+
+### Delete YouTrack Service
+
+Delete YouTrack service for a project.
+
+```
+DELETE /projects/:id/services/youtrack
+```
+
+### Get YouTrack Service Settings
+
+Get YouTrack service settings for a project.
+
+```
+GET /projects/:id/services/youtrack
+```

@@ -100,4 +100,22 @@ describe Gitlab::Graphql::Authorize::AuthorizeResource do
       expect { fake_class.new.find_object }.to raise_error(/Implement #find_object in #{fake_class.name}/)
     end
   end
+
+  describe '#authorize' do
+    it 'adds permissions from subclasses to those of superclasses when used on classes' do
+      base_class = Class.new do
+        include Gitlab::Graphql::Authorize::AuthorizeResource
+
+        authorize :base_authorization
+      end
+
+      sub_class = Class.new(base_class) do
+        authorize :sub_authorization
+      end
+
+      expect(base_class.required_permissions).to contain_exactly(:base_authorization)
+      expect(sub_class.required_permissions)
+        .to contain_exactly(:base_authorization, :sub_authorization)
+    end
+  end
 end

@@ -57,7 +57,11 @@
   text-decoration: underline;
 }
 
-.hint { font-style: italic; color: $gl-gray-400; }
+.hint {
+  font-style: italic;
+  color: $gl-gray-400;
+}
+
 .light { color: $gl-text-color; }
 
 .slead {
@@ -158,13 +162,14 @@ p.time {
   text-shadow: none;
 }
 
-.thin_area {
+.thin-area {
   height: 150px;
 }
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
   img { max-width: 100%; }
+
   .note-title {
     li {
       border-bottom: 0 !important;
@@ -335,7 +340,7 @@ img.emoji {
 
 .disabled-content {
   pointer-events: none;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .break-word {
@@ -400,6 +405,7 @@ img.emoji {
 .flex-no-shrink { flex-shrink: 0; }
 .ws-initial { white-space: initial; }
 .overflow-auto { overflow: auto; }
+
 .d-flex-center {
   display: flex;
   align-items: center;
@@ -462,4 +468,8 @@ img.emoji {
   &.is-dragging {
     background-color: $gray-600;
   }
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }

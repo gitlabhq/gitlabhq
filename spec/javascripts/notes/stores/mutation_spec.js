@@ -530,7 +530,7 @@ describe('Notes Store mutations', () => {
       state = { convertedDisscussionIds: [] };
     });
 
-    it('adds a disucssion to convertedDisscussionIds', () => {
+    it('adds a discussion to convertedDisscussionIds', () => {
       mutations.CONVERT_TO_DISCUSSION(state, discussion.id);
 
       expect(state.convertedDisscussionIds).toContain(discussion.id);
@@ -549,7 +549,7 @@ describe('Notes Store mutations', () => {
       state = { convertedDisscussionIds: [41, 42] };
     });
 
-    it('removes a disucssion from convertedDisscussionIds', () => {
+    it('removes a discussion from convertedDisscussionIds', () => {
       mutations.REMOVE_CONVERTED_DISCUSSION(state, discussion.id);
 
       expect(state.convertedDisscussionIds).not.toContain(discussion.id);

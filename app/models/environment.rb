@@ -243,6 +243,10 @@ class Environment < ActiveRecord::Base
     self.environment_type || self.name
   end
 
+  def name_without_type
+    @name_without_type ||= name.delete_prefix("#{environment_type}/")
+  end
+
   def deployment_platform
     strong_memoize(:deployment_platform) do
       project.deployment_platform(environment: self.name)

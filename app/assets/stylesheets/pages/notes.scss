@@ -303,26 +303,6 @@ $note-form-margin-left: 72px;
       }
     }
 
-    .timeline-icon {
-      float: left;
-      display: flex;
-      align-items: center;
-      background-color: $white-light;
-      width: $system-note-icon-size;
-      height: $system-note-icon-size;
-      border: 1px solid $border-color;
-      border-radius: $system-note-icon-size;
-      margin: -6px $gl-padding 0 0;
-
-      svg {
-        width: $system-note-svg-size;
-        height: $system-note-svg-size;
-        fill: $gray-darkest;
-        display: block;
-        margin: 0 auto;
-      }
-    }
-
     .timeline-content {
       @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 30px;
@@ -378,6 +358,37 @@ $note-form-margin-left: 72px;
           }
         }
       }
+    }
+  }
+
+  .system-note,
+  .discussion-filter-note {
+    .timeline-icon {
+      float: left;
+      display: flex;
+      align-items: center;
+      background-color: $white-light;
+      width: $system-note-icon-size;
+      height: $system-note-icon-size;
+      border: 1px solid $border-color;
+      border-radius: $system-note-icon-size;
+      margin: -6px $gl-padding 0 0;
+
+      svg {
+        width: $system-note-svg-size;
+        height: $system-note-svg-size;
+        fill: $gray-darkest;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .discussion-filter-note {
+    .timeline-icon {
+      width: $system-note-icon-size + 6;
+      height: $system-note-icon-size + 6;
+      margin-top: -8px;
     }
   }
 }
@@ -905,7 +916,6 @@ $note-form-margin-left: 72px;
 }
 
 .discussion-filter-container {
-
   .btn > svg {
     width: $gl-col-padding;
     height: $gl-col-padding;
@@ -927,7 +937,6 @@ $note-form-margin-left: 72px;
 //This needs to be deleted when Snippet/Commit comments are convered to Vue
 // See https://gitlab.com/gitlab-org/gitlab-ce/issues/53918#note_117038785
 .unstyled-comments {
-
   .discussion-header {
     padding: $gl-padding;
     border-bottom: 1px solid $border-color;

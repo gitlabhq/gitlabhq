@@ -66,6 +66,7 @@ class Issue < ActiveRecord::Base
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   scope :public_only, -> { where(confidential: false) }
+  scope :confidential_only, -> { where(confidential: true) }
 
   after_save :expire_etag_cache
   after_save :ensure_metrics, unless: :imported?
@@ -261,6 +262,10 @@ class Issue < ActiveRecord::Base
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def merge_requests_count
+    merge_requests_closing_issues.count
+  end
 
   private
 

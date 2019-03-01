@@ -9,6 +9,10 @@ describe 'Editing file blob', :js do
   let(:file_path) { project.repository.ls_files(project.repository.root_ref)[1] }
   let(:readme_file_path) { 'README.md' }
 
+  before do
+    stub_feature_flags(web_ide_default: false)
+  end
+
   context 'as a developer' do
     let(:user) { create(:user) }
     let(:role) { :developer }
@@ -77,7 +81,7 @@ describe 'Editing file blob', :js do
         click_link 'Preview'
         wait_for_requests
 
-        # the above generates two seperate lists (not embedded) in CommonMark
+        # the above generates two separate lists (not embedded) in CommonMark
         expect(page).to have_content("sublist")
         expect(page).not_to have_xpath("//ol//li//ul")
       end

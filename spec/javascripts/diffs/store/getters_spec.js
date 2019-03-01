@@ -270,4 +270,24 @@ describe('Diffs Module Getters', () => {
       expect(getters.diffFilesLength(localState)).toBe(2);
     });
   });
+
+  describe('currentDiffIndex', () => {
+    it('returns index of currently selected diff in diffList', () => {
+      localState.diffFiles = [{ file_hash: '111' }, { file_hash: '222' }, { file_hash: '333' }];
+      localState.currentDiffFileId = '222';
+
+      expect(getters.currentDiffIndex(localState)).toEqual(1);
+
+      localState.currentDiffFileId = '333';
+
+      expect(getters.currentDiffIndex(localState)).toEqual(2);
+    });
+
+    it('returns 0 if no diff is selected yet or diff is not found', () => {
+      localState.diffFiles = [{ file_hash: '111' }, { file_hash: '222' }, { file_hash: '333' }];
+      localState.currentDiffFileId = '';
+
+      expect(getters.currentDiffIndex(localState)).toEqual(0);
+    });
+  });
 });

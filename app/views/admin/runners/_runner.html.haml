@@ -49,7 +49,7 @@
   .table-section.section-10.section-wrap
     .table-mobile-header{ role: 'rowheader' }= _('Tags')
     .table-mobile-content
-      - runner.tag_list.sort.each do |tag|
+      - runner.tags.map(&:name).sort.each do |tag|
         %span.badge.badge-primary
           = tag
 

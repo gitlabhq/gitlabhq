@@ -54,9 +54,9 @@ describe Projects::EnvironmentsController do
 
         it 'responds with a flat payload describing available environments' do
           expect(environments.count).to eq 3
-          expect(environments.first['name']).to eq 'production'
-          expect(environments.second['name']).to eq 'staging/review-1'
-          expect(environments.third['name']).to eq 'staging/review-2'
+          expect(environments.first).to include('name' => 'production', 'name_without_type' => 'production')
+          expect(environments.second).to include('name' => 'staging/review-1', 'name_without_type' => 'review-1')
+          expect(environments.third).to include('name' => 'staging/review-2', 'name_without_type' => 'review-2')
           expect(json_response['available_count']).to eq 3
           expect(json_response['stopped_count']).to eq 1
         end
@@ -155,9 +155,9 @@ describe Projects::EnvironmentsController do
         expect(response).to be_ok
         expect(response).not_to render_template 'folder'
         expect(json_response['environments'][0])
-          .to include('name' => 'staging-1.0/review')
+          .to include('name' => 'staging-1.0/review', 'name_without_type' => 'review')
         expect(json_response['environments'][1])
-          .to include('name' => 'staging-1.0/zzz')
+          .to include('name' => 'staging-1.0/zzz', 'name_without_type' => 'zzz')
       end
     end
   end

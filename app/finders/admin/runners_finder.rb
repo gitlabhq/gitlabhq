@@ -11,10 +11,11 @@ class Admin::RunnersFinder < UnionFinder
     search!
     filter_by_status!
     filter_by_runner_type!
+    filter_by_tag_list!
     sort!
     paginate!
 
-    @runners
+    @runners.with_tags
   end
 
   def sort_key
@@ -42,6 +43,14 @@ class Admin::RunnersFinder < UnionFinder
 
   def filter_by_runner_type!
     filter_by!(:type_type, Ci::Runner::AVAILABLE_TYPES)
+  end
+
+  def filter_by_tag_list!
+    tag_list = @params[:tag_name].presence
+
+    if tag_list
+      @runners = @runners.tagged_with(tag_list)
+    end
   end
 
   def sort!

@@ -84,9 +84,7 @@ input[type='checkbox']:hover {
 
     .search-icon {
       transition: color $default-transition-duration;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
+      user-select: none;
     }
 
     .clear-icon {
@@ -185,13 +183,11 @@ input[type='checkbox']:hover {
 
 .search-holder {
   @include media-breakpoint-up(sm) {
-    display: -webkit-flex;
     display: flex;
   }
 
   .search-field-holder,
   .project-filter-form {
-    -webkit-flex: 1 0 auto;
     flex: 1 0 auto;
     position: relative;
     margin-right: 0;

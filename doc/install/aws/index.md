@@ -379,6 +379,10 @@ size depends on your needs and you can always migrate to a bigger volume later.
 You will be able to [set up that volume](#setting-up-the-ebs-volume)
 after the instance is created.
 
+CAUTION: **Caution:**
+We **do not** recommend using the AWS Elastic File System (EFS), as it can result
+in [significantly degraded performance](../../administration/high_availability/nfs.html#avoid-using-awss-elastic-file-system-efs).
+
 ### Configure security group
 
 As a last step, configure the security group:

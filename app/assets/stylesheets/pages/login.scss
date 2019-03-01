@@ -120,7 +120,6 @@
   }
 
   .new-session-tabs {
-    display: -webkit-flex;
     display: flex;
     box-shadow: 0 0 0 1px $border-color;
     border-top-right-radius: $border-radius-default;
@@ -190,7 +189,7 @@
     margin-top: 16px;
   }
 
-  input[type="submit"] {
+  input[type='submit'] {
     @extend .btn-block;
     margin-bottom: 0;
   }

@@ -28,12 +28,12 @@ describe Gitlab::IssuableMetadata do
       expect(data.count).to eq(2)
       expect(data[issue.id].upvotes).to eq(1)
       expect(data[issue.id].downvotes).to eq(0)
-      expect(data[issue.id].notes_count).to eq(0)
+      expect(data[issue.id].user_notes_count).to eq(0)
       expect(data[issue.id].merge_requests_count).to eq(1)
 
       expect(data[closed_issue.id].upvotes).to eq(0)
       expect(data[closed_issue.id].downvotes).to eq(1)
-      expect(data[closed_issue.id].notes_count).to eq(0)
+      expect(data[closed_issue.id].user_notes_count).to eq(0)
       expect(data[closed_issue.id].merge_requests_count).to eq(0)
     end
   end
@@ -51,12 +51,12 @@ describe Gitlab::IssuableMetadata do
       expect(data.count).to eq(2)
       expect(data[merge_request.id].upvotes).to eq(1)
       expect(data[merge_request.id].downvotes).to eq(1)
-      expect(data[merge_request.id].notes_count).to eq(1)
+      expect(data[merge_request.id].user_notes_count).to eq(1)
       expect(data[merge_request.id].merge_requests_count).to eq(0)
 
       expect(data[merge_request_closed.id].upvotes).to eq(0)
       expect(data[merge_request_closed.id].downvotes).to eq(0)
-      expect(data[merge_request_closed.id].notes_count).to eq(0)
+      expect(data[merge_request_closed.id].user_notes_count).to eq(0)
       expect(data[merge_request_closed.id].merge_requests_count).to eq(0)
     end
   end

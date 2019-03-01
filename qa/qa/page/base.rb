@@ -77,8 +77,8 @@ module QA
         page.evaluate_script('xhr.status') == 200
       end
 
-      def find_element(name, text_filter = nil, wait: Capybara.default_max_wait_time)
-        find(element_selector_css(name), wait: wait, text: text_filter)
+      def find_element(name, text: nil, wait: Capybara.default_max_wait_time)
+        find(element_selector_css(name), wait: wait, text: text)
       end
 
       def all_elements(name)
@@ -109,8 +109,8 @@ module QA
         element.select value.to_s.capitalize
       end
 
-      def has_element?(name, wait: Capybara.default_max_wait_time)
-        has_css?(element_selector_css(name), wait: wait)
+      def has_element?(name, text: nil, wait: Capybara.default_max_wait_time)
+        has_css?(element_selector_css(name), wait: wait, text: text)
       end
 
       def has_no_element?(name, wait: Capybara.default_max_wait_time)

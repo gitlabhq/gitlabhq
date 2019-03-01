@@ -665,6 +665,14 @@ describe ApplicationController do
 
         expect(response.headers['Cache-Control']).to eq 'max-age=0, private, must-revalidate, no-store'
       end
+
+      it 'does not set the "no-store" header for XHR requests' do
+        sign_in(user)
+
+        get :index, xhr: true
+
+        expect(response.headers['Cache-Control']).to eq 'max-age=0, private, must-revalidate'
+      end
     end
   end
 end

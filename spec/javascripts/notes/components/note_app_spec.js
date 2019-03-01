@@ -126,6 +126,13 @@ describe('note_app', () => {
       expect(wrapper.find('.js-main-target-form').exists()).toBe(false);
     });
 
+    it('should render discussion filter note `commentsDisabled` is true', () => {
+      store.state.commentsDisabled = true;
+      wrapper = mountComponent();
+
+      expect(wrapper.find('.js-discussion-filter-note').exists()).toBe(true);
+    });
+
     it('should render form comment button as disabled', () => {
       expect(wrapper.find('.js-note-new-discussion').attributes('disabled')).toEqual('disabled');
     });

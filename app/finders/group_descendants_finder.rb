@@ -134,7 +134,7 @@ class GroupDescendantsFinder
   def subgroups
     return Group.none unless Group.supports_nested_objects?
 
-    # When filtering subgroups, we want to find all matches withing the tree of
+    # When filtering subgroups, we want to find all matches within the tree of
     # descendants to show to the user
     groups = if params[:filter]
                subgroups_matching_filter

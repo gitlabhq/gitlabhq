@@ -37,9 +37,11 @@ $h6-font-size: 14px;
 $spacer: $grid-size;
 $spacers: (
   0: 0,
-  1: ($spacer * .5),
+  1: ($spacer * 0.5),
   2: ($spacer),
   3: ($spacer * 2),
   4: ($spacer * 3),
-  5: ($spacer * 4)
+  5: ($spacer * 4),
+  6: ($spacer * 8)
 );
+$pagination-color: $gl-text-color;

@@ -130,3 +130,18 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `milestone_id` (required) - The ID of a project milestone
+
+## Promote project milestone to a group milestone
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53861) in GitLab 11.9
+
+Only for users with developer access to the group.
+
+```
+POST /projects/:id/milestones/:milestone_id/promote
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of a project milestone

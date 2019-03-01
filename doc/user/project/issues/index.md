@@ -155,7 +155,7 @@ For further details, see [Importing issues from CSV](csv_import.md)
 
 Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
 tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
-or Bugzilla.
+YouTrack, or Bugzilla.
 
 ### Issue API
 
