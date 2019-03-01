@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import actions, {
+  getMergeRequestsForBranch,
   getMergeRequestData,
   getMergeRequestChanges,
   getMergeRequestVersions,
@@ -25,6 +26,98 @@ describe('IDE store merge request actions', () => {
   afterEach(() => {
     mock.restore();
     resetStore(store);
+  });
+
+  describe('getMergeRequestsForBranch', () => {
+    describe('success', () => {
+      const mrData = { iid: 2, source_branch: 'bar' };
+      const mockData = [mrData];
+
+      describe('base case', () => {
+        beforeEach(() => {
+          spyOn(service, 'getProjectMergeRequests').and.callThrough();
+          mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, mockData);
+        });
+
+        it('calls getProjectMergeRequests service method', done => {
+          store
+            .dispatch('getMergeRequestsForBranch', { projectId: 'abcproject', branchId: 'bar' })
+            .then(() => {
+              expect(service.getProjectMergeRequests).toHaveBeenCalledWith('abcproject', {
+                source_branch: 'bar',
+                order_by: 'created_at',
+                per_page: 1,
+              });
+
+              done();
+            })
+            .catch(done.fail);
+        });
+
+        it('sets the "Merge Request" Object', done => {
+          store
+            .dispatch('getMergeRequestsForBranch', { projectId: 'abcproject', branchId: 'bar' })
+            .then(() => {
+              expect(Object.keys(store.state.projects.abcproject.mergeRequests).length).toEqual(1);
+              expect(Object.keys(store.state.projects.abcproject.mergeRequests)[0]).toEqual('2');
+              expect(store.state.projects.abcproject.mergeRequests[2]).toEqual(
+                jasmine.objectContaining(mrData),
+              );
+              done();
+            })
+            .catch(done.fail);
+        });
+
+        it('sets "Current Merge Request" object to the most recent MR', done => {
+          store
+            .dispatch('getMergeRequestsForBranch', { projectId: 'abcproject', branchId: 'bar' })
+            .then(() => {
+              expect(store.state.currentMergeRequestId).toEqual('2');
+              done();
+            })
+            .catch(done.fail);
+        });
+      });
+
+      describe('no merge requests for branch available case', () => {
+        beforeEach(() => {
+          spyOn(service, 'getProjectMergeRequests').and.callThrough();
+          mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).reply(200, []);
+        });
+
+        it('does not fail if there are no merge requests for current branch', done => {
+          store
+            .dispatch('getMergeRequestsForBranch', { projectId: 'abcproject', branchId: 'foo' })
+            .then(() => {
+              expect(Object.keys(store.state.projects.abcproject.mergeRequests).length).toEqual(0);
+              expect(store.state.currentMergeRequestId).toEqual('');
+              done();
+            })
+            .catch(done.fail);
+        });
+      });
+    });
+
+    describe('error', () => {
+      beforeEach(() => {
+        mock.onGet(/api\/(.*)\/projects\/abcproject\/merge_requests/).networkError();
+      });
+
+      it('flashes message, if error', done => {
+        const flashSpy = spyOnDependency(actions, 'flash');
+
+        getMergeRequestsForBranch({ commit() {} }, { projectId: 'abcproject', branchId: 'bar' })
+          .then(() => {
+            fail('Expected getMergeRequestsForBranch to throw an error');
+          })
+          .catch(() => {
+            expect(flashSpy).toHaveBeenCalled();
+            expect(flashSpy.calls.argsFor(0)[0]).toEqual('Error fetching merge requests for bar');
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
   });
 
   describe('getMergeRequestData', () => {
