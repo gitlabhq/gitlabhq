@@ -96,7 +96,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
   context 'when pipeline is running for a merge request' do
     let(:command) do
       Gitlab::Ci::Pipeline::Chain::Command.new(
-        source: :merge_request,
+        source: :merge_request_event,
         origin_ref: 'feature',
         checkout_sha: project.commit.id,
         after_sha: nil,
@@ -117,7 +117,7 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
     end
 
     it 'correctly indicated that this is a merge request pipeline' do
-      expect(pipeline).to be_merge_request
+      expect(pipeline).to be_merge_request_event
       expect(pipeline.merge_request).to eq(merge_request)
     end
 

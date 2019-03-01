@@ -104,7 +104,7 @@ FactoryBot.define do
     trait :with_merge_request_pipeline do
       after(:build) do |merge_request|
         merge_request.merge_request_pipelines << build(:ci_pipeline,
-          source: :merge_request,
+          source: :merge_request_event,
           merge_request: merge_request,
           project: merge_request.source_project)
       end

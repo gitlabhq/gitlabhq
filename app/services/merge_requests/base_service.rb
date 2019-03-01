@@ -67,7 +67,7 @@ module MergeRequests
 
       Ci::CreatePipelineService
         .new(merge_request.source_project, user, ref: merge_request.source_branch)
-        .execute(:merge_request,
+        .execute(:merge_request_event,
                  ignore_skip_ci: true,
                  save_on_errors: false,
                  merge_request: merge_request)

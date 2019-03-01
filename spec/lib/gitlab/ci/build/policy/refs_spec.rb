@@ -68,6 +68,20 @@ describe Gitlab::Ci::Build::Policy::Refs do
         expect(described_class.new(%w[triggers]))
           .not_to be_satisfied_by(pipeline)
       end
+
+      context 'when source is merge_request_event' do
+        let(:pipeline) { build_stubbed(:ci_pipeline, source: :merge_request_event) }
+
+        it 'is satisfied with only: merge_request' do
+          expect(described_class.new(%w[merge_requests]))
+            .to be_satisfied_by(pipeline)
+        end
+
+        it 'is not satisfied with only: merge_request_event' do
+          expect(described_class.new(%w[merge_request_events]))
+            .not_to be_satisfied_by(pipeline)
+        end
+      end
     end
 
     context 'when matching a ref by a regular expression' do

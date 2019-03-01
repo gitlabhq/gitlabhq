@@ -39,7 +39,7 @@ describe UpdateHeadPipelineForMergeRequestWorker do
       let!(:merge_request_pipeline) do
         create(:ci_pipeline,
                project: project,
-               source: :merge_request,
+               source: :merge_request_event,
                sha: latest_sha,
                merge_request: merge_request)
       end

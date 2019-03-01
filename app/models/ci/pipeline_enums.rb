@@ -23,7 +23,7 @@ module Ci
         api: 5,
         external: 6,
         chat: 8,
-        merge_request: 10
+        merge_request_event: 10
       }
     end
 

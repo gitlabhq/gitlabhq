@@ -46,7 +46,7 @@ module Ci
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
-    delegate :merge_request?, to: :pipeline
+    delegate :merge_request_event?, to: :pipeline
 
     ##
     # Since Gitlab 11.5, deployments records started being created right after
