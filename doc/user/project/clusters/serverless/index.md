@@ -127,7 +127,7 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
    ```
 
     This `.gitlab-ci.yml` creates a `functions` job that invokes some
-    predefined commands to deploy your functions to Knative.
+    predefined commands to deploy your functions to your cluster.
 
     `Serverless.gitlab-ci.yml` is a template that allows customization.
     You can either import it with `include` parameter and use `extends` to
