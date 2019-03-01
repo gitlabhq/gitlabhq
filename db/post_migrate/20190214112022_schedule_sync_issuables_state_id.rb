@@ -11,10 +11,12 @@ class ScheduleSyncIssuablesStateId < ActiveRecord::Migration[5.0]
   # issues count: 13587305
   # merge requests count: 18925274
   #
-  # Using 25000 as batch size should take around 26 hours
-  # to migrate both issues and merge requests
-  BATCH_SIZE = 25000
-  DELAY_INTERVAL = 5.minutes.to_i
+  # Using 5000 as batch size and 115 seconds interval will give:
+  # 2718 jobs for issues - taking ~86 hours
+  # 3786 jobs for merge requests - taking ~120 hours
+  #
+  BATCH_SIZE = 5000
+  DELAY_INTERVAL = 120.seconds.to_i
   ISSUES_MIGRATION = 'SyncIssuesStateId'.freeze
   MERGE_REQUESTS_MIGRATION = 'SyncMergeRequestsStateId'.freeze
 
@@ -34,14 +36,14 @@ class ScheduleSyncIssuablesStateId < ActiveRecord::Migration[5.0]
 
   def up
     queue_background_migration_jobs_by_range_at_intervals(
-      Issue.where(state_id: nil),
+      Issue.all,
       ISSUES_MIGRATION,
       DELAY_INTERVAL,
       batch_size: BATCH_SIZE
     )
 
     queue_background_migration_jobs_by_range_at_intervals(
-      MergeRequest.where(state_id: nil),
+      MergeRequest.all,
       MERGE_REQUESTS_MIGRATION,
       DELAY_INTERVAL,
       batch_size: BATCH_SIZE

@@ -26,29 +26,10 @@ describe ScheduleSyncIssuablesStateId, :migration do
         Timecop.freeze do
           migrate!
 
-          expect(migration).to be_scheduled_delayed_migration(5.minutes, resource_1.id, resource_2.id)
-          expect(migration).to be_scheduled_delayed_migration(10.minutes, resource_3.id, resource_4.id)
+          expect(migration).to be_scheduled_delayed_migration(120.seconds, resource_1.id, resource_2.id)
+          expect(migration).to be_scheduled_delayed_migration(240.seconds, resource_3.id, resource_4.id)
           expect(BackgroundMigrationWorker.jobs.size).to eq(2)
         end
-      end
-    end
-  end
-
-  shared_examples 'rescheduling migrations' do
-    before do
-      Sidekiq::Worker.clear_all
-    end
-
-    it 'reschedules migrations when should wait for dead tuple vacuum' do
-      worker = worker_class.new
-
-      Sidekiq::Testing.fake! do
-        allow(worker).to receive(:wait_for_deadtuple_vacuum?) { true }
-
-        worker.perform(resource_1.id, resource_2.id)
-
-        expect(worker_class.name.demodulize).to be_scheduled_delayed_migration(5.minutes, resource_1.id, resource_2.id)
-        expect(BackgroundMigrationWorker.jobs.size).to eq(1)
       end
     end
   end
@@ -76,12 +57,6 @@ describe ScheduleSyncIssuablesStateId, :migration do
         let!(:resource_3) { issues.create!(description: 'third', state: 'closed') }
         let!(:resource_4) { issues.create!(description: 'fourth', state: 'closed') }
       end
-
-      it_behaves_like 'rescheduling migrations' do
-        let(:worker_class) { Gitlab::BackgroundMigration::SyncIssuesStateId }
-        let!(:resource_1) { issues.create!(description: 'first', state: 'opened') }
-        let!(:resource_2) { issues.create!(description: 'second', state: 'closed') }
-      end
     end
 
     context 'merge requests' do
@@ -107,12 +82,6 @@ describe ScheduleSyncIssuablesStateId, :migration do
         let!(:resource_2) { merge_requests.create!(state: 'closed', target_project_id: @project.id, target_branch: 'feature2', source_branch: 'master') }
         let!(:resource_3) { merge_requests.create!(state: 'merged', target_project_id: @project.id, target_branch: 'feature3', source_branch: 'master') }
         let!(:resource_4) { merge_requests.create!(state: 'locked', target_project_id: @project.id, target_branch: 'feature4', source_branch: 'master') }
-      end
-
-      it_behaves_like 'rescheduling migrations' do
-        let(:worker_class) { Gitlab::BackgroundMigration::SyncMergeRequestsStateId }
-        let(:resource_1) { merge_requests.create!(state: 'opened', target_project_id: @project.id, target_branch: 'feature1', source_branch: 'master') }
-        let(:resource_2) { merge_requests.create!(state: 'closed', target_project_id: @project.id, target_branch: 'feature2', source_branch: 'master') }
       end
     end
   end
