@@ -28,7 +28,7 @@ module API
         args[:scope] = args[:scope].underscore if args[:scope]
 
         issues = IssuesFinder.new(current_user, args).execute
-          .preload(:assignees, :labels, :notes, :timelogs, :project, :author, :closed_by)
+                   .with_api_entity_associations
         issues.reorder(order_options_with_tie_breaker)
       end
       # rubocop: enable CodeReuse/ActiveRecord
