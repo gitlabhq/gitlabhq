@@ -5,6 +5,7 @@ module Ci
     include Ci::Processable
     include Importable
     include AfterCommitQueue
+    include HasRef
     include Gitlab::Utils::StrongMemoize
 
     belongs_to :project
