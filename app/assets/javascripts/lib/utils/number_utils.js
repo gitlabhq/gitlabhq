@@ -80,3 +80,22 @@ export function numberToHumanSize(size) {
   }
   return `${bytesToGiB(size).toFixed(2)} GiB`;
 }
+
+/**
+ * A simple method that returns the value of a + b
+ * It seems unessesary, but when combined with a reducer it
+ * adds up all the values in an array.
+ *
+ * e.g. `[1, 2, 3, 4, 5].reduce(sum) // => 15`
+ *
+ * @param {Float} a
+ * @param {Float} b
+ * @example
+ * // return 15
+ * [1, 2, 3, 4, 5].reduce(sum);
+ *
+ * // returns 6
+ * Object.values([{a: 1, b: 2, c: 3].reduce(sum);
+ * @returns {Float} The summed value
+ */
+export const sum = (a = 0, b = 0) => a + b;

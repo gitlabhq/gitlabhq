@@ -4,7 +4,7 @@ module HasRef
   extend ActiveSupport::Concern
 
   def branch?
-    !tag?
+    !tag? && !merge_request_event?
   end
 
   def git_ref

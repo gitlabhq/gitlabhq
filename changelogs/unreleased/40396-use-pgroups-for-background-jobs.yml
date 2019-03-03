@@ -1,0 +1,5 @@
+---
+title: 'If chpst is available, make fron-source installations run sidekiq as a process group leader'
+merge_request: 25654
+author:
+type: other

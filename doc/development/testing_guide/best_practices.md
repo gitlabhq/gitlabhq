@@ -168,12 +168,13 @@ instead of 30+ seconds in case of a regular `spec_helper`.
 
 ### `let` variables
 
-GitLab's RSpec suite has made extensive use of `let` variables to reduce
-duplication. However, this sometimes [comes at the cost of clarity][lets-not],
+GitLab's RSpec suite has made extensive use of `let`(along with it strict, non-lazy
+version `let!`) variables to reduce duplication. However, this sometimes [comes at the cost of clarity][lets-not], 
 so we need to set some guidelines for their use going forward:
 
-- `let` variables are preferable to instance variables. Local variables are
-  preferable to `let` variables.
+- `let!` variables are preferable to instance variables. `let` variables
+  are preferable to `let!` variables. Local variables are preferable to 
+  `let` variables.
 - Use `let` to reduce duplication throughout an entire spec file.
 - Don't use `let` to define variables used by a single test; define them as
   local variables inside the test's `it` block.
@@ -183,6 +184,9 @@ so we need to set some guidelines for their use going forward:
 - Try to avoid overriding the definition of one `let` variable with another.
 - Don't define a `let` variable that's only used by the definition of another.
   Use a helper method instead.
+- `let!` variables should be used only in case if strict evaluation with defined 
+  order is required, otherwise `let` will suffice. Remember that `let` is lazy and won't 
+  be evaluated until it is referenced.
 
 [lets-not]: https://robots.thoughtbot.com/lets-not
 

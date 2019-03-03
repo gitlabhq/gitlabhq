@@ -38,7 +38,14 @@ start_no_deamonize()
 
 start_sidekiq()
 {
-  exec bundle exec sidekiq -C "${sidekiq_config}" -e $RAILS_ENV -P $sidekiq_pidfile "$@"
+  cmd="exec"
+  chpst=$(which chpst)
+
+  if [ -n "$chpst" ]; then
+    cmd="${cmd} ${chpst} -P"
+  fi
+
+  ${cmd} bundle exec sidekiq -C "${sidekiq_config}" -e $RAILS_ENV -P $sidekiq_pidfile "$@"
 }
 
 load_ok()

@@ -13,6 +13,9 @@ describe Emails::AutoDevops do
 
     subject { Notify.autodevops_disabled_email(pipeline, owner.email) }
 
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+
     it 'sents email with correct subject' do
       is_expected.to have_subject("#{project.name} | Auto DevOps pipeline was disabled for #{project.name}")
     end

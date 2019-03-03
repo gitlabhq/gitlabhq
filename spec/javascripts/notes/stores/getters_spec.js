@@ -261,4 +261,12 @@ describe('Getters Notes Store', () => {
       expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(false)).toBeFalsy();
     });
   });
+
+  describe('getDiscussion', () => {
+    it('returns discussion by ID', () => {
+      state.discussions.push({ id: '1' });
+
+      expect(getters.getDiscussion(state)('1')).toEqual({ id: '1' });
+    });
+  });
 });

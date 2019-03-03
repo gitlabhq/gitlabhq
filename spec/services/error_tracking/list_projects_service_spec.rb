@@ -32,7 +32,7 @@ describe ErrorTracking::ListProjectsService do
       end
 
       context 'set model attributes to new values' do
-        let(:new_api_url) { new_api_host + 'api/0/projects/' }
+        let(:new_api_url) { new_api_host + 'api/0/projects/org/proj/' }
 
         before do
           expect(error_tracking_setting).to receive(:list_sentry_projects)
@@ -121,7 +121,7 @@ describe ErrorTracking::ListProjectsService do
 
     context 'error_tracking_setting is nil' do
       let(:error_tracking_setting) { build(:project_error_tracking_setting) }
-      let(:new_api_url) { new_api_host + 'api/0/projects/' }
+      let(:new_api_url) { new_api_host + 'api/0/projects/org/proj/' }
 
       before do
         expect(project).to receive(:build_error_tracking_setting).once

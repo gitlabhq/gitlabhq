@@ -173,12 +173,12 @@ describe MergeRequests::RefreshService do
 
           it 'sets the latest merge request pipeline as a head pipeline' do
             @merge_request.reload
-            expect(@merge_request.actual_head_pipeline).to be_merge_request
+            expect(@merge_request.actual_head_pipeline).to be_merge_request_event
           end
 
           it 'returns pipelines in correct order' do
             @merge_request.reload
-            expect(@merge_request.all_pipelines.first).to be_merge_request
+            expect(@merge_request.all_pipelines.first).to be_merge_request_event
             expect(@merge_request.all_pipelines.second).to be_push
           end
         end

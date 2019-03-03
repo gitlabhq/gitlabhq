@@ -23,7 +23,7 @@
         = link_to edit_project_tag_release_path(@project, @tag.name), class: 'btn btn-edit controls-item has-tooltip', title: s_('TagsPage|Edit release notes') do
           = icon("pencil")
       = link_to project_tree_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse files') do
-        = icon('files-o')
+        = sprite_icon('folder-open')
       = link_to project_commits_path(@project, @tag.name), class: 'btn controls-item has-tooltip', title: s_('TagsPage|Browse commits') do
         = icon('history')
       .btn-container.controls-item

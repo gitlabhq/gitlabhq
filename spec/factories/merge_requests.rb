@@ -101,6 +101,15 @@ FactoryBot.define do
       end
     end
 
+    trait :with_merge_request_pipeline do
+      after(:build) do |merge_request|
+        merge_request.merge_request_pipelines << build(:ci_pipeline,
+          source: :merge_request_event,
+          merge_request: merge_request,
+          project: merge_request.source_project)
+      end
+    end
+
     trait :deployed_review_app do
       target_branch 'pages-deploy-target'
 

@@ -54,15 +54,14 @@ export default {
       return this.pageInfo.nextPage;
     },
     getItems() {
-      const total = this.pageInfo.totalPages;
-      const { page } = this.pageInfo;
+      const { totalPages, nextPage, previousPage, page } = this.pageInfo;
       const items = [];
 
       if (page > 1) {
         items.push({ title: FIRST, first: true });
       }
 
-      if (page > 1) {
+      if (previousPage) {
         items.push({ title: PREV, prev: true });
       } else {
         items.push({ title: PREV, disabled: true, prev: true });
@@ -70,32 +69,34 @@ export default {
 
       if (page > UI_LIMIT) items.push({ title: SPREAD, separator: true });
 
-      const start = Math.max(page - PAGINATION_UI_BUTTON_LIMIT, 1);
-      const end = Math.min(page + PAGINATION_UI_BUTTON_LIMIT, total);
+      if (totalPages) {
+        const start = Math.max(page - PAGINATION_UI_BUTTON_LIMIT, 1);
+        const end = Math.min(page + PAGINATION_UI_BUTTON_LIMIT, totalPages);
 
-      for (let i = start; i <= end; i += 1) {
-        const isActive = i === page;
-        items.push({ title: i, active: isActive, page: true });
+        for (let i = start; i <= end; i += 1) {
+          const isActive = i === page;
+          items.push({ title: i, active: isActive, page: true });
+        }
+
+        if (totalPages - page > PAGINATION_UI_BUTTON_LIMIT) {
+          items.push({ title: SPREAD, separator: true, page: true });
+        }
       }
 
-      if (total - page > PAGINATION_UI_BUTTON_LIMIT) {
-        items.push({ title: SPREAD, separator: true, page: true });
-      }
-
-      if (page === total) {
-        items.push({ title: NEXT, disabled: true, next: true });
-      } else if (total - page >= 1) {
+      if (nextPage) {
         items.push({ title: NEXT, next: true });
+      } else {
+        items.push({ title: NEXT, disabled: true, next: true });
       }
 
-      if (total - page >= 1) {
+      if (totalPages && totalPages - page >= 1) {
         items.push({ title: LAST, last: true });
       }
 
       return items;
     },
     showPagination() {
-      return this.pageInfo.totalPages > 1;
+      return this.pageInfo.nextPage || this.pageInfo.previousPage;
     },
   },
   methods: {

@@ -880,6 +880,98 @@ import bundle from 'ee_else_ce/protected_branches/protected_branches_bundle.js';
 See the frontend guide [performance section](./fe_guide/performance.md) for
 information on managing page-specific javascript within EE.
 
+
+## Vue code in `assets/javascript`
+### script tag
+
+#### Child Component only used in EE
+To seperate Vue template differences we should [async import the components](https://vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+
+Doing this allows for us to load the correct component in EE whilst in CE
+we can load a empty component that renders nothing. This code **should**
+exist in the CE repository as well as the EE repository.
+
+```html
+<script>
+export default {
+  components: {
+    EEComponent: () => import('ee_component/components/test.vue'),
+  },
+};
+</script>
+
+<template>
+  <div>
+    <ee-component />
+  </div>
+</template>
+```
+
+#### For JS code that is EE only, like props, computed properties, methods, etc, we will keep the current approach
+ - Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](https://docs.gitlab.com/ee/development/ee_features.html#javascript-code-in-assetsjavascripts) alias we already have for webpack.
+  - This means all the EE specific props, computed properties, methods, etc that are EE only should be in a mixin in the `ee/` folder and we need to create a CE counterpart of the mixin
+
+  ##### Example:
+  ```javascript
+  import mixin from 'ee_else_ce/path/mixin';
+
+  {
+    mixins: [mixin]
+  }
+  ```
+- Computed Properties/methods and getters only used in the child import still need a counterpart in CE
+
+- For store modules, we will need a CE counterpart too.
+- You can see an MR with an example [here](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/9762)
+
+#### `template` tag
+* **EE Child components**
+  - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
+
+* **EE extra HTML**
+  - For the templates that have extra HTML in EE we will use the `ifEE` mixin with the `v-if` directive.
+  - You can either use the `template` tag as a wrapper or directly in the element, if there is only one element to be rendered in EE:
+
+```html
+  <template v-if="ifEE">
+    <p>Several</p>
+    <p>non wrapper</p>
+    <p>elements</p>
+    <p>that are rendered</p>
+    <p>in EE only</p>
+  </template>
+```
+
+
+```html
+  <ul v-if="renderIfEE">
+    <li>One wrapped</li>
+    <li>element</li>
+    <li>that is rendered</li>
+    <li>in EE only</li>
+  </template>
+```
+
+### Non Vue Files
+For regular JS files, the approach is similar.
+
+1. We will keep using the [`ee_else_ce`](https://docs.gitlab.com/ee/development/ee_features.html#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
+  1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
+1. For code inside functions that can't be extended, we will use an `if` statement with the `ifEE` helper
+
+##### Example:
+
+```javascript
+import { ifEE } from '~/lib/utils/common_utils'
+if (renderIfEE) {
+  $('.js-import-git-toggle-button').on('click', () => {
+    const $projectMirror = $('#project_mirror');
+
+    $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
+  });
+}
+```
+
 ## SCSS code in `assets/stylesheets`
 
 To separate EE-specific styles in SCSS files, if a component you're adding styles for
