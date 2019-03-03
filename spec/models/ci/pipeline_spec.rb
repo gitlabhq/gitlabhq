@@ -1804,7 +1804,11 @@ describe Ci::Pipeline, :mailer do
 
     context 'on prepare' do
       before do
-        build.prepare
+        # Prevent skipping directly to 'pending'
+        allow(build).to receive(:prerequisites).and_return([double])
+        allow(Ci::BuildPrepareWorker).to receive(:perform_async)
+
+        build.enqueue
       end
 
       it { is_expected.to eq('preparing') }

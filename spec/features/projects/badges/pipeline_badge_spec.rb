@@ -47,10 +47,11 @@ describe 'Pipeline Badge' do
       before do
         # Prevent skipping directly to 'pending'
         allow(Ci::BuildPrepareWorker).to receive(:perform_async)
+        allow(job).to receive(:prerequisites).and_return([double])
       end
 
       it 'displays the preparing badge' do
-        job.prepare
+        job.enqueue
 
         visit pipeline_project_badges_path(project, ref: ref, format: :svg)
 

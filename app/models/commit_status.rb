@@ -66,7 +66,10 @@ class CommitStatus < ActiveRecord::Base
     end
 
     event :enqueue do
-      transition [:created, :preparing, :skipped, :manual, :scheduled] => :pending
+      # A CommitStatus will never have prerequisites, but this event
+      # is shared by Ci::Build, which cannot progress unless prerequisites
+      # are satisfied.
+      transition [:created, :preparing, :skipped, :manual, :scheduled] => :pending, unless: :any_unmet_prerequisites?
     end
 
     event :run do
@@ -177,6 +180,10 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def has_trace?
+    false
+  end
+
+  def any_unmet_prerequisites?
     false
   end
 

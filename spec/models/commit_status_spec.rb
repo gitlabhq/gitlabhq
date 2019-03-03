@@ -489,6 +489,12 @@ describe CommitStatus do
 
       it { is_expected.to be_script_failure }
     end
+
+    context 'when failure_reason is unmet_prerequisites' do
+      let(:reason) { :unmet_prerequisites }
+
+      it { is_expected.to be_unmet_prerequisites }
+    end
   end
 
   describe 'ensure stage assignment' do
