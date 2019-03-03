@@ -194,7 +194,7 @@ describe MergeRequests::CreateService do
 
             merge_request.reload
             expect(merge_request.merge_request_pipelines.count).to eq(1)
-            expect(merge_request.actual_head_pipeline).to be_merge_request
+            expect(merge_request.actual_head_pipeline).to be_merge_request_event
           end
 
           context 'when there are no commits between source branch and target branch' do
@@ -226,7 +226,7 @@ describe MergeRequests::CreateService do
             end
 
             it 'sets the latest merge request pipeline as the head pipeline' do
-              expect(merge_request.actual_head_pipeline).to be_merge_request
+              expect(merge_request.actual_head_pipeline).to be_merge_request_event
             end
           end
 

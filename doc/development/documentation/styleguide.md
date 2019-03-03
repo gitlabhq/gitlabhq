@@ -236,6 +236,24 @@ For other punctuation rules, please refer to the
   E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
 
+### Links to confidential issues
+
+Don't link directly to [confidential issues](../../user/project/issues/confidential_issues.md). These will fail for:
+
+- Those without sufficient permissions.
+- Automated link checkers.
+
+Instead:
+
+- Mention in the text that the information is contained in a confidential issue. This will reduce confusion.
+- Provide a link in back ticks (`` ` ``) so that those with access to the issue can easily navigate to it.
+
+Example:
+
+```md
+For more information, see the [confidential issue](https://docs.gitlab.com/ee/user/project/issues/confidential_issues.html) `https://gitlab.com/gitlab-org/gitlab-ce/issues/<issue_number>`.
+```
+
 ### Unlinking emails
 
 By default, all email addresses will render in an email tag on docs.gitlab.com.

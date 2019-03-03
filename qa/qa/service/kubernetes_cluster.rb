@@ -9,7 +9,7 @@ module QA
 
       attr_reader :api_url, :ca_certificate, :token, :rbac
 
-      def initialize(rbac: false)
+      def initialize(rbac: true)
         @rbac = rbac
       end
 

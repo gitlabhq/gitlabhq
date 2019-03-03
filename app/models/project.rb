@@ -1970,9 +1970,19 @@ class Project < ActiveRecord::Base
     return unless storage_upgradable?
 
     if git_transfer_in_progress?
-      ProjectMigrateHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+      HashedStorage::ProjectMigrateWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
     else
-      ProjectMigrateHashedStorageWorker.perform_async(id)
+      HashedStorage::ProjectMigrateWorker.perform_async(id)
+    end
+  end
+
+  def rollback_to_legacy_storage!
+    return if legacy_storage?
+
+    if git_transfer_in_progress?
+      HashedStorage::ProjectRollbackWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+    else
+      HashedStorage::ProjectRollbackWorker.perform_async(id)
     end
   end
 

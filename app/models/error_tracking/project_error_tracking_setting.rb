@@ -2,7 +2,18 @@
 
 module ErrorTracking
   class ProjectErrorTrackingSetting < ActiveRecord::Base
+    include Gitlab::Utils::StrongMemoize
     include ReactiveCaching
+
+    API_URL_PATH_REGEXP = %r{
+      \A
+        (?<prefix>/api/0/projects/+)
+        (?:
+          (?<organization>[^/]+)/+
+          (?<project>[^/]+)/*
+        )?
+      \z
+    }x
 
     self.reactive_cache_key = ->(setting) { [setting.class.model_name.singular, setting.project_id] }
 
@@ -10,11 +21,11 @@ module ErrorTracking
 
     validates :api_url, length: { maximum: 255 }, public_url: true, url: { enforce_sanitization: true, ascii_only: true }, allow_nil: true
 
-    validates :api_url, presence: true, if: :enabled
+    validates :api_url, presence: { message: 'is a required field' }, if: :enabled
 
     validate :validate_api_url_path, if: :enabled
 
-    validates :token, presence: true, if: :enabled
+    validates :token, presence: { message: 'is a required field' }, if: :enabled
 
     attr_encrypted :token,
       mode: :per_attribute_iv,
@@ -22,6 +33,11 @@ module ErrorTracking
       algorithm: 'aes-256-gcm'
 
     after_save :clear_reactive_cache!
+
+    def api_url=(value)
+      super
+      clear_memoization(:api_url_slugs)
+    end
 
     def project_name
       super || project_name_from_slug
@@ -40,6 +56,8 @@ module ErrorTracking
     end
 
     def self.build_api_url_from(api_host:, project_slug:, organization_slug:)
+      return if api_host.blank?
+
       uri = Addressable::URI.parse("#{api_host}/api/0/projects/#{organization_slug}/#{project_slug}/")
       uri.path = uri.path.squeeze('/')
 
@@ -100,34 +118,39 @@ module ErrorTracking
     end
 
     def project_slug_from_api_url
-      extract_slug(:project)
+      api_url_slug(:project)
     end
 
     def organization_slug_from_api_url
-      extract_slug(:organization)
+      api_url_slug(:organization)
     end
 
-    def extract_slug(capture)
+    def api_url_slug(capture)
+      slugs = strong_memoize(:api_url_slugs) { extract_api_url_slugs || {} }
+      slugs[capture]
+    end
+
+    def extract_api_url_slugs
       return if api_url.blank?
 
       begin
         url = Addressable::URI.parse(api_url)
       rescue Addressable::URI::InvalidURIError
-        return nil
+        return
       end
 
-      @slug_match ||= url.path.match(%r{^/api/0/projects/+(?<organization>[^/]+)/+(?<project>[^/|$]+)}) || {}
-      @slug_match[capture]
+      url.path.match(API_URL_PATH_REGEXP)
     end
 
     def validate_api_url_path
       return if api_url.blank?
 
-      begin
-        unless Addressable::URI.parse(api_url).path.starts_with?('/api/0/projects')
-          errors.add(:api_url, 'path needs to start with /api/0/projects')
-        end
-      rescue Addressable::URI::InvalidURIError
+      unless api_url_slug(:prefix)
+        return errors.add(:api_url, 'is invalid')
+      end
+
+      unless api_url_slug(:organization)
+        errors.add(:project, 'is a required field')
       end
     end
   end

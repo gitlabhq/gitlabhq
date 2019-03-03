@@ -384,16 +384,37 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add a bullet list"
+msgstr ""
+
 msgid "Add a general comment to this %{noteable_name}."
 msgstr ""
 
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
+msgid "Add a link"
+msgstr ""
+
+msgid "Add a numbered list"
+msgstr ""
+
 msgid "Add a table"
 msgstr ""
 
+msgid "Add a task list"
+msgstr ""
+
+msgid "Add bold text"
+msgstr ""
+
+msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
+msgstr ""
+
 msgid "Add image comment"
+msgstr ""
+
+msgid "Add italic text"
 msgstr ""
 
 msgid "Add license"
@@ -865,9 +886,6 @@ msgid "Aug"
 msgstr ""
 
 msgid "August"
-msgstr ""
-
-msgid "Auth Token"
 msgstr ""
 
 msgid "Authentication Log"
@@ -2962,6 +2980,9 @@ msgstr ""
 msgid "Enable group Runners"
 msgstr ""
 
+msgid "Enable header and footer in emails"
+msgstr ""
+
 msgid "Enable or disable version check and usage ping."
 msgstr ""
 
@@ -3002,9 +3023,6 @@ msgid "Enter the merge request description"
 msgstr ""
 
 msgid "Enter the merge request title"
-msgstr ""
-
-msgid "Enter your Sentry API URL"
 msgstr ""
 
 msgid "Environment variables"
@@ -3179,6 +3197,33 @@ msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
 msgid "Error:"
+msgstr ""
+
+msgid "ErrorTracking|Active"
+msgstr ""
+
+msgid "ErrorTracking|After adding your Auth Token, use the 'Connect' button to load projects"
+msgstr ""
+
+msgid "ErrorTracking|Auth Token"
+msgstr ""
+
+msgid "ErrorTracking|Click 'Connect' to re-establish the connection to Sentry and activate the dropdown."
+msgstr ""
+
+msgid "ErrorTracking|Connection has failed. Re-check Auth Token and try again."
+msgstr ""
+
+msgid "ErrorTracking|Find your hostname in your Sentry account settings page"
+msgstr ""
+
+msgid "ErrorTracking|No projects available"
+msgstr ""
+
+msgid "ErrorTracking|Select project"
+msgstr ""
+
+msgid "ErrorTracking|To enable project selection, enter a valid Auth Token"
 msgstr ""
 
 msgid "Errors"
@@ -3405,9 +3450,6 @@ msgstr ""
 msgid "Filter..."
 msgstr ""
 
-msgid "Find and manage Auth Tokens in your Sentry account settings page."
-msgstr ""
-
 msgid "Find by path"
 msgstr ""
 
@@ -3619,6 +3661,9 @@ msgid "Go Micro is a framework for micro service development."
 msgstr ""
 
 msgid "Go back"
+msgstr ""
+
+msgid "Go full screen"
 msgstr ""
 
 msgid "Go to"
@@ -4062,6 +4107,12 @@ msgid "Input host keys manually"
 msgstr ""
 
 msgid "Input your repository URL"
+msgstr ""
+
+msgid "Insert a quote"
+msgstr ""
+
+msgid "Insert code"
 msgstr ""
 
 msgid "Insert suggestion"
@@ -4534,36 +4585,6 @@ msgid "Markdown"
 msgstr ""
 
 msgid "Markdown enabled"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a bullet list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a link"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a numbered list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a table"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a task list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add bold text"
-msgstr ""
-
-msgid "MarkdownToolbar|Add italic text"
-msgstr ""
-
-msgid "MarkdownToolbar|Go full screen"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert a quote"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert code"
 msgstr ""
 
 msgid "Max access level"
@@ -5869,6 +5890,9 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+msgid "Project \"%{name}\" is no longer available. Select another project to continue."
+msgstr ""
+
 msgid "Project '%{project_name}' is in the process of being deleted."
 msgstr ""
 
@@ -5972,6 +5996,9 @@ msgid "ProjectSettings|Learn more about badges."
 msgstr ""
 
 msgid "Projects"
+msgstr ""
+
+msgid "Projects Successfully Retrieved"
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
@@ -7453,6 +7480,9 @@ msgstr ""
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
+msgid "There was an error saving your changes."
+msgstr ""
+
 msgid "There was an error saving your notification settings."
 msgstr ""
 
@@ -8522,6 +8552,9 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
+msgid "Write"
+msgstr ""
+
 msgid "Write a comment or drag your files here…"
 msgstr ""
 
@@ -8836,9 +8869,6 @@ msgid "group"
 msgstr ""
 
 msgid "here"
-msgstr ""
-
-msgid "http://<sentry-host>/api/0/projects/{organization_slug}/{project_slug}/"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
