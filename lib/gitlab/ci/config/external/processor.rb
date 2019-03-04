@@ -7,11 +7,11 @@ module Gitlab
         class Processor
           IncludeError = Class.new(StandardError)
 
-          def initialize(values, project:, sha:, user:)
+          def initialize(values, project:, sha:, user:, expandset:)
             @values = values
-            @external_files = External::Mapper.new(values, project: project, sha: sha, user: user).process
+            @external_files = External::Mapper.new(values, project: project, sha: sha, user: user, expandset: expandset).process
             @content = {}
-          rescue External::Mapper::AmbigiousSpecificationError => e
+          rescue External::Mapper::Error => e
             raise IncludeError, e.message
           end
 

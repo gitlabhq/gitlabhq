@@ -1594,6 +1594,9 @@ You can only use files that are currently tracked by Git on the same branch
 your configuration file is on. In other words, when using a `include:local`, make
 sure that both `.gitlab-ci.yml` and the local file are on the same branch.
 
+All [nested includes](#nested-includes) will be executed in the scope of the same project,
+so it is possible to use local, project, remote or template includes.
+
 NOTE: **Note:**
 Including local files through Git submodules paths is not supported.
 
@@ -1606,7 +1609,7 @@ include:
 
 ### `include:file`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.9.
 
 To include files from another private project under the same GitLab instance,
 use `include:file`. This file is referenced using full  paths relative to the
@@ -1635,6 +1638,10 @@ include:
     file: '/templates/.gitlab-ci-template.yml'
 ```
 
+All nested includes will be executed in the scope of the target project,
+so it is possible to used local (relative to target project), project, remote
+or template includes.
+
 ### `include:template`
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53445) in GitLab 11.7.
@@ -1650,6 +1657,9 @@ include:
   - template: Auto-DevOps.gitlab-ci.yml
 ```
 
+All nested includes will be executed only with the permission of the user,
+so it is possible to use project, remote or template includes.
+
 ### `include:remote`
 
 `include:remote` can be used to include a file from a different location,
@@ -1662,10 +1672,16 @@ include:
   - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
 ```
 
-NOTE: **Note for GitLab admins:**
-In order to include files from another repository inside your local network,
-you may need to enable the **Allow requests to the local network from hooks and services** checkbox
-located in the **Admin area > Settings > Network > Outbound requests** section.
+All nested includes will be executed without context as public user, so only another remote,
+or public project, or template is allowed.
+
+### Nested includes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
+
+Nested includes allow you to compose a set of includes.
+A total of 50 includes is allowed.
+Duplicate includes are considered a configuration error.
 
 ### `include` examples
 
@@ -1833,6 +1849,51 @@ production:
 In this case, if `install_dependencies` and `deploy` were not repeated in
 `.gitlab-ci.yml`, they would not be part of the script for the `production`
 job in the combined CI configuration.
+
+#### Using nested includes
+
+The examples below show how includes can be nested from different sources
+using a combination of different methods.
+
+In this example, `.gitlab-ci.yml` includes local the file `/.gitlab-ci/another-config.yml`:
+
+```yaml
+includes:
+  - local: /.gitlab-ci/another-config.yml
+```
+
+The `/.gitlab-ci/another-config.yml` includes a template and the `/templates/docker-workflow.yml` file
+from another project:
+
+```yaml
+includes:
+  - template: Bash.gitlab-ci.yml
+  - project: /group/my-project
+    file: /templates/docker-workflow.yml
+```
+
+The `/templates/docker-workflow.yml` present in `/group/my-project` includes two local files
+of the `/group/my-project`:
+
+```yaml
+includes:
+  - local: : /templates/docker-build.yml
+  - local: : /templates/docker-testing.yml
+```
+
+Our `/templates/docker-build.yml` present in `/group/my-project` adds a `docker-build` job:
+
+```yaml
+docker-build:
+  script: docker build -t my-image .
+```
+
+Our second `/templates/docker-test.yml` present in `/group/my-project` adds a `docker-test` job:
+
+```yaml
+docker-test:
+  script: docker run my-image /run/tests.sh
+```
 
 ## `extends`
 
