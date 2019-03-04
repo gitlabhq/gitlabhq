@@ -117,6 +117,7 @@ excluded_attributes:
     - :description_html
     - :repository_languages
     - :bfg_object_map
+    - :tag_list
   namespaces:
     - :runners_token
     - :runners_token_encrypted
