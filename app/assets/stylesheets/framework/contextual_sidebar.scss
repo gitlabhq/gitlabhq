@@ -5,12 +5,9 @@
     padding-left: $contextual-sidebar-collapsed-width;
   }
 
-  // NOTE: at 1200px nav sidebar should be in 'desktop mode' (not overlap the content)
+  // At 1200px nav sidebar should not overlap the content
   // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24555#note_134136110
-  // But setting 'desktop mode' at 1200px will break spec/support/features/reportable_note_shared_examples.rb
-  $desktop-nav-sidebar-breakpoint: 1201px;
-
-  @media (min-width: $desktop-nav-sidebar-breakpoint) {
+  @include media-breakpoint-up(xl) {
     padding-left: $contextual-sidebar-width;
   }
 
@@ -215,7 +212,7 @@
     width: 16px;
   }
 
-  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
+  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl) - 1px) {
     &:not(.sidebar-expanded-mobile) {
       @include collapse-contextual-sidebar;
       @include collapse-contextual-sidebar-content;

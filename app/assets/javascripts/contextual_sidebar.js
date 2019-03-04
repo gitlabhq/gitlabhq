@@ -47,9 +47,9 @@ export default class ContextualSidebar {
 
   // TODO: use the breakpoints from breakpoints.js once they have been updated for bootstrap 4
   // See related issue and discussion: https://gitlab.com/gitlab-org/gitlab-ce/issues/56745
-  static isDesktopBreakpoint = () => bp.windowWidth() > 1200;
+  static isDesktopBreakpoint = () => bp.windowWidth() >= 1200;
   static setCollapsedCookie(value) {
-    if (bp.getBreakpointSize() !== 'lg') {
+    if (!ContextualSidebar.isDesktopBreakpoint()) {
       return;
     }
     Cookies.set('sidebar_collapsed', value, { expires: 365 * 10 });
@@ -92,12 +92,11 @@ export default class ContextualSidebar {
   render() {
     if (!this.$sidebar.length) return;
 
-    const breakpoint = bp.getBreakpointSize();
     if (!ContextualSidebar.isDesktopBreakpoint()) {
       this.toggleSidebarNav(false);
-    } else if (breakpoint === 'lg') {
+    } else {
       const collapse = parseBoolean(Cookies.get('sidebar_collapsed'));
-      this.toggleCollapsedSidebar(collapse, false);
+      this.toggleCollapsedSidebar(collapse, true);
     }
   }
 }
