@@ -220,6 +220,19 @@ describe Notes::CreateService do
             expect(note.note).to eq "HELLO\nWORLD"
           end
         end
+
+        context 'when note only have commands' do
+          it 'adds commands applied message to note errors' do
+            note_text = %(/close)
+            service = double(:service)
+            allow(Issues::UpdateService).to receive(:new).and_return(service)
+            expect(service).to receive(:execute)
+
+            note = described_class.new(project, user, opts.merge(note: note_text)).execute
+
+            expect(note.errors[:commands_only]).to be_present
+          end
+        end
       end
 
       context 'as a user who cannot update the target' do

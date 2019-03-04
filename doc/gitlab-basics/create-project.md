@@ -42,7 +42,7 @@ Project templates can pre-populate your project with necessary files to get you 
 
 There are two types of project templates:
 
-- [Built-in templates](#builtin-templates), sourced from the [`project-templates`](https://gitlab.com/gitlab-org/project-templates) group.
+- [Built-in templates](#built-in-templates), sourced from the [`project-templates`](https://gitlab.com/gitlab-org/project-templates) group.
 - [Custom project templates](#custom-project-templates-premium-only), for custom templates configured by GitLab administrators and users.
 
 ### Built-in templates

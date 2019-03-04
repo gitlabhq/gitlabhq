@@ -5,6 +5,7 @@ import PipelineStage from '~/pipelines/components/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import mrWidgetPipelineMixin from 'ee_else_ce/vue_merge_request_widget/mixins/mr_widget_pipeline';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -13,7 +14,10 @@ export default {
     CiIcon,
     Icon,
     TooltipOnTruncate,
+    LinkedPipelinesMiniList: () =>
+      import('ee_component/vue_shared/components/linked_pipelines_mini_list.vue'),
   },
+  mixins: [mrWidgetPipelineMixin],
   props: {
     pipeline: {
       type: Object,
@@ -82,8 +86,7 @@ export default {
   <div v-if="hasPipeline || hasCIError" class="ci-widget media">
     <template v-if="hasCIError">
       <div
-        class="add-border ci-status-icon ci-status-icon-failed ci-error
-        js-ci-error append-right-default"
+        class="add-border ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-default"
       >
         <icon :size="32" name="status_failed_borderless" />
       </div>
@@ -101,16 +104,13 @@ export default {
               <a :href="pipeline.path" class="pipeline-id font-weight-normal pipeline-number"
                 >#{{ pipeline.id }}</a
               >
-
               {{ pipeline.details.status.label }}
-
               <template v-if="hasCommitInfo">
                 for
                 <a
                   :href="pipeline.commit.commit_path"
                   class="commit-sha js-commit-link font-weight-normal"
-                >
-                  {{ pipeline.commit.short_id }}</a
+                  >{{ pipeline.commit.short_id }}</a
                 >
                 on
                 <tooltip-on-truncate
@@ -126,15 +126,22 @@ export default {
         </div>
         <div>
           <span class="mr-widget-pipeline-graph">
-            <span v-if="hasStages" class="stage-cell">
-              <div
-                v-for="(stage, i) in pipeline.details.stages"
-                :key="i"
-                class="stage-container dropdown js-mini-pipeline-graph mr-widget-pipeline-stages"
-              >
-                <pipeline-stage :stage="stage" />
-              </div>
+            <span class="stage-cell">
+              <linked-pipelines-mini-list v-if="triggeredBy.length" :triggered-by="triggeredBy" />
+              <template v-if="hasStages">
+                <div
+                  v-for="(stage, i) in pipeline.details.stages"
+                  :key="i"
+                  :class="{
+                    'has-downstream': hasDownstream(i),
+                  }"
+                  class="stage-container dropdown js-mini-pipeline-graph mr-widget-pipeline-stages"
+                >
+                  <pipeline-stage :stage="stage" />
+                </div>
+              </template>
             </span>
+            <linked-pipelines-mini-list v-if="triggered.length" :triggered="triggered" />
           </span>
         </div>
       </div>

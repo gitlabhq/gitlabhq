@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Base do
-  let(:context) { described_class::Context.new(nil, 'HEAD', nil) }
+  let(:context) { described_class::Context.new(nil, 'HEAD', nil, Set.new) }
 
   let(:test_class) do
     Class.new(described_class) do
@@ -76,6 +76,22 @@ describe Gitlab::Ci::Config::External::File::Base do
       it 'is not a valid file' do
         expect(subject).not_to be_valid
         expect(subject.error_message).to match /does not have valid YAML syntax/
+      end
+    end
+  end
+
+  describe '#to_hash' do
+    context 'with includes' do
+      let(:location) { 'some/file/config.yml' }
+      let(:content) { 'include: { template: Bash.gitlab-ci.yml }'}
+
+      before do
+        allow_any_instance_of(test_class)
+          .to receive(:content).and_return(content)
+      end
+
+      it 'does expand hash to include the template' do
+        expect(subject.to_hash).to include(:before_script)
       end
     end
   end

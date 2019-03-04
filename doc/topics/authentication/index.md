@@ -35,7 +35,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 ## API
 
-- [OAuth 2 Tokens](../../api/README.md#oauth-2-tokens)
+- [OAuth 2 Tokens](../../api/README.md#oauth2-tokens)
 - [Personal access tokens](../../api/README.md#personal-access-tokens)
 - [Impersonation tokens](../../api/README.md#impersonation-tokens)
 - [GitLab as an OAuth2 provider](../../api/oauth2.md#gitlab-as-an-oauth2-provider)

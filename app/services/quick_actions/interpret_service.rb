@@ -7,6 +7,11 @@ module QuickActions
 
     attr_reader :issuable
 
+    # Counts how many commands have been executed.
+    # Used to display relevant feedback on UI when a note
+    # with only commands has been processed.
+    attr_accessor :commands_executed_count
+
     SHRUG = '¯\\＿(ツ)＿/¯'.freeze
     TABLEFLIP = '(╯°□°)╯︵ ┻━┻'.freeze
 

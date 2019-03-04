@@ -8,13 +8,13 @@ Welcome to GitLab! We're glad to have you here!
 
 As a GitLab user you'll have access to all the features
 your [subscription](https://about.gitlab.com/pricing/)
-includes, except [GitLab administrator](../README.md#administrator-documentation)
+includes, except [GitLab administrator](../administration/index.md)
 settings, unless you have admin privileges to install, configure,
 and upgrade your GitLab instance.
 
 Admin privileges for [GitLab.com](https://gitlab.com/) are restricted to the GitLab team.
 
-For more information on configuring GitLab self-managed instances, see [Administrator documentation](../README.md#administrator-documentation).
+For more information on configuring GitLab self-managed instances, see [Administrator documentation](../administration/index.md).
 
 ## Overview
 
