@@ -5,7 +5,9 @@
     padding-left: $contextual-sidebar-collapsed-width;
   }
 
-  @include media-breakpoint-up(xl) {
+
+  $desktop-nav-sidebar-breakpoint: 1201px;
+  @media (min-width: $desktop-nav-sidebar-breakpoint) {
     padding-left: $contextual-sidebar-width;
   }
 
@@ -210,8 +212,8 @@
     width: 16px;
   }
 
-  &:not(.sidebar-expanded-mobile) {
-    @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
+  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl)) {
+    &:not(.sidebar-expanded-mobile) {
       @include collapse-contextual-sidebar;
       @include collapse-contextual-sidebar-content;
     }

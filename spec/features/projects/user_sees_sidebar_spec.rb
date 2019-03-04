@@ -4,6 +4,90 @@ describe 'Projects > User sees sidebar' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private, public_builds: false, namespace: user.namespace) }
 
+  context 'on a smaller screen', :js do
+    include MobileHelpers
+
+    before do
+      sign_in(user)
+    end
+
+    # refactor behaviours into shared behaviours
+
+    shared_examples 'has a collapsible mobile nav sidebar' do
+      it 'has a collapsed desktop nav-sidebar on load' do
+        expect(page).not_to have_content('Collapse sidebar')
+        expect(page).not_to have_selector('.sidebar-expanded-mobile')
+      end
+
+      it 'can expand the nav-sidebar' do
+        page.find('.nav-sidebar .js-toggle-sidebar').click
+        expect(page).to have_selector('.sidebar-expanded-mobile')
+        expect(page).to have_content('Collapse sidebar')
+      end
+    end
+
+    context 'with xs size' do
+      before do
+        resize_screen_xs
+        visit project_path(project)
+        expect(page).to have_selector('.nav-sidebar')
+        expect(page).to have_selector('.toggle-mobile-nav')
+      end
+
+      it 'has a collapsed nav-sidebar on load' do
+        expect(page).not_to have_content('.mobile-nav-open')
+        expect(page).not_to have_selector('.sidebar-expanded-mobile')
+      end
+
+      it 'can expand the nav-sidebar' do
+        page.find('.toggle-mobile-nav').click
+        expect(page).to have_selector('.mobile-nav-open')
+        expect(page).to have_selector('.sidebar-expanded-mobile')
+      end
+    end
+
+    context 'with sm size' do
+      before do
+        resize_screen_sm
+        visit project_path(project)
+        expect(page).to have_selector('.nav-sidebar')
+      end
+
+      it_behaves_like 'has a collapsible mobile nav sidebar'
+    end
+
+    context 'at 1200px exactly' do
+      before do
+        resize_window(1200, 800)
+        visit project_path(project)
+        expect(page).to have_selector('.nav-sidebar')
+      end
+
+      it_behaves_like 'has a collapsible mobile nav sidebar'
+    end
+
+    context 'at 1201px exactly' do
+      before do
+        resize_window(1201, 800)
+        visit project_path(project)
+        expect(page).to have_selector('.nav-sidebar')
+      end
+
+      it 'has a expanded desktop nav-sidebar on load' do
+        expect(page).to have_content('Collapse sidebar')
+        expect(page).not_to have_selector('.sidebar-collapsed-desktop')
+        expect(page).not_to have_selector('.sidebar-expanded-mobile')
+      end
+
+      it 'can collapse the nav-sidebar' do
+        page.find('.nav-sidebar .js-toggle-sidebar').click
+        expect(page).to have_selector('.sidebar-collapsed-desktop')
+        expect(page).not_to have_content('Collapse sidebar')
+        expect(page).not_to have_selector('.sidebar-expanded-mobile')
+      end
+    end
+  end
+
   context 'as owner' do
     before do
       sign_in(user)
