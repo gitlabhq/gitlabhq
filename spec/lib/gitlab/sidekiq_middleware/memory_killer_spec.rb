@@ -35,7 +35,7 @@ describe Gitlab::SidekiqMiddleware::MemoryKiller do
       stub_const("#{described_class}::MAX_RSS", 5.kilobytes)
     end
 
-    it 'sends the STP, TERM and KILL signals at expected times' do
+    it 'sends the TSTP, TERM and KILL signals at expected times' do
       expect(subject).to receive(:sleep).with(15 * 60).ordered
       expect(Process).to receive(:kill).with('SIGTSTP', pid).ordered
 
@@ -44,6 +44,17 @@ describe Gitlab::SidekiqMiddleware::MemoryKiller do
 
       expect(subject).to receive(:sleep).with(10).ordered
       expect(Process).to receive(:kill).with('SIGKILL', pid).ordered
+
+      run
+    end
+
+    it 'sends TSTP and TERM to the pid, but KILL to the pgroup, when running as process leader' do
+      allow(Process).to receive(:getpgrp) { pid }
+      allow(subject).to receive(:sleep)
+
+      expect(Process).to receive(:kill).with('SIGTSTP', pid).ordered
+      expect(Process).to receive(:kill).with('SIGTERM', pid).ordered
+      expect(Process).to receive(:kill).with('SIGKILL', "-#{pid}").ordered
 
       run
     end

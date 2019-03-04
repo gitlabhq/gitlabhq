@@ -77,6 +77,9 @@ Sidekiq.configure_server do |config|
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
   # https://github.com/mikel/mail/issues/912#issuecomment-214850355
   Mail.eager_autoload!
+
+  # Ensure the whole process group is terminated if possible
+  Gitlab::SidekiqSignals.install!(Sidekiq::CLI::SIGNAL_HANDLERS)
 end
 
 Sidekiq.configure_client do |config|
