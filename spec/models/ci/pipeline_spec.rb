@@ -513,8 +513,15 @@ describe Ci::Pipeline, :mailer do
                source_project: project,
                source_branch: 'feature',
                target_project: project,
-               target_branch: 'master')
+               target_branch: 'master',
+               assignee: assignee,
+               milestone: milestone,
+               labels: labels)
       end
+
+      let(:assignee) { create(:user) }
+      let(:milestone) { create(:milestone) }
+      let(:labels) { create_list(:label, 2) }
 
       it 'exposes merge request pipeline variables' do
         expect(subject.to_hash)
@@ -531,7 +538,11 @@ describe Ci::Pipeline, :mailer do
             'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH' => merge_request.source_project.full_path,
             'CI_MERGE_REQUEST_SOURCE_PROJECT_URL' => merge_request.source_project.web_url,
             'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
-            'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => pipeline.source_sha.to_s)
+            'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => pipeline.source_sha.to_s,
+            'CI_MERGE_REQUEST_TITLE' => merge_request.title,
+            'CI_MERGE_REQUEST_ASSIGNEES' => assignee.username,
+            'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
+            'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).join(','))
       end
 
       context 'when source project does not exist' do
@@ -545,6 +556,30 @@ describe Ci::Pipeline, :mailer do
                CI_MERGE_REQUEST_SOURCE_PROJECT_PATH
                CI_MERGE_REQUEST_SOURCE_PROJECT_URL
                CI_MERGE_REQUEST_SOURCE_BRANCH_NAME])
+        end
+      end
+
+      context 'without assignee' do
+        let(:assignee) { nil }
+
+        it 'does not expose assignee variable' do
+          expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_ASSIGNEES')
+        end
+      end
+
+      context 'without milestone' do
+        let(:milestone) { nil }
+
+        it 'does not expose milestone variable' do
+          expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_MILESTONE')
+        end
+      end
+
+      context 'without labels' do
+        let(:labels) { [] }
+
+        it 'does not expose labels variable' do
+          expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_LABELS')
         end
       end
     end
