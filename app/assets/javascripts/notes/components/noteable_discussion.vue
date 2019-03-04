@@ -4,7 +4,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
-import { getDiscussionReplyKey } from '~/lib/utils/autosave';
+import { clearDraft, getDiscussionReplyKey } from '~/lib/utils/autosave';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
 import icon from '~/vue_shared/components/icon.vue';
 import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
@@ -22,7 +22,6 @@ import noteForm from './note_form.vue';
 import diffWithNote from './diff_with_note.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
-import autosave from '../mixins/autosave';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import discussionNavigation from '../mixins/discussion_navigation';
@@ -55,7 +54,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [autosave, noteable, resolvable, discussionNavigation, diffLineNoteFormMixin],
+  mixins: [noteable, resolvable, discussionNavigation, diffLineNoteFormMixin],
   props: {
     discussion: {
       type: Object,
@@ -246,18 +245,6 @@ export default {
       return !this.discussionResolved && this.discussion.resolve_with_issue_path;
     },
   },
-  watch: {
-    isReplying() {
-      if (this.isReplying) {
-        this.$nextTick(() => {
-          // Pass an extra key to separate reply and note edit forms
-          this.initAutoSave({ ...this.firstNote, ...this.discussion }, ['Reply']);
-        });
-      } else {
-        this.disposeAutoSave();
-      }
-    },
-  },
   created() {
     eventHub.$on('startReplying', this.onStartReplying);
   },
@@ -316,7 +303,7 @@ export default {
       }
 
       this.isReplying = false;
-      this.resetAutoSave();
+      clearDraft(this.autosaveKey);
     },
     saveReply(noteText, form, callback) {
       const postData = {
@@ -342,7 +329,7 @@ export default {
       this.isReplying = false;
       this.saveNote(replyData)
         .then(() => {
-          this.resetAutoSave();
+          clearDraft(this.autosaveKey);
           callback();
         })
         .catch(err => {
