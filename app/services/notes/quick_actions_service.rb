@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
+# QuickActionsService class
+#
+# Executes quick actions commands extracted from note text
+#
+# Most commands returns parameters to be applied later
+# using QuickActionService#apply_updates
+#
 module Notes
   class QuickActionsService < BaseService
+    attr_reader :interpret_service
+
+    delegate :commands_executed_count, to: :interpret_service, allow_nil: true
+
     UPDATE_SERVICES = {
       'Issue' => Issues::UpdateService,
       'MergeRequest' => MergeRequests::UpdateService,
@@ -25,18 +36,21 @@ module Notes
       self.class.supported?(note)
     end
 
-    def extract_commands(note, options = {})
+    def execute(note, options = {})
       return [note.note, {}] unless supported?(note)
 
-      QuickActions::InterpretService.new(project, current_user, options)
-        .execute(note.note, note.noteable)
+      @interpret_service = QuickActions::InterpretService.new(project, current_user, options)
+
+      @interpret_service.execute(note.note, note.noteable)
     end
 
-    def execute(command_params, note)
-      return if command_params.empty?
+    # Applies updates extracted to note#noteable
+    # The update parameters are extracted on self#execute
+    def apply_updates(update_params, note)
+      return if update_params.empty?
       return unless supported?(note)
 
-      self.class.noteable_update_service(note).new(note.parent, current_user, command_params).execute(note.noteable)
+      self.class.noteable_update_service(note).new(note.parent, current_user, update_params).execute(note.noteable)
     end
   end
 end

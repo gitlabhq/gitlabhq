@@ -1,9 +1,9 @@
 # Conversational Development Index
 
-> [Introduced][ce-30469] in GitLab 9.3.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30469) in GitLab 9.3.
 
 NOTE: **NOTE**
-Your GitLab instance's [usage ping][ping] must be activated in order to use this feature.
+Your GitLab instance's [usage ping](../admin_area/settings/usage_statistics.md#usage-ping-core-only) must be activated in order to use this feature.
 
 The Conversational Development Index (ConvDev Index) gives you an overview of your entire
 instance's adoption of [Concurrent DevOps](https://about.gitlab.com/concurrent-devops/)
@@ -12,7 +12,7 @@ from planning to monitoring.
 This displays the usage of these GitLab features over
 the last 30 days, averaged over the number of active users in that time period. It also
 provides a Lead score per feature, which is calculated based on GitLab's analysis
-of top-performing instances based on [usage ping data][ping] that GitLab has
+of top-performing instances based on [usage ping data](../admin_area/settings/usage_statistics.md#usage-ping-core-only) that GitLab has
 collected. Your score is compared to the lead score of each feature and then expressed as a percentage at the bottom of said feature.
 Your overall index score is an average of all your feature score percentages - this percentage value is presented above all the of features on the page.
 
@@ -24,6 +24,3 @@ improve your scores.
 Usage ping data is aggregated on GitLab's servers for analysis. Your usage
 information is **not sent** to any other GitLab instances. If you have just started using GitLab, it may take a few weeks for data to be
 collected before this feature is available.
-
-[ce-30469]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30469
-[ping]: ../admin_area/settings/usage_statistics.md#usage-ping

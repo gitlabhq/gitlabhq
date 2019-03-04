@@ -84,7 +84,8 @@ module Gitlab
         Config::External::Processor.new(config,
           project: project,
           sha: sha || project.repository.root_ref_sha,
-          user: user).perform
+          user: user,
+          expandset: Set.new).perform
       end
     end
   end

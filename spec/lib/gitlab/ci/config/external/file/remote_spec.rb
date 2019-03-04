@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Remote do
-  let(:context) { described_class::Context.new(nil, '12345', nil) }
+  let(:context) { described_class::Context.new(nil, '12345', nil, Set.new) }
   let(:params) { { remote: location } }
   let(:remote_file) { described_class.new(params, context) }
   let(:location) { 'https://gitlab.com/gitlab-org/gitlab-ce/blob/1234/.gitlab-ci-1.yml' }
@@ -179,6 +179,16 @@ describe Gitlab::Ci::Config::External::File::Remote do
         expect(subject).to eq "Remote file could not be fetched because URL '#{location}' " \
                               'is blocked: Requests to localhost are not allowed!'
       end
+    end
+  end
+
+  describe '#expand_context' do
+    let(:params) { { remote: 'http://remote' } }
+
+    subject { remote_file.send(:expand_context) }
+
+    it 'drops all parameters' do
+      is_expected.to include(user: nil, project: nil, sha: nil)
     end
   end
 end

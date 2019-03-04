@@ -1,0 +1,5 @@
+---
+title: Fix author layouts in issuable meta line UIs on mobile
+merge_request: 25332
+author: Takuya Noguchi
+type: fixed
