@@ -1,6 +1,7 @@
 # Health Check
 
 > **Notes:**
+
 >   - Liveness and readiness probes were [introduced][ce-10416] in GitLab 9.1.
 >   - The `health_check` endpoint was [introduced][ce-3888] in GitLab 8.8 and will
 >     be deprecated in GitLab 9.1. Read more in the [old behavior](#old-behavior)
@@ -22,7 +23,7 @@ To access monitoring resources, the requesting client IP needs to be included in
 
 ## Using the endpoints
 
-With default whitelist settings, the probes can be accessed from localhost using the following format:
+With default whitelist settings, the probes can be accessed from localhost using the following URLs:
 
 - `http://localhost/-/health`
 - `http://localhost/-/readiness`
@@ -36,7 +37,7 @@ GitLab OK
 
 The readiness and liveness probes will provide a report of system health in JSON format.
 
-`Readiness` probe example output:
+`readiness` probe example output:
 
 ```json
 {
@@ -58,7 +59,7 @@ The readiness and liveness probes will provide a report of system health in JSON
 }
 ```
 
-`Liveness` probe example output:
+`liveness` probe example output:
 
 ```json
 {
