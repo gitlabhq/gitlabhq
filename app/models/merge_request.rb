@@ -71,7 +71,7 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
-  after_create :ensure_merge_request_diff, unless: :importing?
+  after_create :ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_save :ensure_metrics
@@ -188,6 +188,9 @@ class MergeRequest < ActiveRecord::Base
   participant :assignee
 
   after_save :keep_around_commit
+
+  alias_attribute :project, :target_project
+  alias_attribute :project_id, :target_project_id
 
   def self.reference_prefix
     '!'
@@ -845,10 +848,6 @@ class MergeRequest < ActiveRecord::Base
 
   def for_fork?
     target_project != source_project
-  end
-
-  def project
-    target_project
   end
 
   # If the merge request closes any issues, save this information in the

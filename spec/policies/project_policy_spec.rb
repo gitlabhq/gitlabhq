@@ -131,22 +131,26 @@ describe ProjectPolicy do
     subject { described_class.new(owner, project) }
 
     context 'when the feature is disabled' do
-      it 'does not include the issues permissions' do
+      before do
         project.issues_enabled = false
         project.save!
+      end
 
+      it 'does not include the issues permissions' do
         expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
       end
-    end
 
-    context 'when the feature is disabled and external tracker configured' do
-      it 'does not include the issues permissions' do
-        create(:jira_service, project: project)
+      it 'disables boards and lists permissions' do
+        expect_disallowed :read_board, :create_board, :update_board, :admin_board
+        expect_disallowed :read_list, :create_list, :update_list, :admin_list
+      end
 
-        project.issues_enabled = false
-        project.save!
+      context 'when external tracker configured' do
+        it 'does not include the issues permissions' do
+          create(:jira_service, project: project)
 
-        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
+          expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
+        end
       end
     end
   end

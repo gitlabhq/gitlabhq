@@ -1,0 +1,5 @@
+---
+title: Fixed ability to see private groups by users not belonging to given group
+merge_request:
+author:
+type: security

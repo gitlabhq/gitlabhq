@@ -13,7 +13,7 @@ describe Dashboard::MilestonesController do
     )
   end
   let(:issue) { create(:issue, project: project, milestone: project_milestone) }
-  let(:group_issue) { create(:issue, milestone: group_milestone) }
+  let(:group_issue) { create(:issue, milestone: group_milestone, project: create(:project, group: group)) }
 
   let!(:label) { create(:label, project: project, title: 'Issue Label', issues: [issue]) }
   let!(:group_label) { create(:group_label, group: group, title: 'Group Issue Label', issues: [group_issue]) }

@@ -300,6 +300,8 @@ class ProjectPolicy < BasePolicy
 
   rule { issues_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
+    prevent(*create_read_update_admin_destroy(:board))
+    prevent(*create_read_update_admin_destroy(:list))
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do

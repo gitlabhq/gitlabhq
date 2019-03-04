@@ -10,6 +10,7 @@ describe 'Projects > Settings > User manages group links' do
 
   before do
     project.add_maintainer(user)
+    group_market.add_guest(user)
     sign_in(user)
 
     share_link = project.project_group_links.new(group_access: Gitlab::Access::MAINTAINER)

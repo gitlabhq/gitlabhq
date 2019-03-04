@@ -75,6 +75,7 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: 255 }
+    validate :milestone_is_valid
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
@@ -117,6 +118,16 @@ module Issuable
 
     def has_multiple_assignees?
       assignees.count > 1
+    end
+
+    def milestone_available?
+      project_id == milestone&.project_id || project.ancestors_upto.compact.include?(milestone&.group)
+    end
+
+    private
+
+    def milestone_is_valid
+      errors.add(:milestone_id, message: "is invalid") if milestone_id.present? && !milestone_available?
     end
   end
 
