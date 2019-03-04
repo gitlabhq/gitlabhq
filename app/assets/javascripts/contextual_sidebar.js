@@ -26,14 +26,6 @@ export default class ContextualSidebar {
   bindEvents() {
     if (!this.$sidebar.length) return;
 
-    document.addEventListener('click', e => {
-      if (
-        !e.target.closest('.nav-sidebar') &&
-        (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md')
-      ) {
-        this.toggleCollapsedSidebar(true, true);
-      }
-    });
     this.$openSidebar.on('click', () => this.toggleSidebarNav(true));
     this.$closeSidebar.on('click', () => this.toggleSidebarNav(false));
     this.$overlay.on('click', () => this.toggleSidebarNav(false));
@@ -49,9 +41,9 @@ export default class ContextualSidebar {
     $(window).on('resize', () => _.debounce(this.render(), 100));
   }
 
-  // NOTE: at 1200px sidebar should be in 'desktop' mode
+  // NOTE: at 1200px nav sidebar should be in 'desktop mode' (not overlap the content)
   // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24555#note_134136110
-  // But, current behaviour starts desktop mode at 1201px
+  // But setting 'desktop mode' at 1200px will break spec/support/features/reportable_note_shared_examples.rb
 
   // TODO: use the breakpoints from breakpoints.js once they have been updated for bootstrap 4
   // See related issue and discussion: https://gitlab.com/gitlab-org/gitlab-ce/issues/56745
