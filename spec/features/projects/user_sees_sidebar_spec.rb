@@ -4,27 +4,15 @@ describe 'Projects > User sees sidebar' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private, public_builds: false, namespace: user.namespace) }
 
-  context 'on a smaller screen', :js do
+  # NOTE: See documented behaviour https://design.gitlab.com/regions/navigation#contextual-navigation
+  context 'on different viewports', :js do
     include MobileHelpers
 
     before do
       sign_in(user)
     end
 
-    shared_examples 'has a collapsible mobile nav sidebar' do
-      it 'has a collapsed desktop nav-sidebar on load' do
-        expect(page).not_to have_content('Collapse sidebar')
-        expect(page).not_to have_selector('.sidebar-expanded-mobile')
-      end
-
-      it 'can expand the nav-sidebar' do
-        page.find('.nav-sidebar .js-toggle-sidebar').click
-        expect(page).to have_selector('.sidebar-expanded-mobile')
-        expect(page).to have_content('Collapse sidebar')
-      end
-    end
-
-    shared_examples 'has a desktop nav sidebar' do
+    shared_examples 'has a expanded nav sidebar' do
       it 'has a expanded desktop nav-sidebar on load' do
         expect(page).to have_content('Collapse sidebar')
         expect(page).not_to have_selector('.sidebar-collapsed-desktop')
@@ -39,15 +27,21 @@ describe 'Projects > User sees sidebar' do
       end
     end
 
-    context 'with xs size' do
-      before do
-        resize_screen_xs
-        visit project_path(project)
-        expect(page).to have_selector('.nav-sidebar')
-        expect(page).to have_selector('.toggle-mobile-nav')
+    shared_examples 'has a collapsed nav sidebar' do
+      it 'has a collapsed desktop nav-sidebar on load' do
+        expect(page).not_to have_content('Collapse sidebar')
+        expect(page).not_to have_selector('.sidebar-expanded-mobile')
       end
 
-      it 'has a collapsed nav-sidebar on load' do
+      it 'can expand the nav-sidebar' do
+        page.find('.nav-sidebar .js-toggle-sidebar').click
+        expect(page).to have_selector('.sidebar-expanded-mobile')
+        expect(page).to have_content('Collapse sidebar')
+      end
+    end
+
+    shared_examples 'has a mobile nav-sidebar' do
+      it 'has a hidden nav-sidebar on load' do
         expect(page).not_to have_content('.mobile-nav-open')
         expect(page).not_to have_selector('.sidebar-expanded-mobile')
       end
@@ -59,34 +53,56 @@ describe 'Projects > User sees sidebar' do
       end
     end
 
-    context 'with sm size' do
+    context 'with a extra small viewport' do
+      before do
+        resize_screen_xs
+        visit project_path(project)
+        expect(page).to have_selector('.nav-sidebar')
+        expect(page).to have_selector('.toggle-mobile-nav')
+      end
+
+      it_behaves_like 'has a mobile nav-sidebar'
+    end
+
+    context 'with a small size viewport' do
       before do
         resize_screen_sm
         visit project_path(project)
         expect(page).to have_selector('.nav-sidebar')
+        expect(page).to have_selector('.toggle-mobile-nav')
       end
 
-      it_behaves_like 'has a collapsible mobile nav sidebar'
+      it_behaves_like 'has a mobile nav-sidebar'
     end
 
-    context 'with size 1199px' do
+    context 'with medium size viewport' do
+      before do
+        resize_window(768, 800)
+        visit project_path(project)
+        expect(page).to have_selector('.nav-sidebar')
+      end
+
+      it_behaves_like 'has a collapsed nav sidebar'
+    end
+
+    context 'with viewport size 1199px' do
       before do
         resize_window(1199, 800)
         visit project_path(project)
         expect(page).to have_selector('.nav-sidebar')
       end
 
-      it_behaves_like 'has a collapsible mobile nav sidebar'
+      it_behaves_like 'has a collapsed nav sidebar'
     end
 
-    context 'with a larger screen' do
+    context 'with a extra large viewport' do
       before do
         resize_window(1200, 800)
         visit project_path(project)
         expect(page).to have_selector('.nav-sidebar')
       end
 
-      it_behaves_like 'has a desktop nav sidebar'
+      it_behaves_like 'has a expanded nav sidebar'
     end
   end
 

@@ -4,6 +4,10 @@ import _ from 'underscore';
 import bp from './breakpoints';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
+// NOTE: at 1200px nav sidebar should not overlap the content
+// https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24555#note_134136110
+const NAV_SIDEBAR_BREAKPOINT = 1200;
+
 export default class ContextualSidebar {
   constructor() {
     this.initDomElements();
@@ -41,13 +45,9 @@ export default class ContextualSidebar {
     $(window).on('resize', () => _.debounce(this.render(), 100));
   }
 
-  // NOTE: at 1200px nav sidebar should be in 'desktop mode' (not overlap the content)
-  // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24555#note_134136110
-  // But setting 'desktop mode' at 1200px will break spec/support/features/reportable_note_shared_examples.rb
-
   // TODO: use the breakpoints from breakpoints.js once they have been updated for bootstrap 4
-  // See related issue and discussion: https://gitlab.com/gitlab-org/gitlab-ce/issues/56745
-  static isDesktopBreakpoint = () => bp.windowWidth() >= 1200;
+  // See documentation: https://design.gitlab.com/regions/navigation#contextual-navigation
+  static isDesktopBreakpoint = () => bp.windowWidth() >= NAV_SIDEBAR_BREAKPOINT;
   static setCollapsedCookie(value) {
     if (!ContextualSidebar.isDesktopBreakpoint()) {
       return;
@@ -60,18 +60,24 @@ export default class ContextualSidebar {
     const dbp = ContextualSidebar.isDesktopBreakpoint();
 
     this.$sidebar.toggleClass('sidebar-expanded-mobile', !dbp ? show : false);
-    this.$overlay.toggleClass('mobile-nav-open', breakpoint === 'xs' ? show : false);
+    this.$overlay.toggleClass(
+      'mobile-nav-open',
+      breakpoint === 'xs' || breakpoint === 'sm' ? show : false,
+    );
     this.$sidebar.removeClass('sidebar-collapsed-desktop');
   }
 
   toggleCollapsedSidebar(collapsed, saveCookie) {
     const breakpoint = bp.getBreakpointSize();
-    const dbp = ContextualSidebar.isDesktopBreakpoint(breakpoint);
+    const dbp = ContextualSidebar.isDesktopBreakpoint();
 
     if (this.$sidebar.length) {
       this.$sidebar.toggleClass('sidebar-collapsed-desktop', collapsed);
       this.$sidebar.toggleClass('sidebar-expanded-mobile', !dbp ? !collapsed : false);
-      this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
+      this.$page.toggleClass(
+        'page-with-icon-sidebar',
+        breakpoint === 'xs' || breakpoint === 'sm' ? true : collapsed,
+      );
     }
 
     if (saveCookie) {

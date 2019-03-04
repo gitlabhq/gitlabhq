@@ -1,12 +1,10 @@
 .page-with-contextual-sidebar {
   transition: padding-left $sidebar-transition-duration;
 
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(md) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
 
-  // At 1200px nav sidebar should not overlap the content
-  // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24555#note_134136110
   @include media-breakpoint-up(xl) {
     padding-left: $contextual-sidebar-width;
   }
@@ -17,7 +15,7 @@
 }
 
 .page-with-icon-sidebar {
-  @include media-breakpoint-up(sm) {
+  @include media-breakpoint-up(md) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
 }
@@ -194,7 +192,7 @@
     }
   }
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     left: (-$contextual-sidebar-width);
   }
 
@@ -212,7 +210,7 @@
     width: 16px;
   }
 
-  @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, xl) - 1px) {
+  @media (min-width: map-get($grid-breakpoints, md)) and (max-width: map-get($grid-breakpoints, xl) - 1px) {
     &:not(.sidebar-expanded-mobile) {
       @include collapse-contextual-sidebar;
       @include collapse-contextual-sidebar-content;
@@ -224,10 +222,6 @@
   height: 100%;
   width: 100%;
   overflow: auto;
-
-  @include media-breakpoint-up(sm) {
-    overflow: hidden;
-  }
 }
 
 .with-performance-bar .nav-sidebar {
@@ -397,12 +391,6 @@
   }
 }
 
-.toggle-sidebar-button {
-  @include media-breakpoint-down(xs) {
-    display: none;
-  }
-}
-
 .collapse-text {
   white-space: nowrap;
   overflow: hidden;
@@ -445,16 +433,14 @@
     color: $gl-text-color-secondary;
   }
 
-  @include media-breakpoint-down(xs) {
+  @include media-breakpoint-down(sm) {
     display: flex;
     align-items: center;
 
     i {
       font-size: 18px;
     }
-  }
 
-  @include media-breakpoint-down(xs) {
     + .breadcrumbs-links {
       padding-left: $gl-padding;
       border-left: 1px solid $gl-text-color-quaternary;
@@ -462,21 +448,25 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
+@include media-breakpoint-down(sm) {
   .close-nav-button {
     display: flex;
   }
-}
 
-.mobile-overlay {
-  display: none;
+  .toggle-sidebar-button {
+    display: none;
+  }
 
-  &.mobile-nav-open {
-    display: block;
-    position: fixed;
-    background-color: $black-transparent;
-    height: 100%;
-    width: 100%;
-    z-index: 300;
+  .mobile-overlay {
+    display: none;
+
+    &.mobile-nav-open {
+      display: block;
+      position: fixed;
+      background-color: $black-transparent;
+      height: 100%;
+      width: 100%;
+      z-index: 300;
+    }
   }
 }
