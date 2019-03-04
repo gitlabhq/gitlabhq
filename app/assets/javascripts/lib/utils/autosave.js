@@ -1,3 +1,5 @@
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+
 export const clearDraft = autosaveKey => {
   try {
     window.localStorage.removeItem(`autosave/${autosaveKey}`);
@@ -25,3 +27,6 @@ export const updateDraft = (autosaveKey, text) => {
     console.error(e);
   }
 };
+
+export const getDiscussionReplyKey = (noteableType, discussionId) =>
+  ['Note', capitalizeFirstCharacter(noteableType), discussionId, 'Reply'].join('/');

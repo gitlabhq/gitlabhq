@@ -4,6 +4,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
+import { getDiscussionReplyKey } from '~/lib/utils/autosave';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
 import icon from '~/vue_shared/components/icon.vue';
 import diffLineNoteFormMixin from 'ee_else_ce/notes/mixins/diff_line_note_form';
@@ -107,6 +108,9 @@ export default {
     ]),
     author() {
       return this.firstNote.author;
+    },
+    autosaveKey() {
+      return getDiscussionReplyKey(this.firstNote.noteable_type, this.discussion.id);
     },
     canReply() {
       return this.getNoteableData.current_user.can_create_note;
@@ -512,6 +516,7 @@ Please check your network connection and try again.`;
                   :is-editing="false"
                   :line="diffLine"
                   save-button-title="Comment"
+                  :autosave-key="autosaveKey"
                   @handleFormUpdateAddToReview="addReplyToReview"
                   @handleFormUpdate="saveReply"
                   @cancelForm="cancelReplyForm"

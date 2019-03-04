@@ -84,6 +84,7 @@ describe('noteable_discussion component', () => {
           expect(noteFormProps.isEditing).toBe(false);
           expect(noteFormProps.line).toBe(null);
           expect(noteFormProps.saveButtonTitle).toBe('Comment');
+          expect(noteFormProps.autosaveKey).toBe(`Note/Issue/${discussionMock.id}/Reply`);
         })
         .then(done)
         .catch(done.fail);
