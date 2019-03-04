@@ -51,6 +51,7 @@ describe Clusters::Applications::InstallService do
           {
             exception: 'Kubeclient::HttpError',
             message: 'system failure',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::InstallService',
             app_id: application.id,
             project_ids: application.cluster.project_ids,
@@ -61,15 +62,16 @@ describe Clusters::Applications::InstallService do
 
         expect(Gitlab::Sentry).to receive(:track_acceptable_exception).with(
           error,
-          extra: {
+          extra: hash_including(
             exception: 'Kubeclient::HttpError',
             message: 'system failure',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::InstallService',
             app_id: application.id,
             project_ids: application.cluster.project_ids,
             group_ids: [],
             error_code: 500
-          }
+          )
         )
 
         service.execute
@@ -99,6 +101,7 @@ describe Clusters::Applications::InstallService do
             exception: 'StandardError',
             error_code: nil,
             message: 'something bad happened',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::InstallService',
             app_id: application.id,
             project_ids: application.cluster.projects.pluck(:id),
@@ -108,15 +111,16 @@ describe Clusters::Applications::InstallService do
 
         expect(Gitlab::Sentry).to receive(:track_acceptable_exception).with(
           error,
-          extra: {
+          extra: hash_including(
             exception: 'StandardError',
             error_code: nil,
             message: 'something bad happened',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::InstallService',
             app_id: application.id,
             project_ids: application.cluster.projects.pluck(:id),
             group_ids: []
-          }
+          )
         )
 
         service.execute

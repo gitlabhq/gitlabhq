@@ -53,6 +53,7 @@ describe Clusters::Applications::PatchService do
           {
             exception: 'Kubeclient::HttpError',
             message: 'system failure',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::PatchService',
             app_id: application.id,
             project_ids: application.cluster.project_ids,
@@ -66,6 +67,7 @@ describe Clusters::Applications::PatchService do
           extra: {
             exception: 'Kubeclient::HttpError',
             message: 'system failure',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::PatchService',
             app_id: application.id,
             project_ids: application.cluster.project_ids,
@@ -101,6 +103,7 @@ describe Clusters::Applications::PatchService do
             exception: 'StandardError',
             error_code: nil,
             message: 'something bad happened',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::PatchService',
             app_id: application.id,
             project_ids: application.cluster.projects.pluck(:id),
@@ -114,6 +117,7 @@ describe Clusters::Applications::PatchService do
             exception: 'StandardError',
             error_code: nil,
             message: 'something bad happened',
+            backtrace: instance_of(Array),
             service: 'Clusters::Applications::PatchService',
             app_id: application.id,
             project_ids: application.cluster.projects.pluck(:id),

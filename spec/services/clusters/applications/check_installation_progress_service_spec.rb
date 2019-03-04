@@ -36,6 +36,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
   shared_examples 'error logging' do
     context 'when installation raises a Kubeclient::HttpError' do
       let(:cluster) { create(:cluster, :provided_by_user, :project) }
+      let(:logger) { service.send(:logger) }
 
       before do
         application.update!(cluster: cluster)
@@ -51,7 +52,13 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
       end
 
       it 'should log error' do
-        expect(service.send(:logger)).to receive(:error)
+        expect(logger).to receive(:error)
+
+        service.execute
+      end
+
+      it 'logs error backtrace' do
+        expect(logger).to receive(:error).with(hash_including(backtrace: instance_of(Array)))
 
         service.execute
       end

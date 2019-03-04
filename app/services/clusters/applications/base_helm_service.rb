@@ -19,7 +19,8 @@ module Clusters
           app_id: app.id,
           project_ids: app.cluster.project_ids,
           group_ids: app.cluster.group_ids,
-          message: error.message
+          message: error.message,
+          backtrace: Gitlab::Profiler.clean_backtrace(error.backtrace)
         }
 
         logger.error(meta)
