@@ -76,8 +76,7 @@ module MergeRequests
     def try_merge
       repository.merge(current_user, source, merge_request, commit_message)
     rescue Gitlab::Git::PreReceiveError => e
-      handle_merge_error(log_message: e.message)
-      raise_error('Something went wrong during merge pre-receive hook')
+      raise_error("Something went wrong during merge pre-receive hook: #{e.message}")
     rescue => e
       handle_merge_error(log_message: e.message)
       raise_error('Something went wrong during merge')

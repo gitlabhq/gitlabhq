@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Project do
+  set(:context_project) { create(:project) }
   set(:project) { create(:project, :repository) }
   set(:user) { create(:user) }
 
   let(:context_user) { user }
-  let(:context) { described_class::Context.new(nil, '12345', context_user) }
-  let(:subject) { described_class.new(params, context) }
+  let(:context) { described_class::Context.new(context_project, '12345', context_user, Set.new) }
+  let(:project_file) { described_class.new(params, context) }
 
   before do
     project.add_developer(user)
@@ -19,7 +20,7 @@ describe Gitlab::Ci::Config::External::File::Project do
       let(:params) { { file: 'file.yml', project: 'project' } }
 
       it 'should return true' do
-        expect(subject).to be_matching
+        expect(project_file).to be_matching
       end
     end
 
@@ -27,7 +28,7 @@ describe Gitlab::Ci::Config::External::File::Project do
       let(:params) { { file: 'file.yml' } }
 
       it 'should return false' do
-        expect(subject).not_to be_matching
+        expect(project_file).not_to be_matching
       end
     end
 
@@ -35,7 +36,7 @@ describe Gitlab::Ci::Config::External::File::Project do
       let(:params) { { project: 'project' } }
 
       it 'should return false' do
-        expect(subject).not_to be_matching
+        expect(project_file).not_to be_matching
       end
     end
 
@@ -43,7 +44,7 @@ describe Gitlab::Ci::Config::External::File::Project do
       let(:params) { {} }
 
       it 'should return false' do
-        expect(subject).not_to be_matching
+        expect(project_file).not_to be_matching
       end
     end
   end
@@ -61,15 +62,15 @@ describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'should return true' do
-        expect(subject).to be_valid
+        expect(project_file).to be_valid
       end
 
       context 'when user does not have permission to access file' do
         let(:context_user) { create(:user) }
 
         it 'should return false' do
-          expect(subject).not_to be_valid
-          expect(subject.error_message).to include("Project `#{project.full_path}` not found or access denied!")
+          expect(project_file).not_to be_valid
+          expect(project_file.error_message).to include("Project `#{project.full_path}` not found or access denied!")
         end
       end
     end
@@ -86,7 +87,7 @@ describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'should return true' do
-        expect(subject).to be_valid
+        expect(project_file).to be_valid
       end
     end
 
@@ -102,8 +103,8 @@ describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'should return false' do
-        expect(subject).not_to be_valid
-        expect(subject.error_message).to include("Project `#{project.full_path}` file `/file.yml` is empty!")
+        expect(project_file).not_to be_valid
+        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/file.yml` is empty!")
       end
     end
 
@@ -113,8 +114,8 @@ describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'should return false' do
-        expect(subject).not_to be_valid
-        expect(subject.error_message).to include("Project `#{project.full_path}` reference `I-Do-Not-Exist` does not exist!")
+        expect(project_file).not_to be_valid
+        expect(project_file.error_message).to include("Project `#{project.full_path}` reference `I-Do-Not-Exist` does not exist!")
       end
     end
 
@@ -124,8 +125,8 @@ describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'should return false' do
-        expect(subject).not_to be_valid
-        expect(subject.error_message).to include("Project `#{project.full_path}` file `/invalid-file.yml` does not exist!")
+        expect(project_file).not_to be_valid
+        expect(project_file.error_message).to include("Project `#{project.full_path}` file `/invalid-file.yml` does not exist!")
       end
     end
 
@@ -135,9 +136,19 @@ describe Gitlab::Ci::Config::External::File::Project do
       end
 
       it 'should return false' do
-        expect(subject).not_to be_valid
-        expect(subject.error_message).to include('Included file `/invalid-file` does not have YAML extension!')
+        expect(project_file).not_to be_valid
+        expect(project_file.error_message).to include('Included file `/invalid-file` does not have YAML extension!')
       end
+    end
+  end
+
+  describe '#expand_context' do
+    let(:params) { { file: 'file.yml', project: project.full_path, ref: 'master' } }
+
+    subject { project_file.send(:expand_context) }
+
+    it 'inherits user, and target project and sha' do
+      is_expected.to include(user: user, project: project, sha: project.commit('master').id)
     end
   end
 

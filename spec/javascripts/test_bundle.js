@@ -8,6 +8,7 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
+import CheckEE from '~/vue_shared/mixins/is_ee';
 import jasmineDiff from 'jasmine-diff';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
@@ -43,6 +44,7 @@ Vue.config.errorHandler = function(err) {
 
 Vue.use(VueResource);
 Vue.use(Translate);
+Vue.use(CheckEE);
 
 // enable test fixtures
 jasmine.getFixtures().fixturesPath = FIXTURES_PATH;
@@ -67,6 +69,7 @@ window.gl = window.gl || {};
 window.gl.TEST_HOST = TEST_HOST;
 window.gon = window.gon || {};
 window.gon.test_env = true;
+window.gon.ee = false;
 gon.relative_url_root = '';
 
 let hasUnhandledPromiseRejections = false;

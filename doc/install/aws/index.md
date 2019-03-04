@@ -610,7 +610,7 @@ To back up GitLab:
 
 To restore GitLab, first review the [restore documentation](../../raketasks/backup_restore.md#restore),
 and primarily the restore prerequisites. Then, follow the steps under the
-[Omnibus installations section](../../raketasks/backup_restore.md#restore-for-omnibus-installations).
+[Omnibus installations section](../../raketasks/backup_restore.md#restore-for-omnibus-gitlab-installations).
 
 ## Updating GitLab
 

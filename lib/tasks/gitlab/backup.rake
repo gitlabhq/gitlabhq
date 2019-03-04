@@ -61,7 +61,7 @@ namespace :gitlab do
       Rake::Task['gitlab:backup:uploads:restore'].invoke unless backup.skipped?('uploads')
       Rake::Task['gitlab:backup:builds:restore'].invoke unless backup.skipped?('builds')
       Rake::Task['gitlab:backup:artifacts:restore'].invoke unless backup.skipped?('artifacts')
-      Rake::Task["gitlab:backup:pages:restore"].invoke unless backup.skipped?('pages')
+      Rake::Task['gitlab:backup:pages:restore'].invoke unless backup.skipped?('pages')
       Rake::Task['gitlab:backup:lfs:restore'].invoke unless backup.skipped?('lfs')
       Rake::Task['gitlab:backup:registry:restore'].invoke unless backup.skipped?('registry')
       Rake::Task['gitlab:shell:setup'].invoke

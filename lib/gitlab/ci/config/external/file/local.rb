@@ -31,6 +31,13 @@ module Gitlab
             def fetch_local_content
               context.project.repository.blob_data_at(context.sha, location)
             end
+
+            def expand_context
+              super.merge(
+                project: context.project,
+                sha: context.sha,
+                user: context.user)
+            end
           end
         end
       end

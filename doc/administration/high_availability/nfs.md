@@ -37,6 +37,28 @@ options:
   circumstances it could lead to data loss if a failure occurs before data has
   synced.
 
+### Improving NFS performance with GitLab
+
+If you are using NFS to share Git data, we recommend that you enable a
+number of feature flags that will allow GitLab application processes to
+access Git data directly instead of going through the [Gitaly
+service](../gitaly/index.md). Depending on your workload and disk
+performance, these flags may help improve performance. See [the
+issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/57317) for more
+details.
+
+To do this, run the Rake task:
+
+```sh
+gitlab-rake gitlab:features:enable_rugged
+```
+
+If you need to undo this setting for some reason, run:
+
+```sh
+gitlab-rake gitlab:features:disable_rugged
+```
+
 ### Known issues
 
 On some customer systems, we have seen NFS clients slow precipitously due to

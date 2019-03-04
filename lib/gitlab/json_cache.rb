@@ -71,7 +71,21 @@ module Gitlab
     end
 
     def parse_entry(raw, klass)
-      klass.new(raw) if valid_entry?(raw, klass)
+      return unless valid_entry?(raw, klass)
+      return klass.new(raw) unless klass.ancestors.include?(ActiveRecord::Base)
+
+      # When the cached value is a persisted instance of ActiveRecord::Base in
+      # some cases a relation can return an empty collection becauses scope.none!
+      # is being applied on ActiveRecord::Associations::CollectionAssociation#scope
+      # when the new_record? method incorrectly returns false.
+      #
+      # See https://gitlab.com/gitlab-org/gitlab-ee/issues/9903#note_145329964
+      attributes = klass.attributes_builder.build_from_database(raw, {})
+      klass.allocate.init_with("attributes" => attributes, "new_record" => new_record?(raw, klass))
+    end
+
+    def new_record?(raw, klass)
+      raw.fetch(klass.primary_key, nil).blank?
     end
 
     def valid_entry?(raw, klass)

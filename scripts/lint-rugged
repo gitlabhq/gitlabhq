@@ -5,12 +5,18 @@ ALLOWED = [
   'lib/gitlab/bare_repository_import/repository.rb',
 
   # Needed to avoid using the git binary to validate a branch name
-  'lib/gitlab/git_ref_validator.rb'
+  'lib/gitlab/git_ref_validator.rb',
+
+  # Reverted Rugged calls due to Gitaly atop NFS performance
+  # See https://docs.gitlab.com/ee/development/gitaly.html#legacy-rugged-code.
+  'lib/gitlab/git/rugged_impl/',
+  'lib/gitlab/gitaly_client/storage_settings.rb'
 ].freeze
 
 rugged_lines = IO.popen(%w[git grep -i -n rugged -- app config lib], &:read).lines
 rugged_lines = rugged_lines.select { |l| /^[^:]*\.rb:/ =~ l }
 rugged_lines = rugged_lines.reject { |l| l.start_with?(*ALLOWED) }
+rugged_lines = rugged_lines.reject { |l| /(include|prepend) Gitlab::Git::RuggedImpl/ =~ l}
 rugged_lines = rugged_lines.reject do |line|
   code, _comment = line.split('# ', 2)
   code !~ /rugged/i

@@ -1,7 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
-import newModal from './modal.vue';
 import upload from './upload.vue';
 import ItemButton from './button.vue';
 import { modalTypes } from '../../constants';
@@ -9,7 +8,6 @@ import { modalTypes } from '../../constants';
 export default {
   components: {
     icon,
-    newModal,
     upload,
     ItemButton,
   },

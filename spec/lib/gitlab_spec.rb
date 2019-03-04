@@ -95,4 +95,18 @@ describe Gitlab do
       expect(described_class.com?).to eq false
     end
   end
+
+  describe '.ee?' do
+    it 'returns true when using Enterprise Edition' do
+      stub_const('License', Class.new)
+
+      expect(described_class.ee?).to eq(true)
+    end
+
+    it 'returns false when using Community Edition' do
+      hide_const('License')
+
+      expect(described_class.ee?).to eq(false)
+    end
+  end
 end

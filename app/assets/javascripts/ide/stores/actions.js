@@ -215,15 +215,27 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
 
 export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
 
-export const renameEntry = ({ dispatch, commit, state }, { path, name, entryPath = null }) => {
+export const renameEntry = (
+  { dispatch, commit, state },
+  { path, name, entryPath = null, parentPath },
+) => {
   const entry = state.entries[entryPath || path];
 
-  commit(types.RENAME_ENTRY, { path, name, entryPath });
+  commit(types.RENAME_ENTRY, { path, name, entryPath, parentPath });
 
   if (entry.type === 'tree') {
-    state.entries[entryPath || path].tree.forEach(f =>
-      dispatch('renameEntry', { path, name, entryPath: f.path }),
-    );
+    const slashedParentPath = parentPath ? `${parentPath}/` : '';
+    const targetEntry = entryPath ? entryPath.split('/').pop() : name;
+    const newParentPath = `${slashedParentPath}${targetEntry}`;
+
+    state.entries[entryPath || path].tree.forEach(f => {
+      dispatch('renameEntry', {
+        path,
+        name,
+        entryPath: f.path,
+        parentPath: newParentPath,
+      });
+    });
   }
 
   if (!entryPath && !entry.tempFile) {

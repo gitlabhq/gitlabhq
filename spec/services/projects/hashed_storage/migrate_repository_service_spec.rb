@@ -28,7 +28,17 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       it 'fails when a git operation is in progress' do
         allow(project).to receive(:repo_reference_count) { 1 }
 
-        expect { service.execute }.to raise_error(Projects::HashedStorage::RepositoryMigrationError)
+        expect { service.execute }.to raise_error(Projects::HashedStorage::RepositoryInUseError)
+      end
+    end
+
+    context 'when repository doesnt exist on disk' do
+      let(:project) { create(:project, :legacy_storage) }
+
+      it 'skips the disk change but increase the version' do
+        service.execute
+
+        expect(project.hashed_storage?(:repository)).to be_truthy
       end
     end
 

@@ -68,6 +68,7 @@
   - [background_migration, 1]
   - [gcp_cluster, 1]
   - [project_migrate_hashed_storage, 1]
+  - [project_rollback_hashed_storage, 1]
   - [hashed_storage, 1]
   - [pages_domain_verification, 1]
   - [object_storage_upload, 1]

@@ -31,7 +31,7 @@ panel.
 If the repository check fails for some repository you should look up the error
 in `repocheck.log`:
 
-- in the [admin panel](logs.md#repocheck-log)
+- in the [admin panel](logs.md#repochecklog)
 - or on disk, see:
     - `/var/log/gitlab/gitlab-rails` for Omnibus installations
     - `/home/git/gitlab/log` for installations from source
