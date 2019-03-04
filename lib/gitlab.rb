@@ -58,6 +58,10 @@ module Gitlab
     Rails.env.development? || org? || com?
   end
 
+  def self.ee?
+    Object.const_defined?(:License)
+  end
+
   def self.process_name
     return 'sidekiq' if Sidekiq.server?
     return 'console' if defined?(Rails::Console)
