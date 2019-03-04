@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DiffContentComponent from '~/diffs/components/diff_content.vue';
-import { createStore } from '~/mr_notes/stores';
+import { createStore } from 'ee_else_ce/mr_notes/stores';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { GREEN_BOX_IMAGE_URL, RED_BOX_IMAGE_URL } from 'spec/test_constants';
 import '~/behaviors/markdown/render_gfm';
