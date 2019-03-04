@@ -1,0 +1,6 @@
+---
+title: Do not display impersonated sessions under active sessions and remove ability
+  to revoke session
+merge_request:
+author:
+type: security
