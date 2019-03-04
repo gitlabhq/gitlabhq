@@ -112,7 +112,7 @@ describe Gitlab::Git::Commit, :seed_helper do
   end
 
   context 'Class methods' do
-    describe '.find' do
+    shared_examples '.find' do
       it "should return first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
           rugged_repo.head.target.oid
@@ -152,6 +152,20 @@ describe Gitlab::Git::Commit, :seed_helper do
           expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_nil
         end
       end
+    end
+
+    describe '.find with Gitaly enabled' do
+      it_should_behave_like '.find'
+    end
+
+    describe '.find with Rugged enabled', :enable_rugged do
+      it 'calls out to the Rugged implementation' do
+        allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+
+        described_class.find(repository, SeedRepo::Commit::ID)
+      end
+
+      it_should_behave_like '.find'
     end
 
     describe '.last_for_path' do
