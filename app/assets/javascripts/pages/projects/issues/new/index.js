@@ -1,3 +1,3 @@
-import IssuableForm from 'ee_else_ce/issuable_form';
+import initForm from 'ee_else_ce/pages/projects/issues/form';
 
 document.addEventListener('DOMContentLoaded', initForm);
