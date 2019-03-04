@@ -206,19 +206,17 @@ export default {
       }
     }
   },
-  [types.RENAME_ENTRY](state, { path, name, entryPath = null }) {
+  [types.RENAME_ENTRY](state, { path, name, entryPath = null, parentPath }) {
     const oldEntry = state.entries[entryPath || path];
-    const nameRegex =
-      !entryPath && oldEntry.type === 'blob'
-        ? new RegExp(`${oldEntry.name}$`)
-        : new RegExp(`^${path}`);
-    const newPath = oldEntry.path.replace(nameRegex, name);
-    const parentPath = oldEntry.parentPath ? oldEntry.parentPath.replace(nameRegex, name) : '';
+    const slashedParentPath = parentPath ? `${parentPath}/` : '';
+    const newPath = entryPath
+      ? `${slashedParentPath}${oldEntry.name}`
+      : `${slashedParentPath}${name}`;
 
     state.entries[newPath] = {
       ...oldEntry,
       id: newPath,
-      key: `${name}-${oldEntry.type}-${oldEntry.id}`,
+      key: `${newPath}-${oldEntry.type}-${oldEntry.id}`,
       path: newPath,
       name: entryPath ? oldEntry.name : name,
       tempFile: true,
@@ -228,6 +226,7 @@ export default {
       parentPath,
       raw: '',
     };
+
     oldEntry.moved = true;
     oldEntry.movedPath = newPath;
 
@@ -256,6 +255,7 @@ export default {
       Vue.delete(state.entries, oldEntry.path);
     }
   },
+
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,
