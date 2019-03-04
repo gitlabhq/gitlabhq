@@ -199,7 +199,7 @@ from the Omniauth provider's documentation.
 
         sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
 
-    > These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
+    > These are the same commands you used during initial installation in the [Install Gems section](../install/installation.md#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
 
 -   Start GitLab:
 

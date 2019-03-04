@@ -274,7 +274,7 @@ personal access tokens, and to using the [Sudo](#sudo) feature, since the user's
 password/token may not be known or may change over time.
 
 For more information, refer to the
-[users API](users.md#retrieve-user-impersonation-tokens) docs.
+[users API](users.md#create-an-impersonation-token) docs.
 
 Impersonation tokens are used exactly like regular personal access tokens, and can be passed in either the
 `private_token` parameter or the `Private-Token` header.
