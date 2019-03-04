@@ -1,7 +1,11 @@
 require 'rails_helper'
 
 describe 'Merge request > User sees versions', :js do
-  let(:merge_request) { create(:merge_request, importing: true) }
+  let(:merge_request) do
+    create(:merge_request).tap do |mr|
+      mr.merge_request_diff.destroy
+    end
+  end
   let(:project) { merge_request.source_project }
   let(:user) { project.creator }
   let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
