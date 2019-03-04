@@ -13,9 +13,10 @@ class Projects::GroupLinksController < Projects::ApplicationController
     group = Group.find(params[:link_group_id]) if params[:link_group_id].present?
 
     if group
-      return render_404 unless can?(current_user, :read_group, group)
+      result = Projects::GroupLinks::CreateService.new(project, current_user, group_link_create_params).execute(group)
+      return render_404 if result[:http_status] == 404
 
-      Projects::GroupLinks::CreateService.new(project, current_user, group_link_create_params).execute(group)
+      flash[:alert] = result[:message] if result[:http_status] == 409
     else
       flash[:alert] = 'Please select a group.'
     end
