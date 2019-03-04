@@ -155,6 +155,7 @@ performance:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     variables:
@@ -238,6 +239,7 @@ dast:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
     variables:
       - $GITLAB_FEATURES =~ /\bdast\b/
@@ -267,6 +269,7 @@ review:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     refs:
@@ -290,6 +293,7 @@ stop_review:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     refs:
