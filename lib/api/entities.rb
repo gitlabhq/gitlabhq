@@ -156,7 +156,7 @@ module API
     class BasicProjectDetails < ProjectIdentity
       include ::API::ProjectsRelationBuilder
 
-      expose :default_branch
+      expose :default_branch, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
       expose :tag_list do |project|
         # project.tags.order(:name).pluck(:name) is the most suitable option
@@ -261,7 +261,7 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
-      expose :ci_config_path
+      expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
       end
@@ -270,8 +270,9 @@ module API
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :printing_merge_request_link_enabled
       expose :merge_method
-
-      expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
+      expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
+        options[:statistics] && Ability.allowed?(options[:current_user], :download_code, project)
+      }
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
