@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-describe Gitlab::Graphql::Authorize::Instrumentation do
+# Also see spec/graphql/features/authorization_spec.rb for
+# integration tests of AuthorizeFieldService
+describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
   describe '#build_checker' do
     let(:current_user) { double(:current_user) }
     let(:abilities) { [double(:first_ability), double(:last_ability)] }
 
     let(:checker) do
-      described_class.new.__send__(:build_checker, current_user, abilities)
+      service = described_class.new(double(resolve_proc: proc {}))
+      allow(service).to receive(:authorizations).and_return(abilities)
+      service.__send__(:build_checker, current_user)
     end
 
     it 'returns a checker which checks for a single object' do
@@ -56,12 +60,14 @@ describe Gitlab::Graphql::Authorize::Instrumentation do
           .to contain_exactly(allowed)
       end
     end
+  end
 
-    def spy_ability_check_for(ability, object, passed: true)
-      expect(Ability)
-        .to receive(:allowed?)
-        .with(current_user, ability, object)
-        .and_return(passed)
-    end
+  private
+
+  def spy_ability_check_for(ability, object, passed: true)
+    expect(Ability)
+      .to receive(:allowed?)
+      .with(current_user, ability, object)
+      .and_return(passed)
   end
 end
