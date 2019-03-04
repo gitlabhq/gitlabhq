@@ -708,6 +708,14 @@ export const NavigationType = {
   TYPE_RESERVED: 255,
 };
 
+/**
+ * Returns the value of `gon.ee`
+ * Used to check if it's the EE codebase or the CE one.
+ *
+ * @returns Boolean
+ */
+export const isEE = () => window.gon && window.gon.ee;
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),
