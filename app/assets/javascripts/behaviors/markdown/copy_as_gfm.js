@@ -173,7 +173,9 @@ export class CopyAsGFM {
         wrapEl.appendChild(node.cloneNode(true));
         const doc = DOMParser.fromSchema(schema.default).parse(wrapEl);
 
-        const res = markdownSerializer.default.serialize(doc);
+        const res = markdownSerializer.default.serialize(doc, {
+          tightLists: true,
+        });
         return res;
       })
       .catch(() => {});
