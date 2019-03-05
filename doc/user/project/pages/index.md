@@ -141,7 +141,7 @@ You can also take some optional further steps:
 _Advanced options:_
 
 - [Use a custom domain](getting_started_part_three.md#adding-your-custom-domain-to-gitlab-pages)
-- Apply [SSL/TLS certification](getting_started_part_three.md#ssl-tls-certificates) to your custom domain
+- Apply [SSL/TLS certification](getting_started_part_three.md#ssltls-certificates) to your custom domain
 
 ## Explore GitLab Pages
 

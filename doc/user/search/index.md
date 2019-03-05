@@ -96,7 +96,7 @@ quickly access issues and merge requests created or assigned to you within that 
 Your [todos](../../workflow/todos.md#gitlab-todos) can be searched by "to do" and "done".
 You can [filter](../../workflow/todos.md#filtering-your-todos) them per project,
 author, type, and action. Also, you can sort them by
-[**Label priority**](../../user/project/labels.md#prioritize-labels),
+[**Label priority**](../../user/project/labels.md#label-priority),
 **Last created** and **Oldest created**.
 
 ## Projects

@@ -88,7 +88,7 @@ To add an existing Kubernetes cluster to your project:
 1. Click **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required) - The
-      [associated environment](#setting-the-environment-scope) to this cluster.
+      [associated environment](#setting-the-environment-scope-premium) to this cluster.
     - **API URL** (required) -
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
@@ -473,7 +473,7 @@ project. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
 Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope) that will
+[set an environment scope](#setting-the-environment-scope-premium) that will
 differentiate the new cluster with the rest.
 
 ## Setting the environment scope **[PREMIUM]**

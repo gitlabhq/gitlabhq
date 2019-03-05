@@ -59,7 +59,7 @@ which is highly recommendable and much faster than hardcoding.
 
 If you set up a GitLab Pages project on GitLab.com,
 it will automatically be accessible under a
-[subdomain of `namespace.gitlab.io`](introduction.md#gitlab-pages-on-gitlab-com).
+[subdomain of `namespace.gitlab.io`](introduction.md#gitlab-pages-on-gitlabcom).
 The `namespace` is defined by your username on GitLab.com,
 or the group name you created this project under.
 
