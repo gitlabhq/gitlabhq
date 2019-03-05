@@ -208,15 +208,6 @@ describe Notify do
         let(:new_issue) { create(:issue) }
         subject { described_class.issue_moved_email(recipient, issue, new_issue, current_user) }
 
-<<<<<<< HEAD
-        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
-          let(:model) { issue }
-        end
-        it_behaves_like 'it should show Gmail Actions View Issue link'
-        it_behaves_like 'an unsubscribeable thread'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
-=======
         context 'when a user has permissions to access the new issue' do
           before do
             new_issue.project.add_developer(recipient)
@@ -234,7 +225,6 @@ describe Notify do
 
           it 'has the correct subject and body' do
             new_issue_url = project_issue_path(new_issue.project, new_issue)
->>>>>>> dev/master
 
             aggregate_failures do
               is_expected.to have_referable_subject(issue, reply: true)
