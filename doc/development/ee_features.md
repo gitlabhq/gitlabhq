@@ -161,7 +161,7 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always [`extend ::Gitlab::Utils::Override`] and use `override` to
+- you should always [`extend ::Gitlab::Utils::Override`](utilities.md#overridehttpsgitlabcomgitlab-orggitlab-ceblobmasterlibgitlabutilsoverriderb) and use `override` to
   guard the "overrider" method to ensure that if the method gets renamed in
   CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
@@ -272,8 +272,6 @@ module EE
   end
 end
 ```
-
-[`extend ::Gitlab::Utils::Override`]: utilities.md#override
 
 ##### Overriding CE class methods
 
@@ -977,7 +975,7 @@ if (renderIfEE) {
 To separate EE-specific styles in SCSS files, if a component you're adding styles for
 is limited to only EE, it is better to have a separate SCSS file in appropriate directory
 within `app/assets/stylesheets`.
-See [backporting changes](#backporting-changes) for instructions on how to merge changes safely.
+See [backporting changes](#backporting-changes-from-EE-to-CE) for instructions on how to merge changes safely.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,
