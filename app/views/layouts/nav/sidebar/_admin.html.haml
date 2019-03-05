@@ -220,7 +220,7 @@
                   = _('Repository')
             - if template_exists?('admin/application_settings/templates')
               = nav_link(path: 'application_settings#templates') do
-                = link_to templates_admin_application_settings_path, title: _('Templates') do
+                = link_to templates_admin_application_settings_path, title: _('Templates'), class: 'qa-admin-settings-template-item' do
                   %span
                     = _('Templates')
             = nav_link(path: 'application_settings#ci_cd') do
