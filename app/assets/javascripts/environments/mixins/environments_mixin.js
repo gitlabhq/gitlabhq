@@ -36,6 +36,7 @@ export default {
       page: getParameterByName('page') || '1',
       requestData: {},
       environmentInStopModal: {},
+      environmentInRollbackModal: {},
     };
   },
 
@@ -116,12 +117,26 @@ export default {
       this.environmentInStopModal = environment;
     },
 
+    updateRollbackModal(environment) {
+      this.environmentInRollbackModal = environment;
+    },
+
     stopEnvironment(environment) {
       const endpoint = environment.stop_path;
       const errorMessage = s__(
         'Environments|An error occurred while stopping the environment, please try again',
       );
       this.postAction({ endpoint, errorMessage });
+    },
+
+    rollbackEnvironment(environment) {
+      const { retryUrl, isLastDeployment } = environment;
+      const errorMessage = isLastDeployment
+        ? s__('Environments|An error occurred while re-deploying the environment, please try again')
+        : s__(
+            'Environments|An error occurred while rolling back the environment, please try again',
+          );
+      this.postAction({ endpoint: retryUrl, errorMessage });
     },
   },
 
@@ -181,11 +196,17 @@ export default {
     eventHub.$on('postAction', this.postAction);
     eventHub.$on('requestStopEnvironment', this.updateStopModal);
     eventHub.$on('stopEnvironment', this.stopEnvironment);
+
+    eventHub.$on('requestRollbackEnvironment', this.updateRollbackModal);
+    eventHub.$on('rollbackEnvironment', this.rollbackEnvironment);
   },
 
   beforeDestroy() {
     eventHub.$off('postAction', this.postAction);
     eventHub.$off('requestStopEnvironment', this.updateStopModal);
     eventHub.$off('stopEnvironment', this.stopEnvironment);
+
+    eventHub.$off('requestRollbackEnvironment', this.updateRollbackModal);
+    eventHub.$off('rollbackEnvironment', this.rollbackEnvironment);
   },
 };
