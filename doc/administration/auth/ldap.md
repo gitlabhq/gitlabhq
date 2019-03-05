@@ -81,6 +81,9 @@ library. `tls` corresponds to StartTLS, not to be confused with regular TLS.
 Normally, if you specify `ssl` it will be on port 636, while `tls` (StartTLS)
 would be on port 389. `plain` also operates on port 389.
 
+NOTE: **Note:**
+LDAP users must have an email address set, regardless of whether it is used to log in.
+
 **Omnibus configuration**
 
 ```ruby
