@@ -135,7 +135,7 @@ describe 'Clusters Applications', :js do
 
             it 'can then update the domain' do
               page.within('.js-cluster-application-row-knative') do
-                expect(ClusterUpdateAppWorker).to receive(:perform_async)
+                expect(ClusterPatchAppWorker).to receive(:perform_async)
 
                 expect(domainname_form_value).to eq('domain.example.org')
 

@@ -14,12 +14,12 @@ describe Clusters::Applications::UpdateService do
 
   describe '#execute' do
     before do
-      allow(ClusterUpdateAppWorker).to receive(:perform_async)
+      allow(ClusterPatchAppWorker).to receive(:perform_async)
     end
 
     context 'application is not installed' do
       it 'raises Clusters::Applications::BaseService::InvalidApplicationError' do
-        expect(ClusterUpdateAppWorker).not_to receive(:perform_async)
+        expect(ClusterPatchAppWorker).not_to receive(:perform_async)
 
         expect { subject }
           .to raise_exception { Clusters::Applications::BaseService::InvalidApplicationError }
@@ -46,8 +46,8 @@ describe Clusters::Applications::UpdateService do
           expect(application.reload).to be_scheduled
         end
 
-        it 'schedules ClusterUpdateAppWorker' do
-          expect(ClusterUpdateAppWorker).to receive(:perform_async)
+        it 'schedules ClusterPatchAppWorker' do
+          expect(ClusterPatchAppWorker).to receive(:perform_async)
 
           subject
         end
@@ -59,7 +59,7 @@ describe Clusters::Applications::UpdateService do
         end
 
         it 'raises StateMachines::InvalidTransition' do
-          expect(ClusterUpdateAppWorker).not_to receive(:perform_async)
+          expect(ClusterPatchAppWorker).not_to receive(:perform_async)
 
           expect { subject }
             .to raise_exception { StateMachines::InvalidTransition }

@@ -106,7 +106,7 @@ describe Projects::Clusters::ApplicationsController do
 
       context "when cluster and app exists" do
         it "schedules an application update" do
-          expect(ClusterUpdateAppWorker).to receive(:perform_async).with(application.name, anything).once
+          expect(ClusterPatchAppWorker).to receive(:perform_async).with(application.name, anything).once
 
           is_expected.to have_http_status(:no_content)
 
@@ -139,7 +139,7 @@ describe Projects::Clusters::ApplicationsController do
 
     describe 'security' do
       before do
-        allow(ClusterUpdateAppWorker).to receive(:perform_async)
+        allow(ClusterPatchAppWorker).to receive(:perform_async)
       end
 
       it_behaves_like 'a secure endpoint'

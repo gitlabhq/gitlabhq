@@ -6,7 +6,7 @@ module Clusters
       private
 
       def worker_class(application)
-        ClusterUpdateAppWorker
+        ClusterPatchAppWorker
       end
 
       def builders

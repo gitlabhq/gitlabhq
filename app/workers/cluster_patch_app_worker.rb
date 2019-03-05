@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ClusterUpdateAppWorker
+class ClusterPatchAppWorker
   include ApplicationWorker
   include ClusterQueue
   include ClusterApplications
