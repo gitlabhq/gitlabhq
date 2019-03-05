@@ -77,8 +77,9 @@ module GraphqlHelpers
   def query_graphql_field(name, attributes = {}, fields = nil)
     fields ||= all_graphql_fields_for(name.classify)
     attributes = attributes_to_graphql(attributes)
+    attributes = "(#{attributes})" if attributes.present?
     <<~QUERY
-      #{name}(#{attributes}) {
+      #{name}#{attributes} {
         #{fields}
       }
     QUERY
