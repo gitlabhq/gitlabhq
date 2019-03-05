@@ -244,7 +244,9 @@ module Gitlab
     end
 
     def self.feature_enabled?(feature_name)
-      Feature.enabled?("gitaly_#{feature_name}")
+      Feature::FlipperFeature.table_exists? && Feature.enabled?("gitaly_#{feature_name}")
+    rescue ActiveRecord::NoDatabaseError
+      false
     end
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
