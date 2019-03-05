@@ -486,6 +486,33 @@ entry.
 - Update url placeholder for the sentry configuration page. !24338
 
 
+## 11.6.10 (2019-02-28)
+
+### Security (21 changes)
+
+- Stop linking to unrecognized package sources. !55518
+- Check snippet attached file to be moved is within designated directory.
+- Fix potential Addressable::URI::InvalidURIError.
+- Do not display impersonated sessions under active sessions and remove ability to revoke session.
+- Display only information visible to current user on the Milestone page.
+- Show only merge requests visible to user on milestone detail page.
+- Disable issue boards API when issues are disabled.
+- Don't show new issue link after move when a user does not have permissions.
+- Fix git clone revealing private repo's presence.
+- Fix blind SSRF in Prometheus integration by checking URL before querying.
+- Check if desired milestone for an issue is available.
+- Don't allow non-members to see private related MRs.
+- Fix arbitrary file read via diffs during import.
+- Display the correct number of MRs a user has access to.
+- Forbid creating discussions for users with restricted access.
+- Do not disclose milestone titles for unauthorized users.
+- Validate session key when authorizing with GCP to create a cluster.
+- Block local URLs for Kubernetes integration.
+- Limit mermaid rendering to 5K characters.
+- Remove the possibility to share a project with a group that a user is not a member of.
+- Fix leaking private repository information in API.
+
+
 ## 11.6.8 (2019-01-30)
 
 - No changes.

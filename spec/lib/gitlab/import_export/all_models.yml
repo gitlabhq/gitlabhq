@@ -127,7 +127,7 @@ ci_pipelines:
 - scheduled_actions
 - artifacts
 - pipeline_schedule
-- merge_requests
+- merge_requests_as_head_pipeline
 - merge_request
 - deployments
 - environments

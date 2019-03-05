@@ -6,21 +6,17 @@ import GfmAutoComplete from '~/gfm_auto_complete';
 import 'vendor/jquery.caret';
 import 'vendor/jquery.atwho';
 
-import { TEST_HOST } from 'helpers/test_constants';
-import labelsFixture from 'fixtures/autocomplete_sources/labels.json'; // eslint-disable-line import/no-unresolved
-
 describe('GfmAutoComplete', () => {
   const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
     fetchData: () => {},
   });
 
   let atwhoInstance;
+  let items;
   let sorterValue;
 
   describe('DefaultOptions.sorter', () => {
     describe('assets loading', () => {
-      let items;
-
       beforeEach(() => {
         jest.spyOn(GfmAutoComplete, 'isLoading').mockReturnValue(true);
 
@@ -65,7 +61,7 @@ describe('GfmAutoComplete', () => {
         atwhoInstance = { setting: {} };
 
         const query = 'query';
-        const items = [];
+        items = [];
         const searchKey = 'searchKey';
 
         gfmAutoCompleteCallbacks.sorter.call(atwhoInstance, query, items, searchKey);
@@ -252,92 +248,6 @@ describe('GfmAutoComplete', () => {
           reference: 'grp/proj#5',
         }),
       ).toBe('<li><small>grp/proj#5</small> Some Issue</li>');
-    });
-  });
-
-  describe('labels', () => {
-    const dataSources = {
-      labels: `${TEST_HOST}/autocomplete_sources/labels`,
-    };
-
-    const allLabels = labelsFixture;
-    const assignedLabels = allLabels.filter(label => label.set);
-    const unassignedLabels = allLabels.filter(label => !label.set);
-
-    let autocomplete;
-    let $textarea;
-
-    beforeEach(() => {
-      autocomplete = new GfmAutoComplete(dataSources);
-      $textarea = $('<textarea></textarea>');
-      autocomplete.setup($textarea, { labels: true });
-    });
-
-    afterEach(() => {
-      autocomplete.destroy();
-    });
-
-    const triggerDropdown = text => {
-      $textarea
-        .trigger('focus')
-        .val(text)
-        .caret('pos', -1);
-      $textarea.trigger('keyup');
-
-      return new Promise(window.requestAnimationFrame);
-    };
-
-    const getDropdownItems = () => {
-      const dropdown = document.getElementById('at-view-labels');
-      const items = dropdown.getElementsByTagName('li');
-      return [].map.call(items, item => item.textContent.trim());
-    };
-
-    const expectLabels = ({ input, output }) =>
-      triggerDropdown(input).then(() => {
-        expect(getDropdownItems()).toEqual(output.map(label => label.title));
-      });
-
-    describe('with no labels assigned', () => {
-      beforeEach(() => {
-        autocomplete.cachedData['~'] = [...unassignedLabels];
-      });
-
-      it.each`
-        input           | output
-        ${'~'}          | ${unassignedLabels}
-        ${'/label ~'}   | ${unassignedLabels}
-        ${'/relabel ~'} | ${unassignedLabels}
-        ${'/unlabel ~'} | ${[]}
-      `('$input shows $output.length labels', expectLabels);
-    });
-
-    describe('with some labels assigned', () => {
-      beforeEach(() => {
-        autocomplete.cachedData['~'] = allLabels;
-      });
-
-      it.each`
-        input           | output
-        ${'~'}          | ${allLabels}
-        ${'/label ~'}   | ${unassignedLabels}
-        ${'/relabel ~'} | ${allLabels}
-        ${'/unlabel ~'} | ${assignedLabels}
-      `('$input shows $output.length labels', expectLabels);
-    });
-
-    describe('with all labels assigned', () => {
-      beforeEach(() => {
-        autocomplete.cachedData['~'] = [...assignedLabels];
-      });
-
-      it.each`
-        input           | output
-        ${'~'}          | ${assignedLabels}
-        ${'/label ~'}   | ${[]}
-        ${'/relabel ~'} | ${assignedLabels}
-        ${'/unlabel ~'} | ${assignedLabels}
-      `('$input shows $output.length labels', expectLabels);
     });
   });
 });

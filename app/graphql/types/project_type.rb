@@ -16,7 +16,6 @@ module Types
 
     field :description, GraphQL::STRING_TYPE, null: true
 
-    field :default_branch, GraphQL::STRING_TYPE, null: true
     field :tag_list, GraphQL::STRING_TYPE, null: true
 
     field :ssh_url_to_repo, GraphQL::STRING_TYPE, null: true
@@ -59,7 +58,6 @@ module Types
     end
 
     field :import_status, GraphQL::STRING_TYPE, null: true
-    field :ci_config_path, GraphQL::STRING_TYPE, null: true
 
     field :only_allow_merge_if_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true
     field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true

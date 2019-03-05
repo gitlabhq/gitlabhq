@@ -40,7 +40,7 @@ bundle exec rspec spec/[path]/[to]/[spec].rb
   to separate phases.
 - Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
 - Don't assert against the absolute value of a sequence-generated attribute (see
-  [Gotchas](../gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
+  [Gotchas](../gotchas.md#do-not-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
 - On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,

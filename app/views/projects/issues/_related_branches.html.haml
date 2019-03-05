@@ -8,7 +8,7 @@
         - pipeline = @project.pipeline_for(branch, target.sha) if target
         - if can?(current_user, :read_pipeline, pipeline)
           %span.related-branch-ci-status
-            = render_pipeline_status(pipeline)
+            = render 'ci/status/icon', status: pipeline.detailed_status(current_user)
         %span.related-branch-info
           %strong
             = link_to branch, project_compare_path(@project, from: @project.default_branch, to: branch), class: "ref-name"

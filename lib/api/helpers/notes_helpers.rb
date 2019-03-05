@@ -70,14 +70,7 @@ module API
       def find_noteable(parent, noteables_str, noteable_id)
         noteable = public_send("find_#{parent}_#{noteables_str.singularize}", noteable_id) # rubocop:disable GitlabSecurity/PublicSend
 
-        readable =
-          if noteable.is_a?(Commit)
-            # for commits there is not :read_commit policy, check if user
-            # has :read_note permission on the commit's project
-            can?(current_user, :read_note, user_project)
-          else
-            can?(current_user, noteable_read_ability_name(noteable), noteable)
-          end
+        readable = can?(current_user, noteable_read_ability_name(noteable), noteable)
 
         return not_found!(noteables_str) unless readable
 
@@ -89,12 +82,11 @@ module API
       end
 
       def create_note(noteable, opts)
-        policy_object = noteable.is_a?(Commit) ? user_project : noteable
-        authorize!(:create_note, policy_object)
+        authorize!(:create_note, noteable)
 
         parent = noteable_parent(noteable)
 
-        opts.delete(:created_at) unless current_user.can?(:set_note_created_at, policy_object)
+        opts.delete(:created_at) unless current_user.can?(:set_note_created_at, noteable)
 
         opts[:updated_at] = opts[:created_at] if opts[:created_at]
 

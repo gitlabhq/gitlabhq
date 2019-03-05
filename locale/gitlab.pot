@@ -1341,6 +1341,9 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
+msgstr ""
+
 msgid "Certificate"
 msgstr ""
 
@@ -5429,6 +5432,12 @@ msgid "PipelineSchedules|Variables"
 msgstr ""
 
 msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr ""
+
+msgid "PipelineStatusTooltip|Commit: %{ci_status}"
+msgstr ""
+
+msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
 msgstr ""
 
 msgid "Pipelines"

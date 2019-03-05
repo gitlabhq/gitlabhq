@@ -20,6 +20,17 @@ module Gitlab
           create_target_branch unless branch_exists?(@merge_request.target_branch)
         end
 
+        # The merge_request_diff associated with the current @merge_request might
+        # be invalid. Than means, when the @merge_request object is saved, the
+        # @merge_request.merge_request_diff won't. This can leave the merge request
+        # in an invalid state, because a merge request must have an associated
+        # merge request diff.
+        # In this change, if the associated merge request diff is invalid, we set
+        # it to nil. This change, in association with the after callback
+        # :ensure_merge_request_diff in the MergeRequest class, makes that
+        # when the merge request is going to be created and it doesn't have
+        # one, a default one will be generated.
+        @merge_request.merge_request_diff = nil unless @merge_request.merge_request_diff&.valid?
         @merge_request
       end
 
