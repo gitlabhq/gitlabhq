@@ -2252,7 +2252,7 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe "#merge_requests" do
+  describe "#merge_requests_as_head_pipeline" do
     let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
@@ -2260,20 +2260,20 @@ describe Ci::Pipeline, :mailer do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
       merge_request = create(:merge_request, source_project: project, head_pipeline: pipeline, source_branch: pipeline.ref)
 
-      expect(pipeline.merge_requests).to eq([merge_request])
+      expect(pipeline.merge_requests_as_head_pipeline).to eq([merge_request])
     end
 
     it "doesn't return merge requests whose source branch doesn't match the pipeline's ref" do
       create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
 
-      expect(pipeline.merge_requests).to be_empty
+      expect(pipeline.merge_requests_as_head_pipeline).to be_empty
     end
 
     it "doesn't return merge requests whose `diff_head_sha` doesn't match the pipeline's SHA" do
       create(:merge_request, source_project: project, source_branch: pipeline.ref)
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
-      expect(pipeline.merge_requests).to be_empty
+      expect(pipeline.merge_requests_as_head_pipeline).to be_empty
     end
   end
 
