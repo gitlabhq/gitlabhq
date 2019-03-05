@@ -26,15 +26,10 @@
  */
 @mixin markdown-table {
   width: auto;
-  display: inline-block;
+  display: block;
   overflow-x: auto;
   border: 0;
   border-color: $gl-gray-100;
-
-  @supports (width: fit-content) {
-    display: block;
-    width: fit-content;
-  }
 
   tr {
     th {
