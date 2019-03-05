@@ -12,7 +12,7 @@
       %li.nav-item
         = link_to '#tab-merge-requests', class: 'nav-link', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
           Merge Requests
-          %span.badge.badge-pill= milestone.merge_requests.size
+          %span.badge.badge-pill= milestone.merge_requests_visible_to_user(current_user).size
     - else
       %li.nav-item
         = link_to '#tab-merge-requests', class: 'nav-link active', 'data-toggle' => 'tab', 'data-endpoint': milestone_merge_request_tab_path(milestone) do
