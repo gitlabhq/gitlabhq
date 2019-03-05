@@ -511,10 +511,10 @@ Currently, the following tests are in place:
 
 1. `docs lint`: Check that all internal (relative) links work correctly and
    that all cURL examples in API docs use the full switches. It's recommended
-   to [check locally](#previewing-locally) before pushing to GitLab by executing the command
+   to [check locally](#previewing-the-changes-live) before pushing to GitLab by executing the command
    `bundle exec nanoc check internal_links` on your local
    [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs) directory.
-1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-gt-ee-merge-conflicts-beforehand) (runs on CE only):
+1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-ee-merge-conflicts-beforehand) (runs on CE only):
     When you submit a merge request to GitLab Community Edition (CE),
     there is this additional job that runs against Enterprise Edition (EE)
     and checks if your changes can apply cleanly to the EE codebase.
