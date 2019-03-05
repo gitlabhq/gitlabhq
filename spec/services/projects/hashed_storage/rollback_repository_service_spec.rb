@@ -104,6 +104,12 @@ describe Projects::HashedStorage::RollbackRepositoryService, :clean_gitlab_redis
       end
     end
 
+    it 'works even when project validation fails' do
+      allow(project).to receive(:valid?) { false }
+
+      expect { service.execute }.to change { project.legacy_storage? }.to(true)
+    end
+
     def expect_move_repository(from_name, to_name)
       expect(gitlab_shell).to receive(:mv_repository).with(project.repository_storage, from_name, to_name).and_call_original
     end

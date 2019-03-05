@@ -102,6 +102,12 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       end
     end
 
+    it 'works even when project validation fails' do
+      allow(project).to receive(:valid?) { false }
+
+      expect { service.execute }.to change { project.hashed_storage?(:repository) }.to(true)
+    end
+
     def expect_move_repository(from_name, to_name)
       expect(gitlab_shell).to receive(:mv_repository).with(project.repository_storage, from_name, to_name).and_call_original
     end
