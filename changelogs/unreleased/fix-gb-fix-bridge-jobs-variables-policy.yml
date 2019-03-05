@@ -1,0 +1,5 @@
+---
+title: Fix bridge jobs only/except variables policy
+merge_request: 25710
+author:
+type: fixed
