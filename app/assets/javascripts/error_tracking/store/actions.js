@@ -6,7 +6,7 @@ import { __, sprintf } from '~/locale';
 
 let eTagPoll;
 
-export function startPolling({ commit }, endpoint) {
+export function startPolling({ commit, dispatch }, endpoint) {
   eTagPoll = new Poll({
     resource: Service,
     method: 'getErrorList',
@@ -18,6 +18,7 @@ export function startPolling({ commit }, endpoint) {
       commit(types.SET_ERRORS, data.errors);
       commit(types.SET_EXTERNAL_URL, data.external_url);
       commit(types.SET_LOADING, false);
+      dispatch('stopPolling');
     },
     errorCallback: response => {
       let errorMessage = '';
@@ -34,6 +35,18 @@ export function startPolling({ commit }, endpoint) {
   });
 
   eTagPoll.makeRequest();
+}
+
+export const stopPolling = () => {
+  if (eTagPoll) eTagPoll.stop();
+};
+
+export function restartPolling({ commit }) {
+  commit(types.SET_ERRORS, []);
+  commit(types.SET_EXTERNAL_URL, '');
+  commit(types.SET_LOADING, true);
+
+  if (eTagPoll) eTagPoll.restart();
 }
 
 export default () => {};

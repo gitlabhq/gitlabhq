@@ -1389,6 +1389,9 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
+msgid "Check again"
+msgstr ""
+
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
 msgstr ""
 
@@ -5006,7 +5009,7 @@ msgstr ""
 msgid "No due date"
 msgstr ""
 
-msgid "No errors to display"
+msgid "No errors to display."
 msgstr ""
 
 msgid "No estimate or time spent"
@@ -8334,6 +8337,9 @@ msgid "View file @ "
 msgstr ""
 
 msgid "View group labels"
+msgstr ""
+
+msgid "View in Sentry"
 msgstr ""
 
 msgid "View it on GitLab"
