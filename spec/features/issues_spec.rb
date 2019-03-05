@@ -233,8 +233,8 @@ describe 'Issues' do
                          created_at: Time.now - (index * 60))
         end
       end
-      let(:newer_due_milestone) { create(:milestone, due_date: '2013-12-11') }
-      let(:later_due_milestone) { create(:milestone, due_date: '2013-12-12') }
+      let(:newer_due_milestone) { create(:milestone, project: project, due_date: '2013-12-11') }
+      let(:later_due_milestone) { create(:milestone, project: project, due_date: '2013-12-12') }
 
       it 'sorts by newest' do
         visit project_issues_path(project, sort: sort_value_created_date)

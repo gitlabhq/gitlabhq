@@ -318,10 +318,18 @@ module API
         use :pagination
       end
       get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        authorize! :read_merge_request, user_project
+
         commit = user_project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
-        present paginate(commit.merge_requests), with: Entities::MergeRequestBasic
+        commit_merge_requests = MergeRequestsFinder.new(
+          current_user,
+          project_id: user_project.id,
+          commit_sha: commit.sha
+        ).execute
+
+        present paginate(commit_merge_requests), with: Entities::MergeRequestBasic
       end
 
       desc "Get a commit's GPG signature" do

@@ -208,25 +208,53 @@ describe Notify do
         let(:new_issue) { create(:issue) }
         subject { described_class.issue_moved_email(recipient, issue, new_issue, current_user) }
 
-        it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
-          let(:model) { issue }
+        context 'when a user has permissions to access the new issue' do
+          before do
+            new_issue.project.add_developer(recipient)
+          end
+
+          it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
+            let(:model) { issue }
+          end
+          it_behaves_like 'it should show Gmail Actions View Issue link'
+          it_behaves_like 'an unsubscribeable thread'
+
+          it 'contains description about action taken' do
+            is_expected.to have_body_text 'Issue was moved to another project'
+          end
+
+          it 'has the correct subject and body' do
+            new_issue_url = project_issue_path(new_issue.project, new_issue)
+
+            aggregate_failures do
+              is_expected.to have_referable_subject(issue, reply: true)
+              is_expected.to have_body_text(new_issue_url)
+              is_expected.to have_body_text(project_issue_path(project, issue))
+            end
+          end
+
+          it 'contains the issue title' do
+            is_expected.to have_body_text new_issue.title
+          end
         end
-        it_behaves_like 'it should show Gmail Actions View Issue link'
-        it_behaves_like 'an unsubscribeable thread'
-        it_behaves_like 'appearance header and footer enabled'
-        it_behaves_like 'appearance header and footer not enabled'
 
-        it 'contains description about action taken' do
-          is_expected.to have_body_text 'Issue was moved to another project'
-        end
+        context 'when a user does not permissions to access the new issue' do
+          it 'has the correct subject and body' do
+            new_issue_url = project_issue_path(new_issue.project, new_issue)
 
-        it 'has the correct subject and body' do
-          new_issue_url = project_issue_path(new_issue.project, new_issue)
+            aggregate_failures do
+              is_expected.to have_referable_subject(issue, reply: true)
+              is_expected.not_to have_body_text(new_issue_url)
+              is_expected.to have_body_text(project_issue_path(project, issue))
+            end
+          end
 
-          aggregate_failures do
-            is_expected.to have_referable_subject(issue, reply: true)
-            is_expected.to have_body_text(new_issue_url)
-            is_expected.to have_body_text(project_issue_path(project, issue))
+          it 'does not contain the issue title' do
+            is_expected.not_to have_body_text new_issue.title
+          end
+
+          it 'contains information about missing permissions' do
+            is_expected.to have_body_text "You don't have access to the project."
           end
         end
       end

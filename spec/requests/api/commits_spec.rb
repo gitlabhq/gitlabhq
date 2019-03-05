@@ -1430,8 +1430,8 @@ describe API::Commits do
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/merge_requests' do
-    let!(:project) { create(:project, :repository, :private) }
-    let!(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
+    let(:project) { create(:project, :repository, :private) }
+    let(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
     let(:commit) { merged_mr.merge_request_diff.commits.last }
 
     it 'returns the correct merge request' do
@@ -1455,6 +1455,17 @@ describe API::Commits do
       get api("/projects/#{project.id}/repository/commits/a7d26f00c35b/merge_requests", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+
+    context 'public project' do
+      let(:project) { create(:project, :repository, :public, :merge_requests_private) }
+      let(:non_member) { create(:user) }
+
+      it 'responds 403 when only members are allowed to read merge requests' do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", non_member)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
     end
   end
 

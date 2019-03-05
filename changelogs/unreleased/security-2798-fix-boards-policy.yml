@@ -1,0 +1,5 @@
+---
+title: Disable issue boards API when issues are disabled
+merge_request:
+author:
+type: security

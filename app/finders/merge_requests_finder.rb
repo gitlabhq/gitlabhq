@@ -37,12 +37,19 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   def filter_items(_items)
-    items = by_source_branch(super)
+    items = by_commit(super)
+    items = by_source_branch(items)
     items = by_wip(items)
     by_target_branch(items)
   end
 
   private
+
+  def by_commit(items)
+    return items unless params[:commit_sha].presence
+
+    items.by_commit_sha(params[:commit_sha])
+  end
 
   def source_branch
     @source_branch ||= params[:source_branch].presence
