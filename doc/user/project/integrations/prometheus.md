@@ -120,7 +120,7 @@ If the "No data found" screen continues to appear, it could be due to:
 - No successful deployments have occurred to this environment.
 - Prometheus does not have performance data for this environment, or the metrics
   are not labeled correctly. To test this, connect to the Prometheus server and
-  [run a query](#gitlab-prometheus-queries), replacing `$CI_ENVIRONMENT_SLUG`
+  [run a query](prometheus_library/kubernetes.html#metrics-supported), replacing `$CI_ENVIRONMENT_SLUG`
   with the name of your environment.
 
 [autodeploy]: ../../../ci/autodeploy/index.md

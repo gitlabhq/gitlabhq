@@ -56,7 +56,7 @@ group. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
 Add another cluster similar to the first one and make sure to
-[set an environment scope](#environment-scopes) that will
+[set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
 
 ## Base domain
