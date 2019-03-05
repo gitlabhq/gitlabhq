@@ -48,7 +48,7 @@
             CLOSED
         - if can?(current_user, :read_pipeline, merge_request.head_pipeline)
           %li.issuable-pipeline-status.d-none.d-sm-inline-block
-            = render_pipeline_status(merge_request.head_pipeline)
+            = render 'ci/status/icon', status: merge_request.head_pipeline.detailed_status(current_user)
         - if merge_request.open? && merge_request.broken?
           %li.issuable-pipeline-broken.d-none.d-sm-inline-block
             = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do

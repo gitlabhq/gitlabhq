@@ -1,0 +1,41 @@
+# GitLab Serverless template
+
+image: alpine:latest
+
+stages:
+  - build
+  - deploy
+
+.serverless:build:image:
+  variables:
+    DOCKERFILE: "Dockerfile"
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  only:
+    refs:
+      - master
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/$DOCKERFILE --destination $CI_REGISTRY_IMAGE
+
+.serverless:deploy:image:
+  stage: deploy
+  image: gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5
+  only:
+    refs:
+      - master
+  environment: development
+  script:
+    - echo "$CI_REGISTRY_IMAGE"
+    - tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
+
+.serverless:deploy:functions:
+  stage: deploy
+  environment: development
+  image: gcr.io/triggermesh/tm:v0.0.9
+  script:
+   - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN" --push
+   - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_DEPLOY_USER" --password "$CI_DEPLOY_PASSWORD" --pull
+   - tm -n "$KUBE_NAMESPACE" deploy --wait

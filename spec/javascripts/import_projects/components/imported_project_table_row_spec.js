@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import store from '~/import_projects/store';
+import createStore from '~/import_projects/store';
 import importedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
 import STATUS_MAP from '~/import_projects/constants';
 
@@ -16,6 +16,7 @@ describe('ImportedProjectTableRow', () => {
   function createComponent() {
     const ImportedProjectTableRow = Vue.extend(importedProjectTableRow);
 
+    const store = createStore();
     return new ImportedProjectTableRow({
       store,
       propsData: {

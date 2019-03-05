@@ -136,17 +136,24 @@ export const openBranch = ({ dispatch, state }, { projectId, branchId, basePath 
   return dispatch('getFiles', {
     projectId,
     branchId,
-  }).then(() => {
-    if (basePath) {
-      const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
-      const treeEntryKey = Object.keys(state.entries).find(
-        key => key === path && !state.entries[key].pending,
-      );
-      const treeEntry = state.entries[treeEntryKey];
+  })
+    .then(() => {
+      if (basePath) {
+        const path = basePath.slice(-1) === '/' ? basePath.slice(0, -1) : basePath;
+        const treeEntryKey = Object.keys(state.entries).find(
+          key => key === path && !state.entries[key].pending,
+        );
+        const treeEntry = state.entries[treeEntryKey];
 
-      if (treeEntry) {
-        dispatch('handleTreeEntryAction', treeEntry);
+        if (treeEntry) {
+          dispatch('handleTreeEntryAction', treeEntry);
+        }
       }
-    }
-  });
+    })
+    .then(() => {
+      dispatch('getMergeRequestsForBranch', {
+        projectId,
+        branchId,
+      });
+    });
 };

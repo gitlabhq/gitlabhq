@@ -513,8 +513,15 @@ describe Ci::Pipeline, :mailer do
                source_project: project,
                source_branch: 'feature',
                target_project: project,
-               target_branch: 'master')
+               target_branch: 'master',
+               assignee: assignee,
+               milestone: milestone,
+               labels: labels)
       end
+
+      let(:assignee) { create(:user) }
+      let(:milestone) { create(:milestone) }
+      let(:labels) { create_list(:label, 2) }
 
       it 'exposes merge request pipeline variables' do
         expect(subject.to_hash)
@@ -531,7 +538,11 @@ describe Ci::Pipeline, :mailer do
             'CI_MERGE_REQUEST_SOURCE_PROJECT_PATH' => merge_request.source_project.full_path,
             'CI_MERGE_REQUEST_SOURCE_PROJECT_URL' => merge_request.source_project.web_url,
             'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
-            'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => pipeline.source_sha.to_s)
+            'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => pipeline.source_sha.to_s,
+            'CI_MERGE_REQUEST_TITLE' => merge_request.title,
+            'CI_MERGE_REQUEST_ASSIGNEES' => assignee.username,
+            'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
+            'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).join(','))
       end
 
       context 'when source project does not exist' do
@@ -545,6 +556,30 @@ describe Ci::Pipeline, :mailer do
                CI_MERGE_REQUEST_SOURCE_PROJECT_PATH
                CI_MERGE_REQUEST_SOURCE_PROJECT_URL
                CI_MERGE_REQUEST_SOURCE_BRANCH_NAME])
+        end
+      end
+
+      context 'without assignee' do
+        let(:assignee) { nil }
+
+        it 'does not expose assignee variable' do
+          expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_ASSIGNEES')
+        end
+      end
+
+      context 'without milestone' do
+        let(:milestone) { nil }
+
+        it 'does not expose milestone variable' do
+          expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_MILESTONE')
+        end
+      end
+
+      context 'without labels' do
+        let(:labels) { [] }
+
+        it 'does not expose labels variable' do
+          expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_LABELS')
         end
       end
     end
@@ -2217,7 +2252,7 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe "#merge_requests" do
+  describe "#merge_requests_as_head_pipeline" do
     let(:project) { create(:project) }
     let(:pipeline) { create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: 'a288a022a53a5a944fae87bcec6efc87b7061808') }
 
@@ -2225,20 +2260,20 @@ describe Ci::Pipeline, :mailer do
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { 'a288a022a53a5a944fae87bcec6efc87b7061808' }
       merge_request = create(:merge_request, source_project: project, head_pipeline: pipeline, source_branch: pipeline.ref)
 
-      expect(pipeline.merge_requests).to eq([merge_request])
+      expect(pipeline.merge_requests_as_head_pipeline).to eq([merge_request])
     end
 
     it "doesn't return merge requests whose source branch doesn't match the pipeline's ref" do
       create(:merge_request, source_project: project, source_branch: 'feature', target_branch: 'master')
 
-      expect(pipeline.merge_requests).to be_empty
+      expect(pipeline.merge_requests_as_head_pipeline).to be_empty
     end
 
     it "doesn't return merge requests whose `diff_head_sha` doesn't match the pipeline's SHA" do
       create(:merge_request, source_project: project, source_branch: pipeline.ref)
       allow_any_instance_of(MergeRequest).to receive(:diff_head_sha) { '97de212e80737a608d939f648d959671fb0a0142b' }
 
-      expect(pipeline.merge_requests).to be_empty
+      expect(pipeline.merge_requests_as_head_pipeline).to be_empty
     end
   end
 

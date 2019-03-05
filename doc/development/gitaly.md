@@ -5,8 +5,9 @@ Workhorse and GitLab-Shell.
 
 ## Developing new Git features
 
-Starting with GitLab 10.8, all new Git features should be developed in
-Gitaly.
+To read or write Git data, a request has to be made to Gitaly. This means that
+if you're developing a new feature where you need data that's not yet available
+in `lib/gitlab/git` changes have to be made to Gitaly.
 
 > This is a new process that is not clearly defined yet. If you want
 to contribute a Git feature and you're getting stuck, reach out to the
