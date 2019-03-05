@@ -249,6 +249,7 @@ describe('IDE store project actions', () => {
             ['setCurrentBranchId', branch.branchId],
             ['getBranchData', branch],
             ['getFiles', branch],
+            ['getMergeRequestsForBranch', branch],
           ]);
         })
         .then(done)
