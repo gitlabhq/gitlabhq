@@ -243,7 +243,7 @@ describe 'Clusters Applications', :js do
     retries = 0
 
     while Clusters::Cluster.last.send("application_#{app}").nil?
-      raise "Timed out waiting for #{ app } application to be created in DB" if (retries += 1) > 3
+      raise "Timed out waiting for #{app} application to be created in DB" if (retries += 1) > 3
 
       sleep(1)
     end
@@ -254,7 +254,7 @@ describe 'Clusters Applications', :js do
     updated_at = app.updated_at
 
     while updated_at == app.reload.updated_at
-      raise "Timed out waiting for #{ app } application to be created in DB" if (retries += 1) > 3
+      raise "Timed out waiting for #{app} application to be created in DB" if (retries += 1) > 3
 
       sleep(1)
     end
