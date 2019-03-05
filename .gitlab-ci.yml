@@ -686,6 +686,11 @@ gitlab:ui:visual:
     - cd gitlab-ui
     - yarn install
     - CSS_URL=./application.css yarn test
+  only:
+    changes:
+      - app/assets/stylesheets/*.scss
+      - app/assets/stylesheets/**/*.scss
+      - app/assets/stylesheets/**/**/*.scss
   artifacts:
     paths:
       - tests/__image_snapshots__/
