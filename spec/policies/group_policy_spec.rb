@@ -114,13 +114,13 @@ describe GroupPolicy do
       project.add_developer(current_user)
     end
 
-    it { expect_allowed(:read_label) }
+    it { expect_allowed(:read_label, :read_list) }
 
     context 'in subgroups', :nested_groups do
       let(:subgroup) { create(:group, :private, parent: group) }
       let(:project) { create(:project, namespace: subgroup) }
 
-      it { expect_allowed(:read_label) }
+      it { expect_allowed(:read_label, :read_list) }
     end
   end
 
