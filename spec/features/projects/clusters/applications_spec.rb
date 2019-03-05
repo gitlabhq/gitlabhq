@@ -17,7 +17,7 @@ describe 'Clusters Applications', :js do
     end
 
     context 'when cluster is being created' do
-      let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project])}
+      let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
       it 'user is unable to install applications' do
         page.within('.js-cluster-application-row-helm') do
@@ -28,7 +28,7 @@ describe 'Clusters Applications', :js do
     end
 
     context 'when cluster is created' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project])}
+      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       it 'user can install applications' do
         page.within('.js-cluster-application-row-helm') do
@@ -52,7 +52,7 @@ describe 'Clusters Applications', :js do
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
             expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
-            wait_until_helm_created!
+            wait_until_app_created!('helm')
 
             Clusters::Cluster.last.application_helm.make_installing!
 
@@ -76,7 +76,7 @@ describe 'Clusters Applications', :js do
         end
 
         context 'on an abac cluster' do
-          let(:cluster) { create(:cluster, :provided_by_gcp, :rbac_disabled, projects: [project])}
+          let(:cluster) { create(:cluster, :provided_by_gcp, :rbac_disabled, projects: [project]) }
 
           it 'should show info block and not be installable' do
             page.within('.js-cluster-application-row-knative') do
@@ -87,12 +87,66 @@ describe 'Clusters Applications', :js do
         end
 
         context 'on an rbac cluster' do
-          let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project])}
+          let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
           it 'should not show callout block and be installable' do
             page.within('.js-cluster-application-row-knative') do
               expect(page).not_to have_css('.bs-callout-info')
               expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
+            end
+          end
+
+          describe 'when user clicks install button' do
+            def domainname_form_value
+              page.find('.js-knative-domainname').value
+            end
+
+            before do
+              allow(ClusterInstallAppWorker).to receive(:perform_async)
+              allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
+              allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
+
+              page.within('.js-cluster-application-row-knative') do
+                expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
+
+                page.find('.js-knative-domainname').set("domain.example.org")
+
+                click_button 'Install'
+
+                wait_until_app_created!('knative')
+
+                expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
+
+                Clusters::Cluster.last.application_knative.make_installing!
+                Clusters::Cluster.last.application_knative.make_installed!
+                Clusters::Cluster.last.application_knative.update_attribute(:external_ip, '127.0.0.1')
+              end
+            end
+
+            it 'shows status transition' do
+              page.within('.js-cluster-application-row-knative') do
+                expect(domainname_form_value).to eq('domain.example.org')
+                expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
+              end
+
+              expect(page).to have_content('Knative was successfully installed on your Kubernetes cluster')
+              expect(page).to have_css('.js-knative-save-domain-button'), exact_text: 'Save changes'
+            end
+
+            it 'can then update the domain' do
+              page.within('.js-cluster-application-row-knative') do
+                expect(ClusterUpdateAppWorker).to receive(:perform_async)
+
+                expect(domainname_form_value).to eq('domain.example.org')
+
+                page.find('.js-knative-domainname').set("new.domain.example.org")
+
+                click_button 'Save changes'
+
+                wait_until_app_updated!(cluster.application_knative)
+
+                expect(domainname_form_value).to eq('new.domain.example.org')
+              end
             end
           end
         end
@@ -185,11 +239,22 @@ describe 'Clusters Applications', :js do
     end
   end
 
-  def wait_until_helm_created!
+  def wait_until_app_created!(app)
     retries = 0
 
-    while Clusters::Cluster.last.application_helm.nil?
-      raise "Timed out waiting for helm application to be created in DB" if (retries += 1) > 3
+    while Clusters::Cluster.last.send("application_#{app}").nil?
+      raise "Timed out waiting for #{ app } application to be created in DB" if (retries += 1) > 3
+
+      sleep(1)
+    end
+  end
+
+  def wait_until_app_updated!(app)
+    retries = 0
+    updated_at = app.updated_at
+
+    while updated_at == app.reload.updated_at
+      raise "Timed out waiting for #{ app } application to be created in DB" if (retries += 1) > 3
 
       sleep(1)
     end
