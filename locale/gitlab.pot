@@ -3133,6 +3133,9 @@ msgstr ""
 msgid "Error Tracking"
 msgstr ""
 
+msgid "Error creating a new path"
+msgstr ""
+
 msgid "Error deleting  %{issuableType}"
 msgstr ""
 
@@ -5428,6 +5431,12 @@ msgstr ""
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr ""
 
+msgid "PipelineStatusTooltip|Commit: %{ci_status}"
+msgstr ""
+
+msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
+msgstr ""
+
 msgid "Pipelines"
 msgstr ""
 
@@ -7382,6 +7391,9 @@ msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
 msgid "The maximum file size allowed is 200KB."
+msgstr ""
+
+msgid "The name %{entryName} is already taken in this directory."
 msgstr ""
 
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"

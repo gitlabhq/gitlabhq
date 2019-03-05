@@ -672,6 +672,29 @@ gitlab:assets:compile:
     - docker
     - gitlab-org
 
+gitlab:ui:visual:
+  tags:
+    - gitlab-org
+  before_script: []
+  dependencies:
+    - compile-assets
+  script:
+    # Remove node modules from GitLab that may conflict with gitlab-ui
+    - rm -r node_modules
+    - git clone https://gitlab.com/gitlab-org/gitlab-ui.git
+    - cp public/assets/application-*.css gitlab-ui/styles/application.css
+    - cd gitlab-ui
+    - yarn install
+    - CSS_URL=./application.css yarn test
+  only:
+    changes:
+      - app/assets/stylesheets/*.scss
+      - app/assets/stylesheets/**/*.scss
+      - app/assets/stylesheets/**/**/*.scss
+  artifacts:
+    paths:
+      - tests/__image_snapshots__/
+
 karma:
   <<: *dedicated-no-docs-pull-cache-job
   <<: *use-pg

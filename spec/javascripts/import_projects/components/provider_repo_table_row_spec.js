@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/import_projects/store';
+import createStore from '~/import_projects/store';
 import providerRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
 import STATUS_MAP, { STATUSES } from '~/import_projects/constants';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 describe('ProviderRepoTableRow', () => {
+  let store;
   let vm;
   const repo = {
     id: 10,
@@ -27,6 +28,10 @@ describe('ProviderRepoTableRow', () => {
       },
     }).$mount();
   }
+
+  beforeEach(() => {
+    store = createStore();
+  });
 
   afterEach(() => {
     vm.$destroy();

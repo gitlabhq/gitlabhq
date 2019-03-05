@@ -18,6 +18,9 @@ describe('new file modal component', () => {
         store.state.entryModal = {
           type,
           path: '',
+          entry: {
+            path: '',
+          },
         };
 
         vm = createComponentWithStore(Component, store).$mount();
@@ -74,6 +77,7 @@ describe('new file modal component', () => {
         entry: {
           name: 'test',
           type: 'blob',
+          path: 'test-path',
         },
       };
 
@@ -97,13 +101,62 @@ describe('new file modal component', () => {
 
     describe('entryName', () => {
       it('returns entries name', () => {
-        expect(vm.entryName).toBe('test');
+        expect(vm.entryName).toBe('test-path');
       });
 
       it('updated name', () => {
         vm.name = 'index.js';
 
         expect(vm.entryName).toBe('index.js');
+      });
+    });
+  });
+
+  describe('submitForm', () => {
+    it('throws an error when target entry exists', () => {
+      const store = createStore();
+      store.state.entryModal = {
+        type: 'rename',
+        path: 'test-path/test',
+        entry: {
+          name: 'test',
+          type: 'blob',
+          path: 'test-path/test',
+        },
+      };
+      store.state.entries = {
+        'test-path/test': {
+          name: 'test',
+          deleted: false,
+        },
+      };
+
+      vm = createComponentWithStore(Component, store).$mount();
+      const flashSpy = spyOnDependency(modal, 'flash');
+      vm.submitForm();
+
+      expect(flashSpy).toHaveBeenCalled();
+    });
+
+    it('calls createTempEntry when target path does not exist', () => {
+      const store = createStore();
+      store.state.entryModal = {
+        type: 'rename',
+        path: 'test-path/test',
+        entry: {
+          name: 'test',
+          type: 'blob',
+          path: 'test-path1/test',
+        },
+      };
+
+      vm = createComponentWithStore(Component, store).$mount();
+      spyOn(vm, 'createTempEntry').and.callFake(() => Promise.resolve());
+      vm.submitForm();
+
+      expect(vm.createTempEntry).toHaveBeenCalledWith({
+        name: 'test-path1',
+        type: 'tree',
       });
     });
   });

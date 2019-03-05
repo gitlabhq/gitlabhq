@@ -4,6 +4,38 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import { activityBarViews } from '../../constants';
 
+export const getMergeRequestsForBranch = ({ commit }, { projectId, branchId } = {}) =>
+  service
+    .getProjectMergeRequests(`${projectId}`, {
+      source_branch: branchId,
+      order_by: 'created_at',
+      per_page: 1,
+    })
+    .then(({ data }) => {
+      if (data.length > 0) {
+        const currentMR = data[0];
+
+        commit(types.SET_MERGE_REQUEST, {
+          projectPath: projectId,
+          mergeRequestId: currentMR.iid,
+          mergeRequest: currentMR,
+        });
+
+        commit(types.SET_CURRENT_MERGE_REQUEST, `${currentMR.iid}`);
+      }
+    })
+    .catch(e => {
+      flash(
+        __(`Error fetching merge requests for ${branchId}`),
+        'alert',
+        document,
+        null,
+        false,
+        true,
+      );
+      throw e;
+    });
+
 export const getMergeRequestData = (
   { commit, dispatch, state },
   { projectId, mergeRequestId, targetProjectId = null, force = false } = {},
