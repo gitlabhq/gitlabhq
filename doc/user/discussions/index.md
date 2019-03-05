@@ -10,8 +10,9 @@ You can leave a comment in the following places:
 - commits
 - commit diffs
 
-The comment area supports [Markdown] and [quick actions]. One can edit their
-own comment at any time, and anyone with [Maintainer access level][permissions] or
+The comment area supports [Markdown] and [quick actions]. Every individual
+comment can be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
+One can also edit their own comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
 You could also reply to the notification email in order to reply to a comment,
