@@ -46,7 +46,7 @@ They're useful to test permissions, redirections, what view is rendered etc.
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `lib/ci/api/` | `spec/requests/ci/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [JavaScript](#javascript) section. |
+| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Karma JavaScript test suite](frontend_testing.md#karma-test-suite) section. |
 
 ### About controller tests
 
@@ -210,7 +210,7 @@ trade-off:
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
-  a JavaScript driver. Make sure to follow the guidelines in the [Speed](#test-speed)
+  a JavaScript driver. Make sure to follow the guidelines in the [Speed](best_practices.md#test-speed)
   section.
 
 Another way to see it is to think about the "cost of tests", this is well

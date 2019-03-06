@@ -181,6 +181,18 @@ describe GlobalPolicy do
     end
   end
 
+  describe 'read instance metadata' do
+    context 'regular user' do
+      it { is_expected.to be_allowed(:read_instance_metadata) }
+    end
+
+    context 'anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.not_to be_allowed(:read_instance_metadata) }
+    end
+  end
+
   describe 'read instance statistics' do
     context 'regular user' do
       it { is_expected.to be_allowed(:read_instance_statistics) }

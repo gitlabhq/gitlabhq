@@ -32,17 +32,56 @@ describe Issuable do
   end
 
   describe "Validation" do
-    subject { build(:issue) }
+    context 'general validations' do
+      subject { build(:issue) }
 
-    before do
-      allow(InternalId).to receive(:generate_next).and_return(nil)
+      before do
+        allow(InternalId).to receive(:generate_next).and_return(nil)
+      end
+
+      it { is_expected.to validate_presence_of(:project) }
+      it { is_expected.to validate_presence_of(:iid) }
+      it { is_expected.to validate_presence_of(:author) }
+      it { is_expected.to validate_presence_of(:title) }
+      it { is_expected.to validate_length_of(:title).is_at_most(255) }
     end
 
-    it { is_expected.to validate_presence_of(:project) }
-    it { is_expected.to validate_presence_of(:iid) }
-    it { is_expected.to validate_presence_of(:author) }
-    it { is_expected.to validate_presence_of(:title) }
-    it { is_expected.to validate_length_of(:title).is_at_most(255) }
+    describe 'milestone' do
+      let(:project) { create(:project) }
+      let(:milestone_id) { create(:milestone, project: project).id }
+      let(:params) do
+        {
+          title: 'something',
+          project: project,
+          author: build(:user),
+          milestone_id: milestone_id
+        }
+      end
+
+      subject { issuable_class.new(params) }
+
+      context 'with correct params' do
+        it { is_expected.to be_valid }
+      end
+
+      context 'with empty string milestone' do
+        let(:milestone_id) { '' }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with nil milestone id' do
+        let(:milestone_id) { nil }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'with a milestone id from another project' do
+        let(:milestone_id) { create(:milestone).id }
+
+        it { is_expected.to be_invalid }
+      end
+    end
   end
 
   describe "Scope" do
@@ -63,6 +102,48 @@ describe Issuable do
       issue.save(validate: false)
 
       expect(issue.author_name).to eq nil
+    end
+  end
+
+  describe '#milestone_available?' do
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+    let(:issue) { create(:issue, project: project) }
+
+    def build_issuable(milestone_id)
+      issuable_class.new(project: project, milestone_id: milestone_id)
+    end
+
+    it 'returns true with a milestone from the issue project' do
+      milestone = create(:milestone, project: project)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_truthy
+    end
+
+    it 'returns true with a milestone from the issue project group' do
+      milestone = create(:milestone, group: group)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_truthy
+    end
+
+    it 'returns true with a milestone from the the parent of the issue project group', :nested_groups do
+      parent = create(:group)
+      group.update(parent: parent)
+      milestone = create(:milestone, group: parent)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_truthy
+    end
+
+    it 'returns false with a milestone from another project' do
+      milestone = create(:milestone)
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_falsey
+    end
+
+    it 'returns false with a milestone from another group' do
+      milestone = create(:milestone, group: create(:group))
+
+      expect(build_issuable(milestone.id).milestone_available?).to be_falsey
     end
   end
 

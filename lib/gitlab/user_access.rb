@@ -118,8 +118,8 @@ module Gitlab
         protected_refs: project.protected_tags)
     end
 
-    request_cache def protected?(kind, project, ref)
-      kind.protected?(project, ref)
+    request_cache def protected?(kind, project, refs)
+      kind.protected?(project, refs)
     end
   end
 end

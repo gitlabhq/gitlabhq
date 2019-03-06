@@ -6,7 +6,7 @@ describe GoogleApi::AuthorizationsController do
     let(:token) { 'token' }
     let(:expires_at) { 1.hour.since.strftime('%s') }
 
-    subject { get :callback, params: { code: 'xxx', state: @state } }
+    subject { get :callback, params: { code: 'xxx', state: state } }
 
     before do
       sign_in(user)
@@ -15,35 +15,57 @@ describe GoogleApi::AuthorizationsController do
         .to receive(:get_token).and_return([token, expires_at])
     end
 
-    it 'sets token and expires_at in session' do
-      subject
+    shared_examples_for 'access denied' do
+      it 'returns a 404' do
+        subject
 
-      expect(session[GoogleApi::CloudPlatform::Client.session_key_for_token])
-        .to eq(token)
-      expect(session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at])
-        .to eq(expires_at)
+        expect(session[GoogleApi::CloudPlatform::Client.session_key_for_token]).to be_nil
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
-    context 'when redirect uri key is stored in state' do
-      set(:project) { create(:project) }
-      let(:redirect_uri) { project_clusters_url(project).to_s }
+    context 'session key is present' do
+      let(:session_key) { 'session-key' }
+      let(:redirect_uri) { 'example.com' }
 
       before do
-        @state = GoogleApi::CloudPlatform::Client
-          .new_session_key_for_redirect_uri do |key|
-          session[key] = redirect_uri
+        session[GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(session_key)] = redirect_uri
+      end
+
+      context 'session key matches state param' do
+        let(:state) { session_key }
+
+        it 'sets token and expires_at in session' do
+          subject
+
+          expect(session[GoogleApi::CloudPlatform::Client.session_key_for_token])
+            .to eq(token)
+          expect(session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at])
+            .to eq(expires_at)
+        end
+
+        it 'redirects to the URL stored in state param' do
+          expect(subject).to redirect_to(redirect_uri)
         end
       end
 
-      it 'redirects to the URL stored in state param' do
-        expect(subject).to redirect_to(redirect_uri)
+      context 'session key does not match state param' do
+        let(:state) { 'bad-key' }
+
+        it_behaves_like 'access denied'
+      end
+
+      context 'state param is blank' do
+        let(:state) { '' }
+
+        it_behaves_like 'access denied'
       end
     end
 
-    context 'when redirection url is not stored in state' do
-      it 'redirects to root_path' do
-        expect(subject).to redirect_to(root_path)
-      end
+    context 'state param is present, but session key is blank' do
+      let(:state) { 'session-key' }
+
+      it_behaves_like 'access denied'
     end
   end
 end

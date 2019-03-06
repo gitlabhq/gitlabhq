@@ -1,0 +1,5 @@
+---
+title: Validate session key when authorizing with GCP to create a cluster
+merge_request:
+author:
+type: security

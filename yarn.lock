@@ -663,10 +663,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.54.0.tgz#00320e845efd46716042cde0c348b990d4908daf"
   integrity sha512-DR17iy8TM5IbXEacqiDP0p8SuC/J8EL+98xbfVz5BKvRsPHpeZJQNlBF/petIV5d+KWM5A9v3GZTY7uMU7z/JQ==
 
-"@gitlab/ui@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-2.1.0.tgz#815d108633dca4215addbb61037c92805e86f055"
-  integrity sha512-wvmhS3giW7VDktylshuYXaVxMXDNKxHX42lT+ges3cS4enIiSObErWKpWsncMBxWe59ynI4psoMjuX7Q9OM7kg==
+"@gitlab/ui@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-2.2.0.tgz#8e384d3fb3d84f2886eacea75feb05e0ea42adcc"
+  integrity sha512-CCr1CjFyeycm1vrTtRKng5VknWWTN3fFw48YQThz/rgg0viVtA12oqz7oqGGAC+AktnWXtA/cxkXjVNpKTmEpA==
   dependencies:
     "@babel/standalone" "^7.0.0"
     bootstrap-vue "^2.0.0-rc.11"
@@ -1465,6 +1465,13 @@ babel-loader@^8.0.5:
     loader-utils "^1.0.2"
     mkdirp "^0.5.1"
     util.promisify "^1.0.0"
+
+babel-plugin-dynamic-import-node@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-dynamic-import-node/-/babel-plugin-dynamic-import-node-2.2.0.tgz#c0adfb07d95f4a4495e9aaac6ec386c4d7c2524e"
+  integrity sha512-fP899ELUnTaBcIzmrW7nniyqqdYWrWuJUyPWHxFa/c7r7hS6KC8FscNfLlBNIoPSc55kYMGEEKjPjJGCLbE1qA==
+  dependencies:
+    object.assign "^4.1.0"
 
 babel-plugin-istanbul@^5.1.0:
   version "5.1.0"

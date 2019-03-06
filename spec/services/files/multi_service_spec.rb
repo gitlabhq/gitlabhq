@@ -235,6 +235,22 @@ describe Files::MultiService do
         expect(blob).to be_present
       end
     end
+
+    context 'when force is set to true and branch already exists' do
+      let(:commit_params) do
+        {
+          commit_message: commit_message,
+          branch_name: 'feature',
+          start_branch: 'master',
+          actions: actions,
+          force: true
+        }
+      end
+
+      it 'is still a success' do
+        expect(subject.execute[:status]).to eq(:success)
+      end
+    end
   end
 
   def update_file(path)

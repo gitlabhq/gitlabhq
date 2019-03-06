@@ -1858,7 +1858,7 @@ using a combination of different methods.
 In this example, `.gitlab-ci.yml` includes local the file `/.gitlab-ci/another-config.yml`:
 
 ```yaml
-includes:
+include:
   - local: /.gitlab-ci/another-config.yml
 ```
 
@@ -1866,7 +1866,7 @@ The `/.gitlab-ci/another-config.yml` includes a template and the `/templates/doc
 from another project:
 
 ```yaml
-includes:
+include:
   - template: Bash.gitlab-ci.yml
   - project: /group/my-project
     file: /templates/docker-workflow.yml
@@ -1876,7 +1876,7 @@ The `/templates/docker-workflow.yml` present in `/group/my-project` includes two
 of the `/group/my-project`:
 
 ```yaml
-includes:
+include:
   - local: : /templates/docker-build.yml
   - local: : /templates/docker-testing.yml
 ```

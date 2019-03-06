@@ -74,6 +74,7 @@ module Emails
 
       @new_issue = new_issue
       @new_project = new_issue.project
+      @can_access_project = recipient.can?(:read_project, @new_project)
       mail_answer_thread(issue, issue_thread_options(updated_by_user.id, recipient.id, reason))
     end
 

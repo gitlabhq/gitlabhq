@@ -20,13 +20,13 @@ you should consider first, which we'll cover in this guide:
 
 1. Either if you're adding a **root domain** or a **subdomain**, for which
    you'll need to set up [DNS records](#dns-records)
-1. Whether you want to add an [SSL/TLS certificate](#ssl-tls-certificates) or not
+1. Whether you want to add an [SSL/TLS certificate](#ssltls-certificates) or not
 
 To finish the association, you need to [add your domain to your project's Pages settings](#add-your-custom-domain-to-gitlab-pages-settings).
 
 Let's start from the beginning with [DNS records](#dns-records).
 If you already know how they work and want to skip the introduction to DNS,
-you may be interested in skipping it until the [TL;DR](#tl-dr) section below.
+you may be interested in skipping it until the [TL;DR](#tldr) section below.
 
 ### DNS Records
 
@@ -148,7 +148,7 @@ verify your domain's ownership with a TXT record:
 
 Once you've set the DNS record, you'll need navigate to your project's
 **Setting > Pages** and click **+ New domain** to add your custom domain to
-GitLab Pages. You can choose whether to add an [SSL/TLS certificate](#ssl-tls-certificates)
+GitLab Pages. You can choose whether to add an [SSL/TLS certificate](#ssltls-certificates)
 to make your website accessible under HTTPS or leave it blank. If don't add a certificate,
 your site will be accessible only via HTTP:
 

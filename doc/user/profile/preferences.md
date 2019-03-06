@@ -103,4 +103,10 @@ Select your preferred language from a list of supported languages.
 
 The first day of the week can be customised for calendar views and date pickers.
 
-You can choose **Sunday** or **Monday** as the first day of the week. If you select **System Default**, the system-wide default setting will be used.
+You can choose one of the following options as the first day of the week:
+
+- Saturday
+- Sunday
+- Monday
+
+If you select **System Default**, the system-wide default setting will be used.

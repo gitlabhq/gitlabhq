@@ -1,0 +1,5 @@
+---
+title: Fix arbitrary file read via diffs during import
+merge_request:
+author:
+type: security

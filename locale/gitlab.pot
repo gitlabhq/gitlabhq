@@ -1341,6 +1341,9 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
+msgstr ""
+
 msgid "Certificate"
 msgstr ""
 
@@ -1384,6 +1387,9 @@ msgid "Charts"
 msgstr ""
 
 msgid "Chat"
+msgstr ""
+
+msgid "Check again"
 msgstr ""
 
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
@@ -3049,6 +3055,12 @@ msgstr ""
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 
+msgid "Environments|An error occurred while re-deploying the environment, please try again"
+msgstr ""
+
+msgid "Environments|An error occurred while rolling back the environment, please try again"
+msgstr ""
+
 msgid "Environments|An error occurred while stopping the environment, please try again"
 msgstr ""
 
@@ -3094,13 +3106,31 @@ msgstr ""
 msgid "Environments|Open live environment"
 msgstr ""
 
+msgid "Environments|Re-deploy"
+msgstr ""
+
+msgid "Environments|Re-deploy environment %{environment_name}?"
+msgstr ""
+
+msgid "Environments|Re-deploy environment %{name}?"
+msgstr ""
+
 msgid "Environments|Re-deploy to environment"
 msgstr ""
 
 msgid "Environments|Read more about environments"
 msgstr ""
 
+msgid "Environments|Rollback"
+msgstr ""
+
 msgid "Environments|Rollback environment"
+msgstr ""
+
+msgid "Environments|Rollback environment %{environment_name}?"
+msgstr ""
+
+msgid "Environments|Rollback environment %{name}?"
 msgstr ""
 
 msgid "Environments|Show all"
@@ -3113,6 +3143,18 @@ msgid "Environments|Stop environment"
 msgstr ""
 
 msgid "Environments|Stopping"
+msgstr ""
+
+msgid "Environments|This action will relaunch the job for commit %{commit_id}, putting the environment in a previous version. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will relaunch the job for commit %{linkStart}%{commitId}%{linkEnd}, putting the environment in a previous version. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will run the job defined by %{name} for commit %{linkStart}%{commitId}%{linkEnd} putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will run the job defined by staging for commit %{commit_id}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -5003,7 +5045,7 @@ msgstr ""
 msgid "No due date"
 msgstr ""
 
-msgid "No errors to display"
+msgid "No errors to display."
 msgstr ""
 
 msgid "No estimate or time spent"
@@ -6471,6 +6513,9 @@ msgid "SSH public key"
 msgstr ""
 
 msgid "SSL Verification"
+msgstr ""
+
+msgid "Saturday"
 msgstr ""
 
 msgid "Save"
@@ -8331,6 +8376,9 @@ msgid "View file @ "
 msgstr ""
 
 msgid "View group labels"
+msgstr ""
+
+msgid "View in Sentry"
 msgstr ""
 
 msgid "View it on GitLab"
