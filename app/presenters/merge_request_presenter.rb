@@ -104,6 +104,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def source_branch_commits_path
+    if source_branch_exists?
+      project_commits_path(source_project, source_branch)
+    end
+  end
+
   def source_branch_path
     if source_branch_exists?
       project_branch_path(source_project, source_branch)
