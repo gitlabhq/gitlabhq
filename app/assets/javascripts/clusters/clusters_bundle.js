@@ -119,8 +119,7 @@ export default class Clusters {
 
   static initDismissableCallout() {
     const callout = document.querySelector('.js-cluster-security-warning');
-
-    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
+    PersistentUserCallout.factory(callout);
   }
 
   addListeners() {
