@@ -31,6 +31,8 @@ describe 'Clusters Applications', :js do
       let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       it 'user can install applications' do
+        wait_for_requests
+
         page.within('.js-cluster-application-row-helm') do
           expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to be_nil
           expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
@@ -44,6 +46,8 @@ describe 'Clusters Applications', :js do
           page.within('.js-cluster-application-row-helm') do
             page.find(:css, '.js-cluster-application-install-button').click
           end
+
+          wait_for_requests
         end
 
         it 'they see status transition' do
@@ -51,8 +55,6 @@ describe 'Clusters Applications', :js do
             # FE sends request and gets the response, then the buttons is "Installing"
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
             expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
-
-            wait_until_app_created!('helm')
 
             Clusters::Cluster.last.application_helm.make_installing!
 
@@ -113,7 +115,7 @@ describe 'Clusters Applications', :js do
 
                 click_button 'Install'
 
-                wait_until_app_created!('knative')
+                wait_for_requests
 
                 expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installing')
 
@@ -143,7 +145,7 @@ describe 'Clusters Applications', :js do
 
                 click_button 'Save changes'
 
-                wait_until_app_updated!(cluster.application_knative)
+                wait_for_requests
 
                 expect(domainname_form_value).to eq('new.domain.example.org')
               end
@@ -202,6 +204,8 @@ describe 'Clusters Applications', :js do
             page.within('.js-cluster-application-row-ingress') do
               expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
               page.find(:css, '.js-cluster-application-install-button').click
+
+              wait_for_requests
             end
           end
 
@@ -236,27 +240,6 @@ describe 'Clusters Applications', :js do
           end
         end
       end
-    end
-  end
-
-  def wait_until_app_created!(app)
-    retries = 0
-
-    while Clusters::Cluster.last.send("application_#{app}").nil?
-      raise "Timed out waiting for #{app} application to be created in DB" if (retries += 1) > 3
-
-      sleep(1)
-    end
-  end
-
-  def wait_until_app_updated!(app)
-    retries = 0
-    updated_at = app.updated_at
-
-    while updated_at == app.reload.updated_at
-      raise "Timed out waiting for #{app} application to be created in DB" if (retries += 1) > 3
-
-      sleep(1)
     end
   end
 end
