@@ -384,13 +384,13 @@ module Gitlab
 
     # Returns the stacks that calls Gitaly the most times. Used for n+1 detection
     def self.max_stacks
-      return nil unless Gitlab::SafeRequestStore.active?
+      return unless Gitlab::SafeRequestStore.active?
 
       stack_counter = Gitlab::SafeRequestStore[:stack_counter]
-      return nil unless stack_counter
+      return unless stack_counter
 
       max = max_call_count
-      return nil if max.zero?
+      return if max.zero?
 
       stack_counter.select { |_, v| v == max }.keys
     end

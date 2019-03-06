@@ -470,7 +470,7 @@ class User < ApplicationRecord
     end
 
     def by_login(login)
-      return nil unless login
+      return unless login
 
       if login.include?('@'.freeze)
         unscoped.iwhere(email: login).take

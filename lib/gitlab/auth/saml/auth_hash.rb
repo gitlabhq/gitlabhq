@@ -10,11 +10,11 @@ module Gitlab
 
         def authn_context
           response_object = auth_hash.extra[:response_object]
-          return nil if response_object.blank?
+          return if response_object.blank?
 
           document = response_object.decrypted_document
           document ||= response_object.document
-          return nil if document.blank?
+          return if document.blank?
 
           extract_authn_context(document)
         end

@@ -75,7 +75,7 @@ module Gitlab
       end
 
       def line_for_position(pos)
-        return nil unless pos.position_type == 'text'
+        return unless pos.position_type == 'text'
 
         # This method is normally used to find which line the diff was
         # commented on, and in this context, it's normally the raw diff persisted

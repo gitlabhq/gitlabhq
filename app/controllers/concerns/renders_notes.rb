@@ -16,7 +16,7 @@ module RendersNotes
   private
 
   def preload_max_access_for_authors(notes, project)
-    return nil unless project
+    return unless project
 
     user_ids = notes.map(&:author_id)
     project.team.max_member_access_for_user_ids(user_ids)

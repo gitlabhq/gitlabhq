@@ -69,7 +69,7 @@ module ReactiveCaching
     def with_reactive_cache(*args, &blk)
       unless within_reactive_cache_lifetime?(*args)
         refresh_reactive_cache!(*args)
-        return nil
+        return
       end
 
       keep_alive_reactive_cache!(*args)

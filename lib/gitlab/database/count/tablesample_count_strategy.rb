@@ -36,7 +36,7 @@ module Gitlab
 
         def perform_count(model, estimate)
           # If we estimate 0, we may not have statistics at all. Don't use them.
-          return nil unless estimate && estimate > 0
+          return unless estimate && estimate > 0
 
           if estimate < EXACT_COUNT_THRESHOLD
             # The table is considered small, the assumption here is that

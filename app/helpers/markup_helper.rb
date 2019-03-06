@@ -74,7 +74,7 @@ module MarkupHelper
   # the tag contents are truncated without removing the closing tag.
   def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
     md = markdown_field(object, attribute, options)
-    return nil unless md.present?
+    return unless md.present?
 
     tags = %w(a gl-emoji b pre code p span)
     tags << 'img' if options[:allow_images]
