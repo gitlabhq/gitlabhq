@@ -1055,7 +1055,7 @@ schedule:review-deploy:
   <<: *review-deploy-base
   <<: *review-schedules-only
   script:
-    - wait_for_job_to_be_done "review-scheduled-build-cng"
+    - wait_for_job_to_be_done "schedule:review-build-cng"
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
