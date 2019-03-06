@@ -6,20 +6,18 @@ module Clusters
       def execute
         return unless app.scheduled?
 
-        begin
-          app.make_updating!
+        app.make_updating!
 
-          helm_api.update(update_command)
+        helm_api.update(update_command)
 
-          ClusterWaitForAppInstallationWorker.perform_in(
-            ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
-        rescue Kubeclient::HttpError => e
-          log_error(e)
-          app.make_update_errored!("Kubernetes error: #{e.error_code}")
-        rescue StandardError => e
-          log_error(e)
-          app.make_update_errored!("Can't start update process.")
-        end
+        ClusterWaitForAppInstallationWorker.perform_in(
+          ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
+      rescue Kubeclient::HttpError => e
+        log_error(e)
+        app.make_update_errored!("Kubernetes error: #{e.error_code}")
+      rescue StandardError => e
+        log_error(e)
+        app.make_update_errored!("Can't start update process.")
       end
     end
   end
