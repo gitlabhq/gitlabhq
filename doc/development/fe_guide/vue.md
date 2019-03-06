@@ -122,7 +122,7 @@ Check this [page](vuex.md) for more details.
 
 ## Style guide
 
-Please refer to the Vue section of our [style guide](style_guide_js.md#vue-js)
+Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)
 for best practices while writing your Vue components and templates.
 
 ## Testing Vue Components
@@ -132,7 +132,7 @@ Each Vue component has a unique output. This output is always present in the ren
 Although we can test each method of a Vue component individually, our goal must be to test the output
 of the render/template function, which represents the state at all times.
 
-Make use of the [axios mock adapter](axios.md#mock-axios-response-on-tests) to mock data returned.
+Make use of the [axios mock adapter](axios.md#mock-axios-response-in-tests) to mock data returned.
 
 Here's how we would test the Todo App above:
 

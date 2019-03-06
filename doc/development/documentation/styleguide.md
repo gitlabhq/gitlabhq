@@ -36,7 +36,7 @@ gem will support all [GFM markup](../../user/markdown.md) in the future. For now
 use regular markdown markup, following the rules on this style guide. For a complete
 Kramdown reference, check the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
 Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}`) as it will not render properly in
-[`/help`](#gitlab-help).
+[`/help`](index.md#gitlab-help).
 
 ## Content
 
@@ -630,7 +630,7 @@ In this case:
 - The code blocks are indented one or more spaces under the list item to render
   correctly.
 - Different highlighting languages are used for each config in the code block.
-- The [references](#references) guide is used for reconfigure/restart.
+- The [GitLab Restart](#gitlab-restart) section is used to explain a required restart/reconfigure of GitLab.
 
 ## API
 

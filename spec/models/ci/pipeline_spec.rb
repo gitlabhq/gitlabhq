@@ -520,7 +520,7 @@ describe Ci::Pipeline, :mailer do
       end
 
       let(:assignee) { create(:user) }
-      let(:milestone) { create(:milestone) }
+      let(:milestone) { create(:milestone, project: project) }
       let(:labels) { create_list(:label, 2) }
 
       it 'exposes merge request pipeline variables' do

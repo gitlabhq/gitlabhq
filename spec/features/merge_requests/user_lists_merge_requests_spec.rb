@@ -13,7 +13,7 @@ describe 'Merge requests > User lists merge requests' do
                   source_project: project,
                   source_branch: 'fix',
                   assignee: user,
-                  milestone: create(:milestone, due_date: '2013-12-11'),
+                  milestone: create(:milestone, project: project, due_date: '2013-12-11'),
                   created_at: 1.minute.ago,
                   updated_at: 1.minute.ago)
     create(:merge_request,
@@ -21,7 +21,7 @@ describe 'Merge requests > User lists merge requests' do
            source_project: project,
            source_branch: 'markdown',
            assignee: user,
-           milestone: create(:milestone, due_date: '2013-12-12'),
+           milestone: create(:milestone, project: project, due_date: '2013-12-12'),
            created_at: 2.minutes.ago,
            updated_at: 2.minutes.ago)
     create(:merge_request,

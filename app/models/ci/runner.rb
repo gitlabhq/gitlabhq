@@ -10,7 +10,7 @@ module Ci
     include FromUnion
     include TokenAuthenticatable
 
-    add_authentication_token_field :token, encrypted: true, migrating: true
+    add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption) ? :optional : :required }
 
     enum access_level: {
       not_protected: 0,

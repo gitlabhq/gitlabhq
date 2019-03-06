@@ -75,7 +75,8 @@ module Gitlab
             encryption: options['encryption'],
             filter: omniauth_user_filter,
             name_proc: name_proc,
-            disable_verify_certificates: !options['verify_certificates']
+            disable_verify_certificates: !options['verify_certificates'],
+            tls_options: tls_options
           )
 
           if has_auth?
@@ -84,9 +85,6 @@ module Gitlab
               password: options['password']
             )
           end
-
-          opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
-          opts[:ssl_version] = options['ssl_version'] if options['ssl_version'].present?
 
           opts
         end
@@ -196,24 +194,28 @@ module Gitlab
         end
 
         def encryption_options
-          method = translate_method(options['encryption'])
+          method = translate_method
           return nil unless method
 
           {
             method: method,
-            tls_options: tls_options(method)
+            tls_options: tls_options
           }
         end
 
-        def translate_method(method_from_config)
-          NET_LDAP_ENCRYPTION_METHOD[method_from_config.to_sym]
+        def translate_method
+          NET_LDAP_ENCRYPTION_METHOD[options['encryption']&.to_sym]
         end
 
-        def tls_options(method)
-          return { verify_mode: OpenSSL::SSL::VERIFY_NONE } unless method
+        def tls_options
+          return @tls_options if defined?(@tls_options)
 
-          opts = if options['verify_certificates']
-                   OpenSSL::SSL::SSLContext::DEFAULT_PARAMS
+          method = translate_method
+          return nil unless method
+
+          opts = if options['verify_certificates'] && method != 'plain'
+                   # Dup so we don't accidentally overwrite the constant
+                   OpenSSL::SSL::SSLContext::DEFAULT_PARAMS.dup
                  else
                    # It is important to explicitly set verify_mode for two reasons:
                    # 1. The behavior of OpenSSL is undefined when verify_mode is not set.
@@ -222,10 +224,35 @@ module Gitlab
                    { verify_mode: OpenSSL::SSL::VERIFY_NONE }
                  end
 
-          opts[:ca_file] = options['ca_file'] if options['ca_file'].present?
-          opts[:ssl_version] = options['ssl_version'] if options['ssl_version'].present?
+          opts.merge!(custom_tls_options)
 
-          opts
+          @tls_options = opts
+        end
+
+        def custom_tls_options
+          return {} unless options['tls_options']
+
+          # Dup so we don't overwrite the original value
+          custom_options = options['tls_options'].dup.delete_if { |_, value| value.nil? || value.blank? }
+          custom_options.symbolize_keys!
+
+          if custom_options[:cert]
+            begin
+              custom_options[:cert] = OpenSSL::X509::Certificate.new(custom_options[:cert])
+            rescue OpenSSL::X509::CertificateError => e
+              Rails.logger.error "LDAP TLS Options 'cert' is invalid for provider #{provider}: #{e.message}"
+            end
+          end
+
+          if custom_options[:key]
+            begin
+              custom_options[:key] = OpenSSL::PKey.read(custom_options[:key])
+            rescue OpenSSL::PKey::PKeyError => e
+              Rails.logger.error "LDAP TLS Options 'key' is invalid for provider #{provider}: #{e.message}"
+            end
+          end
+
+          custom_options
         end
 
         def auth_options
