@@ -109,6 +109,22 @@ module API
         status 200
         present build, with: Entities::Job
       end
+
+      desc 'Delete the artifacts files from a job' do
+        detail 'This feature was introduced in GitLab 11.9'
+      end
+      params do
+        requires :job_id, type: Integer, desc: 'The ID of a job'
+      end
+      delete ':id/jobs/:job_id/artifacts' do
+        authorize_destroy_artifacts!
+        build = find_build!(params[:job_id])
+        authorize!(:destroy_artifacts, build)
+
+        build.erase_erasable_artifacts!
+
+        status :no_content
+      end
     end
   end
 end
