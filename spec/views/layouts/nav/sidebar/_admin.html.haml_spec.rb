@@ -26,6 +26,8 @@ describe 'layouts/nav/sidebar/_admin' do
     it_behaves_like 'page has active tab', 'Overview'
   end
 
+  it_behaves_like 'has nav sidebar'
+
   context 'on projects' do
     before do
       allow(controller).to receive(:controller_name).and_return('projects')
