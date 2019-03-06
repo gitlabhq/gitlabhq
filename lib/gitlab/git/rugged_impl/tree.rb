@@ -33,9 +33,11 @@ module Gitlab
               end
             end
 
-            # This is an optimization to reduce N+1 queries for Gitaly. It's
-            # currently done in TreeHelper#flatten_tree, but to emulate Gitaly
-            # as much as possible we populate the value here.
+            # This was an optimization to reduce N+1 queries for Gitaly
+            # (https://gitlab.com/gitlab-org/gitaly/issues/530).  It
+            # used to be done lazily in the view via
+            # TreeHelper#flatten_tree, so it's possible there's a
+            # performance impact by loading this eagerly.
             rugged_populate_flat_path(repository, sha, path, ordered_entries)
           end
 
