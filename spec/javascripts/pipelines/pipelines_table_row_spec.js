@@ -196,7 +196,7 @@ describe('Pipelines Table Row', () => {
     it('emits `openConfirmationModal` event when cancel button is clicked and toggles loading', () => {
       eventHub.$once('openConfirmationModal', data => {
         expect(data.endpoint).toEqual('/cancel');
-        expect(data.pipelineId).toEqual(pipeline.id);
+        expect(data.pipeline.id).toEqual(pipeline.id);
       });
 
       component.$el.querySelector('.js-pipelines-cancel-button').click();
