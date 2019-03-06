@@ -3,9 +3,16 @@
 class GraphqlController < ApplicationController
   # Unauthenticated users have access to the API for public data
   skip_before_action :authenticate_user!
-  prepend_before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
+
+  # Allow missing CSRF tokens, this would mean that if a CSRF is invalid or missing,
+  # the user won't be authenticated but can proceed as an anonymous user.
+  #
+  # If a CSRF is valid, the user is authenticated. This makes it easier to play
+  # around in GraphiQL.
+  protect_from_forgery with: :null_session, only: :execute
 
   before_action :check_graphql_feature_flag!
+  before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
 
   def execute
     variables = Gitlab::Graphql::Variables.new(params[:variables]).to_h
