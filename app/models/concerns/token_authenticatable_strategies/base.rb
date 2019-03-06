@@ -39,22 +39,6 @@ module TokenAuthenticatableStrategies
       instance.save! if Gitlab::Database.read_write?
     end
 
-    def fallback?
-      unless options[:fallback].in?([true, false, nil])
-        raise ArgumentError, 'fallback: needs to be a boolean value!'
-      end
-
-      options[:fallback] == true
-    end
-
-    def migrating?
-      unless options[:migrating].in?([true, false, nil])
-        raise ArgumentError, 'migrating: needs to be a boolean value!'
-      end
-
-      options[:migrating] == true
-    end
-
     def self.fabricate(model, field, options)
       if options[:digest] && options[:encrypted]
         raise ArgumentError, 'Incompatible options set!'
