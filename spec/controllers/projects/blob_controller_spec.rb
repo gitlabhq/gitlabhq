@@ -173,7 +173,7 @@ describe Projects::BlobController do
             expect(match_line['type']).to be_nil
           end
 
-          it 'adds bottom match line when "t"o is less than blob size' do
+          it 'adds bottom match line when "to" is less than blob size' do
             do_get(since: 1, to: 5, offset: 10, from_merge_request: true, bottom: true)
 
             match_line = JSON.parse(response.body).last
@@ -183,7 +183,7 @@ describe Projects::BlobController do
             expect(match_line['meta_data']).to have_key('new_pos')
           end
 
-          it 'does not add bottom match line when "to" is less than blob size' do
+          it 'does not add bottom match line when "to" is equal to blob size' do
             commit_id = project.repository.commit('master').id
             blob = project.repository.blob_at(commit_id, 'CHANGELOG')
             do_get(since: 1, to: blob.lines.count, offset: 10, from_merge_request: true, bottom: true)

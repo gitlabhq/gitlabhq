@@ -108,8 +108,6 @@ class Projects::BlobController < Projects::ApplicationController
   # Converts a String array to Gitlab::Diff::Line array
   def render_diff_lines
     @lines.map! do |line|
-      # These are marked as context lines but are loaded from blobs.
-      # We also have context lines loaded from diffs in other places.
       diff_line = Gitlab::Diff::Line.new(line, nil, nil, nil, nil)
       diff_line.rich_text = line
       diff_line
