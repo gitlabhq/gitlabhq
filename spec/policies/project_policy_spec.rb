@@ -45,8 +45,7 @@ describe ProjectPolicy do
   let(:base_maintainer_permissions) do
     %i[
       push_to_delete_protected_branch update_project_snippet update_environment
-      update_deployment admin_project_snippet
-      admin_project_member admin_note admin_wiki admin_project
+      update_deployment admin_project_snippet admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
       admin_pipeline admin_environment admin_deployment destroy_release add_cluster
       daily_statistics
