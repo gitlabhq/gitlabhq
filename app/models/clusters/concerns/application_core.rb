@@ -32,9 +32,9 @@ module Clusters
         end
 
         def update_command
-          command = install_command
-          command.version = version
-          command
+          install_command.tap do |command|
+            command.version = version
+          end
         end
       end
     end
