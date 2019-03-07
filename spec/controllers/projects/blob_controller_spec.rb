@@ -144,54 +144,34 @@ describe Projects::BlobController do
       end
 
       context 'when rendering for merge request' do
+        let(:presenter) { double(:presenter, diff_lines: diff_lines) }
+        let(:diff_lines) do
+          Array.new(3, Gitlab::Diff::Line.new('plain', nil, nil, nil, nil, rich_text: 'rich'))
+        end
+
+        before do
+          allow(Blobs::UnfoldPresenter).to receive(:new).and_return(presenter)
+        end
+
         it 'renders diff context lines Gitlab::Diff::Line array' do
-          do_get(since: 1, to: 5, offset: 10, from_merge_request: true)
+          do_get(since: 1, to: 2, offset: 0, from_merge_request: true)
 
           lines = JSON.parse(response.body)
 
-          expect(lines.first).to have_key('type')
-          expect(lines.first).to have_key('rich_text')
-          expect(lines.first).to have_key('rich_text')
+          expect(lines.size).to eq(diff_lines.size)
+          lines.each do |line|
+            expect(line).to have_key('type')
+            expect(line['text']).to eq('plain')
+            expect(line['rich_text']).to eq('rich')
+          end
         end
 
-        context 'when rendering match lines' do
-          it 'adds top match line when "since" is less than 1' do
-            do_get(since: 5, to: 10, offset: 10, from_merge_request: true)
+        it 'handles full being true' do
+          do_get(full: true, from_merge_request: true)
 
-            match_line = JSON.parse(response.body).first
+          lines = JSON.parse(response.body)
 
-            expect(match_line['type']).to eq('match')
-            expect(match_line['meta_data']).to have_key('old_pos')
-            expect(match_line['meta_data']).to have_key('new_pos')
-          end
-
-          it 'does not add top match line when "since" is equal 1' do
-            do_get(since: 1, to: 10, offset: 10, from_merge_request: true)
-
-            match_line = JSON.parse(response.body).first
-
-            expect(match_line['type']).to be_nil
-          end
-
-          it 'adds bottom match line when "t"o is less than blob size' do
-            do_get(since: 1, to: 5, offset: 10, from_merge_request: true, bottom: true)
-
-            match_line = JSON.parse(response.body).last
-
-            expect(match_line['type']).to eq('match')
-            expect(match_line['meta_data']).to have_key('old_pos')
-            expect(match_line['meta_data']).to have_key('new_pos')
-          end
-
-          it 'does not add bottom match line when "to" is less than blob size' do
-            commit_id = project.repository.commit('master').id
-            blob = project.repository.blob_at(commit_id, 'CHANGELOG')
-            do_get(since: 1, to: blob.lines.count, offset: 10, from_merge_request: true, bottom: true)
-
-            match_line = JSON.parse(response.body).last
-
-            expect(match_line['type']).to be_nil
-          end
+          expect(lines.size).to eq(diff_lines.size)
         end
       end
     end

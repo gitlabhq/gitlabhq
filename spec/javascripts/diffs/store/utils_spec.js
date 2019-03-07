@@ -781,4 +781,49 @@ describe('DiffsStoreUtils', () => {
       ]);
     });
   });
+
+  describe('convertExpandLines', () => {
+    it('converts expanded lines to normal lines', () => {
+      const diffLines = [
+        {
+          type: 'match',
+          old_line: 1,
+          new_line: 1,
+        },
+        {
+          type: '',
+          old_line: 2,
+          new_line: 2,
+        },
+      ];
+
+      const lines = utils.convertExpandLines({
+        diffLines,
+        data: [{ text: 'expanded' }],
+        typeKey: 'type',
+        oldLineKey: 'old_line',
+        newLineKey: 'new_line',
+        mapLine: ({ line, oldLine, newLine }) => ({
+          ...line,
+          old_line: oldLine,
+          new_line: newLine,
+        }),
+      });
+
+      expect(lines).toEqual([
+        {
+          text: 'expanded',
+          new_line: 1,
+          old_line: 1,
+          discussions: [],
+          hasForm: false,
+        },
+        {
+          type: '',
+          old_line: 2,
+          new_line: 2,
+        },
+      ]);
+    });
+  });
 });
