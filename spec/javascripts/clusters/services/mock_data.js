@@ -17,6 +17,7 @@ const CLUSTERS_MOCK_DATA = {
             status: APPLICATION_STATUS.ERROR,
             status_reason: 'Cannot connect',
             external_ip: null,
+            external_hostname: null,
           },
           {
             name: 'runner',
@@ -62,6 +63,7 @@ const CLUSTERS_MOCK_DATA = {
             status: APPLICATION_STATUS.INSTALLED,
             status_reason: 'Cannot connect',
             external_ip: '1.1.1.1',
+            external_hostname: null,
           },
           {
             name: 'runner',

@@ -26,6 +26,13 @@ describe Clusters::Applications::Jupyter do
 
       it { expect(jupyter).to be_installable }
     end
+
+    context 'when ingress is installed and external_hostname is assigned' do
+      let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
+      let(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }
+
+      it { expect(jupyter).to be_installable }
+    end
   end
 
   describe '#install_command' do

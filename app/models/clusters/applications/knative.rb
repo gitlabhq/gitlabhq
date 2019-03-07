@@ -66,6 +66,7 @@ module Clusters
       def schedule_status_update
         return unless installed?
         return if external_ip
+        return if external_hostname
 
         ClusterWaitForIngressIpAddressWorker.perform_async(name, id)
       end

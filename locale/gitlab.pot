@@ -1614,9 +1614,6 @@ msgstr ""
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which may incur additional costs depending on the hosting provider your Kubernetes cluster is installed on. If you are using Google Kubernetes Engine, you can %{pricingLink}."
-msgstr ""
-
 msgid "ClusterIntegration|%{title} upgraded successfully."
 msgstr ""
 
@@ -1636,9 +1633,6 @@ msgid "ClusterIntegration|Adding an integration to your group will share the clu
 msgstr ""
 
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
-msgstr ""
-
-msgid "ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}"
 msgstr ""
 
 msgid "ClusterIntegration|Alternatively"
@@ -1695,7 +1689,7 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
+msgid "ClusterIntegration|Copy Ingress Endpoint to clipboard"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Jupyter Hostname to clipboard"
@@ -1782,7 +1776,7 @@ msgstr ""
 msgid "ClusterIntegration|Ingress"
 msgstr ""
 
-msgid "ClusterIntegration|Ingress IP Address"
+msgid "ClusterIntegration|Ingress Endpoint"
 msgstr ""
 
 msgid "ClusterIntegration|Ingress gives you a way to route requests to services based on the request host or path, centralizing a number of services into a single entrypoint."
@@ -1795,6 +1789,12 @@ msgid "ClusterIntegration|Installed"
 msgstr ""
 
 msgid "ClusterIntegration|Installing"
+msgstr ""
+
+msgid "ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}."
+msgstr ""
+
+msgid "ClusterIntegration|Installing Knative may incur additional costs. Learn more about %{pricingLink}."
 msgstr ""
 
 msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
@@ -1878,9 +1878,6 @@ msgstr ""
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
 msgstr ""
 
-msgid "ClusterIntegration|More information"
-msgstr ""
-
 msgid "ClusterIntegration|No machine types matched your search"
 msgstr ""
 
@@ -1893,9 +1890,6 @@ msgstr ""
 msgid "ClusterIntegration|No zones matched your search"
 msgstr ""
 
-msgid "ClusterIntegration|Note:"
-msgstr ""
-
 msgid "ClusterIntegration|Number of nodes"
 msgstr ""
 
@@ -1905,7 +1899,7 @@ msgstr ""
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
 msgstr ""
 
-msgid "ClusterIntegration|Point a wildcard DNS to this generated IP address in order to access your application after it has been deployed."
+msgid "ClusterIntegration|Point a wildcard DNS to this generated endpoint in order to access your application after it has been deployed."
 msgstr ""
 
 msgid "ClusterIntegration|Project cluster"
@@ -1998,7 +1992,7 @@ msgstr ""
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
 msgstr ""
 
-msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
+msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
@@ -2058,9 +2052,6 @@ msgstr ""
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
 msgstr ""
 
-msgid "ClusterIntegration|check the pricing here"
-msgstr ""
-
 msgid "ClusterIntegration|documentation"
 msgstr ""
 
@@ -2068,6 +2059,9 @@ msgid "ClusterIntegration|help page"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"
+msgstr ""
+
+msgid "ClusterIntegration|pricing"
 msgstr ""
 
 msgid "ClusterIntegration|properly configured"

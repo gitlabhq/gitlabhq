@@ -82,7 +82,7 @@ describe 'Clusters Applications', :js do
 
           it 'should show info block and not be installable' do
             page.within('.js-cluster-application-row-knative') do
-              expect(page).to have_css('.bs-callout-info')
+              expect(page).to have_css('.rbac-notice')
               expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
             end
           end
@@ -93,7 +93,7 @@ describe 'Clusters Applications', :js do
 
           it 'should not show callout block and be installable' do
             page.within('.js-cluster-application-row-knative') do
-              expect(page).not_to have_css('.bs-callout-info')
+              expect(page).not_to have_css('.rbac-notice')
               expect(page).to have_css('.js-cluster-application-install-button:not([disabled])')
             end
           end
@@ -226,14 +226,14 @@ describe 'Clusters Applications', :js do
 
               expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
               expect(page).to have_css('.js-cluster-application-install-button[disabled]')
-              expect(page).to have_selector('.js-no-ip-message')
-              expect(page.find('.js-ip-address').value).to eq('?')
+              expect(page).to have_selector('.js-no-endpoint-message')
+              expect(page.find('.js-endpoint').value).to eq('?')
 
               # We receive the external IP address and display
               Clusters::Cluster.last.application_ingress.update!(external_ip: '192.168.1.100')
 
-              expect(page).not_to have_selector('.js-no-ip-message')
-              expect(page.find('.js-ip-address').value).to eq('192.168.1.100')
+              expect(page).not_to have_selector('.js-no-endpoint-message')
+              expect(page.find('.js-endpoint').value).to eq('192.168.1.100')
             end
 
             expect(page).to have_content('Ingress was successfully installed on your Kubernetes cluster')

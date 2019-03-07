@@ -106,11 +106,37 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-ip-address').value).toEqual('0.0.0.0');
+          expect(vm.$el.querySelector('.js-endpoint').value).toEqual('0.0.0.0');
 
           expect(
             vm.$el.querySelector('.js-clipboard-btn').getAttribute('data-clipboard-text'),
           ).toEqual('0.0.0.0');
+        });
+      });
+
+      describe('with hostname', () => {
+        it('renders hostname with a clipboard button', () => {
+          vm = mountComponent(Applications, {
+            applications: {
+              ingress: {
+                title: 'Ingress',
+                status: 'installed',
+                externalHostname: 'localhost.localdomain',
+              },
+              helm: { title: 'Helm Tiller' },
+              cert_manager: { title: 'Cert-Manager' },
+              runner: { title: 'GitLab Runner' },
+              prometheus: { title: 'Prometheus' },
+              jupyter: { title: 'JupyterHub', hostname: '' },
+              knative: { title: 'Knative', hostname: '' },
+            },
+          });
+
+          expect(vm.$el.querySelector('.js-endpoint').value).toEqual('localhost.localdomain');
+
+          expect(
+            vm.$el.querySelector('.js-clipboard-btn').getAttribute('data-clipboard-text'),
+          ).toEqual('localhost.localdomain');
         });
       });
 
@@ -126,9 +152,9 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-ip-address').value).toEqual('?');
+          expect(vm.$el.querySelector('.js-endpoint').value).toEqual('?');
 
-          expect(vm.$el.querySelector('.js-no-ip-message')).not.toBe(null);
+          expect(vm.$el.querySelector('.js-no-endpoint-message')).not.toBe(null);
         });
       });
     });
@@ -140,7 +166,7 @@ describe('Applications', () => {
         });
 
         expect(vm.$el.textContent).not.toContain('Ingress IP Address');
-        expect(vm.$el.querySelector('.js-ip-address')).toBe(null);
+        expect(vm.$el.querySelector('.js-endpoint')).toBe(null);
       });
     });
 
@@ -268,11 +294,11 @@ describe('Applications', () => {
         it('renders ip address with a clipboard button', () => {
           vm = mountComponent(Applications, props);
 
-          expect(vm.$el.querySelector('.js-knative-ip-address').value).toEqual('1.1.1.1');
+          expect(vm.$el.querySelector('.js-knative-endpoint').value).toEqual('1.1.1.1');
 
           expect(
             vm.$el
-              .querySelector('.js-knative-ip-clipboard-btn')
+              .querySelector('.js-knative-endpoint-clipboard-btn')
               .getAttribute('data-clipboard-text'),
           ).toEqual('1.1.1.1');
         });
@@ -316,9 +342,9 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-knative-ip-address').value).toEqual('?');
+          expect(vm.$el.querySelector('.js-knative-endpoint').value).toEqual('?');
 
-          expect(vm.$el.querySelector('.js-no-knative-ip-message')).not.toBe(null);
+          expect(vm.$el.querySelector('.js-no-knative-endpoint-message')).not.toBe(null);
         });
       });
     });

@@ -37,9 +37,9 @@ To run Knative on Gitlab, you will need:
     applications or functions onto your cluster. You can install the GitLab Runner
     onto the existing Kubernetes cluster. See [Installing Applications](../index.md#installing-applications) for more information.
 1. **Domain Name:** Knative will provide its own load balancer using Istio. It will provide an
-    external IP address for all the applications served by Knative. You will be prompted to enter a
+    external IP address or hostname for all the applications served by Knative. You will be prompted to enter a
     wildcard domain where your applications will be served. Configure your DNS server to use the
-    external IP address for that domain.
+    external IP address or hostname for that domain.
 1. **`.gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
     to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm) to simplify the
     deployment of knative services and functions.
@@ -62,18 +62,8 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
     ![install-knative](img/install-knative.png)
 
-1. After the Knative installation has finished, you can wait for the IP address to be displayed in the
-   **Knative IP Address** field (takes up to 5 minutes) or retrieve the Istio Ingress IP address by running the following command:
-
-   ```bash
-   kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
-   ```
-
-   Output:
-
-   ```bash
-   35.161.143.124 my-machine-name:~ my-user$
-   ```
+1. After the Knative installation has finished, you can wait for the IP address or hostname to be displayed in the
+   **Knative Endpoint** field or [retrieve the Istio Ingress Endpoint manually](../#manually-determining-the-external-endpoint).
 
    NOTE: **Note:**
    Running `kubectl` commands on your cluster requires setting up access to the cluster first.
@@ -82,8 +72,8 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
 
 1. The ingress is now available at this address and will route incoming requests to the proper service based on the DNS
    name in the request. To support this, a wildcard DNS A record should be created for the desired domain name. For example,
-   if your Knative base domain is `example.com` then you need to create an A record with domain `*.example.com`
-   pointing the ip address of the ingress.
+   if your Knative base domain is `knative.info` then you need to create an A record or CNAME record with domain `*.knative.info`
+   pointing the ip address or hostname of the ingress.
 
     ![dns entry](img/dns-entry.png)
 

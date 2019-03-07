@@ -25,6 +25,7 @@ export default class ClusterStore {
           requestStatus: null,
           requestReason: null,
           externalIp: null,
+          externalHostname: null,
         },
         cert_manager: {
           title: s__('ClusterIntegration|Cert-Manager'),
@@ -68,6 +69,7 @@ export default class ClusterStore {
           hostname: null,
           isEditingHostName: false,
           externalIp: null,
+          externalHostname: null,
         },
       },
     };
@@ -120,6 +122,7 @@ export default class ClusterStore {
 
       if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
+        this.state.applications.ingress.externalHostname = serverAppEntry.external_hostname;
       } else if (appId === CERT_MANAGER) {
         this.state.applications.cert_manager.email =
           this.state.applications.cert_manager.email || serverAppEntry.email;
@@ -136,6 +139,8 @@ export default class ClusterStore {
         }
         this.state.applications.knative.externalIp =
           serverAppEntry.external_ip || this.state.applications.knative.externalIp;
+        this.state.applications.knative.externalHostname =
+          serverAppEntry.external_hostname || this.state.applications.knative.externalHostname;
       } else if (appId === RUNNER) {
         this.state.applications.runner.version = version;
         this.state.applications.runner.upgradeAvailable = upgradeAvailable;
