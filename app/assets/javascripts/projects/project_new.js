@@ -125,6 +125,10 @@ const bindEvents = () => {
         text: 'Spring',
         icon: '.template-option .icon-spring',
       },
+      iosswift: {
+        text: 'iOS (Swift)',
+        icon: '.template-option svg.icon-gitlab',
+      },
       dotnetcore: {
         text: '.NET Core',
         icon: '.template-option .icon-dotnet',
