@@ -207,7 +207,9 @@ The resulting file will then be `dump_gitlab_backup.tar`. This is useful for sys
 
 ### Rsyncable
 
-To make sure the generated archive is intelligently transferable by rsync, the `GZIP_RSYNCABLE=yes` option can be set. This will set the `--rsyncable` option to `gzip`. This is only useful in combination with setting [the Backup filename option](#backup-filename). Note that this option in `gzip` is not guaranteed to be available on all distributions.
+To make sure the generated archive is intelligently transferable by rsync, the `GZIP_RSYNCABLE=yes` option can be set. This will set the `--rsyncable` option to `gzip`. This is only useful in combination with setting [the Backup filename option](#backup-filename).
+
+Note that the `--rsyncable` option in `gzip` is not guaranteed to be available on all distributions. To verify that it is available in your distribution you can run `gzip --help` or consult the man pages.
 
 ```sh
 sudo gitlab-rake gitlab:backup:create BACKUP=dump GZIP_RSYNCABLE=yes
