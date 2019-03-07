@@ -175,7 +175,7 @@
     "stylelint-scss": "^3.5.3",
     "vue-jest": "^4.0.0-beta.2",
     "webpack-dev-server": "^3.1.14",
-    "yarn-deduplicate": "^1.1.0"
+    "yarn-deduplicate": "^1.1.1"
   },
   "resolutions": {
     "vue-jest/ts-jest": "24.0.0"
