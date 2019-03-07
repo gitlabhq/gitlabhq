@@ -8,6 +8,47 @@ describe Gitlab::Diff::File do
   let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { described_class.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
 
+  def create_file(file_name, content)
+    Files::CreateService.new(
+      project,
+      project.owner,
+      commit_message: 'Update',
+      start_branch: branch_name,
+      branch_name: branch_name,
+      file_path: file_name,
+      file_content: content
+    ).execute
+
+    project.commit(branch_name).diffs.diff_files.first
+  end
+
+  def update_file(file_name, content)
+    Files::UpdateService.new(
+      project,
+      project.owner,
+      commit_message: 'Update',
+      start_branch: branch_name,
+      branch_name: branch_name,
+      file_path: file_name,
+      file_content: content
+    ).execute
+
+    project.commit(branch_name).diffs.diff_files.first
+  end
+
+  def delete_file(file_name)
+    Files::DeleteService.new(
+      project,
+      project.owner,
+      commit_message: 'Update',
+      start_branch: branch_name,
+      branch_name: branch_name,
+      file_path: file_name
+    ).execute
+
+    project.commit(branch_name).diffs.diff_files.first
+  end
+
   describe '#diff_lines' do
     let(:diff_lines) { diff_file.diff_lines }
 
@@ -675,47 +716,6 @@ describe Gitlab::Diff::File do
     end
     let(:branch_name) { 'master' }
 
-    def create_file(file_name, content)
-      Files::CreateService.new(
-        project,
-        project.owner,
-        commit_message: 'Update',
-        start_branch: branch_name,
-        branch_name: branch_name,
-        file_path: file_name,
-        file_content: content
-      ).execute
-
-      project.commit(branch_name).diffs.diff_files.first
-    end
-
-    def update_file(file_name, content)
-      Files::UpdateService.new(
-        project,
-        project.owner,
-        commit_message: 'Update',
-        start_branch: branch_name,
-        branch_name: branch_name,
-        file_path: file_name,
-        file_content: content
-      ).execute
-
-      project.commit(branch_name).diffs.diff_files.first
-    end
-
-    def delete_file(file_name)
-      Files::DeleteService.new(
-        project,
-        project.owner,
-        commit_message: 'Update',
-        start_branch: branch_name,
-        branch_name: branch_name,
-        file_path: file_name
-      ).execute
-
-      project.commit(branch_name).diffs.diff_files.first
-    end
-
     context 'when empty file is created' do
       it 'returns true' do
         diff_file = create_file('empty.md', '')
@@ -748,6 +748,125 @@ describe Gitlab::Diff::File do
         diff_file = update_file('empty.md', 'new content')
 
         expect(diff_file.empty?).to be_falsey
+      end
+    end
+  end
+
+  describe '#fully_expanded?' do
+    let(:project) do
+      create(:project, :custom_repo, files: {})
+    end
+    let(:branch_name) { 'master' }
+
+    context 'when empty file is created' do
+      it 'returns true' do
+        diff_file = create_file('empty.md', '')
+
+        expect(diff_file.fully_expanded?).to be_truthy
+      end
+    end
+
+    context 'when empty file is deleted' do
+      it 'returns true' do
+        create_file('empty.md', '')
+        diff_file = delete_file('empty.md')
+
+        expect(diff_file.fully_expanded?).to be_truthy
+      end
+    end
+
+    context 'when short file with last line removed' do
+      it 'returns true' do
+        create_file('with-content.md', (1..3).to_a.join("\n"))
+        diff_file = update_file('with-content.md', (1..2).to_a.join("\n"))
+
+        expect(diff_file.fully_expanded?).to be_truthy
+      end
+    end
+
+    context 'when a single line is added to empty file' do
+      it 'returns true' do
+        create_file('empty.md', '')
+        diff_file = update_file('empty.md', 'new content')
+
+        expect(diff_file.fully_expanded?).to be_truthy
+      end
+    end
+
+    context 'when single line file is changed' do
+      it 'returns true' do
+        create_file('file.md', 'foo')
+        diff_file = update_file('file.md', 'bar')
+
+        expect(diff_file.fully_expanded?).to be_truthy
+      end
+    end
+
+    context 'when long file is changed' do
+      before do
+        create_file('file.md', (1..999).to_a.join("\n"))
+      end
+
+      context 'when first line is removed' do
+        it 'returns true' do
+          diff_file = update_file('file.md', (2..999).to_a.join("\n"))
+
+          expect(diff_file.fully_expanded?).to be_falsey
+        end
+      end
+
+      context 'when last line is removed' do
+        it 'returns true' do
+          diff_file = update_file('file.md', (1..998).to_a.join("\n"))
+
+          expect(diff_file.fully_expanded?).to be_falsey
+        end
+      end
+
+      context 'when first and last lines are removed' do
+        it 'returns false' do
+          diff_file = update_file('file.md', (2..998).to_a.join("\n"))
+
+          expect(diff_file.fully_expanded?).to be_falsey
+        end
+      end
+
+      context 'when first and last lines are changed' do
+        it 'returns false' do
+          content = (2..998).to_a
+          content.prepend('a')
+          content.append('z')
+          content = content.join("\n")
+
+          diff_file = update_file('file.md', content)
+
+          expect(diff_file.fully_expanded?).to be_falsey
+        end
+      end
+
+      context 'when every line are changed' do
+        it 'returns true' do
+          diff_file = update_file('file.md', "hi\n" * 999)
+
+          expect(diff_file.fully_expanded?).to be_truthy
+        end
+      end
+
+      context 'when all contents are cleared' do
+        it 'returns true' do
+          diff_file = update_file('file.md', "")
+
+          expect(diff_file.fully_expanded?).to be_truthy
+        end
+      end
+
+      context 'when file is binary' do
+        it 'returns true' do
+          diff_file = update_file('file.md', (1..998).to_a.join("\n"))
+          allow(diff_file).to receive(:binary?).and_return(true)
+
+          expect(diff_file.fully_expanded?).to be_truthy
+        end
       end
     end
   end

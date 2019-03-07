@@ -56,7 +56,7 @@ group. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
 Add another cluster similar to the first one and make sure to
-[set an environment scope](#environment-scopes) that will
+[set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
 
 ## Base domain
@@ -133,4 +133,4 @@ The following features are not currently available for group-level clusters:
 
 1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487)).
 1. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
-1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
+1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55489)).

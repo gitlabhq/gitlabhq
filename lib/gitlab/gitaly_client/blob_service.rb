@@ -27,7 +27,7 @@ module Gitlab
           data << msg.data
         end
 
-        return nil if blob.oid.blank?
+        return if blob.oid.blank?
 
         data = data.join
 

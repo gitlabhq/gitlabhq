@@ -4,7 +4,7 @@ $note-form-margin-left: 72px;
 
 @mixin vertical-line($left) {
   &::before {
-    content: "";
+    content: '';
     border-left: 2px solid $gray-100;
     position: absolute;
     top: 0;
@@ -53,12 +53,12 @@ $note-form-margin-left: 72px;
     &.note-form {
       margin-left: 0;
 
-      @include notes-media("min", map-get($grid-breakpoints, md)) {
+      @include notes-media('min', map-get($grid-breakpoints, md)) {
         margin-left: $note-form-margin-left;
       }
 
       .timeline-icon {
-        @include notes-media("min", map-get($grid-breakpoints, sm)) {
+        @include notes-media('min', map-get($grid-breakpoints, sm)) {
           margin-left: -$note-icon-gutter-width;
         }
       }
@@ -242,7 +242,7 @@ $note-form-margin-left: 72px;
     }
 
     .note-header {
-      @include notes-media("max", map-get($grid-breakpoints, xs)) {
+      @include notes-media('max', map-get($grid-breakpoints, xs)) {
         .inline {
           display: block;
         }
@@ -304,7 +304,7 @@ $note-form-margin-left: 72px;
     }
 
     .timeline-content {
-      @include notes-media("min", map-get($grid-breakpoints, sm)) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 30px;
       }
     }
@@ -348,7 +348,7 @@ $note-form-margin-left: 72px;
           }
 
           &::after {
-            content: "";
+            content: '';
             height: 70px;
             position: absolute;
             left: $gl-padding-24;
@@ -590,7 +590,7 @@ $note-form-margin-left: 72px;
 .note-headline-light {
   display: inline;
 
-  @include notes-media("max", map-get($grid-breakpoints, xs)) {
+  @include notes-media('max', map-get($grid-breakpoints, xs)) {
     display: block;
   }
 }
@@ -656,7 +656,7 @@ $note-form-margin-left: 72px;
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media("max", map-get($grid-breakpoints, sm) - 1) {
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;
     margin-left: 0;
   }
@@ -775,7 +775,7 @@ $note-form-margin-left: 72px;
 }
 
 .line-resolve-all-container {
-  @include notes-media("min", map-get($grid-breakpoints, sm)) {
+  @include notes-media('min', map-get($grid-breakpoints, sm)) {
     margin-right: 0;
   }
 

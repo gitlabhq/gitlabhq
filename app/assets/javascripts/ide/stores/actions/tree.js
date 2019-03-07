@@ -1,7 +1,8 @@
+import _ from 'underscore';
 import { __ } from '../../../locale';
 import service from '../../services';
 import * as types from '../mutation_types';
-import FilesDecoratorWorker from '../workers/files_decorator_worker';
+import { decorateFiles } from '../../lib/files';
 
 export const toggleTreeOpen = ({ commit }, path) => {
   commit(types.TOGGLE_TREE_OPEN, path);
@@ -32,6 +33,19 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   dispatch('showTreeEntry', row.path);
 };
 
+export const setDirectoryData = ({ state, commit }, { projectId, branchId, treeList }) => {
+  const selectedTree = state.trees[`${projectId}/${branchId}`];
+
+  commit(types.SET_DIRECTORY_DATA, {
+    treePath: `${projectId}/${branchId}`,
+    data: treeList,
+  });
+  commit(types.TOGGLE_LOADING, {
+    entry: selectedTree,
+    forceValue: false,
+  });
+};
+
 export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = {}) =>
   new Promise((resolve, reject) => {
     if (
@@ -45,31 +59,19 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
       service
         .getFiles(selectedProject.web_url, branchId)
         .then(({ data }) => {
-          const worker = new FilesDecoratorWorker();
-          worker.addEventListener('message', e => {
-            const { entries, treeList } = e.data;
-            const selectedTree = state.trees[`${projectId}/${branchId}`];
-
-            commit(types.SET_ENTRIES, entries);
-            commit(types.SET_DIRECTORY_DATA, {
-              treePath: `${projectId}/${branchId}`,
-              data: treeList,
-            });
-            commit(types.TOGGLE_LOADING, {
-              entry: selectedTree,
-              forceValue: false,
-            });
-
-            worker.terminate();
-
-            resolve();
-          });
-
-          worker.postMessage({
+          const { entries, treeList } = decorateFiles({
             data,
             projectId,
             branchId,
           });
+
+          commit(types.SET_ENTRIES, entries);
+
+          // Defer setting the directory data because this triggers some intense rendering.
+          // The entries is all we need to load the file editor.
+          _.defer(() => dispatch('setDirectoryData', { projectId, branchId, treeList }));
+
+          resolve();
         })
         .catch(e => {
           if (e.response.status === 404) {

@@ -15,7 +15,7 @@ module Projects
         result = move_repository(old_disk_path, new_disk_path)
 
         if move_wiki
-          result &&= move_repository("#{old_wiki_disk_path}", "#{new_disk_path}.wiki")
+          result &&= move_repository(old_wiki_disk_path, "#{new_disk_path}.wiki")
         end
 
         if result
@@ -34,18 +34,6 @@ module Projects
         end
 
         result
-      end
-
-      private
-
-      def try_to_set_repository_read_only!
-        # Mitigate any push operation to start during migration
-        unless project.set_repository_read_only!
-          migration_error = "Target repository '#{old_disk_path}' cannot be made read-only as there is a git transfer in progress"
-          logger.error migration_error
-
-          raise RepositoryMigrationError, migration_error
-        end
       end
     end
   end

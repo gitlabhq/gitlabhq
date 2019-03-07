@@ -85,7 +85,7 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
 
-  add_authentication_token_field :runners_token, encrypted: true, migrating: true
+  add_authentication_token_field :runners_token, encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required }
 
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
@@ -1230,7 +1230,7 @@ class Project < ActiveRecord::Base
   end
 
   def fork_source
-    return nil unless forked?
+    return unless forked?
 
     forked_from_project || fork_network&.root_project
   end
@@ -1679,7 +1679,7 @@ class Project < ActiveRecord::Base
   end
 
   def export_path
-    return nil unless namespace.present? || hashed_storage?(:repository)
+    return unless namespace.present? || hashed_storage?(:repository)
 
     import_export_shared.archive_path
   end
@@ -1970,9 +1970,19 @@ class Project < ActiveRecord::Base
     return unless storage_upgradable?
 
     if git_transfer_in_progress?
-      ProjectMigrateHashedStorageWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+      HashedStorage::ProjectMigrateWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
     else
-      ProjectMigrateHashedStorageWorker.perform_async(id)
+      HashedStorage::ProjectMigrateWorker.perform_async(id)
+    end
+  end
+
+  def rollback_to_legacy_storage!
+    return if legacy_storage?
+
+    if git_transfer_in_progress?
+      HashedStorage::ProjectRollbackWorker.perform_in(Gitlab::ReferenceCounter::REFERENCE_EXPIRE_TIME, id)
+    else
+      HashedStorage::ProjectRollbackWorker.perform_async(id)
     end
   end
 

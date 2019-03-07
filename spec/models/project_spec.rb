@@ -3430,26 +3430,40 @@ describe Project do
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
+      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the project repo is in use' do
         Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: false)).increase
 
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the wiki repo is in use' do
+      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the wiki repo is in use' do
         Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: true)).increase
 
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker' do
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_async).with(project.id)
+      it 'schedules HashedStorage::ProjectMigrateWorker' do
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_async).with(project.id)
 
         project.migrate_to_hashed_storage!
+      end
+    end
+
+    describe '#rollback_to_legacy_storage!' do
+      let(:project) { create(:project, :empty_repo, :legacy_storage) }
+
+      it 'returns nil' do
+        expect(project.rollback_to_legacy_storage!).to be_nil
+      end
+
+      it 'does not run validations' do
+        expect(project).not_to receive(:valid?)
+
+        project.rollback_to_legacy_storage!
       end
     end
   end
@@ -3527,8 +3541,32 @@ describe Project do
           project = create(:project, storage_version: 1, skip_disk_validation: true)
 
           Sidekiq::Testing.fake! do
-            expect { project.migrate_to_hashed_storage! }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
+            expect { project.migrate_to_hashed_storage! }.to change(HashedStorage::ProjectMigrateWorker.jobs, :size).by(1)
           end
+        end
+      end
+    end
+
+    describe '#rollback_to_legacy_storage!' do
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+
+      it 'returns true' do
+        expect(project.rollback_to_legacy_storage!).to be_truthy
+      end
+
+      it 'does not run validations' do
+        expect(project).not_to receive(:valid?)
+
+        project.rollback_to_legacy_storage!
+      end
+
+      it 'does not flag as read-only' do
+        expect { project.rollback_to_legacy_storage! }.not_to change { project.repository_read_only }
+      end
+
+      it 'enqueues a job' do
+        Sidekiq::Testing.fake! do
+          expect { project.rollback_to_legacy_storage! }.to change(HashedStorage::ProjectRollbackWorker.jobs, :size).by(1)
         end
       end
     end

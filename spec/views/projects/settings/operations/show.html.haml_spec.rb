@@ -30,7 +30,6 @@ describe 'projects/settings/operations/show' do
 
         expect(rendered).to have_content _('Error Tracking')
         expect(rendered).to have_content _('To link Sentry to GitLab, enter your Sentry URL and Auth Token')
-        expect(rendered).to have_content _('Active')
       end
     end
   end

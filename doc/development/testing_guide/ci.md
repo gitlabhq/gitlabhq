@@ -31,7 +31,11 @@ After that, the next pipeline will use the up-to-date
 The GitLab test suite is [monitored] for the `master` branch, and any branch
 that includes `rspec-profile` in their name.
 
+A [public dashboard] is available for everyone to see. Feel free to look at the
+slowest test files and try to improve them.
+
 [monitored]: ../performance.md#rspec-profiling
+[public dashboard]: https://redash.gitlab.com/public/dashboards/l1WhHXaxrCWM5Ai9D7YDqHKehq6OU3bx5gssaiWe?org_slug=default
 
 ## CI setup
 

@@ -40,8 +40,12 @@ if (BABEL_ENV === 'karma' || BABEL_ENV === 'coverage') {
 
 // Jest is running in node environment
 if (BABEL_ENV === 'jest') {
-  plugins.push('transform-es2015-modules-commonjs');
-  plugins.push('dynamic-import-node');
+  plugins.push('@babel/plugin-transform-modules-commonjs');
+  /*
+  without the following, babel-plugin-istanbul throws an error:
+  https://gitlab.com/gitlab-org/gitlab-ce/issues/58390
+  */
+  plugins.push('babel-plugin-dynamic-import-node');
 }
 
 module.exports = { presets, plugins };

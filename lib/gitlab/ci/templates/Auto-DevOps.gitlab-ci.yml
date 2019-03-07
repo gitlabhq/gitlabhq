@@ -81,6 +81,7 @@ build:
     - /build/build.sh
   only:
     - branches
+    - tags
 
 test:
   services:
@@ -95,6 +96,7 @@ test:
     - /bin/herokuish buildpack test
   only:
     - branches
+    - tags
   except:
     variables:
       - $TEST_DISABLED
@@ -112,6 +114,7 @@ code_quality:
     paths: [gl-code-quality-report.json]
   only:
     - branches
+    - tags
   except:
     variables:
       - $CODE_QUALITY_DISABLED
@@ -129,6 +132,7 @@ license_management:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\blicense_management\b/
   except:
@@ -151,6 +155,7 @@ performance:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     variables:
@@ -171,6 +176,7 @@ sast:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/
   except:
@@ -192,6 +198,7 @@ dependency_scanning:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
   except:
@@ -212,6 +219,7 @@ container_scanning:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
   except:
@@ -231,6 +239,7 @@ dast:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
     variables:
       - $GITLAB_FEATURES =~ /\bdast\b/
@@ -260,6 +269,7 @@ review:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     refs:
@@ -283,6 +293,7 @@ stop_review:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     refs:
@@ -488,8 +499,13 @@ rollout 100%:
   [[ "$TRACE" ]] && set -x
   auto_database_url=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${CI_ENVIRONMENT_SLUG}-postgres:5432/${POSTGRES_DB}
   export DATABASE_URL=${DATABASE_URL-$auto_database_url}
-  export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
-  export CI_APPLICATION_TAG=$CI_COMMIT_SHA
+  if [[ -z "$CI_COMMIT_TAG" ]]; then
+    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+    export CI_APPLICATION_TAG=$CI_COMMIT_SHA
+  else
+    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
+    export CI_APPLICATION_TAG=$CI_COMMIT_TAG
+  fi
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
   # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
   export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')

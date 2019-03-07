@@ -149,7 +149,7 @@ class Namespace < ApplicationRecord
   end
 
   def find_fork_of(project)
-    return nil unless project.fork_network
+    return unless project.fork_network
 
     if Gitlab::SafeRequestStore.active?
       forks_in_namespace = Gitlab::SafeRequestStore.fetch("namespaces:#{id}:forked_projects") do

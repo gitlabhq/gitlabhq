@@ -68,7 +68,7 @@ gem 'gpgme', '~> 2.0.18'
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.1.1', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # API
@@ -94,13 +94,15 @@ gem 'carrierwave', '~> 1.3'
 gem 'mini_magick'
 
 # for backups
-gem 'fog-aws', '~> 2.0.1'
-gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.7.1'
-gem 'fog-local', '~> 0.3'
-gem 'fog-openstack', '~> 0.1'
+gem 'fog-aws', '~> 3.3'
+# Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.
+# Also see config/initializers/fog_core_patch.rb.
+gem 'fog-core', '= 2.1.0'
+gem 'fog-google', '~> 1.8'
+gem 'fog-local', '~> 0.6'
+gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.2.0'
+gem 'fog-aliyun', '~> 0.3'
 
 # for Google storage
 gem 'google-api-client', '~> 0.23'
@@ -323,7 +325,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bootsnap', '~> 1.3'
+  gem 'bootsnap', '~> 1.4'
   gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.5.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
@@ -419,7 +421,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.12.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.13.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.15.0'
 

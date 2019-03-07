@@ -392,6 +392,29 @@ describe MergeRequestPresenter do
     end
   end
 
+  describe '#target_branch_path' do
+    subject do
+      described_class.new(resource, current_user: user).target_branch_path
+    end
+
+    context 'when target branch exists' do
+      it 'returns path' do
+        allow(resource).to receive(:target_branch_exists?) { true }
+
+        is_expected
+          .to eq("/#{resource.source_project.full_path}/branches/#{resource.target_branch}")
+      end
+    end
+
+    context 'when target branch does not exist' do
+      it 'returns nil' do
+        allow(resource).to receive(:target_branch_exists?) { false }
+
+        is_expected.to be_nil
+      end
+    end
+  end
+
   describe '#source_branch_with_namespace_link' do
     subject do
       described_class.new(resource, current_user: user).source_branch_with_namespace_link

@@ -4,6 +4,7 @@ import {
   bytesToMiB,
   bytesToGiB,
   numberToHumanSize,
+  sum,
 } from '~/lib/utils/number_utils';
 
 describe('Number Utils', () => {
@@ -85,6 +86,16 @@ describe('Number Utils', () => {
 
     it('should return GiB', () => {
       expect(numberToHumanSize(10737418240)).toEqual('10.00 GiB');
+    });
+  });
+
+  describe('sum', () => {
+    it('should add up two values', () => {
+      expect(sum(1, 2)).toEqual(3);
+    });
+
+    it('should add up all the values in an array when passed to a reducer', () => {
+      expect([1, 2, 3, 4, 5].reduce(sum)).toEqual(15);
     });
   });
 });

@@ -9,7 +9,22 @@ describe Projects::Clusters::ApplicationsController do
     Clusters::Cluster::APPLICATIONS[application]
   end
 
+  shared_examples 'a secure endpoint' do
+    it { expect { subject }.to be_allowed_for(:admin) }
+    it { expect { subject }.to be_allowed_for(:owner).of(project) }
+    it { expect { subject }.to be_allowed_for(:maintainer).of(project) }
+    it { expect { subject }.to be_denied_for(:developer).of(project) }
+    it { expect { subject }.to be_denied_for(:reporter).of(project) }
+    it { expect { subject }.to be_denied_for(:guest).of(project) }
+    it { expect { subject }.to be_denied_for(:user) }
+    it { expect { subject }.to be_denied_for(:external) }
+  end
+
   describe 'POST create' do
+    subject do
+      post :create, params: params.merge(namespace_id: project.namespace, project_id: project)
+    end
+
     let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
     let(:project) { cluster.project }
     let(:application) { 'helm' }
@@ -26,7 +41,7 @@ describe Projects::Clusters::ApplicationsController do
       it 'schedule an application installation' do
         expect(ClusterInstallAppWorker).to receive(:perform_async).with(application, anything).once
 
-        expect { go }.to change { current_application.count }
+        expect { subject }.to change { current_application.count }
         expect(response).to have_http_status(:no_content)
         expect(cluster.application_helm).to be_scheduled
       end
@@ -37,7 +52,7 @@ describe Projects::Clusters::ApplicationsController do
         end
 
         it 'return 404' do
-          expect { go }.not_to change { current_application.count }
+          expect { subject }.not_to change { current_application.count }
           expect(response).to have_http_status(:not_found)
         end
       end
@@ -46,9 +61,7 @@ describe Projects::Clusters::ApplicationsController do
         let(:application) { 'unkwnown-app' }
 
         it 'return 404' do
-          go
-
-          expect(response).to have_http_status(:not_found)
+          is_expected.to have_http_status(:not_found)
         end
       end
 
@@ -58,9 +71,7 @@ describe Projects::Clusters::ApplicationsController do
         end
 
         it 'returns 400' do
-          go
-
-          expect(response).to have_http_status(:bad_request)
+          is_expected.to have_http_status(:bad_request)
         end
       end
     end
@@ -70,18 +81,68 @@ describe Projects::Clusters::ApplicationsController do
         allow(ClusterInstallAppWorker).to receive(:perform_async)
       end
 
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
-      it { expect { go }.to be_denied_for(:developer).of(project) }
-      it { expect { go }.to be_denied_for(:reporter).of(project) }
-      it { expect { go }.to be_denied_for(:guest).of(project) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it_behaves_like 'a secure endpoint'
+    end
+  end
+
+  describe 'PATCH update' do
+    subject do
+      patch :update, params: params.merge(namespace_id: project.namespace, project_id: project)
     end
 
-    def go
-      post :create, params: params.merge(namespace_id: project.namespace, project_id: project)
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:project) { cluster.project }
+    let!(:application) { create(:clusters_applications_knative, :installed, cluster: cluster) }
+    let(:application_name) { application.name }
+    let(:params) { { application: application_name, id: cluster.id, hostname: "new.example.com" } }
+
+    describe 'functionality' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      context "when cluster and app exists" do
+        it "schedules an application update" do
+          expect(ClusterPatchAppWorker).to receive(:perform_async).with(application.name, anything).once
+
+          is_expected.to have_http_status(:no_content)
+
+          expect(cluster.application_knative).to be_scheduled
+        end
+      end
+
+      context 'when cluster do not exists' do
+        before do
+          cluster.destroy!
+        end
+
+        it { is_expected.to have_http_status(:not_found) }
+      end
+
+      context 'when application is unknown' do
+        let(:application_name) { 'unkwnown-app' }
+
+        it { is_expected.to have_http_status(:not_found) }
+      end
+
+      context 'when application is already scheduled' do
+        before do
+          application.make_scheduled!
+        end
+
+        it { is_expected.to have_http_status(:bad_request) }
+      end
+    end
+
+    describe 'security' do
+      before do
+        allow(ClusterPatchAppWorker).to receive(:perform_async)
+      end
+
+      it_behaves_like 'a secure endpoint'
     end
   end
 end

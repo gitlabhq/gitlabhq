@@ -23,6 +23,7 @@
 - cronjob:prune_web_hook_logs
 
 - gcp_cluster:cluster_install_app
+- gcp_cluster:cluster_patch_app
 - gcp_cluster:cluster_upgrade_app
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
@@ -47,6 +48,9 @@
 - github_importer:github_import_stage_import_repository
 
 - hashed_storage:hashed_storage_migrator
+- hashed_storage:hashed_storage_rollbacker
+- hashed_storage:hashed_storage_project_migrate
+- hashed_storage:hashed_storage_project_rollback
 
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
@@ -126,7 +130,6 @@
 - project_cache
 - project_destroy
 - project_export
-- project_migrate_hashed_storage
 - project_service
 - propagate_service_template
 - reactive_caching

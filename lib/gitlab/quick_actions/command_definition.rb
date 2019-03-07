@@ -48,6 +48,8 @@ module Gitlab
       def execute(context, arg)
         return if noop? || !available?(context)
 
+        count_commands_executed_in(context)
+
         execute_block(action_block, context, arg)
       end
 
@@ -72,6 +74,13 @@ module Gitlab
       end
 
       private
+
+      def count_commands_executed_in(context)
+        return unless context.respond_to?(:commands_executed_count=)
+
+        context.commands_executed_count ||= 0
+        context.commands_executed_count += 1
+      end
 
       def execute_block(block, context, arg)
         if arg.present?

@@ -8,10 +8,14 @@ describe API::Todos do
   let(:author_2) { create(:user) }
   let(:john_doe) { create(:user, username: 'john_doe') }
   let(:merge_request) { create(:merge_request, source_project: project_1) }
+  let!(:merge_request_todo) { create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request) }
   let!(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe) }
   let!(:pending_2) { create(:todo, project: project_2, author: author_2, user: john_doe) }
   let!(:pending_3) { create(:on_commit_todo, project: project_1, author: author_2, user: john_doe) }
   let!(:done) { create(:todo, :done, project: project_1, author: author_1, user: john_doe) }
+  let!(:award_emoji_1) { create(:award_emoji, awardable: merge_request, user: author_1, name: 'thumbsup') }
+  let!(:award_emoji_2) { create(:award_emoji, awardable: pending_1.target, user: author_1, name: 'thumbsup') }
+  let!(:award_emoji_3) { create(:award_emoji, awardable: pending_2.target, user: author_2, name: 'thumbsdown') }
 
   before do
     project_1.add_developer(john_doe)
@@ -34,7 +38,7 @@ describe API::Todos do
         expect(response.status).to eq(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
         expect(json_response[0]['id']).to eq(pending_3.id)
         expect(json_response[0]['project']).to be_a Hash
         expect(json_response[0]['author']).to be_a Hash
@@ -45,6 +49,23 @@ describe API::Todos do
         expect(json_response[0]['state']).to eq('pending')
         expect(json_response[0]['action_name']).to eq('assigned')
         expect(json_response[0]['created_at']).to be_present
+        expect(json_response[0]['target_type']).to eq('Commit')
+
+        expect(json_response[1]['target_type']).to eq('Issue')
+        expect(json_response[1]['target']['upvotes']).to eq(0)
+        expect(json_response[1]['target']['downvotes']).to eq(1)
+        expect(json_response[1]['target']['merge_requests_count']).to eq(0)
+
+        expect(json_response[2]['target_type']).to eq('Issue')
+        expect(json_response[2]['target']['upvotes']).to eq(1)
+        expect(json_response[2]['target']['downvotes']).to eq(0)
+        expect(json_response[2]['target']['merge_requests_count']).to eq(0)
+
+        expect(json_response[3]['target_type']).to eq('MergeRequest')
+        # Only issues get a merge request count at the moment
+        expect(json_response[3]['target']['merge_requests_count']).to be_nil
+        expect(json_response[3]['target']['upvotes']).to eq(1)
+        expect(json_response[3]['target']['downvotes']).to eq(0)
       end
 
       context 'and using the author filter' do
@@ -54,7 +75,7 @@ describe API::Todos do
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(2)
+          expect(json_response.length).to eq(3)
         end
       end
 
@@ -67,7 +88,7 @@ describe API::Todos do
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(1)
+          expect(json_response.length).to eq(2)
         end
       end
 
@@ -100,7 +121,7 @@ describe API::Todos do
           expect(response.status).to eq(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
-          expect(json_response.length).to eq(2)
+          expect(json_response.length).to eq(3)
         end
       end
 
@@ -114,6 +135,27 @@ describe API::Todos do
           expect(json_response.length).to eq(1)
         end
       end
+    end
+
+    it 'avoids N+1 queries', :request_store do
+      create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request)
+
+      get api('/todos', john_doe)
+
+      control = ActiveRecord::QueryRecorder.new { get api('/todos', john_doe) }
+
+      merge_request_2 = create(:merge_request, source_project: project_2)
+      create(:todo, project: project_2, author: author_2, user: john_doe, target: merge_request_2)
+
+      project_3 = create(:project, :repository)
+      project_3.add_developer(john_doe)
+      merge_request_3 = create(:merge_request, source_project: project_3)
+      create(:todo, project: project_3, author: author_2, user: john_doe, target: merge_request_3)
+      create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe)
+      create(:on_commit_todo, project: project_3, author: author_1, user: john_doe)
+
+      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control)
+      expect(response.status).to eq(200)
     end
   end
 
@@ -230,7 +272,7 @@ describe API::Todos do
 
     context 'for a merge request' do
       it_behaves_like 'an issuable', 'merge_requests' do
-        let(:issuable) { merge_request }
+        let(:issuable) { create(:merge_request, :simple, source_project: project_1) }
       end
     end
   end

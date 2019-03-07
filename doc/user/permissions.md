@@ -14,7 +14,7 @@ be able to create issues, leave comments, and clone or download the project code
 When a member leaves the team all the assigned [Issues](project/issues/index.md) and [Merge Requests](project/merge_requests/index.md)
 will be unassigned automatically.
 
-GitLab [administrators](../README.md#administrator-documentation) receive all permissions.
+GitLab [administrators](../administration/index.md) receive all permissions.
 
 To add or import a user, you can follow the
 [project members documentation](../user/project/members/index.md).
@@ -62,6 +62,8 @@ The following table depicts the various user permission levels in a project.
 | Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
 | Create issue from vulnerability **[ULTIMATE]** |         | ✓          | ✓           | ✓        | ✓      |
 | View Error Tracking list              |         | ✓          | ✓           | ✓        | ✓      |
+| Pull from [Maven repository](https://docs.gitlab.com/ee/user/project/packages/maven_repository.html) or [NPM registry](https://docs.gitlab.com/ee/user/project/packages/npm_registry.html) **[PREMIUM]** |         | ✓          | ✓           | ✓        | ✓      |
+| Publish to [Maven repository](https://docs.gitlab.com/ee/user/project/packages/maven_repository.html) or [NPM registry](https://docs.gitlab.com/ee/user/project/packages/npm_registry.html) **[PREMIUM]** |         |            | ✓           | ✓        | ✓      |
 | Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Stop environments                     |         |            | ✓           | ✓        | ✓      |

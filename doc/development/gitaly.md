@@ -5,8 +5,9 @@ Workhorse and GitLab-Shell.
 
 ## Developing new Git features
 
-Starting with GitLab 10.8, all new Git features should be developed in
-Gitaly.
+To read or write Git data, a request has to be made to Gitaly. This means that
+if you're developing a new feature where you need data that's not yet available
+in `lib/gitlab/git` changes have to be made to Gitaly.
 
 > This is a new process that is not clearly defined yet. If you want
 to contribute a Git feature and you're getting stuck, reach out to the
@@ -55,6 +56,44 @@ If your test-suite is failing with Gitaly issues, as a first step, try running:
 ```shell
 rm -rf tmp/tests/gitaly
 ```
+
+## Legacy Rugged code
+
+While Gitaly can handle all Git access, many of GitLab customers still
+run Gitaly atop NFS. The legacy Rugged implementation for Git calls may
+be faster than the Gitaly RPC due to N+1 Gitaly calls and other
+reasons. See [the
+issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/57317) for more
+details.
+
+Until GitLab has eliminated most of these inefficiencies or the use of
+NFS is discontinued for Git data, Rugged implementations of some of the
+most commonly-used RPCs can be enabled via feature flags:
+
+* `rugged_find_commit`
+* `rugged_get_tree_entries`
+* `rugged_tree_entry`
+* `rugged_commit_is_ancestor`
+
+A convenience Rake task can be used to enable or disable these flags
+all together. To enable:
+
+```sh
+bundle exec rake gitlab:features:enable_rugged
+```
+
+To disable:
+
+```sh
+bundle exec rake gitlab:features:disable_rugged
+```
+
+Most of this code exists in the `lib/gitlab/git/rugged_impl` directory.
+
+NOTE: **Note:** You should NOT need to add or modify code related to
+Rugged unless explicitly discussed with the [Gitaly
+Team](https://gitlab.com/groups/gl-gitaly/group_members). This code will
+NOT work on GitLab.com or other GitLab instances that do not use NFS.
 
 ## `TooManyInvocationsError` errors
 

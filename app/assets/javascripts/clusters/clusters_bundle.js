@@ -36,6 +36,7 @@ export default class Clusters {
       installRunnerPath,
       installJupyterPath,
       installKnativePath,
+      updateKnativePath,
       installPrometheusPath,
       managePrometheusPath,
       hasRbac,
@@ -62,6 +63,7 @@ export default class Clusters {
       installPrometheusEndpoint: installPrometheusPath,
       installJupyterEndpoint: installJupyterPath,
       installKnativeEndpoint: installKnativePath,
+      updateKnativeEndpoint: updateKnativePath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -119,8 +121,7 @@ export default class Clusters {
 
   static initDismissableCallout() {
     const callout = document.querySelector('.js-cluster-security-warning');
-
-    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
+    PersistentUserCallout.factory(callout);
   }
 
   addListeners() {
@@ -129,6 +130,8 @@ export default class Clusters {
     eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
     eventHub.$on('upgradeFailed', appId => this.upgradeFailed(appId));
     eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
+    eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
+    eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
   }
 
   removeListeners() {
@@ -137,6 +140,8 @@ export default class Clusters {
     eventHub.$off('upgradeApplication', this.upgradeApplication);
     eventHub.$off('upgradeFailed', this.upgradeFailed);
     eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
+    eventHub.$off('saveKnativeDomain');
+    eventHub.$off('setKnativeHostname');
   }
 
   initPolling() {
@@ -270,6 +275,18 @@ export default class Clusters {
 
   dismissUpgradeSuccess(appId) {
     this.store.updateAppProperty(appId, 'requestStatus', null);
+  }
+
+  saveKnativeDomain(data) {
+    const appId = data.id;
+    this.store.updateAppProperty(appId, 'status', APPLICATION_STATUS.UPDATING);
+    this.service.updateApplication(appId, data.params);
+  }
+
+  setKnativeHostname(data) {
+    const appId = data.id;
+    this.store.updateAppProperty(appId, 'isEditingHostName', true);
+    this.store.updateAppProperty(appId, 'hostname', data.hostname);
   }
 
   destroy() {

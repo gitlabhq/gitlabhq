@@ -1,11 +1,19 @@
 import Vuex from 'vuex';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { GlLoadingIcon } from '@gitlab/ui';
 import { TEST_HOST } from 'spec/test_constants';
 import App from '~/diffs/components/app.vue';
 import NoChanges from '~/diffs/components/no_changes.vue';
 import DiffFile from '~/diffs/components/diff_file.vue';
 import Mousetrap from 'mousetrap';
+import CompareVersions from '~/diffs/components/compare_versions.vue';
+import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
+import CommitWidget from '~/diffs/components/commit_widget.vue';
+import TreeList from '~/diffs/components/tree_list.vue';
 import createDiffsStore from '../create_diffs_store';
+import diffsMockData from '../mock_data/merge_request_diffs';
+
+const mergeRequestDiff = { version_index: 1 };
 
 describe('diffs/components/app', () => {
   const oldMrTabs = window.mrTabs;
@@ -47,6 +55,21 @@ describe('diffs/components/app', () => {
 
     // reset component
     wrapper.destroy();
+  });
+
+  it('displays loading icon on loading', () => {
+    createComponent({}, ({ state }) => {
+      state.diffs.isLoading = true;
+    });
+
+    expect(wrapper.contains(GlLoadingIcon)).toBe(true);
+  });
+
+  it('displays diffs container when not loading', () => {
+    createComponent();
+
+    expect(wrapper.contains(GlLoadingIcon)).toBe(false);
+    expect(wrapper.contains('#diffs')).toBe(true);
   });
 
   it('does not show commit info', () => {
@@ -134,8 +157,8 @@ describe('diffs/components/app', () => {
     });
 
     it('does not render empty state when diff files exist', () => {
-      createComponent({}, () => {
-        store.state.diffs.diffFiles.push({
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles.push({
           id: 1,
         });
       });
@@ -145,9 +168,9 @@ describe('diffs/components/app', () => {
     });
 
     it('does not render empty state when versions match', () => {
-      createComponent({}, () => {
-        store.state.diffs.startVersion = { version_index: 1 };
-        store.state.diffs.mergeRequestDiff = { version_index: 1 };
+      createComponent({}, ({ state }) => {
+        state.diffs.startVersion = mergeRequestDiff;
+        state.diffs.mergeRequestDiff = mergeRequestDiff;
       });
 
       expect(wrapper.contains(NoChanges)).toBe(false);
@@ -305,6 +328,73 @@ describe('diffs/components/app', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('diffs', () => {
+    it('should render compare versions component', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.mergeRequestDiffs = diffsMockData;
+        state.diffs.targetBranchName = 'target-branch';
+        state.diffs.mergeRequestDiff = mergeRequestDiff;
+      });
+
+      expect(wrapper.contains(CompareVersions)).toBe(true);
+      expect(wrapper.find(CompareVersions).props()).toEqual(
+        jasmine.objectContaining({
+          targetBranch: {
+            branchName: 'target-branch',
+            versionIndex: -1,
+            path: '',
+          },
+          mergeRequestDiffs: diffsMockData,
+          mergeRequestDiff,
+        }),
+      );
+    });
+
+    it('should render hidden files warning if render overflow warning is present', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.renderOverflowWarning = true;
+        state.diffs.realSize = '5';
+        state.diffs.plainDiffPath = 'plain diff path';
+        state.diffs.emailPatchPath = 'email patch path';
+        state.diffs.size = 1;
+      });
+
+      expect(wrapper.contains(HiddenFilesWarning)).toBe(true);
+      expect(wrapper.find(HiddenFilesWarning).props()).toEqual(
+        jasmine.objectContaining({
+          total: '5',
+          plainDiffPath: 'plain diff path',
+          emailPatchPath: 'email patch path',
+          visible: 1,
+        }),
+      );
+    });
+
+    it('should display commit widget if store has a commit', () => {
+      createComponent({}, () => {
+        store.state.diffs.commit = {
+          author: 'John Doe',
+        };
+      });
+
+      expect(wrapper.contains(CommitWidget)).toBe(true);
+    });
+
+    it('should display diff file if there are diff files', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles.push({ sha: '123' });
+      });
+
+      expect(wrapper.contains(DiffFile)).toBe(true);
+    });
+
+    it('should render tree list', () => {
+      createComponent();
+
+      expect(wrapper.find(TreeList).exists()).toBe(true);
     });
   });
 });

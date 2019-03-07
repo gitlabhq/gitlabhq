@@ -1,6 +1,6 @@
 # Okta SSO provider
 
-Okta is a [Single Sign-on provider][okta-sso] that can be used to authenticate
+Okta is a [Single Sign-on provider](https://www.okta.com/products/single-sign-on/) that can be used to authenticate
 with GitLab.
 
 The following documentation enables Okta as a SAML provider.
@@ -140,7 +140,7 @@ Now that the Okta app is configured, it's time to enable it in GitLab.
       }
     ```
 
-1. [Reconfigure][reconf] or [restart] GitLab for Omnibus and installations
+1. [Reconfigure](../restart_gitlab.md#omnibus-gitlab-reconfigure) or [restart](../restart_gitlab.md#installations-from-source) GitLab for Omnibus and installations
    from source respectively for the changes to take effect.
 
 You might want to try this out on an incognito browser window.
@@ -150,10 +150,5 @@ You might want to try this out on an incognito browser window.
 >**Note:**
 Make sure the groups exist and are assigned to the Okta app.
 
-You can take a look of the [SAML documentation][saml] on external groups since
+You can take a look of the [SAML documentation](../../integration/saml.md#marking-users-as-external-based-on-saml-groups) on external groups since
 it works the same.
-
-[okta-sso]: https://www.okta.com/products/single-sign-on/
-[saml]: ../../integration/saml.md#external-groups
-[reconf]: ../restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart]: ../restart_gitlab.md#installations-from-source

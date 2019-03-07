@@ -100,17 +100,6 @@ module CiStatusHelper
     "pipeline-status/#{pipeline_status.sha}-#{pipeline_status.status}"
   end
 
-  def render_project_pipeline_status(pipeline_status, tooltip_placement: 'left')
-    project = pipeline_status.project
-    path = pipelines_project_commit_path(project, pipeline_status.sha, ref: pipeline_status.ref)
-
-    render_status_with_link(
-      'commit',
-      pipeline_status.status,
-      path,
-      tooltip_placement: tooltip_placement)
-  end
-
   def render_commit_status(commit, ref: nil, tooltip_placement: 'left')
     project = commit.project
     path = pipelines_project_commit_path(project, commit, ref: ref)
@@ -121,12 +110,6 @@ module CiStatusHelper
       path,
       tooltip_placement: tooltip_placement,
       icon_size: 24)
-  end
-
-  def render_pipeline_status(pipeline, tooltip_placement: 'left')
-    project = pipeline.project
-    path = project_pipeline_path(project, pipeline)
-    render_status_with_link('pipeline', pipeline.status, path, tooltip_placement: tooltip_placement)
   end
 
   def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body', icon_size: 16)

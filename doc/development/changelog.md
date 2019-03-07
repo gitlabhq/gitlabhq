@@ -135,21 +135,13 @@ If you're working on the GitLab EE repository, the entry will be added to
 
 | Argument            | Shorthand | Purpose                                                                                                                                 |
 | -----------------   | --------- | --------------------------------------------------------------------------------------------------------------------------------------- |
-| [`--amend`]         |           | Amend the previous commit                                                                                                               |
-| [`--force`]         | `-f`      | Overwrite an existing entry                                                                                                             |
-| [`--merge-request`] | `-m`      | Set merge request ID                                                                                                                    |
-| [`--dry-run`]       | `-n`      | Don't actually write anything, just print                                                                                               |
-| [`--git-username`]  | `-u`      | Use Git user.name configuration as the author                                                                                           |
-| [`--type`]          | `-t`      | The category of the change, valid options are: `added`, `fixed`, `changed`, `deprecated`, `removed`, `security`, `performance`, `other` |
-| [`--help`]          | `-h`      | Print help message                                                                                                                      |
-
-[`--amend`]: #-amend
-[`--force`]: #-force-or-f
-[`--merge-request`]: #-merge-request-or-m
-[`--dry-run`]: #-dry-run-or-n
-[`--git-username`]: #-git-username-or-u
-[`--type`]: #-type-or-t
-[`--help`]: #-help
+| [`--amend`](#--amend)         |           | Amend the previous commit                                                                                                               |
+| [`--force`](#--force-or--f)         | `-f`      | Overwrite an existing entry                                                                                                             |
+| [`--merge-request`](#--merge-request-or--m) | `-m`      | Set merge request ID                                                                                                                    |
+| [`--dry-run`](#--dry-run-or--n)       | `-n`      | Don't actually write anything, just print                                                                                               |
+| [`--git-username`](#--git-username-or--u)  | `-u`      | Use Git user.name configuration as the author                                                                                           |
+| [`--type`](#--type-or--t)          | `-t`      | The category of the change, valid options are: `added`, `fixed`, `changed`, `deprecated`, `removed`, `security`, `performance`, `other` |
+| `--help`          | `-h`      | Print help message                                                                                                                      |
 
 ##### `--amend`
 

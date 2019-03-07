@@ -79,6 +79,7 @@ POST /projects/:id/repository/commits
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
 | `stats` | boolean | no | Include commit stats. Default is true |
+| `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` |
 
 | `actions[]` Attribute | Type | Required | Description |
 | --------------------- | ---- | -------- | ----------- |

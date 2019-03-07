@@ -12,6 +12,7 @@ module QA
   module Git
     class Repository
       include Scenario::Actable
+      RepositoryCommandError = Class.new(StandardError)
 
       attr_writer :use_lfs
       attr_accessor :env_vars
@@ -204,6 +205,10 @@ module QA
         output, status = Open3.capture2e(command)
         output.chomp!
         Runtime::Logger.debug "Git: output=[#{output}], exitstatus=[#{status.exitstatus}]"
+
+        unless status.success?
+          raise RepositoryCommandError, "The command #{command} failed (#{status.exitstatus}) with the following output:\n#{output}"
+        end
 
         Result.new(status.exitstatus == 0, output)
       end

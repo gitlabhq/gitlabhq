@@ -5,7 +5,7 @@ import { polyfillSticky } from '~/lib/utils/sticky';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
-import { GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
 import { diffViewerModes } from '~/ide/constants';
@@ -14,6 +14,9 @@ import DiffStats from './diff_stats.vue';
 
 export default {
   components: {
+    GlTooltip,
+    GlLoadingIcon,
+    GlButton,
     ClipboardButton,
     EditButton,
     Icon,
@@ -125,12 +128,15 @@ export default {
     isModeChanged() {
       return this.diffFile.viewer.name === diffViewerModes.mode_changed;
     },
+    showExpandDiffToFullFileEnabled() {
+      return gon.features.expandDiffFullFile && !this.diffFile.is_fully_expanded;
+    },
   },
   mounted() {
     polyfillSticky(this.$refs.header);
   },
   methods: {
-    ...mapActions('diffs', ['toggleFileDiscussions']),
+    ...mapActions('diffs', ['toggleFileDiscussions', 'toggleFullDiff']),
     handleToggleFile(e, checkTarget) {
       if (
         !checkTarget ||
@@ -236,12 +242,34 @@ export default {
       <a
         v-if="diffFile.replaced_view_path"
         :href="diffFile.replaced_view_path"
-        class="btn view-file js-view-file"
+        class="btn view-file js-view-replaced-file"
         v-html="viewReplacedFileButtonText"
       >
       </a>
-      <a :href="diffFile.view_path" class="btn view-file js-view-file" v-html="viewFileButtonText">
-      </a>
+      <gl-tooltip :target="() => $refs.viewButton" placement="bottom">
+        <span v-html="viewFileButtonText"></span>
+      </gl-tooltip>
+      <gl-button
+        ref="viewButton"
+        :href="diffFile.view_path"
+        target="blank"
+        class="view-file js-view-file-button"
+      >
+        <icon name="external-link" />
+      </gl-button>
+      <gl-button
+        v-if="showExpandDiffToFullFileEnabled"
+        class="expand-file js-expand-file"
+        @click="toggleFullDiff(diffFile.file_path)"
+      >
+        <template v-if="diffFile.isShowingFullFile">
+          {{ s__('MRDiff|Show changes only') }}
+        </template>
+        <template v-else>
+          {{ s__('MRDiff|Show full file') }}
+        </template>
+        <gl-loading-icon v-if="diffFile.isLoadingFullFile" inline />
+      </gl-button>
 
       <a
         v-if="diffFile.external_url"
@@ -250,7 +278,7 @@ export default {
         :title="`View on ${diffFile.formatted_external_url}`"
         target="_blank"
         rel="noopener noreferrer"
-        class="btn btn-file-option"
+        class="btn btn-file-option js-external-url"
       >
         <icon name="external-link" />
       </a>

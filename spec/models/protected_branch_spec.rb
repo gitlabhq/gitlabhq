@@ -190,4 +190,32 @@ describe ProtectedBranch do
       end
     end
   end
+
+  describe '#any_protected?' do
+    context 'existing project' do
+      let(:project) { create(:project, :repository) }
+
+      it 'returns true when any of the branch names match a protected branch via direct match' do
+        create(:protected_branch, project: project, name: 'foo')
+
+        expect(described_class.any_protected?(project, ['foo', 'production/some-branch'])).to eq(true)
+      end
+
+      it 'returns true when any of the branch matches a protected branch via wildcard match' do
+        create(:protected_branch, project: project, name: 'production/*')
+
+        expect(described_class.any_protected?(project, ['foo', 'production/some-branch'])).to eq(true)
+      end
+
+      it 'returns false when none of branches does not match a protected branch via direct match' do
+        expect(described_class.any_protected?(project, ['foo'])).to eq(false)
+      end
+
+      it 'returns false when none of the branches does not match a protected branch via wildcard match' do
+        create(:protected_branch, project: project, name: 'production/*')
+
+        expect(described_class.any_protected?(project, ['staging/some-branch'])).to eq(false)
+      end
+    end
+  end
 end

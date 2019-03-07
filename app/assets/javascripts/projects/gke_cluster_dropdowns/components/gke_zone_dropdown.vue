@@ -34,7 +34,7 @@ export default {
     },
     errorMessage() {
       return sprintf(
-        s__('ClusterIntegration|An error occured while trying to fetch project zones: %{error}'),
+        s__('ClusterIntegration|An error occurred while trying to fetch project zones: %{error}'),
         { error: this.gapiError },
       );
     },

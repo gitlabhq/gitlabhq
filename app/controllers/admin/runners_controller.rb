@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::RunnersController < Admin::ApplicationController
-  before_action :runner, except: :index
+  before_action :runner, except: [:index, :tag_list]
 
   def index
     finder = Admin::RunnersFinder.new(params: params)
@@ -46,6 +46,12 @@ class Admin::RunnersController < Admin::ApplicationController
     else
       redirect_to admin_runners_path, alert: 'Runner was not updated.'
     end
+  end
+
+  def tag_list
+    tags = Autocomplete::ActsAsTaggableOn::TagsFinder.new(params: params).execute
+
+    render json: ActsAsTaggableOn::TagSerializer.new.represent(tags)
   end
 
   private

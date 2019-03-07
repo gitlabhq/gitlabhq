@@ -9,7 +9,7 @@ describe Issue::Metrics do
     context "milestones" do
       it "records the first time an issue is associated with a milestone" do
         time = Time.now
-        Timecop.freeze(time) { subject.update(milestone: create(:milestone)) }
+        Timecop.freeze(time) { subject.update(milestone: create(:milestone, project: project)) }
         metrics = subject.metrics
 
         expect(metrics).to be_present
@@ -18,9 +18,9 @@ describe Issue::Metrics do
 
       it "does not record the second time an issue is associated with a milestone" do
         time = Time.now
-        Timecop.freeze(time) { subject.update(milestone: create(:milestone)) }
+        Timecop.freeze(time) { subject.update(milestone: create(:milestone, project: project)) }
         Timecop.freeze(time + 2.hours) { subject.update(milestone: nil) }
-        Timecop.freeze(time + 6.hours) { subject.update(milestone: create(:milestone)) }
+        Timecop.freeze(time + 6.hours) { subject.update(milestone: create(:milestone, project: project)) }
         metrics = subject.metrics
 
         expect(metrics).to be_present

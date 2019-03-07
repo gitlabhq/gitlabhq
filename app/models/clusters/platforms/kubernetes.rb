@@ -41,7 +41,7 @@ module Clusters
       validate :no_namespace, unless: :allow_user_defined_namespace?
 
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
-      validates :api_url, url: true, presence: true
+      validates :api_url, public_url: true, presence: true
       validates :token, presence: true
       validates :ca_cert, certificate: true, allow_blank: true, if: :ca_cert_changed?
 

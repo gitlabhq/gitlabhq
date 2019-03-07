@@ -4,6 +4,7 @@ import dateFormat from 'dateformat';
 import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
+import { chartHeight, graphTypes, lineTypes } from '../../constants';
 
 let debouncedResize;
 
@@ -19,7 +20,6 @@ export default {
       required: true,
       validator(data) {
         return (
-          data.queries &&
           Array.isArray(data.queries) &&
           data.queries.filter(query => {
             if (Array.isArray(query.result)) {
@@ -51,21 +51,44 @@ export default {
     return {
       tooltip: {
         title: '',
-        content: '',
+        content: [],
         isDeployment: false,
         sha: '',
       },
       width: 0,
-      height: 0,
-      scatterSymbol: undefined,
+      height: chartHeight,
+      svgs: {},
+      primaryColor: null,
     };
   },
   computed: {
     chartData() {
-      return this.graphData.queries.reduce((accumulator, query) => {
-        accumulator[query.unit] = query.result.reduce((acc, res) => acc.concat(res.values), []);
-        return accumulator;
-      }, {});
+      return this.graphData.queries.map(query => {
+        const { appearance } = query;
+        const lineType =
+          appearance && appearance.line && appearance.line.type
+            ? appearance.line.type
+            : lineTypes.default;
+        const lineColor = lineType === lineTypes.threshold ? this.primaryColor : undefined;
+
+        return {
+          name: this.formatLegendLabel(query),
+          data: this.concatenateResults(query.result),
+          lineStyle: {
+            type: lineType,
+            color: lineColor,
+          },
+          itemStyle: {
+            color: lineColor,
+          },
+          areaStyle: {
+            opacity:
+              appearance && appearance.area && typeof appearance.area.opacity === 'number'
+                ? appearance.area.opacity
+                : undefined,
+          },
+        };
+      });
     },
     chartOptions() {
       return {
@@ -78,28 +101,25 @@ export default {
           axisPointer: {
             snap: true,
           },
-          nameTextStyle: {
-            padding: [18, 0, 0, 0],
-          },
         },
         yAxis: {
           name: this.yAxisLabel,
           axisLabel: {
             formatter: value => value.toFixed(3),
           },
-          nameTextStyle: {
-            padding: [0, 0, 36, 0],
-          },
-        },
-        legend: {
-          formatter: this.xAxisLabel,
         },
         series: this.scatterSeries,
+        dataZoom: this.dataZoomConfig,
       };
     },
+    dataZoomConfig() {
+      const handleIcon = this.svgs['scroll-handle'];
+
+      return handleIcon ? { handleIcon } : {};
+    },
     earliestDatapoint() {
-      return Object.values(this.chartData).reduce((acc, data) => {
-        const [[timestamp]] = data.sort(([a], [b]) => {
+      return this.chartData.reduce((acc, series) => {
+        const [[timestamp]] = series.data.sort(([a], [b]) => {
           if (a < b) {
             return -1;
           }
@@ -129,14 +149,14 @@ export default {
     },
     scatterSeries() {
       return {
-        type: 'scatter',
+        type: graphTypes.deploymentData,
         data: this.recentDeployments.map(deployment => [deployment.createdAt, 0]),
-        symbol: this.scatterSymbol,
+        symbol: this.svgs.rocket,
         symbolSize: 14,
+        itemStyle: {
+          color: this.primaryColor,
+        },
       };
-    },
-    xAxisLabel() {
-      return this.graphData.queries.map(query => query.label).join(', ');
     },
     yAxisLabel() {
       return `${this.graphData.y_label}`;
@@ -151,35 +171,54 @@ export default {
   created() {
     debouncedResize = debounceByAnimationFrame(this.onResize);
     window.addEventListener('resize', debouncedResize);
-    this.getScatterSymbol();
+    this.setSvg('rocket');
+    this.setSvg('scroll-handle');
   },
   methods: {
-    formatTooltipText(params) {
-      const [seriesData] = params.seriesData;
-      this.tooltip.isDeployment = seriesData.componentSubType === 'scatter';
-      this.tooltip.title = dateFormat(params.value, 'dd mmm yyyy, h:MMTT');
-      if (this.tooltip.isDeployment) {
-        const [deploy] = this.recentDeployments.filter(
-          deployment => deployment.createdAt === seriesData.value[0],
-        );
-        this.tooltip.sha = deploy.sha.substring(0, 8);
-      } else {
-        this.tooltip.content = `${this.yAxisLabel} ${seriesData.value[1].toFixed(3)}`;
-      }
+    concatenateResults(results) {
+      return results.reduce((acc, result) => acc.concat(result.values), []);
     },
-    getScatterSymbol() {
-      getSvgIconPathContent('rocket')
+    formatLegendLabel(query) {
+      return `${query.label}`;
+    },
+    formatTooltipText(params) {
+      this.tooltip.title = dateFormat(params.value, 'dd mmm yyyy, h:MMTT');
+      this.tooltip.content = [];
+      params.seriesData.forEach(seriesData => {
+        if (seriesData.componentSubType === graphTypes.deploymentData) {
+          this.tooltip.isDeployment = true;
+          const [deploy] = this.recentDeployments.filter(
+            deployment => deployment.createdAt === seriesData.value[0],
+          );
+          this.tooltip.sha = deploy.sha.substring(0, 8);
+        } else {
+          const { seriesName } = seriesData;
+          // seriesData.value contains the chart's [x, y] value pair
+          // seriesData.value[1] is threfore the chart y value
+          const value = seriesData.value[1].toFixed(3);
+
+          this.tooltip.content.push({
+            name: seriesName,
+            value,
+          });
+        }
+      });
+    },
+    setSvg(name) {
+      getSvgIconPathContent(name)
         .then(path => {
           if (path) {
-            this.scatterSymbol = `path://${path}`;
+            this.$set(this.svgs, name, `path://${path}`);
           }
         })
         .catch(() => {});
     },
+    onChartUpdated(chart) {
+      [this.primaryColor] = chart.getOption().color;
+    },
     onResize() {
-      const { width, height } = this.$refs.areaChart.$el.getBoundingClientRect();
+      const { width } = this.$refs.areaChart.$el.getBoundingClientRect();
       this.width = width;
-      this.height = height;
     },
   },
 };
@@ -200,6 +239,7 @@ export default {
       :thresholds="alertData"
       :width="width"
       :height="height"
+      @updated="onChartUpdated"
     >
       <template slot="tooltipTitle">
         <div v-if="tooltip.isDeployment">
@@ -213,7 +253,13 @@ export default {
           {{ tooltip.sha }}
         </div>
         <template v-else>
-          {{ tooltip.content }}
+          <div
+            v-for="(content, key) in tooltip.content"
+            :key="key"
+            class="d-flex justify-content-between"
+          >
+            {{ content.name }} {{ content.value }}
+          </div>
         </template>
       </template>
     </gl-area-chart>

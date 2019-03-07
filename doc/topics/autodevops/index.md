@@ -291,7 +291,7 @@ Auto Build creates a build of the application using an existing `Dockerfile` or
 Heroku buildpacks.
 
 Either way, the resulting Docker image is automatically pushed to the
-[Container Registry][container-registry] and tagged with the commit SHA.
+[Container Registry][container-registry] and tagged with the commit SHA or tag.
 
 #### Auto Build using a Dockerfile
 

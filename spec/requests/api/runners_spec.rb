@@ -90,6 +90,17 @@ describe API::Runners do
 
         expect(response).to have_gitlab_http_status(400)
       end
+
+      it 'filters runners by tag_list' do
+        create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
+        create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
+
+        get api('/runners?tag_list=tag1,tag2', user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+        ]
+      end
     end
 
     context 'unauthorized user' do
@@ -180,6 +191,17 @@ describe API::Runners do
           get api('/runners/all?status=bogus', admin)
 
           expect(response).to have_gitlab_http_status(400)
+        end
+
+        it 'filters runners by tag_list' do
+          create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
+          create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
+
+          get api('/runners/all?tag_list=tag1,tag2', admin)
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+          ]
         end
       end
 
@@ -715,6 +737,17 @@ describe API::Runners do
         get api("/projects/#{project.id}/runners?status=bogus", user)
 
         expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'filters runners by tag_list' do
+        create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
+        create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
+
+        get api("/projects/#{project.id}/runners?tag_list=tag1,tag2", user)
+
+        expect(json_response).to match_array [
+          a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+        ]
       end
     end
 

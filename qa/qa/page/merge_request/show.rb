@@ -27,6 +27,12 @@ module QA
           element :squash_checkbox
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
+          element :dropdown_toggle
+          element :download_email_patches
+          element :download_plain_diff
+        end
+
         view 'app/views/projects/merge_requests/show.html.haml' do
           element :notes_tab
           element :diffs_tab
@@ -158,6 +164,16 @@ module QA
 
         def edit!
           click_element :edit_button
+        end
+
+        def view_email_patches
+          click_element :dropdown_toggle
+          visit_link_in_element(:download_email_patches)
+        end
+
+        def view_plain_diff
+          click_element :dropdown_toggle
+          visit_link_in_element(:download_plain_diff)
         end
       end
     end

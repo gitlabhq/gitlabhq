@@ -436,9 +436,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           let(:expected_variables) do
-            [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
-             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
-             { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true }]
+            [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
+             { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
+             { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false }]
           end
 
           let(:expected_artifacts) do
@@ -549,7 +549,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           end
 
           context 'when job is made for merge request' do
-            let(:pipeline) { create(:ci_pipeline_without_jobs, source: :merge_request, project: project, ref: 'feature', merge_request: merge_request) }
+            let(:pipeline) { create(:ci_pipeline_without_jobs, source: :merge_request_event, project: project, ref: 'feature', merge_request: merge_request) }
             let!(:job) { create(:ci_build, pipeline: pipeline, name: 'spinach', ref: 'feature', stage: 'test', stage_idx: 0) }
             let(:merge_request) { create(:merge_request) }
 
@@ -740,12 +740,12 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when triggered job is available' do
             let(:expected_variables) do
-              [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true },
-               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true },
-               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true },
-               { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true },
-               { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false },
-               { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false }]
+              [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
+               { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
+               { 'key' => 'CI_PIPELINE_TRIGGERED', 'value' => 'true', 'public' => true, 'masked' => false },
+               { 'key' => 'DB_NAME', 'value' => 'postgres', 'public' => true, 'masked' => false },
+               { 'key' => 'SECRET_KEY', 'value' => 'secret_value', 'public' => false, 'masked' => false },
+               { 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1', 'public' => false, 'masked' => false }]
             end
 
             let(:trigger) { create(:ci_trigger, project: project) }

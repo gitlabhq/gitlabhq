@@ -3,6 +3,18 @@ require 'spec_helper'
 describe MergeRequestDiff do
   let(:diff_with_commits) { create(:merge_request).merge_request_diff }
 
+  describe 'validations' do
+    subject { diff_with_commits }
+
+    it 'checks sha format of base_commit_sha, head_commit_sha and start_commit_sha' do
+      subject.base_commit_sha = subject.head_commit_sha = subject.start_commit_sha = 'foobar'
+
+      expect(subject.valid?).to be false
+      expect(subject.errors.count).to eq 3
+      expect(subject.errors).to all(include('is not a valid SHA'))
+    end
+  end
+
   describe 'create new record' do
     subject { diff_with_commits }
 
@@ -78,7 +90,7 @@ describe MergeRequestDiff do
       it 'returns persisted diffs if cannot compare with diff refs' do
         expect(diff).to receive(:load_diffs).and_call_original
 
-        diff.update!(head_commit_sha: 'invalid-sha')
+        diff.update!(head_commit_sha: Digest::SHA1.hexdigest(SecureRandom.hex))
 
         diff.diffs.diff_files
       end

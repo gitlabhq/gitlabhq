@@ -92,6 +92,25 @@
                       = button_tag class: %w[btn btn-link] do
                         = runner_type.titleize
 
+            #js-dropdown-admin-runner-type.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                - Ci::Runner::AVAILABLE_TYPES.each do |runner_type|
+                  %li.filter-dropdown-item{ data: { value: runner_type } }
+                    = button_tag class: %w[btn btn-link] do
+                      = runner_type.titleize
+
+            #js-dropdown-runner-tag.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'none' } }
+                  %button.btn.btn-link
+                    = _('No Tag')
+                %li.divider.droplab-item-ignore
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.js-data-value
+                    %span.dropdown-light-content
+                      {{name}}
+
             = button_tag class: %w[clear-search hidden] do
               = icon('times')
           .filter-dropdown-container

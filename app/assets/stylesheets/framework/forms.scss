@@ -156,8 +156,6 @@ label {
 .select-control {
   padding-left: 10px;
   padding-right: 10px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
   appearance: none;
 
   &::-ms-expand {
@@ -178,7 +176,8 @@ label {
   font-weight: $gl-font-weight-normal;
 }
 
-.form-control::-webkit-input-placeholder {
+
+.form-control::placeholder {
   color: $gl-text-color-tertiary;
 }
 

@@ -154,7 +154,7 @@ There are two different ways to add a new project to a group:
 
 ## Transfer projects into groups
 
-Learn how to [transfer a project into a group](../project/index.md#transfer-an-existing-project-into-a-group).
+Learn how to [transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
 
 ## Sharing a project with a group
 
@@ -181,6 +181,7 @@ Please make sure to understand that:
 - You can only transfer the group to a group you manage.
 - You will need to update your local repositories to point to the new location.
 - If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+- Only explicit group membership is transferred, not the inherited membership. If this would leave the group without an owner, the transferring user is added as owner instead.
 
 ## Group settings
 

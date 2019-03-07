@@ -20,7 +20,6 @@ export default {
   <div>
     <gl-dropdown
       right
-      no-caret
       text="Use an existing commit message"
       variant="link"
       class="mr-commit-dropdown"

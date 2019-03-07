@@ -278,6 +278,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_cluster
     enable :create_environment_terminal
     enable :destroy_release
+    enable :destroy_artifacts
     enable :daily_statistics
   end
 
@@ -300,6 +301,8 @@ class ProjectPolicy < BasePolicy
 
   rule { issues_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
+    prevent(*create_read_update_admin_destroy(:board))
+    prevent(*create_read_update_admin_destroy(:list))
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do
@@ -463,7 +466,7 @@ class ProjectPolicy < BasePolicy
     when ProjectFeature::DISABLED
       false
     when ProjectFeature::PRIVATE
-      guest? || admin?
+      admin? || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true
     end

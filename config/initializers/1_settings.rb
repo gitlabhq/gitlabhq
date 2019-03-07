@@ -40,6 +40,24 @@ if Settings.ldap['enabled'] || Rails.env.test?
     # Since GitLab 10.0, verify_certificates defaults to true for security.
     server['verify_certificates'] = true if server['verify_certificates'].nil?
 
+    # Expose ability to set `tls_options` directly. Deprecate `ca_file` and
+    # `ssl_version` in favor of `tls_options` hash option.
+    server['tls_options'] ||= {}
+
+    if server['ssl_version'] || server['ca_file']
+      Rails.logger.warn 'DEPRECATED: LDAP options `ssl_version` and `ca_file` should be nested within `tls_options`'
+    end
+
+    if server['ssl_version']
+      server['tls_options']['ssl_version'] ||= server['ssl_version']
+      server.delete('ssl_version')
+    end
+
+    if server['ca_file']
+      server['tls_options']['ca_file'] ||= server['ca_file']
+      server.delete('ca_file')
+    end
+
     Settings.ldap['servers'][key] = server
   end
 end

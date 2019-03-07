@@ -29,5 +29,14 @@ describe Emails::Issues do
 
       expect(subject).to have_body_text "23, 34, 58"
     end
+
+    context 'with header and footer' do
+      let(:results) { { success: 165, error_lines: [], parse_error: false } }
+
+      subject { Notify.import_issues_csv_email(user.id, project.id, results) }
+
+      it_behaves_like 'appearance header and footer enabled'
+      it_behaves_like 'appearance header and footer not enabled'
+    end
   end
 end

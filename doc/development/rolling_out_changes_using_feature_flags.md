@@ -135,6 +135,20 @@ want to wait several hours or even days. This is entirely up to you, just make
 sure it is clearly communicated to your team, and the Production team if you
 anticipate any potential problems.
 
+Feature gates can also be actor based, for example a feature could first be
+enabled for only the `gitlab-ce` project. The project is passed by supplying a
+`--project` flag:
+
+```
+/chatops run feature set --project=gitlab-org/gitlab-ce some_feature true
+```
+
+For groups the `--group` flag is available:
+
+```
+/chatops run feature set --group=gitlab-org some_feature true
+```
+
 Once a change is deemed stable, submit a new merge request to remove the
 feature flag. This ensures the change is available to all users and self-hosted
 instances. Make sure to add the ~"feature flag" label to this merge request so
@@ -188,3 +202,12 @@ to be shipped. You can do this via ChatOps:
 
 Note that you can do this at any time, even before the merge request using the
 flag has been merged!
+
+### Cleaning up
+
+When a feature gate has been removed from the code base, the value still exists
+in the database. This can be removed through ChatOps:
+
+```
+/chatops run feature delete some_feature
+```

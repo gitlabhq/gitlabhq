@@ -1,0 +1,5 @@
+---
+title: Resolve showing squash commit edit issue when only single commit is present
+merge_request: 25807
+author:
+type: fixed

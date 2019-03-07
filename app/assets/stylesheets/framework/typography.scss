@@ -2,7 +2,7 @@
   color: $gl-text-color;
   word-wrap: break-word;
 
-  [dir="auto"] {
+  [dir='auto'] {
     text-align: initial;
   }
 
@@ -224,8 +224,8 @@
     }
   }
 
-  a[href*="/uploads/"],
-  a[href*="storage.googleapis.com/google-code-attachments/"] {
+  a[href*='/uploads/'],
+  a[href*='storage.googleapis.com/google-code-attachments/'] {
     &::before {
       margin-right: 4px;
 
@@ -233,7 +233,7 @@
       font-size: inherit;
       text-rendering: auto;
       -webkit-font-smoothing: antialiased;
-      content: "\f0c6";
+      content: '\f0c6';
     }
 
     &:hover::before {
@@ -423,6 +423,7 @@ h4 {
 /**
  * form text input i.e. search bar, comments, forms, etc.
  */
+/* stylelint-disable selector-no-vendor-prefix  */
 input,
 textarea {
   &::-webkit-input-placeholder {
@@ -447,5 +448,6 @@ textarea {
     color: $gl-text-color-tertiary;
   }
 }
+/* stylelint-enable */
 
 .lh-100 { line-height: 1; }

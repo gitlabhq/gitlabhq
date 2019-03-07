@@ -20,6 +20,16 @@ module QA
         e.response
       end
 
+      def put(url, payload)
+        RestClient::Request.execute(
+          method: :put,
+          url: url,
+          payload: payload,
+          verify_ssl: false)
+      rescue RestClient::ExceptionWithResponse => e
+        e.response
+      end
+
       def delete(url)
         RestClient::Request.execute(
           method: :delete,

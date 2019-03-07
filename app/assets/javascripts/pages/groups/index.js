@@ -3,8 +3,7 @@ import initGkeDropdowns from '~/projects/gke_cluster_dropdowns';
 
 function initGcpSignupCallout() {
   const callout = document.querySelector('.gcp-signup-offer');
-
-  if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
+  PersistentUserCallout.factory(callout);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

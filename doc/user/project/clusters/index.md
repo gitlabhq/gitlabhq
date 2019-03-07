@@ -41,7 +41,7 @@ integration, make sure the following requirements are met:
 
 - A [billing account](https://cloud.google.com/billing/docs/how-to/manage-billing-account)
   is set up and you have permissions to access it.
-- The Kubernetes Engine API is enabled. Follow the steps as outlined in the
+- The Kubernetes Engine API and related service are enabled. It should work immediately but may take up to 10 minutes after you create a project. For more information see the
   ["Before you begin" section of the Kubernetes Engine docs](https://cloud.google.com/kubernetes-engine/docs/quickstart#before-you-begin).
 
 ### Creating the cluster
@@ -69,6 +69,7 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
+   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#role-based-access-control-rbac-core-only) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
@@ -87,7 +88,7 @@ To add an existing Kubernetes cluster to your project:
 1. Click **Add an existing Kubernetes cluster** and fill in the details:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required) - The
-      [associated environment](#setting-the-environment-scope) to this cluster.
+      [associated environment](#setting-the-environment-scope-premium) to this cluster.
     - **API URL** (required) -
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
@@ -181,7 +182,7 @@ To add an existing Kubernetes cluster to your project:
       namespace:  11 bytes
       token:      <authentication_token>
       ```
-      
+
       NOTE: **Note:**
       For GKE clusters, you will need the
       `container.clusterRoleBindings.create` permission to create a cluster
@@ -226,12 +227,19 @@ applications running on the cluster.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
 
-Domains at the cluster level permit support for multiple domains
-per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,
-this will be automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
-the [Auto DevOps](../../../topics/autodevops/index.md) stages.
+NOTE: **Note:**
+You do not need to specify a base domain on cluster settings when using GitLab Serverless. The domain in that case
+will be specified as part of the Knative installation. See [Installing Applications](#installing-applications).
 
-The domain should have a wildcard DNS configured to the Ingress IP address.
+Specifying a base domain will automatically set `KUBE_INGRESS_BASE_DOMAIN` as an environment variable.
+If you are using [Auto DevOps](../../../topics/autodevops/index.md), this domain will be used for the different
+stages. For example, Auto Review Apps and Auto Deploy.
+
+The domain should have a wildcard DNS configured to the Ingress IP address. After ingress has been installed (see [Installing Applications](#installing-applications)),
+you can either:
+
+- Create an `A` record that points to the Ingress IP address with your domain provider.
+- Enter a wildcard DNS address using a service such as nip.io or xip.io. For example, `192.168.1.1.xip.io`.
 
 ## Access controls
 
@@ -318,7 +326,7 @@ install it manually.
 NOTE: **Note:**
 Before starting the installation of applications, make sure that time is synchronized
 between your GitLab server and your Kubernetes cluster. Otherwise, installation could fail
-and you may get errors like `Error: remote error: tls: bad certificate` 
+and you may get errors like `Error: remote error: tls: bad certificate`
 in the `stdout` of pods created by GitLab in your Kubernetes cluster.
 
 GitLab provides a one-click install for various applications which can
@@ -345,7 +353,7 @@ by GitLab before installing any of the applications.
 | [Cert Manager](http://docs.cert-manager.io/en/latest/) | 11.6+ | Cert Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
 | [GitLab Runner](https://docs.gitlab.com/runner/) | 10.6+ | GitLab Runner is the open source project that is used to run your jobs and send the results back to GitLab. It is used in conjunction with [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/), the open-source continuous integration service included with GitLab that coordinates the jobs. When installing the GitLab Runner via the applications, it will run in **privileged mode** by default. Make sure you read the [security implications](#security-implications) before doing so. | [runner/gitlab-runner](https://gitlab.com/charts/gitlab-runner) |
-| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) that installs additional useful packages on top of the base Jupyter. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found in [our Nurtch documentation](runbooks/index.md#nurtch-executable-runbooks). **Note**: Authentication will be enabled for any user of the GitLab server via OAuth2. HTTPS will be supported in a future release. | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
+| [JupyterHub](http://jupyter.org/) | 11.0+ | [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/) is a multi-user service for managing notebooks across a team. [Jupyter Notebooks](https://jupyter-notebook.readthedocs.io/en/latest/) provide a web-based interactive programming environment used for data analysis, visualization, and machine learning. We use a [custom Jupyter image](https://gitlab.com/gitlab-org/jupyterhub-user-image/blob/master/Dockerfile) that installs additional useful packages on top of the base Jupyter. Authentication will be enabled only for [project members](../members/index.md) with [Developer or higher](../../permissions.md) access to the project. You will also see ready-to-use DevOps Runbooks built with Nurtch's [Rubix library](https://github.com/amit1rrr/rubix). More information on creating executable runbooks can be found in [our Nurtch documentation](runbooks/index.md#nurtch-executable-runbooks). | [jupyter/jupyterhub](https://jupyterhub.github.io/helm-chart/) |
 | [Knative](https://cloud.google.com/knative) | 11.5+ | Knative provides a platform to create, deploy, and manage serverless workloads from a Kubernetes cluster. It is used in conjunction with, and includes [Istio](https://istio.io) to provide an external IP address for all programs hosted by Knative. You will be prompted to enter a wildcard domain where your applications will be exposed. Configure your DNS server to use the external IP address for that domain. For any application created and installed, they will be accessible as `<program_name>.<kubernetes_namespace>.<domain_name>`. This will require your kubernetes cluster to have [RBAC enabled](#role-based-access-control-rbac). | [knative/knative](https://storage.googleapis.com/triggermesh-charts)
 
 With the exception of Knative, the applications will be installed in a dedicated
@@ -465,7 +473,7 @@ project. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
 Simply add another cluster, like you did the first time, and make sure to
-[set an environment scope](#setting-the-environment-scope) that will
+[set an environment scope](#setting-the-environment-scope-premium) that will
 differentiate the new cluster with the rest.
 
 ## Setting the environment scope **[PREMIUM]**

@@ -50,15 +50,25 @@ describe BoardProjectRecentVisit do
   end
 
   describe '#latest' do
-    it 'returns the most recent visited' do
-      board2 = create(:board, project: project)
-      board3 = create(:board, project: project)
+    def create_visit(time)
+      create :board_project_recent_visit, project: project, user: user, updated_at: time
+    end
 
-      create :board_project_recent_visit, project: board.project, board: board, user: user, updated_at: 7.days.ago
-      create :board_project_recent_visit, project: board2.project, board: board2, user: user, updated_at: 5.days.ago
-      recent = create :board_project_recent_visit, project: board3.project, board: board3, user: user, updated_at: 1.day.ago
+    it 'returns the most recent visited' do
+      create_visit(7.days.ago)
+      create_visit(5.days.ago)
+      recent = create_visit(1.day.ago)
 
       expect(described_class.latest(user, project)).to eq recent
+    end
+
+    it 'returns last 3 visited boards' do
+      create_visit(7.days.ago)
+      visit1 = create_visit(3.days.ago)
+      visit2 = create_visit(2.days.ago)
+      visit3 = create_visit(5.days.ago)
+
+      expect(described_class.latest(user, project, count: 3)).to eq([visit2, visit1, visit3])
     end
   end
 end

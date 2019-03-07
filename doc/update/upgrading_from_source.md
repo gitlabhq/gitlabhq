@@ -40,8 +40,8 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 
 ### 3. Update Ruby
 
-NOTE: Beginning in GitLab 11.0, we only support Ruby 2.4 or higher, and dropped
-support for Ruby 2.3. Be sure to upgrade if necessary.
+NOTE: Beginning in GitLab 11.6, we only support Ruby 2.5 or higher, and dropped
+support for Ruby 2.4. Be sure to upgrade if necessary.
 
 You can check which version you are running with `ruby -v`.
 

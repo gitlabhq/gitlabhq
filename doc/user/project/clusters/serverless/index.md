@@ -19,9 +19,14 @@ For more information on Knative, visit the [Knative docs repo](https://github.co
 
 With GitLab serverless, you can deploy both functions-as-a-service (FaaS) and serverless applications.
 
-## Requirements
+## Prerequisites
 
 To run Knative on Gitlab, you will need:
+
+1. **Existing GitLab project:** You will need a GitLab project to associate all resources. The simplest way to get started:
+
+    - If you are planning on deploying functions, clone the [functions example project](https://gitlab.com/knative-examples/functions) to get started.
+    - If you are planning on deploying a serverless application, clone the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
 
 1. **Kubernetes Cluster:** An RBAC-enabled Kubernetes cluster is required to deploy Knative.
     The simplest way to get started is to add a cluster using [GitLab's GKE integration](../index.md#adding-and-creating-a-new-gke-cluster-via-gitlab).
@@ -43,6 +48,8 @@ To run Knative on Gitlab, you will need:
     runtime being used.
 1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a `Dockerfile` in order to build your application. It should be included
     at the root of your project's repo and expose port `8080`.
+1. **Prometheus** (optional): Installing Prometheus allows you to monitor the scale and traffic of your serverless function/application.
+    See [Installing Applications](../index.md#installing-applications) for more information.
 
 ## Installing Knative via GitLab's Kubernetes integration
 
@@ -56,7 +63,7 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
     ![install-knative](img/install-knative.png)
 
 1. After the Knative installation has finished, you can wait for the IP address to be displayed in the
-   **Knative IP Address** field or retrieve the Istio Ingress IP address by running the following command:
+   **Knative IP Address** field (takes up to 5 minutes) or retrieve the Istio Ingress IP address by running the following command:
 
    ```bash
    kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
@@ -67,6 +74,11 @@ The minimum recommended cluster size to run Knative is 3-nodes, 6 vCPUs, and 22.
    ```bash
    35.161.143.124 my-machine-name:~ my-user$
    ```
+
+   NOTE: **Note:**
+   Running `kubectl` commands on your cluster requires setting up access to the cluster first.
+   For clusters created on GKE, see [GKE Cluster Access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl),
+   for other platforms [Install kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/).
 
 1. The ingress is now available at this address and will route incoming requests to the proper service based on the DNS
    name in the request. To support this, a wildcard DNS A record should be created for the desired domain name. For example,
@@ -94,7 +106,7 @@ Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are 
 
 You can find and import all the files referenced in this doc in the **[functions example project](https://gitlab.com/knative-examples/functions)**.
 
-Follow these steps to deploy a function using the Node.js runtime to your Knative instance:
+Follow these steps to deploy a function using the Node.js runtime to your Knative instance (you can skip these steps if you've cloned the example project):
 
 1. Create a directory that will house the function. In this example we will create a directory called `echo` at the root of the project.
 
@@ -102,28 +114,35 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
     - Public, continue to the next step.
     - Private, you will need to [create a GitLab deploy token](../../deploy_tokens/index.md#creating-a-deploy-token) with `gitlab-deploy-token` as the name and the `read_registry` scope.
 
-1. `.gitlab-ci.yml`: This template allows to define the stage, environment, and
-   image to be used for your functions. It must be included at the root of your repository:
+1. `.gitlab-ci.yml`: this defines a pipeline used to deploy your functions.
+   It must be included at the root of your repository:
 
    ```yaml
-   stages:
-     - deploy
+   include:
+     template: Serverless.gitlab-ci.yml
 
    functions:
-     stage: deploy
-     environment: test
-     image: gcr.io/triggermesh/tm:v0.0.9
-     script:
-      - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN" --push
-      - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_DEPLOY_USER" --password "$CI_DEPLOY_PASSWORD" --pull
-      - tm -n "$KUBE_NAMESPACE" deploy --wait
-
+     extends: .serverless:deploy:functions
+     environment: production
    ```
 
-    The `gitlab-ci.yml` template creates a `Deploy` stage with a `functions` job that invokes the `tm` CLI with the required parameters.
+    This `.gitlab-ci.yml` creates a `functions` job that invokes some
+    predefined commands to deploy your functions to your cluster.
 
-2. `serverless.yml`: This file contains the metadata for your functions,
-   such as name, runtime, and environment. It must be included at the root of your repository. The following is a sample `echo` function which shows the required structure for the file. You can find the relevant files for this project in the [functions example project](https://gitlab.com/knative-examples/functions).
+    `Serverless.gitlab-ci.yml` is a template that allows customization.
+    You can either import it with `include` parameter and use `extends` to
+    customize your jobs, or you can inline the entire template by choosing it
+    from **Apply a template** dropdown when editing the `.gitlab-ci.yml` file through
+    the user interface.
+
+2. `serverless.yml`: this file contains the metadata for your functions,
+   such as name, runtime, and environment.
+
+   It must be included at the root of your repository.
+   The following is a sample `echo` function which shows the required structure
+   for the file.
+
+   You can find the relevant files for this project in the [functions example project](https://gitlab.com/knative-examples/functions).
 
    ```yaml
    service: my-functions
@@ -188,7 +207,7 @@ appear under **Operations > Serverless**.
 This page contains all functions available for the project, the description for
 accessing the function, and, if available, the function's runtime information.
 The details are derived from the Knative installation inside each of the project's
-Kubernetes cluster.
+Kubernetes cluster. Click on each function to obtain detailed scale and invocation data.
 
 The function details can be retrieved directly from Knative on the cluster:
 
@@ -198,14 +217,14 @@ kubectl -n "$KUBE_NAMESPACE" get services.serving.knative.dev
 
 The sample function can now be triggered from any HTTP client using a simple `POST` call:
 
-  1. Using curl
+  1. Using curl (replace the URL on the last line with the URL of your application):
 
       ```bash
       curl \
       --header "Content-Type: application/json" \
       --request POST \
       --data '{"GitLab":"FaaS"}' \
-      http://functions-echo.functions-1.functions.example.net/
+      <http://functions-echo.functions-1.functions.example.com/>
       ```
   2. Using a web-based tool (ie. postman, restlet, etc)
 
@@ -219,34 +238,24 @@ NOTE: **Note:**
 You can reference and import the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) to get started.
 
 Add the following `.gitlab-ci.yml` to the root of your repository
-(you may skip this step if using the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) mentioned above):
+(you may skip this step if you've previously cloned the sample [Knative Ruby App](https://gitlab.com/knative-examples/knative-ruby-app) mentioned above):
 
 ```yaml
-stages:
-  - build
-  - deploy
+include:
+  template: Serverless.gitlab-ci.yml
 
 build:
-  stage: build
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  only:
-    - master
-  script:
-    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --destination $CI_REGISTRY_IMAGE
+  extends: .serverless:build:image
 
 deploy:
-  stage: deploy
-  image: gcr.io/triggermesh/tm@sha256:e3ee74db94d215bd297738d93577481f3e4db38013326c90d57f873df7ab41d5
-  only:
-    - master
-  environment: production
-  script:
-    - echo "$CI_REGISTRY_IMAGE"
-    - tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
+  extends: .serverless:deploy:image
 ```
+
+`Serverless.gitlab-ci.yml` is a template that allows customization.
+You can either import it with `include` parameter and use `extends` to
+customize your jobs, or you can inline the entire template by choosing it
+from **Apply a template** dropdown when editing the `.gitlab-ci.yml` file through
+the user interface.
 
 ### Deploy the application with Knative
 

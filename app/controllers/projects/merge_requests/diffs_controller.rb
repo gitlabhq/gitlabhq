@@ -46,8 +46,8 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   # rubocop: disable CodeReuse/ActiveRecord
   def commit
-    return nil unless commit_id = params[:commit_id].presence
-    return nil unless @merge_request.all_commits.exists?(sha: commit_id)
+    return unless commit_id = params[:commit_id].presence
+    return unless @merge_request.all_commits.exists?(sha: commit_id)
 
     @commit ||= @project.commit(commit_id)
   end

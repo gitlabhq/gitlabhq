@@ -12,7 +12,28 @@ module Projects
       private
 
       def project_update_params
-        params.slice(:error_tracking_setting_attributes)
+        error_tracking_params
+      end
+
+      def error_tracking_params
+        settings = params[:error_tracking_setting_attributes]
+        return {} if settings.blank?
+
+        api_url = ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
+          api_host: settings[:api_host],
+          project_slug: settings.dig(:project, :slug),
+          organization_slug: settings.dig(:project, :organization_slug)
+        )
+
+        {
+          error_tracking_setting_attributes: {
+            api_url: api_url,
+            token: settings[:token],
+            enabled: settings[:enabled],
+            project_name: settings.dig(:project, :name),
+            organization_name: settings.dig(:project, :organization_name)
+          }
+        }
       end
     end
   end

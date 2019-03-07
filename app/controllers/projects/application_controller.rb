@@ -17,7 +17,7 @@ class Projects::ApplicationController < ApplicationController
 
   def project
     return @project if @project
-    return nil unless params[:project_id] || params[:id]
+    return unless params[:project_id] || params[:id]
 
     path = File.join(params[:namespace_id], params[:project_id] || params[:id])
     auth_proc = ->(project) { !project.pending_delete? }

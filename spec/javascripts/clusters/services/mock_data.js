@@ -115,4 +115,14 @@ const DEFAULT_APPLICATION_STATE = {
   requestReason: null,
 };
 
-export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE };
+const APPLICATIONS_MOCK_STATE = {
+  helm: { title: 'Helm Tiller', status: 'installable' },
+  ingress: { title: 'Ingress', status: 'installable' },
+  cert_manager: { title: 'Cert-Manager', status: 'installable' },
+  runner: { title: 'GitLab Runner' },
+  prometheus: { title: 'Prometheus' },
+  jupyter: { title: 'JupyterHub', status: 'installable', hostname: '' },
+  knative: { title: 'Knative ', status: 'installable', hostname: '' },
+};
+
+export { CLUSTERS_MOCK_DATA, DEFAULT_APPLICATION_STATE, APPLICATIONS_MOCK_STATE };

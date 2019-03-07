@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Variables::Collection do
   describe '.new' do
     it 'can be initialized with an array' do
-      variable = { key: 'VAR', value: 'value', public: true }
+      variable = { key: 'VAR', value: 'value', public: true, masked: false }
 
       collection = described_class.new([variable])
 
@@ -66,6 +66,14 @@ describe Gitlab::Ci::Variables::Collection do
       expect(collection).to include(key: 'VAR_3', value: '3', public: true)
     end
 
+    it 'does not concatenate resource if it undefined' do
+      collection = described_class.new([{ key: 'VAR_1', value: '1' }])
+
+      collection.concat(nil)
+
+      expect(collection).to be_one
+    end
+
     it 'returns self' do
       expect(subject.concat([key: 'VAR', value: 'test']))
         .to eq subject
@@ -93,7 +101,7 @@ describe Gitlab::Ci::Variables::Collection do
       collection = described_class.new([{ key: 'TEST', value: '1' }])
 
       expect(collection.to_runner_variables)
-        .to eq [{ key: 'TEST', value: '1', public: true }]
+        .to eq [{ key: 'TEST', value: '1', public: true, masked: false }]
     end
   end
 

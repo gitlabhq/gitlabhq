@@ -152,7 +152,7 @@ trigger word followed by <kbd>help</kbd>. Example: <samp>/gitlab help</samp>
 ## Permissions
 
 The permissions to run the [available commands](#available-slash-commands) derive from
-the [permissions you have on the project](../../permissions.md#project).
+the [permissions you have on the project](../../permissions.md#project-members-permissions).
 
 ## Further reading
 

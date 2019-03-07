@@ -164,8 +164,6 @@ module Gitlab
       kwargs = yield(kwargs) if block_given?
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
-    rescue GRPC::Unavailable => ex
-      handle_grpc_unavailable!(ex)
     ensure
       duration = Gitlab::Metrics::System.monotonic_time - start
 
@@ -177,27 +175,6 @@ module Gitlab
 
       add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc)
     end
-
-    def self.handle_grpc_unavailable!(ex)
-      status = ex.to_status
-      raise ex unless status.details == 'Endpoint read failed'
-
-      # There is a bug in grpc 1.8.x that causes a client process to get stuck
-      # always raising '14:Endpoint read failed'. The only thing that we can
-      # do to recover is to restart the process.
-      #
-      # See https://gitlab.com/gitlab-org/gitaly/issues/1029
-
-      if Sidekiq.server?
-        raise Gitlab::SidekiqMiddleware::Shutdown::WantShutdown.new(ex.to_s)
-      else
-        # SIGQUIT requests a Unicorn worker to shut down gracefully after the current request.
-        Process.kill('QUIT', Process.pid)
-      end
-
-      raise ex
-    end
-    private_class_method :handle_grpc_unavailable!
 
     def self.current_transaction_labels
       Gitlab::Metrics::Transaction.current&.labels || {}
@@ -251,7 +228,7 @@ module Gitlab
       result
     end
 
-    SERVER_FEATURE_FLAGS = %w[].freeze
+    SERVER_FEATURE_FLAGS = %w[go-find-all-tags].freeze
 
     def self.server_feature_flags
       SERVER_FEATURE_FLAGS.map do |f|
@@ -267,7 +244,9 @@ module Gitlab
     end
 
     def self.feature_enabled?(feature_name)
-      Feature.enabled?("gitaly_#{feature_name}")
+      Feature::FlipperFeature.table_exists? && Feature.enabled?("gitaly_#{feature_name}")
+    rescue ActiveRecord::NoDatabaseError
+      false
     end
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
@@ -407,13 +386,13 @@ module Gitlab
 
     # Returns the stacks that calls Gitaly the most times. Used for n+1 detection
     def self.max_stacks
-      return nil unless Gitlab::SafeRequestStore.active?
+      return unless Gitlab::SafeRequestStore.active?
 
       stack_counter = Gitlab::SafeRequestStore[:stack_counter]
-      return nil unless stack_counter
+      return unless stack_counter
 
       max = max_call_count
-      return nil if max.zero?
+      return if max.zero?
 
       stack_counter.select { |_, v| v == max }.keys
     end

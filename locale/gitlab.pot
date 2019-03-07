@@ -384,16 +384,37 @@ msgstr ""
 msgid "Add README"
 msgstr ""
 
+msgid "Add a bullet list"
+msgstr ""
+
 msgid "Add a general comment to this %{noteable_name}."
 msgstr ""
 
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
 msgstr ""
 
+msgid "Add a link"
+msgstr ""
+
+msgid "Add a numbered list"
+msgstr ""
+
 msgid "Add a table"
 msgstr ""
 
+msgid "Add a task list"
+msgstr ""
+
+msgid "Add bold text"
+msgstr ""
+
+msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
+msgstr ""
+
 msgid "Add image comment"
+msgstr ""
+
+msgid "Add italic text"
 msgstr ""
 
 msgid "Add license"
@@ -543,6 +564,9 @@ msgstr ""
 msgid "AdminUsers|Without projects"
 msgstr ""
 
+msgid "Advanced"
+msgstr ""
+
 msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
 msgstr ""
 
@@ -612,10 +636,10 @@ msgstr ""
 msgid "An error has occurred"
 msgstr ""
 
-msgid "An error occured while fetching the releases. Please try again."
+msgid "An error occurred creating the new branch."
 msgstr ""
 
-msgid "An error occurred creating the new branch."
+msgid "An error occurred fetching the dropdown data."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -652,6 +676,9 @@ msgid "An error occurred while fetching the jobs."
 msgstr ""
 
 msgid "An error occurred while fetching the pipeline."
+msgstr ""
+
+msgid "An error occurred while fetching the releases. Please try again."
 msgstr ""
 
 msgid "An error occurred while getting projects"
@@ -862,9 +889,6 @@ msgid "Aug"
 msgstr ""
 
 msgid "August"
-msgstr ""
-
-msgid "Auth Token"
 msgstr ""
 
 msgid "Authentication Log"
@@ -1320,6 +1344,9 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
+msgstr ""
+
 msgid "Certificate"
 msgstr ""
 
@@ -1363,6 +1390,9 @@ msgid "Charts"
 msgstr ""
 
 msgid "Chat"
+msgstr ""
+
+msgid "Check again"
 msgstr ""
 
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
@@ -1417,6 +1447,12 @@ msgid "Choose file..."
 msgstr ""
 
 msgid "Choose the top-level group for your repository imports."
+msgstr ""
+
+msgid "Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions."
+msgstr ""
+
+msgid "Choose your merge method, set up a default merge request description template."
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
@@ -1605,10 +1641,10 @@ msgstr ""
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
-msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
+msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
 msgstr ""
 
-msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
+msgid "ClusterIntegration|An error occurred while trying to fetch project zones: %{error}"
 msgstr ""
 
 msgid "ClusterIntegration|An error occurred while trying to fetch your projects: %{error}"
@@ -1662,7 +1698,7 @@ msgstr ""
 msgid "ClusterIntegration|Copy Jupyter Hostname to clipboard"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Knative IP Address to clipboard"
+msgid "ClusterIntegration|Copy Knative Endpoint to clipboard"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
@@ -1785,7 +1821,7 @@ msgstr ""
 msgid "ClusterIntegration|Knative Domain Name:"
 msgstr ""
 
-msgid "ClusterIntegration|Knative IP Address:"
+msgid "ClusterIntegration|Knative Endpoint:"
 msgstr ""
 
 msgid "ClusterIntegration|Knative extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
@@ -1905,7 +1941,7 @@ msgstr ""
 msgid "ClusterIntegration|Request to begin installing failed"
 msgstr ""
 
-msgid "ClusterIntegration|Retry upgrade"
+msgid "ClusterIntegration|Retry update"
 msgstr ""
 
 msgid "ClusterIntegration|Save changes"
@@ -1950,9 +1986,6 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong when upgrading %{title}. Please check the logs and try again."
-msgstr ""
-
 msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine"
 msgstr ""
 
@@ -1971,10 +2004,19 @@ msgstr ""
 msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
 msgstr ""
 
+msgid "ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint."
+msgstr ""
+
 msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
+msgstr ""
+
+msgid "ClusterIntegration|Update failed. Please check the logs and try again."
+msgstr ""
+
+msgid "ClusterIntegration|Updating"
 msgstr ""
 
 msgid "ClusterIntegration|Upgrade"
@@ -2908,6 +2950,9 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
+msgid "Edit file"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -2930,6 +2975,9 @@ msgid "Emails"
 msgstr ""
 
 msgid "Embed"
+msgstr ""
+
+msgid "Emojis|Something went wrong while loading emojis."
 msgstr ""
 
 msgid "Empty file"
@@ -2957,6 +3005,9 @@ msgid "Enable for this project"
 msgstr ""
 
 msgid "Enable group Runners"
+msgstr ""
+
+msgid "Enable header and footer in emails"
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
@@ -3001,9 +3052,6 @@ msgstr ""
 msgid "Enter the merge request title"
 msgstr ""
 
-msgid "Enter your Sentry API URL"
-msgstr ""
-
 msgid "Environment variables"
 msgstr ""
 
@@ -3026,6 +3074,12 @@ msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
 msgid "Environments|An error occurred while making the request."
+msgstr ""
+
+msgid "Environments|An error occurred while re-deploying the environment, please try again"
+msgstr ""
+
+msgid "Environments|An error occurred while rolling back the environment, please try again"
 msgstr ""
 
 msgid "Environments|An error occurred while stopping the environment, please try again"
@@ -3073,13 +3127,31 @@ msgstr ""
 msgid "Environments|Open live environment"
 msgstr ""
 
+msgid "Environments|Re-deploy"
+msgstr ""
+
+msgid "Environments|Re-deploy environment %{environment_name}?"
+msgstr ""
+
+msgid "Environments|Re-deploy environment %{name}?"
+msgstr ""
+
 msgid "Environments|Re-deploy to environment"
 msgstr ""
 
 msgid "Environments|Read more about environments"
 msgstr ""
 
+msgid "Environments|Rollback"
+msgstr ""
+
 msgid "Environments|Rollback environment"
+msgstr ""
+
+msgid "Environments|Rollback environment %{environment_name}?"
+msgstr ""
+
+msgid "Environments|Rollback environment %{name}?"
 msgstr ""
 
 msgid "Environments|Show all"
@@ -3092,6 +3164,18 @@ msgid "Environments|Stop environment"
 msgstr ""
 
 msgid "Environments|Stopping"
+msgstr ""
+
+msgid "Environments|This action will relaunch the job for commit %{commit_id}, putting the environment in a previous version. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will relaunch the job for commit %{linkStart}%{commitId}%{linkEnd}, putting the environment in a previous version. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will run the job defined by %{name} for commit %{linkStart}%{commitId}%{linkEnd} putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will run the job defined by staging for commit %{commit_id}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -3110,6 +3194,9 @@ msgid "Error Reporting and Logging"
 msgstr ""
 
 msgid "Error Tracking"
+msgstr ""
+
+msgid "Error creating a new path"
 msgstr ""
 
 msgid "Error deleting  %{issuableType}"
@@ -3176,6 +3263,33 @@ msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
 msgid "Error:"
+msgstr ""
+
+msgid "ErrorTracking|Active"
+msgstr ""
+
+msgid "ErrorTracking|After adding your Auth Token, use the 'Connect' button to load projects"
+msgstr ""
+
+msgid "ErrorTracking|Auth Token"
+msgstr ""
+
+msgid "ErrorTracking|Click 'Connect' to re-establish the connection to Sentry and activate the dropdown."
+msgstr ""
+
+msgid "ErrorTracking|Connection has failed. Re-check Auth Token and try again."
+msgstr ""
+
+msgid "ErrorTracking|Find your hostname in your Sentry account settings page"
+msgstr ""
+
+msgid "ErrorTracking|No projects available"
+msgstr ""
+
+msgid "ErrorTracking|Select project"
+msgstr ""
+
+msgid "ErrorTracking|To enable project selection, enter a valid Auth Token"
 msgstr ""
 
 msgid "Errors"
@@ -3402,9 +3516,6 @@ msgstr ""
 msgid "Filter..."
 msgstr ""
 
-msgid "Find and manage Auth Tokens in your Sentry account settings page."
-msgstr ""
-
 msgid "Find by path"
 msgstr ""
 
@@ -3531,6 +3642,9 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+msgid "General Settings"
+msgstr ""
+
 msgid "General pipelines"
 msgstr ""
 
@@ -3616,6 +3730,9 @@ msgid "Go Micro is a framework for micro service development."
 msgstr ""
 
 msgid "Go back"
+msgstr ""
+
+msgid "Go full screen"
 msgstr ""
 
 msgid "Go to"
@@ -3848,6 +3965,9 @@ msgstr ""
 msgid "Housekeeping successfully started"
 msgstr ""
 
+msgid "Housekeeping, export, path, transfer, remove, archive."
+msgstr ""
+
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
 msgstr ""
 
@@ -4059,6 +4179,12 @@ msgid "Input host keys manually"
 msgstr ""
 
 msgid "Input your repository URL"
+msgstr ""
+
+msgid "Insert a quote"
+msgstr ""
+
+msgid "Insert code"
 msgstr ""
 
 msgid "Insert suggestion"
@@ -4464,6 +4590,12 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
+msgid "MRDiff|Show changes only"
+msgstr ""
+
+msgid "MRDiff|Show full file"
+msgstr ""
+
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
 msgstr ""
 
@@ -4531,36 +4663,6 @@ msgid "Markdown"
 msgstr ""
 
 msgid "Markdown enabled"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a bullet list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a link"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a numbered list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a table"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a task list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add bold text"
-msgstr ""
-
-msgid "MarkdownToolbar|Add italic text"
-msgstr ""
-
-msgid "MarkdownToolbar|Go full screen"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert a quote"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert code"
 msgstr ""
 
 msgid "Max access level"
@@ -4660,6 +4762,9 @@ msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{lin
 msgstr ""
 
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
+msgstr ""
+
+msgid "MergeRequest|Error loading full diff. Please try again."
 msgstr ""
 
 msgid "MergeRequest|Filter files"
@@ -4824,6 +4929,9 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
+msgid "Naming, tags, avatar"
+msgstr ""
+
 msgid "Naming, visibility"
 msgstr ""
 
@@ -4943,6 +5051,9 @@ msgstr ""
 msgid "No %{providerTitle} repositories available to import"
 msgstr ""
 
+msgid "No Tag"
+msgstr ""
+
 msgid "No activities found"
 msgstr ""
 
@@ -4973,7 +5084,7 @@ msgstr ""
 msgid "No due date"
 msgstr ""
 
-msgid "No errors to display"
+msgid "No errors to display."
 msgstr ""
 
 msgid "No estimate or time spent"
@@ -5341,9 +5452,6 @@ msgstr ""
 msgid "Pipeline"
 msgstr ""
 
-msgid "Pipeline Health"
-msgstr ""
-
 msgid "Pipeline Schedule"
 msgstr ""
 
@@ -5399,6 +5507,12 @@ msgid "PipelineSchedules|Variables"
 msgstr ""
 
 msgid "PipelineSheduleIntervalPattern|Custom"
+msgstr ""
+
+msgid "PipelineStatusTooltip|Commit: %{ci_status}"
+msgstr ""
+
+msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
 msgstr ""
 
 msgid "Pipelines"
@@ -5863,6 +5977,9 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
+msgid "Project \"%{name}\" is no longer available. Select another project to continue."
+msgstr ""
+
 msgid "Project '%{project_name}' is in the process of being deleted."
 msgstr ""
 
@@ -5966,6 +6083,9 @@ msgid "ProjectSettings|Learn more about badges."
 msgstr ""
 
 msgid "Projects"
+msgstr ""
+
+msgid "Projects Successfully Retrieved"
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
@@ -6116,6 +6236,9 @@ msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
 msgstr ""
 
 msgid "Real-time features"
+msgstr ""
+
+msgid "Recent Project Activity"
 msgstr ""
 
 msgid "Recent searches"
@@ -6429,6 +6552,9 @@ msgid "SSH public key"
 msgstr ""
 
 msgid "SSL Verification"
+msgstr ""
+
+msgid "Saturday"
 msgstr ""
 
 msgid "Save"
@@ -7351,6 +7477,9 @@ msgstr ""
 msgid "The maximum file size allowed is 200KB."
 msgstr ""
 
+msgid "The name %{entryName} is already taken in this directory."
+msgstr ""
+
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
 msgstr ""
 
@@ -7445,6 +7574,9 @@ msgid "There are no unstaged changes"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
+msgstr ""
+
+msgid "There was an error saving your changes."
 msgstr ""
 
 msgid "There was an error saving your notification settings."
@@ -8093,6 +8225,9 @@ msgstr ""
 msgid "Update your group name, description, avatar, and visibility."
 msgstr ""
 
+msgid "Update your project name, tags, description and avatar."
+msgstr ""
+
 msgid "Updating"
 msgstr ""
 
@@ -8285,6 +8420,9 @@ msgstr ""
 msgid "View group labels"
 msgstr ""
 
+msgid "View in Sentry"
+msgstr ""
+
 msgid "View it on GitLab"
 msgstr ""
 
@@ -8319,6 +8457,9 @@ msgid "Visibility level"
 msgstr ""
 
 msgid "Visibility level:"
+msgstr ""
+
+msgid "Visibility, project features, permissions"
 msgstr ""
 
 msgid "Visibility:"
@@ -8514,6 +8655,9 @@ msgid "Will deploy to"
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid "Write"
 msgstr ""
 
 msgid "Write a comment or drag your files here…"
@@ -8830,9 +8974,6 @@ msgid "group"
 msgstr ""
 
 msgid "here"
-msgstr ""
-
-msgid "http://<sentry-host>/api/0/projects/{organization_slug}/{project_slug}/"
 msgstr ""
 
 msgid "https://your-bitbucket-server"

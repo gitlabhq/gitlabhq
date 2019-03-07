@@ -7,7 +7,7 @@ Helm consists of two parts, the `helm` client and a `tiller` server inside Kuber
 
 NOTE: **Note:**
 If you are not able to run Tiller in your cluster, for example on OpenShift, it
-is possible to use [Tiller locally](https://gitlab.com/charts/gitlab/tree/master/doc/helm#local-tiller)
+is possible to use [Tiller locally](https://docs.gitlab.com/charts/installation/tools.html#local-tiller)
 and avoid deploying it into the cluster. This should only be used when Tiller
 cannot be normally deployed.
 
