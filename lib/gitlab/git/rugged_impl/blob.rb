@@ -34,7 +34,7 @@ module Gitlab
 
             blob_entry = find_entry_by_path(repository, root_tree.oid, *path.split('/'))
 
-            return nil unless blob_entry
+            return unless blob_entry
 
             if blob_entry[:type] == :commit
               submodule_blob(blob_entry, path, sha)
@@ -77,10 +77,10 @@ module Gitlab
               entry[:name] == path_parts[0]
             end
 
-            return nil unless entry
+            return unless entry
 
             if path_parts.size > 1
-              return nil unless entry[:type] == :tree
+              return unless entry[:type] == :tree
 
               path_parts.shift
               find_entry_by_path(repository, entry[:oid], *path_parts)
