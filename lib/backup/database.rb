@@ -4,6 +4,7 @@ require 'yaml'
 
 module Backup
   class Database
+    include Backup::Helper
     attr_reader :progress
     attr_reader :config, :db_file_name
 
@@ -17,7 +18,7 @@ module Backup
       FileUtils.mkdir_p(File.dirname(db_file_name))
       FileUtils.rm_f(db_file_name)
       compress_rd, compress_wr = IO.pipe
-      compress_pid = spawn(*%w(gzip -1 -c), in: compress_rd, out: [db_file_name, 'w', 0600])
+      compress_pid = spawn(gzip_cmd, in: compress_rd, out: [db_file_name, 'w', 0600])
       compress_rd.close
 
       dump_pid =
