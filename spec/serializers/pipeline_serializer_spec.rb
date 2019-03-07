@@ -97,6 +97,44 @@ describe PipelineSerializer do
       end
     end
 
+    context 'when there are pipelines for merge requests' do
+      let(:resource) { Ci::Pipeline.all }
+
+      let!(:merge_request_1) do
+        create(:merge_request,
+          :with_merge_request_pipeline,
+          target_project: project,
+          target_branch: 'master',
+          source_project: project,
+          source_branch: 'feature-1')
+      end
+
+      let!(:merge_request_2) do
+        create(:merge_request,
+          :with_merge_request_pipeline,
+          target_project: project,
+          target_branch: 'master',
+          source_project: project,
+          source_branch: 'feature-2')
+      end
+
+      before do
+        project.add_developer(user)
+      end
+
+      it 'includes merge requests information' do
+        expect(subject.all? { |entry| entry[:merge_request].present? }).to be_truthy
+      end
+
+      it 'preloads related merge requests', :postgresql do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
+
+        expect(recorded.log)
+          .to include("SELECT \"merge_requests\".* FROM \"merge_requests\" " \
+                      "WHERE \"merge_requests\".\"id\" IN (#{merge_request_1.id}, #{merge_request_2.id})")
+      end
+    end
+
     describe 'number of queries when preloaded' do
       subject { serializer.represent(resource, preload: true) }
       let(:resource) { Ci::Pipeline.all }

@@ -62,7 +62,7 @@ module Gitlab
         end
 
         branch = response.branch
-        return nil unless branch
+        return unless branch
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)

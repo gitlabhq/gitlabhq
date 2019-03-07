@@ -89,7 +89,7 @@ class IssuableBaseService < BaseService
 
     return unless labels
 
-    params[:label_ids] = labels.split(",").map do |label_name|
+    params[:label_ids] = labels.map do |label_name|
       label = Labels::FindOrCreateService.new(
         current_user,
         parent,

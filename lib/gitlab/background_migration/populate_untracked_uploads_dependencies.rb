@@ -127,7 +127,7 @@ module Gitlab
 
           full_path = matchd[1]
           project = Gitlab::BackgroundMigration::PopulateUntrackedUploadsDependencies::Project.find_by_full_path(full_path)
-          return nil unless project
+          return unless project
 
           project.id
         end

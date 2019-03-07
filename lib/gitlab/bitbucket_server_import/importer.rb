@@ -65,7 +65,7 @@ module Gitlab
       end
 
       def find_user_id(email)
-        return nil unless email
+        return unless email
 
         return users[email] if users.key?(email)
 

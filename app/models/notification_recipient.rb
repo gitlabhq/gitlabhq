@@ -119,7 +119,7 @@ class NotificationRecipient
   private
 
   def read_ability
-    return nil if @skip_read_ability
+    return if @skip_read_ability
     return @read_ability if instance_variable_defined?(:@read_ability)
 
     @read_ability =
@@ -136,7 +136,7 @@ class NotificationRecipient
   end
 
   def default_project
-    return nil if @target.nil?
+    return if @target.nil?
     return @target if @target.is_a?(Project)
     return @target.project if @target.respond_to?(:project)
   end

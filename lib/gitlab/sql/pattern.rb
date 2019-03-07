@@ -33,7 +33,7 @@ module Gitlab
         #                     `LOWER(column) = query` instead of using `ILIKE`.
         def fuzzy_arel_match(column, query, lower_exact_match: false)
           query = query.squish
-          return nil unless query.present?
+          return unless query.present?
 
           words = select_fuzzy_words(query)
 

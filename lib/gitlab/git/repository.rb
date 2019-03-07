@@ -276,7 +276,7 @@ module Gitlab
       # senddata response.
       def archive_file_path(storage_path, sha, name, format = "tar.gz")
         # Build file path
-        return nil unless name
+        return unless name
 
         extension =
           case format

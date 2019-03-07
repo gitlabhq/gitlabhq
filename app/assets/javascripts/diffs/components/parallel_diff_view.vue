@@ -1,5 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
+import draftCommentsMixin from 'ee_else_ce/diffs/mixins/draft_comments';
 import parallelDiffTableRow from './parallel_diff_table_row.vue';
 import parallelDiffCommentRow from './parallel_diff_comment_row.vue';
 
@@ -7,7 +8,10 @@ export default {
   components: {
     parallelDiffTableRow,
     parallelDiffCommentRow,
+    ParallelDraftCommentRow: () =>
+      import('ee_component/batch_comments/components/parallel_draft_comment_row.vue'),
   },
+  mixins: [draftCommentsMixin],
   props: {
     diffFile: {
       type: Object,
@@ -55,6 +59,12 @@ export default {
             :diff-file-hash="diffFile.file_hash"
             :line-index="index"
             :help-page-path="helpPagePath"
+          />
+          <parallel-draft-comment-row
+            v-if="shouldRenderParallelDraftRow(diffFile.file_hash, line)"
+            :key="`drafts-${index}`"
+            :line="line"
+            :diff-file-content-sha="diffFile.file_hash"
           />
         </template>
       </tbody>
