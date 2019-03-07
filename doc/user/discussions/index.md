@@ -10,17 +10,18 @@ You can leave a comment in the following places:
 - commits
 - commit diffs
 
-The comment area supports [Markdown] and [quick actions]. Every individual
-comment can be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
-One can also edit their own comment at any time, and anyone with [Maintainer access level][permissions] or
+There are standard comments, and you also have the option to create a comment
+in the form of a resolvable/threaded discussion. A comment can also be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
+when it receives a reply.
+
+The comment area supports [Markdown] and [quick actions]. You can edit your own
+comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
-You could also reply to the notification email in order to reply to a comment,
+You can also reply to a comment notification email in order to reply to a comment,
 provided that [Reply by email] is configured by your GitLab admin. This also
-supports [Markdown] and [quick actions] as if replied from the web.
-
-Apart from the standard comments, you also have the option to create a comment
-in the form of a resolvable or threaded discussion.
+supports [Markdown] and [quick actions] as if replied from the web. Note that this
+adds an additional comment, but does not create a discussion.
 
 ## Resolvable discussions
 
@@ -348,7 +349,7 @@ To reply a non-discussion comment, you can use the **Reply to comment** button.
 
 ![Reply to comment button](img/reply_to_comment_button.png)
 
-The **Reply to comment** button is only displayed if you have permissions to reply to an existing discussion, or start a discussion from a standalone comment.
+The **Reply to comment** button is only displayed if you have permissions to reply to an existing discussion, or start a discussion from a standard comment.
 
 Clicking on the **Reply to comment** button will bring the reply area into focus and you can type your reply.
 
