@@ -227,7 +227,7 @@ production: &base
         # endpoint: 'http://127.0.0.1:9000' # default: nil
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
-  ## Packages (maven repository so far)
+  ## Packages (maven repository, npm registry, etc...)
   packages:
     enabled: false
 
