@@ -1,6 +1,6 @@
 module SchemaPath
   def self.expand(schema, dir = '')
-    Rails.root.join('spec', dir, "fixtures/api/schemas/#{schema}.json").to_s
+    Rails.root.join(dir, 'spec', "fixtures/api/schemas/#{schema}.json").to_s
   end
 end
 
