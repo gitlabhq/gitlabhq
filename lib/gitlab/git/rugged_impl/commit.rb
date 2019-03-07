@@ -43,6 +43,30 @@ module Gitlab
           end
         end
 
+        override :commit_tree_entry
+        def commit_tree_entry(path)
+          if Feature.enabled?(:rugged_commit_tree_entry)
+            rugged_tree_entry(path)
+          else
+            super
+          end
+        end
+
+        # Is this the same as Blob.find_entry_by_path ?
+        def rugged_tree_entry(path)
+          rugged_commit.tree.path(path)
+        rescue Rugged::TreeError
+          nil
+        end
+
+        def rugged_commit
+          @rugged_commit ||= if raw_commit.is_a?(Rugged::Commit)
+                               raw_commit
+                             else
+                               @repository.rev_parse_target(id)
+                             end
+        end
+
         def init_from_rugged(commit)
           author = commit.author
           committer = commit.committer
