@@ -1,5 +1,8 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-golang-1.11-git-2.18-chrome-71.0-node-10.x-yarn-1.12-postgresql-9.6-graphicsmagick-1.3.29"
 
+include:
+  - local: /lib/gitlab/ci/templates/Code-Quality.gitlab-ci.yml
+
 .dedicated-runner: &dedicated-runner
   retry: 1
   tags:
@@ -774,31 +777,6 @@ jest:
 
 code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
-  image: docker:stable
-  allow_failure: true
-  # gitlab-org runners set `privileged: false` but we need to have it set to true
-  # since we're using Docker in Docker
-  tags: []
-  before_script: []
-  services:
-    - docker:stable-dind
-  variables:
-    SETUP_DB: "false"
-    DOCKER_DRIVER: overlay2
-  cache: {}
-  dependencies: []
-  script:
-    # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
-    expire_in: 1 week
 
 sast:
   <<: *dedicated-no-docs-no-db-pull-cache-job
