@@ -268,7 +268,7 @@ The `releases` directory will hold all our deployments:
     echo 'Cloning repository'
     [ -d {{ $releases_dir }} ] || mkdir {{ $releases_dir }}
     git clone --depth 1 {{ $repository }} {{ $new_release_dir }}
-    cd {{ $releases_dir }}
+    cd {{ $new_release_dir }}
     git reset --hard {{ $commit }}
 @endtask
 
@@ -346,7 +346,7 @@ At the end, our `Envoy.blade.php` file will look like this:
     echo 'Cloning repository'
     [ -d {{ $releases_dir }} ] || mkdir {{ $releases_dir }}
     git clone --depth 1 {{ $repository }} {{ $new_release_dir }}
-    cd {{ $releases_dir }}
+    cd {{ $new_release_dir }}
     git reset --hard {{ $commit }}
 @endtask
 
