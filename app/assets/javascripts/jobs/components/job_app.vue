@@ -34,6 +34,7 @@ export default {
     StuckBlock,
     Sidebar,
     GlLoadingIcon,
+    SharedRunner: () => import('ee_component/jobs/components/shared_runner_limit_block.vue'),
   },
   mixins: [delayedJobMixin],
   props: {
@@ -84,6 +85,7 @@ export default {
       'shouldRenderCalloutMessage',
       'shouldRenderTriggeredLabel',
       'hasEnvironment',
+      'shouldRenderSharedRunnerLimitWarning',
       'hasTrace',
       'emptyStateIllustration',
       'isScrollingDown',
@@ -219,6 +221,14 @@ export default {
           :has-no-runners-for-project="hasRunnersForProject"
           :tags="job.tags"
           :runners-path="runnerSettingsUrl"
+        />
+
+        <shared-runner
+          v-if="shouldRenderSharedRunnerLimitWarning"
+          class="js-shared-runner-limit"
+          :quota-used="job.runners.quota.used"
+          :quota-limit="job.runners.quota.limit"
+          :runners-path="runnerHelpUrl"
         />
 
         <environments-block

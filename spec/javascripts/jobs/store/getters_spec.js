@@ -151,6 +151,61 @@ describe('Job Store Getters', () => {
     });
   });
 
+  describe('shouldRenderSharedRunnerLimitWarning', () => {
+    describe('without runners information', () => {
+      it('returns false', () => {
+        expect(getters.shouldRenderSharedRunnerLimitWarning(localState)).toEqual(false);
+      });
+    });
+
+    describe('with runners information', () => {
+      describe('when used quota is less than limit', () => {
+        it('returns false', () => {
+          localState.job.runners = {
+            quota: {
+              used: 33,
+              limit: 2000,
+            },
+            available: true,
+            online: true,
+          };
+
+          expect(getters.shouldRenderSharedRunnerLimitWarning(localState)).toEqual(false);
+        });
+      });
+
+      describe('when used quota is equal to limit', () => {
+        it('returns true', () => {
+          localState.job.runners = {
+            quota: {
+              used: 2000,
+              limit: 2000,
+            },
+            available: true,
+            online: true,
+          };
+
+          expect(getters.shouldRenderSharedRunnerLimitWarning(localState)).toEqual(true);
+        });
+      });
+
+      describe('when used quota is bigger than limit', () => {
+        it('returns true', () => {
+          localState.job.runners = {
+            quota: {
+              used: 2002,
+              limit: 2000,
+            },
+            available: true,
+            online: true,
+          };
+
+          expect(getters.shouldRenderSharedRunnerLimitWarning(localState)).toEqual(true);
+        });
+      });
+    });
+  });
+
   describe('hasRunnersForProject', () => {
     describe('with available and offline runners', () => {
       it('returns true', () => {
