@@ -1132,18 +1132,6 @@ describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(404)
     end
-
-    it "returns 400 when merge method is not supported" do
-      merge_request.project.update!(merge_method: 'ff')
-
-      put api(url, user)
-
-      expected_error =
-        'Fast-forward to refs/merge-requests/1/merge is currently not supported.'
-
-      expect(response).to have_gitlab_http_status(400)
-      expect(json_response['message']).to eq(expected_error)
-    end
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_iid" do
