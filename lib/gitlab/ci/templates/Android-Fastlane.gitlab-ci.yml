@@ -118,4 +118,3 @@ promoteProduction:
    - master
   script:
     - bundle exec fastlane promote_beta_to_production
-    

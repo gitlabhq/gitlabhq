@@ -18,7 +18,7 @@ cache:
     - venv/
 
 before_script:
-  - python -V               # Print out python version for debugging
+  - python -V # Print out python version for debugging
   - pip install virtualenv
   - virtualenv venv
   - source venv/bin/activate
@@ -26,7 +26,7 @@ before_script:
 test:
   script:
   - python setup.py test
-  - pip install tox flake8  # you can also use tox
+  - pip install tox flake8 # you can also use tox
   - tox -e py36,flake8
 
 run:
