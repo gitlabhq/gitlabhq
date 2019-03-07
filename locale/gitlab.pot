@@ -324,6 +324,9 @@ msgstr ""
 msgid "A ready-to-go template for use with iOS Swift apps."
 msgstr ""
 
+msgid "A ready-to-go template for use with Android apps."
+msgstr ""
+
 msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
 msgstr ""
 
