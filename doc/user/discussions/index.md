@@ -10,8 +10,9 @@ You can leave a comment in the following places:
 - commits
 - commit diffs
 
-The comment area supports [Markdown] and [quick actions]. One can edit their
-own comment at any time, and anyone with [Maintainer access level][permissions] or
+The comment area supports [Markdown] and [quick actions]. Every individual
+comment can be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
+One can also edit their own comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
 You could also reply to the notification email in order to reply to a comment,
@@ -338,6 +339,26 @@ and push the suggested change directly into the codebase in the merge request's 
 > **Note:**
 Custom commit messages will be introduced by
 [#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
+
+## Start a discussion by replying to a non-discussion comment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30299) in GitLab 11.9
+
+To reply a non-discussion comment, you can use the **Reply to comment** button.
+
+![Reply to comment button](img/reply_to_comment_button.png)
+
+The **Reply to comment** button is only displayed if you have permissions to reply to an existing discussion, or start a discussion from a standalone comment.
+
+Clicking on the **Reply to comment** button will bring the reply area into focus and you can type your reply.
+
+![Reply to comment feature](img/reply_to_comment.gif)
+
+Relying to a non-discussion comment will convert the non-discussion comment to a 
+threaded discussion once the reply is submitted. This conversion is considered an edit
+to the original comment, so a note about when it was last edited will appear underneath it.
+
+This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff discussions are not supported yet.
 
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125
