@@ -79,6 +79,8 @@ describe Gitlab::UsageData do
         auto_devops_disabled
         deploy_keys
         deployments
+        successful_deployments
+        failed_deployments
         environments
         clusters
         clusters_enabled
