@@ -883,7 +883,8 @@ module API
       expose :target_type
 
       expose :target do |todo, options|
-        todo_target_class(todo.target_type).represent(todo.target, options)
+        todo_options = options.fetch(todo.target_type, {})
+        todo_target_class(todo.target_type).represent(todo.target, todo_options)
       end
 
       expose :target_url do |todo, options|
