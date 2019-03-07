@@ -35,7 +35,7 @@ If your test exceeds that time, it will fail.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
-(`jest.setTimeout`)[https://jestjs.io/docs/en/jest-object#jestsettimeouttimeout].
+[`jest.setTimeout`](https://jestjs.io/docs/en/jest-object#jestsettimeouttimeout).
 
 ```javascript
 beforeAll(() => {
