@@ -29,7 +29,7 @@ module MergeRequestsHelper
 
   def ci_build_details_path(merge_request)
     build_url = merge_request.source_project.ci_service.build_page(merge_request.diff_head_sha, merge_request.source_branch)
-    return nil unless build_url
+    return unless build_url
 
     parsed_url = URI.parse(build_url)
 
@@ -92,7 +92,7 @@ module MergeRequestsHelper
   end
 
   def version_index(merge_request_diff)
-    return nil if @merge_request_diffs.empty?
+    return if @merge_request_diffs.empty?
 
     @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
   end
@@ -149,7 +149,7 @@ module MergeRequestsHelper
 
   def merge_request_source_project_for_project(project = @project)
     unless can?(current_user, :create_merge_request_in, project)
-      return nil
+      return
     end
 
     if can?(current_user, :create_merge_request_from, project)

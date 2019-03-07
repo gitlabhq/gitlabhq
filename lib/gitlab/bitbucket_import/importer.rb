@@ -47,7 +47,7 @@ module Gitlab
 
       # rubocop: disable CodeReuse/ActiveRecord
       def find_user_id(username)
-        return nil unless username
+        return unless username
 
         return users[username] if users.key?(username)
 

@@ -57,7 +57,7 @@ export default {
       },
       width: 0,
       height: 0,
-      scatterSymbol: undefined,
+      svgs: {},
     };
   },
   computed: {
@@ -78,24 +78,24 @@ export default {
           axisPointer: {
             snap: true,
           },
-          nameTextStyle: {
-            padding: [18, 0, 0, 0],
-          },
         },
         yAxis: {
           name: this.yAxisLabel,
           axisLabel: {
             formatter: value => value.toFixed(3),
           },
-          nameTextStyle: {
-            padding: [0, 0, 36, 0],
-          },
         },
         legend: {
           formatter: this.xAxisLabel,
         },
         series: this.scatterSeries,
+        dataZoom: this.dataZoomConfig,
       };
+    },
+    dataZoomConfig() {
+      const handleIcon = this.svgs['scroll-handle'];
+
+      return handleIcon ? { handleIcon } : {};
     },
     earliestDatapoint() {
       return Object.values(this.chartData).reduce((acc, data) => {
@@ -131,7 +131,7 @@ export default {
       return {
         type: 'scatter',
         data: this.recentDeployments.map(deployment => [deployment.createdAt, 0]),
-        symbol: this.scatterSymbol,
+        symbol: this.svgs.rocket,
         symbolSize: 14,
       };
     },
@@ -151,7 +151,8 @@ export default {
   created() {
     debouncedResize = debounceByAnimationFrame(this.onResize);
     window.addEventListener('resize', debouncedResize);
-    this.getScatterSymbol();
+    this.setSvg('rocket');
+    this.setSvg('scroll-handle');
   },
   methods: {
     formatTooltipText(params) {
@@ -167,11 +168,11 @@ export default {
         this.tooltip.content = `${this.yAxisLabel} ${seriesData.value[1].toFixed(3)}`;
       }
     },
-    getScatterSymbol() {
-      getSvgIconPathContent('rocket')
+    setSvg(name) {
+      getSvgIconPathContent(name)
         .then(path => {
           if (path) {
-            this.scatterSymbol = `path://${path}`;
+            this.$set(this.svgs, name, `path://${path}`);
           }
         })
         .catch(() => {});

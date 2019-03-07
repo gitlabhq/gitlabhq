@@ -1,14 +1,9 @@
+import AvailableDropdownMappings from 'ee_else_ce/filtered_search/available_dropdown_mappings';
 import _ from 'underscore';
 import DropLab from '~/droplab/drop_lab';
 import FilteredSearchContainer from './container';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import DropdownUtils from './dropdown_utils';
-import DropdownHint from './dropdown_hint';
-import DropdownEmoji from './dropdown_emoji';
-import DropdownNonUser from './dropdown_non_user';
-import DropdownUser from './dropdown_user';
-import DropdownAjaxFilter from './dropdown_ajax_filter';
-import NullDropdown from './null_dropdown';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
@@ -50,114 +45,15 @@ export default class FilteredSearchDropdownManager {
 
   setupMapping() {
     const supportedTokens = this.filteredSearchTokenKeys.getKeys();
-    const allowedMappings = {
-      hint: {
-        reference: null,
-        gl: DropdownHint,
-        element: this.container.querySelector('#js-dropdown-hint'),
-      },
-    };
-    const availableMappings = {
-      author: {
-        reference: null,
-        gl: DropdownUser,
-        element: this.container.querySelector('#js-dropdown-author'),
-      },
-      assignee: {
-        reference: null,
-        gl: DropdownUser,
-        element: this.container.querySelector('#js-dropdown-assignee'),
-      },
-      milestone: {
-        reference: null,
-        gl: DropdownNonUser,
-        extraArguments: {
-          endpoint: this.getMilestoneEndpoint(),
-          symbol: '%',
-        },
-        element: this.container.querySelector('#js-dropdown-milestone'),
-      },
-      label: {
-        reference: null,
-        gl: DropdownNonUser,
-        extraArguments: {
-          endpoint: this.getLabelsEndpoint(),
-          symbol: '~',
-          preprocessing: DropdownUtils.duplicateLabelPreprocessing,
-        },
-        element: this.container.querySelector('#js-dropdown-label'),
-      },
-      'my-reaction': {
-        reference: null,
-        gl: DropdownEmoji,
-        element: this.container.querySelector('#js-dropdown-my-reaction'),
-      },
-      wip: {
-        reference: null,
-        gl: DropdownNonUser,
-        element: this.container.querySelector('#js-dropdown-wip'),
-      },
-      confidential: {
-        reference: null,
-        gl: DropdownNonUser,
-        element: this.container.querySelector('#js-dropdown-confidential'),
-      },
-      status: {
-        reference: null,
-        gl: NullDropdown,
-        element: this.container.querySelector('#js-dropdown-admin-runner-status'),
-      },
-      type: {
-        reference: null,
-        gl: NullDropdown,
-        element: this.container.querySelector('#js-dropdown-admin-runner-type'),
-      },
-      tag: {
-        reference: null,
-        gl: DropdownAjaxFilter,
-        extraArguments: {
-          endpoint: this.getRunnerTagsEndpoint(),
-          symbol: '~',
-        },
-        element: this.container.querySelector('#js-dropdown-runner-tag'),
-      },
-    };
+    const availableMappings = new AvailableDropdownMappings(
+      this.container,
+      this.baseEndpoint,
+      this.groupsOnly,
+      this.includeAncestorGroups,
+      this.includeDescendantGroups,
+    );
 
-    supportedTokens.forEach(type => {
-      if (availableMappings[type]) {
-        allowedMappings[type] = availableMappings[type];
-      }
-    });
-
-    this.mapping = allowedMappings;
-  }
-
-  getMilestoneEndpoint() {
-    const endpoint = `${this.baseEndpoint}/milestones.json`;
-
-    return endpoint;
-  }
-
-  getLabelsEndpoint() {
-    let endpoint = `${this.baseEndpoint}/labels.json?`;
-
-    if (this.groupsOnly) {
-      endpoint = `${endpoint}only_group_labels=true&`;
-    }
-
-    if (this.includeAncestorGroups) {
-      endpoint = `${endpoint}include_ancestor_groups=true&`;
-    }
-
-    if (this.includeDescendantGroups) {
-      endpoint = `${endpoint}include_descendant_groups=true`;
-    }
-
-    return endpoint;
-  }
-
-  getRunnerTagsEndpoint() {
-    return `${this.baseEndpoint}/admin/runners/tag_list.json`;
+    this.mapping = availableMappings.getAllowedMappings(supportedTokens);
   }
 
   static addWordToInput(tokenName, tokenValue = '', clicked = false, options = {}) {

@@ -7,6 +7,7 @@ import MonitoringMock, { deploymentData } from '../mock_data';
 
 describe('Area component', () => {
   const mockWidgets = 'mockWidgets';
+  const mockSvgPathContent = 'mockSvgPathContent';
   let mockGraphData;
   let areaChart;
   let spriteSpy;
@@ -30,7 +31,7 @@ describe('Area component', () => {
     });
 
     spriteSpy = spyOnDependency(Area, 'getSvgIconPathContent').and.callFake(
-      () => new Promise(resolve => resolve()),
+      () => new Promise(resolve => resolve(mockSvgPathContent)),
     );
   });
 
@@ -146,13 +147,22 @@ describe('Area component', () => {
       });
     });
 
-    describe('getScatterSymbol', () => {
+    describe('setSvg', () => {
+      const mockSvgName = 'mockSvgName';
+
       beforeEach(() => {
-        areaChart.vm.getScatterSymbol();
+        areaChart.vm.setSvg(mockSvgName);
       });
 
-      it('gets rocket svg path content for use as deployment data symbol', () => {
-        expect(spriteSpy).toHaveBeenCalledWith('rocket');
+      it('gets svg path content', () => {
+        expect(spriteSpy).toHaveBeenCalledWith(mockSvgName);
+      });
+
+      it('sets svg path content', done => {
+        areaChart.vm.$nextTick(() => {
+          expect(areaChart.vm.svgs[mockSvgName]).toBe(`path://${mockSvgPathContent}`);
+          done();
+        });
       });
     });
 

@@ -132,7 +132,7 @@ class WikiPage
 
   # The GitLab Commit instance for this page.
   def version
-    return nil unless persisted?
+    return unless persisted?
 
     @version ||= @page.version
   end

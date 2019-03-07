@@ -79,10 +79,19 @@ module GraphqlHelpers
     attributes = attributes_to_graphql(attributes)
     attributes = "(#{attributes})" if attributes.present?
     <<~QUERY
-      #{name}#{attributes} {
-        #{fields}
-      }
+      #{name}#{attributes}
+      #{wrap_fields(fields)}
     QUERY
+  end
+
+  def wrap_fields(fields)
+    return unless fields.strip.present?
+
+    <<~FIELDS
+    {
+      #{fields}
+    }
+    FIELDS
   end
 
   def all_graphql_fields_for(class_name, parent_types = Set.new)
@@ -116,8 +125,8 @@ module GraphqlHelpers
     end.join(", ")
   end
 
-  def post_graphql(query, current_user: nil, variables: nil)
-    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }
+  def post_graphql(query, current_user: nil, variables: nil, headers: {})
+    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }, headers: headers
   end
 
   def post_graphql_mutation(mutation, current_user: nil)

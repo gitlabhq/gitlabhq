@@ -44,7 +44,7 @@ module Gitlab
             entry[:name] == path_arr[0] && entry[:type] == :tree
           end
 
-          return nil unless entry
+          return unless entry
 
           if path_arr.size > 1
             path_arr.shift

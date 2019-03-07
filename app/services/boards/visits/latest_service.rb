@@ -4,7 +4,7 @@ module Boards
   module Visits
     class LatestService < Boards::BaseService
       def execute
-        return nil unless current_user
+        return unless current_user
 
         recent_visit_model.latest(current_user, parent, count: params[:count])
       end
