@@ -66,6 +66,11 @@ module Gitlab
         rescue Rugged::ReferenceError
           nil
         end
+
+        # Lookup for rugged object by oid or ref name
+        def lookup(oid_or_ref_name)
+          rugged.rev_parse(oid_or_ref_name)
+        end
       end
     end
   end
