@@ -205,6 +205,13 @@ sudo gitlab-rake gitlab:backup:create BACKUP=dump
 
 The resulting file will then be `dump_gitlab_backup.tar`. This is useful for systems that make use of rsync and incremental backups, and will result in considerably faster transfer speeds.
 
+### Rsyncable
+
+To make sure the generated archive is intelligently transferable by rsync, the `GZIP_RSYNCABLE=yes` option can be set. This will set the `--rsyncable` option to `gzip`. This is only useful in combination with setting [the Backup filename option](#backup-filename). Note that this option in `gzip` is not guaranteed to be available on all distributions.
+
+```sh
+sudo gitlab-rake gitlab:backup:create BACKUP=dump GZIP_RSYNCABLE=yes
+```
 
 ### Excluding specific directories from the backup
 
