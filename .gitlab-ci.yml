@@ -684,6 +684,7 @@ gitlab:assets:compile:
     - gitlab-org
 
 gitlab:ui:visual:
+  <<: *except-docs
   tags:
     - gitlab-org
   before_script: []
