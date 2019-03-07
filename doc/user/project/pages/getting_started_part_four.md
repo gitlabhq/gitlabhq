@@ -9,14 +9,26 @@ date: 2017-02-22
 
 # Creating and Tweaking GitLab CI/CD for GitLab Pages
 
-[GitLab CI](https://about.gitlab.com/gitlab-ci/) serves
+To [get started with GitLab Pages](index.md#getting-started), you can
+use one of the project templates, a `.gitlab-ci.yml` template,
+or fork an existing example project. Therefore, you don't need to
+understand _all_ the ins and odds of GitLab CI/CD to get your site
+deployed. Still, there are cases where you want to write your own
+script or tweak an existing one. This document guides you through
+this process.
+
+This guide also provides a general overview and clear introduction
+for **getting familiar with the `.gitlab-ci.yml` file and writing
+one for the first time.**
+
+[GitLab CI/CD](../../../ci/README.md) serves
 numerous purposes, to build, test, and deploy your app
 from GitLab through
-[Continuous Integration, Continuous Delivery, and Continuous Deployment](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/)
+[Continuous Integration, Continuous Delivery, and Continuous Deployment](../../../ci/introduction/index.md#introduction-to-continuous-methods)
 methods. You will need it to build your website with GitLab Pages,
 and deploy it to the Pages server.
 
-To implement GitLab CI/CD, the first thing we need is a configuration
+To implement GitLab CI/CD, the first thing you need is a configuration
 file called `.gitlab-ci.yml` placed at your website's root directory.
 
 What this file actually does is telling the
@@ -26,7 +38,7 @@ terminal. GitLab CI/CD tells the Runner which commands to run.
 Both are built-in in GitLab, and you don't need to set up
 anything for them to work.
 
-Explaining [every detail of GitLab CI](https://docs.gitlab.com/ce/ci/yaml/README.html)
+Explaining [every detail of GitLab CI/CD](../../../ci/yaml/README.md)
 and GitLab Runner is out of the scope of this guide, but we'll
 need to understand just a few things to be able to write our own
 `.gitlab-ci.yml` or tweak an existing one. It's an
