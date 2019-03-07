@@ -48,10 +48,28 @@ describe Gitlab::Checks::BranchCheck do
       context 'when project repository is empty' do
         let(:project) { create(:project) }
 
-        it 'raises an error if the user is not allowed to push to protected branches' do
-          expect(user_access).to receive(:can_push_to_branch?).and_return(false)
+        context 'user is not allowed to push to protected branches' do
+          before do
+            allow(user_access)
+              .to receive(:can_push_to_branch?)
+              .and_return(false)
+          end
 
-          expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /Ask a project Owner or Maintainer to create a default branch/)
+          it 'raises an error' do
+            expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /Ask a project Owner or Maintainer to create a default branch/)
+          end
+        end
+
+        context 'user is allowed to push to protected branches' do
+          before do
+            allow(user_access)
+              .to receive(:can_push_to_branch?)
+              .and_return(true)
+          end
+
+          it 'allows branch creation' do
+            expect { subject.validate! }.not_to raise_error
+          end
         end
       end
 
