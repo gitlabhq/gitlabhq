@@ -24,10 +24,6 @@ export default {
       required: true,
       deep: true,
     },
-    onSubmit: {
-      type: Function,
-      required: true,
-    },
   },
   computed: {
     modalTitle() {
@@ -52,6 +48,11 @@ export default {
       return !_.isEmpty(this.pipeline.ref);
     },
   },
+  methods: {
+    emitSubmit(event) {
+      this.$emit('submit', event);
+    },
+  },
 };
 </script>
 <template>
@@ -60,7 +61,7 @@ export default {
     :header-title-text="modalTitle"
     :footer-primary-button-text="s__('Pipeline|Stop pipeline')"
     footer-primary-button-variant="danger"
-    @submit="onSubmit"
+    @submit="emitSubmit($event)"
   >
     <p v-html="modalText"></p>
 

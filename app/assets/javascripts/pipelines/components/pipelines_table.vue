@@ -84,6 +84,6 @@ export default {
       :view-type="viewType"
       :canceling-pipeline="cancelingPipeline"
     />
-    <pipeline-stop-modal :pipeline="pipeline" :on-submit="onSubmit" />
+    <pipeline-stop-modal :pipeline="pipeline" @submit="onSubmit" />
   </div>
 </template>
