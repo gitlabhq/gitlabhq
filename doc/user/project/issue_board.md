@@ -177,7 +177,7 @@ menu from where you can create another Issue Board or delete the existing one.
 Using the search box at the top of the menu, you can filter the listed boards.
 
 When you have 10 or more boards available, a "Recent" section is also shown in the menu.
-These are shortcuts to your last 5 visited boards.
+These are shortcuts to your last 4 visited boards.
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 
