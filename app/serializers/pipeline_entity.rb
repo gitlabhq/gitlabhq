@@ -28,7 +28,8 @@ class PipelineEntity < Grape::Entity
     expose :can_retry?, as: :retryable
     expose :can_cancel?, as: :cancelable
     expose :failure_reason?, as: :failure_reason
-    expose :detached_merge_request_pipeline?, as: :detached
+    expose :detached_merge_request_pipeline?, as: :detached_merge_request_pipeline
+    expose :merge_request_pipeline?, as: :merge_request_pipeline
   end
 
   expose :details do

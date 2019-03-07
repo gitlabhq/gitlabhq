@@ -2772,7 +2772,7 @@ describe Ci::Build do
     end
 
     context 'when ref is merge request' do
-      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
       let(:pipeline) { merge_request.merge_request_pipelines.first }
       let(:build) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline, project: project) }
 
@@ -2830,7 +2830,7 @@ describe Ci::Build do
     end
 
     context 'when ref is merge request' do
-      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
       let(:pipeline) { merge_request.merge_request_pipelines.first }
       let(:build) { create(:ci_build, ref: merge_request.source_branch, tag: false, pipeline: pipeline, project: project) }
 

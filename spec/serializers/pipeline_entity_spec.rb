@@ -3,6 +3,7 @@ require 'spec_helper'
 describe PipelineEntity do
   include Gitlab::Routing
 
+  set(:project) { create(:project) }
   set(:user) { create(:user) }
   set(:project) { create(:project) }
   let(:request) { double('request') }
@@ -134,12 +135,12 @@ describe PipelineEntity do
     end
 
     context 'when pipeline is detached merge request pipeline' do
-      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
       let(:project) { merge_request.target_project }
       let(:pipeline) { merge_request.merge_request_pipelines.first }
 
       it 'makes detached flag true' do
-        expect(subject[:flags][:detached]).to be_truthy
+        expect(subject[:flags][:detached_merge_request_pipeline]).to be_truthy
       end
 
       context 'when user is a developer' do
@@ -173,6 +174,20 @@ describe PipelineEntity do
         it 'has no merge request information' do
           expect(subject[:merge_request]).to be_nil
         end
+      end
+    end
+
+    context 'when pipeline is merge request pipeline' do
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline, merge_sha: 'abc') }
+      let(:project) { merge_request.target_project }
+      let(:pipeline) { merge_request.merge_request_pipelines.first }
+
+      it 'makes detached flag false' do
+        expect(subject[:flags][:detached_merge_request_pipeline]).to be_falsy
+      end
+
+      it 'makes atached flag true' do
+        expect(subject[:flags][:merge_request_pipeline]).to be_truthy
       end
     end
   end
