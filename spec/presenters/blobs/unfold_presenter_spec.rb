@@ -41,6 +41,81 @@ describe Blobs::UnfoldPresenter do
     end
   end
 
+  describe '#diff_lines' do
+    let(:total_lines) { 50 }
+    let(:blob) { fake_blob(path: 'foo', data: (1..total_lines).to_a.join("\n")) }
+
+    context 'when "full" is true' do
+      let(:params) { { full: true } }
+
+      it 'returns all lines' do
+        lines = subject.diff_lines
+
+        expect(lines.size).to eq(total_lines)
+
+        lines.each.with_index do |line, index|
+          expect(line.text).to include("LC#{index + 1}")
+          expect(line.text).to eq(line.rich_text)
+          expect(line.type).to be_nil
+        end
+      end
+
+      context 'when last line is empty' do
+        let(:blob) { fake_blob(path: 'foo', data: "1\n2\n") }
+
+        it 'disregards last line' do
+          lines = subject.diff_lines
+
+          expect(lines.size).to eq(2)
+        end
+      end
+    end
+
+    context 'when "since" is equal to 1' do
+      let(:params) { { since: 1, to: 10, offset: 10 } }
+
+      it 'does not add top match line' do
+        line = subject.diff_lines.first
+
+        expect(line.type).to be_nil
+      end
+    end
+
+    context 'when since is greater than 1' do
+      let(:params) { { since: 5, to: 10, offset: 10 } }
+
+      it 'adds top match line' do
+        line = subject.diff_lines.first
+
+        expect(line.type).to eq('match')
+        expect(line.old_pos).to eq(5)
+        expect(line.new_pos).to eq(5)
+      end
+    end
+
+    context 'when "to" is less than blob size' do
+      let(:params) { { since: 1, to: 5, offset: 10, bottom: true } }
+
+      it 'adds bottom match line' do
+        line = subject.diff_lines.last
+
+        expect(line.type).to eq('match')
+        expect(line.old_pos).to eq(-5)
+        expect(line.new_pos).to eq(5)
+      end
+    end
+
+    context 'when "to" is equal to blob size' do
+      let(:params) { { since: 1, to: total_lines, offset: 10, bottom: true } }
+
+      it 'does not add bottom match line' do
+        line = subject.diff_lines.last
+
+        expect(line.type).to be_nil
+      end
+    end
+  end
+
   describe '#lines' do
     context 'when scope is specified' do
       let(:params) { { since: 2, to: 3 } }
