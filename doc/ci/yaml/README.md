@@ -1609,7 +1609,7 @@ include:
 
 ### `include:file`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
 
 To include files from another private project under the same GitLab instance,
 use `include:file`. This file is referenced using full  paths relative to the
