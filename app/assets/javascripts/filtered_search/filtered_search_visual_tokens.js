@@ -1,6 +1,10 @@
-import VisualTokenValue from 'ee_else_ce/filtered_search/visual_token_value';
+import _ from 'underscore';
+import AjaxCache from '~/lib/utils/ajax_cache';
 import { objectToQueryString } from '~/lib/utils/common_utils';
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
+import UsersCache from '../lib/utils/users_cache';
+import DropdownUtils from './dropdown_utils';
 
 export default class FilteredSearchVisualTokens {
   static getLastVisualTokenBeforeInput() {
@@ -14,6 +18,21 @@ export default class FilteredSearchVisualTokens {
         lastVisualToken.className.indexOf('filtered-search-term') !== -1 ||
         (lastVisualToken && lastVisualToken.querySelector('.value') !== null),
     };
+  }
+
+  /**
+   * Returns a computed API endpoint
+   * and query string composed of values from endpointQueryParams
+   * @param {String} endpoint
+   * @param {String} endpointQueryParams
+   */
+  static getEndpointWithQueryParams(endpoint, endpointQueryParams) {
+    if (!endpointQueryParams) {
+      return endpoint;
+    }
+
+    const queryString = objectToQueryString(JSON.parse(endpointQueryParams));
+    return `${endpoint}?${queryString}`;
   }
 
   static unselectTokens() {
@@ -57,15 +76,124 @@ export default class FilteredSearchVisualTokens {
     `;
   }
 
+  static setTokenStyle(tokenContainer, backgroundColor, textColor) {
+    const token = tokenContainer;
+
+    token.style.backgroundColor = backgroundColor;
+    token.style.color = textColor;
+
+    if (textColor === '#FFFFFF') {
+      const removeToken = token.querySelector('.remove-token');
+      removeToken.classList.add('inverted');
+    }
+
+    return token;
+  }
+
+  static updateLabelTokenColor(tokenValueContainer, tokenValue) {
+    const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
+    const { baseEndpoint } = filteredSearchInput.dataset;
+    const labelsEndpoint = FilteredSearchVisualTokens.getEndpointWithQueryParams(
+      `${baseEndpoint}/labels.json`,
+      filteredSearchInput.dataset.endpointQueryParams,
+    );
+
+    return AjaxCache.retrieve(labelsEndpoint)
+      .then(labels => {
+        const matchingLabel = (labels || []).find(
+          label => `~${DropdownUtils.getEscapedText(label.title)}` === tokenValue,
+        );
+
+        if (!matchingLabel) {
+          return;
+        }
+
+        FilteredSearchVisualTokens.setTokenStyle(
+          tokenValueContainer,
+          matchingLabel.color,
+          matchingLabel.text_color,
+        );
+      })
+      .catch(() => new Flash('An error occurred while fetching label colors.'));
+  }
+
+  static updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue) {
+    const username = tokenValue.replace(/^@/, '');
+    return (
+      UsersCache.retrieve(username)
+        .then(user => {
+          if (!user) {
+            return;
+          }
+
+          /* eslint-disable no-param-reassign */
+          tokenValueContainer.dataset.originalValue = tokenValue;
+          tokenValueElement.innerHTML = `
+          <img class="avatar s20" src="${user.avatar_url}" alt="">
+          ${_.escape(user.name)}
+        `;
+          /* eslint-enable no-param-reassign */
+        })
+        // ignore error and leave username in the search bar
+        .catch(() => {})
+    );
+  }
+
+  static updateEmojiTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue) {
+    const container = tokenValueContainer;
+    const element = tokenValueElement;
+    const value = tokenValue;
+
+    return (
+      import(/* webpackChunkName: 'emoji' */ '../emoji')
+        .then(Emoji => {
+          Emoji.initEmojiMap()
+            .then(() => {
+              if (!Emoji.isEmojiNameValid(value)) {
+                return;
+              }
+
+              container.dataset.originalValue = value;
+              element.innerHTML = Emoji.glEmojiTag(value);
+            })
+            // ignore error and leave emoji name in the search bar
+            .catch(err => {
+              throw err;
+            });
+        })
+        // ignore error and leave emoji name in the search bar
+        .catch(importError => {
+          throw importError;
+        })
+    );
+  }
+
   static renderVisualTokenValue(parentElement, tokenName, tokenValue) {
-    const tokenType = tokenName.toLowerCase();
     const tokenValueContainer = parentElement.querySelector('.value-container');
     const tokenValueElement = tokenValueContainer.querySelector('.value');
     tokenValueElement.innerText = tokenValue;
 
-    const visualTokenValue = new VisualTokenValue(tokenValue, tokenType);
+    if (['none', 'any'].includes(tokenValue.toLowerCase())) {
+      return;
+    }
 
-    visualTokenValue.render(tokenValueContainer, tokenValueElement);
+    const tokenType = tokenName.toLowerCase();
+
+    if (tokenType === 'label') {
+      FilteredSearchVisualTokens.updateLabelTokenColor(tokenValueContainer, tokenValue);
+    } else if (tokenType === 'author' || tokenType === 'assignee') {
+      FilteredSearchVisualTokens.updateUserTokenAppearance(
+        tokenValueContainer,
+        tokenValueElement,
+        tokenValue,
+      );
+    } else if (tokenType === 'my-reaction') {
+      FilteredSearchVisualTokens.updateEmojiTokenAppearance(
+        tokenValueContainer,
+        tokenValueElement,
+        tokenValue,
+      );
+    }
   }
 
   static addVisualTokenElement(name, value, options = {}) {
@@ -198,21 +326,6 @@ export default class FilteredSearchVisualTokens {
 
       input.value = '';
     }
-  }
-
-  /**
-   * Returns a computed API endpoint
-   * and query string composed of values from endpointQueryParams
-   * @param {String} endpoint
-   * @param {String} endpointQueryParams
-   */
-  static getEndpointWithQueryParams(endpoint, endpointQueryParams) {
-    if (!endpointQueryParams) {
-      return endpoint;
-    }
-
-    const queryString = objectToQueryString(JSON.parse(endpointQueryParams));
-    return `${endpoint}?${queryString}`;
   }
 
   static editToken(token) {
