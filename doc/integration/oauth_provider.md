@@ -3,8 +3,11 @@
 This document is about using GitLab as an OAuth authentication service provider
 to sign in to other services.
 
-If you want to use other OAuth authentication service providers to sign in to
-GitLab, please see the [OAuth2 client documentation](../api/oauth2.md).
+If you want to use:
+
+- Other OAuth authentication service providers to sign in to
+  GitLab, see the [OAuth2 client documentation](omniauth.md).
+- The related API, see [Applications API](../api/applications.md).
 
 ## Introduction to OAuth
 
@@ -28,7 +31,7 @@ GitLab supports two ways of adding a new OAuth2 application to an instance. You
 can either add an application as a regular user or add it in the admin area.
 What this means is that GitLab can actually have instance-wide and a user-wide
 applications. There is no difference between them except for the different
-permission levels they are set (user/admin). The default callback URL is 
+permission levels they are set (user/admin). The default callback URL is
 `http://your-gitlab.example.com/users/auth/gitlab/callback`
 
 ## Adding an application through the profile

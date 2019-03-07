@@ -34,7 +34,7 @@
   background: $gl-gray-400;
   border-radius: 12px;
   padding: 3px;
-  transition: all .4s ease;
+  transition: all 0.4s ease;
 
   &::selection,
   &::before::selection,
@@ -52,7 +52,7 @@
     left: 0;
     border-radius: 9px;
     background: $feature-toggle-color;
-    transition: all .2s ease;
+    transition: all 0.2s ease;
 
     &,
     .toggle-icon-svg {
@@ -135,12 +135,18 @@
   }
 
   @keyframes animate-enabled {
-    0%, 35% { opacity: 0; }
+    0%,
+
+    35% { opacity: 0; }
+
     100% { opacity: 1; }
   }
 
   @keyframes animate-disabled {
-    0%, 35% { opacity: 0; }
+    0%,
+
+    35% { opacity: 0; }
+
     100% { opacity: 1; }
   }
 }

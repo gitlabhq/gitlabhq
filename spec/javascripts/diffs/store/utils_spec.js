@@ -14,7 +14,7 @@ import { MERGE_REQUEST_NOTEABLE_TYPE } from '~/notes/constants';
 import diffFileMockData from '../mock_data/diff_file';
 import { noteableDataMock } from '../../notes/mock_data';
 
-const getDiffFileMock = () => Object.assign({}, diffFileMockData);
+const getDiffFileMock = () => JSON.parse(JSON.stringify(diffFileMockData));
 
 describe('DiffsStoreUtils', () => {
   describe('findDiffFile', () => {
@@ -80,30 +80,44 @@ describe('DiffsStoreUtils', () => {
   });
 
   describe('addContextLines', () => {
-    it('should add context lines properly with bottom parameter', () => {
+    it('should add context lines', () => {
       const diffFile = getDiffFileMock();
       const inlineLines = diffFile.highlighted_diff_lines;
       const parallelLines = diffFile.parallel_diff_lines;
       const lineNumbers = { oldLineNumber: 3, newLineNumber: 5 };
-      const contextLines = [{ lineNumber: 42 }];
-      const options = { inlineLines, parallelLines, contextLines, lineNumbers, bottom: true };
+      const contextLines = [{ lineNumber: 42, line_code: '123' }];
+      const options = { inlineLines, parallelLines, contextLines, lineNumbers };
       const inlineIndex = utils.findIndexInInlineLines(inlineLines, lineNumbers);
       const parallelIndex = utils.findIndexInParallelLines(parallelLines, lineNumbers);
       const normalizedParallelLine = {
         left: options.contextLines[0],
         right: options.contextLines[0],
+        line_code: '123',
+      };
+
+      utils.addContextLines(options);
+
+      expect(inlineLines[inlineIndex]).toEqual(contextLines[0]);
+      expect(parallelLines[parallelIndex]).toEqual(normalizedParallelLine);
+    });
+
+    it('should add context lines properly with bottom parameter', () => {
+      const diffFile = getDiffFileMock();
+      const inlineLines = diffFile.highlighted_diff_lines;
+      const parallelLines = diffFile.parallel_diff_lines;
+      const lineNumbers = { oldLineNumber: 3, newLineNumber: 5 };
+      const contextLines = [{ lineNumber: 42, line_code: '123' }];
+      const options = { inlineLines, parallelLines, contextLines, lineNumbers, bottom: true };
+      const normalizedParallelLine = {
+        left: options.contextLines[0],
+        right: options.contextLines[0],
+        line_code: '123',
       };
 
       utils.addContextLines(options);
 
       expect(inlineLines[inlineLines.length - 1]).toEqual(contextLines[0]);
       expect(parallelLines[parallelLines.length - 1]).toEqual(normalizedParallelLine);
-
-      delete options.bottom;
-      utils.addContextLines(options);
-
-      expect(inlineLines[inlineIndex]).toEqual(contextLines[0]);
-      expect(parallelLines[parallelIndex]).toEqual(normalizedParallelLine);
     });
   });
 
@@ -251,45 +265,40 @@ describe('DiffsStoreUtils', () => {
   describe('trimFirstCharOfLineContent', () => {
     it('trims the line when it starts with a space', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: ' diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a +', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: '+diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('trims the line when it starts with a -', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: '-diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('does not trims the line when it starts with a letter', () => {
       expect(utils.trimFirstCharOfLineContent({ rich_text: 'diff' })).toEqual({
-        discussions: [],
         rich_text: 'diff',
       });
     });
 
     it('does not modify the provided object', () => {
       const lineObj = {
-        discussions: [],
         rich_text: ' diff',
       };
 
       utils.trimFirstCharOfLineContent(lineObj);
 
-      expect(lineObj).toEqual({ discussions: [], rich_text: ' diff' });
+      expect(lineObj).toEqual({ rich_text: ' diff' });
     });
 
     it('handles a undefined or null parameter', () => {
-      expect(utils.trimFirstCharOfLineContent()).toEqual({ discussions: [] });
+      expect(utils.trimFirstCharOfLineContent()).toEqual({});
     });
   });
 
@@ -502,6 +511,7 @@ describe('DiffsStoreUtils', () => {
               fileHash: 'test',
               key: 'app/index.js',
               name: 'index.js',
+              parentPath: 'app/',
               path: 'app/index.js',
               removedLines: 10,
               tempFile: false,
@@ -522,6 +532,7 @@ describe('DiffsStoreUtils', () => {
                   fileHash: 'test',
                   key: 'app/test/index.js',
                   name: 'index.js',
+                  parentPath: 'app/test/',
                   path: 'app/test/index.js',
                   removedLines: 0,
                   tempFile: true,
@@ -535,6 +546,7 @@ describe('DiffsStoreUtils', () => {
                   fileHash: 'test',
                   key: 'app/test/filepathneedstruncating.js',
                   name: 'filepathneedstruncating.js',
+                  parentPath: 'app/test/',
                   path: 'app/test/filepathneedstruncating.js',
                   removedLines: 0,
                   tempFile: true,
@@ -548,6 +560,7 @@ describe('DiffsStoreUtils', () => {
         },
         {
           key: 'package.json',
+          parentPath: '/',
           path: 'package.json',
           name: 'package.json',
           type: 'blob',
@@ -588,13 +601,184 @@ describe('DiffsStoreUtils', () => {
     it('returns mode_changed if key has no match', () => {
       expect(
         utils.getDiffMode({
-          mode_changed: true,
+          viewer: { name: 'mode_changed' },
         }),
       ).toBe('mode_changed');
     });
 
     it('defaults to replaced', () => {
       expect(utils.getDiffMode({})).toBe('replaced');
+    });
+  });
+
+  describe('getLowestSingleFolder', () => {
+    it('returns path and tree of lowest single folder tree', () => {
+      const folder = {
+        name: 'app',
+        type: 'tree',
+        tree: [
+          {
+            name: 'javascripts',
+            type: 'tree',
+            tree: [
+              {
+                type: 'blob',
+                name: 'index.js',
+              },
+            ],
+          },
+        ],
+      };
+      const { path, treeAcc } = utils.getLowestSingleFolder(folder);
+
+      expect(path).toEqual('app/javascripts');
+      expect(treeAcc).toEqual([
+        {
+          type: 'blob',
+          name: 'index.js',
+        },
+      ]);
+    });
+
+    it('returns passed in folders path & tree when more than tree exists', () => {
+      const folder = {
+        name: 'app',
+        type: 'tree',
+        tree: [
+          {
+            name: 'spec',
+            type: 'blob',
+            tree: [],
+          },
+        ],
+      };
+      const { path, treeAcc } = utils.getLowestSingleFolder(folder);
+
+      expect(path).toEqual('app');
+      expect(treeAcc).toBeNull();
+    });
+  });
+
+  describe('flattenTree', () => {
+    it('returns flattened directory structure', () => {
+      const tree = [
+        {
+          type: 'tree',
+          name: 'app',
+          tree: [
+            {
+              type: 'tree',
+              name: 'javascripts',
+              tree: [
+                {
+                  type: 'blob',
+                  name: 'index.js',
+                  tree: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'ee',
+          tree: [
+            {
+              type: 'tree',
+              name: 'lib',
+              tree: [
+                {
+                  type: 'tree',
+                  name: 'ee',
+                  tree: [
+                    {
+                      type: 'tree',
+                      name: 'gitlab',
+                      tree: [
+                        {
+                          type: 'tree',
+                          name: 'checks',
+                          tree: [
+                            {
+                              type: 'tree',
+                              name: 'longtreenametomakepath',
+                              tree: [
+                                {
+                                  type: 'blob',
+                                  name: 'diff_check.rb',
+                                  tree: [],
+                                },
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'spec',
+          tree: [
+            {
+              type: 'tree',
+              name: 'javascripts',
+              tree: [],
+            },
+            {
+              type: 'blob',
+              name: 'index_spec.js',
+              tree: [],
+            },
+          ],
+        },
+      ];
+      const flattened = utils.flattenTree(tree);
+
+      expect(flattened).toEqual([
+        {
+          type: 'tree',
+          name: 'app/javascripts',
+          tree: [
+            {
+              type: 'blob',
+              name: 'index.js',
+              tree: [],
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'ee/lib/…/…/…/longtreenametomakepath',
+          tree: [
+            {
+              name: 'diff_check.rb',
+              tree: [],
+              type: 'blob',
+            },
+          ],
+        },
+        {
+          type: 'tree',
+          name: 'spec',
+          tree: [
+            {
+              type: 'tree',
+              name: 'javascripts',
+              tree: [],
+            },
+            {
+              type: 'blob',
+              name: 'index_spec.js',
+              tree: [],
+            },
+          ],
+        },
+      ]);
     });
   });
 });

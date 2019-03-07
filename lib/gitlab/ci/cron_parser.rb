@@ -35,7 +35,7 @@ module Gitlab
       # NOTE:
       # cron_timezone can only accept timezones listed in TZInfo::Timezone.
       # Aliases of Timezones from ActiveSupport::TimeZone are NOT accepted,
-      # because Rufus::Scheduler only supports TZInfo::Timezone.
+      # because Fugit::Cron only supports TZInfo::Timezone.
       #
       # For example, those codes have the same effect.
       # Time.zone = 'Pacific Time (US & Canada)' (ActiveSupport::TimeZone)
@@ -47,10 +47,7 @@ module Gitlab
       # If you want to know more, please take a look
       # https://github.com/rails/rails/blob/master/activesupport/lib/active_support/values/time_zone.rb
       def try_parse_cron(cron, cron_timezone)
-        cron_line = Rufus::Scheduler.parse("#{cron} #{cron_timezone}")
-        cron_line if cron_line.is_a?(Rufus::Scheduler::CronLine)
-      rescue
-        # noop
+        Fugit::Cron.parse("#{cron} #{cron_timezone}")
       end
     end
   end

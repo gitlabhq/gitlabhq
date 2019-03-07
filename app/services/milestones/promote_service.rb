@@ -82,11 +82,9 @@ module Milestones
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def group_project_ids
-      @group_project_ids ||= group.projects.pluck(:id)
+      group.projects.select(:id)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def raise_error(message)
       raise PromoteMilestoneError, "Promotion failed - #{message}"

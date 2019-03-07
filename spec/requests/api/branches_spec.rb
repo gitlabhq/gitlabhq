@@ -20,6 +20,12 @@ describe API::Branches do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
     shared_examples_for 'repository branches' do
+      RSpec::Matchers.define :has_merged_branch_names_count do |expected|
+        match do |actual|
+          actual[:merged_branch_names].count == expected
+        end
+      end
+
       it 'returns the repository branches' do
         get api(route, current_user), params: { per_page: 100 }
 
@@ -28,6 +34,12 @@ describe API::Branches do
         expect(response).to include_pagination_headers
         branch_names = json_response.map { |x| x['name'] }
         expect(branch_names).to match_array(project.repository.branch_names)
+      end
+
+      it 'determines only a limited number of merged branch names' do
+        expect(API::Entities::Branch).to receive(:represent).with(anything, has_merged_branch_names_count(2))
+
+        get api(route, current_user), params: { per_page: 2 }
       end
 
       context 'when repository is disabled' do

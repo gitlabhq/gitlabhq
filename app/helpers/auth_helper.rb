@@ -16,6 +16,13 @@ module AuthHelper
     PROVIDERS_WITH_ICONS.include?(name.to_s)
   end
 
+  def qa_class_for_provider(provider)
+    {
+      saml: 'qa-saml-login-button',
+      github: 'qa-github-login-button'
+    }[provider.to_sym]
+  end
+
   def auth_providers
     Gitlab::Auth::OAuth::Provider.providers
   end
@@ -31,7 +38,7 @@ module AuthHelper
   def form_based_provider_with_highest_priority
     @form_based_provider_with_highest_priority ||= begin
       form_based_provider_priority.each do |provider_regexp|
-        highest_priority = form_based_providers.find {  |provider| provider.match?(provider_regexp) }
+        highest_priority = form_based_providers.find { |provider| provider.match?(provider_regexp) }
         break highest_priority unless highest_priority.nil?
       end
     end

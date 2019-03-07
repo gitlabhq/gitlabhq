@@ -53,7 +53,7 @@ class KubernetesService < DeploymentService
   end
 
   def description
-    'Kubernetes / Openshift integration'
+    'Kubernetes / OpenShift integration'
   end
 
   def help

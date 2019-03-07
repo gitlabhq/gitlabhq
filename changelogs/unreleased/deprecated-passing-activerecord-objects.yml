@@ -1,5 +1,0 @@
----
-title: 'Fix deprecation: Passing ActiveRecord::Base objects to sanitize_sql_hash_for_assignment'
-merge_request: 23818
-author: Jasper Maes
-type: other

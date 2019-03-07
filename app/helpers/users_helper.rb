@@ -74,6 +74,15 @@ module UsersHelper
     Gitlab.config.gitlab.impersonation_enabled
   end
 
+  def user_badges_in_admin_section(user)
+    [].tap do |badges|
+      badges << { text: s_('AdminUsers|Blocked'), variant: 'danger' } if user.blocked?
+      badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin?
+      badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
+      badges << { text: s_("AdminUsers|It's you!"), variant: nil } if current_user == user
+    end
+  end
+
   private
 
   def get_profile_tabs

@@ -75,7 +75,7 @@ export default {
 <template>
   <div class="ide-pipeline build-page d-flex flex-column flex-fill">
     <header class="ide-job-header d-flex align-items-center">
-      <button class="btn btn-default btn-sm d-flex" @click="setDetailJob(null);">
+      <button class="btn btn-default btn-sm d-flex" @click="setDetailJob(null)">
         <icon name="chevron-left" /> {{ __('View jobs') }}
       </button>
     </header>

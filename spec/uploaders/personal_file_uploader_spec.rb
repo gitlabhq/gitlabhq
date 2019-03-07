@@ -4,19 +4,13 @@ describe PersonalFileUploader do
   let(:model) { create(:personal_snippet) }
   let(:uploader) { described_class.new(model) }
   let(:upload) { create(:upload, :personal_snippet_upload) }
-  let(:identifier) { %r{\h+/\S+} }
 
   subject { uploader }
 
-  it_behaves_like 'builds correct paths' do
-    let(:patterns) do
-      {
-        store_dir: %r[uploads/-/system/personal_snippet/\d+],
-        upload_path: identifier,
-        absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet/\d+/#{identifier}]
-      }
-    end
-  end
+  it_behaves_like 'builds correct paths',
+                  store_dir: %r[uploads/-/system/personal_snippet/\d+],
+                  upload_path: %r[\h+/\S+],
+                  absolute_path: %r[#{CarrierWave.root}/uploads/-/system/personal_snippet\/\d+\/\h+\/\S+$]
 
   context "object_store is REMOTE" do
     before do
@@ -25,13 +19,17 @@ describe PersonalFileUploader do
 
     include_context 'with storage', described_class::Store::REMOTE
 
-    it_behaves_like 'builds correct paths' do
-      let(:patterns) do
-        {
-          store_dir: %r[\d+/\h+],
-          upload_path: identifier
-        }
-      end
+    it_behaves_like 'builds correct paths',
+                    store_dir: %r[\d+/\h+],
+                    upload_path: %r[^personal_snippet\/\d+\/\h+\/<filename>]
+  end
+
+  describe '#upload_paths' do
+    it 'builds correct paths for both local and remote storage' do
+      paths = uploader.upload_paths('test.jpg')
+
+      expect(paths.first).to match(%r[\h+\/test.jpg])
+      expect(paths.second).to match(%r[^personal_snippet\/\d+\/\h+\/test.jpg])
     end
   end
 

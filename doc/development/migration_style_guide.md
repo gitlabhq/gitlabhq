@@ -40,14 +40,13 @@ migrations _unless_ schema changes are absolutely required to solve a problem.
 ## What Requires Downtime?
 
 The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
-various database operations, such as 
+various database operations, such as
 
 - [adding, dropping, and renaming columns](what_requires_downtime.md#adding-columns)
 - [changing column constraints and types](what_requires_downtime.md#changing-column-constraints)
 - [adding and dropping indexes, tables, and foreign keys](what_requires_downtime.md#adding-indexes)
 
 and whether they require downtime and how to work around that whenever possible.
-
 
 ## Downtime Tagging
 
@@ -59,9 +58,9 @@ the migrations that _do_ require downtime.
 To tag a migration, add the following two constants to the migration class'
 body:
 
-* `DOWNTIME`: a boolean that when set to `true` indicates the migration requires
+- `DOWNTIME`: a boolean that when set to `true` indicates the migration requires
   downtime.
-* `DOWNTIME_REASON`: a String containing the reason for the migration requiring
+- `DOWNTIME_REASON`: a String containing the reason for the migration requiring
   downtime. This constant **must** be set when `DOWNTIME` is set to `true`.
 
 For example:
@@ -318,13 +317,38 @@ end
 
 Instead of using these methods one should use the following methods to store timestamps with timezones:
 
-* `add_timestamps_with_timezone`
-* `timestamps_with_timezone`
+- `add_timestamps_with_timezone`
+- `timestamps_with_timezone`
 
 This ensures all timestamps have a time zone specified. This in turn means existing timestamps won't
 suddenly use a different timezone when the system's timezone changes. It also makes it very clear which
 timezone was used in the first place.
 
+## Storing JSON in database
+
+The Rails 5 natively supports `JSONB` (binary JSON) column type.
+Example migration adding this column:
+
+```ruby
+class AddOptionsToBuildMetadata < ActiveRecord::Migration[5.0]
+  DOWNTIME = false
+
+  def change
+    add_column :ci_builds_metadata, :config_options, :jsonb
+  end
+end
+```
+
+On MySQL the `JSON` and `JSONB` is translated to `TEXT 1MB`, as `JSONB` is PostgreSQL only feature.
+
+For above reason you have to use a serializer to provide a translation layer
+in order to support PostgreSQL and MySQL seamlessly:
+
+```ruby
+class BuildMetadata
+  serialize :config_options, Serializers::JSON # rubocop:disable Cop/ActiveRecordSerialize
+end
+```
 
 ## Testing
 

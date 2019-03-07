@@ -135,6 +135,14 @@ Consider that if you don't lock your specific Runner to a specific project, any
 user with Maintainer role in you project can assign your Runner to another arbitrary
 project without requiring your authorization, so use it with caution.
 
+CAUTION: **Caution:**
+Never add a private Runner that you're using in your private projects to a
+project that you share with other people.
+
+CAUTION: **Caution:**
+Never use a Runner from a project which has multiple maintainers in your
+private project.
+
 An admin can enable/disable a specific Runner for projects:
 
 1. Navigate to **Admin > Runners**
@@ -232,21 +240,64 @@ shared Runners will [only run the jobs they are equipped to run](../yaml/README.
 For instance, at GitLab we have Runners tagged with "rails" if they contain
 the appropriate dependencies to run Rails test suites.
 
-### Preventing Runners with tags from picking jobs without tags
+### Allowing Runners with tags to pick jobs without tags
 
-You can configure a Runner to prevent it from picking
-[jobs with tags](../yaml/README.md#tags) when the Runner does not have tags
-assigned. This setting can be enabled the first
-time you [register a Runner][register] and can be changed afterwards under
-each Runner's settings.
+When you [register a Runner][register], its default behavior is to **only pick**
+[tagged jobs](../yaml/README.md#tags).
 
-To make a Runner pick tagged/untagged jobs:
+NOTE: **Note:**
+Maintainer [permissions](../../user/permissions.md) are required to change the
+Runner settings.
 
-1. Visit your project's **Settings ➔ CI/CD**
-1. Find the Runner you wish and make sure it's enabled
-1. Click the pencil button
-1. Check the **Run untagged jobs** option
-1. Click **Save changes** for the changes to take effect
+To make a Runner pick untagged jobs:
+
+1. Visit your project's **Settings > CI/CD > Runners**.
+1. Find the Runner you want to pick untagged jobs and make sure it's enabled.
+1. Click the pencil button.
+1. Check the **Run untagged jobs** option.
+1. Click the **Save changes** button for the changes to take effect.
+
+NOTE: **Note:**
+The Runner tags list can not be empty when it's not allowed to pick untagged jobs.
+
+Below are some example scenarios of different variations.
+
+#### Runner runs only tagged jobs
+
+The following examples illustrate the potential impact of the Runner being set
+to run only tagged jobs.
+
+Example 1:
+
+1. The Runner is configured to run only tagged jobs and has the `docker` tag.
+1. A job that has a `hello` tag is executed and stuck.
+
+Example 2:
+
+1. The Runner is configured to run only tagged jobs and has the `docker` tag.
+1. A job that has a `docker` tag is executed and run.
+
+Example 3:
+
+1. The Runner is configured to run only tagged jobs and has the `docker` tag.
+1. A job that has no tags defined is executed and stuck.
+
+#### Runner is allowed to run untagged jobs
+
+The following examples illustrate the potential impact of the Runner being set
+to run tagged and untagged jobs.
+
+Example 1:
+
+1. The Runner is configured to run untagged jobs and has the `docker` tag.
+1. A job that has no tags defined is executed and run.
+1. A second job that has a `docker` tag defined is executed and run.
+
+Example 2:
+
+1. The Runner is configured to run untagged jobs and has no tags defined.
+1. A job that has no tags defined is executed and run.
+1. A second job that has a `docker` tag defined is stuck.
 
 ### Setting maximum job timeout for a Runner
 

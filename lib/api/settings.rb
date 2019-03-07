@@ -35,7 +35,7 @@ module API
       end
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :default_artifacts_expire_in, type: String, desc: "Set the default expiration time for each job's artifacts"
-      optional :default_branch_protection, type: Integer, values: [0, 1, 2], desc: 'Determine if developers can push to master'
+      optional :default_branch_protection, type: Integer, values: Gitlab::Access.protection_values, desc: 'Determine if developers can push to master'
       optional :default_group_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default group visibility'
       optional :default_project_visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The default project visibility'
       optional :default_projects_limit, type: Integer, desc: 'The maximum number of personal projects'
@@ -121,6 +121,7 @@ module API
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
+      optional :local_markdown_version, type: Integer, desc: "Local markdown version, increase this value when any cached markdown should be invalidated"
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

@@ -54,6 +54,7 @@ export default {
           :diff-file-hash="diffFileHash"
           :line="line"
           :note-target-line="line"
+          :help-page-path="helpPagePath"
         />
       </div>
     </td>

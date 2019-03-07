@@ -24,5 +24,17 @@ module DiffViewer
 
       super
     end
+
+    private
+
+    def render_error_reason
+      return super unless render_error == :server_side_but_stored_externally
+
+      if diff_file.external_storage == :lfs
+        _('it is stored in LFS')
+      else
+        _('it is stored externally')
+      end
+    end
   end
 end

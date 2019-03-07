@@ -1,4 +1,4 @@
-Issue was <%= @issue_status %> by <%= @updated_by.name %>
+Issue was <%= @issue_status %> by <%= sanitize_name(@updated_by.name) %>
 
 Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
 

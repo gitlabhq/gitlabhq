@@ -26,6 +26,8 @@ class Issue < ActiveRecord::Base
   DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
+  SORTING_PREFERENCE_FIELD = :issues_sort
+
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
   belongs_to :closed_by, class_name: 'User'
@@ -64,6 +66,7 @@ class Issue < ActiveRecord::Base
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   scope :public_only, -> { where(confidential: false) }
+  scope :confidential_only, -> { where(confidential: true) }
 
   after_save :expire_etag_cache
   after_save :ensure_metrics, unless: :imported?
@@ -230,7 +233,8 @@ class Issue < ActiveRecord::Base
   end
 
   def check_for_spam?
-    project.public? && (title_changed? || description_changed?)
+    publicly_visible? &&
+      (title_changed? || description_changed? || confidential_changed?)
   end
 
   def as_json(options = {})
@@ -258,6 +262,10 @@ class Issue < ActiveRecord::Base
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
   # rubocop: enable CodeReuse/ServiceClass
+
+  def merge_requests_count
+    merge_requests_closing_issues.count
+  end
 
   private
 

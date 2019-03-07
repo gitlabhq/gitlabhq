@@ -26,8 +26,9 @@ the time, you should execute `/chatops run feature set my_feature_flag 50`.
 
 ## Feature flags for user applications
 
-GitLab does not yet support the use of feature flags in deployed user applications.
-You can follow the progress on that [in the issue on our issue tracker](https://gitlab.com/gitlab-org/gitlab-ee/issues/779).
+This document only covers feature flags used in the development of GitLab 
+itself. Feature flags in deployed user applications can be found at 
+[Feature Flags](https://docs.gitlab.com/ee/user/project/operations/feature_flags.html)
 
 ## Developing with feature flags
 
@@ -124,4 +125,3 @@ Feature.enable(:feature_flag_name)
 ## Enabling a feature flag (in production)
 
 Check how to [roll out changes using feature flags](rolling_out_changes_using_feature_flags.md).
-

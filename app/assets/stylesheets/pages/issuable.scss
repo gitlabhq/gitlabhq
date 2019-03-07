@@ -22,6 +22,7 @@
   .detail-page-header,
   .page-content-header,
   .commit-box,
+  .info-well,
   .commit-ci-menu,
   .files-changed-inner,
   .limited-header-width,
@@ -60,6 +61,10 @@
     padding: 0;
     margin-bottom: $gl-padding;
     border-bottom: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+    width: 100%;
   }
 
   .btn-edit {
@@ -132,7 +137,7 @@
       color: $blue-800;
 
       .avatar {
-        border-color: rgba($gray-normal, .2);
+        border-color: rgba($gray-normal, 0.2);
       }
 
     }
@@ -219,7 +224,7 @@
     }
 
     a.edit-link:not([href]):hover {
-      color: rgba($gray-normal, .2);
+      color: rgba($gray-normal, 0.2);
     }
 
     .lock-edit, // uses same style, different js behaviour
@@ -707,14 +712,11 @@
 
 .issuable-list {
   li {
-
     .issue-box {
-      display: -webkit-flex;
       display: flex;
     }
 
     .issuable-info-container {
-      -webkit-flex: 1;
       flex: 1;
       display: flex;
       padding-right: $gl-padding;
@@ -809,7 +811,6 @@
 
 
   .sidebar-collapsed-icon {
-
     > .stopwatch-svg {
       display: inline-block;
     }
@@ -867,11 +868,11 @@
   }
 
   .help-state-toggle-enter-active {
-    transition: all .8s ease;
+    transition: all 0.8s ease;
   }
 
   .help-state-toggle-leave-active {
-    transition: all .5s ease;
+    transition: all 0.5s ease;
   }
 
   .help-state-toggle-enter,
@@ -930,7 +931,7 @@
     .sidebar-collapsed-divider {
       line-height: 5px;
       font-size: 12px;
-      color: $theme-gray-700;
+      color: $gray-700;
 
       + .sidebar-collapsed-icon {
         padding-top: 0;

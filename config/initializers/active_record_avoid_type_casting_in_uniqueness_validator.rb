@@ -20,7 +20,7 @@
 #
 # This bug was fixed in Rails 5.1 by https://github.com/rails/rails/pull/24745/commits/aa062318c451512035c10898a1af95943b1a3803
 
-if Rails.version.start_with?("5.1")
+if Rails.gem_version >= Gem::Version.new("5.1")
   raise "Remove this monkey patch: #{__FILE__}"
 end
 

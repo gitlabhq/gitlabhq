@@ -1,21 +1,25 @@
-# GitLab QA - Integration tests for GitLab
+# GitLab QA - End-to-end tests for GitLab
 
-This directory contains integration tests for GitLab.
+This directory contains [end-to-end tests](doc/development/testing_guide/end_to_end_tests.md)
+for GitLab. It includes the test framework and the tests themselves.
+
+The tests can be found in `qa/specs/features` (not to be confused with the unit
+tests for the test framework, which are in `spec/`).
 
 It is part of the [GitLab QA project](https://gitlab.com/gitlab-org/gitlab-qa).
 
 ## What is it?
 
-GitLab QA is an integration tests suite for GitLab.
+GitLab QA is an end-to-end tests suite for GitLab.
 
-These are black-box and entirely click-driven integration tests you can run
+These are black-box and entirely click-driven end-to-end tests you can run
 against any existing instance.
 
 ## How does it work?
 
 1. When we release a new version of GitLab, we build a Docker images for it.
 1. Along with GitLab Docker Images we also build and publish GitLab QA images.
-1. GitLab QA project uses these images to execute integration tests.
+1. GitLab QA project uses these images to execute end-to-end tests.
 
 ## Validating GitLab views / partials / selectors in merge requests
 
@@ -37,6 +41,9 @@ following call would login to a local [GDK] instance and run all specs in
 ```
 bin/qa Test::Instance::All http://localhost:3000
 ```
+
+Note: If you want to run tests requiring SSH against GDK, you
+will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 
 ### Writing tests
 
@@ -86,7 +93,7 @@ The environment variable `QA_COOKIES` can be set to send additional cookies
 on every request. This is necessary on gitlab.com to direct traffic to the
 canary fleet. To do this set `QA_COOKIES="gitlab_canary=true"`.
 
-To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"` 
+To set multiple cookies, separate them with the `;` character, for example: `QA_COOKIES="cookie1=value;cookie2=value2"`
 
 
 ### Building a Docker image to test
@@ -100,3 +107,24 @@ docker build -t gitlab/gitlab-ce-qa:nightly .
 ```
 
 [GDK]: https://gitlab.com/gitlab-org/gitlab-development-kit/
+
+### Quarantined tests
+
+Tests can be put in quarantine by assigning `:quarantine` metadata. This means
+they will be skipped unless run with `--tag quarantine`. This can be used for
+tests that are expected to fail while a fix is in progress (similar to how
+[`skip` or `pending`](https://relishapp.com/rspec/rspec-core/v/3-8/docs/pending-and-skipped-examples)
+ can be used).
+
+```
+bin/qa Test::Instance::All http://localhost --tag quarantine
+```
+
+If `quarantine` is used with other tags, tests will only be run if they have at
+least one of the tags other than `quarantine`. This is different from how RSpec
+tags usually work, where all tags are inclusive.
+
+For example, suppose one test has `:smoke` and `:quarantine` metadata, and
+another test has `:ldap` and `:quarantine` metadata. If the tests are run with
+`--tag smoke --tag quarantine`, only the first test will run. The test with
+`:ldap` will not run even though it also has `:quarantine`.

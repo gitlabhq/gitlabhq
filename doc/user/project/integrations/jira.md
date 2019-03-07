@@ -31,7 +31,7 @@ directly from GitLab, as covered in the article
 
 Each GitLab project can be configured to connect to an entire Jira instance. That
 means one GitLab project can interact with _all_ Jira projects in that instance, once
-configured. Therefore, you will not have to explicitly associate 
+configured. Therefore, you will not have to explicitly associate
 a GitLab project with any single Jira project.
 
 If you have one Jira instance, you can pre-fill the settings page with a default
@@ -46,10 +46,12 @@ project in Jira and then enter the correct values in GitLab.
 ### Configuring Jira
 
 When connecting to **JIRA Server**, which supports basic authentication, a **username and password** are required. Check the link below and proceed to the next step:
-* [Setting up an user in JIRA server](jira_server_configuration.md)
+
+- [Setting up an user in JIRA server](jira_server_configuration.md)
 
 When connecting to **JIRA Cloud**, which supports authentication via API token, an **email and API token**, are required. Check the link below and proceed to the next step:
-* [Setting up an user in JIRA cloud](jira_cloud_configuration.md)
+
+- [Setting up an user in JIRA cloud](jira_cloud_configuration.md)
 
 ### Configuring GitLab
 
@@ -114,11 +116,11 @@ USER mentioned this issue in RESOURCE_NAME of [PROJECT_NAME|LINK_TO_COMMENT]:
 ENTITY_TITLE
 ```
 
-* `USER` A user that mentioned the issue. This is the link to the user profile in GitLab.
-* `LINK_TO_THE_COMMENT` Link to the origin of mention with a name of the entity where Jira issue was mentioned.
-* `RESOURCE_NAME` Kind of resource which referenced the issue. Can be a commit or merge request.
-* `PROJECT_NAME` GitLab project name.
-* `ENTITY_TITLE` Merge request title or commit message first line.
+- `USER` A user that mentioned the issue. This is the link to the user profile in GitLab.
+- `LINK_TO_THE_COMMENT` Link to the origin of mention with a name of the entity where Jira issue was mentioned.
+- `RESOURCE_NAME` Kind of resource which referenced the issue. Can be a commit or merge request.
+- `PROJECT_NAME` GitLab project name.
+- `ENTITY_TITLE` Merge request title or commit message first line.
 
 ![example of mentioning or closing the Jira issue](img/jira_issue_reference.png)
 
@@ -190,11 +192,11 @@ Make sure that the Jira issue is not already marked as resolved; that is,
 the Jira issue resolution field is not set. (It should not be struck through in
 Jira lists.)
 
-### CAPTCHA 
+### CAPTCHA
 
-CAPTCHA may be triggered after several consecutive failed login attempts 
+CAPTCHA may be triggered after several consecutive failed login attempts
 which may lead to a `401 unauthorized` error when testing your Jira integration.
-If CAPTCHA has been triggered, you will not be able to use Jira's REST API to 
+If CAPTCHA has been triggered, you will not be able to use Jira's REST API to
 authenticate with the Jira site. You will need to log in to your Jira instance
 and complete the CAPTCHA.
 

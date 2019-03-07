@@ -92,7 +92,7 @@ export default {
           :disabled="isActionDisabled(action)"
           type="button"
           class="js-manual-action-link no-btn btn d-flex align-items-center"
-          @click="onClickAction(action);"
+          @click="onClickAction(action)"
         >
           <span class="flex-fill"> {{ action.name }} </span>
           <span v-if="action.scheduledAt" class="text-secondary">

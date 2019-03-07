@@ -23,6 +23,8 @@ describe 'User views diffs', :js do
   end
 
   it 'shows diffs' do
+    find('.js-show-diff-settings').click
+
     expect(page).to have_css('.tab-content #diffs.active')
     expect(page).to have_css('#parallel-diff-btn', count: 1)
     expect(page).to have_css('#inline-diff-btn', count: 1)
@@ -38,6 +40,8 @@ describe 'User views diffs', :js do
 
   context 'when in the side-by-side view' do
     before do
+      find('.js-show-diff-settings').click
+
       click_button 'Side-by-side'
 
       wait_for_requests

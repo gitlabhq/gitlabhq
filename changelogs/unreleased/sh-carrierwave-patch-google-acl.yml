@@ -1,5 +1,0 @@
----
-title: Fix object storage not working properly with Google S3 compatibility
-merge_request: 23858
-author:
-type: fixed

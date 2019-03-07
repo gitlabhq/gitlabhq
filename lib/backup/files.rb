@@ -71,8 +71,14 @@ module Backup
     end
 
     def run_pipeline!(cmd_list, options = {})
-      status_list = Open3.pipeline(*cmd_list, options)
-      raise Backup::Error, 'Backup failed' unless status_list.compact.all?(&:success?)
+      err_r, err_w = IO.pipe
+      options[:err] = err_w
+      status = Open3.pipeline(*cmd_list, options)
+      err_w.close
+      return if status.compact.all?(&:success?)
+
+      regex = /^g?tar: \.: Cannot mkdir: No such file or directory$/
+      raise Backup::Error, 'Backup failed' unless err_r.read =~ regex
     end
   end
 end

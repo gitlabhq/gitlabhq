@@ -249,6 +249,16 @@
     .event-item {
       padding-left: 40px;
     }
+
+    @include media-breakpoint-up(lg) {
+      margin-right: 5px;
+    }
+  }
+
+  .projects-block {
+    @include media-breakpoint-up(lg) {
+      margin-left: 5px;
+    }
   }
 
   @include media-breakpoint-down(xs) {
@@ -260,11 +270,9 @@
       position: static;
       padding: 0 16px;
       margin-bottom: 20px;
-      display: -webkit-flex;
       display: flex;
 
       .btn {
-        -webkit-flex-grow: 1;
         flex-grow: 1;
 
         &:first-child {

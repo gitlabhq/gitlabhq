@@ -1,6 +1,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
-import { GlTooltipDirective } from '@gitlab/ui';
+import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import Flash from '../../flash';
 import { glEmojiTag } from '../../emoji';
@@ -10,7 +10,7 @@ export default {
     Icon,
   },
   directives: {
-    GlTooltip: GlTooltipDirective,
+    tooltip,
   },
   props: {
     awards: {
@@ -167,25 +167,25 @@ export default {
       <button
         v-for="(awardList, awardName, index) in groupedAwards"
         :key="index"
-        v-gl-tooltip.bottom="{ boundary: 'viewport' }"
+        v-tooltip
         :class="getAwardClassBindings(awardList)"
         :title="awardTitle(awardList)"
+        data-boundary="viewport"
         class="btn award-control"
         type="button"
-        @click="handleAward(awardName);"
+        @click="handleAward(awardName)"
       >
         <span v-html="getAwardHTML(awardName)"></span>
         <span class="award-control-text js-counter">{{ awardList.length }}</span>
       </button>
       <div v-if="canAwardEmoji" class="award-menu-holder">
         <button
-          v-gl-tooltip
+          v-tooltip
           :class="{ 'js-user-authored': isAuthoredByMe }"
           class="award-control btn js-add-award"
           title="Add reaction"
           aria-label="Add reaction"
           data-boundary="viewport"
-          data-placement="bottom"
           type="button"
         >
           <span class="award-control-icon award-control-icon-neutral">

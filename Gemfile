@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '5.0.7'
+gem 'rails', '5.0.7.1'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Improves copy-on-write performance for MRI
@@ -16,7 +16,7 @@ gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
 
 # Supported DBs
 gem 'mysql2', '~> 0.4.10', group: :mysql
-gem 'pg', '~> 0.18.2', group: :postgres
+gem 'pg', '~> 1.1', group: :postgres
 
 gem 'rugged', '~> 0.27'
 gem 'grape-path-helpers', '~> 1.0'
@@ -34,7 +34,7 @@ gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.3'
 gem 'omniauth-gitlab', '~> 1.0.2'
-gem 'omniauth-google-oauth2', '~> 0.5.3'
+gem 'omniauth-google-oauth2', '~> 0.6.0'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
@@ -43,7 +43,7 @@ gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'rack-oauth2', '~> 1.2.1'
-gem 'jwt', '~> 1.5.6'
+gem 'jwt', '~> 2.1.0'
 
 # Spam and anti-bot protection
 gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
@@ -57,6 +57,7 @@ gem 'u2f', '~> 0.2.1'
 
 # GitLab Pages
 gem 'validates_hostname', '~> 1.0.6'
+gem 'rubyzip', '~> 1.2.2', require: 'zip'
 
 # Browser detection
 gem 'browser', '~> 2.5'
@@ -67,7 +68,7 @@ gem 'gpgme', '~> 2.0.18'
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.1.1', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # API
@@ -89,20 +90,19 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
-# Locked until https://github.com/carrierwaveuploader/carrierwave/pull/2332 and
-# https://github.com/carrierwaveuploader/carrierwave/pull/2356 are merged.
-# config/initializers/carrierwave_patch.rb can be removed once both changes are released.
-gem 'carrierwave', '= 1.2.3'
+gem 'carrierwave', '~> 1.3'
 gem 'mini_magick'
 
 # for backups
-gem 'fog-aws', '~> 2.0.1'
-gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.7.1'
-gem 'fog-local', '~> 0.3'
-gem 'fog-openstack', '~> 0.1'
+gem 'fog-aws', '~> 3.3'
+# Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.
+# Also see config/initializers/fog_core_patch.rb.
+gem 'fog-core', '= 2.1.0'
+gem 'fog-google', '~> 1.8'
+gem 'fog-local', '~> 0.6'
+gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.2.0'
+gem 'fog-aliyun', '~> 0.3'
 
 # for Google storage
 gem 'google-api-client', '~> 0.23'
@@ -115,10 +115,9 @@ gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.8'
-gem 'deckar01-task_list', '2.0.0'
+gem 'deckar01-task_list', '2.2.0'
 gem 'gitlab-markup', '~> 1.6.5'
 gem 'github-markup', '~> 1.7.0', require: 'github/markup'
-gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
 gem 'rdoc', '~> 6.0'
@@ -128,9 +127,9 @@ gem 'wikicloth', '0.8.1'
 gem 'asciidoctor', '~> 1.5.8'
 gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
-gem 'truncato', '~> 0.7.9'
+gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 2.7.0'
-gem 'nokogiri', '~> 1.8.4'
+gem 'nokogiri', '~> 1.10.1'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
@@ -146,7 +145,7 @@ gem 'diffy', '~> 3.1.0'
 gem 'rack', '2.0.6'
 
 group :unicorn do
-  gem 'unicorn', '~> 5.1.0'
+  gem 'unicorn', '~> 5.4.1'
   gem 'unicorn-worker-killer', '~> 0.4.4'
 end
 
@@ -163,12 +162,12 @@ gem 'acts-as-taggable-on', '~> 5.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.2.1'
-gem 'sidekiq-cron', '~> 0.6.0'
+gem 'sidekiq-cron', '~> 1.0'
 gem 'redis-namespace', '~> 1.6.0'
 gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 
 # Cron Parser
-gem 'rufus-scheduler', '~> 3.4'
+gem 'fugit', '~> 1.1'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -187,10 +186,10 @@ gem 're2', '~> 1.1.1'
 
 # Misc
 
-gem 'version_sorter', '~> 2.1.0'
+gem 'version_sorter', '~> 2.2.4'
 
 # Export Ruby Regex to Javascript
-gem 'js_regex', '~> 2.2.1'
+gem 'js_regex', '~> 3.1'
 
 # User agent parsing
 gem 'device_detector'
@@ -204,9 +203,6 @@ gem 'connection_pool', '~> 2.0'
 
 # Discord integration
 gem 'discordrb-webhooks-blackst0ne', '~> 3.3', require: false
-
-# HipChat integration
-gem 'hipchat', '~> 1.5.0'
 
 # JIRA integration
 gem 'jira-ruby', '~> 1.4'
@@ -227,7 +223,7 @@ gem 'asana', '~> 0.8.1'
 gem 'ruby-fogbugz', '~> 0.2.1'
 
 # Kubernetes integration
-gem 'kubeclient', '~> 4.0.0'
+gem 'kubeclient', '~> 4.2.2'
 
 # Sanitize user input
 gem 'sanitize', '~> 4.6'
@@ -307,6 +303,12 @@ group :metrics do
   gem 'raindrops', '~> 0.18'
 end
 
+group :tracing do
+  # OpenTracing
+  gem 'opentracing', '~> 0.4.3'
+  gem 'jaeger-client', '~> 0.10.0'
+end
+
 group :development do
   gem 'foreman', '~> 0.84.0'
   gem 'brakeman', '~> 4.2', require: false
@@ -323,15 +325,15 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bootsnap', '~> 1.3'
+  gem 'bootsnap', '~> 1.4'
   gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
-  gem 'pry-byebug', '~> 3.4.1', platform: :mri
+  gem 'pry-byebug', '~> 3.5.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', require: false
   gem 'fuubar', '~> 2.2.0'
 
-  gem 'database_cleaner', '~> 1.5.0'
+  gem 'database_cleaner', '~> 1.7.0'
   gem 'factory_bot_rails', '~> 4.8.2'
   gem 'rspec-rails', '~> 3.7.0'
   gem 'rspec-retry', '~> 0.4.5'
@@ -340,13 +342,13 @@ group :development, :test do
   gem 'rspec-parameterized', require: false
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
-  gem 'minitest', '~> 5.7.0'
+  gem 'minitest', '~> 5.11.0'
 
   # Generate Fake data
   gem 'ffaker', '~> 2.10'
 
-  gem 'capybara', '~> 2.15'
-  gem 'capybara-screenshot', '~> 1.0.0'
+  gem 'capybara', '~> 2.16.1'
+  gem 'capybara-screenshot', '~> 1.0.18'
   gem 'selenium-webdriver', '~> 3.12'
 
   gem 'spring', '~> 2.0.0'
@@ -380,7 +382,7 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
-  gem 'webmock', '~> 2.3.2'
+  gem 'webmock', '~> 3.5.1'
   gem 'rails-controller-testing'
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.1'
@@ -410,7 +412,7 @@ gem 'sys-filesystem', '~> 1.1.6'
 
 # SSH host key support
 gem 'net-ssh', '~> 5.0'
-gem 'sshkey', '~> 1.9.0'
+gem 'sshkey', '~> 2.0'
 
 # Required for ED25519 SSH host key support
 group :ed25519 do
@@ -419,7 +421,8 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.5.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.13.0', require: 'gitaly'
+
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

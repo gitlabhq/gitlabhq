@@ -41,7 +41,6 @@ describe Project do
     it { is_expected.to have_one(:pipelines_email_service) }
     it { is_expected.to have_one(:irker_service) }
     it { is_expected.to have_one(:pivotaltracker_service) }
-    it { is_expected.to have_one(:hipchat_service) }
     it { is_expected.to have_one(:flowdock_service) }
     it { is_expected.to have_one(:assembla_service) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
@@ -51,6 +50,7 @@ describe Project do
     it { is_expected.to have_one(:teamcity_service) }
     it { is_expected.to have_one(:jira_service) }
     it { is_expected.to have_one(:redmine_service) }
+    it { is_expected.to have_one(:youtrack_service) }
     it { is_expected.to have_one(:custom_issue_tracker_service) }
     it { is_expected.to have_one(:bugzilla_service) }
     it { is_expected.to have_one(:gitlab_issue_tracker_service) }
@@ -62,6 +62,7 @@ describe Project do
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:fork_network_member) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
+    it { is_expected.to have_one(:error_tracking_setting).class_name('ErrorTracking::ProjectErrorTrackingSetting') }
     it { is_expected.to have_many(:commit_statuses) }
     it { is_expected.to have_many(:ci_pipelines) }
     it { is_expected.to have_many(:builds) }
@@ -208,9 +209,14 @@ describe Project do
 
     it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
-      allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
+
+      allow(project2)
+        .to receive(:creator)
+        .and_return(
+          double(can_create_project?: false, projects_limit: 0).as_null_object
+        )
+
       expect(project2).not_to be_valid
-      expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
 
     describe 'wiki path conflict' do
@@ -297,6 +303,13 @@ describe Project do
 
         expect(project).to be_invalid
         expect(project.errors[:import_url].first).to include('Requests to localhost are not allowed')
+      end
+
+      it 'does not allow import_url pointing to the local network' do
+        project = build(:project, import_url: 'https://192.168.1.1')
+
+        expect(project).to be_invalid
+        expect(project.errors[:import_url].first).to include('Requests to the local network are not allowed')
       end
 
       it "does not allow import_url with invalid ports for new projects" do
@@ -392,6 +405,54 @@ describe Project do
     end
   end
 
+  describe '#all_pipelines' do
+    let(:project) { create(:project) }
+
+    before do
+      create(:ci_pipeline, project: project, ref: 'master', source: :web)
+      create(:ci_pipeline, project: project, ref: 'master', source: :external)
+    end
+
+    it 'has all pipelines' do
+      expect(project.all_pipelines.size).to eq(2)
+    end
+
+    context 'when builds are disabled' do
+      before do
+        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'should return .external pipelines' do
+        expect(project.all_pipelines).to all(have_attributes(source: 'external'))
+        expect(project.all_pipelines.size).to eq(1)
+      end
+    end
+  end
+
+  describe '#ci_pipelines' do
+    let(:project) { create(:project) }
+
+    before do
+      create(:ci_pipeline, project: project, ref: 'master', source: :web)
+      create(:ci_pipeline, project: project, ref: 'master', source: :external)
+    end
+
+    it 'has ci pipelines' do
+      expect(project.ci_pipelines.size).to eq(2)
+    end
+
+    context 'when builds are disabled' do
+      before do
+        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+      end
+
+      it 'should return .external pipelines' do
+        expect(project.ci_pipelines).to all(have_attributes(source: 'external'))
+        expect(project.ci_pipelines.size).to eq(1)
+      end
+    end
+  end
+
   describe 'project token' do
     it 'sets an random token if none provided' do
       project = FactoryBot.create(:project, runners_token: '')
@@ -422,6 +483,7 @@ describe Project do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:group_clusters_enabled?).to(:group).with_arguments(allow_nil: true) }
     it { is_expected.to delegate_method(:root_ancestor).to(:namespace).with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:last_pipeline).to(:commit).with_arguments(allow_nil: true) }
   end
 
   describe '#to_reference_with_postfix' do
@@ -603,15 +665,19 @@ describe Project do
       end
 
       it 'returns the address to create a new issue' do
-        address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-issue@gl.ab"
 
         expect(project.new_issuable_address(user, 'issue')).to eq(address)
       end
 
       it 'returns the address to create a new merge request' do
-        address = "p+#{project.full_path}+merge-request+#{user.incoming_email_token}@gl.ab"
+        address = "p+#{project.full_path_slug}-#{project.project_id}-#{user.incoming_email_token}-merge-request@gl.ab"
 
         expect(project.new_issuable_address(user, 'merge_request')).to eq(address)
+      end
+
+      it 'returns nil with invalid address type' do
+        expect(project.new_issuable_address(user, 'invalid_param')).to be_nil
       end
     end
 
@@ -1093,13 +1159,13 @@ describe Project do
 
   describe '#pipeline_for' do
     let(:project) { create(:project, :repository) }
-    let!(:pipeline) { create_pipeline }
+    let!(:pipeline) { create_pipeline(project) }
 
     shared_examples 'giving the correct pipeline' do
       it { is_expected.to eq(pipeline) }
 
       context 'return latest' do
-        let!(:pipeline2) { create_pipeline }
+        let!(:pipeline2) { create_pipeline(project) }
 
         it { is_expected.to eq(pipeline2) }
       end
@@ -1115,13 +1181,6 @@ describe Project do
       subject { project.pipeline_for('master') }
 
       it_behaves_like 'giving the correct pipeline'
-    end
-
-    def create_pipeline
-      create(:ci_pipeline,
-             project: project,
-             ref: 'master',
-             sha: project.commit('master').sha)
     end
   end
 
@@ -1405,6 +1464,24 @@ describe Project do
       it "returns a empty list" do
         is_expected.to be_empty
       end
+    end
+  end
+
+  describe '#visibility_level' do
+    let(:project) { build(:project) }
+
+    subject { project.visibility_level }
+
+    context 'by default' do
+      it { is_expected.to eq(Gitlab::VisibilityLevel::PRIVATE) }
+    end
+
+    context 'when set to INTERNAL in application settings' do
+      before do
+        stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::INTERNAL)
+      end
+
+      it { is_expected.to eq(Gitlab::VisibilityLevel::INTERNAL) }
     end
   end
 
@@ -1713,7 +1790,7 @@ describe Project do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:create_repository)
-          .with(project.repository_storage, project.disk_path)
+          .with(project.repository_storage, project.disk_path, project.full_path)
           .and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -1723,7 +1800,7 @@ describe Project do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:create_repository)
-          .with(project.repository_storage, project.disk_path)
+          .with(project.repository_storage, project.disk_path, project.full_path)
           .and_return(false)
 
         expect(project.repository).not_to receive(:after_create)
@@ -1756,7 +1833,7 @@ describe Project do
         .and_return(false)
 
       allow(shell).to receive(:create_repository)
-        .with(project.repository_storage, project.disk_path)
+        .with(project.repository_storage, project.disk_path, project.full_path)
         .and_return(true)
 
       expect(project).to receive(:create_repository).with(force: true)
@@ -1780,7 +1857,7 @@ describe Project do
         .and_return(false)
 
       expect(shell).to receive(:create_repository)
-        .with(project.repository_storage, project.disk_path)
+        .with(project.repository_storage, project.disk_path, project.full_path)
         .and_return(true)
 
       project.ensure_repository
@@ -1910,38 +1987,21 @@ describe Project do
     end
   end
 
-  describe '#latest_successful_builds_for and #latest_successful_build_for' do
-    def create_pipeline(status = 'success')
-      create(:ci_pipeline, project: project,
-                           sha: project.commit.sha,
-                           ref: project.default_branch,
-                           status: status)
-    end
-
-    def create_build(new_pipeline = pipeline, name = 'test')
-      create(:ci_build, :success, :artifacts,
-             pipeline: new_pipeline,
-             status: new_pipeline.status,
-             name: name)
-    end
-
+  describe '#latest_successful_build_for' do
     let(:project) { create(:project, :repository) }
-    let(:pipeline) { create_pipeline }
+    let(:pipeline) { create_pipeline(project) }
 
     context 'with many builds' do
       it 'gives the latest builds from latest pipeline' do
-        pipeline1 = create_pipeline
-        pipeline2 = create_pipeline
+        pipeline1 = create_pipeline(project)
+        pipeline2 = create_pipeline(project)
         create_build(pipeline1, 'test')
         create_build(pipeline1, 'test2')
         build1_p2 = create_build(pipeline2, 'test')
-        build2_p2 = create_build(pipeline2, 'test2')
+        create_build(pipeline2, 'test2')
 
-        latest_builds = project.latest_successful_builds_for
-        single_build = project.latest_successful_build_for(build1_p2.name)
-
-        expect(latest_builds).to contain_exactly(build2_p2, build1_p2)
-        expect(single_build).to eq(build1_p2)
+        expect(project.latest_successful_build_for(build1_p2.name))
+          .to eq(build1_p2)
       end
     end
 
@@ -1950,51 +2010,90 @@ describe Project do
 
       context 'standalone pipeline' do
         it 'returns builds for ref for default_branch' do
-          builds = project.latest_successful_builds_for
-          single_build = project.latest_successful_build_for(build.name)
-
-          expect(builds).to contain_exactly(build)
-          expect(single_build).to eq(build)
+          expect(project.latest_successful_build_for(build.name))
+            .to eq(build)
         end
 
-        it 'returns empty relation if the build cannot be found for #latest_successful_builds_for' do
-          builds = project.latest_successful_builds_for('TAIL')
-
-          expect(builds).to be_kind_of(ActiveRecord::Relation)
-          expect(builds).to be_empty
-        end
-
-        it 'returns exception if the build cannot be found for #latest_successful_build_for' do
-          expect { project.latest_successful_build_for(build.name, 'TAIL') }.to raise_error(ActiveRecord::RecordNotFound)
+        it 'returns empty relation if the build cannot be found' do
+          expect(project.latest_successful_build_for('TAIL'))
+            .to be_nil
         end
       end
 
       context 'with some pending pipeline' do
         before do
-          create_build(create_pipeline('pending'))
+          create_build(create_pipeline(project, 'pending'))
         end
 
         it 'gives the latest build from latest pipeline' do
-          latest_builds = project.latest_successful_builds_for
-          last_single_build = project.latest_successful_build_for(build.name)
-
-          expect(latest_builds).to contain_exactly(build)
-          expect(last_single_build).to eq(build)
+          expect(project.latest_successful_build_for(build.name))
+            .to eq(build)
         end
       end
     end
 
     context 'with pending pipeline' do
-      before do
+      it 'returns empty relation' do
         pipeline.update(status: 'pending')
-        create_build(pipeline)
+        pending_build = create_build(pipeline)
+
+        expect(project.latest_successful_build_for(pending_build.name)).to be_nil
+      end
+    end
+  end
+
+  describe '#latest_successful_build_for!' do
+    let(:project) { create(:project, :repository) }
+    let(:pipeline) { create_pipeline(project) }
+
+    context 'with many builds' do
+      it 'gives the latest builds from latest pipeline' do
+        pipeline1 = create_pipeline(project)
+        pipeline2 = create_pipeline(project)
+        create_build(pipeline1, 'test')
+        create_build(pipeline1, 'test2')
+        build1_p2 = create_build(pipeline2, 'test')
+        create_build(pipeline2, 'test2')
+
+        expect(project.latest_successful_build_for(build1_p2.name))
+          .to eq(build1_p2)
+      end
+    end
+
+    context 'with succeeded pipeline' do
+      let!(:build) { create_build }
+
+      context 'standalone pipeline' do
+        it 'returns builds for ref for default_branch' do
+          expect(project.latest_successful_build_for!(build.name))
+            .to eq(build)
+        end
+
+        it 'returns exception if the build cannot be found' do
+          expect { project.latest_successful_build_for!(build.name, 'TAIL') }
+            .to raise_error(ActiveRecord::RecordNotFound)
+        end
       end
 
-      it 'returns empty relation' do
-        builds = project.latest_successful_builds_for
+      context 'with some pending pipeline' do
+        before do
+          create_build(create_pipeline(project, 'pending'))
+        end
 
-        expect(builds).to be_kind_of(ActiveRecord::Relation)
-        expect(builds).to be_empty
+        it 'gives the latest build from latest pipeline' do
+          expect(project.latest_successful_build_for!(build.name))
+            .to eq(build)
+        end
+      end
+    end
+
+    context 'with pending pipeline' do
+      it 'returns empty relation' do
+        pipeline.update(status: 'pending')
+        pending_build = create_build(pipeline)
+
+        expect { project.latest_successful_build_for!(pending_build.name) }
+          .to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
@@ -2262,6 +2361,18 @@ describe Project do
     end
   end
 
+  describe '#daily_statistics_enabled?' do
+    it { is_expected.to be_daily_statistics_enabled }
+
+    context 'when :project_daily_statistics is disabled for the project' do
+      before do
+        stub_feature_flags(project_daily_statistics: { thing: subject, enabled: false })
+      end
+
+      it { is_expected.not_to be_daily_statistics_enabled }
+    end
+  end
+
   describe '#change_head' do
     let(:project) { create(:project, :repository) }
 
@@ -2399,6 +2510,30 @@ describe Project do
     end
   end
 
+  describe '#set_repository_read_only!' do
+    let(:project) { create(:project) }
+
+    it 'returns true when there is no existing git transfer in progress' do
+      expect(project.set_repository_read_only!).to be_truthy
+    end
+
+    it 'returns false when there is an existing git transfer in progress' do
+      allow(project).to receive(:git_transfer_in_progress?) { true }
+
+      expect(project.set_repository_read_only!).to be_falsey
+    end
+  end
+
+  describe '#set_repository_writable!' do
+    it 'sets repository_read_only to false' do
+      project = create(:project, :read_only)
+
+      expect { project.set_repository_writable! }
+        .to change(project, :repository_read_only)
+        .from(true).to(false)
+    end
+  end
+
   describe '#pushes_since_gc' do
     let(:project) { create(:project) }
 
@@ -2454,6 +2589,14 @@ describe Project do
   describe '#deployment_variables' do
     context 'when project has no deployment service' do
       let(:project) { create(:project) }
+
+      it 'returns an empty array' do
+        expect(project.deployment_variables).to eq []
+      end
+    end
+
+    context 'when project uses mock deployment service' do
+      let(:project) { create(:mock_deployment_project) }
 
       it 'returns an empty array' do
         expect(project.deployment_variables).to eq []
@@ -2543,6 +2686,10 @@ describe Project do
     end
 
     context 'when the ref is not protected' do
+      before do
+        allow(project).to receive(:protected_for?).with('ref').and_return(false)
+      end
+
       it 'contains only the CI variables' do
         is_expected.to contain_exactly(ci_variable)
       end
@@ -2582,42 +2729,139 @@ describe Project do
   end
 
   describe '#protected_for?' do
-    let(:project) { create(:project) }
+    let(:project) { create(:project, :repository) }
 
-    subject { project.protected_for?('ref') }
+    subject { project.protected_for?(ref) }
 
-    context 'when the ref is not protected' do
+    shared_examples 'ref is not protected' do
       before do
         stub_application_setting(
           default_branch_protection: Gitlab::Access::PROTECTION_NONE)
       end
 
       it 'returns false' do
-        is_expected.to be_falsey
+        is_expected.to be false
       end
     end
 
-    context 'when the ref is a protected branch' do
+    shared_examples 'ref is protected branch' do
       before do
-        allow(project).to receive(:repository).and_call_original
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(true)
-        create(:protected_branch, name: 'ref', project: project)
+        create(:protected_branch, name: 'master', project: project)
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
       end
     end
 
-    context 'when the ref is a protected tag' do
+    shared_examples 'ref is protected tag' do
       before do
-        allow(project).to receive_message_chain(:repository, :branch_exists?).and_return(false)
-        allow(project).to receive_message_chain(:repository, :tag_exists?).and_return(true)
-        create(:protected_tag, name: 'ref', project: project)
+        create(:protected_tag, name: 'v1.0.0', project: project)
       end
 
       it 'returns true' do
-        is_expected.to be_truthy
+        is_expected.to be true
+      end
+    end
+
+    context 'when ref is nil' do
+      let(:ref) { nil }
+
+      it 'returns false' do
+        is_expected.to be false
+      end
+    end
+
+    context 'when ref is ref name' do
+      context 'when ref is ambiguous' do
+        let(:ref) { 'ref' }
+
+        before do
+          project.repository.add_branch(project.creator, 'ref', 'master')
+          project.repository.add_tag(project.creator, 'ref', 'master')
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Repository::AmbiguousRefError)
+        end
+      end
+
+      context 'when the ref is not protected' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'something' }
+
+        it 'returns false' do
+          is_expected.to be false
+        end
+      end
+    end
+
+    context 'when ref is full ref' do
+      context 'when the ref is not protected' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is not protected'
+      end
+
+      context 'when the ref is a protected branch' do
+        let(:ref) { 'refs/heads/master' }
+
+        it_behaves_like 'ref is protected branch'
+      end
+
+      context 'when the ref is a protected tag' do
+        let(:ref) { 'refs/tags/v1.0.0' }
+
+        it_behaves_like 'ref is protected tag'
+      end
+
+      context 'when branch ref name is a full tag ref' do
+        let(:ref) { 'refs/tags/something' }
+
+        before do
+          project.repository.add_branch(project.creator, ref, 'master')
+        end
+
+        context 'when ref is not protected' do
+          it 'returns false' do
+            is_expected.to be false
+          end
+        end
+
+        context 'when ref is a protected branch' do
+          before do
+            create(:protected_branch, name: 'refs/tags/something', project: project)
+          end
+
+          it 'returns true' do
+            is_expected.to be true
+          end
+        end
+      end
+
+      context 'when ref does not exist' do
+        let(:ref) { 'refs/heads/something' }
+
+        it 'returns false' do
+          is_expected.to be false
+        end
       end
     end
   end
@@ -2837,7 +3081,7 @@ describe Project do
 
     it 'shows full error updating an invalid MR' do
       error_message = 'Failed to replace merge_requests because one or more of the new records could not be saved.'\
-                      ' Validate fork Source project is not a fork of the target project'
+        ' Validate fork Source project is not a fork of the target project'
 
       expect { project.append_or_update_attribute(:merge_requests, [create(:merge_request)]) }
         .to raise_error(ActiveRecord::RecordNotSaved, error_message)
@@ -2848,6 +3092,24 @@ describe Project do
 
       expect { project.append_or_update_attribute(:merge_requests, [merge_request]) }
         .not_to raise_error
+    end
+  end
+
+  describe '#update' do
+    let(:project) { create(:project) }
+
+    it 'validates the visibility' do
+      expect(project).to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+    end
+
+    it 'does not validate the visibility' do
+      expect(project).not_to receive(:visibility_level_allowed_as_fork).and_call_original
+      expect(project).not_to receive(:visibility_level_allowed_by_group).and_call_original
+
+      project.update(updated_at: Time.now)
     end
   end
 
@@ -2891,6 +3153,66 @@ describe Project do
     end
   end
 
+  describe '.with_feature_available_for_user' do
+    let!(:user) { create(:user) }
+    let!(:feature) { MergeRequest }
+    let!(:project) { create(:project, :public, :merge_requests_enabled) }
+
+    subject { described_class.with_feature_available_for_user(feature, user) }
+
+    context 'when user has access to project' do
+      subject { described_class.with_feature_available_for_user(feature, user) }
+
+      before do
+        project.add_guest(user)
+      end
+
+      context 'when public project' do
+        context 'when feature is public' do
+          it 'returns project' do
+            is_expected.to include(project)
+          end
+        end
+
+        context 'when feature is private' do
+          let!(:project) { create(:project, :public, :merge_requests_private) }
+
+          it 'returns project when user has access to the feature' do
+            project.add_maintainer(user)
+
+            is_expected.to include(project)
+          end
+
+          it 'does not return project when user does not have the minimum access level required' do
+            is_expected.not_to include(project)
+          end
+        end
+      end
+
+      context 'when private project' do
+        let!(:project) { create(:project) }
+
+        it 'returns project when user has access to the feature' do
+          project.add_maintainer(user)
+
+          is_expected.to include(project)
+        end
+
+        it 'does not return project when user does not have the minimum access level required' do
+          is_expected.not_to include(project)
+        end
+      end
+    end
+
+    context 'when user does not have access to project' do
+      let!(:project) { create(:project) }
+
+      it 'does not return project when user cant access project' do
+        is_expected.not_to include(project)
+      end
+    end
+  end
+
   describe '#pages_available?' do
     let(:project) { create(:project, group: group) }
 
@@ -2909,7 +3231,7 @@ describe Project do
     context 'when the project is in a subgroup' do
       let(:group) { create(:group, :nested) }
 
-      it { is_expected.to be(false) }
+      it { is_expected.to be(true) }
     end
   end
 
@@ -3013,8 +3335,35 @@ describe Project do
     end
   end
 
+  describe '#git_transfer_in_progress?' do
+    let(:project) { build(:project) }
+
+    subject { project.git_transfer_in_progress? }
+
+    it 'returns false when repo_reference_count and wiki_reference_count are 0' do
+      allow(project).to receive(:repo_reference_count) { 0 }
+      allow(project).to receive(:wiki_reference_count) { 0 }
+
+      expect(subject).to be_falsey
+    end
+
+    it 'returns true when repo_reference_count is > 0' do
+      allow(project).to receive(:repo_reference_count) { 2 }
+      allow(project).to receive(:wiki_reference_count) { 0 }
+
+      expect(subject).to be_truthy
+    end
+
+    it 'returns true when wiki_reference_count is > 0' do
+      allow(project).to receive(:repo_reference_count) { 0 }
+      allow(project).to receive(:wiki_reference_count) { 2 }
+
+      expect(subject).to be_truthy
+    end
+  end
+
   context 'legacy storage' do
-    let(:project) { create(:project, :repository, :legacy_storage) }
+    set(:project) { create(:project, :repository, :legacy_storage) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:project_storage) { project.send(:storage) }
 
@@ -3069,40 +3418,58 @@ describe Project do
     end
 
     describe '#migrate_to_hashed_storage!' do
+      let(:project) { create(:project, :empty_repo, :legacy_storage) }
+
       it 'returns true' do
         expect(project.migrate_to_hashed_storage!).to be_truthy
       end
 
-      it 'flags as read-only' do
-        expect { project.migrate_to_hashed_storage! }.to change { project.repository_read_only }.to(true)
+      it 'does not run validation' do
+        expect(project).not_to receive(:valid?)
+
+        project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the project repo is in use' do
+      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the project repo is in use' do
         Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: false)).increase
 
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker with delayed start when the wiki repo is in use' do
+      it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the wiki repo is in use' do
         Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: true)).increase
 
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_in)
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
         project.migrate_to_hashed_storage!
       end
 
-      it 'schedules ProjectMigrateHashedStorageWorker' do
-        expect(ProjectMigrateHashedStorageWorker).to receive(:perform_async).with(project.id)
+      it 'schedules HashedStorage::ProjectMigrateWorker' do
+        expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_async).with(project.id)
 
         project.migrate_to_hashed_storage!
+      end
+    end
+
+    describe '#rollback_to_legacy_storage!' do
+      let(:project) { create(:project, :empty_repo, :legacy_storage) }
+
+      it 'returns nil' do
+        expect(project.rollback_to_legacy_storage!).to be_nil
+      end
+
+      it 'does not run validations' do
+        expect(project).not_to receive(:valid?)
+
+        project.rollback_to_legacy_storage!
       end
     end
   end
 
   context 'hashed storage' do
-    let(:project) { create(:project, :repository, skip_disk_validation: true) }
+    set(:project) { create(:project, :repository, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
     let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
@@ -3159,6 +3526,8 @@ describe Project do
     end
 
     describe '#migrate_to_hashed_storage!' do
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+
       it 'returns nil' do
         expect(project.migrate_to_hashed_storage!).to be_nil
       end
@@ -3168,10 +3537,36 @@ describe Project do
       end
 
       context 'when partially migrated' do
-        it 'returns true' do
+        it 'enqueues a job' do
           project = create(:project, storage_version: 1, skip_disk_validation: true)
 
-          expect(project.migrate_to_hashed_storage!).to be_truthy
+          Sidekiq::Testing.fake! do
+            expect { project.migrate_to_hashed_storage! }.to change(HashedStorage::ProjectMigrateWorker.jobs, :size).by(1)
+          end
+        end
+      end
+    end
+
+    describe '#rollback_to_legacy_storage!' do
+      let(:project) { create(:project, :repository, skip_disk_validation: true) }
+
+      it 'returns true' do
+        expect(project.rollback_to_legacy_storage!).to be_truthy
+      end
+
+      it 'does not run validations' do
+        expect(project).not_to receive(:valid?)
+
+        project.rollback_to_legacy_storage!
+      end
+
+      it 'does not flag as read-only' do
+        expect { project.rollback_to_legacy_storage! }.not_to change { project.repository_read_only }
+      end
+
+      it 'enqueues a job' do
+        Sidekiq::Testing.fake! do
+          expect { project.rollback_to_legacy_storage! }.to change(HashedStorage::ProjectRollbackWorker.jobs, :size).by(1)
         end
       end
     end
@@ -3388,7 +3783,31 @@ describe Project do
     end
   end
 
-  context '#auto_devops_variables' do
+  describe '#api_variables' do
+    set(:project) { create(:project) }
+
+    it 'exposes API v4 URL' do
+      expect(project.api_variables.first[:key]).to eq 'CI_API_V4_URL'
+      expect(project.api_variables.first[:value]).to include '/api/v4'
+    end
+
+    it 'contains a URL variable for every supported API version' do
+      # Ensure future API versions have proper variables defined. We're not doing this for v3.
+      supported_versions = API::API.versions - ['v3']
+      supported_versions = supported_versions.select do |version|
+        API::API.routes.select { |route| route.version == version }.many?
+      end
+
+      required_variables = supported_versions.map do |version|
+        "CI_API_#{version.upcase}_URL"
+      end
+
+      expect(project.api_variables.map { |variable| variable[:key] })
+        .to contain_exactly(*required_variables)
+    end
+  end
+
+  describe '#auto_devops_variables' do
     set(:project) { create(:project) }
 
     subject { project.auto_devops_variables }
@@ -3525,6 +3944,7 @@ describe Project do
       expect(import_state).to receive(:remove_jid)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
+      expect(InternalId).to receive(:flush_records!).with(project: project)
 
       project.after_import
     end
@@ -3689,7 +4109,7 @@ describe Project do
 
   describe '#badges' do
     let(:project_group) { create(:group) }
-    let(:project) {  create(:project, path: 'avatar', namespace: project_group) }
+    let(:project) { create(:project, path: 'avatar', namespace: project_group) }
 
     before do
       create_list(:project_badge, 2, project: project)
@@ -3723,6 +4143,16 @@ describe Project do
     let(:user) { create(:user) }
     let(:target_project) { create(:project, :repository) }
     let(:project) { fork_project(target_project, nil, repository: true) }
+    let!(:local_merge_request) do
+      create(
+        :merge_request,
+        target_project: project,
+        target_branch: 'target-branch',
+        source_project: project,
+        source_branch: 'awesome-feature-1',
+        allow_collaboration: true
+      )
+    end
     let!(:merge_request) do
       create(
         :merge_request,
@@ -3767,14 +4197,23 @@ describe Project do
       end
     end
 
-    describe '#branch_allows_collaboration_push?' do
-      it 'allows access if the user can merge the merge request' do
-        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
+    describe '#any_branch_allows_collaboration?' do
+      it 'allows access when there are merge requests open allowing collaboration' do
+        expect(project.any_branch_allows_collaboration?(user))
           .to be_truthy
       end
 
-      it 'allows access when there are merge requests open but no branch name is given' do
-        expect(project.branch_allows_collaboration?(user, nil))
+      it 'does not allow access when there are no merge requests open allowing collaboration' do
+        merge_request.close!
+
+        expect(project.any_branch_allows_collaboration?(user))
+          .to be_falsey
+      end
+    end
+
+    describe '#branch_allows_collaboration?' do
+      it 'allows access if the user can merge the merge request' do
+        expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_truthy
       end
 
@@ -3803,13 +4242,6 @@ describe Project do
 
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy
-      end
-
-      it 'caches the result' do
-        control = ActiveRecord::QueryRecorder.new { project.branch_allows_collaboration?(user, 'awesome-feature-1') }
-
-        expect { 3.times { project.branch_allows_collaboration?(user, 'awesome-feature-1') } }
-          .not_to exceed_query_limit(control)
       end
 
       context 'when the requeststore is active', :request_store do
@@ -4176,7 +4608,116 @@ describe Project do
     end
   end
 
+  describe '#leave_pool_repository' do
+    let(:pool) { create(:pool_repository) }
+    let(:project) { create(:project, :repository, pool_repository: pool) }
+
+    it 'removes the membership' do
+      project.leave_pool_repository
+
+      expect(pool.member_projects.reload).not_to include(project)
+    end
+  end
+
+  describe '#check_personal_projects_limit' do
+    context 'when creating a project for a group' do
+      it 'does nothing' do
+        creator = build(:user)
+        project = build(:project, namespace: build(:group), creator: creator)
+
+        allow(creator)
+          .to receive(:can_create_project?)
+          .and_return(false)
+
+        project.check_personal_projects_limit
+
+        expect(project.errors).to be_empty
+      end
+    end
+
+    context 'when the user is not allowed to create a personal project' do
+      let(:user) { build(:user) }
+      let(:project) { build(:project, creator: user) }
+
+      before do
+        allow(user)
+          .to receive(:can_create_project?)
+          .and_return(false)
+      end
+
+      context 'when the project limit is zero' do
+        it 'adds a validation error' do
+          allow(user)
+            .to receive(:projects_limit)
+            .and_return(0)
+
+          project.check_personal_projects_limit
+
+          expect(project.errors[:limit_reached].first)
+            .to match(/Personal project creation is not allowed/)
+        end
+      end
+
+      context 'when the project limit is greater than zero' do
+        it 'adds a validation error' do
+          allow(user)
+            .to receive(:projects_limit)
+            .and_return(5)
+
+          project.check_personal_projects_limit
+
+          expect(project.errors[:limit_reached].first)
+            .to match(/Your project limit is 5 projects/)
+        end
+      end
+    end
+
+    context 'when the user is allowed to create personal projects' do
+      it 'does nothing' do
+        user = build(:user)
+        project = build(:project, creator: user)
+
+        allow(user)
+          .to receive(:can_create_project?)
+          .and_return(true)
+
+        project.check_personal_projects_limit
+
+        expect(project.errors).to be_empty
+      end
+    end
+  end
+
+  describe '#has_pool_repsitory?' do
+    it 'returns false when it does not have a pool repository' do
+      subject = create(:project, :repository)
+
+      expect(subject.has_pool_repository?).to be false
+    end
+
+    it 'returns true when it has a pool repository' do
+      pool    = create(:pool_repository, :ready)
+      subject = create(:project, :repository, pool_repository: pool)
+
+      expect(subject.has_pool_repository?).to be true
+    end
+  end
+
   def rugged_config
     rugged_repo(project.repository).config
+  end
+
+  def create_pipeline(project, status = 'success')
+    create(:ci_pipeline, project: project,
+                         sha: project.commit.sha,
+                         ref: project.default_branch,
+                         status: status)
+  end
+
+  def create_build(new_pipeline = pipeline, name = 'test')
+    create(:ci_build, :success, :artifacts,
+           pipeline: new_pipeline,
+           status: new_pipeline.status,
+           name: name)
   end
 end

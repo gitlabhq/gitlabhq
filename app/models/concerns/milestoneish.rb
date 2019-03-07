@@ -42,16 +42,35 @@ module Milestoneish
   def issues_visible_to_user(user)
     memoize_per_user(user, :issues_visible_to_user) do
       IssuesFinder.new(user, issues_finder_params)
-        .execute.preload(:assignees).where(milestone_id: milestoneish_ids)
+        .execute.preload(:assignees).where(milestone_id: milestoneish_id)
     end
+  end
+
+  def issue_participants_visible_by_user(user)
+    User.joins(:issue_assignees)
+      .where('issue_assignees.issue_id' => issues_visible_to_user(user).select(:id))
+      .distinct
+  end
+
+  def issue_labels_visible_by_user(user)
+    Label.joins(:label_links)
+      .where('label_links.target_id' => issues_visible_to_user(user).select(:id), 'label_links.target_type' => 'Issue')
+      .distinct
   end
 
   def sorted_issues(user)
     issues_visible_to_user(user).preload_associations.sort_by_attribute('label_priority')
   end
 
-  def sorted_merge_requests
-    merge_requests.sort_by_attribute('label_priority')
+  def sorted_merge_requests(user)
+    merge_requests_visible_to_user(user).sort_by_attribute('label_priority')
+  end
+
+  def merge_requests_visible_to_user(user)
+    memoize_per_user(user, :merge_requests_visible_to_user) do
+      MergeRequestsFinder.new(user, issues_finder_params)
+        .execute.where(milestone_id: milestoneish_id)
+    end
   end
 
   def upcoming?

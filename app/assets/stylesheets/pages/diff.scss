@@ -7,20 +7,11 @@
     cursor: pointer;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
-      position: -webkit-sticky;
+      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height;
+
       position: sticky;
-      top: 92px;
-      margin-left: -1px;
-      border-left: 1px solid $border-color;
+      top: $mr-file-header-top;
       z-index: 102;
-
-      &.is-commit {
-        top: $header-height + 36px;
-
-        .with-performance-bar & {
-          top: $header-height + 36px + $performance-bar-height;
-        }
-      }
 
       &::before {
         content: '';
@@ -34,7 +25,23 @@
       }
 
       .with-performance-bar & {
-        top: 127px;
+        top: $mr-file-header-top + $performance-bar-height;
+      }
+
+      &.is-commit {
+        top: $header-height + $commit-stat-summary-height;
+
+        .with-performance-bar & {
+          top: $header-height + $commit-stat-summary-height + $performance-bar-height;
+        }
+      }
+
+      &.is-compare {
+        top: $header-height + $compare-branches-sticky-header-height;
+
+        .with-performance-bar & {
+          top: $performance-bar-height + $header-height + $compare-branches-sticky-header-height;
+        }
       }
     }
 
@@ -231,22 +238,18 @@
 
       img {
         border: 1px solid $white-light;
-        background-image: linear-gradient(
-            45deg,
-            $border-color 25%,
-            transparent 25%,
-            transparent 75%,
-            $border-color 75%,
-            $border-color 100%
-          ),
-          linear-gradient(
-            45deg,
-            $border-color 25%,
-            transparent 25%,
-            transparent 75%,
-            $border-color 75%,
-            $border-color 100%
-          );
+        background-image: linear-gradient(45deg,
+        $border-color 25%,
+        transparent 25%,
+        transparent 75%,
+        $border-color 75%,
+        $border-color 100%),
+          linear-gradient(45deg,
+        $border-color 25%,
+        transparent 25%,
+        transparent 75%,
+        $border-color 75%,
+        $border-color 100%);
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
@@ -500,6 +503,25 @@
   }
 }
 
+.diff-stats {
+  align-items: center;
+  padding: 0 0.25rem;
+
+  .diff-stats-group {
+    padding: 0 0.25rem;
+  }
+
+  svg.diff-stats-icon {
+    vertical-align: text-bottom;
+  }
+
+  &.is-compare-versions-header {
+    .diff-stats-group {
+      padding: 0 0.5rem;
+    }
+  }
+}
+
 .file-content .diff-file {
   margin: 0;
   border: 0;
@@ -572,18 +594,6 @@
     position: absolute;
     top: 5px;
     right: 15px;
-  }
-}
-
-@mixin diff_background($background, $idiff, $border) {
-  background: $background;
-
-  &.line_content span.idiff {
-    background: $idiff;
-  }
-
-  &.diff-line-num {
-    border-color: $border;
   }
 }
 
@@ -711,7 +721,6 @@
   }
 
   @include media-breakpoint-up(sm) {
-    position: -webkit-sticky;
     position: sticky;
     top: $header-height;
     background-color: $white-light;
@@ -819,34 +828,26 @@
     width: 100%;
     height: 10px;
     background-color: $white-light;
-    background-image: linear-gradient(
-        45deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      ),
-      linear-gradient(
-        225deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      ),
-      linear-gradient(
-        135deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      ),
-      linear-gradient(
-        -45deg,
-        transparent,
-        transparent 73%,
-        $diff-jagged-border-gradient-color 75%,
-        $white-light 80%
-      );
+    background-image: linear-gradient(45deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%),
+      linear-gradient(225deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%),
+      linear-gradient(135deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%),
+      linear-gradient(-45deg,
+    transparent,
+    transparent 73%,
+    $diff-jagged-border-gradient-color 75%,
+    $white-light 80%);
     background-position: 5px 5px, 0 5px, 0 5px, 5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;
@@ -889,7 +890,7 @@
   }
 }
 
-.files:not([data-can-create-note="true"]) .frame {
+.files:not([data-can-create-note='true']) .frame {
   cursor: auto;
 }
 
@@ -898,15 +899,14 @@
 .btn-transparent.image-diff-overlay-add-comment {
   position: relative;
   cursor: image-url('illustrations/image_comment_light_cursor.svg')
-      $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+    $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
     auto;
 
   // Retina cursor
-  cursor: -webkit-image-set(
-        image-url('illustrations/image_comment_light_cursor.svg') 1x,
-        image-url('illustrations/image_comment_light_cursor@2x.svg') 2x
-      )
-      $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+  // scss-lint:disable DuplicateProperty
+  cursor: image-set(image-url('illustrations/image_comment_light_cursor.svg') 1x,
+  image-url('illustrations/image_comment_light_cursor@2x.svg') 2x)
+    $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
     auto;
 
   .comment-indicator {
@@ -1011,12 +1011,29 @@
 }
 
 .diff-tree-list {
-  width: 320px;
+  position: sticky;
+  $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
+  max-height: calc(100vh - #{$top-pos});
+  padding-right: $gl-padding;
+  z-index: 202;
+
+  .with-performance-bar & {
+    $performance-bar-top-pos: $performance-bar-height + $top-pos;
+    top: $performance-bar-top-pos;
+    max-height: calc(100vh - #{$performance-bar-top-pos});
+  }
+
+  .drag-handle {
+    bottom: 16px;
+    transform: translateX(-6px);
+  }
 }
 
 .diff-files-holder {
   flex: 1;
   min-width: 0;
+  z-index: 201;
 }
 
 .compare-versions-container {
@@ -1024,20 +1041,11 @@
 }
 
 .tree-list-holder {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 100px;
-  max-height: calc(100vh - 100px);
-  padding-right: $gl-padding;
+  height: 100%;
 
   .file-row {
     margin-left: 0;
     margin-right: 0;
-  }
-
-  .with-performance-bar & {
-    top: 135px;
-    max-height: calc(100vh - 135px);
   }
 }
 
@@ -1089,12 +1097,6 @@
       max-height: calc(50px + 50vh);
       padding-right: 0;
     }
-  }
-}
-
-.tree-list-view-toggle {
-  svg {
-    top: 0;
   }
 }
 

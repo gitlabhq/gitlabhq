@@ -6,7 +6,7 @@ _This diagram demonstrates the relative priority of each test type we use. `e2e`
 
 ## Unit tests
 
-Formal definition: https://en.wikipedia.org/wiki/Unit_testing
+Formal definition: <https://en.wikipedia.org/wiki/Unit_testing>
 
 These kind of tests ensure that a single unit of code (a method) works as
 expected (given an input, it has a predictable output). These tests should be
@@ -32,7 +32,7 @@ records should use stubs/doubles as much as possible.
 
 ## Integration tests
 
-Formal definition: https://en.wikipedia.org/wiki/Integration_testing
+Formal definition: <https://en.wikipedia.org/wiki/Integration_testing>
 
 These kind of tests ensure that individual parts of the application work well
 together, without the overhead of the actual app environment (i.e. the browser).
@@ -46,7 +46,7 @@ They're useful to test permissions, redirections, what view is rendered etc.
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `lib/ci/api/` | `spec/requests/ci/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [JavaScript](#javascript) section. |
+| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Karma JavaScript test suite](frontend_testing.md#karma-test-suite) section. |
 
 ### About controller tests
 
@@ -75,8 +75,8 @@ of multiple components).
 
 Formal definitions:
 
-- https://en.wikipedia.org/wiki/System_testing
-- https://en.wikipedia.org/wiki/White-box_testing
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/White-box_testing>
 
 These kind of tests ensure the GitLab *Rails* application (i.e.
 `gitlab-ce`/`gitlab-ee`) works as expected from a *browser* point of view.
@@ -135,8 +135,8 @@ The reasons why we should follow these best practices are as follows:
 
 Formal definitions:
 
-- https://en.wikipedia.org/wiki/System_testing
-- https://en.wikipedia.org/wiki/Black-box_testing
+- <https://en.wikipedia.org/wiki/System_testing>
+- <https://en.wikipedia.org/wiki/Black-box_testing>
 
 GitLab consists of [multiple pieces] such as [GitLab Shell], [GitLab Workhorse],
 [Gitaly], [GitLab Pages], [GitLab Runner], and GitLab Rails. All theses pieces
@@ -158,6 +158,10 @@ Every new feature should come with a [test plan].
 | `qa/qa/specs/features/` | [Capybara] + [RSpec] + Custom QA framework | Tests should be placed under their corresponding [Product category] |
 
 > See [end-to-end tests](end_to_end_tests.md) for more information.
+
+Note that `qa/spec` contains unit tests of the QA framework itself, not to be
+confused with the application's [unit tests](#unit-tests) or 
+[end-to-end tests](#black-box-tests-at-the-system-level-aka-end-to-end-tests).
 
 [multiple pieces]: ../architecture.md#components
 [GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
@@ -206,7 +210,7 @@ trade-off:
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
-  a JavaScript driver. Make sure to follow the guidelines in the [Speed](#test-speed)
+  a JavaScript driver. Make sure to follow the guidelines in the [Speed](best_practices.md#test-speed)
   section.
 
 Another way to see it is to think about the "cost of tests", this is well

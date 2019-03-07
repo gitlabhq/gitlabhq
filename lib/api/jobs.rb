@@ -38,6 +38,8 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/jobs' do
+        authorize_read_builds!
+
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
@@ -50,13 +52,16 @@ module API
         success Entities::Job
       end
       params do
-        requires :pipeline_id, type: Integer,  desc: 'The pipeline ID'
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
         use :optional_scope
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/pipelines/:pipeline_id/jobs' do
+        authorize!(:read_pipeline, user_project)
         pipeline = user_project.ci_pipelines.find(params[:pipeline_id])
+        authorize!(:read_build, pipeline)
+
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
         builds = builds.preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])

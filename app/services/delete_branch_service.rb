@@ -14,7 +14,7 @@ class DeleteBranchService < BaseService
     end
 
     if repository.rm_branch(current_user, branch_name)
-      success('Branch was removed')
+      success('Branch was deleted')
     else
       error('Failed to remove branch')
     end

@@ -7,7 +7,7 @@ class ApplicationSetting < ActiveRecord::Base
   include IgnorableColumn
   include ChronicDurationAttribute
 
-  add_authentication_token_field :runners_registration_token, encrypted: true, fallback: true
+  add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
 
   DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
@@ -193,6 +193,10 @@ class ApplicationSetting < ActiveRecord::Base
             allow_nil: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 1.day.seconds }
 
+  validates :local_markdown_version,
+            allow_nil: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than: 65536 }
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -246,6 +250,7 @@ class ApplicationSetting < ActiveRecord::Base
       dsa_key_restriction: 0,
       ecdsa_key_restriction: 0,
       ed25519_key_restriction: 0,
+      first_day_of_week: 0,
       gitaly_timeout_default: 55,
       gitaly_timeout_fast: 10,
       gitaly_timeout_medium: 30,
@@ -303,7 +308,8 @@ class ApplicationSetting < ActiveRecord::Base
       usage_stats_set_by_user_id: nil,
       diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
       commit_email_hostname: default_commit_email_hostname,
-      protected_ci_variables: false
+      protected_ci_variables: false,
+      local_markdown_version: 0
     }
   end
 
@@ -312,7 +318,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def self.create_from_defaults
-    create(defaults)
+    build_from_defaults.tap(&:save)
   end
 
   def self.human_attribute_name(attr, _options = {})
@@ -383,7 +389,7 @@ class ApplicationSetting < ActiveRecord::Base
   end
 
   def restricted_visibility_levels=(levels)
-    super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
+    super(levels&.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
   def strip_sentry_values

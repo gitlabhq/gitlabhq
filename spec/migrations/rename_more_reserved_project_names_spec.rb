@@ -37,9 +37,8 @@ describe RenameMoreReservedProjectNames, :delete do
             .to receive(:execute)
             .and_raise(Projects::AfterRenameService::RenameFailedError)
 
-          allow(Projects::AfterRenameService)
-            .to receive(:new)
-            .with(project)
+          expect(migration)
+            .to receive(:after_rename_service)
             .and_return(service)
         end
 

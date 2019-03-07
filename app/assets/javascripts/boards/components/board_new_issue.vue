@@ -96,7 +96,7 @@ export default {
 <template>
   <div class="board-new-issue-form">
     <div class="board-card">
-      <form @submit="submit($event);">
+      <form @submit="submit($event)">
         <div v-if="error" class="flash-container">
           <div class="flash-alert">An error occurred. Please try again.</div>
         </div>

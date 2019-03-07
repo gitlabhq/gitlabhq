@@ -1,0 +1,5 @@
+---
+title: "Fix weekday shift in issue board cards for UTC+X timezones by removing local timezone to UTC conversion"
+merge_request: 25512
+author: Elias Werberich
+type: fixed

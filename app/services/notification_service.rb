@@ -188,7 +188,7 @@ class NotificationService
   #  * merge_request assignee if their notification level is not Disabled
   #  * users with custom level checked with "reassign merge request"
   #
-  def reassigned_merge_request(merge_request, current_user, previous_assignee)
+  def reassigned_merge_request(merge_request, current_user, previous_assignee = nil)
     recipients = NotificationRecipientService.build_recipients(
       merge_request,
       current_user,
@@ -373,7 +373,8 @@ class NotificationService
   end
 
   def project_was_moved(project, old_path_with_namespace)
-    recipients = notifiable_users(project.team.members, :mention, project: project)
+    recipients = project.private? ? project.team.members_in_project_and_ancestors : project.team.members
+    recipients = notifiable_users(recipients, :mention, project: project)
 
     recipients.each do |recipient|
       mailer.project_was_moved_email(

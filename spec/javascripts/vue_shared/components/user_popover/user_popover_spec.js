@@ -17,14 +17,13 @@ const DEFAULT_PROPS = {
 const UserPopover = Vue.extend(userPopover);
 
 describe('User Popover Component', () => {
+  const fixtureTemplate = 'merge_requests/diff_comment.html.raw';
+  preloadFixtures(fixtureTemplate);
+
   let vm;
 
   beforeEach(() => {
-    setFixtures(`
-      <a href="/root" data-user-id="1" class="js-user-link" title="testuser">
-        Root
-      </a>
-    `);
+    loadFixtures(fixtureTemplate);
   });
 
   afterEach(() => {
@@ -123,7 +122,7 @@ describe('User Popover Component', () => {
   describe('status data', () => {
     it('should show only message', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.status = { message: 'Hello World' };
+      testProps.user.status = { message_html: 'Hello World' };
 
       vm = mountComponent(UserPopover, {
         ...DEFAULT_PROPS,
@@ -135,12 +134,12 @@ describe('User Popover Component', () => {
 
     it('should show message and emoji', () => {
       const testProps = Object.assign({}, DEFAULT_PROPS);
-      testProps.user.status = { emoji: 'basketball_player', message: 'Hello World' };
+      testProps.user.status = { emoji: 'basketball_player', message_html: 'Hello World' };
 
       vm = mountComponent(UserPopover, {
         ...DEFAULT_PROPS,
         target: document.querySelector('.js-user-link'),
-        status: { emoji: 'basketball_player', message: 'Hello World' },
+        status: { emoji: 'basketball_player', message_html: 'Hello World' },
       });
 
       expect(vm.$el.textContent).toContain('Hello World');

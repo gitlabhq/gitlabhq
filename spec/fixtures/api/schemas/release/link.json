@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["name", "url"],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "url": { "type": "string" },
+    "external": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

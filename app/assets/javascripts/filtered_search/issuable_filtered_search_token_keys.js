@@ -60,52 +60,52 @@ export const conditions = [
   {
     url: 'assignee_id=None',
     tokenKey: 'assignee',
-    value: 'none',
+    value: 'None',
   },
   {
     url: 'assignee_id=Any',
     tokenKey: 'assignee',
-    value: 'any',
+    value: 'Any',
   },
   {
     url: 'milestone_title=None',
     tokenKey: 'milestone',
-    value: 'none',
+    value: 'None',
   },
   {
     url: 'milestone_title=Any',
     tokenKey: 'milestone',
-    value: 'any',
+    value: 'Any',
   },
   {
     url: 'milestone_title=%23upcoming',
     tokenKey: 'milestone',
-    value: 'upcoming',
+    value: 'Upcoming',
   },
   {
     url: 'milestone_title=%23started',
     tokenKey: 'milestone',
-    value: 'started',
+    value: 'Started',
   },
   {
     url: 'label_name[]=None',
     tokenKey: 'label',
-    value: 'none',
+    value: 'None',
   },
   {
     url: 'label_name[]=Any',
-    tokenKey: 'any',
-    value: 'any',
+    tokenKey: 'label',
+    value: 'Any',
   },
   {
     url: 'my_reaction_emoji=None',
     tokenKey: 'my-reaction',
-    value: 'none',
+    value: 'None',
   },
   {
     url: 'my_reaction_emoji=Any',
     tokenKey: 'my-reaction',
-    value: 'any',
+    value: 'Any',
   },
 ];
 

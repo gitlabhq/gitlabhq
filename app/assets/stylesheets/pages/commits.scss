@@ -342,11 +342,11 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, color("gray"), $gray-darkest);
+    @include status-color($gray-dark, color('gray'), $gray-darkest);
     border-color: $gray-darkest;
 
     &:not(span):hover {
-      color: color("gray");
+      color: color('gray');
     }
   }
 }

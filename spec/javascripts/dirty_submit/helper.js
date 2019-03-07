@@ -1,25 +1,42 @@
 import DirtySubmitForm from '~/dirty_submit/dirty_submit_form';
 import setTimeoutPromiseHelper from '../helpers/set_timeout_promise_helper';
 
-export function setInput(element, value) {
-  element.value = value;
+function isCheckableType(type) {
+  return /^(radio|checkbox)$/.test(type);
+}
+
+export function setInputValue(element, value) {
+  const { type } = element;
+  let eventType;
+
+  if (isCheckableType(type)) {
+    element.checked = !element.checked;
+    eventType = 'change';
+  } else {
+    element.value = value;
+    eventType = 'input';
+  }
 
   element.dispatchEvent(
-    new Event('input', {
+    new Event(eventType, {
       bubbles: true,
-      cancelable: true,
     }),
   );
 
   return setTimeoutPromiseHelper(DirtySubmitForm.THROTTLE_DURATION);
 }
 
-export function createForm() {
+export function getInputValue(input) {
+  return isCheckableType(input.type) ? input.checked : input.value;
+}
+
+export function createForm(type = 'text') {
   const form = document.createElement('form');
   form.innerHTML = `
-    <input type="text" value="original" class="js-input" name="input" />
+    <input type="${type}" name="${type}" class="js-input"/>
     <button type="submit" class="js-dirty-submit"></button>
   `;
+
   const input = form.querySelector('.js-input');
   const submit = form.querySelector('.js-dirty-submit');
 

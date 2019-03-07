@@ -31,7 +31,7 @@ describe API::Boards do
   set(:board_label) { create(:label, project: board_parent) }
   set(:board) { create(:board, project: board_parent, lists: [dev_list, test_list]) }
 
-  it_behaves_like 'group and project boards',  "/projects/:id/boards"
+  it_behaves_like 'group and project boards', "/projects/:id/boards"
 
   describe "POST /projects/:id/boards/lists" do
     let(:url) { "/projects/#{board_parent.id}/boards/#{board.id}/lists" }

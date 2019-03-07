@@ -33,8 +33,8 @@ module QA
               click_on 'Add Kubernetes cluster'
             end
 
-            def check_rbac!
-              check_element :rbac_checkbox
+            def uncheck_rbac!
+              uncheck_element :rbac_checkbox
             end
           end
         end

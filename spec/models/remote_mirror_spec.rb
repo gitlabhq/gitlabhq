@@ -24,6 +24,20 @@ describe RemoteMirror, :mailer do
         expect(remote_mirror).to be_invalid
         expect(remote_mirror.errors[:url].first).to include('Username needs to start with an alphanumeric character')
       end
+
+      it 'does not allow url pointing to localhost' do
+        remote_mirror = build(:remote_mirror, url: 'http://127.0.0.2/t.git')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to loopback addresses are not allowed')
+      end
+
+      it 'does not allow url pointing to the local network' do
+        remote_mirror = build(:remote_mirror, url: 'https://192.168.1.1')
+
+        expect(remote_mirror).to be_invalid
+        expect(remote_mirror.errors[:url].first).to include('Requests to the local network are not allowed')
+      end
     end
   end
 
@@ -286,6 +300,25 @@ describe RemoteMirror, :mailer do
 
         remote_mirror.ensure_remote!
       end
+    end
+  end
+
+  context '#url=' do
+    let(:remote_mirror) { create(:project, :repository, :remote_mirror).remote_mirrors.first }
+
+    it 'resets all the columns when URL changes' do
+      remote_mirror.update(last_error: Time.now,
+                           last_update_at: Time.now,
+                           last_successful_update_at: Time.now,
+                           update_status: 'started',
+                           error_notification_sent: true)
+
+      expect { remote_mirror.update_attribute(:url, 'http://new.example.com') }
+        .to change { remote_mirror.last_error }.to(nil)
+        .and change { remote_mirror.last_update_at }.to(nil)
+        .and change { remote_mirror.last_successful_update_at }.to(nil)
+        .and change { remote_mirror.update_status }.to('finished')
+        .and change { remote_mirror.error_notification_sent }.to(false)
     end
   end
 

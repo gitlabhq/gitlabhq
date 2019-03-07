@@ -44,6 +44,10 @@ FactoryBot.define do
       provider_gcp factory: [:cluster_provider_gcp, :creating]
     end
 
+    trait :rbac_disabled do
+      platform_kubernetes factory: [:cluster_platform_kubernetes, :configured, :rbac_disabled]
+    end
+
     trait :disabled do
       enabled false
     end
@@ -54,6 +58,10 @@ FactoryBot.define do
 
     trait :with_installed_helm do
       application_helm factory: %i(clusters_applications_helm installed)
+    end
+
+    trait :with_domain do
+      domain 'example.com'
     end
   end
 end

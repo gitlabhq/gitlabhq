@@ -1,0 +1,5 @@
+---
+title: Fix pipeline status icon mismatch
+merge_request: 25407
+author:
+type: fixed

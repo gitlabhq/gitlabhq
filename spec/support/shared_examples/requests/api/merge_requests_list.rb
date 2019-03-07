@@ -186,6 +186,37 @@ shared_examples 'merge requests list' do
       expect(json_response.length).to eq(0)
     end
 
+    it 'returns an array of labeled merge requests where all labels match' do
+      path = endpoint_path + "?labels[]=#{label.title}&labels[]=#{label2.title}"
+
+      get api(path, user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label2.title, label.title])
+    end
+
+    it 'returns an array of merge requests with any label when filtering by any label' do
+      get api(endpoint_path, user), params: { labels: [" #{label.title} ", " #{label2.title} "] }
+
+      expect_paginated_array_response
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label2.title, label.title])
+      expect(json_response.first['id']).to eq(merge_request.id)
+    end
+
+    it 'returns an array of merge requests with any label when filtering by any label' do
+      get api(endpoint_path, user), params: { labels: ["#{label.title} , #{label2.title}"] }
+
+      expect_paginated_array_response
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label2.title, label.title])
+      expect(json_response.first['id']).to eq(merge_request.id)
+    end
+
     it 'returns an array of merge requests with any label when filtering by any label' do
       get api(endpoint_path, user), params: { labels: IssuesFinder::FILTER_ANY }
 
@@ -255,6 +286,38 @@ shared_examples 'merge requests list' do
         expect(json_response.length).to eq(4)
         response_dates = json_response.map { |merge_request| merge_request['created_at'] }
         expect(response_dates).to eq(response_dates.sort.reverse)
+      end
+
+      context '2 merge requests with equal created_at' do
+        let!(:closed_mr2) do
+          create :merge_request,
+                 state: 'closed',
+                 milestone: milestone1,
+                 author: user,
+                 assignee: user,
+                 source_project: project,
+                 target_project: project,
+                 title: "Test",
+                 created_at: @mr_earlier.created_at
+        end
+
+        it 'page breaks first page correctly' do
+          get api("#{endpoint_path}?sort=desc&per_page=4", user)
+
+          response_ids = json_response.map { |merge_request| merge_request['id'] }
+
+          expect(response_ids).to include(closed_mr2.id)
+          expect(response_ids).not_to include(@mr_earlier.id)
+        end
+
+        it 'page breaks second page correctly' do
+          get api("#{endpoint_path}?sort=desc&per_page=4&page=2", user)
+
+          response_ids = json_response.map { |merge_request| merge_request['id'] }
+
+          expect(response_ids).not_to include(closed_mr2.id)
+          expect(response_ids).to include(@mr_earlier.id)
+        end
       end
 
       it 'returns an array of merge_requests ordered by updated_at' do

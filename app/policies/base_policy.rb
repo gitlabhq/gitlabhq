@@ -7,6 +7,10 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:admin) { @user&.admin? }
 
+  desc "User has access to all private groups & projects"
+  with_options scope: :user, score: 0
+  condition(:full_private_access) { @user&.full_private_access? }
+
   with_options scope: :user, score: 0
   condition(:external_user) { @user.nil? || @user.external? }
 

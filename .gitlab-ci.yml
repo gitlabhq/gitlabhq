@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-golang-1.9-git-2.18-chrome-69.0-node-10.x-yarn-1.12-postgresql-9.6-graphicsmagick-1.3.29"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-golang-1.11-git-2.18-chrome-71.0-node-10.x-yarn-1.12-postgresql-9.6-graphicsmagick-1.3.29"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -120,9 +120,8 @@ stages:
   variables: &single-script-job-variables
     GIT_STRATEGY: none
   before_script:
-    # We need to download the script rather than clone the repo since the
-    # package-and-qa job will not be able to run when the branch gets
-    # deleted (when merging the MR).
+    # We don't clone the repo by using GIT_STRATEGY: none and only download the
+    # single script we need here so it's much faster than cloning.
     - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
     - apk add --update openssl
     - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
@@ -228,20 +227,21 @@ stages:
 # Trigger a package build in omnibus-gitlab repository
 #
 package-and-qa:
-  <<: *single-script-job
+  image: ruby:2.5-alpine
+  stage: test
+  before_script: []
+  dependencies: []
+  cache: {}
   variables:
-    <<: *single-script-job-variables
+    GIT_DEPTH: "1"
     API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
-    SCRIPT_NAME: trigger-build
   retry: 0
   script:
-    - gem install gitlab --no-document
     - apk add --update openssl curl jq
-    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/review_apps/review-apps.sh
-    - chmod 755 review-apps.sh
-    - source ./review-apps.sh
+    - gem install gitlab --no-document
+    - source ./scripts/review_apps/review-apps.sh
     - wait_for_job_to_be_done "gitlab:assets:compile"
-    - ./$SCRIPT_NAME omnibus
+    - ./scripts/trigger-build omnibus
   when: manual
   only:
     - //@gitlab-org/gitlab-ce
@@ -315,6 +315,7 @@ cloud-native-image:
   variables:
     GIT_DEPTH: "1"
   cache: {}
+  when: always
   script:
     - gem install gitlab --no-document
     - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
@@ -385,20 +386,25 @@ flaky-examples-check:
     - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
     - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
 
+.assets-compile-cache: &assets-compile-cache
+  cache:
+    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v5"
+    paths:
+      - vendor/ruby/
+      - .yarn-cache/
+      - tmp/cache/assets/sprockets
+
 compile-assets:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *use-pg
   stage: prepare
-  cache:
-    <<: *default-cache
   script:
     - node --version
-    - date
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
-    - date
     - free -m
     - bundle exec rake gitlab:assets:compile
+    - scripts/clean-old-cached-assets
   variables:
     # we override the max_old_space_size to prevent OOM errors
     NODE_OPTIONS: --max_old_space_size=3584
@@ -407,6 +413,7 @@ compile-assets:
     paths:
       - node_modules
       - public/assets
+  <<: *assets-compile-cache
 
 setup-test-env:
   <<: *dedicated-runner
@@ -426,15 +433,7 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 # GitLab Review apps
-.review-base: &review-base
-  <<: *dedicated-no-docs-no-db-pull-cache-job
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: test
-  cache: {}
-  dependencies: []
-  environment: &review-environment
-    name: review/${CI_COMMIT_REF_NAME}
-    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+.review-only: &review-only
   only:
     refs:
       - branches@gitlab-org/gitlab-ce
@@ -444,6 +443,28 @@ setup-test-env:
     refs:
       - master
       - /(^docs[\/-].*|.*-docs$)/
+
+.review-schedules-only: &review-schedules-only
+  only:
+    refs:
+      - schedules@gitlab-org/gitlab-ce
+      - schedules@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    refs:
+      - tags
+      - /(^docs[\/-].*|.*-docs$)/
+
+.review-base: &review-base
+  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *review-only
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  cache: {}
+  dependencies: []
+  environment: &review-environment
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
   before_script: []
 
 .review-docker: &review-docker
@@ -498,6 +519,23 @@ rspec-mysql:
   <<: *rspec-metadata-mysql
   parallel: 50
 
+.rspec-quarantine: &rspec-quarantine
+  retry: 0
+  script:
+    - export CACHE_CLASSES=true
+    - scripts/gitaly-test-spawn
+    - bin/rspec --color --format documentation --tag quarantine spec/
+
+rspec-pg-quarantine:
+  <<: *rspec-metadata-pg
+  <<: *rspec-quarantine
+  allow_failure: true
+
+rspec-mysql-quarantine:
+  <<: *rspec-metadata-mysql
+  <<: *rspec-quarantine
+  allow_failure: true
+
 static-analysis:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   dependencies:
@@ -526,7 +564,7 @@ docs lint:
   script:
     - scripts/lint-doc.sh
     - scripts/lint-changelog-yaml
-    - mv doc/ /tmp/gitlab-docs/content/
+    - mv doc/ /tmp/gitlab-docs/content/$DOCS_GITLAB_REPO_SUFFIX
     - cd /tmp/gitlab-docs
     # Build HTML from Markdown
     - bundle exec nanoc
@@ -607,8 +645,9 @@ gitlab:setup-mysql:
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-no-docs-pull-cache-job
-  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-69.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
-  dependencies: []
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.18-chrome-71.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
+  dependencies:
+    - setup-test-env
   services:
     - docker:stable-dind
   variables:
@@ -622,26 +661,51 @@ gitlab:assets:compile:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
   script:
-    - date
+    - node --version
     - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
-    - date
     - free -m
     - bundle exec rake gitlab:assets:compile
-    - scripts/build_assets_image
+    - time scripts/build_assets_image
+    - scripts/clean-old-cached-assets
   artifacts:
     name: webpack-report
     expire_in: 31d
     paths:
       - webpack-report/
       - public/assets/
+  <<: *assets-compile-cache
   only:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
     - //@gitlab/gitlabhq
     - //@gitlab/gitlab-ee
   tags:
-    - gitlab-org-delivery
-    - high-cpu
+    - docker
+    - gitlab-org
+
+gitlab:ui:visual:
+  <<: *except-docs
+  tags:
+    - gitlab-org
+  before_script: []
+  dependencies:
+    - compile-assets
+  script:
+    # Remove node modules from GitLab that may conflict with gitlab-ui
+    - rm -r node_modules
+    - git clone https://gitlab.com/gitlab-org/gitlab-ui.git
+    - cp public/assets/application-*.css gitlab-ui/styles/application.css
+    - cd gitlab-ui
+    - yarn install
+    - CSS_URL=./application.css yarn test
+  only:
+    changes:
+      - app/assets/stylesheets/*.scss
+      - app/assets/stylesheets/**/*.scss
+      - app/assets/stylesheets/**/**/*.scss
+  artifacts:
+    paths:
+      - tests/__image_snapshots__/
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
@@ -787,6 +851,7 @@ qa:selectors:
     - bundle exec bin/qa Test::Sanity::Selectors
 
 .qa-frontend-node: &qa-frontend-node
+  <<: *dedicated-no-docs-no-db-pull-cache-job
   stage: test
   variables:
     NODE_OPTIONS: --max_old_space_size=3584
@@ -801,11 +866,6 @@ qa:selectors:
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - date
     - yarn run webpack-prod
-  <<: *except-docs
-
-qa-frontend-node:6:
-  <<: *qa-frontend-node
-  image: node:6-alpine
 
 qa-frontend-node:8:
   <<: *qa-frontend-node
@@ -853,6 +913,21 @@ lint:javascript:report:
     paths:
       - eslint-report.html
 
+jsdoc:
+  <<: *dedicated-no-docs-pull-cache-job
+  stage: post-test
+  dependencies:
+    - compile-assets
+  before_script: []
+  script:
+    - date
+    - yarn run jsdoc || true # ignore exit code
+  artifacts:
+    name: jsdoc
+    expire_in: 31d
+    paths:
+      - jsdoc/
+
 pages:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   before_script: []
@@ -862,6 +937,7 @@ pages:
     - karma
     - gitlab:assets:compile
     - lint:javascript:report
+    - jsdoc
   script:
     - mv public/ .public/
     - mkdir public/
@@ -871,6 +947,7 @@ pages:
     - mv webpack-report/ public/webpack-report/ || true
     - cp .public/assets/application-*.css public/application.css || true
     - cp .public/assets/application-*.css.gz public/application.css.gz || true
+    - mv jsdoc/ public/jsdoc/ || true
   artifacts:
     paths:
       - public
@@ -917,7 +994,31 @@ no_ee_check:
     - //@gitlab-org/gitlab-ce
 
 # GitLab Review apps
-review-deploy:
+.review-build-cng-base: &review-build-cng-base
+  image: ruby:2.5-alpine
+  stage: test
+  before_script: []
+  dependencies: []
+  cache: {}
+  variables:
+    GIT_DEPTH: "1"
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+  script:
+    - apk add --update openssl curl jq
+    - gem install gitlab --no-document
+    - source ./scripts/review_apps/review-apps.sh
+    - wait_for_job_to_be_done "gitlab:assets:compile"
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+
+review-build-cng:
+  <<: *review-only
+  <<: *review-build-cng-base
+
+schedule:review-build-cng:
+  <<: *review-schedules-only
+  <<: *review-build-cng-base
+
+.review-deploy-base: &review-deploy-base
   <<: *review-base
   retry: 2
   allow_failure: true
@@ -931,15 +1032,15 @@ review-deploy:
     <<: *review-environment
     on_stop: review-stop
   before_script:
-    - apk update && apk add jq
-    - gem install gitlab --no-document
-  script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+    - apk update && apk add jq
+    - gem install gitlab --no-document
     - source ./scripts/review_apps/review-apps.sh
-    - wait_for_job_to_be_done "gitlab:assets:compile"
-    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+  script:
+    - wait_for_job_to_be_done "review-build-cng"
+  after_script:
     - check_kube_domain
     - download_gitlab_chart
     - ensure_namespace
@@ -948,9 +1049,17 @@ review-deploy:
     - time deploy
     - add_license
 
+review-deploy:
+  <<: *review-deploy-base
+
+schedule:review-deploy:
+  <<: *review-deploy-base
+  <<: *review-schedules-only
+  script:
+    - wait_for_job_to_be_done "schedule:review-build-cng"
+
 .review-qa-base: &review-qa-base
   <<: *review-docker
-  retry: 2
   allow_failure: true
   variables:
     <<: *review-docker-variables
@@ -975,18 +1084,39 @@ review-deploy:
     - apk update && apk add curl jq
     - source ./scripts/review_apps/review-apps.sh
     - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
-    - wait_for_job_to_be_done "review-deploy"
 
 review-qa-smoke:
   <<: *review-qa-base
   script:
+    - wait_for_job_to_be_done "review-deploy"
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 review-qa-all:
   <<: *review-qa-base
   script:
+    - wait_for_job_to_be_done "review-deploy"
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
   when: manual
+
+
+.review-performance-base: &review-performance-base
+  <<: *review-qa-base
+  script:
+    - wait_for_job_to_be_done "review-deploy"
+  after_script:
+    - mkdir gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir sitespeed-results
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
+    - mv sitespeed-results/data/performance.json performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      performance: performance.json
+
+review-performance:
+  <<: *review-performance-base
 
 review-stop:
   <<: *review-base
@@ -1007,21 +1137,20 @@ review-stop:
 
 schedule:review-cleanup:
   <<: *review-base
+  <<: *review-schedules-only
   stage: build
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
   environment:
     name: review/auto-cleanup
-  only:
-    refs:
-      - schedules@gitlab-org/gitlab-ce
-      - schedules@gitlab-org/gitlab-ee
-    kubernetes: active
-  except:
-    - tags
-    - /(^docs[\/-].*|.*-docs$)/
   before_script:
     - gem install gitlab --no-document
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+
+schedule:review-performance:
+  <<: *review-performance-base
+  <<: *review-schedules-only
+  script:
+    - wait_for_job_to_be_done "schedule:review-deploy"

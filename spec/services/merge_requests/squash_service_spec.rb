@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::SquashService do
   include GitHelpers
 
-  let(:service) { described_class.new(project, user, {}) }
+  let(:service) { described_class.new(project, user, { merge_request: merge_request }) }
   let(:user) { project.owner }
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
@@ -31,32 +31,49 @@ describe MergeRequests::SquashService do
 
   shared_examples 'the squash succeeds' do
     it 'returns the squashed commit SHA' do
-      result = service.execute(merge_request)
+      result = service.execute
 
       expect(result).to match(status: :success, squash_sha: a_string_matching(/\h{40}/))
       expect(result[:squash_sha]).not_to eq(merge_request.diff_head_sha)
     end
 
     it 'cleans up the temporary directory' do
-      service.execute(merge_request)
+      service.execute
 
       expect(File.exist?(squash_dir_path)).to be(false)
     end
 
     it 'does not keep the branch push event' do
-      expect { service.execute(merge_request) }.not_to change { Event.count }
+      expect { service.execute }.not_to change { Event.count }
+    end
+
+    context 'when there is a single commit in the merge request' do
+      before do
+        expect(merge_request).to receive(:commits_count).at_least(:once).and_return(1)
+      end
+
+      it 'will skip performing the squash, as the outcome would be the same' do
+        expect(merge_request.target_project.repository).not_to receive(:squash)
+
+        service.execute
+      end
+
+      it 'will still perform the squash when a custom squash commit message has been provided' do
+        service = described_class.new(project, user, { merge_request: merge_request, squash_commit_message: 'A custom commit message' })
+
+        expect(merge_request.target_project.repository).to receive(:squash).and_return('sha')
+
+        service.execute
+      end
     end
 
     context 'the squashed commit' do
-      let(:squash_sha) { service.execute(merge_request)[:squash_sha] }
+      let(:squash_sha) { service.execute[:squash_sha] }
       let(:squash_commit) { project.repository.commit(squash_sha) }
 
-      it 'copies the author info and message from the merge request' do
+      it 'copies the author info from the merge request' do
         expect(squash_commit.author_name).to eq(merge_request.author.name)
         expect(squash_commit.author_email).to eq(merge_request.author.email)
-
-        # Commit messages have a trailing newline, but titles don't.
-        expect(squash_commit.message.chomp).to eq(merge_request.title)
       end
 
       it 'sets the current user as the committer' do
@@ -72,21 +89,37 @@ describe MergeRequests::SquashService do
         expect(squash_diff.patch.length).to eq(mr_diff.patch.length)
         expect(squash_commit.sha).not_to eq(merge_request.diff_head_sha)
       end
+
+      it 'has a default squash commit message if no message was provided' do
+        expect(squash_commit.message.chomp).to eq(merge_request.default_squash_commit_message.chomp)
+      end
+
+      context 'if a message was provided' do
+        let(:service) { described_class.new(project, user, { merge_request: merge_request, squash_commit_message: message }) }
+        let(:message) { 'My custom message' }
+        let(:squash_sha) { service.execute[:squash_sha] }
+
+        it 'has the same message as the message provided' do
+          expect(squash_commit.message.chomp).to eq(message)
+        end
+      end
     end
   end
 
   describe '#execute' do
     context 'when there is only one commit in the merge request' do
-      it 'returns that commit SHA' do
-        result = service.execute(merge_request_with_one_commit)
+      let(:merge_request) { merge_request_with_one_commit }
 
-        expect(result).to match(status: :success, squash_sha: merge_request_with_one_commit.diff_head_sha)
+      it 'returns that commit SHA' do
+        result = service.execute
+
+        expect(result).to match(status: :success, squash_sha: merge_request.diff_head_sha)
       end
 
       it 'does not perform any git actions' do
         expect(repository).not_to receive(:popen)
 
-        service.execute(merge_request_with_one_commit)
+        service.execute
       end
     end
 
@@ -116,12 +149,11 @@ describe MergeRequests::SquashService do
           expect(service).to receive(:log_error).with(log_error)
           expect(service).to receive(:log_error).with(error)
 
-          service.execute(merge_request)
+          service.execute
         end
 
         it 'returns an error' do
-          expect(service.execute(merge_request)).to match(status: :error,
-                                                          message: a_string_including('squash'))
+          expect(service.execute).to match(status: :error, message: a_string_including('squash'))
         end
       end
     end
@@ -131,23 +163,22 @@ describe MergeRequests::SquashService do
       let(:error) { 'A test error' }
 
       before do
-        allow(merge_request).to receive(:commits_count).and_raise(error)
+        allow(merge_request.target_project.repository).to receive(:squash).and_raise(error)
       end
 
       it 'logs the MR reference and exception' do
         expect(service).to receive(:log_error).with(a_string_including("#{project.full_path}#{merge_request.to_reference}"))
         expect(service).to receive(:log_error).with(error)
 
-        service.execute(merge_request)
+        service.execute
       end
 
       it 'returns an error' do
-        expect(service.execute(merge_request)).to match(status: :error,
-                                                        message: a_string_including('squash'))
+        expect(service.execute).to match(status: :error, message: a_string_including('squash'))
       end
 
       it 'cleans up the temporary directory' do
-        service.execute(merge_request)
+        service.execute
 
         expect(File.exist?(squash_dir_path)).to be(false)
       end

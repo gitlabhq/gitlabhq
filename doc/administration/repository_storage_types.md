@@ -7,8 +7,8 @@
 Legacy Storage is the storage behavior prior to version 10.0. For historical
 reasons, GitLab replicated the same mapping structure from the projects URLs:
 
-* Project's repository: `#{namespace}/#{project_name}.git`
-* Project's wiki: `#{namespace}/#{project_name}.wiki.git`
+- Project's repository: `#{namespace}/#{project_name}.git`
+- Project's wiki: `#{namespace}/#{project_name}.wiki.git`
 
 This structure made it simple to migrate from existing solutions to GitLab and
 easy for Administrators to find where the repository is stored.
@@ -40,7 +40,6 @@ Attachments, GitLab Pages artifacts, Docker Containers for the integrated
 Registry, etc.
 
 ## Hashed Storage
-
 
 Hashed Storage is the new storage behavior we rolled out with 10.0. Instead
 of coupling project URL and the folder structure where the repository will be

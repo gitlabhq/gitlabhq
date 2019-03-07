@@ -6,16 +6,16 @@ We have a lot of graphing libraries in our codebase to render graphs. In an effo
 
 We chose D3 as our library going forward because of the following features:
 
-* [Tree shaking webpack capabilities.](https://github.com/d3/d3/blob/master/CHANGES.md#changes-in-d3-40)
-* [Compatible with vue.js as well as vanilla javascript.](https://github.com/d3/d3/blob/master/CHANGES.md#changes-in-d3-40)
+- [Tree shaking webpack capabilities](https://github.com/d3/d3/blob/master/CHANGES.md#changes-in-d3-40).
+- [Compatible with vue.js as well as vanilla javascript](https://github.com/d3/d3/blob/master/CHANGES.md#changes-in-d3-40).
 
 D3 is very popular across many projects outside of GitLab:
 
-* [The New York Times](https://archive.nytimes.com/www.nytimes.com/interactive/2012/02/13/us/politics/2013-budget-proposal-graphic.html)
-* [plot.ly](https://plot.ly/)
-* [Droptask](https://www.droptask.com/)
+- [The New York Times](https://archive.nytimes.com/www.nytimes.com/interactive/2012/02/13/us/politics/2013-budget-proposal-graphic.html)
+- [plot.ly](https://plot.ly/)
+- [Droptask](https://www.droptask.com/)
 
 Within GitLab, D3 has been used for the following notable features
 
-* [Prometheus graphs](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html)
-* Contribution calendars
+- [Prometheus graphs](https://docs.gitlab.com/ee/user/project/integrations/prometheus.html)
+- Contribution calendars

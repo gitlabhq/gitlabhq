@@ -66,6 +66,17 @@ class InternalId < ActiveRecord::Base
       InternalIdGenerator.new(subject, scope, usage, init).generate
     end
 
+    # Flushing records is generally safe in a sense that those
+    # records are going to be re-created when needed.
+    #
+    # A filter condition has to be provided to not accidentally flush
+    # records for all projects.
+    def flush_records!(filter)
+      raise ArgumentError, "filter cannot be empty" if filter.blank?
+
+      where(filter).delete_all
+    end
+
     def available?
       @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION # rubocop:disable Gitlab/PredicateMemoization
     end
@@ -111,7 +122,7 @@ class InternalId < ActiveRecord::Base
 
     # Generates next internal id and returns it
     def generate
-      InternalId.transaction do
+      subject.transaction do
         # Create a record in internal_ids if one does not yet exist
         # and increment its last value
         #
@@ -125,7 +136,7 @@ class InternalId < ActiveRecord::Base
     #
     # Note this will acquire a ROW SHARE lock on the InternalId record
     def track_greatest(new_value)
-      InternalId.transaction do
+      subject.transaction do
         (lookup || create_record).track_greatest_and_save!(new_value)
       end
     end
@@ -148,7 +159,7 @@ class InternalId < ActiveRecord::Base
     # violation. We can safely roll-back the nested transaction and perform
     # a lookup instead to retrieve the record.
     def create_record
-      InternalId.transaction(requires_new: true) do
+      subject.transaction(requires_new: true) do
         InternalId.create!(
           **scope,
           usage: usage_value,

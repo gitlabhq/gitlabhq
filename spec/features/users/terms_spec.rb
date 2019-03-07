@@ -76,7 +76,7 @@ describe 'Users > Terms' do
         project.add_developer(user)
       end
 
-      it 'redirects to terms and back to where the user was going'  do
+      it 'redirects to terms and back to where the user was going' do
         visit project_path(project)
 
         enforce_terms

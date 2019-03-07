@@ -31,25 +31,24 @@ module QA
           element :register_tab
         end
 
-        view 'app/views/devise/shared/_omniauth_box.html.haml' do
+        view 'app/helpers/auth_helper.rb' do
           element :saml_login_button
+          element :github_login_button
         end
 
         view 'app/views/layouts/devise.html.haml' do
           element :login_page
         end
 
-        def initialize
-          # The login page is usually the entry point for all the scenarios so
-          # we need to wait for the instance to start. That said, in some cases
-          # we are already logged-in so we check both cases here.
-          # Check if we're already logged in first. If we don't then we have to
-          # wait 10 seconds for the check for the login page to fail every time
-          # we use this class when we're already logged in (E.g., whenever we
-          # create a personal access token to use for API access).
-          wait(max: 500) do
-            Page::Main::Menu.act { has_personal_area?(wait: 0) } ||
-              has_element?(:login_page)
+        def assert_page_loaded
+          unless page_loaded?
+            raise QA::Runtime::Browser::NotRespondingError, "Login page did not load at #{QA::Page::Main::Login.perform(&:current_url)}"
+          end
+        end
+
+        def page_loaded?
+          wait(max: 60) do
+            has_element?(:login_page)
           end
         end
 
@@ -132,6 +131,16 @@ module QA
           click_element :standard_tab
         end
 
+        def sign_in_with_github
+          set_initial_password_if_present
+          click_element :github_login_button
+        end
+
+        def sign_in_with_saml
+          set_initial_password_if_present
+          click_element :saml_login_button
+        end
+
         private
 
         def sign_in_using_ldap_credentials
@@ -140,11 +149,6 @@ module QA
           fill_element :username_field, Runtime::User.ldap_username
           fill_element :password_field, Runtime::User.ldap_password
           click_element :sign_in_button
-        end
-
-        def sign_in_with_saml
-          set_initial_password_if_present
-          click_element :saml_login_button
         end
 
         def sign_in_using_gitlab_credentials(user)

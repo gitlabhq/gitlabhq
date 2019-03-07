@@ -19,7 +19,7 @@ describe ContainerRepositoryEntity do
     allow(request).to receive(:current_user).and_return(user)
   end
 
-  it 'exposes required informations'  do
+  it 'exposes required informations' do
     expect(subject).to include(:id, :path, :location, :tags_path)
   end
 

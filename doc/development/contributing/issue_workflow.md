@@ -6,7 +6,7 @@ scheduling into milestones. Labelling is a task for everyone.
 
 Most issues will have labels for at least one of the following:
 
-- Type: ~"feature proposal", ~bug, ~customer, etc.
+- Type: ~feature, ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~Plan, ~Manage, ~Quality, etc.
 - Stage: ~"devops:plan", ~"devops:create", etc.
@@ -20,15 +20,15 @@ All labels, their meaning and priority are defined on the
 If you come across an issue that has none of these, and you're allowed to set
 labels, you can _always_ add the team and type, and often also the subject.
 
-[milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
+[milestones-page]: https://gitlab.com/groups/gitlab-org/-/milestones
 
 ## Type labels
 
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one or more.
 
-Examples of type labels are ~"feature proposal", ~bug, ~customer, ~security,
-and ~"direction".
+Examples of type labels are ~feature, ~bug, ~customer, ~security,
+and ~direction.
 
 A number of type labels have a priority assigned to them, which automatically
 makes them float to the top, depending on their importance.
@@ -67,7 +67,7 @@ The current team labels are:
 - ~Geo
 - ~Gitaly
 - ~Manage
-- ~Monitoring
+- ~Monitor
 - ~Plan
 - ~Quality
 - ~Release
@@ -199,8 +199,8 @@ different way.
 We add the ~"Accepting merge requests" label to:
 
 - Low priority ~bug issues (i.e. we do not add it to the bugs that we want to
-solve in the ~"Next Patch Release")
-- Small ~"feature proposal"
+  solve in the ~"Next Patch Release")
+- Small ~feature
 - Small ~"technical debt" issues
 
 After adding the ~"Accepting merge requests" label, we try to estimate the
@@ -259,10 +259,10 @@ For feature proposals for EE, open an issue on the
 [issue tracker of EE][ee-tracker].
 
 In order to help track the feature proposals, we have created a
-[`feature proposal`][fpl] label. For the time being, users that are not members
+[`feature`][fl] label. For the time being, users that are not members
 of the project cannot add labels. You can instead ask one of the [core team]
-members to add the label ~"feature proposal" to the issue or add the following
-code snippet right after your description in a new line: `~"feature proposal"`.
+members to add the label ~feature to the issue or add the following
+code snippet right after your description in a new line: `~feature`.
 
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
@@ -276,7 +276,7 @@ need to ask one of the [core team] members to add the label, if you do not have 
 If you want to create something yourself, consider opening an issue first to
 discuss whether it is interesting to include this in GitLab.
 
-[fpl]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=feature+proposal
+[fl]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=feature
 
 ## Issue tracker guidelines
 
@@ -300,17 +300,17 @@ below will make it easy to manage this, without unnecessary overhead.
 
 1. Set weight for any issue at the earliest possible convenience
 1. If you don't agree with a set weight, discuss with other developers until
-consensus is reached about the weight
+   consensus is reached about the weight
 1. Issue weights are an abstract measurement of complexity of the issue. Do not
-relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring)
-and something you want to avoid.
+   relate issue weight directly to time. This is called [anchoring](https://en.wikipedia.org/wiki/Anchoring)
+   and something you want to avoid.
 1. Something that has a weight of 1 (or no weight) is really small and simple.
-Something that is 9 is rewriting a large fundamental part of GitLab,
-which might lead to many hard problems to solve. Changing some text in GitLab
-is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
+   Something that is 9 is rewriting a large fundamental part of GitLab,
+   which might lead to many hard problems to solve. Changing some text in GitLab
+   is probably 1, adding a new Git Hook maybe 4 or 5, big features 7-9.
 1. If something is very large, it should probably be split up in multiple
-issues or chunks. You can simply not set the weight of a parent issue and set
-weights to children issues.
+   issues or chunks. You can simply not set the weight of a parent issue and set
+   weights to children issues.
 
 ## Regression issues
 

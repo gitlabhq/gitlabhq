@@ -1,0 +1,16 @@
+- @no_container = true
+- @content_class = "limit-container-width" unless fluid_layout
+
+- add_to_breadcrumbs('Serverless', project_serverless_functions_path(@project))
+
+- page_title @service[:name]
+
+.serverless-function-details-page.js-serverless-function-details-page{ data: { service: @service.as_json } }
+%div{ class: [container_class, ('limit-container-width' unless fluid_layout)] }
+  .top-area.adjust
+    .serverless-function-details#js-serverless-function-details
+
+  .js-serverless-function-notice
+    .flash-container
+
+  .function-holder.js-function-holder.input-group

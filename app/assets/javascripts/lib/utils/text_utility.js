@@ -72,6 +72,29 @@ export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3
  */
 export const truncateSha = sha => sha.substr(0, 8);
 
+const ELLIPSIS_CHAR = '…';
+export const truncatePathMiddleToLength = (text, maxWidth) => {
+  let returnText = text;
+  let ellipsisCount = 0;
+
+  while (returnText.length >= maxWidth) {
+    const textSplit = returnText.split('/').filter(s => s !== ELLIPSIS_CHAR);
+    const middleIndex = Math.floor(textSplit.length / 2);
+
+    returnText = textSplit
+      .slice(0, middleIndex)
+      .concat(
+        new Array(ellipsisCount + 1).fill().map(() => ELLIPSIS_CHAR),
+        textSplit.slice(middleIndex + 1),
+      )
+      .join('/');
+
+    ellipsisCount += 1;
+  }
+
+  return returnText;
+};
+
 /**
  * Capitalizes first character
  *

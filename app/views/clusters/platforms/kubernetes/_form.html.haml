@@ -1,0 +1,58 @@
+= form_for cluster, url: update_cluster_url_path, as: :cluster do |field|
+  = form_errors(cluster)
+
+  .form-group
+    - if cluster.managed?
+      %label.append-bottom-10{ for: 'cluster-name' }
+        = s_('ClusterIntegration|Kubernetes cluster name')
+      .input-group
+        %input.form-control.cluster-name.js-select-on-focus{ value: cluster.name, readonly: true }
+        %span.input-group-append
+          = clipboard_button(text: cluster.name, title: s_('ClusterIntegration|Copy Kubernetes cluster name'), class: 'input-group-text btn-default')
+    - else
+      = field.label :name, s_('ClusterIntegration|Kubernetes cluster name'), class: 'label-bold'
+      .input-group
+        = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Kubernetes cluster name')
+
+  = field.fields_for :platform_kubernetes, platform do |platform_field|
+    .form-group
+      = platform_field.label :api_url, s_('ClusterIntegration|API URL')
+      .input-group
+        = platform_field.text_field :api_url, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|API URL'), readonly: cluster.managed?
+        - if cluster.managed?
+          %span.input-group-append
+            = clipboard_button(text: platform.api_url, title: s_('ClusterIntegration|Copy API URL'), class: 'input-group-text btn-default')
+
+    .form-group
+      = platform_field.label :ca_cert, s_('ClusterIntegration|CA Certificate')
+      .input-group
+        = platform_field.text_area :ca_cert, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'), readonly: cluster.managed?
+        - if cluster.managed?
+          %span.input-group-append.clipboard-addon
+            = clipboard_button(text: platform.ca_cert, title: s_('ClusterIntegration|Copy CA Certificate'), class: 'input-group-text btn-blank')
+
+    .form-group
+      = platform_field.label :token, s_('ClusterIntegration|Token')
+      .input-group
+        = platform_field.text_field :token, class: 'form-control js-cluster-token js-select-on-focus', type: 'password', placeholder: s_('ClusterIntegration|Token'), readonly: cluster.managed?
+        %span.input-group-append
+          %button.btn.btn-default.input-group-text.js-show-cluster-token{ type: 'button' }
+            = s_('ClusterIntegration|Show')
+          - if cluster.managed?
+            = clipboard_button(text: platform.token, title: s_('ClusterIntegration|Copy Token'), class: 'btn-default')
+
+    - if cluster.allow_user_defined_namespace?
+      .form-group
+        = platform_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
+        = platform_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace')
+
+    .form-group
+      .form-check
+        = platform_field.check_box :authorization_type, { class: 'form-check-input', disabled: true }, 'rbac', 'abac'
+        = platform_field.label :authorization_type, s_('ClusterIntegration|RBAC-enabled cluster'), class: 'form-check-label label-bold'
+        .form-text.text-muted
+          = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).')
+          = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
+
+  .form-group
+    = field.submit s_('ClusterIntegration|Save changes'), class: 'btn btn-success'

@@ -32,7 +32,7 @@ describe API::Internal do
     context 'broadcast message exists' do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it 'returns one broadcast message'  do
+      it 'returns one broadcast message' do
         get api('/internal/broadcast_message'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
@@ -41,7 +41,7 @@ describe API::Internal do
     end
 
     context 'broadcast message does not exist' do
-      it 'returns nothing'  do
+      it 'returns nothing' do
         get api('/internal/broadcast_message'), params: { secret_token: secret_token }
 
         expect(response).to have_gitlab_http_status(200)
@@ -167,6 +167,7 @@ describe API::Internal do
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq(user.username)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+        expect(json_response['expires_in']).to eq(Gitlab::LfsToken::DEFAULT_EXPIRE_TIME)
         expect(Gitlab::LfsToken.new(key).token_valid?(json_response['lfs_token'])).to be_truthy
       end
 
@@ -324,6 +325,7 @@ describe API::Internal do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
+          expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to be_nil
         end
@@ -336,6 +338,7 @@ describe API::Internal do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
+          expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
         end
@@ -349,6 +352,7 @@ describe API::Internal do
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+          expect(json_response["gl_project_path"]).to eq(project.full_path)
           expect(json_response["gitaly"]).not_to be_nil
           expect(json_response["gitaly"]["repository"]).not_to be_nil
           expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
@@ -368,6 +372,7 @@ describe API::Internal do
             expect(json_response["status"]).to be_truthy
             expect(json_response["repository_path"]).to eq('/')
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
+            expect(json_response["gl_project_path"]).to eq(project.full_path)
             expect(json_response["gitaly"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]).not_to be_nil
             expect(json_response["gitaly"]["repository"]["storage_name"]).to eq(project.repository.gitaly_repository.storage_name)
@@ -809,12 +814,18 @@ describe API::Internal do
         gl_repository: gl_repository,
         secret_token: secret_token,
         identifier: identifier,
-        changes: changes
+        changes: changes,
+        push_options: push_options
       }
     end
 
     let(:changes) do
       "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch"
+    end
+
+    let(:push_options) do
+      ['ci.skip',
+       'another push option']
     end
 
     before do
@@ -825,7 +836,7 @@ describe API::Internal do
 
     it 'enqueues a PostReceive worker job' do
       expect(PostReceive).to receive(:perform_async)
-        .with(gl_repository, identifier, changes)
+        .with(gl_repository, identifier, changes, push_options)
 
       post api("/internal/post_receive"), params: valid_params
     end
@@ -861,7 +872,7 @@ describe API::Internal do
     context 'broadcast message exists' do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
-      it 'returns one broadcast message'  do
+      it 'returns one broadcast message' do
         post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)
@@ -870,7 +881,7 @@ describe API::Internal do
     end
 
     context 'broadcast message does not exist' do
-      it 'returns empty string'  do
+      it 'returns empty string' do
         post api("/internal/post_receive"), params: valid_params
 
         expect(response).to have_gitlab_http_status(200)

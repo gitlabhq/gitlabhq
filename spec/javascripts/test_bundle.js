@@ -8,6 +8,7 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
+import CheckEE from '~/vue_shared/mixins/is_ee';
 import jasmineDiff from 'jasmine-diff';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
@@ -21,6 +22,16 @@ Vue.config.productionTip = false;
 
 let hasVueWarnings = false;
 Vue.config.warnHandler = (msg, vm, trace) => {
+  // The following workaround is necessary, so we are able to use setProps from Vue test utils
+  // see https://github.com/vuejs/vue-test-utils/issues/631#issuecomment-421108344
+  const currentStack = new Error().stack;
+  const isInVueTestUtils = currentStack
+    .split('\n')
+    .some(line => line.startsWith('    at VueWrapper.setProps ('));
+  if (isInVueTestUtils) {
+    return;
+  }
+
   hasVueWarnings = true;
   fail(`${msg}${trace}`);
 };
@@ -33,6 +44,7 @@ Vue.config.errorHandler = function(err) {
 
 Vue.use(VueResource);
 Vue.use(Translate);
+Vue.use(CheckEE);
 
 // enable test fixtures
 jasmine.getFixtures().fixturesPath = FIXTURES_PATH;
@@ -57,6 +69,7 @@ window.gl = window.gl || {};
 window.gl.TEST_HOST = TEST_HOST;
 window.gon = window.gon || {};
 window.gon.test_env = true;
+window.gon.ee = false;
 gon.relative_url_root = '';
 
 let hasUnhandledPromiseRejections = false;
@@ -187,6 +200,7 @@ if (process.env.BABEL_ENV === 'coverage') {
     './terminal/terminal_bundle.js',
     './users/users_bundle.js',
     './issue_show/index.js',
+    './pages/admin/application_settings/show/index.js',
   ];
 
   describe('Uncovered files', function() {

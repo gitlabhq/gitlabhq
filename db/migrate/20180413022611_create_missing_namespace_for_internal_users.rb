@@ -46,7 +46,7 @@ class CreateMissingNamespaceForInternalUsers < ActiveRecord::Migration[4.2]
     end
 
     insert_query = "INSERT INTO namespaces(owner_id, path, name, created_at, updated_at) VALUES(#{user_id}, '#{path}', '#{path}', NOW(), NOW())"
-    namespace_id = connection.insert_sql(insert_query)
+    namespace_id = connection.insert(insert_query)
 
     create_route(namespace_id)
   end

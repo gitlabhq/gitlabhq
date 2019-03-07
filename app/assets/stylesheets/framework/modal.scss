@@ -29,10 +29,6 @@
       padding-right: 28px;
     }
   }
-
-  .page-title {
-    margin-top: 0;
-  }
 }
 
 .modal-body {
@@ -103,5 +99,44 @@ body.modal-open {
 
   .recaptcha {
     margin: 0;
+  }
+}
+
+.issues-import-modal,
+.issues-export-modal {
+  .modal-header {
+    justify-content: flex-start;
+
+    .import-export-svg-container {
+      flex-grow: 1;
+      height: 56px;
+      padding: $gl-btn-padding $gl-btn-padding 0;
+      text-align: right;
+
+      .illustration {
+        height: inherit;
+        width: initial;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 0;
+
+    .modal-subheader {
+      justify-content: flex-start;
+      align-items: center;
+      border-bottom: 1px solid $modal-border-color;
+      padding: 14px;
+    }
+
+    .modal-text {
+      padding: $gl-padding-24 $gl-padding;
+      min-height: $modal-body-height;
+    }
+  }
+
+  .checkmark {
+    color: $green-400;
   }
 }

@@ -73,7 +73,7 @@ router.beforeEach((to, from, next) => {
         projectId: to.params.project,
       })
       .then(() => {
-        const basePath = to.params[0] || '';
+        const basePath = to.params.pathMatch || '';
         const projectId = `${to.params.namespace}/${to.params.project}`;
         const branchId = to.params.branchid;
         const mergeRequestId = to.params.mrid;

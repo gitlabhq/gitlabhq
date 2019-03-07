@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/84
+  context 'Create', :quarantine do
     describe 'SSH key support' do
       # Note: If you run this test against GDK make sure you've enabled sshd
       # See: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md
@@ -10,7 +11,7 @@ module QA
 
       it 'user adds an ssh key and pushes code to the repository' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         key = Resource::SSHKey.fabricate! do |resource|
           resource.title = key_title
@@ -24,13 +25,12 @@ module QA
         end
 
         project_push.project.visit!
-        Page::Project::Show.act { wait_for_push }
 
         expect(page).to have_content('README.md')
         expect(page).to have_content('Test Use SSH Key')
 
-        Page::Main::Menu.act { go_to_profile_settings }
-        Page::Profile::Menu.act { click_ssh_keys }
+        Page::Main::Menu.perform(&:go_to_profile_settings)
+        Page::Profile::Menu.perform(&:click_ssh_keys)
 
         Page::Profile::SSHKeys.perform do |ssh_keys|
           ssh_keys.remove_key(key_title)

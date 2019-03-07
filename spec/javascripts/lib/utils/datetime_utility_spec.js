@@ -156,7 +156,7 @@ describe('getSundays', () => {
 });
 
 describe('getTimeframeWindowFrom', () => {
-  it('returns array of date objects upto provided length start with provided startDate', () => {
+  it('returns array of date objects upto provided length (positive number) into the future starting from provided startDate', () => {
     const startDate = new Date(2018, 0, 1);
     const mockTimeframe = [
       new Date(2018, 0, 1),
@@ -166,6 +166,25 @@ describe('getTimeframeWindowFrom', () => {
       new Date(2018, 4, 31),
     ];
     const timeframe = datetimeUtility.getTimeframeWindowFrom(startDate, 5);
+
+    expect(timeframe.length).toBe(5);
+    timeframe.forEach((timeframeItem, index) => {
+      expect(timeframeItem.getFullYear()).toBe(mockTimeframe[index].getFullYear());
+      expect(timeframeItem.getMonth()).toBe(mockTimeframe[index].getMonth());
+      expect(timeframeItem.getDate()).toBe(mockTimeframe[index].getDate());
+    });
+  });
+
+  it('returns array of date objects upto provided length (negative number) into the past starting from provided startDate', () => {
+    const startDate = new Date(2018, 0, 1);
+    const mockTimeframe = [
+      new Date(2018, 0, 1),
+      new Date(2017, 11, 1),
+      new Date(2017, 10, 1),
+      new Date(2017, 9, 1),
+      new Date(2017, 8, 1),
+    ];
+    const timeframe = datetimeUtility.getTimeframeWindowFrom(startDate, -5);
 
     expect(timeframe.length).toBe(5);
     timeframe.forEach((timeframeItem, index) => {
@@ -374,5 +393,24 @@ describe('calculateRemainingMilliseconds', () => {
     const milliseconds = datetimeUtility.calculateRemainingMilliseconds('2063-04-03T00:00:00Z');
 
     expect(milliseconds).toBe(0);
+  });
+});
+
+describe('newDate', () => {
+  it('returns new date instance from existing date instance', () => {
+    const initialDate = new Date(2019, 0, 1);
+    const copiedDate = datetimeUtility.newDate(initialDate);
+
+    expect(copiedDate.getTime()).toBe(initialDate.getTime());
+
+    initialDate.setMonth(initialDate.getMonth() + 1);
+
+    expect(copiedDate.getTime()).not.toBe(initialDate.getTime());
+  });
+
+  it('returns date instance when provided date param is not of type date or is undefined', () => {
+    const initialDate = datetimeUtility.newDate();
+
+    expect(initialDate instanceof Date).toBe(true);
   });
 });

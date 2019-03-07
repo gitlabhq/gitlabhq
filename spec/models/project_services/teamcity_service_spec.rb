@@ -205,7 +205,7 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
   end
 
   def stub_request(status: 200, body: nil, build_status: 'success')
-    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,number:123'
+    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,revision:123'
     auth = %w(mic password)
 
     body ||= %Q({"build":{"status":"#{build_status}","id":"666"}})

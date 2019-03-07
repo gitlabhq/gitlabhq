@@ -32,7 +32,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       get ':id/pipeline_schedules/:pipeline_schedule_id' do
         present pipeline_schedule, with: Entities::PipelineScheduleDetails
@@ -87,7 +87,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       post ':id/pipeline_schedules/:pipeline_schedule_id/take_ownership' do
         authorize! :update_pipeline_schedule, pipeline_schedule
@@ -103,7 +103,7 @@ module API
         success Entities::PipelineScheduleDetails
       end
       params do
-        requires :pipeline_schedule_id, type: Integer,  desc: 'The pipeline schedule id'
+        requires :pipeline_schedule_id, type: Integer, desc: 'The pipeline schedule id'
       end
       delete ':id/pipeline_schedules/:pipeline_schedule_id' do
         authorize! :admin_pipeline_schedule, pipeline_schedule

@@ -108,7 +108,7 @@ describe 'Filter issues', :js do
       it 'filters issues by no assignee' do
         input_filtered_search('assignee:none')
 
-        expect_tokens([assignee_token('none')])
+        expect_tokens([assignee_token('None')])
         expect_issues_list_count(3)
         expect_filtered_search_input_empty
       end
@@ -146,7 +146,7 @@ describe 'Filter issues', :js do
       it 'filters issues by no label' do
         input_filtered_search('label:none')
 
-        expect_tokens([label_token('none', false)])
+        expect_tokens([label_token('None', false)])
         expect_issues_list_count(4)
         expect_filtered_search_input_empty
       end
@@ -287,7 +287,7 @@ describe 'Filter issues', :js do
       it 'filters issues by no milestone' do
         input_filtered_search("milestone:none")
 
-        expect_tokens([milestone_token('none', false)])
+        expect_tokens([milestone_token('None', false)])
         expect_issues_list_count(3)
         expect_filtered_search_input_empty
       end
@@ -299,7 +299,7 @@ describe 'Filter issues', :js do
 
         input_filtered_search("milestone:upcoming")
 
-        expect_tokens([milestone_token('upcoming', false)])
+        expect_tokens([milestone_token('Upcoming', false)])
         expect_issues_list_count(1)
         expect_filtered_search_input_empty
       end
@@ -307,7 +307,7 @@ describe 'Filter issues', :js do
       it 'filters issues by started milestones' do
         input_filtered_search("milestone:started")
 
-        expect_tokens([milestone_token('started', false)])
+        expect_tokens([milestone_token('Started', false)])
         expect_issues_list_count(5)
         expect_filtered_search_input_empty
       end

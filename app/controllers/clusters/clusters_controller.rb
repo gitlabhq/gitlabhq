@@ -24,7 +24,7 @@ class Clusters::ClustersController < Clusters::BaseController
     # Note: We are paginating through an array here but this should OK as:
     #
     # In CE, we can have a maximum group nesting depth of 21, so including
-    # project cluster, we can have max 22 clusters for a group hierachy.
+    # project cluster, we can have max 22 clusters for a group hierarchy.
     # In EE (Premium) we can have any number, as multiple clusters are
     # supported, but the number of clusters are fairly low currently.
     #
@@ -127,6 +127,7 @@ class Clusters::ClustersController < Clusters::BaseController
       params.require(:cluster).permit(
         :enabled,
         :environment_scope,
+        :base_domain,
         platform_kubernetes_attributes: [
           :namespace
         ]
@@ -136,6 +137,7 @@ class Clusters::ClustersController < Clusters::BaseController
         :enabled,
         :name,
         :environment_scope,
+        :base_domain,
         platform_kubernetes_attributes: [
           :api_url,
           :token,

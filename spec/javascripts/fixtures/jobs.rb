@@ -14,8 +14,7 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
     create(:ci_build, :scheduled,
            pipeline: pipeline,
            name: 'delayed job',
-           stage: 'test',
-           commands: 'test')
+           stage: 'test')
   end
 
   render_views

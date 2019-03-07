@@ -4,7 +4,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include AuthenticatesWithTwoFactor
   include Devise::Controllers::Rememberable
 
-  protect_from_forgery except: [:kerberos, :saml, :cas3], prepend: true
+  protect_from_forgery except: [:kerberos, :saml, :cas3, :failure], with: :exception, prepend: true
 
   def handle_omniauth
     omniauth_flow(Gitlab::Auth::OAuth)
@@ -75,6 +75,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   private
 
   def omniauth_flow(auth_module, identity_linker: nil)
+    if fragment = request.env.dig('omniauth.params', 'redirect_fragment').presence
+      store_redirect_fragment(fragment)
+    end
+
     if current_user
       log_audit_event(current_user, with: oauth['provider'])
 
@@ -112,8 +116,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     session[:service_tickets][provider] = ticket
   end
 
+  def build_auth_user(auth_user_class)
+    auth_user_class.new(oauth)
+  end
+
   def sign_in_user_flow(auth_user_class)
-    auth_user = auth_user_class.new(oauth)
+    auth_user = build_auth_user(auth_user_class)
     user = auth_user.find_and_update!
 
     if auth_user.valid_sign_in?
@@ -188,5 +196,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def remember_me?
     request_params = request.env['omniauth.params']
     (request_params['remember_me'] == '1') if request_params.present?
+  end
+
+  def store_redirect_fragment(redirect_fragment)
+    key = stored_location_key_for(:user)
+    location = session[key]
+    if uri = parse_uri(location)
+      uri.fragment = redirect_fragment
+      store_location_for(:user, uri.to_s)
+    end
   end
 end

@@ -98,6 +98,12 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
+  def target_branch_path
+    if target_branch_exists?
+      project_branch_path(project, target_branch)
+    end
+  end
+
   def source_branch_path
     if source_branch_exists?
       project_branch_path(source_project, source_branch)
@@ -170,6 +176,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
   end
 
+  def can_read_pipeline?
+    pipeline && can?(current_user, :read_pipeline, pipeline)
+  end
+
   def mergeable_discussions_state
     # This avoids calling MergeRequest#mergeable_discussions_state without
     # considering the state of the MR first. If a MR isn't mergeable, we can
@@ -187,6 +197,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
 
   def subscribed?
     merge_request.subscribed?(current_user, merge_request.target_project)
+  end
+
+  def conflicts_docs_path
+    help_page_path('user/project/merge_requests/resolve_conflicts.md')
   end
 
   private

@@ -4,7 +4,7 @@ class MergeRequestDiffFile < ActiveRecord::Base
   include Gitlab::EncodingHelper
   include DiffFile
 
-  belongs_to :merge_request_diff
+  belongs_to :merge_request_diff, inverse_of: :merge_request_diff_files
 
   def utf8_diff
     return '' if diff.blank?
@@ -13,6 +13,16 @@ class MergeRequestDiffFile < ActiveRecord::Base
   end
 
   def diff
-    binary? ? super.unpack('m0').first : super
+    content =
+      if merge_request_diff&.stored_externally?
+        merge_request_diff.opening_external_diff do |file|
+          file.seek(external_diff_offset)
+          file.read(external_diff_size)
+        end
+      else
+        super
+      end
+
+    binary? ? content.unpack('m0').first : content
   end
 end

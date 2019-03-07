@@ -382,6 +382,20 @@ describe API::Groups do
         expect(response_project_ids(json_response, 'shared_projects'))
           .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
+
+      it 'avoids N+1 queries' do
+        get api("/groups/#{group1.id}", admin)
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/groups/#{group1.id}", admin)
+        end.count
+
+        create(:project, namespace: group1)
+
+        expect do
+          get api("/groups/#{group1.id}", admin)
+        end.not_to exceed_query_limit(control_count)
+      end
     end
 
     context "when authenticated as admin" do

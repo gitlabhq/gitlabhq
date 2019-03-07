@@ -3,6 +3,56 @@ require 'spec_helper'
 describe ProjectsHelper do
   include ProjectForksHelper
 
+  describe '#error_tracking_setting_project_json' do
+    let(:project) { create(:project) }
+
+    context 'error tracking setting does not exist' do
+      before do
+        helper.instance_variable_set(:@project, project)
+      end
+
+      it 'returns nil' do
+        expect(helper.error_tracking_setting_project_json).to be_nil
+      end
+    end
+
+    context 'error tracking setting exists' do
+      let!(:error_tracking_setting) { create(:project_error_tracking_setting, project: project) }
+
+      context 'api_url present' do
+        let(:json) do
+          {
+            name: error_tracking_setting.project_name,
+            organization_name: error_tracking_setting.organization_name,
+            organization_slug: error_tracking_setting.organization_slug,
+            slug: error_tracking_setting.project_slug
+          }.to_json
+        end
+
+        before do
+          helper.instance_variable_set(:@project, project)
+        end
+
+        it 'returns error tracking json' do
+          expect(helper.error_tracking_setting_project_json).to eq(json)
+        end
+      end
+
+      context 'api_url not present' do
+        before do
+          project.error_tracking_setting.api_url = nil
+          project.error_tracking_setting.enabled = false
+
+          helper.instance_variable_set(:@project, project)
+        end
+
+        it 'returns nil' do
+          expect(helper.error_tracking_setting_project_json).to be_nil
+        end
+      end
+    end
+  end
+
   describe "#project_status_css_class" do
     it "returns appropriate class" do
       expect(project_status_css_class("started")).to eq("table-active")
@@ -354,8 +404,35 @@ describe ProjectsHelper do
         allow(project).to receive(:builds_enabled?).and_return(false)
       end
 
-      it "do not include pipelines tab" do
-        is_expected.not_to include(:pipelines)
+      context 'when user has access to builds' do
+        it "does include pipelines tab" do
+          is_expected.to include(:pipelines)
+        end
+      end
+
+      context 'when user does not have access to builds' do
+        before do
+          allow(helper).to receive(:can?) { false }
+        end
+
+        it "does not include pipelines tab" do
+          is_expected.not_to include(:pipelines)
+        end
+      end
+    end
+
+    context 'when project has external wiki' do
+      it 'includes external wiki tab' do
+        project.create_external_wiki_service(active: true, properties: { 'external_wiki_url' => 'https://gitlab.com' })
+
+        is_expected.to include(:external_wiki)
+      end
+    end
+
+    context 'when project does not have external wiki' do
+      it 'does not include external wiki tab' do
+        expect(project.external_wiki).to be_nil
+        is_expected.not_to include(:external_wiki)
       end
     end
   end
@@ -508,18 +585,6 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#legacy_render_context' do
-    it 'returns the redcarpet engine' do
-      params = { legacy_render: '1' }
-
-      expect(helper.legacy_render_context(params)).to include(markdown_engine: :redcarpet)
-    end
-
-    it 'returns nothing' do
-      expect(helper.legacy_render_context({})).to be_empty
-    end
-  end
-
   describe '#explore_projects_tab?' do
     subject { helper.explore_projects_tab? }
 
@@ -627,6 +692,105 @@ describe ProjectsHelper do
       it 'returns true if disabled flag is false' do
         expect(helper.show_issue_count?).to be_truthy
       end
+    end
+  end
+
+  describe '#show_auto_devops_implicitly_enabled_banner?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { create(:user) }
+
+    let(:feature_visibilities) do
+      {
+        enabled: ProjectFeature::ENABLED,
+        disabled: ProjectFeature::DISABLED
+      }
+    end
+
+    where(:global_setting, :project_setting, :builds_visibility, :gitlab_ci_yml, :user_access, :result) do
+      # With ADO implicitly enabled scenarios
+      true | nil | :disabled | true  | :developer  | false
+      true | nil | :disabled | true  | :maintainer | false
+      true | nil | :disabled | true  | :owner      | false
+
+      true | nil | :disabled | false | :developer  | false
+      true | nil | :disabled | false | :maintainer | false
+      true | nil | :disabled | false | :owner      | false
+
+      true | nil | :enabled  | true  | :developer  | false
+      true | nil | :enabled  | true  | :maintainer | false
+      true | nil | :enabled  | true  | :owner      | false
+
+      true | nil | :enabled  | false | :developer  | false
+      true | nil | :enabled  | false | :maintainer | true
+      true | nil | :enabled  | false | :owner      | true
+
+      # With ADO enabled scenarios
+      true | true | :disabled | true  | :developer  | false
+      true | true | :disabled | true  | :maintainer | false
+      true | true | :disabled | true  | :owner      | false
+
+      true | true | :disabled | false | :developer  | false
+      true | true | :disabled | false | :maintainer | false
+      true | true | :disabled | false | :owner      | false
+
+      true | true | :enabled  | true  | :developer  | false
+      true | true | :enabled  | true  | :maintainer | false
+      true | true | :enabled  | true  | :owner      | false
+
+      true | true | :enabled  | false | :developer  | false
+      true | true | :enabled  | false | :maintainer | false
+      true | true | :enabled  | false | :owner      | false
+
+      # With ADO disabled scenarios
+      true | false | :disabled | true  | :developer  | false
+      true | false | :disabled | true  | :maintainer | false
+      true | false | :disabled | true  | :owner      | false
+
+      true | false | :disabled | false | :developer  | false
+      true | false | :disabled | false | :maintainer | false
+      true | false | :disabled | false | :owner      | false
+
+      true | false | :enabled  | true  | :developer  | false
+      true | false | :enabled  | true  | :maintainer | false
+      true | false | :enabled  | true  | :owner      | false
+
+      true | false | :enabled  | false | :developer  | false
+      true | false | :enabled  | false | :maintainer | false
+      true | false | :enabled  | false | :owner      | false
+    end
+
+    def grant_user_access(project, user, access)
+      case access
+      when :developer, :maintainer
+        project.add_user(user, access)
+      when :owner
+        project.namespace.update(owner: user)
+      end
+    end
+
+    with_them do
+      let(:project) do
+        if project_setting.nil?
+          create(:project, :repository)
+        else
+          create(:project, :repository, :auto_devops)
+        end
+      end
+
+      before do
+        stub_application_setting(auto_devops_enabled: global_setting)
+
+        allow_any_instance_of(Repository).to receive(:gitlab_ci_yml).and_return(gitlab_ci_yml)
+
+        grant_user_access(project, user, user_access)
+        project.project_feature.update_attribute(:builds_access_level, feature_visibilities[builds_visibility])
+        project.auto_devops.update_attribute(:enabled, project_setting) unless project_setting.nil?
+      end
+
+      subject { helper.show_auto_devops_implicitly_enabled_banner?(project, user) }
+
+      it { is_expected.to eq(result) }
     end
   end
 end

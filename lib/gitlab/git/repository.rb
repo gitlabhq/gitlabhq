@@ -11,6 +11,7 @@ module Gitlab
       include Gitlab::Git::WrapsGitalyErrors
       include Gitlab::EncodingHelper
       include Gitlab::Utils::StrongMemoize
+      include Gitlab::Git::RuggedImpl::Repository
 
       SEARCH_CONTEXT_LINES = 3
       REV_LIST_COMMIT_LIMIT = 2_000
@@ -67,7 +68,7 @@ module Gitlab
       # Relative path of repo
       attr_reader :relative_path
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :storage, :gl_repository, :relative_path, :gl_project_path
 
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
@@ -78,10 +79,11 @@ module Gitlab
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
-      def initialize(storage, relative_path, gl_repository)
+      def initialize(storage, relative_path, gl_repository, gl_project_path)
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
+        @gl_project_path = gl_project_path
 
         @name = @relative_path.split("/").last
       end
@@ -274,7 +276,7 @@ module Gitlab
       # senddata response.
       def archive_file_path(storage_path, sha, name, format = "tar.gz")
         # Build file path
-        return nil unless name
+        return unless name
 
         extension =
           case format
@@ -490,6 +492,13 @@ module Gitlab
         end
       end
 
+      # Return total diverging commits count
+      def diverging_commit_count(from, to, max_count:)
+        wrapped_gitaly_errors do
+          gitaly_commit_client.diverging_commit_count(from, to, max_count: max_count)
+        end
+      end
+
       # Mimic the `git clean` command and recursively delete untracked files.
       # Valid keys that can be passed in the +options+ hash are:
       #
@@ -546,6 +555,12 @@ module Gitlab
 
       def find_tag(name)
         tags.find { |tag| tag.name == name }
+      end
+
+      def merge_to_ref(user, source_sha, branch, target_ref, message)
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_merge_to_ref(user, source_sha, branch, target_ref, message)
+        end
       end
 
       def merge(user, source_sha, target_branch, message, &block)
@@ -789,6 +804,11 @@ module Gitlab
       end
 
       def create_from_bundle(bundle_path)
+        # It's important to check that the linked-to file is actually a valid
+        # .bundle file as it is passed to `git clone`, which may otherwise
+        # interpret it as a pointer to another repository
+        ::Gitlab::Git::BundleFile.check!(bundle_path)
+
         gitaly_repository_client.create_from_bundle(bundle_path)
       end
 
@@ -833,17 +853,20 @@ module Gitlab
         true
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
-        start_branch_name: nil, start_repository: self)
+        start_branch_name: nil, start_repository: self,
+        force: false)
 
         wrapped_gitaly_errors do
           gitaly_operation_client.user_commit_files(user, branch_name,
               message, actions, author_email, author_name,
-              start_branch_name, start_repository)
+              start_branch_name, start_repository, force)
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def write_config(full_path:)
         return unless full_path.present?
@@ -867,7 +890,7 @@ module Gitlab
       end
 
       def gitaly_repository
-        Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
+        Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository, @gl_project_path)
       end
 
       def gitaly_ref_client

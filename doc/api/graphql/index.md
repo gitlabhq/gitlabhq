@@ -24,7 +24,7 @@ feature flag. You can enable the feature using the [features api][features-api] 
 For example:
 
 ```shell
-curl --data "value=100" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/features/graphql
+curl --data "value=100" --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/features/graphql
 ```
 
 ## Available queries

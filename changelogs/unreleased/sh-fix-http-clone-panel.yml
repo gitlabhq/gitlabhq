@@ -1,5 +1,0 @@
----
-title: Fix missing Git clone button when protocol restriction setting enabled
-merge_request: 24015
-author:
-type: fixed

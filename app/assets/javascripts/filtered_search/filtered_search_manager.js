@@ -593,7 +593,7 @@ export default class FilteredSearchManager {
     tokens.forEach(token => {
       const condition = this.filteredSearchTokenKeys.searchByConditionKeyValue(
         token.key,
-        token.value.toLowerCase(),
+        token.value,
       );
       const tokenConfig = this.filteredSearchTokenKeys.searchByKey(token.key) || {};
       const { param } = tokenConfig;

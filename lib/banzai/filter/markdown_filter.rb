@@ -6,7 +6,7 @@ module Banzai
       def initialize(text, context = nil, result = nil)
         super(text, context, result)
 
-        @renderer = renderer(context[:markdown_engine]).new
+        @renderer = renderer(context[:markdown_engine]).new(context)
         @text = @text.delete("\r")
       end
 

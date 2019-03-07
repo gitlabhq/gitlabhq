@@ -24,10 +24,10 @@ module SearchHelper
   end
 
   def search_entries_info(collection, scope, term)
-    return unless collection.count > 0
+    return if collection.to_a.empty?
 
     from = collection.offset_value + 1
-    to = collection.offset_value + collection.count
+    to = collection.offset_value + collection.to_a.size
     count = collection.total_count
 
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""

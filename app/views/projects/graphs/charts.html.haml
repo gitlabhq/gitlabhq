@@ -55,23 +55,23 @@
             #{@commits_graph.authors}
           = (_("Authors: %{authors}") % { authors: "<strong>#{authors}</strong>" }).html_safe
     .col-md-6
+      %p.slead
+        = _("Commits per day of month")
       %div
-        %p.slead
-          = _("Commits per day of month")
         %canvas#month-chart
   .row
     .col-md-6
     .col-md-6
+      %p.slead
+        = _("Commits per weekday")
       %div
-        %p.slead
-          = _("Commits per weekday")
         %canvas#weekday-chart
   .row
     .col-md-6
     .col-md-6
+      %p.slead
+        = _("Commits per day hour (UTC)")
       %div
-        %p.slead
-          = _("Commits per day hour (UTC)")
         %canvas#hour-chart
 
 -# haml-lint:disable InlineJavaScript

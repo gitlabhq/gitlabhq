@@ -13,9 +13,8 @@ module CacheMarkdownField
   extend ActiveSupport::Concern
 
   # Increment this number every time the renderer changes its output
-  CACHE_REDCARPET_VERSION         = 3
   CACHE_COMMONMARK_VERSION_START  = 10
-  CACHE_COMMONMARK_VERSION        = 12
+  CACHE_COMMONMARK_VERSION        = 14
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
@@ -42,18 +41,6 @@ module CacheMarkdownField
     end
   end
 
-  class MarkdownEngine
-    def self.from_version(version = nil)
-      return :common_mark if version.nil? || version == 0
-
-      if version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
-        :redcarpet
-      else
-        :common_mark
-      end
-    end
-  end
-
   def skip_project_check?
     false
   end
@@ -71,7 +58,7 @@ module CacheMarkdownField
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
 
-    context[:markdown_engine] = MarkdownEngine.from_version(latest_cached_markdown_version)
+    context[:markdown_engine] = :common_mark
 
     context
   end
@@ -128,12 +115,27 @@ module CacheMarkdownField
   end
 
   def latest_cached_markdown_version
-    return CacheMarkdownField::CACHE_COMMONMARK_VERSION unless cached_markdown_version
+    @latest_cached_markdown_version ||= (CacheMarkdownField::CACHE_COMMONMARK_VERSION << 16) | local_version
+  end
 
-    if cached_markdown_version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
-      CacheMarkdownField::CACHE_REDCARPET_VERSION
+  def local_version
+    # because local_markdown_version is stored in application_settings which
+    # uses cached_markdown_version too, we check explicitly to avoid
+    # endless loop
+    return local_markdown_version if has_attribute?(:local_markdown_version)
+
+    settings = Gitlab::CurrentSettings.current_application_settings
+
+    # Following migrations are not properly isolated and
+    # use real models (by calling .ghost method), in these migrations
+    # local_markdown_version attribute doesn't exist yet, so we
+    # use a default value:
+    # db/migrate/20170825104051_migrate_issues_to_ghost_user.rb
+    # db/migrate/20171114150259_merge_requests_author_id_foreign_key.rb
+    if settings.respond_to?(:local_markdown_version)
+      settings.local_markdown_version
     else
-      CacheMarkdownField::CACHE_COMMONMARK_VERSION
+      0
     end
   end
 
@@ -178,7 +180,9 @@ module CacheMarkdownField
       # author and project invalidate the cache in all circumstances.
       define_method(invalidation_method) do
         changed_fields = changed_attributes.keys
-        invalidations = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations  = changed_fields & [markdown_field.to_s, *INVALIDATED_BY]
+        invalidations.delete(markdown_field.to_s) if changed_fields.include?("#{markdown_field}_html")
+
         !invalidations.empty? || !cached_html_up_to_date?(markdown_field)
       end
     end

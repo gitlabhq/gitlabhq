@@ -16,7 +16,10 @@ FactoryBot.define do
 
       commit
     end
+
     project
+
+    skip_create # Commits cannot be persisted
 
     initialize_with do
       new(git_commit, project)
@@ -24,6 +27,13 @@ FactoryBot.define do
 
     after(:build) do |commit, evaluator|
       allow(commit).to receive(:author).and_return(evaluator.author || build_stubbed(:author))
+      allow(commit).to receive(:parent_ids).and_return([])
+    end
+
+    trait :merge_commit do
+      after(:build) do |commit|
+        allow(commit).to receive(:parent_ids).and_return(Array.new(2) { SecureRandom.hex(20) })
+      end
     end
 
     trait :without_author do

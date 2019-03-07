@@ -3,6 +3,7 @@
  * Render environments table.
  */
 import { GlLoadingIcon } from '@gitlab/ui';
+import _ from 'underscore';
 import environmentItem from './environment_item.vue';
 
 export default {
@@ -23,11 +24,14 @@ export default {
       required: false,
       default: false,
     },
-
-    canCreateDeployment: {
-      type: Boolean,
-      required: false,
-      default: false,
+  },
+  computed: {
+    sortedEnvironments() {
+      return this.sortEnvironments(this.environments).map(env =>
+        this.shouldRenderFolderContent(env)
+          ? { ...env, children: this.sortEnvironments(env.children) }
+          : env,
+      );
     },
   },
   methods: {
@@ -36,6 +40,30 @@ export default {
     },
     shouldRenderFolderContent(env) {
       return env.isFolder && env.isOpen && env.children && env.children.length > 0;
+    },
+    sortEnvironments(environments) {
+      /*
+       * The sorting algorithm should sort in the following priorities:
+       *
+       * 1. folders first,
+       * 2. last updated descending,
+       * 3. by name ascending,
+       *
+       * the sorting algorithm must:
+       *
+       * 1. Sort by name ascending,
+       * 2. Reverse (sort by name descending),
+       * 3. Sort by last deployment ascending,
+       * 4. Reverse (last deployment descending, name ascending),
+       * 5. Put folders first.
+       */
+      return _.chain(environments)
+        .sortBy(env => (env.isFolder ? env.folderName : env.name))
+        .reverse()
+        .sortBy(env => (env.last_deployment ? env.last_deployment.created_at : '0000'))
+        .reverse()
+        .sortBy(env => (env.isFolder ? -1 : 1))
+        .value();
     },
   },
 };
@@ -59,12 +87,11 @@ export default {
         {{ s__('Environments|Updated') }}
       </div>
     </div>
-    <template v-for="(model, i) in environments" :model="model">
+    <template v-for="(model, i) in sortedEnvironments" :model="model">
       <div
         is="environment-item"
         :key="`environment-item-${i}`"
         :model="model"
-        :can-create-deployment="canCreateDeployment"
         :can-read-environment="canReadEnvironment"
       />
 
@@ -79,15 +106,14 @@ export default {
             v-for="(children, index) in model.children"
             :key="`env-item-${i}-${index}`"
             :model="children"
-            :can-create-deployment="canCreateDeployment"
             :can-read-environment="canReadEnvironment"
           />
 
           <div :key="`sub-div-${i}`">
             <div class="text-center prepend-top-10">
-              <a :href="folderUrl(model)" class="btn btn-default">
-                {{ s__('Environments|Show all') }}
-              </a>
+              <a :href="folderUrl(model)" class="btn btn-default">{{
+                s__('Environments|Show all')
+              }}</a>
             </div>
           </div>
         </template>

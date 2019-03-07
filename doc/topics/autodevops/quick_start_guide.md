@@ -83,7 +83,7 @@ under which this application will be deployed.
     ![GitLab GKE cluster details](img/guide_gitlab_gke_details.png)
 
 1. Once ready, click **Create Kubernetes cluster**.
- 
+
 NOTE: **Note:**
 Do not select `f1-micro` from the **Machine type** dropdown. `f1-micro` machines cannot support a full GitLab installation.
 
@@ -159,15 +159,15 @@ In the **test** stage, GitLab runs various checks on the application:
 - The `test` job runs unit and integration tests by detecting the language and
   framework ([Auto Test](index.md#auto-test))
 - The `code_quality` job checks the code quality and is allowed to fail
-  ([Auto Code Quality](index.md#auto-code-quality)) **[STARTER]**
+  ([Auto Code Quality](index.md#auto-code-quality-starter)) **[STARTER]**
 - The `container_scanning` job checks the Docker container if it has any
   vulnerabilities and is allowed to fail ([Auto Container Scanning](index.md#auto-container-scanning))
 - The `dependency_scanning` job checks if the application has any dependencies
-  susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning)) **[ULTIMATE]**
+  susceptible to vulnerabilities and is allowed to fail ([Auto Dependency Scanning](index.md#auto-dependency-scanning-ultimate)) **[ULTIMATE]**
 - The `sast` job runs static analysis on the current code to check for potential
-  security issues and is allowed to fail([Auto SAST](index.md#auto-sast)) **[ULTIMATE]**
+  security issues and is allowed to fail([Auto SAST](index.md#auto-sast-ultimate)) **[ULTIMATE]**
 - The `license_management` job searches the application's dependencies to determine each of their
-  licenses and is allowed to fail ([Auto License Management](index.md#auto-license-management)) **[ULTIMATE]**
+  licenses and is allowed to fail ([Auto License Management](index.md#auto-license-management-ultimate)) **[ULTIMATE]**
 
 NOTE: **Note:**
 As you might have noticed, all jobs except `test` are allowed to fail in the
@@ -178,7 +178,7 @@ deploys the application in Kubernetes ([Auto Deploy](index.md#auto-deploy)).
 
 Lastly, in the **performance** stage, some performance tests will run
 on the deployed application
-([Auto Browser Performance Testing](index.md#auto-browser-performance-testing)). **[PREMIUM]**
+([Auto Browser Performance Testing](index.md#auto-browser-performance-testing-premium)). **[PREMIUM]**
 
 ---
 
@@ -216,7 +216,7 @@ deployment and clicking a square will take you to the pod's logs page.
 TIP: **Tip:**
 There is only one pod hosting the application at the moment, but you can add
 more pods by defining the [`REPLICAS` variable](index.md#environment-variables)
-under **Settings > CI/CD > Variables**.
+under **Settings > CI/CD > Environment variables**.
 
 ### Working with branches
 
@@ -285,8 +285,8 @@ all within GitLab. Despite its automatic nature, Auto DevOps can also be configu
 and customized to fit your workflow. Here are some helpful resources for further reading:
 
 1. [Auto DevOps](index.md)
-1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters) **[PREMIUM]**
-1. [Incremental rollout to production](index.md#incremental-rollout-to-production) **[PREMIUM]**
+1. [Multiple Kubernetes clusters](index.md#using-multiple-kubernetes-clusters-premium) **[PREMIUM]**
+1. [Incremental rollout to production](index.md#incremental-rollout-to-production-premium) **[PREMIUM]**
 1. [Disable jobs you don't need with environment variables](index.md#environment-variables)
 1. [Use a static IP for your cluster](../../user/project/clusters/index.md#using-a-static-ip)
 1. [Use your own buildpacks to build your application](index.md#custom-buildpacks)

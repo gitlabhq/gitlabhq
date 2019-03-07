@@ -7,29 +7,28 @@ This is determined by the `visibility` field in the project.
 
 Values for the project visibility level are:
 
-* `private`:
+- `private`:
   Project access must be granted explicitly for each user.
 
-* `internal`:
+- `internal`:
   The project can be cloned by any logged in user.
 
-* `public`:
+- `public`:
   The project can be cloned without any authentication.
 
 ## Project merge method
 
 There are currently three options for `merge_method` to choose from:
 
-* `merge`:
+- `merge`:
   A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
 
-* `rebase_merge`:
+- `rebase_merge`:
   A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
   This way you could make sure that if this merge request would build, after merging to target branch it would also build.
 
-* `ff`:
+- `ff`:
   No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
-
 
 ## List all projects
 
@@ -55,6 +54,7 @@ GET /projects
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+| `with_programming_language` | string | no | Limit by projects which use the given programming language |
 | `wiki_checksum_failed` | boolean | no | Limit projects where the wiki checksum calculation has failed _([Introduced][ee-6137] in [GitLab Premium][eep] 11.2)_ |
 | `repository_checksum_failed` | boolean | no | Limit projects where the repository checksum calculation has failed _([Introduced][ee-6137] in [GitLab Premium][eep] 11.2)_ |
 | `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
@@ -280,6 +280,7 @@ GET /users/:user_id/projects
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+| `with_programming_language` | string | no | Limit by projects which use the given programming language |
 | `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 
 ```json
@@ -526,11 +527,13 @@ GET /projects/:id
     {
       "group_id": 4,
       "group_name": "Twitter",
+      "group_full_path": "twitter",
       "group_access_level": 30
     },
     {
       "group_id": 3,
       "group_name": "Gitlab Org",
+      "group_full_path": "gitlab-org",
       "group_access_level": 10
     }
   ],
@@ -768,6 +771,8 @@ POST /projects/:id/fork
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `namespace` | integer/string | yes | The ID or path of the namespace that the project will be forked to |
+| `path` | string | no | The path that will be assigned to the resultant project after forking |
+| `name` | string | no | The name that will be assigned to the resultant project after forking |
 
 ## List Forks of a project
 
@@ -798,7 +803,7 @@ GET /projects/:id/forks
 | `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/forks"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/forks"
 ```
 
 Example responses:
@@ -878,7 +883,7 @@ POST /projects/:id/star
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/star"
 ```
 
 Example response:
@@ -964,7 +969,7 @@ POST /projects/:id/unstar
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unstar"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unstar"
 ```
 
 Example response:
@@ -1046,7 +1051,7 @@ GET /projects/:id/languages
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/languages"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/languages"
 ```
 
 Example response:
@@ -1074,7 +1079,7 @@ POST /projects/:id/archive
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/archive"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/archive"
 ```
 
 Example response:
@@ -1178,7 +1183,7 @@ POST /projects/:id/unarchive
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/unarchive"
 ```
 
 Example response:
@@ -1299,7 +1304,7 @@ The `file=` parameter must point to a file on your filesystem and be preceded
 by `@`. For example:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/5/uploads
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "file=@dk.png" https://gitlab.example.com/api/v4/projects/5/uploads
 ```
 
 Returned object:
@@ -1345,7 +1350,7 @@ DELETE /projects/:id/share/:group_id
 | `group_id` | integer | yes | The ID of the group |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/share/17
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/share/17
 ```
 
 ## Hooks
@@ -1513,7 +1518,7 @@ GET /projects
 | `sort` | string | no | Return requests sorted in `asc` or `desc` order |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects?search=test
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects?search=test
 ```
 
 ## Start the Housekeeping task for a Project

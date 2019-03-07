@@ -43,7 +43,7 @@ export default {
           :show-label="false"
           class="d-flex border-0 p-0 mr-3 qa-new-file"
           icon="doc-new"
-          @click="openNewEntryModal({ type: 'blob' });"
+          @click="openNewEntryModal({ type: 'blob' })"
         />
         <upload
           :show-label="false"
@@ -56,7 +56,7 @@ export default {
           :show-label="false"
           class="d-flex border-0 p-0"
           icon="folder-new"
-          @click="openNewEntryModal({ type: 'tree' });"
+          @click="openNewEntryModal({ type: 'tree' })"
         />
       </div>
     </template>

@@ -179,7 +179,7 @@ describe 'Labels Hierarchy', :js, :nested_groups do
     end
 
     context 'on project board issue sidebar' do
-      let(:board)   { create(:board, project: project_1) }
+      let(:board) { create(:board, project: project_1) }
 
       before do
         project_1.add_developer(user)
@@ -195,7 +195,7 @@ describe 'Labels Hierarchy', :js, :nested_groups do
     end
 
     context 'on group board issue sidebar' do
-      let(:board)   { create(:board, group: parent) }
+      let(:board) { create(:board, group: parent) }
 
       before do
         parent.add_developer(user)

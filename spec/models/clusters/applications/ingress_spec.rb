@@ -7,37 +7,13 @@ describe Clusters::Applications::Ingress do
 
   include_examples 'cluster application core specs', :clusters_applications_ingress
   include_examples 'cluster application status specs', :clusters_applications_ingress
+  include_examples 'cluster application version specs', :clusters_applications_ingress
   include_examples 'cluster application helm specs', :clusters_applications_ingress
+  include_examples 'cluster application initial status specs'
 
   before do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_in)
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
-  end
-
-  describe '.installed' do
-    subject { described_class.installed }
-
-    let!(:cluster) { create(:clusters_applications_ingress, :installed) }
-
-    before do
-      create(:clusters_applications_ingress, :errored)
-    end
-
-    it { is_expected.to contain_exactly(cluster) }
-  end
-
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_ingress, :scheduled, version: '0.22.0') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('0.23.0')
-      end
-    end
   end
 
   describe '#make_installed!' do
@@ -90,24 +66,24 @@ describe Clusters::Applications::Ingress do
     it 'should be initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
-      expect(subject.version).to eq('0.23.0')
-      expect(subject).not_to be_rbac
+      expect(subject.version).to eq('1.1.2')
+      expect(subject).to be_rbac
       expect(subject.files).to eq(ingress.files)
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        ingress.cluster.platform_kubernetes.rbac!
+        ingress.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
       let(:ingress) { create(:clusters_applications_ingress, :errored, version: 'nginx') }
 
       it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('0.23.0')
+        expect(subject.version).to eq('1.1.2')
       end
     end
   end

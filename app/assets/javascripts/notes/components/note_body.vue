@@ -95,6 +95,7 @@ export default {
   <div ref="note-body" :class="{ 'js-task-list-container': canEdit }" class="note-body">
     <suggestions
       v-if="hasSuggestion && !isEditing"
+      class="note-text md"
       :suggestions="note.suggestions"
       :note-html="note.note_html"
       :line-type="lineType"
@@ -111,7 +112,6 @@ export default {
       :line="line"
       :note="note"
       :help-page-path="helpPagePath"
-      :markdown-version="note.cached_markdown_version"
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />

@@ -56,6 +56,49 @@ The same tag is shown on the pipeline's details:
 
 ![Pipeline's details](img/pipeline_detail.png)
 
+## Excluding certain jobs
+
+The behavior of the `only: merge_requests` rule is such that _only_ jobs with
+that rule are run in the context of a merge request; no other jobs will be run.
+
+However, you may want to reverse this behaviour, having all of your jobs to run _except_
+for one or two. Consider the following pipeline, with jobs `A`, `B`, and `C`. If you want
+all pipelines to always run `A` and `B`, but only want `C` to run for a merge request,
+you can configure your `.gitlab-ci.yml` file as follows:
+
+``` yaml
+.only-default: &only-default
+  only:
+    - master
+    - merge_requests
+    - tags
+
+A:
+  <<: *only-default
+  script:
+    - ...
+
+B:
+  <<: *only-default
+  script:
+    - ...
+
+C:
+  script:
+    - ...
+  only:
+    - merge_requests
+```
+
+Since `A` and `B` are getting the `only:` rule to execute in all cases, they will
+always run. `C` specifies that it should only run for merge requests, so for any
+pipeline except a merge request pipeline, it will not run.
+
+As you can see, this will help you avoid a lot of boilerplate where you'd need
+to add that `only:` rule to all of your jobs in order to make them always run. You
+can use this for scenarios like having only pipelines with merge requests get a
+Review App set up, helping to save resources.
+
 ## Important notes about merge requests from forked projects
 
 Note that the current behavior is subject to change. In the usual contribution
@@ -63,10 +106,10 @@ flow, external contributors follow the following steps:
 
 1. Fork a parent project.
 1. Create a merge request from the forked project that targets the `master` branch
-in the parent project.
+   in the parent project.
 1. A pipeline runs on the merge request.
 1. A maintainer from the parent project checks the pipeline result, and merge
-into a target branch if the latest pipeline has passed.
+   into a target branch if the latest pipeline has passed.
 
 Currently, those pipelines are created in a **forked** project, not in the
 parent project. This means you cannot completely trust the pipeline result,

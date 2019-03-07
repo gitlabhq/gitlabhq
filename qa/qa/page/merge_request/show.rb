@@ -4,6 +4,8 @@ module QA
   module Page
     module MergeRequest
       class Show < Page::Base
+        include Page::Component::Note
+
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
           element :merge_button
           element :fast_forward_message, 'Fast-forward merge without a merge commit' # rubocop:disable QA/ElementWithPattern
@@ -25,6 +27,12 @@ module QA
           element :squash_checkbox
         end
 
+        view 'app/assets/javascripts/vue_merge_request_widget/components/mr_widget_header.vue' do
+          element :dropdown_toggle
+          element :download_email_patches
+          element :download_plain_diff
+        end
+
         view 'app/views/projects/merge_requests/show.html.haml' do
           element :notes_tab
           element :diffs_tab
@@ -32,19 +40,6 @@ module QA
 
         view 'app/assets/javascripts/diffs/components/diff_line_gutter_content.vue' do
           element :diff_comment
-        end
-
-        view 'app/assets/javascripts/notes/components/comment_form.vue' do
-          element :note_dropdown
-          element :discussion_option
-        end
-
-        view 'app/assets/javascripts/notes/components/note_form.vue' do
-          element :reply_input
-        end
-
-        view 'app/assets/javascripts/notes/components/noteable_discussion.vue' do
-          element :discussion_reply
         end
 
         view 'app/assets/javascripts/diffs/components/inline_diff_table_row.vue' do
@@ -61,17 +56,17 @@ module QA
         end
 
         def fast_forward_possible?
-          !has_text?('Fast-forward merge is not possible')
+          has_no_text?('Fast-forward merge is not possible')
         end
 
         def has_merge_button?
           refresh
 
-          has_css?(element_selector_css(:merge_button))
+          has_element?(:merge_button)
         end
 
         def has_merge_options?
-          has_css?(element_selector_css(:merge_moment_dropdown))
+          has_element?(:merge_moment_dropdown)
         end
 
         def merge_immediately
@@ -86,19 +81,21 @@ module QA
         def rebase!
           # The rebase button is disabled on load
           wait do
-            has_css?(element_selector_css(:mr_rebase_button))
+            has_element?(:mr_rebase_button)
           end
 
           # The rebase button is enabled via JS
           wait(reload: false) do
-            !first(element_selector_css(:mr_rebase_button)).disabled?
+            !find_element(:mr_rebase_button).disabled?
           end
 
           click_element :mr_rebase_button
 
-          wait(reload: false) do
+          success = wait do
             has_text?('Fast-forward merge without a merge commit')
           end
+
+          raise "Rebase did not appear to be successful" unless success
         end
 
         def has_assignee?(username)
@@ -117,30 +114,32 @@ module QA
         def merge!
           # The merge button is disabled on load
           wait do
-            has_css?(element_selector_css(:merge_button))
+            has_element?(:merge_button)
           end
 
           # The merge button is enabled via JS
           wait(reload: false) do
-            !first(element_selector_css(:merge_button)).disabled?
+            !find_element(:merge_button).disabled?
           end
 
           merge_immediately
 
-          wait(reload: false) do
+          success = wait do
             has_text?('The changes were merged into')
           end
+
+          raise "Merge did not appear to be successful" unless success
         end
 
         def mark_to_squash
           # The squash checkbox is disabled on load
           wait do
-            has_css?(element_selector_css(:squash_checkbox))
+            has_element?(:squash_checkbox)
           end
 
           # The squash checkbox is enabled via JS
           wait(reload: false) do
-            !first(element_selector_css(:squash_checkbox)).disabled?
+            !find_element(:squash_checkbox).disabled?
           end
 
           click_element :squash_checkbox
@@ -155,28 +154,26 @@ module QA
         end
 
         def add_comment_to_diff(text)
-          wait(time: 5) do
-            page.has_text?("No newline at end of file")
+          wait(interval: 5) do
+            has_text?("No newline at end of file")
           end
           all_elements(:new_diff_line).first.hover
           click_element :diff_comment
           fill_element :reply_input, text
         end
 
-        def start_discussion(text)
-          fill_element :comment_input, text
-          click_element :note_dropdown
-          click_element :discussion_option
-          click_element :comment_button
-        end
-
-        def reply_to_discussion(reply_text)
-          all_elements(:discussion_reply).last.click
-          fill_element :reply_input, reply_text
-        end
-
         def edit!
           click_element :edit_button
+        end
+
+        def view_email_patches
+          click_element :dropdown_toggle
+          visit_link_in_element(:download_email_patches)
+        end
+
+        def view_plain_diff
+          click_element :dropdown_toggle
+          visit_link_in_element(:download_plain_diff)
         end
       end
     end

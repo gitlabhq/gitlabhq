@@ -11,8 +11,7 @@ See the documentation below for details on how to configure these services.
 
 - [Akismet](akismet.md) Configure Akismet to stop spam
 - [Auth0 OmniAuth](auth0.md) Enable the Auth0 OmniAuth provider
-- [Bitbucket](bitbucket.md) Import projects from Bitbucket.org and login to your GitLab instance with your
-Bitbucket.org account
+- [Bitbucket](bitbucket.md) Import projects from Bitbucket.org and login to your GitLab instance with your Bitbucket.org account
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
@@ -30,8 +29,8 @@ Bitbucket.org account
 
 ## Project services
 
-Integration with services such as Campfire, Flowdock, HipChat,
-Pivotal Tracker, and Slack are available in the form of a [Project Service][].
+Integration with services such as Campfire, Flowdock, Pivotal Tracker, and Slack
+are available in the form of a [Project Service][].
 
 [Project Service]: ../user/project/integrations/project_services.md
 

@@ -34,7 +34,7 @@
             = n_('Reveal value', 'Reveal values', @schedule.variables.size)
   .form-group.row
     .col-md-9
-      = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-bold'
+      = f.label :active, s_('PipelineSchedules|Activated'), class: 'label-bold'
       %div
         = f.check_box :active, required: false, value: @schedule.active?
         = _('Active')

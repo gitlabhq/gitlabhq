@@ -18,9 +18,8 @@ GET /projects/:id/repository/commits
 | `all` | boolean | no | Retrieve every commit from the repository |
 | `with_stats` | boolean | no | Stats about each commit will be added to the response |
 
-
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits"
 ```
 
 Example response:
@@ -80,7 +79,7 @@ POST /projects/:id/repository/commits
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
 | `stats` | boolean | no | Include commit stats. Default is true |
-
+| `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` |
 
 | `actions[]` Attribute | Type | Required | Description |
 | --------------------- | ---- | -------- | ----------- |
@@ -127,7 +126,7 @@ PAYLOAD=$(cat << 'JSON'
 }
 JSON
 )
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data "$PAYLOAD" https://gitlab.example.com/api/v4/projects/1/repository/commits
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data "$PAYLOAD" https://gitlab.example.com/api/v4/projects/1/repository/commits
 ```
 
 Example response:
@@ -173,7 +172,7 @@ Parameters:
 | `stats` | boolean | no | Include commit stats. Default is true |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master
 ```
 
 Example response:
@@ -229,7 +228,7 @@ Parameters:
 | `type` | string | no | The scope of commits. Possible values `branch`, `tag`, `all`. Default is `all`.  |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/5937ac0a7beb003549fc5fd26fc247adbce4a52e/refs?type=all"
 ```
 
 Example response:
@@ -263,7 +262,7 @@ Parameters:
 | `branch` | string | yes | The name of the branch  |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/cherry_pick"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/cherry_pick"
 ```
 
 Example response:
@@ -307,7 +306,7 @@ Parameters:
 | `branch`  | string         | yes      | Target branch name                                                              |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/a738f717824ff53aebad8b090c1b79a14f2bd9e8/revert"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "branch=master" "https://gitlab.example.com/api/v4/projects/5/repository/commits/a738f717824ff53aebad8b090c1b79a14f2bd9e8/revert"
 ```
 
 Example response:
@@ -345,7 +344,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/diff"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/diff"
 ```
 
 Example response:
@@ -381,7 +380,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/comments"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/master/comments"
 ```
 
 Example response:
@@ -434,7 +433,7 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
 ```
 
 Example response:
@@ -480,7 +479,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
 ```
 
 Example response:
@@ -556,7 +555,7 @@ POST /projects/:id/statuses/:sha
 | `coverage` | float  | no    | The total code coverage
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
 Example response:
@@ -601,9 +600,8 @@ GET /projects/:id/repository/commits/:sha/merge_requests
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 | `sha`     | string  | yes   | The commit SHA
 
-
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/commits/af5b13261899fb2c0db30abdd0af8b07cb44fdc5/merge_requests"
 ```
 
 Example response:
@@ -654,6 +652,46 @@ Example response:
       }
    }
 ]
+```
+
+## Get GPG signature of a commit
+
+Get the [GPG signature from a commit](../user/project/repository/gpg_signed_commits/index.md),
+if it is signed. For unsigned commits, it results in a 404 response.
+
+```
+GET /projects/:id/repository/commits/:sha/signature
+```
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+| `sha` | string | yes | The commit hash or name of a repository branch or tag |
+
+```bash
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/repository/commits/da738facbc19eb2fc2cef57c49be0e6038570352/signature"
+```
+
+Example response if commit is signed:
+
+```json
+{
+  "gpg_key_id": 1,
+  "gpg_key_primary_keyid": "8254AAB3FBD54AC9",
+  "gpg_key_user_name": "John Doe",
+  "gpg_key_user_email": "johndoe@example.com",
+  "verification_status": "verified",
+  "gpg_key_subkey_id": null
+}
+```
+
+Example response if commit is unsigned:
+```json
+{
+  "message": "404 GPG Signature Not Found"
+}
 ```
 
 [ce-6096]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6096 "Multi-file commit"

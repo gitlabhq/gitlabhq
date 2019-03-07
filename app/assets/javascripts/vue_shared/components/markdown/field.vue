@@ -27,11 +27,6 @@ export default {
       type: String,
       required: true,
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     addSpacingClasses: {
       type: Boolean,
       required: false,
@@ -89,7 +84,6 @@ export default {
       return this.referencedUsers.length >= referencedUsersThreshold;
     },
     lineContent() {
-      const FIRST_CHAR_REGEX = /^(\+|-)/;
       const [firstSuggestion] = this.suggestions;
       if (firstSuggestion) {
         return firstSuggestion.from_content;
@@ -99,7 +93,7 @@ export default {
         const { rich_text: richText, text } = this.line;
 
         if (text) {
-          return text.replace(FIRST_CHAR_REGEX, '');
+          return text;
         }
 
         return _.unescape(stripHtml(richText).replace(/\n/g, ''));
@@ -159,7 +153,7 @@ export default {
         this.markdownPreviewLoading = true;
         this.markdownPreview = __('Loading…');
         this.$http
-          .post(this.versionedPreviewPath(), { text })
+          .post(this.markdownPreviewPath, { text })
           .then(resp => resp.json())
           .then(data => this.renderMarkdown(data))
           .catch(() => new Flash(__('Error loading markdown preview')));
@@ -183,16 +177,9 @@ export default {
         this.hasSuggestion = data.references.suggestions && data.references.suggestions.length;
       }
 
-      this.$nextTick(() => {
-        $(this.$refs['markdown-preview']).renderGFM();
-      });
-    },
-
-    versionedPreviewPath() {
-      const { markdownPreviewPath, markdownVersion } = this;
-      return `${markdownPreviewPath}${
-        markdownPreviewPath.indexOf('?') === -1 ? '?' : '&'
-      }markdown_version=${markdownVersion}`;
+      this.$nextTick()
+        .then(() => $(this.$refs['markdown-preview']).renderGFM())
+        .catch(() => new Flash(__('Error rendering markdown preview')));
     },
   },
 };

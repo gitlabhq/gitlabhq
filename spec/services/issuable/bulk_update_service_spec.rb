@@ -28,6 +28,33 @@ describe Issuable::BulkUpdateService do
       expect(project.issues.opened).to be_empty
       expect(project.issues.closed).not_to be_empty
     end
+
+    context 'when issue for a different project is created' do
+      let(:private_project) { create(:project, :private) }
+      let(:issue) { create(:issue, project: private_project, author: user) }
+
+      context 'when user has access to the project' do
+        it 'closes all issues passed' do
+          private_project.add_maintainer(user)
+
+          bulk_update(issues + [issue], state_event: 'close')
+
+          expect(project.issues.opened).to be_empty
+          expect(project.issues.closed).not_to be_empty
+          expect(private_project.issues.closed).not_to be_empty
+        end
+      end
+
+      context 'when user does not have access to project' do
+        it 'only closes all issues that the user has access to' do
+          bulk_update(issues + [issue], state_event: 'close')
+
+          expect(project.issues.opened).to be_empty
+          expect(project.issues.closed).not_to be_empty
+          expect(private_project.issues.closed).to be_empty
+        end
+      end
+    end
   end
 
   describe 'reopen issues' do

@@ -11,7 +11,7 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS  do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get project variables' do
         success Entities::Variable
       end

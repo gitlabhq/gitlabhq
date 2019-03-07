@@ -3,7 +3,7 @@ comments: false
 ---
 
 > **Note**: We **do not** recommend using the AWS Elastic File System (EFS), as it can result
-in [significantly degraded performance](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/administration/high_availability/nfs.md#aws-elastic-file-system).
+in [significantly degraded performance](../../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs).
 
 # High Availability on AWS
 
@@ -66,10 +66,10 @@ RDS instances as well.
 
 The subnets are listed with their name, AZ and CIDR block:
 
-* gitlab-public-10.0.0.0  - us-west-2a - 10.0.0.0
-* gitlab-private-10.0.1.0 - us-west-2a - 10.0.1.0
-* gitlab-public-10.0.2.0  - us-west-2b - 10.0.2.0
-* gitlab-private-10.0.3.0 - us-west-2b - 10.0.3.0
+- gitlab-public-10.0.0.0  - us-west-2a - 10.0.0.0
+- gitlab-private-10.0.1.0 - us-west-2a - 10.0.1.0
+- gitlab-public-10.0.2.0  - us-west-2b - 10.0.2.0
+- gitlab-private-10.0.3.0 - us-west-2b - 10.0.3.0
 
 ### Route Table
 
@@ -79,7 +79,6 @@ Route Tables on the left column and give it a name and associate it to
 our newly created VPC.
 
 ![Route Table](img/route_table.png)
-
 
 ### Internet Gateway
 
@@ -126,10 +125,10 @@ image below we have the settings for this article but note the
 following two options which are of particular interest for HA:
 
 1. Multi-AZ-Deployment is recommended as redundancy. Read more at
-[High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
+   [High Availability (Multi-AZ)](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.MultiAZ.html)
 1. While we chose a General Purpose (SSD) for this article a Provisioned
-IOPS (SSD) is best suited for HA. Read more about it at
-[Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html)
+   IOPS (SSD) is best suited for HA. Read more about it at
+   [Storage for Amazon RDS](http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html)
 
 ![RDS Instance Specs](img/instance_specs.png)
 
@@ -161,7 +160,7 @@ private subnets.
 Now press the Launch a Cache Cluster and choose Redis for our
 DB engine. You'll be able to configure details such as replication,
 Multi-AZ and node types. The second section will allow us to choose our
-subnet and security group and     
+subnet and security group and
 
 ![Redis Cluster details](img/redis-cluster-det.png)
 
@@ -183,7 +182,7 @@ Another option is to build a simple NFS server using a vanilla Linux server back
 by AWS Elastic Block Storage (EBS).
 
 > **Note:** GitLab does not recommend using AWS Elastic File System (EFS). See
-  details in [High Availability NFS documentation](../../../administration/high_availability/nfs.md#aws-elastic-file-system)
+  details in [High Availability NFS documentation](../../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs)
 
 ***
 
@@ -206,7 +205,7 @@ http traffic from anywhere and name it something such as
 `gitlab-ec2-security-group`.
 
 While we wait for it to launch we can allocate an Elastic IP and
-associate it with our new EC2 instance.  
+associate it with our new EC2 instance.
 
 ### RDS and Redis Security Group
 
@@ -238,7 +237,6 @@ running reconfigure we need to make sure all our services are tied down
 so just leave the reconfigure command until after we edit our gitlab.rb
 file.
 
-
 ### Extension for PostgreSQL
 
 Connect to your new RDS instance to verify access and to install
@@ -268,16 +266,14 @@ our current case we'll specify the adapter, encoding, host, db name,
 username, and password.
 
     gitlab_rails['db_adapter'] = "postgresql"
-    gitlab_rails['db_encoding'] = "unicode"    
-    gitlab_rails['db_database'] = "gitlabhq_production"   
+    gitlab_rails['db_encoding'] = "unicode"
+    gitlab_rails['db_database'] = "gitlabhq_production"
     gitlab_rails['db_username'] = "gitlab"
     gitlab_rails['db_password'] = "mypassword"
     gitlab_rails['db_host'] = "<rds-endpoint>"
 
 Next, we only need to configure the Redis section by adding the host and
 uncommenting the port.
-
-
 
 The last configuration step is to [change the default file locations ](http://docs.gitlab.com/ee/administration/high_availability/nfs.html)
 to make the EFS integration easier to manage.
@@ -288,9 +284,9 @@ to make the EFS integration easier to manage.
 Finally, run reconfigure. You might find it useful to run a check and
 a service status to make sure everything has been set up correctly.
 
-    sudo gitlab-ctl reconfigure  
-    sudo gitlab-rake gitlab:check  
-    sudo gitlab-ctl status  
+    sudo gitlab-ctl reconfigure
+    sudo gitlab-rake gitlab:check
+    sudo gitlab-ctl status
 
 If everything looks good copy the Elastic IP over to your browser and
 test the instance manually.
@@ -344,7 +340,6 @@ text area that allows us to add a lot of custom configurations which
 allows you to add a custom script for when launching an instance. Let's
 add the following script to the User Data section:
 
-
     #cloud-config
     package_upgrade: true
     packages:
@@ -395,5 +390,5 @@ some redundancy options but it might also imply Geographic replication.
 There is a lot of ground yet to cover so have a read through these other
 resources and feel free to open an issue to request additional material.
 
-* [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
-* [GitLab Geo](http://docs.gitlab.com/ee/gitlab-geo/README.html)  
+- [GitLab High Availability](http://docs.gitlab.com/ce/administration/high_availability/README.html#sts=High%20Availability)
+- [GitLab Geo](https://docs.gitlab.com/ee/administration/geo/replication/index.html)

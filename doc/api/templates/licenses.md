@@ -116,7 +116,7 @@ If you omit the `fullname` parameter but authenticate your request, the name of
 the authenticated user will be used to replace the copyright holder placeholder.
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/templates/licenses/mit?project=My+Cool+Project
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/templates/licenses/mit?project=My+Cool+Project
 ```
 
 Example response:

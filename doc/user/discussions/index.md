@@ -248,13 +248,14 @@ For large projects with many contributors, it may be useful to stop discussions
 in issues or merge requests in these scenarios:
 
 - The project maintainer has already resolved the discussion and it is not helpful
-for continued feedback. The project maintainer has already directed new conversation
-to newer issues or merge requests.
+  for continued feedback. The project maintainer has already directed new conversation
+  to newer issues or merge requests.
 - The people participating in the discussion are trolling, abusive, or otherwise
-being unproductive.
+  being unproductive.
 
-In these cases, a user with Maintainer permissions or higher in the project can lock (and unlock)
-an issue or a merge request, using the "Lock" section in the sidebar:
+In these cases, a user with Developer permissions or higher in the project can lock (and unlock)
+an issue or a merge request, using the "Lock" section in the sidebar. For issues,
+a user with Reporter permissions can lock (and unlock).
 
 | Unlock | Lock |
 | :-----------: | :----------: |
@@ -275,17 +276,17 @@ Additionally locked issues can not be reopened.
 
 ## Filtering notes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26723) in GitLab 11.5. 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26723) in GitLab 11.5.
 
-For issues with many comments like activity notes and user comments, sometimes 
-finding useful information can be hard. There is a way to filter comments from single notes and discussions for merge requests and issues.  
+For issues with many comments like activity notes and user comments, sometimes
+finding useful information can be hard. There is a way to filter comments from single notes and discussions for merge requests and issues.
 
-From a merge request's **Discussion** tab, or from an issue overview, find the filter's dropdown menu on the right side of the page, from which you can choose one of the following options:
+From a merge request's **Discussion** tab, or from an epic/issue overview, find the filter's dropdown menu on the right side of the page, from which you can choose one of the following options:
 
 - **Show all activity**: displays all user comments and system notes
-(issue updates, mentions from other issues, changes to the description, etc).
+  (issue updates, mentions from other issues, changes to the description, etc).
 - **Show comments only**: only displays user comments in the list.
-- **Show history only**: only displays activity notes. 
+- **Show history only**: only displays activity notes.
 
 ![Notes filters dropdown options](img/index_notes_filters.png)
 
@@ -297,21 +298,21 @@ from any device you're logged into.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/18008) in GitLab 11.6.
 
-As a reviewer, you're able to suggest code changes with a simple 
+As a reviewer, you're able to suggest code changes with a simple
 markdown syntax in Merge Request Diff discussions. Then, the
-Merge Request author (or other users with appropriate 
+Merge Request author (or other users with appropriate
 [permission](../permissions.md)) is able to apply these
-suggestions with a click, which will generate a commit in 
+suggestions with a click, which will generate a commit in
 the Merge Request authored by the user that applied them.
 
 1. Choose a line of code to be changed, add a new comment, then click
-on the **Insert suggestion** icon in the toolbar:
+   on the **Insert suggestion** icon in the toolbar:
 
     ![Add a new comment](img/insert_suggestion.png)
-    
+
     > **Note:**
     The suggestion will only affect the commented line. Multi-line
-    suggestions are currently not supported. Will be introduced by 
+    suggestions are currently not supported. Will be introduced by
     [#53310](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310).
 
 1. In the comment, add your suggestion to the pre-populated code block:
@@ -326,9 +327,9 @@ on the **Insert suggestion** icon in the toolbar:
     ![Apply suggestions](img/suggestion.png)
 
     > **Note:**
-    Discussions are _not_ automatically resolved. Will be introduced by 
+    Discussions are _not_ automatically resolved. Will be introduced by
     [#54405](https://gitlab.com/gitlab-org/gitlab-ce/issues/54405).
-    
+
 Once the author applies a suggestion, it will be marked with the **Applied** label,
 and GitLab will create a new commit with the message `Apply suggestion to <file-name>`
 and push the suggested change directly into the codebase in the merge request's branch.

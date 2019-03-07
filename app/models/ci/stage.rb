@@ -14,6 +14,7 @@ module Ci
 
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :stage_id
     has_many :builds, foreign_key: :stage_id
+    has_many :bridges, foreign_key: :stage_id
 
     with_options unless: :importing? do
       validates :project, presence: true

@@ -32,10 +32,35 @@ describe Groups::MilestonesController do
   end
 
   describe '#index' do
-    it 'shows group milestones page' do
-      get :index, params: { group_id: group.to_param }
+    describe 'as HTML' do
+      render_views
 
-      expect(response).to have_gitlab_http_status(200)
+      it 'shows group milestones page' do
+        milestone
+
+        get :index, params: { group_id: group.to_param }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.body).to include(milestone.title)
+      end
+
+      it 'searches legacy milestones by title when search_title is given' do
+        project_milestone = create(:milestone, project: project, title: 'Project milestone title')
+
+        get :index, params: { group_id: group.to_param, search_title: 'Project mil' }
+
+        expect(response.body).to include(project_milestone.title)
+        expect(response.body).not_to include(milestone.title)
+      end
+
+      it 'searches group milestones by title when search_title is given' do
+        group_milestone = create(:milestone, title: 'Group milestone title', group: group)
+
+        get :index, params: { group_id: group.to_param, search_title: 'Group mil' }
+
+        expect(response.body).to include(group_milestone.title)
+        expect(response.body).not_to include(milestone.title)
+      end
     end
 
     context 'as JSON' do
@@ -64,7 +89,7 @@ describe Groups::MilestonesController do
 
     context 'when there is a title parameter' do
       it 'searches for a legacy group milestone' do
-        expect(GlobalMilestone).to receive(:build)
+        expect(GroupMilestone).to receive(:build)
         expect(Milestone).not_to receive(:find_by_iid)
 
         get :show, params: { group_id: group.to_param, id: title, title: milestone1.safe_title }

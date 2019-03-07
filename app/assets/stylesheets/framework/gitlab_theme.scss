@@ -282,31 +282,31 @@ body {
 
   &.ui-dark {
     @include gitlab-theme(
-      $theme-gray-200,
-      $theme-gray-500,
-      $theme-gray-700,
-      $theme-gray-800,
-      $theme-gray-900,
+      $gray-200,
+      $gray-500,
+      $gray-700,
+      $gray-800,
+      $gray-900,
       $white-light
     );
   }
 
   &.ui-light {
     @include gitlab-theme(
-      $theme-gray-700,
-      $theme-gray-800,
-      $theme-gray-700,
-      $theme-gray-700,
-      $theme-gray-100,
-      $theme-gray-700
+      $gray-700,
+      $gray-800,
+      $gray-700,
+      $gray-700,
+      $gray-100,
+      $gray-700
     );
 
     .navbar-gitlab {
-      background-color: $theme-gray-100;
+      background-color: $gray-100;
       box-shadow: 0 1px 0 0 $border-color;
 
       .logo-text svg {
-        fill: $theme-gray-900;
+        fill: $gray-900;
       }
 
       .navbar-sub-nav,
@@ -315,7 +315,7 @@ body {
           > a:hover,
           > a:focus,
           > button:hover {
-            color: $theme-gray-900;
+            color: $gray-900;
           }
 
           &.active > a,
@@ -329,8 +329,8 @@ body {
       .container-fluid {
         .navbar-toggler,
         .navbar-toggler:hover {
-          color: $theme-gray-700;
-          border-left: 1px solid $theme-gray-200;
+          color: $gray-700;
+          border-left: 1px solid $gray-200;
         }
       }
     }
@@ -348,7 +348,7 @@ body {
 
       .search-input-wrap {
         .search-icon {
-          fill: $theme-gray-200;
+          fill: $gray-200;
         }
 
         .search-input {
@@ -359,16 +359,16 @@ body {
 
     .nav-sidebar li.active {
       > a {
-        color: $theme-gray-900;
+        color: $gray-900;
       }
 
       svg {
-        fill: $theme-gray-900;
+        fill: $gray-900;
       }
     }
 
     .sidebar-top-level-items > li.active .badge.badge-pill {
-      color: $theme-gray-900;
+      color: $gray-900;
     }
   }
 }

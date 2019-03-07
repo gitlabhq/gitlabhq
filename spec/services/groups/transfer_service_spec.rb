@@ -410,5 +410,34 @@ describe Groups::TransferService, :postgresql do
         end
       end
     end
+
+    context 'when transferring a subgroup into root group' do
+      let(:group) { create(:group, :public, :nested) }
+      let(:subgroup) { create(:group, :public, parent: group) }
+      let(:transfer_service) { described_class.new(subgroup, user) }
+
+      it 'ensures there is still an owner for the transferred group' do
+        expect(subgroup.owners).to be_empty
+
+        transfer_service.execute(nil)
+        subgroup.reload
+
+        expect(subgroup.owners).to match_array(user)
+      end
+
+      context 'when group has explicit owner' do
+        let(:another_owner) { create(:user) }
+        let!(:another_member) { create(:group_member, :owner, group: subgroup, user: another_owner) }
+
+        it 'does not add additional owner' do
+          expect(subgroup.owners).to match_array(another_owner)
+
+          transfer_service.execute(nil)
+          subgroup.reload
+
+          expect(subgroup.owners).to match_array(another_owner)
+        end
+      end
+    end
   end
 end

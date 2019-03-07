@@ -19,7 +19,7 @@ describe Gitlab::Auth do
     it 'optional_scopes contains all non-default scopes' do
       stub_container_registry_config(enabled: true)
 
-      expect(subject.optional_scopes).to eq %i[read_user sudo read_repository read_registry openid]
+      expect(subject.optional_scopes).to eq %i[read_user sudo read_repository read_registry openid profile email]
     end
 
     context 'registry_scopes' do
@@ -380,7 +380,7 @@ describe Gitlab::Auth do
         password: password,
         password_confirmation: password)
     end
-    let(:username) { 'John' }     # username isn't lowercase, test this
+    let(:username) { 'John' } # username isn't lowercase, test this
     let(:password) { 'my-secret' }
 
     it "finds user by valid login/password" do

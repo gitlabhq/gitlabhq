@@ -255,7 +255,6 @@ class Service < ActiveRecord::Base
       external_wiki
       flowdock
       hangouts_chat
-      hipchat
       irker
       jira
       kubernetes
@@ -267,6 +266,7 @@ class Service < ActiveRecord::Base
       prometheus
       pushover
       redmine
+      youtrack
       slack_slash_commands
       slack
       teamcity

@@ -8,6 +8,7 @@ describe Gitlab do
       expect(described_class.root).to eq(Pathname.new(File.expand_path('../..', __dir__)))
     end
   end
+
   describe '.revision' do
     let(:cmd) { %W[#{described_class.config.git.bin_path} log --pretty=format:%h -n 1] }
 
@@ -92,6 +93,20 @@ describe Gitlab do
       stub_config_setting(url: 'http://example.com')
 
       expect(described_class.com?).to eq false
+    end
+  end
+
+  describe '.ee?' do
+    it 'returns true when using Enterprise Edition' do
+      stub_const('License', Class.new)
+
+      expect(described_class.ee?).to eq(true)
+    end
+
+    it 'returns false when using Community Edition' do
+      hide_const('License')
+
+      expect(described_class.ee?).to eq(false)
     end
   end
 end

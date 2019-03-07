@@ -6,7 +6,7 @@ describe 'List issue resource label events', :js do
   let(:user)     { create(:user) }
   let(:project)  { create(:project, :public) }
   let(:issue)    { create(:issue, project: project, author: user) }
-  let!(:label)    { create(:label, project: project, title: 'foo') }
+  let!(:label) { create(:label, project: project, title: 'foo') }
   let!(:user_status) { create(:user_status, user: user) }
 
   context 'when user displays the issue' do

@@ -85,14 +85,20 @@ class PoolRepository < ActiveRecord::Base
   def unlink_repository(repository)
     object_pool.unlink_repository(repository.raw)
 
-    mark_obsolete unless member_projects.where.not(id: repository.project.id).exists?
+    if member_projects.where.not(id: repository.project.id).exists?
+      true
+    else
+      mark_obsolete
+    end
   end
 
   def object_pool
     @object_pool ||= Gitlab::Git::ObjectPool.new(
       shard.name,
       disk_path + '.git',
-      source_project.repository.raw)
+      source_project.repository.raw,
+      source_project.full_path
+    )
   end
 
   def inspect

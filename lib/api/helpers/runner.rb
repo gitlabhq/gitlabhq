@@ -26,7 +26,7 @@ module API
       end
 
       def get_runner_ip
-        { ip_address: request.ip }
+        { ip_address: env["action_dispatch.remote_ip"].to_s || request.ip }
       end
 
       def current_runner

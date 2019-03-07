@@ -1,5 +1,7 @@
 /* https://github.com/aahan/pygments-github-style */
 
+@import './common';
+
 /*
 * White Syntax Colors
 */
@@ -35,16 +37,16 @@ $white-kt: #458;
 $white-m: #099;
 $white-s: #d14;
 $white-n: #333;
-$white-na: teal;
+$white-na: #008080;
 $white-nb: #0086b3;
 $white-nc: #458;
-$white-no: teal;
-$white-ni: purple;
+$white-no: #008080;
+$white-ni: #800080;
 $white-ne: #900;
 $white-nf: #900;
 $white-nn: #555;
-$white-nt: navy;
-$white-nv: teal;
+$white-nt: #000080;
+$white-nv: #008080;
 $white-w: #bbb;
 $white-mf: #099;
 $white-mh: #099;
@@ -62,20 +64,20 @@ $white-sr: #009926;
 $white-s1: #d14;
 $white-ss: #990073;
 $white-bp: #999;
-$white-vc: teal;
-$white-vg: teal;
-$white-vi: teal;
+$white-vc: #008080;
+$white-vg: #008080;
+$white-vi: #008080;
 $white-il: #099;
 $white-gc-color: #999;
 $white-gc-bg: #eaf2f5;
 
 
-@mixin matchLine {
+@mixin match-line {
   color: $black-transparent;
   background-color: $gray-light;
 }
 
-  // Line numbers
+// Line numbers
 .line-numbers,
 .diff-line-num {
   background-color: $gray-light;
@@ -101,11 +103,10 @@ pre.code,
 
 // Diff line
 .line_holder {
-
   &.match .line_content,
   .new-nonewline.line_content,
   .old-nonewline.line_content {
-    @include matchLine;
+    @include match-line;
   }
 
   .diff-line-num {
@@ -185,7 +186,7 @@ pre.code,
     }
 
     &.match {
-      @include matchLine;
+      @include match-line;
     }
 
     &.hll:not(.empty-cell) {
@@ -199,25 +200,38 @@ pre .hll {
   background-color: $white-pre-hll-bg !important;
 }
 
-  // Search result highlight
+// Search result highlight
 span.highlight_word {
   background-color: $white-highlight !important;
 }
 
-  // Links to URLs, emails, or dependencies
+// Links to URLs, emails, or dependencies
 .line a {
   color: $white-nb;
 }
 
 .hll { background-color: $white-hll-bg; }
-.c { color: $white-c; font-style: italic; }
-.err { color: $white-err; background-color: $white-err-bg; }
+
+.c { color: $white-c;
+  font-style: italic; }
+
+.err { color: $white-err;
+  background-color: $white-err-bg; }
 .k { font-weight: $gl-font-weight-bold; }
 .o { font-weight: $gl-font-weight-bold; }
-.cm { color: $white-cm; font-style: italic; }
-.cp { color: $white-cp; font-weight: $gl-font-weight-bold; }
-.c1 { color: $white-c1; font-style: italic; }
-.cs { color: $white-cs; font-weight: $gl-font-weight-bold; font-style: italic; }
+
+.cm { color: $white-cm;
+  font-style: italic; }
+
+.cp { color: $white-cp;
+  font-weight: $gl-font-weight-bold; }
+
+.c1 { color: $white-c1;
+  font-style: italic; }
+
+.cs { color: $white-cs;
+  font-weight: $gl-font-weight-bold;
+  font-style: italic; }
 
 .gd {
   color: $white-gd;
@@ -246,24 +260,34 @@ span.highlight_word {
 .go { color: $white-go; }
 .gp { color: $white-gp; }
 .gs { font-weight: $gl-font-weight-bold; }
-.gu { color: $white-gu; font-weight: $gl-font-weight-bold; }
+
+.gu { color: $white-gu;
+  font-weight: $gl-font-weight-bold; }
 .gt { color: $white-gt; }
 .kc { font-weight: $gl-font-weight-bold; }
 .kd { font-weight: $gl-font-weight-bold; }
 .kn { font-weight: $gl-font-weight-bold; }
 .kp { font-weight: $gl-font-weight-bold; }
 .kr { font-weight: $gl-font-weight-bold; }
-.kt { color: $white-kt; font-weight: $gl-font-weight-bold; }
+
+.kt { color: $white-kt;
+  font-weight: $gl-font-weight-bold; }
 .m { color: $white-m; }
 .s { color: $white-s; }
 .n { color: $white-n; }
 .na { color: $white-na; }
 .nb { color: $white-nb; }
-.nc { color: $white-nc; font-weight: $gl-font-weight-bold; }
+
+.nc { color: $white-nc;
+  font-weight: $gl-font-weight-bold; }
 .no { color: $white-no; }
 .ni { color: $white-ni; }
-.ne { color: $white-ne; font-weight: $gl-font-weight-bold; }
-.nf { color: $white-nf; font-weight: $gl-font-weight-bold; }
+
+.ne { color: $white-ne;
+  font-weight: $gl-font-weight-bold; }
+
+.nf { color: $white-nf;
+  font-weight: $gl-font-weight-bold; }
 .nn { color: $white-nn; }
 .nt { color: $white-nt; }
 .nv { color: $white-nv; }
@@ -289,4 +313,6 @@ span.highlight_word {
 .vg { color: $white-vg; }
 .vi { color: $white-vi; }
 .il { color: $white-il; }
-.gc { color: $white-gc-color; background-color: $white-gc-bg; }
+
+.gc { color: $white-gc-color;
+  background-color: $white-gc-bg; }

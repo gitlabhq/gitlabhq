@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Graphql::Connections::KeysetConnection do
   let(:nodes) { Project.all.order(id: :asc) }
-  let(:arguments) {  {} }
+  let(:arguments) { {} }
   subject(:connection) do
     described_class.new(nodes, arguments, max_page_size: 3)
   end

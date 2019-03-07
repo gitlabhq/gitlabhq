@@ -2,10 +2,10 @@
 
 class GroupsController < Groups::ApplicationController
   include API::Helpers::RelatedResourcesHelpers
-  include IssuesAction
-  include MergeRequestsAction
+  include IssuableCollectionsAction
   include ParamsBackwardCompatibility
   include PreviewMarkdown
+  include RecordUserLastActivity
 
   respond_to :html
 

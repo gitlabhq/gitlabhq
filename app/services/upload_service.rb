@@ -6,12 +6,12 @@ class UploadService
   end
 
   def execute
-    return nil unless @file && @file.size <= max_attachment_size
+    return unless @file && @file.size <= max_attachment_size
 
     uploader = @uploader_class.new(@model, nil, @uploader_context)
     uploader.store!(@file)
 
-    uploader.to_h
+    uploader
   end
 
   private

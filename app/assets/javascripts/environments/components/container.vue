@@ -22,10 +22,6 @@ export default {
       type: Object,
       required: true,
     },
-    canCreateDeployment: {
-      type: Boolean,
-      required: true,
-    },
     canReadEnvironment: {
       type: Boolean,
       required: true,
@@ -51,11 +47,7 @@ export default {
     <slot name="emptyState"></slot>
 
     <div v-if="!isLoading && environments.length > 0" class="table-holder">
-      <environment-table
-        :environments="environments"
-        :can-create-deployment="canCreateDeployment"
-        :can-read-environment="canReadEnvironment"
-      />
+      <environment-table :environments="environments" :can-read-environment="canReadEnvironment" />
 
       <table-pagination
         v-if="pagination && pagination.totalPages > 1"

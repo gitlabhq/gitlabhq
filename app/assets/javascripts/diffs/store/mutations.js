@@ -1,5 +1,4 @@
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { sortTree } from '~/ide/stores/utils';
 import {
   findDiffFile,
   addLineReferences,
@@ -7,7 +6,6 @@ import {
   addContextLines,
   prepareDiffData,
   isDiscussionApplicableToLine,
-  generateTreeList,
 } from './utils';
 import * as types from './mutation_types';
 
@@ -23,12 +21,9 @@ export default {
 
   [types.SET_DIFF_DATA](state, data) {
     prepareDiffData(data);
-    const { tree, treeEntries } = generateTreeList(data.diff_files);
 
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data),
-      tree: sortTree(tree),
-      treeEntries,
     });
   },
 
@@ -149,6 +144,7 @@ export default {
 
             if (left || right) {
               return {
+                ...line,
                 left: line.left ? mapDiscussions(line.left) : null,
                 right: line.right ? mapDiscussions(line.right, () => !left) : null,
               };
@@ -238,5 +234,18 @@ export default {
   },
   [types.SET_HIGHLIGHTED_ROW](state, lineCode) {
     state.highlightedRow = lineCode;
+  },
+  [types.SET_TREE_DATA](state, { treeEntries, tree }) {
+    state.treeEntries = treeEntries;
+    state.tree = tree;
+  },
+  [types.SET_RENDER_TREE_LIST](state, renderTreeList) {
+    state.renderTreeList = renderTreeList;
+  },
+  [types.SET_SHOW_WHITESPACE](state, showWhitespace) {
+    state.showWhitespace = showWhitespace;
+  },
+  [types.TOGGLE_FILE_FINDER_VISIBLE](state, visible) {
+    state.fileFinderVisible = visible;
   },
 };

@@ -89,7 +89,11 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
-    @merge_request = ::MergeRequests::BuildService.new(project, current_user, merge_request_params.merge(diff_options: diff_options)).execute
+
+    # Gitaly N+1 issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/58096
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      @merge_request = ::MergeRequests::BuildService.new(project, current_user, merge_request_params.merge(diff_options: diff_options)).execute
+    end
   end
 
   def define_new_vars

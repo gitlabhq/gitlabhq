@@ -57,8 +57,12 @@ module QA
         end
 
         def go_to_profile_settings
-          within_user_menu do
-            click_link 'Settings'
+          retry_until(reload: false) do
+            within_user_menu do
+              click_link 'Settings'
+            end
+
+            has_text?('User Settings')
           end
         end
 

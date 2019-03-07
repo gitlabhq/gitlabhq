@@ -238,7 +238,7 @@ describe 'Dropdown label', :js do
       find("#{js_dropdown_label} .filter-dropdown-item", text: 'None').click
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([label_token('none', false)])
+      expect_tokens([label_token('None', false)])
       expect_filtered_search_input_empty
     end
 
@@ -246,7 +246,7 @@ describe 'Dropdown label', :js do
       find("#{js_dropdown_label} .filter-dropdown-item", text: 'Any').click
 
       expect(page).not_to have_css(js_dropdown_label)
-      expect_tokens([label_token('any', false)])
+      expect_tokens([label_token('Any', false)])
       expect_filtered_search_input_empty
     end
   end

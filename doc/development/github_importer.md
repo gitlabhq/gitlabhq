@@ -13,20 +13,20 @@ or Rake tasks. The parallel importer on the other hand uses Sidekiq.
 
 ## Requirements
 
-* GitLab CE 10.2.0 or newer.
-* Sidekiq workers that process the `github_importer` and
+- GitLab CE 10.2.0 or newer.
+- Sidekiq workers that process the `github_importer` and
   `github_importer_advance_stage` queues (this is enabled by default).
-* Octokit (used for interacting with the GitHub API)
+- Octokit (used for interacting with the GitHub API).
 
 ## Code structure
 
 The importer's codebase is broken up into the following directories:
 
-* `lib/gitlab/github_import`: this directory contains most of the code such as
+- `lib/gitlab/github_import`: this directory contains most of the code such as
   the classes used for importing resources.
-* `app/workers/gitlab/github_import`: this directory contains the Sidekiq
+- `app/workers/gitlab/github_import`: this directory contains the Sidekiq
   workers.
-* `app/workers/concerns/gitlab/github_import`: this directory contains a few
+- `app/workers/concerns/gitlab/github_import`: this directory contains a few
   modules reused by the various Sidekiq workers.
 
 ## Architecture overview
@@ -188,8 +188,8 @@ projects get imported the fewer GitHub API calls will be needed.
 
 The code for this resides in:
 
-* `lib/gitlab/github_import/user_finder.rb`
-* `lib/gitlab/github_import/caching.rb`
+- `lib/gitlab/github_import/user_finder.rb`
+- `lib/gitlab/github_import/caching.rb`
 
 ## Mapping labels and milestones
 
@@ -204,6 +204,6 @@ project that is being imported.
 
 The code for this resides in:
 
-* `lib/gitlab/github_import/label_finder.rb`
-* `lib/gitlab/github_import/milestone_finder.rb`
-* `lib/gitlab/github_import/caching.rb`
+- `lib/gitlab/github_import/label_finder.rb`
+- `lib/gitlab/github_import/milestone_finder.rb`
+- `lib/gitlab/github_import/caching.rb`

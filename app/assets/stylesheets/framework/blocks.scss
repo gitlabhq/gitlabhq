@@ -86,11 +86,8 @@
   }
 
   .block-controls {
-    display: -webkit-flex;
     display: flex;
-    -webkit-justify-content: flex-end;
     justify-content: flex-end;
-    -webkit-flex: 1;
     flex: 1;
 
     .control {
@@ -153,7 +150,7 @@
       display: inline-block;
       margin-left: 5px;
       font-size: 18px;
-      color: color("gray");
+      color: color('gray');
     }
 
     p {
@@ -228,7 +225,6 @@
   }
 
   .group-info {
-
     h1 {
       display: inline;
       font-weight: $gl-font-weight-normal;

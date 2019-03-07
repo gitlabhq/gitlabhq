@@ -9,7 +9,7 @@ module Gitlab
       LOG_FILENAME = File.join(Rails.root, 'log', 'sidekiq_exporter.log')
 
       def enabled?
-        Gitlab::Metrics.metrics_folder_present? && settings.enabled
+        ::Gitlab::Metrics.metrics_folder_present? && settings.enabled
       end
 
       def settings

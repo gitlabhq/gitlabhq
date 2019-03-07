@@ -35,7 +35,6 @@ In Google's side:
 
 1. You should now be able to see a Client ID and Client secret. Note them down
    or keep this page open as you will need them later.
-1. From the **Dashboard** select **ENABLE APIS AND SERVICES > Social > Google+ API > Enable**
 1. To enable projects to access [Google Kubernetes Engine](../user/project/clusters/index.md), you must also
    enable these APIs:
    - Google Kubernetes Engine API

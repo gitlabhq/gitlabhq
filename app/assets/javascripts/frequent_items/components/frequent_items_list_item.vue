@@ -82,8 +82,14 @@ export default {
   <li class="frequent-items-list-item-container">
     <a :href="webUrl" class="clearfix">
       <div class="frequent-items-item-avatar-container">
-        <img v-if="hasAvatar" :src="avatarUrl" class="avatar s32" />
-        <identicon v-else :entity-id="itemId" :entity-name="itemName" size-class="s32" />
+        <img v-if="hasAvatar" :src="avatarUrl" class="avatar rect-avatar s32" />
+        <identicon
+          v-else
+          :entity-id="itemId"
+          :entity-name="itemName"
+          size-class="s32"
+          class="rect-avatar"
+        />
       </div>
       <div class="frequent-items-item-metadata-container">
         <div :title="itemName" class="frequent-items-item-title" v-html="highlightedItemName"></div>

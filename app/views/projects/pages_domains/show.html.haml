@@ -1,6 +1,6 @@
-- add_to_breadcrumbs "Pages", project_pages_path(@project)
+- add_to_breadcrumbs _("Pages"), project_pages_path(@project)
 - breadcrumb_title @domain.domain
-- page_title "#{@domain.domain}", 'Pages Domains'
+- page_title "#{@domain.domain}", _('Pages Domains')
 - dns_record = "#{@domain.domain} CNAME #{@domain.project.pages_subdomain}.#{Settings.pages.host}."
 
 - verification_enabled = Gitlab::CurrentSettings.pages_domain_verification_enabled?
@@ -9,37 +9,37 @@
   = content_for :flash_message do
     .alert.alert-warning
       .container-fluid.container-limited
-        This domain is not verified. You will need to verify ownership before access is enabled.
+        = _("This domain is not verified. You will need to verify ownership before access is enabled.")
 
 %h3.page-title.with-button
-  = link_to 'Edit', edit_project_pages_domain_path(@project, @domain), class: 'btn btn-success float-right'
-  Pages Domain
+  = link_to _('Edit'), edit_project_pages_domain_path(@project, @domain), class: 'btn btn-success float-right'
+  = _("Pages Domain")
 
 .table-holder
   %table.table
     %tr
       %td
-        Domain
+        = _("Domain")
       %td
         = link_to @domain.url do
           = @domain.url
           = icon('external-link')
     %tr
       %td
-        DNS
+        = _("DNS")
       %td
         .input-group
           = text_field_tag :domain_dns, dns_record , class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append
             = clipboard_button(target: '#domain_dns', class: 'btn-default input-group-text d-none d-sm-block')
         %p.form-text.text-muted
-          To access this domain create a new DNS record
+          = _("To access this domain create a new DNS record")
 
     - if verification_enabled
       - verification_record = "#{@domain.verification_domain} TXT #{@domain.keyed_verification_code}"
       %tr
         %td
-          Verification status
+          = _("Verification status")
         %td
           = form_tag verify_project_pages_domain_path(@project, @domain) do
             .status-badge
@@ -53,17 +53,16 @@
             .input-group-append
               = clipboard_button(target: '#domain_verification', class: 'btn-default d-none d-sm-block')
           %p.form-text.text-muted
-            - help_link = help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record')
-            To #{link_to 'verify ownership', help_link} of your domain,
-            add the above key to a TXT record within to your DNS configuration.
+            - link_to_help = link_to(_('verify ownership'), help_page_path('user/project/pages/getting_started_part_three.md', anchor: 'dns-txt-record'))
+            = _("To %{link_to_help} of your domain, add the above key to a TXT record within to your DNS configuration.").html_safe % { link_to_help: link_to_help }
 
     %tr
       %td
-        Certificate
+        = _("Certificate")
       %td
         - if @domain.certificate_text
           %pre
             = @domain.certificate_text
         - else
           .light
-            missing
+            = _("missing")

@@ -1005,6 +1005,67 @@ describe Repository do
     end
   end
 
+  describe '#ambiguous_ref?' do
+    let(:ref) { 'ref' }
+
+    subject { repository.ambiguous_ref?(ref) }
+
+    context 'when ref is ambiguous' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+        repository.add_branch(project.creator, ref, 'master')
+      end
+
+      it 'should be true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when ref is not ambiguous' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+      end
+
+      it 'should be false' do
+        is_expected.to eq(false)
+      end
+    end
+  end
+
+  describe '#expand_ref' do
+    let(:ref) { 'ref' }
+
+    subject { repository.expand_ref(ref) }
+
+    context 'when ref is not tag or branch name' do
+      let(:ref) { 'refs/heads/master' }
+
+      it 'returns nil' do
+        is_expected.to eq(nil)
+      end
+    end
+
+    context 'when ref is tag name' do
+      before do
+        repository.add_tag(project.creator, ref, 'master')
+      end
+
+      it 'returns the tag ref' do
+        is_expected.to eq("refs/tags/#{ref}")
+      end
+    end
+
+    context 'when ref is branch name' do
+      before do
+        repository.add_branch(project.creator, ref, 'master')
+      end
+
+      it 'returns the branch ref' do
+        is_expected.to eq("refs/heads/#{ref}")
+      end
+    end
+  end
+
   describe '#add_branch' do
     let(:branch_name) { 'new_feature' }
     let(:target) { 'master' }
@@ -1176,6 +1237,27 @@ describe Repository do
     end
   end
 
+  describe '#blobs_at' do
+    let(:empty_repository) { create(:project_empty_repo).repository }
+
+    it 'returns empty array for an empty repository' do
+      # rubocop:disable Style/WordArray
+      expect(empty_repository.blobs_at(['master', 'foobar'])).to eq([])
+      # rubocop:enable Style/WordArray
+    end
+
+    it 'returns blob array for a non-empty repository' do
+      repository.create_file(User.last, 'foobar', 'CONTENT', message: 'message', branch_name: 'master')
+
+      # rubocop:disable Style/WordArray
+      blobs = repository.blobs_at([['master', 'foobar']])
+      # rubocop:enable Style/WordArray
+
+      expect(blobs.first.name).to eq('foobar')
+      expect(blobs.size).to eq(1)
+    end
+  end
+
   describe '#root_ref' do
     it 'returns a branch name' do
       expect(repository.root_ref).to be_an_instance_of(String)
@@ -1288,6 +1370,29 @@ describe Repository do
 
     def merge(repository, user, merge_request, message)
       repository.merge(user, merge_request.diff_head_sha, merge_request, message)
+    end
+  end
+
+  describe '#merge_to_ref' do
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'feature',
+                             target_branch: 'master',
+                             source_project: project)
+    end
+
+    it 'writes merge of source and target to MR merge_ref_path' do
+      merge_commit_id = repository.merge_to_ref(user,
+                                                merge_request.diff_head_sha,
+                                                merge_request,
+                                                merge_request.merge_ref_path,
+                                                'Custom message')
+
+      merge_commit = repository.commit(merge_commit_id)
+
+      expect(merge_commit.message).to eq('Custom message')
+      expect(merge_commit.author_name).to eq(user.name)
+      expect(merge_commit.author_email).to eq(user.commit_email)
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
   end
 
@@ -2209,6 +2314,7 @@ describe Repository do
       expect(subject).to be_a(Gitlab::Git::Repository)
       expect(subject.relative_path).to eq(project.disk_path + '.git')
       expect(subject.gl_repository).to eq("project-#{project.id}")
+      expect(subject.gl_project_path).to eq(project.full_path)
     end
 
     context 'with a wiki repository' do
@@ -2218,6 +2324,7 @@ describe Repository do
         expect(subject).to be_a(Gitlab::Git::Repository)
         expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
         expect(subject.gl_repository).to eq("wiki-#{project.id}")
+        expect(subject.gl_project_path).to eq(project.full_path)
       end
     end
   end
@@ -2337,24 +2444,6 @@ describe Repository do
       expect(Gitlab::GitalyClient).to receive(:call).once.and_call_original
 
       repository.merge_base('master', 'fix')
-    end
-  end
-
-  describe '#cache' do
-    subject(:cache) { repository.send(:cache) }
-
-    it 'returns a RepositoryCache' do
-      expect(subject).to be_kind_of Gitlab::RepositoryCache
-    end
-
-    it 'when is_wiki it includes wiki as part of key' do
-      allow(repository).to receive(:is_wiki) { true }
-
-      expect(subject.namespace).to include('wiki')
-    end
-
-    it 'when is_wiki is false extra_namespace is nil' do
-      expect(subject.namespace).not_to include('wiki')
     end
   end
 end

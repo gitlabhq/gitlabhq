@@ -25,7 +25,7 @@
   .value.hide-collapsed
     - if issuable_sidebar[:assignee]
       = link_to_member(@project, assignee, size: 32, extra_class: 'bold') do
-        - if issuable_sidebar[:assignee][:can_merge]
+        - unless issuable_sidebar[:assignee][:can_merge]
           %span.float-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: _('Not allowed to merge') }
             = icon('exclamation-triangle', 'aria-hidden': 'true')
         %span.username

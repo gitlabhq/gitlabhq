@@ -1515,8 +1515,8 @@ describe Gitlab::Diff::PositionTracer do
           {                      new_path: file_name,              new_line: 4,   change: true },
           {                      new_path: file_name, old_line: 3,                change: true },
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 5 },
-          {                      new_path: file_name, old_line: 5,                change: true },
-          {                      new_path: file_name,              new_line: 7 }
+          {                      new_path: file_name, old_line: 5, change: true },
+          {                      new_path: file_name, new_line: 7 }
         ]
 
         expect_new_positions(old_position_attrs, new_position_attrs)
@@ -1588,7 +1588,7 @@ describe Gitlab::Diff::PositionTracer do
           {                      new_path: file_name,              new_line: 4,   change: true },
           { old_path: file_name,                      old_line: 3,                change: true },
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 5 },
-          { old_path: file_name,                      old_line: 5,                change: true },
+          { old_path: file_name,                      old_line: 5, change: true },
           {                      new_path: file_name,              new_line: 7 }
         ]
 
@@ -1638,13 +1638,13 @@ describe Gitlab::Diff::PositionTracer do
         new_position_attrs = [
           { old_path: file_name, new_path: file_name, old_line: 1, new_line: 1 },
           { old_path: file_name,                      old_line: 2              },
-          { old_path: file_name,                      old_line: 2,                change: true },
+          { old_path: file_name,                      old_line: 2, change: true },
           { old_path: file_name, new_path: file_name, old_line: 3, new_line: 2 },
-          { old_path: file_name,                      old_line: 4,                change: true },
+          { old_path: file_name,                      old_line: 4, change: true },
           { old_path: file_name, new_path: file_name, old_line: 5, new_line: 4 },
-          {                      new_path: file_name,              new_line: 5,   change: true },
-          { old_path: file_name,                      old_line: 6,                change: true },
-          {                      new_path: file_name,              new_line: 6 }
+          {                      new_path: file_name,              new_line: 5, change: true },
+          { old_path: file_name, old_line: 6, change: true },
+          { new_path: file_name, new_line: 6 }
         ]
 
         expect_new_positions(old_position_attrs, new_position_attrs)
@@ -1880,7 +1880,7 @@ describe Gitlab::Diff::PositionTracer do
 
         new_position_attrs = [
           { old_path: file_name, new_path: file_name, old_line: 1, new_line: 1 },
-          { old_path: file_name,                      old_line: 2,                change: true },
+          { old_path: file_name,                      old_line: 2, change: true },
           {                      new_path: file_name,              new_line: 2 },
           { old_path: file_name, new_path: file_name, old_line: 2, new_line: 3 },
           {                      new_path: file_name,              new_line: 4 },

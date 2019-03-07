@@ -96,43 +96,36 @@ describe Gitlab::Middleware::Go do
 
                     it_behaves_like 'unauthorized'
                   end
-                end
 
-                context 'using warden' do
-                  before do
-                    env['warden'] = double(authenticate: current_user)
-                  end
-
-                  context 'when active' do
-                    it_behaves_like 'authenticated'
-                  end
-
-                  context 'when blocked' do
+                  context 'with user is blocked' do
                     before do
-                      current_user.block!
+                      current_user.block
                     end
 
                     it_behaves_like 'unauthorized'
                   end
                 end
 
-                context 'using a personal access token' do
-                  let(:personal_access_token) { create(:personal_access_token, user: current_user) }
+                context 'using basic auth' do
+                  context 'using a personal access token' do
+                    let(:personal_access_token) { create(:personal_access_token, user: current_user) }
 
-                  before do
-                    env['HTTP_PRIVATE_TOKEN'] = personal_access_token.token
-                  end
-
-                  context 'with api scope' do
-                    it_behaves_like 'authenticated'
-                  end
-
-                  context 'with read_user scope' do
                     before do
-                      personal_access_token.update_attribute(:scopes, [:read_user])
+                      env['REMOTE_ADDR'] = "192.168.0.1"
+                      env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(current_user.username, personal_access_token.token)
                     end
 
-                    it_behaves_like 'unauthorized'
+                    context 'with api scope' do
+                      it_behaves_like 'authenticated'
+                    end
+
+                    context 'with read_user scope' do
+                      before do
+                        personal_access_token.update_attribute(:scopes, [:read_user])
+                      end
+
+                      it_behaves_like 'unauthorized'
+                    end
                   end
                 end
               end

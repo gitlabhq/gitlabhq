@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 describe LabelNote do
-  set(:project)  { create(:project, :repository) }
-  set(:user)   { create(:user) }
+  set(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
   set(:label) { create(:label, project: project) }
   set(:label2) { create(:label, project: project) }
   let(:resource_parent) { project }

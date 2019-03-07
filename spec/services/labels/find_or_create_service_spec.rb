@@ -46,7 +46,7 @@ describe Labels::FindOrCreateService do
         end
 
         context 'when include_ancestor_groups is true' do
-          let(:group)   { create(:group, :nested) }
+          let(:group) { create(:group, :nested) }
           let(:params) do
             {
               title: 'Audit',

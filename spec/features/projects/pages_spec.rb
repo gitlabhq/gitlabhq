@@ -13,16 +13,6 @@ describe 'Pages' do
     sign_in(user)
   end
 
-  shared_examples 'no pages deployed' do
-    it 'does not see anything to destroy' do
-      visit project_pages_path(project)
-
-      expect(page).to have_content('Configure pages')
-      expect(page).not_to have_link('Remove pages')
-      expect(page).not_to have_text('Only the project owner can remove pages')
-    end
-  end
-
   context 'when user is the owner' do
     before do
       project.namespace.update(owner: user)
@@ -181,7 +171,12 @@ describe 'Pages' do
       end
     end
 
-    it_behaves_like 'no pages deployed'
+    it 'does not see anything to destroy' do
+      visit project_pages_path(project)
+
+      expect(page).to have_content('Configure pages')
+      expect(page).not_to have_link('Remove pages')
+    end
 
     describe 'project settings page' do
       it 'renders "Pages" tab' do
@@ -208,22 +203,6 @@ describe 'Pages' do
     end
   end
 
-  context 'when the user is not the owner' do
-    context 'when pages deployed' do
-      before do
-        allow_any_instance_of(Project).to receive(:pages_deployed?) { true }
-      end
-
-      it 'sees "Only the project owner can remove pages" text' do
-        visit project_pages_path(project)
-
-        expect(page).to have_text('Only the project owner can remove pages')
-      end
-    end
-
-    it_behaves_like 'no pages deployed'
-  end
-
   describe 'HTTPS settings', :js, :https_pages_enabled do
     before do
       project.namespace.update(owner: user)
@@ -233,7 +212,7 @@ describe 'Pages' do
 
     it 'tries to change the setting' do
       visit project_pages_path(project)
-      expect(page).to have_content("Force domains with SSL certificates to use HTTPS")
+      expect(page).to have_content("Force HTTPS (requires valid certificates)")
 
       uncheck :project_pages_https_only
 
@@ -282,58 +261,52 @@ describe 'Pages' do
         visit project_pages_path(project)
 
         expect(page).not_to have_field(:project_pages_https_only)
-        expect(page).not_to have_content('Force domains with SSL certificates to use HTTPS')
+        expect(page).not_to have_content('Force HTTPS (requires valid certificates)')
         expect(page).not_to have_button('Save')
       end
     end
   end
 
   describe 'Remove page' do
-    context 'when user is the owner' do
-      let(:project) { create :project, :repository }
+    let(:project) { create :project, :repository }
 
-      before do
-        project.namespace.update(owner: user)
+    context 'when pages are deployed' do
+      let(:pipeline) do
+        commit_sha = project.commit('HEAD').sha
+
+        project.ci_pipelines.create(
+          ref: 'HEAD',
+          sha: commit_sha,
+          source: :push,
+          protected: false
+        )
       end
 
-      context 'when pages are deployed' do
-        let(:pipeline) do
-          commit_sha = project.commit('HEAD').sha
+      let(:ci_build) do
+        create(
+          :ci_build,
+          project: project,
+          pipeline: pipeline,
+          ref: 'HEAD',
+          legacy_artifacts_file: fixture_file_upload(File.join('spec/fixtures/pages.zip')),
+          legacy_artifacts_metadata: fixture_file_upload(File.join('spec/fixtures/pages.zip.meta'))
+        )
+      end
 
-          project.ci_pipelines.create(
-            ref: 'HEAD',
-            sha: commit_sha,
-            source: :push,
-            protected: false
-          )
-        end
+      before do
+        result = Projects::UpdatePagesService.new(project, ci_build).execute
+        expect(result[:status]).to eq(:success)
+        expect(project).to be_pages_deployed
+      end
 
-        let(:ci_build) do
-          create(
-            :ci_build,
-            project: project,
-            pipeline: pipeline,
-            ref: 'HEAD',
-            legacy_artifacts_file: fixture_file_upload(File.join('spec/fixtures/pages.zip')),
-            legacy_artifacts_metadata: fixture_file_upload(File.join('spec/fixtures/pages.zip.meta'))
-          )
-        end
+      it 'removes the pages' do
+        visit project_pages_path(project)
 
-        before do
-          result = Projects::UpdatePagesService.new(project, ci_build).execute
-          expect(result[:status]).to eq(:success)
-          expect(project).to be_pages_deployed
-        end
+        expect(page).to have_link('Remove pages')
 
-        it 'removes the pages' do
-          visit project_pages_path(project)
+        click_link 'Remove pages'
 
-          expect(page).to have_link('Remove pages')
-
-          click_link 'Remove pages'
-
-          expect(project.pages_deployed?).to be_falsey
-        end
+        expect(project.pages_deployed?).to be_falsey
       end
     end
   end

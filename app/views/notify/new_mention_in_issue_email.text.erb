@@ -1,7 +1,7 @@
 You have been mentioned in an issue.
 
 Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
-Author:    <%= @issue.author_name %>
-Assignee:  <%= @issue.assignee_list %>
+Author:    <%= sanitize_name(@issue.author_name) %>
+Assignee:  <%= sanitize_name(@issue.assignee_list) %>
 
 <%= @issue.description %>

@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Seed::Build do
-  let(:pipeline) { create(:ci_empty_pipeline) }
+  let(:project) { create(:project, :repository) }
+  let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
   let(:attributes) do
-    { name: 'rspec',
-      ref: 'master',
-      commands: 'rspec' }
+    { name: 'rspec', ref: 'master' }
   end
 
   subject do
@@ -17,14 +16,49 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
     it 'returns hash attributes of a build' do
       expect(subject.attributes).to be_a Hash
       expect(subject.attributes)
-        .to include(:name, :project, :ref, :commands)
+        .to include(:name, :project, :ref)
+    end
+  end
+
+  describe '#bridge?' do
+    context 'when job is a bridge' do
+      let(:attributes) do
+        { name: 'rspec', ref: 'master', options: { trigger: 'my/project' } }
+      end
+
+      it { is_expected.to be_bridge }
+    end
+
+    context 'when trigger definition is empty' do
+      let(:attributes) do
+        { name: 'rspec', ref: 'master', options: { trigger: '' } }
+      end
+
+      it { is_expected.not_to be_bridge }
+    end
+
+    context 'when job is not a bridge' do
+      it { is_expected.not_to be_bridge }
     end
   end
 
   describe '#to_resource' do
-    it 'returns a valid build resource' do
-      expect(subject.to_resource).to be_a(::Ci::Build)
-      expect(subject.to_resource).to be_valid
+    context 'when job is not a bridge' do
+      it 'returns a valid build resource' do
+        expect(subject.to_resource).to be_a(::Ci::Build)
+        expect(subject.to_resource).to be_valid
+      end
+    end
+
+    context 'when job is a bridge' do
+      let(:attributes) do
+        { name: 'rspec', ref: 'master', options: { trigger: 'my/project' } }
+      end
+
+      it 'returns a valid bridge resource' do
+        expect(subject.to_resource).to be_a(::Ci::Bridge)
+        expect(subject.to_resource).to be_valid
+      end
     end
 
     it 'memoizes a resource object' do

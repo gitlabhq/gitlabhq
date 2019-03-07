@@ -23,9 +23,9 @@ The process of solving performance problems is roughly as follows:
 
 When providing timings make sure to provide:
 
-* The 95th percentile
-* The 99th percentile
-* The mean
+- The 95th percentile
+- The 99th percentile
+- The mean
 
 When providing screenshots of graphs, make sure that both the X and Y axes and
 the legend are clearly visible. If you happen to have access to GitLab.com's own
@@ -36,12 +36,13 @@ graphs/dashboards.
 
 GitLab provides built-in tools to help improve performance and availability:
 
-* [Profiling](profiling.md)
-  * [Sherlock](profiling.md#sherlock)
-* [GitLab Performance Monitoring](../administration/monitoring/performance/index.md)
-* [Request Profiling](../administration/monitoring/performance/request_profiling.md)
-* [QueryRecoder](query_recorder.md) for preventing `N+1` regressions
-* [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
+- [Profiling](profiling.md).
+  - [Sherlock](profiling.md#sherlock).
+- [Distributed Tracing](distributed_tracing.md)
+- [GitLab Performance Monitoring](../administration/monitoring/performance/index.md).
+- [Request Profiling](../administration/monitoring/performance/request_profiling.md).
+- [QueryRecoder](query_recorder.md) for preventing `N+1` regressions.
+- [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
 <https://dashboards.gitlab.net>, this requires you to log in using your
@@ -269,11 +270,11 @@ piece of code is worth optimizing. The only two things you can do are:
 
 Some examples of changes that aren't really important/worth the effort:
 
-* Replacing double quotes with single quotes.
-* Replacing usage of Array with Set when the list of values is very small.
-* Replacing library A with library B when both only take up 0.1% of the total
+- Replacing double quotes with single quotes.
+- Replacing usage of Array with Set when the list of values is very small.
+- Replacing library A with library B when both only take up 0.1% of the total
   execution time.
-* Calling `freeze` on every string (see [String Freezing](#string-freezing)).
+- Calling `freeze` on every string (see [String Freezing](#string-freezing)).
 
 ## Slow Operations & Sidekiq
 
@@ -335,7 +336,6 @@ has overhead. By caching the result in an instance variable, repeated calls to
 the same method won't end up retrieving data from Redis upon every call. When
 memoizing cached data in an instance variable, make sure to also reset the
 instance variable when flushing the cache. An example:
-
 
 ```ruby
 def first_branch
@@ -410,6 +410,21 @@ there's nothing stopping somebody from doing this elsewhere in the code:
 ```ruby
 SOME_CONSTANT = 'bar'
 ```
+
+## How to seed a database with millions of rows
+
+You might want millions of project rows in your local database, for example,
+in order to compare relative query performance, or to reproduce a bug. You could
+do this by hand with SQL commands, but since you have ActiveRecord models, you
+might find using these gems more convenient:
+
+- [BulkInsert gem](https://github.com/jamis/bulk_insert)
+- [ActiveRecord::PgGenerateSeries gem](https://github.com/ryu39/active_record-pg_generate_series)
+
+### Examples
+
+You may find some useful examples in this snippet:
+https://gitlab.com/gitlab-org/gitlab-ce/snippets/33946
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
 [yorickpeterse]: https://gitlab.com/yorickpeterse

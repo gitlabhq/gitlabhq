@@ -11,6 +11,8 @@ const storedTreeShow = localStorage.getItem(MR_TREE_SHOW_KEY);
 
 export default () => ({
   isLoading: true,
+  addedLines: null,
+  removedLines: null,
   endpoint: '',
   basePath: '',
   commit: null,
@@ -27,4 +29,7 @@ export default () => ({
   projectPath: '',
   commentForms: [],
   highlightedRow: null,
+  renderTreeList: true,
+  showWhitespace: true,
+  fileFinderVisible: false,
 });

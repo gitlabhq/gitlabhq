@@ -1,12 +1,18 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
-import initDismissableCallout from '~/dismissable_callout';
+import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
-import { APPLICATION_STATUS, REQUEST_LOADING, REQUEST_SUCCESS, REQUEST_FAILURE } from './constants';
+import {
+  APPLICATION_STATUS,
+  REQUEST_SUBMITTED,
+  REQUEST_FAILURE,
+  UPGRADE_REQUESTED,
+  UPGRADE_REQUEST_FAILURE,
+} from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
@@ -32,6 +38,7 @@ export default class Clusters {
       installKnativePath,
       installPrometheusPath,
       managePrometheusPath,
+      hasRbac,
       clusterType,
       clusterStatus,
       clusterStatusReason,
@@ -45,6 +52,7 @@ export default class Clusters {
     this.store.setManagePrometheusPath(managePrometheusPath);
     this.store.updateStatus(clusterStatus);
     this.store.updateStatusReason(clusterStatusReason);
+    this.store.updateRbac(hasRbac);
     this.service = new ClustersService({
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
@@ -67,7 +75,7 @@ export default class Clusters {
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
 
-    initDismissableCallout('.js-cluster-security-warning');
+    Clusters.initDismissableCallout();
     initSettingsPanels();
     setupToggleButtons(document.querySelector('.js-cluster-enable-toggle-area'));
     this.initApplications(clusterType);
@@ -102,20 +110,32 @@ export default class Clusters {
             ingressHelpPath: this.state.ingressHelpPath,
             managePrometheusPath: this.state.managePrometheusPath,
             ingressDnsHelpPath: this.state.ingressDnsHelpPath,
+            rbac: this.state.rbac,
           },
         });
       },
     });
   }
 
+  static initDismissableCallout() {
+    const callout = document.querySelector('.js-cluster-security-warning');
+    PersistentUserCallout.factory(callout);
+  }
+
   addListeners() {
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
+    eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
+    eventHub.$on('upgradeFailed', appId => this.upgradeFailed(appId));
+    eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
   }
 
   removeListeners() {
     if (this.showTokenButton) this.showTokenButton.removeEventListener('click', this.showToken);
     eventHub.$off('installApplication', this.installApplication);
+    eventHub.$off('upgradeApplication', this.upgradeApplication);
+    eventHub.$off('upgradeFailed', this.upgradeFailed);
+    eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
   }
 
   initPolling() {
@@ -222,22 +242,33 @@ export default class Clusters {
 
   installApplication(data) {
     const appId = data.id;
-    this.store.updateAppProperty(appId, 'requestStatus', REQUEST_LOADING);
+    this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUBMITTED);
     this.store.updateAppProperty(appId, 'requestReason', null);
+    this.store.updateAppProperty(appId, 'statusReason', null);
 
-    this.service
-      .installApplication(appId, data.params)
-      .then(() => {
-        this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUCCESS);
-      })
-      .catch(() => {
-        this.store.updateAppProperty(appId, 'requestStatus', REQUEST_FAILURE);
-        this.store.updateAppProperty(
-          appId,
-          'requestReason',
-          s__('ClusterIntegration|Request to begin installing failed'),
-        );
-      });
+    this.service.installApplication(appId, data.params).catch(() => {
+      this.store.updateAppProperty(appId, 'requestStatus', REQUEST_FAILURE);
+      this.store.updateAppProperty(
+        appId,
+        'requestReason',
+        s__('ClusterIntegration|Request to begin installing failed'),
+      );
+    });
+  }
+
+  upgradeApplication(data) {
+    const appId = data.id;
+    this.store.updateAppProperty(appId, 'requestStatus', UPGRADE_REQUESTED);
+    this.store.updateAppProperty(appId, 'status', APPLICATION_STATUS.UPDATING);
+    this.service.installApplication(appId, data.params).catch(() => this.upgradeFailed(appId));
+  }
+
+  upgradeFailed(appId) {
+    this.store.updateAppProperty(appId, 'requestStatus', UPGRADE_REQUEST_FAILURE);
+  }
+
+  dismissUpgradeSuccess(appId) {
+    this.store.updateAppProperty(appId, 'requestStatus', null);
   }
 
   destroy() {

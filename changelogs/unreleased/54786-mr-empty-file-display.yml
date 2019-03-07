@@ -1,5 +1,0 @@
----
-title: Display empty files properly on MR diffs
-merge_request: 23671
-author: Sean Nichols
-type: fixed

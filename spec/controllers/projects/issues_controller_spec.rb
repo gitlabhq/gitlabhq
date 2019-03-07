@@ -42,7 +42,9 @@ describe Projects::IssuesController do
 
       it_behaves_like "issuables list meta-data", :issue
 
-      it_behaves_like 'set sort order from user preference'
+      it_behaves_like 'set sort order from user preference' do
+        let(:sorting_param) { 'updated_asc' }
+      end
 
       it "returns index" do
         get :index, params: { namespace_id: project.namespace, project_id: project }
@@ -66,7 +68,7 @@ describe Projects::IssuesController do
     end
 
     context 'with page param' do
-      let(:last_page) { project.issues.page().total_pages }
+      let(:last_page) { project.issues.page.total_pages }
       let!(:issue_list) { create_list(:issue, 2, project: project) }
 
       before do
@@ -131,7 +133,7 @@ describe Projects::IssuesController do
     it 'redirects to signin if not logged in' do
       get :new, params: { namespace_id: project.namespace, project_id: project }
 
-      expect(flash[:notice]).to eq 'Please sign in to create the new issue.'
+      expect(flash[:alert]).to eq 'You need to sign in or sign up before continuing.'
       expect(response).to redirect_to(new_user_session_path)
     end
 
@@ -375,6 +377,23 @@ describe Projects::IssuesController do
         go(id: issue.iid)
 
         expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
+    context 'when getting the changes' do
+      before do
+        project.add_developer(user)
+
+        sign_in(user)
+      end
+
+      it 'returns the necessary data' do
+        go(id: issue.iid)
+
+        data = JSON.parse(response.body)
+
+        expect(data).to include('title_text', 'description', 'description_text')
+        expect(data).to include('task_status', 'lock_version')
       end
     end
   end
@@ -1026,6 +1045,59 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'POST #import_csv' do
+    let(:project) { create(:project, :public) }
+    let(:file) { fixture_file_upload('spec/fixtures/csv_comma.csv') }
+
+    context 'unauthorized' do
+      it 'returns 404 for guests' do
+        sign_out(:user)
+
+        import_csv
+
+        expect(response).to have_gitlab_http_status :not_found
+      end
+
+      it 'returns 404 for project members with reporter role' do
+        sign_in(user)
+        project.add_reporter(user)
+
+        import_csv
+
+        expect(response).to have_gitlab_http_status :not_found
+      end
+    end
+
+    context 'authorized' do
+      before do
+        sign_in(user)
+        project.add_developer(user)
+      end
+
+      it "returns 302 for project members with developer role" do
+        import_csv
+
+        expect(flash[:notice]).to include('Your issues are being imported')
+        expect(response).to redirect_to(project_issues_path(project))
+      end
+
+      it "shows error when upload fails" do
+        allow_any_instance_of(UploadService).to receive(:execute).and_return(nil)
+
+        import_csv
+
+        expect(flash[:alert]).to include('File upload error.')
+        expect(response).to redirect_to(project_issues_path(project))
+      end
+    end
+
+    def import_csv
+      post :import_csv, params: { namespace_id: project.namespace.to_param,
+                                  project_id: project.to_param,
+                                  file: file }
+    end
+  end
+
   describe 'GET #discussions' do
     let!(:discussion) { create(:discussion_note_on_issue, noteable: issue, project: issue.project) }
     context 'when authenticated' do
@@ -1065,6 +1137,7 @@ describe Projects::IssuesController do
 
       context 'when user is setting notes filters' do
         let(:issuable) { issue }
+        let(:issuable_parent) { project }
         let!(:discussion_note) { create(:discussion_note_on_issue, :system, noteable: issuable, project: project) }
 
         it_behaves_like 'issuable notes filter'

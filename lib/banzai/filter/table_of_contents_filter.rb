@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Generated HTML is transformed back to GFM by app/assets/javascripts/behaviors/markdown/nodes/table_of_contents.js
 module Banzai
   module Filter
     # HTML filter that adds an anchor child element to all Headers in a

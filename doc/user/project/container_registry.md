@@ -15,7 +15,7 @@
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
 
-You can read more about Docker Registry at https://docs.docker.com/registry/introduction/.
+You can read more about Docker Registry at <https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry for your project
 
@@ -46,7 +46,6 @@ to enable it.
 >   signature includes the repository name.
 > - To move or rename a repository with a container registry you will have to
 >   delete all existing images.
-
 
 If you visit the **Registry** link under your project's menu, you can see the
 explicit instructions to login to the Container Registry using your GitLab
@@ -283,9 +282,9 @@ In the example above, we see the following trace on the mitmproxy window:
 
 The above image shows:
 
-* The initial PUT requests went through fine with a 201 status code.
-* The 201 redirected the client to the S3 bucket.
-* The HEAD request to the AWS bucket reported a 403 Unauthorized.
+- The initial PUT requests went through fine with a 201 status code.
+- The 201 redirected the client to the S3 bucket.
+- The HEAD request to the AWS bucket reported a 403 Unauthorized.
 
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).

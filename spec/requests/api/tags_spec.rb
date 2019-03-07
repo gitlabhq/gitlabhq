@@ -54,6 +54,18 @@ describe API::Tags do
       end
     end
 
+    context 'searching' do
+      it 'only returns searched tags' do
+        get api("#{route}", user), params: { search: 'v1.1.0' }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(1)
+        expect(json_response[0]['name']).to eq('v1.1.0')
+      end
+    end
+
     shared_examples_for 'repository tags' do
       it 'returns the repository tags' do
         get api(route, current_user)
@@ -107,9 +119,12 @@ describe API::Tags do
     context 'with releases' do
       let(:description) { 'Awesome release!' }
 
-      before do
-        release = project.releases.find_or_initialize_by(tag: tag_name)
-        release.update(description: description)
+      let!(:release) do
+        create(:release,
+               :legacy,
+               project: project,
+               tag: tag_name,
+               description: description)
       end
 
       it 'returns an array of project tags with release info' do
@@ -373,7 +388,7 @@ describe API::Tags do
 
         it_behaves_like '404 response' do
           let(:request) { post api(route, current_user), params: { description: description } }
-          let(:message) { 'Tag does not exist' }
+          let(:message) { '404 Tag Not Found' }
         end
       end
 
@@ -398,10 +413,7 @@ describe API::Tags do
       end
 
       context 'on tag with existing release' do
-        before do
-          release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update(description: description)
-        end
+        let!(:release) { create(:release, :legacy, project: project, tag: tag_name, description: description) }
 
         it 'returns 409 if there is already a release' do
           post api(route, user), params: { description: description }
@@ -420,9 +432,12 @@ describe API::Tags do
 
     shared_examples_for 'repository update release' do
       context 'on tag with existing release' do
-        before do
-          release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update(description: description)
+        let!(:release) do
+          create(:release,
+                 :legacy,
+                 project: project,
+                 tag: tag_name,
+                 description: description)
         end
 
         it 'updates the release description' do
@@ -437,9 +452,9 @@ describe API::Tags do
       context 'when tag does not exist' do
         let(:tag_name) { 'unknown' }
 
-        it_behaves_like '404 response' do
+        it_behaves_like '403 response' do
           let(:request) { put api(route, current_user), params: { description: new_description } }
-          let(:message) { 'Tag does not exist' }
+          let(:message) { '403 Forbidden' }
         end
       end
 
@@ -464,9 +479,9 @@ describe API::Tags do
       end
 
       context 'when release does not exist' do
-        it_behaves_like '404 response' do
+        it_behaves_like '403 response' do
           let(:request) { put api(route, current_user), params: { description: new_description } }
-          let(:message) { 'Release does not exist' }
+          let(:message) { '403 Forbidden' }
         end
       end
     end

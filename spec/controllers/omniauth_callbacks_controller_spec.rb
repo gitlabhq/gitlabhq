@@ -45,6 +45,63 @@ describe OmniauthCallbacksController, type: :controller do
       end
     end
 
+    context 'when sign in fails' do
+      include RoutesHelpers
+
+      let(:extern_uid) { 'my-uid' }
+      let(:provider) { :saml }
+
+      def stub_route_as(path)
+        allow(@routes).to receive(:generate_extras) { [path, []] }
+      end
+
+      it 'it calls through to the failure handler' do
+        request.env['omniauth.error'] = OneLogin::RubySaml::ValidationError.new("Fingerprint mismatch")
+        request.env['omniauth.error.strategy'] = OmniAuth::Strategies::SAML.new(nil)
+        stub_route_as('/users/auth/saml/callback')
+
+        ForgeryProtection.with_forgery_protection do
+          post :failure
+        end
+
+        expect(flash[:alert]).to match(/Fingerprint mismatch/)
+      end
+    end
+
+    context 'when a redirect fragment is provided' do
+      let(:provider) { :jwt }
+      let(:extern_uid) { 'my-uid' }
+
+      before do
+        request.env['omniauth.params'] = { 'redirect_fragment' => 'L101' }
+      end
+
+      context 'when a redirect url is stored' do
+        it 'redirects with fragment' do
+          post provider, session: { user_return_to: '/fake/url' }
+
+          expect(response).to redirect_to('/fake/url#L101')
+        end
+      end
+
+      context 'when a redirect url with a fragment is stored' do
+        it 'redirects with the new fragment' do
+          post provider, session: { user_return_to: '/fake/url#replaceme' }
+
+          expect(response).to redirect_to('/fake/url#L101')
+        end
+      end
+
+      context 'when no redirect url is stored' do
+        it 'does not redirect with the fragment' do
+          post provider
+
+          expect(response.redirect?).to be true
+          expect(response.location).not_to include('#L101')
+        end
+      end
+    end
+
     context 'strategies' do
       context 'github' do
         let(:extern_uid) { 'my-uid' }
@@ -136,7 +193,7 @@ describe OmniauthCallbacksController, type: :controller do
     before do
       stub_omniauth_saml_config({ enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
                                   providers: [saml_config] })
-      mock_auth_hash('saml', 'my-uid', user.email, mock_saml_response)
+      mock_auth_hash_with_saml_xml('saml', 'my-uid', user.email, mock_saml_response)
       request.env["devise.mapping"] = Devise.mappings[:user]
       request.env['omniauth.auth'] = Rails.application.env_config['omniauth.auth']
       post :saml, params: { SAMLResponse: mock_saml_response }

@@ -224,5 +224,5 @@ removed with one of the future versions of GitLab. You are advised to
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ee]: https://about.gitlab.com/pricing/
 [variables]: ../variables/README.md
-[predef]: ../variables/README.md#predefined-variables-environment-variables
+[predef]: ../variables/README.md#predefined-environment-variables
 [registry]: ../../user/project/container_registry.md

@@ -6,7 +6,7 @@ describe Users::MigrateToGhostUserService do
   let(:service)    { described_class.new(user) }
 
   context "migrating a user's associated records to the ghost user" do
-    context 'issues'  do
+    context 'issues' do
       context 'deleted user is present as both author and edited_user' do
         include_examples "migrating a deleted user's associated records to the ghost user", Issue, [:author, :last_edited_by] do
           let(:created_record) do

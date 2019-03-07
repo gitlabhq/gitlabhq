@@ -5,35 +5,11 @@ describe Clusters::Applications::Runner do
 
   include_examples 'cluster application core specs', :clusters_applications_runner
   include_examples 'cluster application status specs', :clusters_applications_runner
+  include_examples 'cluster application version specs', :clusters_applications_runner
   include_examples 'cluster application helm specs', :clusters_applications_runner
+  include_examples 'cluster application initial status specs'
 
   it { is_expected.to belong_to(:runner) }
-
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_runner, :scheduled, version: '0.1.30') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('0.1.39')
-      end
-    end
-  end
-
-  describe '.installed' do
-    subject { described_class.installed }
-
-    let!(:cluster) { create(:clusters_applications_runner, :installed) }
-
-    before do
-      create(:clusters_applications_runner, :errored)
-    end
-
-    it { is_expected.to contain_exactly(cluster) }
-  end
 
   describe '#install_command' do
     let(:kubeclient) { double('kubernetes client') }
@@ -46,25 +22,25 @@ describe Clusters::Applications::Runner do
     it 'should be initialized with 4 arguments' do
       expect(subject.name).to eq('runner')
       expect(subject.chart).to eq('runner/gitlab-runner')
-      expect(subject.version).to eq('0.1.39')
-      expect(subject).not_to be_rbac
+      expect(subject.version).to eq('0.2.0')
+      expect(subject).to be_rbac
       expect(subject.repository).to eq('https://charts.gitlab.io')
       expect(subject.files).to eq(gitlab_runner.files)
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        gitlab_runner.cluster.platform_kubernetes.rbac!
+        gitlab_runner.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
       let(:gitlab_runner) { create(:clusters_applications_runner, :errored, runner: ci_runner, version: '0.1.13') }
 
       it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('0.1.39')
+        expect(subject.version).to eq('0.2.0')
       end
     end
   end

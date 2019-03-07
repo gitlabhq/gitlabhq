@@ -146,9 +146,9 @@ you are introducing those changes to your branch.
 Via command line, you can commit multiple times before pushing.
 
 - **Commit message:**
-A commit message is important to identity what is being changed and,
-more importantly, why. In GitLab, you can add keywords to the commit
-message that will perform one of the actions below:
+  A commit message is important to identity what is being changed and,
+  more importantly, why. In GitLab, you can add keywords to the commit
+  message that will perform one of the actions below:
   - **Trigger a GitLab CI/CD pipeline:**
   If you have your project configured with [GitLab CI/CD](../../../ci/README.md),
   you will trigger a pipeline per push, not per commit.
@@ -162,14 +162,14 @@ message that will perform one of the actions below:
   If you mention an issue or a merge request in a commit message, they will be shown
   on their respective thread.
 - **Cherry-pick a commit:**
-In GitLab, you can
-[cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
-right from the UI.
+  In GitLab, you can
+  [cherry-pick a commit](../merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)
+  right from the UI.
 - **Revert a commit:**
-Easily [revert a commit](../merge_requests/revert_changes.md#reverting-a-commit)
-from the UI to a selected branch.
+  Easily [revert a commit](../merge_requests/revert_changes.md#reverting-a-commit)
+  from the UI to a selected branch.
 - **Sign a commit:**
-Use GPG to [sign your commits](gpg_signed_commits/index.md).
+  Use GPG to [sign your commits](gpg_signed_commits/index.md).
 
 ## Repository size
 

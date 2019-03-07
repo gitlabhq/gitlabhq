@@ -16,13 +16,6 @@ module Gitlab
                             dependencies before_script after_script variables
                             environment coverage retry parallel extends].freeze
 
-          DEFAULT_ONLY_POLICY = {
-            refs: %w(branches tags)
-          }.freeze
-
-          DEFAULT_EXCEPT_POLICY = {
-          }.freeze
-
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
             validates :config, presence: true
@@ -73,7 +66,8 @@ module Gitlab
             description: 'Services that will be used to execute this job.'
 
           entry :only, Entry::Policy,
-            description: 'Refs policy this job will be executed for.'
+            description: 'Refs policy this job will be executed for.',
+            default: Entry::Policy::DEFAULT_ONLY
 
           entry :except, Entry::Policy,
             description: 'Refs policy this job will be executed for.'
@@ -95,7 +89,7 @@ module Gitlab
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts, :commands, :environment, :coverage, :retry,
+                  :artifacts, :environment, :coverage, :retry,
                   :parallel
 
           attributes :script, :tags, :allow_failure, :when, :dependencies,
@@ -119,10 +113,6 @@ module Gitlab
 
           def value
             @config.merge(to_hash.compact)
-          end
-
-          def commands
-            (before_script_value.to_a + script_value.to_a).join("\n")
           end
 
           def manual_action?
@@ -156,13 +146,12 @@ module Gitlab
             { name: name,
               before_script: before_script_value,
               script: script_value,
-              commands: commands,
               image: image_value,
               services: services_value,
               stage: stage_value,
               cache: cache_value,
-              only: DEFAULT_ONLY_POLICY.deep_merge(only_value.to_h),
-              except: DEFAULT_EXCEPT_POLICY.deep_merge(except_value.to_h),
+              only: only_value,
+              except: except_value,
               variables: variables_defined? ? variables_value : nil,
               environment: environment_defined? ? environment_value : nil,
               environment_name: environment_defined? ? environment_value[:name] : nil,

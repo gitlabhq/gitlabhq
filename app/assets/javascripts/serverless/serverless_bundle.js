@@ -4,23 +4,65 @@ import { s__ } from '../locale';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import ServerlessStore from './stores/serverless_store';
+import ServerlessDetailsStore from './stores/serverless_details_store';
 import GetFunctionsService from './services/get_functions_service';
 import Functions from './components/functions.vue';
+import FunctionDetails from './components/function_details.vue';
 
 export default class Serverless {
   constructor() {
-    const { statusPath, clustersPath, helpPath, installed } = document.querySelector(
-      '.js-serverless-functions-page',
-    ).dataset;
+    if (document.querySelector('.js-serverless-function-details-page') != null) {
+      const {
+        serviceName,
+        serviceDescription,
+        serviceEnvironment,
+        serviceUrl,
+        serviceNamespace,
+        servicePodcount,
+      } = document.querySelector('.js-serverless-function-details-page').dataset;
+      const el = document.querySelector('#js-serverless-function-details');
+      this.store = new ServerlessDetailsStore();
+      const { store } = this;
 
-    this.service = new GetFunctionsService(statusPath);
-    this.knativeInstalled = installed !== undefined;
-    this.store = new ServerlessStore(this.knativeInstalled, clustersPath, helpPath);
-    this.initServerless();
-    this.functionLoadCount = 0;
+      const service = {
+        name: serviceName,
+        description: serviceDescription,
+        environment: serviceEnvironment,
+        url: serviceUrl,
+        namespace: serviceNamespace,
+        podcount: servicePodcount,
+      };
 
-    if (statusPath && this.knativeInstalled) {
-      this.initPolling();
+      this.store.updateDetailedFunction(service);
+      this.functionDetails = new Vue({
+        el,
+        data() {
+          return {
+            state: store.state,
+          };
+        },
+        render(createElement) {
+          return createElement(FunctionDetails, {
+            props: {
+              func: this.state.functionDetail,
+            },
+          });
+        },
+      });
+    } else {
+      const { statusPath, clustersPath, helpPath, installed } = document.querySelector(
+        '.js-serverless-functions-page',
+      ).dataset;
+
+      this.service = new GetFunctionsService(statusPath);
+      this.knativeInstalled = installed !== undefined;
+      this.store = new ServerlessStore(this.knativeInstalled, clustersPath, helpPath);
+      this.initServerless();
+      this.functionLoadCount = 0;
+
+      if (statusPath && this.knativeInstalled) {
+        this.initPolling();
+      }
     }
   }
 
@@ -55,7 +97,7 @@ export default class Serverless {
       resource: this.service,
       method: 'fetchData',
       successCallback: data => this.handleSuccess(data),
-      errorCallback: () => this.handleError(),
+      errorCallback: () => Serverless.handleError(),
     });
 
     if (!Visibility.hidden()) {
@@ -64,7 +106,7 @@ export default class Serverless {
       this.service
         .fetchData()
         .then(data => this.handleSuccess(data))
-        .catch(() => this.handleError());
+        .catch(() => Serverless.handleError());
     }
 
     Visibility.change(() => {
@@ -102,5 +144,6 @@ export default class Serverless {
     }
 
     this.functions.$destroy();
+    this.functionDetails.$destroy();
   }
 }

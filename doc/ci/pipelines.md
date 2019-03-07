@@ -3,7 +3,7 @@
 > Introduced in GitLab 8.8.
 
 NOTE: **Note:**
-If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository-starter),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -197,7 +197,7 @@ stage has a job with a manual action.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
 
-When you do not want to run a job immediately, you can [delay the job to run after a certain period](yaml/README.md#when-delayed).
+When you do not want to run a job immediately, you can [delay the job to run after a certain period](yaml/README.md#whendelayed).
 This is especially useful for timed incremental rollout that new code is rolled out gradually.
 For example, if you start rolling out new code and users do not experience trouble, GitLab automatically completes the deployment from 0% to 100%.
 Alternatively, if you start rolling out and you noticed that a few users experience trouble with the version,
@@ -241,9 +241,9 @@ So each job would be represented as a `Period`, which consists of
 `Period#first` as when the job started and `Period#last` as when the
 job was finished. A simple example here would be:
 
-* A (1, 3)
-* B (2, 4)
-* C (6, 7)
+- A (1, 3)
+- B (2, 4)
+- C (6, 7)
 
 Here A begins from 1, and ends to 3. B begins from 2, and ends to 4.
 C begins from 6, and ends to 7. Visually it could be viewed as:

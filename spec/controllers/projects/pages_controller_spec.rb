@@ -28,10 +28,10 @@ describe Projects::PagesController do
       let(:group) { create(:group, :nested) }
       let(:project) { create(:project, namespace: group) }
 
-      it 'returns a 404 status code' do
+      it 'returns a 200 status code' do
         get :show, params: request_params
 
-        expect(response).to have_gitlab_http_status(404)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end
@@ -41,6 +41,18 @@ describe Projects::PagesController do
       delete :destroy, params: request_params
 
       expect(response).to have_gitlab_http_status(302)
+    end
+
+    context 'when user is developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'returns 404 status' do
+        delete :destroy, params: request_params
+
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
   end
 

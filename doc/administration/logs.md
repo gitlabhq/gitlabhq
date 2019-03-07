@@ -23,12 +23,13 @@ requests from the API are logged to a separate file in `api_json.log`.
 Each line contains a JSON line that can be ingested by Elasticsearch, Splunk, etc. For example:
 
 ```json
-{"method":"GET","path":"/gitlab/gitlab-ce/issues/1234","format":"html","controller":"Projects::IssuesController","action":"show","status":200,"duration":229.03,"view":174.07,"db":13.24,"time":"2017-08-08T20:15:54.821Z","params":[{"key":"param_key","value":"param_value"}],"remote_ip":"18.245.0.1","user_id":1,"username":"admin","gitaly_calls":76}
+{"method":"GET","path":"/gitlab/gitlab-ce/issues/1234","format":"html","controller":"Projects::IssuesController","action":"show","status":200,"duration":229.03,"view":174.07,"db":13.24,"time":"2017-08-08T20:15:54.821Z","params":[{"key":"param_key","value":"param_value"}],"remote_ip":"18.245.0.1","user_id":1,"username":"admin","gitaly_calls":76,"queue_duration": 112.47}
 ```
 
 In this example, you can see this was a GET request for a specific issue. Notice each line also contains performance data:
 
-1. `duration`: the total time taken to retrieve the request
+1. `duration`: total time in milliseconds taken to retrieve the request
+1. `queue_duration`: total time in milliseconds that the request was queued inside GitLab Workhorse
 1. `view`: total time taken inside the Rails views
 1. `db`: total time to retrieve data from the database
 1. `gitaly_calls`: total number of calls made to Gitaly
@@ -91,6 +92,8 @@ This entry above shows an access to an internal endpoint to check whether an
 associated SSH key can download the project in question via a `git fetch` or
 `git clone`. In this example, we see:
 
+1. `duration`: total time in milliseconds taken to retrieve the request
+1. `queue_duration`: total time in milliseconds that the request was queued inside GitLab Workhorse
 1. `method`: The HTTP method used to make the request
 1. `path`: The relative path of the query
 1. `params`: Key-value pairs passed in a query string or HTTP body. Sensitive parameters (e.g. passwords, tokens, etc.) are filtered out.

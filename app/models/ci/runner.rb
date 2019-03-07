@@ -10,7 +10,7 @@ module Ci
     include FromUnion
     include TokenAuthenticatable
 
-    add_authentication_token_field :token, encrypted: true, migrating: true
+    add_authentication_token_field :token, encrypted: -> { Feature.enabled?(:ci_runners_tokens_optional_encryption) ? :optional : :required }
 
     enum access_level: {
       not_protected: 0,
@@ -97,6 +97,7 @@ module Ci
 
     scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
+    scope :with_tags, -> { preload(:tags) }
 
     validate :tag_constraints
     validates :access_level, presence: true
@@ -254,6 +255,10 @@ module Ci
       if can_pick?(build)
         tick_runner_queue
       end
+    end
+
+    def uncached_contacted_at
+      read_attribute(:contacted_at)
     end
 
     private

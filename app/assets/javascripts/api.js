@@ -5,12 +5,14 @@ import axios from './lib/utils/axios_utils';
 const Api = {
   groupsPath: '/api/:version/groups.json',
   groupPath: '/api/:version/groups/:id',
+  groupMembersPath: '/api/:version/groups/:id/members',
   subgroupsPath: '/api/:version/groups/:id/subgroups',
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
+  projectMergeRequestsPath: '/api/:version/projects/:id/merge_requests',
   projectMergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
   projectMergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   projectMergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
@@ -38,6 +40,12 @@ const Api = {
 
       return data;
     });
+  },
+
+  groupMembers(id) {
+    const url = Api.buildUrl(this.groupMembersPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url);
   },
 
   // Return groups list. Filtered by query
@@ -102,6 +110,22 @@ const Api = {
     const url = Api.buildUrl(Api.projectPath).replace(':id', encodeURIComponent(projectPath));
 
     return axios.get(url);
+  },
+
+  /**
+   * Get all Merge Requests for a project, eventually filtering based on
+   * supplied parameters
+   * @param projectPath
+   * @param params
+   * @returns {Promise}
+   */
+  projectMergeRequests(projectPath, params = {}) {
+    const url = Api.buildUrl(Api.projectMergeRequestsPath).replace(
+      ':id',
+      encodeURIComponent(projectPath),
+    );
+
+    return axios.get(url, { params });
   },
 
   // Return Merge Request for project

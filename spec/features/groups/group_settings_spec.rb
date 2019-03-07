@@ -18,14 +18,14 @@ describe 'Edit group settings' do
       update_path(new_group_path)
       visit new_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(group.name)
+      expect(find('h1.home-panel-title')).to have_content(group.name)
     end
 
     it 'the old group path redirects to the new path' do
       update_path(new_group_path)
       visit old_group_full_path
       expect(current_path).to eq(new_group_full_path)
-      expect(find('h1.group-title')).to have_content(group.name)
+      expect(find('h1.home-panel-title')).to have_content(group.name)
     end
 
     context 'with a subgroup' do
@@ -37,14 +37,14 @@ describe 'Edit group settings' do
         update_path(new_group_path)
         visit new_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.name)
+        expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
 
       it 'the old subgroup path redirects to the new path' do
         update_path(new_group_path)
         visit old_subgroup_full_path
         expect(current_path).to eq(new_subgroup_full_path)
-        expect(find('h1.group-title')).to have_content(subgroup.name)
+        expect(find('h1.home-panel-title')).to have_content(subgroup.name)
       end
     end
 

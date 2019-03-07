@@ -10,6 +10,10 @@ describe EnvironmentSerializer do
       .represent(resource)
   end
 
+  before do
+    project.add_developer(user)
+  end
+
   context 'when there is a single object provided' do
     let(:project) { create(:project, :repository) }
     let(:deployable) { create(:ci_build) }
@@ -120,20 +124,15 @@ describe EnvironmentSerializer do
   end
 
   context 'when used with pagination' do
-    let(:request) { spy('request') }
+    let(:request) { double(url: "#{Gitlab.config.gitlab.url}:8080/api/v4/projects?#{query.to_query}", query_parameters: query) }
     let(:response) { spy('response') }
     let(:resource) { Environment.all }
-    let(:pagination) { { page: 1, per_page: 2 } }
+    let(:query) { { page: 1, per_page: 2 } }
 
     let(:serializer) do
       described_class
         .new(current_user: user, project: project)
         .with_pagination(request, response)
-    end
-
-    before do
-      allow(request).to receive(:query_parameters)
-        .and_return(pagination)
     end
 
     subject { serializer.represent(resource) }

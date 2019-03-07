@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::CreateGpgKeySubkeysFromGpgKeys, :migration, schema: 20171005130944 do
   context 'when GpgKey exists' do
-    let!(:gpg_key) { create(:gpg_key, key: GpgHelpers::User3.public_key) }
+    let!(:gpg_key) { create(:gpg_key, key: GpgHelpers::User3.public_key) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
     before do
       GpgKeySubkey.destroy_all # rubocop: disable DestroyAll

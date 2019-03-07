@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe PipelineEntity do
+  include Gitlab::Routing
+
   set(:user) { create(:user) }
   let(:request) { double('request') }
 
@@ -126,6 +128,49 @@ describe PipelineEntity do
       it 'has a correct failure reason' do
         expect(subject[:failure_reason])
           .to eq 'CI/CD YAML configuration error!'
+      end
+    end
+
+    context 'when pipeline is detached merge request pipeline' do
+      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:project) { merge_request.target_project }
+      let(:pipeline) { merge_request.merge_request_pipelines.first }
+
+      it 'makes detached flag true' do
+        expect(subject[:flags][:detached]).to be_truthy
+      end
+
+      context 'when user is a developer' do
+        before do
+          project.add_developer(user)
+        end
+
+        it 'has merge request information' do
+          expect(subject[:merge_request][:iid]).to eq(merge_request.iid)
+
+          expect(project_merge_request_path(project, merge_request))
+            .to include(subject[:merge_request][:path])
+
+          expect(subject[:merge_request][:title]).to eq(merge_request.title)
+
+          expect(subject[:merge_request][:source_branch])
+            .to eq(merge_request.source_branch)
+
+          expect(project_branch_path(project, merge_request.source_branch))
+            .to include(subject[:merge_request][:source_branch_path])
+
+          expect(subject[:merge_request][:target_branch])
+            .to eq(merge_request.target_branch)
+
+          expect(project_branch_path(project, merge_request.target_branch))
+            .to include(subject[:merge_request][:target_branch_path])
+        end
+      end
+
+      context 'when user is an external user' do
+        it 'has no merge request information' do
+          expect(subject[:merge_request]).to be_nil
+        end
       end
     end
   end

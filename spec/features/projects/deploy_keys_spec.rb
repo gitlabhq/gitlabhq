@@ -20,7 +20,7 @@ describe 'Project deploy keys', :js do
       page.within(find('.deploy-keys')) do
         expect(page).to have_selector('.deploy-key', count: 1)
 
-        accept_confirm { find('.ic-remove').click() }
+        accept_confirm { find('.ic-remove').click }
 
         wait_for_requests
 

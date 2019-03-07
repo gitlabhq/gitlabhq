@@ -4,8 +4,20 @@ class ExpireBuildArtifactsWorker
   include ApplicationWorker
   include CronjobQueue
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def perform
+    if Feature.enabled?(:ci_new_expire_job_artifacts_service, default_enabled: true)
+      perform_efficient_artifacts_removal
+    else
+      perform_legacy_artifacts_removal
+    end
+  end
+
+  def perform_efficient_artifacts_removal
+    Ci::DestroyExpiredJobArtifactsService.new.execute
+  end
+
+  # rubocop: disable CodeReuse/ActiveRecord
+  def perform_legacy_artifacts_removal
     Rails.logger.info 'Scheduling removal of build artifacts'
 
     build_ids = Ci::Build.with_expired_artifacts.pluck(:id)

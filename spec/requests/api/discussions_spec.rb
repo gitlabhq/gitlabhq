@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Discussions do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :public, :repository, namespace: user.namespace) }
-  let(:private_user)    { create(:user) }
+  let(:private_user) { create(:user) }
 
   before do
     project.add_developer(user)

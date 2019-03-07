@@ -87,20 +87,6 @@ describe 'Merge request > User sees diff', :js do
       let(:current_user) { project.owner }
       let(:branch_name) {"test_branch"}
 
-      def create_file(branch_name, file_name, content)
-        Files::CreateService.new(
-          project,
-          current_user,
-          start_branch: branch_name,
-          branch_name: branch_name,
-          commit_message: "Create file",
-          file_path: file_name,
-          file_content: content
-        ).execute
-
-        project.commit(branch_name)
-      end
-
       it 'escapes any HTML special characters in the diff chunk header' do
         file_content =
           <<~CONTENT
@@ -135,6 +121,62 @@ describe 'Merge request > User sees diff', :js do
         expect(page).to have_text("function foo<input> {")
         expect(page).to have_css(".line[lang='rust'] .k")
       end
+    end
+
+    context 'when file is stored in LFS' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:current_user) { project.owner }
+
+      context 'when LFS is enabled on the project' do
+        before do
+          allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+          project.update_attribute(:lfs_enabled, true)
+
+          create_file('master', file_name, project.repository.blob_at('master', 'files/lfs/lfs_object.iso').data)
+
+          visit diffs_project_merge_request_path(project, merge_request)
+        end
+
+        context 'when file is an image', :js do
+          let(:file_name) { 'files/lfs/image.png' }
+
+          it 'shows an error message' do
+            expect(page).not_to have_content('could not be displayed because it is stored in LFS')
+          end
+        end
+
+        context 'when file is not an image' do
+          let(:file_name) { 'files/lfs/ruby.rb' }
+
+          it 'shows an error message' do
+            expect(page).to have_content('This source diff could not be displayed because it is stored in LFS')
+          end
+        end
+      end
+
+      context 'when LFS is not enabled' do
+        before do
+          visit diffs_project_merge_request_path(project, merge_request)
+        end
+
+        it 'displays the diff' do
+          expect(page).to have_content('size 1575078')
+        end
+      end
+    end
+
+    def create_file(branch_name, file_name, content)
+      Files::CreateService.new(
+        project,
+        current_user,
+        start_branch: branch_name,
+        branch_name: branch_name,
+        commit_message: "Create file",
+        file_path: file_name,
+        file_content: content
+      ).execute
+
+      project.commit(branch_name)
     end
   end
 end

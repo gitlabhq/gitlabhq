@@ -13,6 +13,8 @@
 
 .top-area
   = render 'shared/milestones_filter', counts: @milestone_states
+  .nav-controls
+    = render 'shared/milestones/search_form'
 
 .milestones
   %ul.content-list

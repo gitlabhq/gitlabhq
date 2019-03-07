@@ -15,11 +15,10 @@ export default () =>
       const environmentsData = document.querySelector(this.$options.el).dataset;
 
       return {
-        endpoint: environmentsData.endpoint,
-        folderName: environmentsData.folderName,
+        endpoint: environmentsData.environmentsDataEndpoint,
+        folderName: environmentsData.environmentsDataFolderName,
         cssContainerClass: environmentsData.cssClass,
-        canCreateDeployment: parseBoolean(environmentsData.canCreateDeployment),
-        canReadEnvironment: parseBoolean(environmentsData.canReadEnvironment),
+        canReadEnvironment: parseBoolean(environmentsData.environmentsDataCanReadEnvironment),
       };
     },
     render(createElement) {
@@ -28,7 +27,6 @@ export default () =>
           endpoint: this.endpoint,
           folderName: this.folderName,
           cssContainerClass: this.cssContainerClass,
-          canCreateDeployment: this.canCreateDeployment,
           canReadEnvironment: this.canReadEnvironment,
         },
       });

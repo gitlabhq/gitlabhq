@@ -62,7 +62,7 @@ the consent of one of the technical writers.
 The global nav is built from two files:
 
 - [Data](#data-file)
-- [Layout](#layout-file)
+- [Layout](#layout-file-logic)
 
 The data file feeds the layout with the links to the docs. The layout organizes
 the data among the nav in containers properly [styled](#css-classes).
@@ -234,7 +234,7 @@ Examples:
 ```yaml
 - category_title: Issues
   category_url: 'user/project/issues/'
-  # note that the above URL does not start with a slash and 
+  # note that the above URL does not start with a slash and
   # does not include index.html at the end
 
   docs:
@@ -294,7 +294,6 @@ point to `/ee/` docs.
 On the other hand, if the user is looking at `/ce/` docs,
 all the links in the CE nav should link internally to `/ce/`
 files, except for [`ee-only` docs](#ee-only-docs).
-
 
 ```html
 <% if dir != 'ce' %>

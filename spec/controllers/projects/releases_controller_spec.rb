@@ -6,10 +6,6 @@ describe Projects::ReleasesController do
   let!(:project) { create(:project, :repository, :public) }
   let!(:user)    { create(:user) }
 
-  before do
-    stub_feature_flags(releases_page: true)
-  end
-
   describe 'GET #index' do
     it 'renders a 200' do
       get_index
@@ -38,18 +34,6 @@ describe Projects::ReleasesController do
       it 'renders a 404 when logged in but not in the project' do
         sign_in(user)
 
-        get_index
-
-        expect(response.status).to eq(404)
-      end
-    end
-
-    context 'when releases_page feature flag is disabled' do
-      before do
-        stub_feature_flags(releases_page: false)
-      end
-
-      it 'renders a 404' do
         get_index
 
         expect(response.status).to eq(404)

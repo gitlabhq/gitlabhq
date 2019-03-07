@@ -77,7 +77,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def reset_health_check_token
     @application_setting.reset_health_check_access_token!
     flash[:notice] = 'New health check access token has been generated!'
-    redirect_to :back
+    redirect_back_or_default
   end
 
   def clear_repository_check_states

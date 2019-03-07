@@ -79,17 +79,7 @@ describe Clusters::Providers::Gcp do
 
     subject { gcp }
 
-    it 'should default to true' do
-      is_expected.to be_legacy_abac
-    end
-
-    context 'legacy_abac is set to false' do
-      let(:gcp) { build(:cluster_provider_gcp, legacy_abac: false) }
-
-      it 'is false' do
-        is_expected.not_to be_legacy_abac
-      end
-    end
+    it { is_expected.not_to be_legacy_abac }
   end
 
   describe '#state_machine' do

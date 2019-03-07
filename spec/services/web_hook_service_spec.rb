@@ -61,7 +61,7 @@ describe WebHookService do
     end
 
     context 'when auth credentials are present' do
-      let(:url)  {'https://example.org'}
+      let(:url) {'https://example.org'}
       let(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
 
       it 'uses the credentials' do
@@ -76,7 +76,7 @@ describe WebHookService do
     end
 
     context 'when auth credentials are partial present' do
-      let(:url)  {'https://example.org'}
+      let(:url) {'https://example.org'}
       let(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
 
       it 'uses the credentials anyways' do
@@ -102,7 +102,7 @@ describe WebHookService do
         exception = exception_class.new('Exception message')
 
         WebMock.stub_request(:post, project_hook.url).to_raise(exception)
-        expect(service_instance.execute).to eq({ status: :error, message: exception.message })
+        expect(service_instance.execute).to eq({ status: :error, message: exception.to_s })
         expect { service_instance.execute }.not_to raise_error
       end
     end

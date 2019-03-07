@@ -1,15 +1,24 @@
+# Alias import callbacks under the /users/auth endpoint so that
+# the OAuth2 callback URL can be restricted under http://example.com/users/auth
+# instead of http://example.com.
+Devise.omniauth_providers.map(&:downcase).each do |provider|
+  next if provider == 'ldapmain'
+
+  get "/users/auth/-/import/#{provider}/callback", to: "import/#{provider}#callback", as: "users_import_#{provider}_callback"
+end
+
 namespace :import do
   resource :github, only: [:create, :new], controller: :github do
     post :personal_access_token
     get :status
     get :callback
-    get :jobs
+    get :realtime_changes
   end
 
   resource :gitea, only: [:create, :new], controller: :gitea do
     post :personal_access_token
     get :status
-    get :jobs
+    get :realtime_changes
   end
 
   resource :gitlab, only: [:create], controller: :gitlab do

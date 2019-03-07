@@ -31,6 +31,12 @@ describe('Suggestion Diff component', () => {
       expect(header.innerHTML.includes('Suggested change')).toBe(true);
     });
 
+    it('renders a help button', () => {
+      const helpBtn = vm.$el.querySelector('.js-help-btn');
+
+      expect(helpBtn).not.toBeNull();
+    });
+
     it('renders an apply button', () => {
       const applyBtn = vm.$el.querySelector('.qa-apply-btn');
 

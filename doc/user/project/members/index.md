@@ -77,7 +77,7 @@ GitLab users to the project.
 
 Once done, hit **Add users to project** and watch that there is a new member
 with the e-mail address we used above. From there on, you can resend the
-invitation, change their access level or even delete them.
+invitation, change their access level, or even delete them.
 
 ![Invite user members list](img/add_user_email_accept.png)
 

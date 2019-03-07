@@ -31,12 +31,14 @@ export function setupFeatureHighlightPopover(id, debounceTimeout = 300) {
     .removeAttr('disabled');
 }
 
+const getPriority = e => parseInt(e.dataset.highlightPriority, 10) || 0;
+
 export function findHighestPriorityFeature() {
   let priorityFeature;
 
   const sortedFeatureEls = [].slice
     .call(document.querySelectorAll('.js-feature-highlight'))
-    .sort((a, b) => (a.dataset.highlightPriority || 0) < (b.dataset.highlightPriority || 0));
+    .sort((a, b) => getPriority(b) - getPriority(a));
 
   const [priorityFeatureEl] = sortedFeatureEls;
   if (priorityFeatureEl) {

@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class CertManager < ActiveRecord::Base
-      VERSION = 'v0.5.0'.freeze
+      VERSION = 'v0.5.2'.freeze
 
       self.table_name = 'clusters_applications_cert_managers'
 

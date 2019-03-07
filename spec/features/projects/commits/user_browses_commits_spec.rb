@@ -93,7 +93,7 @@ describe 'User browses commits' do
 
     it 'shows a blank label' do
       allow_any_instance_of(Gitlab::Diff::File).to receive(:blob).and_return(nil)
-      allow_any_instance_of(Gitlab::Diff::File).to receive(:raw_binary?).and_return(true)
+      allow_any_instance_of(Gitlab::Diff::File).to receive(:binary?).and_return(true)
 
       visit(project_commit_path(project, commit))
 

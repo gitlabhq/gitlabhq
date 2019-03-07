@@ -1,5 +1,0 @@
----
-title: Add new pipeline variable CI_COMMIT_SHORT_SHA
-merge_request: 23822
-author:
-type: added

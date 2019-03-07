@@ -138,7 +138,7 @@ Please refer to `group_rename` and `user_rename` for that case.
                   "created_at": "2012-07-21T07:30:56Z",
                   "updated_at": "2012-07-21T07:38:22Z",
                   "event_name": "user_add_to_team",
-              "project_access": "Maintainer",
+                "access_level": "Maintainer",
                   "project_id": 74,
                 "project_name": "StoreCloud",
                 "project_path": "storecloud",
@@ -147,7 +147,7 @@ Please refer to `group_rename` and `user_rename` for that case.
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
-          "project_visibility": "private"
+          "project_visibility": "visibilitylevel|private"
 }
 ```
 
@@ -158,7 +158,7 @@ Please refer to `group_rename` and `user_rename` for that case.
                   "created_at": "2012-07-21T07:30:56Z",
                   "updated_at": "2012-07-21T07:38:22Z",
                   "event_name": "user_remove_from_team",
-              "project_access": "Maintainer",
+                "access_level": "Maintainer",
                   "project_id": 74,
                 "project_name": "StoreCloud",
                 "project_path": "storecloud",
@@ -167,7 +167,7 @@ Please refer to `group_rename` and `user_rename` for that case.
                    "user_name": "John Smith",
                "user_username": "johnsmith",
                      "user_id": 41,
-          "project_visibility": "private"
+          "project_visibility": "visibilitylevel|private"
 }
 ```
 
@@ -272,7 +272,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab-ce/issues/39675>.
 
 **Group removed:**
 
@@ -289,7 +289,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab-ce/issues/39675>.
 
 **Group renamed:**
 
@@ -309,7 +309,7 @@ If the user is blocked via LDAP, `state` will be `ldap_blocked`.
 }
 ```
 
-`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
+`owner_name` and `owner_email` are always `null`. Please see <https://gitlab.com/gitlab-org/gitlab-ce/issues/39675>.
 
 **New Group Member:**
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe SearchController do
-  let(:user)    { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)

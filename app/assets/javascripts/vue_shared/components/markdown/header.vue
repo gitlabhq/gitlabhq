@@ -78,13 +78,8 @@ export default {
   <div class="md-header">
     <ul class="nav-links clearfix">
       <li :class="{ active: !previewMarkdown }" class="md-header-tab">
-        <button
-          class="js-write-link"
-          tabindex="-1"
-          type="button"
-          @click="writeMarkdownTab($event);"
-        >
-          Write
+        <button class="js-write-link" tabindex="-1" type="button" @click="writeMarkdownTab($event)">
+          {{ __('Write') }}
         </button>
       </li>
       <li :class="{ active: previewMarkdown }" class="md-header-tab">
@@ -92,38 +87,43 @@ export default {
           class="js-preview-link js-md-preview-button"
           tabindex="-1"
           type="button"
-          @click="previewMarkdownTab($event);"
+          @click="previewMarkdownTab($event)"
         >
-          Preview
+          {{ __('Preview') }}
         </button>
       </li>
       <li :class="{ active: !previewMarkdown }" class="md-header-toolbar">
-        <toolbar-button tag="**" button-title="Add bold text" icon="bold" />
-        <toolbar-button tag="*" button-title="Add italic text" icon="italic" />
-        <toolbar-button :prepend="true" tag="> " button-title="Insert a quote" icon="quote" />
-        <toolbar-button tag="`" tag-block="```" button-title="Insert code" icon="code" />
+        <toolbar-button tag="**" :button-title="__('Add bold text')" icon="bold" />
+        <toolbar-button tag="*" :button-title="__('Add italic text')" icon="italic" />
+        <toolbar-button
+          :prepend="true"
+          tag="> "
+          :button-title="__('Insert a quote')"
+          icon="quote"
+        />
+        <toolbar-button tag="`" tag-block="```" :button-title="__('Insert code')" icon="code" />
         <toolbar-button
           tag="[{text}](url)"
           tag-select="url"
-          button-title="Add a link"
+          :button-title="__('Add a link')"
           icon="link"
         />
         <toolbar-button
           :prepend="true"
           tag="* "
-          button-title="Add a bullet list"
+          :button-title="__('Add a bullet list')"
           icon="list-bulleted"
         />
         <toolbar-button
           :prepend="true"
           tag="1. "
-          button-title="Add a numbered list"
+          :button-title="__('Add a numbered list')"
           icon="list-numbered"
         />
         <toolbar-button
           :prepend="true"
           tag="* [ ] "
-          button-title="Add a task list"
+          :button-title="__('Add a task list')"
           icon="task-done"
         />
         <toolbar-button
@@ -144,11 +144,11 @@ export default {
         />
         <button
           v-gl-tooltip
-          aria-label="Go full screen"
+          :aria-label="__('Go full screen')"
           class="toolbar-btn toolbar-fullscreen-btn js-zen-enter"
           data-container="body"
           tabindex="-1"
-          title="Go full screen"
+          :title="__('Go full screen')"
           type="button"
         >
           <icon name="screen-full" />

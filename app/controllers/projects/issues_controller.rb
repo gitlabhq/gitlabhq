@@ -8,9 +8,10 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableCollections
   include IssuesCalendar
   include SpammableActions
+  include RecordUserLastActivity
 
   def self.issue_except_actions
-    %i[index calendar new create bulk_update]
+    %i[index calendar new create bulk_update import_csv]
   end
 
   def self.set_issuables_index_only_actions
@@ -19,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:calendar]) { authenticate_sessionless_user!(:ics) }
-  prepend_before_action :authenticate_new_issue!, only: [:new]
+  prepend_before_action :authenticate_user!, only: [:new]
   prepend_before_action :store_uri, only: [:new, :show]
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
@@ -36,6 +37,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
+
+  before_action :authorize_import_issues!, only: [:import_csv]
 
   before_action :set_suggested_issues_feature_flags, only: [:new]
 
@@ -175,7 +178,23 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
+  def import_csv
+    if uploader = UploadService.new(project, params[:file]).execute
+      ImportIssuesCsvWorker.perform_async(current_user.id, project.id, uploader.upload.id)
+
+      flash[:notice] = _("Your issues are being imported. Once finished, you'll get a confirmation email.")
+    else
+      flash[:alert] = _("File upload error.")
+    end
+
+    redirect_to project_issues_path(project)
+  end
+
   protected
+
+  def issuable_sorting_field
+    Issue::SORTING_PREFERENCE_FIELD
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def issue
@@ -228,15 +247,7 @@ class Projects::IssuesController < Projects::ApplicationController
       task_num
       lock_version
       discussion_locked
-    ] + [{ label_ids: [], assignee_ids: [] }]
-  end
-
-  def authenticate_new_issue!
-    return if current_user
-
-    notice = "Please sign in to create the new issue."
-
-    redirect_to new_user_session_path, notice: notice
+    ] + [{ label_ids: [], assignee_ids: [], update_task: [:index, :checked, :line_number, :line_source] }]
   end
 
   def store_uri

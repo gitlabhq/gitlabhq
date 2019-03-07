@@ -21,11 +21,22 @@ class Projects::BadgesController < Projects::ApplicationController
 
   private
 
+  def badge_layout
+    case params[:style]
+    when 'flat'
+      'badge'
+    when 'flat-square'
+      'badge_flat-square'
+    else
+      'badge'
+    end
+  end
+
   def render_badge(badge)
     respond_to do |format|
       format.html { render_404 }
       format.svg do
-        render 'badge', locals: { badge: badge.template }
+        render badge_layout, locals: { badge: badge.template }
       end
     end
   end

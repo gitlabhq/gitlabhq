@@ -6,7 +6,7 @@ module Gitlab
       def validate!
         logger.log_timed("Checking if you are allowed to push...") do
           unless can_push?
-            raise GitAccess::UnauthorizedError, 'You are not allowed to push code to this project.'
+            raise GitAccess::UnauthorizedError, GitAccess::ERROR_MESSAGES[:push_code]
           end
         end
       end
@@ -15,7 +15,7 @@ module Gitlab
 
       def can_push?
         user_access.can_do_action?(:push_code) ||
-          user_access.can_push_to_branch?(branch_name)
+          project.branch_allows_collaboration?(user_access.user, branch_name)
       end
     end
   end

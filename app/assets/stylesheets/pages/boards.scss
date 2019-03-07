@@ -3,7 +3,6 @@
 }
 
 .user-can-drag {
-  cursor: -webkit-grab;
   cursor: grab;
 }
 
@@ -12,12 +11,8 @@
   opacity: 1 !important;
 
   * {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
     // !important to make sure no style can override this when dragging
-    cursor: -webkit-grabbing !important;
     cursor: grabbing !important;
   }
 }
@@ -26,12 +21,14 @@
   opacity: 0.3;
 }
 
+.dropdown-projects {
+  .dropdown-content {
+    max-height: 200px;
+  }
+}
+
 .dropdown-menu-issues-board-new {
   width: 320px;
-
-  .open & {
-    max-height: 400px;
-  }
 
   .dropdown-content {
     max-height: 162px;
@@ -162,6 +159,13 @@
       display: none;
     }
   }
+
+  &:not(.is-collapsed) {
+    .board-list-component {
+      display: flex;
+      flex-direction: column;
+    }
+  }
 }
 
 .board-inner {
@@ -171,6 +175,7 @@
   background: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+  flex: 1;
 }
 
 .board-header {
@@ -232,9 +237,11 @@
 }
 
 .board-blank-state {
-  height: calc(100% - 49px);
   padding: $gl-padding;
   background-color: $white-light;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .board-blank-state-list {
@@ -256,9 +263,9 @@
 }
 
 .board-list-component {
-  height: calc(100% - 49px);
-  overflow: hidden;
   position: relative;
+  flex: 1;
+  min-height: 0; // firefox fix
 }
 
 .board-list {
@@ -281,7 +288,7 @@
   padding: $gl-padding;
   background: $white-light;
   border-radius: $border-radius-default;
-  border: 1px solid $theme-gray-200;
+  border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
   line-height: $gl-padding;
@@ -489,7 +496,6 @@
 }
 
 .add-issues-modal {
-  display: -webkit-flex;
   display: flex;
   position: fixed;
   top: 0;
@@ -501,9 +507,7 @@
 }
 
 .add-issues-container {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex-direction: column;
   flex-direction: column;
   width: 90vw;
   height: 85vh;
@@ -516,16 +520,12 @@
   box-shadow: 0 2px 12px rgba($black, 0.5);
 
   .empty-state {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex: 1;
     flex: 1;
     margin-top: 0;
 
     &.add-issues-empty-state-filter {
-      -webkit-flex-direction: column;
       flex-direction: column;
-      -webkit-justify-content: center;
       justify-content: center;
     }
 
@@ -554,11 +554,9 @@
 }
 
 .add-issues-search {
-  display: -webkit-flex;
   display: flex;
 
   .issues-filters {
-    -webkit-flex: 1;
     flex: 1;
   }
 }
@@ -576,9 +574,7 @@
 }
 
 .add-issues-list {
-  display: -webkit-flex;
   display: flex;
-  -webkit-flex: 1;
   flex: 1;
   padding-top: 3px;
   margin-left: -$gl-vert-padding;
@@ -597,7 +593,6 @@
 }
 
 .add-issues-list-loading {
-  -webkit-align-self: center;
   align-self: center;
   width: 100%;
   padding-left: $gl-vert-padding;
@@ -673,7 +668,7 @@
   }
 
   .board-card-info-icon {
-    color: $theme-gray-600;
+    color: $gray-600;
     margin-right: $gl-padding-4;
   }
 

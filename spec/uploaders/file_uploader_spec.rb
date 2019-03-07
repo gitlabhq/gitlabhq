@@ -4,7 +4,7 @@ describe FileUploader do
   let(:group) { create(:group, name: 'awesome') }
   let(:project) { create(:project, :legacy_storage, namespace: group, name: 'project') }
   let(:uploader) { described_class.new(project) }
-  let(:upload)  { double(model: project, path: 'secret/foo.jpg') }
+  let(:upload) { double(model: project, path: 'secret/foo.jpg') }
 
   subject { uploader }
 
@@ -201,7 +201,7 @@ describe FileUploader do
       end
 
       let!(:fog_file) do
-        fog_connection.directories.get('uploads').files.create(
+        fog_connection.directories.new(key: 'uploads').files.create(
           key: 'tmp/uploads/test/123123',
           body: 'content'
         )

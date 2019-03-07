@@ -14,8 +14,14 @@
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
       = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
-      %span.d-none.d-sm-block
-        Closed
+      .d-none.d-sm-block
+        - if @issue.moved?
+          - moved_link_start = "<a href=\"#{issue_path(@issue.moved_to)}\" class=\"text-white text-underline\">".html_safe
+          - moved_link_end = '</a>'.html_safe
+          = s_('IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})').html_safe % {moved_link_start: moved_link_start,
+            moved_link_end: moved_link_end}
+        - else
+          = _("Closed")
     .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
       = sprite_icon('issue-open-m', size: 16, css_class: 'd-block d-sm-none')
       %span.d-none.d-sm-block Open
@@ -55,7 +61,7 @@
     - if can_report_spam
       = link_to 'Submit as spam', mark_as_spam_project_issue_path(@project, @issue), method: :post, class: 'd-none d-sm-none d-md-block btn btn-grouped btn-spam', title: 'Submit as spam'
     - if can_create_issue
-      = link_to new_project_issue_path(@project), class: 'd-none d-sm-none d-md-block btn btn-grouped new-issue-link btn-success btn-inverted', title: 'New issue', id: 'new_issue_link' do
+      = link_to new_project_issue_path(@project), class: 'd-none d-sm-none d-md-block btn btn-grouped btn-success btn-inverted', title: 'New issue', id: 'new_issue_link' do
         New issue
 
 .issue-details.issuable-details
@@ -85,7 +91,6 @@
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' unless @issue.confidential?
 
-  %section.issuable-discussion
-    = render 'projects/issues/discussion'
+  = render_if_exists 'projects/issues/discussion'
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

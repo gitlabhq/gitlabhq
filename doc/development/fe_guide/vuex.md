@@ -120,8 +120,8 @@ create:
 1. An action `receiveSomethingError`, to handle the error callback
 1. An action `fetchSomething` to make the request.
     1. In case your application does more than a `GET` request you can use these as examples:
-        - `PUT`: `createSomething`
-        - `POST`: `updateSomething`
+        - `POST`: `createSomething`
+        - `PUT`: `updateSomething`
         - `DELETE`: `deleteSomething`
 
 The component MUST only dispatch the `fetchNamespace` action. Actions namespaced with `request` or `receive` should not be called from the component

@@ -112,14 +112,18 @@ GET /projects/:id/repository/archive[.format]
 ```
 
 `format` is an optional suffix for the archive format. Default is
-`tar.gz`. Options are `tar.gz`, `tar.bz2`, `tbz`, 'tbz2`, `tb2`,
+`tar.gz`. Options are `tar.gz`, `tar.bz2`, `tbz`, `tbz2`, `tb2`,
 `bz2`, `tar`, and `zip`. For example, specifying `archive.zip`
 would send an archive in ZIP format.
 
 Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
-- `sha` (optional) - The commit SHA to download. A tag, branch reference or sha can be used. This defaults to the tip of the default branch if not specified
+- `sha` (optional) - The commit SHA to download. A tag, branch reference, or SHA can be used. This defaults to the tip of the default branch if not specified. For example:
+
+    ```sh
+    curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>
+    ```
 
 ## Compare branches, tags or commits
 
@@ -212,7 +216,7 @@ Response:
 
 ## Merge Base
 
-Get the common ancestor for 2 refs (commit SHAs, branch names or tags).
+Get the common ancestor for 2 or more refs (commit SHAs, branch names or tags).
 
 ```
 GET /projects/:id/repository/merge_base
@@ -224,7 +228,7 @@ GET /projects/:id/repository/merge_base
 | `refs` | array | yes | The refs to find the common ancestor of, multiple refs can be passed |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257dcb821665ab5110318fc58a007bd104ed&refs[]=0031876facac3f2b2702a0e53a26e89939a42209"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257dcb821665ab5110318fc58a007bd104ed&refs[]=0031876facac3f2b2702a0e53a26e89939a42209"
 ```
 
 Example response:

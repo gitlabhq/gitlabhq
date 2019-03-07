@@ -4,6 +4,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
   before_action :authorize_read_pipeline!
+  before_action :authorize_read_build!, only: [:index]
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
 
@@ -69,7 +70,7 @@ class Projects::PipelinesController < Projects::ApplicationController
 
         render json: PipelineSerializer
           .new(project: @project, current_user: @current_user)
-          .represent(@pipeline, grouped: true)
+          .represent(@pipeline, show_represent_params)
       end
     end
   end
@@ -155,6 +156,10 @@ class Projects::PipelinesController < Projects::ApplicationController
         render 'show'
       end
     end
+  end
+
+  def show_represent_params
+    { grouped: true }
   end
 
   def create_params

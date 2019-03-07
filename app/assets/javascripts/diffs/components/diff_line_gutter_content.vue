@@ -179,7 +179,7 @@ export default {
         v-if="lineNumber"
         :data-linenumber="lineNumber"
         :href="lineHref"
-        @click="setHighlightedRow(lineCode);"
+        @click="setHighlightedRow(lineCode)"
       >
       </a>
       <diff-gutter-avatars v-if="shouldShowAvatarsOnGutter" :discussions="line.discussions" />

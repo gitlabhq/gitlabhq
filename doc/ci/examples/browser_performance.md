@@ -41,7 +41,7 @@ The above example will create a `performance` job in your CI/CD pipeline and wil
 Sitespeed.io against the webpage you defined in `URL` to gather key metrics.
 The [GitLab plugin](https://gitlab.com/gitlab-org/gl-performance) for
 Sitespeed.io is downloaded in order to save the report as a
-[Performance report artifact](https://docs.gitlab.com/ee//ci/yaml/README.html#artifactsreportsperformance)
+[Performance report artifact](../yaml/README.md#artifactsreportsperformance-premium)
 that you can later download and analyze.
 Due to implementation limitations we always take the latest Performance artifact available.
 

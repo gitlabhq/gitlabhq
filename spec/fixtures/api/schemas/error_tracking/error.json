@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "required" : [
+    "external_url",
+    "last_seen",
+    "message",
+    "type"
+  ],
+  "properties" : {
+    "id": { "type": "string"},
+    "first_seen": { "type": "string", "format": "date-time" },
+    "last_seen": { "type": "string", "format": "date-time" },
+    "type": { "type": "string" },
+    "message": { "type": "string" },
+    "culprit": { "type": "string" },
+    "count": { "type": "integer"},
+    "external_url": { "type": "string" },
+    "user_count": { "type": "integer"}
+  },
+  "additionalProperties": true
+}

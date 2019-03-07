@@ -23,11 +23,12 @@ module Issuable
   include Sortable
   include CreatedAtFilterable
   include UpdatedAtFilterable
+  include ClosedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
   # lists avoiding n+1 queries and improving performance.
-  IssuableMeta = Struct.new(:upvotes, :downvotes, :notes_count, :merge_requests_count)
+  IssuableMeta = Struct.new(:upvotes, :downvotes, :user_notes_count, :merge_requests_count)
 
   included do
     cache_markdown_field :title, pipeline: :single_line
@@ -35,8 +36,8 @@ module Issuable
 
     redact_field :description
 
-    belongs_to :author, class_name: "User"
-    belongs_to :updated_by, class_name: "User"
+    belongs_to :author, class_name: 'User'
+    belongs_to :updated_by, class_name: 'User'
     belongs_to :last_edited_by, class_name: 'User'
     belongs_to :milestone
 
@@ -74,6 +75,7 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: 255 }
+    validate :milestone_is_valid
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :recent, -> { reorder(id: :desc) }
@@ -117,6 +119,16 @@ module Issuable
     def has_multiple_assignees?
       assignees.count > 1
     end
+
+    def milestone_available?
+      project_id == milestone&.project_id || project.ancestors_upto.compact.include?(milestone&.group)
+    end
+
+    private
+
+    def milestone_is_valid
+      errors.add(:milestone_id, message: "is invalid") if milestone_id.present? && !milestone_available?
+    end
   end
 
   class_methods do
@@ -136,10 +148,18 @@ module Issuable
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
     #
     # query - The search query as a String
+    # matched_columns - Modify the scope of the query. 'title', 'description' or joining them with a comma.
     #
     # Returns an ActiveRecord::Relation.
-    def full_search(query)
-      fuzzy_search(query, [:title, :description])
+    def full_search(query, matched_columns: 'title,description')
+      allowed_columns = [:title, :description]
+      matched_columns = matched_columns.to_s.split(',').map(&:to_sym)
+      matched_columns &= allowed_columns
+
+      # Matching title or description if the matched_columns did not contain any allowed columns.
+      matched_columns = [:title, :description] if matched_columns.empty?
+
+      fuzzy_search(query, matched_columns)
     end
 
     def sort_by_attribute(method, excluded_labels: [])
@@ -270,26 +290,29 @@ module Issuable
 
   def to_hook_data(user, old_associations: {})
     changes = previous_changes
-    old_labels = old_associations.fetch(:labels, [])
-    old_assignees = old_associations.fetch(:assignees, [])
 
-    if old_labels != labels
-      changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
-    end
+    if old_associations
+      old_labels = old_associations.fetch(:labels, [])
+      old_assignees = old_associations.fetch(:assignees, [])
 
-    if old_assignees != assignees
-      if self.is_a?(Issue)
-        changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
-      else
-        changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+      if old_labels != labels
+        changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
       end
-    end
 
-    if self.respond_to?(:total_time_spent)
-      old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+      if old_assignees != assignees
+        if self.is_a?(Issue)
+          changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
+        else
+          changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+        end
+      end
 
-      if old_total_time_spent != total_time_spent
-        changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+      if self.respond_to?(:total_time_spent)
+        old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+
+        if old_total_time_spent != total_time_spent
+          changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+        end
       end
     end
 

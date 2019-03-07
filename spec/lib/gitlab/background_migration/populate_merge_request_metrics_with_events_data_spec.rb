@@ -1,5 +1,6 @@
 require 'rails_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::PopulateMergeRequestMetricsWithEventsData, :migration, schema: 20171128214150 do
   # commits_count attribute is added in a next migration
   before do
@@ -128,3 +129,4 @@ describe Gitlab::BackgroundMigration::PopulateMergeRequestMetricsWithEventsData,
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

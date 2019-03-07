@@ -85,7 +85,7 @@ module NotesHelper
 
       diffs_project_merge_request_path(discussion.project, discussion.noteable, path_params)
     elsif discussion.for_commit?
-      anchor = discussion.line_code if discussion.diff_discussion?
+      anchor = discussion.diff_discussion? ? discussion.line_code : "note_#{discussion.first_note.id}"
 
       project_commit_path(discussion.project, discussion.noteable, anchor: anchor)
     end
@@ -122,7 +122,7 @@ module NotesHelper
   end
 
   def new_form_url
-    return nil unless @snippet.is_a?(PersonalSnippet)
+    return unless @snippet.is_a?(PersonalSnippet)
 
     snippet_notes_path(@snippet)
   end
@@ -171,7 +171,6 @@ module NotesHelper
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
       markdownDocsPath: help_page_path('user/markdown'),
-      markdownVersion: issuable.cached_markdown_version,
       quickActionsDocsPath: help_page_path('user/project/quick_actions'),
       closePath: close_issuable_path(issuable),
       reopenPath: reopen_issuable_path(issuable),

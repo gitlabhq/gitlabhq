@@ -69,7 +69,7 @@ collects the JUnit test report from each job. After each job is executed, the
 XML reports are stored in GitLab as artifacts and their results are shown in the
 merge request widget.
 
-NOTE: **Note:** 
+NOTE: **Note:**
 If you also want the ability to browse JUnit output files, include the
 [`artifacts:paths`](yaml/README.md#artifactspaths) keyword.
 
@@ -151,7 +151,7 @@ There are a few tools that can produce JUnit reports in C/C++.
 #### GoogleTest
 
 In the following example, `gtest` is used to generate the test reports.
-If there are multiple gtest executables created for different architectures (`x86`, `x64` or `arm`), 
+If there are multiple gtest executables created for different architectures (`x86`, `x64` or `arm`),
 you will be required to run each test providing a unique filename. The results
 will then be aggregated together.
 
@@ -171,4 +171,4 @@ Currently, the following tools might not work because their XML formats are unsu
 
 |Case|Tool|Issue|
 |---|---|---|
-|`<testcase>` does not have `classname` attribute|ESlint, sass-lint|https://gitlab.com/gitlab-org/gitlab-ce/issues/50964|
+|`<testcase>` does not have `classname` attribute|ESlint, sass-lint|<https://gitlab.com/gitlab-org/gitlab-ce/issues/50964>|

@@ -142,10 +142,20 @@ describe API::Jobs do
     end
 
     context 'unauthorized user' do
-      let(:api_user) { nil }
+      context 'when user is not logged in' do
+        let(:api_user) { nil }
 
-      it 'does not return project jobs' do
-        expect(response).to have_gitlab_http_status(401)
+        it 'does not return project jobs' do
+          expect(response).to have_gitlab_http_status(401)
+        end
+      end
+
+      context 'when user is guest' do
+        let(:api_user) { guest }
+
+        it 'does not return project jobs' do
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 
@@ -241,10 +251,20 @@ describe API::Jobs do
     end
 
     context 'unauthorized user' do
-      let(:api_user) { nil }
+      context 'when user is not logged in' do
+        let(:api_user) { nil }
 
-      it 'does not return jobs' do
-        expect(response).to have_gitlab_http_status(401)
+        it 'does not return jobs' do
+          expect(response).to have_gitlab_http_status(401)
+        end
+      end
+
+      context 'when user is guest' do
+        let(:api_user) { guest }
+
+        it 'does not return jobs' do
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
   end
@@ -297,6 +317,49 @@ describe API::Jobs do
 
       it 'does not return specific job data' do
         expect(response).to have_gitlab_http_status(401)
+      end
+    end
+  end
+
+  describe 'DELETE /projects/:id/jobs/:job_id/artifacts' do
+    let!(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user) }
+
+    before do
+      delete api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+    end
+
+    context 'when user is anonymous' do
+      let(:api_user) { nil }
+
+      it 'does not delete artifacts' do
+        expect(job.job_artifacts.size).to eq 2
+      end
+
+      it 'returns status 401 (unauthorized)' do
+        expect(response).to have_http_status :unauthorized
+      end
+    end
+
+    context 'with developer' do
+      it 'does not delete artifacts' do
+        expect(job.job_artifacts.size).to eq 2
+      end
+
+      it 'returns status 403 (forbidden)' do
+        expect(response).to have_http_status :forbidden
+      end
+    end
+
+    context 'with authorized user' do
+      let(:maintainer) { create(:project_member, :maintainer, project: project).user }
+      let!(:api_user) { maintainer }
+
+      it 'deletes artifacts' do
+        expect(job.job_artifacts.size).to eq 0
+      end
+
+      it 'returns status 204 (no content)' do
+        expect(response).to have_http_status :no_content
       end
     end
   end
@@ -383,7 +446,7 @@ describe API::Jobs do
     shared_examples 'downloads artifact' do
       let(:download_headers) do
         { 'Content-Transfer-Encoding' => 'binary',
-          'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
+          'Content-Disposition' => %q(attachment; filename="ci_build_artifacts.zip"; filename*=UTF-8''ci_build_artifacts.zip) }
       end
 
       it 'returns specific job artifacts' do
@@ -535,7 +598,7 @@ describe API::Jobs do
           let(:download_headers) do
             { 'Content-Transfer-Encoding' => 'binary',
               'Content-Disposition' =>
-                "attachment; filename=#{job.artifacts_file.filename}" }
+              %Q(attachment; filename="#{job.artifacts_file.filename}"; filename*=UTF-8''#{job.artifacts_file.filename}) }
           end
 
           it { expect(response).to have_http_status(:ok) }

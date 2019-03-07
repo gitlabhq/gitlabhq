@@ -2,6 +2,9 @@ import initUserPopovers from '~/user_popovers';
 import UsersCache from '~/lib/utils/users_cache';
 
 describe('User Popovers', () => {
+  const fixtureTemplate = 'merge_requests/diff_comment.html.raw';
+  preloadFixtures(fixtureTemplate);
+
   const selector = '.js-user-link';
 
   const dummyUser = { name: 'root' };
@@ -15,11 +18,7 @@ describe('User Popovers', () => {
   };
 
   beforeEach(() => {
-    setFixtures(`
-      <a href="/root" data-user-id="1" class="js-user-link" data-username="root" data-original-title="" title="">
-        Root
-      </a>
-    `);
+    loadFixtures(fixtureTemplate);
 
     const usersCacheSpy = () => Promise.resolve(dummyUser);
     spyOn(UsersCache, 'retrieveById').and.callFake(userId => usersCacheSpy(userId));
@@ -31,7 +30,9 @@ describe('User Popovers', () => {
   });
 
   it('Should Show+Hide Popover on mouseenter and mouseleave', done => {
-    triggerEvent('mouseenter', document.querySelector(selector));
+    const targetLink = document.querySelector(selector);
+    const { userId } = targetLink.dataset;
+    triggerEvent('mouseenter', targetLink);
 
     setTimeout(() => {
       const shownPopover = document.querySelector('.popover');
@@ -39,9 +40,9 @@ describe('User Popovers', () => {
       expect(shownPopover).not.toBeNull();
 
       expect(shownPopover.innerHTML).toContain(dummyUser.name);
-      expect(UsersCache.retrieveById).toHaveBeenCalledWith('1');
+      expect(UsersCache.retrieveById).toHaveBeenCalledWith(userId.toString());
 
-      triggerEvent('mouseleave', document.querySelector(selector));
+      triggerEvent('mouseleave', targetLink);
 
       setTimeout(() => {
         // After Mouse leave it should be hidden now
@@ -52,13 +53,15 @@ describe('User Popovers', () => {
   });
 
   it('Should Not show a popover on short mouse over', done => {
-    triggerEvent('mouseenter', document.querySelector(selector));
+    const targetLink = document.querySelector(selector);
+    const { userId } = targetLink.dataset;
+    triggerEvent('mouseenter', targetLink);
 
     setTimeout(() => {
       expect(document.querySelector('.popover')).toBeNull();
-      expect(UsersCache.retrieveById).not.toHaveBeenCalledWith('1');
+      expect(UsersCache.retrieveById).not.toHaveBeenCalledWith(userId.toString());
 
-      triggerEvent('mouseleave', document.querySelector(selector));
+      triggerEvent('mouseleave', targetLink);
 
       done();
     });

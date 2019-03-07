@@ -115,15 +115,63 @@ const bindEvents = () => {
     const templates = {
       rails: {
         text: 'Ruby on Rails',
-        icon: '.template-option svg.icon-rails',
+        icon: '.template-option .icon-rails',
       },
       express: {
         text: 'NodeJS Express',
-        icon: '.template-option svg.icon-node-express',
+        icon: '.template-option .icon-express',
       },
       spring: {
         text: 'Spring',
-        icon: '.template-option svg.icon-java-spring',
+        icon: '.template-option .icon-spring',
+      },
+      dotnetcore: {
+        text: '.NET Core',
+        icon: '.template-option .icon-dotnet',
+      },
+      gomicro: {
+        text: 'Go Micro',
+        icon: '.template-option .icon-gomicro',
+      },
+      hugo: {
+        text: 'Pages/Hugo',
+        icon: '.template-option .icon-hugo',
+      },
+      jekyll: {
+        text: 'Pages/Jekyll',
+        icon: '.template-option .icon-jekyll',
+      },
+      plainhtml: {
+        text: 'Pages/Plain HTML',
+        icon: '.template-option .icon-plainhtml',
+      },
+      gitbook: {
+        text: 'Pages/GitBook',
+        icon: '.template-option .icon-gitbook',
+      },
+      hexo: {
+        text: 'Pages/Hexo',
+        icon: '.template-option .icon-hexo',
+      },
+      nfhugo: {
+        text: 'Netlify/Hugo',
+        icon: '.template-option .icon-netlify',
+      },
+      nfjekyll: {
+        text: 'Netlify/Jekyll',
+        icon: '.template-option .icon-netlify',
+      },
+      nfplainhtml: {
+        text: 'Netlify/Plain HTML',
+        icon: '.template-option .icon-netlify',
+      },
+      nfgitbook: {
+        text: 'Netlify/GitBook',
+        icon: '.template-option .icon-netlify',
+      },
+      nfhexo: {
+        text: 'Netlify/Hexo',
+        icon: '.template-option .icon-netlify',
       },
     };
 

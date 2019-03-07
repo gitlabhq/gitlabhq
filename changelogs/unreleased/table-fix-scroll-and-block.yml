@@ -1,0 +1,5 @@
+---
+title: Fix large table horizontal scroll and prevent side-by-side tables
+merge_request: 25520
+author: Dany Jupille
+type: fixed

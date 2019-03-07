@@ -61,7 +61,7 @@ describe Gitlab::IncomingEmail do
     end
 
     it 'returns the address with interpolated reply key and unsubscribe suffix' do
-      expect(described_class.unsubscribe_address('key')).to eq('replies+key+unsubscribe@example.com')
+      expect(described_class.unsubscribe_address('key')).to eq("replies+key#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}@example.com")
     end
   end
 

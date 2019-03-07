@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   extend Gitlab::ConfigHelper
 
   include Gitlab::ConfigHelper
@@ -145,7 +145,7 @@ class User < ActiveRecord::Base
 
   has_many :issue_assignees
   has_many :assigned_issues, class_name: "Issue", through: :issue_assignees, source: :issue
-  has_many :assigned_merge_requests,  dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
+  has_many :assigned_merge_requests, dependent: :nullify, foreign_key: :assignee_id, class_name: "MergeRequest" # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_many :callouts, class_name: 'UserCallout'
@@ -228,6 +228,9 @@ class User < ActiveRecord::Base
   delegate :path, to: :namespace, allow_nil: true, prefix: true
   delegate :notes_filter_for, to: :user_preference
   delegate :set_notes_filter, to: :user_preference
+  delegate :first_day_of_week, :first_day_of_week=, to: :user_preference
+
+  accepts_nested_attributes_for :user_preference, update_only: true
 
   state_machine :state, initial: :active do
     event :block do
@@ -267,9 +270,12 @@ class User < ActiveRecord::Base
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
+  scope :order_recent_last_activity, -> { reorder(Gitlab::Database.nulls_last_order('last_activity_on', 'DESC')) }
+  scope :order_oldest_last_activity, -> { reorder(Gitlab::Database.nulls_first_order('last_activity_on', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
   scope :for_todos, -> (todos) { where(id: todos.select(:user_id)) }
+  scope :with_emails, -> { preload(:emails) }
 
   # Limits the users to those that have TODOs, optionally in the given state.
   #
@@ -337,6 +343,8 @@ class User < ActiveRecord::Base
       case order_method.to_s
       when 'recent_sign_in' then order_recent_sign_in
       when 'oldest_sign_in' then order_oldest_sign_in
+      when 'last_activity_on_desc' then order_recent_last_activity
+      when 'last_activity_on_asc' then order_oldest_last_activity
       else
         order_by(order_method)
       end
@@ -380,7 +388,7 @@ class User < ActiveRecord::Base
       find_by(id: user_id)
     end
 
-    def filter(filter_name)
+    def filter_items(filter_name)
       case filter_name
       when 'admins'
         admins
@@ -462,7 +470,7 @@ class User < ActiveRecord::Base
     end
 
     def by_login(login)
-      return nil unless login
+      return unless login
 
       if login.include?('@'.freeze)
         unscoped.iwhere(email: login).take
@@ -754,8 +762,12 @@ class User < ActiveRecord::Base
   #
   # Example use:
   # `Project.where('EXISTS(?)', user.authorizations_for_projects)`
-  def authorizations_for_projects
-    project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+  def authorizations_for_projects(min_access_level: nil)
+    authorizations = project_authorizations.select(1).where('project_authorizations.project_id = projects.id')
+
+    return authorizations unless min_access_level.present?
+
+    authorizations.where('project_authorizations.access_level >= ?', min_access_level)
   end
 
   # Returns the projects this user has reporter (or greater) access to, limited
@@ -1154,6 +1166,10 @@ class User < ActiveRecord::Base
 
   def manageable_groups
     Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+  end
+
+  def manageable_groups_with_routes
+    manageable_groups.eager_load(:route).order('routes.path')
   end
 
   def namespaces

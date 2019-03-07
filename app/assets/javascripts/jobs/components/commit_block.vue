@@ -45,7 +45,7 @@ export default {
       />
 
       <span v-if="mergeRequest">
-        {{ __('in') }}
+        in
         <gl-link :href="mergeRequest.path" class="js-link-commit link-commit"
           >!{{ mergeRequest.iid }}</gl-link
         >

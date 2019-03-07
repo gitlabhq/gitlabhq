@@ -8,10 +8,7 @@ module Gitlab
 
     def add_gon_variables
       gon.api_version            = 'v4'
-      gon.default_avatar_url     =
-        Gitlab::Utils.append_path(
-          Gitlab.config.gitlab.url,
-          ActionController::Base.helpers.image_path('no_avatar.png'))
+      gon.default_avatar_url     = default_avatar_url
       gon.max_file_size          = Gitlab::CurrentSettings.max_attachment_size
       gon.asset_host             = ActionController::Base.asset_host
       gon.webpack_public_path    = webpack_public_path
@@ -27,6 +24,8 @@ module Gitlab
       gon.emoji_sprites_css_path = ActionController::Base.helpers.stylesheet_path('emoji_sprites')
       gon.test_env               = Rails.env.test?
       gon.suggested_label_colors = LabelsHelper.suggested_colors
+      gon.first_day_of_week      = current_user&.first_day_of_week || Gitlab::CurrentSettings.first_day_of_week
+      gon.ee                     = Gitlab.ee?
 
       if current_user
         gon.current_user_id = current_user.id
@@ -49,6 +48,16 @@ module Gitlab
       # into any existing ones, instead of overwriting them. This allows you to
       # use this method to push multiple feature flags.
       gon.push({ features: { var_name => enabled } }, true)
+    end
+
+    def default_avatar_url
+      # We can't use ActionController::Base.helpers.image_url because it
+      # doesn't return an actual URL because request is nil for some reason.
+      #
+      # We also can't use Gitlab::Utils.append_path because the image path
+      # may be an absolute URL.
+      URI.join(Gitlab.config.gitlab.url,
+               ActionController::Base.helpers.image_path('no_avatar.png')).to_s
     end
   end
 end

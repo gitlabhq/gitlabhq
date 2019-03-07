@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 describe UserPreference do
+  let(:user_preference) { create(:user_preference) }
+
   describe '#set_notes_filter' do
     let(:issuable) { build_stubbed(:issue) }
-    let(:user_preference) { create(:user_preference) }
 
     shared_examples 'setting system notes' do
       it 'returns updated discussion filter' do
@@ -48,6 +49,28 @@ describe UserPreference do
 
         expect(user_preference.set_notes_filter(9999, issuable)).to eq(only_comments)
       end
+    end
+  end
+
+  describe 'sort_by preferences' do
+    shared_examples_for 'a sort_by preference' do
+      it 'allows nil sort fields' do
+        user_preference.update(attribute => nil)
+
+        expect(user_preference).to be_valid
+      end
+    end
+
+    context 'merge_requests_sort attribute' do
+      let(:attribute) { :merge_requests_sort }
+
+      it_behaves_like 'a sort_by preference'
+    end
+
+    context 'issues_sort attribute' do
+      let(:attribute) { :issues_sort }
+
+      it_behaves_like 'a sort_by preference'
     end
   end
 end

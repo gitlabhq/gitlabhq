@@ -10,8 +10,20 @@ FactoryBot.define do
 
     pipeline factory: :ci_pipeline
 
+    trait :variables do
+      yaml_variables [{ key: 'BRIDGE', value: 'cross', public: true }]
+    end
+
+    transient { downstream nil }
+
     after(:build) do |bridge, evaluator|
       bridge.project ||= bridge.pipeline.project
+
+      if evaluator.downstream.present?
+        bridge.options = bridge.options.to_h.merge(
+          trigger: { project: evaluator.downstream.full_path }
+        )
+      end
     end
   end
 end

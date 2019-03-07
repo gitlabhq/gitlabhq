@@ -13,7 +13,13 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @projects = load_projects(params.merge(non_public: true))
 
     respond_to do |format|
-      format.html
+      format.html do
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37434
+        # Also https://gitlab.com/gitlab-org/gitlab-ce/issues/40260
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
+      end
       format.atom do
         load_events
         render layout: 'xml.atom'
@@ -53,6 +59,9 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def load_projects(finder_params)
+    @total_user_projects_count = ProjectsFinder.new(params: { non_public: true }, current_user: current_user).execute
+    @total_starred_projects_count = ProjectsFinder.new(params: { starred: true }, current_user: current_user).execute
+
     projects = ProjectsFinder
                 .new(params: finder_params, current_user: current_user)
                 .execute

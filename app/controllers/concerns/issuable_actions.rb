@@ -7,6 +7,9 @@ module IssuableActions
   included do
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
+    before_action only: :show do
+      push_frontend_feature_flag(:reply_to_individual_notes)
+    end
   end
 
   def permitted_keys
@@ -58,7 +61,8 @@ module IssuableActions
       title_text: issuable.title,
       description: view_context.markdown_field(issuable, :description),
       description_text: issuable.description,
-      task_status: issuable.task_status
+      task_status: issuable.task_status,
+      lock_version: issuable.lock_version
     }
 
     if issuable.edited?

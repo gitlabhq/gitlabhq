@@ -66,6 +66,9 @@ snippets:
 releases:
 - author
 - project
+- links
+links:
+- release
 project_members:
 - created_by
 - user
@@ -111,6 +114,7 @@ ci_pipelines:
 - stages
 - statuses
 - builds
+- processables
 - trigger_requests
 - variables
 - auto_canceled_by
@@ -123,10 +127,11 @@ ci_pipelines:
 - scheduled_actions
 - artifacts
 - pipeline_schedule
-- merge_requests
+- merge_requests_as_head_pipeline
 - merge_request
 - deployments
 - environments
+- chat_data
 pipeline_variables:
 - pipeline
 stages:
@@ -134,6 +139,7 @@ stages:
 - pipeline
 - statuses
 - builds
+- bridges
 statuses:
 - project
 - pipeline
@@ -214,7 +220,6 @@ project:
 - packagist_service
 - pivotaltracker_service
 - prometheus_service
-- hipchat_service
 - flowdock_service
 - assembla_service
 - asana_service
@@ -228,6 +233,7 @@ project:
 - pushover_service
 - jira_service
 - redmine_service
+- youtrack_service
 - custom_issue_tracker_service
 - bugzilla_service
 - gitlab_issue_tracker_service
@@ -311,6 +317,7 @@ project:
 - repository_languages
 - pool_repository
 - kubernetes_namespaces
+- error_tracking_setting
 award_emoji:
 - awardable
 - user
@@ -342,3 +349,5 @@ resource_label_events:
 - merge_request
 - epic
 - label
+error_tracking_setting:
+- project

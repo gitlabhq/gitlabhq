@@ -17,7 +17,7 @@ class NamespacelessProjectDestroyWorker
       return
     end
 
-    return if project.namespace  # Reject doing anything for projects that *do* have a namespace
+    return if project.namespace # Reject doing anything for projects that *do* have a namespace
 
     project.team.truncate
 

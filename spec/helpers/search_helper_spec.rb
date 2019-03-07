@@ -18,7 +18,7 @@ describe SearchHelper do
     end
 
     context "with a standard user" do
-      let(:user)   { create(:user) }
+      let(:user) { create(:user) }
 
       before do
         allow(self).to receive(:current_user).and_return(user)

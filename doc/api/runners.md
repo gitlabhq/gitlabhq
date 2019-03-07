@@ -13,16 +13,18 @@ GET /runners
 GET /runners?scope=active
 GET /runners?type=project_type
 GET /runners?status=active
+GET /runners?tag_list=tag1,tag2
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| Attribute   | Type           | Required | Description         |
+|-------------|----------------|----------|---------------------|
+| `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| `tag_list`  | Array[String]  | no       | List of of the runner's tags |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
 ```
 
 Example response:
@@ -62,16 +64,18 @@ GET /runners/all
 GET /runners/all?scope=online
 GET /runners/all?type=project_type
 GET /runners/all?status=active
+GET /runners/all?tag_list=tag1,tag2
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| Attribute   | Type           | Required | Description         |
+|-------------|----------------|----------|---------------------|
+| `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| `tag_list`  | Array[String]  | no       | List of of the runner's tags |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/all"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
 ```
 
 Example response:
@@ -134,7 +138,7 @@ GET /runners/:id
 | `id`      | integer | yes      | The ID of a runner  |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
 ```
 
 Example response:
@@ -193,7 +197,7 @@ PUT /runners/:id
 | `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
 
 ```
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
 Example response:
@@ -247,7 +251,7 @@ DELETE /runners/:id
 | `id`      | integer | yes      | The ID of a runner  |
 
 ```
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/6"
 ```
 
 ## List runner's jobs
@@ -264,7 +268,7 @@ GET /runners/:id/jobs
 | `status`  | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
 ```
 
 Example response:
@@ -347,17 +351,19 @@ GET /projects/:id/runners
 GET /projects/:id/runners?scope=active
 GET /projects/:id/runners?type=project_type
 GET /projects/:id/runners?status=active
+GET /projects/:id/runners?tag_list=tag1,tag2
 ```
 
-| Attribute | Type           | Required | Description         |
-|-----------|----------------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `scope`   | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`    | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`  | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| Attribute  | Type           | Required | Description         |
+|------------|----------------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| `tag_list` | Array[String]  | no       | List of of the runner's tags |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners"
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
 ```
 
 Example response:
@@ -401,7 +407,7 @@ POST /projects/:id/runners
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners" --form "runner_id=9"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners" --form "runner_id=9"
 ```
 
 Example response:
@@ -435,7 +441,7 @@ DELETE /projects/:id/runners/:runner_id
 | `runner_id` | integer | yes      | The ID of a runner  |
 
 ```
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners/9"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners/9"
 ```
 
 ## Register a new Runner
@@ -478,7 +484,7 @@ Example response:
 
 ## Delete a registered Runner
 
-Deletes a registed Runner.
+Deletes a registered Runner.
 
 ```
 DELETE /runners

@@ -62,7 +62,7 @@ module QA
             sleep 5
             refresh
 
-            wait(time: 1) do
+            wait(interval: 1) do
               within_element_by_index(:mirrored_repository_row, row_index) do
                 last_update = find_element(:mirror_last_update_at, wait: 0)
                 last_update.has_text?('just now') || last_update.has_text?('seconds')

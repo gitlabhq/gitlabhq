@@ -59,13 +59,6 @@ describe 'Visual tokens', :js do
       expect(page).to have_css('#js-dropdown-author', visible: false)
     end
 
-    it 'ends editing mode when scroll container is clicked' do
-      find('.scroll-container').click
-
-      expect_filtered_search_input_empty
-      expect(page).to have_css('#js-dropdown-author', visible: false)
-    end
-
     describe 'selecting different author from dropdown' do
       before do
         filter_author_dropdown.find('.filter-dropdown-item .dropdown-light-content', text: "@#{user_rock.username}").click
@@ -109,20 +102,13 @@ describe 'Visual tokens', :js do
       expect(page).to have_css('#js-dropdown-assignee', visible: false)
     end
 
-    it 'ends editing mode when scroll container is clicked' do
-      find('.scroll-container').click
-
-      expect_filtered_search_input_empty
-      expect(page).to have_css('#js-dropdown-assignee', visible: false)
-    end
-
     describe 'selecting static option from dropdown' do
       before do
         find("#js-dropdown-assignee").find('.filter-dropdown-item', text: 'None').click
       end
 
       it 'changes value in visual token' do
-        expect(first('.tokens-container .filtered-search-token .value').text).to eq('none')
+        expect(first('.tokens-container .filtered-search-token .value').text).to eq('None')
       end
 
       it 'moves input to the right' do
@@ -147,7 +133,7 @@ describe 'Visual tokens', :js do
     it 'selects static option from dropdown' do
       find("#js-dropdown-milestone").find('.filter-dropdown-item', text: 'Upcoming').click
 
-      expect(first('.tokens-container .filtered-search-token .value').text).to eq('upcoming')
+      expect(first('.tokens-container .filtered-search-token .value').text).to eq('Upcoming')
       expect(is_input_focused).to eq(true)
     end
 
@@ -163,13 +149,6 @@ describe 'Visual tokens', :js do
 
     it 'ends editing mode when document is clicked' do
       find('#content-body').click
-
-      expect_filtered_search_input_empty
-      expect(page).to have_css('#js-dropdown-milestone', visible: false)
-    end
-
-    it 'ends editing mode when scroll container is clicked' do
-      find('.scroll-container').click
 
       expect_filtered_search_input_empty
       expect(page).to have_css('#js-dropdown-milestone', visible: false)
@@ -348,7 +327,7 @@ describe 'Visual tokens', :js do
     it 'tokenizes the search term to complete visual token' do
       expect_tokens([
         author_token(user.name),
-        assignee_token('none')
+        assignee_token('None')
       ])
     end
   end

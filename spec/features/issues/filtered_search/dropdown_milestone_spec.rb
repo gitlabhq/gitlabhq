@@ -44,7 +44,7 @@ describe 'Dropdown milestone', :js do
     end
 
     it 'closes when the search bar is unfocused' do
-      find('body').click()
+      find('body').click
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
     end
@@ -192,7 +192,7 @@ describe 'Dropdown milestone', :js do
       click_static_milestone('None')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([milestone_token('none', false)])
+      expect_tokens([milestone_token('None', false)])
       expect_filtered_search_input_empty
     end
 
@@ -200,7 +200,7 @@ describe 'Dropdown milestone', :js do
       click_static_milestone('Any')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([milestone_token('any', false)])
+      expect_tokens([milestone_token('Any', false)])
       expect_filtered_search_input_empty
     end
 
@@ -208,7 +208,7 @@ describe 'Dropdown milestone', :js do
       click_static_milestone('Upcoming')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([milestone_token('upcoming', false)])
+      expect_tokens([milestone_token('Upcoming', false)])
       expect_filtered_search_input_empty
     end
 
@@ -216,7 +216,7 @@ describe 'Dropdown milestone', :js do
       click_static_milestone('Started')
 
       expect(page).to have_css(js_dropdown_milestone, visible: false)
-      expect_tokens([milestone_token('started', false)])
+      expect_tokens([milestone_token('Started', false)])
       expect_filtered_search_input_empty
     end
   end

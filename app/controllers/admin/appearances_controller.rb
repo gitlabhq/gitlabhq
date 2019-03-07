@@ -74,6 +74,11 @@ class Admin::AppearancesController < Admin::ApplicationController
       favicon_cache
       new_project_guidelines
       updated_by
+      header_message
+      footer_message
+      message_background_color
+      message_font_color
+      email_header_and_footer_enabled
     ]
   end
 end

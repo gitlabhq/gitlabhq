@@ -22,7 +22,8 @@
       "type": [ "array", "null" ]
     },
     "task_status": { "type": "string" },
-    "task_status_short": { "type": "string" }
+    "task_status_short": { "type": "string" },
+    "lock_version": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

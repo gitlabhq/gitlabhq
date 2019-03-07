@@ -5,15 +5,10 @@
 - subscribed = params[:subscribed]
 - labels_or_filters = @labels.exists? || @prioritized_labels.exists? || search.present? || subscribed.present?
 
-- if labels_or_filters && can_admin_label
-  - content_for(:header_content) do
-    .nav-controls
-      = link_to _('New label'), new_project_label_path(@project), class: "btn btn-success qa-label-create-new"
-
 - if labels_or_filters
   #promote-label-modal
   %div{ class: container_class }
-    = render 'shared/labels/nav'
+    = render 'shared/labels/nav', labels_or_filters: labels_or_filters, can_admin_label: can_admin_label
 
     .labels-container.prepend-top-10
       - if can_admin_label

@@ -64,11 +64,13 @@ describe "Internal references", :js do
 
           it "shows references" do
             page.within("#merge-requests .merge-requests-title") do
-              expect(page).to have_content("1 Related Merge Request")
+              expect(page).to have_content("Related merge requests")
+              expect(page).to have_css(".mr-count-badge")
             end
 
             page.within("#merge-requests ul") do
               expect(page).to have_content(private_project_merge_request.title)
+              expect(page).to have_css(".merge-request-status")
             end
 
             expect(page).to have_content("mentioned in merge request #{private_project_merge_request.to_reference(public_project)}")

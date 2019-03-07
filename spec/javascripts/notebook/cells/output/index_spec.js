@@ -10,7 +10,7 @@ describe('Output component', () => {
   const createComponent = output => {
     vm = new Component({
       propsData: {
-        output,
+        outputs: [].concat(output),
         count: 1,
       },
     });
@@ -51,28 +51,21 @@ describe('Output component', () => {
     it('renders as an image', () => {
       expect(vm.$el.querySelector('img')).not.toBeNull();
     });
-
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
-    });
   });
 
   describe('html output', () => {
-    beforeEach(done => {
+    it('renders raw HTML', () => {
       createComponent(json.cells[4].outputs[0]);
 
-      setTimeout(() => {
-        done();
-      });
-    });
-
-    it('renders raw HTML', () => {
       expect(vm.$el.querySelector('p')).not.toBeNull();
-      expect(vm.$el.textContent.trim()).toBe('test');
+      expect(vm.$el.querySelectorAll('p').length).toBe(1);
+      expect(vm.$el.textContent.trim()).toContain('test');
     });
 
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
+    it('renders multiple raw HTML outputs', () => {
+      createComponent([json.cells[4].outputs[0], json.cells[4].outputs[0]]);
+
+      expect(vm.$el.querySelectorAll('p').length).toBe(2);
     });
   });
 
@@ -87,10 +80,6 @@ describe('Output component', () => {
 
     it('renders as an svg', () => {
       expect(vm.$el.querySelector('svg')).not.toBeNull();
-    });
-
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
     });
   });
 

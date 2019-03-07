@@ -121,6 +121,13 @@ describe Banzai::Filter::AutolinkFilter do
       expect(doc.to_s).to eq("See #{link}")
     end
 
+    it 'does not autolink bad URLs after we remove trailing punctuation' do
+      link = 'http://]'
+      doc = filter("See #{link}")
+
+      expect(doc.to_s).to eq("See #{link}")
+    end
+
     it 'does not include trailing punctuation' do
       ['.', ', ok?', '...', '?', '!', ': is that ok?'].each do |trailing_punctuation|
         doc = filter("See #{link}#{trailing_punctuation}")
@@ -186,6 +193,22 @@ describe Banzai::Filter::AutolinkFilter do
     it 'accepts link_attr options' do
       doc = filter("See #{link}", link_attr: { class: 'custom' })
       expect(doc.at_css('a')['class']).to eq 'custom'
+    end
+
+    it 'escapes RTLO and other characters' do
+      # rendered text looks like "http://example.com/evilexe.mp3"
+      evil_link = "#{link}evil\u202E3pm.exe"
+      doc = filter("#{evil_link}")
+
+      expect(doc.at_css('a')['href']).to eq "http://about.gitlab.com/evil%E2%80%AE3pm.exe"
+    end
+
+    it 'encodes international domains' do
+      link     = "http://one😄two.com"
+      expected = "http://one%F0%9F%98%84two.com"
+      doc      = filter(link)
+
+      expect(doc.at_css('a')['href']).to eq expected
     end
 
     described_class::IGNORE_PARENTS.each do |elem|

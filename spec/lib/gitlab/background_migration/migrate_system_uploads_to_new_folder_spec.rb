@@ -1,5 +1,6 @@
 require 'spec_helper'
 
+# rubocop:disable RSpec/FactoriesInMigrationSpecs
 describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder, :delete do
   let(:migration) { described_class.new }
 
@@ -17,3 +18,4 @@ describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder, :delete d
     end
   end
 end
+# rubocop:enable RSpec/FactoriesInMigrationSpecs

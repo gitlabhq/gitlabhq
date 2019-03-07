@@ -1,5 +1,0 @@
----
-title: 'Fix deprecation: Using positional arguments in integration tests'
-merge_request: 24009
-author: Jasper Maes
-type: other

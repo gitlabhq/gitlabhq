@@ -16,4 +16,4 @@ You can get Helm from the project's [releases page](https://github.com/kubernete
 
 # Next steps
 
-Once installed, proceed to the next [installation step](../gitlab_chart.md#prerequisites).
+Once installed, proceed to the next [installation step](../gitlab_chart.md#installing-gitlab-using-the-helm-chart).

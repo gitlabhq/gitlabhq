@@ -62,7 +62,7 @@ describe Gitlab::Git::MergeBase do
   end
 
   describe '#commit' do
-    context 'for existing refs with a merge base', :existing_refs  do
+    context 'for existing refs with a merge base', :existing_refs do
       it 'finds the commit for the merge base' do
         expect(merge_base.commit).to be_a(Commit)
       end

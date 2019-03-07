@@ -807,9 +807,10 @@ describe SystemNoteService do
           expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
             body: hash_including(
               GlobalID: "GitLab",
+              relationship: 'mentioned on',
               object: {
                 url: project_commit_url(project, commit),
-                title: "GitLab: Mentioned on commit - #{commit.title}",
+                title: "Commit - #{commit.title}",
                 icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
@@ -819,7 +820,7 @@ describe SystemNoteService do
       end
 
       context 'for issues' do
-        let(:issue)           { create(:issue, project: project) }
+        let(:issue) { create(:issue, project: project) }
 
         it "creates comment" do
           result = described_class.cross_reference(jira_issue, issue, author)
@@ -833,9 +834,10 @@ describe SystemNoteService do
           expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
             body: hash_including(
               GlobalID: "GitLab",
+              relationship: 'mentioned on',
               object: {
                 url: project_issue_url(project, issue),
-                title: "GitLab: Mentioned on issue - #{issue.title}",
+                title: "Issue - #{issue.title}",
                 icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
@@ -859,9 +861,10 @@ describe SystemNoteService do
           expect(WebMock).to have_requested(:post, jira_api_remote_link_url(jira_issue)).with(
             body: hash_including(
               GlobalID: "GitLab",
+              relationship: 'mentioned on',
               object: {
                 url: project_snippet_url(project, snippet),
-                title: "GitLab: Mentioned on snippet - #{snippet.title}",
+                title: "Snippet - #{snippet.title}",
                 icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
@@ -1131,7 +1134,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:project) }
+      let(:other_project) { create(:project) }
       let(:canonical_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1156,7 +1159,7 @@ describe SystemNoteService do
     end
 
     context 'across different projects' do
-      let(:other_project)  { create(:project) }
+      let(:other_project) { create(:project) }
       let(:duplicate_issue) { create(:issue, project: other_project) }
 
       it_behaves_like 'a system note' do
@@ -1168,7 +1171,7 @@ describe SystemNoteService do
   end
 
   describe '.discussion_lock' do
-    subject { described_class.discussion_lock(noteable, author)  }
+    subject { described_class.discussion_lock(noteable, author) }
 
     context 'discussion unlocked' do
       it_behaves_like 'a system note' do

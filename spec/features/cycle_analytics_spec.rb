@@ -11,7 +11,7 @@ describe 'Cycle Analytics', :js do
 
   context 'as an allowed user' do
     context 'when project is new' do
-      before  do
+      before do
         project.add_maintainer(user)
 
         sign_in(user)

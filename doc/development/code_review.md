@@ -23,6 +23,11 @@ one of the [Merge request coaches][team].
 If you need assistance with security scans or comments, feel free to include the 
 Security Team (`@gitlab-com/gl-security`) in the review.
 
+The `danger-review` CI job will randomly pick a reviewer and a maintainer for
+each area of the codebase that your merge request seems to touch. It only makes
+recommendations - feel free to override it if you think someone else is a better
+fit!
+
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 
@@ -132,6 +137,14 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a domain expert and/or reviewer, it is recommended that they are not also picked
 as the maintainer to ultimately approve and merge it.
 
+Try to review in a timely manner; doing so allows everyone involved in the merge
+request to iterate faster as the context is fresh in memory. Further, this 
+improves contributors' experiences significantly. Reviewers should aim to review
+within two working days from the date they were assigned the merge request. If 
+you don't think you'll be able to review a merge request within that time, let 
+the author know as soon as possible. When the author of the merge request has not
+heard anything after two days, a new reviewer should be assigned.
+
 Maintainers should check before merging if the merge request is approved by the
 required approvers.
 
@@ -190,7 +203,10 @@ first time.
 - Extract unrelated changes and refactorings into future merge requests/issues.
 - Seek to understand the reviewer's perspective.
 - Try to respond to every comment.
-- Let the reviewer select the "Resolve discussion" buttons.
+- The merge request author resolves only the discussions they have fully
+  addressed. If there's an open reply, an open discussion, a suggestion,
+  a question, or anything else, the discussion should be left to be resolved
+  by the reviewer.
 - Push commits based on earlier rounds of feedback as isolated commits to the
   branch. Do not squash until the branch is ready to merge. Reviewers should be
   able to read individual updates based on their earlier feedback.

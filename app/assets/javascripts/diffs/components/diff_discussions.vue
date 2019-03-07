@@ -68,7 +68,7 @@ export default {
             }"
             type="button"
             class="js-diff-notes-toggle"
-            @click="toggleDiscussion({ discussionId: discussion.id });"
+            @click="toggleDiscussion({ discussionId: discussion.id })"
           >
             <icon v-if="discussion.expanded" name="collapse" class="collapse-icon" />
             <template v-else>

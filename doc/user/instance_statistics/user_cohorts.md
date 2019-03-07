@@ -23,5 +23,6 @@ the month, but who have never actually had any activity in the instance.
 
 How do we measure the activity of users? GitLab considers a user active if:
 
-* the user signs in
-* the user has Git activity (whether push or pull).
+- The user signs in.
+- The user has Git activity (whether push or pull).
+- The user visits pages related to Dashboards, Projects, Issues and Merge Requests ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/54947) in GitLab 11.8).

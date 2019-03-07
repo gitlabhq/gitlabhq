@@ -2,7 +2,7 @@
   color: $gl-text-color;
   word-wrap: break-word;
 
-  [dir="auto"] {
+  [dir='auto'] {
     text-align: initial;
   }
 
@@ -47,13 +47,6 @@
     font-family: $monospace-font;
     white-space: pre-wrap;
     word-wrap: normal;
-  }
-
-  // Multi-line code blocks should scroll horizontally
-  pre {
-    code {
-      white-space: pre;
-    }
   }
 
   kbd {
@@ -143,11 +136,12 @@
     margin: 0 0 16px;
   }
 
-  table {
+  table:not(.js-syntax-highlight) {
     @extend .table;
     @extend .table-bordered;
     margin: 16px 0;
     color: $gl-text-color;
+    border: 0;
 
     th {
       background: $label-gray-bg;
@@ -165,6 +159,10 @@
     overflow-x: auto;
     border-radius: 2px;
 
+    // Multi-line code blocks should scroll horizontally
+    code {
+      white-space: pre;
+    }
 
     &.plain-readme {
       background: none;
@@ -226,8 +224,8 @@
     }
   }
 
-  a[href*="/uploads/"],
-  a[href*="storage.googleapis.com/google-code-attachments/"] {
+  a[href*='/uploads/'],
+  a[href*='storage.googleapis.com/google-code-attachments/'] {
     &::before {
       margin-right: 4px;
 
@@ -235,7 +233,7 @@
       font-size: inherit;
       text-rendering: auto;
       -webkit-font-smoothing: antialiased;
-      content: "\f0c6";
+      content: '\f0c6';
     }
 
     &:hover::before {
@@ -302,11 +300,10 @@ body {
 }
 
 .page-title-empty {
-  margin-top: 0;
+  margin: 12px 0;
   line-height: 1.3;
   font-size: 1.25em;
   font-weight: $gl-font-weight-bold;
-  margin: 12px 0;
 }
 
 h1,
@@ -374,6 +371,16 @@ code {
 
 .md:not(.use-csslab) {
   @include md-typography;
+
+  &:not(.wiki) {
+    img:not(.emoji) {
+      border: 1px solid $white-normal;
+      padding: 5px;
+      margin: 5px 0;
+      // Ensure that image does not exceed viewport
+      max-height: calc(100vh - 100px);
+    }
+  }
 }
 
 /**
@@ -416,6 +423,7 @@ h4 {
 /**
  * form text input i.e. search bar, comments, forms, etc.
  */
+/* stylelint-disable selector-no-vendor-prefix  */
 input,
 textarea {
   &::-webkit-input-placeholder {
@@ -440,5 +448,6 @@ textarea {
     color: $gl-text-color-tertiary;
   }
 }
+/* stylelint-enable */
 
 .lh-100 { line-height: 1; }

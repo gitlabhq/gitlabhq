@@ -33,7 +33,7 @@ export default {
       data-container="body"
       data-boundary="viewport"
       data-placement="bottom"
-      @click.stop.prevent="unstageChange(path);"
+      @click.stop.prevent="unstageChange(path)"
     >
       <icon :size="16" name="redo" class="ml-auto mr-auto" />
     </button>

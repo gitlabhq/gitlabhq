@@ -2,13 +2,20 @@
   "type": "object",
   "required" : [
     "name",
+    "path",
     "location"
   ],
   "properties" : {
     "name": {
       "type": "string"
     },
+    "path": {
+      "type": "string"
+    },
     "location": {
+      "type": "string"
+    },
+    "digest": {
       "type": "string"
     },
     "revision": {

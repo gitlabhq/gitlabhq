@@ -8,12 +8,12 @@ The GitLab Pages feature must be enabled to use these endpoints. Find out more a
 
 Get a list of all pages domains. The user must have admin permissions.
 
-```http
+```text
 GET /pages/domains
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/pages/domains
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/pages/domains
 ```
 
 ```json
@@ -34,7 +34,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 
 Get a list of project pages domains. The user must have permissions to view pages domains.
 
-```http
+```text
 GET /projects/:id/pages/domains
 ```
 
@@ -43,7 +43,7 @@ GET /projects/:id/pages/domains
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
 ```json
@@ -69,7 +69,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 
 Get a single project pages domain. The user must have permissions to view pages domains.
 
-```http
+```text
 GET /projects/:id/pages/domains/:domain
 ```
 
@@ -79,7 +79,7 @@ GET /projects/:id/pages/domains/:domain
 | `domain`  | string         | yes      | The domain                               |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/pages/domains/www.domain.example
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/www.domain.example
 ```
 
 ```json
@@ -90,7 +90,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 ```
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
 ```json
@@ -110,7 +110,7 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 
 Creates a new pages domain. The user must have permissions to create new pages domains.
 
-```http
+```text
 POST /projects/:id/pages/domains
 ```
 
@@ -122,11 +122,11 @@ POST /projects/:id/pages/domains
 | `key`         | file/string    | no       | The certificate key in PEM format.       |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --form "domain=ssl.domain.example" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains
 ```
 
 ```json
@@ -146,7 +146,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "domai
 
 Updates an existing project pages domain. The user must have permissions to change an existing pages domains.
 
-```http
+```text
 PUT /projects/:id/pages/domains/:domain
 ```
 
@@ -158,11 +158,11 @@ PUT /projects/:id/pages/domains/:domain
 | `key`         | file/string    | no       | The certificate key in PEM format.       |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=@/path/to/cert.pem" --form "key=@/path/to/key.pem" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --form "certificate=$CERT_PEM" --form "key=$KEY_PEM" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```
 
 ```json
@@ -182,7 +182,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "certif
 
 Deletes an existing project pages domain.
 
-```http
+```text
 DELETE /projects/:id/pages/domains/:domain
 ```
 
@@ -192,5 +192,5 @@ DELETE /projects/:id/pages/domains/:domain
 | `domain`  | string         | yes      | The domain                               |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/pages/domains/ssl.domain.example
 ```

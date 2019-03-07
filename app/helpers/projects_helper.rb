@@ -204,12 +204,10 @@ module ProjectsHelper
       current_user.require_extra_setup_for_git_auth?
   end
 
-  def show_auto_devops_implicitly_enabled_banner?(project)
-    cookie_key = "hide_auto_devops_implicitly_enabled_banner_#{project.id}"
+  def show_auto_devops_implicitly_enabled_banner?(project, user)
+    return false unless user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
 
-    project.has_auto_devops_implicitly_enabled? &&
-      cookies[cookie_key.to_sym].blank? &&
-      (project.owner == current_user || project.team.maintainer?(current_user))
+    cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
   end
 
   def link_to_set_password
@@ -267,10 +265,6 @@ module ProjectsHelper
     link_to 'BFG', 'https://rtyley.github.io/bfg-repo-cleaner/', target: '_blank', rel: 'noopener noreferrer'
   end
 
-  def legacy_render_context(params)
-    params[:legacy_render] ? { markdown_engine: :redcarpet } : {}
-  end
-
   def explore_projects_tab?
     current_page?(explore_projects_path) ||
       current_page?(trending_explore_projects_path) ||
@@ -283,6 +277,25 @@ module ProjectsHelper
 
   def show_issue_count?(disabled: false, compact_mode: false)
     !disabled && !compact_mode && Feature.enabled?(:project_list_show_issue_count, default_enabled: true)
+  end
+
+  # overridden in EE
+  def settings_operations_available?
+    can?(current_user, :read_environment, @project)
+  end
+
+  def error_tracking_setting_project_json
+    setting = @project.error_tracking_setting
+
+    return if setting.blank? || setting.project_slug.blank? ||
+        setting.organization_slug.blank?
+
+    {
+      name: setting.project_name,
+      organization_name: setting.organization_name,
+      organization_slug: setting.organization_slug,
+      slug: setting.project_slug
+    }.to_json
   end
 
   private
@@ -302,16 +315,13 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
-    if project.builds_enabled? && can?(current_user, :read_pipeline, project)
+    # Pipelines feature is tied to presence of builds
+    if can?(current_user, :read_build, project)
       nav_tabs << :pipelines
     end
 
     if can?(current_user, :read_environment, project) || can?(current_user, :read_cluster, project)
       nav_tabs << :operations
-    end
-
-    if project.external_issue_tracker
-      nav_tabs << :external_issue_tracker
     end
 
     tab_ability_map.each do |tab, ability|
@@ -320,7 +330,16 @@ module ProjectsHelper
       end
     end
 
+    nav_tabs << external_nav_tabs(project)
+
     nav_tabs.flatten
+  end
+
+  def external_nav_tabs(project)
+    [].tap do |tabs|
+      tabs << :external_issue_tracker if project.external_issue_tracker
+      tabs << :external_wiki if project.external_wiki
+    end
   end
 
   def tab_ability_map
@@ -332,6 +351,7 @@ module ProjectsHelper
       builds:           :read_build,
       clusters:         :read_cluster,
       serverless:       :read_cluster,
+      error_tracking:   :read_sentry_issue,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,
@@ -485,7 +505,7 @@ module ProjectsHelper
       lfsHelpPath: help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs'),
       pagesAvailable: Gitlab.config.pages.enabled,
       pagesAccessControlEnabled: Gitlab.config.pages.access_control,
-      pagesHelpPath: help_page_path('user/project/pages/index.md')
+      pagesHelpPath: help_page_path('user/project/pages/introduction', anchor: 'gitlab-pages-access-control-core-only')
     }
   end
 
@@ -546,6 +566,7 @@ module ProjectsHelper
       services#edit
       repository#show
       ci_cd#show
+      operations#show
       badges#index
       pages#show
     ]
@@ -575,8 +596,16 @@ module ProjectsHelper
       environments
       clusters
       functions
+      error_tracking
       user
       gcp
     ]
+  end
+
+  def user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
+    Ability.allowed?(user, :admin_project, project) &&
+      project.has_auto_devops_implicitly_enabled? &&
+      project.builds_enabled? &&
+      !project.repository.gitlab_ci_yml
   end
 end

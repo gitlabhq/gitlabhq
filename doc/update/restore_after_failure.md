@@ -12,7 +12,7 @@ First, roll back the code or package. For source installations this involves
 checking out the older version (branch or tag). For Omnibus installations this
 means installing the older .deb or .rpm package. Then, restore from a backup.
 Follow the instructions in the
-[Backup and Restore](../raketasks/backup_restore.md#restore-a-previously-created-backup)
+[Backup and Restore](../raketasks/backup_restore.md#restore)
 documentation.
 
 ## Potential problems on the next upgrade
@@ -80,4 +80,3 @@ exit
 Once the migration is successfully marked, run the rake `db:migrate` task again.
 You will likely have to repeat this process several times until all failed
 migrations are marked complete.
-

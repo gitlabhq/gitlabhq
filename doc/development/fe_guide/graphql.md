@@ -9,7 +9,7 @@ read more about [Feature Flags][feature-flags].
 ## Apollo Client
 
 To save duplicated clients getting created in different apps, we have a
-[default client][defualt-client] that should be used. This setups the
+[default client][default-client] that should be used. This setups the
 Apollo client with the correct URL and also sets the CSRF headers.
 
 ## GraphQL Queries
@@ -27,11 +27,11 @@ the Vue application is mounted.
 ```javascript
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import defaultClient from '~/lib/graphql';
+import createDefaultClient from '~/lib/graphql';
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({
-  defaultClient,
+  defaultClient: createDefaultClient(),
 });
 
 new Vue({
@@ -42,6 +42,29 @@ new Vue({
 ```
 
 Read more about [Vue Apollo][vue-apollo] in the [Vue Apollo documentation][vue-apollo-docs].
+
+### Local state with `apollo-link-state`
+
+It is possible to use our Apollo setup with [apollo-link-state][apollo-link-state] by passing
+in the client state object when creating the default client.
+
+```javascript
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
+Vue.use(VueApollo);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient({
+    defaults: {
+      testing: true,
+    },
+    resolvers: {
+      ...
+    },
+  }),
+});
+```
 
 ### Testing
 
@@ -81,3 +104,4 @@ Read more about the [Apollo] client in the [Apollo documentation][apollo-client-
 [default-client]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/javascripts/lib/graphql.js
 [apollo-client-docs]: https://www.apollographql.com/docs/tutorial/client.html
 [vue-test-utils]: https://vue-test-utils.vuejs.org/
+[apollo-link-state]: https://www.apollographql.com/docs/link/links/state.html

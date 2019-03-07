@@ -65,7 +65,7 @@ export default {
         :disabled="disabled"
         type="radio"
         name="commit-action"
-        @change="updateCommitAction($event.target.value);"
+        @change="updateCommitAction($event.target.value)"
       />
       <span class="prepend-left-10">
         <span v-if="label" class="ide-radio-label"> {{ label }} </span> <slot v-else></slot>
@@ -76,7 +76,7 @@ export default {
         :placeholder="newBranchName"
         type="text"
         class="form-control monospace"
-        @input="updateBranchName($event.target.value);"
+        @input="updateBranchName($event.target.value)"
       />
     </div>
   </fieldset>

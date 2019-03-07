@@ -331,7 +331,7 @@ describe Projects::BranchesController do
         let(:branch) { "feature" }
 
         it 'returns JSON response with message' do
-          expect(json_response).to eql("message" => 'Branch was removed')
+          expect(json_response).to eql("message" => 'Branch was deleted')
         end
 
         it { expect(response).to have_gitlab_http_status(200) }
@@ -341,7 +341,7 @@ describe Projects::BranchesController do
         let(:branch) { "improve/awesome" }
 
         it 'returns JSON response with message' do
-          expect(json_response).to eql('message' => 'Branch was removed')
+          expect(json_response).to eql('message' => 'Branch was deleted')
         end
 
         it { expect(response).to have_gitlab_http_status(200) }
@@ -351,7 +351,7 @@ describe Projects::BranchesController do
         let(:branch) { 'improve%2Fawesome' }
 
         it 'returns JSON response with message' do
-          expect(json_response).to eql('message' => 'Branch was removed')
+          expect(json_response).to eql('message' => 'Branch was deleted')
         end
 
         it { expect(response).to have_gitlab_http_status(200) }

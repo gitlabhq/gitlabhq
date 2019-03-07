@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::Notes do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :public, namespace: user.namespace) }
-  let(:private_user)    { create(:user) }
+  let(:private_user) { create(:user) }
 
   before do
     project.add_reporter(user)
@@ -46,7 +46,7 @@ describe API::Notes do
         create(:project, namespace: private_user.namespace)
         .tap { |p| p.add_maintainer(private_user) }
       end
-      let(:private_issue)    { create(:issue, project: private_project) }
+      let(:private_issue) { create(:issue, project: private_project) }
 
       let(:ext_proj)  { create(:project, :public) }
       let(:ext_issue) { create(:issue, project: ext_proj) }

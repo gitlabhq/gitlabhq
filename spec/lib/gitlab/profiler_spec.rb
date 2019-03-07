@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::Profiler do
-  RSpec::Matchers.define_negated_matcher :not_change, :change
-
   let(:null_logger) { Logger.new('/dev/null') }
   let(:private_token) { 'private' }
 
@@ -187,7 +185,7 @@ describe Gitlab::Profiler do
       end
 
       it 'does not modify the standard Rails loggers' do
-        expect { described_class.with_custom_logger(nil) { } }
+        expect { described_class.with_custom_logger(nil) {} }
           .to not_change { ActiveRecord::Base.logger }
           .and not_change { ActionController::Base.logger }
           .and not_change { ActiveSupport::LogSubscriber.colorize_logging }
@@ -204,7 +202,7 @@ describe Gitlab::Profiler do
       end
 
       it 'cleans up ApplicationController afterwards' do
-        expect { described_class.with_user(user) { } }
+        expect { described_class.with_user(user) {} }
           .to not_change { ActionController.instance_methods(false) }
       end
     end
@@ -213,7 +211,7 @@ describe Gitlab::Profiler do
       it 'does not define methods on ApplicationController' do
         expect(ApplicationController).not_to receive(:define_method)
 
-        described_class.with_user(nil) { }
+        described_class.with_user(nil) {}
       end
     end
   end

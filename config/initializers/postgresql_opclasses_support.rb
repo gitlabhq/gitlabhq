@@ -130,9 +130,12 @@ module ActiveRecord
               where = inddef.scan(/WHERE (.+)$/).flatten[0]
               using = inddef.scan(/USING (.+?) /).flatten[0].to_sym
               opclasses = Hash[inddef.scan(/\((.+?)\)(?:$| WHERE )/).flatten[0].split(',').map do |column_and_opclass|
-                                 column, opclass = column_and_opclass.split(' ').map(&:strip)
-                                 [column, opclass] if opclass
-                               end.compact]
+                column, opclass = column_and_opclass.split(' ').map(&:strip)
+              end.reject do |column, opclass|
+                ['desc', 'asc'].include?(opclass&.downcase)
+              end.map do |column, opclass|
+                [column, opclass] if opclass
+              end.compact]
 
               index_attrs = [table_name, index_name, unique, column_names, [], orders, where, nil, using, nil, opclasses]
 
@@ -151,6 +154,9 @@ module ActiveRecord
           def quoted_columns_for_index(column_names, options = {})
             column_opclasses = options[:opclasses] || {}
             column_names.map {|name| "#{quote_column_name(name)} #{column_opclasses[name]}"}
+
+            quoted_columns = Hash[column_names.map { |name| [name.to_sym, "#{quote_column_name(name)} #{column_opclasses[name]}"] }]
+            add_options_for_index_columns(quoted_columns, options).values
           end
       end
     end

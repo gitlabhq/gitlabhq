@@ -37,6 +37,8 @@ describe 'Merge request > User resolves conflicts', :js do
       click_on 'Changes'
       wait_for_requests
 
+      find('.js-toggle-tree-list').click
+
       within find('.diff-file', text: 'files/ruby/popen.rb') do
         expect(page).to have_selector('.line_content.new', text: "vars = { 'PWD' => path }")
         expect(page).to have_selector('.line_content.new', text: "options = { chdir: path }")

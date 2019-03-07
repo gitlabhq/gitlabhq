@@ -101,9 +101,9 @@ module Banzai
 
       def self_and_ancestors_ids(parent)
         if group_context?(parent)
-          parent.self_and_ancestors_ids
+          parent.self_and_ancestors.select(:id)
         elsif project_context?(parent)
-          parent.group&.self_and_ancestors_ids
+          parent.group&.self_and_ancestors&.select(:id)
         end
       end
 

@@ -19,7 +19,7 @@ def configure_sentry
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
       # Sanitize authentication headers
       config.sanitize_http_headers = %w[Authorization Private-Token]
-      config.tags = { program: Gitlab::Sentry.program_context }
+      config.tags = { program: Gitlab.process_name }
     end
   end
 end

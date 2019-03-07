@@ -25,7 +25,7 @@ describe JSONWebToken::RSAToken do
         rsa_token['key'] = 'value'
       end
 
-      subject { JWT.decode(rsa_encoded, rsa_key) }
+      subject { JWT.decode(rsa_encoded, rsa_key, true, { algorithm: 'RS256' }) }
 
       it { expect {subject}.not_to raise_error }
       it { expect(subject.first).to include('key' => 'value') }
@@ -39,7 +39,7 @@ describe JSONWebToken::RSAToken do
 
     context 'for invalid key to raise an exception' do
       let(:new_key) { OpenSSL::PKey::RSA.generate(512) }
-      subject { JWT.decode(rsa_encoded, new_key) }
+      subject { JWT.decode(rsa_encoded, new_key, true, { algorithm: 'RS256' }) }
 
       it { expect {subject}.to raise_error(JWT::DecodeError) }
     end

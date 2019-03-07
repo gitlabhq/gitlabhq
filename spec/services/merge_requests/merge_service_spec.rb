@@ -224,6 +224,18 @@ describe MergeRequests::MergeService do
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 
+      it 'logs and saves error if user is not authorized' do
+        unauthorized_user = create(:user)
+        project.add_reporter(unauthorized_user)
+
+        service = described_class.new(project, unauthorized_user)
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error)
+          .to eq('You are not allowed to merge this merge request')
+      end
+
       it 'logs and saves error if there is an PreReceiveError exception' do
         error_message = 'error message'
 
@@ -232,7 +244,7 @@ describe MergeRequests::MergeService do
 
         service.execute(merge_request)
 
-        expect(merge_request.merge_error).to include('Something went wrong during merge pre-receive hook')
+        expect(merge_request.merge_error).to include("Something went wrong during merge pre-receive hook: #{error_message}")
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
 
@@ -258,7 +270,7 @@ describe MergeRequests::MergeService do
         it 'logs and saves error if there is an error when squashing' do
           error_message = 'Failed to squash. Should be done manually'
 
-          allow_any_instance_of(MergeRequests::SquashService).to receive(:squash).and_return(nil)
+          allow_any_instance_of(MergeRequests::SquashService).to receive(:squash!).and_return(nil)
           merge_request.update(squash: true)
 
           service.execute(merge_request)

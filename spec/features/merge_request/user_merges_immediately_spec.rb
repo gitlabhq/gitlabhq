@@ -25,6 +25,8 @@ describe 'Merge requests > User merges immediately', :js do
     end
 
     it 'enables merge immediately' do
+      wait_for_requests
+
       page.within '.mr-widget-body' do
         find('.dropdown-toggle').click
 

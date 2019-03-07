@@ -69,14 +69,14 @@ module ReactiveCaching
     def with_reactive_cache(*args, &blk)
       unless within_reactive_cache_lifetime?(*args)
         refresh_reactive_cache!(*args)
-        return nil
+        return
       end
 
       keep_alive_reactive_cache!(*args)
 
       begin
         data = Rails.cache.read(full_reactive_cache_key(*args))
-        yield data if data.present?
+        yield data unless data.nil?
       rescue InvalidateReactiveCache
         refresh_reactive_cache!(*args)
         nil

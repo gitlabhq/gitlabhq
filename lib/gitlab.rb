@@ -7,6 +7,14 @@ module Gitlab
     Pathname.new(File.expand_path('..', __dir__))
   end
 
+  def self.version_info
+    Gitlab::VersionInfo.parse(Gitlab::VERSION)
+  end
+
+  def self.pre_release?
+    VERSION.include?('pre')
+  end
+
   def self.config
     Settings
   end
@@ -50,11 +58,15 @@ module Gitlab
     Rails.env.development? || org? || com?
   end
 
-  def self.pre_release?
-    VERSION.include?('pre')
+  def self.ee?
+    Object.const_defined?(:License)
   end
 
-  def self.version_info
-    Gitlab::VersionInfo.parse(Gitlab::VERSION)
+  def self.process_name
+    return 'sidekiq' if Sidekiq.server?
+    return 'console' if defined?(Rails::Console)
+    return 'test' if Rails.env.test?
+
+    'web'
   end
 end

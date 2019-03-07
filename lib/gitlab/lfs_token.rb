@@ -30,8 +30,8 @@ module Gitlab
         end
     end
 
-    def token(expire_time: DEFAULT_EXPIRE_TIME)
-      HMACToken.new(actor).token(expire_time)
+    def token
+      HMACToken.new(actor).token(DEFAULT_EXPIRE_TIME)
     end
 
     def token_valid?(token_to_check)
@@ -47,7 +47,16 @@ module Gitlab
       user? ? :lfs_token : :lfs_deploy_token
     end
 
-    private  # rubocop:disable Lint/UselessAccessModifier
+    def authentication_payload(repository_http_path)
+      {
+        username: actor_name,
+        lfs_token: token,
+        repository_http_path: repository_http_path,
+        expires_in: DEFAULT_EXPIRE_TIME
+      }
+    end
+
+    private # rubocop:disable Lint/UselessAccessModifier
 
     class HMACToken
       include LfsTokenHelper
@@ -100,7 +109,7 @@ module Gitlab
     #
     class LegacyRedisDeviseToken
       TOKEN_LENGTH = 50
-      DEFAULT_EXPIRY_TIME = 1800 * 1000  # 30 mins
+      DEFAULT_EXPIRY_TIME = 1800 * 1000 # 30 mins
 
       def initialize(actor)
         @actor = actor

@@ -34,6 +34,7 @@ export default {
     StuckBlock,
     Sidebar,
     GlLoadingIcon,
+    SharedRunner: () => import('ee_component/jobs/components/shared_runner_limit_block.vue'),
   },
   mixins: [delayedJobMixin],
   props: {
@@ -80,11 +81,11 @@ export default {
       'hasError',
     ]),
     ...mapGetters([
-      'headerActions',
       'headerTime',
       'shouldRenderCalloutMessage',
       'shouldRenderTriggeredLabel',
       'hasEnvironment',
+      'shouldRenderSharedRunnerLimitWarning',
       'hasTrace',
       'emptyStateIllustration',
       'isScrollingDown',
@@ -202,7 +203,6 @@ export default {
               :item-id="job.id"
               :time="headerTime"
               :user="job.user"
-              :actions="headerActions"
               :has-sidebar-button="true"
               :should-render-triggered-label="shouldRenderTriggeredLabel"
               :item-name="__('Job')"
@@ -223,6 +223,14 @@ export default {
           :runners-path="runnerSettingsUrl"
         />
 
+        <shared-runner
+          v-if="shouldRenderSharedRunnerLimitWarning"
+          class="js-shared-runner-limit"
+          :quota-used="job.runners.quota.used"
+          :quota-limit="job.runners.quota.limit"
+          :runners-path="runnerHelpUrl"
+        />
+
         <environments-block
           v-if="hasEnvironment"
           class="js-job-environment"
@@ -240,14 +248,19 @@ export default {
         <div
           v-if="job.archived"
           ref="sticky"
-          class="js-archived-job prepend-top-default archived-sticky sticky-top"
+          class="js-archived-job prepend-top-default archived-job"
+          :class="{ 'sticky-top border-bottom-0': hasTrace }"
         >
           <icon name="lock" class="align-text-bottom" />
 
           {{ __('This job is archived. Only the complete pipeline can be retried.') }}
         </div>
         <!-- job log -->
-        <div v-if="hasTrace" class="build-trace-container">
+        <div
+          v-if="hasTrace"
+          class="build-trace-container"
+          :class="{ 'prepend-top-default': !job.archived }"
+        >
           <log-top-bar
             :class="{
               'sidebar-expanded': isSidebarOpen,

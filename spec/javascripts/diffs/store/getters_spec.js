@@ -51,13 +51,13 @@ describe('Diffs Module Getters', () => {
 
   describe('hasCollapsedFile', () => {
     it('returns true when all files are collapsed', () => {
-      localState.diffFiles = [{ collapsed: true }, { collapsed: true }];
+      localState.diffFiles = [{ viewer: { collapsed: true } }, { viewer: { collapsed: true } }];
 
       expect(getters.hasCollapsedFile(localState)).toEqual(true);
     });
 
     it('returns true when at least one file is collapsed', () => {
-      localState.diffFiles = [{ collapsed: false }, { collapsed: true }];
+      localState.diffFiles = [{ viewer: { collapsed: false } }, { viewer: { collapsed: true } }];
 
       expect(getters.hasCollapsedFile(localState)).toEqual(true);
     });
@@ -230,15 +230,34 @@ describe('Diffs Module Getters', () => {
       localState.treeEntries = {
         file: {
           type: 'blob',
+          path: 'file',
+          parentPath: '/',
+          tree: [],
         },
         tree: {
           type: 'tree',
+          path: 'tree',
+          parentPath: '/',
+          tree: [],
         },
       };
 
-      expect(getters.allBlobs(localState)).toEqual([
+      expect(
+        getters.allBlobs(localState, {
+          flatBlobsList: getters.flatBlobsList(localState),
+        }),
+      ).toEqual([
         {
-          type: 'blob',
+          isHeader: true,
+          path: '/',
+          tree: [
+            {
+              parentPath: '/',
+              path: 'file',
+              tree: [],
+              type: 'blob',
+            },
+          ],
         },
       ]);
     });
@@ -249,6 +268,26 @@ describe('Diffs Module Getters', () => {
       localState.diffFiles.push('test', 'test 2');
 
       expect(getters.diffFilesLength(localState)).toBe(2);
+    });
+  });
+
+  describe('currentDiffIndex', () => {
+    it('returns index of currently selected diff in diffList', () => {
+      localState.diffFiles = [{ file_hash: '111' }, { file_hash: '222' }, { file_hash: '333' }];
+      localState.currentDiffFileId = '222';
+
+      expect(getters.currentDiffIndex(localState)).toEqual(1);
+
+      localState.currentDiffFileId = '333';
+
+      expect(getters.currentDiffIndex(localState)).toEqual(2);
+    });
+
+    it('returns 0 if no diff is selected yet or diff is not found', () => {
+      localState.diffFiles = [{ file_hash: '111' }, { file_hash: '222' }, { file_hash: '333' }];
+      localState.currentDiffFileId = '';
+
+      expect(getters.currentDiffIndex(localState)).toEqual(0);
     });
   });
 });

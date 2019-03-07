@@ -23,7 +23,7 @@ export default function initTodoToggle() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+function initStatusTriggers() {
   const setStatusModalTriggerEl = document.querySelector('.js-set-status-modal-trigger');
   const setStatusModalWrapperEl = document.querySelector('.js-set-status-modal-wrapper');
 
@@ -72,4 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  requestIdleCallback(initStatusTriggers);
 });

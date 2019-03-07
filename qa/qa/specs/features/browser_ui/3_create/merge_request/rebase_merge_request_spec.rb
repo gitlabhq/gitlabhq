@@ -3,17 +3,17 @@
 module QA
   context 'Create' do
     describe 'Merge request rebasing' do
-      it 'user rebases source branch of merge request'  do
+      it 'user rebases source branch of merge request' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
+        Page::Main::Login.perform(&:sign_in_using_credentials)
 
         project = Resource::Project.fabricate! do |project|
           project.name = "only-fast-forward"
         end
         project.visit!
 
-        Page::Project::Menu.act { go_to_settings }
-        Page::Project::Settings::MergeRequest.act { enable_ff_only }
+        Page::Project::Menu.perform(&:go_to_settings)
+        Page::Project::Settings::MergeRequest.perform(&:enable_ff_only)
 
         merge_request = Resource::MergeRequest.fabricate! do |merge_request|
           merge_request.project = project
@@ -38,7 +38,7 @@ module QA
           merge_request.rebase!
 
           expect(merge_request).to have_merge_button
-          expect(merge_request.fast_forward_possible?).to be_truthy
+          expect(merge_request).to be_fast_forward_possible
         end
       end
     end

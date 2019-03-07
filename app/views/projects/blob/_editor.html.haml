@@ -1,4 +1,6 @@
 - action = current_action?(:edit) || current_action?(:update) ? 'edit' : 'create'
+- file_name = params[:id].split("/").last ||= ""
+- is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(file_name)
 
 .file-holder-bottom-radius.file-holder.file.append-bottom-default
   .js-file-title.file-title.clearfix{ data: { current_action: action } }
@@ -17,6 +19,8 @@
         required: true, class: 'form-control new-file-name js-file-path-name-input'
 
     .file-buttons
+      - if is_markdown
+        = render 'projects/blob/markdown_buttons', show_fullscreen_button: false
       = button_tag class: 'soft-wrap-toggle btn', type: 'button', tabindex: '-1' do
         %span.no-wrap
           = custom_icon('icon_no_wrap')

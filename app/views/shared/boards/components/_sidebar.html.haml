@@ -1,4 +1,4 @@
-%board-sidebar{ "inline-template" => true,  ":current-user" => (UserSerializer.new.represent(current_user) || {}).to_json }
+%board-sidebar{ "inline-template" => true, ":current-user" => (UserSerializer.new.represent(current_user) || {}).to_json }
   %transition{ name: "boards-sidebar-slide" }
     %aside.right-sidebar.right-sidebar-expanded.issue-boards-sidebar{ "v-show" => "showSidebar" }
       .issuable-sidebar

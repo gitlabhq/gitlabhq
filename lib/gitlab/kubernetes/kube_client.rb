@@ -76,9 +76,14 @@ module Gitlab
 
       attr_reader :api_prefix, :kubeclient_options
 
+      # We disable redirects through 'http_max_redirects: 0',
+      # so that KubeClient does not follow redirects and
+      # expose internal services.
       def initialize(api_prefix, **kubeclient_options)
         @api_prefix = api_prefix
-        @kubeclient_options = kubeclient_options
+        @kubeclient_options = kubeclient_options.merge(http_max_redirects: 0)
+
+        validate_url!
       end
 
       def create_or_update_cluster_role_binding(resource)
@@ -114,6 +119,12 @@ module Gitlab
       end
 
       private
+
+      def validate_url!
+        return if Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services?
+
+        Gitlab::UrlBlocker.validate!(api_prefix, allow_local_network: false)
+      end
 
       def cluster_role_binding_exists?(resource)
         get_cluster_role_binding(resource.metadata.name)

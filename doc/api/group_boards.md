@@ -18,7 +18,7 @@ GET /groups/:id/boards
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards
 ```
 
 Example response:
@@ -75,7 +75,7 @@ GET /groups/:id/boards/:board_id
 | `board_id` | integer | yes | The ID of a board |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1
 ```
 
 Example response:
@@ -131,7 +131,7 @@ GET /groups/:id/boards/:board_id/lists
 | `board_id` | integer | yes | The ID of a board |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists
 ```
 
 Example response:
@@ -183,7 +183,7 @@ GET /groups/:id/boards/:board_id/lists/:list_id
 | `list_id` | integer | yes | The ID of a board's list |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```
 
 Example response:
@@ -215,7 +215,7 @@ POST /groups/:id/boards/:board_id/lists
 | `label_id` | integer | yes | The ID of a label |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists?label_id=5
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists?label_id=5
 ```
 
 Example response:
@@ -248,7 +248,7 @@ PUT /groups/:id/boards/:board_id/lists/:list_id
 | `position` | integer | yes | The position of the list |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/group/5/boards/1/lists/1?position=2
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/group/5/boards/1/lists/1?position=2
 ```
 
 Example response:
@@ -280,5 +280,5 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 | `list_id` | integer | yes | The ID of a board's list |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```

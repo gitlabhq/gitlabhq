@@ -93,7 +93,7 @@ class Projects::BlobController < Projects::ApplicationController
     @blob.load_all_data!
     @lines = @blob.present.highlight.lines
 
-    @form = UnfoldForm.new(params)
+    @form = UnfoldForm.new(params.to_unsafe_h)
 
     @lines = @lines[@form.since - 1..@form.to - 1].map(&:html_safe)
 
@@ -260,7 +260,7 @@ class Projects::BlobController < Projects::ApplicationController
       extension: blob.extension,
       size: blob.raw_size,
       mime_type: blob.mime_type,
-      binary: blob.raw_binary?,
+      binary: blob.binary?,
       simple_viewer: blob.simple_viewer&.class&.partial_name,
       rich_viewer: blob.rich_viewer&.class&.partial_name,
       show_viewer_switcher: !!blob.show_viewer_switcher?,

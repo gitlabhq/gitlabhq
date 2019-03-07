@@ -58,6 +58,20 @@
   }
 }
 
+.cluster-application-banner {
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cluster-application-banner-close {
+  align-self: flex-start;
+  font-weight: 500;
+  font-size: 20px;
+  margin: $gl-padding-8 14px 0 0;
+}
+
 .cluster-application-description {
   flex: 1;
 }

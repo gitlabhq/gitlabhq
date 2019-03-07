@@ -76,13 +76,16 @@ class Member < ActiveRecord::Base
   scope :maintainers, -> { active.where(access_level: MAINTAINER) }
   scope :masters, -> { maintainers } # @deprecated
   scope :owners,  -> { active.where(access_level: OWNER) }
-  scope :owners_and_maintainers,  -> { active.where(access_level: [OWNER, MAINTAINER]) }
+  scope :owners_and_maintainers, -> { active.where(access_level: [OWNER, MAINTAINER]) }
   scope :owners_and_masters,  -> { owners_and_maintainers } # @deprecated
+  scope :with_user, -> (user) { where(user: user) }
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }
   scope :order_recent_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.last_sign_in_at', 'ASC')) }
+
+  scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 

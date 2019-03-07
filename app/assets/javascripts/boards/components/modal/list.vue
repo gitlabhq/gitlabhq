@@ -130,7 +130,7 @@ export default {
         <div
           :class="{ 'is-active': issue.selected }"
           class="board-card"
-          @click="toggleIssue($event, issue);"
+          @click="toggleIssue($event, issue)"
         >
           <issue-card-inner :issue="issue" :issue-link-base="issueLinkBase" :root-path="rootPath" />
           <icon

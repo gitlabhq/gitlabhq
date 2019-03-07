@@ -172,26 +172,6 @@
         text-decoration: inherit;
       }
     }
-
-    .tree_commit {
-      max-width: 320px;
-
-      .str-truncated {
-        max-width: 100%;
-      }
-    }
-
-    .tree_time_ago {
-      min-width: 135px;
-    }
-  }
-
-  .tree_author {
-    padding-right: 8px;
-
-    .commit-author-name {
-      color: $gl-text-color;
-    }
   }
 
   .tree-truncated-warning {

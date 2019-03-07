@@ -8,6 +8,14 @@ import { languageCode, s__ } from '../../locale';
 window.timeago = timeago;
 
 /**
+ * This method allows you to create new Date instance from existing
+ * date instance without keeping the reference.
+ *
+ * @param {Date} date
+ */
+export const newDate = date => (date instanceof Date ? new Date(date.getTime()) : new Date());
+
+/**
  * Returns i18n month names array.
  * If `abbreviated` is provided, returns abbreviated
  * name.
@@ -79,44 +87,67 @@ let timeagoInstance;
  */
 export const getTimeago = () => {
   if (!timeagoInstance) {
-    const localeRemaining = (number, index) =>
-      [
-        [s__('Timeago|just now'), s__('Timeago|right now')],
-        [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
-        [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
-        [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
-        [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
-        [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
-        [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
-        [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
-        [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
-        [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
-        [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
-        [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
-        [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
-        [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
-      ][index];
+    const memoizedLocaleRemaining = () => {
+      const cache = [];
 
-    const locale = (number, index) =>
-      [
-        [s__('Timeago|just now'), s__('Timeago|right now')],
-        [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
-        [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
-        [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
-        [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
-        [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
-        [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
-        [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
-        [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
-        [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
-        [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
-        [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
-        [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
-        [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
-      ][index];
+      const timeAgoLocaleRemaining = [
+        () => [s__('Timeago|just now'), s__('Timeago|right now')],
+        () => [s__('Timeago|%s seconds ago'), s__('Timeago|%s seconds remaining')],
+        () => [s__('Timeago|1 minute ago'), s__('Timeago|1 minute remaining')],
+        () => [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
+        () => [s__('Timeago|1 hour ago'), s__('Timeago|1 hour remaining')],
+        () => [s__('Timeago|%s hours ago'), s__('Timeago|%s hours remaining')],
+        () => [s__('Timeago|1 day ago'), s__('Timeago|1 day remaining')],
+        () => [s__('Timeago|%s days ago'), s__('Timeago|%s days remaining')],
+        () => [s__('Timeago|1 week ago'), s__('Timeago|1 week remaining')],
+        () => [s__('Timeago|%s weeks ago'), s__('Timeago|%s weeks remaining')],
+        () => [s__('Timeago|1 month ago'), s__('Timeago|1 month remaining')],
+        () => [s__('Timeago|%s months ago'), s__('Timeago|%s months remaining')],
+        () => [s__('Timeago|1 year ago'), s__('Timeago|1 year remaining')],
+        () => [s__('Timeago|%s years ago'), s__('Timeago|%s years remaining')],
+      ];
 
-    timeago.register(timeagoLanguageCode, locale);
-    timeago.register(`${timeagoLanguageCode}-remaining`, localeRemaining);
+      return (number, index) => {
+        if (cache[index]) {
+          return cache[index];
+        }
+        cache[index] = timeAgoLocaleRemaining[index] && timeAgoLocaleRemaining[index]();
+        return cache[index];
+      };
+    };
+
+    const memoizedLocale = () => {
+      const cache = [];
+
+      const timeAgoLocale = [
+        () => [s__('Timeago|just now'), s__('Timeago|right now')],
+        () => [s__('Timeago|%s seconds ago'), s__('Timeago|in %s seconds')],
+        () => [s__('Timeago|1 minute ago'), s__('Timeago|in 1 minute')],
+        () => [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],
+        () => [s__('Timeago|1 hour ago'), s__('Timeago|in 1 hour')],
+        () => [s__('Timeago|%s hours ago'), s__('Timeago|in %s hours')],
+        () => [s__('Timeago|1 day ago'), s__('Timeago|in 1 day')],
+        () => [s__('Timeago|%s days ago'), s__('Timeago|in %s days')],
+        () => [s__('Timeago|1 week ago'), s__('Timeago|in 1 week')],
+        () => [s__('Timeago|%s weeks ago'), s__('Timeago|in %s weeks')],
+        () => [s__('Timeago|1 month ago'), s__('Timeago|in 1 month')],
+        () => [s__('Timeago|%s months ago'), s__('Timeago|in %s months')],
+        () => [s__('Timeago|1 year ago'), s__('Timeago|in 1 year')],
+        () => [s__('Timeago|%s years ago'), s__('Timeago|in %s years')],
+      ];
+
+      return (number, index) => {
+        if (cache[index]) {
+          return cache[index];
+        }
+        cache[index] = timeAgoLocale[index] && timeAgoLocale[index]();
+        return cache[index];
+      };
+    };
+
+    timeago.register(timeagoLanguageCode, memoizedLocale());
+    timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
+
     timeagoInstance = timeago();
   }
 
@@ -124,35 +155,28 @@ export const getTimeago = () => {
 };
 
 /**
- * For the given element, renders a timeago instance.
- * @param {jQuery} $els
- */
-export const renderTimeago = $els => {
-  const timeagoEls = $els || document.querySelectorAll('.js-timeago-render');
-
-  // timeago.js sets timeouts internally for each timeago value to be updated in real time
-  getTimeago().render(timeagoEls, timeagoLanguageCode);
-};
-
-/**
  * For the given elements, sets a tooltip with a formatted date.
- * @param {jQuery}
+ * @param {JQuery} $timeagoEls
  * @param {Boolean} setTimeago
  */
 export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
-  $timeagoEls.each((i, el) => {
-    if (setTimeago) {
+  getTimeago().render($timeagoEls, timeagoLanguageCode);
+
+  if (!setTimeago) {
+    return;
+  }
+
+  function addTimeAgoTooltip() {
+    $timeagoEls.each((i, el) => {
       // Recreate with custom template
       $(el).tooltip({
         template:
           '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
       });
-    }
+    });
+  }
 
-    el.classList.add('js-timeago-render');
-  });
-
-  renderTimeago($timeagoEls);
+  requestIdleCallback(addTimeAgoTooltip);
 };
 
 /**
@@ -321,23 +345,35 @@ export const getSundays = date => {
 
 /**
  * Returns list of Dates representing a timeframe of months from startDate and length
+ * This method also supports going back in time when `length` is negative number
  *
- * @param {Date} startDate
+ * @param {Date} initialStartDate
  * @param {Number} length
  */
-export const getTimeframeWindowFrom = (startDate, length) => {
-  if (!(startDate instanceof Date) || !length) {
+export const getTimeframeWindowFrom = (initialStartDate, length) => {
+  if (!(initialStartDate instanceof Date) || !length) {
     return [];
   }
 
+  const startDate = newDate(initialStartDate);
+  const moveMonthBy = length > 0 ? 1 : -1;
+
+  startDate.setDate(1);
+  startDate.setHours(0, 0, 0, 0);
+
   // Iterate and set date for the size of length
   // and push date reference to timeframe list
-  const timeframe = new Array(length)
-    .fill()
-    .map((val, i) => new Date(startDate.getFullYear(), startDate.getMonth() + i, 1));
+  const timeframe = new Array(Math.abs(length)).fill().map(() => {
+    const currentMonth = startDate.getTime();
+    startDate.setMonth(startDate.getMonth() + moveMonthBy);
+    return new Date(currentMonth);
+  });
 
   // Change date of last timeframe item to last date of the month
-  timeframe[length - 1].setDate(totalDaysInMonth(timeframe[length - 1]));
+  // when length is positive
+  if (length > 0) {
+    timeframe[timeframe.length - 1].setDate(totalDaysInMonth(timeframe[timeframe.length - 1]));
+  }
 
   return timeframe;
 };

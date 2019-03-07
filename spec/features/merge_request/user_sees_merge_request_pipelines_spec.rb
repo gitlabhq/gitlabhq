@@ -49,7 +49,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
 
     let!(:merge_request_pipeline) do
       Ci::CreatePipelineService.new(project, user, ref: 'feature')
-                                .execute(:merge_request, merge_request: merge_request)
+                                .execute(:merge_request_event, merge_request: merge_request)
     end
 
     before do
@@ -81,7 +81,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
 
       let!(:merge_request_pipeline_2) do
         Ci::CreatePipelineService.new(project, user, ref: 'feature')
-                                  .execute(:merge_request, merge_request: merge_request)
+                                  .execute(:merge_request_event, merge_request: merge_request)
       end
 
       before do
@@ -220,7 +220,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
 
     let!(:merge_request_pipeline) do
       Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
-                                .execute(:merge_request, merge_request: merge_request)
+                                .execute(:merge_request_event, merge_request: merge_request)
     end
 
     let(:forked_project) { fork_project(project, user2, repository: true) }
@@ -263,7 +263,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
 
       let!(:merge_request_pipeline_2) do
         Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
-                                  .execute(:merge_request, merge_request: merge_request)
+                                  .execute(:merge_request_event, merge_request: merge_request)
       end
 
       before do

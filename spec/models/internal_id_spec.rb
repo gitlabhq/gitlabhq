@@ -13,6 +13,29 @@ describe InternalId do
     it { is_expected.to validate_presence_of(:usage) }
   end
 
+  describe '.flush_records!' do
+    subject { described_class.flush_records!(project: project) }
+
+    let(:another_project) { create(:project) }
+
+    before do
+      create_list(:issue, 2, project: project)
+      create_list(:issue, 2, project: another_project)
+    end
+
+    it 'deletes all records for the given project' do
+      expect { subject }.to change { described_class.where(project: project).count }.from(1).to(0)
+    end
+
+    it 'retains records for other projects' do
+      expect { subject }.not_to change { described_class.where(project: another_project).count }
+    end
+
+    it 'does not allow an empty filter' do
+      expect { described_class.flush_records!({}) }.to raise_error(/filter cannot be empty/)
+    end
+  end
+
   describe '.generate_next' do
     subject { described_class.generate_next(issue, scope, usage, init) }
 

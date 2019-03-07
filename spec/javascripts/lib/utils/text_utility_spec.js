@@ -135,4 +135,20 @@ describe('text_utility', () => {
       expect(textUtils.getFirstCharacterCapitalized(null)).toEqual('');
     });
   });
+
+  describe('truncatePathMiddleToLength', () => {
+    it('does not truncate text', () => {
+      expect(textUtils.truncatePathMiddleToLength('app/test', 50)).toEqual('app/test');
+    });
+
+    it('truncates middle of the path', () => {
+      expect(textUtils.truncatePathMiddleToLength('app/test/diff', 13)).toEqual('app/…/diff');
+    });
+
+    it('truncates multiple times in the middle of the path', () => {
+      expect(textUtils.truncatePathMiddleToLength('app/test/merge_request/diff', 13)).toEqual(
+        'app/…/…/diff',
+      );
+    });
+  });
 });

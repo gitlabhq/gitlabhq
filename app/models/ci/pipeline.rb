@@ -11,6 +11,11 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include AtomicInternalId
     include EnumWithNil
+    include HasRef
+    include ShaAttribute
+
+    sha_attribute :source_sha
+    sha_attribute :target_sha
 
     belongs_to :project, inverse_of: :all_pipelines
     belongs_to :user
@@ -24,6 +29,8 @@ module Ci
 
     has_many :stages, -> { order(position: :asc) }, inverse_of: :pipeline
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
+    has_many :processables, -> { processables },
+             class_name: 'CommitStatus', foreign_key: :commit_id, inverse_of: :pipeline
     has_many :builds, foreign_key: :commit_id, inverse_of: :pipeline
     has_many :trigger_requests, dependent: :destroy, foreign_key: :commit_id # rubocop:disable Cop/ActiveRecordDependent
     has_many :variables, class_name: 'Ci::PipelineVariable'
@@ -32,7 +39,7 @@ module Ci
 
     # Merge requests for which the current pipeline is running against
     # the merge request's latest commit.
-    has_many :merge_requests, foreign_key: "head_pipeline_id"
+    has_many :merge_requests_as_head_pipeline, foreign_key: "head_pipeline_id", class_name: 'MergeRequest'
 
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
@@ -44,6 +51,8 @@ module Ci
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
+    has_one :chat_data, class_name: 'Ci::PipelineChatData'
+
     accepts_nested_attributes_for :variables, reject_if: :persisted?
 
     delegate :id, to: :project, prefix: true
@@ -51,9 +60,9 @@ module Ci
 
     validates :sha, presence: { unless: :importing? }
     validates :ref, presence: { unless: :importing? }
-    validates :merge_request, presence: { if: :merge_request? }
-    validates :merge_request, absence: { unless: :merge_request? }
-    validates :tag, inclusion: { in: [false], if: :merge_request? }
+    validates :merge_request, presence: { if: :merge_request_event? }
+    validates :merge_request, absence: { unless: :merge_request_event? }
+    validates :tag, inclusion: { in: [false], if: :merge_request_event? }
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
@@ -170,12 +179,37 @@ module Ci
 
     scope :sort_by_merge_request_pipelines, -> do
       sql = 'CASE ci_pipelines.source WHEN (?) THEN 0 ELSE 1 END, ci_pipelines.id DESC'
-      query = ActiveRecord::Base.send(:sanitize_sql_array, [sql, sources[:merge_request]]) # rubocop:disable GitlabSecurity/PublicSend
+      query = ActiveRecord::Base.send(:sanitize_sql_array, [sql, sources[:merge_request_event]]) # rubocop:disable GitlabSecurity/PublicSend
 
       order(query)
     end
 
     scope :for_user, -> (user) { where(user: user) }
+
+    scope :for_merge_request, -> (merge_request, ref, sha) do
+      ##
+      # We have to filter out unrelated MR pipelines.
+      # When merge request is empty, it selects general pipelines, such as push sourced pipelines.
+      # When merge request is matched, it selects MR pipelines.
+      where(merge_request: [nil, merge_request], ref: ref, sha: sha)
+        .sort_by_merge_request_pipelines
+    end
+
+    scope :triggered_by_merge_request, -> (merge_request) do
+      where(source: :merge_request_event, merge_request: merge_request)
+    end
+
+    scope :detached_merge_request_pipelines, -> (merge_request) do
+      triggered_by_merge_request(merge_request).where(target_sha: nil)
+    end
+
+    scope :merge_request_pipelines, -> (merge_request) do
+      triggered_by_merge_request(merge_request).where.not(target_sha: nil)
+    end
+
+    scope :mergeable_merge_request_pipelines, -> (merge_request) do
+      triggered_by_merge_request(merge_request).where(target_sha: merge_request.target_branch_sha)
+    end
 
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
@@ -264,6 +298,10 @@ module Ci
       sources.reject { |source| source == "external" }.values
     end
 
+    def self.latest_for_merge_request(merge_request, ref, sha)
+      for_merge_request(merge_request, ref, sha).first
+    end
+
     def self.ci_sources_values
       config_sources.values_at(:repository_source, :auto_devops_source, :unknown_source)
     end
@@ -299,7 +337,7 @@ module Ci
     def ordered_stages
       return legacy_stages unless complete?
 
-      if Feature.enabled?('ci_pipeline_persisted_stages')
+      if Feature.enabled?('ci_pipeline_persisted_stages', default_enabled: true)
         stages
       else
         legacy_stages
@@ -377,10 +415,6 @@ module Ci
     # Use constructs like: `pipeline.commit.present?`
     def commit
       @commit ||= Commit.lazy(project, sha)
-    end
-
-    def branch?
-      !tag? && !merge_request?
     end
 
     def stuck?
@@ -495,7 +529,7 @@ module Ci
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha })
+        ::Gitlab::Ci::YamlProcessor.new(ci_yaml_file, { project: project, sha: sha, user: user })
       rescue Gitlab::Ci::YamlProcessor::ValidationError => e
         self.yaml_errors = e.message
         nil
@@ -580,7 +614,7 @@ module Ci
     end
 
     def protected_ref?
-      strong_memoize(:protected_ref) { project.protected_for?(ref) }
+      strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
     end
 
     def legacy_trigger
@@ -605,7 +639,9 @@ module Ci
         variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
         variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
 
-        if merge_request? && merge_request
+        if merge_request_event? && merge_request
+          variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)
+          variables.append(key: 'CI_MERGE_REQUEST_TARGET_BRANCH_SHA', value: target_sha.to_s)
           variables.concat(merge_request.predefined_variables)
         end
       end
@@ -633,10 +669,10 @@ module Ci
     # All the merge requests for which the current pipeline runs/ran against
     def all_merge_requests
       @all_merge_requests ||=
-        if merge_request?
-          project.merge_requests.where(id: merge_request.id)
+        if merge_request_event?
+          MergeRequest.where(id: merge_request_id)
         else
-          project.merge_requests.where(source_branch: ref)
+          MergeRequest.where(source_project_id: project_id, source_branch: ref)
         end
     end
 
@@ -671,14 +707,39 @@ module Ci
       end
     end
 
+    # Returns the modified paths.
+    #
+    # The returned value is
+    # * Array: List of modified paths that should be evaluated
+    # * nil: Modified path can not be evaluated
     def modified_paths
       strong_memoize(:modified_paths) do
-        push_details.modified_paths
+        if merge_request_event?
+          merge_request.modified_paths
+        elsif branch_updated?
+          push_details.modified_paths
+        end
       end
     end
 
     def default_branch?
       ref == project.default_branch
+    end
+
+    def triggered_by_merge_request?
+      merge_request_event? && merge_request_id.present?
+    end
+
+    def detached_merge_request_pipeline?
+      triggered_by_merge_request? && target_sha.nil?
+    end
+
+    def merge_request_pipeline?
+      triggered_by_merge_request? && target_sha.present?
+    end
+
+    def mergeable_merge_request_pipeline?
+      triggered_by_merge_request? && target_sha == merge_request.target_branch_sha
     end
 
     private
@@ -712,14 +773,16 @@ module Ci
     end
 
     def git_ref
-      if branch?
+      if merge_request_event?
+        ##
+        # In the future, we're going to change this ref to
+        # merge request's merged reference, such as "refs/merge-requests/:iid/merge".
+        # In order to do that, we have to update GitLab-Runner's source pulling
+        # logic.
+        # See https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1092
         Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif merge_request?
-        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      elsif tag?
-        Gitlab::Git::TAG_REF_PREFIX + ref.to_s
       else
-        raise ArgumentError, 'Invalid pipeline type!'
+        super
       end
     end
 

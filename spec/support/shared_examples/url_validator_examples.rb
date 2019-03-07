@@ -1,5 +1,5 @@
 RSpec.shared_examples 'url validator examples' do |protocols|
-  let(:validator) { described_class.new(attributes: [:link_url],  **options) }
+  let(:validator) { described_class.new(attributes: [:link_url], **options) }
   let!(:badge) { build(:badge, link_url: 'http://www.example.com') }
 
   subject { validator.validate_each(badge, :link_url, badge.link_url) }

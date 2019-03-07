@@ -35,13 +35,13 @@ From there, you can:
 - Manage [2FA](account/two_factor_authentication.md)
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
-[use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
+  [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
 - Manage [personal access tokens](personal_access_tokens.md) to access your account via API and authorized applications
 - Add and delete emails linked to your account
 - Choose which email to use for notifications, web-based commits, and display on your public profile
-- Manage [SSH keys](../../ssh/README.md#ssh) to access your account via SSH
+- Manage [SSH keys](../../ssh/README.md) to access your account via SSH
 - Manage your [preferences](preferences.md#syntax-highlighting-theme)
-to customize your own GitLab experience
+  to customize your own GitLab experience
 - [View your active sessions](active_sessions.md) and revoke any of them if necessary
 - Access your audit log, a security log of important events involving your account
 
@@ -73,7 +73,7 @@ which also covers the case where you have projects hosted with
 
 ## Private profile
 
-The following information will be hidden from the user profile page (https://gitlab.example.com/username) if this feature is enabled:
+The following information will be hidden from the user profile page (`https://gitlab.example.com/username`) if this feature is enabled:
 
 - Atom feed
 - Date when account is created
@@ -88,7 +88,6 @@ To enable private profile:
 1. Navigate to your personal [profile settings](#profile-settings).
 1. Check the "Private profile" option.
 1. Hit **Update profile settings**.
-
 
 NOTE: **Note:**
 You and GitLab admins can see your the abovementioned information on your profile even if it is private.

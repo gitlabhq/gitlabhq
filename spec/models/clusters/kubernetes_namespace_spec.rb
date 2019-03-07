@@ -28,7 +28,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     let(:cluster_project) { create(:cluster_project) }
     let(:kubernetes_namespace) { build(:cluster_kubernetes_namespace, namespace: 'my-namespace') }
 
-    subject  { kubernetes_namespace }
+    subject { kubernetes_namespace }
 
     context 'when cluster is using the namespace' do
       before do
@@ -97,7 +97,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     let(:platform) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem, token: token) }
 
     let(:api_url) { 'https://kube.domain.com' }
-    let(:ca_pem) { 'CA PEM DATA' }
+    let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
     let(:token) { 'token' }
 
     let(:kubeconfig) do

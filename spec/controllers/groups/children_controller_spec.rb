@@ -110,7 +110,7 @@ describe Groups::ChildrenController do
           matched_project_1 = create(:project, :public, namespace: shared_subgroup, name: 'mobile-soc')
 
           l2_subgroup = create(:group, :public, parent: shared_subgroup, path: 'broadcom')
-          l3_subgroup = create(:group, :public,  parent: l2_subgroup, path: 'wifi-group')
+          l3_subgroup = create(:group, :public, parent: l2_subgroup, path: 'wifi-group')
           matched_project_2 = create(:project, :public, namespace: l3_subgroup, name: 'mobile')
 
           get :index, params: { group_id: group.to_param, filter: 'mobile' }, format: :json
@@ -289,7 +289,7 @@ describe Groups::ChildrenController do
       end
 
       context 'with subgroups and projects', :nested_groups do
-        let!(:first_page_subgroups) { create_list(:group,  per_page, :public,  parent: group) }
+        let!(:first_page_subgroups) { create_list(:group, per_page, :public, parent: group) }
         let!(:other_subgroup) { create(:group, :public, parent: group) }
         let!(:next_page_projects) { create_list(:project, per_page, :public, namespace: group) }
 
@@ -306,7 +306,7 @@ describe Groups::ChildrenController do
         end
 
         context 'with a mixed first page' do
-          let!(:first_page_subgroups) { [create(:group,  :public,  parent: group)] }
+          let!(:first_page_subgroups) { [create(:group, :public, parent: group)] }
           let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group) }
 
           it 'correctly calculates the counts' do

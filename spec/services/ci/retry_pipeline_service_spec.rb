@@ -285,7 +285,7 @@ describe Ci::RetryPipelineService, '#execute' do
     end
 
     it 'allows to retry failed pipeline' do
-      allow_any_instance_of(Project).to receive(:fetch_branch_allows_collaboration?).and_return(true)
+      allow_any_instance_of(Project).to receive(:branch_allows_collaboration?).and_return(true)
       allow_any_instance_of(Project).to receive(:empty_repo?).and_return(false)
 
       service.execute(pipeline)

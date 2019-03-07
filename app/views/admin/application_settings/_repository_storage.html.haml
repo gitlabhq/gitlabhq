@@ -11,7 +11,6 @@
           .form-text.text-muted
             Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents
             repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
-            %em (EXPERIMENTAL)
       .form-group
         = f.label :repository_storages, 'Storage paths for new projects', class: 'label-bold'
         = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),

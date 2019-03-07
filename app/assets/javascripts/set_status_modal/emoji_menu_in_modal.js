@@ -12,9 +12,8 @@ class EmojiMenuInModal extends AwardsHandler {
     this.bindEvents();
   }
 
-  postEmoji($emojiButton, awardUrl, selectedEmoji, callback) {
+  postEmoji($emojiButton, awardUrl, selectedEmoji) {
     this.selectEmojiCallback(selectedEmoji, this.emoji.glEmojiTag(selectedEmoji));
-    callback();
   }
 }
 

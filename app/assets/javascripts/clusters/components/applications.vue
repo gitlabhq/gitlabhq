@@ -52,6 +52,11 @@ export default {
       required: false,
       default: '',
     },
+    rbac: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data: () => ({
     elasticsearchLogo,
@@ -357,6 +362,9 @@ export default {
         :status-reason="applications.runner.statusReason"
         :request-status="applications.runner.requestStatus"
         :request-reason="applications.runner.requestReason"
+        :version="applications.runner.version"
+        :chart-repo="applications.runner.chartRepo"
+        :upgrade-available="applications.runner.upgradeAvailable"
         :disabled="!helmInstalled"
         title-link="https://docs.gitlab.com/runner/"
       >
@@ -442,6 +450,18 @@ export default {
         title-link="https://github.com/knative/docs"
       >
         <div slot="description">
+          <span v-if="!rbac">
+            <p v-if="!rbac" class="bs-callout bs-callout-info append-bottom-0">
+              {{
+                s__(`ClusterIntegration|You must have an RBAC-enabled cluster
+              to install Knative.`)
+              }}
+              <a :href="helpPath" target="_blank" rel="noopener noreferrer">
+                {{ __('More information') }}
+              </a>
+            </p>
+            <br />
+          </span>
           <p>
             {{
               s__(`ClusterIntegration|Knative extends Kubernetes to provide
@@ -465,7 +485,7 @@ export default {
               />
             </div>
           </template>
-          <template v-else-if="helmInstalled">
+          <template v-else-if="helmInstalled && rbac">
             <div class="form-group">
               <label for="knative-domainname">
                 {{ s__('ClusterIntegration|Knative Domain Name:') }}

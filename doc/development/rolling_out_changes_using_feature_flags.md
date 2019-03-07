@@ -10,12 +10,12 @@ disable those changes, without having to revert an entire release.
 Starting with GitLab 11.4, developers are required to use feature flags for
 non-trivial changes. Such changes include:
 
-* New features (e.g. a new merge request widget, epics, etc).
-* Complex performance improvements that may require additional testing in
+- New features (e.g. a new merge request widget, epics, etc).
+- Complex performance improvements that may require additional testing in
   production, such as rewriting complex queries.
-* Invasive changes to the user interface, such as a new navigation bar or the
+- Invasive changes to the user interface, such as a new navigation bar or the
   removal of a sidebar.
-* Adding support for importing projects from a third-party service.
+- Adding support for importing projects from a third-party service.
 
 In all cases, those working on the changes can best decide if a feature flag is
 necessary. For example, changing the color of a button doesn't need a feature
@@ -135,6 +135,20 @@ want to wait several hours or even days. This is entirely up to you, just make
 sure it is clearly communicated to your team, and the Production team if you
 anticipate any potential problems.
 
+Feature gates can also be actor based, for example a feature could first be
+enabled for only the `gitlab-ce` project. The project is passed by supplying a
+`--project` flag:
+
+```
+/chatops run feature set --project=gitlab-org/gitlab-ce some_feature true
+```
+
+For groups the `--group` flag is available:
+
+```
+/chatops run feature set --group=gitlab-org some_feature true
+```
+
 Once a change is deemed stable, submit a new merge request to remove the
 feature flag. This ensures the change is available to all users and self-hosted
 instances. Make sure to add the ~"feature flag" label to this merge request so
@@ -188,3 +202,12 @@ to be shipped. You can do this via ChatOps:
 
 Note that you can do this at any time, even before the merge request using the
 flag has been merged!
+
+### Cleaning up
+
+When a feature gate has been removed from the code base, the value still exists
+in the database. This can be removed through ChatOps:
+
+```
+/chatops run feature delete some_feature
+```

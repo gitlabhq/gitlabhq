@@ -98,6 +98,22 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it { expect(kubernetes.save).to be_truthy }
       end
+
+      context 'when api_url is localhost' do
+        let(:api_url) { 'http://localhost:22' }
+
+        it { expect(kubernetes.save).to be_falsey }
+
+        context 'Application settings allows local requests' do
+          before do
+            allow(ApplicationSetting)
+              .to receive(:current)
+              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: true))
+          end
+
+          it { expect(kubernetes.save).to be_truthy }
+        end
+      end
     end
 
     context 'when validates token' do
@@ -111,6 +127,36 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         let(:token) { nil }
 
         it { expect(kubernetes.save).to be_falsey }
+      end
+    end
+
+    context 'ca_cert' do
+      let(:kubernetes) { build(:cluster_platform_kubernetes, ca_pem: ca_pem) }
+
+      context 'with a valid certificate' do
+        let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'with an invalid certificate' do
+        let(:ca_pem) { "invalid" }
+
+        it { is_expected.to be_falsey }
+
+        context 'but the certificate is not being updated' do
+          before do
+            allow(kubernetes).to receive(:ca_cert_changed?).and_return(false)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+      end
+
+      context 'with no certificate' do
+        let(:ca_pem) { "" }
+
+        it { is_expected.to be_truthy }
       end
     end
 
@@ -154,19 +200,11 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   end
 
   describe '#rbac?' do
-    subject { kubernetes.rbac? }
-
     let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
 
-    context 'when authorization type is rbac' do
-      let(:kubernetes) { build(:cluster_platform_kubernetes, :rbac_enabled, :configured) }
+    subject { kubernetes.rbac? }
 
-      it { is_expected.to be_truthy }
-    end
-
-    context 'when authorization type is nil' do
-      it { is_expected.to be_falsey }
-    end
+    it { is_expected.to be_truthy }
   end
 
   describe '#actual_namespace' do
@@ -210,7 +248,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
     let(:kubernetes) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem) }
     let(:api_url) { 'https://kube.domain.com' }
-    let(:ca_pem) { 'CA PEM DATA' }
+    let(:ca_pem) { File.read(Rails.root.join('spec/fixtures/clusters/sample_cert.pem')) }
 
     subject { kubernetes.predefined_variables(project: cluster.project) }
 
@@ -305,6 +343,19 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
         end
       end
     end
+
+    context 'with a domain' do
+      let!(:cluster) do
+        create(:cluster, :provided_by_gcp, :with_domain,
+               platform_kubernetes: kubernetes)
+      end
+
+      it 'sets KUBE_INGRESS_BASE_DOMAIN' do
+        expect(subject).to include(
+          { key: 'KUBE_INGRESS_BASE_DOMAIN', value: cluster.domain, public: true }
+        )
+      end
+    end
   end
 
   describe '#terminals' do
@@ -325,12 +376,13 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     context 'with valid pods' do
       let(:pod) { kube_pod(app: environment.slug) }
+      let(:pod_with_no_terminal) { kube_pod(app: environment.slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
       before do
         stub_reactive_cache(
           service,
-          pods: [pod, pod, kube_pod(app: "should-be-filtered-out")]
+          pods: [pod, pod, pod_with_no_terminal, kube_pod(app: "should-be-filtered-out")]
         )
       end
 

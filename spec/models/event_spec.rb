@@ -243,6 +243,20 @@ describe Event do
           expect(event.visible_to_user?(admin)).to eq true
         end
       end
+
+      context 'private project' do
+        let(:project) { create(:project, :private) }
+        let(:target) { note_on_issue }
+
+        it do
+          expect(event.visible_to_user?(non_member)).to eq false
+          expect(event.visible_to_user?(author)).to eq false
+          expect(event.visible_to_user?(assignee)).to eq false
+          expect(event.visible_to_user?(member)).to eq true
+          expect(event.visible_to_user?(guest)).to eq true
+          expect(event.visible_to_user?(admin)).to eq true
+        end
+      end
     end
 
     context 'merge request diff note event' do
@@ -265,8 +279,8 @@ describe Event do
 
         it do
           expect(event.visible_to_user?(non_member)).to eq false
-          expect(event.visible_to_user?(author)).to eq true
-          expect(event.visible_to_user?(assignee)).to eq true
+          expect(event.visible_to_user?(author)).to eq false
+          expect(event.visible_to_user?(assignee)).to eq false
           expect(event.visible_to_user?(member)).to eq true
           expect(event.visible_to_user?(guest)).to eq false
           expect(event.visible_to_user?(admin)).to eq true
@@ -385,10 +399,7 @@ describe Event do
           expect(event.visible_to_user?(nil)).to be_falsy
           expect(event.visible_to_user?(non_member)).to be_falsy
           expect(event.visible_to_user?(author)).to be_truthy
-
-          # It is very unexpected that a private personal snippet is not visible
-          # to an instance administrator. This should be fixed in the future.
-          expect(event.visible_to_user?(admin)).to be_falsy
+          expect(event.visible_to_user?(admin)).to be_truthy
         end
       end
     end

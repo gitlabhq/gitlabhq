@@ -5,7 +5,7 @@ describe Projects::CommitController do
   set(:user)     { create(:user) }
   let(:commit)   { project.commit("master") }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
-  let(:master_pickable_commit)  { project.commit(master_pickable_sha) }
+  let(:master_pickable_commit) { project.commit(master_pickable_sha) }
 
   before do
     sign_in(user)

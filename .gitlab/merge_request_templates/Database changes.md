@@ -16,7 +16,7 @@ Add a description of your merge request here.
 
 ## Database checklist
 
-- [ ] Conforms to the [database guides](https://docs.gitlab.com/ee/development/README.html#databases-guides)
+- [ ] Conforms to the [database guides](https://docs.gitlab.com/ee/development/README.html#database-guides)
 
 When adding migrations:
 
@@ -49,10 +49,10 @@ When removing columns, tables, indexes or other structures:
 ## General checklist
 
 - [ ] [Changelog entry](https://docs.gitlab.com/ee/development/changelog.html) added, if necessary
-- [ ] [Documentation created/updated](https://docs.gitlab.com/ee/development/documentation/index.html#contributing-to-docs)
+- [ ] [Documentation created/updated](https://docs.gitlab.com/ee/development/documentation/)
 - [ ] [Tests added for this feature/bug](https://docs.gitlab.com/ee/development/testing_guide/index.html)
 - [ ] Conforms to the [code review guidelines](https://docs.gitlab.com/ee/development/code_review.html)
 - [ ] Conforms to the [merge request performance guidelines](https://docs.gitlab.com/ee/development/merge_request_performance_guidelines.html)
-- [ ] Conforms to the [style guides](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/CONTRIBUTING.md#style-guides)
+- [ ] Conforms to the [style guides](https://docs.gitlab.com/ee/development/contributing/style_guides.html)
 
 /label ~database

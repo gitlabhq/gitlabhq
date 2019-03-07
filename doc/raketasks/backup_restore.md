@@ -329,6 +329,11 @@ For installations from source:
           remote_directory: 'my.s3.bucket'
           # Turns on AWS Server-Side Encryption with Amazon S3-Managed Keys for backups, this is optional
           # encryption: 'AES256'
+          # Turns on AWS Server-Side Encryption with Amazon Customer-Provided Encryption Keys for backups, this is optional
+          #   This should be set to the base64-encoded encryption key for Amazon S3 to use to encrypt or decrypt your data.
+          #   'encryption' must also be set in order for this to have any effect.
+          #   To avoid storing the key on disk, the key can also be specified via the `GITLAB_BACKUP_ENCRYPTION_KEY` environment variable.
+          # encryption_key: '<base64 key>'
           # Specifies Amazon S3 storage class to use for backups, this is optional
           # storage_class: 'STANDARD'
     ```
@@ -391,7 +396,7 @@ with the name of your bucket:
 If you want to use Google Cloud Storage to save backups, you'll have to create
 an access key from the Google console first:
 
-1. Go to the storage settings page https://console.cloud.google.com/storage/settings
+1. Go to the storage settings page <https://console.cloud.google.com/storage/settings>
 1. Select "Interoperability" and create an access key
 1. Make note of the "Access Key" and "Secret" and replace them in the
    configurations below
@@ -455,6 +460,7 @@ backups will be copied to, and will be created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, just use `.` instead.
 
+NOTE: **Note:** Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 For Omnibus GitLab packages:
 
@@ -576,7 +582,6 @@ For installations from source:
     ```
 
 1. [Restart GitLab] for the changes to take effect.
-
 
 ```sh
 sudo -u git crontab -e # Edit the crontab for the git user
@@ -819,9 +824,22 @@ If you have failed to [back up the secrets file](#storing-configuration-files),
 then users with 2FA enabled will not be able to log into GitLab. In that case,
 you need to [disable 2FA for everyone](../security/two_factor_authentication.md#disabling-2fa-for-everyone).
 
-In the case of CI/CD, if your project has secure variables set, you might experience
-some weird behavior, like stuck jobs or 500 errors. In that case, you can try
-deleting the `ci_variables` table from the database.
+The secrets file is also responsible for storing the encryption key for several
+columns containing sensitive information. If the key is lost, GitLab will be
+unable to decrypt those columns. This will break a wide range of functionality,
+including (but not restricted to):
+
+* [CI/CD variables](../ci/variables/README.md)
+* [Kubernetes / GCP integration](../user/project/clusters/index.md)
+* [Custom Pages domains](../user/project/pages/getting_started_part_three.md)
+* [Project error tracking](../user/project/operations/error_tracking.md)
+* [Runner authentication](../ci/runners/README.md)
+* [Project mirroring](../workflow/repository_mirroring.md)
+* [Web hooks](../user/project/integrations/webhooks.md)
+
+In the case of CI/CD, variables, you might experience some weird behavior, like
+stuck jobs or 500 errors. In that case, you can try removing  contents of the
+`ci_group_variables` and `ci_project_variables` tables from the database.
 
 CAUTION: **Warning:**
 Use the following commands at your own risk, and make sure you've taken a
@@ -841,9 +859,10 @@ backup beforehand.
     sudo -u git -H bundle exec rails dbconsole RAILS_ENV=production
     ```
 
-1.  Check the `ci_variables` table:
+1.  Check the `ci_group_variables` and `ci_variables` tables:
 
     ```sql
+    SELECT * FROM public."ci_group_variables";
     SELECT * FROM public."ci_variables";
     ```
 
@@ -852,6 +871,7 @@ backup beforehand.
 1.  Drop the table:
 
     ```sql
+    DELETE FROM ci_group_variables;
     DELETE FROM ci_variables;
     ```
 
@@ -860,6 +880,10 @@ backup beforehand.
 
 You should now be able to visit your project, and the jobs will start
 running again.
+
+A similar strategy can be employed for the remaining features - by removing the
+data that cannot be decrypted, GitLab can be brought back into working order,
+and the lost data can be manually replaced.
 
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [restart GitLab]: ../administration/restart_gitlab.md#installations-from-source

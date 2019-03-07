@@ -1,59 +1,20 @@
 <script>
-import _ from 'underscore';
 import { GlLoadingIcon } from '@gitlab/ui';
 import StageColumnComponent from './stage_column_component.vue';
+import GraphMixin from '../../mixins/graph_component_mixin';
 
 export default {
   components: {
     StageColumnComponent,
     GlLoadingIcon,
   },
-  props: {
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
-    pipeline: {
-      type: Object,
-      required: true,
-    },
-  },
-  computed: {
-    graph() {
-      return this.pipeline.details && this.pipeline.details.stages;
-    },
-  },
-  methods: {
-    capitalizeStageName(name) {
-      const escapedName = _.escape(name);
-      return escapedName.charAt(0).toUpperCase() + escapedName.slice(1);
-    },
-    isFirstColumn(index) {
-      return index === 0;
-    },
-    stageConnectorClass(index, stage) {
-      let className;
-
-      // If it's the first stage column and only has one job
-      if (index === 0 && stage.groups.length === 1) {
-        className = 'no-margin';
-      } else if (index > 0) {
-        // If it is not the first column
-        className = 'left-margin';
-      }
-
-      return className;
-    },
-    refreshPipelineGraph() {
-      this.$emit('refreshPipelineGraph');
-    },
-  },
+  mixins: [GraphMixin],
 };
 </script>
 <template>
   <div class="build-content middle-block js-pipeline-graph">
     <div class="pipeline-visualization pipeline-graph pipeline-tab-content">
-      <div class="text-center"><gl-loading-icon v-if="isLoading" :size="3" /></div>
+      <div v-if="isLoading" class="m-auto"><gl-loading-icon :size="3" /></div>
 
       <ul v-if="!isLoading" class="stage-column-list">
         <stage-column-component

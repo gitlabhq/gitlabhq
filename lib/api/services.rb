@@ -368,46 +368,9 @@ module API
           name: :webhook,
           type: String,
           desc: 'The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces…'
-        }
-      ],
-      'hipchat' => [
-        {
-          required: true,
-          name: :token,
-          type: String,
-          desc: 'The room token'
         },
-        {
-          required: false,
-          name: :room,
-          type: String,
-          desc: 'The room name or ID'
-        },
-        {
-          required: false,
-          name: :color,
-          type: String,
-          desc: 'The room color'
-        },
-        {
-          required: false,
-          name: :notify,
-          type: Boolean,
-          desc: 'Enable notifications'
-        },
-        {
-          required: false,
-          name: :api_version,
-          type: String,
-          desc: 'Leave blank for default (v2)'
-        },
-        {
-          required: false,
-          name: :server,
-          type: String,
-          desc: 'Leave blank for default. https://hipchat.example.com'
-        }
-      ],
+        CHAT_NOTIFICATION_EVENTS
+      ].flatten,
       'irker' => [
         {
           required: true,
@@ -468,7 +431,7 @@ module API
         {
           required: false,
           name: :jira_issue_transition_id,
-          type: Integer,
+          type: String,
           desc: 'The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`'
         }
       ],
@@ -629,6 +592,26 @@ module API
           desc: 'The description of the tracker'
         }
       ],
+      'youtrack' => [
+        {
+          required: true,
+          name: :project_url,
+          type: String,
+          desc: 'The project URL'
+        },
+        {
+          required: true,
+          name: :issues_url,
+          type: String,
+          desc: 'The issues URL'
+        },
+        {
+          required: false,
+          name: :description,
+          type: String,
+          desc: 'The description of the tracker'
+        }
+      ],
       'slack' => [
         CHAT_NOTIFICATION_SETTINGS,
         CHAT_NOTIFICATION_FLAGS,
@@ -691,7 +674,6 @@ module API
       ExternalWikiService,
       FlowdockService,
       HangoutsChatService,
-      HipchatService,
       IrkerService,
       JiraService,
       KubernetesService,
@@ -703,6 +685,7 @@ module API
       PrometheusService,
       PushoverService,
       RedmineService,
+      YoutrackService,
       SlackService,
       MattermostService,
       MicrosoftTeamsService,
@@ -763,7 +746,7 @@ module API
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS  do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before { authenticate! }
       before { authorize_admin_project }
 
@@ -842,7 +825,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS  do
+      resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Trigger a slash command for #{service_slug}" do
           detail 'Added in GitLab 8.13'
         end

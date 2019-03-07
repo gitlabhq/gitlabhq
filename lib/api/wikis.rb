@@ -11,9 +11,7 @@ module API
         }
       end
 
-      params :wiki_page_params do
-        requires :content, type: String, desc: 'Content of a wiki page'
-        requires :title, type: String, desc: 'Title of a wiki page'
+      params :common_wiki_page_params do
         optional :format,
           type: String,
           values: ProjectWiki::MARKUPS.values.map(&:to_s),
@@ -22,7 +20,9 @@ module API
       end
     end
 
-    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+    WIKI_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(slug: API::NO_SLASH_URL_PART_REGEX)
+
+    resource :projects, requirements: WIKI_ENDPOINT_REQUIREMENTS do
       desc 'Get a list of wiki pages' do
         success Entities::WikiPageBasic
       end
@@ -52,7 +52,9 @@ module API
         success Entities::WikiPage
       end
       params do
-        use :wiki_page_params
+        requires :title, type: String, desc: 'Title of a wiki page'
+        requires :content, type: String, desc: 'Content of a wiki page'
+        use :common_wiki_page_params
       end
       post ':id/wikis' do
         authorize! :create_wiki, user_project
@@ -70,7 +72,10 @@ module API
         success Entities::WikiPage
       end
       params do
-        use :wiki_page_params
+        optional :title, type: String, desc: 'Title of a wiki page'
+        optional :content, type: String, desc: 'Content of a wiki page'
+        use :common_wiki_page_params
+        at_least_one_of :content, :title, :format
       end
       put ':id/wikis/:slug' do
         authorize! :create_wiki, user_project
@@ -103,7 +108,7 @@ module API
         requires :file, type: ::API::Validations::Types::SafeFile, desc: 'The attachment file to be uploaded'
         optional :branch, type: String, desc: 'The name of the branch'
       end
-      post ":id/wikis/attachments", requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
+      post ":id/wikis/attachments" do
         authorize! :create_wiki, user_project
 
         result = ::Wikis::CreateAttachmentService.new(user_project,

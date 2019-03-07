@@ -53,11 +53,11 @@ describe Gitlab::BlobHelper do
 
   describe '#text?' do
     it 'returns true' do
-      expect(blob.text?).to be_truthy
+      expect(blob.text_in_repo?).to be_truthy
     end
 
     it 'returns false' do
-      expect(large_blob.text?).to be_falsey
+      expect(large_blob.text_in_repo?).to be_falsey
     end
   end
 

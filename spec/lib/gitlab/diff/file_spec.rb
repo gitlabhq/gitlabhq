@@ -310,7 +310,7 @@ describe Gitlab::Diff::File do
     context 'when the content changed' do
       context 'when the file represented by the diff file is binary' do
         before do
-          allow(diff_file).to receive(:raw_binary?).and_return(true)
+          allow(diff_file).to receive(:binary?).and_return(true)
         end
 
         it 'returns a No Preview viewer' do
@@ -345,7 +345,7 @@ describe Gitlab::Diff::File do
 
       context 'when the file represented by the diff file is binary' do
         before do
-          allow(diff_file).to receive(:raw_binary?).and_return(true)
+          allow(diff_file).to receive(:binary?).and_return(true)
         end
 
         it 'returns an Added viewer' do
@@ -380,7 +380,7 @@ describe Gitlab::Diff::File do
 
       context 'when the file represented by the diff file is binary' do
         before do
-          allow(diff_file).to receive(:raw_binary?).and_return(true)
+          allow(diff_file).to receive(:binary?).and_return(true)
         end
 
         it 'returns a Deleted viewer' do
@@ -436,7 +436,7 @@ describe Gitlab::Diff::File do
         allow(diff_file).to receive(:deleted_file?).and_return(false)
         allow(diff_file).to receive(:renamed_file?).and_return(false)
         allow(diff_file).to receive(:mode_changed?).and_return(false)
-        allow(diff_file).to receive(:raw_text?).and_return(false)
+        allow(diff_file).to receive(:text?).and_return(false)
       end
 
       it 'returns a No Preview viewer' do

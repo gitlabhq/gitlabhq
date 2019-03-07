@@ -1,4 +1,4 @@
-- if @search_objects.empty?
+- if @search_objects.to_a.empty?
   = render partial: "search/results/empty"
 - else
   .row-content-block
@@ -6,9 +6,11 @@
       = search_entries_info(@search_objects, @scope, @search_term)
     - unless @show_snippets
       - if @project
-        in project #{link_to @project.full_name, [@project.namespace.becomes(Namespace), @project]}
+        - link_to_project = link_to(@project.full_name, [@project.namespace.becomes(Namespace), @project])
+        = _("in project %{link_to_project}").html_safe % { link_to_project: link_to_project }
       - elsif @group
-        in group #{link_to @group.name, @group}
+        - link_to_group = link_to(@group.name, @group)
+        = _("in group %{link_to_group}").html_safe % { link_to_group: link_to_group }
 
   .results.prepend-top-10
     - if @scope == 'commits'

@@ -28,13 +28,13 @@ class UploadsController < ApplicationController
   end
 
   def find_model
-    return nil unless params[:id]
+    return unless params[:id]
 
     upload_model_class.find(params[:id])
   end
 
   def authorize_access!
-    return nil unless model
+    return unless model
 
     authorized =
       case model
@@ -54,7 +54,7 @@ class UploadsController < ApplicationController
   end
 
   def authorize_create_access!
-    return nil unless model
+    return unless model
 
     # for now we support only personal snippets comments
     authorized = can?(current_user, :comment_personal_snippet, model)
@@ -68,6 +68,10 @@ class UploadsController < ApplicationController
     else
       authenticate_user!
     end
+  end
+
+  def cache_publicly?
+    User === model || Appearance === model
   end
 
   def upload_model_class

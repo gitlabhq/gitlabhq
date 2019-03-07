@@ -24,10 +24,10 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html  do
+      format.html do
         render
       end
-      format.diff  do
+      format.diff do
         send_git_diff(@project.repository, @commit.diff_refs)
       end
       format.patch do
@@ -65,7 +65,11 @@ class Projects::CommitController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def merge_requests
-    @merge_requests = @commit.merge_requests.map do |mr|
+    @merge_requests = MergeRequestsFinder.new(
+      current_user,
+      project_id: @project.id,
+      commit_sha: @commit.sha
+    ).execute.map do |mr|
       { iid: mr.iid, path: merge_request_path(mr), title: mr.title }
     end
 

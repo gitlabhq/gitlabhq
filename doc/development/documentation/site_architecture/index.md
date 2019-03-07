@@ -2,10 +2,17 @@
 description: "Learn how GitLab's documentation website is architectured."
 ---
 
-# Docs site architecture
+# Documentation site architecture
 
 Learn how we build and architecture [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs)
 and deploy it to <https://docs.gitlab.com>.
+
+## Repository
+
+While the source of the documentation content is stored in GitLab's respective product
+repositories, the source that is used to build the documentation site _from that content_
+is located at <https://gitlab.com/gitlab-com/gitlab-docs>. See the README there for
+detailed information.
 
 ## Assets
 
@@ -37,7 +44,7 @@ read through the [global navigation](global_nav.md) doc.
 The docs site is deployed to production with GitLab Pages, and previewed in
 merge requests with Review Apps.
 
-The deployment aspects will be soon transfered from the [original document](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md)
+The deployment aspects will be soon transferred from the [original document](https://gitlab.com/gitlab-com/gitlab-docs/blob/master/README.md)
 to this page.
 
 <!--

@@ -51,6 +51,7 @@ request path. By doing this we avoid query parameter ordering problems and make
 route matching easier.
 
 For more information see:
+
 - [`Poll-Interval` header](fe_guide/performance.md#realtime-components)
 - [RFC 7232](https://tools.ietf.org/html/rfc7232)
 - [ETag proposal](https://gitlab.com/gitlab-org/gitlab-ce/issues/26926)

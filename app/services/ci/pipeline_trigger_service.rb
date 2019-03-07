@@ -7,6 +7,8 @@ module Ci
     def execute
       if trigger_from_token
         create_pipeline_from_trigger(trigger_from_token)
+      elsif job_from_token
+        create_pipeline_from_job(job_from_token)
       end
     end
 
@@ -33,6 +35,14 @@ module Ci
       strong_memoize(:trigger) do
         Ci::Trigger.find_by_token(params[:token].to_s)
       end
+    end
+
+    def create_pipeline_from_job(job)
+      # overridden in EE
+    end
+
+    def job_from_token
+      # overridden in EE
     end
 
     def variables

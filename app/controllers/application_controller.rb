@@ -43,7 +43,10 @@ class ApplicationController < ActionController::Base
     :git_import_enabled?, :gitlab_project_import_enabled?,
     :manifest_import_enabled?
 
+  # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
+  # concerns due to caching private data.
   DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store".freeze
+  DEFAULT_GITLAB_CONTROL_NO_CACHE = "#{DEFAULT_GITLAB_CACHE_CONTROL}, no-cache".freeze
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -76,7 +79,7 @@ class ApplicationController < ActionController::Base
   end
 
   def redirect_back_or_default(default: root_path, options: {})
-    redirect_to request.referer.present? ? :back : default, options
+    redirect_back(fallback_location: default, **options)
   end
 
   def not_found
@@ -137,6 +140,8 @@ class ApplicationController < ActionController::Base
     if response.status == 422 && response.body.present? && response.content_type == 'application/json'.freeze
       payload[:response] = response.body
     end
+
+    payload[:queue_duration] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
   end
 
   ##
@@ -177,11 +182,17 @@ class ApplicationController < ActionController::Base
     # hide existence of the resource, rather tell them they cannot access it using
     # the provided message
     status ||= message.present? ? :forbidden : :not_found
+    template =
+      if status == :not_found
+        "errors/not_found"
+      else
+        "errors/access_denied"
+      end
 
     respond_to do |format|
       format.any { head status }
       format.html do
-        render "errors/access_denied",
+        render template,
                layout: "errors",
                status: status,
                locals: { message: message }
@@ -227,9 +238,9 @@ class ApplicationController < ActionController::Base
   end
 
   def no_cache_headers
-    response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+    headers['Cache-Control'] = DEFAULT_GITLAB_CONTROL_NO_CACHE
+    headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
+    headers['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
   end
 
   def default_headers
@@ -239,10 +250,16 @@ class ApplicationController < ActionController::Base
     headers['X-Content-Type-Options'] = 'nosniff'
 
     if current_user
-      # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
-      # concerns due to caching private data.
-      headers['Cache-Control'] = DEFAULT_GITLAB_CACHE_CONTROL
-      headers["Pragma"] = "no-cache" # HTTP 1.0 compatibility
+      headers['Cache-Control'] = default_cache_control
+      headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
+    end
+  end
+
+  def default_cache_control
+    if request.xhr?
+      ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL
+    else
+      DEFAULT_GITLAB_CACHE_CONTROL
     end
   end
 

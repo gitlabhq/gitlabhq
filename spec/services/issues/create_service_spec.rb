@@ -172,7 +172,7 @@ describe Issues::CreateService do
         end
 
         it 'removes assignee when user id is 0' do
-          opts = { title: 'Title', description: 'Description',  assignee_ids: [0] }
+          opts = { title: 'Title', description: 'Description', assignee_ids: [0] }
 
           issue = described_class.new(project, user, opts).execute
 

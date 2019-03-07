@@ -1,11 +1,11 @@
 - environment = local_assigns.fetch(:environment, nil)
-- is_commit = local_assigns.fetch(:is_commit, false)
+- diff_page_context = local_assigns.fetch(:diff_page_context, nil)
 - file_hash = hexdigest(diff_file.file_path)
 - image_diff = diff_file.rich_viewer && diff_file.rich_viewer.partial_name == 'image'
 - image_replaced = diff_file.old_content_sha && diff_file.old_content_sha != diff_file.content_sha
 
 .diff-file.file-holder{ id: file_hash, data: diff_file_html_data(project, diff_file.file_path, diff_file.content_sha) }
-  .js-file-title.file-title-flex-parent{ class: is_commit ? "is-commit" : "" }
+  .js-file-title.file-title-flex-parent{ class: diff_page_context }
     .file-header-content
       = render "projects/diffs/file_header", diff_file: diff_file, url: "##{file_hash}"
 

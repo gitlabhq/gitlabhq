@@ -83,7 +83,7 @@ module Gitlab
         extend ActiveSupport::Concern
 
         def full_path
-          @full_path ||= build_full_path
+          route&.path || build_full_path
         end
 
         def build_full_path
@@ -99,7 +99,12 @@ module Gitlab
         end
       end
 
-      # Namespace model.
+      # Route model
+      class Route < ActiveRecord::Base
+        belongs_to :source, inverse_of: :route, polymorphic: true
+      end
+
+      # Namespace model
       class Namespace < ActiveRecord::Base
         self.table_name = 'namespaces'
         self.inheritance_column = nil
@@ -107,6 +112,8 @@ module Gitlab
         include Routable
 
         belongs_to :parent, class_name: 'Namespace', inverse_of: 'namespaces'
+
+        has_one :route, -> { where(source_type: 'Namespace') }, inverse_of: :source, foreign_key: :source_id
 
         has_many :projects, inverse_of: :parent
         has_many :namespaces, inverse_of: :parent
@@ -134,6 +141,7 @@ module Gitlab
 
         belongs_to :parent, class_name: 'Namespace', foreign_key: :namespace_id, inverse_of: 'projects'
 
+        has_one :route, -> { where(source_type: 'Project') }, inverse_of: :source, foreign_key: :source_id
         has_one :project_repository, inverse_of: :project
 
         delegate :disk_path, to: :storage
@@ -194,6 +202,8 @@ module Gitlab
       def project_repositories(start_id, stop_id)
         projects
           .without_project_repository
+          .includes(:route, parent: [:route]).references(:routes)
+          .includes(:parent).references(:namespaces)
           .where(id: start_id..stop_id)
           .map { |project| build_attributes_for_project(project) }
           .compact

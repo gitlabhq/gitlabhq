@@ -1,6 +1,5 @@
--# This partial is overridden in EE
 .nav-controls
-  - if clusterable.can_create_cluster? && clusterable.clusters.empty?
+  - if clusterable.can_add_cluster?
     = link_to s_('ClusterIntegration|Add Kubernetes cluster'), clusterable.new_path, class: 'btn btn-success js-add-cluster'
   - else
     %span.btn.btn-add-cluster.disabled.js-add-cluster

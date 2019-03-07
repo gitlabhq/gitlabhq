@@ -11,14 +11,23 @@
 }
 
 .divergence-graph {
+  $graph-side-width: 80px;
+  $graph-separator-width: 1px;
+
   padding: 0 6px;
 
   .graph-side {
     position: relative;
-    width: 80px;
+    width: $graph-side-width;
     height: 22px;
     padding: 5px 0 13px;
     float: left;
+
+    &.full {
+      width: $graph-side-width * 2 + $graph-separator-width;
+      display: flex;
+      justify-content: center;
+    }
 
     .bar {
       position: absolute;
@@ -57,7 +66,7 @@
 
   .graph-separator {
     position: relative;
-    width: 1px;
+    width: $graph-separator-width;
     height: 18px;
     margin: 5px 0 0;
     float: left;

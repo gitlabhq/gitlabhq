@@ -22,14 +22,14 @@ Once you have performed those two steps, you can [create a VM](#creating-the-vm)
 
 To deploy GitLab on GCP you need to follow five simple steps:
 
-1. Go to https://console.cloud.google.com/compute/instances and login with your Google credentials.
+1. Go to <https://console.cloud.google.com/compute/instances> and login with your Google credentials.
 
 1. Click on **Create**
 
     ![Search for GitLab](img/launch_vm.png)
 
 1.  On the next page, you can select the type of VM as well as the
-   estimated costs. Provide the name of the instance, desired datacenter, and machine type. Note that GitLab recommends at least 2 vCPU's and 4GB of RAM. 
+   estimated costs. Provide the name of the instance, desired datacenter, and machine type. Note that GitLab recommends at least 2 vCPU's and 4GB of RAM.
 
     ![Launch on Compute Engine](img/vm_details.png)
 
@@ -51,7 +51,7 @@ After a few seconds, the instance will be created and available to log in. The n
 
     ![GitLab first sign in](img/ssh_terminal.png)
 
-1. Next, follow the instructions for installing GitLab for the operating system you choose, at https://about.gitlab.com/installation/. You can use the IP address from the step above, as the hostname.
+1. Next, follow the instructions for installing GitLab for the operating system you choose, at <https://about.gitlab.com/installation/>. You can use the IP address from the step above, as the hostname.
 
 1. Congratulations! GitLab is now installed and you can access it via your browser. To finish installation, open the URL in your browser and provide the initial administrator password. The username for this account is `root`.
 

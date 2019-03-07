@@ -1,12 +1,13 @@
 FactoryBot.define do
   factory :personal_access_token do
     user
-    token { SecureRandom.hex(50) }
     sequence(:name) { |n| "PAT #{n}" }
     revoked false
     expires_at { 5.days.from_now }
     scopes ['api']
     impersonation false
+
+    after(:build) { |personal_access_token| personal_access_token.ensure_token }
 
     trait :impersonation do
       impersonation true
@@ -21,7 +22,7 @@ FactoryBot.define do
     end
 
     trait :invalid do
-      token nil
+      token_digest nil
     end
   end
 end

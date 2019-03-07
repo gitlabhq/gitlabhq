@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe QA::Resource::Base do
-  include Support::StubENV
+  include Helpers::StubENV
 
   let(:resource) { spy('resource') }
   let(:location) { 'http://location' }
@@ -138,10 +138,6 @@ describe QA::Resource::Base do
   describe '.attribute' do
     include_context 'simple resource'
 
-    it 'appends new attribute' do
-      expect(subject.attributes_names).to eq([:no_block, :test, :web_url])
-    end
-
     context 'when the attribute is populated via a block' do
       it 'returns value from the block' do
         result = subject.fabricate!(resource: resource)
@@ -215,6 +211,42 @@ describe QA::Resource::Base do
 
         expect { result.no_block }
           .to raise_error(described_class::NoValueError, "No value was computed for no_block of #{resource.class.name}.")
+      end
+    end
+
+    context 'when multiple resources have the same attribute name' do
+      let(:base) do
+        Class.new(QA::Resource::Base) do
+          def fabricate!
+            'any'
+          end
+
+          def self.current_url
+            'http://stub'
+          end
+        end
+      end
+      let(:first_resource) do
+        Class.new(base) do
+          attribute :test do
+            'first block'
+          end
+        end
+      end
+      let(:second_resource) do
+        Class.new(base) do
+          attribute :test do
+            'second block'
+          end
+        end
+      end
+
+      it 'has unique attribute values' do
+        first_result = first_resource.fabricate!(resource: first_resource.new)
+        second_result = second_resource.fabricate!(resource: second_resource.new)
+
+        expect(first_result.test).to eq 'first block'
+        expect(second_result.test).to eq 'second block'
       end
     end
   end

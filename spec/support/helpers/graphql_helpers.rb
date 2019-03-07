@@ -77,14 +77,24 @@ module GraphqlHelpers
   def query_graphql_field(name, attributes = {}, fields = nil)
     fields ||= all_graphql_fields_for(name.classify)
     attributes = attributes_to_graphql(attributes)
+    attributes = "(#{attributes})" if attributes.present?
     <<~QUERY
-      #{name}(#{attributes}) {
-        #{fields}
-      }
+      #{name}#{attributes}
+      #{wrap_fields(fields)}
     QUERY
   end
 
-  def all_graphql_fields_for(class_name)
+  def wrap_fields(fields)
+    return unless fields.strip.present?
+
+    <<~FIELDS
+    {
+      #{fields}
+    }
+    FIELDS
+  end
+
+  def all_graphql_fields_for(class_name, parent_types = Set.new)
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
 
@@ -92,8 +102,17 @@ module GraphqlHelpers
       # We can't guess arguments, so skip fields that require them
       next if required_arguments?(field)
 
+      singular_field_type = field_type(field)
+
+      # If field type is the same as parent type, then we're hitting into
+      # mutual dependency. Break it from infinite recursion
+      next if parent_types.include?(singular_field_type)
+
       if nested_fields?(field)
-        "#{name} { #{all_graphql_fields_for(field_type(field))} }"
+        fields =
+          all_graphql_fields_for(singular_field_type, parent_types | [type])
+
+        "#{name} { #{fields} }"
       else
         name
       end
@@ -106,8 +125,8 @@ module GraphqlHelpers
     end.join(", ")
   end
 
-  def post_graphql(query, current_user: nil, variables: nil)
-    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }
+  def post_graphql(query, current_user: nil, variables: nil, headers: {})
+    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }, headers: headers
   end
 
   def post_graphql_mutation(mutation, current_user: nil)
@@ -149,7 +168,7 @@ module GraphqlHelpers
     # - List
     # - String!
     # - String
-    field_type = field_type.of_type  while field_type.respond_to?(:of_type)
+    field_type = field_type.of_type while field_type.respond_to?(:of_type)
 
     field_type
   end

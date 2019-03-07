@@ -3,9 +3,11 @@ require Rails.root.join('db', 'migrate', '20180201110056_add_foreign_keys_to_tod
 
 describe AddForeignKeysToTodos, :migration do
   let(:todos) { table(:todos) }
+  let(:users) { table(:users) }
+  let(:projects) { table(:projects) }
 
-  let(:project) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-  let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let(:project) { projects.create!(name: 'gitlab', path: 'gitlab-org/gitlab-ce', namespace_id: 1) }
+  let(:user) { users.create!(email: 'email@email.com', name: 'foo', username: 'foo', projects_limit: 0) }
 
   context 'add foreign key on user_id' do
     let!(:todo_with_user) { create_todo(user_id: user.id) }

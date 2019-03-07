@@ -31,7 +31,7 @@
                   %strong= t scope, scope: [:doorkeeper, :scopes]
                   .text-secondary= t scope, scope: [:doorkeeper, :scope_desc]
         .form-actions.text-right
-          = form_tag oauth_authorization_path, method: :delete, class: 'inline'  do
+          = form_tag oauth_authorization_path, method: :delete, class: 'inline' do
             = hidden_field_tag :client_id, @pre_auth.client.uid
             = hidden_field_tag :redirect_uri, @pre_auth.redirect_uri
             = hidden_field_tag :state, @pre_auth.state

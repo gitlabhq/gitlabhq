@@ -42,7 +42,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="md-suggestion">
     <suggestion-diff-header
       class="qa-suggestion-diff-header"
       :can-apply="suggestion.appliable && suggestion.current_user.can_apply && !disabled"
@@ -50,7 +50,7 @@ export default {
       :help-page-path="helpPagePath"
       @apply="applySuggestion"
     />
-    <table class="mb-3 md-suggestion-diff">
+    <table class="mb-3 md-suggestion-diff js-syntax-highlight code">
       <tbody>
         <!-- Old Line -->
         <tr class="line_holder old">

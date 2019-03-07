@@ -6,27 +6,38 @@ module QA
   module Resource
     class User < Base
       attr_reader :unique_id
-      attr_writer :username, :password, :name, :email
+      attr_writer :username, :password
       attr_accessor :provider, :extern_uid
+
+      attribute :name
+      attribute :email
 
       def initialize
         @unique_id = SecureRandom.hex(8)
       end
 
       def username
-        @username ||= "qa-user-#{unique_id}"
+        @username || "qa-user-#{unique_id}"
       end
 
       def password
-        @password ||= 'password'
+        @password || 'password'
       end
 
       def name
-        @name ||= username
+        @name ||= api_resource&.dig(:name) || username
       end
 
       def email
         @email ||= "#{username}@example.com"
+      end
+
+      def public_email
+        @public_email ||= begin
+          api_public_email = api_resource&.dig(:public_email)
+
+          api_public_email && api_public_email != '' ? api_public_email : Runtime::User.default_email
+        end
       end
 
       def credentials_given?

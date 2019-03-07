@@ -34,8 +34,8 @@ describe('Suggestion Diff component', () => {
       expect(vm.$el.querySelector('.qa-suggestion-diff-header')).not.toBeNull();
     });
 
-    it('renders a diff table', () => {
-      expect(vm.$el.querySelector('table.md-suggestion-diff')).not.toBeNull();
+    it('renders a diff table with syntax highlighting', () => {
+      expect(vm.$el.querySelector('.md-suggestion-diff.js-syntax-highlight.code')).not.toBeNull();
     });
 
     it('renders the oldLineNumber', () => {

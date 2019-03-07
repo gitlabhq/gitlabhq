@@ -20,7 +20,7 @@ describe 'project commit pipelines', :js do
       visit pipelines_project_commit_path(project, project.commit.sha)
 
       page.within('.table-holder') do
-        expect(page).to have_content project.ci_pipelines[0].id     # pipeline ids
+        expect(page).to have_content project.ci_pipelines[0].id # pipeline ids
       end
     end
   end

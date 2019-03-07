@@ -163,6 +163,7 @@ export default class LazyLoader {
       img.removeAttribute('data-src');
       img.classList.remove('lazy');
       img.classList.add('js-lazy-loaded');
+      img.classList.add('qa-js-lazy-loaded');
     }
   }
 }

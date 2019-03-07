@@ -5,33 +5,9 @@ describe Clusters::Applications::Prometheus do
 
   include_examples 'cluster application core specs', :clusters_applications_prometheus
   include_examples 'cluster application status specs', :clusters_applications_prometheus
+  include_examples 'cluster application version specs', :clusters_applications_prometheus
   include_examples 'cluster application helm specs', :clusters_applications_prometheus
-
-  describe '.installed' do
-    subject { described_class.installed }
-
-    let!(:cluster) { create(:clusters_applications_prometheus, :installed) }
-
-    before do
-      create(:clusters_applications_prometheus, :errored)
-    end
-
-    it { is_expected.to contain_exactly(cluster) }
-  end
-
-  describe '#make_installing!' do
-    before do
-      application.make_installing!
-    end
-
-    context 'application install previously errored with older version' do
-      let(:application) { create(:clusters_applications_prometheus, :scheduled, version: '6.7.2') }
-
-      it 'updates the application version' do
-        expect(application.reload.version).to eq('6.7.3')
-      end
-    end
-  end
+  include_examples 'cluster application initial status specs'
 
   describe 'transition to installed' do
     let(:project) { create(:project) }
@@ -48,47 +24,6 @@ describe Clusters::Applications::Prometheus do
       expect(prometheus_service).to receive(:update).with(active: true)
 
       subject.make_installed
-    end
-  end
-
-  describe '#ready' do
-    let(:project) { create(:project) }
-    let(:cluster) { create(:cluster, projects: [project]) }
-
-    it 'returns true when installed' do
-      application = build(:clusters_applications_prometheus, :installed, cluster: cluster)
-
-      expect(application).to be_ready
-    end
-
-    it 'returns false when not_installable' do
-      application = build(:clusters_applications_prometheus, :not_installable, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when installable' do
-      application = build(:clusters_applications_prometheus, :installable, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when scheduled' do
-      application = build(:clusters_applications_prometheus, :scheduled, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when installing' do
-      application = build(:clusters_applications_prometheus, :installing, cluster: cluster)
-
-      expect(application).not_to be_ready
-    end
-
-    it 'returns false when errored' do
-      application = build(:clusters_applications_prometheus, :errored, cluster: cluster)
-
-      expect(application).not_to be_ready
     end
   end
 
@@ -161,16 +96,16 @@ describe Clusters::Applications::Prometheus do
       expect(subject.name).to eq('prometheus')
       expect(subject.chart).to eq('stable/prometheus')
       expect(subject.version).to eq('6.7.3')
-      expect(subject).not_to be_rbac
+      expect(subject).to be_rbac
       expect(subject.files).to eq(prometheus.files)
     end
 
-    context 'on a rbac enabled cluster' do
+    context 'on a non rbac enabled cluster' do
       before do
-        prometheus.cluster.platform_kubernetes.rbac!
+        prometheus.cluster.platform_kubernetes.abac!
       end
 
-      it { is_expected.to be_rbac }
+      it { is_expected.not_to be_rbac }
     end
 
     context 'application failed to install previously' do
@@ -178,6 +113,61 @@ describe Clusters::Applications::Prometheus do
 
       it 'should be initialized with the locked version' do
         expect(subject.version).to eq('6.7.3')
+      end
+    end
+
+    it 'should not install knative metrics' do
+      expect(subject.postinstall).to be_nil
+    end
+
+    context 'with knative installed' do
+      let(:knative) { create(:clusters_applications_knative, :updated ) }
+      let(:prometheus) { create(:clusters_applications_prometheus, cluster: knative.cluster) }
+
+      subject { prometheus.install_command }
+
+      it 'should install knative metrics' do
+        expect(subject.postinstall).to include("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
+      end
+    end
+  end
+
+  describe '#upgrade_command' do
+    let(:prometheus) { build(:clusters_applications_prometheus) }
+    let(:values) { prometheus.values }
+
+    it 'returns an instance of Gitlab::Kubernetes::Helm::InstallCommand' do
+      expect(prometheus.upgrade_command(values)).to be_an_instance_of(::Gitlab::Kubernetes::Helm::InstallCommand)
+    end
+
+    it 'should be initialized with 3 arguments' do
+      command = prometheus.upgrade_command(values)
+
+      expect(command.name).to eq('prometheus')
+      expect(command.chart).to eq('stable/prometheus')
+      expect(command.version).to eq('6.7.3')
+      expect(command.files).to eq(prometheus.files)
+    end
+  end
+
+  describe '#update_in_progress?' do
+    context 'when app is updating' do
+      it 'returns true' do
+        cluster = create(:cluster)
+        prometheus_app = build(:clusters_applications_prometheus, :updating, cluster: cluster)
+
+        expect(prometheus_app.update_in_progress?).to be true
+      end
+    end
+  end
+
+  describe '#update_errored?' do
+    context 'when app errored' do
+      it 'returns true' do
+        cluster = create(:cluster)
+        prometheus_app = build(:clusters_applications_prometheus, :update_errored, cluster: cluster)
+
+        expect(prometheus_app.update_errored?).to be true
       end
     end
   end
@@ -194,6 +184,45 @@ describe Clusters::Applications::Prometheus do
       expect(values).to include('nodeExporter')
       expect(values).to include('pushgateway')
       expect(values).to include('serverFiles')
+    end
+  end
+
+  describe '#files_with_replaced_values' do
+    let(:application) { build(:clusters_applications_prometheus) }
+    let(:files) { application.files }
+
+    subject { application.files_with_replaced_values({ hello: :world }) }
+
+    it 'does not modify #files' do
+      expect(subject[:'values.yaml']).not_to eq(files)
+      expect(files[:'values.yaml']).to eq(application.values)
+    end
+
+    it 'returns values.yaml with replaced values' do
+      expect(subject[:'values.yaml']).to eq({ hello: :world })
+    end
+
+    it 'should include cert files' do
+      expect(subject[:'ca.pem']).to be_present
+      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+
+      expect(subject[:'cert.pem']).to be_present
+      expect(subject[:'key.pem']).to be_present
+
+      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
+      expect(cert.not_after).to be < 60.minutes.from_now
+    end
+
+    context 'when the helm application does not have a ca_cert' do
+      before do
+        application.cluster.application_helm.ca_cert = nil
+      end
+
+      it 'should not include cert files' do
+        expect(subject[:'ca.pem']).not_to be_present
+        expect(subject[:'cert.pem']).not_to be_present
+        expect(subject[:'key.pem']).not_to be_present
+      end
     end
   end
 end

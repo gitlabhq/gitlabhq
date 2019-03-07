@@ -25,7 +25,8 @@ describe GroupPolicy do
       :read_cluster,
       :create_cluster,
       :update_cluster,
-      :admin_cluster
+      :admin_cluster,
+      :add_cluster
     ]
   end
 
@@ -73,6 +74,38 @@ describe GroupPolicy do
     end
   end
 
+  context 'with no user and public project' do
+    let(:project) { create(:project, :public) }
+    let(:user) { create(:user) }
+    let(:current_user) { nil }
+
+    before do
+      Projects::GroupLinks::CreateService.new(
+        project,
+        user,
+        link_group_access: ProjectGroupLink::DEVELOPER
+      ).execute(group)
+    end
+
+    it { expect_disallowed(:read_group) }
+  end
+
+  context 'with foreign user and public project' do
+    let(:project) { create(:project, :public) }
+    let(:user) { create(:user) }
+    let(:current_user) { create(:user) }
+
+    before do
+      Projects::GroupLinks::CreateService.new(
+        project,
+        user,
+        link_group_access: ProjectGroupLink::DEVELOPER
+      ).execute(group)
+    end
+
+    it { expect_disallowed(:read_group) }
+  end
+
   context 'has projects' do
     let(:current_user) { create(:user) }
     let(:project) { create(:project, namespace: group) }
@@ -81,17 +114,13 @@ describe GroupPolicy do
       project.add_developer(current_user)
     end
 
-    it do
-      expect_allowed(:read_group, :read_label)
-    end
+    it { expect_allowed(:read_label, :read_list) }
 
     context 'in subgroups', :nested_groups do
       let(:subgroup) { create(:group, :private, parent: group) }
       let(:project) { create(:project, namespace: subgroup) }
 
-      it do
-        expect_allowed(:read_group, :read_label)
-      end
+      it { expect_allowed(:read_label, :read_list) }
     end
   end
 
@@ -380,6 +409,16 @@ describe GroupPolicy do
       let(:current_user) { create(:user) }
 
       it { expect_disallowed(:change_share_with_group_lock) }
+    end
+  end
+
+  it_behaves_like 'clusterable policies' do
+    let(:clusterable) { create(:group) }
+    let(:cluster) do
+      create(:cluster,
+             :provided_by_gcp,
+             :group,
+             groups: [clusterable])
     end
   end
 end

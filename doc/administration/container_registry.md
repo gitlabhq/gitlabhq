@@ -11,7 +11,7 @@ With the Container Registry integrated into GitLab, every project can have its
 own space to store its Docker images.
 
 You can read more about the Container Registry at
-https://docs.docker.com/registry/introduction/.
+<https://docs.docker.com/registry/introduction/>.
 
 ## Enable the Container Registry
 
@@ -378,7 +378,7 @@ Read more about the individual driver's config options in the
 > **Warning** GitLab will not backup Docker images that are not stored on the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
-> 
+>
 > **Important** Enabling storage driver other than `filesystem` would mean
 that your Docker client needs to be able to access the storage backend directly.
 So you must use an address that resolves and is accessible outside GitLab server.
@@ -542,7 +542,6 @@ Read more about the Container Registry notifications config options in the
 >**Note:**
 Multiple endpoints can be configured for the Container Registry.
 
-
 **Omnibus GitLab installations**
 
 To configure a notification endpoint in Omnibus:
@@ -587,7 +586,9 @@ notifications:
       backoff: 1000
 ```
 
-## Using self-signed certificates with Container Registry
+## Troubleshooting
+
+### Using self-signed certificates with Container Registry
 
 If you're using a self-signed certificate with your Container Registry, you
 might encounter issues during the CI jobs like the following:
@@ -599,22 +600,28 @@ Error response from daemon: Get registry.example.com/v1/users/: x509: certificat
 The Docker daemon running the command expects a cert signed by a recognized CA,
 thus the error above.
 
-While GitLab doesn't support using self-signed certificates with Container
-Registry out of the box, it is possible to make it work if you follow
-[Docker's documentation][docker-insecure-self-signed]. You may find some additional
-information in [issue 18239][ce-18239].
+While GitLab doesn't support using self-signed certificates with Container Registry out of the box, it is possible to make it work by [instructing the docker-daemon to trust the self-signed certificates][docker-insecure-self-signed], mounting the docker-daemon and setting `privileged = false` in the runner's `config.toml`. Setting `privileged = true` takes precedence over the docker-daemon.
 
-## Troubleshooting
+```
+  [runners.docker]
+    image = "ruby:2.1"
+    privileged = false
+    volumes = ["/var/run/docker.sock:/var/run/docker.sock", "/cache"]
+```
 
-When using AWS S3 with the GitLab registry, an error may occur when pushing 
+Additional information about this: [issue 18239][ce-18239].
+
+### AWS S3 with the GitLab registry error when pushing large images
+
+When using AWS S3 with the GitLab registry, an error may occur when pushing
 large images. Look in the Registry log for the following error:
 
 ```
-level=error msg="response completed with error" err.code=unknown err.detail="unexpected EOF" err.message="unknown error" 
+level=error msg="response completed with error" err.code=unknown err.detail="unexpected EOF" err.message="unknown error"
 ```
 
-To resolve the error specify a `chunksize` value in the Registry configuration. 
-Start with a value between `25000000` (25MB) and `50000000` (50MB). 
+To resolve the error specify a `chunksize` value in the Registry configuration.
+Start with a value between `25000000` (25MB) and `50000000` (50MB).
 
 **For Omnibus installations**
 

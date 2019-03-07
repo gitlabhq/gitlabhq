@@ -115,5 +115,15 @@ module Gitlab
 
       string_or_array.split(',').map(&:strip)
     end
+
+    def deep_indifferent_access(data)
+      if data.is_a?(Array)
+        data.map(&method(:deep_indifferent_access))
+      elsif data.is_a?(Hash)
+        data.with_indifferent_access
+      else
+        data
+      end
+    end
   end
 end

@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
-import { __ } from '~/locale';
+import flash from '~/flash';
+import { __, sprintf, s__ } from '~/locale';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import { modalTypes } from '../../constants';
@@ -15,15 +16,17 @@ export default {
     };
   },
   computed: {
-    ...mapState(['entryModal']),
+    ...mapState(['entries', 'entryModal']),
     ...mapGetters('fileTemplates', ['templateTypes']),
     entryName: {
       get() {
+        const entryPath = this.entryModal.entry.path;
+
         if (this.entryModal.type === modalTypes.rename) {
-          return this.name || this.entryModal.entry.name;
+          return this.name || entryPath;
         }
 
-        return this.name || (this.entryModal.path !== '' ? `${this.entryModal.path}/` : '');
+        return this.name || (entryPath ? `${entryPath}/` : '');
       },
       set(val) {
         this.name = val;
@@ -51,18 +54,51 @@ export default {
 
       return __('Create file');
     },
-    isCreatingNew() {
-      return this.entryModal.type !== modalTypes.rename;
+    isCreatingNewFile() {
+      return this.entryModal.type === 'blob';
+    },
+    placeholder() {
+      return this.isCreatingNewFile ? 'dir/file_name' : 'dir/';
     },
   },
   methods: {
     ...mapActions(['createTempEntry', 'renameEntry']),
     submitForm() {
       if (this.entryModal.type === modalTypes.rename) {
-        this.renameEntry({
-          path: this.entryModal.entry.path,
-          name: this.entryName,
-        });
+        if (this.entries[this.entryName] && !this.entries[this.entryName].deleted) {
+          flash(
+            sprintf(s__('The name %{entryName} is already taken in this directory.'), {
+              entryName: this.entryName,
+            }),
+            'alert',
+            document,
+            null,
+            false,
+            true,
+          );
+        } else {
+          let parentPath = this.entryName.split('/');
+          const entryName = parentPath.pop();
+          parentPath = parentPath.join('/');
+
+          const createPromise =
+            parentPath && !this.entries[parentPath]
+              ? this.createTempEntry({ name: parentPath, type: 'tree' })
+              : Promise.resolve();
+
+          createPromise
+            .then(() =>
+              this.renameEntry({
+                path: this.entryModal.entry.path,
+                name: entryName,
+                entryPath: null,
+                parentPath,
+              }),
+            )
+            .catch(() =>
+              flash(__('Error creating a new path'), 'alert', document, null, false, true),
+            );
+        }
       } else {
         this.createTempEntry({
           name: this.name,
@@ -79,7 +115,14 @@ export default {
       $('#ide-new-entry').modal('toggle');
     },
     focusInput() {
+      const name = this.entries[this.entryName] ? this.entries[this.entryName].name : null;
+      const inputValue = this.$refs.fieldName.value;
+
       this.$refs.fieldName.focus();
+
+      if (name) {
+        this.$refs.fieldName.setSelectionRange(inputValue.indexOf(name), inputValue.length);
+      }
     },
     closedModal() {
       this.name = '';
@@ -107,14 +150,17 @@ export default {
           v-model="entryName"
           type="text"
           class="form-control qa-full-file-path"
-          placeholder="/dir/file_name"
+          :placeholder="placeholder"
         />
-        <ul v-if="isCreatingNew" class="prepend-top-default list-inline qa-template-list">
+        <ul
+          v-if="isCreatingNewFile"
+          class="file-templates prepend-top-default list-inline qa-template-list"
+        >
           <li v-for="(template, index) in templateTypes" :key="index" class="list-inline-item">
             <button
               type="button"
               class="btn btn-missing p-1 pr-2 pl-2"
-              @click="createFromTemplate(template);"
+              @click="createFromTemplate(template)"
             >
               {{ template.name }}
             </button>

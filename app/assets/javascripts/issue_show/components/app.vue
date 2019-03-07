@@ -1,5 +1,7 @@
 <script>
 import Visibility from 'visibilityjs';
+import { __, s__, sprintf } from '~/locale';
+import createFlash from '~/flash';
 import { visitUrl } from '../../lib/utils/url_utility';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
@@ -106,11 +108,6 @@ export default {
       type: String,
       required: true,
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     projectPath: {
       type: String,
       required: true,
@@ -129,6 +126,11 @@ export default {
       required: false,
       default: true,
     },
+    lockVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     const store = new Store({
@@ -140,6 +142,7 @@ export default {
       updatedByName: this.updatedByName,
       updatedByPath: this.updatedByPath,
       taskStatus: this.initialTaskStatus,
+      lock_version: this.lockVersion,
     });
 
     return {
@@ -159,6 +162,9 @@ export default {
       const descriptionChanged = this.initialDescriptionText !== this.store.formState.description;
       const titleChanged = this.initialTitleText !== this.store.formState.title;
       return descriptionChanged || titleChanged;
+    },
+    defaultErrorMessage() {
+      return sprintf(s__('Error updating %{issuableType}'), { issuableType: this.issuableType });
     },
   },
   created() {
@@ -201,10 +207,21 @@ export default {
   methods: {
     handleBeforeUnloadEvent(e) {
       const event = e;
-      if (this.showForm && this.issueChanged) {
-        event.returnValue = 'Are you sure you want to lose your issue information?';
+      if (this.showForm && this.issueChanged && !this.showRecaptcha) {
+        event.returnValue = __('Are you sure you want to lose your issue information?');
       }
       return undefined;
+    },
+    updateStoreState() {
+      return this.service
+        .getData()
+        .then(res => res.data)
+        .then(data => {
+          this.store.updateState(data);
+        })
+        .catch(() => {
+          createFlash(this.defaultErrorMessage);
+        });
     },
 
     openForm() {
@@ -213,6 +230,7 @@ export default {
         this.store.setFormState({
           title: this.state.titleText,
           description: this.state.descriptionText,
+          lock_version: this.state.lock_version,
           lockedWarningVisible: false,
           updateLoading: false,
         });
@@ -231,20 +249,24 @@ export default {
           if (window.location.pathname !== data.web_url) {
             visitUrl(data.web_url);
           }
-
-          return this.service.getData();
         })
-        .then(res => res.data)
-        .then(data => {
-          this.store.updateState(data);
+        .then(this.updateStoreState)
+        .then(() => {
           eventHub.$emit('close.form');
         })
-        .catch(error => {
-          if (error && error.name === 'SpamError') {
+        .catch((error = {}) => {
+          const { name, response = {} } = error;
+
+          if (name === 'SpamError') {
             this.openRecaptcha();
           } else {
-            eventHub.$emit('close.form');
-            window.Flash(`Error updating ${this.issuableType}`);
+            let errMsg = this.defaultErrorMessage;
+
+            if (response.data && response.data.errors) {
+              errMsg += `. ${response.data.errors.join(' ')}`;
+            }
+
+            createFlash(errMsg);
           }
         });
     },
@@ -268,8 +290,9 @@ export default {
           visitUrl(data.web_url);
         })
         .catch(() => {
-          eventHub.$emit('close.form');
-          window.Flash(`Error deleting ${this.issuableType}`);
+          createFlash(
+            sprintf(s__('Error deleting  %{issuableType}'), { issuableType: this.issuableType }),
+          );
         });
     },
   },
@@ -285,7 +308,6 @@ export default {
         :issuable-templates="issuableTemplates"
         :markdown-docs-path="markdownDocsPath"
         :markdown-preview-path="markdownPreviewPath"
-        :markdown-version="markdownVersion"
         :project-path="projectPath"
         :project-namespace="projectNamespace"
         :show-delete-button="showDeleteButton"
@@ -313,6 +335,8 @@ export default {
         :task-status="state.taskStatus"
         :issuable-type="issuableType"
         :update-url="updateEndpoint"
+        :lock-version="state.lock_version"
+        @taskListUpdateFailed="updateStoreState"
       />
       <edited-component
         v-if="hasUpdated"

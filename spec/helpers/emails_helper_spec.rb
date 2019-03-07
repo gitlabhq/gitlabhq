@@ -1,6 +1,20 @@
 require 'spec_helper'
 
 describe EmailsHelper do
+  describe 'sanitize_name' do
+    context 'when name contains a valid URL string' do
+      it 'returns name with `.` replaced with `_` to prevent mail clients from auto-linking URLs' do
+        expect(sanitize_name('https://about.gitlab.com')).to eq('https://about_gitlab_com')
+        expect(sanitize_name('www.gitlab.com')).to eq('www_gitlab_com')
+        expect(sanitize_name('//about.gitlab.com/handbook/security/#best-practices')).to eq('//about_gitlab_com/handbook/security/#best-practices')
+      end
+
+      it 'returns name as it is when it does not contain a URL' do
+        expect(sanitize_name('Foo Bar')).to eq('Foo Bar')
+      end
+    end
+  end
+
   describe 'password_reset_token_valid_time' do
     def validate_time_string(time_limit, expected_string)
       Devise.reset_password_within = time_limit
@@ -125,6 +139,60 @@ describe EmailsHelper do
 
         expect(list_id).to eq("12345.#{list_id_path}.#{Gitlab.config.gitlab.host}")
         expect(list_id).to satisfy { |s| s.length <= 255 }
+      end
+    end
+  end
+
+  describe 'header and footer messages' do
+    context 'when email_header_and_footer_enabled is enabled' do
+      it 'returns header and footer messages' do
+        create :appearance, header_message: 'Foo', footer_message: 'Bar', email_header_and_footer_enabled: true
+
+        aggregate_failures do
+          expect(html_header_message).to eq(%{<div class="header-message" style=""><p>Foo</p></div>})
+          expect(html_footer_message).to eq(%{<div class="footer-message" style=""><p>Bar</p></div>})
+          expect(text_header_message).to eq('Foo')
+          expect(text_footer_message).to eq('Bar')
+        end
+      end
+
+      context 'when header and footer messages are empty' do
+        it 'returns nil' do
+          create :appearance, header_message: '', footer_message: '', email_header_and_footer_enabled: true
+
+          aggregate_failures do
+            expect(html_header_message).to eq(nil)
+            expect(html_footer_message).to eq(nil)
+            expect(text_header_message).to eq(nil)
+            expect(text_footer_message).to eq(nil)
+          end
+        end
+      end
+
+      context 'when header and footer messages are nil' do
+        it 'returns nil' do
+          create :appearance, header_message: nil, footer_message: nil, email_header_and_footer_enabled: true
+
+          aggregate_failures do
+            expect(html_header_message).to eq(nil)
+            expect(html_footer_message).to eq(nil)
+            expect(text_header_message).to eq(nil)
+            expect(text_footer_message).to eq(nil)
+          end
+        end
+      end
+    end
+
+    context 'when email_header_and_footer_enabled is disabled' do
+      it 'returns header and footer messages' do
+        create :appearance, header_message: 'Foo', footer_message: 'Bar', email_header_and_footer_enabled: false
+
+        aggregate_failures do
+          expect(html_header_message).to eq(nil)
+          expect(html_footer_message).to eq(nil)
+          expect(text_header_message).to eq(nil)
+          expect(text_footer_message).to eq(nil)
+        end
       end
     end
   end

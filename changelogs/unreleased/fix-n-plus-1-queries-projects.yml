@@ -1,6 +1,0 @@
----
-title: Fix some N+1 queries related to Admin Dashboard, User Dashboards and Activity
-  Stream
-merge_request: 23034
-author:
-type: performance

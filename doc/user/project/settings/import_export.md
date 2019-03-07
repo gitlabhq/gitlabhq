@@ -61,7 +61,7 @@ The following items will be exported:
 
 - Project and wiki repositories
 - Project uploads
-- Project configuration including web hooks and services
+- Project configuration, including services
 - Issues with comments, merge requests with diffs and comments, labels, milestones, snippets,
   and other project entities
 - LFS objects
@@ -71,6 +71,7 @@ The following items will NOT be exported:
 - Build traces and artifacts
 - Container registry images
 - CI variables
+- Webhooks
 - Any encrypted tokens
 
 ## Exporting a project and its data

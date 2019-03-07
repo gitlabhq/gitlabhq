@@ -20,7 +20,7 @@ module ApplicationSettingsHelper
   def enabled_protocol
     case Gitlab::CurrentSettings.enabled_git_access_protocol
     when 'http'
-      gitlab_config.protocol
+      Gitlab.config.gitlab.protocol
     when 'ssh'
       'ssh'
     end
@@ -35,7 +35,7 @@ module ApplicationSettingsHelper
   end
 
   def http_enabled?
-    all_protocols_enabled? || enabled_protocol == 'http'
+    all_protocols_enabled? || Gitlab::CurrentSettings.enabled_git_access_protocol == 'http'
   end
 
   def enabled_project_button(project, protocol)
@@ -150,6 +150,7 @@ module ApplicationSettingsHelper
       :email_author_in_body,
       :enabled_git_access_protocol,
       :enforce_terms,
+      :first_day_of_week,
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
       :gitaly_timeout_fast,
@@ -231,7 +232,8 @@ module ApplicationSettingsHelper
       :web_ide_clientside_preview_enabled,
       :diff_max_patch_bytes,
       :commit_email_hostname,
-      :protected_ci_variables
+      :protected_ci_variables,
+      :local_markdown_version
     ]
   end
 

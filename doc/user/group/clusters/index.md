@@ -56,14 +56,19 @@ group. That way you can have different clusters for different environments,
 like dev, staging, production, etc.
 
 Add another cluster similar to the first one and make sure to
-[set an environment scope](#environment-scopes) that will
+[set an environment scope](#environment-scopes-premium) that will
 differentiate the new cluster from the rest.
 
-NOTE: **Note:**
-Auto DevOps is not supported for a group with multiple clusters, as it
-is not possible to set `AUTO_DEVOPS_DOMAIN` per environment on the group
-level. This will be resolved in the future with the [following issue](
-https://gitlab.com/gitlab-org/gitlab-ce/issues/52363).
+## Base domain
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24580) in GitLab 11.8.
+
+Domains at the cluster level permit support for multiple domains
+per [multiple Kubernetes clusters](#multiple-kubernetes-clusters-premium). When specifying a domain,
+this will be automatically set as an environment variable (`KUBE_INGRESS_BASE_DOMAIN`) during
+the [Auto DevOps](../../../topics/autodevops/index.md) stages.
+
+The domain should have a wildcard DNS configured to the Ingress IP address.
 
 ## Environment scopes **[PREMIUM]**
 
@@ -89,7 +94,6 @@ For example, let's say we have the following Kubernetes clusters:
 | Production | `production/*`      | Project   |
 | Test       | `test`              | Group     |
 | Development| `*`                 | Group     |
-
 
 And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
@@ -129,4 +133,4 @@ The following features are not currently available for group-level clusters:
 
 1. Terminals (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55487)).
 1. Pod logs (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
-1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55488)).
+1. Deployment boards (see [related issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/55489)).

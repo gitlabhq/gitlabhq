@@ -25,7 +25,7 @@
     #{snippet.to_reference} &middot;
     authored #{time_ago_with_tooltip(snippet.created_at, placement: 'bottom', html_class: 'snippet-created-ago')}
     by
-    = link_to user_snippets_path(snippet.author) do
+    = link_to user_snippets_path(snippet.author), class: "js-user-link", data: { user_id: snippet.author.id } do
       = snippet.author_name
     - if link_project && snippet.project_id?
       %span.d-none.d-sm-inline-block

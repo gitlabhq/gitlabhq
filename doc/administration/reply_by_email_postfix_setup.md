@@ -333,6 +333,6 @@ If all the tests were successful, Postfix is all set up and ready to receive ema
 
 ---
 
-_This document was adapted from https://help.ubuntu.com/community/PostfixBasicSetupHowto, by contributors to the Ubuntu documentation wiki._
+_This document was adapted from <https://help.ubuntu.com/community/PostfixBasicSetupHowto>, by contributors to the Ubuntu documentation wiki._
 
 [incoming email]: incoming_email.md

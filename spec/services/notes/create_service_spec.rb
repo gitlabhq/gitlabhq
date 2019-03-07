@@ -127,6 +127,10 @@ describe Notes::CreateService do
         create(:diff_note_on_merge_request, noteable: merge_request, project: project_with_repo)
       end
 
+      before do
+        project_with_repo.add_maintainer(user)
+      end
+
       context 'when eligible to have a note diff file' do
         let(:new_opts) do
           opts.merge(in_reply_to_discussion_id: nil,
@@ -216,6 +220,19 @@ describe Notes::CreateService do
             expect(note.note).to eq "HELLO\nWORLD"
           end
         end
+
+        context 'when note only have commands' do
+          it 'adds commands applied message to note errors' do
+            note_text = %(/close)
+            service = double(:service)
+            allow(Issues::UpdateService).to receive(:new).and_return(service)
+            expect(service).to receive(:execute)
+
+            note = described_class.new(project, user, opts.merge(note: note_text)).execute
+
+            expect(note.errors[:commands_only]).to be_present
+          end
+        end
       end
 
       context 'as a user who cannot update the target' do
@@ -272,6 +289,50 @@ describe Notes::CreateService do
 
         expect(note).to be_valid
         expect(note.note).to eq(':smile:')
+      end
+    end
+
+    context 'reply to individual note' do
+      let(:existing_note) { create(:note_on_issue, noteable: issue, project: project) }
+      let(:reply_opts) { opts.merge(in_reply_to_discussion_id: existing_note.discussion_id) }
+
+      subject { described_class.new(project, user, reply_opts).execute }
+
+      context 'when reply_to_individual_notes is disabled' do
+        before do
+          stub_feature_flags(reply_to_individual_notes: false)
+        end
+
+        it 'creates an individual note' do
+          expect(subject.type).to eq(nil)
+          expect(subject.discussion_id).not_to eq(existing_note.discussion_id)
+        end
+
+        it 'does not convert existing note' do
+          expect { subject }.not_to change { existing_note.reload.type }
+        end
+      end
+
+      context 'when reply_to_individual_notes is enabled' do
+        before do
+          stub_feature_flags(reply_to_individual_notes: true)
+        end
+
+        it 'creates a DiscussionNote in reply to existing note' do
+          expect(subject).to be_a(DiscussionNote)
+          expect(subject.discussion_id).to eq(existing_note.discussion_id)
+        end
+
+        it 'converts existing note to DiscussionNote' do
+          expect do
+            existing_note
+
+            Timecop.freeze(Time.now + 1.minute) { subject }
+
+            existing_note.reload
+          end.to change { existing_note.type }.from(nil).to('DiscussionNote')
+             .and change { existing_note.updated_at }
+        end
       end
     end
   end

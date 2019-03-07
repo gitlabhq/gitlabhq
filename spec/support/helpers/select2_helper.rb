@@ -1,3 +1,5 @@
+require_relative 'wait_for_requests'
+
 # Select2 ajax programmatic helper
 # It allows you to select value from select2
 #
@@ -11,8 +13,12 @@
 #
 
 module Select2Helper
+  include WaitForRequests
+
   def select2(value, options = {})
     raise ArgumentError, 'options must be a Hash' unless options.is_a?(Hash)
+
+    wait_for_requests unless options[:async]
 
     selector = options.fetch(:from)
 

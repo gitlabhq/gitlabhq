@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import createFlash from '~/flash';
 import GfmAutoComplete from '~/gfm_auto_complete';
+import emojiRegex from 'emoji-regex';
 import EmojiMenu from './emoji_menu';
 
 const defaultStatusEmoji = 'speech_balloon';
@@ -42,32 +43,47 @@ document.addEventListener('DOMContentLoaded', () => {
   const emojiAutocomplete = new GfmAutoComplete();
   emojiAutocomplete.setup($(statusMessageField), { emojis: true });
 
+  const userNameInput = document.getElementById('user_name');
+  userNameInput.addEventListener('input', () => {
+    const EMOJI_REGEX = emojiRegex();
+    if (EMOJI_REGEX.test(userNameInput.value)) {
+      // set field to invalid so it gets detected by GlFieldErrors
+      userNameInput.setCustomValidity('Invalid field');
+    } else {
+      userNameInput.setCustomValidity('');
+    }
+  });
+
   import(/* webpackChunkName: 'emoji' */ '~/emoji')
     .then(Emoji => {
-      const emojiMenu = new EmojiMenu(
-        Emoji,
-        toggleEmojiMenuButtonSelector,
-        'js-status-emoji-menu',
-        selectEmojiCallback,
-      );
-      emojiMenu.bindEvents();
+      Emoji.initEmojiMap()
+        .then(() => {
+          const emojiMenu = new EmojiMenu(
+            Emoji,
+            toggleEmojiMenuButtonSelector,
+            'js-status-emoji-menu',
+            selectEmojiCallback,
+          );
+          emojiMenu.bindEvents();
 
-      const defaultEmojiTag = Emoji.glEmojiTag(defaultStatusEmoji);
-      statusMessageField.addEventListener('input', () => {
-        const hasStatusMessage = statusMessageField.value.trim() !== '';
-        const statusEmoji = findStatusEmoji();
-        if (hasStatusMessage && statusEmoji) {
-          return;
-        }
+          const defaultEmojiTag = Emoji.glEmojiTag(defaultStatusEmoji);
+          statusMessageField.addEventListener('input', () => {
+            const hasStatusMessage = statusMessageField.value.trim() !== '';
+            const statusEmoji = findStatusEmoji();
+            if (hasStatusMessage && statusEmoji) {
+              return;
+            }
 
-        if (hasStatusMessage) {
-          toggleNoEmojiPlaceholder(false);
-          toggleEmojiMenuButton.innerHTML += defaultEmojiTag;
-        } else if (statusEmoji.dataset.name === defaultStatusEmoji) {
-          toggleNoEmojiPlaceholder(true);
-          removeStatusEmoji();
-        }
-      });
+            if (hasStatusMessage) {
+              toggleNoEmojiPlaceholder(false);
+              toggleEmojiMenuButton.innerHTML += defaultEmojiTag;
+            } else if (statusEmoji.dataset.name === defaultStatusEmoji) {
+              toggleNoEmojiPlaceholder(true);
+              removeStatusEmoji();
+            }
+          });
+        })
+        .catch(() => createFlash('Failed to load emoji list.'));
     })
     .catch(() => createFlash('Failed to load emoji list.'));
 });

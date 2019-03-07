@@ -5,7 +5,7 @@ class PasswordsController < Devise::PasswordsController
 
   before_action :resource_from_email, only: [:create]
   before_action :check_password_authentication_available, only: [:create]
-  before_action :throttle_reset,      only: [:create]
+  before_action :throttle_reset, only: [:create]
 
   # rubocop: disable CodeReuse/ActiveRecord
   def edit

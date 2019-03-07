@@ -154,7 +154,7 @@ module CommitsHelper
     if user.nil?
       mail_to(source_email, text, link_options)
     else
-      link_to(text, user_path(user), link_options)
+      link_to(text, user_path(user), { class: "commit-#{options[:source]}-link js-user-link", data: { user_id: user.id } })
     end
   end
 

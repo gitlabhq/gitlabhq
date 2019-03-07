@@ -11,6 +11,8 @@ module Gitlab
           strategy :RefsPolicy, if: -> (config) { config.is_a?(Array) }
           strategy :ComplexPolicy, if: -> (config) { config.is_a?(Hash) }
 
+          DEFAULT_ONLY = { refs: %w[branches tags] }.freeze
+
           class RefsPolicy < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable
 
@@ -64,7 +66,8 @@ module Gitlab
             end
           end
 
-          def self.default
+          def value
+            default.to_h.deep_merge(subject.value.to_h)
           end
         end
       end

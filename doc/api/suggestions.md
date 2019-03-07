@@ -16,7 +16,7 @@ PUT /suggestions/:id/apply
 | `id` | integer/string | yes | The ID of a suggestion |
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/suggestions/5/apply
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/suggestions/5/apply
 ```
 
 Example response:

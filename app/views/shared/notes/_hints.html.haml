@@ -1,10 +1,10 @@
 - supports_quick_actions = local_assigns.fetch(:supports_quick_actions, false)
 .comment-toolbar.clearfix
   .toolbar-text
-    = link_to 'Markdown', help_page_path('user/markdown'), target: '_blank', tabindex: -1
+    = link_to _('Markdown'), help_page_path('user/markdown'), target: '_blank', tabindex: -1
     - if supports_quick_actions
       and
-      = link_to 'quick actions', help_page_path('user/project/quick_actions'), target: '_blank', tabindex: -1
+      = link_to _('quick actions'), help_page_path('user/project/quick_actions'), target: '_blank', tabindex: -1
       are
     - else
       is
@@ -24,12 +24,12 @@
         = icon('file-image-o', class: 'toolbar-button-icon')
       %span.uploading-error-message
         -# Populated by app/assets/javascripts/dropzone_input.js
-      %button.retry-uploading-link{ type: 'button' } Try again
+      %button.retry-uploading-link{ type: 'button' }= _("Try again")
       or
-      %button.attach-new-file.markdown-selector{ type: 'button' } attach a new file
+      %button.attach-new-file.markdown-selector{ type: 'button' }= _("attach a new file")
 
     %button.markdown-selector.button-attach-file{ type: 'button', tabindex: '-1' }
       = icon('file-image-o', class: 'toolbar-button-icon')
-      Attach a file
+      = _("Attach a file")
 
-    %button.btn.btn-default.btn-sm.hide.button-cancel-uploading-files{ type: 'button' } Cancel
+    %button.btn.btn-default.btn-sm.hide.button-cancel-uploading-files{ type: 'button' }= _("Cancel")

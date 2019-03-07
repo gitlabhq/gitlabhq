@@ -16,7 +16,7 @@ To get started with GitLab Pages, you need:
 1. A project
 1. A configuration file (`.gitlab-ci.yml`) to deploy your site
 1. A specific `job` called `pages` in the configuration file
-that will make GitLab aware that you are deploying a GitLab Pages website
+   that will make GitLab aware that you are deploying a GitLab Pages website
 1. A `public` directory with the content of the website
 
 Optional Features:
@@ -31,12 +31,26 @@ The optional settings, custom domain, DNS records, and SSL/TLS certificates, are
 ## Project
 
 Your GitLab Pages project is a regular project created the
-same way you do for the other ones. To get started with GitLab Pages, you have two ways:
+same way you do for the other ones. To get started with GitLab Pages, you have three ways:
 
+- Use one of the popular templates already in the app,
 - Fork one of the templates from Page Examples, or
 - Create a new project from scratch
 
-Let's go over both options.
+Let's go over each option.
+
+### Use one of the popular Pages templates bundled with GitLab
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47857)
+in GitLab 11.8.
+
+The simplest way to create a GitLab Pages site is to use one of the most
+popular templates, which come already bundled and ready to go. To use one
+of these templates:
+
+1. From the top navigation, click the **+** button and select **New project**
+1. Select **Create from Template**
+1. Choose one of the templates starting with **Pages**
 
 ### Fork a project to get started from
 
@@ -57,7 +71,7 @@ created for the steps below.
 To turn a **project website** forked from the Pages group into a **user/group** website, you'll need to:
 
 - Rename it to `namespace.gitlab.io`: navigate to project's **Settings** > expand **Advanced settings** > and scroll down to **Rename repository**
-- Adjust your SSG's [base URL](#urls-and-baseurls) to from `"project-name"` to `""`. This setting will be at a different place for each SSG, as each of them have their own structure and file tree. Most likely, it will be in the SSG's config file.
+- Adjust your SSG's [base URL](#urls-and-baseurls) from `"project-name"` to `""`. This setting will be at a different place for each SSG, as each of them have their own structure and file tree. Most likely, it will be in the SSG's config file.
 
 > **Notes:**
 >
@@ -71,16 +85,16 @@ is useful for submitting merge requests to the upstream.
 ### Create a project from scratch
 
 1. From your **Project**'s **[Dashboard](https://gitlab.com/dashboard/projects)**,
-click **New project**, and name it considering the
-[practical examples](getting_started_part_one.md#practical-examples).
+   click **New project**, and name it considering the
+   [practical examples](getting_started_part_one.md#practical-examples).
 1. Clone it to your local computer, add your website
-files to your project, add, commit and push to GitLab.
+   files to your project, add, commit and push to GitLab.
 1. From the your **Project**'s page, click **Set up CI/CD**:
 
     ![setup GitLab CI/CD](img/setup_ci.png)
 
 1. Choose one of the templates from the dropbox menu.
-Pick up the template corresponding to the SSG you're using (or plain HTML).
+   Pick up the template corresponding to the SSG you're using (or plain HTML).
 
     ![gitlab-ci templates](img/choose_ci_template.png)
 
@@ -93,20 +107,20 @@ where you'll find its default URL.
 > **Notes:**
 >
 > - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but,
-if you don't find yours among the templates, you'll need
-to configure your own `.gitlab-ci.yml`. To do that, please
-read through the article [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md). New SSGs are very welcome among
-the [example projects](https://gitlab.com/pages). If you set
-up a new one, please
-[contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md)
-to our examples.
+  if you don't find yours among the templates, you'll need
+  to configure your own `.gitlab-ci.yml`. To do that, please
+  read through the article [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md). New SSGs are very welcome among
+  the [example projects](https://gitlab.com/pages). If you set
+  up a new one, please
+  [contribute](https://gitlab.com/pages/pages.gitlab.io/blob/master/CONTRIBUTING.md)
+  to our examples.
 >
 > - The second step _"Clone it to your local computer"_, can be done
-differently, achieving the same results: instead of cloning the bare
-repository to you local computer and moving your site files into it,
-you can run `git init` in your local website directory, add the
-remote URL: `git remote add origin git@gitlab.com:namespace/project-name.git`,
-then add, commit, and push.
+  differently, achieving the same results: instead of cloning the bare
+  repository to you local computer and moving your site files into it,
+  you can run `git init` in your local website directory, add the
+  remote URL: `git remote add origin git@gitlab.com:namespace/project-name.git`,
+  then add, commit, and push.
 
 ## URLs and Baseurls
 

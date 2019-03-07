@@ -7,9 +7,16 @@ module Projects
     DestroyError = Class.new(StandardError)
 
     DELETED_FLAG = '+deleted'.freeze
+    REPO_REMOVAL_DELAY = 5.minutes.to_i
 
     def async_execute
       project.update_attribute(:pending_delete, true)
+
+      # Ensure no repository +deleted paths are kept,
+      # regardless of any issue with the ProjectDestroyWorker
+      # job process.
+      schedule_stale_repos_removal
+
       job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
       Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.full_path} with job ID #{job_id}")
     end
@@ -92,11 +99,20 @@ module Projects
         log_info(%Q{Repository "#{path}" moved to "#{new_path}" for project "#{project.full_path}"})
 
         project.run_after_commit do
-          # self is now project
-          GitlabShellWorker.perform_in(5.minutes, :remove_repository, self.repository_storage, new_path)
+          GitlabShellWorker.perform_in(REPO_REMOVAL_DELAY, :remove_repository, self.repository_storage, new_path)
         end
       else
         false
+      end
+    end
+
+    def schedule_stale_repos_removal
+      repo_paths = [removal_path(repo_path), removal_path(wiki_path)]
+
+      # Ideally it should wait until the regular removal phase finishes,
+      # so let's delay it a bit further.
+      repo_paths.each do |path|
+        GitlabShellWorker.perform_in(REPO_REMOVAL_DELAY * 2, :remove_repository, project.repository_storage, path)
       end
     end
 
@@ -113,13 +129,11 @@ module Projects
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def mv_repository(from_path, to_path)
-      return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
+      return true unless repo_exists?(from_path)
 
       gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def attempt_rollback(project, message)
       return unless project

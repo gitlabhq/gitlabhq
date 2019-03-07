@@ -33,11 +33,13 @@ describe('DiscussionCounter component', () => {
             ...discussionMock,
             id: discussionMock.id,
             notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
+            resolved: true,
           },
           {
             ...discussionMock,
             id: discussionMock.id + 1,
             notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: false }],
+            resolved: false,
           },
         ];
         const firstDiscussionId = discussionMock.id + 1;

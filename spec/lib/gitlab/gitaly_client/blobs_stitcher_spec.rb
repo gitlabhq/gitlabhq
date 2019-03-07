@@ -21,7 +21,7 @@ describe Gitlab::GitalyClient::BlobsStitcher do
       expect(blobs[0].size).to eq(1642)
       expect(blobs[0].commit_id).to eq('f00ba7')
       expect(blobs[0].data).to eq("first-line\nsecond-line")
-      expect(blobs[0].binary?).to be false
+      expect(blobs[0].binary_in_repo?).to be false
 
       expect(blobs[1].id).to eq('abcdef2')
       expect(blobs[1].mode).to eq('100644')
@@ -30,7 +30,7 @@ describe Gitlab::GitalyClient::BlobsStitcher do
       expect(blobs[1].size).to eq(2461)
       expect(blobs[1].commit_id).to eq('f00ba8')
       expect(blobs[1].data).to eq("GIF87a\x90\x01".b)
-      expect(blobs[1].binary?).to be true
+      expect(blobs[1].binary_in_repo?).to be true
     end
   end
 end

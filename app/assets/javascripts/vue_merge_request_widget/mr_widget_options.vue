@@ -3,6 +3,9 @@ import _ from 'underscore';
 import { __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
+import MRWidgetStore from 'ee_else_ce/vue_merge_request_widget/stores/mr_widget_store';
+import MRWidgetService from 'ee_else_ce/vue_merge_request_widget/services/mr_widget_service';
+import stateMaps from 'ee_else_ce/vue_merge_request_widget/stores/state_maps';
 import createFlash from '../flash';
 import WidgetHeader from './components/mr_widget_header.vue';
 import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
@@ -28,11 +31,7 @@ import FailedToMerge from './components/states/mr_widget_failed_to_merge.vue';
 import MergeWhenPipelineSucceedsState from './components/states/mr_widget_merge_when_pipeline_succeeds.vue';
 import AutoMergeFailed from './components/states/mr_widget_auto_merge_failed.vue';
 import CheckingState from './components/states/mr_widget_checking.vue';
-import MRWidgetStore from './stores/ee_switch_mr_widget_store';
-import MRWidgetService from './services/ee_switch_mr_widget_service';
 import eventHub from './event_hub';
-import stateMaps from './stores/ee_switch_state_maps';
-import SquashBeforeMerge from './components/states/squash_before_merge.vue';
 import notify from '~/lib/utils/notify';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
@@ -59,7 +58,6 @@ export default {
     'mr-widget-missing-branch': MissingBranchState,
     'mr-widget-ready-to-merge': ReadyToMergeState,
     'sha-mismatch': ShaMismatchState,
-    'mr-widget-squash-before-merge': SquashBeforeMerge,
     'mr-widget-checking': CheckingState,
     'mr-widget-unresolved-discussions': UnresolvedDiscussionsState,
     'mr-widget-pipeline-blocked': PipelineBlockedState,
@@ -106,6 +104,9 @@ export default {
         (!this.mr.isNothingToMergeState && !this.mr.isMergedState)
       );
     },
+    shouldRenderCollaborationStatus() {
+      return this.mr.allowCollaboration && this.mr.isOpen;
+    },
     shouldRenderMergedPipeline() {
       return this.mr.state === 'merged' && !_.isEmpty(this.mr.mergePipeline);
     },
@@ -141,8 +142,8 @@ export default {
     }
   },
   methods: {
-    createService(store) {
-      const endpoints = {
+    getServiceEndpoints(store) {
+      return {
         mergePath: store.mergePath,
         mergeCheckPath: store.mergeCheckPath,
         cancelAutoMergePath: store.cancelAutoMergePath,
@@ -153,7 +154,9 @@ export default {
         mergeActionsContentPath: store.mergeActionsContentPath,
         rebasePath: store.rebasePath,
       };
-      return new MRWidgetService(endpoints);
+    },
+    createService(store) {
+      return new MRWidgetService(this.getServiceEndpoints(store));
     },
     checkStatus(cb, isRebased) {
       return this.service
@@ -315,7 +318,7 @@ export default {
       <div class="mr-widget-section">
         <component :is="componentName" :mr="mr" :service="service" />
 
-        <section v-if="mr.allowCollaboration" class="mr-info-list mr-links">
+        <section v-if="shouldRenderCollaborationStatus" class="mr-info-list mr-links">
           {{ s__('mrWidget|Allows commits from members who can merge to the target branch') }}
         </section>
 

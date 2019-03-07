@@ -2,13 +2,47 @@ require 'spec_helper'
 
 describe CommitCollection do
   let(:project) { create(:project, :repository) }
-  let(:commit) { project.commit }
+  let(:commit) { project.commit("c1c67abbaf91f624347bb3ae96eabe3a1b742478") }
 
   describe '#each' do
     it 'yields every commit' do
       collection = described_class.new(project, [commit])
 
       expect { |b| collection.each(&b) }.to yield_with_args(commit)
+    end
+  end
+
+  describe '.authors' do
+    it 'returns a relation of users when users are found' do
+      user = create(:user, email: commit.author_email.upcase)
+      collection = described_class.new(project, [commit])
+
+      expect(collection.authors).to contain_exactly(user)
+    end
+
+    it 'returns empty array when authors cannot be found' do
+      collection = described_class.new(project, [commit])
+
+      expect(collection.authors).to be_empty
+    end
+
+    it 'excludes authors of merge commits' do
+      commit = project.commit("60ecb67744cb56576c30214ff52294f8ce2def98")
+      create(:user, email: commit.author_email.upcase)
+      collection = described_class.new(project, [commit])
+
+      expect(collection.authors).to be_empty
+    end
+  end
+
+  describe '#without_merge_commits' do
+    it 'returns all commits except merge commits' do
+      collection = described_class.new(project, [
+        build(:commit),
+        build(:commit, :merge_commit)
+      ])
+
+      expect(collection.without_merge_commits.size).to eq(1)
     end
   end
 

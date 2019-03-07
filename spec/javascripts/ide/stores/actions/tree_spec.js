@@ -20,6 +20,7 @@ describe('Multi-file store tree actions', () => {
   };
 
   beforeEach(() => {
+    jasmine.clock().install();
     spyOn(router, 'push');
 
     mock = new MockAdapter(axios);
@@ -37,6 +38,7 @@ describe('Multi-file store tree actions', () => {
   });
 
   afterEach(() => {
+    jasmine.clock().uninstall();
     mock.restore();
     resetStore(store);
   });
@@ -69,6 +71,11 @@ describe('Multi-file store tree actions', () => {
       it('adds data into tree', done => {
         store
           .dispatch('getFiles', basicCallParameters)
+          .then(() => {
+            // The populating of the tree is deferred for performance reasons.
+            // See this merge request for details: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25700
+            jasmine.clock().tick(1);
+          })
           .then(() => {
             projectTree = store.state.trees['abcproject/master'];
 

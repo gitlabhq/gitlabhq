@@ -8,6 +8,7 @@ module Gitlab
           include ::Gitlab::Utils::StrongMemoize
 
           SKIP_PATTERN = /\[(ci[ _-]skip|skip[ _-]ci)\]/i
+          SKIP_PUSH_OPTION = 'ci.skip'
 
           def perform!
             if skipped?
@@ -16,7 +17,7 @@ module Gitlab
           end
 
           def skipped?
-            !@command.ignore_skip_ci && commit_message_skips_ci?
+            !@command.ignore_skip_ci && (commit_message_skips_ci? || push_option_skips_ci?)
           end
 
           def break?
@@ -31,6 +32,10 @@ module Gitlab
             strong_memoize(:commit_message_skips_ci) do
               !!(@pipeline.git_commit_message =~ SKIP_PATTERN)
             end
+          end
+
+          def push_option_skips_ci?
+            !!(@command.push_options&.include?(SKIP_PUSH_OPTION))
           end
         end
       end

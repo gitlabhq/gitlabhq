@@ -17,12 +17,7 @@ export default {
   },
   methods: {
     handleEditClick(evt) {
-      if (!this.canCurrentUserFork || this.canModifyBlob) {
-        // if we can Edit, do default Edit button behavior
-        return;
-      }
-
-      if (this.canCurrentUserFork) {
+      if (this.canCurrentUserFork && !this.canModifyBlob) {
         evt.preventDefault();
         this.$emit('showForkMessage');
       }

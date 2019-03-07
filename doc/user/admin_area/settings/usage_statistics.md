@@ -12,9 +12,9 @@ If enabled, version check will inform you if a new version is available and the
 importance of it through a status. This is shown on the help page (i.e. `/help`)
 for all signed in users, and on the admin pages. The statuses are:
 
-* Green: You are running the latest version of GitLab.
-* Orange: An updated version of GitLab is available.
-* Red: The version of GitLab you are running is vulnerable. You should install
+- Green: You are running the latest version of GitLab.
+- Orange: An updated version of GitLab is available.
+- Red: The version of GitLab you are running is vulnerable. You should install
   the latest version with security fixes as soon as possible.
 
 ![Orange version check example](img/update-available.png)

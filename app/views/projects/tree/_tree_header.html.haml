@@ -40,27 +40,24 @@
                     #{ _('New directory') }
               - elsif can?(current_user, :fork_project, @project) && can?(current_user, :create_merge_request_in, @project)
                 %li
-                  - continue_params = { to:         project_new_blob_path(@project, @id),
-                                        notice:     edit_in_new_fork_notice,
+                  - continue_params = { to: project_new_blob_path(@project, @id),
+                                        notice: edit_in_new_fork_notice,
                                         notice_now: edit_in_new_fork_notice_now }
-                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
-                                                                                          continue:       continue_params)
+                  - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
                   = link_to fork_path, method: :post do
                     #{ _('New file') }
                 %li
-                  - continue_params = { to:         request.fullpath,
-                                        notice:     edit_in_new_fork_notice + " Try to upload a file again.",
+                  - continue_params = { to: request.fullpath,
+                                        notice: edit_in_new_fork_notice + " Try to upload a file again.",
                                         notice_now: edit_in_new_fork_notice_now }
-                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
-                                                                                          continue:       continue_params)
+                  - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
                   = link_to fork_path, method: :post do
                     #{ _('Upload file') }
                 %li
-                  - continue_params = { to:         request.fullpath,
-                                        notice:     edit_in_new_fork_notice + " Try to create a new directory again.",
+                  - continue_params = { to: request.fullpath,
+                                        notice: edit_in_new_fork_notice + " Try to create a new directory again.",
                                         notice_now: edit_in_new_fork_notice_now }
-                  - fork_path = project_forks_path(@project, namespace_key:  current_user.namespace.id,
-                                                                                          continue:       continue_params)
+                  - fork_path = project_forks_path(@project, namespace_key: current_user.namespace.id, continue: continue_params)
                   = link_to fork_path, method: :post do
                     #{ _('New directory') }
 

@@ -14,7 +14,7 @@ be able to create issues, leave comments, and clone or download the project code
 When a member leaves the team all the assigned [Issues](project/issues/index.md) and [Merge Requests](project/merge_requests/index.md)
 will be unassigned automatically.
 
-GitLab [administrators](../README.md#administrator-documentation) receive all permissions.
+GitLab [administrators](../administration/index.md) receive all permissions.
 
 To add or import a user, you can follow the
 [project members documentation](../user/project/members/index.md).
@@ -44,6 +44,7 @@ The following table depicts the various user permission levels in a project.
 | View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View license management reports **[ULTIMATE]** | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **[ULTIMATE]**  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| View project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Assign issues                         |         | ✓          | ✓           | ✓        | ✓      |
@@ -60,6 +61,9 @@ The following table depicts the various user permission levels in a project.
 | Manage related issues **[STARTER]**   |         | ✓          | ✓           | ✓        | ✓      |
 | Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
 | Create issue from vulnerability **[ULTIMATE]** |         | ✓          | ✓           | ✓        | ✓      |
+| View Error Tracking list              |         | ✓          | ✓           | ✓        | ✓      |
+| Pull from [Maven repository](https://docs.gitlab.com/ee/user/project/packages/maven_repository.html) or [NPM registry](https://docs.gitlab.com/ee/user/project/packages/npm_registry.html) **[PREMIUM]** |         | ✓          | ✓           | ✓        | ✓      |
+| Publish to [Maven repository](https://docs.gitlab.com/ee/user/project/packages/maven_repository.html) or [NPM registry](https://docs.gitlab.com/ee/user/project/packages/npm_registry.html) **[PREMIUM]** |         |            | ✓           | ✓        | ✓      |
 | Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Stop environments                     |         |            | ✓           | ✓        | ✓      |
@@ -95,19 +99,20 @@ The following table depicts the various user permission levels in a project.
 | Manage variables                      |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
 | Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
-| Remove GitLab Pages                   |         |            |             |          | ✓      |
+| Remove GitLab Pages                   |         |            |             | ✓        | ✓      |
 | View GitLab Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control-core-only) | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
 | Manage license policy **[ULTIMATE]**  |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
+| Manage Error Tracking                 |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Delete issues                         |         |            |             |          | ✓      |
-| Remove pages                          |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
 | View project Audit Events             |         |            |             | ✓        | ✓      |
+| View project statistics               |         |            |             | ✓        | ✓      |
 
 ## Project features permissions
 
@@ -158,6 +163,13 @@ Confidential issues can be accessed by reporters and higher permission levels,
 as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
+### Releases permissions
+
+[Project Releases](project/releases/index.md) can be read by all project
+members (Reporters, Developers, Maintainers, Owners) **except Guests**.
+Releases can be created, updated, or deleted via [Releases APIs](../api/releases/index.md)
+by project Developers, Maintainers, and Owners.
+
 ## Group members permissions
 
 NOTE: **Note:**
@@ -172,14 +184,12 @@ group.
 | Browse group            | ✓     | ✓        | ✓         | ✓      | ✓     |
 | Edit group              |       |          |           |        | ✓     |
 | Create subgroup         |       |          |           |        | ✓     |
-| Create project in group |       |          |           | ✓      | ✓     |
+| Create project in group |       |          |  ✓         | ✓      | ✓     |
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
-| View private group epic **[ULTIMATE]** |         | ✓        | ✓         | ✓      | ✓     |
-| View internal group epic **[ULTIMATE]** | ✓       | ✓        | ✓         | ✓      | ✓     |
-| View public group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
+| View group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit group epic **[ULTIMATE]**  |         | ✓        | ✓         | ✓      | ✓     |
 | Delete group epic **[ULTIMATE]**       |         |          |           |        | ✓     |
 | View group Audit Events  |         |          |           |        | ✓     |

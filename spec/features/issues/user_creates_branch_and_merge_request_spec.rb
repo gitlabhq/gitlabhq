@@ -141,7 +141,7 @@ describe 'User creates branch and merge request on issue page', :js do
       it 'disables the create branch button' do
         expect(page).to have_css('.create-mr-dropdown-wrap .unavailable:not(.hidden)')
         expect(page).to have_css('.create-mr-dropdown-wrap .available.hidden', visible: false)
-        expect(page).to have_content /1 Related Merge Request/
+        expect(page).to have_content /Related merge requests/
       end
     end
 

@@ -42,10 +42,11 @@ describe Projects::MilestonesController do
 
   describe "#index" do
     context "as html" do
-      def render_index(project:, page:)
+      def render_index(project:, page:, search_title: '')
         get :index, params: {
                       namespace_id: project.namespace.id,
                       project_id: project.id,
+                      search_title: search_title,
                       page: page
                     }
       end
@@ -57,6 +58,15 @@ describe Projects::MilestonesController do
 
         expect(milestones.count).to eq(1)
         expect(milestones.where(project_id: nil)).to be_empty
+      end
+
+      it 'searches milestones by title when search_title is given' do
+        milestone1 = create(:milestone, title: 'Project milestone title', project: project)
+
+        render_index project: project, page: 1, search_title: 'Project mile'
+
+        milestones = assigns(:milestones)
+        expect(milestones).to eq([milestone1])
       end
 
       it 'renders paginated milestones without missing or duplicates' do

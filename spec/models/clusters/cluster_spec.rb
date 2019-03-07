@@ -29,6 +29,8 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:available?).to(:application_helm).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_ingress).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
+  it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
+  it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
 
   it { is_expected.to respond_to :project }
 
@@ -112,7 +114,7 @@ describe Clusters::Cluster do
     end
   end
 
-  describe 'validation' do
+  describe 'validations' do
     subject { cluster.valid? }
 
     context 'when validates name' do
@@ -249,6 +251,31 @@ describe Clusters::Cluster do
           expect(instance_cluster).not_to be_valid
           expect(instance_cluster.errors.full_messages).to include('Cluster cannot have projects assigned')
         end
+      end
+    end
+
+    describe 'domain validation' do
+      let(:cluster) { build(:cluster) }
+
+      subject { cluster }
+
+      context 'when cluster has domain' do
+        let(:cluster) { build(:cluster, :with_domain) }
+
+        it { is_expected.to be_valid }
+      end
+
+      context 'when cluster is not a valid hostname' do
+        let(:cluster) { build(:cluster, domain: 'http://not.a.valid.hostname') }
+
+        it 'should add an error on domain' do
+          expect(subject).not_to be_valid
+          expect(subject.errors[:domain].first).to eq('contains invalid characters (valid characters: [a-z0-9\\-])')
+        end
+      end
+
+      context 'when cluster does not have a domain' do
+        it { is_expected.to be_valid }
       end
     end
   end
@@ -486,6 +513,110 @@ describe Clusters::Cluster do
       let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#kube_ingress_domain' do
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    subject { cluster.kube_ingress_domain }
+
+    context 'with domain set in cluster' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :with_domain) }
+
+      it { is_expected.to eq(cluster.domain) }
+    end
+
+    context 'with no domain on cluster' do
+      context 'with a project cluster' do
+        let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        context 'with domain set at instance level' do
+          before do
+            stub_application_setting(auto_devops_domain: 'global_domain.com')
+
+            it { is_expected.to eq('global_domain.com') }
+          end
+        end
+
+        context 'with domain set on ProjectAutoDevops' do
+          before do
+            auto_devops = project.build_auto_devops(domain: 'legacy-ado-domain.com')
+            auto_devops.save
+          end
+
+          it { is_expected.to eq('legacy-ado-domain.com') }
+        end
+
+        context 'with domain set as environment variable on project' do
+          before do
+            variable = project.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'project-ado-domain.com')
+            variable.save
+          end
+
+          it { is_expected.to eq('project-ado-domain.com') }
+        end
+
+        context 'with domain set as environment variable on the group project' do
+          let(:group) { create(:group) }
+
+          before do
+            project.update(parent_id: group.id)
+            variable = group.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'group-ado-domain.com')
+            variable.save
+          end
+
+          it { is_expected.to eq('group-ado-domain.com') }
+        end
+      end
+
+      context 'with a group cluster' do
+        let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
+
+        context 'with domain set as environment variable for the group' do
+          let(:group) { cluster.group }
+
+          before do
+            variable = group.variables.build(key: 'AUTO_DEVOPS_DOMAIN', value: 'group-ado-domain.com')
+            variable.save
+          end
+
+          it { is_expected.to eq('group-ado-domain.com') }
+        end
+      end
+    end
+  end
+
+  describe '#predefined_variables' do
+    subject { cluster.predefined_variables }
+
+    context 'with an instance domain' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      before do
+        stub_application_setting(auto_devops_domain: 'global_domain.com')
+      end
+
+      it 'should include KUBE_INGRESS_BASE_DOMAIN' do
+        expect(subject.to_hash).to include(KUBE_INGRESS_BASE_DOMAIN: 'global_domain.com')
+      end
+    end
+
+    context 'with a cluster domain' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, domain: 'example.com') }
+
+      it 'should include KUBE_INGRESS_BASE_DOMAIN' do
+        expect(subject.to_hash).to include(KUBE_INGRESS_BASE_DOMAIN: 'example.com')
+      end
+    end
+
+    context 'with no domain' do
+      let(:cluster) { create(:cluster, :provided_by_gcp, :project) }
+
+      it 'should return an empty array' do
+        expect(subject.to_hash).to be_empty
+      end
     end
   end
 end

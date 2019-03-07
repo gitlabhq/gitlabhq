@@ -20,10 +20,27 @@ describe Members::UpdateService do
 
   shared_examples 'a service updating a member' do
     it 'updates the member' do
+      expect(TodosDestroyer::EntityLeaveWorker).not_to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, member.user_id, member.source_id, source.class.name)
+
       updated_member = described_class.new(current_user, params).execute(member, permission: permission)
 
       expect(updated_member).to be_valid
       expect(updated_member.access_level).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    context 'when member is downgraded to guest' do
+      let(:params) do
+        { access_level: Gitlab::Access::GUEST }
+      end
+
+      it 'schedules to delete confidential todos' do
+        expect(TodosDestroyer::EntityLeaveWorker).to receive(:perform_in).with(Todo::WAIT_FOR_DELETE, member.user_id, member.source_id, source.class.name).once
+
+        updated_member = described_class.new(current_user, params).execute(member, permission: permission)
+
+        expect(updated_member).to be_valid
+        expect(updated_member.access_level).to eq(Gitlab::Access::GUEST)
+      end
     end
   end
 

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # Git protocol v2 is temporarily disabled
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/55769 (confidential)
+  context 'Create', :quarantine do
     describe 'Push over HTTP using Git protocol version 2', :requires_git_protocol_v2 do
       it 'user pushes to the repository' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -35,7 +37,7 @@ module QA
         end
 
         project.visit!
-        Page::Project::Show.perform(&:wait_for_push)
+        project.wait_for_push_new_branch
 
         # Check that the push worked
         expect(page).to have_content(file_name)

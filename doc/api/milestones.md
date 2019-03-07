@@ -23,7 +23,7 @@ Parameters:
 | `search` | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/milestones
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/milestones
 ```
 
 Example Response:
@@ -124,6 +124,21 @@ Gets all merge requests assigned to a single project milestone.
 
 ```
 GET /projects/:id/milestones/:milestone_id/merge_requests
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of a project milestone
+
+## Promote project milestone to a group milestone
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53861) in GitLab 11.9
+
+Only for users with developer access to the group.
+
+```
+POST /projects/:id/milestones/:milestone_id/promote
 ```
 
 Parameters:

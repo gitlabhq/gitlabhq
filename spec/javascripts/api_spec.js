@@ -49,6 +49,22 @@ describe('Api', () => {
     });
   });
 
+  describe('groupMembers', () => {
+    it('fetches group members', done => {
+      const groupId = '54321';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/members`;
+      const expectedData = [{ id: 7 }];
+      mock.onGet(expectedUrl).reply(200, expectedData);
+
+      Api.groupMembers(groupId)
+        .then(({ data }) => {
+          expect(data).toEqual(expectedData);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
   describe('groups', () => {
     it('fetches groups', done => {
       const query = 'dummy query';
@@ -120,6 +136,40 @@ describe('Api', () => {
         expect(response[0].name).toBe('test');
         done();
       });
+    });
+  });
+
+  describe('projectMergeRequests', () => {
+    const projectPath = 'abc';
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectPath}/merge_requests`;
+
+    it('fetches all merge requests for a project', done => {
+      const mockData = [{ source_branch: 'foo' }, { source_branch: 'bar' }];
+      mock.onGet(expectedUrl).reply(200, mockData);
+      Api.projectMergeRequests(projectPath)
+        .then(({ data }) => {
+          expect(data.length).toEqual(2);
+          expect(data[0].source_branch).toBe('foo');
+          expect(data[1].source_branch).toBe('bar');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('fetches merge requests filtered with passed params', done => {
+      const params = {
+        source_branch: 'bar',
+      };
+      const mockData = [{ source_branch: 'bar' }];
+      mock.onGet(expectedUrl, { params }).reply(200, mockData);
+
+      Api.projectMergeRequests(projectPath, params)
+        .then(({ data }) => {
+          expect(data.length).toEqual(1);
+          expect(data[0].source_branch).toBe('bar');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 

@@ -8,9 +8,10 @@ requests within GitLab.
 ## Overview
 
 Time Tracking lets you:
-* record the time spent working on an issue or a merge request,
-* add an estimate of the amount of time needed to complete an issue or a merge
-request.
+
+- Record the time spent working on an issue or a merge request.
+- Add an estimate of the amount of time needed to complete an issue or a merge
+  request.
 
 You don't have to indicate an estimate to enter the time spent, and vice versa.
 
@@ -37,13 +38,14 @@ Adding time entries (time spent or estimates) is limited to project members.
 
 To enter an estimate, write `/estimate`, followed by the time. For example, if
 you need to enter an estimate of 3 days, 5 hours and 10 minutes, you would write
-`/estimate 3d 5h 10m`.
+`/estimate 3d 5h 10m`. Time units that we support are listed at the bottom of
+this help page.
 
 Every time you enter a new time estimate, any previous time estimates will be
 overridden by this new value. There should only be one valid estimate in an
 issue or a merge request.
 
-To remove an estimation entirely, use `/remove_estimation`.
+To remove an estimation entirely, use `/remove_estimate`.
 
 ### Time spent
 
@@ -62,13 +64,17 @@ To remove all the time spent at once, use `/remove_time_spent`.
 ## Configuration
 
 The following time units are available:
-* months (mo)
-* weeks (w)
-* days (d)
-* hours (h)
-* minutes (m)
+
+- months (mo)
+- weeks (w)
+- days (d)
+- hours (h)
+- minutes (m)
 
 Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
-[landing]: https://about.gitlab.com/features/time-tracking
+Other interesting links:
+
+- [Time Tracking landing page on about.gitlab.com](https://about.gitlab.com/features/time-tracking)
+
 [quick actions]: ../user/project/quick_actions.md

@@ -3,8 +3,39 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Local do
-  let(:project) { create(:project, :repository) }
-  let(:local_file) { described_class.new(location, { project: project, sha: '12345' }) }
+  set(:project) { create(:project, :repository) }
+  set(:user) { create(:user) }
+
+  let(:sha) { '12345' }
+  let(:context) { described_class::Context.new(project, sha, user, Set.new) }
+  let(:params) { { local: location } }
+  let(:local_file) { described_class.new(params, context) }
+
+  describe '#matching?' do
+    context 'when a local is specified' do
+      let(:params) { { local: 'file' } }
+
+      it 'should return true' do
+        expect(local_file).to be_matching
+      end
+    end
+
+    context 'with a missing local' do
+      let(:params) { { local: nil } }
+
+      it 'should return false' do
+        expect(local_file).not_to be_matching
+      end
+    end
+
+    context 'with a missing local key' do
+      let(:params) { {} }
+
+      it 'should return false' do
+        expect(local_file).not_to be_matching
+      end
+    end
+  end
 
   describe '#valid?' do
     context 'when is a valid local path' do
@@ -44,7 +75,6 @@ describe Gitlab::Ci::Config::External::File::Local do
             - apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs
             - ruby -v
             - which ruby
-            - gem install bundler --no-ri --no-rdoc
             - bundle install --jobs $(nproc)  "${FLAGS[@]}"
         HEREDOC
       end
@@ -73,6 +103,38 @@ describe Gitlab::Ci::Config::External::File::Local do
 
     it 'should return an error message' do
       expect(local_file.error_message).to eq("Local file `#{location}` does not exist!")
+    end
+  end
+
+  describe '#expand_context' do
+    let(:location) { 'location.yml' }
+
+    subject { local_file.send(:expand_context) }
+
+    it 'inherits project, user and sha' do
+      is_expected.to include(user: user, project: project, sha: sha)
+    end
+  end
+
+  describe '#to_hash' do
+    context 'properly includes another local file in the same repository' do
+      let(:location) { 'some/file/config.yml' }
+      let(:content) { 'include: { local: another-config.yml }'}
+
+      let(:another_location) { 'another-config.yml' }
+      let(:another_content) { 'rspec: JOB' }
+
+      before do
+        allow(project.repository).to receive(:blob_data_at).with(sha, location)
+          .and_return(content)
+
+        allow(project.repository).to receive(:blob_data_at).with(sha, another_location)
+          .and_return(another_content)
+      end
+
+      it 'does expand hash to include the template' do
+        expect(local_file.to_hash).to include(:rspec)
+      end
     end
   end
 end

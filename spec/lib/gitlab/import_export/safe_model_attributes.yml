@@ -120,6 +120,13 @@ Release:
 - project_id
 - created_at
 - updated_at
+Releases::Link:
+- id
+- release_id
+- url
+- name
+- created_at
+- updated_at
 ProjectMember:
 - id
 - access_level
@@ -228,6 +235,8 @@ Ci::Pipeline:
 - ref
 - sha
 - before_sha
+- source_sha
+- target_sha
 - push_data
 - created_at
 - updated_at
@@ -593,3 +602,9 @@ ResourceLabelEvent:
 - label_id
 - user_id
 - created_at
+ErrorTracking::ProjectErrorTrackingSetting:
+- id
+- api_url
+- project_id
+- project_name
+- organization_name

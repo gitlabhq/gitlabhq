@@ -18,22 +18,13 @@ module QA
         page.refresh
       end
 
-      def wait(max: 60, time: 0.1, reload: true)
-        start = Time.now
-
-        while Time.now - start < max
-          result = yield
-          return result if result
-
-          sleep(time)
-
-          refresh if reload
+      def wait(max: 60, interval: 0.1, reload: true)
+        QA::Support::Waiter.wait(max: max, interval: interval) do
+          yield || (reload && refresh && false)
         end
-
-        false
       end
 
-      def with_retry(max_attempts: 3, reload: false)
+      def retry_until(max_attempts: 3, reload: false)
         attempts = 0
 
         while attempts < max_attempts
@@ -46,6 +37,12 @@ module QA
         end
 
         false
+      end
+
+      def retry_on_exception(max_attempts: 3, reload: false, sleep_interval: 0.5)
+        QA::Support::Retrier.retry_on_exception(max_attempts: max_attempts, reload_page: (reload && self), sleep_interval: sleep_interval) do
+          yield
+        end
       end
 
       def scroll_to(selector, text: nil)
@@ -73,15 +70,15 @@ module QA
           xhr.send();
         JS
 
-        return false unless wait(time: 0.5, max: 60, reload: false) do
+        return false unless wait(interval: 0.5, max: 60, reload: false) do
           page.evaluate_script('xhr.readyState == XMLHttpRequest.DONE')
         end
 
         page.evaluate_script('xhr.status') == 200
       end
 
-      def find_element(name, text_filter = nil, wait: Capybara.default_max_wait_time)
-        find(element_selector_css(name), wait: wait, text: text_filter)
+      def find_element(name, text: nil, wait: Capybara.default_max_wait_time)
+        find(element_selector_css(name), wait: wait, text: text)
       end
 
       def all_elements(name)
@@ -90,6 +87,10 @@ module QA
 
       def check_element(name)
         find_element(name).set(true)
+      end
+
+      def uncheck_element(name)
+        find_element(name).set(false)
       end
 
       def click_element(name)
@@ -108,12 +109,24 @@ module QA
         element.select value.to_s.capitalize
       end
 
-      def has_element?(name, wait: Capybara.default_max_wait_time)
-        has_css?(element_selector_css(name), wait: wait)
+      def has_element?(name, text: nil, wait: Capybara.default_max_wait_time)
+        has_css?(element_selector_css(name), wait: wait, text: text)
+      end
+
+      def has_no_element?(name, wait: Capybara.default_max_wait_time)
+        has_no_css?(element_selector_css(name), wait: wait)
+      end
+
+      def has_text?(text)
+        page.has_text? text
       end
 
       def has_no_text?(text)
         page.has_no_text? text
+      end
+
+      def finished_loading?
+        has_no_css?('.fa-spinner', wait: Capybara.default_max_wait_time)
       end
 
       def within_element(name)
@@ -138,6 +151,14 @@ module QA
 
       def click_link_with_text(text)
         click_link text
+      end
+
+      def click_body
+        find('body').click
+      end
+
+      def visit_link_in_element(name)
+        visit find_element(name)['href']
       end
 
       def self.path

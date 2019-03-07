@@ -2,6 +2,9 @@
 
 require 'uri'
 
+# Generated HTML is transformed back to GFM by:
+# - app/assets/javascripts/behaviors/markdown/marks/math.js
+# - app/assets/javascripts/behaviors/markdown/nodes/code_block.js
 module Banzai
   module Filter
     # HTML filter that adds class="code math" and removes the dollar sign in $`2+2`$.

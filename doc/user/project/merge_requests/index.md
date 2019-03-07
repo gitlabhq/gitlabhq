@@ -46,7 +46,7 @@ A. Consider you are a software developer working in a team:
 1. You verify your changes with [JUnit test reports](../../../ci/junit_test_reports.md) in GitLab CI/CD
 1. You request the approval from your manager
 1. Your manager pushes a commit with his final review, [approves the merge request](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
-1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#manual-actions) for GitLab CI/CD
+1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#whenmanual) for GitLab CI/CD
 1. Your implementations were successfully shipped to your customer
 
 B. Consider you're a web developer writing a webpage for your company's:
@@ -76,10 +76,10 @@ You can [search and filter the results](../../search/index.md#issues-and-merge-r
 
 ![Group Issues list view](img/group_merge_requests_list_view.png)
 
-## Removing the source branch
+## Deleting the source branch
 
-When creating a merge request, select the "Remove source branch when merge
-request accepted" option and the source branch will be removed when the merge
+When creating a merge request, select the "Delete source branch when merge
+request accepted" option and the source branch will be deleted when the merge
 request is merged.
 
 This option is also visible in an existing merge request next to the merge
@@ -87,10 +87,19 @@ request button and can be selected/deselected before merging. It's only visible
 to users with [Maintainer permissions](../../permissions.md) in the source project.
 
 If the user viewing the merge request does not have the correct permissions to
-remove the source branch and the source branch is set for removal, the merge
-request widget will show the "Removes source branch" text.
+delete the source branch and the source branch is set for deletion, the merge
+request widget will show the "Deletes source branch" text.
 
-![Remove source branch status](img/remove_source_branch_status.png)
+![Delete source branch status](img/remove_source_branch_status.png)
+
+## Allow collaboration on merge requests across forks
+
+When a user opens a merge request from a fork, they are given the option to allow
+upstream maintainers to collaborate with them on the source branch. This allows
+the maintainers of the upstream project to make small fixes or rebase branches
+before merging, reducing the back and forth of accepting community contributions.
+
+[Learn more about allowing upstream members to push to forks.](allow_collaboration.md)
 
 ## Authorization for merge requests
 
@@ -169,9 +178,9 @@ those conflicts in the GitLab UI.
 
 ## Create new merge requests by email
 
-*This feature needs [incoming email](../../../administration/incoming_email.md)
+_This feature needs [incoming email](../../../administration/incoming_email.md)
 to be configured by a GitLab administrator to be available for CE/EE users, and
-it's available on GitLab.com.*
+it's available on GitLab.com._
 
 You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
@@ -183,7 +192,15 @@ will be used as the merge request description. You need
 this feature. If it's not enabled to your instance, you may ask your GitLab
 administrator to do so.
 
+This is a private email address, generated just for you. **Keep it to yourself**
+as anyone who gets ahold of it can create issues or merge requests as if they were you.
+You can add this address to your contact list for easy access.
+
 ![Create new merge requests by email](img/create_from_email.png)
+
+_In GitLab 11.7, we updated the format of the generated email address.
+However the older format is still supported, allowing existing aliases
+or contacts to continue working._
 
 ### Adding patches when creating a merge request via e-mail
 
@@ -267,7 +284,11 @@ you can preview the changes submitted to a feature-branch through a merge reques
 in a per-branch basis. No need to checkout the branch, install and preview locally;
 all your changes will be available to preview by anyone with the Review Apps link.
 
-[Read more about Review Apps.](../../../ci/review_apps/index.md)
+With GitLab's [Route Maps](../../../ci/review_apps/index.md#route-maps) set, the
+merge request widget takes you directly to the pages changed, making it easier and
+faster to preview proposed modifications.
+
+[Read more about Review Apps](../../../ci/review_apps/index.md).
 
 ## Pipelines for merge requests
 
@@ -320,8 +341,8 @@ troubleshooting steps.
 
 This can occur for one of two reasons:
 
-* Sidekiq doesn't pick up the changes fast enough
-* Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
+- Sidekiq doesn't pick up the changes fast enough
+- Because of the bug described in [#41545](https://gitlab.com/gitlab-org/gitlab-ce/issues/41545)
 
 #### Sidekiq
 

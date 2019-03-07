@@ -38,7 +38,10 @@
 
 svg {
   fill: currentColor;
+}
 
+.square,
+svg {
   $svg-sizes: 8 10 12 14 16 18 24 32 48 72;
   @each $svg-size in $svg-sizes {
     &.s#{$svg-size} {

@@ -30,4 +30,8 @@ class ProjectImportData < ActiveRecord::Base
   def merge_credentials(hash)
     self.credentials = credentials.to_h.merge(hash) unless hash.empty?
   end
+
+  def clear_credentials
+    self.credentials = {}
+  end
 end

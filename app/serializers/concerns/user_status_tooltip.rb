@@ -11,7 +11,7 @@ module UserStatusTooltip
     expose :user_status_if_loaded, as: :status_tooltip_html
 
     def user_status_if_loaded
-      return nil unless object.association(:status).loaded?
+      return unless object.association(:status).loaded?
 
       user_status(object)
     end

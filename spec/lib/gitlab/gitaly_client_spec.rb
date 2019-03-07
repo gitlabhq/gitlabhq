@@ -119,6 +119,15 @@ describe Gitlab::GitalyClient do
     end
   end
 
+  describe '.connection_data' do
+    it 'returns connection data' do
+      address = 'tcp://localhost:9876'
+      stub_repos_storages address
+
+      expect(described_class.connection_data('default')).to eq({ 'address' => address, 'token' => 'secret' })
+    end
+  end
+
   describe 'allow_n_plus_1_calls' do
     context 'when RequestStore is enabled', :request_store do
       it 'returns the result of the allow_n_plus_1_calls block' do

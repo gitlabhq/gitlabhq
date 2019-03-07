@@ -6,6 +6,7 @@ module QA
       module Issue
         class Show < Page::Base
           include Page::Component::Issuable::Common
+          include Page::Component::Note
 
           view 'app/views/shared/notes/_form.html.haml' do
             element :new_note_form, 'new-note' # rubocop:disable QA/ElementWithPattern
@@ -22,6 +23,10 @@ module QA
             element :filter_options
           end
 
+          view 'app/assets/javascripts/notes/components/noteable_note.vue' do
+            element :noteable_note_item
+          end
+
           # Adds a comment to an issue
           # attachment option should be an absolute path
           def comment(text, attachment: nil)
@@ -35,19 +40,32 @@ module QA
             click_element :comment_button
           end
 
+          def has_comment?(comment_text)
+            wait(reload: false) do
+              has_element?(:noteable_note_item, text: comment_text)
+            end
+          end
+
           def select_comments_only_filter
-            click_element :discussion_filter
-            find_element(:filter_options, "Show comments only").click
+            select_filter_with_text('Show comments only')
           end
 
           def select_history_only_filter
-            click_element :discussion_filter
-            find_element(:filter_options, "Show history only").click
+            select_filter_with_text('Show history only')
           end
 
           def select_all_activities_filter
-            click_element :discussion_filter
-            find_element(:filter_options, "Show all activity").click
+            select_filter_with_text('Show all activity')
+          end
+
+          private
+
+          def select_filter_with_text(text)
+            retry_on_exception do
+              click_body
+              click_element :discussion_filter
+              find_element(:filter_options, text: text).click
+            end
           end
         end
       end

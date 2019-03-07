@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Mousetrap from 'mousetrap';
-import _ from 'underscore';
 import Sidebar from '../../right_sidebar';
 import Shortcuts from './shortcuts';
 import { CopyAsGFM } from '../markdown/copy_as_gfm';
@@ -63,28 +62,32 @@ export default class ShortcutsIssuable extends Shortcuts {
     }
 
     const el = CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
-    const selected = CopyAsGFM.nodeToGFM(el);
+    const blockquoteEl = document.createElement('blockquote');
+    blockquoteEl.appendChild(el);
+    CopyAsGFM.nodeToGFM(blockquoteEl)
+      .then(text => {
+        if (text.trim() === '') {
+          return false;
+        }
 
-    if (selected.trim() === '') {
-      return false;
-    }
+        // If replyField already has some content, add a newline before our quote
+        const separator = ($replyField.val().trim() !== '' && '\n\n') || '';
+        $replyField
+          .val((a, current) => `${current}${separator}${text}\n\n`)
+          .trigger('input')
+          .trigger('change');
 
-    const quote = _.map(selected.split('\n'), val => `${`> ${val}`.trim()}\n`);
+        // Trigger autosize
+        const event = document.createEvent('Event');
+        event.initEvent('autosize:update', true, false);
+        $replyField.get(0).dispatchEvent(event);
 
-    // If replyField already has some content, add a newline before our quote
-    const separator = ($replyField.val().trim() !== '' && '\n\n') || '';
-    $replyField
-      .val((a, current) => `${current}${separator}${quote.join('')}\n`)
-      .trigger('input')
-      .trigger('change');
+        // Focus the input field
+        $replyField.focus();
 
-    // Trigger autosize
-    const event = document.createEvent('Event');
-    event.initEvent('autosize:update', true, false);
-    $replyField.get(0).dispatchEvent(event);
-
-    // Focus the input field
-    $replyField.focus();
+        return false;
+      })
+      .catch(() => {});
 
     return false;
   }

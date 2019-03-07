@@ -4,23 +4,26 @@ description: 'Learn how to install, configure, update, and maintain your GitLab 
 
 # Administrator documentation **[CORE ONLY]**
 
-Learn how to administer your GitLab instance (Community Edition and
-Enterprise Edition).
-Regular users don't have access to GitLab administration tools and settings.
+Learn how to administer your self-managed GitLab instance.
 
-GitLab has two product distributions: the open source
-[GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
-and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
-available through [different subscriptions](https://about.gitlab.com/pricing/).
+GitLab has two product distributions available through [different subscriptions](https://about.gitlab.com/pricing/):
 
-You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
-but the features you'll have access to depend on the subscription you choose
-(Core, Starter, Premium, or Ultimate). GitLab Community Edition installations
-only have access to Core features.
+- The open source [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce).
+- The open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee).
+
+You can [install either GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/).
+However, the features you'll have access to depend on the subscription you choose
+(Core, Starter, Premium, or Ultimate).
+
+NOTE: **Note:**
+GitLab Community Edition installations only have access to Core features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
 [user documentation](../user/index.html).
+
+NOTE: **Note:**
+Non-administrator users don’t have access to GitLab administration tools and settings.
 
 ## Installing and maintaining GitLab
 
@@ -41,13 +44,16 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
-[source installations](../install/installation.md#installation-from-source).
+  [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
 - [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 - [Diff limits](../user/admin_area/diff_limits.md): Configure the diff rendering size limits of branch comparison pages.
+- [Merge request diffs storage](merge_request_diffs.md): Configure merge requests diffs external storage.
+- [Broadcast Messages](../user/admin_area/broadcast_messages.md): Send messages to GitLab users through the UI.
+- [Admin Area](../user/admin_area/index.md): for self-managed instance-wide configuration and maintenance.
 
 #### Customizing GitLab's appearance
 
@@ -63,6 +69,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
 - [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
+- [Invalidate markdown cache](invalidate_markdown_cache.md): Invalidate any cached markdown.
 
 #### Updating GitLab
 
@@ -80,7 +87,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/): Integrate with [Mattermost](https://about.mattermost.com/), an open source, private cloud workplace for web messaging.
 - [PlantUML](integration/plantuml.md): Create simple diagrams in AsciiDoc and Markdown documents
-created in snippets, wikis, and repos.
+  created in snippets, wikis, and repos.
 - [Web terminals](integration/terminal.md): Provide terminal access to your applications deployed to Kubernetes from within GitLab's CI/CD [environments](../ci/environments.md#web-terminals).
 
 ## User settings and permissions
@@ -88,7 +95,7 @@ created in snippets, wikis, and repos.
 - [Libravatar](../customization/libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
-- [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
+- [Authentication and Authorization](auth/README.md): Configure external authentication with LDAP, SAML, CAS and additional providers. See also other [authentication](../topics/authentication/index.md#gitlab-administrators) topics (for example, enforcing 2FA).
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
   users to [reply by email], create [issues by email] and
   [merge requests by email], and to enable [Service Desk].
@@ -123,8 +130,8 @@ created in snippets, wikis, and repos.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
 - [Job traces](job_traces.md): Information about the job traces (logs).
 - [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
-- [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for Shared Runners.
-- [Enable/disable Auto DevOps](../topics/autodevops/index.md#enabling-auto-devops): Enable or disable Auto DevOps for your instance.
+- [Shared Runners pipelines quota](https://docs.gitlab.com/ee/user/admin_area/settings/continuous_integration.html#shared-runners-pipeline-minutes-quota-starter-only): Limit the usage of pipeline minutes for Shared Runners. **[STARTER ONLY]**
+- [Enable/disable Auto DevOps](../topics/autodevops/index.md#enablingdisabling-auto-devops): Enable or disable Auto DevOps for your instance.
 
 ## Git configuration options
 

@@ -1,16 +1,12 @@
 {
     "licenses": [
         {
-            "count": 13,
-            "name": "MIT"
-        },
-        {
-            "count": 2,
-            "name": "New BSD"
+            "count": 1,
+            "name": "WTFPL"
         },
         {
             "count": 1,
-            "name": "LGPL"
+            "name": "MIT"
         }
     ],
     "dependencies": [
@@ -20,9 +16,9 @@
                 "url": "http://opensource.org/licenses/mit-license"
             },
             "dependency": {
-                "name": "bundler",
-                "url": "http://bundler.io",
-                "description": "The best way to manage your application's dependencies",
+                "name": "actioncable",
+                "url": "http://rubyonrails.org",
+                "description": "WebSocket framework for Rails.",
                 "pathes": [
                     "."
                 ]
@@ -30,209 +26,13 @@
         },
         {
             "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
+                "name": "WTFPL",
+                "url": "http://www.wtfpl.net/"
             },
             "dependency": {
-                "name": "concurrent-ruby",
-                "url": "http://www.concurrent-ruby.com",
-                "description": "Modern concurrency tools for Ruby. Inspired by Erlang, Clojure, Scala, Haskell, F#, C#, Java, and classic concurrency patterns.",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "connection_pool",
-                "url": "https://github.com/mperham/connection_pool",
-                "description": "Generic connection pool for Ruby",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "mini_portile2",
-                "url": "http://github.com/flavorjones/mini_portile",
-                "description": "Simplistic port-like solution for developers",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "mustermann",
-                "url": "https://github.com/sinatra/mustermann",
-                "description": "Your personal string matching expert.",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "nokogiri",
-                "url": "http://nokogiri.org",
-                "description": "Nokogiri (鋸) is an HTML, XML, SAX, and Reader parser",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "New BSD",
-                "url": "http://opensource.org/licenses/BSD-3-Clause"
-            },
-            "dependency": {
-                "name": "pg",
-                "url": "https://bitbucket.org/ged/ruby-pg",
-                "description": "Pg is the Ruby interface to the {PostgreSQL RDBMS}[http://www.postgresql.org/]",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "New BSD",
-                "url": "http://opensource.org/licenses/BSD-3-Clause"
-            },
-            "dependency": {
-                "name": "puma",
-                "url": "http://puma.io",
-                "description": "Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server for Ruby/Rack applications",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "rack",
-                "url": "https://rack.github.io/",
-                "description": "a modular Ruby webserver interface",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "rack-protection",
-                "url": "http://github.com/sinatra/sinatra/tree/master/rack-protection",
-                "description": "Protect against typical web attacks, works with all Rack apps, including Rails.",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "redis",
-                "url": "https://github.com/redis/redis-rb",
-                "description": "A Ruby client library for Redis",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "LGPL",
-                "url": "http://www.gnu.org/licenses/lgpl.txt"
-            },
-            "dependency": {
-                "name": "sidekiq",
-                "url": "http://sidekiq.org",
-                "description": "Simple, efficient background processing for Ruby",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "sinatra",
-                "url": "http://www.sinatrarb.com/",
-                "description": "Classy web-development dressed in a DSL",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "slim",
-                "url": "http://slim-lang.com/",
-                "description": "Slim is a template language.",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "temple",
-                "url": "https://github.com/judofyr/temple",
-                "description": "Template compilation framework in Ruby",
-                "pathes": [
-                    "."
-                ]
-            }
-        },
-        {
-            "license": {
-                "name": "MIT",
-                "url": "http://opensource.org/licenses/mit-license"
-            },
-            "dependency": {
-                "name": "tilt",
-                "url": "http://github.com/rtomayko/tilt/",
-                "description": "Generic interface to multiple Ruby template engines",
+                "name": "wtfpl_init",
+                "url": "https://rubygems.org/gems/wtfpl_init",
+                "description": "Download WTFPL license file and rename to LICENSE.md or something",
                 "pathes": [
                     "."
                 ]

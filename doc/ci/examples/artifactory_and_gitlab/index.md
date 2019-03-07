@@ -16,8 +16,8 @@ to build a [Maven](https://maven.apache.org/) project, deploy it to [Artifactory
 
 You'll create two different projects:
 
-- `simple-maven-dep`: the app built and deployed to Artifactory (available at https://gitlab.com/gitlab-examples/maven/simple-maven-dep )
-- `simple-maven-app`: the app using the previous one as a dependency (available at https://gitlab.com/gitlab-examples/maven/simple-maven-app )
+- `simple-maven-dep`: the app built and deployed to Artifactory (available at <https://gitlab.com/gitlab-examples/maven/simple-maven-dep>)
+- `simple-maven-app`: the app using the previous one as a dependency (available at <https://gitlab.com/gitlab-examples/maven/simple-maven-app>)
 
 We assume that you already have a GitLab account on [GitLab.com](https://gitlab.com/), and that you know the basic usage of Git and [GitLab CI/CD](https://about.gitlab.com/features/gitlab-ci-cd/).
 We also assume that an Artifactory instance is available and reachable from the internet, and that you have valid credentials to deploy on it.
@@ -107,7 +107,7 @@ Now it's time we set up [GitLab CI/CD](https://about.gitlab.com/features/gitlab-
 GitLab CI/CD uses a file in the root of the repo, named `.gitlab-ci.yml`, to read the definitions for jobs
 that will be executed by the configured GitLab Runners. You can read more about this file in the [GitLab Documentation](https://docs.gitlab.com/ee/ci/yaml/).
 
-First of all, remember to set up variables for your deployment. Navigate to your project's **Settings > CI/CD > Variables** page
+First of all, remember to set up variables for your deployment. Navigate to your project's **Settings > CI/CD > Environment variables** page
 and add the following ones (replace them with your current values, of course):
 
 - **MAVEN_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)

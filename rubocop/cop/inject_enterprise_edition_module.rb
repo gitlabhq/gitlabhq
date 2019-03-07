@@ -11,9 +11,13 @@ module RuboCop
 
       METHODS = Set.new(%i[include extend prepend]).freeze
 
-      def_node_matcher :ee_const?, <<~PATTERN
-        (const (const _ :EE) _)
-      PATTERN
+      def ee_const?(node)
+        line = node.location.expression.source_line
+
+        # We use `match?` here instead of RuboCop's AST matching, as this makes
+        # it far easier to handle nested constants such as `EE::Foo::Bar::Baz`.
+        line.match?(/(\s|\()(::)?EE::/)
+      end
 
       def on_send(node)
         return unless METHODS.include?(node.children[1])

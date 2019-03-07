@@ -1,10 +1,14 @@
 <script>
-import statusIcon from '../mr_widget_status_icon.vue';
+import $ from 'jquery';
+import _ from 'underscore';
+import { s__, sprintf } from '~/locale';
+import { mouseenter, debouncedMouseleave, togglePopover } from '~/shared/popover';
+import StatusIcon from '../mr_widget_status_icon.vue';
 
 export default {
   name: 'MRWidgetConflicts',
   components: {
-    statusIcon,
+    StatusIcon,
   },
   props: {
     /* TODO: This is providing all store and service down when it
@@ -14,6 +18,52 @@ export default {
       required: true,
       default: () => ({}),
     },
+  },
+  computed: {
+    popoverTitle() {
+      return s__(
+        'mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected.',
+      );
+    },
+    showResolveButton() {
+      return this.mr.conflictResolutionPath && this.mr.canMerge;
+    },
+    showPopover() {
+      return this.showResolveButton && this.mr.sourceBranchProtected;
+    },
+  },
+  mounted() {
+    if (this.showPopover) {
+      const $el = $(this.$refs.popover);
+
+      $el
+        .popover({
+          html: true,
+          trigger: 'focus',
+          container: 'body',
+          placement: 'top',
+          template:
+            '<div class="popover" role="tooltip"><div class="arrow"></div><p class="popover-header"></p><div class="popover-body"></div></div>',
+          title: s__(
+            'mrWidget|This feature merges changes from the target branch to the source branch. You cannot use this feature since the source branch is protected.',
+          ),
+          content: sprintf(
+            s__('mrWidget|%{link_start}Learn more about resolving conflicts%{link_end}'),
+            {
+              link_start: `<a href="${_.escape(
+                this.mr.conflictsDocsPath,
+              )}" target="_blank" rel="noopener noreferrer">`,
+              link_end: '</a>',
+            },
+            false,
+          ),
+        })
+        .on('mouseenter', mouseenter)
+        .on('mouseleave', debouncedMouseleave(300))
+        .on('show.bs.popover', () => {
+          window.addEventListener('scroll', togglePopover.bind($el, false), { once: true });
+        });
+    }
   },
 };
 </script>
@@ -38,13 +88,15 @@ To merge this request, first rebase locally.`)
             }}
           </span>
         </span>
-        <a
-          v-if="mr.canMerge && mr.conflictResolutionPath"
-          :href="mr.conflictResolutionPath"
-          class="js-resolve-conflicts-button btn btn-default btn-sm"
-        >
-          {{ s__('mrWidget|Resolve conflicts') }}
-        </a>
+        <span v-if="showResolveButton" ref="popover">
+          <a
+            :href="mr.conflictResolutionPath"
+            :disabled="mr.sourceBranchProtected"
+            class="js-resolve-conflicts-button btn btn-default btn-sm"
+          >
+            {{ s__('mrWidget|Resolve conflicts') }}
+          </a>
+        </span>
         <button
           v-if="mr.canMerge"
           class="js-merge-locally-button btn btn-default btn-sm"

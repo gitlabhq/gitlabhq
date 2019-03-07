@@ -48,7 +48,20 @@
   color: $brand-info;
 }
 
-.hint { font-style: italic; color: $gl-gray-400; }
+.text-break-word {
+  word-break: break-all;
+}
+
+.text-underline,
+.text-underline:hover {
+  text-decoration: underline;
+}
+
+.hint {
+  font-style: italic;
+  color: $gl-gray-400;
+}
+
 .light { color: $gl-text-color; }
 
 .slead {
@@ -88,6 +101,10 @@ hr {
 
 .str-truncated {
   @include str-truncated;
+
+  &-30 {
+    @include str-truncated(30%);
+  }
 
   &-60 {
     @include str-truncated(60%);
@@ -145,13 +162,14 @@ p.time {
   text-shadow: none;
 }
 
-.thin_area {
+.thin-area {
   height: 150px;
 }
 
 // Fix issue with notes & lists creating a bunch of bottom borders.
 li.note {
   img { max-width: 100%; }
+
   .note-title {
     li {
       border-bottom: 0 !important;
@@ -322,7 +340,7 @@ img.emoji {
 
 .disabled-content {
   pointer-events: none;
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .break-word {
@@ -381,13 +399,35 @@ img.emoji {
 .inline { display: inline-block; }
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
+.vertical-align-sub { vertical-align: sub; }
 .flex-align-self-center { align-self: center; }
 .flex-grow { flex-grow: 1; }
 .flex-no-shrink { flex-shrink: 0; }
-.mw-460 { max-width: 460px; }
 .ws-initial { white-space: initial; }
+.ws-normal { white-space: normal; }
+.overflow-auto { overflow: auto; }
+
+.d-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/** COMMON SIZING CLASSES **/
+.w-0 { width: 0; }
+
+.h-12em { height: 12em; }
+
+.mw-460 { max-width: 460px; }
+.mw-6em { max-width: 6em; }
+
 .min-height-0 { min-height: 0; }
 
+.w-3 { width: #{3 * $grid-size}; }
+
+.h-3 { width: #{3 * $grid-size}; }
+
+/** COMMON SPACING CLASSES **/
 .gl-pl-0 { padding-left: 0; }
 .gl-pl-1 { padding-left: #{0.5 * $grid-size}; }
 .gl-pl-2 { padding-left: $grid-size; }
@@ -401,3 +441,36 @@ img.emoji {
 .gl-pr-3 { padding-right: #{2 * $grid-size}; }
 .gl-pr-4 { padding-right: #{3 * $grid-size}; }
 .gl-pr-5 { padding-right: #{4 * $grid-size}; }
+
+/**
+ * Removes browser specific clear icon from input fields in
+ * Internet Explorer 10, Internet Explorer 11, and Microsoft Edge.
+ * This is intended for elements which add a customized clear icon.
+ *
+ * see also https://developer.mozilla.org/en-US/docs/Web/CSS/::-ms-clear
+ */
+.ms-no-clear ::-ms-clear {
+  display: none;
+}
+
+/** COMMON POSITIONING CLASSES */
+.position-bottom-0 { bottom: 0; }
+.position-left-0 { left: 0; }
+.position-right-0 { right: 0; }
+.position-top-0 { top: 0; }
+
+.drag-handle {
+  width: 4px;
+
+  &:hover {
+    background-color: $white-normal;
+  }
+
+  &.is-dragging {
+    background-color: $gray-600;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

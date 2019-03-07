@@ -30,6 +30,17 @@ describe BitbucketServer::Paginator do
       expect { limited.items }.to raise_error(StopIteration)
     end
 
+    it 'does not stop if limit is unspecified' do
+      stub_const("BitbucketServer::Paginator::PAGE_LENGTH", 1)
+      paginator = described_class.new(connection, 'http://more-data', :pull_request, page_offset: 0, limit: nil)
+      allow(paginator).to receive(:fetch_next_page).and_return(first_page, last_page)
+
+      expect(paginator.has_next_page?).to be_truthy
+      expect(paginator.items).to match(['item_1'])
+      expect(paginator.has_next_page?).to be_truthy
+      expect(paginator.items).to match(['item_2'])
+    end
+
     it 'calls the connection with different offsets' do
       expect(connection).to receive(:get).with('http://more-data', start: 0, limit: BitbucketServer::Paginator::PAGE_LENGTH).and_return(page_attrs)
 

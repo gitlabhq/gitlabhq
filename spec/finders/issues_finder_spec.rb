@@ -174,9 +174,13 @@ describe IssuesFinder do
       context 'filtering by upcoming milestone' do
         let(:params) { { milestone_title: Milestone::Upcoming.name } }
 
+        let!(:group) { create(:group, :public) }
+        let!(:group_member) { create(:group_member, group: group, user: user) }
+
         let(:project_no_upcoming_milestones) { create(:project, :public) }
         let(:project_next_1_1) { create(:project, :public) }
         let(:project_next_8_8) { create(:project, :public) }
+        let(:project_in_group) { create(:project, :public, namespace: group) }
 
         let(:yesterday) { Date.today - 1.day }
         let(:tomorrow) { Date.today + 1.day }
@@ -187,21 +191,22 @@ describe IssuesFinder do
           [
             create(:milestone, :closed, project: project_no_upcoming_milestones),
             create(:milestone, project: project_next_1_1, title: '1.1', due_date: two_days_from_now),
-            create(:milestone, project: project_next_1_1, title: '8.8', due_date: ten_days_from_now),
-            create(:milestone, project: project_next_8_8, title: '1.1', due_date: yesterday),
-            create(:milestone, project: project_next_8_8, title: '8.8', due_date: tomorrow)
+            create(:milestone, project: project_next_1_1, title: '8.9', due_date: ten_days_from_now),
+            create(:milestone, project: project_next_8_8, title: '1.2', due_date: yesterday),
+            create(:milestone, project: project_next_8_8, title: '8.8', due_date: tomorrow),
+            create(:milestone, group: group, title: '9.9', due_date: tomorrow)
           ]
         end
 
         before do
           milestones.each do |milestone|
-            create(:issue, project: milestone.project, milestone: milestone, author: user, assignees: [user])
+            create(:issue, project: milestone.project || project_in_group, milestone: milestone, author: user, assignees: [user])
           end
         end
 
-        it 'returns issues in the upcoming milestone for each project' do
-          expect(issues.map { |issue| issue.milestone.title }).to contain_exactly('1.1', '8.8')
-          expect(issues.map { |issue| issue.milestone.due_date }).to contain_exactly(tomorrow, two_days_from_now)
+        it 'returns issues in the upcoming milestone for each project or group' do
+          expect(issues.map { |issue| issue.milestone.title }).to contain_exactly('1.1', '8.8', '9.9')
+          expect(issues.map { |issue| issue.milestone.due_date }).to contain_exactly(tomorrow, two_days_from_now, tomorrow)
         end
       end
 
@@ -309,6 +314,14 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by issue term in title' do
+        let(:params) { { search: 'git', in: 'title' } }
+
+        it 'returns issues with title match for search term' do
+          expect(issues).to contain_exactly(issue1)
+        end
+      end
+
       context 'filtering by issues iids' do
         let(:params) { { iids: issue3.iid } }
 
@@ -403,6 +416,36 @@ describe IssuesFinder do
         end
       end
 
+      context 'filtering by closed_at' do
+        let!(:closed_issue1) { create(:issue, project: project1, state: :closed, closed_at: 1.week.ago) }
+        let!(:closed_issue2) { create(:issue, project: project2, state: :closed, closed_at: 1.week.from_now) }
+        let!(:closed_issue3) { create(:issue, project: project2, state: :closed, closed_at: 2.weeks.from_now) }
+
+        context 'through closed_after' do
+          let(:params) { { state: :closed, closed_after: closed_issue3.closed_at } }
+
+          it 'returns issues closed on or after the given date' do
+            expect(issues).to contain_exactly(closed_issue3)
+          end
+        end
+
+        context 'through closed_before' do
+          let(:params) { { state: :closed, closed_before: closed_issue1.closed_at } }
+
+          it 'returns issues closed on or before the given date' do
+            expect(issues).to contain_exactly(closed_issue1)
+          end
+        end
+
+        context 'through closed_after and closed_before' do
+          let(:params) { { state: :closed, closed_after: closed_issue2.closed_at, closed_before: closed_issue3.closed_at } }
+
+          it 'returns issues closed between the given dates' do
+            expect(issues).to contain_exactly(closed_issue2, closed_issue3)
+          end
+        end
+      end
+
       context 'filtering by reaction name' do
         context 'user searches by no reaction' do
           let(:params) { { my_reaction_emoji: 'None' } }
@@ -443,6 +486,32 @@ describe IssuesFinder do
 
           it 'returns issues that the user thumbsdown to' do
             expect(issues).to contain_exactly(issue3)
+          end
+        end
+      end
+
+      context 'filtering by confidential' do
+        set(:confidential_issue) { create(:issue, project: project1, confidential: true) }
+
+        context 'no filtering' do
+          it 'returns all issues' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4, confidential_issue)
+          end
+        end
+
+        context 'user filters confidential issues' do
+          let(:params) { { confidential: true } }
+
+          it 'returns only confdential issues' do
+            expect(issues).to contain_exactly(confidential_issue)
+          end
+        end
+
+        context 'user filters only public issues' do
+          let(:params) { { confidential: false } }
+
+          it 'returns only confdential issues' do
+            expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
           end
         end
       end
@@ -513,7 +582,7 @@ describe IssuesFinder do
     it 'returns the number of rows for the default state' do
       finder = described_class.new(user)
 
-      expect(finder.row_count).to eq(4)
+      expect(finder.row_count).to eq(5)
     end
 
     it 'returns the number of rows for a given state' do
@@ -646,7 +715,7 @@ describe IssuesFinder do
 
     before do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-      stub_feature_flags(use_subquery_for_group_issues_search: true)
+      stub_feature_flags(attempt_group_search_optimizations: true)
     end
 
     context 'when there is no search param' do
@@ -677,12 +746,20 @@ describe IssuesFinder do
       end
     end
 
-    context 'when the use_subquery_for_group_issues_search flag is disabled' do
+    context 'when the attempt_group_search_optimizations flag is disabled' do
       let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
 
       before do
-        stub_feature_flags(use_subquery_for_group_issues_search: false)
+        stub_feature_flags(attempt_group_search_optimizations: false)
       end
+
+      it 'returns false' do
+        expect(finder.use_subquery_for_search?).to be_falsey
+      end
+    end
+
+    context 'when force_cte? is true' do
+      let(:params) { { search: 'foo', attempt_group_search_optimizations: true, force_cte: true } }
 
       it 'returns false' do
         expect(finder.use_subquery_for_search?).to be_falsey
@@ -698,72 +775,59 @@ describe IssuesFinder do
     end
   end
 
-  describe '#use_cte_for_search?' do
+  describe '#use_cte_for_count?' do
     let(:finder) { described_class.new(nil, params) }
 
     before do
       allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-      stub_feature_flags(use_cte_for_group_issues_search: true)
-      stub_feature_flags(use_subquery_for_group_issues_search: false)
+      stub_feature_flags(attempt_group_search_optimizations: true)
     end
 
     context 'when there is no search param' do
-      let(:params) { { attempt_group_search_optimizations: true } }
+      let(:params) { { attempt_group_search_optimizations: true, force_cte: true } }
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
     context 'when the database is not Postgres' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+      let(:params) { { search: 'foo', force_cte: true, attempt_group_search_optimizations: true } }
 
       before do
         allow(Gitlab::Database).to receive(:postgresql?).and_return(false)
       end
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
-    context 'when the attempt_group_search_optimizations param is falsey' do
+    context 'when the force_cte param is falsey' do
       let(:params) { { search: 'foo' } }
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
-    context 'when the use_cte_for_group_issues_search flag is disabled' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+    context 'when the attempt_group_search_optimizations flag is disabled' do
+      let(:params) { { search: 'foo', force_cte: true, attempt_group_search_optimizations: true } }
 
       before do
-        stub_feature_flags(use_cte_for_group_issues_search: false)
+        stub_feature_flags(attempt_group_search_optimizations: false)
       end
 
       it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
-      end
-    end
-
-    context 'when use_subquery_for_search? is true' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
-
-      before do
-        stub_feature_flags(use_subquery_for_group_issues_search: true)
-      end
-
-      it 'returns false' do
-        expect(finder.use_cte_for_search?).to be_falsey
+        expect(finder.use_cte_for_count?).to be_falsey
       end
     end
 
     context 'when all conditions are met' do
-      let(:params) { { search: 'foo', attempt_group_search_optimizations: true } }
+      let(:params) { { search: 'foo', force_cte: true, attempt_group_search_optimizations: true } }
 
       it 'returns true' do
-        expect(finder.use_cte_for_search?).to be_truthy
+        expect(finder.use_cte_for_count?).to be_truthy
       end
     end
   end

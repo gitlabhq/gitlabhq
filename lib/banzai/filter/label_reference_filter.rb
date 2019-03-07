@@ -29,7 +29,7 @@ module Banzai
           if label
             yield match, label.id, project, namespace, $~
           else
-            match
+            escape_html_entities(match)
           end
         end
       end
@@ -100,6 +100,10 @@ module Banzai
 
       def unescape_html_entities(text)
         CGI.unescapeHTML(text.to_s)
+      end
+
+      def escape_html_entities(text)
+        CGI.escapeHTML(text.to_s)
       end
 
       def object_link_title(object, matches)

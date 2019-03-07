@@ -144,7 +144,7 @@ describe EventCreateService do
 
     it 'updates user last activity' do
       expect { service.push(project, user, push_data) }
-        .to change {  user.last_activity_on }.to(Date.today)
+        .to change { user.last_activity_on }.to(Date.today)
     end
 
     it 'caches the last push event for the user' do

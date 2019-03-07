@@ -6,6 +6,7 @@ import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
 import markdownField from '../../vue_shared/components/markdown/field.vue';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
+import { __ } from '~/locale';
 
 export default {
   name: 'NoteForm',
@@ -25,15 +26,10 @@ export default {
       required: false,
       default: '',
     },
-    markdownVersion: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     saveButtonTitle: {
       type: String,
       required: false,
-      default: 'Save comment',
+      default: __('Save comment'),
     },
     discussion: {
       type: Object,
@@ -149,6 +145,9 @@ export default {
 
       return shouldResolve || shouldToggleState;
     },
+    handleKeySubmit() {
+      this.handleUpdate();
+    },
     handleUpdate(shouldResolve) {
       const beforeSubmitDiscussionState = this.discussionResolved;
       this.isSubmitting = true;
@@ -198,7 +197,6 @@ export default {
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
-        :markdown-version="markdownVersion"
         :quick-actions-docs-path="quickActionsDocsPath"
         :line="line"
         :note="discussionNote"
@@ -216,32 +214,32 @@ export default {
           class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
           aria-label="Description"
           placeholder="Write a comment or drag your files here…"
-          @keydown.meta.enter="handleUpdate();"
-          @keydown.ctrl.enter="handleUpdate();"
-          @keydown.up="editMyLastNote();"
-          @keydown.esc="cancelHandler(true);"
+          @keydown.meta.enter="handleKeySubmit()"
+          @keydown.ctrl.enter="handleKeySubmit()"
+          @keydown.up="editMyLastNote()"
+          @keydown.esc="cancelHandler(true)"
         ></textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
         <button
           :disabled="isDisabled"
           type="button"
-          class="js-vue-issue-save btn btn-success js-comment-button"
-          @click="handleUpdate();"
+          class="js-vue-issue-save btn btn-success js-comment-button qa-reply-comment-button"
+          @click="handleUpdate()"
         >
           {{ saveButtonTitle }}
         </button>
         <button
           v-if="discussion.resolvable"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button"
-          @click.prevent="handleUpdate(true);"
+          @click.prevent="handleUpdate(true)"
         >
           {{ resolveButtonTitle }}
         </button>
         <button
           class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
           type="button"
-          @click="cancelHandler();"
+          @click="cancelHandler()"
         >
           Cancel
         </button>

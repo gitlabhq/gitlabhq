@@ -16,6 +16,7 @@ export default () => {
     const filePath = editBlobForm.data('blobFilename');
     const currentAction = $('.js-file-title').data('currentAction');
     const projectId = editBlobForm.data('project-id');
+    const isMarkdown = editBlobForm.data('is-markdown');
     const commitButton = $('.js-commit-button');
     const cancelLink = $('.btn.btn-cancel');
 
@@ -27,7 +28,13 @@ export default () => {
       window.onbeforeunload = null;
     });
 
-    new EditBlob(`${urlRoot}${assetsPath}`, filePath, currentAction, projectId);
+    new EditBlob({
+      assetsPath: `${urlRoot}${assetsPath}`,
+      filePath,
+      currentAction,
+      projectId,
+      isMarkdown,
+    });
     new NewCommitForm(editBlobForm);
 
     // returning here blocks page navigation

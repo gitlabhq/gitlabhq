@@ -28,7 +28,7 @@ project_tree:
     - notes:
         :author
   - releases:
-      :author
+    - :links
   - project_members:
     - :user
   - merge_requests:
@@ -63,7 +63,6 @@ project_tree:
   - :triggers
   - :pipeline_schedules
   - :services
-  - :hooks
   - protected_branches:
     - :merge_access_levels
     - :push_access_levels
@@ -74,6 +73,7 @@ project_tree:
   - :prometheus_metrics
   - :project_badges
   - :ci_cd_settings
+  - :error_tracking_setting
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -129,9 +129,13 @@ excluded_attributes:
   snippets:
     - :expired_at
   merge_request_diff:
-    - :st_diffs
+    - :external_diff
+    - :stored_externally
+    - :external_diff_store
   merge_request_diff_files:
     - :diff
+    - :external_diff_offset
+    - :external_diff_size
   issues:
     - :milestone_id
   merge_requests:
@@ -148,6 +152,7 @@ excluded_attributes:
     - :when
     - :artifacts_file
     - :artifacts_metadata
+    - :commands
   push_event_payload:
     - :event_id
   project_badges:
@@ -156,17 +161,15 @@ excluded_attributes:
     - :reference
     - :reference_html
     - :epic_id
-  hooks:
-    - :token
-    - :encrypted_token
-    - :encrypted_token_iv
-    - :encrypted_url
-    - :encrypted_url_iv
   runners:
     - :token
     - :token_encrypted
   services:
     - :template
+  error_tracking_setting:
+    - :encrypted_token
+    - :encrypted_token_iv
+    - :enabled
 
 methods:
   labels:

@@ -143,6 +143,7 @@ Naming/FileName:
     - XMPP
     - XSRF
     - XSS
+    - GRPC
 
 # GitLab ###################################################################
 
@@ -180,3 +181,6 @@ Cop/InjectEnterpriseEditionModule:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+Style/ReturnNil:
+  Enabled: true

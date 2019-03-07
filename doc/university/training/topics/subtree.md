@@ -4,20 +4,20 @@ comments: false
 
 # Subtree
 
-* Used when there are nested repositories.
-* Not recommended when the amount of dependencies is too large
-* For these cases we need a dependency control system
-* Command are painfully long so aliases are necessary
+- Used when there are nested repositories.
+- Not recommended when the amount of dependencies is too large.
+- For these cases we need a dependency control system.
+- Command are painfully long so aliases are necessary.
 
 ----------
 
 ## Subtree Aliases
 
-* Add: git subtree add --prefix <target-folder> <url> <branch> --squash
-* Pull: git subtree add --prefix <target-folder> <url> <branch> --squash
-* Push: git subtree add --prefix <target-folder> <url> <branch>
-* Ex: git config alias.sbp 'subtree pull --prefix st /
-  git@gitlab.com:balameb/subtree-nested-example.git master --squash'
+- Add: git subtree add --prefix <target-folder> <url> <branch> --squash.
+- Pull: git subtree add --prefix <target-folder> <url> <branch> --squash.
+- Push: git subtree add --prefix <target-folder> <url> <branch>.
+- Ex: git config alias.sbp 'subtree pull --prefix st /
+  git@gitlab.com:balameb/subtree-nested-example.git master --squash'.
 
 ----------
 

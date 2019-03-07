@@ -93,7 +93,7 @@ module Gitlab
       end
 
       def markdown(text)
-        Banzai.render(text, project: @source_parent, no_original_data: true)
+        Banzai.render(text, project: @source_parent, no_original_data: true, no_sourcepos: true)
       end
     end
   end

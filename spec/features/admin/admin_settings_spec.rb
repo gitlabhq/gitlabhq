@@ -238,7 +238,7 @@ describe 'Admin updates settings' do
 
       page.within('.as-ci-cd') do
         check 'Default to Auto DevOps pipeline for all projects'
-        fill_in 'Auto devops domain', with: 'domain.com'
+        fill_in 'application_setting_auto_devops_domain', with: 'domain.com'
         click_button 'Save changes'
       end
 

@@ -8,11 +8,7 @@ module QA
       attribute :fingerprint do
         Page::Project::Settings::Repository.perform do |setting|
           setting.expand_deploy_keys do |key|
-            key_offset = key.key_titles.index do |key_title|
-              key_title.text == title
-            end
-
-            key.key_fingerprints[key_offset].text
+            key.find_fingerprint(title)
           end
         end
       end

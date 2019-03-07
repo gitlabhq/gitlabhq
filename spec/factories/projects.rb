@@ -1,7 +1,7 @@
 require_relative '../support/helpers/test_env'
 
 FactoryBot.define do
-  PAGES_ACCESS_LEVEL_SCHEMA_VERSION = 20180423204600
+  PAGES_ACCESS_LEVEL_SCHEMA_VERSION ||= 20180423204600
 
   # Project without repository
   #
@@ -313,6 +313,20 @@ FactoryBot.define do
     end
   end
 
+  factory :youtrack_project, parent: :project do
+    has_external_issue_tracker true
+
+    after :create do |project|
+      project.create_youtrack_service(
+        active: true,
+        properties: {
+          'project_url' => 'http://youtrack/projects/project_guid_in_youtrack',
+          'issues_url' => 'http://youtrack/issues/:id'
+        }
+      )
+    end
+  end
+
   factory :jira_project, parent: :project do
     has_external_issue_tracker true
     jira_service
@@ -320,6 +334,10 @@ FactoryBot.define do
 
   factory :kubernetes_project, parent: :project do
     kubernetes_service
+  end
+
+  factory :mock_deployment_project, parent: :project do
+    mock_deployment_service
   end
 
   factory :prometheus_project, parent: :project do

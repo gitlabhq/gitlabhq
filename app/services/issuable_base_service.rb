@@ -61,10 +61,10 @@ class IssuableBaseService < BaseService
     return unless milestone_id
 
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
-    group_ids = project.group&.self_and_ancestors&.pluck(:id)
+    groups = project.group&.self_and_ancestors&.select(:id)
 
     milestone =
-      Milestone.for_projects_and_groups([project.id], group_ids).find_by_id(milestone_id)
+      Milestone.for_projects_and_groups([project.id], groups).find_by_id(milestone_id)
 
     params[:milestone_id] = '' unless milestone
   end
@@ -89,7 +89,7 @@ class IssuableBaseService < BaseService
 
     return unless labels
 
-    params[:label_ids] = labels.split(",").map do |label_name|
+    params[:label_ids] = labels.map do |label_name|
       label = Labels::FindOrCreateService.new(
         current_user,
         parent,
@@ -235,6 +235,61 @@ class IssuableBaseService < BaseService
     issuable
   end
 
+  def update_task(issuable)
+    filter_params(issuable)
+
+    if issuable.changed? || params.present?
+      issuable.assign_attributes(params.merge(updated_by: current_user,
+                                              last_edited_at: Time.now,
+                                              last_edited_by: current_user))
+
+      before_update(issuable)
+
+      if issuable.with_transaction_returning_status { issuable.save }
+        # We do not touch as it will affect a update on updated_at field
+        ActiveRecord::Base.no_touching do
+          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels: nil)
+        end
+
+        handle_task_changes(issuable)
+        invalidate_cache_counts(issuable, users: issuable.assignees.to_a)
+        after_update(issuable)
+        execute_hooks(issuable, 'update', old_associations: nil)
+      end
+    end
+
+    issuable
+  end
+
+  # Handle the `update_task` event sent from UI.  Attempts to update a specific
+  # line in the markdown and cached html, bypassing any unnecessary updates or checks.
+  def update_task_event(issuable)
+    update_task_params = params.delete(:update_task)
+    return unless update_task_params
+
+    tasklist_toggler = TaskListToggleService.new(issuable.description, issuable.description_html,
+                                                 line_source: update_task_params[:line_source],
+                                                 line_number: update_task_params[:line_number].to_i,
+                                                 toggle_as_checked: update_task_params[:checked])
+
+    unless tasklist_toggler.execute
+      # if we make it here, the data is much newer than we thought it was - fail fast
+      raise ActiveRecord::StaleObjectError
+    end
+
+    # by updating the description_html field at the same time,
+    # the markdown cache won't be considered invalid
+    params[:description]      = tasklist_toggler.updated_markdown
+    params[:description_html] = tasklist_toggler.updated_markdown_html
+
+    # since we're updating a very specific line, we don't care whether
+    # the `lock_version` sent from the FE is the same or not.  Just
+    # make sure the data hasn't changed since we queried it
+    params[:lock_version]     = issuable.lock_version
+
+    update_task(issuable)
+  end
+
   def labels_changing?(old_label_ids, new_label_ids)
     old_label_ids.sort != new_label_ids.sort
   end
@@ -318,6 +373,10 @@ class IssuableBaseService < BaseService
   end
 
   # override if needed
+  def handle_task_changes(issuable)
+  end
+
+  # override if needed
   def execute_hooks(issuable, action = 'open', params = {})
   end
 
@@ -327,5 +386,11 @@ class IssuableBaseService < BaseService
 
   def parent
     project
+  end
+
+  # we need to check this because milestone from milestone_id param is displayed on "new" page
+  # where private project milestone could leak without this check
+  def ensure_milestone_available(issuable)
+    issuable.milestone_id = nil unless issuable.milestone_available?
   end
 end

@@ -22,7 +22,7 @@ module API
       get ':id/environments' do
         authorize! :read_environment, user_project
 
-        present paginate(user_project.environments), with: Entities::Environment
+        present paginate(user_project.environments), with: Entities::Environment, current_user: current_user
       end
 
       desc 'Creates a new environment' do
@@ -40,7 +40,7 @@ module API
         environment = user_project.environments.create(declared_params)
 
         if environment.persisted?
-          present environment, with: Entities::Environment
+          present environment, with: Entities::Environment, current_user: current_user
         else
           render_validation_error!(environment)
         end
@@ -63,7 +63,7 @@ module API
 
         update_params = declared_params(include_missing: false).extract!(:name, :external_url)
         if environment.update(update_params)
-          present environment, with: Entities::Environment
+          present environment, with: Entities::Environment, current_user: current_user
         else
           render_validation_error!(environment)
         end
@@ -74,7 +74,7 @@ module API
         success Entities::Environment
       end
       params do
-        requires :environment_id, type: Integer,  desc: 'The environment ID'
+        requires :environment_id, type: Integer, desc: 'The environment ID'
       end
       delete ':id/environments/:environment_id' do
         authorize! :update_environment, user_project
@@ -88,7 +88,7 @@ module API
         success Entities::Environment
       end
       params do
-        requires :environment_id, type: Integer,  desc: 'The environment ID'
+        requires :environment_id, type: Integer, desc: 'The environment ID'
       end
       post ':id/environments/:environment_id/stop' do
         authorize! :read_environment, user_project
@@ -99,7 +99,7 @@ module API
         environment.stop_with_action!(current_user)
 
         status 200
-        present environment, with: Entities::Environment
+        present environment, with: Entities::Environment, current_user: current_user
       end
     end
   end

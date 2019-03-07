@@ -177,9 +177,10 @@ describe JiraService do
         expect(WebMock).to have_requested(:post, @remote_link_url).with(
           body: hash_including(
             GlobalID: 'GitLab',
+            relationship: 'mentioned on',
             object: {
               url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{commit_id}",
-              title: "GitLab: Solved by commit #{commit_id}.",
+              title: "Solved by commit #{commit_id}.",
               icon: { title: 'GitLab', url16x16: favicon_path },
               status: { resolved: true }
             }

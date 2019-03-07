@@ -81,7 +81,7 @@ export default {
               type="button"
               class="close js-modal-close-action"
               data-dismiss="modal"
-              @click="emitCancel($event);"
+              @click="emitCancel($event)"
             >
               <span aria-hidden="true">&times;</span>
             </button>
@@ -96,7 +96,7 @@ export default {
               type="button"
               class="btn js-modal-cancel-action qa-modal-cancel-button"
               data-dismiss="modal"
-              @click="emitCancel($event);"
+              @click="emitCancel($event)"
             >
               {{ s__('Modal|Cancel') }}
             </button>
@@ -105,7 +105,7 @@ export default {
               type="button"
               class="btn js-modal-primary-action qa-modal-primary-button"
               data-dismiss="modal"
-              @click="emitSubmit($event);"
+              @click="emitSubmit($event)"
             >
               {{ footerPrimaryButtonText }}
             </button>

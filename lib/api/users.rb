@@ -26,7 +26,7 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         def reorder_users(users)
           if params[:order_by] && params[:sort]
-            users.reorder(params[:order_by] => params[:sort])
+            users.reorder(order_options_with_tie_breaker)
           else
             users
           end
@@ -133,10 +133,10 @@ module API
 
       desc "Get the status of a user"
       params do
-        requires :id_or_username, type: String, desc: 'The ID or username of the user'
+        requires :user_id, type: String, desc: 'The ID or username of the user'
       end
-      get ":id_or_username/status" do
-        user = find_user(params[:id_or_username])
+      get ":user_id/status", requirements: API::USER_REQUIREMENTS do
+        user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
         present user.status || {}, with: Entities::UserStatus

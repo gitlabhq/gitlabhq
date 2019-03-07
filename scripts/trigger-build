@@ -68,7 +68,7 @@ module Trigger
 
     def base_variables
       {
-        'GITLAB_REF_SLUG' => ENV['CI_COMMIT_REF_SLUG'],
+        'GITLAB_REF_SLUG' => ENV['CI_COMMIT_TAG'] ? ENV['CI_COMMIT_REF_NAME'] : ENV['CI_COMMIT_REF_SLUG'],
         'TRIGGERED_USER' => ENV['TRIGGERED_USER'] || ENV['GITLAB_USER_NAME'],
         'TRIGGER_SOURCE' => ENV['CI_JOB_URL'],
         'TOP_UPSTREAM_SOURCE_PROJECT' => ENV['CI_PROJECT_PATH'],
@@ -137,7 +137,11 @@ module Trigger
       edition = Trigger.ee? ? 'EE' : 'CE'
 
       {
+        # Back-compatibility until https://gitlab.com/gitlab-org/build/CNG/merge_requests/189 is merged
         "GITLAB_#{edition}_VERSION" => ENV['CI_COMMIT_REF_NAME'],
+        "GITLAB_VERSION" => ENV['CI_COMMIT_REF_NAME'],
+        "GITLAB_TAG" => ENV['CI_COMMIT_TAG'],
+        "GITLAB_ASSETS_TAG" => ENV['CI_COMMIT_REF_SLUG'],
         "#{edition}_PIPELINE" => 'true'
       }
     end

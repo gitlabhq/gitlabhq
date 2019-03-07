@@ -58,7 +58,7 @@ describe DiffViewer::Base do
 
       context 'when the binaryness does not match' do
         before do
-          allow_any_instance_of(Blob).to receive(:binary?).and_return(true)
+          allow_any_instance_of(Blob).to receive(:binary_in_repo?).and_return(true)
         end
 
         it 'returns false' do
@@ -138,6 +138,27 @@ describe DiffViewer::Base do
     context 'when the combined blob size is smaller than the size limit' do
       it 'returns nil' do
         expect(viewer.render_error).to be_nil
+      end
+    end
+  end
+
+  describe '#render_error_message' do
+    it 'returns nothing when no render_error' do
+      expect(viewer.render_error).to be_nil
+      expect(viewer.render_error_message).to be_nil
+    end
+
+    context 'when render_error error' do
+      before do
+        allow(viewer).to receive(:render_error).and_return(:too_large)
+      end
+
+      it 'returns an error message' do
+        expect(viewer.render_error_message).to include('it is too large')
+      end
+
+      it 'includes a "view the blob" link' do
+        expect(viewer.render_error_message).to include('view the blob')
       end
     end
   end

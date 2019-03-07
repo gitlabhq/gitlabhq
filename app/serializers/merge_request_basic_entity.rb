@@ -11,4 +11,5 @@ class MergeRequestBasicEntity < Grape::Entity
   expose :labels, using: LabelEntity
   expose :assignee, using: API::Entities::UserBasic
   expose :task_status, :task_status_short
+  expose :lock_version, :lock_version
 end

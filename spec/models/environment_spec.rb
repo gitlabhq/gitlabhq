@@ -41,6 +41,76 @@ describe Environment do
     end
   end
 
+  describe '.for_name_like' do
+    subject { project.environments.for_name_like(query, limit: limit) }
+
+    let!(:environment) { create(:environment, name: 'production', project: project) }
+    let(:query) { 'pro' }
+    let(:limit) { 5 }
+
+    it 'returns a found name' do
+      is_expected.to include(environment)
+    end
+
+    context 'when query is production' do
+      let(:query) { 'production' }
+
+      it 'returns a found name' do
+        is_expected.to include(environment)
+      end
+    end
+
+    context 'when query is productionA' do
+      let(:query) { 'productionA' }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when query is empty' do
+      let(:query) { '' }
+
+      it 'returns a found name' do
+        is_expected.to include(environment)
+      end
+    end
+
+    context 'when query is nil' do
+      let(:query) { }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(NoMethodError)
+      end
+    end
+
+    context 'when query is partially matched in the middle of environment name' do
+      let(:query) { 'duction' }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when query contains a wildcard character' do
+      let(:query) { 'produc%' }
+
+      it 'prevents wildcard injection' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
+  describe '.pluck_names' do
+    subject { described_class.pluck_names }
+
+    let!(:environment) { create(:environment, name: 'production', project: project) }
+
+    it 'plucks names' do
+      is_expected.to eq(%w[production])
+    end
+  end
+
   describe '#expire_etag_cache' do
     let(:store) { Gitlab::EtagCaching::Store.new }
 
@@ -90,6 +160,28 @@ describe Environment do
 
       it 'returns an environment name' do
         expect(environment.folder_name).to eq 'production'
+      end
+    end
+  end
+
+  describe '#name_without_type' do
+    context 'when it is inside a folder' do
+      subject(:environment) do
+        create(:environment, name: 'staging/review-1')
+      end
+
+      it 'returns name without folder' do
+        expect(environment.name_without_type).to eq 'review-1'
+      end
+    end
+
+    context 'when the environment if a top-level item itself' do
+      subject(:environment) do
+        create(:environment, name: 'production')
+      end
+
+      it 'returns full name' do
+        expect(environment.name_without_type).to eq 'production'
       end
     end
   end

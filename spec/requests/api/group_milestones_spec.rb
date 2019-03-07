@@ -8,7 +8,7 @@ describe API::GroupMilestones do
   let!(:closed_milestone) { create(:closed_milestone, group: group, title: 'version1', description: 'closed milestone') }
   let!(:milestone) { create(:milestone, group: group, title: 'version2', description: 'open milestone') }
 
-  it_behaves_like 'group and project milestones', "/groups/:id/milestones"  do
+  it_behaves_like 'group and project milestones', "/groups/:id/milestones" do
     let(:route) { "/groups/#{group.id}/milestones" }
   end
 

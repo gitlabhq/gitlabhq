@@ -4,7 +4,7 @@ describe Gitlab::BackgroundMigration::PopulateImportState, :migration, schema: 2
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
-  let(:import_state)  { table(:project_mirror_data) }
+  let(:import_state) { table(:project_mirror_data) }
 
   before do
     namespaces.create(id: 1, name: 'gitlab-org', path: 'gitlab-org')

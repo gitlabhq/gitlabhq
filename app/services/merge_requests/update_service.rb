@@ -21,7 +21,7 @@ module MergeRequests
       end
 
       handle_wip_event(merge_request)
-      update(merge_request)
+      update_task_event(merge_request) || update(merge_request)
     end
 
     # rubocop:disable Metrics/AbcSize
@@ -46,11 +46,13 @@ module MergeRequests
       end
 
       if merge_request.previous_changes.include?('assignee_id')
+        reassigned_merge_request_args = [merge_request, current_user]
+
         old_assignee_id = merge_request.previous_changes['assignee_id'].first
-        old_assignee = User.find(old_assignee_id) if old_assignee_id
+        reassigned_merge_request_args << User.find(old_assignee_id) if old_assignee_id
 
         create_assignee_note(merge_request)
-        notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignee)
+        notification_service.async.reassigned_merge_request(*reassigned_merge_request_args)
         todo_service.reassigned_merge_request(merge_request, current_user)
       end
 
@@ -80,6 +82,11 @@ module MergeRequests
       end
     end
     # rubocop:enable Metrics/AbcSize
+
+    def handle_task_changes(merge_request)
+      todo_service.mark_pending_todos_as_done(merge_request, current_user)
+      todo_service.update_merge_request(merge_request, current_user)
+    end
 
     def merge_from_quick_action(merge_request)
       last_diff_sha = params.delete(:merge)

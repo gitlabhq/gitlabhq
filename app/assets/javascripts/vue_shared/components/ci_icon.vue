@@ -21,6 +21,7 @@ import Icon from '../../vue_shared/components/icon.vue';
  * - Jobs table
  * - Jobs show view header
  * - Jobs show view sidebar
+ * - Linked pipelines
  */
 const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
 
@@ -46,6 +47,11 @@ export default {
       required: false,
       default: false,
     },
+    cssClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     cssClass() {
@@ -59,5 +65,5 @@ export default {
 };
 </script>
 <template>
-  <span :class="cssClass"> <icon :name="icon" :size="size" /> </span>
+  <span :class="cssClass"> <icon :name="icon" :size="size" :css-classes="cssClasses" /> </span>
 </template>

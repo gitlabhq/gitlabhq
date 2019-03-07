@@ -2,6 +2,7 @@
 
 class Groups::BoardsController < Groups::ApplicationController
   include BoardsResponses
+  include RecordUserLastActivity
 
   before_action :assign_endpoint_vars
   before_action :boards, only: :index

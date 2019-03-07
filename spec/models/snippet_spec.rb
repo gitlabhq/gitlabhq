@@ -423,4 +423,41 @@ describe Snippet do
       expect(blob.data).to eq(snippet.content)
     end
   end
+
+  describe '#embeddable?' do
+    context 'project snippet' do
+      [
+        { project: :public,   snippet: :public,   embeddable: true },
+        { project: :internal, snippet: :public,   embeddable: false },
+        { project: :private,  snippet: :public,   embeddable: false },
+        { project: :public,   snippet: :internal, embeddable: false },
+        { project: :internal, snippet: :internal, embeddable: false },
+        { project: :private,  snippet: :internal, embeddable: false },
+        { project: :public,   snippet: :private,  embeddable: false },
+        { project: :internal, snippet: :private,  embeddable: false },
+        { project: :private,  snippet: :private,  embeddable: false }
+      ].each do |combination|
+        it 'only returns true when both project and snippet are public' do
+          project = create(:project, combination[:project])
+          snippet = create(:project_snippet, combination[:snippet], project: project)
+
+          expect(snippet.embeddable?).to eq(combination[:embeddable])
+        end
+      end
+    end
+
+    context 'personal snippet' do
+      [
+        { snippet: :public,   embeddable: true },
+        { snippet: :internal, embeddable: false },
+        { snippet: :private,  embeddable: false }
+      ].each do |combination|
+        it 'only returns true when snippet is public' do
+          snippet = create(:personal_snippet, combination[:snippet])
+
+          expect(snippet.embeddable?).to eq(combination[:embeddable])
+        end
+      end
+    end
+  end
 end

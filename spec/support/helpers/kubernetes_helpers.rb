@@ -20,6 +20,13 @@ module KubernetesHelpers
     WebMock.stub_request(:get, api_url + '/apis/serving.knative.dev/v1alpha1').to_return(kube_response(kube_v1alpha1_serving_knative_discovery_body))
   end
 
+  def stub_kubeclient_service_pods(response = nil)
+    stub_kubeclient_discover(service.api_url)
+    pods_url = service.api_url + "/api/v1/pods"
+
+    WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
+  end
+
   def stub_kubeclient_pods(response = nil)
     stub_kubeclient_discover(service.api_url)
     pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
@@ -58,6 +65,11 @@ module KubernetesHelpers
       .to_return(status: [status, "Internal Server Error"])
   end
 
+  def stub_kubeclient_get_service_account(api_url, name, namespace: 'default')
+    WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts/#{name}")
+      .to_return(kube_response({}))
+  end
+
   def stub_kubeclient_get_service_account_error(api_url, name, namespace: 'default', status: 404)
     WebMock.stub_request(:get, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts/#{name}")
       .to_return(status: [status, "Internal Server Error"])
@@ -71,6 +83,11 @@ module KubernetesHelpers
   def stub_kubeclient_create_service_account_error(api_url, namespace: 'default')
     WebMock.stub_request(:post, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts")
       .to_return(status: [500, "Internal Server Error"])
+  end
+
+  def stub_kubeclient_put_service_account(api_url, name, namespace: 'default')
+    WebMock.stub_request(:put, api_url + "/api/v1/namespaces/#{namespace}/serviceaccounts/#{name}")
+      .to_return(kube_response({}))
   end
 
   def stub_kubeclient_create_secret(api_url, namespace: 'default')
@@ -93,6 +110,11 @@ module KubernetesHelpers
       .to_return(kube_response({}))
   end
 
+  def stub_kubeclient_get_role_binding(api_url, name, namespace: 'default')
+    WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
+      .to_return(kube_response({}))
+  end
+
   def stub_kubeclient_get_role_binding_error(api_url, name, namespace: 'default', status: 404)
     WebMock.stub_request(:get, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
       .to_return(status: [status, "Internal Server Error"])
@@ -100,6 +122,11 @@ module KubernetesHelpers
 
   def stub_kubeclient_create_role_binding(api_url, namespace: 'default')
     WebMock.stub_request(:post, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings")
+      .to_return(kube_response({}))
+  end
+
+  def stub_kubeclient_put_role_binding(api_url, name, namespace: 'default')
+    WebMock.stub_request(:put, api_url + "/apis/rbac.authorization.k8s.io/v1/namespaces/#{namespace}/rolebindings/#{name}")
       .to_return(kube_response({}))
   end
 
@@ -192,6 +219,13 @@ module KubernetesHelpers
     }
   end
 
+  def kube_knative_pods_body(name, namespace)
+    {
+      "kind" => "PodList",
+      "items" => [kube_knative_pod(name: name, namespace: namespace)]
+    }
+  end
+
   def kube_knative_services_body(**options)
     {
       "kind" => "List",
@@ -210,6 +244,28 @@ module KubernetesHelpers
         "labels" => {
           "app" => app,
           "track" => track
+        }
+      },
+      "spec" => {
+        "containers" => [
+          { "name" => "container-0" },
+          { "name" => "container-1" }
+        ]
+      },
+      "status" => { "phase" => status }
+    }
+  end
+
+  # Similar to a kube_pod, but should contain a running service
+  def kube_knative_pod(name: "kube-pod", namespace: "default", status: "Running")
+    {
+      "metadata" => {
+        "name" => name,
+        "namespace" => namespace,
+        "generate_name" => "generated-name-with-suffix",
+        "creationTimestamp" => "2016-11-25T19:55:19Z",
+        "labels" => {
+          "serving.knative.dev/service" => name
         }
       },
       "spec" => {
@@ -245,10 +301,10 @@ module KubernetesHelpers
   def kube_service(name: "kubetest", namespace: "default", domain: "example.com")
     {
       "metadata" => {
-          "creationTimestamp" => "2018-11-21T06:16:33Z",
-          "name" => name,
-          "namespace" => namespace,
-          "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}"
+        "creationTimestamp" => "2018-11-21T06:16:33Z",
+        "name" => name,
+        "namespace" => namespace,
+        "selfLink" => "/apis/serving.knative.dev/v1alpha1/namespaces/#{namespace}/services/#{name}"
       },
       "spec" => {
         "generation" => 2
@@ -313,6 +369,6 @@ module KubernetesHelpers
   end
 
   def empty_deployment_rollout_status
-    ::Gitlab::Kubernetes::RolloutStatus.from_deployments()
+    ::Gitlab::Kubernetes::RolloutStatus.from_deployments
   end
 end

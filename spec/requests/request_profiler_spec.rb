@@ -18,7 +18,7 @@ describe 'Request Profiler' do
       path    = "/#{project.full_path}"
 
       Timecop.freeze(time) do
-        get path, params: {},  headers: { 'X-Profile-Token' => Gitlab::RequestProfiler.profile_token }
+        get path, params: {}, headers: { 'X-Profile-Token' => Gitlab::RequestProfiler.profile_token }
       end
 
       profile_path = "#{Gitlab.config.shared.path}/tmp/requests_profiles/#{path.tr('/', '|')}_#{time.to_i}.html"

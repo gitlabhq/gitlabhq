@@ -150,11 +150,15 @@ describe MergeRequests::RefreshService do
           }
         end
 
-        it 'create merge request pipeline' do
+        it 'create merge request pipeline with commits' do
           expect { subject }
             .to change { @merge_request.merge_request_pipelines.count }.by(1)
             .and change { @fork_merge_request.merge_request_pipelines.count }.by(1)
-            .and change { @another_merge_request.merge_request_pipelines.count }.by(1)
+            .and change { @another_merge_request.merge_request_pipelines.count }.by(0)
+
+          expect(@merge_request.has_commits?).to be_truthy
+          expect(@fork_merge_request.has_commits?).to be_truthy
+          expect(@another_merge_request.has_commits?).to be_falsy
         end
 
         context "when branch pipeline was created before a merge request pipline has been created" do
@@ -169,12 +173,12 @@ describe MergeRequests::RefreshService do
 
           it 'sets the latest merge request pipeline as a head pipeline' do
             @merge_request.reload
-            expect(@merge_request.actual_head_pipeline).to be_merge_request
+            expect(@merge_request.actual_head_pipeline).to be_merge_request_event
           end
 
           it 'returns pipelines in correct order' do
             @merge_request.reload
-            expect(@merge_request.all_pipelines.first).to be_merge_request
+            expect(@merge_request.all_pipelines.first).to be_merge_request_event
             expect(@merge_request.all_pipelines.second).to be_push
           end
         end
@@ -509,7 +513,7 @@ describe MergeRequests::RefreshService do
           committed_date: Time.now
         )
 
-        allow_any_instance_of(MergeRequest).to receive(:commits).and_return([commit])
+        allow_any_instance_of(MergeRequest).to receive(:commits).and_return(CommitCollection.new(@project, [commit], 'feature'))
       end
 
       context 'when the merge request is sourced from the same project' do

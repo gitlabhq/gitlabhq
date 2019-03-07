@@ -102,4 +102,48 @@ class Feature
         expires_in: 1.hour)
     end
   end
+
+  class Target
+    attr_reader :params
+
+    def initialize(params)
+      @params = params
+    end
+
+    def gate_specified?
+      %i(user project group feature_group).any? { |key| params.key?(key) }
+    end
+
+    def targets
+      [feature_group, user, project, group].compact
+    end
+
+    private
+
+    # rubocop: disable CodeReuse/ActiveRecord
+    def feature_group
+      return unless params.key?(:feature_group)
+
+      Feature.group(params[:feature_group])
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
+    def user
+      return unless params.key?(:user)
+
+      UserFinder.new(params[:user]).find_by_username!
+    end
+
+    def project
+      return unless params.key?(:project)
+
+      Project.find_by_full_path(params[:project])
+    end
+
+    def group
+      return unless params.key?(:group)
+
+      Group.find_by_full_path(params[:group])
+    end
+  end
 end

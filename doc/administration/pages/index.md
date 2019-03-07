@@ -11,7 +11,7 @@ description: 'Learn how to administer GitLab Pages.'
 > - This guide is for Omnibus GitLab installations. If you have installed
 >   GitLab from source, follow the [Pages source installation document](source.md).
 > - To learn how to use GitLab Pages, read the [user documentation][pages-userguide].
-> - Does NOT support subgroups. See [this issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) for more information and status.
+> - Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
 This document describes how to set up the _latest_ GitLab Pages feature. Make
 sure to read the [changelog](#changelog) if you are upgrading to a new GitLab
@@ -331,6 +331,42 @@ Omnibus GitLab 11.1.
 The maximum size of the unpacked archive per project can be configured in the
 Admin area under the Application settings in the **Maximum size of pages (MB)**.
 The default is 100MB.
+
+## Running GitLab Pages in a separate server
+
+You may want to run GitLab Pages daemon on a separate server in order to decrease the load on your main application server.
+Follow the steps below to configure GitLab Pages in a separate server.
+
+1. Suppose you have the main GitLab application server named `app1`. Prepare
+   new Linux server (let's call it `app2`), create NFS share there and configure access to
+   this share from `app1`. Let's use the default GitLab Pages folder `/var/opt/gitlab/gitlab-rails/shared/pages`
+   as the shared folder on `app2` and mount it to `/mnt/pages` on `app1`.
+
+1. On `app2` install GitLab omnibus and modify `/etc/gitlab/gitlab.rb` this way:
+
+    ```shell
+    external_url 'http://<ip-address-of-the-server>'
+    pages_external_url "http://<your-pages-domain>"
+    postgresql['enable'] = false
+    redis['enable'] = false
+    prometheus['enable'] = false
+    unicorn['enable'] = false
+    sidekiq['enable'] = false
+    gitlab_workhorse['enable'] = false
+    gitaly['enable'] = false
+    alertmanager['enable'] = false
+    node_exporter['enable'] = false
+    ```
+1. Run `sudo gitlab-ctl reconfigure`.
+1. On `app1` apply the following changes to `/etc/gitlab/gitlab.rb`:
+
+    ```shell
+    gitlab_pages['enable'] = false
+    pages_external_url "http://<your-pages-domain>"
+    gitlab_rails['pages_path'] = "/mnt/pages"
+    ```
+
+1. Run `sudo gitlab-ctl reconfigure`.
 
 ## Backup
 

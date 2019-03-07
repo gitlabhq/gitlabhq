@@ -6,7 +6,7 @@ describe Emails::PagesDomains do
   include_context 'gitlab email notification'
 
   set(:project) { create(:project) }
-  set(:domain) { create(:pages_domain, project: project)  }
+  set(:domain) { create(:pages_domain, project: project) }
   set(:user) { project.owner }
 
   shared_examples 'a pages domain email' do

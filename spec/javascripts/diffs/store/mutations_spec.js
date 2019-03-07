@@ -121,8 +121,14 @@ describe('DiffsStoreMutations', () => {
   describe('ADD_COLLAPSED_DIFFS', () => {
     it('should update the state with the given data for the given file hash', () => {
       const fileHash = 123;
-      const state = { diffFiles: [{}, { file_hash: fileHash, existing_field: 0 }] };
-      const data = { diff_files: [{ file_hash: fileHash, extra_field: 1, existing_field: 1 }] };
+      const state = {
+        diffFiles: [{}, { file_hash: fileHash, existing_field: 0 }],
+      };
+      const data = {
+        diff_files: [
+          { file_hash: fileHash, extra_field: 1, existing_field: 1, viewer: { name: 'text' } },
+        ],
+      };
 
       mutations[types.ADD_COLLAPSED_DIFFS](state, { file: state.diffFiles[1], data });
 
@@ -626,6 +632,52 @@ describe('DiffsStoreMutations', () => {
 
       expect(file.parallel_diff_lines[0].left.hasForm).toBe(true);
       expect(file.parallel_diff_lines[1].right.hasForm).toBe(false);
+    });
+  });
+
+  describe('SET_TREE_DATA', () => {
+    it('sets treeEntries and tree in state', () => {
+      const state = {
+        treeEntries: {},
+        tree: [],
+      };
+
+      mutations[types.SET_TREE_DATA](state, {
+        treeEntries: { file: { name: 'index.js' } },
+        tree: ['tree'],
+      });
+
+      expect(state.treeEntries).toEqual({
+        file: {
+          name: 'index.js',
+        },
+      });
+
+      expect(state.tree).toEqual(['tree']);
+    });
+  });
+
+  describe('SET_RENDER_TREE_LIST', () => {
+    it('sets renderTreeList', () => {
+      const state = {
+        renderTreeList: true,
+      };
+
+      mutations[types.SET_RENDER_TREE_LIST](state, false);
+
+      expect(state.renderTreeList).toBe(false);
+    });
+  });
+
+  describe('SET_SHOW_WHITESPACE', () => {
+    it('sets showWhitespace', () => {
+      const state = {
+        showWhitespace: true,
+      };
+
+      mutations[types.SET_SHOW_WHITESPACE](state, false);
+
+      expect(state.showWhitespace).toBe(false);
     });
   });
 });

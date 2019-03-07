@@ -1,94 +1,140 @@
 # GitLab API
 
-Automate GitLab via a simple and powerful API. All definitions can be found
-under [`/lib/api`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/lib/api).
+Automate GitLab via a simple and powerful API.
 
 The main GitLab API is a [REST](https://en.wikipedia.org/wiki/Representational_state_transfer) API. Therefore, documentation in this section assumes knowledge of REST concepts.
 
-## API Resources
+## API resources
 
-The following API resources are available:
+Available API resources can be grouped in the following contexts:
 
-- [Applications](applications.md)
-- [Avatar](avatar.md)
-- [Award emoji](award_emoji.md)
-- [Branches](branches.md)
-- [Broadcast messages](broadcast_messages.md)
-- [Code snippets](snippets.md)
-- [Commits](commits.md)
-- [Custom attributes](custom_attributes.md)
-- [Deploy keys](deploy_keys.md), and [deploy keys for multiple projects](deploy_key_multiple_projects.md)
-- [Deployments](deployments.md)
-- [Discussions](discussions.md) (threaded comments)
-- [Environments](environments.md)
-- [Events](events.md)
-- [Feature flags](features.md)
-- Group-related resources, including:
-  - [Groups](groups.md)
-  - [Group access requests](access_requests.md)
-  - [Group badges](group_badges.md)
-  - [Group issue boards](group_boards.md)
-  - [Group-level variables](group_level_variables.md)
-  - [Group members](members.md)
-  - [Group milestones](group_milestones.md)
-- [Issues](issues.md)
-- [Issue boards](boards.md)
-- [Jobs](jobs.md)
-- [Keys](keys.md)
-- [Labels](labels.md)
-- [Markdown](markdown.md)
-- [Merge requests](merge_requests.md)
-- [Namespaces](namespaces.md)
-- [Notes](notes.md) (comments)
-- [Notification settings](notification_settings.md)
-- [Pages domains](pages_domains.md)
-- [Pipelines](pipelines.md)
-- [Pipeline schedules](pipeline_schedules.md)
-- [Pipeline triggers](pipeline_triggers.md) and [triggering pipelines](../ci/triggers/README.md)
-- Project-related resources, including:
-  - [Projects](projects.md) including setting Webhooks
-  - [Project access requests](access_requests.md)
-  - [Project badges](project_badges.md)
-  - [Project-level variables](project_level_variables.md)
-  - [Project import/export](project_import_export.md)
-  - [Project members](members.md)
-  - [Project milestones](milestones.md)
-  - [Project snippets](project_snippets.md)
-  - [Project templates](project_templates.md) (see also [Templates API Resources](#templates-api-resources))
-- [Protected branches](protected_branches.md)
-- [Protected tags](protected_tags.md)
-- [Repositories](repositories.md)
-- [Repository files](repository_files.md)
-- [Repository submodules](repository_submodules.md)
-- [Resource label events](resource_label_events.md)
-- [Runners](runners.md)
-- [Search](search.md)
-- [Services](services.md)
-- [Settings](settings.md)
-- [Sidekiq metrics](sidekiq_metrics.md)
-- [System hooks](system_hooks.md)
-- [Tags](tags.md)
-- [Todos](todos.md)
-- [Users](users.md)
-- [Validate CI configuration](lint.md) (linting)
-- [Version](version.md)
-- [Wikis](wikis.md)
+- [Projects](#project-resources).
+- [Groups](#group-resources).
+- [Standalone](#standalone-resources).
 
-See also [V3 to V4](v3_to_v4.md).
+See also:
 
-### Templates API Resources
+- [V3 to V4](v3_to_v4.md).
+- Adding [deploy keys for multiple projects](deploy_key_multiple_projects.md).
+
+### Project resources
+
+The following API resources are available in the project context:
+
+| Resource                                              | Available endpoints                                                                                                                                                       |
+|:------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Access requests](access_requests.md)                 | `/projects/:id/access_requests` (also available for groups)                                                                                                               |
+| [Award emoji](award_emoji.md)                         | `/projects/:id/issues/.../award_emoji`, `/projects/:id/merge_requests/.../award_emoji`, `/projects/:id/snippets/.../award_emoji`                                          |
+| [Branches](branches.md)                               | `/projects/:id/repository/branches/`, `/projects/:id/repository/merged_branches`                                                                                          |
+| [Commits](commits.md)                                 | `/projects/:id/repository/commits`, `/projects/:id/statuses`                                                                                                              |
+| [Container Registry](container_registry.md)           | `/projects/:id/registry/repositories`                                                                                                                                     |
+| [Custom attributes](custom_attributes.md)             | `/projects/:id/custom_attributes` (also available for groups and users)                                                                                                   |
+| [Deploy keys](deploy_keys.md)                         | `/projects/:id/deploy_keys` (also available standalone)                                                                                                                   |
+| [Deployments](deployments.md)                         | `/projects/:id/deployments`                                                                                                                                               |
+| [Discussions](discussions.md) (threaded comments)     | `/projects/:id/issues/.../discussions`, `/projects/:id/snippets/.../discussions`, `/projects/:id/merge_requests/.../discussions`, `/projects/:id/commits/.../discussions` |
+| [Environments](environments.md)                       | `/projects/:id/environments`                                                                                                                                              |
+| [Events](events.md)                                   | `/projects/:id/events` (also available for users and standalone)                                                                                                          |
+| [Issues](issues.md)                                   | `/projects/:id/issues` (also available for groups and standalone)                                                                                                         |
+| [Issue boards](boards.md)                             | `/projects/:id/boards`                                                                                                                                                    |
+| [Jobs](jobs.md)                                       | `/projects/:id/jobs`, `/projects/:id/pipelines/.../jobs`                                                                                                                  |
+| [Labels](labels.md)                                   | `/projects/:id/labels`                                                                                                                                                    |
+| [Members](members.md)                                 | `/projects/:id/members` (also available for groups)                                                                                                                       |
+| [Merge requests](merge_requests.md)                   | `/projects/:id/merge_requests` (also available for groups and standalone)                                                                                                 |
+| [Notes](notes.md) (comments)                          | `/projects/:id/issues/.../notes`, `/projects/:id/snippets/.../notes`, `/projects/:id/merge_requests/.../notes`                                                            |
+| [Notification settings](notification_settings.md)     | `/projects/:id/notification_settings` (also available for groups and standalone)                                                                                          |
+| [Pages domains](pages_domains.md)                     | `/projects/:id/pages` (also available standalone)                                                                                                                         |
+| [Pipelines](pipelines.md)                             | `/projects/:id/pipelines`                                                                                                                                                 |
+| [Pipeline schedules](pipeline_schedules.md)           | `/projects/:id/pipeline_schedules`                                                                                                                                        |
+| [Pipeline triggers](pipeline_triggers.md)             | `/projects/:id/triggers`                                                                                                                                                  |
+| [Projects](projects.md) including setting Webhooks    | `/projects`, `/projects/:id/hooks` (also available for users)                                                                                                             |
+| [Project badges](project_badges.md)                   | `/projects/:id/badges`                                                                                                                                                    |
+| [Project clusters](project_clusters.md)               | `/projects/:id/clusters`                                                                                                                                                  |
+| [Project-level variables](project_level_variables.md) | `/projects/:id/variables`                                                                                                                                                 |
+| [Project import/export](project_import_export.md)     | `/projects/:id/export`, `/projects/import`, `/projects/:id/import`                                                                                                        |
+| [Project milestones](milestones.md)                   | `/projects/:id/milestones`                                                                                                                                                |
+| [Project snippets](project_snippets.md)               | `/projects/:id/snippets`                                                                                                                                                  |
+| [Project templates](project_templates.md)             | `/projects/:id/templates`                                                                                                                                                 |
+| [Protected branches](protected_branches.md)           | `/projects/:id/protected_branches`                                                                                                                                        |
+| [Protected tags](protected_tags.md)                   | `/projects/:id/protected_tags`                                                                                                                                            |
+| [Releases](releases/index.md)                         | `/projects/:id/releases`                                                                                                                                                  |
+| [Release links](releases/links.md)                    | `/projects/:id/releases/.../assets/links`                                                                                                                                 |
+| [Repositories](repositories.md)                       | `/projects/:id/repository`                                                                                                                                                |
+| [Repository files](repository_files.md)               | `/projects/:id/repository/files`                                                                                                                                          |
+| [Repository submodules](repository_submodules.md)     | `/projects/:id/repository/submodules`                                                                                                                                     |
+| [Resource label events](resource_label_events.md)     | `/projects/:id/issues/.../resource_label_events`, `/projects/:id/merge_requests/.../resource_label_events`                                                                |
+| [Runners](runners.md)                                 | `/projects/:id/runners` (also available standalone)                                                                                                                       |
+| [Search](search.md)                                   | `/projects/:id/search` (also available for groups and standalone)                                                                                                         |
+| [Services](services.md)                               | `/projects/:id/services`                                                                                                                                                  |
+| [Tags](tags.md)                                       | `/projects/:id/repository/tags`                                                                                                                                           |
+| [Wikis](wikis.md)                                     | `/projects/:id/wikis`                                                                                                                                                     |
+
+### Group resources
+
+The following API resources are available in the group context:
+
+| Resource                                          | Available endpoints                                                              |
+|:--------------------------------------------------|:---------------------------------------------------------------------------------|
+| [Access requests](access_requests.md)             | `/groups/:id/access_requests/` (also available for projects)                     |
+| [Custom attributes](custom_attributes.md)         | `/groups/:id/custom_attributes` (also available for projects and users)          |
+| [Groups](groups.md)                               | `/groups`, `/groups/.../subgroups`                                               |
+| [Group badges](group_badges.md)                   | `/groups/:id/badges`                                                             |
+| [Group issue boards](group_boards.md)             | `/groups/:id/boards`                                                             |
+| [Group labels](group_labels.md)                   | `/groups/:id/labels`                                                             |
+| [Group-level variables](group_level_variables.md) | `/groups/:id/variables`                                                          |
+| [Group milestones](group_milestones.md)           | `/groups/:id/milestones`                                                         |
+| [Issues](issues.md)                               | `/groups/:id/issues` (also available for projects and standalone)                |
+| [Members](members.md)                             | `/groups/:id/members` (also available for projects)                              |
+| [Merge requests](merge_requests.md)               | `/groups/:id/merge_requests` (also available for projects and standalone)        |
+| [Notification settings](notification_settings.md) | `/groups/:id/notification_settings` (also available for projects and standalone) |
+| [Search](search.md)                               | `/groups/:id/search` (also available for projects and standalone)                |
+
+### Standalone resources
+
+The following API resources are available outside of project and group contexts (including `/users`):
+
+| Resource                                          | Available endpoints                                                     |
+|:--------------------------------------------------|:------------------------------------------------------------------------|
+| [Applications](applications.md)                   | `/applications`                                                         |
+| [Avatar](avatar.md)                               | `/avatar`                                                               |
+| [Broadcast messages](broadcast_messages.md)       | `/broadcast_messages`                                                   |
+| [Code snippets](snippets.md)                      | `/snippets`                                                             |
+| [Custom attributes](custom_attributes.md)         | `/users/:id/custom_attributes` (also available for groups and projects) |
+| [Deploy keys](deploy_keys.md)                     | `/deploy_keys` (also available for projects)                            |
+| [Events](events.md)                               | `/events`, `/users/:id/events` (also available for projects)            |
+| [Feature flags](features.md)                      | `/features`                                                             |
+| [Import repository from GitHub](import.md)        | `/import/github`                                                        |
+| [Issues](issues.md)                               | `/issues` (also available for groups and projects)                      |
+| [Keys](keys.md)                                   | `/keys`                                                                 |
+| [Markdown](markdown.md)                           | `/markdown`                                                             |
+| [Merge requests](merge_requests.md)               | `/merge_requests` (also available for groups and projects)              |
+| [Namespaces](namespaces.md)                       | `/namespaces`                                                           |
+| [Notification settings](notification_settings.md) | `/notification_settings` (also available for groups and projects)       |
+| [Pages domains](pages_domains.md)                 | `/pages/domains` (also available for projects)                          |
+| [Projects](projects.md)                           | `/users/:id/projects` (also available for projects)                     |
+| [Runners](runners.md)                             | `/runners` (also available for projects)                                |
+| [Search](search.md)                               | `/search` (also available for groups and projects)                      |
+| [Settings](settings.md)                           | `/application/settings`                                                 |
+| [Sidekiq metrics](sidekiq_metrics.md)             | `/sidekiq`                                                              |
+| [Suggestions](suggestions.md)                     | `/suggestions`                                                          |
+| [System hooks](system_hooks.md)                   | `/hooks`                                                                |
+| [Todos](todos.md)                                 | `/todos`                                                                |
+| [Users](users.md)                                 | `/users`                                                                |
+| [Validate `.gitlab-ci.yml` file](lint.md)         | `/lint`                                                                 |
+| [Version](version.md)                             | `/version`                                                              |
+
+### Templates API resources
 
 Endpoints are available for:
 
 - [Dockerfile templates](templates/dockerfiles.md).
-- [gitignore templates](templates/gitignores.md).
+- [`.gitignore` templates](templates/gitignores.md).
 - [GitLab CI YAML templates](templates/gitlab_ci_ymls.md).
 - [Open source license templates](templates/licenses.md).
 
 ## Road to GraphQL
 
 Going forward, we will start on moving to
-[GraphQL](http://graphql.org/learn/best-practices/) and deprecate the use of
+[GraphQL](graphql/index.md) and deprecate the use of
 controller-specific endpoints. GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.
@@ -103,7 +149,7 @@ have been resolved to our satisfaction by the relicensing of the reference
 implementations under MIT, and the use of the OWF license for the GraphQL
 specification.
 
-## Compatibility Guidelines
+## Compatibility guidelines
 
 The HTTP API is versioned using a single number, the current one being 4. This
 number symbolizes the same as the major version number as described by
@@ -194,13 +240,13 @@ You can use a [personal access token][pat] to authenticate with the API by passi
 Example of using the personal access token in a parameter:
 
 ```shell
-curl https://gitlab.example.com/api/v4/projects?private_token=9koXpg98eAheJpvBs5tK
+curl https://gitlab.example.com/api/v4/projects?private_token=<your_access_token>
 ```
 
 Example of using the personal access token in a header:
 
 ```shell
-curl --header "Private-Token: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects
+curl --header "Private-Token: <your_access_token>" https://gitlab.example.com/api/v4/projects
 ```
 
 Read more about [personal access tokens][pat].
@@ -228,7 +274,7 @@ personal access tokens, and to using the [Sudo](#sudo) feature, since the user's
 password/token may not be known or may change over time.
 
 For more information, refer to the
-[users API](users.md#retrieve-user-impersonation-tokens) docs.
+[users API](users.md#create-an-impersonation-token) docs.
 
 Impersonation tokens are used exactly like regular personal access tokens, and can be passed in either the
 `private_token` parameter or the `Private-Token` header.
@@ -319,22 +365,22 @@ Example of a valid API call and a request using cURL with sudo request,
 providing a username:
 
 ```
-GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=username
+GET /projects?private_token=<your_access_token>&sudo=username
 ```
 
 ```shell
-curl --header "Private-Token: 9koXpg98eAheJpvBs5tK" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
+curl --header "Private-Token: <your_access_token>" --header "Sudo: username" "https://gitlab.example.com/api/v4/projects"
 ```
 
 Example of a valid API call and a request using cURL with sudo request,
 providing an ID:
 
 ```
-GET /projects?private_token=9koXpg98eAheJpvBs5tK&sudo=23
+GET /projects?private_token=<your_access_token>&sudo=23
 ```
 
 ```shell
-curl --header "Private-Token: 9koXpg98eAheJpvBs5tK" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
+curl --header "Private-Token: <your_access_token>" --header "Sudo: 23" "https://gitlab.example.com/api/v4/projects"
 ```
 
 ## Status codes
@@ -383,7 +429,7 @@ resources you can pass the following parameters:
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
 ```bash
-curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/namespaces?per_page=50
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/namespaces?per_page=50
 ```
 
 ### Pagination Link header
@@ -397,7 +443,7 @@ and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
 ```bash
-curl --head --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/8/issues/8/notes?per_page=3&page=2
 ```
 
 The response will then be:
@@ -434,6 +480,14 @@ Additional pagination headers are also sent back.
 | `X-Next-Page`   | The index of the next page |
 | `X-Prev-Page`   | The index of the previous page |
 
+CAUTION: **Caution:**
+For performance reasons since
+[GitLab 11.8](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/23931)
+and **behind the `api_kaminari_count_with_limit`
+[feature flag](../development/feature_flags.md)**, if the number of resources is
+more than 10,000, the `X-Total` and `X-Total-Pages` headers as well as the
+`rel="last"` `Link` are not present in the response headers.
+
 ## Namespaced path encoding
 
 If using namespaced API calls, make sure that the `NAMESPACE/PROJECT_NAME` is
@@ -465,7 +519,7 @@ We can call the API with `array` and `hash` types parameters as shown below:
 `import_sources` is a parameter of type `array`:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 -d "import_sources[]=github" \
 -d "import_sources[]=bitbucket" \
 "https://gitlab.example.com/api/v4/some_endpoint
@@ -476,7 +530,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
 `override_params` is a parameter of type `hash`:
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 --form "namespace=email" \
 --form "path=impapi" \
 --form "file=@/path/to/somefile.txt"
@@ -592,7 +646,7 @@ Content-Type: application/json
 ## Encoding `+` in ISO 8601 dates
 
 If you need to include a `+` in a query parameter, you may need to use `%2B` instead due
-a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
+to a [W3 recommendation](http://www.w3.org/Addressing/URL/4_URI_Recommentations.html) that
 causes a `+` to be interpreted as a space. For example, in an ISO 8601 date, you may want to pass
 a time in Mountain Standard Time, such as:
 

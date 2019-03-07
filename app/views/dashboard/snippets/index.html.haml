@@ -3,6 +3,14 @@
 - header_title  "Snippets", dashboard_snippets_path
 
 = render 'dashboard/snippets_head'
-= render partial: 'snippets/snippets_scope_menu', locals: { include_private: true }
+- if current_user.snippets.exists?
+  = render partial: 'snippets/snippets_scope_menu', locals: { include_private: true }
 
-= render partial: 'snippets/snippets', locals: { link_project: true }
+.d-block.d-sm-none
+  &nbsp;
+  = link_to _("New snippet"), new_snippet_path, class: "btn btn-success btn-block", title: _("New snippet")
+
+- if current_user.snippets.exists?
+  = render partial: 'shared/snippets/list', locals: { link_project: true }
+- else
+  = render 'shared/empty_states/snippets', button_path: new_snippet_path

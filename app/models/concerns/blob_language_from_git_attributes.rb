@@ -5,7 +5,7 @@ module BlobLanguageFromGitAttributes
   extend ActiveSupport::Concern
 
   def language_from_gitattributes
-    return nil unless project
+    return unless project
 
     repository = project.repository
     repository.gitattribute(path, 'gitlab-language')

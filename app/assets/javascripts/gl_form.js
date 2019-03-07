@@ -51,8 +51,6 @@ export default class GLForm {
     // form and textarea event listeners
     this.addEventListeners();
     addMarkdownListeners(this.form);
-    // hide discard button
-    this.form.find('.js-note-discard').hide();
     this.form.show();
     if (this.isAutosizeable) this.setupAutosize();
   }

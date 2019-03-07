@@ -22,6 +22,13 @@ describe RepositoryUpdateRemoteMirrorWorker do
         expect { subject.perform(remote_mirror.id, Time.now) }.to change { remote_mirror.reload.update_status }.to('finished')
       end
 
+      it 'resets the notification flag upon success' do
+        expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :success)
+        remote_mirror.update_column(:error_notification_sent, true)
+
+        expect { subject.perform(remote_mirror.id, Time.now) }.to change { remote_mirror.reload.error_notification_sent }.to(false)
+      end
+
       it 'sets status as failed when update remote mirror service executes with errors' do
         error_message = 'fail!'
 

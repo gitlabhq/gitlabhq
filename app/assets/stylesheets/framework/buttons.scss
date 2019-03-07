@@ -42,6 +42,10 @@
   color: $text;
   border-color: $border;
 
+  &.btn-border-color {
+    border-color: $border-color;
+  }
+
   > .icon {
     color: $text;
   }
@@ -162,7 +166,8 @@
       @include btn-outline($white-light, $green-600, $green-500, $green-500, $white-light, $green-600, $green-600, $green-700);
     }
 
-    &.btn-remove {
+    &.btn-remove,
+    &.btn-danger {
       @include btn-outline($white-light, $red-500, $red-500, $red-500, $white-light, $red-600, $red-600, $red-700);
     }
 
@@ -390,8 +395,6 @@
   cursor: default;
 
   &:active {
-    -moz-box-shadow: inset 0 0 0 $white-light;
-    -webkit-box-shadow: inset 0 0 0 $white-light;
     box-shadow: inset 0 0 0 $white-light;
   }
 }
@@ -483,7 +486,7 @@
 // All disabled buttons, regardless of color, type, etc
 %disabled {
   background-color: $gray-light !important;
-  border-color: $theme-gray-200 !important;
+  border-color: $gray-200 !important;
   color: $gl-text-color-disabled !important;
   opacity: 1 !important;
   cursor: default !important;

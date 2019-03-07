@@ -18,9 +18,9 @@ a link to the group settings. By clicking the last button you can leave that gro
 You can create groups for numerous reasons. To name a few:
 
 - Organize related projects under the same [namespace](#namespaces), add members to that
-group and grant access to all their projects at once
+  group and grant access to all their projects at once
 - Create a group, include members of your team, and make it easier to
-`@mention` all the team at once in issues and merge requests
+  `@mention` all the team at once in issues and merge requests
   - Create a group for your company members, and create [subgroups](subgroups/index.md)
     for each individual team. Let's say you create a group called `company-team`, and among others,
     you created subgroups in this group for each individual team `backend-team`,
@@ -43,11 +43,11 @@ In GitLab, a namespace is a unique name to be used as a user name, a group name,
 For example, consider a user named Alex:
 
 1. Alex creates an account on GitLab.com with the username `alex`;
-their profile will be accessed under `https://gitlab.example.com/alex`
+   their profile will be accessed under `https://gitlab.example.com/alex`
 1. Alex creates a group for their team with the groupname `alex-team`;
-the group and its projects will be accessed under `https://gitlab.example.com/alex-team`
+   the group and its projects will be accessed under `https://gitlab.example.com/alex-team`
 1. Alex creates a subgroup of `alex-team` with the subgroup name `marketing`;
-this subgroup and its projects will be accessed under `https://gitlab.example.com/alex-team/marketing`
+   this subgroup and its projects will be accessed under `https://gitlab.example.com/alex-team/marketing`
 
 By doing so:
 
@@ -107,7 +107,7 @@ Consider we have a group with two projects:
 
 - On the **Group Members** page we can now add a new user to the group.
 - Now because this user is a **Developer** member of the group, he automatically
-gets **Developer** access to **all projects** within that group.
+  gets **Developer** access to **all projects** within that group.
 
 If necessary, you can increase the access level of an individual user for a specific project,
 by adding them again as a new member to the project with the new permission levels.
@@ -154,7 +154,7 @@ There are two different ways to add a new project to a group:
 
 ## Transfer projects into groups
 
-Learn how to [transfer a project into a group](../project/index.md#transfer-an-existing-project-into-a-group).
+Learn how to [transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).
 
 ## Sharing a project with a group
 
@@ -181,6 +181,7 @@ Please make sure to understand that:
 - You can only transfer the group to a group you manage.
 - You will need to update your local repositories to point to the new location.
 - If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+- Only explicit group membership is transferred, not the inherited membership. If this would leave the group without an owner, the transferring user is added as owner instead.
 
 ## Group settings
 
@@ -267,9 +268,9 @@ Define project templates at a group-level by setting a group as a template sourc
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,
-access each project's settings, and remove any project from the same screen.
+  access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md) to your group.
 - **Kubernetes cluster integration**: connect your GitLab group with [Kubernetes clusters](clusters/index.md).
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
-for the group. **[STARTER ONLY]**
+  for the group. **[STARTER ONLY]**
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group.

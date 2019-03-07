@@ -69,6 +69,12 @@ describe MilestonesFinder do
 
       expect(result.to_a).to contain_exactly(milestone_1)
     end
+
+    it 'filters by search_title' do
+      result = described_class.new(params.merge(search_title: 'one t')).execute
+
+      expect(result.to_a).to contain_exactly(milestone_1)
+    end
   end
 
   describe '#find_by' do

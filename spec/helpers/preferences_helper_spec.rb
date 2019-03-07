@@ -35,6 +35,38 @@ describe PreferencesHelper do
     end
   end
 
+  describe '#first_day_of_week_choices' do
+    it 'returns Saturday, Sunday and Monday as choices' do
+      expect(helper.first_day_of_week_choices).to eq [
+        ['Sunday', 0],
+        ['Monday', 1],
+        ['Saturday', 6]
+      ]
+    end
+  end
+
+  describe '#first_day_of_week_choices_with_default' do
+    it 'returns choices including system default' do
+      expect(helper.first_day_of_week_choices_with_default).to eq [
+        ['System default (Sunday)', nil], ['Sunday', 0], ['Monday', 1], ['Saturday', 6]
+      ]
+    end
+
+    it 'returns choices including system default set to Monday' do
+      stub_application_setting(first_day_of_week: 1)
+      expect(helper.first_day_of_week_choices_with_default).to eq [
+        ['System default (Monday)', nil], ['Sunday', 0], ['Monday', 1], ['Saturday', 6]
+      ]
+    end
+
+    it 'returns choices including system default set to Saturday' do
+      stub_application_setting(first_day_of_week: 6)
+      expect(helper.first_day_of_week_choices_with_default).to eq [
+        ['System default (Saturday)', nil], ['Sunday', 0], ['Monday', 1], ['Saturday', 6]
+      ]
+    end
+  end
+
   describe '#user_application_theme' do
     context 'with a user' do
       it "returns user's theme's css_class" do
@@ -83,6 +115,13 @@ describe PreferencesHelper do
         expect(helper.user_color_scheme)
           .to eq Gitlab::ColorSchemes.default.css_class
       end
+    end
+  end
+
+  describe '#language_choices' do
+    it 'returns an array of all available languages' do
+      expect(helper.language_choices).to be_an(Array)
+      expect(helper.language_choices.map(&:second)).to eq(Gitlab::I18n.available_locales)
     end
   end
 

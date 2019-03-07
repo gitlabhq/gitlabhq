@@ -32,11 +32,13 @@ shared_examples 'backfill migration for project repositories' do |storage|
 
     it 'inserts rows in a single query' do
       projects.create!(name: 'foo', path: 'foo', namespace_id: group.id, storage_version: storage_version, repository_storage: shard.name)
+      group2 = namespaces.create!(name: 'gro', path: 'gro')
 
       control_count = ActiveRecord::QueryRecorder.new { described_class.new.perform(1, projects.last.id) }
 
       projects.create!(name: 'bar', path: 'bar', namespace_id: group.id, storage_version: storage_version, repository_storage: shard.name)
-      projects.create!(name: 'zoo', path: 'zoo', namespace_id: group.id, storage_version: storage_version, repository_storage: shard.name)
+      projects.create!(name: 'top', path: 'top', namespace_id: group.id, storage_version: storage_version, repository_storage: shard.name)
+      projects.create!(name: 'zoo', path: 'zoo', namespace_id: group2.id, storage_version: storage_version, repository_storage: shard.name)
 
       expect { described_class.new.perform(1, projects.last.id) }.not_to exceed_query_limit(control_count)
     end

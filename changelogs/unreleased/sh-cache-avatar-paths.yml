@@ -1,5 +1,0 @@
----
-title: Cache avatar URLs and paths within a request
-merge_request: 23950
-author:
-type: performance

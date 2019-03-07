@@ -223,7 +223,6 @@ describe('issue_comment_form component', () => {
             'Comment & close issue',
           );
 
-          expect(vm.$el.querySelector('.js-note-discard')).toBeDefined();
           done();
         });
       });

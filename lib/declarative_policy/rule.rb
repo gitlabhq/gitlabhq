@@ -84,7 +84,7 @@ module DeclarativePolicy
       # returns nil unless it's already cached
       def cached_pass?(context)
         condition = context.condition(@name)
-        return nil unless condition.cached?
+        return unless condition.cached?
 
         condition.pass?
       end
@@ -124,7 +124,7 @@ module DeclarativePolicy
 
       def cached_pass?(context)
         condition = delegated_context(context).condition(@name)
-        return nil unless condition.cached?
+        return unless condition.cached?
 
         condition.pass?
       rescue MissingDelegate
@@ -161,7 +161,7 @@ module DeclarativePolicy
 
       def cached_pass?(context)
         runner = context.runner(@ability)
-        return nil unless runner.cached?
+        return unless runner.cached?
 
         runner.pass?
       end

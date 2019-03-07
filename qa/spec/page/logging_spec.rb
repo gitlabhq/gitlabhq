@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 require 'capybara/dsl'
+require 'logger'
 
 describe QA::Support::Page::Logging do
-  include Support::StubENV
-
-  let(:page) { double().as_null_object }
+  let(:page) { double.as_null_object }
 
   before do
-    logger = Logger.new $stdout
+    logger = ::Logger.new $stdout
     logger.level = ::Logger::DEBUG
     QA::Runtime::Logger.logger = logger
 
@@ -30,8 +29,19 @@ describe QA::Support::Page::Logging do
 
   it 'logs wait' do
     expect { subject.wait(max: 0) {} }
+      .to output(/next wait uses reload: true/).to_stdout_from_any_process
+    expect { subject.wait(max: 0) {} }
       .to output(/with wait/).to_stdout_from_any_process
     expect { subject.wait(max: 0) {} }
+      .to output(/ended wait after .* seconds$/).to_stdout_from_any_process
+  end
+
+  it 'logs wait with reload false' do
+    expect { subject.wait(max: 0, reload: false) {} }
+      .to output(/next wait uses reload: false/).to_stdout_from_any_process
+    expect { subject.wait(max: 0, reload: false) {} }
+      .to output(/with wait/).to_stdout_from_any_process
+    expect { subject.wait(max: 0, reload: false) {} }
       .to output(/ended wait after .* seconds$/).to_stdout_from_any_process
   end
 
@@ -47,6 +57,15 @@ describe QA::Support::Page::Logging do
 
   it 'logs find_element' do
     expect { subject.find_element(:element) }
+      .to output(/finding :element/).to_stdout_from_any_process
+    expect { subject.find_element(:element) }
+      .to output(/found :element/).to_stdout_from_any_process
+  end
+
+  it 'logs find_element with text' do
+    expect { subject.find_element(:element, text: 'foo') }
+      .to output(/finding :element with text "foo"/).to_stdout_from_any_process
+    expect { subject.find_element(:element, text: 'foo') }
       .to output(/found :element/).to_stdout_from_any_process
   end
 
@@ -62,7 +81,26 @@ describe QA::Support::Page::Logging do
 
   it 'logs has_element?' do
     expect { subject.has_element?(:element) }
-      .to output(/has_element\? :element returned true/).to_stdout_from_any_process
+      .to output(/has_element\? :element \(wait: 2\) returned: true/).to_stdout_from_any_process
+  end
+
+  it 'logs has_element? with text' do
+    expect { subject.has_element?(:element, text: "some text") }
+      .to output(/has_element\? :element with text \"some text\" \(wait: 2\) returned: true/).to_stdout_from_any_process
+  end
+
+  it 'logs has_no_element?' do
+    allow(page).to receive(:has_no_css?).and_return(true)
+
+    expect { subject.has_no_element?(:element) }
+      .to output(/has_no_element\? :element returned true/).to_stdout_from_any_process
+  end
+
+  it 'logs has_text?' do
+    allow(page).to receive(:has_text?).and_return(true)
+
+    expect { subject.has_text? 'foo' }
+      .to output(/has_text\?\('foo'\) returned true/).to_stdout_from_any_process
   end
 
   it 'logs has_no_text?' do
@@ -70,6 +108,13 @@ describe QA::Support::Page::Logging do
 
     expect { subject.has_no_text? 'foo' }
       .to output(/has_no_text\?\('foo'\) returned true/).to_stdout_from_any_process
+  end
+
+  it 'logs finished_loading?' do
+    expect { subject.finished_loading? }
+      .to output(/waiting for loading to complete\.\.\./).to_stdout_from_any_process
+    expect { subject.finished_loading? }
+      .to output(/loading complete after .* seconds$/).to_stdout_from_any_process
   end
 
   it 'logs within_element' do

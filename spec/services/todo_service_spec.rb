@@ -19,6 +19,7 @@ describe TodoService do
   before do
     project.add_guest(guest)
     project.add_developer(author)
+    project.add_developer(assignee)
     project.add_developer(member)
     project.add_developer(john_doe)
     project.add_developer(skipped)
@@ -456,7 +457,7 @@ describe TodoService do
       end
 
       context 'on commit' do
-        let(:project)  { create(:project, :repository) }
+        let(:project) { create(:project, :repository) }
 
         it 'creates a todo for each valid mentioned user when leaving a note on commit' do
           service.new_note(note_on_commit, john_doe)

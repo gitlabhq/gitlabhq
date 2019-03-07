@@ -1,5 +1,6 @@
 import _ from 'underscore';
-import { diffModes } from '~/ide/constants';
+import { truncatePathMiddleToLength } from '~/lib/utils/text_utility';
+import { diffModes, diffViewerModes } from '~/ide/constants';
 import {
   LINE_POSITION_LEFT,
   LINE_POSITION_RIGHT,
@@ -11,6 +12,7 @@ import {
   MATCH_LINE_TYPE,
   LINES_TO_BE_RENDERED_DIRECTLY,
   MAX_LINES_TO_BE_RENDERED,
+  TREE_TYPE,
 } from '../constants';
 
 export function findDiffFile(files, hash) {
@@ -159,6 +161,7 @@ export function addContextLines(options) {
   const normalizedParallelLines = contextLines.map(line => ({
     left: line,
     right: line,
+    line_code: line.line_code,
   }));
 
   if (options.bottom) {
@@ -180,8 +183,6 @@ export function addContextLines(options) {
 export function trimFirstCharOfLineContent(line = {}) {
   // eslint-disable-next-line no-param-reassign
   delete line.text;
-  // eslint-disable-next-line no-param-reassign
-  line.discussions = [];
 
   const parsedLine = Object.assign({}, line);
 
@@ -221,10 +222,12 @@ export function prepareDiffData(diffData) {
         line.line_code = getLineCode(line, u);
         if (line.left) {
           line.left = trimFirstCharOfLineContent(line.left);
+          line.left.discussions = [];
           line.left.hasForm = false;
         }
         if (line.right) {
           line.right = trimFirstCharOfLineContent(line.right);
+          line.right.discussions = [];
           line.right.hasForm = false;
         }
       }
@@ -234,14 +237,19 @@ export function prepareDiffData(diffData) {
       const linesLength = file.highlighted_diff_lines.length;
       for (let u = 0; u < linesLength; u += 1) {
         const line = file.highlighted_diff_lines[u];
-        Object.assign(line, { ...trimFirstCharOfLineContent(line), hasForm: false });
+        Object.assign(line, {
+          ...trimFirstCharOfLineContent(line),
+          discussions: [],
+          hasForm: false,
+        });
       }
       showingLines += file.parallel_diff_lines.length;
     }
 
     Object.assign(file, {
       renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
-      collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
+      collapsed:
+        file.viewer.name === diffViewerModes.text && showingLines > MAX_LINES_TO_BE_RENDERED,
       discussions: [],
     });
   }
@@ -289,8 +297,63 @@ export function isDiscussionApplicableToLine({ discussion, diffPosition, latestD
   return latestDiff && discussion.active && line_code === discussion.line_code;
 }
 
-export const generateTreeList = files =>
-  files.reduce(
+export const getLowestSingleFolder = folder => {
+  const getFolder = (blob, start = []) =>
+    blob.tree.reduce(
+      (acc, file) => {
+        const shouldGetFolder = file.tree.length === 1 && file.tree[0].type === TREE_TYPE;
+        const currentFileTypeTree = file.type === TREE_TYPE;
+        const path = shouldGetFolder || currentFileTypeTree ? acc.path.concat(file.name) : acc.path;
+        const tree = shouldGetFolder || currentFileTypeTree ? acc.tree.concat(file) : acc.tree;
+
+        if (shouldGetFolder) {
+          const firstFolder = getFolder(file);
+
+          path.push(...firstFolder.path);
+          tree.push(...firstFolder.tree);
+        }
+
+        return {
+          ...acc,
+          path,
+          tree,
+        };
+      },
+      { path: start, tree: [] },
+    );
+  const { path, tree } = getFolder(folder, [folder.name]);
+
+  return {
+    path: truncatePathMiddleToLength(path.join('/'), 40),
+    treeAcc: tree.length ? tree[tree.length - 1].tree : null,
+  };
+};
+
+export const flattenTree = tree => {
+  const flatten = blobTree =>
+    blobTree.reduce((acc, file) => {
+      const blob = file;
+      let treeToFlatten = blob.tree;
+
+      if (file.type === TREE_TYPE && file.tree.length === 1) {
+        const { treeAcc, path } = getLowestSingleFolder(file);
+
+        if (treeAcc) {
+          blob.name = path;
+          treeToFlatten = flatten(treeAcc);
+        }
+      }
+
+      blob.tree = flatten(treeToFlatten);
+
+      return acc.concat(blob);
+    }, []);
+
+  return flatten(tree);
+};
+
+export const generateTreeList = files => {
+  const { treeEntries, tree } = files.reduce(
     (acc, file) => {
       const split = file.new_path.split('/');
 
@@ -318,6 +381,7 @@ export const generateTreeList = files =>
               fileHash: file.file_hash,
               addedLines: file.added_lines,
               removedLines: file.removed_lines,
+              parentPath: parent ? `${parent.path}/` : '/',
             });
           } else {
             Object.assign(entry, {
@@ -334,11 +398,16 @@ export const generateTreeList = files =>
     { treeEntries: {}, tree: [] },
   );
 
+  return { treeEntries, tree: flattenTree(tree) };
+};
+
 export const getDiffMode = diffFile => {
   const diffModeKey = Object.keys(diffModes).find(key => diffFile[`${key}_file`]);
   return (
     diffModes[diffModeKey] ||
-    (diffFile.mode_changed && diffModes.mode_changed) ||
+    (diffFile.viewer &&
+      diffFile.viewer.name === diffViewerModes.mode_changed &&
+      diffViewerModes.mode_changed) ||
     diffModes.replaced
   );
 };

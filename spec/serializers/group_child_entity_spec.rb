@@ -10,6 +10,7 @@ describe GroupChildEntity do
 
   before do
     allow(request).to receive(:current_user).and_return(user)
+    stub_commonmark_sourcepos_disabled
   end
 
   shared_examples 'group child json' do

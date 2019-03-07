@@ -1,3 +1,3 @@
-import monitoringBundle from '~/monitoring/monitoring_bundle';
+import monitoringBundle from 'ee_else_ce/monitoring/monitoring_bundle';
 
 document.addEventListener('DOMContentLoaded', monitoringBundle);

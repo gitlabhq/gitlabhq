@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def call(env)
-        request = Rack::Request.new(env)
+        request = ActionDispatch::Request.new(env)
         route = Gitlab::EtagCaching::Router.match(request.path_info)
         return @app.call(env) unless route
 

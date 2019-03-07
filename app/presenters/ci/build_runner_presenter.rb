@@ -2,6 +2,11 @@
 
 module Ci
   class BuildRunnerPresenter < SimpleDelegator
+    include Gitlab::Utils::StrongMemoize
+
+    RUNNER_REMOTE_TAG_PREFIX = 'refs/tags/'.freeze
+    RUNNER_REMOTE_BRANCH_PREFIX = 'refs/remotes/origin/'.freeze
+
     def artifacts
       return unless options[:artifacts]
 
@@ -9,6 +14,35 @@ module Ci
       list << create_archive(options[:artifacts])
       list << create_reports(options[:artifacts][:reports], expire_in: options[:artifacts][:expire_in])
       list.flatten.compact
+    end
+
+    def ref_type
+      if tag
+        'tag'
+      else
+        'branch'
+      end
+    end
+
+    def git_depth
+      strong_memoize(:git_depth) do
+        git_depth = variables&.find { |variable| variable[:key] == 'GIT_DEPTH' }&.dig(:value)
+        git_depth.to_i
+      end
+    end
+
+    def refspecs
+      specs = []
+
+      if git_depth > 0
+        specs << refspec_for_branch(ref) if branch? || merge_request_event?
+        specs << refspec_for_tag(ref) if tag?
+      else
+        specs << refspec_for_branch
+        specs << refspec_for_tag
+      end
+
+      specs
     end
 
     private
@@ -40,6 +74,14 @@ module Ci
           expire_in: expire_in
         }
       end
+    end
+
+    def refspec_for_branch(ref = '*')
+      "+#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref}:#{RUNNER_REMOTE_BRANCH_PREFIX}#{ref}"
+    end
+
+    def refspec_for_tag(ref = '*')
+      "+#{Gitlab::Git::TAG_REF_PREFIX}#{ref}:#{RUNNER_REMOTE_TAG_PREFIX}#{ref}"
     end
   end
 end

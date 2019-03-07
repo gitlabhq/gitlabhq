@@ -68,7 +68,7 @@ describe 'Merge requests > User mass updates', :js do
   end
 
   context 'milestone' do
-    let(:milestone)  { create(:milestone, project: project) }
+    let(:milestone) { create(:milestone, project: project) }
 
     describe 'set milestone' do
       before do

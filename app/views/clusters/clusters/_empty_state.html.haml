@@ -9,6 +9,6 @@
         = clusterable.empty_state_help_text
         = clusterable.learn_more_link
 
-      - if clusterable.can_create_cluster?
+      - if clusterable.can_add_cluster?
         .text-center
           = link_to s_('ClusterIntegration|Add Kubernetes cluster'), clusterable.new_path, class: 'btn btn-success'

@@ -32,17 +32,40 @@ describe 'projects/merge_requests/show.html.haml' do
     assign(:noteable, closed_merge_request)
     assign(:notes, [])
     assign(:pipelines, Ci::Pipeline.none)
-    assign(
-      :issuable_sidebar,
-      MergeRequestSerializer.new(current_user: user, project: project)
-        .represent(closed_merge_request, serializer: 'sidebar')
-    )
+    assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, closed_merge_request))
 
     preload_view_requirements
 
     allow(view).to receive_messages(current_user: user,
                                     can?: true,
                                     current_application_settings: Gitlab::CurrentSettings.current_application_settings)
+  end
+
+  describe 'merge request assignee sidebar' do
+    context 'when assignee is allowed to merge' do
+      it 'does not show a warning icon' do
+        closed_merge_request.update(assignee_id: user.id)
+        project.add_maintainer(user)
+        assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, closed_merge_request))
+
+        render
+
+        expect(rendered).not_to have_css('.cannot-be-merged')
+      end
+    end
+
+    context 'when assignee is not allowed to merge' do
+      it 'shows a warning icon' do
+        reporter = create(:user)
+        project.add_reporter(reporter)
+        closed_merge_request.update(assignee_id: reporter.id)
+        assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, closed_merge_request))
+
+        render
+
+        expect(rendered).to have_css('.cannot-be-merged')
+      end
+    end
   end
 
   context 'when the merge request is closed' do
@@ -79,5 +102,11 @@ describe 'projects/merge_requests/show.html.haml' do
       expect(rendered).to have_css('a', visible: false, text: 'Reopen')
       expect(rendered).to have_css('a', visible: false, text: 'Close')
     end
+  end
+
+  def serialize_issuable_sidebar(user, project, merge_request)
+    MergeRequestSerializer
+      .new(current_user: user, project: project)
+      .represent(closed_merge_request, serializer: 'sidebar')
   end
 end

@@ -456,6 +456,10 @@ class Note < ActiveRecord::Base
     Upload.find_by(model: self, path: paths)
   end
 
+  def parent
+    project
+  end
+
   private
 
   def keep_around_commit

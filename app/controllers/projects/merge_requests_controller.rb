@@ -7,6 +7,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include RendersCommits
   include ToggleAwardEmoji
   include IssuableCollections
+  include RecordUserLastActivity
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :whitelist_query_limiting, only: [:assign_related_issues, :update]
@@ -14,6 +15,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :set_issuables_index, only: [:index]
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
+
+  before_action only: [:show] do
+    push_frontend_feature_flag(:diff_tree_filtering, default_enabled: true)
+  end
 
   def index
     @merge_requests = @issuables
@@ -55,7 +60,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         render json: serializer.represent(@merge_request, serializer: params[:serializer])
       end
 
-      format.patch  do
+      format.patch do
         break render_404 unless @merge_request.diff_refs
 
         send_git_patch @project.repository, @merge_request.diff_refs
@@ -218,18 +223,28 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     head :ok
   end
 
+  def discussions
+    merge_request.preload_discussions_diff_highlight
+
+    super
+  end
+
   protected
 
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
+  def issuable_sorting_field
+    MergeRequest::SORTING_PREFERENCE_FIELD
+  end
+
   def merge_params
     params.permit(merge_params_attributes)
   end
 
   def merge_params_attributes
-    [:should_remove_source_branch, :commit_message, :squash]
+    [:should_remove_source_branch, :commit_message, :squash_commit_message, :squash]
   end
 
   def merge_when_pipeline_succeeds_active?

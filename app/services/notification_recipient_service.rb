@@ -249,6 +249,7 @@ module NotificationRecipientService
       attr_reader :action
       attr_reader :previous_assignee
       attr_reader :skip_current_user
+
       def initialize(target, current_user, action:, custom_action: nil, previous_assignee: nil, skip_current_user: true)
         @target = target
         @current_user = current_user
@@ -258,9 +259,13 @@ module NotificationRecipientService
         @skip_current_user = skip_current_user
       end
 
+      def add_watchers
+        add_project_watchers
+      end
+
       def build!
         add_participants(current_user)
-        add_project_watchers
+        add_watchers
         add_custom_notifications
 
         # Re-assign is considered as a mention of the new assignee

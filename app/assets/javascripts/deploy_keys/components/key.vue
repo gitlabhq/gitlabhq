@@ -113,7 +113,7 @@ export default {
   <div class="gl-responsive-table-row deploy-key">
     <div class="table-section section-40">
       <div role="rowheader" class="table-mobile-header">{{ s__('DeployKeys|Deploy key') }}</div>
-      <div class="table-mobile-content">
+      <div class="table-mobile-content qa-key">
         <strong class="title qa-key-title"> {{ deployKey.title }} </strong>
         <div class="fingerprint qa-key-fingerprint">{{ deployKey.fingerprint }}</div>
       </div>

@@ -237,7 +237,7 @@ describe API::Commits do
     end
 
     describe 'create' do
-      let(:message) { 'Created file' }
+      let(:message) { 'Created a new file with a very very looooooooooooooooooooooooooooooooooooooooooooooong commit message' }
       let(:invalid_c_params) do
         {
           branch: 'master',
@@ -1430,8 +1430,8 @@ describe API::Commits do
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/merge_requests' do
-    let!(:project) { create(:project, :repository, :private) }
-    let!(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
+    let(:project) { create(:project, :repository, :private) }
+    let(:merged_mr) { create(:merge_request, source_project: project, source_branch: 'master', target_branch: 'feature') }
     let(:commit) { merged_mr.merge_request_diff.commits.last }
 
     it 'returns the correct merge request' do
@@ -1455,6 +1455,55 @@ describe API::Commits do
       get api("/projects/#{project.id}/repository/commits/a7d26f00c35b/merge_requests", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+
+    context 'public project' do
+      let(:project) { create(:project, :repository, :public, :merge_requests_private) }
+      let(:non_member) { create(:user) }
+
+      it 'responds 403 when only members are allowed to read merge requests' do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests", non_member)
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+  end
+
+  describe 'GET /projects/:id/repository/commits/:sha/signature' do
+    let!(:project) { create(:project, :repository, :public) }
+    let(:project_id) { project.id }
+    let(:commit_id) { project.repository.commit.id }
+    let(:route) { "/projects/#{project_id}/repository/commits/#{commit_id}/signature" }
+
+    context 'when commit does not exist' do
+      let(:commit_id) { 'unknown' }
+
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 Commit Not Found' }
+      end
+    end
+
+    context 'unsigned commit' do
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 GPG Signature Not Found'}
+      end
+    end
+
+    context 'signed commit' do
+      let(:commit) { project.repository.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
+      let(:commit_id) { commit.id }
+
+      it 'returns correct JSON' do
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['gpg_key_id']).to eq(commit.signature.gpg_key_id)
+        expect(json_response['gpg_key_subkey_id']).to eq(commit.signature.gpg_key_subkey_id)
+        expect(json_response['gpg_key_primary_keyid']).to eq(commit.signature.gpg_key_primary_keyid)
+        expect(json_response['verification_status']).to eq(commit.signature.verification_status)
+      end
     end
   end
 end

@@ -149,16 +149,8 @@
     margin: 10px 0;
   }
 
-  // Border around images in issue and MR comments.
-  img:not(.emoji) {
-    border: 1px solid $white-normal;
-    padding: 5px;
-    margin: 5px 0;
-    // Ensure that image does not exceed viewport
-    max-height: calc(100vh - 100px);
-  }
 
-  table {
+  table:not(.js-syntax-highlight) {
     @include markdown-table;
   }
 }
@@ -173,7 +165,7 @@
   svg {
     width: 14px;
     height: 14px;
-    margin-top: 3px;
+    vertical-align: middle;
     fill: $gl-text-color-secondary;
   }
 
@@ -228,7 +220,7 @@
 
   .cur {
     .avatar {
-      @include disableAllAnimation;
+      @include disable-all-animation;
       border: 1px solid $white-light;
     }
   }
@@ -280,6 +272,8 @@
 .md-suggestion-diff {
   display: table !important;
   border: 1px solid $border-color !important;
+  width: 100% !important;
+  font-family: $monospace-font !important;
 }
 
 .md-suggestion-header {
@@ -306,5 +300,9 @@
   .atwho-view ul li {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .referenced-users {
+    margin-right: 0;
   }
 }

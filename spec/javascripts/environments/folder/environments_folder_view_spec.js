@@ -13,7 +13,6 @@ describe('Environments Folder View', () => {
   const mockData = {
     endpoint: 'environments.json',
     folderName: 'review',
-    canCreateDeployment: true,
     canReadEnvironment: true,
     cssContainerClass: 'container',
   };
@@ -108,7 +107,7 @@ describe('Environments Folder View', () => {
       it('should make an API request when changing page', done => {
         spyOn(component, 'updateContent');
         setTimeout(() => {
-          component.$el.querySelector('.gl-pagination .js-last-button a').click();
+          component.$el.querySelector('.gl-pagination .js-last-button .page-link').click();
 
           expect(component.updateContent).toHaveBeenCalledWith({
             scope: component.scope,

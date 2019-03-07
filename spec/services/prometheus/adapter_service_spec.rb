@@ -22,7 +22,15 @@ describe Prometheus::AdapterService do
     context "prometheus service can't execute queries" do
       let(:prometheus_service) { double(:prometheus_service, can_query?: false) }
 
-      context 'with cluster with prometheus installed' do
+      context 'with cluster with prometheus not available' do
+        let!(:prometheus) { create(:clusters_applications_prometheus, :installable, cluster: cluster) }
+
+        it 'returns nil' do
+          expect(subject.prometheus_adapter).to be_nil
+        end
+      end
+
+      context 'with cluster with prometheus available' do
         let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
 
         it 'returns application handling all environments' do

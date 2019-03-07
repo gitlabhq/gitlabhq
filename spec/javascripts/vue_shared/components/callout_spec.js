@@ -1,45 +1,66 @@
-import Vue from 'vue';
-import callout from '~/vue_shared/components/callout.vue';
-import createComponent from 'spec/helpers/vue_mount_component_helper';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import Callout from '~/vue_shared/components/callout.vue';
+
+const TEST_MESSAGE = 'This is a callout message!';
+const TEST_SLOT = '<button>This is a callout slot!</button>';
+
+const localVue = createLocalVue();
 
 describe('Callout Component', () => {
-  let CalloutComponent;
-  let vm;
-  const exampleMessage = 'This is a callout message!';
+  let wrapper;
 
-  beforeEach(() => {
-    CalloutComponent = Vue.extend(callout);
-  });
+  const factory = options => {
+    wrapper = shallowMount(localVue.extend(Callout), {
+      localVue,
+      ...options,
+    });
+  };
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   it('should render the appropriate variant of callout', () => {
-    vm = createComponent(CalloutComponent, {
-      category: 'info',
-      message: exampleMessage,
+    factory({
+      propsData: {
+        category: 'info',
+        message: TEST_MESSAGE,
+      },
     });
 
-    expect(vm.$el.getAttribute('class')).toEqual('bs-callout bs-callout-info');
+    expect(wrapper.classes()).toEqual(['bs-callout', 'bs-callout-info']);
 
-    expect(vm.$el.tagName).toEqual('DIV');
+    expect(wrapper.element.tagName).toEqual('DIV');
   });
 
   it('should render accessibility attributes', () => {
-    vm = createComponent(CalloutComponent, {
-      message: exampleMessage,
+    factory({
+      propsData: {
+        message: TEST_MESSAGE,
+      },
     });
 
-    expect(vm.$el.getAttribute('role')).toEqual('alert');
-    expect(vm.$el.getAttribute('aria-live')).toEqual('assertive');
+    expect(wrapper.attributes('role')).toEqual('alert');
+    expect(wrapper.attributes('aria-live')).toEqual('assertive');
   });
 
   it('should render the provided message', () => {
-    vm = createComponent(CalloutComponent, {
-      message: exampleMessage,
+    factory({
+      propsData: {
+        message: TEST_MESSAGE,
+      },
     });
 
-    expect(vm.$el.innerHTML.trim()).toEqual(exampleMessage);
+    expect(wrapper.element.innerHTML.trim()).toEqual(TEST_MESSAGE);
+  });
+
+  it('should render the provided slot', () => {
+    factory({
+      slots: {
+        default: TEST_SLOT,
+      },
+    });
+
+    expect(wrapper.element.innerHTML.trim()).toEqual(TEST_SLOT);
   });
 });

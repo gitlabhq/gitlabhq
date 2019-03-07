@@ -73,6 +73,8 @@ module Ci
       where(file_type: types)
     end
 
+    scope :expired, -> (limit) { where('expire_at < ?', Time.now).limit(limit) }
+
     delegate :filename, :exists?, :open, to: :file
 
     enum file_type: {

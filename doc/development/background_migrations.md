@@ -25,9 +25,9 @@ should only be used for data migrations.
 
 Some examples where background migrations can be useful:
 
-* Migrating events from one table to multiple separate tables.
-* Populating one column based on JSON stored in another column.
-* Migrating data that depends on the output of external services (e.g. an API).
+- Migrating events from one table to multiple separate tables.
+- Populating one column based on JSON stored in another column.
+- Migrating data that depends on the output of external services (e.g. an API).
 
 ## Isolation
 

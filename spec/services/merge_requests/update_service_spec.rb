@@ -328,7 +328,7 @@ describe MergeRequests::UpdateService, :mailer do
         it_behaves_like 'system notes for milestones'
 
         it 'sends notifications for subscribers of changed milestone' do
-          merge_request.milestone = create(:milestone)
+          merge_request.milestone = create(:milestone, project: project)
 
           merge_request.save
 
@@ -352,7 +352,7 @@ describe MergeRequests::UpdateService, :mailer do
         end
 
         it 'marks pending todos as done' do
-          update_merge_request({ milestone: create(:milestone) })
+          update_merge_request({ milestone: create(:milestone, project: project) })
 
           expect(pending_todo.reload).to be_done
         end
@@ -361,7 +361,7 @@ describe MergeRequests::UpdateService, :mailer do
 
         it 'sends notifications for subscribers of changed milestone' do
           perform_enqueued_jobs do
-            update_merge_request(milestone: create(:milestone))
+            update_merge_request(milestone: create(:milestone, project: project))
           end
 
           should_email(subscriber)
@@ -465,6 +465,8 @@ describe MergeRequests::UpdateService, :mailer do
       end
 
       it { expect(@merge_request.tasks?).to eq(true) }
+
+      it_behaves_like 'updating a single task'
 
       context 'when tasks are marked as completed' do
         before do

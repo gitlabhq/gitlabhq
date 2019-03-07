@@ -9,7 +9,7 @@ To enable the Facebook OmniAuth provider you must register your application with
 1. Select the type "Website"
 
 1. Enter a name for your app. This can be anything. Consider something like "&lt;Organization&gt;'s GitLab" or "&lt;Your Name&gt;'s GitLab" or
-something else descriptive.
+   something else descriptive.
 
 1. Choose "Create New Facebook App ID"
 

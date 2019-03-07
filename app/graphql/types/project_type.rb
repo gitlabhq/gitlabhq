@@ -16,7 +16,6 @@ module Types
 
     field :description, GraphQL::STRING_TYPE, null: true
 
-    field :default_branch, GraphQL::STRING_TYPE, null: true
     field :tag_list, GraphQL::STRING_TYPE, null: true
 
     field :ssh_url_to_repo, GraphQL::STRING_TYPE, null: true
@@ -59,24 +58,33 @@ module Types
     end
 
     field :import_status, GraphQL::STRING_TYPE, null: true
-    field :ci_config_path, GraphQL::STRING_TYPE, null: true
 
     field :only_allow_merge_if_pipeline_succeeds, GraphQL::BOOLEAN_TYPE, null: true
     field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::BOOLEAN_TYPE, null: true
     field :printing_merge_request_link_enabled, GraphQL::BOOLEAN_TYPE, null: true
 
+    field :merge_requests,
+          Types::MergeRequestType.connection_type,
+          null: true,
+          resolver: Resolvers::MergeRequestsResolver,
+          authorize: :read_merge_request
+
     field :merge_request,
           Types::MergeRequestType,
           null: true,
-          resolver: Resolvers::MergeRequestResolver do
-      authorize :read_merge_request
-    end
+          resolver: Resolvers::MergeRequestsResolver.single,
+          authorize: :read_merge_request
 
     field :issues,
           Types::IssueType.connection_type,
           null: true,
           resolver: Resolvers::IssuesResolver
+
+    field :issue,
+          Types::IssueType,
+          null: true,
+          resolver: Resolvers::IssuesResolver.single
 
     field :pipelines,
           Types::Ci::PipelineType.connection_type,

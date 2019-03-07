@@ -22,7 +22,7 @@ if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
 end
 
-if ENV['CI'] && !ENV['NO_KNAPSACK']
+if ENV['CI'] && ENV['KNAPSACK_GENERATE_REPORT'] && !ENV['NO_KNAPSACK']
   require 'knapsack'
   Knapsack::Adapters::RSpecAdapter.bind
 end
@@ -115,9 +115,16 @@ RSpec.configure do |config|
     TestEnv.clean_test_path
   end
 
-  config.before do
+  config.before do |example|
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
+
+    enabled = example.metadata[:enable_rugged].present?
+
+    # Disable Rugged features by default
+    Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
+      allow(Feature).to receive(:enabled?).with(flag).and_return(enabled)
+    end
 
     # The following can be removed when we remove the staged rollout strategy
     # and we can just enable it using instance wide settings
@@ -125,6 +132,11 @@ RSpec.configure do |config|
     allow(Feature).to receive(:enabled?)
       .with(:force_autodevops_on_by_default, anything)
       .and_return(false)
+  end
+
+  config.before(:example, :quarantine) do
+    # Skip tests in quarantine unless we explicitly focus on them.
+    skip('In quarantine') unless config.inclusion_filter[:quarantine]
   end
 
   config.before(:example, :request_store) do
@@ -216,11 +228,15 @@ RSpec.configure do |config|
 
   # Each example may call `migrate!`, so we must ensure we are migrated down every time
   config.before(:each, :migration) do
+    use_fake_application_settings
+
     schema_migrate_down!
   end
 
   config.after(:context, :migration) do
     schema_migrate_up!
+
+    Gitlab::CurrentSettings.clear_in_memory_application_settings!
   end
 
   config.around(:each, :nested_groups) do |example|

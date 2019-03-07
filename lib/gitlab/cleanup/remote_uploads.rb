@@ -67,7 +67,7 @@ module Gitlab
       end
 
       def remote_directory
-        connection.directories.get(configuration['remote_directory'])
+        connection.directories.new(key: configuration['remote_directory'])
       end
 
       def connection

@@ -437,7 +437,7 @@ export class AwardsHandler {
 
   createAwardButtonForVotesBlock(votesBlock, emojiName) {
     const buttonHtml = `
-      <button class="btn award-control js-emoji-btn has-tooltip active" title="You" data-placement="bottom">
+      <button class="btn award-control js-emoji-btn has-tooltip active" title="You">
         ${this.emoji.glEmojiTag(emojiName)}
         <span class="award-control-text js-counter">1</span>
       </button>
@@ -615,10 +615,18 @@ export class AwardsHandler {
 let awardsHandlerPromise = null;
 export default function loadAwardsHandler(reload = false) {
   if (!awardsHandlerPromise || reload) {
-    awardsHandlerPromise = import(/* webpackChunkName: 'emoji' */ './emoji').then(Emoji => {
-      const awardsHandler = new AwardsHandler(Emoji);
-      awardsHandler.bindEvents();
-      return awardsHandler;
+    awardsHandlerPromise = new Promise((resolve, reject) => {
+      import(/* webpackChunkName: 'emoji' */ './emoji')
+        .then(Emoji => {
+          Emoji.initEmojiMap()
+            .then(() => {
+              const awardsHandler = new AwardsHandler(Emoji);
+              awardsHandler.bindEvents();
+              resolve(awardsHandler);
+            })
+            .catch(() => reject);
+        })
+        .catch(() => reject);
     });
   }
   return awardsHandlerPromise;

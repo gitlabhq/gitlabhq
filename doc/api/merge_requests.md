@@ -24,6 +24,7 @@ GET /merge_requests?labels=bug,reproduced
 GET /merge_requests?author_id=5
 GET /merge_requests?my_reaction_emoji=star
 GET /merge_requests?scope=assigned_to_me
+GET /merge_requests?search=foo&in=title
 ```
 
 Parameters:
@@ -47,6 +48,7 @@ Parameters:
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
+| `in`                | string   | no       | Modify the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description` |
 | `wip`               | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
 ```json
@@ -158,7 +160,6 @@ will be the same. In the case of a merge request from a fork,
 `target_project_id` and `project_id` will be the same and
 `source_project_id` will be the fork project's ID.
 
-
 Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                                    |
@@ -182,6 +183,7 @@ Parameters:
 | `source_branch`     | string         | no       | Return merge requests with the given source branch                                                                             |
 | `target_branch`     | string         | no       | Return merge requests with the given target branch                                                                             |
 | `search`            | string         | no       | Search merge requests against their `title` and `description`                                                                  |
+| `wip`               | string         | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests |
 
 ```json
 [
@@ -432,6 +434,9 @@ Parameters:
     "avatar_url": null,
     "web_url" : "https://gitlab.example.com/admin"
   },
+  "user" : {
+    "can_merge" : false
+   }
   "assignee": {
     "id": 1,
     "name": "Administrator",
@@ -525,7 +530,6 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
 
-
 ```json
 [
   {
@@ -559,7 +563,6 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required) - The internal ID of the merge request
-
 
 ```json
 [
@@ -967,7 +970,7 @@ DELETE /projects/:id/merge_requests/:merge_request_iid
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/merge_requests/85
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/4/merge_requests/85
 ```
 
 ## Accept MR
@@ -991,6 +994,8 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `merge_request_iid` (required)            - Internal ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
+- `squash_commit_message` (optional)        - Custom squash commit message
+- `squash` (optional)                       - if `true` the commits will be squashed into a single commit on merge
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
 - `merge_when_pipeline_succeeds` (optional) - if `true` the MR is merged when the pipeline succeeds
 - `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
@@ -1093,6 +1098,40 @@ Parameters:
     "start_sha": "c380d3acebd181f13629a25d2e2acca46ffe1e00"
   },
   "diverged_commits_count": 2
+}
+```
+
+## Merge to default merge ref path
+
+Merge the changes between the merge request source and target branches into `refs/merge-requests/:iid/merge` 
+ref, of the target project repository. This ref will have the state the target branch would have if
+a regular merge action was taken.
+
+This is not a regular merge action given it doesn't change the merge request state in any manner.
+
+This ref (`refs/merge-requests/:iid/merge`) is **always** overwritten when submitting
+requests to this API, so none of its state is kept or used in the process.
+
+If the merge request has conflicts, is empty or already merged,
+you'll get a `400` and a descriptive error message. If you don't have permissions to do so, 
+you'll get a `403`.
+
+It returns the HEAD commit of `refs/merge-requests/:iid/merge` in the response body in
+case of `200`.
+
+```
+PUT /projects/:id/merge_requests/:merge_request_iid/merge_to_ref
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `merge_request_iid` (required)            - Internal ID of MR
+- `merge_commit_message` (optional)         - Custom merge commit message
+
+```json
+{
+  "commit_id": "854a3a7a17acbcc0bbbea170986df1eb60435f34"
 }
 ```
 
@@ -1230,7 +1269,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/rebase
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/rebase
 ```
 
 This is an asynchronous request. The API will return an empty `202 Accepted`
@@ -1286,7 +1325,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/closes_issues
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/76/merge_requests/1/closes_issues
 ```
 
 Example response when the GitLab issue tracker is used:
@@ -1362,7 +1401,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/subscribe
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/subscribe
 ```
 
 Example response:
@@ -1483,7 +1522,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/unsubscribe
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/17/unsubscribe
 ```
 
 Example response:
@@ -1604,7 +1643,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/todo
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/27/todo
 ```
 
 Example response:
@@ -1707,7 +1746,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions
 ```
 
 Example response:
@@ -1749,7 +1788,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/versions/:version_id
 | `version_id`        | integer | yes      | The ID of the merge request diff version |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1
+curl --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/1/merge_requests/1/versions/1
 ```
 
 Example response:
@@ -1816,7 +1855,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/time_estimate
 | `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_estimate?duration=3h30m
 ```
 
 Example response:
@@ -1844,7 +1883,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_time_estimate
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_time_estimate
 ```
 
 Example response:
@@ -1873,7 +1912,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/add_spent_time
 | `duration`          | string  | yes      | The duration in human format. e.g: 3h30m |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/add_spent_time?duration=1h
 ```
 
 Example response:
@@ -1901,7 +1940,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/reset_spent_time
 | `merge_request_iid` | integer | yes      | The internal ID of a project's merge_request |
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/reset_spent_time
 ```
 
 Example response:
@@ -1927,7 +1966,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/time_stats
 | `merge_request_iid` | integer | yes      | The internal ID of the merge request |
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/projects/5/merge_requests/93/time_stats
 ```
 
 Example response:

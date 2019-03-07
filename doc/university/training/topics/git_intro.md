@@ -8,7 +8,7 @@ comments: false
 
 ## Intro
 
-https://git-scm.com/about
+<https://git-scm.com/about>
 
 - Distributed version control
   - Does not rely on connection to a central server
@@ -25,4 +25,4 @@ Use the tools at your disposal when you get stuck.
 
 - Use '`git help <command>`' command
 - Use Google
-- Read documentation at https://git-scm.com
+- Read documentation at <https://git-scm.com>

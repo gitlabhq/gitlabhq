@@ -28,7 +28,7 @@ module BlobLike
     nil
   end
 
-  def binary?
+  def binary_in_repo?
     false
   end
 

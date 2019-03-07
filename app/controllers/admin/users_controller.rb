@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
 class Admin::UsersController < Admin::ApplicationController
+  include RoutableActions
+
   before_action :user, except: [:index, :new, :create]
   before_action :check_impersonation_availability, only: :impersonate
 
   def index
-    @users = User.order_name_asc.filter(params[:filter])
+    @users = User.filter_items(params[:filter]).order_name_asc
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
     @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
@@ -177,11 +179,13 @@ class Admin::UsersController < Admin::ApplicationController
     user == current_user
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def user
-    @user ||= User.find_by!(username: params[:id])
+    @user ||= find_routable!(User, params[:id])
   end
-  # rubocop: enable CodeReuse/ActiveRecord
+
+  def build_canonical_path(user)
+    url_for(safe_params.merge(id: user.to_param))
+  end
 
   def redirect_back_or_admin_user(options = {})
     redirect_back_or_default(default: default_route, options: options)

@@ -4,6 +4,11 @@ class Todo < ActiveRecord::Base
   include Sortable
   include FromUnion
 
+  # Time to wait for todos being removed when not visible for user anymore.
+  # Prevents TODOs being removed by mistake, for example, removing access from a user
+  # and giving it back again.
+  WAIT_FOR_DELETE    = 1.hour
+
   ASSIGNED           = 1
   MENTIONED          = 2
   BUILD_FAILED       = 3

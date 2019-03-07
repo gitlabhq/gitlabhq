@@ -28,7 +28,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it "shows Pending tab jobs" do
-        expect(page).to have_link 'Cancel running'
         expect(page).to have_selector('.nav-links li.active', text: 'Pending')
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
@@ -44,7 +43,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
       it "shows Running tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Running')
-        expect(page).to have_link 'Cancel running'
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
         expect(page).to have_content job.name
@@ -60,7 +58,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       it "shows Finished tab jobs" do
         expect(page).to have_selector('.nav-links li.active', text: 'Finished')
         expect(page).to have_content 'No jobs to show'
-        expect(page).to have_link 'Cancel running'
       end
     end
 
@@ -75,7 +72,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         expect(page).to have_content job.short_sha
         expect(page).to have_content job.ref
         expect(page).to have_content job.name
-        expect(page).not_to have_link 'Cancel running'
       end
     end
 
@@ -94,23 +90,6 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     end
   end
 
-  describe "POST /:project/jobs/:id/cancel_all" do
-    before do
-      job.run!
-      visit project_jobs_path(project)
-      click_link "Cancel running"
-    end
-
-    it 'shows all necessary content' do
-      expect(page).to have_selector('.nav-links li.active', text: 'All')
-      expect(page).to have_content 'canceled'
-      expect(page).to have_content job.short_sha
-      expect(page).to have_content job.ref
-      expect(page).to have_content job.name
-      expect(page).not_to have_link 'Cancel running'
-    end
-  end
-
   describe "GET /:project/jobs/:id" do
     context "Job from project" do
       let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
@@ -124,7 +103,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'shows commit`s data', :js do
-        requests = inspect_requests() do
+        requests = inspect_requests do
           visit project_job_path(project, job)
         end
 
@@ -191,7 +170,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
           href = new_project_issue_path(project, options)
 
-          page.within('.header-action-buttons') do
+          page.within('.build-sidebar') do
             expect(find('.js-new-issue')['href']).to include(href)
           end
         end
@@ -235,13 +214,13 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it 'downloads the zip file when user clicks the download button' do
-        requests = inspect_requests() do
+        requests = inspect_requests do
           click_link 'Download'
         end
 
         artifact_request = requests.find { |req| req.url.match(%r{artifacts/download}) }
 
-        expect(artifact_request.response_headers["Content-Disposition"]).to eq(%Q{attachment; filename="#{job.artifacts_file.filename}"})
+        expect(artifact_request.response_headers["Content-Disposition"]).to eq(%Q{attachment; filename*=UTF-8''#{job.artifacts_file.filename}; filename="#{job.artifacts_file.filename}"})
         expect(artifact_request.response_headers['Content-Transfer-Encoding']).to eq("binary")
         expect(artifact_request.response_headers['Content-Type']).to eq("image/gif")
         expect(artifact_request.body).to eq(job.artifacts_file.file.read.b)
@@ -845,7 +824,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       before do
         job.run!
         visit project_job_path(project, job)
-        find('.js-cancel-job').click()
+        find('.js-cancel-job').click
       end
 
       it 'loads the page and shows all needed controls' do
@@ -905,7 +884,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
 
       it do
-        requests = inspect_requests() do
+        requests = inspect_requests do
           visit download_project_job_artifacts_path(project, job2)
         end
 

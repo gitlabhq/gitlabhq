@@ -11,11 +11,15 @@ module QA::Page
 
       view 'app/assets/javascripts/pipelines/components/graph/job_item.vue' do
         element :job_component, /class.*ci-job-component.*/ # rubocop:disable QA/ElementWithPattern
-        element :job_link, /class.*js-pipeline-graph-job-link.*/ # rubocop:disable QA/ElementWithPattern
+        element :job_link
       end
 
       view 'app/assets/javascripts/vue_shared/components/ci_icon.vue' do
         element :status_icon, 'ci-status-icon-${status}' # rubocop:disable QA/ElementWithPattern
+      end
+
+      view 'app/views/projects/pipelines/_info.html.haml' do
+        element :pipeline_badges
       end
 
       def running?
@@ -30,6 +34,16 @@ module QA::Page
             has_selector?(".ci-status-icon-#{status}", { wait: wait }.compact)
           end
         end
+      end
+
+      def has_tag?(tag_name)
+        within_element(:pipeline_badges) do
+          has_selector?('.badge', text: tag_name)
+        end
+      end
+
+      def go_to_job(job_name)
+        find_element(:job_link, text: job_name).click
       end
 
       def go_to_first_job

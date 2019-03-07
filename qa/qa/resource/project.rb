@@ -5,11 +5,17 @@ require 'securerandom'
 module QA
   module Resource
     class Project < Base
+      include Events::Project
+
       attribute :name
       attribute :description
 
       attribute :group do
         Group.fabricate!
+      end
+
+      attribute :path_with_namespace do
+        "#{group.sandbox.path}/#{group.path}/#{name}" if group
       end
 
       attribute :repository_ssh_location do
@@ -46,8 +52,14 @@ module QA
         end
       end
 
+      def fabricate_via_api!
+        resource_web_url(api_get)
+      rescue ResourceNotFoundError
+        super
+      end
+
       def api_get_path
-        "/projects/#{name}"
+        "/projects/#{CGI.escape(path_with_namespace)}"
       end
 
       def api_post_path

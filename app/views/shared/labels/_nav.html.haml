@@ -18,3 +18,7 @@
           %button.btn.btn-default{ type: "submit", "aria-label" => _('Submit search') }
             = icon("search")
     = render 'shared/labels/sort_dropdown'
+    - if labels_or_filters && can_admin_label && @project
+      = link_to _('New label'), new_project_label_path(@project), class: "btn btn-success qa-label-create-new"
+    - if labels_or_filters && can_admin_label && @group
+      = link_to _('New label'), new_group_label_path(@group), class: "btn btn-success qa-label-create-new"
