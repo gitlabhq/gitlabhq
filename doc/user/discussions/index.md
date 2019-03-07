@@ -18,10 +18,10 @@ The comment area supports [Markdown] and [quick actions]. You can edit your own
 comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
-You can also reply to a comment notification email in order to reply to a comment,
-provided that [Reply by email] is configured by your GitLab admin. This also
-supports [Markdown] and [quick actions] as if replied from the web. Note that this
-adds an additional comment, but does not create a discussion.
+You can also reply to a comment notification email to reply to the comment if
+[Reply by email] is configured for your GitLab instance. Replying to a standard comment 
+creates another standard comment. Replying to a discussion comment creates a reply in the
+discussion thread. Email replies support [Markdown] and [quick actions], just as if you replied from the web.
 
 ## Resolvable comments and discussions
 
