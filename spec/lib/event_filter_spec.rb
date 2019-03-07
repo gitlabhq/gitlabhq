@@ -26,10 +26,10 @@ describe EventFilter do
 
     set(:push_event)     { create(:push_event,        project: public_project) }
     set(:merged_event)   { create(:event, :merged,    project: public_project, target: public_project) }
-    set(:created_event)  { create(:event, :created,   project: public_project, target: public_project) }
-    set(:updated_event)  { create(:event, :updated,   project: public_project, target: public_project) }
-    set(:closed_event)   { create(:event, :closed,    project: public_project, target: public_project) }
-    set(:reopened_event) { create(:event, :reopened,  project: public_project, target: public_project) }
+    set(:created_event)  { create(:event, :created,   project: public_project, target: create(:issue, project: public_project)) }
+    set(:updated_event)  { create(:event, :updated,   project: public_project, target: create(:issue, project: public_project)) }
+    set(:closed_event)   { create(:event, :closed,    project: public_project, target: create(:issue, project: public_project)) }
+    set(:reopened_event) { create(:event, :reopened,  project: public_project, target: create(:issue, project: public_project)) }
     set(:comments_event) { create(:event, :commented, project: public_project, target: public_project) }
     set(:joined_event)   { create(:event, :joined,    project: public_project, target: public_project) }
     set(:left_event)     { create(:event, :left,      project: public_project, target: public_project) }

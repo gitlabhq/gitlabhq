@@ -39,6 +39,8 @@ describe 'Dashboard > Activity' do
       event
     end
 
+    let(:issue) { create(:issue, project: project) }
+
     let!(:merged_event) do
       create(:event, :merged, project: project, target: merge_request, author: user)
     end
@@ -59,6 +61,10 @@ describe 'Dashboard > Activity' do
       create(:event, :closed, project: project, target: milestone, author: user)
     end
 
+    let!(:issue_event) do
+      create(:event, :created, project: project, target: issue, author: user)
+    end
+
     before do
       project.add_maintainer(user)
 
@@ -74,6 +80,7 @@ describe 'Dashboard > Activity' do
         expect(page).to have_content('closed')
         expect(page).to have_content('commented on')
         expect(page).to have_content('closed milestone')
+        expect(page).to have_content('opened issue')
       end
     end
 
@@ -87,6 +94,7 @@ describe 'Dashboard > Activity' do
         expect(page).not_to have_content('accepted')
         expect(page).not_to have_content('closed')
         expect(page).not_to have_content('commented on')
+        expect(page).not_to have_content('opened issue')
       end
     end
 
@@ -100,6 +108,7 @@ describe 'Dashboard > Activity' do
         expect(page).to have_content('accepted')
         expect(page).not_to have_content('closed')
         expect(page).not_to have_content('commented on')
+        expect(page).not_to have_content('opened issue')
       end
     end
 
@@ -111,9 +120,10 @@ describe 'Dashboard > Activity' do
         expect(page).not_to have_content('pushed new branch')
         expect(page).not_to have_content('joined')
         expect(page).not_to have_content('accepted')
-        expect(page).to have_content('closed')
+        expect(page).not_to have_content('closed')
         expect(page).not_to have_content('commented on')
-        expect(page).to have_content('closed milestone')
+        expect(page).not_to have_content('closed milestone')
+        expect(page).to have_content('opened issue')
       end
     end
 
@@ -127,6 +137,7 @@ describe 'Dashboard > Activity' do
         expect(page).not_to have_content('accepted')
         expect(page).not_to have_content('closed')
         expect(page).to have_content('commented on')
+        expect(page).not_to have_content('opened issue')
       end
     end
 
@@ -140,6 +151,7 @@ describe 'Dashboard > Activity' do
         expect(page).not_to have_content('accepted')
         expect(page).not_to have_content('closed')
         expect(page).not_to have_content('commented on')
+        expect(page).not_to have_content('opened issue')
       end
     end
 
@@ -155,6 +167,7 @@ describe 'Dashboard > Activity' do
         expect(page).not_to have_content('accepted')
         expect(page).not_to have_content('closed')
         expect(page).not_to have_content('commented on')
+        expect(page).not_to have_content('opened issue')
       end
     end
   end
