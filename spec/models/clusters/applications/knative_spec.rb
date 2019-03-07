@@ -66,9 +66,7 @@ describe Clusters::Applications::Knative do
     end
   end
 
-  describe '#install_command' do
-    subject { knative.install_command }
-
+  shared_examples 'a command' do
     it 'should be an instance of Helm::InstallCommand' do
       expect(subject).to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand)
     end
@@ -76,7 +74,6 @@ describe Clusters::Applications::Knative do
     it 'should be initialized with knative arguments' do
       expect(subject.name).to eq('knative')
       expect(subject.chart).to eq('knative/knative')
-      expect(subject.version).to eq('0.2.2')
       expect(subject.files).to eq(knative.files)
     end
 
@@ -96,6 +93,27 @@ describe Clusters::Applications::Knative do
         expect(subject.postinstall[0]).to eql("kubectl apply -f #{Clusters::Applications::Knative::METRICS_CONFIG}")
       end
     end
+  end
+
+  describe '#install_command' do
+    subject { knative.install_command }
+
+    it 'should be initialized with latest version' do
+      expect(subject.version).to eq('0.2.2')
+    end
+
+    it_behaves_like 'a command'
+  end
+
+  describe '#update_command' do
+    let!(:current_installed_version) { knative.version = '0.1.0' }
+    subject { knative.update_command }
+
+    it 'should be initialized with current version' do
+      expect(subject.version).to eq(current_installed_version)
+    end
+
+    it_behaves_like 'a command'
   end
 
   describe '#files' do

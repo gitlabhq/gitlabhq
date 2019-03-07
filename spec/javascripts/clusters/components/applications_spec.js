@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import applications from '~/clusters/components/applications.vue';
 import { CLUSTER_TYPE } from '~/clusters/constants';
+import eventHub from '~/clusters/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 
 describe('Applications', () => {
   let vm;
@@ -18,16 +20,8 @@ describe('Applications', () => {
   describe('Project cluster applications', () => {
     beforeEach(() => {
       vm = mountComponent(Applications, {
+        applications: APPLICATIONS_MOCK_STATE,
         type: CLUSTER_TYPE.PROJECT,
-        applications: {
-          helm: { title: 'Helm Tiller' },
-          ingress: { title: 'Ingress' },
-          cert_manager: { title: 'Cert-Manager' },
-          runner: { title: 'GitLab Runner' },
-          prometheus: { title: 'Prometheus' },
-          jupyter: { title: 'JupyterHub' },
-          knative: { title: 'Knative' },
-        },
       });
     });
 
@@ -64,15 +58,7 @@ describe('Applications', () => {
     beforeEach(() => {
       vm = mountComponent(Applications, {
         type: CLUSTER_TYPE.GROUP,
-        applications: {
-          helm: { title: 'Helm Tiller' },
-          ingress: { title: 'Ingress' },
-          cert_manager: { title: 'Cert-Manager' },
-          runner: { title: 'GitLab Runner' },
-          prometheus: { title: 'Prometheus' },
-          jupyter: { title: 'JupyterHub' },
-          knative: { title: 'Knative' },
-        },
+        applications: APPLICATIONS_MOCK_STATE,
       });
     });
 
@@ -111,17 +97,12 @@ describe('Applications', () => {
         it('renders ip address with a clipboard button', () => {
           vm = mountComponent(Applications, {
             applications: {
+              ...APPLICATIONS_MOCK_STATE,
               ingress: {
                 title: 'Ingress',
                 status: 'installed',
                 externalIp: '0.0.0.0',
               },
-              helm: { title: 'Helm Tiller' },
-              cert_manager: { title: 'Cert-Manager' },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', hostname: '' },
-              knative: { title: 'Knative', hostname: '' },
             },
           });
 
@@ -137,16 +118,11 @@ describe('Applications', () => {
         it('renders an input text with a question mark and an alert text', () => {
           vm = mountComponent(Applications, {
             applications: {
+              ...APPLICATIONS_MOCK_STATE,
               ingress: {
                 title: 'Ingress',
                 status: 'installed',
               },
-              helm: { title: 'Helm Tiller' },
-              cert_manager: { title: 'Cert-Manager' },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', hostname: '' },
-              knative: { title: 'Knative', hostname: '' },
             },
           });
 
@@ -160,15 +136,7 @@ describe('Applications', () => {
     describe('before installing', () => {
       it('does not render the IP address', () => {
         vm = mountComponent(Applications, {
-          applications: {
-            helm: { title: 'Helm Tiller' },
-            ingress: { title: 'Ingress' },
-            cert_manager: { title: 'Cert-Manager' },
-            runner: { title: 'GitLab Runner' },
-            prometheus: { title: 'Prometheus' },
-            jupyter: { title: 'JupyterHub', hostname: '' },
-            knative: { title: 'Knative', hostname: '' },
-          },
+          applications: APPLICATIONS_MOCK_STATE,
         });
 
         expect(vm.$el.textContent).not.toContain('Ingress IP Address');
@@ -181,17 +149,12 @@ describe('Applications', () => {
         it('renders email & allows editing', () => {
           vm = mountComponent(Applications, {
             applications: {
-              helm: { title: 'Helm Tiller', status: 'installed' },
-              ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+              ...APPLICATIONS_MOCK_STATE,
               cert_manager: {
                 title: 'Cert-Manager',
                 email: 'before@example.com',
                 status: 'installable',
               },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
-              knative: { title: 'Knative', hostname: '', status: 'installable' },
             },
           });
 
@@ -204,17 +167,12 @@ describe('Applications', () => {
         it('renders email in readonly', () => {
           vm = mountComponent(Applications, {
             applications: {
-              helm: { title: 'Helm Tiller', status: 'installed' },
-              ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
+              ...APPLICATIONS_MOCK_STATE,
               cert_manager: {
                 title: 'Cert-Manager',
                 email: 'after@example.com',
                 status: 'installed',
               },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
-              knative: { title: 'Knative', hostname: '', status: 'installable' },
             },
           });
 
@@ -229,13 +187,12 @@ describe('Applications', () => {
         it('renders hostname active input', () => {
           vm = mountComponent(Applications, {
             applications: {
-              helm: { title: 'Helm Tiller', status: 'installed' },
-              ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
-              cert_manager: { title: 'Cert-Manager' },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
-              knative: { title: 'Knative', hostname: '', status: 'installable' },
+              ...APPLICATIONS_MOCK_STATE,
+              ingress: {
+                title: 'Ingress',
+                status: 'installed',
+                externalIp: '1.1.1.1',
+              },
             },
           });
 
@@ -247,13 +204,8 @@ describe('Applications', () => {
         it('does not render hostname input', () => {
           vm = mountComponent(Applications, {
             applications: {
-              helm: { title: 'Helm Tiller', status: 'installed' },
+              ...APPLICATIONS_MOCK_STATE,
               ingress: { title: 'Ingress', status: 'installed' },
-              cert_manager: { title: 'Cert-Manager' },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', hostname: '', status: 'installable' },
-              knative: { title: 'Knative', hostname: '', status: 'installable' },
             },
           });
 
@@ -265,13 +217,9 @@ describe('Applications', () => {
         it('renders readonly input', () => {
           vm = mountComponent(Applications, {
             applications: {
-              helm: { title: 'Helm Tiller', status: 'installed' },
+              ...APPLICATIONS_MOCK_STATE,
               ingress: { title: 'Ingress', status: 'installed', externalIp: '1.1.1.1' },
-              cert_manager: { title: 'Cert-Manager' },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
               jupyter: { title: 'JupyterHub', status: 'installed', hostname: '' },
-              knative: { title: 'Knative', status: 'installed', hostname: '' },
             },
           });
 
@@ -282,15 +230,7 @@ describe('Applications', () => {
       describe('without ingress installed', () => {
         beforeEach(() => {
           vm = mountComponent(Applications, {
-            applications: {
-              helm: { title: 'Helm Tiller' },
-              ingress: { title: 'Ingress' },
-              cert_manager: { title: 'Cert-Manager' },
-              runner: { title: 'GitLab Runner' },
-              prometheus: { title: 'Prometheus' },
-              jupyter: { title: 'JupyterHub', status: 'not_installable' },
-              knative: { title: 'Knative' },
-            },
+            applications: APPLICATIONS_MOCK_STATE,
           });
         });
 
@@ -306,6 +246,79 @@ describe('Applications', () => {
               )
               .getAttribute('disabled'),
           ).toEqual('disabled');
+        });
+      });
+    });
+  });
+
+  describe('Knative application', () => {
+    describe('when installed', () => {
+      describe('with ip address', () => {
+        const props = {
+          applications: {
+            ...APPLICATIONS_MOCK_STATE,
+            knative: {
+              title: 'Knative',
+              hostname: 'example.com',
+              status: 'installed',
+              externalIp: '1.1.1.1',
+            },
+          },
+        };
+        it('renders ip address with a clipboard button', () => {
+          vm = mountComponent(Applications, props);
+
+          expect(vm.$el.querySelector('.js-knative-ip-address').value).toEqual('1.1.1.1');
+
+          expect(
+            vm.$el
+              .querySelector('.js-knative-ip-clipboard-btn')
+              .getAttribute('data-clipboard-text'),
+          ).toEqual('1.1.1.1');
+        });
+
+        it('renders domain & allows editing', () => {
+          expect(vm.$el.querySelector('.js-knative-domainname').value).toEqual('example.com');
+          expect(vm.$el.querySelector('.js-knative-domainname').getAttribute('readonly')).toBe(
+            null,
+          );
+        });
+
+        it('renders an update/save Knative domain button', () => {
+          expect(vm.$el.querySelector('.js-knative-save-domain-button')).not.toBe(null);
+        });
+
+        it('emits event when clicking Save changes button', () => {
+          spyOn(eventHub, '$emit');
+          vm = mountComponent(Applications, props);
+
+          const saveButton = vm.$el.querySelector('.js-knative-save-domain-button');
+
+          saveButton.click();
+
+          expect(eventHub.$emit).toHaveBeenCalledWith('saveKnativeDomain', {
+            id: 'knative',
+            params: { hostname: 'example.com' },
+          });
+        });
+      });
+
+      describe('without ip address', () => {
+        it('renders an input text with a question mark and an alert text', () => {
+          vm = mountComponent(Applications, {
+            applications: {
+              ...APPLICATIONS_MOCK_STATE,
+              knative: {
+                title: 'Knative',
+                hostname: 'example.com',
+                status: 'installed',
+              },
+            },
+          });
+
+          expect(vm.$el.querySelector('.js-knative-ip-address').value).toEqual('?');
+
+          expect(vm.$el.querySelector('.js-no-knative-ip-message')).not.toBe(null);
         });
       });
     });

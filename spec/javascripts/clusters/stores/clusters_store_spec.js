@@ -111,6 +111,7 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
             hostname: null,
+            isEditingHostName: false,
             externalIp: null,
           },
           cert_manager: {
