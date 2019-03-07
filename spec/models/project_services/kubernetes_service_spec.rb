@@ -276,7 +276,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       it 'sets the variables' do
         expect(subject.predefined_variables(project: project)).to include(
           { key: 'KUBE_URL', value: 'https://kube.domain.com', public: true },
-          { key: 'KUBE_TOKEN', value: 'token', public: false },
+          { key: 'KUBE_TOKEN', value: 'token', public: false, masked: true },
           { key: 'KUBE_NAMESPACE', value: namespace, public: true },
           { key: 'KUBECONFIG', value: kubeconfig, public: false, file: true },
           { key: 'KUBE_CA_PEM', value: 'CA PEM DATA', public: true },
