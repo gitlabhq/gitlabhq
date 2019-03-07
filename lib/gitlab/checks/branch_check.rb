@@ -46,7 +46,7 @@ module Gitlab
           end
         end
 
-        if creation? && protected_branch_creation_enabled?
+        if creation? && protected_branch_creation_enabled? && !project.empty_repo?
           protected_branch_creation_checks
         elsif deletion?
           protected_branch_deletion_checks

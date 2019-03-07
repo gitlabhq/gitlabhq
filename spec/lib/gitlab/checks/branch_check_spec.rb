@@ -116,6 +116,21 @@ describe Gitlab::Checks::BranchCheck do
                 .and_return(['branch'])
             end
 
+            context "when repo is empty" do
+              let(:project) { create(:project, :empty_repo) }
+              let(:ref) { 'refs/heads/master' }
+
+              before do
+                allow(user_access)
+                  .to receive(:can_push_to_branch?)
+                  .and_return(true)
+              end
+
+              it 'allows branch creation' do
+                expect { subject.validate! }.not_to raise_error
+              end
+            end
+
             context "newrev isn't in any protected branches" do
               before do
                 allow(ProtectedBranch)
