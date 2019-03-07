@@ -11,7 +11,7 @@ You can leave a comment in the following places:
 - commit diffs
 
 There are standard comments, and you also have the option to create a comment
-in the form of a resolvable/threaded discussion. A comment can also be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
+in the form of a threaded discussion. A comment can also be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
 when it receives a reply.
 
 The comment area supports [Markdown] and [quick actions]. You can edit your own
@@ -23,20 +23,22 @@ provided that [Reply by email] is configured by your GitLab admin. This also
 supports [Markdown] and [quick actions] as if replied from the web. Note that this
 adds an additional comment, but does not create a discussion.
 
-## Resolvable discussions
+## Resolvable comments and discussions
 
 > **Notes:**
 > - The main feature was [introduced][ce-5022] in GitLab 8.11.
 > - Resolvable discussions can be added only to merge request diffs.
 
 Discussion resolution helps keep track of progress during planning or code review.
-Resolving comments prevents you from forgetting to address feedback and lets you
-hide discussions that are no longer relevant.
+
+Every standard comment or discussion thread in merge requests, commits, commit diffs, and
+snippets is initially displayed as unresolved. They can then be individually resolved by anyone
+with at least Developer access to the project or by the author of the change being reviewed.
+
+The need to resolve all standard comments or discussions prevents you from forgetting
+to address feedback and lets you hide discussions that are no longer relevant.
 
 !["A discussion between two people on a piece of code"][discussion-view]
-
-Comments and discussions can be resolved by anyone with at least Developer
-access to the project or the author of the merge request.
 
 ### Commit discussions in the context of a merge request
 
