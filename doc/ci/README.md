@@ -5,10 +5,7 @@ description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Inte
 
 # GitLab Continuous Integration (GitLab CI/CD)
 
-GitLab provides tools for continuously integrating and delivering code.
-
-Within the [entire DevOps lifecycle](../README.md#the-entire-devops-lifecycle), GitLab CI/CD spans
-the [Verify (CI)](../README.md#verify) and [Release (CD)](../README.md#release) stages.
+**GitLab CI/CD** is GitLab's built-in tool for software development using the Continuous Methodology (Continuous Integration, Continuous Delivery, Continuous Deployment).
 
 ## Overview
 
@@ -16,31 +13,13 @@ CI/CD is a vast area, so GitLab provides documentation for all levels of experti
 
 | Level of expertise                  | Resource                                                                                                                                              |
 |:------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
-| New to the concepts of CI and CD    | For a high-level overview, see the [GitLab Continuous Integration & Delivery](https://about.gitlab.com/product/continuous-integration/) product page. |
-| Familiar with the purpose of CI/CD  | Delve into GitLab CI/CD by continuing down the page, starting with our [introduction](#introduction).                                                 |
+| New to the concepts of CI and CD    | For a high-level overview, read an [introduction to CI/CD with GitLab](introduction/index.md). |
 | Familiar with GitLab CI/CD concepts | After getting familiar with GitLab CI/CD, let us walk you through a simple example in our [quick start guide](quick_start/README.md).                 |
 | A GitLab CI/CD expert               | Jump straight to our [`.gitlab.yml`](yaml/README.md) reference.                                                                                       |
 
-## Introduction
-
-The following introduces the process of continuous integration (CI) and continuous delivery (CD):
-
-![Pipeline graph](img/cicd_pipeline_infograph.png)
-
-In this illustration:
-
-- New code is combined with existing code through a commit to a project's [repository](../user/project/repository/index.md).
-- The newly combined code is sent to a CI [pipeline](pipelines.md) where:
-  - The code is [built](../user/project/pipelines/job_artifacts.md).
-  - Unit and integration tests are run over the built code.
-- Assuming the build and tests are successful, a CD pipeline is triggered to allow for:
-  - Review using [Review Apps](review_apps/index.md).
-  - Deploying to configured [environments](environments.md).
-
-The benefits of CI/CD are vast, allowing automation to be an integral part of your workflow for testing, building, deploying, and monitoring your code.
-
-Because CI and CD with GitLab is broad topic with many possibilities, the rest of this section provides
-links to topics and resources needed to make use of GitLab CI/CD.
+NOTE: **Note:**
+Within the [DevOps lifecycle](../README.md#the-entire-devops-lifecycle), GitLab CI/CD spans
+the [Verify (CI)](../README.md#verify) and [Release (CD)](../README.md#release) stages.
 
 ## Essentials
 
@@ -51,6 +30,7 @@ The following documentation provides the minimum required knowledge for making u
 | [Getting started with GitLab CI/CD](quick_start/README.md)              | Outlines the first steps for configuring GitLab CI/CD.   |
 | [Introduction to pipelines and jobs](pipelines.md)                      | Provides an overview of GitLab CI/CD and jobs.           |
 | [Configuration of your pipelines with `.gitlab-ci.yml`](yaml/README.md) | A comprehensive reference for the `.gitlab-ci.yml` file. |
+| [`.gitlab-ci.yml` introduction](../user/project/pages/getting_started_part_four.md)                            | A step-by-step introduction to writing a GitLab CI/CD configuration file (`.gitlab-ci.yml`) for the first time. |
 
 NOTE: **Note:**
 Familiarity with [GitLab Runner](https://docs.gitlab.com/runner/) is useful because it is
@@ -99,7 +79,8 @@ use of advanced features:
 ### GitLab Pages
 
 GitLab CI/CD can be used to build and host static websites. For more information, see the
-documentation on [GitLab Pages](../user/project/pages/index.md).
+documentation on [GitLab Pages](../user/project/pages/index.md),
+or dive right into the [CI/CD step-by-step guide for Pages](../user/project/pages/getting_started_part_four.md).
 
 ## Examples
 
