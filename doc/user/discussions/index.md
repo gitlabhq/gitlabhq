@@ -341,11 +341,11 @@ and push the suggested change directly into the codebase in the merge request's 
 Custom commit messages will be introduced by
 [#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
 
-## Start a discussion by replying to a non-discussion comment
+## Start a discussion by replying to a standard comment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30299) in GitLab 11.9
 
-To reply a non-discussion comment, you can use the **Reply to comment** button.
+To reply to a standard (non-discussion) comment, you can use the **Reply to comment** button.
 
 ![Reply to comment button](img/reply_to_comment_button.png)
 
