@@ -13,123 +13,142 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: tr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2019-02-11 08:10\n"
+"PO-Revision-Date: 2019-03-06 18:45\n"
 
 msgid " Status"
-msgstr ""
+msgstr " Durum"
 
 msgid " and"
-msgstr ""
+msgstr " ve"
 
 msgid " degraded on %d point"
 msgid_plural " degraded on %d points"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " %d noktasında bozuldu"
+msgstr[1] " %d noktasında bozuldu"
 
 msgid " improved on %d point"
 msgid_plural " improved on %d points"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " %d noktasında geliştirildi"
+msgstr[1] " %d noktalasında geliştirildi"
 
 msgid " or "
-msgstr ""
+msgstr " veya "
 
 msgid " or <#epic id>"
-msgstr ""
+msgstr " veya <#epic id>"
 
 msgid " or <#issue id>"
-msgstr ""
+msgstr " veya <#issue id>"
 
 msgid "\"%{query}\" in projects"
-msgstr ""
+msgstr "\"%{query}\" projelerde"
+
+msgid "%d comment"
+msgid_plural "%d comments"
+msgstr[0] "%d yorum"
+msgstr[1] "%d yorum"
 
 msgid "%d commit"
 msgid_plural "%d commits"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d işlem"
+msgstr[1] "%d işlem"
 
 msgid "%d commit behind"
 msgid_plural "%d commits behind"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d 'e bağlı işlem"
+msgstr[1] "%d 'e bağlı işlem"
 
 msgid "%d commits"
-msgstr ""
+msgstr "%d işlem"
 
 msgid "%d exporter"
 msgid_plural "%d exporters"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d dışa aktaran"
+msgstr[1] "%d dışa aktaran"
 
 msgid "%d failed test result"
 msgid_plural "%d failed test results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d başarısız test sonucu"
+msgstr[1] "%d başarısız test sonucu"
 
 msgid "%d fixed test result"
 msgid_plural "%d fixed test results"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sabit test sonucu"
+msgstr[1] "%d sabit test sonucu"
 
 msgid "%d issue"
 msgid_plural "%d issues"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sorun"
+msgstr[1] "%d soru"
 
 msgid "%d issue selected"
 msgid_plural "%d issues selected"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d sorun seçili"
+msgstr[1] "%d sorun seçili"
 
 msgid "%d layer"
 msgid_plural "%d layers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d katman"
+msgstr[1] "%d katmanlar"
 
 msgid "%d merge request"
 msgid_plural "%d merge requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d birleştirme isteği"
+msgstr[1] "%d birleştirme isteği"
 
 msgid "%d metric"
 msgid_plural "%d metrics"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d metrik"
+msgstr[1] "%d metrik"
 
 msgid "%d staged change"
 msgid_plural "%d staged changes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d aşamalı değişiklik"
+msgstr[1] "%d aşamalı değişiklik"
 
 msgid "%d unstaged change"
 msgid_plural "%d unstaged changes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d grupsuz değişiklik"
+msgstr[1] "%d grupsuz değişiklik"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
+msgstr[0] "%s performans sorunlarını önlemek için ek işlem konulmuştur."
+msgstr[1] "%s performans sorunlarını önlemek için ek işlem konulmuştur."
+
+msgid "%{actionText} & %{openOrClose} %{noteable}"
+msgstr "%{actionText} ve %{openOrClose} %{noteable}"
+
+msgid "%{authorsName}'s discussion"
+msgstr "%{authorsName} kişisinin tartışması"
+
+msgid "%{commit_author_link} authored %{commit_timeago}"
+msgstr "%{commit_author_link} %{commit_timeago} yazdı"
+
+msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
+msgstr "%{counter_storage} (%{counter_repositories} depo, %{counter_build_artifacts} yapı eseri, %{counter_lfs_objects} LFS)"
+
+msgid "%{count} %{alerts}"
+msgstr "%{count} %{alerts}"
+
+msgid "%{count} approval required from %{name}"
+msgid_plural "%{count} approvals required from %{name}"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{actionText} & %{openOrClose} %{noteable}"
-msgstr ""
-
-msgid "%{authorsName}'s discussion"
-msgstr ""
-
-msgid "%{commit_author_link} authored %{commit_timeago}"
-msgstr ""
-
-msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
-msgstr ""
-
-msgid "%{count} %{alerts}"
+msgid "%{count} approvals from %{name}"
 msgstr ""
 
 msgid "%{count} more"
-msgstr ""
+msgstr "%{count} daha"
 
 msgid "%{count} more assignees"
+msgstr "%{count} daha fazla atanan"
+
+msgid "%{count} of %{required} approvals from %{name}"
+msgstr ""
+
+msgid "%{count} of %{total}"
 msgstr ""
 
 msgid "%{count} participant"
@@ -143,181 +162,189 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{filePath} deleted"
-msgstr ""
+msgstr "%{filePath} silindi"
 
 msgid "%{firstLabel} +%{labelCount} more"
-msgstr ""
-
-msgid "%{firstOption} +%{extraOptionCount} more"
-msgstr ""
+msgstr "%{firstLabel} +%{labelCount} daha"
 
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
 msgid "%{issuableType} will be removed! Are you sure?"
+msgstr "%{issuableType} kaldırılacak! Emin misiniz?"
+
+msgid "%{label_for_message} unavailable"
 msgstr ""
 
 msgid "%{link_start}Read more%{link_end} about role permissions"
 msgstr ""
 
 msgid "%{loadingIcon} Started"
-msgstr ""
+msgstr "%{loadingIcon} Başladı"
 
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
-msgstr ""
+msgstr "%{lock_path} dizini %{lock_user_id} GitLab kullanıcısı tarafından kilitlendi"
 
 msgid "%{name}'s avatar"
-msgstr ""
+msgstr "%{name} kullanıcısının avatarı"
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
 msgid "%{openOrClose} %{noteable}"
-msgstr ""
+msgstr "%{openOrClose} %{noteable}"
 
 msgid "%{percent}%% complete"
-msgstr ""
+msgstr "%{percent}%% tamamlandı"
 
 msgid "%{state} epics"
-msgstr ""
+msgstr "%{state} epik"
 
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
 msgid_plural "%{strong_start}%{branch_count}%{strong_end} Branches"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{strong_start}%{branch_count}%{strong_end} Dal"
+msgstr[1] "%{strong_start}%{branch_count}%{strong_end} Dal"
 
 msgid "%{strong_start}%{commit_count}%{strong_end} Commit"
 msgid_plural "%{strong_start}%{commit_count}%{strong_end} Commits"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{strong_start}%{commit_count}%{strong_end} İşlem"
+msgstr[1] "%{strong_start}%{commit_count}%{strong_end} İşlem"
 
 msgid "%{strong_start}%{human_size}%{strong_end} Files"
-msgstr ""
+msgstr "%{strong_start}%{human_size}%{strong_end} Dosya"
 
 msgid "%{strong_start}%{tag_count}%{strong_end} Tag"
 msgid_plural "%{strong_start}%{tag_count}%{strong_end} Tags"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{strong_start}%{tag_count}%{strong_end} Etiket"
+msgstr[1] "%{strong_start}%{tag_count}%{strong_end} Etiket"
 
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{text} %{files}"
+msgstr[1] "%{text} %{files} dosyaları"
 
 msgid "%{text} is available"
-msgstr ""
+msgstr "%{text} kullanılabilir"
 
 msgid "%{title} changes"
-msgstr ""
+msgstr "%{title} değişiklik"
 
 msgid "%{unstaged} unstaged and %{staged} staged changes"
-msgstr ""
+msgstr "%{unstaged} aşamasız ve %{staged} aşamalı değişiklik"
 
 msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what information is shared with GitLab Inc."
 msgstr ""
 
 msgid "%{user_name} profile page"
-msgstr ""
+msgstr "%{user_name} profil sayfası"
 
 msgid "(external source)"
-msgstr ""
+msgstr "(dış kaynak)"
 
 msgid "+ %{count} more"
-msgstr ""
+msgstr "+ %{count} daha"
 
 msgid "+ %{moreCount} more"
 msgstr "+ %{moreCount} daha fazla"
 
-msgid ", or "
+msgid "+%{extraOptionCount} more"
 msgstr ""
+
+msgid ", or "
+msgstr ", veya "
 
 msgid "- Runner is active and can process any new jobs"
-msgstr ""
+msgstr "- Çalıştırıcı aktif ve yeni işler işleyebilir"
 
 msgid "- Runner is paused and will not receive any new jobs"
-msgstr ""
+msgstr "- Çalıştırıcı duraklatıldı ve yeni işler almayacak"
 
 msgid "- show less"
 msgstr "- daha az göster"
 
 msgid "1 %{type} addition"
 msgid_plural "%{count} %{type} additions"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 %{type} ek"
+msgstr[1] "%{count} %{type} ek"
 
 msgid "1 %{type} modification"
 msgid_plural "%{count} %{type} modifications"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 %{type} değişiklik"
+msgstr[1] "%{count} %{type} değişiklik"
+
+msgid "1 Day"
+msgid_plural "%d Days"
+msgstr[0] "1 gün"
+msgstr[1] "%d gün"
 
 msgid "1 closed issue"
 msgid_plural "%d closed issues"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 kapatılmış sorun"
+msgstr[1] "%d kapatılmış sorun"
 
 msgid "1 closed merge request"
 msgid_plural "%d closed merge requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 kapatılmış birleştirme talebi"
+msgstr[1] "%d kapatılmış birleştirme talebi"
 
 msgid "1 group"
 msgid_plural "%d groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 grup"
+msgstr[1] "%d grup"
 
 msgid "1 merged merge request"
 msgid_plural "%d merged merge requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 birleştirilmiş birleştirme talebi"
+msgstr[1] "%d birleştirilmiş birleştirme talebi"
 
 msgid "1 open issue"
 msgid_plural "%d open issues"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 açık sorun"
+msgstr[1] "%d açık sorun"
 
 msgid "1 open merge request"
 msgid_plural "%d open merge requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 açık birleştirme talebi"
+msgstr[1] "%d açık birleştirme talebi"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 iş hattı"
+msgstr[1] "%d iş hattı"
 
 msgid "1 role"
 msgid_plural "%d roles"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 rol"
+msgstr[1] "%d rol"
 
 msgid "1 user"
 msgid_plural "%d users"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "1 kullanıcı"
+msgstr[1] "%d kullanıcı"
 
 msgid "1st contribution!"
 msgstr "İlk katkı!"
 
 msgid "2FA"
-msgstr ""
+msgstr "2FA"
 
 msgid "2FA enabled"
-msgstr ""
+msgstr "2FA etkin"
 
 msgid "403|Please contact your GitLab administrator to get permission."
-msgstr ""
+msgstr "403|İzin almak için lütfen GitLab yöneticinize başvurun."
 
 msgid "403|You don't have the permission to access this page."
-msgstr ""
+msgstr "403 | Bu sayfaya erişim izniniz yok."
 
 msgid "404|Make sure the address is correct and the page hasn't moved."
-msgstr ""
+msgstr "404|Adresin doğru olduğundan ve sayfanın taşınmadığından emin olun."
 
 msgid "404|Page Not Found"
-msgstr ""
+msgstr "404|Sayfa Bulunamadı"
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
-msgstr ""
+msgstr "404|Lütfen bunun bir hata olduğunu düşünüyorsanız, GitLab yöneticinizle görüşün."
 
 msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
 msgstr ""
@@ -335,13 +362,13 @@ msgid "<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFiles
 msgstr ""
 
 msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
-msgstr ""
+msgstr "<strong>%{created_count}</strong> oluşturuldu, <strong>%{accepted_count}</strong> kabul edildi."
 
 msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
-msgstr ""
+msgstr "<strong>%{created_count}</strong> oluşturuldu, <strong>%{closed_count}</strong> kapatıldı."
 
 msgid "<strong>%{group_name}</strong> group members"
-msgstr ""
+msgstr "<strong>%{group_name}</strong> grup üyeleri"
 
 msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
 msgstr ""
@@ -352,167 +379,212 @@ msgstr ""
 msgid "A 'Runner' is a process which runs a job. You can set up as many Runners as you need."
 msgstr ""
 
-msgid "A collection of graphs regarding Continuous Integration"
+msgid "A .NET Core console application template, customizable for any .NET Core project"
 msgstr ""
+
+msgid "A GitBook site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Hexo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Hugo site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
+msgstr ""
+
+msgid "A collection of graphs regarding Continuous Integration"
+msgstr "Sürekli Entegrasyon için bir grafik derlemesi"
 
 msgid "A default branch cannot be chosen for an empty project."
 msgstr ""
 
 msgid "A deleted user"
-msgstr ""
+msgstr "Silinmiş kullanıcı"
 
 msgid "A member of GitLab's abuse team will review your report as soon as possible."
 msgstr ""
 
 msgid "A new branch will be created in your fork and a new merge request will be started."
+msgstr "Çatalınızdan yeni bir dal oluşturulacak ve yeni bir birleştirme talebi başlatılacak."
+
+msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr ""
 
 msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
-msgstr ""
+msgstr "İş izlemede test kapsamı çıktısını bulmak için kullanılacak düzenli bir ifade. Devre dışı bırakmak için boş bırakın"
 
 msgid "A user with write access to the source branch selected this option"
-msgstr ""
+msgstr "Bu dala yazma yetkisi olan kullanıcı bu seçeneği seçti"
 
 msgid "About GitLab"
-msgstr ""
+msgstr "GitLab Hakkında"
 
 msgid "About GitLab CE"
-msgstr ""
+msgstr "GitLab CE hakkında"
 
 msgid "About auto deploy"
-msgstr ""
+msgstr "Otomatik dağıtım hakkında"
 
 msgid "About this feature"
-msgstr ""
+msgstr "Bu özellik hakkında"
 
 msgid "Abuse Reports"
 msgstr "Kötüye Kullanım Raporları"
 
 msgid "Abuse reports"
-msgstr ""
+msgstr "Kötüye kullanım raporları"
 
 msgid "Accept invitation"
-msgstr ""
+msgstr "Daveti kabul et"
 
 msgid "Accept terms"
-msgstr ""
+msgstr "Şartları kabul et"
 
 msgid "Accepted MR"
-msgstr ""
+msgstr "Kabul edilen MR"
 
 msgid "Access Tokens"
-msgstr "Erişim anahtarları"
+msgstr "Erişim Anahtarları"
 
 msgid "Access denied! Please verify you can add deploy keys to this repository."
-msgstr ""
+msgstr "Erişim reddedildi! Lütfen bu depoya dağıtım anahtarlarını ekleyebileceğinizi doğrulayın."
 
 msgid "Access expiration date"
-msgstr ""
+msgstr "Erişim bitiş tarihi"
 
 msgid "Access to '%{classification_label}' not allowed"
-msgstr ""
+msgstr "'%{classification_label}' erişimine izin verilmedi"
 
 msgid "Account"
 msgstr "Hesap"
 
 msgid "Account and limit"
-msgstr ""
+msgstr "Hesap ve sınırı"
 
 msgid "Active"
 msgstr "Etkin"
 
 msgid "Active Sessions"
-msgstr ""
+msgstr "Etkin Oturumlar"
 
 msgid "Activity"
 msgstr "Etkinlik"
 
 msgid "Add"
-msgstr ""
+msgstr "Ekle"
 
 msgid "Add CHANGELOG"
-msgstr ""
+msgstr "CHANGELOG ekle"
 
 msgid "Add CONTRIBUTING"
-msgstr ""
+msgstr "CONTRIBUTING ekle"
 
 msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Add Jaeger URL"
-msgstr ""
+msgstr "Jaeger URL ekle"
 
 msgid "Add Kubernetes cluster"
-msgstr ""
+msgstr "Kubernetes kümesi ekle"
 
 msgid "Add README"
-msgstr ""
+msgstr "BENİOKU ekle"
+
+msgid "Add a bullet list"
+msgstr "Madde işareti listesi ekle"
 
 msgid "Add a general comment to this %{noteable_name}."
 msgstr ""
 
 msgid "Add a homepage to your wiki that contains information about your project and GitLab will display it here instead of this message."
-msgstr ""
+msgstr "Wiki'nize projeniz hakkında bilgi içeren bir ana sayfa ekleyin. GitLab bu mesaj yerine onu burada görüntüleyecektir."
+
+msgid "Add a link"
+msgstr "Bağlantı ekle"
+
+msgid "Add a numbered list"
+msgstr "Numaralı liste ekle"
 
 msgid "Add a table"
-msgstr ""
+msgstr "Tablo ekle"
+
+msgid "Add a task list"
+msgstr "Görev listesi ekle"
 
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
+msgstr "Tüm e-posta iletişiminde görünecek ek metin ekleyin. %{character_limit} karakter sınırı"
+
+msgid "Add approver(s)"
 msgstr ""
 
+msgid "Add approvers"
+msgstr ""
+
+msgid "Add bold text"
+msgstr "Kalın metin ekle"
+
 msgid "Add comment now"
+msgstr "Şimdi yorum ekle"
+
+msgid "Add header and footer to emails. Please note that color settings will only be applied within the application interface"
 msgstr ""
 
 msgid "Add image comment"
-msgstr ""
+msgstr "Resim yorumu ekle"
+
+msgid "Add italic text"
+msgstr "Eğik metin ekle"
 
 msgid "Add license"
-msgstr ""
+msgstr "Lisans ekle"
 
 msgid "Add new application"
-msgstr ""
+msgstr "Yeni uygulama ekle"
 
 msgid "Add new directory"
 msgstr "Yeni dizin ekle"
 
 msgid "Add projects"
-msgstr ""
+msgstr "Proje ekle"
 
 msgid "Add reaction"
-msgstr ""
+msgstr "Tepki ekle"
 
 msgid "Add to project"
-msgstr ""
+msgstr "Projeye ekle"
 
 msgid "Add to review"
-msgstr ""
+msgstr "İncelemeye ekle"
 
 msgid "Add todo"
 msgstr "Yapılacaklara Ekle"
 
 msgid "Add user(s) to the group:"
-msgstr ""
+msgstr "Gruba kullanıcı(lar) ekleyin:"
 
 msgid "Add users or groups who are allowed to approve every merge request"
 msgstr ""
 
 msgid "Add users to group"
-msgstr ""
+msgstr "Kullanıcıları gruba ekle"
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
-msgstr ""
+msgstr "GitLab örneğinizde yeni uygulamalar eklemek devre dışı bırakıldı. İzin almak için lütfen GitLab yöneticinize başvurun"
 
 msgid "Additional text"
-msgstr ""
+msgstr "Ek metin"
 
 msgid "Admin Area"
-msgstr ""
+msgstr "Yönetici alanı"
 
 msgid "Admin Overview"
-msgstr ""
+msgstr "Yönetim Genel Bakış"
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
 msgstr ""
@@ -530,22 +602,22 @@ msgid "AdminArea|Stop jobs"
 msgstr "İşleri durdur"
 
 msgid "AdminArea|Stopping jobs failed"
-msgstr ""
+msgstr "AdminArea|Durdurma işleri başarısız oldu"
 
 msgid "AdminArea|You’re about to stop all jobs.This will halt all current jobs that are running."
-msgstr ""
+msgstr "AdminArea|Bütün işleri durdurmak üzeresiniz. Bu işlem çalışan tüm mevcut işleri durduracaktır."
 
 msgid "AdminProjects| You’re about to permanently delete the project %{projectName}, its repository, and all related resources including issues, merge requests, etc..  Once you confirm and press %{strong_start}Delete project%{strong_end}, it cannot be undone or recovered."
 msgstr ""
 
 msgid "AdminProjects|Delete"
-msgstr ""
+msgstr "AdminProjects|Sil"
 
 msgid "AdminProjects|Delete Project %{projectName}?"
-msgstr ""
+msgstr "AdminProjects|%{projectName} projesi silinsin mi?"
 
 msgid "AdminProjects|Delete project"
-msgstr ""
+msgstr "AdminProjects|Projeyi sil"
 
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
@@ -560,52 +632,52 @@ msgid "AdminSettings|When creating a new environment variable it will be protect
 msgstr ""
 
 msgid "AdminUsers|2FA Disabled"
-msgstr ""
+msgstr "AdminUsers|2FA Devre dışı"
 
 msgid "AdminUsers|2FA Enabled"
-msgstr ""
+msgstr "AdminUsers|2FA Etkin"
 
 msgid "AdminUsers|Active"
-msgstr ""
+msgstr "AdminUsers|Etkin"
 
 msgid "AdminUsers|Admin"
-msgstr ""
+msgstr "AdminUsers|Yönetici"
 
 msgid "AdminUsers|Admins"
-msgstr ""
+msgstr "AdminUsers|Yöneticiler"
 
 msgid "AdminUsers|Block user"
-msgstr ""
+msgstr "AdminUsers | Kullanıcıyı engelle"
 
 msgid "AdminUsers|Blocked"
-msgstr ""
+msgstr "AdminUsers|Engellendi"
 
 msgid "AdminUsers|Cannot unblock LDAP blocked users"
 msgstr ""
 
 msgid "AdminUsers|Delete User %{username} and contributions?"
-msgstr ""
+msgstr "AdminUsers |%{username} kullanıcısını ve katkılarını sil?"
 
 msgid "AdminUsers|Delete User %{username}?"
-msgstr ""
+msgstr "AdminUsers|%{username} kullanısını sil?"
 
 msgid "AdminUsers|Delete user"
-msgstr ""
+msgstr "AdminUsers|Kullanıcıyı sil"
 
 msgid "AdminUsers|Delete user and contributions"
-msgstr ""
+msgstr "AdminUsers|Kullanıcıyı ve katkılarını sil"
 
 msgid "AdminUsers|External"
-msgstr ""
+msgstr "AdminUsers|Harici"
 
 msgid "AdminUsers|It's you!"
-msgstr ""
+msgstr "AdminUsers|Bu sensin!"
 
 msgid "AdminUsers|New user"
-msgstr ""
+msgstr "AdminUsers|Yeni kullanıcı"
 
 msgid "AdminUsers|No users found"
-msgstr ""
+msgstr "AdminUsers|Kullanıcı bulunamadı"
 
 msgid "AdminUsers|Search by name, email or username"
 msgstr ""
@@ -617,7 +689,7 @@ msgid "AdminUsers|Send email to users"
 msgstr ""
 
 msgid "AdminUsers|Sort by"
-msgstr ""
+msgstr "AdminUsers|Buna göre sırala"
 
 msgid "AdminUsers|To confirm, type %{projectName}"
 msgstr ""
@@ -637,19 +709,25 @@ msgstr ""
 msgid "Advanced settings"
 msgstr "Gelişmiş ayarlar"
 
+msgid "After a successful password update you will be redirected to login screen."
+msgstr ""
+
 msgid "Alert"
 msgid_plural "Alerts"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Uyarı"
+msgstr[1] "Uyarı"
 
 msgid "Alerts"
-msgstr ""
+msgstr "Uyarılar"
 
 msgid "All"
 msgstr "Tümü"
 
-msgid "All changes are committed"
+msgid "All Members"
 msgstr ""
+
+msgid "All changes are committed"
+msgstr "Tüm değişiklikler işlendi"
 
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
@@ -658,16 +736,16 @@ msgid "All issues for this milestone are closed. You may close this milestone no
 msgstr ""
 
 msgid "All users"
-msgstr ""
+msgstr "Tüm kullanıcılar"
 
 msgid "Allow \"%{group_name}\" to sign you in"
 msgstr ""
 
 msgid "Allow commits from members who can merge to the target branch."
-msgstr ""
+msgstr "Hedef dala bağlanabilecek üyelerin işlemlerine izin verin."
 
 msgid "Allow projects within this group to use Git LFS"
-msgstr ""
+msgstr "Bu gruptaki projelerin Git LFS'yi kullanmasına izin verin"
 
 msgid "Allow public access to pipelines and job details, including output logs and artifacts"
 msgstr ""
@@ -679,7 +757,7 @@ msgid "Allow requests to the local network from hooks and services."
 msgstr ""
 
 msgid "Allow users to request access"
-msgstr ""
+msgstr "Kullanıcıların erişim isteğinde bulunmasına izin ver"
 
 msgid "Allow users to request access if visibility is public or internal."
 msgstr ""
@@ -709,24 +787,33 @@ msgid "An SSH key will be automatically generated when the form is submitted. Fo
 msgstr ""
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
-msgstr ""
+msgstr "%{link_to_client} adlı uygulama, GitLab hesabınıza erişim talep ediyor."
 
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
 
 msgid "An error has occurred"
-msgstr ""
+msgstr "Bir hata oluştu"
 
-msgid "An error occured while fetching the releases. Please try again."
+msgid "An error occured while loading designs. Please try again."
 msgstr ""
 
 msgid "An error occurred adding a draft to the discussion."
 msgstr ""
 
 msgid "An error occurred adding a new draft."
-msgstr ""
+msgstr "Yeni taslak eklenirken bir hata oluştu."
 
 msgid "An error occurred creating the new branch."
+msgstr ""
+
+msgid "An error occurred fetching the approval rules."
+msgstr ""
+
+msgid "An error occurred fetching the approvers for the new rule."
+msgstr ""
+
+msgid "An error occurred fetching the dropdown data."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -739,6 +826,9 @@ msgid "An error occurred when updating the issue weight"
 msgstr ""
 
 msgid "An error occurred while adding approver"
+msgstr ""
+
+msgid "An error occurred while deleting the approvers group"
 msgstr ""
 
 msgid "An error occurred while deleting the comment"
@@ -760,52 +850,55 @@ msgid "An error occurred while fetching pending comments"
 msgstr ""
 
 msgid "An error occurred while fetching sidebar data"
-msgstr ""
+msgstr "Kenar çubuğu verileri getirilirken bir hata oluştu"
 
 msgid "An error occurred while fetching stages."
 msgstr ""
 
 msgid "An error occurred while fetching the job log."
-msgstr ""
+msgstr "İş kayıtları alınırken bir hata oluştu."
 
 msgid "An error occurred while fetching the job."
-msgstr ""
+msgstr "İş alınırken bir hata oluştu."
 
 msgid "An error occurred while fetching the jobs."
-msgstr ""
+msgstr "İşler alınırken bir hata oluştu."
 
 msgid "An error occurred while fetching the pipeline."
+msgstr "İş hattı alınırken bir hata oluştu."
+
+msgid "An error occurred while fetching the releases. Please try again."
 msgstr ""
 
 msgid "An error occurred while getting projects"
 msgstr "Projeler yüklenirken bir hata oluştu"
 
 msgid "An error occurred while importing project: %{details}"
-msgstr ""
+msgstr "Projeyi içe aktarırken bir sorun oluştu: %{details}"
 
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
 msgid "An error occurred while loading chart data"
-msgstr ""
+msgstr "Tablo verileri alınırken bir hata oluştu"
 
 msgid "An error occurred while loading commit signatures"
-msgstr ""
+msgstr "İşlem imzaları yüklenirken bir hata oluştu"
 
 msgid "An error occurred while loading diff"
-msgstr ""
+msgstr "Değişiklikler uygulanırken bir hata oluştu"
 
 msgid "An error occurred while loading filenames"
 msgstr "Dosya isimleri yüklenirken bir hata oluştu"
 
 msgid "An error occurred while loading the file"
-msgstr ""
+msgstr "Dosya yüklenirken bir hata oluştu"
 
 msgid "An error occurred while loading the subscription details."
 msgstr ""
 
 msgid "An error occurred while making the request."
-msgstr ""
+msgstr "Talep edilirken bir hata oluştu."
 
 msgid "An error occurred while removing approver"
 msgstr ""
@@ -823,7 +916,7 @@ msgid "An error occurred while rendering preview broadcast message"
 msgstr "Önizleme yayını iletisi oluşturulurken bir hata oluştu"
 
 msgid "An error occurred while retrieving calendar activity"
-msgstr ""
+msgstr "Takvim etkinlikleri getirilirken bir hata meydana geldi"
 
 msgid "An error occurred while retrieving diff"
 msgstr "Değişiklikler yüklenirken bir hata oluştu"
@@ -832,16 +925,22 @@ msgid "An error occurred while saving LDAP override status. Please try again."
 msgstr ""
 
 msgid "An error occurred while saving assignees"
+msgstr "Atanmış kişiler kaydedilirken bir hata oluştu"
+
+msgid "An error occurred while saving the approval settings"
 msgstr ""
 
 msgid "An error occurred while subscribing to notifications."
-msgstr ""
+msgstr "Bildirimlere abone olunurken bir hata oluştu."
 
 msgid "An error occurred while unsubscribing to notifications."
+msgstr "Bildirim aboneliği iptal edilirken bir hata oluştu."
+
+msgid "An error occurred while updating approvers"
 msgstr ""
 
 msgid "An error occurred while updating the comment"
-msgstr ""
+msgstr "Yorum güncellenirken bir hata oluştu"
 
 msgid "An error occurred while validating username"
 msgstr "Kullanıcı adı doğrulanırken bir hata oluştu"
@@ -895,49 +994,87 @@ msgid "An unexpected error occurred while stopping the Web Terminal."
 msgstr ""
 
 msgid "Analytics"
-msgstr ""
+msgstr "Analizler"
 
 msgid "Anonymous"
-msgstr ""
+msgstr "Anonim"
 
 msgid "Anti-spam verification"
-msgstr ""
+msgstr "Anti-spam doğrulama"
 
 msgid "Any"
-msgstr ""
+msgstr "Herhangi"
 
 msgid "Any Label"
-msgstr ""
+msgstr "Herhangi bir etiket"
 
 msgid "Appearance"
 msgstr "Görünüm"
 
 msgid "Application"
-msgstr ""
+msgstr "Uygulama"
 
 msgid "Application ID"
-msgstr ""
+msgstr "Uygulama Kimliği"
 
 msgid "Application: %{name}"
-msgstr ""
+msgstr "Uygulama: %{name}"
 
 msgid "Applications"
 msgstr "Uygulamalar"
 
 msgid "Applied"
-msgstr ""
+msgstr "Uygulandı"
 
 msgid "Apply suggestion"
+msgstr "Öneriyi uygula"
+
+msgid "ApprovalRuleRemove|%d member"
+msgid_plural "ApprovalRuleRemove|%d members"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ApprovalRuleRemove|Approvals from this member are not revoked."
+msgid_plural "ApprovalRuleRemove|Approvals from these members are not revoked."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{nMembers}."
+msgstr ""
+
+msgid "ApprovalRuleSummary|%d member"
+msgid_plural "ApprovalRuleSummary|%d members"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ApprovalRuleSummary|%{count} approval required from %{membersCount}"
+msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCount}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "ApprovalRule|All members with Developer role or higher and code owners (if any)"
+msgstr ""
+
+msgid "ApprovalRule|Members"
+msgstr ""
+
+msgid "ApprovalRule|Name"
+msgstr ""
+
+msgid "ApprovalRule|No. approvals required"
+msgstr ""
+
+msgid "ApprovalRule|e.g. QA, Security, etc."
 msgstr ""
 
 msgid "Approvals"
-msgstr ""
+msgstr "Onaylar"
 
 msgid "Approvals required"
 msgstr ""
 
 msgid "Approvers"
-msgstr ""
+msgstr "Onaylayanlar"
 
 msgid "Apr"
 msgstr "Nis"
@@ -949,13 +1086,13 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Archived projects"
-msgstr ""
+msgstr "Arşivlenmiş projeler"
 
 msgid "Are you sure"
-msgstr ""
+msgstr "Emin misiniz"
 
 msgid "Are you sure you want to delete this pipeline schedule?"
-msgstr ""
+msgstr "Bu iş hattı planını silmek istediğinizden emin misiniz?"
 
 msgid "Are you sure you want to erase this build?"
 msgstr ""
@@ -972,7 +1109,13 @@ msgstr ""
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
+msgid "Are you sure you want to remove approver %{name}"
+msgstr ""
+
 msgid "Are you sure you want to remove approver %{name}?"
+msgstr ""
+
+msgid "Are you sure you want to remove group %{name}"
 msgstr ""
 
 msgid "Are you sure you want to remove group %{name}?"
@@ -982,7 +1125,7 @@ msgid "Are you sure you want to remove the attachment?"
 msgstr ""
 
 msgid "Are you sure you want to remove this identity?"
-msgstr ""
+msgstr "Bu kimliği kaldırmak istediğinizden emin misiniz?"
 
 msgid "Are you sure you want to reset registration token?"
 msgstr ""
@@ -994,7 +1137,7 @@ msgid "Are you sure you want to stop this environment?"
 msgstr ""
 
 msgid "Are you sure you want to unlock %{path_lock_path}?"
-msgstr ""
+msgstr "%{path_lock_path} silmek istediğinizden emin misiniz?"
 
 msgid "Are you sure you want to unsubscribe from the %{type}: %{link_to_noteable_text}?"
 msgstr ""
@@ -1003,10 +1146,10 @@ msgid "Are you sure?"
 msgstr "Emin misiniz?"
 
 msgid "Artifact ID"
-msgstr ""
+msgstr "Yapı Kimliği"
 
 msgid "Artifacts"
-msgstr ""
+msgstr "Yapılar"
 
 msgid "Ascending"
 msgstr ""
@@ -1027,7 +1170,7 @@ msgid "Assign labels"
 msgstr "Etiket tanımla"
 
 msgid "Assign milestone"
-msgstr ""
+msgstr "Kilometre taşı ata"
 
 msgid "Assign some issues to this milestone."
 msgstr ""
@@ -1036,7 +1179,7 @@ msgid "Assign to"
 msgstr "Ata"
 
 msgid "Assigned Issues"
-msgstr ""
+msgstr "Atanan sorunlar"
 
 msgid "Assigned Merge Requests"
 msgstr ""
@@ -1045,10 +1188,10 @@ msgid "Assigned to :name"
 msgstr ""
 
 msgid "Assigned to me"
-msgstr ""
+msgstr "Bana atanan"
 
 msgid "Assignee"
-msgstr ""
+msgstr "Atanan"
 
 msgid "Assignee lists not available with your current license"
 msgstr ""
@@ -1057,6 +1200,9 @@ msgid "Assignee lists show all issues assigned to the selected user."
 msgstr ""
 
 msgid "Assignee(s)"
+msgstr "Atanan(lar)"
+
+msgid "At least one approval from a code owner is required to change files matching the respective CODEOWNER rules."
 msgstr ""
 
 msgid "Attach a file"
@@ -1066,7 +1212,7 @@ msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "Sürükleyip bırakarak bir dosya ekle veya %{upload_link}"
 
 msgid "Audit Events"
-msgstr ""
+msgstr "Denetim Etkinlikleri"
 
 msgid "Aug"
 msgstr "Ağustos"
@@ -1074,50 +1220,47 @@ msgstr "Ağustos"
 msgid "August"
 msgstr "Ağustos"
 
-msgid "Auth Token"
-msgstr ""
-
 msgid "Authentication Log"
 msgstr "Kimlik Doğrulama Günlüğü"
 
 msgid "Authentication log"
-msgstr ""
+msgstr "Kimlik Doğrulama Günlüğü"
 
 msgid "Authentication method"
-msgstr ""
+msgstr "Kimlik doğrulama yöntemi"
 
 msgid "Author"
 msgstr "Yazar"
 
 msgid "Authorization code:"
-msgstr ""
+msgstr "Yetkilendirme kodu:"
 
 msgid "Authorization key"
 msgstr ""
 
 msgid "Authorization was granted by entering your username and password in the application."
-msgstr ""
+msgstr "Uygulamaya kullanıcı adınız ve şifreniz girilererek yetki verildi."
 
 msgid "Authorize"
-msgstr ""
+msgstr "Yetki Ver"
 
 msgid "Authorize %{link_to_client} to use your account?"
 msgstr ""
 
 msgid "Authorized At"
-msgstr ""
+msgstr "Yetkili"
 
 msgid "Authorized applications (%{size})"
-msgstr ""
+msgstr "Yetkili uygulamalar (%{size})"
 
 msgid "Authors: %{authors}"
 msgstr "Yazarlar: %{authors}"
 
 msgid "Auto DevOps"
-msgstr ""
+msgstr "Otomatik DevOps"
 
 msgid "Auto DevOps enabled"
-msgstr ""
+msgstr "Auto DevOps etkinleştirildi"
 
 msgid "Auto DevOps, runners and job artifacts"
 msgstr ""
@@ -1132,7 +1275,7 @@ msgid "AutoDevOps|Auto DevOps documentation"
 msgstr ""
 
 msgid "AutoDevOps|Enable in settings"
-msgstr ""
+msgstr "AutoDevOps|Ayarlardan etkinleştirin"
 
 msgid "AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
 msgstr ""
@@ -1147,13 +1290,13 @@ msgid "AutoDevOps|You can automatically build and test your application if you %
 msgstr ""
 
 msgid "AutoDevOps|add a Kubernetes cluster"
-msgstr ""
+msgstr "AutoDevOps|Kubernetes Cluster Ekle"
 
 msgid "AutoDevOps|enable Auto DevOps"
-msgstr ""
+msgstr "AutoDevOps | Auto DevOps'u etkinleştir"
 
 msgid "Automatically marked as default internal user"
-msgstr ""
+msgstr "Otomatik olarak varsayılan kullanıcı olarak işaretlendi"
 
 msgid "Automatically resolved"
 msgstr ""
@@ -1180,31 +1323,31 @@ msgid "Avatar will be removed. Are you sure?"
 msgstr "Avatar kaldırılacak. Emin misiniz?"
 
 msgid "Average per day: %{average}"
-msgstr ""
+msgstr "Günlük ortalama: %{average}"
 
 msgid "Background Color"
-msgstr ""
+msgstr "Arkaplan Rengi"
 
 msgid "Background Jobs"
-msgstr ""
+msgstr "Arka plan işleri"
 
 msgid "Background color"
-msgstr ""
+msgstr "Arkaplan rengi"
 
 msgid "Badges"
-msgstr ""
+msgstr "Rozetler"
 
 msgid "Badges|A new badge was added."
-msgstr ""
+msgstr "Badges|Yeni bir rozet eklendi."
 
 msgid "Badges|Add badge"
-msgstr ""
+msgstr "Badges|Rozet ekle"
 
 msgid "Badges|Adding the badge failed, please check the entered URLs and try again."
-msgstr ""
+msgstr "Badges|Rozetin eklenmesi başarısız oldu, lütfen girilen bağlantıları kontrol edin ve tekrar deneyin."
 
 msgid "Badges|Badge image URL"
-msgstr ""
+msgstr "Badges|Rozet resim bağlantısı"
 
 msgid "Badges|Badge image preview"
 msgstr ""
@@ -1330,7 +1473,7 @@ msgid "BillingPlans|Upgrade"
 msgstr ""
 
 msgid "BillingPlans|You are currently on the %{plan_link} plan."
-msgstr ""
+msgstr "BillingPlans|Şu an %{plan_link} plan kullanıyorsunuz."
 
 msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. %{learn_more_text}"
 msgstr ""
@@ -1345,7 +1488,7 @@ msgid "BillingPlans|frequently asked questions"
 msgstr ""
 
 msgid "BillingPlans|monthly"
-msgstr ""
+msgstr "BillingPlans|aylık"
 
 msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
@@ -1366,10 +1509,10 @@ msgid "Blocked"
 msgstr ""
 
 msgid "Blog"
-msgstr ""
+msgstr "Blog"
 
 msgid "Boards"
-msgstr ""
+msgstr "Panolar"
 
 msgid "Branch %{branchName} was not found in this project's repository."
 msgstr ""
@@ -1378,13 +1521,13 @@ msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy
 msgstr ""
 
 msgid "Branch has changed"
-msgstr ""
+msgstr "Dal değişti"
 
 msgid "Branch is already taken"
 msgstr ""
 
 msgid "Branch name"
-msgstr ""
+msgstr "Dal adı"
 
 msgid "BranchSwitcherPlaceholder|Search branches"
 msgstr ""
@@ -1393,22 +1536,22 @@ msgid "BranchSwitcherTitle|Switch branch"
 msgstr ""
 
 msgid "Branches"
-msgstr ""
+msgstr "Dallar"
 
 msgid "Branches|Active"
-msgstr ""
+msgstr "Branches|Etkin"
 
 msgid "Branches|Active branches"
 msgstr ""
 
 msgid "Branches|All"
-msgstr ""
+msgstr "Branches|Tümü"
 
 msgid "Branches|Cant find HEAD commit for this branch"
 msgstr ""
 
 msgid "Branches|Compare"
-msgstr ""
+msgstr "Branches|Karşılaştırma"
 
 msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
 msgstr ""
@@ -1417,7 +1560,7 @@ msgid "Branches|Delete branch"
 msgstr ""
 
 msgid "Branches|Delete merged branches"
-msgstr ""
+msgstr "Branches|Birleştirilmiş dalları sil"
 
 msgid "Branches|Delete protected branch"
 msgstr ""
@@ -1450,7 +1593,7 @@ msgid "Branches|Only a project maintainer or owner can delete a protected branch
 msgstr ""
 
 msgid "Branches|Overview"
-msgstr ""
+msgstr "Branches|Genel Bakış"
 
 msgid "Branches|Protected branches can be managed in %{project_settings_link}."
 msgstr ""
@@ -1624,15 +1767,18 @@ msgid "Canary Deployments is a popular CI strategy, where a small portion of the
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
+msgstr "İptal"
 
 msgid "Cancel this job"
-msgstr ""
+msgstr "Bu işi iptal et"
 
 msgid "Cannot be merged automatically"
-msgstr ""
+msgstr "Otomatik olarak birleştirilemez"
 
 msgid "Cannot modify managed Kubernetes cluster"
+msgstr ""
+
+msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
 msgstr ""
 
 msgid "Certificate"
@@ -1671,6 +1817,9 @@ msgstr ""
 msgid "ChangeTypeAction|This will create a new commit in order to revert the existing changes."
 msgstr ""
 
+msgid "Changes"
+msgstr ""
+
 msgid "Changes are shown as if the <b>source</b> revision was being merged into the <b>target</b> revision."
 msgstr ""
 
@@ -1678,9 +1827,12 @@ msgid "Changes suppressed. Click to show."
 msgstr ""
 
 msgid "Charts"
-msgstr ""
+msgstr "Grafikler"
 
 msgid "Chat"
+msgstr "Sohbet"
+
+msgid "Check again"
 msgstr ""
 
 msgid "Check the %{docs_link_start}documentation%{docs_link_end}."
@@ -1747,9 +1899,6 @@ msgid "Choose which groups you wish to synchronize to this secondary node."
 msgstr ""
 
 msgid "Choose which repositories you want to connect and run CI/CD pipelines."
-msgstr ""
-
-msgid "Choose which repositories you want to import."
 msgstr ""
 
 msgid "Choose which shards you wish to synchronize to this secondary node."
@@ -1911,6 +2060,9 @@ msgstr ""
 msgid "Clone with %{http_label}"
 msgstr ""
 
+msgid "Clone with KRB5"
+msgstr ""
+
 msgid "Clone with SSH"
 msgstr ""
 
@@ -1926,11 +2078,8 @@ msgstr ""
 msgid "Closed"
 msgstr ""
 
-msgid "Closed (moved)"
-msgstr ""
-
 msgid "Closed issues"
-msgstr ""
+msgstr "Kapalı sorunlar"
 
 msgid "ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}."
 msgstr ""
@@ -1974,10 +2123,10 @@ msgstr ""
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
-msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
+msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
 msgstr ""
 
-msgid "ClusterIntegration|An error occurred when trying to contact the Google Cloud API. Please try again later."
+msgid "ClusterIntegration|An error occurred while trying to fetch project zones: %{error}"
 msgstr ""
 
 msgid "ClusterIntegration|An error occurred while trying to fetch your projects: %{error}"
@@ -2016,6 +2165,9 @@ msgstr ""
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
 msgstr ""
 
+msgid "ClusterIntegration|Cluster health"
+msgstr ""
+
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters."
 msgstr ""
 
@@ -2038,7 +2190,7 @@ msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Token"
-msgstr ""
+msgstr "ClusterIntegration|Erişim Anahtarını Kopyala"
 
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
@@ -2112,7 +2264,7 @@ msgstr ""
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
 msgstr ""
 
-msgid "ClusterIntegration|In order to show the health of the cluster, we'll need to provision your cluster with Prometheus to collect the required data."
+msgid "ClusterIntegration|In order to view the health of your cluster, you must first install Prometheus below."
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"
@@ -2125,9 +2277,6 @@ msgid "ClusterIntegration|Ingress gives you a way to route requests to services 
 msgstr ""
 
 msgid "ClusterIntegration|Install"
-msgstr ""
-
-msgid "ClusterIntegration|Install Prometheus"
 msgstr ""
 
 msgid "ClusterIntegration|Installed"
@@ -2173,9 +2322,6 @@ msgid "ClusterIntegration|Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster details"
-msgstr ""
-
-msgid "ClusterIntegration|Kubernetes cluster health"
 msgstr ""
 
 msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
@@ -2415,13 +2561,25 @@ msgstr ""
 msgid "Code"
 msgstr ""
 
+msgid "Code Owners"
+msgstr ""
+
+msgid "Code owner approval is required"
+msgstr ""
+
 msgid "Code owners"
+msgstr ""
+
+msgid "CodeOwner|Pattern"
 msgstr ""
 
 msgid "Cohorts"
 msgstr ""
 
 msgid "Collapse"
+msgstr ""
+
+msgid "Collapse approvers"
 msgstr ""
 
 msgid "Collapse sidebar"
@@ -2520,7 +2678,7 @@ msgid "Commit…"
 msgstr ""
 
 msgid "Compare"
-msgstr ""
+msgstr "Karşılaştır"
 
 msgid "Compare Git revisions"
 msgstr ""
@@ -2682,10 +2840,10 @@ msgid "Contributions per group member"
 msgstr ""
 
 msgid "Contributors"
-msgstr ""
+msgstr "Katkıda Bulunanlar"
 
 msgid "ContributorsPage|%{startDate} – %{endDate}"
-msgstr ""
+msgstr "ContributorsPage|%{startDate} – %{endDate}"
 
 msgid "ContributorsPage|Building repository graph."
 msgstr ""
@@ -2694,7 +2852,7 @@ msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limi
 msgstr ""
 
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
-msgstr ""
+msgstr "ContributorsPage|Lütfen bekleyin, hazır olduğunda bu sayfa otomatik olarak yenilenir."
 
 msgid "Control the display of third party offers."
 msgstr ""
@@ -2721,6 +2879,9 @@ msgid "Copy %{protocol} clone URL"
 msgstr ""
 
 msgid "Copy ID to clipboard"
+msgstr ""
+
+msgid "Copy KRB5 clone URL"
 msgstr ""
 
 msgid "Copy SSH clone URL"
@@ -2763,7 +2924,7 @@ msgid "Copy to clipboard"
 msgstr ""
 
 msgid "Copy token to clipboard"
-msgstr ""
+msgstr "Erişim anahtarını panoya kopyala"
 
 msgid "Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}"
 msgstr ""
@@ -2778,13 +2939,13 @@ msgid "Create New Domain"
 msgstr ""
 
 msgid "Create a new branch"
-msgstr ""
+msgstr "Yeni bir dal oluştur"
 
 msgid "Create a new branch and merge request"
-msgstr ""
+msgstr "Yeni bir dal ve birleştirme isteği oluştur"
 
 msgid "Create a new issue"
-msgstr ""
+msgstr "Yeni bir sorun oluştur"
 
 msgid "Create a new repository"
 msgstr ""
@@ -2823,31 +2984,31 @@ msgid "Create lists from labels. Issues with that label appear in that list."
 msgstr ""
 
 msgid "Create merge request"
-msgstr ""
+msgstr "Birleştirme isteği oluştur"
 
 msgid "Create merge request and branch"
-msgstr ""
+msgstr "Birleştirme isteği ve dal oluştur"
 
 msgid "Create milestone"
 msgstr ""
 
 msgid "Create new branch"
-msgstr ""
+msgstr "Yeni dal oluştur"
 
 msgid "Create new directory"
-msgstr ""
+msgstr "Yeni dizin oluştur"
 
 msgid "Create new file"
-msgstr ""
+msgstr "Yeni dosya oluştur"
 
 msgid "Create new file or directory"
-msgstr ""
+msgstr "Yeni dosya veya dizin oluştur"
 
 msgid "Create new label"
-msgstr ""
+msgstr "Yeni etiket oluştur"
 
 msgid "Create new..."
-msgstr ""
+msgstr "Yeni oluştur..."
 
 msgid "Create project label"
 msgstr ""
@@ -2895,7 +3056,7 @@ msgid "CurrentUser|Profile"
 msgstr ""
 
 msgid "CurrentUser|Settings"
-msgstr ""
+msgstr "CurrentUser|Ayarlar"
 
 msgid "Custom CI config path"
 msgstr ""
@@ -2904,7 +3065,7 @@ msgid "Custom hostname (for private commit emails)"
 msgstr ""
 
 msgid "Custom notification events"
-msgstr ""
+msgstr "Özel bildirim etkinlikleri"
 
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
@@ -2925,7 +3086,7 @@ msgid "Customize how Google Code email addresses and usernames are imported into
 msgstr ""
 
 msgid "Customize language and region related settings."
-msgstr ""
+msgstr "Dil ve bölgeyle ilgili ayarları özelleştirin."
 
 msgid "Customize your merge request approval settings."
 msgstr ""
@@ -2934,7 +3095,7 @@ msgid "Customize your pipeline configuration, view your pipeline status and cove
 msgstr ""
 
 msgid "Cycle Analytics"
-msgstr ""
+msgstr "Aşama Analizi"
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
 msgstr ""
@@ -2952,13 +3113,13 @@ msgid "CycleAnalyticsStage|Production"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Review"
-msgstr ""
+msgstr "CycleAnalyticsStage|İnceleme"
 
 msgid "CycleAnalyticsStage|Staging"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Test"
-msgstr ""
+msgstr "CycleAnalyticsStage|Test"
 
 msgid "DNS"
 msgstr ""
@@ -2970,7 +3131,7 @@ msgid "DashboardProjects|All"
 msgstr ""
 
 msgid "DashboardProjects|Personal"
-msgstr ""
+msgstr "DashboardProjects|Kişisel"
 
 msgid "Data is still calculating..."
 msgstr ""
@@ -2982,10 +3143,10 @@ msgid "Debug"
 msgstr ""
 
 msgid "Dec"
-msgstr ""
+msgstr "Ara"
 
 msgid "December"
-msgstr ""
+msgstr "Aralık"
 
 msgid "Decline"
 msgstr ""
@@ -3164,7 +3325,7 @@ msgid "DeployTokens|Scopes"
 msgstr ""
 
 msgid "DeployTokens|This action cannot be undone."
-msgstr ""
+msgstr "DeployTokens|Bu işlem geri alınamaz."
 
 msgid "DeployTokens|This project has no active Deploy Tokens."
 msgstr ""
@@ -3211,14 +3372,17 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+msgid "Designs"
+msgstr ""
+
 msgid "Destroy"
 msgstr ""
 
 msgid "Details"
-msgstr ""
+msgstr "Ayrıntılar"
 
 msgid "Details (default)"
-msgstr ""
+msgstr "Ayrıntılar (varsayılan)"
 
 msgid "Detect host keys"
 msgstr ""
@@ -3289,6 +3453,9 @@ msgstr ""
 msgid "Discuss a specific suggestion or question that needs to be resolved"
 msgstr ""
 
+msgid "Discussion"
+msgstr ""
+
 msgid "Dismiss"
 msgstr ""
 
@@ -3302,7 +3469,7 @@ msgid "Dismiss Merge Request promotion"
 msgstr ""
 
 msgid "Dismiss trial promotion"
-msgstr ""
+msgstr "Deneme promosyonunu reddet"
 
 msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
@@ -3314,10 +3481,10 @@ msgid "Domain"
 msgstr ""
 
 msgid "Don't show again"
-msgstr ""
+msgstr "Bir daha gösterme"
 
 msgid "Done"
-msgstr ""
+msgstr "Tamamlandı"
 
 msgid "Download"
 msgstr ""
@@ -3404,7 +3571,7 @@ msgid "Edit identity for %{user_name}"
 msgstr ""
 
 msgid "Edit issues"
-msgstr ""
+msgstr "Sorunları düzenle"
 
 msgid "Elasticsearch"
 msgstr ""
@@ -3413,13 +3580,13 @@ msgid "Elasticsearch integration. Elasticsearch AWS IAM."
 msgstr ""
 
 msgid "Email"
-msgstr ""
+msgstr "E-posta"
 
 msgid "Email patch"
 msgstr ""
 
 msgid "Emails"
-msgstr ""
+msgstr "E-postalar"
 
 msgid "Embed"
 msgstr ""
@@ -3460,6 +3627,9 @@ msgstr ""
 msgid "Enable group Runners"
 msgstr ""
 
+msgid "Enable header and footer in emails"
+msgstr ""
+
 msgid "Enable or disable the Pseudonymizer data collection."
 msgstr ""
 
@@ -3479,7 +3649,7 @@ msgid "Enable the Performance Bar for a given group."
 msgstr ""
 
 msgid "Enable two-factor authentication"
-msgstr ""
+msgstr "İki aşamalı doğrulamayı etkinleştir"
 
 msgid "Enable usage ping"
 msgstr ""
@@ -3494,6 +3664,9 @@ msgid "Ends at (UTC)"
 msgstr ""
 
 msgid "Enforce SSO-only authentication for this group"
+msgstr ""
+
+msgid "Enforce users to have dedicated group managed accounts for this group"
 msgstr ""
 
 msgid "Enforced SSO"
@@ -3512,10 +3685,7 @@ msgid "Enter the merge request description"
 msgstr ""
 
 msgid "Enter the merge request title"
-msgstr ""
-
-msgid "Enter your Sentry API URL"
-msgstr ""
+msgstr "Birleştirme isteğinin başlığını girin"
 
 msgid "Environment variables"
 msgstr ""
@@ -3539,6 +3709,12 @@ msgid "Environments|An error occurred while fetching the environments."
 msgstr ""
 
 msgid "Environments|An error occurred while making the request."
+msgstr ""
+
+msgid "Environments|An error occurred while re-deploying the environment, please try again"
+msgstr ""
+
+msgid "Environments|An error occurred while rolling back the environment, please try again"
 msgstr ""
 
 msgid "Environments|An error occurred while stopping the environment, please try again"
@@ -3592,13 +3768,31 @@ msgstr ""
 msgid "Environments|Pod logs from"
 msgstr ""
 
+msgid "Environments|Re-deploy"
+msgstr ""
+
+msgid "Environments|Re-deploy environment %{environment_name}?"
+msgstr ""
+
+msgid "Environments|Re-deploy environment %{name}?"
+msgstr ""
+
 msgid "Environments|Re-deploy to environment"
 msgstr ""
 
 msgid "Environments|Read more about environments"
 msgstr ""
 
+msgid "Environments|Rollback"
+msgstr ""
+
 msgid "Environments|Rollback environment"
+msgstr ""
+
+msgid "Environments|Rollback environment %{environment_name}?"
+msgstr ""
+
+msgid "Environments|Rollback environment %{name}?"
 msgstr ""
 
 msgid "Environments|Show all"
@@ -3613,8 +3807,20 @@ msgstr ""
 msgid "Environments|Stopping"
 msgstr ""
 
-msgid "Environments|Updated"
+msgid "Environments|This action will relaunch the job for commit %{commit_id}, putting the environment in a previous version. Are you sure you want to continue?"
 msgstr ""
+
+msgid "Environments|This action will relaunch the job for commit %{linkStart}%{commitId}%{linkEnd}, putting the environment in a previous version. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will run the job defined by %{name} for commit %{linkStart}%{commitId}%{linkEnd} putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|This action will run the job defined by staging for commit %{commit_id}, putting the environment in a previous version. You can revert it by re-deploying the latest version of your application. Are you sure you want to continue?"
+msgstr ""
+
+msgid "Environments|Updated"
+msgstr "Environments|Güncellendi:"
 
 msgid "Environments|You don't have any environments right now"
 msgstr ""
@@ -3664,6 +3870,9 @@ msgstr ""
 msgid "Error Tracking"
 msgstr ""
 
+msgid "Error creating a new path"
+msgstr ""
+
 msgid "Error creating epic"
 msgstr ""
 
@@ -3671,7 +3880,7 @@ msgid "Error deleting  %{issuableType}"
 msgstr ""
 
 msgid "Error fetching contributors data."
-msgstr ""
+msgstr "Katkıda bulunanlar verileri alınırken hata oluştu."
 
 msgid "Error fetching labels."
 msgstr ""
@@ -3698,7 +3907,7 @@ msgid "Error loading markdown preview"
 msgstr ""
 
 msgid "Error loading merge requests."
-msgstr ""
+msgstr "Birleştirme isteği yüklenirken hata oluştu."
 
 msgid "Error loading project data. Please try again."
 msgstr ""
@@ -3722,15 +3931,42 @@ msgid "Error updating %{issuableType}"
 msgstr ""
 
 msgid "Error updating status for all todos."
-msgstr ""
+msgstr "Bütün yapılacaklar için durum güncellenirken hata oluştu."
 
 msgid "Error updating todo status."
 msgstr ""
 
 msgid "Error while loading the merge request. Please try again."
-msgstr ""
+msgstr "Birleştirme isteğini yüklerken hata oluştu. Lütfen tekrar deneyin."
 
 msgid "Error:"
+msgstr ""
+
+msgid "ErrorTracking|Active"
+msgstr ""
+
+msgid "ErrorTracking|After adding your Auth Token, use the 'Connect' button to load projects"
+msgstr ""
+
+msgid "ErrorTracking|Auth Token"
+msgstr ""
+
+msgid "ErrorTracking|Click 'Connect' to re-establish the connection to Sentry and activate the dropdown."
+msgstr ""
+
+msgid "ErrorTracking|Connection has failed. Re-check Auth Token and try again."
+msgstr ""
+
+msgid "ErrorTracking|Find your hostname in your Sentry account settings page"
+msgstr ""
+
+msgid "ErrorTracking|No projects available"
+msgstr ""
+
+msgid "ErrorTracking|Select project"
+msgstr ""
+
+msgid "ErrorTracking|To enable project selection, enter a valid Auth Token"
 msgstr ""
 
 msgid "Errors"
@@ -3758,7 +3994,7 @@ msgid "EventFilterBy|Filter by team"
 msgstr ""
 
 msgid "Events"
-msgstr ""
+msgstr "Etkinlikler"
 
 msgid "Every %{action} attempt has failed: %{job_error_message}. Please try again."
 msgstr ""
@@ -3811,6 +4047,9 @@ msgstr ""
 msgid "Expand all"
 msgstr ""
 
+msgid "Expand approvers"
+msgstr ""
+
 msgid "Expand sidebar"
 msgstr ""
 
@@ -3833,16 +4072,16 @@ msgid "Explore GitLab"
 msgstr ""
 
 msgid "Explore Groups"
-msgstr ""
+msgstr "Grupları Keşfet"
 
 msgid "Explore groups"
-msgstr ""
+msgstr "Grupları keşfet"
 
 msgid "Explore projects"
 msgstr ""
 
 msgid "Explore public groups"
-msgstr ""
+msgstr "Genel grupları keşfet"
 
 msgid "Export as CSV"
 msgstr ""
@@ -3898,7 +4137,7 @@ msgstr ""
 msgid "Failed to load emoji list."
 msgstr ""
 
-msgid "Failed to load errors from Sentry"
+msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -3964,9 +4203,6 @@ msgstr ""
 msgid "FeatureFlags|Description"
 msgstr ""
 
-msgid "FeatureFlags|Edit %{feature_flag_name}"
-msgstr ""
-
 msgid "FeatureFlags|Edit Feature Flag"
 msgstr ""
 
@@ -4024,9 +4260,6 @@ msgstr ""
 msgid "FeatureFlags|New Feature Flag"
 msgstr ""
 
-msgid "FeatureFlags|Save changes"
-msgstr ""
-
 msgid "FeatureFlags|Status"
 msgstr ""
 
@@ -4046,10 +4279,10 @@ msgid "FeatureFlags|Try again in a few moments or contact your support team."
 msgstr ""
 
 msgid "Feb"
-msgstr ""
+msgstr "Şub"
 
 msgid "February"
-msgstr ""
+msgstr "Şubat"
 
 msgid "Fields on this page are now uneditable, you can configure"
 msgstr ""
@@ -4081,7 +4314,7 @@ msgid "File upload error."
 msgstr ""
 
 msgid "Files"
-msgstr ""
+msgstr "Dosyalar"
 
 msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
 msgstr ""
@@ -4111,9 +4344,6 @@ msgid "Filter results by project"
 msgstr ""
 
 msgid "Filter..."
-msgstr ""
-
-msgid "Find and manage Auth Tokens in your Sentry account settings page."
 msgstr ""
 
 msgid "Find by path"
@@ -4228,9 +4458,9 @@ msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
 msgid "Free Trial of GitLab.com Gold"
-msgstr ""
+msgstr "GitLab.com Gold Ücretsiz Deneme"
 
-msgid "From %{provider_title}"
+msgid "From %{providerTitle}"
 msgstr ""
 
 msgid "From Bitbucket"
@@ -4260,7 +4490,13 @@ msgstr ""
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
 msgstr ""
 
+msgid "GPG Key ID:"
+msgstr ""
+
 msgid "GPG Keys"
+msgstr "GPG Anahtarları"
+
+msgid "GPG signature (loading...)"
 msgstr ""
 
 msgid "General"
@@ -4462,7 +4698,7 @@ msgid "Geo|All"
 msgstr ""
 
 msgid "Geo|All projects"
-msgstr ""
+msgstr "Geo|Tüm projeler"
 
 msgid "Geo|All projects are being scheduled for re-check"
 msgstr ""
@@ -4525,7 +4761,7 @@ msgid "Geo|Project (ID: %{project_id}) no longer exists on the primary. It is sa
 msgstr ""
 
 msgid "Geo|Projects in certain groups"
-msgstr ""
+msgstr "Geo|Belli gruplardaki projeler"
 
 msgid "Geo|Projects in certain storage shards"
 msgstr ""
@@ -4564,7 +4800,7 @@ msgid "Geo|Shards to synchronize"
 msgstr ""
 
 msgid "Geo|Status"
-msgstr ""
+msgstr "Geo|Durum"
 
 msgid "Geo|Synced"
 msgstr ""
@@ -4695,13 +4931,22 @@ msgstr ""
 msgid "Go Back"
 msgstr ""
 
+msgid "Go Micro is a framework for micro service development."
+msgstr ""
+
 msgid "Go back"
+msgstr ""
+
+msgid "Go full screen"
 msgstr ""
 
 msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
+msgstr ""
+
+msgid "Go to project"
 msgstr ""
 
 msgid "Google Code import"
@@ -4720,7 +4965,7 @@ msgid "Grant access"
 msgstr ""
 
 msgid "Graph"
-msgstr ""
+msgstr "Çizelge"
 
 msgid "Group"
 msgstr ""
@@ -4753,12 +4998,15 @@ msgid "Group description (optional)"
 msgstr ""
 
 msgid "Group details"
-msgstr ""
+msgstr "Grup ayrıntıları"
 
 msgid "Group info:"
 msgstr ""
 
 msgid "Group maintainers can register group runners in the %{link}"
+msgstr ""
+
+msgid "Group managed accounts"
 msgstr ""
 
 msgid "Group name"
@@ -4834,7 +5082,7 @@ msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name
 msgstr ""
 
 msgid "Groups"
-msgstr ""
+msgstr "Gruplar"
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr ""
@@ -4870,7 +5118,7 @@ msgid "GroupsEmptyState|If you organize your projects under a group, it works li
 msgstr ""
 
 msgid "GroupsEmptyState|No groups found"
-msgstr ""
+msgstr "GroupsEmptyState|Grup bulunamadı"
 
 msgid "GroupsEmptyState|You can manage your group member’s permissions and access to each project in the group."
 msgstr ""
@@ -4930,13 +5178,13 @@ msgid "HealthCheck|Unhealthy"
 msgstr ""
 
 msgid "Help"
-msgstr ""
+msgstr "Yardım"
 
 msgid "Help page"
-msgstr ""
+msgstr "Yardım sayfası"
 
 msgid "Help page text and support page url."
-msgstr ""
+msgstr "Yardım sayfası metni ve destek sayfası bağlantısı."
 
 msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
 msgstr ""
@@ -5073,7 +5321,7 @@ msgid "Import all compatible projects"
 msgstr ""
 
 msgid "Import all projects"
-msgstr ""
+msgstr "Tüm projeleri içe aktar"
 
 msgid "Import all repositories"
 msgstr ""
@@ -5103,19 +5351,19 @@ msgid "Import project members"
 msgstr ""
 
 msgid "Import projects from Bitbucket"
-msgstr ""
+msgstr "Bitbucket'ten projeleri içe aktar"
 
 msgid "Import projects from Bitbucket Server"
 msgstr ""
 
 msgid "Import projects from FogBugz"
-msgstr ""
+msgstr "FogBugz'dan projeleri içe aktar"
 
 msgid "Import projects from GitLab.com"
-msgstr ""
+msgstr "GitLab.com'dan projeleri içe aktar"
 
 msgid "Import projects from Google Code"
-msgstr ""
+msgstr "Google Code'dan projeler içe aktar"
 
 msgid "Import repositories from Bitbucket Server"
 msgstr ""
@@ -5129,7 +5377,22 @@ msgstr ""
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
 msgstr ""
 
+msgid "Import/Export illustration"
+msgstr ""
+
 msgid "ImportButtons|Connect repositories from"
+msgstr ""
+
+msgid "ImportProjects|Importing the project failed"
+msgstr ""
+
+msgid "ImportProjects|Requesting your %{provider} repositories failed"
+msgstr ""
+
+msgid "ImportProjects|Select the projects you want to import"
+msgstr ""
+
+msgid "ImportProjects|Updating the imported projects failed"
 msgstr ""
 
 msgid "Improve Issue boards with GitLab Enterprise Edition."
@@ -5181,6 +5444,12 @@ msgid "Input host keys manually"
 msgstr ""
 
 msgid "Input your repository URL"
+msgstr ""
+
+msgid "Insert a quote"
+msgstr ""
+
+msgid "Insert code"
 msgstr ""
 
 msgid "Insert suggestion"
@@ -5236,6 +5505,9 @@ msgstr ""
 msgid "Introducing Your Conversational Development Index"
 msgstr ""
 
+msgid "Invalid input, please avoid emojis"
+msgstr ""
+
 msgid "Invitation"
 msgstr ""
 
@@ -5254,6 +5526,9 @@ msgstr ""
 msgid "Invoke Time"
 msgstr ""
 
+msgid "IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})"
+msgstr ""
+
 msgid "Issue"
 msgstr ""
 
@@ -5264,7 +5539,7 @@ msgid "Issue board focus mode"
 msgstr ""
 
 msgid "Issue events"
-msgstr ""
+msgstr "Sorun etkinlikleri"
 
 msgid "IssueBoards|Board"
 msgstr ""
@@ -5288,15 +5563,15 @@ msgid "IssueBoards|Switch board"
 msgstr ""
 
 msgid "Issues"
-msgstr ""
+msgstr "Sorunlar"
 
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
 msgid "Issues closed"
-msgstr ""
+msgstr "Sorunlar kapalı"
 
-msgid "Issues, merge requests, pushes and comments."
+msgid "Issues, merge requests, pushes, and comments."
 msgstr ""
 
 msgid "IssuesAnalytics|After you begin creating issues for your projects, we can start tracking and displaying metrics for them"
@@ -5333,10 +5608,10 @@ msgid "Jaeger tracing"
 msgstr ""
 
 msgid "Jan"
-msgstr ""
+msgstr "Oca"
 
 msgid "January"
-msgstr ""
+msgstr "Ocak"
 
 msgid "Job"
 msgstr ""
@@ -5396,16 +5671,16 @@ msgid "Job|This job is stuck because the project doesn't have any runners online
 msgstr ""
 
 msgid "Jul"
-msgstr ""
+msgstr "Tem"
 
 msgid "July"
-msgstr ""
+msgstr "Temmuz"
 
 msgid "Jun"
-msgstr ""
+msgstr "Haz"
 
 msgid "June"
-msgstr ""
+msgstr "Haziran"
 
 msgid "Key (PEM)"
 msgstr ""
@@ -5441,10 +5716,10 @@ msgid "LFS"
 msgstr ""
 
 msgid "LFSStatus|Disabled"
-msgstr ""
+msgstr "LFSStatus|Kapalı"
 
 msgid "LFSStatus|Enabled"
-msgstr ""
+msgstr "LFSStatus|Etkin"
 
 msgid "Label"
 msgstr ""
@@ -5465,7 +5740,7 @@ msgid "LabelSelect|Labels"
 msgstr ""
 
 msgid "Labels"
-msgstr ""
+msgstr "Etiketler"
 
 msgid "Labels can be applied to %{features}. Group labels are available for any project within the group."
 msgstr ""
@@ -5485,6 +5760,9 @@ msgstr ""
 msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
 msgstr ""
 
+msgid "Language"
+msgstr ""
+
 msgid "Large File Storage"
 msgstr ""
 
@@ -5497,7 +5775,7 @@ msgid "Last Pipeline"
 msgstr ""
 
 msgid "Last activity"
-msgstr ""
+msgstr "Son etkinlik"
 
 msgid "Last commit"
 msgstr ""
@@ -5521,7 +5799,7 @@ msgid "Last update"
 msgstr ""
 
 msgid "Last updated"
-msgstr ""
+msgstr "Son güncelleme"
 
 msgid "LastPushEvent|You pushed to"
 msgstr ""
@@ -5566,6 +5844,9 @@ msgid "Learn more about incoming email addresses"
 msgstr ""
 
 msgid "Learn more about protected branches"
+msgstr ""
+
+msgid "Learn more about signing commits"
 msgstr ""
 
 msgid "Learn more in the"
@@ -5673,7 +5954,7 @@ msgid "LinkedIn"
 msgstr ""
 
 msgid "List"
-msgstr ""
+msgstr "Liste"
 
 msgid "List Your Gitea Repositories"
 msgstr ""
@@ -5727,7 +6008,7 @@ msgid "Locked"
 msgstr ""
 
 msgid "Locked Files"
-msgstr ""
+msgstr "Kilitli Dosyalar"
 
 msgid "Locked to current projects"
 msgstr ""
@@ -5739,6 +6020,15 @@ msgid "Login with smartcard"
 msgstr ""
 
 msgid "Logs"
+msgstr ""
+
+msgid "MRApprovals|Approved by"
+msgstr ""
+
+msgid "MRApprovals|Approvers"
+msgstr ""
+
+msgid "MRApprovals|Pending approvals"
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
@@ -5757,7 +6047,7 @@ msgid "Manage access"
 msgstr ""
 
 msgid "Manage all notifications"
-msgstr ""
+msgstr "Tüm bildirimleri yönet"
 
 msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
 msgstr ""
@@ -5786,6 +6076,9 @@ msgstr ""
 msgid "Manifest file import"
 msgstr ""
 
+msgid "Manual job"
+msgstr ""
+
 msgid "Map a FogBugz account ID to a GitLab user"
 msgstr ""
 
@@ -5799,48 +6092,18 @@ msgid "Map a Google Code user to a full name"
 msgstr ""
 
 msgid "Mar"
-msgstr ""
+msgstr "Mar"
 
 msgid "March"
-msgstr ""
+msgstr "Mart"
 
 msgid "Mark todo as done"
-msgstr ""
+msgstr "Yapılacağı tamamlandı olarak işaretle"
 
 msgid "Markdown"
 msgstr ""
 
 msgid "Markdown enabled"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a bullet list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a link"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a numbered list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a table"
-msgstr ""
-
-msgid "MarkdownToolbar|Add a task list"
-msgstr ""
-
-msgid "MarkdownToolbar|Add bold text"
-msgstr ""
-
-msgid "MarkdownToolbar|Add italic text"
-msgstr ""
-
-msgid "MarkdownToolbar|Go full screen"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert a quote"
-msgstr ""
-
-msgid "MarkdownToolbar|Insert code"
 msgstr ""
 
 msgid "Maven Metadata"
@@ -5853,7 +6116,7 @@ msgid "Maximum job timeout"
 msgstr ""
 
 msgid "May"
-msgstr ""
+msgstr "May"
 
 msgid "Median"
 msgstr ""
@@ -5862,10 +6125,10 @@ msgid "Member lock"
 msgstr ""
 
 msgid "Member since %{date}"
-msgstr ""
+msgstr "%{date} tarihinden beri üye"
 
 msgid "Members"
-msgstr ""
+msgstr "Üyeler"
 
 msgid "Members can be added by project <i>Maintainers</i> or <i>Owners</i>"
 msgstr ""
@@ -5877,10 +6140,10 @@ msgid "Members will be forwarded here when signing in to your group. Get this fr
 msgstr ""
 
 msgid "Merge Request"
-msgstr ""
+msgstr "Birleştirme İsteği"
 
 msgid "Merge Requests"
-msgstr ""
+msgstr "Birleştirme İstekleri"
 
 msgid "Merge Requests created"
 msgstr ""
@@ -5897,14 +6160,17 @@ msgstr ""
 msgid "Merge in progress"
 msgstr ""
 
-msgid "Merge request"
+msgid "Merge pipelines will try to validate the post-merge result prior to merging"
 msgstr ""
+
+msgid "Merge request"
+msgstr "Birleştirme isteği"
 
 msgid "Merge request approvals"
-msgstr ""
+msgstr "Birleştirme isteği onayları"
 
 msgid "Merge requests"
-msgstr ""
+msgstr "Birleştirme istekleri"
 
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
@@ -5982,7 +6248,7 @@ msgid "MergeRequest|Search files"
 msgstr ""
 
 msgid "Merged"
-msgstr ""
+msgstr "Birleştirildi"
 
 msgid "Messages"
 msgstr ""
@@ -6047,9 +6313,6 @@ msgstr ""
 msgid "Metrics|Prometheus Query Documentation"
 msgstr ""
 
-msgid "Metrics|System"
-msgstr ""
-
 msgid "Metrics|There was an error fetching the environments data, please try again"
 msgstr ""
 
@@ -6099,7 +6362,7 @@ msgid "Milestone lists show all issues from the selected milestone."
 msgstr ""
 
 msgid "Milestones"
-msgstr ""
+msgstr "Dönüm Noktaları"
 
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
 msgstr ""
@@ -6156,7 +6419,7 @@ msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr ""
 
 msgid "Modal|Cancel"
-msgstr ""
+msgstr "Modal|İptal"
 
 msgid "Modal|Close"
 msgstr ""
@@ -6192,6 +6455,9 @@ msgid "More information"
 msgstr ""
 
 msgid "More information is available|here"
+msgstr ""
+
+msgid "More than %{number_commits_distance} commits different with %{default_branch}"
 msgstr ""
 
 msgid "Most stars"
@@ -6234,7 +6500,7 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Need help?"
-msgstr ""
+msgstr "Yardım ister misiniz?"
 
 msgid "Network"
 msgstr ""
@@ -6243,27 +6509,27 @@ msgid "Never"
 msgstr ""
 
 msgid "New"
-msgstr ""
+msgstr "Yeni"
 
 msgid "New Application"
-msgstr ""
+msgstr "Yeni Uygulama"
 
 msgid "New Environment"
-msgstr ""
+msgstr "Yeni Ortam"
 
 msgid "New Group"
-msgstr ""
+msgstr "Yeni Grup"
 
 msgid "New Identity"
-msgstr ""
+msgstr "Yeni Kimlik"
 
 msgid "New Issue"
 msgid_plural "New Issues"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Yeni Sorun"
+msgstr[1] "Yeni Sorunlar"
 
 msgid "New Label"
-msgstr ""
+msgstr "Yeni Etiket"
 
 msgid "New Milestone"
 msgstr ""
@@ -6271,13 +6537,13 @@ msgstr ""
 msgid "New Pages Domain"
 msgstr ""
 
+msgid "New Password"
+msgstr ""
+
 msgid "New Pipeline Schedule"
 msgstr ""
 
 msgid "New Snippet"
-msgstr ""
-
-msgid "New Snippets"
 msgstr ""
 
 msgid "New branch"
@@ -6293,25 +6559,25 @@ msgid "New environment"
 msgstr ""
 
 msgid "New epic"
-msgstr ""
+msgstr "Yeni epik"
 
 msgid "New file"
-msgstr ""
+msgstr "Yeni dosya"
 
 msgid "New group"
-msgstr ""
+msgstr "Yeni grup"
 
 msgid "New identity"
-msgstr ""
+msgstr "Yeni kimlik"
 
 msgid "New issue"
-msgstr ""
+msgstr "Yeni sorun"
 
 msgid "New label"
-msgstr ""
+msgstr "Yeni etiket"
 
 msgid "New merge request"
-msgstr ""
+msgstr "Yeni birleştirme isteği"
 
 msgid "New milestone"
 msgstr ""
@@ -6320,31 +6586,37 @@ msgid "New pipelines will cancel older, pending pipelines on the same branch"
 msgstr ""
 
 msgid "New project"
-msgstr ""
+msgstr "Yeni proje"
 
 msgid "New schedule"
 msgstr ""
 
 msgid "New snippet"
-msgstr ""
+msgstr "Yeni kod parçası"
 
 msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
-msgstr ""
+msgstr "Yeni etiket"
 
 msgid "New..."
-msgstr ""
+msgstr "Yeni..."
 
 msgid "No"
+msgstr ""
+
+msgid "No %{providerTitle} repositories available to import"
 msgstr ""
 
 msgid "No Label"
 msgstr ""
 
-msgid "No activities found"
+msgid "No Tag"
 msgstr ""
+
+msgid "No activities found"
+msgstr "Etkinlik bulunamadı"
 
 msgid "No assignee"
 msgstr ""
@@ -6370,13 +6642,16 @@ msgstr ""
 msgid "No credit card required."
 msgstr ""
 
-msgid "No details available"
+msgid "No designs found."
 msgstr ""
+
+msgid "No details available"
+msgstr "Ayrıntı yok"
 
 msgid "No due date"
 msgstr ""
 
-msgid "No errors to display"
+msgid "No errors to display."
 msgstr ""
 
 msgid "No estimate or time spent"
@@ -6389,7 +6664,7 @@ msgid "No file selected"
 msgstr ""
 
 msgid "No files found."
-msgstr ""
+msgstr "Dosya bulunamadı."
 
 msgid "No issues for the selected time period."
 msgstr ""
@@ -6407,7 +6682,7 @@ msgid "No merge requests for the selected time period."
 msgstr ""
 
 msgid "No merge requests found"
-msgstr ""
+msgstr "Birleştirme isteği bulunamadı"
 
 msgid "No messages were logged"
 msgstr ""
@@ -6425,7 +6700,7 @@ msgid "No prioritised labels with such name or description"
 msgstr ""
 
 msgid "No public groups"
-msgstr ""
+msgstr "Genel grup yok"
 
 msgid "No pushes for the selected time period."
 msgstr ""
@@ -6470,6 +6745,9 @@ msgid "Not enough data"
 msgstr ""
 
 msgid "Not now"
+msgstr ""
+
+msgid "Not started"
 msgstr ""
 
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
@@ -6569,28 +6847,28 @@ msgid "NotificationLevel|Watch"
 msgstr ""
 
 msgid "Notifications"
-msgstr ""
+msgstr "Bildirimler"
 
 msgid "Notifications off"
-msgstr ""
+msgstr "Bildirimler kapalı"
 
 msgid "Notifications on"
-msgstr ""
+msgstr "Bildirimler açık"
 
 msgid "Nov"
-msgstr ""
+msgstr "Kas"
 
 msgid "November"
-msgstr ""
+msgstr "Kasım"
 
 msgid "OK"
 msgstr ""
 
 msgid "Oct"
-msgstr ""
+msgstr "Eki"
 
 msgid "October"
-msgstr ""
+msgstr "Ekim"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
@@ -6646,7 +6924,7 @@ msgid "Open in Xcode"
 msgstr ""
 
 msgid "Open projects"
-msgstr ""
+msgstr "Projeleri aç"
 
 msgid "Open sidebar"
 msgstr ""
@@ -6655,13 +6933,13 @@ msgid "Open source software to collaborate on code"
 msgstr ""
 
 msgid "Opened"
-msgstr ""
+msgstr "Açtı:"
 
 msgid "Opened MR"
 msgstr ""
 
 msgid "Opened issues"
-msgstr ""
+msgstr "Açılan sorunlar"
 
 msgid "OpenedNDaysAgo|Opened"
 msgstr ""
@@ -6673,6 +6951,9 @@ msgid "Operations"
 msgstr ""
 
 msgid "Operations Dashboard"
+msgstr "İşlemler Panosu"
+
+msgid "Operations Settings"
 msgstr ""
 
 msgid "OperationsDashboard|Add a project to the dashboard"
@@ -6682,6 +6963,9 @@ msgid "OperationsDashboard|The operations dashboard provides a summary of each p
 msgstr ""
 
 msgid "OperationsDashboard|Unable to add %{invalidProjects}. The Operations Dashboard is available for public projects, and private projects in groups with a Gold plan."
+msgstr ""
+
+msgid "Optional"
 msgstr ""
 
 msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
@@ -6757,7 +7041,7 @@ msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
-msgstr ""
+msgstr "Şifre"
 
 msgid "Past due"
 msgstr ""
@@ -6802,7 +7086,7 @@ msgid "Permissions, LFS, 2FA"
 msgstr ""
 
 msgid "Personal Access Token"
-msgstr ""
+msgstr "Kişisel Erişim Anahtarı"
 
 msgid "Personal project creation is not allowed. Please contact your administrator with questions"
 msgstr ""
@@ -6823,7 +7107,7 @@ msgid "Pipeline Schedules"
 msgstr ""
 
 msgid "Pipeline quota"
-msgstr ""
+msgstr "İş Hattı Kotası"
 
 msgid "Pipeline triggers"
 msgstr ""
@@ -6876,6 +7160,12 @@ msgstr ""
 msgid "PipelineSheduleIntervalPattern|Custom"
 msgstr ""
 
+msgid "PipelineStatusTooltip|Commit: %{ci_status}"
+msgstr ""
+
+msgid "PipelineStatusTooltip|Pipeline: %{ci_status}"
+msgstr ""
+
 msgid "Pipelines"
 msgstr ""
 
@@ -6889,6 +7179,9 @@ msgid "Pipelines for last week"
 msgstr ""
 
 msgid "Pipelines for last year"
+msgstr ""
+
+msgid "Pipelines need to be configured to enable this feature."
 msgstr ""
 
 msgid "Pipelines|Build with confidence"
@@ -7011,7 +7304,19 @@ msgstr ""
 msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
 msgstr ""
 
+msgid "Please create a username with only alphanumeric characters."
+msgstr ""
+
 msgid "Please enable and migrate to hashed storage to avoid security issues and ensure data integrity. %{migrate_link}"
+msgstr ""
+
+msgid "Please enter a non-negative number"
+msgstr ""
+
+msgid "Please enter a number greater than %{number} (from the project settings)"
+msgstr ""
+
+msgid "Please enter a valid number"
 msgstr ""
 
 msgid "Please fill in a descriptive name for your group."
@@ -7023,7 +7328,16 @@ msgstr ""
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
 msgstr ""
 
+msgid "Please provide a name"
+msgstr ""
+
+msgid "Please select and add a member"
+msgstr ""
+
 msgid "Please select at least one filter to see results"
+msgstr ""
+
+msgid "Please set a new password before proceeding."
 msgstr ""
 
 msgid "Please solve the reCAPTCHA"
@@ -7045,13 +7359,16 @@ msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
 msgid "Preferences"
-msgstr ""
+msgstr "Tercihler"
 
 msgid "Preferences|Navigation theme"
+msgstr "Preferences|Gezinme teması"
+
+msgid "Preferences|This feature is experimental and translations are not complete yet"
 msgstr ""
 
 msgid "Press Enter or click to search"
-msgstr ""
+msgstr "Aramak için Enter tuşuna basın veya tıklayın"
 
 msgid "Prevent adding new members to project membership within this group"
 msgstr ""
@@ -7090,10 +7407,10 @@ msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 msgid "Profile Settings"
-msgstr ""
+msgstr "Profil Ayarları"
 
 msgid "Profiles| You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account. Once you confirm %{deleteAccount}, it cannot be undone or recovered."
 msgstr ""
@@ -7117,7 +7434,7 @@ msgid "Profiles|Add key"
 msgstr ""
 
 msgid "Profiles|Add status emoji"
-msgstr ""
+msgstr "Profiles|Durum ifadesi ekle"
 
 msgid "Profiles|Avatar cropper"
 msgstr ""
@@ -7141,7 +7458,7 @@ msgid "Profiles|City, country"
 msgstr ""
 
 msgid "Profiles|Clear status"
-msgstr ""
+msgstr "Profiles|Durumu temizle"
 
 msgid "Profiles|Click on icon to activate signin with one of the following services"
 msgstr ""
@@ -7150,22 +7467,22 @@ msgid "Profiles|Connect"
 msgstr ""
 
 msgid "Profiles|Connected Accounts"
-msgstr ""
+msgstr "Profiles|Bağlı Hesaplar"
 
 msgid "Profiles|Current path: %{path}"
 msgstr ""
 
 msgid "Profiles|Current status"
-msgstr ""
+msgstr "Profiles|Mevcut durum"
 
 msgid "Profiles|Delete Account"
-msgstr ""
+msgstr "Profiles|Hesabı Sil"
 
 msgid "Profiles|Delete account"
-msgstr ""
+msgstr "Profiles|Hesabı sil"
 
 msgid "Profiles|Delete your account?"
-msgstr ""
+msgstr "Profiles|Hesabınız silinsin mi?"
 
 msgid "Profiles|Deleting an account has the following effects:"
 msgstr ""
@@ -7180,7 +7497,7 @@ msgid "Profiles|Don't display activity-related personal information on your prof
 msgstr ""
 
 msgid "Profiles|Edit Profile"
-msgstr ""
+msgstr "Profiles|Profili Düzenle"
 
 msgid "Profiles|Enter your name, so people you know can recognize you"
 msgstr ""
@@ -7189,7 +7506,7 @@ msgid "Profiles|Increase your account's security by enabling Two-Factor Authenti
 msgstr ""
 
 msgid "Profiles|Invalid password"
-msgstr ""
+msgstr "Profiles|Geçersiz şifre"
 
 msgid "Profiles|Invalid username"
 msgstr ""
@@ -7198,10 +7515,10 @@ msgid "Profiles|Learn more"
 msgstr ""
 
 msgid "Profiles|Made a private contribution"
-msgstr ""
+msgstr "Profiles|Özel bir katkı yaptı"
 
 msgid "Profiles|Main settings"
-msgstr ""
+msgstr "Profiles|Ana ayarlar"
 
 msgid "Profiles|No file chosen"
 msgstr ""
@@ -7213,10 +7530,10 @@ msgid "Profiles|Position and size your new avatar"
 msgstr ""
 
 msgid "Profiles|Private contributions"
-msgstr ""
+msgstr "Profiles|Özel katkılar"
 
 msgid "Profiles|Public Avatar"
-msgstr ""
+msgstr "Profiles|Genel Avatar"
 
 msgid "Profiles|Remove avatar"
 msgstr ""
@@ -7225,7 +7542,7 @@ msgid "Profiles|Set new profile picture"
 msgstr ""
 
 msgid "Profiles|Social sign-in"
-msgstr ""
+msgstr "Profiles|Sosyal oturum açma"
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
 msgstr ""
@@ -7246,13 +7563,10 @@ msgid "Profiles|This email will be used for web based operations, such as edits 
 msgstr ""
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
-msgstr ""
-
-msgid "Profiles|This feature is experimental and translations are not complete yet"
-msgstr ""
+msgstr "Profiles|Bu ifade ve mesaj profilinizde ve arayüz boyunca görünecektir."
 
 msgid "Profiles|This information will appear on your profile"
-msgstr ""
+msgstr "Profiles|Bu bilgiler profilinizde görünecek"
 
 msgid "Profiles|Two-Factor Authentication"
 msgstr ""
@@ -7264,13 +7578,13 @@ msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr ""
 
 msgid "Profiles|Update profile settings"
-msgstr ""
+msgstr "Profiles|Profil ayarlarını güncelle"
 
 msgid "Profiles|Update username"
 msgstr ""
 
 msgid "Profiles|Upload new avatar"
-msgstr ""
+msgstr "Profiles|Yeni avatar yükle"
 
 msgid "Profiles|Use a private email - %{email}"
 msgstr ""
@@ -7279,13 +7593,13 @@ msgid "Profiles|Username change failed - %{message}"
 msgstr ""
 
 msgid "Profiles|Username successfully changed"
-msgstr ""
+msgstr "Profiles|Kullanıcı adı başarıyla değiştirildi"
 
 msgid "Profiles|Using emojis in names seems fun, but please try to set a status message instead"
 msgstr ""
 
 msgid "Profiles|What's your status?"
-msgstr ""
+msgstr "Profiles|Durumunuz nedir?"
 
 msgid "Profiles|Who you represent or work for"
 msgstr ""
@@ -7324,7 +7638,7 @@ msgid "Profiles|Your name was automatically set based on your %{provider_label} 
 msgstr ""
 
 msgid "Profiles|Your status"
-msgstr ""
+msgstr "Profiles|Durumunuz"
 
 msgid "Profiles|e.g. My MacBook key"
 msgstr ""
@@ -7342,12 +7656,15 @@ msgid "Profiling - Performance bar"
 msgstr ""
 
 msgid "Programming languages used in this repository"
-msgstr ""
+msgstr "Bu depoda kullanılan programlama dilleri"
 
 msgid "Progress"
 msgstr ""
 
 msgid "Project"
+msgstr ""
+
+msgid "Project \"%{name}\" is no longer available. Select another project to continue."
 msgstr ""
 
 msgid "Project '%{project_name}' is in the process of being deleted."
@@ -7357,7 +7674,7 @@ msgid "Project '%{project_name}' queued for deletion."
 msgstr ""
 
 msgid "Project '%{project_name}' was successfully created."
-msgstr ""
+msgstr "'%{project_name}' projesi başarıyla oluşturuldu."
 
 msgid "Project '%{project_name}' was successfully updated."
 msgstr ""
@@ -7378,7 +7695,7 @@ msgid "Project avatar in repository: %{link}"
 msgstr ""
 
 msgid "Project details"
-msgstr ""
+msgstr "Proje ayrıntıları"
 
 msgid "Project export could not be deleted."
 msgstr ""
@@ -7392,11 +7709,14 @@ msgstr ""
 msgid "Project export started. A download link will be sent by email."
 msgstr ""
 
+msgid "Project has too many %{label_for_message} to search"
+msgstr ""
+
 msgid "Project members"
 msgstr ""
 
 msgid "Project name"
-msgstr ""
+msgstr "Proje adı"
 
 msgid "Project slug"
 msgstr ""
@@ -7414,10 +7734,10 @@ msgid "ProjectCreationLevel|Default project creation protection"
 msgstr ""
 
 msgid "ProjectCreationLevel|Developers + Maintainers"
-msgstr ""
+msgstr "ProjectCreationLevel|Geliştirici + Sorumlu"
 
 msgid "ProjectCreationLevel|Maintainers"
-msgstr ""
+msgstr "ProjectCreationLevel|Sorumlu"
 
 msgid "ProjectCreationLevel|No one"
 msgstr ""
@@ -7489,6 +7809,9 @@ msgid "ProjectSettings|Users can only push commits to this repository that were 
 msgstr ""
 
 msgid "Projects"
+msgstr "Projeler"
+
+msgid "Projects Successfully Retrieved"
 msgstr ""
 
 msgid "Projects shared with %{group_name}"
@@ -7806,7 +8129,7 @@ msgid "Register and see your runners for this project."
 msgstr ""
 
 msgid "Registry"
-msgstr ""
+msgstr "Kayıt Defteri"
 
 msgid "Related Commits"
 msgstr ""
@@ -7824,13 +8147,13 @@ msgid "Related Merge Requests"
 msgstr ""
 
 msgid "Related Merged Requests"
-msgstr ""
+msgstr "İlgili Birleştirme Talepleri"
 
 msgid "Related merge requests"
 msgstr ""
 
 msgid "Releases"
-msgstr ""
+msgstr "Sürümler"
 
 msgid "Releases mark specific points in a project's development history, communicate information about the type of change, and deliver on prepared, often compiled, versions of the software to be reused elsewhere. Currently, releases can only be created through the API."
 msgstr ""
@@ -7848,6 +8171,12 @@ msgid "Remove all approvals in a merge request when new commits are pushed to it
 msgstr ""
 
 msgid "Remove approver"
+msgstr ""
+
+msgid "Remove approvers"
+msgstr ""
+
+msgid "Remove approvers?"
 msgstr ""
 
 msgid "Remove avatar"
@@ -7941,7 +8270,7 @@ msgid "Reports|no changed test results"
 msgstr ""
 
 msgid "Repository"
-msgstr ""
+msgstr "Depo"
 
 msgid "Repository Settings"
 msgstr ""
@@ -7984,6 +8313,19 @@ msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr ""
+
+msgid "Require approval from code owners"
+msgstr ""
+
+msgid "Requires approval from %{names}."
+msgid_plural "Requires %{count} more approvals from %{names}."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Requires approval."
+msgid_plural "Requires %d more approvals."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Resend invite"
 msgstr ""
@@ -8143,6 +8485,9 @@ msgstr ""
 msgid "Running"
 msgstr ""
 
+msgid "Running…"
+msgstr ""
+
 msgid "SAML SSO"
 msgstr ""
 
@@ -8162,15 +8507,18 @@ msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from you
 msgstr ""
 
 msgid "SSH Keys"
-msgstr ""
+msgstr "SSH Anahtarları"
 
 msgid "SSH host keys"
-msgstr ""
+msgstr "SSH ana bilgisayar anahtarları"
 
 msgid "SSH public key"
 msgstr ""
 
 msgid "SSL Verification"
+msgstr ""
+
+msgid "Saturday"
 msgstr ""
 
 msgid "Save"
@@ -8180,7 +8528,7 @@ msgid "Save Changes"
 msgstr ""
 
 msgid "Save application"
-msgstr ""
+msgstr "Uygulamayı kaydet"
 
 msgid "Save changes"
 msgstr ""
@@ -8204,6 +8552,9 @@ msgid "Scheduled"
 msgstr ""
 
 msgid "Schedules"
+msgstr ""
+
+msgid "Scheduling"
 msgstr ""
 
 msgid "Scheduling Pipelines"
@@ -8252,22 +8603,25 @@ msgid "Search milestones"
 msgstr ""
 
 msgid "Search or filter results..."
-msgstr ""
+msgstr "Ara veya sonuçları filtrele..."
 
 msgid "Search or jump to…"
-msgstr ""
+msgstr "Ara veya atla…"
 
 msgid "Search project"
 msgstr ""
 
 msgid "Search projects"
-msgstr ""
+msgstr "Projeleri ara"
 
 msgid "Search users"
 msgstr ""
 
-msgid "Search your projects"
+msgid "Search users or groups"
 msgstr ""
+
+msgid "Search your projects"
+msgstr "Projelerinizi arayın"
 
 msgid "SearchAutocomplete|All GitLab"
 msgstr ""
@@ -8414,7 +8768,7 @@ msgid "Select project to choose zone"
 msgstr ""
 
 msgid "Select projects you want to import."
-msgstr ""
+msgstr "İçe aktarmak istediğiniz projeleri seçin."
 
 msgid "Select source branch"
 msgstr ""
@@ -8447,10 +8801,10 @@ msgid "Sentry API URL"
 msgstr ""
 
 msgid "Sep"
-msgstr ""
+msgstr "Eyl"
 
 msgid "September"
-msgstr ""
+msgstr "Eylül"
 
 msgid "Server version"
 msgstr ""
@@ -8498,7 +8852,7 @@ msgid "Serverless|There is currently no function data available from Knative. Th
 msgstr ""
 
 msgid "Service Desk"
-msgstr ""
+msgstr "Servis Masası"
 
 msgid "Service Templates"
 msgstr ""
@@ -8507,13 +8861,13 @@ msgid "Service URL"
 msgstr ""
 
 msgid "Session expiration, projects limit and attachment size."
-msgstr ""
+msgstr "Oturum zaman aşımı, proje sınırı ve ek boyutu."
 
 msgid "Set a password on your account to pull or push via %{protocol}."
 msgstr ""
 
 msgid "Set a template repository for projects in this group"
-msgstr ""
+msgstr "Bu gruptaki projeler için bir şablon deposu ayarlayın"
 
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
 msgstr ""
@@ -8522,6 +8876,9 @@ msgid "Set instance-wide template repository"
 msgstr ""
 
 msgid "Set max session time for web terminal."
+msgstr ""
+
+msgid "Set new password"
 msgstr ""
 
 msgid "Set notification email for abuse reports."
@@ -8548,6 +8905,9 @@ msgstr ""
 msgid "Set up new U2F device"
 msgstr ""
 
+msgid "Set up new password"
+msgstr ""
+
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -8555,28 +8915,28 @@ msgid "SetPasswordToCloneLink|set a password"
 msgstr ""
 
 msgid "SetStatusModal|Add status emoji"
-msgstr ""
+msgstr "SetStatusModal|Durum ifadesi ekle"
 
 msgid "SetStatusModal|Clear status"
-msgstr ""
+msgstr "SetStatusModal|Durumu temizle"
 
 msgid "SetStatusModal|Edit status"
-msgstr ""
+msgstr "SetStatusModal|Durumu düzenle"
 
 msgid "SetStatusModal|Remove status"
-msgstr ""
+msgstr "SetStatusModal|Durumu kaldır"
 
 msgid "SetStatusModal|Set a status"
-msgstr ""
+msgstr "SetStatusModal|Bir durum ayarla"
 
 msgid "SetStatusModal|Set status"
-msgstr ""
+msgstr "SetStatusModal|Durum ayarla"
 
 msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try again later."
 msgstr ""
 
 msgid "SetStatusModal|What's your status?"
-msgstr ""
+msgstr "SetStatusModal|Durumunuz nedir?"
 
 msgid "Settings"
 msgstr ""
@@ -8605,7 +8965,13 @@ msgstr ""
 msgid "Sherlock Transactions"
 msgstr ""
 
+msgid "Show all activity"
+msgstr ""
+
 msgid "Show command"
+msgstr ""
+
+msgid "Show comments only"
 msgstr ""
 
 msgid "Show complete raw log"
@@ -8628,8 +8994,8 @@ msgstr ""
 
 msgid "Showing %d event"
 msgid_plural "Showing %d events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d etkinliği gösteriliyor"
+msgstr[1] "%d etkinlikleri gösteriliyor"
 
 msgid "Side-by-side"
 msgstr ""
@@ -8668,7 +9034,7 @@ msgid "Sign in with smart card"
 msgstr ""
 
 msgid "Sign out"
-msgstr ""
+msgstr "Oturumu kapat"
 
 msgid "Sign-in restrictions"
 msgstr ""
@@ -8677,7 +9043,7 @@ msgid "Sign-up restrictions"
 msgstr ""
 
 msgid "Similar issues"
-msgstr ""
+msgstr "Benzer sorunlar"
 
 msgid "Size"
 msgstr ""
@@ -8704,6 +9070,24 @@ msgid "Snippet Contents"
 msgstr ""
 
 msgid "Snippets"
+msgstr "Parçacıklar"
+
+msgid "SnippetsEmptyState|Explore public snippets"
+msgstr ""
+
+msgid "SnippetsEmptyState|New snippet"
+msgstr ""
+
+msgid "SnippetsEmptyState|No snippets found"
+msgstr ""
+
+msgid "SnippetsEmptyState|Snippets are small pieces of code or notes that you want to keep."
+msgstr ""
+
+msgid "SnippetsEmptyState|There are no snippets to show."
+msgstr ""
+
+msgid "SnippetsEmptyState|They can be either public or private."
 msgstr ""
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
@@ -8833,7 +9217,7 @@ msgid "SortOptions|Last joined"
 msgstr ""
 
 msgid "SortOptions|Last updated"
-msgstr ""
+msgstr "SortOptions|Son güncelleme"
 
 msgid "SortOptions|Least popular"
 msgstr ""
@@ -8881,7 +9265,7 @@ msgid "SortOptions|Oldest sign in"
 msgstr ""
 
 msgid "SortOptions|Oldest updated"
-msgstr ""
+msgstr "SortOptions|En eski güncelleme"
 
 msgid "SortOptions|Popularity"
 msgstr ""
@@ -8914,7 +9298,7 @@ msgid "Source (branch or tag)"
 msgstr ""
 
 msgid "Source code"
-msgstr ""
+msgstr "Kaynak kodu"
 
 msgid "Source is not available"
 msgstr ""
@@ -8944,7 +9328,7 @@ msgid "Squash commits"
 msgstr ""
 
 msgid "Stage"
-msgstr ""
+msgstr "Aşama"
 
 msgid "Stage & Commit"
 msgstr ""
@@ -8974,6 +9358,12 @@ msgid "Starred Projects' Activity"
 msgstr ""
 
 msgid "Starred projects"
+msgstr ""
+
+msgid "StarredProjectsEmptyState|Visit a project page and press on a star icon. Then, you can find the project on this page."
+msgstr ""
+
+msgid "StarredProjectsEmptyState|You don't have starred projects yet."
 msgstr ""
 
 msgid "Stars"
@@ -9010,7 +9400,7 @@ msgid "Start the Runner!"
 msgstr ""
 
 msgid "Start your trial"
-msgstr ""
+msgstr "Denemenizi başlatın"
 
 msgid "Started"
 msgstr ""
@@ -9064,10 +9454,10 @@ msgid "Storage:"
 msgstr ""
 
 msgid "Subgroups"
-msgstr ""
+msgstr "Alt gruplar"
 
 msgid "Subgroups and projects"
-msgstr ""
+msgstr "Alt gruplar ve projeler"
 
 msgid "Submit as spam"
 msgstr ""
@@ -9082,7 +9472,7 @@ msgid "Submit search"
 msgstr ""
 
 msgid "Subscribe"
-msgstr ""
+msgstr "Abone ol"
 
 msgid "Subscribe at group level"
 msgstr ""
@@ -9091,13 +9481,13 @@ msgid "Subscribe at project level"
 msgstr ""
 
 msgid "Subscribe to RSS feed"
-msgstr ""
+msgstr "RSS beslemesine abone olun"
 
 msgid "Subscribe to calendar"
-msgstr ""
+msgstr "Takvime abone ol"
 
 msgid "Subscribed"
-msgstr ""
+msgstr "Abone"
 
 msgid "SubscriptionTable|Billing"
 msgstr ""
@@ -9186,6 +9576,9 @@ msgstr ""
 msgid "Sync information"
 msgstr ""
 
+msgid "System"
+msgstr ""
+
 msgid "System Hooks"
 msgstr ""
 
@@ -9211,13 +9604,13 @@ msgid "Tag list:"
 msgstr ""
 
 msgid "Tags"
-msgstr ""
+msgstr "Etiketler"
 
 msgid "Tags feed"
 msgstr ""
 
 msgid "Tags:"
-msgstr ""
+msgstr "Etiketler:"
 
 msgid "TagsPage|Browse commits"
 msgstr ""
@@ -9229,7 +9622,7 @@ msgid "TagsPage|Can't find HEAD commit for this tag"
 msgstr ""
 
 msgid "TagsPage|Cancel"
-msgstr ""
+msgstr "TagsPage|İptal"
 
 msgid "TagsPage|Create tag"
 msgstr ""
@@ -9322,7 +9715,7 @@ msgid "Test coverage parsing"
 msgstr ""
 
 msgid "Thanks! Don't show me this again"
-msgstr ""
+msgstr "Teşekkürler! Bu mesajı tekrar gösterme"
 
 msgid "The \"%{group_path}\" group allows you to sign in with your Single Sign-On Account"
 msgstr ""
@@ -9373,6 +9766,9 @@ msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
 msgid "The maximum file size allowed is 200KB."
+msgstr ""
+
+msgid "The name %{entryName} is already taken in this directory."
 msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
@@ -9496,6 +9892,9 @@ msgid "There was an error deleting the todo."
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
+msgstr "Kullanıcı etkinlik takvimi yüklenirken bir hata oluştu."
+
+msgid "There was an error saving your changes."
 msgstr ""
 
 msgid "There was an error saving your notification settings."
@@ -9543,6 +9942,21 @@ msgstr ""
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
+msgid "This commit is part of merge request %{link_to_merge_request}. Comments created here will be created in the context of that merge request."
+msgstr ""
+
+msgid "This commit was signed with a <strong>verified</strong> signature and the committer email is verified to belong to the same user."
+msgstr ""
+
+msgid "This commit was signed with a different user's verified signature."
+msgstr ""
+
+msgid "This commit was signed with a verified signature, but the committer email is <strong>not verified</strong> to belong to the same user."
+msgstr ""
+
+msgid "This commit was signed with an <strong>unverified</strong> signature."
+msgstr ""
+
 msgid "This container registry has been scheduled for deletion."
 msgstr ""
 
@@ -9562,6 +9976,9 @@ msgid "This directory"
 msgstr ""
 
 msgid "This domain is not verified. You will need to verify ownership before access is enabled."
+msgstr ""
+
+msgid "This field is required."
 msgstr ""
 
 msgid "This group"
@@ -9598,7 +10015,7 @@ msgid "This job does not have a trace."
 msgstr ""
 
 msgid "This job has been canceled"
-msgstr ""
+msgstr "Bu iş iptal edildi"
 
 msgid "This job has been skipped"
 msgstr ""
@@ -9646,6 +10063,12 @@ msgid "This means you can not push code until you create an empty repository or 
 msgstr ""
 
 msgid "This merge request is locked."
+msgstr ""
+
+msgid "This merge request must be approved by members of these groups. You can override the project settings by setting your own list of approvers."
+msgstr ""
+
+msgid "This merge request must be approved by these users. You can override the project settings by setting your own list of approvers."
 msgstr ""
 
 msgid "This option is disabled as you don't have write permissions for the current branch"
@@ -9754,130 +10177,130 @@ msgid "TimeTracking|Spent"
 msgstr ""
 
 msgid "Timeago|%s days ago"
-msgstr ""
+msgstr "Timeago|%s gün önce"
 
 msgid "Timeago|%s days remaining"
-msgstr ""
+msgstr "Timeago|%s gün kaldı"
 
 msgid "Timeago|%s hours ago"
-msgstr ""
+msgstr "Timeago|%s saat önce"
 
 msgid "Timeago|%s hours remaining"
-msgstr ""
+msgstr "Timeago|%s saat kaldı"
 
 msgid "Timeago|%s minutes ago"
-msgstr ""
+msgstr "Timeago|%s dakika önce"
 
 msgid "Timeago|%s minutes remaining"
-msgstr ""
+msgstr "Timeago|%s dakika kaldı"
 
 msgid "Timeago|%s months ago"
-msgstr ""
+msgstr "Timeago|%s ay önce"
 
 msgid "Timeago|%s months remaining"
-msgstr ""
+msgstr "Timeago|%s ay kaldı"
 
 msgid "Timeago|%s seconds ago"
-msgstr ""
+msgstr "Timeago|%s saniye önce"
 
 msgid "Timeago|%s seconds remaining"
-msgstr ""
+msgstr "Timeago|%s saniye kaldı"
 
 msgid "Timeago|%s weeks ago"
-msgstr ""
+msgstr "Timeago|%s hafta önce"
 
 msgid "Timeago|%s weeks remaining"
-msgstr ""
+msgstr "Timeago|%s hafta kaldı"
 
 msgid "Timeago|%s years ago"
-msgstr ""
+msgstr "Timeago|%s yıl önce"
 
 msgid "Timeago|%s years remaining"
-msgstr ""
+msgstr "Timeago|%s yıl kaldı"
 
 msgid "Timeago|1 day ago"
 msgstr ""
 
 msgid "Timeago|1 day remaining"
-msgstr ""
+msgstr "Timeago|1 gün kaldı"
 
 msgid "Timeago|1 hour ago"
-msgstr ""
+msgstr "Timeago|1 saat önce"
 
 msgid "Timeago|1 hour remaining"
-msgstr ""
+msgstr "Timeago|1 saat kaldı"
 
 msgid "Timeago|1 minute ago"
-msgstr ""
+msgstr "Timeago|1 dakika önce"
 
 msgid "Timeago|1 minute remaining"
-msgstr ""
+msgstr "Timeago|1 dakika kaldı"
 
 msgid "Timeago|1 month ago"
-msgstr ""
+msgstr "Timeago|1 ay önce"
 
 msgid "Timeago|1 month remaining"
-msgstr ""
+msgstr "Timeago|1 ay kaldı"
 
 msgid "Timeago|1 week ago"
-msgstr ""
+msgstr "Timeago|1 hafta önce"
 
 msgid "Timeago|1 week remaining"
-msgstr ""
+msgstr "Timeago|1 hafta kaldı"
 
 msgid "Timeago|1 year ago"
-msgstr ""
+msgstr "Timeago|1 yıl önce"
 
 msgid "Timeago|1 year remaining"
-msgstr ""
+msgstr "Timeago|1 yıl kaldı"
 
 msgid "Timeago|Past due"
-msgstr ""
+msgstr "Timeago|Vadesi geçmiş"
 
 msgid "Timeago|in %s days"
-msgstr ""
+msgstr "Timeago|%s gün içinde"
 
 msgid "Timeago|in %s hours"
-msgstr ""
+msgstr "Timeago|%s saat içinde"
 
 msgid "Timeago|in %s minutes"
-msgstr ""
+msgstr "Timeago|%s dakika içinde"
 
 msgid "Timeago|in %s months"
-msgstr ""
+msgstr "Timeago|%s ay içinde"
 
 msgid "Timeago|in %s seconds"
-msgstr ""
+msgstr "Timeago|%s saniye içinde"
 
 msgid "Timeago|in %s weeks"
-msgstr ""
+msgstr "Timeago|%s hafta içinde"
 
 msgid "Timeago|in %s years"
-msgstr ""
+msgstr "Timeago|%s yıl içinde"
 
 msgid "Timeago|in 1 day"
-msgstr ""
+msgstr "Timeago|1 gün içinde"
 
 msgid "Timeago|in 1 hour"
-msgstr ""
+msgstr "Timeago|1 saat içinde"
 
 msgid "Timeago|in 1 minute"
-msgstr ""
+msgstr "Timeago|1 dakika içinde"
 
 msgid "Timeago|in 1 month"
-msgstr ""
+msgstr "Timeago|1 ay içinde"
 
 msgid "Timeago|in 1 week"
-msgstr ""
+msgstr "Timeago|1 hafta içinde"
 
 msgid "Timeago|in 1 year"
-msgstr ""
+msgstr "Timeago|1 yıl içinde"
 
 msgid "Timeago|just now"
-msgstr ""
+msgstr "Timeago|şimdi"
 
 msgid "Timeago|right now"
-msgstr ""
+msgstr "Timeago|şimdi"
 
 msgid "Timeout"
 msgstr ""
@@ -10010,7 +10433,7 @@ msgid "Todo"
 msgstr ""
 
 msgid "Todos"
-msgstr ""
+msgstr "Yapılacaklar"
 
 msgid "Toggle Sidebar"
 msgstr ""
@@ -10040,7 +10463,7 @@ msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
 msgid "Token"
-msgstr ""
+msgstr "Erişim anahtarı"
 
 msgid "Tomorrow"
 msgstr ""
@@ -10184,7 +10607,7 @@ msgid "Unstar"
 msgstr ""
 
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Abonelikten çık"
 
 msgid "Unsubscribe at group level"
 msgstr ""
@@ -10207,6 +10630,9 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update approvers"
+msgstr ""
+
 msgid "Update failed"
 msgstr ""
 
@@ -10214,6 +10640,9 @@ msgid "Update now"
 msgstr ""
 
 msgid "Update your group name, description, avatar, and visibility."
+msgstr ""
+
+msgid "Updated"
 msgstr ""
 
 msgid "Updating"
@@ -10307,7 +10736,7 @@ msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{
 msgstr ""
 
 msgid "User Settings"
-msgstr ""
+msgstr "Kullanıcı Ayarları"
 
 msgid "User and IP Rate Limits"
 msgstr ""
@@ -10316,22 +10745,22 @@ msgid "User map"
 msgstr ""
 
 msgid "UserProfile|Activity"
-msgstr ""
+msgstr "UserProfile|Etkinlik"
 
 msgid "UserProfile|Already reported for abuse"
 msgstr ""
 
 msgid "UserProfile|Contributed projects"
-msgstr ""
+msgstr "UserProfile|Katıldığı projeler"
 
 msgid "UserProfile|Edit profile"
-msgstr ""
+msgstr "UserProfile|Profili düzenle"
 
 msgid "UserProfile|Explore public groups to find projects to contribute to."
 msgstr ""
 
 msgid "UserProfile|Groups"
-msgstr ""
+msgstr "UserProfile|Gruplar"
 
 msgid "UserProfile|Groups are the best way to manage projects and members."
 msgstr ""
@@ -10340,43 +10769,43 @@ msgid "UserProfile|Join or create a group to start contributing by commenting on
 msgstr ""
 
 msgid "UserProfile|Most Recent Activity"
-msgstr ""
+msgstr "UserProfile|En Son Etkinlik"
 
 msgid "UserProfile|No snippets found."
-msgstr ""
+msgstr "UserProfile|Parçacık bulunamadı."
 
 msgid "UserProfile|Overview"
-msgstr ""
+msgstr "UserProfile|Genel bakış"
 
 msgid "UserProfile|Personal projects"
-msgstr ""
+msgstr "UserProfile|Kişisel projeler"
 
 msgid "UserProfile|Report abuse"
-msgstr ""
+msgstr "UserProfile|Kötüye kullanımı bildir"
 
 msgid "UserProfile|Snippets"
-msgstr ""
+msgstr "UserProfile|Parçacıklar"
 
 msgid "UserProfile|Snippets in GitLab can either be private, internal, or public."
 msgstr ""
 
 msgid "UserProfile|Subscribe"
-msgstr ""
+msgstr "UserProfile|Abone"
 
 msgid "UserProfile|This user doesn't have any personal projects"
-msgstr ""
+msgstr "UserProfile|Bu kullanıcının herhangi bir kişisel projesi yok"
 
 msgid "UserProfile|This user has a private profile"
-msgstr ""
+msgstr "UserProfile|Bu kullanıcı özel bir profile sahip"
 
 msgid "UserProfile|This user hasn't contributed to any projects"
-msgstr ""
+msgstr "UserProfile|Bu kullanıcı hiçbir projeye katkıda bulunmadı"
 
 msgid "UserProfile|View all"
-msgstr ""
+msgstr "UserProfile|Tümünü görüntüle"
 
 msgid "UserProfile|View user in admin area"
-msgstr ""
+msgstr "UserProfile|Kullanıcıyı yönetici alanında görüntüle"
 
 msgid "UserProfile|You can create a group for several dependent projects."
 msgstr ""
@@ -10444,6 +10873,9 @@ msgstr ""
 msgid "View documentation"
 msgstr ""
 
+msgid "View eligible approvers"
+msgstr ""
+
 msgid "View epics list"
 msgstr ""
 
@@ -10451,6 +10883,9 @@ msgid "View file @ "
 msgstr ""
 
 msgid "View group labels"
+msgstr ""
+
+msgid "View in Sentry"
 msgstr ""
 
 msgid "View issue"
@@ -10756,6 +11191,9 @@ msgstr ""
 msgid "Withdraw Access Request"
 msgstr ""
 
+msgid "Write"
+msgstr ""
+
 msgid "Write a comment or drag your files here…"
 msgstr ""
 
@@ -10850,15 +11288,18 @@ msgid "You do not have the correct permissions to override the settings from the
 msgstr ""
 
 msgid "You don't have any applications"
-msgstr ""
+msgstr "Herhangi bir uygulamanız yok"
 
 msgid "You don't have any authorized applications"
-msgstr ""
+msgstr "Herhangi bir yetkili uygulamanız yok"
 
 msgid "You don't have any deployments right now."
 msgstr ""
 
 msgid "You have no permissions"
+msgstr ""
+
+msgid "You have not added any approvers. Start by adding users or groups."
 msgstr ""
 
 msgid "You have reached your project limit"
@@ -10895,16 +11336,16 @@ msgid "You will lose all the unstaged changes you've made in this project. This 
 msgstr ""
 
 msgid "You will not get any notifications via email"
-msgstr ""
+msgstr "E-posta yoluyla herhangi bir bildirim almazsınız "
 
 msgid "You will only receive notifications for the events you choose"
-msgstr ""
+msgstr "Yalnızca seçtiğiniz etkinlikler için bildirim alacaksınız"
 
 msgid "You will only receive notifications for threads you have participated in"
 msgstr ""
 
 msgid "You will receive notifications for any activity"
-msgstr ""
+msgstr "Herhangi bir etkinlik için bildirim alacaksınız"
 
 msgid "You will receive notifications only for comments in which you were @mentioned"
 msgstr ""
@@ -10916,9 +11357,12 @@ msgid "You won't be able to pull or push project code via SSH until you %{add_ss
 msgstr ""
 
 msgid "You won't be able to pull or push project code via SSH until you add an SSH key to your profile"
-msgstr ""
+msgstr "Profilinize bir SSH anahtarı ekleyene kadar proje kodunu SSH üzerinden çekemez veya yollayamazsınız"
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're only seeing %{startTag}other activity%{endTag} in the feed. To add a comment, switch to one of the following options."
 msgstr ""
 
 msgid "You're receiving this email because %{reason}."
@@ -10937,7 +11381,7 @@ msgid "Your Conversational Development Index gives an overview of how you are us
 msgstr ""
 
 msgid "Your Groups"
-msgstr ""
+msgstr "Gruplarınız"
 
 msgid "Your Kubernetes cluster information on this page is still editable, but you are advised to disable and reconfigure"
 msgstr ""
@@ -10949,16 +11393,16 @@ msgid "Your Projects' Activity"
 msgstr ""
 
 msgid "Your Todos"
-msgstr ""
+msgstr "Yapacaklarınız"
 
 msgid "Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left."
 msgstr ""
 
 msgid "Your applications (%{size})"
-msgstr ""
+msgstr "Uygulamalarınız (%{size})"
 
 msgid "Your authorized applications"
-msgstr ""
+msgstr "Yetkili uygulamalarınız"
 
 msgid "Your browser doesn't support U2F. Please use Google Chrome desktop (version 41 or newer)."
 msgstr ""
@@ -10979,7 +11423,7 @@ msgid "Your device was successfully set up! Give it a name and register it with 
 msgstr ""
 
 msgid "Your groups"
-msgstr ""
+msgstr "Gruplarınız"
 
 msgid "Your issues are being imported. Once finished, you'll get a confirmation email."
 msgstr ""
@@ -10994,13 +11438,13 @@ msgid "Your project limit is %{limit} projects! Please contact your administrato
 msgstr ""
 
 msgid "Your projects"
-msgstr ""
+msgstr "Projeleriniz"
 
 msgid "a deleted user"
 msgstr ""
 
 msgid "ago"
-msgstr ""
+msgstr "önce"
 
 msgid "allowed to fail"
 msgstr ""
@@ -11012,6 +11456,9 @@ msgid "assign yourself"
 msgstr ""
 
 msgid "attach a new file"
+msgstr ""
+
+msgid "authored"
 msgstr ""
 
 msgid "branch name"
@@ -11095,6 +11542,9 @@ msgid "ciReport|Code quality"
 msgstr ""
 
 msgid "ciReport|Confidence"
+msgstr ""
+
+msgid "ciReport|Container Scanning"
 msgstr ""
 
 msgid "ciReport|Container scanning"
@@ -11191,9 +11641,6 @@ msgstr ""
 msgid "ciReport|Performance metrics"
 msgstr ""
 
-msgid "ciReport|Revert dismissal"
-msgstr ""
-
 msgid "ciReport|SAST"
 msgstr ""
 
@@ -11233,6 +11680,9 @@ msgstr ""
 msgid "ciReport|There was an error reverting the dismissal. Please try again."
 msgstr ""
 
+msgid "ciReport|Undo dismiss"
+msgstr ""
+
 msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
 msgstr ""
 
@@ -11251,7 +11701,7 @@ msgid "command line instructions"
 msgstr ""
 
 msgid "commented on %{link_to_project}"
-msgstr ""
+msgstr "Yorumladı: %{link_to_project}"
 
 msgid "confidentiality|You are going to turn off the confidentiality. This means <strong>everyone</strong> will be able to see and leave a comment on this issue."
 msgstr ""
@@ -11288,7 +11738,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "done"
-msgstr ""
+msgstr "tamamlandı"
 
 msgid "draft"
 msgid_plural "drafts"
@@ -11320,12 +11770,9 @@ msgid "group"
 msgstr ""
 
 msgid "help"
-msgstr ""
+msgstr "yardım"
 
 msgid "here"
-msgstr ""
-
-msgid "http://<sentry-host>/api/0/projects/{organization_slug}/{project_slug}/"
 msgstr ""
 
 msgid "https://your-bitbucket-server"
@@ -11401,8 +11848,8 @@ msgstr ""
 
 msgid "merge request"
 msgid_plural "merge requests"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "birleştirme isteği"
+msgstr[1] "birleştirme isteği"
 
 msgid "missing"
 msgstr ""
@@ -11446,11 +11893,14 @@ msgstr ""
 msgid "mrWidget|Approve"
 msgstr ""
 
+msgid "mrWidget|Approve additionally"
+msgstr ""
+
 msgid "mrWidget|Approved by"
 msgstr ""
 
 msgid "mrWidget|Cancel automatic merge"
-msgstr ""
+msgstr "mrWidget|Otomatik birleştirmeyi iptal et"
 
 msgid "mrWidget|Check out branch"
 msgstr ""
@@ -11518,6 +11968,9 @@ msgstr ""
 msgid "mrWidget|Merge request approved"
 msgstr ""
 
+msgid "mrWidget|Merge request approved."
+msgstr ""
+
 msgid "mrWidget|Merge request approved; you can approve additionally"
 msgstr ""
 
@@ -11577,6 +12030,9 @@ msgid "mrWidget|Revert"
 msgstr ""
 
 msgid "mrWidget|Revert this merge request in a new merge request"
+msgstr ""
+
+msgid "mrWidget|Revoke approval"
 msgstr ""
 
 msgid "mrWidget|Set by"
@@ -11655,13 +12111,13 @@ msgid "n/a"
 msgstr ""
 
 msgid "new merge request"
-msgstr ""
+msgstr "yeni birleştirme isteği"
 
 msgid "none"
 msgstr ""
 
 msgid "notification emails"
-msgstr ""
+msgstr "bildirim e-postaları"
 
 msgid "nounSeries|%{firstItem} and %{lastItem}"
 msgstr ""
@@ -11686,10 +12142,10 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "password"
-msgstr ""
+msgstr "şifre"
 
 msgid "personal access token"
-msgstr ""
+msgstr "kişisel erişim anahtarı"
 
 msgid "private"
 msgstr ""
@@ -11765,13 +12221,13 @@ msgid "this document"
 msgstr ""
 
 msgid "to help your contributors communicate effectively!"
-msgstr ""
+msgstr "katkıda bulunanlara yardım etmek için etkili şekilde iletişim kurun!"
 
 msgid "triggered"
 msgstr ""
 
 msgid "updated"
-msgstr ""
+msgstr "güncellendi"
 
 msgid "username"
 msgstr ""
