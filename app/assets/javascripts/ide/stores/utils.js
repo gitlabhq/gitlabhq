@@ -75,8 +75,7 @@ export const decorateData = entity => {
     parentPath = '',
   } = entity;
 
-  return {
-    ...dataStructure(),
+  return Object.assign(dataStructure(), {
     id,
     projectId,
     branchId,
@@ -97,7 +96,7 @@ export const decorateData = entity => {
     file_lock,
     html,
     parentPath,
-  };
+  });
 };
 
 export const findEntry = (tree, type, name, prop = 'name') =>
