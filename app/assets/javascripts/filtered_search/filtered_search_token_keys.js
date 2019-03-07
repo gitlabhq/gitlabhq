@@ -88,4 +88,21 @@ export default class FilteredSearchTokenKeys {
     this.tokenKeys.push(confidentialToken);
     this.tokenKeysWithAlternative.push(confidentialToken);
   }
+
+  addExtraTokensForMergeRequests() {
+    const wipToken = {
+      key: 'wip',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'admin',
+      tag: 'Yes or No',
+      lowercaseValueOnSubmit: true,
+      uppercaseTokenName: true,
+      capitalizeTokenValue: true,
+    };
+
+    this.tokenKeys.push(wipToken);
+    this.tokenKeysWithAlternative.push(wipToken);
+  }
 }
