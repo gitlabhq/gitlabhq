@@ -37,6 +37,5 @@ module Backup
                       "gzip -c -1"
                     end
     end
-
   end
 end
