@@ -2247,7 +2247,7 @@ describe Repository do
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
-  describe '#ancestor?' do
+  shared_examples '#ancestor?' do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
@@ -2279,6 +2279,20 @@ describe Repository do
     context 'with Gitaly disabled', :skip_gitaly_mock do
       it_behaves_like('#ancestor?')
     end
+  end
+
+  describe '#ancestor? with Gitaly enabled' do
+    it_behaves_like "#ancestor?"
+  end
+
+  describe '#ancestor? with Rugged enabled', :enable_rugged do
+    it 'calls out to the Rugged implementation' do
+      allow_any_instance_of(Rugged).to receive(:merge_base).with(repository.commit.id, Gitlab::Git::BLANK_SHA).and_call_original
+
+      repository.ancestor?(repository.commit.id, Gitlab::Git::BLANK_SHA)
+    end
+
+    it_behaves_like '#ancestor?'
   end
 
   describe '#archive_metadata' do
