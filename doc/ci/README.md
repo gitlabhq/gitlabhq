@@ -11,11 +11,11 @@ description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Inte
 
 CI/CD is a vast area, so GitLab provides documentation for all levels of expertise. Consult the following table to find the right documentation for you:
 
-| Level of expertise                  | Resource                                                                                                                                              |
-|:------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------|
-| New to the concepts of CI and CD    | For a high-level overview, read an [introduction to CI/CD with GitLab](introduction/index.md). |
-| Familiar with GitLab CI/CD concepts | After getting familiar with GitLab CI/CD, let us walk you through a simple example in our [quick start guide](quick_start/README.md).                 |
-| A GitLab CI/CD expert               | Jump straight to our [`.gitlab.yml`](yaml/README.md) reference.                                                                                       |
+| Level of expertise                  | Resource                                                                                                                              |
+|:------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------|
+| New to the concepts of CI and CD    | For a high-level overview, read an [introduction to CI/CD with GitLab](introduction/index.md).                                        |
+| Familiar with GitLab CI/CD concepts | After getting familiar with GitLab CI/CD, let us walk you through a simple example in our [quick start guide](quick_start/README.md). |
+| A GitLab CI/CD expert               | Jump straight to our [`.gitlab.yml`](yaml/README.md) reference.                                                                       |
 
 NOTE: **Note:**
 Within the [DevOps lifecycle](../README.md#the-entire-devops-lifecycle), GitLab CI/CD spans
@@ -25,12 +25,12 @@ the [Verify (CI)](../README.md#verify) and [Release (CD)](../README.md#release) 
 
 The following documentation provides the minimum required knowledge for making use of GitLab CI/CD:
 
-| Topic                                                                   | Description                                              |
-|:------------------------------------------------------------------------|:---------------------------------------------------------|
-| [Getting started with GitLab CI/CD](quick_start/README.md)              | Outlines the first steps for configuring GitLab CI/CD.   |
-| [Introduction to pipelines and jobs](pipelines.md)                      | Provides an overview of GitLab CI/CD and jobs.           |
-| [Configuration of your pipelines with `.gitlab-ci.yml`](yaml/README.md) | A comprehensive reference for the `.gitlab-ci.yml` file. |
-| [`.gitlab-ci.yml` introduction](../user/project/pages/getting_started_part_four.md)                            | A step-by-step introduction to writing a GitLab CI/CD configuration file (`.gitlab-ci.yml`) for the first time. |
+| Topic                                                                               | Description                                                                                                     |
+|:------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------|
+| [Getting started with GitLab CI/CD](quick_start/README.md)                          | Outlines the first steps for configuring GitLab CI/CD.                                                          |
+| [Introduction to pipelines and jobs](pipelines.md)                                  | Provides an overview of GitLab CI/CD and jobs.                                                                  |
+| [Configuration of your pipelines with `.gitlab-ci.yml`](yaml/README.md)             | A comprehensive reference for the `.gitlab-ci.yml` file.                                                        |
+| [`.gitlab-ci.yml` introduction](../user/project/pages/getting_started_part_four.md) | A step-by-step introduction to writing a GitLab CI/CD configuration file (`.gitlab-ci.yml`) for the first time. |
 
 NOTE: **Note:**
 Familiarity with [GitLab Runner](https://docs.gitlab.com/runner/) is useful because it is
