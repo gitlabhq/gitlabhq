@@ -78,10 +78,10 @@ scripts to be specified in a file called [`.gitlab-ci.yml`](../yaml/README.md),
 located in the root path of your repository.
 
 In this file, you can define the scripts you want to run, define include and
-cache dependencies, choose what commands you want to run in sequence
+cache dependencies, choose commands you want to run in sequence
 and those you want to run in parallel, define where you want to
-deploy your app, and choose if you want to run the script automatically
-or if you want to trigger it manually. Once you're familiar with
+deploy your app, and specify whether you will want to run the scripts automatically
+or trigger any of them manually. Once you're familiar with
 GitLab CI/CD you can add more advanced steps into the configuration file.
 
 To add scripts to that file, you'll need to organize them in a
@@ -175,7 +175,7 @@ file, so we recommend you read through it to understand GitLab's CI/CD
 logic, and learn how to write your own script (or tweak an
 existing one) for any application.
 
-For an deep view of GitLab's CI/CD configuration options, check the
+For a deep view of GitLab's CI/CD configuration options, check the
 [`.gitlab-ci.yml` full reference](../yaml/README.md).
 
 ### GitLab CI/CD feature set
