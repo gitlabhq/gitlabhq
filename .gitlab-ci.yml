@@ -703,6 +703,9 @@ gitlab:ui:visual:
       - app/assets/stylesheets/*.scss
       - app/assets/stylesheets/**/*.scss
       - app/assets/stylesheets/**/**/*.scss
+  except:
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[skip visual\]/i
   artifacts:
     paths:
       - tests/__image_snapshots__/
