@@ -259,6 +259,7 @@
   background: $gray-light;
   border: 1px solid $border-color;
   color: $gl-text-color;
+  position: -webkit-sticky;
   position: sticky;
   top: $header-height;
   padding: $grid-size;
