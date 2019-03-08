@@ -7,10 +7,14 @@ class ApplicationSetting < ActiveRecord::Base
   include IgnorableColumn
   include ChronicDurationAttribute
 
-  include ApplicationSettingImplementation
-
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
+
+  # Include here so it can override methods from
+  # `add_authentication_token_field`
+  # We don't prepend for now because otherwise we'll need to
+  # fix a lot of tests using allow_any_instance_of
+  include ApplicationSettingImplementation
 
   serialize :restricted_visibility_levels # rubocop:disable Cop/ActiveRecordSerialize
   serialize :import_sources # rubocop:disable Cop/ActiveRecordSerialize
