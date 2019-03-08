@@ -32,7 +32,7 @@ let globDir = process.argv[3] || '';
 if (globDir && globDir.charAt(globDir.length - 1) !== '/') globDir += '/';
 
 console.log(
-  `Loading all ${allFiles ? '' : 'staged '}files ${globDir ? `within ${globDir} ` : ''}...`
+  `Loading all ${allFiles ? '' : 'staged '}files ${globDir ? `within ${globDir} ` : ''}...`,
 );
 
 const globPatterns = matchExtensions.map(ext => `${globDir}**/*.${ext}`);
@@ -105,7 +105,7 @@ Promise.all(matchedFiles.map(checkFileWithPrettierConfig))
   .then(() => {
     const failAction = shouldSave ? 'fixed' : 'failed';
     console.log(
-      `\nSummary:\n  ${matchedCount} files processed (${passedCount} passed, ${failedCount} ${failAction}, ${ignoredCount} ignored)\n`
+      `\nSummary:\n  ${matchedCount} files processed (${passedCount} passed, ${failedCount} ${failAction}, ${ignoredCount} ignored)\n`,
     );
 
     if (didWarn) process.exit(1);
