@@ -158,7 +158,6 @@ export default {
         href="#"
         title="Add reaction"
       >
-        <gl-loading-icon inline />
         <icon
           css-classes="link-highlight award-control-icon-neutral"
           name="emoji_slightly_smiling_face"
