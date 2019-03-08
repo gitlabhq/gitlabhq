@@ -5,8 +5,8 @@ module Gitlab
     def self.load_configurations!
       if Gitlab::CurrentSettings.recaptcha_enabled
         ::Recaptcha.configure do |config|
-          config.public_key  = Gitlab::CurrentSettings.recaptcha_site_key
-          config.private_key = Gitlab::CurrentSettings.recaptcha_private_key
+          config.site_key = Gitlab::CurrentSettings.recaptcha_site_key
+          config.secret_key = Gitlab::CurrentSettings.recaptcha_private_key
         end
 
         true
