@@ -387,27 +387,27 @@ Upgrades will reset values back to the values built into the `runner`
 chart plus the values set by
 [`values.yaml`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/vendor/runner/values.yaml)
 
-## Getting the external IP address
+## Getting the external endpoint
 
 NOTE: **Note:**
 With the following procedure, a load balancer must be installed in your cluster
-to obtain the external IP address. You can use either
+to obtain the endpoint. You can use either
 [Ingress](#installing-applications), or Knative's own load balancer
 ([Istio](https://istio.io)) if using [Knative](#installing-applications).
 
-In order to publish your web application, you first need to find the external IP
-address associated to your load balancer.
+In order to publish your web application, you first need to find the endpoint which will be either an IP
+address or a hostname associated with your load balancer.
 
-### Let GitLab fetch the IP address
+### Let GitLab fetch the external endpoint
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
 
 If you [installed Ingress or Knative](#installing-applications),
-you should see the Ingress IP address on this same page within a few minutes.
-If you don't see this, GitLab might not be able to determine the IP address of
+you should see the Ingress Endpoint on this same page within a few minutes.
+If you don't see this, GitLab might not be able to determine the external endpoint of
 your ingress application in which case you should manually determine it.
 
-### Manually determining the IP address
+### Manually determining the external endpoint
 
 If the cluster is on GKE, click the **Google Kubernetes Engine** link in the
 **Advanced settings**, or go directly to the
@@ -417,7 +417,7 @@ the `gcloud` command in a local terminal or using the **Cloud Shell**.
 
 If the cluster is not on GKE, follow the specific instructions for your
 Kubernetes provider to configure `kubectl` with the right credentials.
-The output of the following examples will show the external IP address of your
+The output of the following examples will show the external endpoint of your
 cluster. This information can then be used to set up DNS entries and forwarding
 rules that allow external access to your deployed applications.
 
@@ -425,19 +425,19 @@ If you installed the Ingress [via the **Applications**](#installing-applications
 run the following command:
 
 ```bash
-kubectl get svc --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
+kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+```
+
+Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+
+```bash
+kubectl get service --namespace=gitlab-managed-apps ingress-nginx-ingress-controller -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
 ```
 
 For Istio/Knative, the command will be different:
 
 ```bash
 kubectl get svc --namespace=istio-system knative-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip} '
-```
-
-Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
-
-```bash
-kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}".
 ```
 
 Otherwise, you can list the IP addresses of all load balancers:
@@ -456,13 +456,12 @@ reserved IP.
 
 Read how to [promote an ephemeral external IP address in GKE](https://cloud.google.com/compute/docs/ip-addresses/reserve-static-external-ip-address#promote_ephemeral_ip).
 
-### Pointing your DNS at the cluster IP
+### Pointing your DNS at the external endpoint
 
-Once you've set up the static IP, you should associate it to a [wildcard DNS
-record](https://en.wikipedia.org/wiki/Wildcard_DNS_record), in order to be able
-to reach your apps. This heavily depends on your domain provider, but in case
-you aren't sure, just create an A record with a wildcard host like
-`*.example.com.`.
+Once you've set up the external endpoint, you should associate it with a [wildcard DNS
+record](https://en.wikipedia.org/wiki/Wildcard_DNS_record) such as `*.example.com.`
+in order to be able to reach your apps. If your external endpoint is an IP address,
+use an A record. If your external endpoint is a hostname, use a CNAME record.
 
 ## Multiple Kubernetes clusters **[PREMIUM]**
 

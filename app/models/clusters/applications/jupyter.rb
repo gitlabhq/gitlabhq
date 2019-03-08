@@ -18,8 +18,10 @@ module Clusters
 
       def set_initial_status
         return unless not_installable?
+        return unless cluster&.application_ingress_available?
 
-        if cluster&.application_ingress_available? && cluster.application_ingress.external_ip
+        ingress = cluster.application_ingress
+        if ingress.external_ip || ingress.external_hostname
           self.status = 'installable'
         end
       end
