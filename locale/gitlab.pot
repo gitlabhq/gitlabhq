@@ -321,6 +321,12 @@ msgstr ""
 msgid "A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}."
 msgstr ""
 
+msgid "A ready-to-go template for use with Android apps."
+msgstr ""
+
+msgid "A ready-to-go template for use with iOS Swift apps."
+msgstr ""
+
 msgid "A regular expression that will be used to find the test coverage output in the job trace. Leave blank to disable"
 msgstr ""
 
@@ -562,6 +568,9 @@ msgid "AdminUsers|User will be blocked"
 msgstr ""
 
 msgid "AdminUsers|Without projects"
+msgstr ""
+
+msgid "Advanced"
 msgstr ""
 
 msgid "Advanced permissions, Large File Storage and Two-Factor authentication settings."
@@ -1446,6 +1455,12 @@ msgstr ""
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
+msgid "Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions."
+msgstr ""
+
+msgid "Choose your merge method, set up a default merge request description template."
+msgstr ""
+
 msgid "CiStatusLabel|canceled"
 msgstr ""
 
@@ -1602,9 +1617,6 @@ msgstr ""
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which may incur additional costs depending on the hosting provider your Kubernetes cluster is installed on. If you are using Google Kubernetes Engine, you can %{pricingLink}."
-msgstr ""
-
 msgid "ClusterIntegration|%{title} upgraded successfully."
 msgstr ""
 
@@ -1624,9 +1636,6 @@ msgid "ClusterIntegration|Adding an integration to your group will share the clu
 msgstr ""
 
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
-msgstr ""
-
-msgid "ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}"
 msgstr ""
 
 msgid "ClusterIntegration|Alternatively"
@@ -1683,13 +1692,13 @@ msgstr ""
 msgid "ClusterIntegration|Copy CA Certificate"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Ingress IP Address to clipboard"
+msgid "ClusterIntegration|Copy Ingress Endpoint to clipboard"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Jupyter Hostname to clipboard"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Knative IP Address to clipboard"
+msgid "ClusterIntegration|Copy Knative Endpoint to clipboard"
 msgstr ""
 
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
@@ -1770,7 +1779,7 @@ msgstr ""
 msgid "ClusterIntegration|Ingress"
 msgstr ""
 
-msgid "ClusterIntegration|Ingress IP Address"
+msgid "ClusterIntegration|Ingress Endpoint"
 msgstr ""
 
 msgid "ClusterIntegration|Ingress gives you a way to route requests to services based on the request host or path, centralizing a number of services into a single entrypoint."
@@ -1783,6 +1792,12 @@ msgid "ClusterIntegration|Installed"
 msgstr ""
 
 msgid "ClusterIntegration|Installing"
+msgstr ""
+
+msgid "ClusterIntegration|Installing Ingress may incur additional costs. Learn more about %{pricingLink}."
+msgstr ""
+
+msgid "ClusterIntegration|Installing Knative may incur additional costs. Learn more about %{pricingLink}."
 msgstr ""
 
 msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
@@ -1812,7 +1827,7 @@ msgstr ""
 msgid "ClusterIntegration|Knative Domain Name:"
 msgstr ""
 
-msgid "ClusterIntegration|Knative IP Address:"
+msgid "ClusterIntegration|Knative Endpoint:"
 msgstr ""
 
 msgid "ClusterIntegration|Knative extends Kubernetes to provide a set of middleware components that are essential to build modern, source-centric, and container-based applications that can run anywhere: on premises, in the cloud, or even in a third-party data center."
@@ -1866,9 +1881,6 @@ msgstr ""
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
 msgstr ""
 
-msgid "ClusterIntegration|More information"
-msgstr ""
-
 msgid "ClusterIntegration|No machine types matched your search"
 msgstr ""
 
@@ -1881,9 +1893,6 @@ msgstr ""
 msgid "ClusterIntegration|No zones matched your search"
 msgstr ""
 
-msgid "ClusterIntegration|Note:"
-msgstr ""
-
 msgid "ClusterIntegration|Number of nodes"
 msgstr ""
 
@@ -1893,7 +1902,7 @@ msgstr ""
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
 msgstr ""
 
-msgid "ClusterIntegration|Point a wildcard DNS to this generated IP address in order to access your application after it has been deployed."
+msgid "ClusterIntegration|Point a wildcard DNS to this generated endpoint in order to access your application after it has been deployed."
 msgstr ""
 
 msgid "ClusterIntegration|Project cluster"
@@ -1932,7 +1941,7 @@ msgstr ""
 msgid "ClusterIntegration|Request to begin installing failed"
 msgstr ""
 
-msgid "ClusterIntegration|Retry upgrade"
+msgid "ClusterIntegration|Retry update"
 msgstr ""
 
 msgid "ClusterIntegration|Save changes"
@@ -1977,9 +1986,6 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong when upgrading %{title}. Please check the logs and try again."
-msgstr ""
-
 msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine"
 msgstr ""
 
@@ -1989,7 +1995,7 @@ msgstr ""
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
 msgstr ""
 
-msgid "ClusterIntegration|The IP address is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
+msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
 msgstr ""
 
 msgid "ClusterIntegration|This account must have permissions to create a Kubernetes cluster in the %{link_to_container_project} specified below"
@@ -1998,10 +2004,19 @@ msgstr ""
 msgid "ClusterIntegration|This option will allow you to install applications on RBAC clusters."
 msgstr ""
 
+msgid "ClusterIntegration|To access your application after deployment, point a wildcard DNS to the Knative Endpoint."
+msgstr ""
+
 msgid "ClusterIntegration|Toggle Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Token"
+msgstr ""
+
+msgid "ClusterIntegration|Update failed. Please check the logs and try again."
+msgstr ""
+
+msgid "ClusterIntegration|Updating"
 msgstr ""
 
 msgid "ClusterIntegration|Upgrade"
@@ -2040,9 +2055,6 @@ msgstr ""
 msgid "ClusterIntegration|access to Google Kubernetes Engine"
 msgstr ""
 
-msgid "ClusterIntegration|check the pricing here"
-msgstr ""
-
 msgid "ClusterIntegration|documentation"
 msgstr ""
 
@@ -2050,6 +2062,9 @@ msgid "ClusterIntegration|help page"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"
+msgstr ""
+
+msgid "ClusterIntegration|pricing"
 msgstr ""
 
 msgid "ClusterIntegration|properly configured"
@@ -2935,6 +2950,9 @@ msgstr ""
 msgid "Edit environment"
 msgstr ""
 
+msgid "Edit file"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr ""
 
@@ -2957,6 +2975,9 @@ msgid "Emails"
 msgstr ""
 
 msgid "Embed"
+msgstr ""
+
+msgid "Emojis|Something went wrong while loading emojis."
 msgstr ""
 
 msgid "Empty file"
@@ -3621,6 +3642,9 @@ msgstr ""
 msgid "General"
 msgstr ""
 
+msgid "General Settings"
+msgstr ""
+
 msgid "General pipelines"
 msgstr ""
 
@@ -3939,6 +3963,9 @@ msgid "History"
 msgstr ""
 
 msgid "Housekeeping successfully started"
+msgstr ""
+
+msgid "Housekeeping, export, path, transfer, remove, archive."
 msgstr ""
 
 msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
@@ -4563,6 +4590,12 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
+msgid "MRDiff|Show changes only"
+msgstr ""
+
+msgid "MRDiff|Show full file"
+msgstr ""
+
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
 msgstr ""
 
@@ -4731,6 +4764,9 @@ msgstr ""
 msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
 msgstr ""
 
+msgid "MergeRequest|Error loading full diff. Please try again."
+msgstr ""
+
 msgid "MergeRequest|Filter files"
 msgstr ""
 
@@ -4891,6 +4927,9 @@ msgid "Name your individual key via a title"
 msgstr ""
 
 msgid "Name:"
+msgstr ""
+
+msgid "Naming, tags, avatar"
 msgstr ""
 
 msgid "Naming, visibility"
@@ -5411,9 +5450,6 @@ msgid "Pick a name"
 msgstr ""
 
 msgid "Pipeline"
-msgstr ""
-
-msgid "Pipeline Health"
 msgstr ""
 
 msgid "Pipeline Schedule"
@@ -6202,6 +6238,9 @@ msgstr ""
 msgid "Real-time features"
 msgstr ""
 
+msgid "Recent Project Activity"
+msgstr ""
+
 msgid "Recent searches"
 msgstr ""
 
@@ -6513,6 +6552,9 @@ msgid "SSH public key"
 msgstr ""
 
 msgid "SSL Verification"
+msgstr ""
+
+msgid "Saturday"
 msgstr ""
 
 msgid "Save"
@@ -8183,6 +8225,9 @@ msgstr ""
 msgid "Update your group name, description, avatar, and visibility."
 msgstr ""
 
+msgid "Update your project name, tags, description and avatar."
+msgstr ""
+
 msgid "Updating"
 msgstr ""
 
@@ -8412,6 +8457,9 @@ msgid "Visibility level"
 msgstr ""
 
 msgid "Visibility level:"
+msgstr ""
+
+msgid "Visibility, project features, permissions"
 msgstr ""
 
 msgid "Visibility:"

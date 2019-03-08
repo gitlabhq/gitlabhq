@@ -10,6 +10,12 @@ import { __ } from '~/locale';
 
 const d3 = { select, scaleLinear, scaleThreshold };
 
+const firstDayOfWeekChoices = Object.freeze({
+  sunday: 0,
+  monday: 1,
+  saturday: 6,
+});
+
 const LOADING_HTML = `
   <div class="text-center">
     <i class="fa fa-spinner fa-spin user-calendar-activities-loading"></i>
@@ -49,7 +55,7 @@ export default class ActivityCalendar {
     timestamps,
     calendarActivitiesPath,
     utcOffset = 0,
-    firstDayOfWeek = 0,
+    firstDayOfWeek = firstDayOfWeekChoices.sunday,
     monthsAgo = 12,
   ) {
     this.calendarActivitiesPath = calendarActivitiesPath;
@@ -206,10 +212,15 @@ export default class ActivityCalendar {
       },
     ];
 
-    if (this.firstDayOfWeek === 1) {
+    if (this.firstDayOfWeek === firstDayOfWeekChoices.monday) {
       days.push({
         text: 'S',
         y: 29 + this.dayYPos(7),
+      });
+    } else if (this.firstDayOfWeek === firstDayOfWeekChoices.saturday) {
+      days.push({
+        text: 'S',
+        y: 29 + this.dayYPos(6),
       });
     }
 

@@ -56,6 +56,14 @@ describe Clusters::Applications::Ingress do
         expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
       end
     end
+
+    context 'when there is already an external_hostname' do
+      let(:application) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
+
+      it 'does not schedule a ClusterWaitForIngressIpAddressWorker' do
+        expect(ClusterWaitForIngressIpAddressWorker).not_to have_received(:perform_in)
+      end
+    end
   end
 
   describe '#install_command' do

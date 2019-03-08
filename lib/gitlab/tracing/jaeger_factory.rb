@@ -60,7 +60,7 @@ module Gitlab
         elsif udp_endpoint.present?
           sender = get_udp_sender(encoder, udp_endpoint)
         else
-          return nil
+          return
         end
 
         Jaeger::Reporters::RemoteReporter.new(

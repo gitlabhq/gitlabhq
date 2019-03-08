@@ -122,7 +122,7 @@ module NotesHelper
   end
 
   def new_form_url
-    return nil unless @snippet.is_a?(PersonalSnippet)
+    return unless @snippet.is_a?(PersonalSnippet)
 
     snippet_notes_path(@snippet)
   end

@@ -71,6 +71,7 @@
                 = render 'shared/issuable/user_dropdown_item',
                   user: User.new(username: '{{username}}', name: '{{name}}'),
                   avatar: { lazy: true, url: '{{avatar_url}}' }
+            = render_if_exists 'shared/issuable/approver_dropdown'
             #js-dropdown-milestone.filtered-search-input-dropdown-menu.dropdown-menu
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { value: 'None' } }

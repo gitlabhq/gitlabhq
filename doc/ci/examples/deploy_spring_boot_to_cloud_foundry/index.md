@@ -1,7 +1,7 @@
 ---
 author: Dylan Griffith
 author_gitlab: DylanGriffith
-level: intermediary
+level: intermediate
 article_type: tutorial
 date: 2018-06-07
 description: "Continuous Deployment of a Spring Boot application to Cloud Foundry with GitLab CI/CD"

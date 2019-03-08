@@ -2,28 +2,18 @@
 
 module TokenAuthenticatableStrategies
   class Encrypted < Base
-    def initialize(*)
-      super
-
-      if migrating? && fallback?
-        raise ArgumentError, '`fallback` and `migrating` options are not compatible!'
-      end
-    end
-
     def find_token_authenticatable(token, unscoped = false)
       return if token.blank?
 
-      if fully_encrypted?
-        return find_by_encrypted_token(token, unscoped)
-      end
-
-      if fallback?
+      if required?
+        find_by_encrypted_token(token, unscoped)
+      elsif optional?
         find_by_encrypted_token(token, unscoped) ||
           find_by_plaintext_token(token, unscoped)
       elsif migrating?
         find_by_plaintext_token(token, unscoped)
       else
-        raise ArgumentError, 'Unknown encryption phase!'
+        raise ArgumentError, "Unknown encryption strategy: #{encrypted_strategy}!"
       end
     end
 
@@ -41,8 +31,8 @@ module TokenAuthenticatableStrategies
 
       return super if instance.has_attribute?(encrypted_field)
 
-      if fully_encrypted?
-        raise ArgumentError, 'Using encrypted strategy when encrypted field is missing!'
+      if required?
+        raise ArgumentError, 'Using required encryption strategy when encrypted field is missing!'
       else
         insecure_strategy.ensure_token(instance)
       end
@@ -53,8 +43,7 @@ module TokenAuthenticatableStrategies
 
       encrypted_token = instance.read_attribute(encrypted_field)
       token = Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
-
-      token || (insecure_strategy.get_token(instance) if fallback?)
+      token || (insecure_strategy.get_token(instance) if optional?)
     end
 
     def set_token(instance, token)
@@ -62,15 +51,34 @@ module TokenAuthenticatableStrategies
 
       instance[encrypted_field] = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
       instance[token_field] = token if migrating?
-      instance[token_field] = nil if fallback?
+      instance[token_field] = nil if optional?
       token
     end
 
-    def fully_encrypted?
-      !migrating? && !fallback?
+    def required?
+      encrypted_strategy == :required
+    end
+
+    def migrating?
+      encrypted_strategy == :migrating
+    end
+
+    def optional?
+      encrypted_strategy == :optional
     end
 
     protected
+
+    def encrypted_strategy
+      value = options[:encrypted]
+      value = value.call if value.is_a?(Proc)
+
+      unless value.in?([:required, :optional, :migrating])
+        raise ArgumentError, 'encrypted: needs to be a :required, :optional or :migrating!'
+      end
+
+      value
+    end
 
     def find_by_plaintext_token(token, unscoped)
       insecure_strategy.find_token_authenticatable(token, unscoped)
@@ -89,7 +97,7 @@ module TokenAuthenticatableStrategies
     def token_set?(instance)
       raw_token = instance.read_attribute(encrypted_field)
 
-      unless fully_encrypted?
+      unless required?
         raw_token ||= insecure_strategy.get_token(instance)
       end
 

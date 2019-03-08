@@ -1,0 +1,41 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/project/merge_requests/dependency_scanning.html
+#
+# Configure the scanning tool through the environment variables.
+# List of the variables: https://gitlab.com/gitlab-org/security-products/dependency-scanning#settings
+# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+
+dependency_scanning:
+  stage: test
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export DS_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
+    - |
+      docker run \
+        --env DS_ANALYZER_IMAGES \
+        --env DS_ANALYZER_IMAGE_PREFIX \
+        --env DS_ANALYZER_IMAGE_TAG \
+        --env DS_DEFAULT_ANALYZERS \
+        --env DEP_SCAN_DISABLE_REMOTE_CHECKS \
+        --env DS_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
+        --env DS_PULL_ANALYZER_IMAGE_TIMEOUT \
+        --env DS_RUN_ANALYZER_TIMEOUT \
+        --volume "$PWD:/code" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$DS_VERSION" /code
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json
+  dependencies: []
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
+  except:
+    variables:
+      - $DEPENDENCY_SCANNING_DISABLED

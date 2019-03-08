@@ -341,13 +341,15 @@
   &.builds .ci-table tr {
     height: 71px;
   }
+
+  .ci-table {
+    thead th {
+      border-top: 0;
+    }
+  }
 }
 
 .build-failures {
-  th {
-    border-top: 0;
-  }
-
   .build-state {
     padding: 20px 2px;
 

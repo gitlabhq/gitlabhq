@@ -17,7 +17,7 @@ used to create and test an image:
 
 ```bash
 docker build -t my-image dockerfiles/
-docker run my-docker-image /script/to/run/tests
+docker run my-image /script/to/run/tests
 docker tag my-image my-registry:5000/my-image
 docker push my-registry:5000/my-image
 ```

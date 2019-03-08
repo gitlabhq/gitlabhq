@@ -79,7 +79,7 @@ class Repository
   end
 
   def raw_repository
-    return nil unless full_path
+    return unless full_path
 
     @raw_repository ||= initialize_raw_repository
   end
@@ -103,7 +103,7 @@ class Repository
   end
 
   def commit(ref = nil)
-    return nil unless exists?
+    return unless exists?
     return ref if ref.is_a?(::Commit)
 
     find_commit(ref || root_ref)

@@ -9,13 +9,17 @@ module Gitlab
         non_master_delete_protected_branch: 'You are not allowed to delete protected branches from this project. Only a project maintainer or owner can delete a protected branch.',
         non_web_delete_protected_branch: 'You can only delete protected branches using the web interface.',
         merge_protected_branch: 'You are not allowed to merge code into protected branches on this project.',
-        push_protected_branch: 'You are not allowed to push code to protected branches on this project.'
+        push_protected_branch: 'You are not allowed to push code to protected branches on this project.',
+        create_protected_branch: 'You are not allowed to create protected branches on this project.',
+        invalid_commit_create_protected_branch: 'You can only use an existing protected branch ref as the basis of a new protected branch.',
+        non_web_create_protected_branch: 'You can only create protected branches using the web interface and API.'
       }.freeze
 
       LOG_MESSAGES = {
         delete_default_branch_check: "Checking if default branch is being deleted...",
         protected_branch_checks: "Checking if you are force pushing to a protected branch...",
         protected_branch_push_checks: "Checking if you are allowed to push to the protected branch...",
+        protected_branch_creation_checks: "Checking if you are allowed to create a protected branch...",
         protected_branch_deletion_checks: "Checking if you are allowed to delete the protected branch..."
       }.freeze
 
@@ -42,10 +46,30 @@ module Gitlab
           end
         end
 
-        if deletion?
+        if project.empty_repo?
+          protected_branch_push_checks
+        elsif creation? && protected_branch_creation_enabled?
+          protected_branch_creation_checks
+        elsif deletion?
           protected_branch_deletion_checks
         else
           protected_branch_push_checks
+        end
+      end
+
+      def protected_branch_creation_checks
+        logger.log_timed(LOG_MESSAGES[:protected_branch_creation_checks]) do
+          unless user_access.can_merge_to_branch?(branch_name)
+            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:create_protected_branch]
+          end
+
+          unless safe_commit_for_new_protected_branch?
+            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:invalid_commit_create_protected_branch]
+          end
+
+          unless updated_from_web?
+            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:non_web_create_protected_branch]
+          end
         end
       end
 
@@ -98,12 +122,20 @@ module Gitlab
         Gitlab::Routing.url_helpers.project_project_members_url(project)
       end
 
+      def protected_branch_creation_enabled?
+        Feature.enabled?(:protected_branch_creation, project, default_enabled: true)
+      end
+
       def matching_merge_request?
         Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
       end
 
       def forced_push?
         Gitlab::Checks::ForcePush.force_push?(project, oldrev, newrev)
+      end
+
+      def safe_commit_for_new_protected_branch?
+        ProtectedBranch.any_protected?(project, project.repository.branch_names_contains_sha(newrev))
       end
     end
   end

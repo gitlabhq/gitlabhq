@@ -3,13 +3,17 @@
 module Ci
   class Bridge < CommitStatus
     include Ci::Processable
+    include Ci::Contextable
     include Importable
     include AfterCommitQueue
+    include HasRef
     include Gitlab::Utils::StrongMemoize
 
     belongs_to :project
     belongs_to :trigger_request
     validates :ref, presence: true
+
+    delegate :merge_request_event?, to: :pipeline
 
     def self.retry(bridge, current_user)
       raise NotImplementedError
@@ -37,11 +41,11 @@ module Ci
       false
     end
 
-    def expanded_environment_name
+    def runnable?
+      false
     end
 
-    def predefined_variables
-      raise NotImplementedError
+    def expanded_environment_name
     end
 
     def execute_hooks

@@ -195,6 +195,26 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 sudo gitlab-rake gitlab:backup:create STRATEGY=copy
 ```
 
+### Backup filename
+
+By default a backup file is created according to the specification in [the Backup timestamp](#backup-timestamp) section above. You can however override the `[TIMESTAMP]` part of the filename by setting the `BACKUP` environment variable. For example:
+
+```sh
+sudo gitlab-rake gitlab:backup:create BACKUP=dump
+```
+
+The resulting file will then be `dump_gitlab_backup.tar`. This is useful for systems that make use of rsync and incremental backups, and will result in considerably faster transfer speeds.
+
+### Rsyncable
+
+To make sure the generated archive is intelligently transferable by rsync, the `GZIP_RSYNCABLE=yes` option can be set. This will set the `--rsyncable` option to `gzip`. This is only useful in combination with setting [the Backup filename option](#backup-filename).
+
+Note that the `--rsyncable` option in `gzip` is not guaranteed to be available on all distributions. To verify that it is available in your distribution you can run `gzip --help` or consult the man pages.
+
+```sh
+sudo gitlab-rake gitlab:backup:create BACKUP=dump GZIP_RSYNCABLE=yes
+```
+
 ### Excluding specific directories from the backup
 
 You can choose what should be exempt from the backup up by adding the environment variable `SKIP`.

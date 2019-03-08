@@ -12,6 +12,9 @@ module API
     helpers do
       params :optional_params_ee do
       end
+
+      params :optional_merge_requests_search_params do
+      end
     end
 
     def self.update_params_at_least_one_of
@@ -45,7 +48,7 @@ module API
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
-          .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs, metrics: [:latest_closed_by, :merged_by])
+          .with_api_entity_associations
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -95,7 +98,7 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
                         desc: 'Return merge requests sorted in `asc` or `desc` order.'
         optional :milestone, type: String, desc: 'Return merge requests for a specific milestone'
-        optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
         optional :created_after, type: DateTime, desc: 'Return merge requests created after the specified time'
         optional :created_before, type: DateTime, desc: 'Return merge requests created before the specified time'
         optional :updated_after, type: DateTime, desc: 'Return merge requests updated after the specified time'
@@ -112,6 +115,8 @@ module API
         optional :search, type: String, desc: 'Search merge requests for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
         optional :wip, type: String, values: %w[yes no], desc: 'Search merge requests for WIP in the title'
+
+        use :optional_merge_requests_search_params
         use :pagination
       end
     end
@@ -179,8 +184,8 @@ module API
           optional :description, type: String, desc: 'The description of the merge request'
           optional :assignee_id, type: Integer, desc: 'The ID of a user to assign the merge request'
           optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign the merge request'
-          optional :labels, type: String, desc: 'Comma-separated list of label names'
-          optional :remove_source_branch, type: Boolean, desc: 'Delete source branch when merging'
+          optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
+          optional :remove_source_branch, type: Boolean, desc: 'Remove source branch when merging'
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch'
           optional :allow_maintainer_to_push, type: Boolean, as: :allow_collaboration, desc: '[deprecated] See allow_collaboration'
           optional :squash, type: Grape::API::Boolean, desc: 'When true, the commits will be squashed into a single commit on merge'

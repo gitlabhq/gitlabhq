@@ -58,10 +58,10 @@ module Gitlab
           return commit_id if commit_id.is_a?(Gitlab::Git::Commit)
 
           # Some weird thing?
-          return nil unless commit_id.is_a?(String)
+          return unless commit_id.is_a?(String)
 
           # This saves us an RPC round trip.
-          return nil if commit_id.include?(':')
+          return if commit_id.include?(':')
 
           commit = find_commit(repo, commit_id)
 

@@ -278,6 +278,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_cluster
     enable :create_environment_terminal
     enable :destroy_release
+    enable :destroy_artifacts
     enable :daily_statistics
   end
 

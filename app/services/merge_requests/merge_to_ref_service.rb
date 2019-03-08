@@ -20,7 +20,12 @@ module MergeRequests
 
       raise_error('Conflicts detected during merge') unless commit_id
 
-      success(commit_id: commit_id)
+      commit = project.commit(commit_id)
+      target_id, source_id = commit.parent_ids
+
+      success(commit_id: commit.id,
+              target_id: target_id,
+              source_id: source_id)
     rescue MergeError => error
       error(error.message)
     end
@@ -38,12 +43,8 @@ module MergeRequests
       error =
         if Feature.disabled?(:merge_to_tmp_merge_ref_path, project)
           'Feature is not enabled'
-        elsif !merge_method_supported?
-          "#{project.human_merge_method} to #{target_ref} is currently not supported."
         elsif !hooks_validation_pass?(merge_request)
           hooks_validation_error(merge_request)
-        elsif @merge_request.should_be_rebased?
-          'Fast-forward merge is not possible. Please update your source branch.'
         elsif !@merge_request.mergeable_to_ref?
           "Merge request is not mergeable to #{target_ref}"
         elsif !source
@@ -67,10 +68,6 @@ module MergeRequests
       repository.merge_to_ref(current_user, source, merge_request, target_ref, commit_message)
     rescue Gitlab::Git::PreReceiveError => error
       raise MergeError, error.message
-    end
-
-    def merge_method_supported?
-      [:merge, :rebase_merge].include?(project.merge_method)
     end
   end
 end

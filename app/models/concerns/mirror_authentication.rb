@@ -79,7 +79,7 @@ module MirrorAuthentication
   end
 
   def ssh_public_key
-    return nil if ssh_private_key.blank?
+    return if ssh_private_key.blank?
 
     comment = "git@#{::Gitlab.config.gitlab.host}"
     ::SSHKey.new(ssh_private_key, comment: comment).ssh_public_key

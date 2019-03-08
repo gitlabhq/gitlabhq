@@ -1,0 +1,48 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html
+
+container_scanning:
+  stage: test
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+    # Defining two new variables based on GitLab's CI/CD predefined variables
+    # https://docs.gitlab.com/ee/ci/variables/#predefined-environment-variables
+    CI_APPLICATION_REPOSITORY: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+    CI_APPLICATION_TAG: $CI_COMMIT_SHA
+    # Prior to this, you need to have the Container Registry running for your project and setup a build job
+    # with at least the following steps:
+    #
+    # docker build -t $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG .
+    # docker push $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG:$CI_COMMIT_SHA
+    #
+    # Container Scanning deals with Docker images only so no need to import the project's Git repository:
+    GIT_STRATEGY: none
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - docker run -d --name db arminc/clair-db:latest
+    - docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
+    - apk add -U wget ca-certificates
+    - docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
+    - wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
+    - mv clair-scanner_linux_amd64 clair-scanner
+    - chmod +x clair-scanner
+    - touch clair-whitelist.yml
+    - while( ! wget -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; done
+    - retries=0
+    - echo "Waiting for clair daemon to start"
+    - while( ! wget -T 10 -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
+    - ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+  artifacts:
+    reports:
+      container_scanning: gl-container-scanning-report.json
+  dependencies: []
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
+  except:
+    variables:
+      - $CONTAINER_SCANNING_DISABLED

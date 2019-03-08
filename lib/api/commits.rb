@@ -99,6 +99,7 @@ module API
         optional :author_email, type: String, desc: 'Author email for commit'
         optional :author_name, type: String, desc: 'Author name for commit'
         optional :stats, type: Boolean, default: true, desc: 'Include commit stats'
+        optional :force, type: Boolean, default: false, desc: 'When `true` overwrites the target branch with a new commit based on the `start_branch`'
       end
       post ':id/repository/commits' do
         authorize_push_to_branch!(params[:branch])

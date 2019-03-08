@@ -26,6 +26,13 @@ describe Clusters::Applications::Jupyter do
 
       it { expect(jupyter).to be_installable }
     end
+
+    context 'when ingress is installed and external_hostname is assigned' do
+      let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
+      let(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }
+
+      it { expect(jupyter).to be_installable }
+    end
   end
 
   describe '#install_command' do
@@ -39,7 +46,7 @@ describe Clusters::Applications::Jupyter do
     it 'should be initialized with 4 arguments' do
       expect(subject.name).to eq('jupyter')
       expect(subject.chart).to eq('jupyter/jupyterhub')
-      expect(subject.version).to eq('v0.6')
+      expect(subject.version).to eq('0.9-174bbd5')
       expect(subject).to be_rbac
       expect(subject.repository).to eq('https://jupyterhub.github.io/helm-chart/')
       expect(subject.files).to eq(jupyter.files)
@@ -57,7 +64,7 @@ describe Clusters::Applications::Jupyter do
       let(:jupyter) { create(:clusters_applications_jupyter, :errored, version: '0.0.1') }
 
       it 'should be initialized with the locked version' do
-        expect(subject.version).to eq('v0.6')
+        expect(subject.version).to eq('0.9-174bbd5')
       end
     end
   end
@@ -77,6 +84,7 @@ describe Clusters::Applications::Jupyter do
       expect(values).to include('singleuser')
       expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
       expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
+      expect(values).to include("gitlabProjectIdWhitelist:\n    - #{application.cluster.project.id}")
     end
 
     context 'when cluster belongs to a project' do

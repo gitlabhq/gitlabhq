@@ -58,6 +58,7 @@ export default () => {
       state: boardsStore.state,
       loading: true,
       boardsEndpoint: $boardApp.dataset.boardsEndpoint,
+      recentBoardsEndpoint: $boardApp.dataset.recentBoardsEndpoint,
       listsEndpoint: $boardApp.dataset.listsEndpoint,
       boardId: $boardApp.dataset.boardId,
       disabled: parseBoolean($boardApp.dataset.disabled),
@@ -75,6 +76,7 @@ export default () => {
     created() {
       gl.boardService = new BoardService({
         boardsEndpoint: this.boardsEndpoint,
+        recentBoardsEndpoint: this.recentBoardsEndpoint,
         listsEndpoint: this.listsEndpoint,
         bulkUpdatePath: this.bulkUpdatePath,
         boardId: this.boardId,

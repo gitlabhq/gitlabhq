@@ -191,14 +191,7 @@ export default {
       return this.status === APPLICATION_STATUS.UPDATE_ERRORED;
     },
     upgradeFailureDescription() {
-      return sprintf(
-        s__(
-          'ClusterIntegration|Something went wrong when upgrading %{title}. Please check the logs and try again.',
-        ),
-        {
-          title: this.title,
-        },
-      );
+      return s__('ClusterIntegration|Update failed. Please check the logs and try again.');
     },
     upgradeSuccessDescription() {
       return sprintf(s__('ClusterIntegration|%{title} upgraded successfully.'), {
@@ -210,9 +203,9 @@ export default {
       if (this.upgradeAvailable && !this.upgradeFailed && !this.isUpgrading) {
         label = s__('ClusterIntegration|Upgrade');
       } else if (this.isUpgrading) {
-        label = s__('ClusterIntegration|Upgrading');
+        label = s__('ClusterIntegration|Updating');
       } else if (this.upgradeFailed) {
-        label = s__('ClusterIntegration|Retry upgrade');
+        label = s__('ClusterIntegration|Retry update');
       }
 
       return label;
@@ -222,6 +215,14 @@ export default {
       return (
         this.status === APPLICATION_STATUS.UPDATING ||
         (this.upgradeRequested && !this.upgradeSuccessful)
+      );
+    },
+    shouldShowUpgradeDetails() {
+      // This method only returns true when;
+      // Upgrade was successful OR Upgrade failed
+      //     AND new upgrade is unavailable AND version information is present.
+      return (
+        (this.upgradeSuccessful || this.upgradeFailed) && !this.upgradeAvailable && this.version
       );
     },
   },
@@ -303,7 +304,7 @@ export default {
         </div>
 
         <div
-          v-if="(upgradeSuccessful || upgradeFailed) && !upgradeAvailable"
+          v-if="shouldShowUpgradeDetails"
           class="form-text text-muted label p-0 js-cluster-application-upgrade-details"
         >
           {{ versionLabel }}

@@ -181,3 +181,6 @@ Cop/InjectEnterpriseEditionModule:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+Style/ReturnNil:
+  Enabled: true

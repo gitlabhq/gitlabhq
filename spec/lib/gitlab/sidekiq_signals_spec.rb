@@ -44,7 +44,7 @@ describe Gitlab::SidekiqSignals do
 
           expect(Process)
             .to receive(:kill)
-            .with(signal, "-#{Process.pid}")
+            .with(signal, 0)
             .ordered
 
           expect(described_class)
