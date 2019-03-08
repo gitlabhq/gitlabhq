@@ -12,6 +12,14 @@ shared_examples 'check ingress ip executions' do |app_name|
       end
     end
 
+    context 'when the ingress external hostname is available' do
+      it 'updates the external_hostname for the app' do
+        subject
+
+        expect(application.external_hostname).to eq('localhost.localdomain')
+      end
+    end
+
     context 'when the ingress ip address is not available' do
       let(:ingress) { nil }
 

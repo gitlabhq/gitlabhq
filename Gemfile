@@ -267,7 +267,6 @@ gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.2'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'request_store', '~> 1.3'
-gem 'select2-rails', '~> 3.5.9'
 gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'
 
@@ -421,7 +420,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.12.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.13.0', require: 'gitaly'
 
 gem 'grpc', '~> 1.15.0'
 

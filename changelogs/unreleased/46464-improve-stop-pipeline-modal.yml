@@ -1,0 +1,5 @@
+---
+title: Show pipeline ID, commit, and branch name on modal while stopping pipeline
+merge_request: 25059
+author:
+type: changed

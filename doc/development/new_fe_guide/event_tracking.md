@@ -1,6 +1,6 @@
 # Event Tracking
 
-We use [Snowplow](https://github.com/snowplow/snowplow) for tracking custom events.
+We use [Snowplow](https://github.com/snowplow/snowplow) for tracking custom events (available in GitLab [Enterprise Edition](https://about.gitlab.com/pricing/) only).
 
 ## Generic tracking function
 
@@ -72,3 +72,20 @@ Below is a list of supported `data-track-*` attributes:
 | `data-track-value`    | The `value` in `trackEvent`. If omitted, this will be `target.value` or empty string. For checkboxes, the default value being tracked will be the element's checked attribute if `data-track-value` is omitted. | false    |
 
 Since Snowplow is an Enterprise Edition feature, it's necessary to create a CE backport when adding `data-track-*` attributes to HAML templates in most cases.
+
+## Testing
+
+Snowplow can be enabled by navigating to:
+
+- **Admin area > Settings > Integrations** in the UI.
+- `admin/application_settings/integrations` in your browser.
+
+The following configuration is required:
+
+| Name          | Value                     |
+| ------------- | ------------------------- |
+| Collector     | `snowplow.trx.gitlab.net` |
+| Site ID       | `gitlab`                  |
+| Cookie domain | `.gitlab.com`             |
+
+Now the implemented tracking events can be inspected locally by looking at the network panel of the browser's development tools.

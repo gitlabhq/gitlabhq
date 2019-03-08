@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Jupyter < ActiveRecord::Base
-      VERSION = 'v0.6'.freeze
+      VERSION = '0.9-174bbd5'.freeze
 
       self.table_name = 'clusters_applications_jupyter'
 
@@ -18,8 +18,10 @@ module Clusters
 
       def set_initial_status
         return unless not_installable?
+        return unless cluster&.application_ingress_available?
 
-        if cluster&.application_ingress_available? && cluster.application_ingress.external_ip
+        ingress = cluster.application_ingress
+        if ingress.external_ip || ingress.external_hostname
           self.status = 'installable'
         end
       end
@@ -75,15 +77,20 @@ module Clusters
             "gitlab" => {
               "clientId" => oauth_application.uid,
               "clientSecret" => oauth_application.secret,
-              "callbackUrl" => callback_url
+              "callbackUrl" => callback_url,
+              "gitlabProjectIdWhitelist" => [project_id]
             }
           },
           "singleuser" => {
             "extraEnv" => {
-              "GITLAB_CLUSTER_ID" => cluster.id
+              "GITLAB_CLUSTER_ID" => cluster.id.to_s
             }
           }
         }
+      end
+
+      def project_id
+        cluster&.project&.id
       end
 
       def gitlab_url

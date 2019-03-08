@@ -3,45 +3,40 @@
 > [Introduced][ce-5986] in GitLab 8.12. Further features were added in GitLab
   8.14.
 
-Cycle Analytics measures the time it takes to go from an [idea to production] for
-each project you have. This is achieved by not only indicating the total time it
-takes to reach that point, but the total time is broken down into the
-multiple stages an idea has to pass through to be shipped.
+Cycle Analytics measures the time spent to go from an [idea to production] for
+each of your projects. Cycle Analytics displays the median time for an idea to
+reach production, along with the time typically spent in each DevOps stage along the way.
+
+Cycle Analytics is useful in order to quickly determine the velocity of a given
+project. It points to bottlenecks in the development process, enabling management
+to uncover, triage, and root-cause slowdowns in the software development life cycle.
 
 Cycle Analytics is tightly coupled with the [GitLab flow] and
 calculates a separate median for each stage.
 
 ## Overview
 
-You can find the Cycle Analytics page under your project's **Pipelines ➔ Cycle
+You can find the Cycle Analytics page under your project's **Project ➔ Cycle
 Analytics** tab.
 
 ![Cycle Analytics landing page](img/cycle_analytics_landing_page.png)
 
-You can see that there are seven stages in total:
+There are seven stages that are tracked as part of the Cycle Analytics calculations.
 
 - **Issue** (Tracker)
-    - Median time from issue creation until given a milestone or list label
-      (first assignment, any milestone, milestone date or assignee is not required)
+    - Time to schedule an issue (by milestone or by adding it to an issue board)
 - **Plan** (Board)
-    - Median time from giving an issue a milestone or label until pushing the
-      first commit to the branch
+    - Time to first commit
 - **Code** (IDE)
-    - Median time from the first commit to the branch until the merge request is
-      created
+    - Time to create a merge request
 - **Test** (CI)
-    - Median total test time for all commits/merges
+    - Time it takes GitLab CI/CD to test your code
 - **Review** (Merge Request/MR)
-    - Median time from merge request creation until the merge request is merged
-      (closed merge requests won't be taken into account)
+    - Time spent on code review
 - **Staging** (Continuous Deployment)
-    - Median time from when the merge request got merged until the deploy to
-      production (production is last stage/environment)
+    - Time between merging and deploying to production
 - **Production** (Total)
-   - Sum of all the above stages' times excluding the Test (CI) time. To clarify,
-     it's not so much that CI time is "excluded", but rather CI time is already
-     counted in the review stage since CI is done automatically. Most of the
-     other stages are purely sequential, but **Test** is not.
+    - Total lifecycle time; i.e. the velocity of the project or team
 
 ## How the data is measured
 

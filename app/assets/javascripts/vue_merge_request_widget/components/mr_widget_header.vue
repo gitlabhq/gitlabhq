@@ -135,7 +135,7 @@ export default {
         <span class="dropdown">
           <button
             type="button"
-            class="btn dropdown-toggle"
+            class="btn dropdown-toggle qa-dropdown-toggle"
             data-toggle="dropdown"
             aria-label="Download as"
             aria-haspopup="true"
@@ -145,12 +145,20 @@ export default {
           </button>
           <ul class="dropdown-menu dropdown-menu-right">
             <li>
-              <a :href="mr.emailPatchesPath" class="js-download-email-patches" download>
+              <a
+                :href="mr.emailPatchesPath"
+                class="js-download-email-patches qa-download-email-patches"
+                download
+              >
                 {{ s__('mrWidget|Email patches') }}
               </a>
             </li>
             <li>
-              <a :href="mr.plainDiffPath" class="js-download-plain-diff" download>
+              <a
+                :href="mr.plainDiffPath"
+                class="js-download-plain-diff qa-download-plain-diff"
+                download
+              >
                 {{ s__('mrWidget|Plain diff') }}
               </a>
             </li>

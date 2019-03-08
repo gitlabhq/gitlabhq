@@ -444,6 +444,17 @@ setup-test-env:
       - master
       - /(^docs[\/-].*|.*-docs$)/
 
+.review-schedules-only: &review-schedules-only
+  only:
+    refs:
+      - schedules@gitlab-org/gitlab-ce
+      - schedules@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    refs:
+      - tags
+      - /(^docs[\/-].*|.*-docs$)/
+
 .review-base: &review-base
   <<: *dedicated-no-docs-no-db-pull-cache-job
   <<: *review-only
@@ -671,6 +682,35 @@ gitlab:assets:compile:
   tags:
     - docker
     - gitlab-org
+
+gitlab:ui:visual:
+  <<: *except-docs
+  tags:
+    - gitlab-org
+  before_script: []
+  dependencies:
+    - compile-assets
+  script:
+    # Remove node modules from GitLab that may conflict with gitlab-ui
+    - rm -r node_modules
+    - git clone https://gitlab.com/gitlab-org/gitlab-ui.git
+    - cp public/assets/application-*.css gitlab-ui/styles/application.css
+    - cd gitlab-ui
+    - yarn install
+    - CSS_URL=./application.css yarn test
+  only:
+    changes:
+      - app/assets/stylesheets/*.scss
+      - app/assets/stylesheets/**/*.scss
+      - app/assets/stylesheets/**/**/*.scss
+  except:
+    refs:
+      - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[skip visual\]/i
+  artifacts:
+    paths:
+      - tests/__image_snapshots__/
 
 karma:
   <<: *dedicated-no-docs-pull-cache-job
@@ -959,8 +999,7 @@ no_ee_check:
     - //@gitlab-org/gitlab-ce
 
 # GitLab Review apps
-review-build-cng:
-  <<: *review-only
+.review-build-cng-base: &review-build-cng-base
   image: ruby:2.5-alpine
   stage: test
   before_script: []
@@ -976,7 +1015,15 @@ review-build-cng:
     - wait_for_job_to_be_done "gitlab:assets:compile"
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
 
-review-deploy:
+review-build-cng:
+  <<: *review-only
+  <<: *review-build-cng-base
+
+schedule:review-build-cng:
+  <<: *review-schedules-only
+  <<: *review-build-cng-base
+
+.review-deploy-base: &review-deploy-base
   <<: *review-base
   retry: 2
   allow_failure: true
@@ -998,6 +1045,8 @@ review-deploy:
     - source ./scripts/review_apps/review-apps.sh
   script:
     - wait_for_job_to_be_done "review-build-cng"
+  after_script:
+    - source ./scripts/review_apps/review-apps.sh
     - check_kube_domain
     - download_gitlab_chart
     - ensure_namespace
@@ -1005,6 +1054,15 @@ review-deploy:
     - install_external_dns
     - time deploy
     - add_license
+
+review-deploy:
+  <<: *review-deploy-base
+
+schedule:review-deploy:
+  <<: *review-deploy-base
+  <<: *review-schedules-only
+  script:
+    - wait_for_job_to_be_done "schedule:review-build-cng"
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
@@ -1032,22 +1090,26 @@ review-deploy:
     - apk update && apk add curl jq
     - source ./scripts/review_apps/review-apps.sh
     - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
-    - wait_for_job_to_be_done "review-deploy"
 
 review-qa-smoke:
   <<: *review-qa-base
   script:
+    - wait_for_job_to_be_done "review-deploy"
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 review-qa-all:
   <<: *review-qa-base
   script:
+    - wait_for_job_to_be_done "review-deploy"
     - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
   when: manual
 
-review-performance:
+
+.review-performance-base: &review-performance-base
   <<: *review-qa-base
   script:
+    - wait_for_job_to_be_done "review-deploy"
+  after_script:
     - mkdir gitlab-exporter
     - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
     - mkdir sitespeed-results
@@ -1058,6 +1120,9 @@ review-performance:
       - sitespeed-results/
     reports:
       performance: performance.json
+
+review-performance:
+  <<: *review-performance-base
 
 review-stop:
   <<: *review-base
@@ -1078,21 +1143,20 @@ review-stop:
 
 schedule:review-cleanup:
   <<: *review-base
+  <<: *review-schedules-only
   stage: build
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
   environment:
     name: review/auto-cleanup
-  only:
-    refs:
-      - schedules@gitlab-org/gitlab-ce
-      - schedules@gitlab-org/gitlab-ee
-    kubernetes: active
-  except:
-    - tags
-    - /(^docs[\/-].*|.*-docs$)/
   before_script:
     - gem install gitlab --no-document
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+
+schedule:review-performance:
+  <<: *review-performance-base
+  <<: *review-schedules-only
+  script:
+    - wait_for_job_to_be_done "schedule:review-deploy"

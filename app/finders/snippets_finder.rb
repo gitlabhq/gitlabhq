@@ -69,6 +69,8 @@ class SnippetsFinder < UnionFinder
     base.with_optional_visibility(visibility_from_scope).fresh
   end
 
+  private
+
   # Produces a query that retrieves snippets from multiple projects.
   #
   # The resulting query will, depending on the user's permissions, include the

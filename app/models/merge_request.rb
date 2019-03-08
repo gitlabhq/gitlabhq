@@ -184,6 +184,13 @@ class MergeRequest < ActiveRecord::Base
   scope :assigned, -> { where("assignee_id IS NOT NULL") }
   scope :unassigned, -> { where("assignee_id IS NULL") }
   scope :assigned_to, ->(u) { where(assignee_id: u.id)}
+  scope :with_api_entity_associations, -> {
+    preload(:author, :assignee, :notes, :labels, :milestone, :timelogs,
+            latest_merge_request_diff: [:merge_request_diff_commits],
+            metrics: [:latest_closed_by, :merged_by],
+            target_project: [:route, { namespace: :route }],
+            source_project: [:route, { namespace: :route }])
+  }
 
   participant :assignee
 

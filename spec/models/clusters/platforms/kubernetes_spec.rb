@@ -269,7 +269,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -281,7 +281,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
         )
       end
     end
@@ -297,7 +297,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -309,7 +309,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -338,7 +338,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it 'sets KUBE_TOKEN' do
           expect(subject).to include(
-            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
           )
         end
       end

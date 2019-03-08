@@ -230,7 +230,7 @@ describe('Application Row', () => {
       expect(upgradeBtn.innerHTML).toContain('Upgrade');
     });
 
-    it('has enabled "Retry upgrade" when APPLICATION_STATUS.UPDATE_ERRORED', () => {
+    it('has enabled "Retry update" when APPLICATION_STATUS.UPDATE_ERRORED', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.UPDATE_ERRORED,
@@ -239,10 +239,10 @@ describe('Application Row', () => {
 
       expect(upgradeBtn).not.toBe(null);
       expect(vm.upgradeFailed).toBe(true);
-      expect(upgradeBtn.innerHTML).toContain('Retry upgrade');
+      expect(upgradeBtn.innerHTML).toContain('Retry update');
     });
 
-    it('has disabled "Retry upgrade" when APPLICATION_STATUS.UPDATING', () => {
+    it('has disabled "Updating" when APPLICATION_STATUS.UPDATING', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.UPDATING,
@@ -251,7 +251,7 @@ describe('Application Row', () => {
 
       expect(upgradeBtn).not.toBe(null);
       expect(vm.isUpgrading).toBe(true);
-      expect(upgradeBtn.innerHTML).toContain('Upgrading');
+      expect(upgradeBtn.innerHTML).toContain('Updating');
     });
 
     it('clicking upgrade button emits event', () => {
@@ -295,7 +295,7 @@ describe('Application Row', () => {
 
       expect(failureMessage).not.toBe(null);
       expect(failureMessage.innerHTML).toContain(
-        'Something went wrong when upgrading GitLab Runner. Please check the logs and try again.',
+        'Update failed. Please check the logs and try again.',
       );
     });
   });

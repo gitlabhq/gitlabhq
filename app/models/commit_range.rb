@@ -134,25 +134,25 @@ class CommitRange
   end
 
   def sha_from
-    return nil unless @commit_from
+    return unless @commit_from
 
     @commit_from.id
   end
 
   def sha_to
-    return nil unless @commit_to
+    return unless @commit_to
 
     @commit_to.id
   end
 
   def sha_start
-    return nil unless sha_from
+    return unless sha_from
 
     exclude_start? ? sha_from + '^' : sha_from
   end
 
   def commit_start
-    return nil unless sha_start
+    return unless sha_start
 
     if exclude_start?
       @commit_start ||= project.commit(sha_start)

@@ -600,6 +600,11 @@
     js-levenshtein "^1.1.3"
     semver "^5.3.0"
 
+"@babel/standalone@^7.0.0":
+  version "7.3.4"
+  resolved "https://registry.yarnpkg.com/@babel/standalone/-/standalone-7.3.4.tgz#b622c1e522acef91b2a14f22bdcdd4f935a1a474"
+  integrity sha512-4L9c5i4WlGqbrjOVX0Yp8TIR5cEiw1/tPYYZENW/iuO2uI6viY38U7zALidzNfGdZIwNc+A/AWqMEWKeScWkBg==
+
 "@babel/template@^7.0.0", "@babel/template@^7.1.0", "@babel/template@^7.1.2", "@babel/template@^7.2.2":
   version "7.2.2"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.2.2.tgz#005b3fdf0ed96e88041330379e0da9a708eb2907"
@@ -658,12 +663,12 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.54.0.tgz#00320e845efd46716042cde0c348b990d4908daf"
   integrity sha512-DR17iy8TM5IbXEacqiDP0p8SuC/J8EL+98xbfVz5BKvRsPHpeZJQNlBF/petIV5d+KWM5A9v3GZTY7uMU7z/JQ==
 
-"@gitlab/ui@^2.0.4":
-  version "2.0.4"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-2.0.4.tgz#ba86f6e5868ef7bc7f504cef9ca504c2d2f6bffd"
-  integrity sha512-dJ+KKpeqIAPYZtYZeciXhC/whNiGPVRjp5IgjQRddh3zsreqmfwQq58nSH7HepAAIepaqTe0UFuzBgrSWvVM6w==
+"@gitlab/ui@^2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-2.2.2.tgz#de8f436d6b52c168c4752b221a88cf7665fe0134"
+  integrity sha512-xVY8lGfDA3D2EtyfZVpJVeNUXLbpn/xJqNF4fleqHJfqrwt+IcVlsQ7yEs/LBukmIw6tXPliD4Mm9uefnQhkXA==
   dependencies:
-    babel-standalone "^6.26.0"
+    "@babel/standalone" "^7.0.0"
     bootstrap-vue "^2.0.0-rc.11"
     copy-to-clipboard "^3.0.8"
     echarts "^4.2.0-rc.2"
@@ -875,6 +880,8 @@
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/leb128/-/leb128-1.7.11.tgz#d7267a1ee9c4594fd3f7e37298818ec65687db63"
   integrity sha512-vuGmgZjjp3zjcerQg+JA+tGOncOnJLWVkt8Aze5eWQLwTQGNgVLcyOTqgSCxWTR4J42ijHbBxnuRaL1Rv7XMdw==
+  dependencies:
+    "@xtuc/long" "4.2.1"
 
 "@webassemblyjs/utf8@1.7.11":
   version "1.7.11"
@@ -910,6 +917,11 @@
   version "1.7.11"
   resolved "https://registry.yarnpkg.com/@webassemblyjs/wasm-opt/-/wasm-opt-1.7.11.tgz#b331e8e7cef8f8e2f007d42c3a36a0580a7d6ca7"
   integrity sha512-XynkOwQyiRidh0GLua7SkeHvAPXQV/RxsUeERILmAInZegApOUAIJfRuPYe2F7RcjOC9tW3Cb9juPvAC/sCqvg==
+  dependencies:
+    "@webassemblyjs/ast" "1.7.11"
+    "@webassemblyjs/helper-buffer" "1.7.11"
+    "@webassemblyjs/wasm-gen" "1.7.11"
+    "@webassemblyjs/wasm-parser" "1.7.11"
 
 "@webassemblyjs/wasm-parser@1.7.11":
   version "1.7.11"
@@ -1504,11 +1516,6 @@ babel-runtime@^6.22.0:
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.11.0"
-
-babel-standalone@^6.26.0:
-  version "6.26.0"
-  resolved "https://registry.yarnpkg.com/babel-standalone/-/babel-standalone-6.26.0.tgz#15fb3d35f2c456695815ebf1ed96fe7f015b6886"
-  integrity sha1-Ffs9NfLEVmlYFevx7Zb+fwFbaIY=
 
 babylon@7.0.0-beta.19:
   version "7.0.0-beta.19"
@@ -9669,6 +9676,9 @@ style-loader@^0.23.1:
   version "0.23.1"
   resolved "https://registry.yarnpkg.com/style-loader/-/style-loader-0.23.1.tgz#cb9154606f3e771ab6c4ab637026a1049174d925"
   integrity sha512-XK+uv9kWwhZMZ1y7mysB+zoihsEj4wneFWAS5qoiLwzW0WzSqMrrsIy+a3zkQJq0ipFtBpX5W3MqyRIBF/WFGg==
+  dependencies:
+    loader-utils "^1.1.0"
+    schema-utils "^1.0.0"
 
 style-search@^0.1.0:
   version "0.1.0"
@@ -11152,10 +11162,10 @@ yargs@^12.0.2, yargs@^12.0.4:
     y18n "^3.2.1 || ^4.0.0"
     yargs-parser "^11.1.1"
 
-yarn-deduplicate@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/yarn-deduplicate/-/yarn-deduplicate-1.1.0.tgz#bdfdcc5a2473556c0232996424dfe039293f2f44"
-  integrity sha512-YTZzmzzUgDK7IllsKxgnTQ7zAGbTVnj3bnH3nxoqZ2dE0IY7NpaFpFYXR+BuBeDtxIgMhwJJvH1LTWm3k3fWpg==
+yarn-deduplicate@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/yarn-deduplicate/-/yarn-deduplicate-1.1.1.tgz#19b4a87654b66f55bf3a4bd6b153b4e4ab1b6e6d"
+  integrity sha512-2FDJ1dFmtvqhRmfja89ohYzpaheCYg7BFBSyaUq+kxK0y61C9oHv1XaQovCWGJtP2WU8PksQOgzMVV7oQOobzw==
   dependencies:
     "@yarnpkg/lockfile" "^1.1.0"
     commander "^2.10.0"

@@ -120,7 +120,7 @@ describe 'Environment' do
             end
 
             it 'does show a play button' do
-              expect(page).to have_link(action.name.humanize)
+              expect(page).to have_link(action.name)
             end
 
             it 'does allow to play manual action', :js do
@@ -128,7 +128,7 @@ describe 'Environment' do
 
               find('button.dropdown').click
 
-              expect { click_link(action.name.humanize) }
+              expect { click_link(action.name) }
                 .not_to change { Ci::Pipeline.count }
 
               wait_for_all_requests
@@ -140,7 +140,7 @@ describe 'Environment' do
 
           context 'when user has no ability to trigger a deployment' do
             it 'does not show a play button' do
-              expect(page).not_to have_link(action.name.humanize)
+              expect(page).not_to have_link(action.name)
             end
           end
 

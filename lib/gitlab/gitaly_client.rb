@@ -228,7 +228,7 @@ module Gitlab
       result
     end
 
-    SERVER_FEATURE_FLAGS = %w[].freeze
+    SERVER_FEATURE_FLAGS = %w[go-find-all-tags].freeze
 
     def self.server_feature_flags
       SERVER_FEATURE_FLAGS.map do |f|
@@ -244,7 +244,9 @@ module Gitlab
     end
 
     def self.feature_enabled?(feature_name)
-      Feature.enabled?("gitaly_#{feature_name}")
+      Feature::FlipperFeature.table_exists? && Feature.enabled?("gitaly_#{feature_name}")
+    rescue ActiveRecord::NoDatabaseError
+      false
     end
 
     # Ensures that Gitaly is not being abuse through n+1 misuse etc
@@ -384,13 +386,13 @@ module Gitlab
 
     # Returns the stacks that calls Gitaly the most times. Used for n+1 detection
     def self.max_stacks
-      return nil unless Gitlab::SafeRequestStore.active?
+      return unless Gitlab::SafeRequestStore.active?
 
       stack_counter = Gitlab::SafeRequestStore[:stack_counter]
-      return nil unless stack_counter
+      return unless stack_counter
 
       max = max_call_count
-      return nil if max.zero?
+      return if max.zero?
 
       stack_counter.select { |_, v| v == max }.keys
     end

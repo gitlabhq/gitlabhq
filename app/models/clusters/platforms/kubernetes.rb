@@ -95,7 +95,7 @@ module Clusters
             # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22433
             variables
               .append(key: 'KUBE_URL', value: api_url)
-              .append(key: 'KUBE_TOKEN', value: token, public: false)
+              .append(key: 'KUBE_TOKEN', value: token, public: false, masked: true)
               .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
               .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
           end

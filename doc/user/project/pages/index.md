@@ -1,5 +1,6 @@
 ---
 description: 'Learn how to use GitLab Pages to deploy a static website at no additional cost.'
+last_updated: 2019-03-05
 ---
 
 # GitLab Pages
@@ -8,8 +9,8 @@ description: 'Learn how to use GitLab Pages to deploy a static website at no add
 directly from a repository in GitLab.**
 
 You can use it either for personal or business websites, such as
-portfolios, documentation, manifestos, and business presentations,
-and attribute any license to your content.
+portfolios, documentation, manifestos, and business presentations.
+You can also attribute any license to your content.
 
 <table class="borderless-table center fixed-table">
   <tr>
@@ -91,52 +92,28 @@ site under the HTTPS protocol.
 
 ## Getting started
 
-To get started with GitLab Pages, you can either [create a project from scratch](getting_started_part_two.md#create-a-project-from-scratch),
-use a [bundled template](getting_started_part_two.md#use-one-of-the-popular-pages-templates-bundled-with-gitlab), or copy any of our existing example projects:
+To get started with GitLab Pages, you can either:
 
-1. Choose an [example project](https://gitlab.com/pages) to [fork](../../../gitlab-basics/fork-project.md#how-to-fork-a-project):
-   by forking a project, you create a copy of the codebase you're forking from to start from a template instead of starting from scratch.
-1. From the left sidebar, navigate to your project's **CI/CD > Pipelines** and click
-   **Run pipeline** so that GitLab CI/CD will build and deploy your site to the server.
-1. Once the pipeline has finished successfully, find the link to visit your website from your
-   project's **Settings > Pages**.
+- [Create a project from scratch](getting_started_part_two.md#create-a-project-from-scratch).
+- [Copy an existing example project](getting_started_part_two.md#fork-a-project-to-get-started-from).
+- Use a bundled project template that is ready to go ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47857)
+in GitLab 11.8), as follows:
 
-<table class="borderless-table center fixed-table middle width-80">
-  <tr>
-    <td style="width: 30%"><img src="img/icons/fork.png" alt="Fork" class="image-noshadow half-width"></td>
-    <td style="width: 10%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 30%"><img src="img/icons/terminal.png" alt="Deploy" class="image-noshadow half-width"></td>
-    <td style="width: 10%">
-      <strong>
-        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-      </strong>
-    </td>
-    <td style="width: 30%"><img src="img/icons/click.png" alt="Visit" class="image-noshadow half-width"></td>
-  </tr>
-  <tr>
-    <td><em>Fork an example project</em></td>
-    <td></td>
-    <td><em>Deploy your website</em></td>
-    <td></td>
-    <td><em>Visit your website's URL</em></td>
-  </tr>
-</table>
+1. From the top navigation, click the **+** button and select **New project**.
+1. Select **Create from Template**.
+1. Choose one of the templates starting with **Pages**:
 
-Your website is then visible on your domain, and you can modify your files
-as you wish. For every modification pushed to your repository, GitLab CI/CD will run
-a new pipeline to publish your changes to the server.
+    ![Project templates for Pages](img/pages_project_templates_11-8.png)
 
-You can also take some optional further steps:
+1. From the left sidebar, navigate to your project's **CI/CD > Pipelines**
+and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
+site to the server.
+1. Once the pipeline has finished successfully, find the link to visit your
+website from your project's **Settings > Pages**.
 
-- Remove the [fork relationship](getting_started_part_two.md#fork-a-project-to-get-started-from)
-   (_You don't need the relationship unless you intent to contribute back to the example project you forked from_).
-- Make it a [user/group website](getting_started_part_one.md#user-and-group-websites)
-
-**<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=TWqh9MtT4Bg) with all the steps above!**
+Your website is then visible on your domain, and you can modify yourfiles
+as you wish. For every modification pushed to your repository, GitLab CI/CD
+will run a new pipeline to publish your changes to the server.
 
 _Advanced options:_
 

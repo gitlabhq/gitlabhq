@@ -26,7 +26,7 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
     visit project_merge_request_path(target_project, merge_request)
     click_link 'Changes'
     wait_for_requests
-    first('.js-file-title').click_link 'Edit'
+    first('.js-file-title').find('.js-edit-blob').click
     wait_for_requests
   end
 

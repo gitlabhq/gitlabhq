@@ -25,6 +25,8 @@
   .settings-content
     = render 'groups/settings/permissions'
 
+= render_if_exists 'groups/insights', expanded: expanded
+
 %section.settings.no-animate#js-badge-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }

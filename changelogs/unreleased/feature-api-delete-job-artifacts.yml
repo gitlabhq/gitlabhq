@@ -1,0 +1,5 @@
+---
+title: Extend the Gitlab API for deletion of job_artifacts of a single job.
+merge_request: 25522
+author: rroger
+type: added

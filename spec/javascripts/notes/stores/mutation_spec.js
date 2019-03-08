@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import mutations from '~/notes/stores/mutations';
+import { DISCUSSION_NOTE } from '~/notes/constants';
 import {
   note,
   discussionMock,
@@ -325,6 +326,18 @@ describe('Notes Store mutations', () => {
       mutations.UPDATE_NOTE(state, updated);
 
       expect(state.discussions[0].notes[0].note).toEqual('Foo');
+    });
+
+    it('transforms an individual note to discussion', () => {
+      const state = {
+        discussions: [individualNote],
+      };
+
+      const transformedNote = { ...individualNote.notes[0], type: DISCUSSION_NOTE };
+
+      mutations.UPDATE_NOTE(state, transformedNote);
+
+      expect(state.discussions[0].individual_note).toEqual(false);
     });
   });
 

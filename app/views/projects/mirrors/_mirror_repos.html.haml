@@ -57,7 +57,7 @@
                   %td
                     - if mirror.last_error.present?
                       .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) }= _('Error')
-                  %td.mirror-action-buttons
+                  %td
                     .btn-group.mirror-actions-group.pull-right{ role: 'group' }
                       - if mirror.ssh_key_auth?
                         = clipboard_button(text: mirror.ssh_public_key, class: 'btn btn-default', title: _('Copy SSH public key'))

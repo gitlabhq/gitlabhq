@@ -49,6 +49,15 @@ describe 'Editing file blob', :js do
       end
     end
 
+    it 'updates the content of file with a number as file path' do
+      project.repository.create_file(user, '1', 'test', message: 'testing', branch_name: branch)
+      visit project_blob_path(project, tree_join(branch, '1'))
+
+      edit_and_commit
+
+      expect(page).to have_content 'NextFeature'
+    end
+
     context 'from blob file path' do
       before do
         visit project_blob_path(project, tree_join(branch, file_path))

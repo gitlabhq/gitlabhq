@@ -75,7 +75,7 @@ module Gitlab
       # the relation_hash, updating references with new object IDs, mapping users using
       # the "members_mapper" object, also updating notes if required.
       def create
-        return nil if unknown_service?
+        return if unknown_service?
 
         setup_models
 

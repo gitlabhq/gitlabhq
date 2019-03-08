@@ -11,7 +11,7 @@ module Gitlab
       include Gitlab::Git::WrapsGitalyErrors
       include Gitlab::EncodingHelper
       include Gitlab::Utils::StrongMemoize
-      include Gitlab::Git::RuggedImpl::Repository
+      prepend Gitlab::Git::RuggedImpl::Repository
 
       SEARCH_CONTEXT_LINES = 3
       REV_LIST_COMMIT_LIMIT = 2_000
@@ -276,7 +276,7 @@ module Gitlab
       # senddata response.
       def archive_file_path(storage_path, sha, name, format = "tar.gz")
         # Build file path
-        return nil unless name
+        return unless name
 
         extension =
           case format
@@ -853,17 +853,20 @@ module Gitlab
         true
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
-        start_branch_name: nil, start_repository: self)
+        start_branch_name: nil, start_repository: self,
+        force: false)
 
         wrapped_gitaly_errors do
           gitaly_operation_client.user_commit_files(user, branch_name,
               message, actions, author_email, author_name,
-              start_branch_name, start_repository)
+              start_branch_name, start_repository, force)
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def write_config(full_path:)
         return unless full_path.present?

@@ -31,6 +31,7 @@ describe Clusters::Cluster do
   it { is_expected.to delegate_method(:available?).to(:application_prometheus).with_prefix }
   it { is_expected.to delegate_method(:available?).to(:application_knative).with_prefix }
   it { is_expected.to delegate_method(:external_ip).to(:application_ingress).with_prefix }
+  it { is_expected.to delegate_method(:external_hostname).to(:application_ingress).with_prefix }
 
   it { is_expected.to respond_to :project }
 

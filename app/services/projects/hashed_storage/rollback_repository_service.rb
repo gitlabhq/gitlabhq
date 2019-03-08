@@ -27,7 +27,7 @@ module Projects
         end
 
         project.repository_read_only = false
-        project.save!
+        project.save!(validate: false)
 
         if result && block_given?
           yield
