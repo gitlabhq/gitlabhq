@@ -4,7 +4,7 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
 
-= render_if_exists "shared/gold_trial_callout"
+= render_dashboard_gold_trial(current_user)
 
 .page-title-holder
   %h1.page-title= _('Issues')
