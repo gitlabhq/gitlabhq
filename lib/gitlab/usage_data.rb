@@ -54,6 +54,8 @@ module Gitlab
             auto_devops_disabled: count(::ProjectAutoDevops.disabled),
             deploy_keys: count(DeployKey),
             deployments: count(Deployment),
+            successful_deployments: count(Deployment.success),
+            failed_deployments: count(Deployment.failed),
             environments: count(::Environment),
             clusters: count(::Clusters::Cluster),
             clusters_enabled: count(::Clusters::Cluster.enabled),

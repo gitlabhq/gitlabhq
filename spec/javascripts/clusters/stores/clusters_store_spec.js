@@ -78,6 +78,7 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
             externalIp: null,
+            externalHostname: null,
           },
           runner: {
             title: 'GitLab Runner',
@@ -111,7 +112,9 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
             hostname: null,
+            isEditingHostName: false,
             externalIp: null,
+            externalHostname: null,
           },
           cert_manager: {
             title: 'Cert-Manager',

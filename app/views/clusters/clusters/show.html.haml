@@ -15,14 +15,15 @@
   install_runner_path: clusterable.install_applications_cluster_path(@cluster, :runner),
   install_jupyter_path: clusterable.install_applications_cluster_path(@cluster, :jupyter),
   install_knative_path: clusterable.install_applications_cluster_path(@cluster, :knative),
+  update_knative_path: clusterable.update_applications_cluster_path(@cluster, :knative),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   has_rbac: @cluster.platform_kubernetes_rbac? ? 'true': 'false',
   cluster_type: @cluster.cluster_type,
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications'),
-  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-ip-address'),
-  ingress_dns_help_path: help_page_path('topics/autodevops/quick_start_guide.md', anchor: 'point-dns-at-cluster-ip'),
+  ingress_help_path: help_page_path('user/project/clusters/index.md', anchor: 'getting-the-external-endpoint'),
+  ingress_dns_help_path: help_page_path('user/project/clusters/index.md', anchor: 'manually-determining-the-external-endpoint'),
   manage_prometheus_path: manage_prometheus_path } }
 
   .js-cluster-application-notice

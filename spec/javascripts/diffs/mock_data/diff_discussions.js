@@ -288,6 +288,7 @@ export default {
     external_storage: null,
     old_path_html: 'CHANGELOG_OLD',
     new_path_html: 'CHANGELOG',
+    is_fully_expanded: true,
     context_lines_path:
       '/gitlab-org/gitlab-test/blob/c48ee0d1bf3b30453f5b32250ce03134beaa6d13/CHANGELOG/diff',
     highlighted_diff_lines: [

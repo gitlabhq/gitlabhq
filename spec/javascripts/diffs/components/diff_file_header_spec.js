@@ -23,6 +23,9 @@ describe('diff_file_header', () => {
   });
 
   beforeEach(() => {
+    gon.features = {
+      expandDiffFullFile: true,
+    };
     const diffFile = diffDiscussionMock.diff_file;
 
     diffFile.added_lines = 2;
@@ -382,7 +385,7 @@ describe('diff_file_header', () => {
         props.diffFile.edit_path = '/';
         vm = mountComponentWithStore(Component, { props, store });
 
-        expect(vm.$el.querySelector('.js-edit-blob')).toContainText('Edit');
+        expect(vm.$el.querySelector('.js-edit-blob')).not.toBe(null);
       });
 
       it('should not show edit button when file is deleted', () => {
@@ -574,6 +577,68 @@ describe('diff_file_header', () => {
           expect(vm.$el.querySelector('.js-edit-blob')).toEqual(null);
         });
       });
+    });
+  });
+
+  describe('expand full file button', () => {
+    beforeEach(() => {
+      props.addMergeRequestButtons = true;
+      props.diffFile.edit_path = '/';
+    });
+
+    it('does not render button', () => {
+      vm = mountComponentWithStore(Component, { props, store });
+
+      expect(vm.$el.querySelector('.js-expand-file')).toBe(null);
+    });
+
+    it('renders button', () => {
+      props.diffFile.is_fully_expanded = false;
+
+      vm = mountComponentWithStore(Component, { props, store });
+
+      expect(vm.$el.querySelector('.js-expand-file')).not.toBe(null);
+    });
+
+    it('shows fully expanded text', () => {
+      props.diffFile.is_fully_expanded = false;
+      props.diffFile.isShowingFullFile = true;
+
+      vm = mountComponentWithStore(Component, { props, store });
+
+      expect(vm.$el.querySelector('.js-expand-file').textContent).toContain('Show changes only');
+    });
+
+    it('shows expand text', () => {
+      props.diffFile.is_fully_expanded = false;
+
+      vm = mountComponentWithStore(Component, { props, store });
+
+      expect(vm.$el.querySelector('.js-expand-file').textContent).toContain('Show full file');
+    });
+
+    it('renders loading icon', () => {
+      props.diffFile.is_fully_expanded = false;
+      props.diffFile.isLoadingFullFile = true;
+
+      vm = mountComponentWithStore(Component, { props, store });
+
+      expect(vm.$el.querySelector('.js-expand-file .loading-container')).not.toBe(null);
+    });
+
+    it('calls toggleFullDiff on click', () => {
+      props.diffFile.is_fully_expanded = false;
+
+      vm = mountComponentWithStore(Component, { props, store });
+
+      spyOn(vm.$store, 'dispatch').and.stub();
+
+      vm.$el.querySelector('.js-expand-file').click();
+
+      expect(vm.$store.dispatch).toHaveBeenCalledWith(
+        'diffs/toggleFullDiff',
+        props.diffFile.file_path,
+      );
     });
   });
 });

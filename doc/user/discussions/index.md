@@ -10,31 +10,35 @@ You can leave a comment in the following places:
 - commits
 - commit diffs
 
-The comment area supports [Markdown] and [quick actions]. One can edit their
-own comment at any time, and anyone with [Maintainer access level][permissions] or
+There are standard comments, and you also have the option to create a comment
+in the form of a threaded discussion. A comment can also be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
+when it receives a reply.
+
+The comment area supports [Markdown] and [quick actions]. You can edit your own
+comment at any time, and anyone with [Maintainer access level][permissions] or
 higher can also edit a comment made by someone else.
 
-You could also reply to the notification email in order to reply to a comment,
-provided that [Reply by email] is configured by your GitLab admin. This also
-supports [Markdown] and [quick actions] as if replied from the web.
+You can also reply to a comment notification email to reply to the comment if
+[Reply by email] is configured for your GitLab instance. Replying to a standard comment 
+creates another standard comment. Replying to a discussion comment creates a reply in the
+discussion thread. Email replies support [Markdown] and [quick actions], just as if you replied from the web.
 
-Apart from the standard comments, you also have the option to create a comment
-in the form of a resolvable or threaded discussion.
-
-## Resolvable discussions
+## Resolvable comments and discussions
 
 > **Notes:**
 > - The main feature was [introduced][ce-5022] in GitLab 8.11.
 > - Resolvable discussions can be added only to merge request diffs.
 
 Discussion resolution helps keep track of progress during planning or code review.
-Resolving comments prevents you from forgetting to address feedback and lets you
-hide discussions that are no longer relevant.
+
+Every standard comment or discussion thread in merge requests, commits, commit diffs, and
+snippets is initially displayed as unresolved. They can then be individually resolved by anyone
+with at least Developer access to the project or by the author of the change being reviewed.
+
+The need to resolve all standard comments or discussions prevents you from forgetting
+to address feedback and lets you hide discussions that are no longer relevant.
 
 !["A discussion between two people on a piece of code"][discussion-view]
-
-Comments and discussions can be resolved by anyone with at least Developer
-access to the project or the author of the merge request.
 
 ### Commit discussions in the context of a merge request
 
@@ -272,7 +276,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
 
-Additionally locked issues can not be reopened.
+Additionally, locked issues and merge requests can not be reopened.
 
 ## Filtering notes
 
@@ -338,6 +342,26 @@ and push the suggested change directly into the codebase in the merge request's 
 > **Note:**
 Custom commit messages will be introduced by
 [#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
+
+## Start a discussion by replying to a standard comment
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30299) in GitLab 11.9
+
+To reply to a standard (non-discussion) comment, you can use the **Reply to comment** button.
+
+![Reply to comment button](img/reply_to_comment_button.png)
+
+The **Reply to comment** button is only displayed if you have permissions to reply to an existing discussion, or start a discussion from a standard comment.
+
+Clicking on the **Reply to comment** button will bring the reply area into focus and you can type your reply.
+
+![Reply to comment feature](img/reply_to_comment.gif)
+
+Relying to a non-discussion comment will convert the non-discussion comment to a 
+threaded discussion once the reply is submitted. This conversion is considered an edit
+to the original comment, so a note about when it was last edited will appear underneath it.
+
+This feature only exists for Issues, Merge requests, and Epics. Commits, Snippets and Merge request diff discussions are not supported yet.
 
 [ce-5022]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5022
 [ce-7125]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7125

@@ -784,6 +784,7 @@
   }
 
   @include media-breakpoint-up(md) {
+    position: -webkit-sticky;
     position: sticky;
     top: $header-height + $mr-tabs-height;
     width: 100%;
@@ -810,6 +811,7 @@
   border-bottom: 1px solid $border-color;
 
   @include media-breakpoint-up(sm) {
+    position: -webkit-sticky;
     position: sticky;
   }
 

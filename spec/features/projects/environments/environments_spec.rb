@@ -183,14 +183,14 @@ describe 'Environments page', :js do
         it 'shows a play button' do
           find('.js-environment-actions-dropdown').click
 
-          expect(page).to have_content(action.name.humanize)
+          expect(page).to have_content(action.name)
         end
 
         it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
           find('.js-environment-actions-dropdown').click
-          expect(page).to have_content(action.name.humanize)
+          expect(page).to have_content(action.name)
 
           expect { find('.js-manual-action-link').click }
             .not_to change { Ci::Pipeline.count }
@@ -311,7 +311,7 @@ describe 'Environments page', :js do
         it "has link to the delayed job's action" do
           find('.js-environment-actions-dropdown').click
 
-          expect(page).to have_button('Delayed job')
+          expect(page).to have_button('delayed job')
           expect(page).to have_content(/\d{2}:\d{2}:\d{2}/)
         end
 
@@ -333,7 +333,7 @@ describe 'Environments page', :js do
         context 'when user played a delayed job immediately' do
           before do
             find('.js-environment-actions-dropdown').click
-            page.accept_confirm { click_button('Delayed job') }
+            page.accept_confirm { click_button('delayed job') }
             wait_for_requests
           end
 

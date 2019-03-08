@@ -18,6 +18,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action only: [:show] do
     push_frontend_feature_flag(:diff_tree_filtering, default_enabled: true)
+    push_frontend_feature_flag(:expand_diff_full_file)
   end
 
   def index

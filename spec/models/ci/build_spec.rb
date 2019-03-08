@@ -2118,11 +2118,11 @@ describe Ci::Build do
           { key: 'CI_PIPELINE_URL', value: project.web_url + "/pipelines/#{pipeline.id}", public: true, masked: false },
           { key: 'CI_JOB_ID', value: build.id.to_s, public: true, masked: false },
           { key: 'CI_JOB_URL', value: project.web_url + "/-/jobs/#{build.id}", public: true, masked: false },
-          { key: 'CI_JOB_TOKEN', value: 'my-token', public: false, masked: false },
+          { key: 'CI_JOB_TOKEN', value: 'my-token', public: false, masked: true },
           { key: 'CI_BUILD_ID', value: build.id.to_s, public: true, masked: false },
-          { key: 'CI_BUILD_TOKEN', value: 'my-token', public: false, masked: false },
+          { key: 'CI_BUILD_TOKEN', value: 'my-token', public: false, masked: true },
           { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true, masked: false },
-          { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false, masked: false },
+          { key: 'CI_REGISTRY_PASSWORD', value: 'my-token', public: false, masked: true },
           { key: 'CI_REPOSITORY_URL', value: build.repo_url, public: false, masked: false },
           { key: 'CI', value: 'true', public: true, masked: false },
           { key: 'GITLAB_CI', value: 'true', public: true, masked: false },
@@ -2652,7 +2652,7 @@ describe Ci::Build do
       let(:deploy_token_variables) do
         [
           { key: 'CI_DEPLOY_USER', value: deploy_token.username, public: true, masked: false },
-          { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: false, masked: false }
+          { key: 'CI_DEPLOY_PASSWORD', value: deploy_token.token, public: false, masked: true }
         ]
       end
 

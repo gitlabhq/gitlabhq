@@ -6,8 +6,10 @@ import {
   addContextLines,
   prepareDiffData,
   isDiscussionApplicableToLine,
+  convertExpandLines,
 } from './utils';
 import * as types from './mutation_types';
+import { OLD_LINE_KEY, NEW_LINE_KEY, TYPE_KEY, LEFT_LINE_KEY } from '../constants';
 
 export default {
   [types.SET_BASE_CONFIG](state, options) {
@@ -247,5 +249,55 @@ export default {
   },
   [types.TOGGLE_FILE_FINDER_VISIBLE](state, visible) {
     state.fileFinderVisible = visible;
+  },
+  [types.REQUEST_FULL_DIFF](state, filePath) {
+    const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+
+    file.isLoadingFullFile = true;
+  },
+  [types.RECEIVE_FULL_DIFF_ERROR](state, filePath) {
+    const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+
+    file.isLoadingFullFile = false;
+  },
+  [types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath, data }) {
+    const file = findDiffFile(state.diffFiles, filePath, 'file_path');
+
+    file.isShowingFullFile = true;
+    file.isLoadingFullFile = false;
+
+    file.highlighted_diff_lines = convertExpandLines({
+      diffLines: file.highlighted_diff_lines,
+      typeKey: [TYPE_KEY],
+      oldLineKey: [OLD_LINE_KEY],
+      newLineKey: [NEW_LINE_KEY],
+      data,
+      mapLine: ({ line, oldLine, newLine }) => ({
+        ...line,
+        old_line: oldLine,
+        new_line: newLine,
+        line_code: `${file.file_hash}_${oldLine}_${newLine}`,
+      }),
+    });
+
+    file.parallel_diff_lines = convertExpandLines({
+      diffLines: file.parallel_diff_lines,
+      typeKey: [LEFT_LINE_KEY, TYPE_KEY],
+      oldLineKey: [LEFT_LINE_KEY, OLD_LINE_KEY],
+      newLineKey: [LEFT_LINE_KEY, NEW_LINE_KEY],
+      data,
+      mapLine: ({ line, oldLine, newLine }) => ({
+        left: {
+          ...line,
+          old_line: oldLine,
+          line_code: `${file.file_hash}_${oldLine}_${newLine}`,
+        },
+        right: {
+          ...line,
+          new_line: newLine,
+          line_code: `${file.file_hash}_${newLine}_${oldLine}`,
+        },
+      }),
+    });
   },
 };

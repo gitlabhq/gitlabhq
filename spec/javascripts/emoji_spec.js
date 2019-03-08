@@ -1,4 +1,6 @@
-import { glEmojiTag } from '~/emoji';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import { initEmojiMap, glEmojiTag, EMOJI_VERSION } from '~/emoji';
 import isEmojiUnicodeSupported, {
   isFlagEmoji,
   isRainbowFlagEmoji,
@@ -7,6 +9,7 @@ import isEmojiUnicodeSupported, {
   isHorceRacingSkinToneComboEmoji,
   isPersonZwjEmoji,
 } from '~/emoji/support/is_emoji_unicode_supported';
+import installGlEmojiElement from '~/behaviors/gl_emoji';
 
 const emptySupportMap = {
   personZwj: false,
@@ -31,34 +34,35 @@ const emojiFixtureMap = {
   bomb: {
     name: 'bomb',
     moji: '💣',
-    unicodeVersion: '6.0',
+    uni: '6.0',
   },
   construction_worker_tone5: {
     name: 'construction_worker_tone5',
     moji: '👷🏿',
-    unicodeVersion: '8.0',
+    uni: '8.0',
   },
   five: {
     name: 'five',
     moji: '5️⃣',
-    unicodeVersion: '3.0',
+    uni: '3.0',
   },
   grey_question: {
     name: 'grey_question',
     moji: '❔',
-    unicodeVersion: '6.0',
+    uni: '6.0',
   },
 };
 
 function markupToDomElement(markup) {
   const div = document.createElement('div');
   div.innerHTML = markup;
+  document.body.appendChild(div);
   return div.firstElementChild;
 }
 
-function testGlEmojiImageFallback(element, name, src) {
+function testGlEmojiImageFallback(element, name) {
   expect(element.tagName.toLowerCase()).toBe('img');
-  expect(element.getAttribute('src')).toBe(src);
+  expect(element.getAttribute('src')).toBe(`/-/emojis/${EMOJI_VERSION}/${name}.png`);
   expect(element.getAttribute('title')).toBe(`:${name}:`);
   expect(element.getAttribute('alt')).toBe(`:${name}:`);
 }
@@ -68,12 +72,11 @@ const defaults = {
   sprite: false,
 };
 
-function testGlEmojiElement(element, name, unicodeVersion, unicodeMoji, options = {}) {
+function testGlEmojiElement(element, name, uni, unicodeMoji, options = {}) {
   const opts = Object.assign({}, defaults, options);
   expect(element.tagName.toLowerCase()).toBe('gl-emoji');
   expect(element.dataset.name).toBe(name);
-  expect(element.dataset.fallbackSrc.length).toBeGreaterThan(0);
-  expect(element.dataset.unicodeVersion).toBe(unicodeVersion);
+  expect(element.dataset.uni).toBe(uni);
 
   const fallbackSpriteClass = `emoji-${name}`;
   if (opts.sprite) {
@@ -86,7 +89,7 @@ function testGlEmojiElement(element, name, unicodeVersion, unicodeMoji, options 
 
   if (opts.forceFallback && !opts.sprite) {
     // Check for image fallback
-    testGlEmojiImageFallback(element.firstElementChild, name, element.dataset.fallbackSrc);
+    testGlEmojiImageFallback(element.firstElementChild, name);
   } else {
     // Otherwise make sure things are still unicode text
     expect(element.textContent.trim()).toBe(unicodeMoji);
@@ -94,101 +97,143 @@ function testGlEmojiElement(element, name, unicodeVersion, unicodeMoji, options 
 }
 
 describe('gl_emoji', () => {
+  beforeAll(() => {
+    installGlEmojiElement();
+  });
+
+  let mock;
+  const emojiData = getJSONFixture('emojis/emojis.json');
+
+  beforeEach(function(done) {
+    mock = new MockAdapter(axios);
+    mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, emojiData);
+
+    initEmojiMap()
+      .then(() => {
+        done();
+      })
+      .catch(() => {
+        done();
+      });
+  });
+
+  afterEach(function() {
+    mock.restore();
+  });
+
   describe('glEmojiTag', () => {
-    it('bomb emoji', () => {
+    it('bomb emoji', done => {
       const emojiKey = 'bomb';
       const markup = glEmojiTag(emojiFixtureMap[emojiKey].name);
       const glEmojiElement = markupToDomElement(markup);
-      testGlEmojiElement(
-        glEmojiElement,
-        emojiFixtureMap[emojiKey].name,
-        emojiFixtureMap[emojiKey].unicodeVersion,
-        emojiFixtureMap[emojiKey].moji,
-      );
+      setTimeout(() => {
+        testGlEmojiElement(
+          glEmojiElement,
+          emojiFixtureMap[emojiKey].name,
+          emojiFixtureMap[emojiKey].uni,
+          emojiFixtureMap[emojiKey].moji,
+        );
+        done();
+      });
     });
 
-    it('bomb emoji with image fallback', () => {
+    it('bomb emoji with image fallback', done => {
       const emojiKey = 'bomb';
       const markup = glEmojiTag(emojiFixtureMap[emojiKey].name, {
         forceFallback: true,
       });
       const glEmojiElement = markupToDomElement(markup);
-      testGlEmojiElement(
-        glEmojiElement,
-        emojiFixtureMap[emojiKey].name,
-        emojiFixtureMap[emojiKey].unicodeVersion,
-        emojiFixtureMap[emojiKey].moji,
-        {
-          forceFallback: true,
-        },
-      );
+      setTimeout(() => {
+        testGlEmojiElement(
+          glEmojiElement,
+          emojiFixtureMap[emojiKey].name,
+          emojiFixtureMap[emojiKey].uni,
+          emojiFixtureMap[emojiKey].moji,
+          {
+            forceFallback: true,
+          },
+        );
+        done();
+      });
     });
 
-    it('bomb emoji with sprite fallback readiness', () => {
+    it('bomb emoji with sprite fallback readiness', done => {
       const emojiKey = 'bomb';
       const markup = glEmojiTag(emojiFixtureMap[emojiKey].name, {
         sprite: true,
       });
       const glEmojiElement = markupToDomElement(markup);
-      testGlEmojiElement(
-        glEmojiElement,
-        emojiFixtureMap[emojiKey].name,
-        emojiFixtureMap[emojiKey].unicodeVersion,
-        emojiFixtureMap[emojiKey].moji,
-        {
-          sprite: true,
-        },
-      );
+      setTimeout(() => {
+        testGlEmojiElement(
+          glEmojiElement,
+          emojiFixtureMap[emojiKey].name,
+          emojiFixtureMap[emojiKey].uni,
+          emojiFixtureMap[emojiKey].moji,
+          {
+            sprite: true,
+          },
+        );
+        done();
+      });
     });
 
-    it('bomb emoji with sprite fallback', () => {
+    it('bomb emoji with sprite fallback', done => {
       const emojiKey = 'bomb';
       const markup = glEmojiTag(emojiFixtureMap[emojiKey].name, {
         forceFallback: true,
         sprite: true,
       });
       const glEmojiElement = markupToDomElement(markup);
-      testGlEmojiElement(
-        glEmojiElement,
-        emojiFixtureMap[emojiKey].name,
-        emojiFixtureMap[emojiKey].unicodeVersion,
-        emojiFixtureMap[emojiKey].moji,
-        {
-          forceFallback: true,
-          sprite: true,
-        },
-      );
+      setTimeout(() => {
+        testGlEmojiElement(
+          glEmojiElement,
+          emojiFixtureMap[emojiKey].name,
+          emojiFixtureMap[emojiKey].uni,
+          emojiFixtureMap[emojiKey].moji,
+          {
+            forceFallback: true,
+            sprite: true,
+          },
+        );
+        done();
+      });
     });
 
-    it('question mark when invalid emoji name given', () => {
+    it('question mark when invalid emoji name given', done => {
       const name = 'invalid_emoji';
       const emojiKey = 'grey_question';
       const markup = glEmojiTag(name);
       const glEmojiElement = markupToDomElement(markup);
-      testGlEmojiElement(
-        glEmojiElement,
-        emojiFixtureMap[emojiKey].name,
-        emojiFixtureMap[emojiKey].unicodeVersion,
-        emojiFixtureMap[emojiKey].moji,
-      );
+      setTimeout(() => {
+        testGlEmojiElement(
+          glEmojiElement,
+          emojiFixtureMap[emojiKey].name,
+          emojiFixtureMap[emojiKey].uni,
+          emojiFixtureMap[emojiKey].moji,
+        );
+        done();
+      });
     });
 
-    it('question mark with image fallback when invalid emoji name given', () => {
+    it('question mark with image fallback when invalid emoji name given', done => {
       const name = 'invalid_emoji';
       const emojiKey = 'grey_question';
       const markup = glEmojiTag(name, {
         forceFallback: true,
       });
       const glEmojiElement = markupToDomElement(markup);
-      testGlEmojiElement(
-        glEmojiElement,
-        emojiFixtureMap[emojiKey].name,
-        emojiFixtureMap[emojiKey].unicodeVersion,
-        emojiFixtureMap[emojiKey].moji,
-        {
-          forceFallback: true,
-        },
-      );
+      setTimeout(() => {
+        testGlEmojiElement(
+          glEmojiElement,
+          emojiFixtureMap[emojiKey].name,
+          emojiFixtureMap[emojiKey].uni,
+          emojiFixtureMap[emojiKey].moji,
+          {
+            forceFallback: true,
+          },
+        );
+        done();
+      });
     });
   });
 
@@ -389,7 +434,7 @@ describe('gl_emoji', () => {
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
-        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].uni,
       );
 
       expect(isSupported).toBeTruthy();
@@ -401,7 +446,7 @@ describe('gl_emoji', () => {
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
-        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].uni,
       );
 
       expect(isSupported).toBeFalsy();
@@ -415,7 +460,7 @@ describe('gl_emoji', () => {
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
-        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].uni,
       );
 
       expect(isSupported).toBeFalsy();
@@ -441,7 +486,7 @@ describe('gl_emoji', () => {
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
-        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].uni,
       );
 
       expect(isSupported).toBeFalsy();
@@ -459,7 +504,7 @@ describe('gl_emoji', () => {
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
-        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].uni,
       );
 
       expect(isSupported).toBeTruthy();
@@ -477,7 +522,7 @@ describe('gl_emoji', () => {
       const isSupported = isEmojiUnicodeSupported(
         unicodeSupportMap,
         emojiFixtureMap[emojiKey].moji,
-        emojiFixtureMap[emojiKey].unicodeVersion,
+        emojiFixtureMap[emojiKey].uni,
       );
 
       expect(isSupported).toBeFalsy();
