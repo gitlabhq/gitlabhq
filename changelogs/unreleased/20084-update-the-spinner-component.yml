@@ -1,5 +1,5 @@
 ---
-title: Add a spinner icon which is rendered using pure css
-merge_request: 25186
+title: Add a spinner icon which is rendered using pure css + update conflicting CSS
+merge_request: 25683
 author:
 type: changed
