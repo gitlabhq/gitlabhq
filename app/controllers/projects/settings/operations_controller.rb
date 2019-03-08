@@ -3,7 +3,6 @@
 module Projects
   module Settings
     class OperationsController < Projects::ApplicationController
-      before_action :check_license
       before_action :authorize_update_environment!
 
       helper_method :error_tracking_setting
@@ -64,10 +63,6 @@ module Projects
             project: [:slug, :name, :organization_slug, :organization_name]
           ]
         }
-      end
-
-      def check_license
-        render_404 unless helpers.settings_operations_available?
       end
     end
   end
