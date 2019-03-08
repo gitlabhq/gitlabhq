@@ -13,7 +13,7 @@ describe IssuablePolicy, models: true do
 
       context 'when user is able to read project' do
         it 'enables user to read and update issuables' do
-          expect(policies).to be_allowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request)
+          expect(policies).to be_allowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request, :reopen_merge_request)
         end
       end
 
@@ -24,12 +24,12 @@ describe IssuablePolicy, models: true do
           it 'enables user to read and update issuables' do
             project.add_maintainer(user)
 
-            expect(policies).to be_allowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request)
+            expect(policies).to be_allowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request, :reopen_merge_request)
           end
         end
 
         it 'disallows user from reading and updating issuables from that project' do
-          expect(policies).to be_disallowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request)
+          expect(policies).to be_disallowed(:read_issue, :update_issue, :reopen_issue, :read_merge_request, :update_merge_request, :reopen_merge_request)
         end
       end
     end

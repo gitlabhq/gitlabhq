@@ -276,7 +276,7 @@ edit existing comments. Non-team members are restricted from adding or editing c
 | :-----------: | :----------: |
 | ![Comment form member](img/lock_form_member.png) | ![Comment form non-member](img/lock_form_non_member.png) |
 
-Additionally locked issues can not be reopened.
+Additionally, locked issues and merge requests can not be reopened.
 
 ## Filtering notes
 

@@ -231,6 +231,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_merge_request
     enable :admin_milestone
     enable :update_merge_request
+    enable :reopen_merge_request
     enable :create_commit_status
     enable :update_commit_status
     enable :create_build
