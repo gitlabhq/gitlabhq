@@ -18,7 +18,7 @@ describe Gitlab::Git::Blob, :seed_helper do
     end
   end
 
-  describe '.find' do
+  shared_examples '.find' do
     context 'nil path' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
 
@@ -126,6 +126,20 @@ describe Gitlab::Git::Blob, :seed_helper do
         expect(blob).to be_binary_in_repo
       end
     end
+  end
+
+  describe '.find with Gitaly enabled' do
+    it_behaves_like '.find'
+  end
+
+  describe '.find with Rugged enabled', :enable_rugged do
+    it 'calls out to the Rugged implementation' do
+      allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+
+      described_class.find(repository, SeedRepo::Commit::ID, 'files/images/6049019_460s.jpg')
+    end
+
+    it_behaves_like '.find'
   end
 
   describe '.raw' do

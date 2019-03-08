@@ -680,4 +680,66 @@ describe('DiffsStoreMutations', () => {
       expect(state.showWhitespace).toBe(false);
     });
   });
+
+  describe('REQUEST_FULL_DIFF', () => {
+    it('sets isLoadingFullFile to true', () => {
+      const state = {
+        diffFiles: [{ file_path: 'test', isLoadingFullFile: false }],
+      };
+
+      mutations[types.REQUEST_FULL_DIFF](state, 'test');
+
+      expect(state.diffFiles[0].isLoadingFullFile).toBe(true);
+    });
+  });
+
+  describe('RECEIVE_FULL_DIFF_ERROR', () => {
+    it('sets isLoadingFullFile to false', () => {
+      const state = {
+        diffFiles: [{ file_path: 'test', isLoadingFullFile: true }],
+      };
+
+      mutations[types.RECEIVE_FULL_DIFF_ERROR](state, 'test');
+
+      expect(state.diffFiles[0].isLoadingFullFile).toBe(false);
+    });
+  });
+
+  describe('RECEIVE_FULL_DIFF_SUCCESS', () => {
+    it('sets isLoadingFullFile to false', () => {
+      const state = {
+        diffFiles: [
+          {
+            file_path: 'test',
+            isLoadingFullFile: true,
+            isShowingFullFile: false,
+            highlighted_diff_lines: [],
+            parallel_diff_lines: [],
+          },
+        ],
+      };
+
+      mutations[types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath: 'test', data: [] });
+
+      expect(state.diffFiles[0].isLoadingFullFile).toBe(false);
+    });
+
+    it('sets isShowingFullFile to true', () => {
+      const state = {
+        diffFiles: [
+          {
+            file_path: 'test',
+            isLoadingFullFile: true,
+            isShowingFullFile: false,
+            highlighted_diff_lines: [],
+            parallel_diff_lines: [],
+          },
+        ],
+      };
+
+      mutations[types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath: 'test', data: [] });
+
+      expect(state.diffFiles[0].isShowingFullFile).toBe(true);
+    });
+  });
 });

@@ -13,9 +13,10 @@
     = form.label :key, class: 'col-form-label col-sm-2'
     .col-sm-10
       %p.light
-        Paste a machine public key here. Read more about how to generate it
-        = link_to 'here', help_page_path('ssh/README')
-      = form.text_area :key, class: 'form-control thin-area', rows: 5
+        - link_start = "<a href='#{help_page_path('ssh/README')}' target='_blank' rel='noreferrer noopener'>".html_safe
+        - link_end = '</a>'
+        = _('Paste a machine public key here. Read more about how to generate it %{link_start}here%{link_end}').html_safe % { link_start: link_start, link_end: link_end.html_safe }
+      = form.text_area :key, class: 'form-control thin_area', rows: 5
   - else
     = form.label :fingerprint, class: 'col-form-label col-sm-2'
     .col-sm-10
@@ -28,6 +29,6 @@
       .col-sm-10
         = deploy_keys_project_form.label :can_push do
           = deploy_keys_project_form.check_box :can_push
-          %strong Write access allowed
+          %strong= _('Write access allowed')
         %p.light.append-bottom-0
-          Allow this key to push to repository as well? (Default only allows pull access.)
+          = _('Allow this key to push to repository as well? (Default only allows pull access.)')

@@ -35,7 +35,10 @@ module Groups
     def proceed_to_transfer
       Group.transaction do
         update_group_attributes
+        ensure_ownership
       end
+
+      true
     end
 
     def ensure_allowed_transfer
@@ -94,6 +97,13 @@ module Groups
         .update_all(visibility_level: @new_parent_group.visibility_level)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def ensure_ownership
+      return if @new_parent_group
+      return unless @group.owners.empty?
+
+      @group.add_owner(current_user)
+    end
 
     def raise_transfer_error(message)
       raise TransferError, ERROR_MESSAGES[message]

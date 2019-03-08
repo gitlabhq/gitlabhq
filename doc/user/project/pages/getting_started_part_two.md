@@ -1,5 +1,5 @@
 ---
-last_updated: 2018-02-16
+last_updated: 2019-03-05
 author: Marcia Ramos
 author_gitlab: marcia
 level: beginner
@@ -21,8 +21,8 @@ To get started with GitLab Pages, you need:
 
 Optional Features:
 
-1. A custom domain or subdomain
-1. A DNS pointing your (sub)domain to your Pages site
+1. A custom domain or subdomain.
+1. A DNS pointing your (sub)domain to your Pages site.
    1. **Optional**: an SSL/TLS certificate so your custom
    domain is accessible under HTTPS.
 
@@ -33,54 +33,73 @@ The optional settings, custom domain, DNS records, and SSL/TLS certificates, are
 Your GitLab Pages project is a regular project created the
 same way you do for the other ones. To get started with GitLab Pages, you have three ways:
 
-- Use one of the popular templates already in the app,
-- Fork one of the templates from Page Examples, or
-- Create a new project from scratch
-
-Let's go over each option.
+- [Use one of the popular project templates bundled with GitLab](#use-one-of-the-popular-pages-templates-bundled-with-gitlab).
+- [Fork one of the templates from Page Examples](#fork-a-project-to-get-started-from).
+- [Create a new project from scratch](#create-a-project-from-scratch).
 
 ### Use one of the popular Pages templates bundled with GitLab
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/47857)
 in GitLab 11.8.
 
-The simplest way to create a GitLab Pages site is to use one of the most
-popular templates, which come already bundled and ready to go. To use one
-of these templates:
-
-1. From the top navigation, click the **+** button and select **New project**
-1. Select **Create from Template**
-1. Choose one of the templates starting with **Pages**
+The simplest way to create a GitLab Pages site is to
+[use one of the most popular templates](index.md#getting-started),
+which come already bundled with GitLab and are ready to go.
 
 ### Fork a project to get started from
 
-To make things easy for you, we've created this
-[group](https://gitlab.com/pages) of default projects
-containing the most popular SSGs templates.
+If you don't find an existing project template that suits you,
+we've created this [group](https://gitlab.com/pages) of default projects
+containing the most popular SSGs templates to get you started.
 
-Watch the [video tutorial](https://youtu.be/TWqh9MtT4Bg) we've
-created for the steps below.
+<table class="borderless-table center fixed-table middle width-80">
+  <tr>
+    <td style="width: 30%"><img src="img/icons/fork.png" alt="Fork" class="image-noshadow half-width"></td>
+    <td style="width: 10%">
+      <strong>
+        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+      </strong>
+    </td>
+    <td style="width: 30%"><img src="img/icons/terminal.png" alt="Deploy" class="image-noshadow half-width"></td>
+    <td style="width: 10%">
+      <strong>
+        <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+      </strong>
+    </td>
+    <td style="width: 30%"><img src="img/icons/click.png" alt="Visit" class="image-noshadow half-width"></td>
+  </tr>
+  <tr>
+    <td><em>Fork an example project</em></td>
+    <td></td>
+    <td><em>Deploy your website</em></td>
+    <td></td>
+    <td><em>Visit your website's URL</em></td>
+  </tr>
+</table>
 
-1. [Fork a sample project](../../../gitlab-basics/fork-project.md) from the [Pages group](https://gitlab.com/pages)
-1. Trigger a build (push a change to any file)
-1. As soon as the build passes, your website will have been deployed with GitLab Pages. Your website URL will be available under your project's **Settings** > **Pages**
-1. Optionally, remove the fork relationship by navigating to your project's **Settings** > expanding **Advanced settings** and scrolling down to **Remove fork relationship**:
+**<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> Watch a [video tutorial](https://www.youtube.com/watch?v=TWqh9MtT4Bg) with all the steps below.**
+
+1. [Fork](../../../gitlab-basics/fork-project.md) a sample project from the [GitLab Pages examples](https://gitlab.com/pages) group.
+1. From the left sidebar, navigate to your project's **CI/CD > Pipelines**
+and click **Run pipeline** to trigger GitLab CI/CD to build and deploy your
+site to the server.
+1. Once the pipeline has finished successfully, find the link to visit your
+website from your project's **Settings > Pages**.
+
+You can also take some **optional** further steps:
+
+- _Remove the fork relationship._ The fork relashionship is necessary to contribute back to the project you originally forked from. If you don't have any intentions to do so, you can remove it. To do so, navigate to your project's **Settings**, expand **Advanced settings**, and scroll down to **Remove fork relationship**:
 
     ![remove fork relationship](img/remove_fork_relationship.png)
 
-To turn a **project website** forked from the Pages group into a **user/group** website, you'll need to:
-
-- Rename it to `namespace.gitlab.io`: navigate to project's **Settings** > expand **Advanced settings** > and scroll down to **Rename repository**
-- Adjust your SSG's [base URL](#urls-and-baseurls) from `"project-name"` to `""`. This setting will be at a different place for each SSG, as each of them have their own structure and file tree. Most likely, it will be in the SSG's config file.
-
-> **Notes:**
->
-> Why do I need to remove the fork relationship?
->
-> Unless you want to contribute to the original project,
-you won't need it connected to the upstream. A
-[fork](https://about.gitlab.com/2016/12/01/how-to-keep-your-fork-up-to-date-with-its-origin/#fork)
-is useful for submitting merge requests to the upstream.
+- _Make it a user or group website._ To turn a **project website** forked
+from the Pages group into a **user/group** website, you'll need to:
+    - Rename it to `namespace.gitlab.io`: navigate to project's **Settings** >
+    expand **Advanced settings** > and scroll down to **Rename repository**.
+    - Adjust your SSG's [base URL](#urls-and-baseurls) from `"project-name"` to
+    `""`. This setting will be at a different place for each SSG, as each of them
+    have their own structure and file tree. Most likely, it will be in the SSG's
+    config file.
 
 ### Create a project from scratch
 

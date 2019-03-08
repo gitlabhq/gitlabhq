@@ -7,29 +7,28 @@ module AccessMatchers
   extend RSpec::Matchers::DSL
   include Warden::Test::Helpers
 
-  def emulate_user(user, membership = nil)
-    case user
-    when :user
-      login_as(create(:user))
+  def emulate_user(user_type_or_trait, membership = nil)
+    case user_type_or_trait
+    when :user, :admin
+      login_as(create(user_type_or_trait))
+    when :external, :auditor
+      login_as(create(:user, user_type_or_trait))
     when :visitor
       logout
-    when :admin
-      login_as(create(:admin))
-    when :external
-      login_as(create(:user, external: true))
     when User
-      login_as(user)
+      login_as(user_type_or_trait)
     when *Gitlab::Access.sym_options_with_owner.keys
-      raise ArgumentError, "cannot emulate #{user} without membership parent" unless membership
+      raise ArgumentError, "cannot emulate #{user_type_or_trait} without membership parent" unless membership
 
-      role = user
-
-      if role == :owner && membership.owner
-        user = membership.owner
-      else
-        user = create(:user)
-        membership.public_send(:"add_#{role}", user)
-      end
+      role = user_type_or_trait
+      user =
+        if role == :owner && membership.owner
+          membership.owner
+        else
+          create(:user).tap do |new_user|
+            membership.public_send(:"add_#{role}", new_user)
+          end
+        end
 
       login_as(user)
     else

@@ -7,7 +7,7 @@ class DiffFileEntity < DiffFileBaseEntity
   expose :added_lines
   expose :removed_lines
 
-  expose :load_collapsed_diff_url, if: -> (diff_file, options) { diff_file.viewer.collapsed? && options[:merge_request] } do |diff_file|
+  expose :load_collapsed_diff_url, if: -> (diff_file, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
     project = merge_request.target_project
 
@@ -55,6 +55,10 @@ class DiffFileEntity < DiffFileBaseEntity
   # Used for inline diffs
   expose :highlighted_diff_lines, using: DiffLineEntity, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
     diff_file.diff_lines_for_serializer
+  end
+
+  expose :is_fully_expanded, if: -> (diff_file, _) { Feature.enabled?(:expand_diff_full_file) && diff_file.text? } do |diff_file|
+    diff_file.fully_expanded?
   end
 
   # Used for parallel diffs

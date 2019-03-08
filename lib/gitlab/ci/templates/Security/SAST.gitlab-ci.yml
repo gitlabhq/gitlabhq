@@ -1,0 +1,43 @@
+# Read more about this feature here: https://docs.gitlab.com/ee/user/project/merge_requests/sast.html
+#
+# Configure the scanning tool through the environment variables.
+# List of the variables: https://gitlab.com/gitlab-org/security-products/sast#settings
+# How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
+
+sast:
+  stage: test
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SAST_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
+    - |
+      docker run \
+        --env SAST_ANALYZER_IMAGES \
+        --env SAST_ANALYZER_IMAGE_PREFIX \
+        --env SAST_ANALYZER_IMAGE_TAG \
+        --env SAST_DEFAULT_ANALYZERS \
+        --env SAST_BRAKEMAN_LEVEL \
+        --env SAST_GOSEC_LEVEL \
+        --env SAST_FLAWFINDER_LEVEL \
+        --env SAST_DOCKER_CLIENT_NEGOTIATION_TIMEOUT \
+        --env SAST_PULL_ANALYZER_IMAGE_TIMEOUT \
+        --env SAST_RUN_ANALYZER_TIMEOUT \
+        --volume "$PWD:/code" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+  dependencies: []
+  only:
+    refs:
+      - branches
+    variables:
+      - $GITLAB_FEATURES =~ /\bsast\b/
+  except:
+    variables:
+      - $SAST_DISABLED

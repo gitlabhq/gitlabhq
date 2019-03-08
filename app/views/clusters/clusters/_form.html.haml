@@ -37,7 +37,7 @@
         = s_('ClusterIntegration|Alternatively')
         %code #{@cluster.application_ingress_external_ip}.nip.io
         = s_('ClusterIntegration| can be used instead of a custom domain.')
-      - custom_domain_url = help_page_path('user/project/clusters/index', anchor: 'pointing-your-dns-at-the-cluster-ip')
+      - custom_domain_url = help_page_path('user/project/clusters/index', anchor: 'pointing-your-dns-at-the-external-endpoint')
       - custom_domain_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: custom_domain_url }
       = s_('ClusterIntegration| %{custom_domain_start}More information%{custom_domain_end}.').html_safe % { custom_domain_start: custom_domain_start, custom_domain_end: '</a>'.html_safe }
 

@@ -379,6 +379,21 @@ describe Milestone do
         expect(milestone_ids).to be_empty
       end
     end
+
+    context 'when there is a milestone with a date after 294276 AD', :postgresql do
+      before do
+        past_milestone_project_1.update!(due_date: Date.new(294277, 1, 1))
+      end
+
+      it 'returns the next upcoming open milestone ID for each project and group' do
+        expect(milestone_ids).to contain_exactly(
+          current_milestone_project_1.id,
+          current_milestone_project_2.id,
+          current_milestone_group_1.id,
+          current_milestone_group_2.id
+        )
+      end
+    end
   end
 
   describe '#to_reference' do

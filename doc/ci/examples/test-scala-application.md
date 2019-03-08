@@ -1,4 +1,4 @@
-# Test and deploy to Heroku a Scala application
+# Test and deploy a Scala application to Heroku
 
 This example demonstrates the integration of GitLab CI with Scala
 applications using SBT. Checkout the example

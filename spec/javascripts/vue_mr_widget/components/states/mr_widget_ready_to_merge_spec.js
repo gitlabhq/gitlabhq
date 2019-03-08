@@ -673,7 +673,7 @@ describe('ReadyToMerge', () => {
           .at(0)
           .props('label');
 
-      it('should have two edit components when squash is enabled', () => {
+      it('should have two edit components when squash is enabled and there is more than 1 commit', () => {
         createLocalComponent({
           mr: {
             commitsCount: 2,
@@ -683,6 +683,18 @@ describe('ReadyToMerge', () => {
         });
 
         expect(findCommitEditElements().length).toBe(2);
+      });
+
+      it('should have one edit components when squash is enabled and there is 1 commit only', () => {
+        createLocalComponent({
+          mr: {
+            commitsCount: 1,
+            squash: true,
+            enableSquashBeforeMerge: true,
+          },
+        });
+
+        expect(findCommitEditElements().length).toBe(1);
       });
 
       it('should have correct edit merge commit label', () => {
@@ -711,8 +723,10 @@ describe('ReadyToMerge', () => {
         expect(findCommitDropdownElement().exists()).toBeFalsy();
       });
 
-      it('should  be rendered if squash is enabled', () => {
-        createLocalComponent({ mr: { squash: true } });
+      it('should  be rendered if squash is enabled and there is more than 1 commit', () => {
+        createLocalComponent({
+          mr: { enableSquashBeforeMerge: true, squash: true, commitsCount: 2 },
+        });
 
         expect(findCommitDropdownElement().exists()).toBeTruthy();
       });

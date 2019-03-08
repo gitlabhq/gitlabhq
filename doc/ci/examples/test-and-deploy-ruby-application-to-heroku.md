@@ -1,4 +1,4 @@
-# Test and Deploy a ruby application with GitLab CI/CD
+# Test and deploy a Ruby application with GitLab CI/CD
 
 This example will guide you how to run tests in your Ruby on Rails application and deploy it automatically as Heroku application.
 
@@ -58,10 +58,10 @@ You can do this through the [Dashboard](https://dashboard.heroku.com/).
 ## Create Runner
 
 First install [Docker Engine](https://docs.docker.com/installation/).
-To build this project you also need to have [GitLab Runner](https://about.gitlab.com/gitlab-ci/#gitlab-runner).
+To build this project you also need to have [GitLab Runner](https://docs.gitlab.com/runner/).
 You can use public runners available on `gitlab.com`, but you can register your own:
 
-```
+```sh
 gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.com/" \

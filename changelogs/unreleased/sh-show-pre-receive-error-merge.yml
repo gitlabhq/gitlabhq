@@ -1,5 +1,0 @@
----
-title: Show pre-receive error message when merge fails
-merge_request: 25708
-author:
-type: fixed

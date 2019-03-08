@@ -35,8 +35,11 @@ module Gitlab
     # signals from outside the process group, but that isn't fatal.
     def self.blindly_signal_pgroup!(signal)
       old_trap = trap(signal, 'IGNORE')
-      Process.kill(signal, "-#{Process.getpgrp}")
-      trap(signal, old_trap)
+      begin
+        Process.kill(signal, 0)
+      ensure
+        trap(signal, old_trap)
+      end
     end
   end
 end

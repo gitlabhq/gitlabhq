@@ -9,6 +9,7 @@
     @media (min-width: map-get($grid-breakpoints, md)) {
       $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height;
 
+      position: -webkit-sticky;
       position: sticky;
       top: $mr-file-header-top;
       z-index: 102;
@@ -51,6 +52,10 @@
 
     &:hover {
       background-color: $gray-normal;
+    }
+
+    a {
+      color: $gray-700;
     }
 
     svg {
@@ -721,6 +726,7 @@
   }
 
   @include media-breakpoint-up(sm) {
+    position: -webkit-sticky;
     position: sticky;
     top: $header-height;
     background-color: $white-light;
@@ -1011,6 +1017,7 @@
 }
 
 .diff-tree-list {
+  position: -webkit-sticky;
   position: sticky;
   $top-pos: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;
   top: $header-height + $mr-tabs-height + $mr-version-controls-height + 10px;

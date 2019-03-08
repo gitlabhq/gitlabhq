@@ -115,7 +115,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
       expect(kubernetes_namespace.predefined_variables).to include(
         { key: 'KUBE_SERVICE_ACCOUNT', value: kubernetes_namespace.service_account_name, public: true },
         { key: 'KUBE_NAMESPACE', value: kubernetes_namespace.namespace, public: true },
-        { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false },
+        { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true },
         { key: 'KUBECONFIG', value: kubeconfig, public: false, file: true }
       )
     end

@@ -1,7 +1,6 @@
 <script>
-import Modal from '~/vue_shared/components/gl_modal.vue';
-import { s__, sprintf } from '~/locale';
 import PipelinesTableRowComponent from './pipelines_table_row.vue';
+import PipelineStopModal from './pipeline_stop_modal.vue';
 import eventHub from '../event_hub';
 
 /**
@@ -12,7 +11,7 @@ import eventHub from '../event_hub';
 export default {
   components: {
     PipelinesTableRowComponent,
-    Modal,
+    PipelineStopModal,
   },
   props: {
     pipelines: {
@@ -36,29 +35,10 @@ export default {
   data() {
     return {
       pipelineId: 0,
+      pipeline: {},
       endpoint: '',
       cancelingPipeline: null,
     };
-  },
-  computed: {
-    modalTitle() {
-      return sprintf(
-        s__('Pipeline|Stop pipeline #%{pipelineId}?'),
-        {
-          pipelineId: `${this.pipelineId}`,
-        },
-        false,
-      );
-    },
-    modalText() {
-      return sprintf(
-        s__('Pipeline|You’re about to stop pipeline %{pipelineId}.'),
-        {
-          pipelineId: `<strong>#${this.pipelineId}</strong>`,
-        },
-        false,
-      );
-    },
   },
   created() {
     eventHub.$on('openConfirmationModal', this.setModalData);
@@ -68,7 +48,8 @@ export default {
   },
   methods: {
     setModalData(data) {
-      this.pipelineId = data.pipelineId;
+      this.pipelineId = data.pipeline.id;
+      this.pipeline = data.pipeline;
       this.endpoint = data.endpoint;
     },
     onSubmit() {
@@ -103,15 +84,6 @@ export default {
       :view-type="viewType"
       :canceling-pipeline="cancelingPipeline"
     />
-
-    <modal
-      id="confirmation-modal"
-      :header-title-text="modalTitle"
-      :footer-primary-button-text="s__('Pipeline|Stop pipeline')"
-      footer-primary-button-variant="danger"
-      @submit="onSubmit"
-    >
-      <span v-html="modalText"></span>
-    </modal>
+    <pipeline-stop-modal :pipeline="pipeline" @submit="onSubmit" />
   </div>
 </template>

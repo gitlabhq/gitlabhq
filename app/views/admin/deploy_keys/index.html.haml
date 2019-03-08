@@ -1,19 +1,19 @@
-- page_title "Deploy Keys"
+- page_title _('Deploy Keys')
 
 %h3.page-title.deploy-keys-title
-  Public deploy keys (#{@deploy_keys.count})
+  = _('Public deploy keys (%{deploy_keys_count})') % { deploy_keys_count: @deploy_keys.count }
   .float-right
-    = link_to 'New deploy key', new_admin_deploy_key_path, class: 'btn btn-success btn-sm btn-inverted'
+    = link_to _('New deploy key'), new_admin_deploy_key_path, class: 'btn btn-success btn-sm btn-inverted'
 
 - if @deploy_keys.any?
   .table-holder.deploy-keys-list
     %table.table
       %thead
         %tr
-          %th.col-sm-2 Title
-          %th.col-sm-4 Fingerprint
-          %th.col-sm-2 Projects with write access
-          %th.col-sm-2 Added at
+          %th.col-sm-2= _('Title')
+          %th.col-sm-4= _('Fingerprint')
+          %th.col-sm-2= _('Projects with write access')
+          %th.col-sm-2= _('Added at')
           %th.col-sm-2
       %tbody
         - @deploy_keys.each do |deploy_key|
@@ -27,8 +27,8 @@
                 = link_to project.full_name, admin_project_path(project), class: 'label deploy-project-label'
             %td
               %span.cgray
-                added #{time_ago_with_tooltip(deploy_key.created_at)}
+                = _('added %{created_at_timeago}').html_safe % { created_at_timeago: time_ago_with_tooltip(deploy_key.created_at) }
             %td
               .float-right
-                = link_to 'Edit', edit_admin_deploy_key_path(deploy_key), class: 'btn btn-sm'
-                = link_to 'Remove', admin_deploy_key_path(deploy_key), data: { confirm: 'Are you sure?'}, method: :delete, class: 'btn btn-sm btn-remove delete-key'
+                = link_to _('Edit'), edit_admin_deploy_key_path(deploy_key), class: 'btn btn-sm'
+                = link_to _('Remove'), admin_deploy_key_path(deploy_key), data: { confirm: _('Are you sure?') }, method: :delete, class: 'btn btn-sm btn-remove delete-key'

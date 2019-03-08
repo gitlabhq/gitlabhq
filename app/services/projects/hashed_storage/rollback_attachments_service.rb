@@ -19,7 +19,7 @@ module Projects
         result = move_folder!(origin, target)
 
         if result
-          project.save!
+          project.save!(validate: false)
 
           yield if block_given?
         else
