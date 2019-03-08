@@ -84,8 +84,12 @@ or dive right into the [CI/CD step-by-step guide for Pages](../user/project/page
 
 ## Examples
 
-Check out the [GitLab CI/CD examples](examples/README.md) for a collection of tutorials and guides on
-setting up your CI/CD pipeline for various programming languages, frameworks, and operating systems.
+GitLab provides examples of configuring GitLab CI/CD in the form of:
+
+- A collection of [examples and other resources](examples/README.md).
+- Example projects, available at the [`gitlab-examples`](https://gitlab.com/gitlab-examples) group. For example, see:
+  - [`multi-project-pipelines`](https://gitlab.com/gitlab-examples/multi-project-pipelines) for examples of implementing multi-project-pipelines.
+  - [`review-apps-nginx`](https://gitlab.com/gitlab-examples/review-apps-nginx/) provides an example of using Review Apps.
 
 ## Administration
 
@@ -113,55 +117,10 @@ Related topics include:
 
 - [Docker integration](docker/README.md).
 - [CI services (linked Docker containers)](services/README.md).
-- [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/) (article).
 
-## Further resources
+## Why GitLab CI/CD?
 
-This section provides further resources to help you get familiar with GitLab CI/CD.
-
-### Articles
-
-The following table provides a list of articles about CI/CD, sorted in reverse chronological order of publish date:
-
-| Publish Date | Article                                                                                                                                                                                                                                       |
-|:-------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 2017-07-13   | [Making CI easier with GitLab](https://about.gitlab.com/2017/07/13/making-ci-easier-with-gitlab/).                                                                                                                                            |
-| 2017-05-22   | [Fast and natural continuous integration with GitLab CI](https://about.gitlab.com/2017/05/22/fast-and-natural-continuous-integration-with-gitlab-ci/).                                                                                        |
-| 2016-11-22   | [Introducing Review Apps](https://about.gitlab.com/2016/11/22/introducing-review-apps/).                                                                                                                                                      |
-| 2016-08-26   | [GitLab CI: Deployment & Environments](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/).                                                                                                                                  |
-| 2016-08-05   | [Continuous Integration, Delivery, and Deployment with GitLab](https://about.gitlab.com/2016/08/05/continuous-integration-delivery-and-deployment-with-gitlab/).                                                                              |
-| 2016-07-29   | [GitLab CI: Run jobs sequentially, in parallel or build a custom pipeline](https://about.gitlab.com/2016/07/29/the-basics-of-gitlab-ci/).                                                                                                     |
-| 2016-06-09   | [Continuous Delivery with GitLab and Convox](https://about.gitlab.com/2016/06/09/continuous-delivery-with-gitlab-and-convox/)                                                                                                                 |
-| 2016-05-23   | [GitLab Container Registry](https://about.gitlab.com/2016/05/23/gitlab-container-registry/).                                                                                                                                                  |
-| 2016-05-05   | [Getting Started with GitLab and Shippable Continuous Integration](https://about.gitlab.com/2016/05/05/getting-started-gitlab-and-shippable/)                                                                                                 |
-| 2016-04-19   | [GitLab Partners with DigitalOcean to make Continuous Integration faster, safer, and more affordable](https://about.gitlab.com/2016/04/19/gitlab-partners-with-digitalocean-to-make-continuous-integration-faster-safer-and-more-affordable/) |
-| 2015-03-01   | [Setting up GitLab Runner For Continuous Integration](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/).                                                                                                                        |
-| 2015-12-14   | [Getting started with GitLab and GitLab CI](https://about.gitlab.com/2015/12/14/getting-started-with-gitlab-and-gitlab-ci/).                                                                                                                  |
-
-### Videos
-
-The following table provides a list of videos about CI/CD, sorted in reverse chronological order of publish date:
-
-| Publish Date | Video                                                                                                                                                              |
-|:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| 2017-07-17   | [GitLab CI/CD Deep Dive](https://youtu.be/pBe4t1CD8Fc?t=195).                                                                                                      |
-| 2017-03-13   | [Demo: CI/CD with GitLab in action](https://about.gitlab.com/2017/03/13/ci-cd-demo/).                                                                              |
-| 2016-04-20   | [Webcast Recording and Slides: Getting started with CI in GitLab](https://about.gitlab.com/2016/04/20/webcast-recording-and-slides-introduction-to-ci-in-gitlab/). |
-
-In addition, the following third-party videos are available:
-
-- [Intégration continue avec GitLab (September 2016)](https://www.youtube.com/watch?v=URcMBXjIr24&t=13s).
-- [GitLab CI for Minecraft Plugins (July 2016)](https://www.youtube.com/watch?v=Z4pcI9F8yf8).
-
-### Example Projects
-
-[`review-apps-nginx`](https://gitlab.com/gitlab-examples/review-apps-nginx/) provides an example of using Review Apps.
-
-Other example projects are available at the [`gitlab-examples`](https://gitlab.com/gitlab-examples) group.
-
-### Why GitLab CI/CD?
-
-The following articles explain reasons why you might use GitLab CI/CD for your CI/CD infrastructure:
+The following articles explain reasons to use GitLab CI/CD for your CI/CD infrastructure:
 
 - [Why we chose GitLab CI for our CI/CD solution](https://about.gitlab.com/2016/10/17/gitlab-ci-oohlala/).
 - [Building our web-app on GitLab CI](https://about.gitlab.com/2016/07/22/building-our-web-app-on-gitlab-ci/).
