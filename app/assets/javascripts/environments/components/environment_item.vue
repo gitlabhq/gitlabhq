@@ -4,6 +4,7 @@ import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import environmentItemMixin from 'ee_else_ce/environments/mixins/environment_item_mixin';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -34,10 +35,10 @@ export default {
     TerminalButtonComponent,
     MonitoringButtonComponent,
   },
-
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [environmentItemMixin],
 
   props: {
     model: {
@@ -467,9 +468,18 @@ export default {
       <div v-if="!model.isFolder" class="table-mobile-header" role="rowheader">
         {{ s__('Environments|Environment') }}
       </div>
+
+      <span v-if="shouldRenderDeployBoard" class="deploy-board-icon" @click="toggleDeployBoard">
+        <icon :name="deployIconName" />
+      </span>
+
       <span v-if="!model.isFolder" class="environment-name table-mobile-content">
         <a class="qa-environment-link" :href="environmentPath"> {{ model.name }} </a>
+        <span v-if="isProtected" class="badge badge-success">
+          {{ s__('Environments|protected') }}
+        </span>
       </span>
+
       <span v-else class="folder-name" role="button" @click="onClickFolder">
         <icon :name="folderIconName" class="folder-icon" />
 

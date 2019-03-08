@@ -3196,6 +3196,9 @@ msgstr ""
 msgid "Environments|You don't have any environments right now"
 msgstr ""
 
+msgid "Environments|protected"
+msgstr ""
+
 msgid "Epic"
 msgstr ""
 
