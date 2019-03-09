@@ -504,14 +504,7 @@ export default class FilteredSearchManager {
         const match = this.filteredSearchTokenKeys.searchByKeyParam(keyParam);
 
         if (match) {
-          // Use lastIndexOf because the token key is allowed to contain underscore
-          // e.g. 'my_reaction' is the token key of 'my_reaction_emoji'
-          const lastIndexOf = keyParam.lastIndexOf('_');
-          let sanitizedKey = lastIndexOf !== -1 ? keyParam.slice(0, lastIndexOf) : keyParam;
-          // Replace underscore with hyphen in the sanitizedkey.
-          // e.g. 'my_reaction' => 'my-reaction'
-          sanitizedKey = sanitizedKey.replace('_', '-');
-          const { symbol } = match;
+          const { key, symbol } = match;
           let quotationsToUse = '';
 
           if (sanitizedValue.indexOf(' ') !== -1) {
@@ -520,10 +513,10 @@ export default class FilteredSearchManager {
           }
 
           hasFilteredSearch = true;
-          const canEdit = this.canEdit && this.canEdit(sanitizedKey, sanitizedValue);
+          const canEdit = this.canEdit && this.canEdit(key, sanitizedValue);
           const { uppercaseTokenName, capitalizeTokenValue } = match;
           FilteredSearchVisualTokens.addFilterVisualToken(
-            sanitizedKey,
+            key,
             `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`,
             {
               canEdit,

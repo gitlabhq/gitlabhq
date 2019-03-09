@@ -69,10 +69,20 @@ export default class FilteredSearchVisualTokens {
   }
 
   static addVisualTokenElement(name, value, options = {}) {
-    const { isSearchTerm = false, canEdit, uppercaseTokenName, capitalizeTokenValue } = options;
+    const {
+      isSearchTerm = false,
+      canEdit,
+      uppercaseTokenName,
+      capitalizeTokenValue,
+      tokenClass = `search-token-${name.toLowerCase()}`,
+    } = options;
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
+
+    if (!isSearchTerm) {
+      li.classList.add(tokenClass);
+    }
 
     if (value) {
       li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML({
