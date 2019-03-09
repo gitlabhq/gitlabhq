@@ -293,6 +293,7 @@ describe('Filtered Search Visual Tokens', () => {
       subject.addVisualTokenElement('milestone');
       const token = tokensContainer.querySelector('.js-visual-token');
 
+      expect(token.classList.contains('search-token-milestone')).toEqual(true);
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('milestone');
       expect(token.querySelector('.value')).toEqual(null);
@@ -302,6 +303,7 @@ describe('Filtered Search Visual Tokens', () => {
       subject.addVisualTokenElement('label', 'Frontend');
       const token = tokensContainer.querySelector('.js-visual-token');
 
+      expect(token.classList.contains('search-token-label')).toEqual(true);
       expect(token.classList.contains('filtered-search-token')).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('label');
       expect(token.querySelector('.value').innerText).toEqual('Frontend');
@@ -317,10 +319,12 @@ describe('Filtered Search Visual Tokens', () => {
       const labelToken = tokens[0];
       const assigneeToken = tokens[1];
 
+      expect(labelToken.classList.contains('search-token-label')).toEqual(true);
       expect(labelToken.classList.contains('filtered-search-token')).toEqual(true);
       expect(labelToken.querySelector('.name').innerText).toEqual('label');
       expect(labelToken.querySelector('.value').innerText).toEqual('Frontend');
 
+      expect(assigneeToken.classList.contains('search-token-assignee')).toEqual(true);
       expect(assigneeToken.classList.contains('filtered-search-token')).toEqual(true);
       expect(assigneeToken.querySelector('.name').innerText).toEqual('assignee');
       expect(assigneeToken.querySelector('.value').innerText).toEqual('@root');

@@ -29,7 +29,7 @@
 #
 class MergeRequestsFinder < IssuableFinder
   def self.scalar_params
-    @scalar_params ||= super + [:wip]
+    @scalar_params ||= super + [:wip, :target_branch]
   end
 
   def klass

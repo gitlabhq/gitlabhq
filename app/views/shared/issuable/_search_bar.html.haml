@@ -137,6 +137,11 @@
                 %li.filter-dropdown-item{ data: { value: 'no', capitalize: true } }
                   %button.btn.btn-link{ type: 'button' }
                     = _('No')
+            #js-dropdown-target-branch.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
+                %li.filter-dropdown-item
+                  %button.btn.btn-link.js-data-value.monospace
+                    {{title}}
 
             = render_if_exists 'shared/issuable/filter_weight', type: type
 

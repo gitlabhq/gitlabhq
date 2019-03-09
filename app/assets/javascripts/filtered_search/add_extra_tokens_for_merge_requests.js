@@ -13,4 +13,16 @@ export default IssuableTokenKeys => {
 
   IssuableTokenKeys.tokenKeys.push(wipToken);
   IssuableTokenKeys.tokenKeysWithAlternative.push(wipToken);
+
+  const targetBranchToken = {
+    key: 'target-branch',
+    type: 'string',
+    param: '',
+    symbol: '',
+    icon: 'arrow-right',
+    tag: 'branch',
+  };
+
+  IssuableTokenKeys.tokenKeys.push(targetBranchToken);
+  IssuableTokenKeys.tokenKeysWithAlternative.push(targetBranchToken);
 };
