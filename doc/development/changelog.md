@@ -43,7 +43,7 @@ the `author` field. GitLab team members **should not**.
   database records created during Cycle Analytics model spec."
 - _Any_ contribution from a community member, no matter how small, **may** have
   a changelog entry regardless of these guidelines if the contributor wants one.
-  Example: "Fixed a typo on the search results page. (Jane Smith)"
+  Example: "Fixed a typo on the search results page."
 - Performance improvements **should** have a changelog entry.
 - Any change that introduces a database migration **must** have a
   changelog entry.
