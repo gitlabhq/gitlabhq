@@ -28,7 +28,7 @@ class Member < ActiveRecord::Base
     presence: {
       if: :invite?
     },
-    email: {
+    devise_email: {
       allow_nil: true
     },
     uniqueness: {

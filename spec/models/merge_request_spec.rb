@@ -270,6 +270,25 @@ describe MergeRequest do
     end
   end
 
+  describe '.recent_target_branches' do
+    let(:project) { create(:project) }
+    let!(:merge_request1) { create(:merge_request, :opened, source_project: project, target_branch: 'feature') }
+    let!(:merge_request2) { create(:merge_request, :closed, source_project: project, target_branch: 'merge-test') }
+    let!(:merge_request3) { create(:merge_request, :opened, source_project: project, target_branch: 'fix') }
+    let!(:merge_request4) { create(:merge_request, :closed, source_project: project, target_branch: 'feature') }
+
+    before do
+      merge_request1.update_columns(updated_at: 1.day.since)
+      merge_request2.update_columns(updated_at: 2.days.since)
+      merge_request3.update_columns(updated_at: 3.days.since)
+      merge_request4.update_columns(updated_at: 4.days.since)
+    end
+
+    it 'returns target branches sort by updated at desc' do
+      expect(described_class.recent_target_branches).to match_array(['feature', 'merge-test', 'fix'])
+    end
+  end
+
   describe '#target_branch_sha' do
     let(:project) { create(:project, :repository) }
 

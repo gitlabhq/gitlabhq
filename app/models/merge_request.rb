@@ -203,6 +203,22 @@ class MergeRequest < ActiveRecord::Base
     '!'
   end
 
+  # Returns the top 100 target branches
+  #
+  # The returned value is a Array containing branch names
+  # sort by updated_at of merge request:
+  #
+  #     ['master', 'develop', 'production']
+  #
+  # limit - The maximum number of target branch to return.
+  def self.recent_target_branches(limit: 100)
+    group(:target_branch)
+      .select(:target_branch)
+      .reorder('MAX(merge_requests.updated_at) DESC')
+      .limit(limit)
+      .pluck(:target_branch)
+  end
+
   def rebase_in_progress?
     strong_memoize(:rebase_in_progress) do
       # The source project can be deleted

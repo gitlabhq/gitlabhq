@@ -684,7 +684,6 @@ gitlab:assets:compile:
     - gitlab-org
 
 gitlab:ui:visual:
-  <<: *except-docs
   tags:
     - gitlab-org
   before_script: []
@@ -705,6 +704,7 @@ gitlab:ui:visual:
       - app/assets/stylesheets/**/**/*.scss
   except:
     refs:
+      - /(^docs[\/-].*|.*-docs$)/
       - master
     variables:
       - $CI_COMMIT_MESSAGE =~ /\[skip visual\]/i

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AutocompleteController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:users, :award_emojis]
+  skip_before_action :authenticate_user!, only: [:users, :award_emojis, :merge_request_target_branches]
 
   def users
     project = Autocomplete::ProjectFinder
@@ -37,5 +37,12 @@ class AutocompleteController < ApplicationController
 
   def award_emojis
     render json: AwardedEmojiFinder.new(current_user).execute
+  end
+
+  def merge_request_target_branches
+    merge_requests = MergeRequestsFinder.new(current_user, params).execute
+    target_branches = merge_requests.recent_target_branches
+
+    render json: target_branches.map { |target_branch| { title: target_branch } }
   end
 end

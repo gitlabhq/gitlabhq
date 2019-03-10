@@ -1,0 +1,5 @@
+---
+title: Add target branch filter to merge requests search bar
+merge_request: 24380
+author: Hiroyuki Sato
+type: added
