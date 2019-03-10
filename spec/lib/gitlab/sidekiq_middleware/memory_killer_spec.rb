@@ -54,7 +54,7 @@ describe Gitlab::SidekiqMiddleware::MemoryKiller do
 
       expect(Process).to receive(:kill).with('SIGTSTP', pid).ordered
       expect(Process).to receive(:kill).with('SIGTERM', pid).ordered
-      expect(Process).to receive(:kill).with('SIGKILL', "-#{pid}").ordered
+      expect(Process).to receive(:kill).with('SIGKILL', 0).ordered
 
       run
     end
