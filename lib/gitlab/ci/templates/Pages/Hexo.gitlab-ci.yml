@@ -1,10 +1,11 @@
 # Full project: https://gitlab.com/pages/hexo
-image: node:6.10.0
+image: node:10.15.3
 
 pages:
   script:
-  - npm install
-  - ./node_modules/hexo/bin/hexo generate
+  - npm install hexo-cli -g
+  - test -e package.json && npm install
+  - hexo generate
   artifacts:
     paths:
     - public
