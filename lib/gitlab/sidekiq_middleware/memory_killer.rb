@@ -63,7 +63,7 @@ module Gitlab
         sleep(time)
 
         Sidekiq.logger.warn "sending Sidekiq worker PGRP-#{pid} #{signal} (#{explanation})"
-        Process.kill(signal, "-#{pid}")
+        Process.kill(signal, 0)
       end
 
       def wait_and_signal(time, signal, explanation)

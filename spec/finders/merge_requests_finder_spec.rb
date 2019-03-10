@@ -36,7 +36,7 @@ describe MergeRequestsFinder do
     let(:project5) { create_project_without_n_plus_1(group: subgroup) }
     let(:project6) { create_project_without_n_plus_1(group: subgroup) }
 
-    let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
+    let!(:merge_request1) { create(:merge_request, author: user, source_project: project2, target_project: project1, target_branch: 'merged-target') }
     let!(:merge_request2) { create(:merge_request, :conflict, author: user, source_project: project2, target_project: project1, state: 'closed') }
     let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, state: 'locked', title: 'thing WIP thing') }
     let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3, title: 'WIP thing') }

@@ -5,6 +5,7 @@ import DropdownEmoji from './dropdown_emoji';
 import NullDropdown from './null_dropdown';
 import DropdownAjaxFilter from './dropdown_ajax_filter';
 import DropdownUtils from './dropdown_utils';
+import { mergeUrlParams } from '../lib/utils/url_utility';
 
 export default class AvailableDropdownMappings {
   constructor(container, baseEndpoint, groupsOnly, includeAncestorGroups, includeDescendantGroups) {
@@ -13,6 +14,7 @@ export default class AvailableDropdownMappings {
     this.groupsOnly = groupsOnly;
     this.includeAncestorGroups = includeAncestorGroups;
     this.includeDescendantGroups = includeDescendantGroups;
+    this.filteredSearchInput = this.container.querySelector('.filtered-search');
   }
 
   getAllowedMappings(supportedTokens) {
@@ -102,6 +104,15 @@ export default class AvailableDropdownMappings {
         },
         element: this.container.querySelector('#js-dropdown-runner-tag'),
       },
+      'target-branch': {
+        reference: null,
+        gl: DropdownNonUser,
+        extraArguments: {
+          endpoint: this.getMergeRequestTargetBranchesEndpoint(),
+          symbol: '',
+        },
+        element: this.container.querySelector('#js-dropdown-target-branch'),
+      },
     };
   }
 
@@ -129,5 +140,25 @@ export default class AvailableDropdownMappings {
 
   getRunnerTagsEndpoint() {
     return `${this.baseEndpoint}/admin/runners/tag_list.json`;
+  }
+
+  getMergeRequestTargetBranchesEndpoint() {
+    const endpoint = `${gon.relative_url_root ||
+      ''}/autocomplete/merge_request_target_branches.json`;
+
+    const params = {
+      group_id: this.getGroupId(),
+      project_id: this.getProjectId(),
+    };
+
+    return mergeUrlParams(params, endpoint);
+  }
+
+  getGroupId() {
+    return this.filteredSearchInput.getAttribute('data-group-id') || '';
+  }
+
+  getProjectId() {
+    return this.filteredSearchInput.getAttribute('data-project-id') || '';
   }
 }

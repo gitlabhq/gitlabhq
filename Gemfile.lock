@@ -1142,7 +1142,6 @@ DEPENDENCIES
   sass-rails (~> 5.0.6)
   scss_lint (~> 0.56.0)
   seed-fu (~> 2.3.7)
-  select2-rails (~> 3.5.9)
   selenium-webdriver (~> 3.12)
   sentry-raven (~> 2.7)
   settingslogic (~> 2.0.9)
