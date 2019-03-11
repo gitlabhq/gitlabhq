@@ -484,6 +484,9 @@ setup-test-env:
 
 build-qa-image:
   <<: *review-docker
+  variables:
+    <<: *review-docker-variables
+    GIT_DEPTH: "20"
   stage: prepare
   script:
     - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} ./qa/
