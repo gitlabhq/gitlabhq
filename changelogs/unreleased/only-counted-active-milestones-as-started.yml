@@ -1,0 +1,5 @@
+---
+title: Only consider active milestones when using the special Started milestone filter
+merge_request:
+author:
+type: fixed

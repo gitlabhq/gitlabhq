@@ -220,6 +220,7 @@ describe IssuesFinder do
         let(:yesterday) { Date.today - 1.day }
         let(:tomorrow) { Date.today + 1.day }
         let(:two_days_ago) { Date.today - 2.days }
+        let(:three_days_ago) { Date.today - 3.days }
 
         let(:milestones) do
           [
@@ -227,6 +228,8 @@ describe IssuesFinder do
             create(:milestone, project: project_started_1_and_2, title: '1.0', start_date: two_days_ago),
             create(:milestone, project: project_started_1_and_2, title: '2.0', start_date: yesterday),
             create(:milestone, project: project_started_1_and_2, title: '3.0', start_date: tomorrow),
+            create(:milestone, :closed, project: project_started_1_and_2, title: '4.0', start_date: three_days_ago),
+            create(:milestone, :closed, project: project_started_8, title: '6.0', start_date: three_days_ago),
             create(:milestone, project: project_started_8, title: '7.0'),
             create(:milestone, project: project_started_8, title: '8.0', start_date: yesterday),
             create(:milestone, project: project_started_8, title: '9.0', start_date: tomorrow)

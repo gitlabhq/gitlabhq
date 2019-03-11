@@ -496,7 +496,7 @@ class IssuableFinder
         upcoming_ids = Milestone.upcoming_ids(projects, related_groups)
         items = items.left_joins_milestones.where(milestone_id: upcoming_ids)
       elsif filter_by_started_milestone?
-        items = items.left_joins_milestones.where('milestones.start_date <= NOW()')
+        items = items.left_joins_milestones.merge(Milestone.started)
       else
         items = items.with_milestone(params[:milestone_title])
       end
