@@ -109,6 +109,31 @@ describe('DiffFile', () => {
           done();
         });
       });
+
+      it('should update store state', done => {
+        spyOn(vm.$store, 'dispatch');
+
+        vm.isCollapsed = true;
+
+        vm.$nextTick(() => {
+          expect(vm.$store.dispatch).toHaveBeenCalledWith('diffs/setFileCollapsed', {
+            filePath: vm.file.file_path,
+            collapsed: true,
+          });
+
+          done();
+        });
+      });
+
+      it('updates local state when changing file state', done => {
+        vm.file.viewer.collapsed = true;
+
+        vm.$nextTick(() => {
+          expect(vm.isCollapsed).toBe(true);
+
+          done();
+        });
+      });
     });
   });
 

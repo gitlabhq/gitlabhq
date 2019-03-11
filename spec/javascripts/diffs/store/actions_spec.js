@@ -35,6 +35,7 @@ import actions, {
   receiveFullDiffError,
   fetchFullDiff,
   toggleFullDiff,
+  setFileCollapsed,
 } from '~/diffs/store/actions';
 import eventHub from '~/notes/event_hub';
 import * as types from '~/diffs/store/mutation_types';
@@ -973,6 +974,19 @@ describe('DiffsStoreActions', () => {
           { type: 'requestFullDiff', payload: 'test' },
           { type: 'fetchFullDiff', payload: state.diffFiles[0] },
         ],
+        done,
+      );
+    });
+  });
+
+  describe('setFileCollapsed', () => {
+    it('commits SET_FILE_COLLAPSED', done => {
+      testAction(
+        setFileCollapsed,
+        { filePath: 'test', collapsed: true },
+        null,
+        [{ type: types.SET_FILE_COLLAPSED, payload: { filePath: 'test', collapsed: true } }],
+        [],
         done,
       );
     });

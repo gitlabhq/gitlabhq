@@ -125,9 +125,9 @@ export default {
         >
           {{ __('Show latest version') }}
         </gl-button>
-        <a v-show="hasCollapsedFile" class="btn btn-default append-right-8" @click="expandAllFiles">
+        <gl-button v-show="hasCollapsedFile" class="append-right-8" @click="expandAllFiles">
           {{ __('Expand all') }}
-        </a>
+        </gl-button>
         <settings-dropdown />
       </div>
     </div>

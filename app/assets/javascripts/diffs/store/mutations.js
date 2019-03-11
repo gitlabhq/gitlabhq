@@ -104,7 +104,10 @@ export default {
   [types.EXPAND_ALL_FILES](state) {
     state.diffFiles = state.diffFiles.map(file => ({
       ...file,
-      collapsed: false,
+      viewer: {
+        ...file.viewer,
+        collapsed: false,
+      },
     }));
   },
 
@@ -299,5 +302,12 @@ export default {
         },
       }),
     });
+  },
+  [types.SET_FILE_COLLAPSED](state, { filePath, collapsed }) {
+    const file = state.diffFiles.find(f => f.file_path === filePath);
+
+    if (file && file.viewer) {
+      file.viewer.collapsed = collapsed;
+    }
   },
 };
