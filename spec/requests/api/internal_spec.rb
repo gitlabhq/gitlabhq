@@ -237,6 +237,14 @@ describe API::Internal do
 
       expect(json_response['name']).to eq(user.name)
     end
+
+    it 'responds successfully when a user is not found' do
+      get(api("/internal/discover"), params: { username: 'noone', secret_token: secret_token })
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(response.body).to eq('null')
+    end
   end
 
   describe "GET /internal/authorized_keys" do
