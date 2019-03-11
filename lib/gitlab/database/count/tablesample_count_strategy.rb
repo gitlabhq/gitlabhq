@@ -61,6 +61,7 @@ module Gitlab
             SELECT (COUNT(*)*#{inverse})::integer AS count
             FROM #{model.table_name}
             TABLESAMPLE SYSTEM (#{portion * 100})
+            REPEATABLE (0)
             #{where_clause(model)}
           SQL
 
