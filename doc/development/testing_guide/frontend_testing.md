@@ -281,25 +281,6 @@ Information on setting up and running RSpec integration tests with
 
 ## Gotchas
 
-### Errors due to use of unsupported JavaScript features
-
-Similar errors will be thrown if you're using JavaScript features not yet
-supported by the PhantomJS test runner which is used for both Karma and RSpec
-tests. We polyfill some JavaScript objects for older browsers, but some
-features are still unavailable:
-
-- Array.from
-- Array.first
-- Async functions
-- Generators
-- Array destructuring
-- For..Of
-- Symbol/Symbol.iterator
-- Spread
-
-Until these are polyfilled appropriately, they should not be used. Please
-update this list with additional unsupported features.
-
 ### RSpec errors due to JavaScript
 
 By default RSpec unit tests will not run JavaScript in the headless browser
