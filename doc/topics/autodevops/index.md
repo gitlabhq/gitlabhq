@@ -442,10 +442,10 @@ process. Auto Review Apps create a Review App for each branch.
 Auto Review Apps will deploy your app to your Kubernetes cluster only. When no cluster
 is available, no deployment will occur.
 
-The Review App will have a unique URL based on the project name, the branch
+The Review App will have a unique URL based on the project ID, the branch or tag
 name, and a unique number, combined with the Auto DevOps base domain. For
-example, `user-project-branch-1234.example.com`. A link to the Review App shows
-up in the merge request widget for easy discovery. When the branch is deleted,
+example, `13083-review-project-branch-123456.example.com`. A link to the Review App shows
+up in the merge request widget for easy discovery. When the branch or tag is deleted,
 for example after the merge request is merged, the Review App will automatically
 be deleted.
 
