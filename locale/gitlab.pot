@@ -3789,6 +3789,9 @@ msgstr ""
 msgid "Group ID"
 msgstr ""
 
+msgid "Group ID: %{group_id}"
+msgstr ""
+
 msgid "Group Runners"
 msgstr ""
 
