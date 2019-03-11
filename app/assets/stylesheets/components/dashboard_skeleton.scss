@@ -1,0 +1,80 @@
+.dashboard-cards {
+  margin-right: -$gl-padding-8;
+  margin-left: -$gl-padding-8;
+}
+
+.dashboard-card {
+  &-header {
+    &-warning {
+      background-color: $orange-100;
+    }
+
+    &-failed {
+      background-color: $red-100;
+    }
+  }
+
+  &-body {
+    height: 120px;
+
+    &-warning {
+      background-color: $orange-50;
+    }
+
+    &-failed {
+      background-color: $red-50;
+    }
+  }
+
+  &-time-ago {
+    &-icon {
+      color: $gray-500;
+    }
+  }
+
+  &-footer {
+    border-radius: $gl-padding;
+    height: $gl-padding-32;
+
+    &-failed {
+      background-color: $red-100;
+    }
+
+    &-arrow {
+      color: $gray-300;
+    }
+
+    &-downstream {
+      margin-right: -$gl-padding-8;
+    }
+
+    &-extra {
+      background-color: $gray-400;
+      font-size: 10px;
+      line-height: $gl-line-height;
+      width: $gl-padding;
+    }
+  }
+
+  &-skeleton-info {
+    border-radius: $gl-padding;
+    height: $gl-padding;
+    overflow: hidden;
+
+    &::after {
+      content: ' ';
+      display: block;
+      animation: blockTextShine 1s linear infinite forwards;
+      background-repeat: no-repeat;
+      background-size: cover;
+      background-image: linear-gradient(to right,
+      $gray-100 0%,
+      $gray-50 20%,
+      $gray-100 40%,
+      $gray-100 100%);
+      border-radius: $gl-padding;
+      height: $gl-padding;
+      margin-top: -$gl-padding-8;
+    }
+  }
+}
