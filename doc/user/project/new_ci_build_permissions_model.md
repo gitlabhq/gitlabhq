@@ -49,7 +49,7 @@ It is important to note that we have a few types of users:
   Administrator will have to be a member of it in order to have access to it
   via another project's job.
 
-- **External users**: CI jobs created by [external users][ext] will have
+- **External users**: CI jobs created by [external users](../permissions.md#external-users-permissions) will have
   access only to projects to which user has at least reporter access. This
   rules out accessing all internal projects by default,
 
@@ -60,7 +60,7 @@ Let's consider the following scenario:
    hosted in private repositories and you have multiple CI jobs that make use
    of these repositories.
 
-1. You invite a new [external user][ext]. CI jobs created by that user do not
+1. You invite a new [external user](../permissions.md#external-users-permissions). CI jobs created by that user do not
    have access to internal repositories, because the user also doesn't have the
    access from within GitLab. You as an employee have to grant explicit access
    for this user. This allows us to prevent from accidental data leakage.
@@ -232,7 +232,6 @@ test:
 
 [job permissions]: ../permissions.md#job-permissions
 [comment]: https://gitlab.com/gitlab-org/gitlab-ce/issues/22484#note_16648302
-[ext]: ../permissions.md#external-users
 [gitsub]: ../../ci/git_submodules.md
 [https]: ../admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols
 [triggers]: ../../ci/triggers/README.md

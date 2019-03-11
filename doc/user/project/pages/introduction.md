@@ -115,7 +115,7 @@ gives you absolute control over the build process. You can actually watch your
 website being built live by following the CI job traces.
 
 For a simplified user guide on setting up GitLab CI/CD for Pages, read through
-the article [GitLab Pages from A to Z: Part 4 - Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md#creating-and-tweaking-gitlab-ci-yml-for-gitlab-pages)
+the article [GitLab Pages from A to Z: Part 4 - Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
 
 > **Note:**
 > Before reading this section, make sure you familiarize yourself with GitLab CI

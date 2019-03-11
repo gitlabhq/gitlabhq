@@ -183,7 +183,7 @@ information in the UI.
 DANGER: **Warning:**
 This is a destructive action that leads to data loss. Use with caution.
 
-If you have at least Developer [permissions](../../permissions.md#gitlab-ci-cd-permissions)
+If you have at least Developer [permissions](../../permissions.md#gitlab-cicd-permissions)
 on the project, you can erase a single job via the UI which will also remove the
 artifacts and the job's trace.
 
