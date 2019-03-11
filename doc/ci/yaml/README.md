@@ -268,6 +268,12 @@ There are also two edge cases worth mentioning:
 
 ### `stage`
 
+NOTE: **Note:**
+By default, when using your own Runners, the GitLab Runner installation is set up to run only one job at a time (see  the `concurrent` flag in [Runner global settings](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section) for more information).
+Jobs will run in parallel only if:
+ - Run on different Runners
+ - The Runner's `concurrent` config has been changed.
+
 `stage` is defined per-job and relies on [`stages`](#stages) which is defined
 globally. It allows to group jobs into different stages, and jobs of the same
 `stage` are executed in `parallel`. For example:
