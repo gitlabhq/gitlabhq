@@ -158,6 +158,18 @@ TODO
 
 TODO
 
+### Registry
+
+The registry is what users use to store their own Docker images. The bundled
+registry uses nginx as a load balancer and GitLab as an authentication manager.
+Whenever a client requests to pull or push an image from the registry, it will
+return a `401` response along with a header detailing where to get an
+authentication token, in this case the GitLab instance. The client will then
+request a pull or push auth token from GitLab and retry the original request
+to the registry. Learn more about [token authentication](https://docs.docker.com/registry/spec/auth/token/).
+
+An external registry can also be configured to use GitLab as an auth endpoint.
+
 ## GitLab by Request Type
 
 GitLab provides two "interfaces" for end users to access the service:
