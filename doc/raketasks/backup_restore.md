@@ -100,6 +100,13 @@ the gitlab task runner pod via `kubectl`. Refer to [backing up a GitLab installa
 kubectl exec -it <gitlab task-runner pod> backup-utility
 ```
 
+Similarly to the Kubernetes case, if you have scaled out your GitLab
+cluster to use multiple application servers, you should pick a
+designated node (that won't be auto-scaled away) for running the
+backup rake task. Because the backup rake task is tightly coupled to
+the main Rails application, this is typically a node on which you're
+also running Unicorn/Puma and/or Sidekiq.
+
 Example output:
 
 ```
