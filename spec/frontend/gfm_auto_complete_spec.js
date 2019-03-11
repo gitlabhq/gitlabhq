@@ -7,7 +7,11 @@ import 'vendor/jquery.caret';
 import 'vendor/jquery.atwho';
 
 import { TEST_HOST } from 'helpers/test_constants';
+import { setTestTimeout } from 'helpers/timeout';
+
 import labelsFixture from 'fixtures/autocomplete_sources/labels.json'; // eslint-disable-line import/no-unresolved
+
+setTestTimeout(500);
 
 describe('GfmAutoComplete', () => {
   const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
