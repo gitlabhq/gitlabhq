@@ -6,6 +6,14 @@ describe('Environment table', () => {
   let Component;
   let vm;
 
+  const eeOnlyProps = {
+    canaryDeploymentFeatureId: 'canary_deployment',
+    showCanaryDeploymentCallout: true,
+    userCalloutsPath: '/callouts',
+    lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+    helpCanaryDeploymentsPath: 'help/canary-deployments',
+  };
+
   beforeEach(() => {
     Component = Vue.extend(environmentTableComp);
   });
@@ -27,6 +35,7 @@ describe('Environment table', () => {
     vm = mountComponent(Component, {
       environments: [mockItem],
       canReadEnvironment: true,
+      ...eeOnlyProps,
     });
 
     expect(vm.$el.getAttribute('class')).toContain('ci-table');
@@ -67,6 +76,7 @@ describe('Environment table', () => {
       vm = mountComponent(Component, {
         environments: mockItems,
         canReadEnvironment: true,
+        ...eeOnlyProps,
       });
 
       const [old, newer, older, noDeploy] = mockItems;
@@ -130,6 +140,7 @@ describe('Environment table', () => {
       vm = mountComponent(Component, {
         environments: mockItems,
         canReadEnvironment: true,
+        ...eeOnlyProps,
       });
 
       const [prod, review, staging] = mockItems;
@@ -166,6 +177,7 @@ describe('Environment table', () => {
       vm = mountComponent(Component, {
         environments: mockItems,
         canReadEnvironment: true,
+        ...eeOnlyProps,
       });
 
       const [old, newer, older] = mockItems;
@@ -192,6 +204,7 @@ describe('Environment table', () => {
       vm = mountComponent(Component, {
         environments: mockItems,
         canReadEnvironment: true,
+        ...eeOnlyProps,
       });
 
       const [old, newer, older] = mockItems;
@@ -240,6 +253,7 @@ describe('Environment table', () => {
       vm = mountComponent(Component, {
         environments: mockItems,
         canReadEnvironment: true,
+        ...eeOnlyProps,
       });
 
       expect(vm.sortedEnvironments.map(env => env.name)).toEqual([

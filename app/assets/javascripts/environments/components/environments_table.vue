@@ -4,21 +4,24 @@
  */
 import { GlLoadingIcon } from '@gitlab/ui';
 import _ from 'underscore';
-import environmentItem from './environment_item.vue';
+import environmentTableMixin from 'ee_else_ce/environments/mixins/environments_table_mixin';
+import EnvironmentItem from './environment_item.vue';
 
 export default {
   components: {
-    environmentItem,
+    EnvironmentItem,
     GlLoadingIcon,
+    DeployBoard: () => import('ee_component/environments/components/deploy_board_component.vue'),
+    CanaryDeploymentCallout: () =>
+      import('ee_component/environments/components/canary_deployment_callout.vue'),
   },
-
+  mixins: [environmentTableMixin],
   props: {
     environments: {
       type: Array,
       required: true,
       default: () => [],
     },
-
     canReadEnvironment: {
       type: Boolean,
       required: false,
@@ -95,6 +98,21 @@ export default {
         :can-read-environment="canReadEnvironment"
       />
 
+      <div
+        v-if="shouldRenderDeployBoard"
+        :key="`deploy-board-row-${i}`"
+        class="js-deploy-board-row"
+      >
+        <div class="deploy-board-container">
+          <deploy-board
+            :deploy-board-data="model.deployBoardData"
+            :is-loading="model.isLoadingDeployBoard"
+            :is-empty="model.isEmptyDeployBoard"
+            :logs-path="model.logs_path"
+          />
+        </div>
+      </div>
+
       <template v-if="shouldRenderFolderContent(model)">
         <div v-if="model.isLoadingFolderContent" :key="`loading-item-${i}`">
           <gl-loading-icon :size="2" class="prepend-top-16" />
@@ -111,12 +129,23 @@ export default {
 
           <div :key="`sub-div-${i}`">
             <div class="text-center prepend-top-10">
-              <a :href="folderUrl(model)" class="btn btn-default">{{
-                s__('Environments|Show all')
-              }}</a>
+              <a :href="folderUrl(model)" class="btn btn-default">
+                {{ s__('Environments|Show all') }}
+              </a>
             </div>
           </div>
         </template>
+      </template>
+
+      <template v-if="shouldShowCanaryCallout(model)">
+        <canary-deployment-callout
+          :key="`canary-promo-${i}`"
+          :canary-deployment-feature-id="canaryDeploymentFeatureId"
+          :user-callouts-path="userCalloutsPath"
+          :lock-promotion-svg-path="lockPromotionSvgPath"
+          :help-canary-deployments-path="helpCanaryDeploymentsPath"
+          :data-js-canary-promo-key="i"
+        />
       </template>
     </template>
   </div>
