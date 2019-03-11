@@ -16,7 +16,7 @@ Variables of different types can take precedence over other variables, depending
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/README.md#pass-job-variables-to-a-trigger) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
+1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
 1. Project-level [variables](#variables) or [protected variables](#protected-variables).
 1. Group-level [variables](#variables) or [protected variables](#protected-variables).
 1. YAML-defined [job-level variables](../yaml/README.md#variables).
@@ -46,7 +46,7 @@ version of Runner required.
 
 NOTE: **Note:**
 Starting with GitLab 9.0, we have deprecated some variables. Read the
-[9.0 Renaming](#9-0-renaming) section to find out their replacements. **You are
+[9.0 Renaming](#gitlab-90-renaming) section to find out their replacements. **You are
 strongly advised to use the new variables as we will remove the old ones in
 future GitLab releases.**
 
@@ -311,7 +311,7 @@ variables that were set, etc.
 
 Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines.md#seeing-build-status) all generated job traces
+also [erase](../pipelines.md#seeing-job-status) all generated job traces
 before making them visible again.
 
 To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:

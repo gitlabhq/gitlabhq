@@ -4,7 +4,7 @@
 >
 > - [Introduced](https://about.gitlab.com/2015/08/22/gitlab-7-14-released/) in GitLab 7.14.
 > - GitLab 8.12 has a completely redesigned job permissions system. Read all
->   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
+>   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#pipeline-triggers).
 
 Triggers can be used to force a pipeline rerun of a specific `ref` (branch or
 tag) with an API call.
@@ -219,7 +219,7 @@ Old triggers, created before GitLab 9.0 will be marked as legacy.
 Triggers with the legacy label do not have an associated user and only have
 access to the current project. They are considered deprecated and will be
 removed with one of the future versions of GitLab. You are advised to
-[take ownership](#taking-ownership) of any legacy triggers.
+[take ownership](#taking-ownership-of-a-trigger) of any legacy triggers.
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ee]: https://about.gitlab.com/pricing/
