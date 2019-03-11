@@ -477,12 +477,9 @@ differentiate the new cluster with the rest.
 
 ## Setting the environment scope **[PREMIUM]**
 
-When adding more than one Kubernetes clusters to your project, you need
-to differentiate them with an environment scope. The environment scope
-associates clusters with [environments](../../../ci/environments.md)
-similar to how the [environment-specific
-variables](../../../ci/variables/README.md#limiting-environment-scopes-of-variables)
-work.
+When adding more than one Kubernetes cluster to your project, you need to differentiate
+them with an environment scope. The environment scope associates clusters with [environments](../../../ci/environments.md) similar to how the
+[environment-specific variables](https://docs.gitlab.com/ee/ci/variables/README.html#limiting-environment-scopes-of-variables-premium) work.
 
 The default environment scope is `*`, which means all jobs, regardless of their
 environment, will use that cluster. Each scope can only be used by a single
@@ -545,7 +542,7 @@ GitLab CI/CD build environment.
 | `KUBE_CA_PEM_FILE` | Path to a file containing PEM data. Only present if a custom CA bundle was specified. |
 | `KUBE_CA_PEM` | (**deprecated**) Raw PEM data. Only if a custom CA bundle was specified. |
 | `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. This config also embeds the same token defined in `KUBE_TOKEN` so you likely will only need this variable. This variable name is also automatically picked up by `kubectl` so you won't actually need to reference it explicitly if using `kubectl`. |
-| `KUBE_INGRESS_BASE_DOMAIN` | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](#base-domain) for more information. | 
+| `KUBE_INGRESS_BASE_DOMAIN` | From GitLab 11.8, this variable can be used to set a domain per cluster. See [cluster domains](#base-domain) for more information. |
 
 NOTE: **NOTE:**
 Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main

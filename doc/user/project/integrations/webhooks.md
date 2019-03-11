@@ -1041,7 +1041,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null
@@ -1062,7 +1067,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null
@@ -1083,7 +1093,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null

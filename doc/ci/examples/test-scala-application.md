@@ -55,8 +55,8 @@ You can use other versions of Scala and SBT by defining them in
 
 Add the `Coverage was \[\d+.\d+\%\]` regular expression in the
 **Settings ➔ Pipelines ➔ Coverage report** project setting to
-retrieve the [test coverage] rate from the build trace and have it
-displayed with your jobs.
+retrieve the [test coverage](../../user/project/pipelines/settings.md#test-coverage-report-badge)
+rate from the build trace and have it displayed with your jobs.
 
 **Pipelines** must be enabled for this option to appear.
 
@@ -69,8 +69,5 @@ in the `.gitlab-ci.yml` file with your application's name.
 ## Heroku API key
 
 You can look up your Heroku API key in your
-[account](https://dashboard.heroku.com/account). Add a secure [variable] with
+[account](https://dashboard.heroku.com/account). Add a [protected variable](../variables/README.md#protected-variables) with
 this value in **Project ➔ Variables** with key `HEROKU_API_KEY`.
-
-[variable]: ../variables/README.md#user-defined-variables-secure-variables
-[test coverage]: ../../user/project/pipelines/settings.md#test-coverage-report-badge

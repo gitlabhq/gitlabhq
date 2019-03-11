@@ -4,6 +4,7 @@ author_gitlab: blitzgren
 level: intermediate
 article_type: tutorial
 date: 2018-03-07
+last_updated: 2019-03-06
 ---
 
 # DevOps and Game Dev with GitLab CI/CD
@@ -520,7 +521,7 @@ a lot of breathing room in quickly getting changes to players.
 Here are some ideas to further investigate that can speed up or improve your pipeline:
 
 - [Yarn](https://yarnpkg.com) instead of npm
-- Set up a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ci-yml) image that can preload dependencies and tools (like AWS CLI)
+- Set up a custom [Docker](../../../ci/docker/using_docker_images.md#define-image-and-services-from-gitlab-ciyml) image that can preload dependencies and tools (like AWS CLI)
 - Forward a [custom domain](http://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html) to your game's S3 static website
 - Combine jobs if you find it unnecessary for a small project
 - Avoid the queues and set up your own [custom GitLab CI/CD runner](https://about.gitlab.com/2016/03/01/gitlab-runner-with-docker/)
