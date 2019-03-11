@@ -1792,6 +1792,14 @@ include:
 All nested includes will be executed without context as public user, so only another remote,
 or public project, or template is allowed.
 
+NOTE: **Note:**
+Changes to remote includes will not have effect on already created pipelines,
+because the include is being evaluated at the time of pipeline creation.
+This is when full definition of CI yaml is being expanded in order to create
+pipeline with stages with jobs. You always retry job that is already created,
+thus created after pipeline creation. To re-include all (thus re-evaluate the
+configuration), you have to re-create pipeline.
+
 #### Nested includes
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
