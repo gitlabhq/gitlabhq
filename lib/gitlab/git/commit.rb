@@ -314,11 +314,16 @@ module Gitlab
       def tree_entry(path)
         return unless path.present?
 
+        commit_tree_entry(path)
+      end
+
+      def commit_tree_entry(path)
         # We're only interested in metadata, so limit actual data to 1 byte
         # since Gitaly doesn't support "send no data" option.
         entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
         return unless entry
 
+        # To be compatible with the rugged format
         entry = entry.to_h
         entry.delete(:data)
         entry[:name] = File.basename(path)
