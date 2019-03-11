@@ -159,9 +159,12 @@ export default {
         });
     },
     initiateMergePolling() {
-      simplePoll((continuePolling, stopPolling) => {
-        this.handleMergePolling(continuePolling, stopPolling);
-      });
+      simplePoll(
+        (continuePolling, stopPolling) => {
+          this.handleMergePolling(continuePolling, stopPolling);
+        },
+        { timeout: 0 },
+      );
     },
     handleMergePolling(continuePolling, stopPolling) {
       this.service
@@ -192,6 +195,7 @@ export default {
         })
         .catch(() => {
           new Flash(__('Something went wrong while merging this merge request. Please try again.')); // eslint-disable-line
+          stopPolling();
         });
     },
     initiateRemoveSourceBranchPolling() {
