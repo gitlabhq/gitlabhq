@@ -21,21 +21,21 @@ module Gitlab
 
       # Traintainers also count as reviewers
       def reviewer?(project, category)
-        capabilities(project) == "reviewer #{category}" || traintainer?(project, category)
+        capabilities(project).include?("reviewer #{category}") || traintainer?(project, category)
       end
 
       def traintainer?(project, category)
-        capabilities(project) == "trainee_maintainer #{category}"
+        capabilities(project).include?("trainee_maintainer #{category}")
       end
 
       def maintainer?(project, category)
-        capabilities(project) == "maintainer #{category}"
+        capabilities(project).include?("maintainer #{category}")
       end
 
       private
 
       def capabilities(project)
-        projects.fetch(project, '')
+        Array(projects.fetch(project, []))
       end
     end
   end
