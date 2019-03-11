@@ -51,7 +51,7 @@ Below are the settings for [GitLab Pages].
 | TLS certificates support| yes               | no            |
 
 The maximum size of your Pages site is regulated by the artifacts maximum size
-which is part of [GitLab CI/CD](#gitlab-ci-cd).
+which is part of [GitLab CI/CD](#gitlab-cicd).
 
 ## GitLab CI/CD
 

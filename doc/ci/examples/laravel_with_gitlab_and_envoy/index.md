@@ -5,6 +5,7 @@ author_gitlab: mehranrasulian
 level: intermediate
 article_type: tutorial
 date: 2017-08-31
+last_updated: 2019-03-06
 ---
 
 # Test and deploy Laravel applications with GitLab CI/CD and Envoy
@@ -374,7 +375,7 @@ You might want to create another Envoy task to do that for you.
 We also create the `.env` file in the same path to set up our production environment variables for Laravel.
 These are persistent data and will be shared to every new release.
 
-Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments.md), which will be described [later](#setting-up-gitlab-ci-cd) in this tutorial.
+Now, we would need to deploy our app by running `envoy run deploy`, but it won't be necessary since GitLab can handle that for us with CI's [environments](../../environments.md), which will be described [later](#setting-up-gitlab-cicd) in this tutorial.
 
 Now it's time to commit [Envoy.blade.php](https://gitlab.com/mehranrasulian/laravel-sample/blob/master/Envoy.blade.php) and push it to the `master` branch.
 To keep things simple, we commit directly to `master`, without using [feature-branches](../../../workflow/gitlab_flow.md#github-flow-as-a-simpler-alternative) since collaboration is beyond the scope of this tutorial.
@@ -557,7 +558,7 @@ So we should adjust the configuration of MySQL instance by defining `MYSQL_DATAB
 Find out more about MySQL variables at the [official MySQL Docker Image](https://hub.docker.com/r/_/mysql/).
 
 Also set the variables `DB_HOST` to `mysql` and `DB_USERNAME` to `root`, which are Laravel specific variables.
-We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../docker/using_docker_images.md#how-services-are-linked-to-the-build).
+We define `DB_HOST` as `mysql` instead of `127.0.0.1`, as we use MySQL Docker image as a service which [is linked to the main Docker image](../../docker/using_docker_images.md#how-services-are-linked-to-the-job).
 
 ```yaml
 ...

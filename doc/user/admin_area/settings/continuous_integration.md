@@ -26,7 +26,7 @@ If you want to disable it for a specific project, you can do so in
 
 The maximum size of the [job artifacts][art-yml] can be set in the Admin area
 of your GitLab instance. The value is in *MB* and the default is 100MB per job;
-on GitLab.com it's [set to 1G](../../gitlab_com/index.md#gitlab-ci-cd).
+on GitLab.com it's [set to 1G](../../gitlab_com/index.md#gitlab-cicd).
 
 To change it:
 
@@ -40,7 +40,7 @@ The default expiration time of the [job artifacts](../../../administration/job_a
 can be set in the Admin area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../../ci/yaml/README.md#artifactsexpire_in)
 and the default value is `30 days`. On GitLab.com they
-[never expire](../../gitlab_com/index.md#gitlab-ci-cd).
+[never expire](../../gitlab_com/index.md#gitlab-cicd).
 
 1. Go to **Admin area > Settings > Continuous Integration and Deployment**.
 1. Change the value of default expiration time.
