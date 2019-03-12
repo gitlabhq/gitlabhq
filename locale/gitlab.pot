@@ -3166,6 +3166,9 @@ msgstr ""
 msgid "Ends at (UTC)"
 msgstr ""
 
+msgid "Enter at least three characters to search"
+msgstr ""
+
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
@@ -7013,6 +7016,9 @@ msgstr ""
 msgid "Search users"
 msgstr ""
 
+msgid "Search your projects"
+msgstr ""
+
 msgid "SearchAutocomplete|All GitLab"
 msgstr ""
 
@@ -7405,7 +7411,13 @@ msgstr ""
 msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
+msgid "Something went wrong, unable to search projects"
+msgstr ""
+
 msgid "Something went wrong. Please try again."
+msgstr ""
+
+msgid "Sorry, no projects matched your search"
 msgstr ""
 
 msgid "Sorry, your filter produced no results"

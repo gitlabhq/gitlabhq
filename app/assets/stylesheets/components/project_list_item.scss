@@ -1,0 +1,27 @@
+.project-list-item {
+  &:not(:disabled):not(.disabled) {
+    &:focus,
+    &:active,
+    &:focus:active {
+      outline: none;
+      box-shadow: none;
+    }
+  }
+}
+
+// When housed inside a modal, the edge of each item
+// should extend to the edge of the modal.
+.modal-body {
+  .project-list-item {
+    border-radius: 0;
+    margin-left: -$gl-padding;
+    margin-right: -$gl-padding;
+
+    // should be replaced by Bootstrap's
+    // .overflow-hidden utility class once
+    // we upgrade Bootstrap to at least 4.2.x
+    .project-namespace-name-container {
+      overflow: hidden;
+    }
+  }
+}
