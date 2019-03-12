@@ -534,10 +534,9 @@ class Repository
   end
 
   def root_ref
-    # When the repo does not exist, or there is no root ref, we raise this error so no data is cached.
-    raw_repository&.root_ref or raise Gitlab::Git::Repository::NoRepository # rubocop:disable Style/AndOr
+    raw_repository&.root_ref
   end
-  cache_method :root_ref
+  cache_method_asymmetrically :root_ref
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/314
   def exists?
