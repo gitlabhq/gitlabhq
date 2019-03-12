@@ -283,8 +283,6 @@ $note-form-margin-left: 72px;
     }
 
     .system-note-message {
-      display: inline;
-
       &::first-letter {
         text-transform: lowercase;
       }
@@ -607,12 +605,6 @@ $note-form-margin-left: 72px;
 }
 
 .note-headline-meta {
-  display: inline-block;
-
-  .system-note-message {
-    white-space: normal;
-  }
-
   .system-note-separator {
     color: $gl-text-color-disabled;
   }
