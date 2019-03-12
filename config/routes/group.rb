@@ -31,6 +31,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     namespace :settings do
       resource :ci_cd, only: [:show], controller: 'ci_cd' do
         put :reset_registration_token
+        patch :update_auto_devops
       end
     end
 

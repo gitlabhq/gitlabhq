@@ -271,6 +271,10 @@ FactoryBot.define do
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops
     end
+
+    trait :auto_devops_disabled do
+      association :auto_devops, factory: [:project_auto_devops, :disabled]
+    end
   end
 
   # Project with empty repository
