@@ -966,15 +966,6 @@ msgstr ""
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found. %{more_information_link}"
 msgstr ""
 
-msgid "AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}."
-msgstr ""
-
-msgid "AutoDevOps|add a Kubernetes cluster"
-msgstr ""
-
-msgid "AutoDevOps|enable Auto DevOps"
-msgstr ""
-
 msgid "Automatically marked as default internal user"
 msgstr ""
 
@@ -3373,12 +3364,6 @@ msgstr ""
 msgid "Except policy:"
 msgstr ""
 
-msgid "Existing Git repository"
-msgstr ""
-
-msgid "Existing folder"
-msgstr ""
-
 msgid "Existing members and groups"
 msgstr ""
 
@@ -4073,9 +4058,6 @@ msgstr ""
 msgid "If enabled"
 msgstr ""
 
-msgid "If you already have files you can push them using the %{link_to_cli} below."
-msgstr ""
-
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
 msgstr ""
 
@@ -4538,9 +4520,6 @@ msgid "Learn more about Auto DevOps"
 msgstr ""
 
 msgid "Learn more about Kubernetes"
-msgstr ""
-
-msgid "Learn more about protected branches"
 msgstr ""
 
 msgid "Learn more about signing commits"
@@ -5207,9 +5186,6 @@ msgstr ""
 msgid "Not started"
 msgstr ""
 
-msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
-msgstr ""
-
 msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
 msgstr ""
 
@@ -5399,9 +5375,6 @@ msgid "Or you can choose one of the suggested colors below"
 msgstr ""
 
 msgid "Other Labels"
-msgstr ""
-
-msgid "Otherwise it is recommended you start with one of the options below."
 msgstr ""
 
 msgid "Outbound requests"
@@ -6260,6 +6233,12 @@ msgid "Public pipelines"
 msgstr ""
 
 msgid "Push"
+msgstr ""
+
+msgid "Push an existing Git repository"
+msgstr ""
+
+msgid "Push an existing folder"
 msgstr ""
 
 msgid "Push events"
@@ -8765,6 +8744,12 @@ msgstr ""
 msgid "You can also star a label to make it a priority label."
 msgstr ""
 
+msgid "You can also upload existing files from your computer using the instructions below."
+msgstr ""
+
+msgid "You can create files directly in GitLab using one of the following options."
+msgstr ""
+
 msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
@@ -8967,9 +8952,6 @@ msgid "authored"
 msgstr ""
 
 msgid "branch name"
-msgstr ""
-
-msgid "command line instructions"
 msgstr ""
 
 msgid "commented on %{link_to_project}"
