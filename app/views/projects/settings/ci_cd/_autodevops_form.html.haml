@@ -8,15 +8,15 @@
             .card.auto-devops-card
               .card-body
                 .form-check
-                  = form.check_box :enabled, class: 'form-check-input js-toggle-extra-settings', checked: @project.auto_devops_enabled?
+                  = form.check_box :enabled, class: 'form-check-input js-toggle-extra-settings', checked: auto_devops_enabled
                   = form.label :enabled, class: 'form-check-label' do
                     %strong= s_('CICD|Default to Auto DevOps pipeline')
-                    - if @project.has_auto_devops_implicitly_enabled?
-                      %span.badge.badge-info.js-instance-default-badge= s_('CICD|instance enabled')
+                    - if auto_devops_enabled
+                      %span.badge.badge-info.js-instance-default-badge= badge_for_auto_devops_scope(@project)
                   .form-text.text-muted
                     = s_('CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found.')
                     = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
-              .card-footer.js-extra-settings{ class: @project.auto_devops_enabled? || 'hidden' }
+              .card-footer.js-extra-settings{ class: auto_devops_enabled || 'hidden' }
                 %p.settings-message.text-center
                   - kubernetes_cluster_link = help_page_path('user/project/clusters/index')
                   - kubernetes_cluster_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: kubernetes_cluster_link }

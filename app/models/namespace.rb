@@ -11,6 +11,7 @@ class Namespace < ApplicationRecord
   include IgnorableColumn
   include FeatureGate
   include FromUnion
+  include Gitlab::Utils::StrongMemoize
 
   ignore_column :deleted_at
 
@@ -265,6 +266,22 @@ class Namespace < ApplicationRecord
 
   def refresh_project_authorizations
     owner.refresh_authorized_projects
+  end
+
+  def auto_devops_enabled?
+    first_auto_devops_config[:status]
+  end
+
+  def first_auto_devops_config
+    return { scope: :group, status: auto_devops_enabled } unless auto_devops_enabled.nil?
+
+    strong_memoize(:first_auto_devops_config) do
+      if has_parent?
+        parent.first_auto_devops_config
+      else
+        { scope: :instance, status: Gitlab::CurrentSettings.auto_devops_enabled? }
+      end
+    end
   end
 
   private
