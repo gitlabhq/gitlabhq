@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+require 'csv'
+require 'rspec_profiling'
+require 'postgres-copy'
+
+module RspecProfiling
+  module Collectors
+    class PSQL
+      def establish_connection
+        # This disables the automatic creation of the database and
+        # table. In the future, we may want a way to specify the host of
+        # the database to connect so that we can call #install.
+        Result.establish_connection(results_url)
+      end
+
+      def prepared?
+        connection.data_source_exists?(table)
+      end
+
+      def results_url
+        ENV['RSPEC_PROFILING_POSTGRES_URL']
+      end
+
+      class Result < ActiveRecord::Base
+        acts_as_copy_target
+      end
+    end
+  end
+end
+
+def insert_data(path)
+  puts "#{Time.now} Inserting CI stats..."
+
+  collector = RspecProfiling::Collectors::PSQL.new
+  collector.install
+
+  files = Dir[File.join(path, "*.csv")]
+
+  files.each do |filename|
+    puts "#{Time.now} Inserting #{filename}..."
+    result = RspecProfiling::Collectors::PSQL::Result.copy_from(filename)
+    puts "#{Time.now} Inserted #{result.cmd_tuples} lines in #{filename}, DB response: #{result.cmd_status}"
+  end
+end
+
+insert_data('rspec_profiling') if ENV['RSPEC_PROFILING_POSTGRES_URL'].present?
