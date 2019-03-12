@@ -28,7 +28,7 @@
       "items": { "$ref": "entities/label.json" }
     },
     "assignee": {
-      "id": { "type": "integet" },
+      "id": { "type": "integer" },
       "name": { "type": "string" },
       "username": { "type": "string" },
       "avatar_url": { "type": "uri" }
@@ -52,6 +52,5 @@
       }
     },
     "subscribed": { "type": ["boolean", "null"] }
-  },
-  "additionalProperties": false
+  }
 }
