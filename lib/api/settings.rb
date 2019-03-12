@@ -9,6 +9,11 @@ module API
         @current_setting ||=
           (ApplicationSetting.current_without_cache || ApplicationSetting.create_from_defaults)
       end
+
+      def filter_attributes_using_license(attrs)
+        # This method will be redefined in EE.
+        attrs
+      end
     end
 
     desc 'Get the current application settings' do
@@ -155,6 +160,8 @@ module API
       elsif attrs.has_key?(:password_authentication_enabled)
         attrs[:password_authentication_enabled_for_web] = attrs.delete(:password_authentication_enabled)
       end
+
+      attrs = filter_attributes_using_license(attrs)
 
       if ApplicationSettings::UpdateService.new(current_settings, current_user, attrs).execute
         present current_settings, with: Entities::ApplicationSetting
