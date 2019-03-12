@@ -81,7 +81,25 @@ module Gitlab
         Rails.logger.error("#{err.message} rolling-back storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
 
+      # Returns whether we have any pending storage migration
+      #
+      def migration_pending?
+        any_non_empty_queue?(::HashedStorage::MigratorWorker, ::HashedStorage::ProjectMigrateWorker)
+      end
+
+      # Returns whether we have any pending storage rollback
+      #
+      def rollback_pending?
+        any_non_empty_queue?(::HashedStorage::RollbackerWorker, ::HashedStorage::ProjectRollbackWorker)
+      end
+
       private
+
+      def any_non_empty_queue?(*workers)
+        workers.any? do |worker|
+          worker.jobs.any?
+        end
+      end
 
       # rubocop: disable CodeReuse/ActiveRecord
       def build_relation(start, finish)
