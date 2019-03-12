@@ -694,6 +694,7 @@ gitlab:ui:visual:
   tags:
     - gitlab-org
   before_script: []
+  allow_failure: true
   dependencies:
     - compile-assets
   script:
