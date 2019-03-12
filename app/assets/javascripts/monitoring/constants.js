@@ -7,3 +7,12 @@ export const graphTypes = {
 export const lineTypes = {
   default: 'solid',
 };
+
+export const timeWindows = {
+  thirtyMinutes: '30 minutes',
+  threeHours: '3 hours',
+  eightHours: '8 hours',
+  oneDay: '1 day',
+  threeDays: '3 days',
+  oneWeek: '1 week',
+};

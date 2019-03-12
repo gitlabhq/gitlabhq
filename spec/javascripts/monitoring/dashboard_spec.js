@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
+import { timeWindows } from '~/monitoring/constants';
 import axios from '~/lib/utils/axios_utils';
 import { metricsGroupsAPIResponse, mockApiEndpoint, environmentData } from './mock_data';
 
@@ -131,7 +132,7 @@ describe('Dashboard', () => {
 
       setTimeout(() => {
         const dropdownMenuEnvironments = component.$el.querySelectorAll(
-          '.js-environments-dropdown .dropdown-item',
+          '.js-environments-dropdown ul',
         );
 
         expect(dropdownMenuEnvironments.length).toEqual(0);
@@ -173,6 +174,26 @@ describe('Dashboard', () => {
         const dropdownIsActiveElement = component.$el.querySelectorAll('.environments');
 
         expect(dropdownIsActiveElement.length).toEqual(0);
+        done();
+      });
+    });
+
+    it('renders the time window dropdown with a set of options ', done => {
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+      });
+      const numberOfTimeWindows = Object.keys(timeWindows).length;
+
+      setTimeout(() => {
+        const timeWindowDropdown = component.$el.querySelector('#time-window-dropdown');
+        const timeWindowDropdownEls = component.$el.querySelectorAll(
+          '#time-window-dropdown .dropdown-item',
+        );
+
+        expect(timeWindowDropdown).not.toBeNull();
+        expect(timeWindowDropdownEls.length).toEqual(numberOfTimeWindows);
+
         done();
       });
     });
