@@ -3,6 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { removeBreakLine, removeWhitespace } from 'spec/helpers/vue_component_helper';
 import { environmentsList } from '../mock_data';
 
 describe('Environments Folder View', () => {
@@ -15,6 +16,11 @@ describe('Environments Folder View', () => {
     folderName: 'review',
     canReadEnvironment: true,
     cssContainerClass: 'container',
+    canaryDeploymentFeatureId: 'canary_deployment',
+    showCanaryDeploymentCallout: true,
+    userCalloutsPath: '/callouts',
+    lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+    helpCanaryDeploymentsPath: 'help/canary-deployments',
   };
 
   beforeEach(() => {
@@ -89,9 +95,11 @@ describe('Environments Folder View', () => {
 
     it('should render parent folder name', done => {
       setTimeout(() => {
-        expect(component.$el.querySelector('.js-folder-name').textContent.trim()).toContain(
-          'Environments / review',
-        );
+        expect(
+          removeBreakLine(
+            removeWhitespace(component.$el.querySelector('.js-folder-name').textContent.trim()),
+          ),
+        ).toContain('Environments / review');
         done();
       }, 0);
     });
