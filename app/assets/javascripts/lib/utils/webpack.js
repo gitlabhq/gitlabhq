@@ -6,5 +6,5 @@ export function resetServiceWorkersPublicPath() {
   // see: https://webpack.js.org/guides/public-path/
   const relativeRootPath = (gon && gon.relative_url_root) || '';
   const webpackAssetPath = `${relativeRootPath}/assets/webpack/`;
-  __webpack_public_path__ = webpackAssetPath; // eslint-disable-line camelcase
+  window.__webpack_public_path__ = webpackAssetPath; // eslint-disable-line
 }
