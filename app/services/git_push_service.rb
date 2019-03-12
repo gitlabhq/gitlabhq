@@ -22,6 +22,19 @@ class GitPushService < BaseService
   #  6. Checks if the project's main language has changed
   #
   def execute
+    update_commits
+    execute_related_hooks
+    perform_housekeeping
+
+    update_remote_mirrors
+    update_caches
+
+    update_signatures
+  end
+
+  protected
+
+  def update_commits
     project.repository.after_create if project.empty_repo?
     project.repository.after_push_commit(branch_name)
 
@@ -54,14 +67,6 @@ class GitPushService < BaseService
       # .gitattributes file
       update_gitattributes if default_branch?
     end
-
-    execute_related_hooks
-    perform_housekeeping
-
-    update_remote_mirrors
-    update_caches
-
-    update_signatures
   end
 
   def update_gitattributes
@@ -122,8 +127,6 @@ class GitPushService < BaseService
       end
     end
   end
-
-  protected
 
   def update_remote_mirrors
     return unless project.has_remote_mirror?
