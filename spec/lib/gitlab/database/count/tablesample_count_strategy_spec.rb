@@ -4,15 +4,23 @@ describe Gitlab::Database::Count::TablesampleCountStrategy do
   before do
     create_list(:project, 3)
     create(:identity)
+    create(:group)
   end
 
-  let(:models) { [Project, Identity] }
+  let(:models) { [Project, Identity, Group, Namespace] }
   let(:strategy) { described_class.new(models) }
 
   subject { strategy.count }
 
   describe '#count', :postgresql do
-    let(:estimates) { { Project => threshold + 1, Identity => threshold - 1 } }
+    let(:estimates) do
+      {
+        Project => threshold + 1,
+        Identity => threshold - 1,
+        Group => threshold + 1,
+        Namespace => threshold + 1
+      }
+    end
     let(:threshold) { Gitlab::Database::Count::TablesampleCountStrategy::EXACT_COUNT_THRESHOLD }
 
     before do
@@ -30,9 +38,13 @@ describe Gitlab::Database::Count::TablesampleCountStrategy do
     context 'for tables with an estimated large size' do
       it 'performs a tablesample count' do
         expect(Project).not_to receive(:count)
+        expect(Group).not_to receive(:count)
+        expect(Namespace).not_to receive(:count)
 
         result = subject
         expect(result[Project]).to eq(3)
+        expect(result[Group]).to eq(1)
+        expect(result[Namespace]).to eq(4)
       end
     end
 
