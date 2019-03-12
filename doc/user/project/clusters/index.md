@@ -75,6 +75,14 @@ new Kubernetes cluster to your project:
 After a couple of minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](#installing-applications).
 
+NOTE: **Note:**
+GitLab requires basic authentication enabled and a client certificate issued for
+the cluster in order to setup an [initial service
+account](#access-controls). Starting from [GitLab
+11.10](https://gitlab.com/gitlab-org/gitlab-ce/issues/58208), the cluster
+creation process will explicitly request that basic authentication and
+client certificate is enabled.
+
 ## Adding an existing Kubernetes cluster
 
 To add an existing Kubernetes cluster to your project:
