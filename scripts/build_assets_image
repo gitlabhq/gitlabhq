@@ -27,3 +27,9 @@ docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
 docker push ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}
 docker push ${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
 
+# Also tag the image with GitLab version, if running on a tag pipeline, so
+# other projects can simply use that instead of computing the slug.
+if [ -n "$CI_COMMIT_TAG" ]; then
+    docker tag ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG} ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
+    docker push ${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
+fi
