@@ -80,6 +80,8 @@ describe GroupPolicy do
     let(:current_user) { nil }
 
     before do
+      group.add_developer(user)
+
       Projects::GroupLinks::CreateService.new(
         project,
         user,
@@ -87,7 +89,10 @@ describe GroupPolicy do
       ).execute(group)
     end
 
-    it { expect_disallowed(:read_group) }
+    it do
+      expect(group.shared_projects).not_to be_empty
+      expect_disallowed(:read_group)
+    end
   end
 
   context 'with foreign user and public project' do
@@ -96,6 +101,8 @@ describe GroupPolicy do
     let(:current_user) { create(:user) }
 
     before do
+      group.add_developer(user)
+
       Projects::GroupLinks::CreateService.new(
         project,
         user,
@@ -103,7 +110,10 @@ describe GroupPolicy do
       ).execute(group)
     end
 
-    it { expect_disallowed(:read_group) }
+    it do
+      expect(group.shared_projects).not_to be_empty
+      expect_disallowed(:read_group)
+    end
   end
 
   context 'has projects' do

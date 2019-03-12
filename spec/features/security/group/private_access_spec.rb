@@ -96,16 +96,20 @@ describe 'Private Group access' do
 
   describe 'GET /groups/:path for shared projects' do
     let(:project) { create(:project, :public) }
+    let(:linking_user) { create(:user) }
     before do
+      group.add_guest(linking_user)
+
       Projects::GroupLinks::CreateService.new(
         project,
-        create(:user),
+        linking_user,
         link_group_access: ProjectGroupLink::DEVELOPER
       ).execute(group)
     end
 
     subject { group_path(group) }
 
+    it { expect(group.shared_projects).not_to be_empty }
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
     it { is_expected.to be_allowed_for(:maintainer).of(group) }
