@@ -81,11 +81,6 @@ module API
             gl_id: Gitlab::GlId.gl_id(user),
             gl_username: user&.username,
             git_config_options: [],
-
-            # This repository_path is a bogus value but gitlab-shell still requires
-            # its presence. https://gitlab.com/gitlab-org/gitlab-shell/issues/135
-            repository_path: '/',
-
             gitaly: gitaly_payload(params[:action])
           }
 
