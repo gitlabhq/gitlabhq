@@ -2487,6 +2487,16 @@ describe Project do
     end
   end
 
+  describe '#set_repository_writable!' do
+    it 'sets repository_read_only to false' do
+      project = create(:project, :read_only)
+
+      expect { project.set_repository_writable! }
+        .to change(project, :repository_read_only)
+        .from(true).to(false)
+    end
+  end
+
   describe '#pushes_since_gc' do
     let(:project) { create(:project) }
 

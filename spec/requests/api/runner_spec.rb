@@ -526,6 +526,15 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(runner.reload.ip_address).to eq('123.222.123.222')
           end
 
+          it "handles multiple X-Forwarded-For addresses" do
+            post api('/jobs/request'),
+              params: { token: runner.token },
+              headers: { 'User-Agent' => user_agent, 'X-Forwarded-For' => '123.222.123.222, 127.0.0.1' }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(runner.reload.ip_address).to eq('123.222.123.222')
+          end
+
           context 'when concurrently updating a job' do
             before do
               expect_any_instance_of(Ci::Build).to receive(:run!)
