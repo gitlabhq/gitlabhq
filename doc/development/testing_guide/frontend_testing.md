@@ -35,15 +35,16 @@ If your test exceeds that time, it will fail.
 
 If you cannot improve the performance of the tests, you can increase the timeout
 for a specific test using
-[`jest.setTimeout`](https://jestjs.io/docs/en/jest-object#jestsettimeouttimeout).
+[`setTestTimeout`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/frontend/helpers/timeout.js).
 
 ```javascript
-beforeAll(() => {
-  jest.setTimeout(500);
-});
+import { setTestTimeout } from 'helpers/timeout';
 
 describe('Component', () => {
-  // ...
+  it('does something amazing', () => {
+    setTestTimeout(500);
+    // ...
+  });
 });
 ```
 
