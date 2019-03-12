@@ -4,6 +4,11 @@ require 'spec_helper'
 
 describe ClusterConfigureWorker, '#perform' do
   let(:worker) { described_class.new }
+  let(:ci_preparing_state_enabled) { false }
+
+  before do
+    stub_feature_flags(ci_preparing_state: ci_preparing_state_enabled)
+  end
 
   context 'when group cluster' do
     let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
@@ -64,6 +69,17 @@ describe ClusterConfigureWorker, '#perform' do
       expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:execute)
 
       described_class.new.perform(123)
+    end
+  end
+
+  context 'ci_preparing_state feature is enabled' do
+    let(:cluster) { create(:cluster) }
+    let(:ci_preparing_state_enabled) { true }
+
+    it 'does not configure the cluster' do
+      expect(Clusters::RefreshService).not_to receive(:create_or_update_namespaces_for_cluster)
+
+      described_class.new.perform(cluster.id)
     end
   end
 end

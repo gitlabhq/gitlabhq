@@ -2919,6 +2919,36 @@ describe Ci::Build do
     end
   end
 
+  describe '#any_unmet_prerequisites?' do
+    let(:build) { create(:ci_build, :created) }
+
+    subject { build.any_unmet_prerequisites? }
+
+    context 'build has prerequisites' do
+      before do
+        allow(build).to receive(:prerequisites).and_return([double])
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'and the ci_preparing_state feature is disabled' do
+        before do
+          stub_feature_flags(ci_preparing_state: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'build does not have prerequisites' do
+      before do
+        allow(build).to receive(:prerequisites).and_return([])
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#yaml_variables' do
     let(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: variables) }
 
