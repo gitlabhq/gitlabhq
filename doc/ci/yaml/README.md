@@ -1756,7 +1756,7 @@ include:
 ```
 
 All [nested includes](#nested-includes) will be executed in the scope of the target project,
-so it is possible to used local (relative to target project), project, remote
+so it is possible to use local (relative to target project), project, remote
 or template includes.
 
 #### `include:template`
@@ -1802,7 +1802,7 @@ configuration), you have to re-create pipeline.
 
 #### Nested includes
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53903) in GitLab 11.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/56836) in GitLab 11.9.
 
 Nested includes allow you to compose a set of includes.
 A total of 50 includes is allowed.
