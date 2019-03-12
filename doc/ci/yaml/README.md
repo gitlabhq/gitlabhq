@@ -367,10 +367,11 @@ job:
     - branches@gitlab-org/gitlab-ce
   except:
     - master@gitlab-org/gitlab-ce
+    - release/.*@gitlab-org/gitlab-ce
 ```
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
-except master.
+except `master` and those with names prefixed with `release/`.
 
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
 default. If it doesn't have an `except` rule, it is empty.
