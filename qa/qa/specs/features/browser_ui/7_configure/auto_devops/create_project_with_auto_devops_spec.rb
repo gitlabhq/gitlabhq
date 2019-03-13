@@ -13,6 +13,14 @@ module QA
     describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
       context 'when rbac is enabled' do
         before(:all) do
+          @cluster = Service::KubernetesCluster.new.create!
+        end
+
+        after(:all) do
+          @cluster&.remove!
+        end
+
+        it 'runs auto devops' do
           login
 
           @project = Resource::Project.fabricate! do |p|
@@ -28,8 +36,14 @@ module QA
             resource.value = '1'
           end
 
-          # Create and connect K8s cluster
-          @cluster = Service::KubernetesCluster.new.create!
+          # Set an application secret CI variable (prefixed with K8S_SECRET_)
+          Resource::CiVariable.fabricate! do |resource|
+            resource.project = @project
+            resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
+            resource.value = 'You can see this application secret'
+          end
+
+          # Connect K8s cluster
           Resource::KubernetesCluster.fabricate! do |cluster|
             cluster.project = @project
             cluster.cluster = @cluster
@@ -47,14 +61,7 @@ module QA
               .join('../../../../../fixtures/auto_devops_rack')
             push.commit_message = 'Create Auto DevOps compatible rack application'
           end
-        end
 
-        after(:all) do
-          @cluster&.remove!
-        end
-
-        it 'runs auto devops' do
-          @project.visit!
           Page::Project::Menu.perform(&:click_ci_cd_pipelines)
           Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
 
@@ -89,66 +96,6 @@ module QA
           Page::Project::Operations::Environments::Index.perform do |index|
             index.go_to_environment('production')
           end
-          Page::Project::Operations::Environments::Show.perform do |show|
-            show.view_deployment do
-              expect(page).to have_content('Hello World!')
-            end
-          end
-        end
-
-        it 'user sets application secret variable and Auto DevOps passes it to container' do
-          # Set an application secret CI variable (prefixed with K8S_SECRET_)
-          Resource::CiVariable.fabricate! do |resource|
-            resource.project = @project
-            resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
-            resource.value = 'You can see this application secret'
-          end
-
-          # Our current Auto DevOps implementation won't update the production
-          # app if we only update a CI variable with no code change.
-          #
-          # Workaround: push new code and use the resultant pipeline.
-          Resource::Repository::ProjectPush.fabricate! do |push|
-            push.project = @project
-            push.commit_message = 'Force a Deployment change by pushing new code'
-            push.file_name = 'new_file.txt'
-            push.file_content = 'new file contents'
-          end
-
-          Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-          Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.go_to_job('build')
-          end
-          Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 600)
-
-            job.click_element(:pipeline_path)
-          end
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.go_to_job('test')
-          end
-          Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 600)
-
-            job.click_element(:pipeline_path)
-          end
-
-          Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.go_to_job('production')
-          end
-          Page::Project::Job::Show.perform do |job|
-            expect(job).to be_successful(timeout: 1200)
-          end
-
-          Page::Project::Menu.perform(&:click_operations_environments)
-
-          Page::Project::Operations::Environments::Index.perform do |index|
-            index.go_to_environment('production')
-          end
-
           Page::Project::Operations::Environments::Show.perform do |show|
             show.view_deployment do
               expect(page).to have_content('Hello World!')
