@@ -168,20 +168,21 @@ Alternatively, you can [lock the sharing with group feature](#share-with-group-l
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
 
-## Transfer groups to another group
+## Transferring groups
 
-From 10.5 there are two different ways to transfer a group:
+From GitLab 10.5, groups can be transferred in the following ways:
 
-- Either by transferring a group into another group (making it a subgroup of that group).
-- Or by converting a subgroup into a root group (a group with no parent).
+- Top-level groups can be transferred to a group, converting them into subgroups.
+- Subgroups can be transferred to a new parent group.
+- Subgroups can be transferred out from a parent group, converting them into top-level groups.
 
-Please make sure to understand that:
+When transferring groups, note:
 
-- Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths)
-- You can only transfer the group to a group you manage.
+- Changing a group's parent can have unintended side effects. See [Redirects when changing repository paths](../project/index.md#redirects-when-changing-repository-paths).
+- You can only transfer groups to groups you manage.
 - You will need to update your local repositories to point to the new location.
-- If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
-- Only explicit group membership is transferred, not the inherited membership. If this would leave the group without an owner, the transferring user is added as owner instead.
+- If the parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+- Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this would leave the group without an owner. In this case, the user transferring the group becomes the group's owner.
 
 ## Group settings
 
