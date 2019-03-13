@@ -1,0 +1,5 @@
+---
+title: Allow modifying squash commit message for fast-forward only merge method
+merge_request: 26017
+author:
+type: fixed
