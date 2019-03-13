@@ -3,8 +3,8 @@
 import $ from 'jquery';
 import GfmAutoComplete from '~/gfm_auto_complete';
 
-import 'vendor/jquery.caret';
-import 'vendor/jquery.atwho';
+import 'jquery.caret';
+import 'at.js';
 
 describe('GfmAutoComplete', () => {
   const gfmAutoCompleteCallbacks = GfmAutoComplete.prototype.getDefaultCallbacks.call({
