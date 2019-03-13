@@ -94,6 +94,7 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - File content from Web Editor (:content)
+    # - Jira shared secret (:sharedSecret)
     #
     # NOTE: It is **IMPORTANT** to also update gitlab-workhorse's filter when adding parameters here to not
     #       introduce another security vulnerability: https://gitlab.com/gitlab-org/gitlab-workhorse/issues/182
@@ -108,6 +109,7 @@ module Gitlab
       trace
       variables
       content
+      sharedSecret
     )
 
     # Enable escaping HTML in JSON.
