@@ -106,7 +106,9 @@ FactoryBot.define do
         merge_request.merge_request_pipelines << build(:ci_pipeline,
           source: :merge_request_event,
           merge_request: merge_request,
-          project: merge_request.source_project)
+          project: merge_request.source_project,
+          ref: merge_request.source_branch,
+          sha: merge_request.source_branch_sha)
       end
     end
 

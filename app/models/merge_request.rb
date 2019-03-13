@@ -1149,12 +1149,18 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
-  def all_pipelines(shas: all_commit_shas)
+  def all_pipelines
     return Ci::Pipeline.none unless source_project
 
-    @all_pipelines ||=
-      source_project.ci_pipelines
-                    .for_merge_request(self, source_branch, all_commit_shas)
+    shas = all_commit_shas
+
+    strong_memoize(:all_pipelines) do
+      Ci::Pipeline.from_union(
+        [source_project.ci_pipelines.merge_request_pipelines(self, shas),
+         source_project.ci_pipelines.detached_merge_request_pipelines(self, shas),
+         source_project.ci_pipelines.triggered_for_branch(source_branch).for_sha(shas)],
+         remove_duplicates: false).sort_by_merge_request_pipelines
+    end
   end
 
   def update_head_pipeline
@@ -1389,8 +1395,7 @@ class MergeRequest < ActiveRecord::Base
   private
 
   def find_actual_head_pipeline
-    source_project&.ci_pipelines
-                  &.latest_for_merge_request(self, source_branch, diff_head_sha)
+    all_pipelines.for_sha_or_source_sha(diff_head_sha).first
   end
 
   def source_project_variables
