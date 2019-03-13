@@ -50,11 +50,11 @@ build:
   - 'dotnet restore' 
 # Build all projects discovered from solution file. 
 #
-# Note: this may fail in case you have at least one not .NET Core based project 
-# defined in your solution file e.g. WCF service, which is based on .NET Framework
-# not .NET Core. In such scenario you will need to build .NET Core project 
-# by explicitly specifying a relative path to the directory where it is located
-# e.g. 'dotnet build ./src/ConsoleApp'
+# Note: this will fail if you have any projects in your solution that are not 
+# .NET Core based projects e.g. WCF service, which is based on .NET Framework, 
+# not .NET Core. In such scenario you will need to build every .NET Core based 
+# project by explicitly specifying a relative path to the directory 
+# where it is located e.g. 'dotnet build ./src/ConsoleApp'. 
 # Only one project path can be passed as a parameter to 'dotnet build' command.
  script:
   - 'dotnet build'
