@@ -6652,6 +6652,9 @@ msgstr ""
 msgid "Pipeline|Stop pipeline #%{pipelineId}?"
 msgstr ""
 
+msgid "Pipeline|Triggerer"
+msgstr ""
+
 msgid "Pipeline|Variables"
 msgstr ""
 
