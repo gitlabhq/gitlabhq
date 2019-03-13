@@ -69,7 +69,7 @@ window.gl = window.gl || {};
 window.gl.TEST_HOST = TEST_HOST;
 window.gon = window.gon || {};
 window.gon.test_env = true;
-window.gon.ee = false;
+window.gon.ee = process.env.EE;
 gon.relative_url_root = '';
 
 let hasUnhandledPromiseRejections = false;
