@@ -45,7 +45,10 @@ describe Banzai::Filter::SyntaxHighlightFilter do
   end
 
   context "languages that should be passed through" do
-    %w(math mermaid plantuml).each do |lang|
+    let(:delimiter) { described_class::PARAMS_DELIMITER }
+    let(:data_attr) { described_class::LANG_PARAMS_ATTR }
+
+    %w(math mermaid plantuml suggestion).each do |lang|
       context "when #{lang} is specified" do
         it "highlights as plaintext but with the correct language attribute and class" do
           result = filter(%{<pre><code lang="#{lang}">This is a test</code></pre>})
@@ -54,6 +57,33 @@ describe Banzai::Filter::SyntaxHighlightFilter do
         end
 
         include_examples "XSS prevention", lang
+      end
+
+      context "when #{lang} has extra params" do
+        let(:lang_params) { 'foo-bar-kux' }
+
+        it "includes data-lang-params tag with extra information" do
+          result = filter(%{<pre><code lang="#{lang}#{delimiter}#{lang_params}">This is a test</code></pre>})
+
+          expect(result.to_html).to eq(%{<pre class="code highlight js-syntax-highlight #{lang}" lang="#{lang}" #{data_attr}="#{lang_params}" v-pre="true"><code><span id="LC1" class="line" lang="#{lang}">This is a test</span></code></pre>})
+        end
+
+        include_examples "XSS prevention", lang
+        include_examples "XSS prevention",
+          "#{lang}#{described_class::PARAMS_DELIMITER}&lt;script&gt;alert(1)&lt;/script&gt;"
+        include_examples "XSS prevention",
+          "#{lang}#{described_class::PARAMS_DELIMITER}<script>alert(1)</script>"
+      end
+    end
+
+    context 'when multiple param delimiters are used' do
+      let(:lang) { 'suggestion' }
+      let(:lang_params) { '-1+10' }
+
+      it "delimits on the first appearence" do
+        result = filter(%{<pre><code lang="#{lang}#{delimiter}#{lang_params}#{delimiter}more-things">This is a test</code></pre>})
+
+        expect(result.to_html).to eq(%{<pre class="code highlight js-syntax-highlight #{lang}" lang="#{lang}" #{data_attr}="#{lang_params}#{delimiter}more-things" v-pre="true"><code><span id="LC1" class="line" lang="#{lang}">This is a test</span></code></pre>})
       end
     end
   end
