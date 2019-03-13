@@ -3,8 +3,41 @@ require 'rails_helper'
 describe 'Issues > User uses quick actions', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
+  context "issuable common quick actions" do
+    let(:new_url_opts) { {} }
+    let(:maintainer) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let!(:label_bug) { create(:label, project: project, title: 'bug') }
+    let!(:label_feature) { create(:label, project: project, title: 'feature') }
+    let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
     let(:issuable) { create(:issue, project: project) }
+    let(:source_issuable) { create(:issue, project: project, milestone: milestone, labels: [label_bug, label_feature])}
+
+    it_behaves_like 'assign quick action', :issue
+    it_behaves_like 'unassign quick action', :issue
+    it_behaves_like 'close quick action', :issue
+    it_behaves_like 'reopen quick action', :issue
+    it_behaves_like 'title quick action', :issue
+    it_behaves_like 'todo quick action', :issue
+    it_behaves_like 'done quick action', :issue
+    it_behaves_like 'subscribe quick action', :issue
+    it_behaves_like 'unsubscribe quick action', :issue
+    it_behaves_like 'lock quick action', :issue
+    it_behaves_like 'unlock quick action', :issue
+    it_behaves_like 'milestone quick action', :issue
+    it_behaves_like 'remove_milestone quick action', :issue
+    it_behaves_like 'label quick action', :issue
+    it_behaves_like 'unlabel quick action', :issue
+    it_behaves_like 'relabel quick action', :issue
+    it_behaves_like 'award quick action', :issue
+    it_behaves_like 'estimate quick action', :issue
+    it_behaves_like 'remove_estimate quick action', :issue
+    it_behaves_like 'spend quick action', :issue
+    it_behaves_like 'remove_time_spent quick action', :issue
+    it_behaves_like 'shrug quick action', :issue
+    it_behaves_like 'tableflip quick action', :issue
+    it_behaves_like 'copy_metadata quick action', :issue
+    it_behaves_like 'issuable time tracker', :issue
   end
 
   describe 'issue-only commands' do
@@ -15,37 +48,17 @@ describe 'Issues > User uses quick actions', :js do
       project.add_maintainer(user)
       sign_in(user)
       visit project_issue_path(project, issue)
+      wait_for_all_requests
     end
 
     after do
       wait_for_requests
     end
 
-    describe 'time tracking' do
-      let(:issue) { create(:issue, project: project) }
-
-      before do
-        visit project_issue_path(project, issue)
-      end
-
-      it_behaves_like 'issuable time tracker'
-    end
-
     describe 'adding a due date from note' do
       let(:issue) { create(:issue, project: project) }
 
-      context 'when the current user can update the due date' do
-        it 'does not create a note, and sets the due date accordingly' do
-          add_note("/due 2016-08-28")
-
-          expect(page).not_to have_content '/due 2016-08-28'
-          expect(page).to have_content 'Commands applied'
-
-          issue.reload
-
-          expect(issue.due_date).to eq Date.new(2016, 8, 28)
-        end
-      end
+      it_behaves_like 'due quick action available and date can be added'
 
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
@@ -56,35 +69,14 @@ describe 'Issues > User uses quick actions', :js do
           visit project_issue_path(project, issue)
         end
 
-        it 'does not create a note, and sets the due date accordingly' do
-          add_note("/due 2016-08-28")
-
-          expect(page).not_to have_content 'Commands applied'
-
-          issue.reload
-
-          expect(issue.due_date).to be_nil
-        end
+        it_behaves_like 'due quick action not available'
       end
     end
 
     describe 'removing a due date from note' do
       let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
-      context 'when the current user can update the due date' do
-        it 'does not create a note, and removes the due date accordingly' do
-          expect(issue.due_date).to eq Date.new(2016, 8, 28)
-
-          add_note("/remove_due_date")
-
-          expect(page).not_to have_content '/remove_due_date'
-          expect(page).to have_content 'Commands applied'
-
-          issue.reload
-
-          expect(issue.due_date).to be_nil
-        end
-      end
+      it_behaves_like 'remove_due_date action available and due date can be removed'
 
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
@@ -95,15 +87,7 @@ describe 'Issues > User uses quick actions', :js do
           visit project_issue_path(project, issue)
         end
 
-        it 'does not create a note, and sets the due date accordingly' do
-          add_note("/remove_due_date")
-
-          expect(page).not_to have_content 'Commands applied'
-
-          issue.reload
-
-          expect(issue.due_date).to eq Date.new(2016, 8, 28)
-        end
+        it_behaves_like 'remove_due_date action not available'
       end
     end
 
@@ -200,6 +184,7 @@ describe 'Issues > User uses quick actions', :js do
           gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
+          wait_for_requests
         end
 
         it 'moves the issue' do
@@ -221,6 +206,7 @@ describe 'Issues > User uses quick actions', :js do
           gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
+          wait_for_requests
         end
 
         it 'does not move the issue' do
@@ -238,6 +224,7 @@ describe 'Issues > User uses quick actions', :js do
           gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
+          wait_for_requests
         end
 
         it 'does not move the issue' do
