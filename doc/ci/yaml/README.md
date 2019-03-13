@@ -1796,7 +1796,7 @@ All nested includes will be executed without context as public user, so only ano
 or public project, or template is allowed.
 
 NOTE: **Note:**
-Changes to remote includes will not affect already created pipelines.To have remote includes affect already
+Changes to remote includes will not affect already created pipelines. To have remote includes affect already
 created pipelines, recreate the pipeline.
 
 #### Nested includes
