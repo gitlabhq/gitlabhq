@@ -398,7 +398,6 @@ GEM
       activesupport
       multipart-post
       oauth (~> 0.5, >= 0.5.0)
-    jquery-atwho-rails (1.3.2)
     js_regex (3.1.1)
       character_set (~> 1.1)
       regexp_parser (~> 1.1)
@@ -1046,7 +1045,6 @@ DEPENDENCIES
   influxdb (~> 0.2)
   jaeger-client (~> 0.10.0)
   jira-ruby (~> 1.4)
-  jquery-atwho-rails (~> 1.3.2)
   js_regex (~> 3.1)
   json-schema (~> 2.8.0)
   jwt (~> 2.1.0)
