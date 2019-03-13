@@ -102,7 +102,7 @@ describe PipelineSerializer do
 
       let!(:merge_request_1) do
         create(:merge_request,
-          :with_merge_request_pipeline,
+          :with_detached_merge_request_pipeline,
           target_project: project,
           target_branch: 'master',
           source_project: project,
@@ -111,7 +111,7 @@ describe PipelineSerializer do
 
       let!(:merge_request_2) do
         create(:merge_request,
-          :with_merge_request_pipeline,
+          :with_detached_merge_request_pipeline,
           target_project: project,
           target_branch: 'master',
           source_project: project,
