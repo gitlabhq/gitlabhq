@@ -76,23 +76,13 @@ describe GroupPolicy do
 
   context 'with no user and public project' do
     let(:project) { create(:project, :public) }
-    let(:user) { create(:user) }
     let(:current_user) { nil }
 
     before do
-      group.add_developer(user)
-
-      Projects::GroupLinks::CreateService.new(
-        project,
-        user,
-        link_group_access: ProjectGroupLink::DEVELOPER
-      ).execute(group)
+      create(:project_group_link, project: project, group: group)
     end
 
-    it do
-      expect(group.shared_projects).not_to be_empty
-      expect_disallowed(:read_group)
-    end
+    it { expect_disallowed(:read_group) }
   end
 
   context 'with foreign user and public project' do
@@ -101,19 +91,10 @@ describe GroupPolicy do
     let(:current_user) { create(:user) }
 
     before do
-      group.add_developer(user)
-
-      Projects::GroupLinks::CreateService.new(
-        project,
-        user,
-        link_group_access: ProjectGroupLink::DEVELOPER
-      ).execute(group)
+      create(:project_group_link, project: project, group: group)
     end
 
-    it do
-      expect(group.shared_projects).not_to be_empty
-      expect_disallowed(:read_group)
-    end
+    it { expect_disallowed(:read_group) }
   end
 
   context 'has projects' do
