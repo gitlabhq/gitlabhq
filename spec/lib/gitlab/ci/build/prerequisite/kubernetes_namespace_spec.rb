@@ -16,34 +16,41 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
       it { is_expected.to be_falsey }
     end
 
-    context 'build has a deployment, and no existing kubernetes namespace' do
+    context 'build has a deployment' do
       let!(:deployment) { create(:deployment, deployable: build) }
-      let!(:cluster) { create(:cluster, projects: [build.project]) }
 
-      before do
-        expect(build.project.kubernetes_namespaces).to be_empty
+      context 'and a cluster to deploy to' do
+        let(:cluster) { create(:cluster, projects: [build.project]) }
+
+        before do
+          allow(build.deployment).to receive(:cluster).and_return(cluster)
+        end
+
+        it { is_expected.to be_truthy }
       end
 
-      it { is_expected.to be_truthy }
-    end
+      context 'and no cluster to deploy to' do
+        before do
+          expect(deployment.cluster).to be_nil
+        end
 
-    context 'build has a deployment and kubernetes namespaces' do
-      let!(:deployment) { create(:deployment, deployable: build) }
-      let!(:cluster) { create(:cluster, projects: [build.project]) }
-      let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster) }
-
-      it { is_expected.to be_falsey }
+        it { is_expected.to be_falsey }
+      end
     end
   end
 
   describe '#complete!' do
-    let(:cluster) { create(:cluster, projects: [build.project]) }
+    let!(:deployment) { create(:deployment, deployable: build) }
     let(:service) { double(execute: true) }
 
     subject { described_class.new(build).complete! }
 
     context 'completion is required' do
-      let!(:deployment) { create(:deployment, deployable: build) }
+      let(:cluster) { create(:cluster, projects: [build.project]) }
+
+      before do
+        allow(build.deployment).to receive(:cluster).and_return(cluster)
+      end
 
       it 'creates a kubernetes namespace' do
         expect(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService)
@@ -59,7 +66,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
     context 'completion is not required' do
       before do
-        expect(build.deployment).to be_nil
+        expect(deployment.cluster).to be_nil
       end
 
       it 'does not create a namespace' do
