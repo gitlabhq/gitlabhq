@@ -679,7 +679,7 @@ GEM
       optimist (>= 3.0.0)
     rdoc (6.0.4)
     re2 (1.1.1)
-    recaptcha (3.0.0)
+    recaptcha (4.13.1)
       json
     recursive-open-struct (1.1.0)
     redis (3.3.5)
@@ -1113,7 +1113,7 @@ DEPENDENCIES
   rbtrace (~> 0.4)
   rdoc (~> 6.0)
   re2 (~> 1.1.1)
-  recaptcha (~> 3.0)
+  recaptcha (~> 4.11)
   redis (~> 3.2)
   redis-namespace (~> 1.6.0)
   redis-rails (~> 5.0.2)

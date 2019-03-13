@@ -46,7 +46,7 @@ gem 'rack-oauth2', '~> 1.9.3'
 gem 'jwt', '~> 2.1.0'
 
 # Spam and anti-bot protection
-gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
+gem 'recaptcha', '~> 4.11', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
