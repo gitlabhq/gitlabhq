@@ -13,6 +13,11 @@ describe('Environment', () => {
     cssContainerClass: 'container',
     newEnvironmentPath: 'environments/new',
     helpPagePath: 'help',
+    canaryDeploymentFeatureId: 'canary_deployment',
+    showCanaryDeploymentCallout: true,
+    userCalloutsPath: '/callouts',
+    lockPromotionSvgPath: '/assets/illustrations/lock-promotion.svg',
+    helpCanaryDeploymentsPath: 'help/canary-deployments',
   };
 
   let EnvironmentsComponent;

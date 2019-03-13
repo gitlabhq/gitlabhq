@@ -26,6 +26,21 @@ describe API::Internal do
 
       expect(json_response['redis']).to be(false)
     end
+
+    context 'authenticating' do
+      it 'authenticates using a header' do
+        get api("/internal/check"),
+            headers: { API::Helpers::GITLAB_SHARED_SECRET_HEADER => Base64.encode64(secret_token) }
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns 401 when no credentials provided' do
+        get(api("/internal/check"))
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+    end
   end
 
   describe 'GET /internal/broadcast_message' do
@@ -237,6 +252,14 @@ describe API::Internal do
 
       expect(json_response['name']).to eq(user.name)
     end
+
+    it 'responds successfully when a user is not found' do
+      get(api("/internal/discover"), params: { username: 'noone', secret_token: secret_token })
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(response.body).to eq('null')
+    end
   end
 
   describe "GET /internal/authorized_keys" do
@@ -324,7 +347,6 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to be_nil
@@ -337,7 +359,6 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_project_path"]).to eq(project.wiki.full_path)
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(user.reload.last_activity_on).to eql(Date.today)
@@ -350,7 +371,6 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_truthy
-          expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("project-#{project.id}")
           expect(json_response["gl_project_path"]).to eq(project.full_path)
           expect(json_response["gitaly"]).not_to be_nil
@@ -370,7 +390,6 @@ describe API::Internal do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response["status"]).to be_truthy
-            expect(json_response["repository_path"]).to eq('/')
             expect(json_response["gl_repository"]).to eq("project-#{project.id}")
             expect(json_response["gl_project_path"]).to eq(project.full_path)
             expect(json_response["gitaly"]).not_to be_nil

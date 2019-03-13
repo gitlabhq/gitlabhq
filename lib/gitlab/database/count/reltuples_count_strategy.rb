@@ -37,6 +37,22 @@ module Gitlab
 
         private
 
+        # Models using single-type inheritance (STI) don't work with
+        # reltuple count estimates. We just have to ignore them and
+        # use another strategy to compute them.
+        def non_sti_models
+          models.reject { |model| sti_model?(model) }
+        end
+
+        def non_sti_table_names
+          non_sti_models.map(&:table_name)
+        end
+
+        def sti_model?(model)
+          model.column_names.include?(model.inheritance_column) &&
+            model.base_class != model
+        end
+
         def table_names
           models.map(&:table_name)
         end
@@ -47,7 +63,7 @@ module Gitlab
           # Querying tuple stats only works on the primary. Due to load balancing, the
           # easiest way to do this is to start a transaction.
           ActiveRecord::Base.transaction do
-            get_statistics(table_names, check_statistics: check_statistics).each_with_object({}) do |row, data|
+            get_statistics(non_sti_table_names, check_statistics: check_statistics).each_with_object({}) do |row, data|
               model = table_to_model[row.table_name]
               data[model] = row.estimate
             end

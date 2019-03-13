@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe Gitlab::HashedStorage::Migrator do
+describe Gitlab::HashedStorage::Migrator, :sidekiq do
   describe '#bulk_schedule_migration' do
     it 'schedules job to HashedStorage::MigratorWorker' do
       Sidekiq::Testing.fake! do
@@ -180,6 +182,54 @@ describe Gitlab::HashedStorage::Migrator do
       it 'returns false' do
         expect(subject.rollback(project)).to be_falsey
       end
+    end
+  end
+
+  describe 'migration_pending?' do
+    set(:project) { create(:project, :empty_repo) }
+
+    it 'returns true when there are MigratorWorker jobs scheduled' do
+      Sidekiq::Testing.fake! do
+        ::HashedStorage::MigratorWorker.perform_async(1, 5)
+
+        expect(subject.migration_pending?).to be_truthy
+      end
+    end
+
+    it 'returns true when there are ProjectMigrateWorker jobs scheduled' do
+      Sidekiq::Testing.fake! do
+        ::HashedStorage::ProjectMigrateWorker.perform_async(1)
+
+        expect(subject.migration_pending?).to be_truthy
+      end
+    end
+
+    it 'returns false when queues are empty' do
+      expect(subject.migration_pending?).to be_falsey
+    end
+  end
+
+  describe 'rollback_pending?' do
+    set(:project) { create(:project, :empty_repo) }
+
+    it 'returns true when there are RollbackerWorker jobs scheduled' do
+      Sidekiq::Testing.fake! do
+        ::HashedStorage::RollbackerWorker.perform_async(1, 5)
+
+        expect(subject.rollback_pending?).to be_truthy
+      end
+    end
+
+    it 'returns true when there are jobs scheduled' do
+      Sidekiq::Testing.fake! do
+        ::HashedStorage::ProjectRollbackWorker.perform_async(1)
+
+        expect(subject.rollback_pending?).to be_truthy
+      end
+    end
+
+    it 'returns false when queues are empty' do
+      expect(subject.rollback_pending?).to be_falsey
     end
   end
 end

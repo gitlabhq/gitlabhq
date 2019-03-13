@@ -344,5 +344,8 @@ export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
   }
 };
 
+export const setFileCollapsed = ({ commit }, { filePath, collapsed }) =>
+  commit(types.SET_FILE_COLLAPSED, { filePath, collapsed });
+
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

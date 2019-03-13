@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Manage' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/45
+  context 'Manage', :quarantine do
     describe 'Add project member' do
       it 'user adds project member' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

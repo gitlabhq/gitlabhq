@@ -36,5 +36,13 @@ FactoryBot.define do
     trait :nested do
       parent factory: :group
     end
+
+    trait :auto_devops_enabled do
+      auto_devops_enabled true
+    end
+
+    trait :auto_devops_disabled do
+      auto_devops_enabled false
+    end
   end
 end

@@ -251,7 +251,7 @@ module.exports = {
       } else {
         resource.request = path.join(
           ROOT_PATH,
-          'app/assets/javascripts/vue_shared/components/empty_component.js'
+          'app/assets/javascripts/vue_shared/components/empty_component.js',
         );
       }
     }),
@@ -267,7 +267,7 @@ module.exports = {
           const missingDeps = Array.from(compilation.missingDependencies);
           const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
           const hasMissingNodeModules = missingDeps.some(
-            file => file.indexOf(nodeModulesPath) !== -1
+            file => file.indexOf(nodeModulesPath) !== -1,
           );
 
           // watch for changes to missing node_modules
@@ -278,7 +278,7 @@ module.exports = {
 
           // report our auto-generated bundle count
           console.log(
-            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
+            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`,
           );
 
           callback();

@@ -7,9 +7,7 @@ module API
 
     before { authenticate! }
 
-    NOTEABLE_TYPES = [Issue, Snippet, MergeRequest, Commit].freeze
-
-    NOTEABLE_TYPES.each do |noteable_type|
+    Helpers::DiscussionsHelpers.noteable_types.each do |noteable_type|
       parent_type = noteable_type.parent_class.to_s.underscore
       noteables_str = noteable_type.to_s.underscore.pluralize
       noteables_path = noteable_type == Commit ? "repository/#{noteables_str}" : noteables_str

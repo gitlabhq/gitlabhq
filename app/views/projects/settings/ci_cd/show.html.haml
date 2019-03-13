@@ -26,7 +26,7 @@
       = s_('CICD|Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.')
       = link_to s_('CICD|Learn more about Auto DevOps'), help_page_path('topics/autodevops/index.md')
   .settings-content
-    = render 'autodevops_form'
+    = render 'autodevops_form', auto_devops_enabled: @project.auto_devops_enabled?
 
 = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 

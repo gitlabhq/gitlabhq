@@ -36,14 +36,13 @@
             = user_status(note.author)
             %span.note-headline-light
               = note.author.to_reference
-          %span.note-headline-light
-            %span.note-headline-meta
-              - if note.system
-                %span.system-note-message
-                  = markdown_field(note, :note)
-              %span.system-note-separator
-                &middot;
-              %a.system-note-separator{ href: "##{dom_id(note)}" }= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+          %span.note-headline-light.note-headline-meta
+            - if note.system
+              %span.system-note-message
+                = markdown_field(note, :note)
+            %span.system-note-separator
+              &middot;
+            %a.system-note-separator{ href: "##{dom_id(note)}" }= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
           .note-actions
             - if note.for_personal_snippet?

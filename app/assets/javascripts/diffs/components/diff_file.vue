@@ -73,13 +73,23 @@ export default {
       if (!newVal && oldVal && !this.hasDiffLines) {
         this.handleLoadCollapsedDiff();
       }
+
+      this.setFileCollapsed({ filePath: this.file.file_path, collapsed: newVal });
+    },
+    'file.viewer.collapsed': function setIsCollapsed(newVal) {
+      this.isCollapsed = newVal;
     },
   },
   created() {
     eventHub.$on(`loadCollapsedDiff/${this.file.file_hash}`, this.handleLoadCollapsedDiff);
   },
   methods: {
-    ...mapActions('diffs', ['loadCollapsedDiff', 'assignDiscussionsToDiff', 'setRenderIt']),
+    ...mapActions('diffs', [
+      'loadCollapsedDiff',
+      'assignDiscussionsToDiff',
+      'setRenderIt',
+      'setFileCollapsed',
+    ]),
     handleToggle() {
       if (!this.hasDiffLines) {
         this.handleLoadCollapsedDiff();

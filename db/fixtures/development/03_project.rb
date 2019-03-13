@@ -60,7 +60,7 @@ Sidekiq::Testing.inline! do
             path: group_path
           )
           group.description = FFaker::Lorem.sentence
-          group.save
+          group.save!
 
           group.add_owner(User.first)
         end
