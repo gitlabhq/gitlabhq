@@ -3,13 +3,13 @@
  */
 import _ from 'underscore';
 import Visibility from 'visibilityjs';
+import EnvironmentsStore from 'ee_else_ce/environments/stores/environments_store';
 import Poll from '../../lib/utils/poll';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import { s__ } from '../../locale';
 import Flash from '../../flash';
 import eventHub from '../event_hub';
 
-import EnvironmentsStore from '../stores/environments_store';
 import EnvironmentsService from '../services/environments_service';
 import tablePagination from '../../vue_shared/components/table_pagination.vue';
 import environmentTable from '../components/environments_table.vue';
