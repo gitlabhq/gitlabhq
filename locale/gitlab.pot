@@ -4920,6 +4920,9 @@ msgstr ""
 msgid "Modal|Close"
 msgstr ""
 
+msgid "Modify commit message"
+msgstr ""
+
 msgid "Modify commit messages"
 msgstr ""
 
@@ -9087,6 +9090,9 @@ msgid "missing"
 msgstr ""
 
 msgid "mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}."
+msgstr ""
+
+msgid "mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}."
 msgstr ""
 
 msgid "mrWidgetCommitsAdded|1 merge commit"

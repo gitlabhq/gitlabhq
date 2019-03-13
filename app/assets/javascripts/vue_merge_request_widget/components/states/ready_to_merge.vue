@@ -113,6 +113,12 @@ export default {
     shouldShowMergeControls() {
       return this.mr.isMergeAllowed || this.shouldShowMergeWhenPipelineSucceedsText;
     },
+    shouldShowSquashEdit() {
+      return this.squashBeforeMerge && this.shouldShowSquashBeforeMerge;
+    },
+    shouldShowMergeEdit() {
+      return !this.mr.ffOnlyEnabled;
+    },
   },
   methods: {
     updateMergeCommitMessage(includeDescription) {
@@ -321,43 +327,44 @@ export default {
       <div v-if="mr.ffOnlyEnabled" class="mr-fast-forward-message">
         {{ __('Fast-forward merge without a merge commit') }}
       </div>
-      <template v-else>
-        <commits-header
-          :is-squash-enabled="squashBeforeMerge"
-          :commits-count="mr.commitsCount"
-          :target-branch="mr.targetBranch"
-        >
-          <ul class="border-top content-list commits-list flex-list">
-            <commit-edit
-              v-if="squashBeforeMerge && shouldShowSquashBeforeMerge"
+      <commits-header
+        v-if="shouldShowSquashEdit || shouldShowMergeEdit"
+        :is-squash-enabled="squashBeforeMerge"
+        :commits-count="mr.commitsCount"
+        :target-branch="mr.targetBranch"
+        :is-fast-forward-enabled="mr.ffOnlyEnabled"
+      >
+        <ul class="border-top content-list commits-list flex-list">
+          <commit-edit
+            v-if="shouldShowSquashEdit"
+            v-model="squashCommitMessage"
+            :label="__('Squash commit message')"
+            input-id="squash-message-edit"
+            squash
+          >
+            <commit-message-dropdown
+              slot="header"
               v-model="squashCommitMessage"
-              :label="__('Squash commit message')"
-              input-id="squash-message-edit"
-              squash
-            >
-              <commit-message-dropdown
-                slot="header"
-                v-model="squashCommitMessage"
-                :commits="mr.commits"
+              :commits="mr.commits"
+            />
+          </commit-edit>
+          <commit-edit
+            v-if="shouldShowMergeEdit"
+            v-model="commitMessage"
+            :label="__('Merge commit message')"
+            input-id="merge-message-edit"
+          >
+            <label slot="checkbox">
+              <input
+                id="include-description"
+                type="checkbox"
+                @change="updateMergeCommitMessage($event.target.checked)"
               />
-            </commit-edit>
-            <commit-edit
-              v-model="commitMessage"
-              :label="__('Merge commit message')"
-              input-id="merge-message-edit"
-            >
-              <label slot="checkbox">
-                <input
-                  id="include-description"
-                  type="checkbox"
-                  @change="updateMergeCommitMessage($event.target.checked)"
-                />
-                {{ __('Include merge request description') }}
-              </label>
-            </commit-edit>
-          </ul>
-        </commits-header>
-      </template>
+              {{ __('Include merge request description') }}
+            </label>
+          </commit-edit>
+        </ul>
+      </commits-header>
     </template>
   </div>
 </template>
