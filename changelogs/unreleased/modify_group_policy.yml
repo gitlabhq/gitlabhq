@@ -1,0 +1,5 @@
+---
+title: Allow project members to see private group if the project is in the group namespace
+merge_request:
+author:
+type: fixed

@@ -33,10 +33,7 @@ export function initEmojiMap() {
       }
 
       axiosInstance
-        .get(
-          `${gon.asset_host || ''}${gon.relative_url_root ||
-            ''}/-/emojis/${EMOJI_VERSION}/emojis.json`,
-        )
+        .get(`${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`)
         .then(({ data }) => {
           emojiMap = data;
           validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
