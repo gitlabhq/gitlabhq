@@ -8,16 +8,15 @@ class PipelineScheduleWorker
   def perform
     Ci::PipelineSchedule.active.where("next_run_at < ?", Time.now)
       .preload(:owner, :project).find_each do |schedule|
-      begin
-        Ci::CreatePipelineService.new(schedule.project,
-                                      schedule.owner,
-                                      ref: schedule.ref)
-          .execute!(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: schedule)
-      rescue => e
-        error(schedule, e)
-      ensure
-        schedule.schedule_next_run!
-      end
+
+      Ci::CreatePipelineService.new(schedule.project,
+                                    schedule.owner,
+                                    ref: schedule.ref)
+        .execute!(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: schedule)
+    rescue => e
+      error(schedule, e)
+    ensure
+      schedule.schedule_next_run!
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

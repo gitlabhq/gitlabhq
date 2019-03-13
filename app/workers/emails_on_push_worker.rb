@@ -52,24 +52,22 @@ class EmailsOnPushWorker
     end
 
     valid_recipients(recipients).each do |recipient|
-      begin
-        send_email(
-          recipient,
-          project_id,
-          author_id:                 author_id,
-          ref:                       ref,
-          action:                    action,
-          compare:                   compare,
-          reverse_compare:           reverse_compare,
-          diff_refs:                 diff_refs,
-          send_from_committer_email: send_from_committer_email,
-          disable_diffs:             disable_diffs
-        )
+      send_email(
+        recipient,
+        project_id,
+        author_id:                 author_id,
+        ref:                       ref,
+        action:                    action,
+        compare:                   compare,
+        reverse_compare:           reverse_compare,
+        diff_refs:                 diff_refs,
+        send_from_committer_email: send_from_committer_email,
+        disable_diffs:             disable_diffs
+      )
 
-      # These are input errors and won't be corrected even if Sidekiq retries
-      rescue Net::SMTPFatalError, Net::SMTPSyntaxError => e
-        logger.info("Failed to send e-mail for project '#{project.full_name}' to #{recipient}: #{e}")
-      end
+    # These are input errors and won't be corrected even if Sidekiq retries
+    rescue Net::SMTPFatalError, Net::SMTPSyntaxError => e
+      logger.info("Failed to send e-mail for project '#{project.full_name}' to #{recipient}: #{e}")
     end
   ensure
     @email = nil

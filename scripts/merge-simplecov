@@ -12,11 +12,9 @@ module SimpleCov
 
       def resultset_hashes
         resultset_files.map do |path|
-          begin
-            JSON.parse(File.read(path))
-          rescue
-            {}
-          end
+          JSON.parse(File.read(path))
+        rescue
+          {}
         end
       end
 

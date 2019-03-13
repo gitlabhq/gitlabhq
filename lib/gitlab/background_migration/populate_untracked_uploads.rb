@@ -34,18 +34,16 @@ module Gitlab
 
       def filter_error_files(files)
         files.partition do |file|
-          begin
-            file.to_h
-            true
-          rescue => e
-            msg = <<~MSG
+          file.to_h
+          true
+        rescue => e
+          msg = <<~MSG
               Error parsing path "#{file.path}":
                 #{e.message}
                 #{e.backtrace.join("\n  ")}
             MSG
-            Rails.logger.error(msg)
-            false
-          end
+          Rails.logger.error(msg)
+          false
         end
       end
 
