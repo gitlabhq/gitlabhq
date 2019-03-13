@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.8.2 (2019-03-13)
+
+### Security (1 change)
+
+- Fixed ability to see private groups by users not belonging to given group.
+
+### Fixed (5 changes)
+
+- Fix import_jid error on project import. !25239
+- Properly handle multiple X-Forwarded-For addresses in runner IP. !25511
+- Fix error when viewing group issue boards when user doesn't have explicit group permissions. !25524
+- Fix method to mark a project repository as writable. !25546
+- Allow project members to see private group if the project is in the group namespace.
+
+
 ## 11.8.0 (2019-02-22)
 
 ### Security (7 changes, 1 of them is from the community)
