@@ -9,6 +9,8 @@ describe 'Emojis (JavaScript fixtures)' do
 
   it 'emojis/emojis.json' do |example|
     JavaScriptFixturesHelpers::FIXTURE_PATHS.each do |fixture_path|
+      next unless File.directory?(fixture_path)
+
       # Copying the emojis.json from the public folder
       fixture_file_name = File.expand_path('emojis/emojis.json', fixture_path)
       FileUtils.mkdir_p(File.dirname(fixture_file_name))

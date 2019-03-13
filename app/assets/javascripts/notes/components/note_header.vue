@@ -87,27 +87,25 @@ export default {
       <span class="note-headline-light">@{{ author.username }}</span>
     </a>
     <span v-else>{{ __('A deleted user') }}</span>
-    <span class="note-headline-light">
-      <span class="note-headline-meta">
-        <span class="system-note-message"> <slot></slot> </span>
-        <template v-if="createdAt">
-          <span class="system-note-separator">
-            <template v-if="actionText">{{ actionText }}</template>
-          </span>
-          <a
-            :href="noteTimestampLink"
-            class="note-timestamp system-note-separator"
-            @click="updateTargetNoteHash"
-          >
-            <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
-          </a>
-        </template>
-        <i
-          class="fa fa-spinner fa-spin editing-spinner"
-          aria-label="Comment is being updated"
-          aria-hidden="true"
-        ></i>
-      </span>
+    <span class="note-headline-light note-headline-meta">
+      <span class="system-note-message"> <slot></slot> </span>
+      <template v-if="createdAt">
+        <span class="system-note-separator">
+          <template v-if="actionText">{{ actionText }}</template>
+        </span>
+        <a
+          :href="noteTimestampLink"
+          class="note-timestamp system-note-separator"
+          @click="updateTargetNoteHash"
+        >
+          <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
+        </a>
+      </template>
+      <i
+        class="fa fa-spinner fa-spin editing-spinner"
+        aria-label="Comment is being updated"
+        aria-hidden="true"
+      ></i>
     </span>
   </div>
 </template>

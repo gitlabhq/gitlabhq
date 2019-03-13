@@ -34,7 +34,7 @@ export default {
 
 <template>
   <li class="timeline-entry note note-wrapper discussion-filter-note js-discussion-filter-note">
-    <div class="timeline-icon">
+    <div class="timeline-icon d-none d-lg-flex">
       <icon name="comment" />
     </div>
     <div class="timeline-content">

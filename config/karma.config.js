@@ -26,7 +26,7 @@ webpackConfig.devtool = 'cheap-inline-source-map';
 webpackConfig.plugins.push(
   new webpack.DefinePlugin({
     'process.env.BABEL_ENV': JSON.stringify(process.env.BABEL_ENV || process.env.NODE_ENV || null),
-  })
+  }),
 );
 
 const specFilters = argumentsParser
@@ -37,7 +37,7 @@ const specFilters = argumentsParser
       memo.push(filter, filter.replace(/\/?$/, '/**/*.js'));
       return memo;
     },
-    []
+    [],
   )
   .parse(process.argv).filterSpec;
 
@@ -51,7 +51,7 @@ if (specFilters.length) {
         root: ROOT_PATH,
         matchBase: true,
       })
-      .filter(path => path.endsWith('spec.js'))
+      .filter(path => path.endsWith('spec.js')),
   );
 
   // flatten
@@ -78,8 +78,8 @@ if (specFilters.length) {
     new webpack.ContextReplacementPlugin(
       /spec[\\\/]javascripts$/,
       path.join(ROOT_PATH, 'spec/javascripts'),
-      newContext
-    )
+      newContext,
+    ),
   );
 }
 
@@ -112,13 +112,13 @@ module.exports = function(config) {
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],
     },
-    reporters: ['progress'],
+    reporters: ['mocha'],
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
   };
 
   if (process.env.CI) {
-    karmaConfig.reporters = ['mocha', 'junit'];
+    karmaConfig.reporters.push('junit');
     karmaConfig.junitReporter = {
       outputFile: 'junit_karma.xml',
       useBrowserName: false,

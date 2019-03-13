@@ -48,12 +48,21 @@ module Gitlab
           end
         end
 
+        def where_clause(model)
+          return unless sti_model?(model)
+
+          "WHERE #{model.inheritance_column} = '#{model.name}'"
+        end
+
         def tablesample_count(model, estimate)
           portion = (TABLESAMPLE_ROW_TARGET.to_f / estimate).round(4)
           inverse = 1 / portion
           query = <<~SQL
             SELECT (COUNT(*)*#{inverse})::integer AS count
-            FROM #{model.table_name} TABLESAMPLE SYSTEM (#{portion * 100})
+            FROM #{model.table_name}
+            TABLESAMPLE SYSTEM (#{portion * 100})
+            REPEATABLE (0)
+            #{where_clause(model)}
           SQL
 
           rows = ActiveRecord::Base.connection.select_all(query)

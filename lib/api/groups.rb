@@ -58,6 +58,22 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      def create_group
+        # This is a separate method so that EE can extend its behaviour, without
+        # having to modify this code directly.
+        ::Groups::CreateService
+          .new(current_user, declared_params(include_missing: false))
+          .execute
+      end
+
+      def update_group(group)
+        # This is a separate method so that EE can extend its behaviour, without
+        # having to modify this code directly.
+        ::Groups::UpdateService
+          .new(group, current_user, declared_params(include_missing: false))
+          .execute
+      end
+
       def find_group_projects(params)
         group = find_group!(params[:id])
         options = {
@@ -127,7 +143,7 @@ module API
           authorize! :create_group
         end
 
-        group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
+        group = create_group
 
         if group.persisted?
           present group, with: Entities::GroupDetail, current_user: current_user
@@ -153,7 +169,7 @@ module API
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
-        if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
+        if update_group(group)
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_validation_error!(group)

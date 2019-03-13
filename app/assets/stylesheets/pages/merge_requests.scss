@@ -1019,3 +1019,13 @@
   padding-left: 50px;
   padding-bottom: $gl-padding;
 }
+
+.mr-compare {
+  .diff-file .file-title-flex-parent {
+    top: $header-height + 51px;
+
+    .with-performance-bar & {
+      top: $performance-bar-height + $header-height + 51px;
+    }
+  }
+}

@@ -6,6 +6,7 @@ module API
     include Helpers::Pagination
 
     SUDO_HEADER = "HTTP_SUDO".freeze
+    GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret".freeze
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'.freeze
 
@@ -212,10 +213,12 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      input = params['secret_token'].try(:chomp)
-      unless Devise.secure_compare(secret_token, input)
-        unauthorized!
-      end
+      input = params['secret_token']
+      input ||= Base64.decode64(headers[GITLAB_SHARED_SECRET_HEADER]) if headers.key?(GITLAB_SHARED_SECRET_HEADER)
+
+      input&.chomp!
+
+      unauthorized! unless Devise.secure_compare(secret_token, input)
     end
 
     def authenticated_with_full_private_access!

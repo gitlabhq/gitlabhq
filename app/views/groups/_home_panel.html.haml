@@ -13,7 +13,7 @@
               = visibility_level_icon(@group.visibility_level, fw: false, options: {class: 'icon'})
         .home-panel-metadata.d-flex.align-items-center.text-secondary
           %span
-            = _("Group")
+            = _("Group ID: %{group_id}") % { group_id: @group.id }
           - if current_user
             %span.access-request-links.prepend-left-8
               = render 'shared/members/access_request_links', source: @group

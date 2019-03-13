@@ -82,6 +82,12 @@ FactoryBot.define do
         end
       end
 
+      trait :with_job do
+        after(:build) do |pipeline, evaluator|
+          pipeline.builds << build(:ci_build, pipeline: pipeline, project: pipeline.project)
+        end
+      end
+
       trait :auto_devops_source do
         config_source { Ci::Pipeline.config_sources[:auto_devops_source] }
       end

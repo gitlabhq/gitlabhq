@@ -5,6 +5,7 @@ describe 'projects/settings/ci_cd/_autodevops_form' do
 
   before do
     assign :project, project
+    allow(view).to receive(:auto_devops_enabled) { true }
   end
 
   it 'shows a warning message about Kubernetes cluster' do

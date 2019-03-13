@@ -17,6 +17,12 @@ The following methods of authentication are supported.
 
 A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
 
+DANGER: **Danger:**
+Passing plain text tokens in public projects is a security issue. Potential
+attackers can impersonate the user that exposed their trigger token publicly in
+their `.gitlab-ci.yml` file. Use [variables](../variables/README.md#variables)
+to protect trigger tokens.
+
 ## Adding a new trigger
 
 You can add a new trigger by going to your project's
@@ -53,9 +59,6 @@ The action is irreversible.
 >
 > - Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
 >   it will not trigger a job.
-> - If your project is public, passing the token in plain text is probably not the
->   wisest idea, so you might want to use a
->   [variable](../variables/README.md#variables) for that purpose.
 
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 

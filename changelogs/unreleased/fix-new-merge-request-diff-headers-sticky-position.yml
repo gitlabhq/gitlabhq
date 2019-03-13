@@ -1,0 +1,5 @@
+---
+title: Fixed sticky headers in merge request creation diffs
+merge_request:
+author:
+type: fixed
