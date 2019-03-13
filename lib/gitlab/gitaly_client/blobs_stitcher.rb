@@ -13,17 +13,15 @@ module Gitlab
         current_blob_data = nil
 
         @rpc_response.each do |msg|
-          begin
-            if msg.oid.blank? && msg.data.blank?
-              next
-            elsif msg.oid.present?
-              yield new_blob(current_blob_data) if current_blob_data
+          if msg.oid.blank? && msg.data.blank?
+            next
+          elsif msg.oid.present?
+            yield new_blob(current_blob_data) if current_blob_data
 
-              current_blob_data = msg.to_h.slice(:oid, :path, :size, :revision, :mode)
-              current_blob_data[:data] = msg.data.dup
-            else
-              current_blob_data[:data] << msg.data
-            end
+            current_blob_data = msg.to_h.slice(:oid, :path, :size, :revision, :mode)
+            current_blob_data[:data] = msg.data.dup
+          else
+            current_blob_data[:data] << msg.data
           end
         end
 

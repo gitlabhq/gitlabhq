@@ -20,11 +20,9 @@ class CreateGpgSignatureWorker
 
     # This calculates and caches the signature in the database
     commits.each do |commit|
-      begin
-        Gitlab::Gpg::Commit.new(commit).signature
-      rescue => e
-        Rails.logger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}")
-      end
+      Gitlab::Gpg::Commit.new(commit).signature
+    rescue => e
+      Rails.logger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}")
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

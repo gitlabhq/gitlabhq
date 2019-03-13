@@ -75,13 +75,11 @@ module Gitlab
 
       @certs = stub_cert_paths.flat_map do |cert_file|
         File.read(cert_file).scan(PEM_REGEX).map do |cert|
-          begin
-            OpenSSL::X509::Certificate.new(cert).to_pem
-          rescue OpenSSL::OpenSSLError => e
-            Rails.logger.error "Could not load certificate #{cert_file} #{e}"
-            Gitlab::Sentry.track_exception(e, extra: { cert_file: cert_file })
-            nil
-          end
+          OpenSSL::X509::Certificate.new(cert).to_pem
+        rescue OpenSSL::OpenSSLError => e
+          Rails.logger.error "Could not load certificate #{cert_file} #{e}"
+          Gitlab::Sentry.track_exception(e, extra: { cert_file: cert_file })
+          nil
         end.compact
       end.uniq.join("\n")
     end

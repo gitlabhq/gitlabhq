@@ -75,17 +75,15 @@ module Projects
         create_tmp_storage_dir
 
         File.open(tmp_filename, 'wb') do |file|
-          begin
-            yield file
-          rescue StandardError => e
-            # If the lfs file is successfully downloaded it will be removed
-            # when it is added to the project's lfs files.
-            # Nevertheless if any excetion raises the file would remain
-            # in the file system. Here we ensure to remove it
-            File.unlink(file) if File.exist?(file)
+          yield file
+        rescue StandardError => e
+          # If the lfs file is successfully downloaded it will be removed
+          # when it is added to the project's lfs files.
+          # Nevertheless if any excetion raises the file would remain
+          # in the file system. Here we ensure to remove it
+          File.unlink(file) if File.exist?(file)
 
-            raise e
-          end
+          raise e
         end
       end
 

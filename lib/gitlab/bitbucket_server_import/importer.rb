@@ -162,27 +162,23 @@ module Gitlab
           restore_branches(batch) if recover_missing_commits
 
           batch.each do |pull_request|
-            begin
-              import_bitbucket_pull_request(pull_request)
-            rescue StandardError => e
-              backtrace = Gitlab::Profiler.clean_backtrace(e.backtrace)
-              log_error(stage: 'import_pull_requests', iid: pull_request.iid, error: e.message, backtrace: backtrace)
+            import_bitbucket_pull_request(pull_request)
+          rescue StandardError => e
+            backtrace = Gitlab::Profiler.clean_backtrace(e.backtrace)
+            log_error(stage: 'import_pull_requests', iid: pull_request.iid, error: e.message, backtrace: backtrace)
 
-              errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, backtrace: backtrace.join("\n"), raw_response: pull_request.raw }
-            end
+            errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, backtrace: backtrace.join("\n"), raw_response: pull_request.raw }
           end
         end
       end
 
       def delete_temp_branches
         @temp_branches.each do |branch|
-          begin
-            client.delete_branch(project_key, repository_slug, branch.name, branch.sha)
-            project.repository.delete_branch(branch.name)
-          rescue BitbucketServer::Connection::ConnectionError => e
-            log_error(stage: 'delete_temp_branches', branch: branch.name, error: e.message)
-            @errors << { type: :delete_temp_branches, branch_name: branch.name, errors: e.message }
-          end
+          client.delete_branch(project_key, repository_slug, branch.name, branch.sha)
+          project.repository.delete_branch(branch.name)
+        rescue BitbucketServer::Connection::ConnectionError => e
+          log_error(stage: 'delete_temp_branches', branch: branch.name, error: e.message)
+          @errors << { type: :delete_temp_branches, branch_name: branch.name, errors: e.message }
         end
       end
 
@@ -323,16 +319,14 @@ module Gitlab
 
       def import_standalone_pr_comments(pr_comments, merge_request)
         pr_comments.each do |comment|
-          begin
-            merge_request.notes.create!(pull_request_comment_attributes(comment))
+          merge_request.notes.create!(pull_request_comment_attributes(comment))
 
-            comment.comments.each do |replies|
-              merge_request.notes.create!(pull_request_comment_attributes(replies))
-            end
-          rescue StandardError => e
-            log_error(stage: 'import_standalone_pr_comments', merge_request_id: merge_request.id, comment_id: comment.id, error: e.message)
-            errors << { type: :pull_request, comment_id: comment.id, errors: e.message }
+          comment.comments.each do |replies|
+            merge_request.notes.create!(pull_request_comment_attributes(replies))
           end
+        rescue StandardError => e
+          log_error(stage: 'import_standalone_pr_comments', merge_request_id: merge_request.id, comment_id: comment.id, error: e.message)
+          errors << { type: :pull_request, comment_id: comment.id, errors: e.message }
         end
       end
 
