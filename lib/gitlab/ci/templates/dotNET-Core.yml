@@ -1,15 +1,5 @@
 ﻿# This is a simple example illustrating how to build and test .NET Core project
 # with GitLab Continuous Integration / Continuous Delivery.
-#
-# Structure of a sample project would look like this:
-#
-# Project
-# ├── src
-# │   └── ConsoleApp
-# │       └── Program.cs
-# └── test
-#     └── UnitTests
-#         └── BasicUnitTests.cs
 
 # Specify the Docker image
 #
