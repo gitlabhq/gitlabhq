@@ -122,10 +122,11 @@ afterEach(() => {
 const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
-const testContexts = [
-  require.context('spec', true, /_spec$/),
-  require.context('ee_spec', true, /_spec$/),
-];
+const testContexts = [require.context('spec', true, /_spec$/)];
+
+if (process.env.EE) {
+  testContexts.push(require.context('ee_spec', true, /_spec$/));
+}
 
 testContexts.forEach(context => {
   context.keys().forEach(path => {
@@ -210,10 +211,12 @@ if (process.env.BABEL_ENV === 'coverage') {
   ];
 
   describe('Uncovered files', function() {
-    const sourceFilesContexts = [
-      require.context('~', true, /\.(js|vue)$/),
-      require.context('ee', true, /\.(js|vue)$/),
-    ];
+    const sourceFilesContexts = [require.context('~', true, /\.(js|vue)$/)];
+
+    if (process.env.EE) {
+      sourceFilesContexts.push(require.context('ee', true, /\.(js|vue)$/));
+    }
+
     const allTestFiles = testContexts.reduce(
       (accumulator, context) => accumulator.concat(context.keys()),
       [],
