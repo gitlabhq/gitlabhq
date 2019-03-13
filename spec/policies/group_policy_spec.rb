@@ -76,15 +76,10 @@ describe GroupPolicy do
 
   context 'with no user and public project' do
     let(:project) { create(:project, :public) }
-    let(:user) { create(:user) }
     let(:current_user) { nil }
 
     before do
-      Projects::GroupLinks::CreateService.new(
-        project,
-        user,
-        link_group_access: ProjectGroupLink::DEVELOPER
-      ).execute(group)
+      create(:project_group_link, project: project, group: group)
     end
 
     it { expect_disallowed(:read_group) }
@@ -96,11 +91,7 @@ describe GroupPolicy do
     let(:current_user) { create(:user) }
 
     before do
-      Projects::GroupLinks::CreateService.new(
-        project,
-        user,
-        link_group_access: ProjectGroupLink::DEVELOPER
-      ).execute(group)
+      create(:project_group_link, project: project, group: group)
     end
 
     it { expect_disallowed(:read_group) }

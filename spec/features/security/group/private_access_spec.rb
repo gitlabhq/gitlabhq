@@ -98,11 +98,7 @@ describe 'Private Group access' do
     let(:project) { create(:project, :public) }
 
     before do
-      Projects::GroupLinks::CreateService.new(
-        project,
-        create(:user),
-        link_group_access: ProjectGroupLink::DEVELOPER
-      ).execute(group)
+      create(:project_group_link, project: project, group: group)
     end
 
     subject { group_path(group) }
