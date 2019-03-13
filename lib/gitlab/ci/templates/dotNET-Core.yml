@@ -49,7 +49,7 @@ build:
  script:
   - 'dotnet build'
   
-unit tests:
+tests:
  stage: test
 # Despite the fact that the project was already built and restored, 
 # a dependency restore must be performed again.
@@ -57,9 +57,11 @@ unit tests:
   - 'dotnet restore'
 # Run the tests
 #
-# You can either run tests only for specific project (like shown below)
-# or run tests for all test projects that are defined in a solution file 
-# with 'dotnet test'. You may want to define separate jobs for separate
-# testing projects e.g. IntegrationTests, UnitTests etc.
+# You can either run tests for all test projects that are defined in your solution 
+# with 'dotnet test' or run tests only for specific project by specifying
+# a relative path to the directory where it is located e.g. 'dotnet test ./test/UnitTests'. 
+#
+# You may want to define separate testing jobs for different types of testing
+# e.g. integration tests, unit tests etc.
  script:
- - 'dotnet test ./test/UnitTests' 
+ - 'dotnet test' 
