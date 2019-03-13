@@ -16,6 +16,7 @@ module Gitlab
 
     def users
       return User.none unless @text.present?
+      return User.none if references.empty?
 
       @users ||= User.from_union(union_relations)
     end
