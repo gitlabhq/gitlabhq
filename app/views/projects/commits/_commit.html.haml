@@ -20,12 +20,9 @@
         = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title"
       - else
         = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
-      %span.commit-row-message.d-block.d-sm-none
+      %span.commit-row-message.d-inline.d-sm-none
         &middot;
         = commit.short_id
-      - if commit_status
-        .d-block.d-sm-none
-          = render_commit_status(commit, ref: ref)
       - if commit.description?
         %button.text-expander.js-toggle-button
           = sprite_icon('ellipsis_h', size: 12)
@@ -40,7 +37,7 @@
         %pre.commit-row-description.js-toggle-content.append-bottom-8
           = preserve(markdown_field(commit, :description))
 
-    .commit-actions.flex-row.d-none.d-sm-flex
+    .commit-actions.flex-row
       - if request.xhr?
         = render partial: 'projects/commit/signature', object: commit.signature
       - else
@@ -51,7 +48,7 @@
 
       .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 
-      .commit-sha-group
+      .commit-sha-group.d-none.d-sm-flex
         .label.label-monospace
           = commit.short_id
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"), class: "btn btn-default", container: "body")
