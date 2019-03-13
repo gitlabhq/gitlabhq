@@ -4,33 +4,19 @@ docs_paths_to_review = helper.changes_by_category[:docs]
 
 unless docs_paths_to_review.empty?
   message 'This merge request adds or changes files that require a review ' \
-    'from the Technical Writing team whether before or after merging.'
+    'from the Technical Writing team.'
 
   markdown(<<~MARKDOWN)
 ## Documentation review
 
-The following files will require a review from the [Technical Writing](https://about.gitlab.com/handbook/product/technical-writing/) team:
+The following files require a review from a technical writer:
 
 * #{docs_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
-Per the [documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html), the review may occur prior to merging this MR **or** after a maintainer has agreed to review and merge this MR without a tech writer review. (Meanwhile, you are welcome to involve a technical writer at any time if you have questions about writing or updating the documentation. GitLabbers are also welcome to use the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) channel on Slack.)
+The review does not need to block merging this merge request. See the:
 
-The technical writer who, by default, will review this content or collaborate as needed is dependent on the [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages) to which the content applies:
-
-| Tech writer  | Stage(s)                                                     |
-| ------------ | ------------------------------------------------------------ |
-| `@marcia`    | ~Create ~Release + ~"development guidelines"                 |
-| `@axil`      | ~Distribution ~Gitaly ~Gitter ~Monitor ~Package ~Secure      |
-| `@eread`     | ~Manage ~Configure ~Geo ~Verify                              |
-| `@mikelewis` | ~Plan                                                        |
-
-**To request a review prior to merging**
-
-- Assign the MR to the applicable technical writer, above. If you are not sure which category the change falls within, or the change is not part of one of these categories, mention one of the usernames above.
-
-**To request a review to commence after merging**
-
-- Create an issue for a doc review [using the Doc Review template](https://gitlab.com/gitlab-org/gitlab-ce/issues/new?issuable_template=Doc%20Review) and assign it to the applicable technicial writer from the table.
+- [DevOps stages](https://about.gitlab.com/handbook/product/categories/#devops-stages) for the appropriate technical writer for this review.
+- [Documentation workflows](https://docs.gitlab.com/ee/development/documentation/workflow.html) for information on when to assign a merge request for review.
   MARKDOWN
 
   unless gitlab.mr_labels.include?('Documentation')
