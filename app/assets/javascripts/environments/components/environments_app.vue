@@ -1,4 +1,5 @@
 <script>
+import envrionmentsAppMixin from 'ee_else_ce/environments/mixins/environments_app_mixin';
 import Flash from '../../flash';
 import { s__ } from '../../locale';
 import emptyState from './empty_state.vue';
@@ -15,7 +16,7 @@ export default {
     ConfirmRollbackModal,
   },
 
-  mixins: [CIPaginationMixin, environmentsMixin],
+  mixins: [CIPaginationMixin, environmentsMixin, envrionmentsAppMixin],
 
   props: {
     endpoint: {
@@ -95,9 +96,9 @@ export default {
       <tabs :tabs="tabs" scope="environments" @onChangeTab="onChangeTab" />
 
       <div v-if="canCreateEnvironment && !isLoading" class="nav-controls">
-        <a :href="newEnvironmentPath" class="btn btn-success">{{
-          s__('Environments|New environment')
-        }}</a>
+        <a :href="newEnvironmentPath" class="btn btn-success">
+          {{ s__('Environments|New environment') }}
+        </a>
       </div>
     </div>
 
@@ -106,6 +107,11 @@ export default {
       :environments="state.environments"
       :pagination="state.paginationInformation"
       :can-read-environment="canReadEnvironment"
+      :canary-deployment-feature-id="canaryDeploymentFeatureId"
+      :show-canary-deployment-callout="showCanaryDeploymentCallout"
+      :user-callouts-path="userCalloutsPath"
+      :lock-promotion-svg-path="lockPromotionSvgPath"
+      :help-canary-deployments-path="helpCanaryDeploymentsPath"
       @onChangePage="onChangePage"
     >
       <empty-state
