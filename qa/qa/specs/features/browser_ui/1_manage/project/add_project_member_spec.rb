@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/45
-  context 'Manage', :quarantine do
+  context 'Manage' do
     describe 'Add project member' do
       it 'user adds project member' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -20,7 +19,7 @@ module QA
           page.add_member(user.username)
         end
 
-        expect(page).to have_content("#{user.name} @#{user.username} Given access")
+        expect(page).to have_content(/#{user.name} (. )?@#{user.username} Given access/)
       end
     end
   end
