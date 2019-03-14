@@ -205,12 +205,10 @@ class JiraService < IssueTrackerService
   # if any transition fails it will log the error message and stop the transition sequence
   def transition_issue(issue)
     jira_issue_transition_id.scan(Gitlab::Regex.jira_transition_id_regex).each do |transition_id|
-      begin
-        issue.transitions.build.save!(transition: { id: transition_id })
-      rescue => error
-        log_error("Issue transition failed", error: error.message, client_url: client_url)
-        return false
-      end
+      issue.transitions.build.save!(transition: { id: transition_id })
+    rescue => error
+      log_error("Issue transition failed", error: error.message, client_url: client_url)
+      return false
     end
   end
 

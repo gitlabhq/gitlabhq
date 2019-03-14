@@ -37,14 +37,12 @@ describe Gitlab::Git::RepositoryCleaner do
       let(:object_map) { Gitlab::HttpIO.new(url, object_map_data.size) }
 
       around do |example|
-        begin
-          tempfile.write(object_map_data)
-          tempfile.close
+        tempfile.write(object_map_data)
+        tempfile.close
 
-          example.run
-        ensure
-          tempfile.unlink
-        end
+        example.run
+      ensure
+        tempfile.unlink
       end
 
       it 'removes internal references' do

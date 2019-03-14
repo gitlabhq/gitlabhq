@@ -23,8 +23,12 @@ module Gitlab
           end
         end
 
+        def min_chars_for_partial_matching
+          MIN_CHARS_FOR_PARTIAL_MATCHING
+        end
+
         def partial_matching?(query)
-          query.length >= MIN_CHARS_FOR_PARTIAL_MATCHING
+          query.length >= min_chars_for_partial_matching
         end
 
         # column - The column name to search in.

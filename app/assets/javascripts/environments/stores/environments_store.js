@@ -1,4 +1,6 @@
 import { parseIntPagination, normalizeHeaders } from '~/lib/utils/common_utils';
+import { setDeployBoard } from 'ee_else_ce/environments/stores/helpers';
+
 /**
  * Environments Store.
  *
@@ -30,6 +32,14 @@ export default class EnvironmentsStore {
    *
    * If the `size` is bigger than 1, it means it should be rendered as a folder.
    * In those cases we add `isFolder` key in order to render it properly.
+   *
+   * Top level environments - when the size is 1 - with `rollout_status`
+   * can render a deploy board. We add `isDeployBoardVisible` and `deployBoardData`
+   * keys to those environments.
+   * The first key will let's us know if we should or not render the deploy board.
+   * It will be toggled when the user clicks to seee the deploy board.
+   *
+   * The second key will allow us to update the environment with the received deploy board data.
    *
    * @param  {Array} environments
    * @returns {Array}
@@ -63,6 +73,7 @@ export default class EnvironmentsStore {
         filtered = Object.assign(filtered, env);
       }
 
+      filtered = setDeployBoard(oldEnvironmentState, filtered);
       return filtered;
     });
 
@@ -71,6 +82,20 @@ export default class EnvironmentsStore {
     return filteredEnvironments;
   }
 
+  /**
+   * Stores the pagination information needed to render the pagination for the
+   * table.
+   *
+   * Normalizes the headers to uppercase since they can be provided either
+   * in uppercase or lowercase.
+   *
+   * Parses to an integer the normalized ones needed for the pagination component.
+   *
+   * Stores the normalized and parsed information.
+   *
+   * @param  {Object} pagination = {}
+   * @return {Object}
+   */
   setPagination(pagination = {}) {
     const normalizedHeaders = normalizeHeaders(pagination);
     const paginationInformation = parseIntPagination(normalizedHeaders);

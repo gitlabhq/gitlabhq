@@ -24,11 +24,14 @@ module QA
         end
 
         def choose_test_namespace
+          choose_namespace(Runtime::Namespace.path)
+        end
+
+        def choose_namespace(namespace)
           retry_on_exception do
             click_body
             click_element :project_namespace_select
-
-            search_and_select(Runtime::Namespace.path)
+            search_and_select(namespace)
           end
         end
 

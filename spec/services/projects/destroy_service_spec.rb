@@ -128,10 +128,8 @@ describe Projects::DestroyService do
 
     it 'keeps project team intact upon an error' do
       perform_enqueued_jobs do
-        begin
-          destroy_project(project, user, {})
-        rescue ::Redis::CannotConnectError
-        end
+        destroy_project(project, user, {})
+      rescue ::Redis::CannotConnectError
       end
 
       expect(project.team.members.count).to eq 2

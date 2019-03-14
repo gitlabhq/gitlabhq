@@ -11,8 +11,8 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import Autosize from 'autosize';
-import 'vendor/jquery.caret'; // required by jquery.atwho
-import 'vendor/jquery.atwho';
+import 'jquery.caret'; // required by at.js
+import 'at.js';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import Vue from 'vue';
 import syntaxHighlight from '~/syntax_highlight';

@@ -26,13 +26,12 @@ namespace :gitlab do
       Ci::Build.joins(:project)
         .with_archived_trace_stored_locally
         .find_each(batch_size: 10) do |build|
-        begin
-          build.job_artifacts_trace.file.migrate!(ObjectStorage::Store::REMOTE)
 
-          logger.info("Transferred job trace of #{build.id} to object storage")
-        rescue => e
-          logger.error("Failed to transfer artifacts of #{build.id} with error: #{e.message}")
-        end
+        build.job_artifacts_trace.file.migrate!(ObjectStorage::Store::REMOTE)
+
+        logger.info("Transferred job trace of #{build.id} to object storage")
+      rescue => e
+        logger.error("Failed to transfer artifacts of #{build.id} with error: #{e.message}")
       end
     end
   end

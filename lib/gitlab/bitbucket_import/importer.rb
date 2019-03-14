@@ -79,31 +79,29 @@ module Gitlab
         create_labels
 
         client.issues(repo).each do |issue|
-          begin
-            description = ''
-            description += @formatter.author_line(issue.author) unless find_user_id(issue.author)
-            description += issue.description
+          description = ''
+          description += @formatter.author_line(issue.author) unless find_user_id(issue.author)
+          description += issue.description
 
-            label_name = issue.kind
-            milestone = issue.milestone ? project.milestones.find_or_create_by(title: issue.milestone) : nil
+          label_name = issue.kind
+          milestone = issue.milestone ? project.milestones.find_or_create_by(title: issue.milestone) : nil
 
-            gitlab_issue = project.issues.create!(
-              iid: issue.iid,
-              title: issue.title,
-              description: description,
-              state: issue.state,
-              author_id: gitlab_user_id(project, issue.author),
-              milestone: milestone,
-              created_at: issue.created_at,
-              updated_at: issue.updated_at
-            )
+          gitlab_issue = project.issues.create!(
+            iid: issue.iid,
+            title: issue.title,
+            description: description,
+            state: issue.state,
+            author_id: gitlab_user_id(project, issue.author),
+            milestone: milestone,
+            created_at: issue.created_at,
+            updated_at: issue.updated_at
+          )
 
-            gitlab_issue.labels << @labels[label_name]
+          gitlab_issue.labels << @labels[label_name]
 
-            import_issue_comments(issue, gitlab_issue) if gitlab_issue.persisted?
-          rescue StandardError => e
-            errors << { type: :issue, iid: issue.iid, errors: e.message }
-          end
+          import_issue_comments(issue, gitlab_issue) if gitlab_issue.persisted?
+        rescue StandardError => e
+          errors << { type: :issue, iid: issue.iid, errors: e.message }
         end
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -150,37 +148,35 @@ module Gitlab
         pull_requests = client.pull_requests(repo)
 
         pull_requests.each do |pull_request|
-          begin
-            description = ''
-            description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author)
-            description += pull_request.description
+          description = ''
+          description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author)
+          description += pull_request.description
 
-            source_branch_sha = pull_request.source_branch_sha
-            target_branch_sha = pull_request.target_branch_sha
-            source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
-            target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
+          source_branch_sha = pull_request.source_branch_sha
+          target_branch_sha = pull_request.target_branch_sha
+          source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
+          target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
 
-            merge_request = project.merge_requests.create!(
-              iid: pull_request.iid,
-              title: pull_request.title,
-              description: description,
-              source_project: project,
-              source_branch: pull_request.source_branch_name,
-              source_branch_sha: source_branch_sha,
-              target_project: project,
-              target_branch: pull_request.target_branch_name,
-              target_branch_sha: target_branch_sha,
-              state: pull_request.state,
-              author_id: gitlab_user_id(project, pull_request.author),
-              assignee_id: nil,
-              created_at: pull_request.created_at,
-              updated_at: pull_request.updated_at
-            )
+          merge_request = project.merge_requests.create!(
+            iid: pull_request.iid,
+            title: pull_request.title,
+            description: description,
+            source_project: project,
+            source_branch: pull_request.source_branch_name,
+            source_branch_sha: source_branch_sha,
+            target_project: project,
+            target_branch: pull_request.target_branch_name,
+            target_branch_sha: target_branch_sha,
+            state: pull_request.state,
+            author_id: gitlab_user_id(project, pull_request.author),
+            assignee_id: nil,
+            created_at: pull_request.created_at,
+            updated_at: pull_request.updated_at
+          )
 
-            import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
-          rescue StandardError => e
-            errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
-          end
+          import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
+        rescue StandardError => e
+          errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
         end
       end
 
@@ -211,23 +207,21 @@ module Gitlab
         end
 
         inline_comments.each do |comment|
-          begin
-            attributes = pull_request_comment_attributes(comment)
-            attributes[:discussion_id] = discussion_map[comment.parent_id] if comment.has_parent?
+          attributes = pull_request_comment_attributes(comment)
+          attributes[:discussion_id] = discussion_map[comment.parent_id] if comment.has_parent?
 
-            attributes.merge!(
-              position: position_map[comment.iid],
-              type: 'DiffNote')
+          attributes.merge!(
+            position: position_map[comment.iid],
+            type: 'DiffNote')
 
-            note = merge_request.notes.create!(attributes)
+          note = merge_request.notes.create!(attributes)
 
-            # We can't store a discussion ID until a note is created, so if
-            # replies are created before the parent the discussion ID won't be
-            # linked properly.
-            discussion_map[comment.iid] = note.discussion_id
-          rescue StandardError => e
-            errors << { type: :pull_request, iid: comment.iid, errors: e.message }
-          end
+          # We can't store a discussion ID until a note is created, so if
+          # replies are created before the parent the discussion ID won't be
+          # linked properly.
+          discussion_map[comment.iid] = note.discussion_id
+        rescue StandardError => e
+          errors << { type: :pull_request, iid: comment.iid, errors: e.message }
         end
       end
 
@@ -245,11 +239,9 @@ module Gitlab
 
       def import_standalone_pr_comments(pr_comments, merge_request)
         pr_comments.each do |comment|
-          begin
-            merge_request.notes.create!(pull_request_comment_attributes(comment))
-          rescue StandardError => e
-            errors << { type: :pull_request, iid: comment.iid, errors: e.message }
-          end
+          merge_request.notes.create!(pull_request_comment_attributes(comment))
+        rescue StandardError => e
+          errors << { type: :pull_request, iid: comment.iid, errors: e.message }
         end
       end
 

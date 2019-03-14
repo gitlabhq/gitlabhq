@@ -101,12 +101,33 @@ FactoryBot.define do
       end
     end
 
-    trait :with_merge_request_pipeline do
+    trait :with_detached_merge_request_pipeline do
       after(:build) do |merge_request|
         merge_request.merge_request_pipelines << build(:ci_pipeline,
           source: :merge_request_event,
           merge_request: merge_request,
-          project: merge_request.source_project)
+          project: merge_request.source_project,
+          ref: merge_request.ref_path,
+          sha: merge_request.source_branch_sha)
+      end
+    end
+
+    trait :with_merge_request_pipeline do
+      transient do
+        merge_sha { 'test-merge-sha' }
+        source_sha { source_branch_sha }
+        target_sha { target_branch_sha }
+      end
+
+      after(:build) do |merge_request, evaluator|
+        merge_request.merge_request_pipelines << create(:ci_pipeline,
+          source: :merge_request_event,
+          merge_request: merge_request,
+          project: merge_request.source_project,
+          ref: merge_request.merge_ref_path,
+          sha: evaluator.merge_sha,
+          source_sha: evaluator.source_sha,
+          target_sha: evaluator.target_sha)
       end
     end
 
