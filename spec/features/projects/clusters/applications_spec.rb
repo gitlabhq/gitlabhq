@@ -227,7 +227,7 @@ describe 'Clusters Applications', :js do
               expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Installed')
               expect(page).to have_css('.js-cluster-application-install-button[disabled]')
               expect(page).to have_selector('.js-no-endpoint-message')
-              expect(page.find('.js-endpoint').value).to eq('?')
+              expect(page).to have_selector('.js-ingress-ip-loading-icon')
 
               # We receive the external IP address and display
               Clusters::Cluster.last.application_ingress.update!(external_ip: '192.168.1.100')
