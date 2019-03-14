@@ -324,6 +324,10 @@ module.exports = {
         reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
         statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
       }),
+
+    new webpack.DefinePlugin({
+      'process.env.EE': JSON.stringify(IS_EE),
+    }),
   ].filter(Boolean),
 
   devServer: {
