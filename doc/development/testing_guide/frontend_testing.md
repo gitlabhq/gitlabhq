@@ -15,7 +15,7 @@ information on general testing practices at GitLab.
 
 ## Jest
 
-GitLab has started to migrate tests to the (Jest)[https://jestjs.io]
+GitLab has started to migrate tests to the [Jest](https://jestjs.io)
 testing framework. You can read a [detailed evaluation](https://gitlab.com/gitlab-org/gitlab-ce/issues/49171)
 of Jest compared to our use of Karma and Jasmine. In summary, it will allow us
 to improve the performance and consistency of our frontend tests.
