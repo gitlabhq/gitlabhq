@@ -5,7 +5,7 @@ describe PipelineSerializer do
   set(:user) { create(:user) }
 
   let(:serializer) do
-    described_class.new(current_user: user)
+    described_class.new(current_user: user, project: project)
   end
 
   before do
@@ -102,20 +102,20 @@ describe PipelineSerializer do
 
       let!(:merge_request_1) do
         create(:merge_request,
-          :with_merge_request_pipeline,
+          :with_detached_merge_request_pipeline,
           target_project: project,
           target_branch: 'master',
           source_project: project,
-          source_branch: 'feature-1')
+          source_branch: 'feature')
       end
 
       let!(:merge_request_2) do
         create(:merge_request,
-          :with_merge_request_pipeline,
+          :with_detached_merge_request_pipeline,
           target_project: project,
           target_branch: 'master',
           source_project: project,
-          source_branch: 'feature-2')
+          source_branch: '2-mb-file')
       end
 
       before do

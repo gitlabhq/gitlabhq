@@ -1209,11 +1209,9 @@ class Project < ActiveRecord::Base
 
   def repo_exists?
     strong_memoize(:repo_exists) do
-      begin
-        repository.exists?
-      rescue
-        false
-      end
+      repository.exists?
+    rescue
+      false
     end
   end
 

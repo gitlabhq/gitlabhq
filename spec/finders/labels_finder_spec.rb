@@ -209,6 +209,12 @@ describe LabelsFinder do
 
         expect(finder.execute).to eq [project_label_1]
       end
+
+      it 'returns labels matching a single character' do
+        finder = described_class.new(user, search: '(')
+
+        expect(finder.execute).to eq [group_label_1]
+      end
     end
 
     context 'filter by subscription' do

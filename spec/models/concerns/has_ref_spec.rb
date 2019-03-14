@@ -18,7 +18,7 @@ describe HasRef do
       end
 
       context 'when it was triggered by merge request' do
-        let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+        let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
         let(:pipeline) { merge_request.merge_request_pipelines.first }
         let(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -67,7 +67,7 @@ describe HasRef do
     end
 
     context 'when it is triggered by a merge request' do
-      let(:merge_request) { create(:merge_request, :with_merge_request_pipeline) }
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline) }
       let(:pipeline) { merge_request.merge_request_pipelines.first }
       let(:build) { create(:ci_build, tag: false, pipeline: pipeline) }
 

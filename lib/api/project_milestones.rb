@@ -103,17 +103,15 @@ module API
         detail 'This feature was introduced in GitLab 11.9'
       end
       post ':id/milestones/:milestone_id/promote' do
-        begin
-          authorize! :admin_milestone, user_project
-          authorize! :admin_milestone, user_project.group
+        authorize! :admin_milestone, user_project
+        authorize! :admin_milestone, user_project.group
 
-          milestone = user_project.milestones.find(params[:milestone_id])
-          Milestones::PromoteService.new(user_project, current_user).execute(milestone)
+        milestone = user_project.milestones.find(params[:milestone_id])
+        Milestones::PromoteService.new(user_project, current_user).execute(milestone)
 
-          status(200)
-        rescue Milestones::PromoteService::PromoteMilestoneError => error
-          render_api_error!(error.message, 400)
-        end
+        status(200)
+      rescue Milestones::PromoteService::PromoteMilestoneError => error
+        render_api_error!(error.message, 400)
       end
     end
   end

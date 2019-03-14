@@ -46,7 +46,7 @@ gem 'rack-oauth2', '~> 1.9.3'
 gem 'jwt', '~> 2.1.0'
 
 # Spam and anti-bot protection
-gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
+gem 'recaptcha', '~> 4.11', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
@@ -265,7 +265,6 @@ gem 'addressable', '~> 2.5.2'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.2'
-gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'request_store', '~> 1.3'
 gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'

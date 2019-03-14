@@ -19,11 +19,9 @@ unless Rails.env.production?
 
     desc "GitLab | lint | Lint HAML files"
     task :haml do
-      begin
-        Rake::Task['haml_lint'].invoke
-      rescue RuntimeError # The haml_lint tasks raise a RuntimeError
-        exit(1)
-      end
+      Rake::Task['haml_lint'].invoke
+    rescue RuntimeError # The haml_lint tasks raise a RuntimeError
+      exit(1)
     end
 
     desc "GitLab | lint | Run several lint checks"

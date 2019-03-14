@@ -5,13 +5,16 @@ description: "Set and configure Git protocol v2"
 # Configuring Git Protocol v2
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/46555) in GitLab 11.4.
-> [Temporarily disabled](https://gitlab.com/gitlab-org/gitlab-ce/issues/55769) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+
+> Temporarily disabled (see [confidential issue](../user/project/issues/confidential_issues.md)
+> `https://gitlab.com/gitlab-org/gitlab-ce/issues/55769`) in GitLab 11.5.8, 11.6.6, 11.7.1, and 11.8+.
 
 NOTE: **Note:**
-Git protocol v2 support has been [temporarily disabled](https://gitlab.com/gitlab-org/gitlab-ce/issues/55769),
-as a feature used to hide certain internal references does not function when it
+Git protocol v2 support has been temporarily disabled
+because a feature used to hide certain internal references does not function when it
 is enabled, and this has a security impact. Once this problem has been resolved,
-protocol v2 support will be re-enabled.
+protocol v2 support will be re-enabled. For more information, see the
+[confidential issue](../user/project/issues/confidential_issues.md)
+`https://gitlab.com/gitlab-org/gitlab-ce/issues/55769`.
 
 Git protocol v2 improves the v1 wire protocol in several ways and is
 enabled by default in GitLab for HTTP requests. In order to enable SSH,

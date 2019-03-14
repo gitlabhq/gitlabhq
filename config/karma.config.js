@@ -115,6 +115,15 @@ module.exports = function(config) {
     reporters: ['mocha'],
     webpack: webpackConfig,
     webpackMiddleware: { stats: 'errors-only' },
+    plugins: [
+      'karma-chrome-launcher',
+      'karma-coverage-istanbul-reporter',
+      'karma-jasmine',
+      'karma-junit-reporter',
+      'karma-mocha-reporter',
+      'karma-sourcemap-loader',
+      'karma-webpack',
+    ],
   };
 
   if (process.env.CI) {
@@ -123,6 +132,19 @@ module.exports = function(config) {
       outputFile: 'junit_karma.xml',
       useBrowserName: false,
     };
+  } else {
+    // ignore 404s in local environment because we are not fixing them and they bloat the log
+    function ignore404() {
+      return (request, response /* next */) => {
+        response.writeHead(404);
+        return response.end('NOT FOUND');
+      };
+    }
+
+    karmaConfig.middleware = ['ignore-404'];
+    karmaConfig.plugins.push({
+      'middleware:ignore-404': ['factory', ignore404],
+    });
   }
 
   if (process.env.BABEL_ENV === 'coverage' || process.env.NODE_ENV === 'coverage') {

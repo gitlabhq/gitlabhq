@@ -3,7 +3,7 @@ module QA
     module Component
       module Select2
         def select_item(item_text)
-          find('.select2-result-label', text: item_text).click
+          find('.select2-result-label', text: item_text, match: :prefer_exact).click
         end
 
         def clear_current_selection_if_present
