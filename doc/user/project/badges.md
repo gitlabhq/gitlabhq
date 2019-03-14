@@ -63,6 +63,12 @@ are available:
 - `%{commit_sha}`: ID of the most recent commit to the default branch of a
   project's repository
 
+NOTE: **NOTE**
+Placeholders allow badges to expose otherwise-private information, such as the
+default branch or commit SHA when the project is configured to have a private
+repository. This is by design, as badges are intended to be used publicly. Avoid
+using these placeholders if the information is sensitive.
+
 ## API
 
 You can also configure badges via the GitLab API. As in the settings, there is
