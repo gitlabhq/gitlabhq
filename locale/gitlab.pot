@@ -495,6 +495,9 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
+msgid "AdminSettings|Enable shared runners for new projects"
+msgstr ""
+
 msgid "AdminSettings|Environment variables are protected by default"
 msgstr ""
 
@@ -603,6 +606,12 @@ msgstr ""
 msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
+msgid "Allow mirrors to be set up for projects"
+msgstr ""
+
+msgid "Allow only the selected protocols to be used for Git access."
+msgstr ""
+
 msgid "Allow projects within this group to use Git LFS"
 msgstr ""
 
@@ -618,6 +627,9 @@ msgstr ""
 msgid "Allow this key to push to repository as well? (Default only allows pull access.)"
 msgstr ""
 
+msgid "Allow users to register any application to use GitLab as an OAuth provider"
+msgstr ""
+
 msgid "Allow users to request access"
 msgstr ""
 
@@ -628,6 +640,9 @@ msgid "Allowed to fail"
 msgstr ""
 
 msgid "Allows you to add and manage Kubernetes clusters."
+msgstr ""
+
+msgid "Alternate support URL for help page"
 msgstr ""
 
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
@@ -799,6 +814,9 @@ msgid "Apr"
 msgstr ""
 
 msgid "April"
+msgstr ""
+
+msgid "Archive jobs"
 msgstr ""
 
 msgid "Archived project! Repository and other project resources are read-only"
@@ -1272,6 +1290,9 @@ msgstr ""
 msgid "By %{user_name}"
 msgstr ""
 
+msgid "By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format."
+msgstr ""
+
 msgid "ByAuthor|by"
 msgstr ""
 
@@ -1315,6 +1336,9 @@ msgid "CICD|Continuous deployment to production using timed incremental rollout"
 msgstr ""
 
 msgid "CICD|Default to Auto DevOps pipeline"
+msgstr ""
+
+msgid "CICD|Default to Auto DevOps pipeline for all projects"
 msgstr ""
 
 msgid "CICD|Deployment strategy"
@@ -2597,6 +2621,9 @@ msgstr ""
 msgid "Default Branch"
 msgstr ""
 
+msgid "Default artifacts expiration"
+msgstr ""
+
 msgid "Default first day of the week"
 msgstr ""
 
@@ -3001,6 +3028,9 @@ msgstr ""
 msgid "Enable Auto DevOps"
 msgstr ""
 
+msgid "Enable HTML emails"
+msgstr ""
+
 msgid "Enable Sentry for error reporting and logging."
 msgstr ""
 
@@ -3020,6 +3050,9 @@ msgid "Enable group Runners"
 msgstr ""
 
 msgid "Enable header and footer in emails"
+msgstr ""
+
+msgid "Enable mirror configuration"
 msgstr ""
 
 msgid "Enable or disable version check and usage ping."
@@ -3044,6 +3077,12 @@ msgid "Enable usage ping to get an overview of how you are using GitLab from a f
 msgstr ""
 
 msgid "Enabled"
+msgstr ""
+
+msgid "Enabled Git access protocols"
+msgstr ""
+
+msgid "Enabled sources for code import during project creation. OmniAuth must be configured for GitHub"
 msgstr ""
 
 msgid "Ends at (UTC)"
@@ -3714,6 +3753,9 @@ msgstr ""
 msgid "GitLab project export"
 msgstr ""
 
+msgid "GitLab restart is required to apply changes"
+msgstr ""
+
 msgid "GitLab.com import"
 msgstr ""
 
@@ -3775,6 +3817,9 @@ msgid "Grant access"
 msgstr ""
 
 msgid "Graph"
+msgstr ""
+
+msgid "Gravatar enabled"
 msgstr ""
 
 msgid "Group"
@@ -3963,6 +4008,9 @@ msgstr ""
 msgid "Hide host keys manual input"
 msgstr ""
 
+msgid "Hide marketing-related entries from help"
+msgstr ""
+
 msgid "Hide payload"
 msgstr ""
 
@@ -4041,6 +4089,9 @@ msgid "Identities"
 msgstr ""
 
 msgid "If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like \"1 hour\". Values without specification represent seconds."
+msgstr ""
+
+msgid "If disabled, only admins will be able to set up mirrors in projects."
 msgstr ""
 
 msgid "If disabled, the access level will depend on the user's permissions in the project."
@@ -4163,6 +4214,9 @@ msgstr ""
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
 msgstr ""
 
+msgid "Include author name in notification email body"
+msgstr ""
+
 msgid "Include merge request description"
 msgstr ""
 
@@ -4182,6 +4236,9 @@ msgid "Incompatible Project"
 msgstr ""
 
 msgid "Indicates whether this runner can pick jobs without tags"
+msgstr ""
+
+msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
 msgstr ""
 
 msgid "Information about additional Pages templates and how to install them can be found in our %{pages_getting_started_guide}."
@@ -4683,7 +4740,16 @@ msgstr ""
 msgid "Max access level"
 msgstr ""
 
+msgid "Maximum artifacts size (MB)"
+msgstr ""
+
+msgid "Maximum attachment size (MB)"
+msgstr ""
+
 msgid "Maximum job timeout"
+msgstr ""
+
+msgid "Maximum push size (MB)"
 msgstr ""
 
 msgid "May"
@@ -5060,7 +5126,13 @@ msgstr ""
 msgid "New tag"
 msgstr ""
 
+msgid "New users set to external"
+msgstr ""
+
 msgid "New..."
+msgstr ""
+
+msgid "Newly registered users will by default be external"
 msgstr ""
 
 msgid "No"
@@ -6034,6 +6106,9 @@ msgstr ""
 msgid "Project export could not be deleted."
 msgstr ""
 
+msgid "Project export enabled"
+msgstr ""
+
 msgid "Project export has been deleted."
 msgstr ""
 
@@ -6209,6 +6284,9 @@ msgid "Promote to Group Milestone"
 msgstr ""
 
 msgid "Promote to group label"
+msgstr ""
+
+msgid "Prompt users to upload SSH keys"
 msgstr ""
 
 msgid "Protected"
@@ -6752,6 +6830,9 @@ msgstr ""
 msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
 msgstr ""
 
+msgid "Selected levels cannot be used by non-admin users for groups, projects or snippets. If the public level is restricted, user profiles are only visible to logged in users."
+msgstr ""
+
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
@@ -6821,6 +6902,9 @@ msgstr ""
 msgid "Service Templates"
 msgstr ""
 
+msgid "Session duration (minutes)"
+msgstr ""
+
 msgid "Session expiration, projects limit and attachment size."
 msgstr ""
 
@@ -6840,6 +6924,15 @@ msgid "Set notification email for abuse reports."
 msgstr ""
 
 msgid "Set requirements for a user to sign-in. Enable mandatory two-factor authentication."
+msgstr ""
+
+msgid "Set the default expiration time for each job's artifacts. 0 for unlimited. The default unit is in seconds, but you can define an alternative. For example: <code>4 mins 2 sec</code>, <code>2h42min</code>."
+msgstr ""
+
+msgid "Set the duration for which the jobs will be considered as old and expired. Once that time passes, the jobs will be archived and no longer able to be retried. Make it empty to never expire jobs. It has to be no less than 1 day, for example: <code>15 days</code>, <code>1 month</code>, <code>2 years</code>."
+msgstr ""
+
+msgid "Set the maximum file size for each job's artifacts"
 msgstr ""
 
 msgid "Set up CI/CD"
@@ -6986,6 +7079,9 @@ msgid "SnippetsEmptyState|There are no snippets to show."
 msgstr ""
 
 msgid "SnippetsEmptyState|They can be either public or private."
+msgstr ""
+
+msgid "Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead."
 msgstr ""
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
@@ -7334,6 +7430,9 @@ msgid "Sunday"
 msgstr ""
 
 msgid "Support for custom certificates is disabled. Ask your system's administrator to enable it."
+msgstr ""
+
+msgid "Support page URL"
 msgstr ""
 
 msgid "Switch branch/tag"
@@ -8310,6 +8409,9 @@ msgid "Use your global notification setting"
 msgstr ""
 
 msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
+msgstr ""
+
+msgid "User OAuth applications"
 msgstr ""
 
 msgid "User Settings"
