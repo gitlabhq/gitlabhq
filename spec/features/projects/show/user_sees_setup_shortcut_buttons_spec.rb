@@ -20,18 +20,18 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
         visit project_path(project)
       end
 
-      it 'no Auto DevOps button if can not manage pipelines' do
-        page.within('.project-buttons') do
-          expect(page).not_to have_link('Enable Auto DevOps')
-          expect(page).not_to have_link('Auto DevOps enabled')
-        end
-      end
-
-      it '"Auto DevOps enabled" button not linked' do
+      it 'Project buttons are not visible' do
         visit project_path(project)
 
         page.within('.project-buttons') do
-          expect(page).to have_text('Auto DevOps enabled')
+          expect(page).not_to have_link('New file')
+          expect(page).not_to have_link('Add README')
+          expect(page).not_to have_link('Add CHANGELOG')
+          expect(page).not_to have_link('Add CONTRIBUTING')
+          expect(page).not_to have_link('Enable Auto DevOps')
+          expect(page).not_to have_link('Auto DevOps enabled')
+          expect(page).not_to have_link('Add Kubernetes cluster')
+          expect(page).not_to have_link('Kubernetes configured')
         end
       end
     end
@@ -59,46 +59,6 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       it '"Add license" button linked to new file populated for a license' do
         page.within('.project-stats') do
           expect(page).to have_link('Add license', href: presenter.add_license_path)
-        end
-      end
-
-      describe 'Auto DevOps button' do
-        context 'when Auto DevOps is enabled' do
-          it '"Auto DevOps enabled" anchor linked to settings page' do
-            visit project_path(project)
-
-            page.within('.project-buttons') do
-              expect(page).to have_link('Auto DevOps enabled', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
-            end
-          end
-        end
-
-        context 'when Auto DevOps is not enabled' do
-          let(:project) { create(:project, :public, :empty_repo, auto_devops_attributes: { enabled: false }) }
-
-          it '"Enable Auto DevOps" button linked to settings page' do
-            page.within('.project-buttons') do
-              expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
-            end
-          end
-        end
-      end
-
-      describe 'Kubernetes cluster button' do
-        it '"Add Kubernetes cluster" button linked to clusters page' do
-          page.within('.project-buttons') do
-            expect(page).to have_link('Add Kubernetes cluster', href: new_project_cluster_path(project))
-          end
-        end
-
-        it '"Kubernetes cluster" anchor linked to cluster page' do
-          cluster = create(:cluster, :provided_by_gcp, projects: [project])
-
-          visit project_path(project)
-
-          page.within('.project-buttons') do
-            expect(page).to have_link('Kubernetes configured', href: project_cluster_path(project, cluster))
-          end
         end
       end
     end
