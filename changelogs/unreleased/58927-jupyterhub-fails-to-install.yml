@@ -1,0 +1,5 @@
+---
+title: Fixes jupyter installation randomly failing
+merge_request: 26126
+author:
+type: fixed
