@@ -1040,7 +1040,7 @@ describe MergeRequest do
 
   describe '#commit_authors' do
     it 'returns all the authors of every commit in the merge request' do
-      users = subject.commits.map(&:author_email).uniq.map do |email|
+      users = subject.commits.without_merge_commits.map(&:author_email).uniq.map do |email|
         create(:user, email: email)
       end
 
@@ -1054,7 +1054,7 @@ describe MergeRequest do
 
   describe '#authors' do
     it 'returns a list with all the commit authors in the merge request and author' do
-      users = subject.commits.map(&:author_email).uniq.map do |email|
+      users = subject.commits.without_merge_commits.map(&:author_email).uniq.map do |email|
         create(:user, email: email)
       end
 
