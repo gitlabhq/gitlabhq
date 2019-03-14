@@ -313,6 +313,14 @@ class Note < ActiveRecord::Base
     !system?
   end
 
+  # Since we're using `updated_at` as `last_edited_at`, it could be touched by transforming / resolving a note.
+  # This makes sure it is only marked as edited when the note body is updated.
+  def edited?
+    return false if updated_by.blank?
+
+    super
+  end
+
   def cross_reference_not_visible_for?(user)
     cross_reference? && !all_referenced_mentionables_allowed?(user)
   end

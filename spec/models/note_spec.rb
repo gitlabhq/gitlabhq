@@ -208,6 +208,24 @@ describe Note do
     end
   end
 
+  describe "edited?" do
+    let(:note) { build(:note, updated_by_id: nil, created_at: Time.now, updated_at: Time.now + 5.hours) }
+
+    context "with updated_by" do
+      it "returns true" do
+        note.updated_by = build(:user)
+
+        expect(note.edited?).to be_truthy
+      end
+    end
+
+    context "without updated_by" do
+      it "returns false" do
+        expect(note.edited?).to be_falsy
+      end
+    end
+  end
+
   describe "confidential?" do
     it "delegates to noteable" do
       issue_note = build(:note, :on_issue)
