@@ -11,11 +11,10 @@ module Gitlab
         # So we chose a way to use ::Ci::Build directly and we don't change the `archive!` method until 11.1
         ::Ci::Build.finished.without_archived_trace
           .where(id: start_id..stop_id).find_each do |build|
-            begin
-              build.trace.archive!
-            rescue => e
-              Rails.logger.error "Failed to archive live trace. id: #{build.id} message: #{e.message}"
-            end
+
+            build.trace.archive!
+          rescue => e
+            Rails.logger.error "Failed to archive live trace. id: #{build.id} message: #{e.message}"
           end
       end
     end

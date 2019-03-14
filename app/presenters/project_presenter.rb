@@ -42,11 +42,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def empty_repo_statistics_anchors
     [
-      license_anchor_data,
-      commits_anchor_data,
-      branches_anchor_data,
-      tags_anchor_data,
-      files_anchor_data
+      license_anchor_data
     ].compact.select { |item| item.is_link }
   end
 
@@ -55,9 +51,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       new_file_anchor_data,
       readme_anchor_data,
       changelog_anchor_data,
-      contribution_guide_anchor_data,
-      autodevops_anchor_data,
-      kubernetes_cluster_anchor_data
+      contribution_guide_anchor_data
     ].compact.reject { |item| item.is_link }
   end
 

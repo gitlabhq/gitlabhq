@@ -43,11 +43,9 @@ module QA
           def create_new_file_from_template(file_name, template)
             click_element :new_file
             within_element(:template_list) do
-              begin
-                click_on file_name
-              rescue Capybara::ElementNotFound
-                raise ElementNotFound, %Q(Couldn't find file template named "#{file_name}". Please confirm that it is a valid option.)
-              end
+              click_on file_name
+            rescue Capybara::ElementNotFound
+              raise ElementNotFound, %Q(Couldn't find file template named "#{file_name}". Please confirm that it is a valid option.)
             end
 
             wait(reload: false) do

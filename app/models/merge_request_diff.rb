@@ -286,13 +286,11 @@ class MergeRequestDiff < ActiveRecord::Base
     return yield(@external_diff_file) if @external_diff_file
 
     external_diff.open do |file|
-      begin
-        @external_diff_file = file
+      @external_diff_file = file
 
-        yield(@external_diff_file)
-      ensure
-        @external_diff_file = nil
-      end
+      yield(@external_diff_file)
+    ensure
+      @external_diff_file = nil
     end
   end
 

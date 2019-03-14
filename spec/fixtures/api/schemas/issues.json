@@ -10,6 +10,5 @@
       "items": { "$ref": "issue.json" }
     },
     "size": { "type": "integer" }
-  },
-  "additionalProperties": false
+  }
 }

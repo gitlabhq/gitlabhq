@@ -20,13 +20,14 @@
               = _('Overview')
 
           %ul.sidebar-sub-level-items
-            = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(path: ['groups#show', 'groups#details', 'groups#activity', 'groups#subgroups'], html_options: { class: "fly-out-top-item" } ) do
               = link_to group_path(@group) do
                 %strong.fly-out-top-item-name
                   = _('Overview')
             %li.divider.fly-out-top-item
-            = nav_link(path: ['groups#show', 'groups#subgroups'], html_options: { class: 'home' }) do
-              = link_to group_path(@group), title: _('Group details') do
+
+            = nav_link(path: ['groups#show', 'groups#details', 'groups#subgroups'], html_options: { class: 'home' }) do
+              = link_to details_group_path(@group), title: _('Group details') do
                 %span
                   = _('Details')
 
@@ -40,9 +41,9 @@
 
             - if group_sidebar_link?(:contribution_analytics)
               = nav_link(path: 'analytics#show') do
-                = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
+                = link_to group_analytics_path(@group), title: _('Contribution Analytics'), data: { placement: 'right' } do
                   %span
-                    Contribution Analytics
+                    = _('Contribution Analytics')
 
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 

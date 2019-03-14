@@ -22,7 +22,7 @@ module Gitlab
       # Casts binary data to a SHA1 in hexadecimal.
       def deserialize(value)
         value = super(value)
-        value ? value.unpack(PACK_FORMAT)[0] : nil
+        value ? value.unpack1(PACK_FORMAT) : nil
       end
 
       # Casts a SHA1 in hexadecimal to the proper binary format.

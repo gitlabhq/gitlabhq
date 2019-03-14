@@ -79,15 +79,13 @@ module GitalyTest
     socket = read_socket_path
 
     Integer(timeout / delay).times do
-      begin
-        UNIXSocket.new(socket)
-        puts ' OK'
+      UNIXSocket.new(socket)
+      puts ' OK'
 
-        return
-      rescue Errno::ENOENT, Errno::ECONNREFUSED
-        print '.'
-        sleep delay
-      end
+      return
+    rescue Errno::ENOENT, Errno::ECONNREFUSED
+      print '.'
+      sleep delay
     end
 
     puts ' FAILED'

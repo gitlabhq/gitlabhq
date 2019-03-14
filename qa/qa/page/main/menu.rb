@@ -19,6 +19,7 @@ module QA
           element :admin_area_link
           element :projects_dropdown
           element :groups_dropdown
+          element :snippets_link
         end
 
         view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
@@ -64,6 +65,10 @@ module QA
 
             has_text?('User Settings')
           end
+        end
+
+        def go_to_snippets
+          click_element :snippets_link
         end
 
         def has_personal_area?(wait: Capybara.default_max_wait_time)

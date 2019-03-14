@@ -1,6 +1,6 @@
 .detail-page-header
   .detail-page-header-body
-    .snippet-box.has-tooltip.inline.append-right-5{ title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: "body" } }
+    .snippet-box.qa-snippet-box.has-tooltip.inline.append-right-5{ title: snippet_visibility_level_description(@snippet.visibility_level, @snippet), data: { container: "body" } }
       %span.sr-only
         = visibility_level_label(@snippet.visibility_level)
       = visibility_level_icon(@snippet.visibility_level, fw: false)
@@ -17,11 +17,11 @@
       = render "snippets/actions"
 
 .snippet-header.limited-header-width
-  %h2.snippet-title.prepend-top-0.append-bottom-0
+  %h2.snippet-title.prepend-top-0.append-bottom-0.qa-snippet-title
     = markdown_field(@snippet, :title)
 
   - if @snippet.description.present?
-    .description
+    .description.qa-snippet-description
       .wiki
         = markdown_field(@snippet, :description)
       %textarea.hidden.js-task-list-field
@@ -34,7 +34,7 @@
     .embed-snippet
       .input-group
         .input-group-prepend
-          %button.btn.btn-svg.embed-toggle.input-group-text{ 'data-toggle': 'dropdown', type: 'button' }
+          %button.btn.btn-svg.embed-toggle.input-group-text.qa-embed-type{ 'data-toggle': 'dropdown', type: 'button' }
             %span.js-embed-action= _("Embed")
             = sprite_icon('angle-down', size: 12, css_class: 'caret-down')
           %ul.dropdown-menu.dropdown-menu-selectable.embed-toggle-list

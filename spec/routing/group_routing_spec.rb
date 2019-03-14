@@ -17,6 +17,10 @@ describe "Groups", "routing" do
     expect(get("/#{group_path}")).to route_to('groups#show', id: group_path)
   end
 
+  it "to #details" do
+    expect(get("/groups/#{group_path}/-/details")).to route_to('groups#details', id: group_path)
+  end
+
   it "to #activity" do
     expect(get("/groups/#{group_path}/-/activity")).to route_to('groups#activity', id: group_path)
   end

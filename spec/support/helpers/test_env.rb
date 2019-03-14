@@ -202,12 +202,10 @@ module TestEnv
     socket = Gitlab::GitalyClient.address('default').sub('unix:', '')
 
     Integer(sleep_time / sleep_interval).times do
-      begin
-        Socket.unix(socket)
-        return
-      rescue
-        sleep sleep_interval
-      end
+      Socket.unix(socket)
+      return
+    rescue
+      sleep sleep_interval
     end
 
     raise "could not connect to gitaly at #{socket.inspect} after #{sleep_time} seconds"
