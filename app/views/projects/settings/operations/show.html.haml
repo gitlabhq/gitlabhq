@@ -2,5 +2,6 @@
 - page_title _('Operations Settings')
 - breadcrumb_title _('Operations Settings')
 
+= render_if_exists 'projects/settings/operations/incidents'
 = render 'projects/settings/operations/error_tracking', expanded: true
 = render_if_exists 'projects/settings/operations/tracing'

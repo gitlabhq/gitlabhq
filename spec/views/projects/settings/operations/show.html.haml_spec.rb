@@ -18,6 +18,7 @@ describe 'projects/settings/operations/show' do
       allow(view).to receive(:error_tracking_setting)
         .and_return(error_tracking_setting)
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:incident_management_available?) { false }
     end
 
     let!(:error_tracking_setting) do
