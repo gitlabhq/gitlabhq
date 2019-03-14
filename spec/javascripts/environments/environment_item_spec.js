@@ -20,23 +20,23 @@ describe('Environment item', () => {
         size: 3,
         isFolder: true,
         environment_path: 'url',
+        log_path: 'url',
       };
 
       component = new EnvironmentItem({
         propsData: {
           model: mockItem,
           canReadEnvironment: true,
-          service: {},
         },
       }).$mount();
     });
 
-    it('Should render folder icon and name', () => {
+    it('should render folder icon and name', () => {
       expect(component.$el.querySelector('.folder-name').textContent).toContain(mockItem.name);
       expect(component.$el.querySelector('.folder-icon')).toBeDefined();
     });
 
-    it('Should render the number of children in a badge', () => {
+    it('should render the number of children in a badge', () => {
       expect(component.$el.querySelector('.folder-name .badge').textContent).toContain(
         mockItem.size,
       );
@@ -109,6 +109,7 @@ describe('Environment item', () => {
         },
         has_stop_action: true,
         environment_path: 'root/ci-folders/environments/31',
+        log_path: 'root/ci-folders/environments/31/logs',
         created_at: '2016-11-07T11:11:16.525Z',
         updated_at: '2016-11-10T15:55:58.778Z',
       };
@@ -117,7 +118,6 @@ describe('Environment item', () => {
         propsData: {
           model: environment,
           canReadEnvironment: true,
-          service: {},
         },
       }).$mount();
     });
@@ -157,13 +157,13 @@ describe('Environment item', () => {
       });
 
       describe('With build url', () => {
-        it('Should link to build url provided', () => {
+        it('should link to build url provided', () => {
           expect(component.$el.querySelector('.build-link').getAttribute('href')).toEqual(
             environment.last_deployment.deployable.build_path,
           );
         });
 
-        it('Should render deployable name and id', () => {
+        it('should render deployable name and id', () => {
           expect(component.$el.querySelector('.build-link').getAttribute('href')).toEqual(
             environment.last_deployment.deployable.build_path,
           );
@@ -178,7 +178,7 @@ describe('Environment item', () => {
     });
 
     describe('With manual actions', () => {
-      it('Should render actions component', () => {
+      it('should render actions component', () => {
         expect(component.$el.querySelector('.js-manual-actions-container')).toBeDefined();
       });
     });
@@ -190,13 +190,13 @@ describe('Environment item', () => {
     });
 
     describe('With stop action', () => {
-      it('Should render stop action component', () => {
+      it('should render stop action component', () => {
         expect(component.$el.querySelector('.js-stop-component-container')).toBeDefined();
       });
     });
 
     describe('With retry action', () => {
-      it('Should render rollback component', () => {
+      it('should render rollback component', () => {
         expect(component.$el.querySelector('.js-rollback-component-container')).toBeDefined();
       });
     });
