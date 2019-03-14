@@ -1,5 +1,6 @@
 <script>
 import _ from 'underscore';
+import stageColumnMixin from 'ee_else_ce/pipelines/mixins/stage_column_mixin';
 import JobItem from './job_item.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
 
@@ -8,6 +9,7 @@ export default {
     JobItem,
     JobGroupDropdown,
   },
+  mixins: [stageColumnMixin],
   props: {
     title: {
       type: String,
@@ -31,9 +33,6 @@ export default {
   methods: {
     groupId(group) {
       return `ci-badge-${_.escape(group.name)}`;
-    },
-    buildConnnectorClass(index) {
-      return index === 0 && !this.isFirstColumn ? 'left-connector' : '';
     },
     pipelineActionRequestComplete() {
       this.$emit('refreshPipelineGraph');
