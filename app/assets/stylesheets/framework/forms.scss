@@ -157,6 +157,10 @@ label {
   padding-left: 10px;
   padding-right: 10px;
   appearance: none;
+  /* stylelint-disable property-no-vendor-prefix */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* stylelint-enable property-no-vendor-prefix */
 
   &::-ms-expand {
     display: none;

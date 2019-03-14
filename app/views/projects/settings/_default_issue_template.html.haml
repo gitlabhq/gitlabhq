@@ -1,0 +1,21 @@
+- if @project.feature_available?(:issuable_default_templates)
+  - expanded = Rails.env.test?
+  %section.settings.issues-feature.no-animate#js-issue-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:issues_access_level) == 0)] }
+    .settings-header
+      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Default issue template')
+      %button.btn.js-settings-toggle= expanded ? _('Collapse') : _('Expand')
+      %p= _('Set a default template for issue descriptions.')
+
+    .settings-content
+      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "issue-settings-form" }, authenticity_token: true do |f|
+        %input{ type: 'hidden', name: 'update_section', value: 'js-issue-settings' }
+        .row
+          .form-group.col-md-9
+            = f.label :issues_template, class: 'label-bold' do
+              = _('Default description template for issues')
+              = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'setting-a-default-template-for-issues-and-merge-requests'), target: '_blank'
+            = f.text_area :issues_template, class: "form-control", rows: 3
+            .text-secondary
+              - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_page_path('user/markdown') }
+              = _('Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
+        = f.submit _('Save changes'), class: "btn btn-success"
