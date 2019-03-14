@@ -107,7 +107,7 @@ describe Gitlab::PathRegex do
     git = Gitlab.config.git.bin_path
     tracked = `cd #{Rails.root} && #{git} ls-files public`
       .split("\n")
-      .map { |entry| entry.start_with?('public/-/') ? '-' : entry.gsub('public/', '') }
+      .map { |entry| entry.gsub('public/', '') }
       .uniq
     tracked + %w(assets uploads)
   end
