@@ -3,7 +3,9 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20170523083112_migrate_old_artifacts.rb')
 
-describe MigrateOldArtifacts do
+# Adding the ci_job_artifacts table (from the 20170918072948 schema)
+# makes the use of model code below easier.
+describe MigrateOldArtifacts, :migration, schema: 20170918072948 do
   let(:migration) { described_class.new }
   let!(:directory) { Dir.mktmpdir }
 
@@ -16,18 +18,22 @@ describe MigrateOldArtifacts do
   end
 
   context 'with migratable data' do
-    set(:project1) { create(:project, ci_id: 2) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-    set(:project2) { create(:project, ci_id: 3) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-    set(:project3) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    let(:projects) { table(:projects) }
+    let(:ci_pipelines) { table(:ci_pipelines) }
+    let(:ci_builds) { table(:ci_builds) }
 
-    set(:pipeline1) { create(:ci_empty_pipeline, project: project1) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-    set(:pipeline2) { create(:ci_empty_pipeline, project: project2) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-    set(:pipeline3) { create(:ci_empty_pipeline, project: project3) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    let!(:project1) { projects.create!(ci_id: 2) }
+    let!(:project2) { projects.create!(ci_id: 3) }
+    let!(:project3) { projects.create! }
 
-    let!(:build_with_legacy_artifacts) { create(:ci_build, pipeline: pipeline1) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-    let!(:build_without_artifacts) { create(:ci_build, pipeline: pipeline1) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-    let!(:build2) { create(:ci_build, pipeline: pipeline2) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-    let!(:build3) { create(:ci_build, pipeline: pipeline3) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    let!(:pipeline1) { ci_pipelines.create!(project_id: project1.id) }
+    let!(:pipeline2) { ci_pipelines.create!(project_id: project2.id) }
+    let!(:pipeline3) { ci_pipelines.create!(project_id: project3.id) }
+
+    let!(:build_with_legacy_artifacts) { ci_builds.create!(commit_id: pipeline1.id, project_id: project1.id, type: 'Ci::Build').becomes(Ci::Build) }
+    let!(:build_without_artifacts) { ci_builds.create!(commit_id: pipeline1.id, project_id: project1.id, type: 'Ci::Build').becomes(Ci::Build) }
+    let!(:build2) { ci_builds.create!(commit_id: pipeline2.id, project_id: project2.id, type: 'Ci::Build').becomes(Ci::Build) }
+    let!(:build3) { ci_builds.create!(commit_id: pipeline3.id, project_id: project3.id, type: 'Ci::Build').becomes(Ci::Build) }
 
     before do
       setup_builds(build2, build3)
