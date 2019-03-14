@@ -52,9 +52,12 @@ for audiences of all ages.
 If a contributor is no longer actively working on a submitted merge request
 we can decide that the merge request will be finished by one of our
 [Merge request coaches][team] or close the merge request. We make this decision
-based on how important the change is for our product vision. If a Merge request
+based on how important the change is for our product vision. If a merge request
 coach is going to finish the merge request we assign the
-~"coach will finish" label.
+~"coach will finish" label. When a team member picks up a community contribution,
+we credit the original author by adding a changelog entry crediting the author
+and optionally include the original author on at least one of the commits
+within the MR.
 
 ## Helping others
 
