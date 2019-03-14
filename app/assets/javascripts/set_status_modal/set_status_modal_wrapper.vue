@@ -66,23 +66,19 @@ export default {
 
       import(/* webpackChunkName: 'emoji' */ '~/emoji')
         .then(Emoji => {
-          Emoji.initEmojiMap()
-            .then(() => {
-              if (this.emoji) {
-                this.emojiTag = Emoji.glEmojiTag(this.emoji);
-              }
-              this.noEmoji = this.emoji === '';
-              this.defaultEmojiTag = Emoji.glEmojiTag('speech_balloon');
+          if (this.emoji) {
+            this.emojiTag = Emoji.glEmojiTag(this.emoji);
+          }
+          this.noEmoji = this.emoji === '';
+          this.defaultEmojiTag = Emoji.glEmojiTag('speech_balloon');
 
-              this.emojiMenu = new EmojiMenuInModal(
-                Emoji,
-                toggleEmojiMenuButtonSelector,
-                emojiMenuClass,
-                this.setEmoji,
-                this.$refs.userStatusForm,
-              );
-            })
-            .catch(() => createFlash(__('Failed to load emoji list.')));
+          this.emojiMenu = new EmojiMenuInModal(
+            Emoji,
+            toggleEmojiMenuButtonSelector,
+            emojiMenuClass,
+            this.setEmoji,
+            this.$refs.userStatusForm,
+          );
         })
         .catch(() => createFlash(__('Failed to load emoji list.')));
     },

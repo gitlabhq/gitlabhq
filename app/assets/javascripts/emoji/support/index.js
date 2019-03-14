@@ -5,9 +5,6 @@ import getUnicodeSupportMap from './unicode_support_map';
 let browserUnicodeSupportMap;
 
 export default function isEmojiUnicodeSupportedByBrowser(emojiUnicode, unicodeVersion) {
-  // Our Spec browser would fail producing emoji maps
-  if (/\bHeadlessChrome\//.test(navigator.userAgent)) return true;
-
   browserUnicodeSupportMap = browserUnicodeSupportMap || getUnicodeSupportMap();
   return isEmojiUnicodeSupported(browserUnicodeSupportMap, emojiUnicode, unicodeVersion);
 }

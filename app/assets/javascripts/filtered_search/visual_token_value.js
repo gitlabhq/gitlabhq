@@ -102,24 +102,15 @@ export default class VisualTokenValue {
     return (
       import(/* webpackChunkName: 'emoji' */ '../emoji')
         .then(Emoji => {
-          Emoji.initEmojiMap()
-            .then(() => {
-              if (!Emoji.isEmojiNameValid(value)) {
-                return;
-              }
+          if (!Emoji.isEmojiNameValid(value)) {
+            return;
+          }
 
-              container.dataset.originalValue = value;
-              element.innerHTML = Emoji.glEmojiTag(value);
-            })
-            // ignore error and leave emoji name in the search bar
-            .catch(err => {
-              throw err;
-            });
+          container.dataset.originalValue = value;
+          element.innerHTML = Emoji.glEmojiTag(value);
         })
         // ignore error and leave emoji name in the search bar
-        .catch(importError => {
-          throw importError;
-        })
+        .catch(() => {})
     );
   }
 }

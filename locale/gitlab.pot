@@ -2977,9 +2977,6 @@ msgstr ""
 msgid "Embed"
 msgstr ""
 
-msgid "Emojis|Something went wrong while loading emojis."
-msgstr ""
-
 msgid "Empty file"
 msgstr ""
 
@@ -4879,6 +4876,9 @@ msgid "Modal|Cancel"
 msgstr ""
 
 msgid "Modal|Close"
+msgstr ""
+
+msgid "Modify commit message"
 msgstr ""
 
 msgid "Modify commit messages"
@@ -9030,6 +9030,9 @@ msgid "missing"
 msgstr ""
 
 msgid "mrWidgetCommitsAdded|%{commitCount} and %{mergeCommitCount} will be added to %{targetBranch}."
+msgstr ""
+
+msgid "mrWidgetCommitsAdded|%{commitCount} will be added to %{targetBranch}."
 msgstr ""
 
 msgid "mrWidgetCommitsAdded|1 merge commit"
