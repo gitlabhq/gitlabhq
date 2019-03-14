@@ -1482,9 +1482,6 @@ msgstr ""
 msgid "Choose <strong>Next</strong> at the bottom of the page."
 msgstr ""
 
-msgid "Choose File ..."
-msgstr ""
-
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
@@ -1506,7 +1503,7 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
-msgid "Choose file..."
+msgid "Choose file…"
 msgstr ""
 
 msgid "Choose the top-level group for your repository imports."
@@ -6239,9 +6236,6 @@ msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
 msgid "Project avatar"
-msgstr ""
-
-msgid "Project avatar in repository: %{link}"
 msgstr ""
 
 msgid "Project details"
