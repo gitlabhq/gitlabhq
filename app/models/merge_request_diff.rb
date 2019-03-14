@@ -296,6 +296,11 @@ class MergeRequestDiff < ActiveRecord::Base
 
   private
 
+  def encode_in_base64?(diff_text)
+    (diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?) ||
+      diff_text.include?("\0")
+  end
+
   def create_merge_request_diff_files(diffs)
     rows =
       if has_attribute?(:external_diff) && Gitlab.config.external_diffs.enabled
@@ -348,7 +353,7 @@ class MergeRequestDiff < ActiveRecord::Base
       diff_hash.tap do |hash|
         diff_text = hash[:diff]
 
-        if diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?
+        if encode_in_base64?(diff_text)
           hash[:binary] = true
           hash[:diff] = [diff_text].pack('m0')
         end
