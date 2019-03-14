@@ -487,15 +487,9 @@ class GfmAutoComplete {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
       import(/* webpackChunkName: 'emoji' */ './emoji')
-        .then(({ initEmojiMap, getValidEmojiNames, glEmojiTag }) => {
-          initEmojiMap()
-            .then(() => {
-              this.loadData($input, at, getValidEmojiNames());
-              GfmAutoComplete.glEmojiTag = glEmojiTag;
-            })
-            .catch(() => {
-              this.isLoadingData[at] = false;
-            });
+        .then(({ validEmojiNames, glEmojiTag }) => {
+          this.loadData($input, at, validEmojiNames);
+          GfmAutoComplete.glEmojiTag = glEmojiTag;
         })
         .catch(() => {
           this.isLoadingData[at] = false;

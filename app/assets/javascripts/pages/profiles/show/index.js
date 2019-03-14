@@ -56,34 +56,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
   import(/* webpackChunkName: 'emoji' */ '~/emoji')
     .then(Emoji => {
-      Emoji.initEmojiMap()
-        .then(() => {
-          const emojiMenu = new EmojiMenu(
-            Emoji,
-            toggleEmojiMenuButtonSelector,
-            'js-status-emoji-menu',
-            selectEmojiCallback,
-          );
-          emojiMenu.bindEvents();
+      const emojiMenu = new EmojiMenu(
+        Emoji,
+        toggleEmojiMenuButtonSelector,
+        'js-status-emoji-menu',
+        selectEmojiCallback,
+      );
+      emojiMenu.bindEvents();
 
-          const defaultEmojiTag = Emoji.glEmojiTag(defaultStatusEmoji);
-          statusMessageField.addEventListener('input', () => {
-            const hasStatusMessage = statusMessageField.value.trim() !== '';
-            const statusEmoji = findStatusEmoji();
-            if (hasStatusMessage && statusEmoji) {
-              return;
-            }
+      const defaultEmojiTag = Emoji.glEmojiTag(defaultStatusEmoji);
+      statusMessageField.addEventListener('input', () => {
+        const hasStatusMessage = statusMessageField.value.trim() !== '';
+        const statusEmoji = findStatusEmoji();
+        if (hasStatusMessage && statusEmoji) {
+          return;
+        }
 
-            if (hasStatusMessage) {
-              toggleNoEmojiPlaceholder(false);
-              toggleEmojiMenuButton.innerHTML += defaultEmojiTag;
-            } else if (statusEmoji.dataset.name === defaultStatusEmoji) {
-              toggleNoEmojiPlaceholder(true);
-              removeStatusEmoji();
-            }
-          });
-        })
-        .catch(() => createFlash('Failed to load emoji list.'));
+        if (hasStatusMessage) {
+          toggleNoEmojiPlaceholder(false);
+          toggleEmojiMenuButton.innerHTML += defaultEmojiTag;
+        } else if (statusEmoji.dataset.name === defaultStatusEmoji) {
+          toggleNoEmojiPlaceholder(true);
+          removeStatusEmoji();
+        }
+      });
     })
     .catch(() => createFlash('Failed to load emoji list.'));
 });
