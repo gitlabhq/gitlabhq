@@ -351,6 +351,12 @@ msgstr ""
 msgid "A member of GitLab's abuse team will review your report as soon as possible."
 msgstr ""
 
+msgid "A merge commit is created for every merge, and merging is allowed as long as there are no conflicts."
+msgstr ""
+
+msgid "A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible. This way you could make sure that if this merge request would build, after merging to target branch it would also build."
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
@@ -1066,6 +1072,9 @@ msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if 
 msgstr ""
 
 msgid "Automatically marked as default internal user"
+msgstr ""
+
+msgid "Automatically resolve merge request diff discussions when they become outdated"
 msgstr ""
 
 msgid "Automatically resolved"
@@ -3643,6 +3652,9 @@ msgstr ""
 msgid "Failure"
 msgstr ""
 
+msgid "Fast-forward merge"
+msgstr ""
+
 msgid "Fast-forward merge without a merge commit"
 msgstr ""
 
@@ -5016,7 +5028,13 @@ msgstr ""
 msgid "Merge Requests"
 msgstr ""
 
+msgid "Merge commit"
+msgstr ""
+
 msgid "Merge commit message"
+msgstr ""
+
+msgid "Merge commit with semi-linear history"
 msgstr ""
 
 msgid "Merge events"
@@ -5026,6 +5044,9 @@ msgid "Merge immediately"
 msgstr ""
 
 msgid "Merge in progress"
+msgstr ""
+
+msgid "Merge method"
 msgstr ""
 
 msgid "Merge request"
@@ -5459,6 +5480,9 @@ msgstr ""
 msgid "No license. All rights reserved"
 msgstr ""
 
+msgid "No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. When fast-forward merge is not possible, the user is given the option to rebase."
+msgstr ""
+
 msgid "No merge requests found"
 msgstr ""
 
@@ -5648,6 +5672,12 @@ msgid "One or more of your Google Code projects cannot be imported into GitLab d
 msgstr ""
 
 msgid "Only admins"
+msgstr ""
+
+msgid "Only allow merge requests to be merged if all discussions are resolved"
+msgstr ""
+
+msgid "Only allow merge requests to be merged if the pipeline succeeds"
 msgstr ""
 
 msgid "Only mirror protected branches"
@@ -5903,6 +5933,9 @@ msgid "Pipelines for last week"
 msgstr ""
 
 msgid "Pipelines for last year"
+msgstr ""
+
+msgid "Pipelines need to be configured to enable this feature."
 msgstr ""
 
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
@@ -7407,6 +7440,9 @@ msgid "Show file browser"
 msgstr ""
 
 msgid "Show latest version"
+msgstr ""
+
+msgid "Show link to create/view merge request when pushing from the command line"
 msgstr ""
 
 msgid "Show parent pages"
@@ -9245,6 +9281,9 @@ msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
+msgstr ""
+
+msgid "When fast-forward merge is not possible, the user is given the option to rebase."
 msgstr ""
 
 msgid "When this merge request is accepted"
