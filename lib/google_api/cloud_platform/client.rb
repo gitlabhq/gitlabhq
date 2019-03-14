@@ -10,6 +10,7 @@ module GoogleApi
     class Client < GoogleApi::Auth
       SCOPE = 'https://www.googleapis.com/auth/cloud-platform'.freeze
       LEAST_TOKEN_LIFE_TIME = 10.minutes
+      CLUSTER_MASTER_AUTH_USERNAME = 'admin'.freeze
 
       class << self
         def session_key_for_token
@@ -63,6 +64,12 @@ module GoogleApi
               "initial_node_count": cluster_size,
               "node_config": {
                 "machine_type": machine_type
+              },
+              "master_auth": {
+                "username": CLUSTER_MASTER_AUTH_USERNAME,
+                "client_certificate_config": {
+                  issue_client_certificate: true
+                }
               },
               "legacy_abac": {
                 "enabled": legacy_abac
