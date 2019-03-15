@@ -1,17 +1,10 @@
 code_quality:
   image: docker:stable
   allow_failure: true
-  # gitlab-org runners set `privileged: false` but we need to have it set to true
-  # since we're using Docker in Docker
-  tags: []
-  before_script: []
   services:
     - docker:stable-dind
   variables:
-    SETUP_DB: "false"
     DOCKER_DRIVER: overlay2
-  cache: {}
-  dependencies: []
   script:
     - docker run
         --env SOURCE_CODE="$PWD"

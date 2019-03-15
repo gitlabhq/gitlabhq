@@ -777,6 +777,14 @@ jest:
 
 code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
+  # gitlab-org runners set `privileged: false` but we need to have it set to true
+  # since we're using Docker in Docker
+  tags: []
+  before_script: []
+  cache: {}
+  dependencies: []
+  variables:
+    SETUP_DB: "false"
 
 sast:
   <<: *dedicated-no-docs-no-db-pull-cache-job
