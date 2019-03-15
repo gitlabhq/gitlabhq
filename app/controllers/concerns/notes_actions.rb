@@ -48,7 +48,7 @@ module NotesActions
     respond_to do |format|
       format.json do
         json = {
-          commands_changes: @note.commands_changes
+          commands_changes: @note.commands_changes&.slice(:emoji_award, :time_estimate, :spend_time)
         }
 
         if @note.persisted? && return_discussion?
