@@ -3,13 +3,13 @@
 require 'pathname'
 
 module QA
-  # Transient failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/68
   context 'Configure' do
     def login
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.perform(&:sign_in_using_credentials)
     end
 
+    # Transient failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/68
     describe 'Auto DevOps support', :orchestrated, :kubernetes, :quarantine do
       context 'when rbac is enabled' do
         before(:all) do
@@ -106,7 +106,8 @@ module QA
       end
     end
 
-    describe 'Auto DevOps', :smoke do
+    # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/87
+    describe 'Auto DevOps', :smoke, :quarantine do
       it 'enables AutoDevOps by default' do
         login
 
