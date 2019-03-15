@@ -1702,6 +1702,11 @@ of using YAML anchors, you can use the [`extends` keyword](#extends).
 
 See [usage examples](#include-examples).
 
+NOTE: **Note:**
+`.gitlab-ci.yml` configuration included by all methods is evaluated at pipeline creation.
+The configuration is a snapshot in time and persisted in the database. Any changes to
+referenced `.gitlab-ci.yml` configuration will not be reflected in GitLab until the next pipeline is created.
+
 #### `include:local`
 
 `include:local` includes a file from the same repository as `.gitlab-ci.yml`.
@@ -1789,15 +1794,8 @@ include:
   - remote: 'https://gitlab.com/awesome-project/raw/master/.gitlab-ci-template.yml'
 ```
 
-At pipeline creation, remote `.gitlab-ci.yml` files are expanded to create
-pipelines with stages containing jobs and retried jobs.
-
 All nested includes will be executed without context as public user, so only another remote,
 or public project, or template is allowed.
-
-NOTE: **Note:**
-Changes to remote includes will not affect already created pipelines. To have remote includes affect already
-created pipelines, recreate the pipeline.
 
 #### Nested includes
 
