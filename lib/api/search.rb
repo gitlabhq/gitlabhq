@@ -54,7 +54,7 @@ module API
       end
 
       def check_users_search_allowed!
-        if Feature.disabled?(:users_search, default_enabled: true) && params[:scope].to_sym == :users
+        if params[:scope].to_sym == :users && Feature.disabled?(:users_search, default_enabled: true)
           render_api_error!({ error: _("Scope not supported with disabled 'users_search' feature!") }, 400)
         end
       end
