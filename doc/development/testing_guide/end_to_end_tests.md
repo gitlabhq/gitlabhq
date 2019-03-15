@@ -25,10 +25,10 @@ You can find these nightly pipelines at [gitlab-org/quality/staging/pipelines][q
 
 ### Testing code in merge requests
 
-It is possible to run end-to-end tests (eventually being run within a
-[GitLab QA pipeline][gitlab-qa-pipelines]) for a merge request by triggering
-the `package-and-qa` manual action in the `test` stage, that should be present
-in a merge request widget (unless the merge request is from a fork).
+It is possible to run end-to-end tests for a merge request, eventually being run in
+a pipeline in the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/) project,
+by triggering the `package-and-qa` manual action in the `test` stage (which should
+be present in a merge request widget, unless the merge request comes from a fork).
 
 Manual action that starts end-to-end tests is also available in merge requests
 in [Omnibus GitLab][omnibus-gitlab].
@@ -81,7 +81,6 @@ you can find an issue you would like to work on in
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa
 [gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
-[gitlab-qa-pipelines]: https://gitlab.com/gitlab-org/gitlab-qa/pipelines
 [quality-nightly-pipelines]: https://gitlab.com/gitlab-org/quality/nightly/pipelines
 [quality-staging-pipelines]: https://gitlab.com/gitlab-org/quality/staging/pipelines
 [gitlab-qa-architecture]: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md
