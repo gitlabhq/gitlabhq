@@ -7,6 +7,9 @@ controller:
   podAnnotations:
     prometheus.io/scrape: "true"
     prometheus.io/port: "10254"
+  config:
+    enable-modsecurity: "true"
+    enable-owasp-modsecurity-crs: "true"
 
 rbac:
   create: false

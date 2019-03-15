@@ -107,6 +107,8 @@ describe Clusters::Applications::Ingress do
       expect(values).to include('repository')
       expect(values).to include('stats')
       expect(values).to include('podAnnotations')
+      expect(values).to include('config')
+      expect(values).to include('enable-owasp-modsecurity-crs')
     end
   end
 end
