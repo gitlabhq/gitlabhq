@@ -7,25 +7,17 @@ describe 'api', 'routing' do
     end
 
     it 'does not route to the GraphqlController' do
-      expect(get('/api/graphql')).not_to route_to('graphql#execute')
-    end
-
-    it 'does not expose graphiql' do
-      expect(get('/-/graphql-explorer')).not_to route_to('graphiql/rails/editors#show')
+      expect(post('/api/graphql')).not_to route_to('graphql#execute')
     end
   end
 
-  context 'when graphql is disabled' do
+  context 'when graphql is enabled' do
     before do
       stub_feature_flags(graphql: true)
     end
 
     it 'routes to the GraphqlController' do
-      expect(get('/api/graphql')).not_to route_to('graphql#execute')
-    end
-
-    it 'exposes graphiql' do
-      expect(get('/-/graphql-explorer')).not_to route_to('graphiql/rails/editors#show')
+      expect(post('/api/graphql')).to route_to('graphql#execute')
     end
   end
 end
