@@ -1,0 +1,5 @@
+---
+title: Disable timeout on merge request merging poll
+merge_request: 25988
+author:
+type: fixed
