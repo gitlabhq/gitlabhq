@@ -38,7 +38,7 @@ module Gitlab
       def remove_remote(name)
         request = Gitaly::RemoveRemoteRequest.new(repository: @gitaly_repo, name: name)
 
-        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.fast_timeout)
+        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request)
 
         response.result
       end
