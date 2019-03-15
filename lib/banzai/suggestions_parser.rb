@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# TODO: Delete when https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26107
+# exchange this parser by `Gitlab::Diff::SuggestionsParser`.
 module Banzai
   module SuggestionsParser
     # Returns the content of each suggestion code block.
