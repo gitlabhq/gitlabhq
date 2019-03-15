@@ -1,6 +1,0 @@
----
-title: Fix error when viewing group issue boards when user doesn't have explicit group
-  permissions
-merge_request: 25524
-author:
-type: fixed

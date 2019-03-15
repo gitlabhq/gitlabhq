@@ -141,7 +141,7 @@ describe('Applications', () => {
       });
 
       describe('without ip address', () => {
-        it('renders an input text with a question mark and an alert text', () => {
+        it('renders an input text with a loading icon and an alert text', () => {
           vm = mountComponent(Applications, {
             applications: {
               ...APPLICATIONS_MOCK_STATE,
@@ -152,8 +152,7 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-endpoint').value).toEqual('?');
-
+          expect(vm.$el.querySelector('.js-ingress-ip-loading-icon')).not.toBe(null);
           expect(vm.$el.querySelector('.js-no-endpoint-message')).not.toBe(null);
         });
       });
@@ -330,7 +329,7 @@ describe('Applications', () => {
       });
 
       describe('without ip address', () => {
-        it('renders an input text with a question mark and an alert text', () => {
+        it('renders an input text with a loading icon and an alert text', () => {
           vm = mountComponent(Applications, {
             applications: {
               ...APPLICATIONS_MOCK_STATE,
@@ -342,8 +341,7 @@ describe('Applications', () => {
             },
           });
 
-          expect(vm.$el.querySelector('.js-knative-endpoint').value).toEqual('?');
-
+          expect(vm.$el.querySelector('.js-knative-ip-loading-icon')).not.toBe(null);
           expect(vm.$el.querySelector('.js-no-knative-endpoint-message')).not.toBe(null);
         });
       });

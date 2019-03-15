@@ -253,7 +253,7 @@ Example response:
 ### Scope: snippet_blobs
 
 ```bash
-curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/search?scope=snippet_blos&search=test
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" https://gitlab.example.com/api/v4/search?scope=snippet_blobs&search=test
 ```
 
 Example response:

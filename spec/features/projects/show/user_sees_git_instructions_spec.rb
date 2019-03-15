@@ -13,7 +13,7 @@ describe 'Projects > Show > User sees Git instructions' do
     it 'shows Git command line instructions' do
       click_link 'Create empty repository'
 
-      page.within '.empty_wrapper' do
+      page.within '.empty-wrapper' do
         expect(page).to have_content('Command line instructions')
       end
     end
