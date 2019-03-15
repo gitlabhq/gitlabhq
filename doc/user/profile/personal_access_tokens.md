@@ -20,21 +20,19 @@ at midnight UTC.
 You can create as many personal access tokens as you like from your GitLab
 profile.
 
-1. Log in to your GitLab account.
-1. Go to your **Profile settings**.
-1. Go to **Access tokens**.
-1. Choose a name and optionally an expiry date for the token.
+1. Log in to GitLab.
+1. In the upper-right corner, click your avatar and select **Settings**.
+1. On the  **User Settings** menu, select **Access Tokens**.
+1. Choose a name and optional expiry date for the token.
 1. Choose the [desired scopes](#limiting-scopes-of-a-personal-access-token).
-1. Click on **Create personal access token**.
+1. Click the **Create personal access token** button.
 1. Save the personal access token somewhere safe. Once you leave or refresh
    the page, you won't be able to access it again.
 
-![Personal access tokens page](img/personal_access_tokens.png)
+### Revoking a personal access token
 
-## Revoking a personal access token
-
-At any time, you can revoke any personal access token by just clicking the
-respective **Revoke** button under the 'Active personal access tokens' area.
+At any time, you can revoke any personal access token by clicking the
+respective **Revoke** button under the **Active Personal Access Token** area.
 
 ## Limiting scopes of a personal access token
 

@@ -9,7 +9,7 @@
     .form-group.row
       = f.label :title, class: 'col-form-label col-sm-2'
       .col-sm-10
-        = f.text_field :title, class: 'form-control', required: true, autofocus: true
+        = f.text_field :title, class: 'form-control qa-snippet-title', required: true, autofocus: true
 
     = render 'shared/form_elements/description', model: @snippet, project: @project, form: f
 
@@ -21,7 +21,7 @@
         .col-sm-10
           .file-holder.snippet
             .js-file-title.file-title
-              = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name'
+              = f.text_field :file_name, placeholder: "Optionally name this file to add code highlighting, e.g. example.rb for Ruby.", class: 'form-control snippet-file-name qa-snippet-file-name'
             .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'
@@ -31,7 +31,7 @@
 
     .form-actions
       - if @snippet.new_record?
-        = f.submit 'Create snippet', class: "btn-success btn"
+        = f.submit 'Create snippet', class: "btn-success btn qa-create-snippet-button"
       - else
         = f.submit 'Save changes', class: "btn-success btn"
 

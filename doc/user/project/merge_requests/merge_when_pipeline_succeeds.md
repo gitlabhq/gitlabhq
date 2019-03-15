@@ -1,4 +1,4 @@
-# Merge When Pipeline Succeeds
+# Merge when pipeline succeeds
 
 When reviewing a merge request that looks ready to merge but still has one or
 more CI jobs running, you can set it to be merged automatically when the
