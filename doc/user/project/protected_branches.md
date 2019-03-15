@@ -96,7 +96,7 @@ all matching branches:
 
 ## Creating a protected branch
 
-> [Introduced][https://gitlab.com/gitlab-org/gitlab-ce/issues/53361] in GitLab 11.9.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53361) in GitLab 11.9.
 
 When a protected branch or wildcard protected branches are set to
 [**No one** is **Allowed to push**](#using-the-allowed-to-merge-and-allowed-to-push-settings),
