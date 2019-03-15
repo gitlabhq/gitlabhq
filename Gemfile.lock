@@ -813,7 +813,7 @@ GEM
     selenium-webdriver (3.12.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
-    sentry-raven (2.7.4)
+    sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
     settingslogic (2.0.9)
     sexp_processor (4.11.0)
