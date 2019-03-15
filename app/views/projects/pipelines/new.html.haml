@@ -1,9 +1,9 @@
-- breadcrumb_title "Pipelines"
-- page_title s_("Pipeline|Run Pipeline")
+- breadcrumb_title _('Pipelines')
+- page_title s_('Pipeline|Run Pipeline')
 - settings_link = link_to _('CI/CD settings'), project_settings_ci_cd_path(@project)
 
 %h3.page-title
-  = s_("Pipeline|Run Pipeline")
+  = s_('Pipeline|Run Pipeline')
 %hr
 
 = form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "js-new-pipeline-form js-requires-input" } do |f|
@@ -29,7 +29,7 @@
 
   .form-actions
     = f.submit s_('Pipeline|Create pipeline'), class: 'btn btn-success js-variables-save-button', tabindex: 3
-    = link_to 'Cancel', project_pipelines_path(@project), class: 'btn btn-default float-right'
+    = link_to _('Cancel'), project_pipelines_path(@project), class: 'btn btn-default float-right'
 
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

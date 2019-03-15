@@ -111,6 +111,9 @@ msgstr ""
 msgid "%{firstLabel} +%{labelCount} more"
 msgstr ""
 
+msgid "%{gitlab_ci_yml} not found in this commit"
+msgstr ""
+
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
@@ -2411,6 +2414,9 @@ msgstr ""
 msgid "Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}"
 msgstr ""
 
+msgid "Coverage"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -3648,6 +3654,9 @@ msgstr ""
 msgid "Format"
 msgstr ""
 
+msgid "Found errors in your %{gitlab_ci_yml}:"
+msgstr ""
+
 msgid "Found errors in your .gitlab-ci.yml:"
 msgstr ""
 
@@ -4374,6 +4383,9 @@ msgid "January"
 msgstr ""
 
 msgid "Job"
+msgstr ""
+
+msgid "Job ID"
 msgstr ""
 
 msgid "Job has been erased"
@@ -8850,6 +8862,9 @@ msgid "You can also create a project from the command line."
 msgstr ""
 
 msgid "You can also star a label to make it a priority label."
+msgstr ""
+
+msgid "You can also test your %{gitlab_ci_yml} in %{lint_link_start}CI Lint%{lint_link_end}"
 msgstr ""
 
 msgid "You can also upload existing files from your computer using the instructions below."
