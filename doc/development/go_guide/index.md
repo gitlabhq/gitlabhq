@@ -161,11 +161,38 @@ in the code.
 
 ### Logging
 
-The usage of a logging library is strongly recommended for daemons. Even though
-there is a `log` package in the standard library, we generally use
-[logrus](https://github.com/sirupsen/logrus). Its plugin ("hooks") system
+The usage of a logging library is strongly recommended for daemons. Even
+though there is a `log` package in the standard library, we generally use
+[Logrus](https://github.com/sirupsen/logrus). Its plugin ("hooks") system
 makes it a powerful logging library, with the ability to add notifiers and
 formatters at the logger level directly.
+
+#### Structured (JSON) logging
+
+Every binary ideally must have structured (JSON) logging in place as it helps
+with searching and filtering the logs. At GitLab we use structured logging in
+JSON format, as all our infrastructure assumes that. When using
+[Logrus](https://github.com/sirupsen/logrus) you can turn on structured
+logging simply by using the build in [JSON
+formatter](https://github.com/sirupsen/logrus#formatters). This follows the
+same logging type we use in our [Ruby
+applications](../logging.md#use-structured-json-logging).
+
+#### How to use Logrus
+
+There are a few guidelines one should follow when using the
+[Logrus](https://github.com/sirupsen/logrus) package:
+
+- When printing an error use
+  [WithError](https://godoc.org/github.com/sirupsen/logrus#WithError). For
+  exmaple, `logrus.WithError(err).Error("Failed to do something")`.
+- Since we use [structured logging](#structured-json-logging) we can log
+  fields in the context of that code path, such as the URI of the request using
+  [`WithField`](https://godoc.org/github.com/sirupsen/logrus#WithField) or
+  [`WithFields`](https://godoc.org/github.com/sirupsen/logrus#WithFields). For
+  example, `logrus.WithField("file", "/app/go).Info("Opening dir")`. If you
+  have to log multiple keys, always use `WithFields` instead of calling
+  `WithField` more than once.
 
 ### Tracing and Correlation
 
