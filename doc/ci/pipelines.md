@@ -304,7 +304,7 @@ stage has a job with a manual action.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/21767) in GitLab 11.4.
 
-When you do not want to run a job immediately, you can use the [`when:deplayed`](yaml/README.md#whendelayed) parameter to
+When you do not want to run a job immediately, you can use the [`when:delayed`](yaml/README.md#whendelayed) parameter to
 delay a job's execution for a certain period.
 
 This is especially useful for timed incremental rollout where new code is rolled out gradually.
