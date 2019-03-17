@@ -286,7 +286,7 @@ module Gitlab
           commit = call_find_commit(revision)
           return unless commit
 
-          key[:commit_id] = commit.id
+          key[:commit_id] = commit.id unless GitalyClient.ref_name_caching_allowed?
           Gitlab::SafeRequestStore[key] = commit
         else
           call_find_commit(revision)
