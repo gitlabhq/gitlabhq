@@ -1,0 +1,5 @@
+---
+title: Fix notes being marked as edited after resolving
+merge_request: 26143
+author:
+type: fixed

@@ -136,15 +136,6 @@ describe Project do
       end
     end
 
-    describe '#boards' do
-      it 'raises an error when attempting to add more than one board to the project' do
-        subject.boards.build
-
-        expect { subject.boards.build }.to raise_error(Project::BoardLimitExceeded, 'Number of permitted boards exceeded')
-        expect(subject.boards.size).to eq 1
-      end
-    end
-
     describe 'ci_pipelines association' do
       it 'returns only pipelines from ci_sources' do
         expect(Ci::Pipeline).to receive(:ci_sources).and_call_original

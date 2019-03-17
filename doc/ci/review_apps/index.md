@@ -12,7 +12,7 @@ Review Apps are a collaboration tool that takes the hard work out of providing a
 Review Apps:
 
 - Provide an automatic live preview of changes made in a feature branch by spinning up a dynamic environment for your merge requests.
-- Allow designers and product manages to see your changes without needing to check out your branch and run your changes in a sandbox environment.
+- Allow designers and product managers to see your changes without needing to check out your branch and run your changes in a sandbox environment.
 - Are fully integrated with the [GitLab DevOps LifeCycle](../../README.md#the-entire-devops-lifecycle).
 - Allow you to deploy your changes wherever you want.
 
