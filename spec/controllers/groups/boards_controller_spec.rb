@@ -22,28 +22,6 @@ describe Groups::BoardsController do
         expect(response.content_type).to eq 'text/html'
       end
 
-      it 'redirects to latest visited board' do
-        board = create(:board, group: group)
-        create(:board_group_recent_visit, group: board.group, board: board, user: user)
-
-        list_boards
-
-        expect(response).to redirect_to(group_board_path(id: board.id))
-      end
-
-      it 'renders template if visited board is not found' do
-        temporary_board = create(:board, group: group)
-        visited = create(:board_group_recent_visit, group: temporary_board.group, board: temporary_board, user: user)
-        temporary_board.delete
-
-        allow_any_instance_of(Boards::Visits::LatestService).to receive(:execute).and_return(visited)
-
-        list_boards
-
-        expect(response).to render_template :index
-        expect(response.content_type).to eq 'text/html'
-      end
-
       context 'with unauthorized user' do
         before do
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(true)

@@ -207,6 +207,9 @@ We support the current and the previous major release of:
 - Microsoft Edge
 - Internet Explorer 11
 
+The browser vendors release regular minor version updates with important bug fixes and security updates.
+Support is only provided for the current minor version of the major version you are running.
+
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
 
 Note: We do not support running GitLab with JavaScript disabled in the browser and have no plans of supporting that

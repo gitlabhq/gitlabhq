@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequestDiff do
+  include RepoHelpers
+
   let(:diff_with_commits) { create(:merge_request).merge_request_diff }
 
   describe 'validations' do
@@ -193,6 +195,25 @@ describe MergeRequestDiff do
 
         expect(diff_file).to be_binary
         expect(diff_file.diff).to eq(mr_diff.compare.diffs(paths: [path]).to_a.first.diff)
+      end
+
+      context 'with diffs that contain a null byte' do
+        let(:filename) { 'test-null.txt' }
+        let(:content) { "a" * 10000 + "\x00" }
+        let(:project) { create(:project, :repository) }
+        let(:branch) { 'null-data' }
+        let(:target_branch) { 'master' }
+
+        it 'saves diffs correctly' do
+          create_file_in_repo(project, target_branch, branch, filename, content)
+
+          mr_diff = create(:merge_request, target_project: project, source_project: project, source_branch: branch, target_branch: target_branch).merge_request_diff
+          diff_file = mr_diff.merge_request_diff_files.find_by(new_path: filename)
+
+          expect(diff_file).to be_binary
+          expect(diff_file.diff).to eq(mr_diff.compare.diffs(paths: [filename]).to_a.first.diff)
+          expect(diff_file.diff).to include(content)
+        end
       end
     end
   end
