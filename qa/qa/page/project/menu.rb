@@ -30,7 +30,7 @@ module QA
           end
         end
 
-        def go_to_activity
+        def click_activity
           within_sidebar do
             click_element(:activity_link)
           end
