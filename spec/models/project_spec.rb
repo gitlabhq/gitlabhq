@@ -3428,7 +3428,7 @@ describe Project do
       end
 
       it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the project repo is in use' do
-        Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: false)).increase
+        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::PROJECT.identifier_for_subject(project)).increase
 
         expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
@@ -3436,7 +3436,7 @@ describe Project do
       end
 
       it 'schedules HashedStorage::ProjectMigrateWorker with delayed start when the wiki repo is in use' do
-        Gitlab::ReferenceCounter.new(project.gl_repository(is_wiki: true)).increase
+        Gitlab::ReferenceCounter.new(Gitlab::GlRepository::WIKI.identifier_for_subject(project)).increase
 
         expect(HashedStorage::ProjectMigrateWorker).to receive(:perform_in)
 
@@ -3566,16 +3566,6 @@ describe Project do
           expect { project.rollback_to_legacy_storage! }.to change(HashedStorage::ProjectRollbackWorker.jobs, :size).by(1)
         end
       end
-    end
-  end
-
-  describe '#gl_repository' do
-    let(:project) { create(:project) }
-
-    it 'delegates to Gitlab::GlRepository.gl_repository' do
-      expect(Gitlab::GlRepository).to receive(:gl_repository).with(project, true)
-
-      project.gl_repository(is_wiki: true)
     end
   end
 

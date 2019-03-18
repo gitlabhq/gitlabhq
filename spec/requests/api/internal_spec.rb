@@ -321,7 +321,7 @@ describe API::Internal do
       end
 
       context 'with env passed as a JSON' do
-        let(:gl_repository) { project.gl_repository(is_wiki: true) }
+        let(:gl_repository) { Gitlab::GlRepository::WIKI.identifier_for_subject(project) }
 
         it 'sets env in RequestStore' do
           obj_dir_relative = './objects'
@@ -975,9 +975,9 @@ describe API::Internal do
   def gl_repository_for(project_or_wiki)
     case project_or_wiki
     when ProjectWiki
-      project_or_wiki.project.gl_repository(is_wiki: true)
+      Gitlab::GlRepository::WIKI.identifier_for_subject(project_or_wiki.project)
     when Project
-      project_or_wiki.gl_repository(is_wiki: false)
+      Gitlab::GlRepository::PROJECT.identifier_for_subject(project_or_wiki)
     else
       nil
     end
