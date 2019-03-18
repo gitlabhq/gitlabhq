@@ -35,6 +35,7 @@ describe('stage column component', () => {
     component = mountComponent(StageColumnComponent, {
       title: 'foo',
       groups: mockGroups,
+      hasTriggeredBy: false,
     });
   });
 
@@ -61,6 +62,7 @@ describe('stage column component', () => {
           },
         ],
         title: 'test',
+        hasTriggeredBy: false,
       });
 
       expect(component.$el.querySelector('.builds-container li').getAttribute('id')).toEqual(
