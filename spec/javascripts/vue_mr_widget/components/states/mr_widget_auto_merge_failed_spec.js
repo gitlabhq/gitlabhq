@@ -38,7 +38,7 @@ describe('MRWidgetAutoMergeFailed', () => {
 
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('button').getAttribute('disabled')).toEqual('disabled');
-      expect(vm.$el.querySelector('button i').classList).toContain('fa-spinner');
+      expect(vm.$el.querySelector('button .loading-container span').classList).toContain('spinner');
       done();
     });
   });
