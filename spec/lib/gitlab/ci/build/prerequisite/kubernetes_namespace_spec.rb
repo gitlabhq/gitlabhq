@@ -27,6 +27,12 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
         end
 
         it { is_expected.to be_truthy }
+
+        context 'and a namespace is already created for this project' do
+          let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, project: build.project) }
+
+          it { is_expected.to be_falsey }
+        end
       end
 
       context 'and no cluster to deploy to' do

@@ -5,12 +5,8 @@ module Gitlab
     module Build
       module Prerequisite
         class KubernetesNamespace < Base
-          ##
-          # Cluster settings may have changed since the last deploy,
-          # so we must always ensure the namespace is up to date.
-          #
           def unmet?
-            deployment_cluster.present?
+            deployment_cluster.present? && kubernetes_namespace.new_record?
           end
 
           def complete!
@@ -25,9 +21,13 @@ module Gitlab
             build.deployment&.cluster
           end
 
-          def create_or_update_namespace
-            kubernetes_namespace = deployment_cluster.find_or_initialize_kubernetes_namespace_for_project(build.project)
+          def kubernetes_namespace
+            strong_memoize(:kubernetes_namespace) do
+              deployment_cluster.find_or_initialize_kubernetes_namespace_for_project(build.project)
+            end
+          end
 
+          def create_or_update_namespace
             Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService.new(
               cluster: deployment_cluster,
               kubernetes_namespace: kubernetes_namespace

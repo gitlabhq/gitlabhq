@@ -5,6 +5,8 @@ module Gitlab
     module Build
       module Prerequisite
         class Base
+          include Utils::StrongMemoize
+
           attr_reader :build
 
           def initialize(build)
