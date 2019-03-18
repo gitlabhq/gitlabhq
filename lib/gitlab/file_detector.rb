@@ -22,6 +22,7 @@ module Gitlab
       gitignore: '.gitignore',
       gitlab_ci: '.gitlab-ci.yml',
       route_map: '.gitlab/route-map.yml',
+      insights_config: '.gitlab/insights.yml',
 
       # Dependency files
       cartfile: %r{\ACartfile[^/]*\z},
