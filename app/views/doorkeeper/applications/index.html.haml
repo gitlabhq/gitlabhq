@@ -52,7 +52,7 @@
     .oauth-authorized-applications.prepend-top-20.append-bottom-default
       - if user_oauth_applications?
         %h5
-          = _("Authorized applications (%{size})") % { size: @authorized_tokens.size }
+          = _("Authorized applications (%{size})") % { size: @authorized_apps.size + @authorized_anonymous_tokens.size }
 
       - if @authorized_tokens.any?
         .table-responsive
