@@ -1235,8 +1235,7 @@ job:
 to the paths defined in `artifacts:paths`).
 
 NOTE: **Note:**
-To exclude the folders/files which should not be a part of `untracked` just
-add them to `.gitignore`.
+`artifacts:untracked` ignores configuration in the repository's `.gitignore` file.
 
 Send all Git untracked files:
 
