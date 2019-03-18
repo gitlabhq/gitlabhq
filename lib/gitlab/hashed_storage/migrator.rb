@@ -97,7 +97,7 @@ module Gitlab
 
       def any_non_empty_queue?(*workers)
         workers.any? do |worker|
-          worker.jobs.any?
+          !Sidekiq::Queue.new(worker.queue).size.zero?
         end
       end
 

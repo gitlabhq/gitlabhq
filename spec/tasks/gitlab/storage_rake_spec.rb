@@ -89,9 +89,9 @@ describe 'rake gitlab:storage:*', :sidekiq do
   describe 'gitlab:storage:migrate_to_hashed' do
     let(:task) { 'gitlab:storage:migrate_to_hashed' }
 
-    context 'with rollback already scheduled' do
+    context 'with rollback already scheduled', :redis do
       it 'does nothing' do
-        Sidekiq::Testing.fake! do
+        Sidekiq::Testing.disable! do
           ::HashedStorage::RollbackerWorker.perform_async(1, 5)
 
           expect(Project).not_to receive(:with_unmigrated_storage)
@@ -146,9 +146,9 @@ describe 'rake gitlab:storage:*', :sidekiq do
 
     it_behaves_like 'make sure database is writable'
 
-    context 'with migration already scheduled' do
+    context 'with migration already scheduled', :redis do
       it 'does nothing' do
-        Sidekiq::Testing.fake! do
+        Sidekiq::Testing.disable! do
           ::HashedStorage::MigratorWorker.perform_async(1, 5)
 
           expect(Project).not_to receive(:with_unmigrated_storage)
