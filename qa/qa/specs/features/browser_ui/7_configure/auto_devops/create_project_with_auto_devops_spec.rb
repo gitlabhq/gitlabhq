@@ -116,12 +116,6 @@ module QA
           p.description = 'Project with AutoDevOps'
         end
 
-        project.visit!
-
-        Page::Alert::AutoDevopsAlert.perform do |alert|
-          expect(alert).to have_text(/.*The Auto DevOps pipeline has been enabled.*/)
-        end
-
         # Create AutoDevOps repo
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
