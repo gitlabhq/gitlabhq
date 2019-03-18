@@ -104,6 +104,12 @@ module Gitlab
       nil
     end
 
+    def try_megabytes_to_bytes(size)
+      Integer(size).megabytes
+    rescue ArgumentError
+      size
+    end
+
     def bytes_to_megabytes(bytes)
       bytes.to_f / Numeric::MEGABYTE
     end

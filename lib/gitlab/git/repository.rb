@@ -344,12 +344,12 @@ module Gitlab
         end
       end
 
-      def new_blobs(newrev)
+      def new_blobs(newrev, dynamic_timeout: nil)
         return [] if newrev.blank? || newrev == ::Gitlab::Git::BLANK_SHA
 
         strong_memoize("new_blobs_#{newrev}") do
           wrapped_gitaly_errors do
-            gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT)
+            gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
           end
         end
       end

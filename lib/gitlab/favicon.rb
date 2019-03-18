@@ -10,12 +10,18 @@ module Gitlab
           elsif Gitlab::Utils.to_boolean(ENV['CANARY'])
             'favicon-yellow.png'
           elsif Rails.env.development?
-            'favicon-blue.png'
+            development_favicon
           else
             'favicon.png'
           end
 
         ActionController::Base.helpers.image_path(image_name, host: host)
+      end
+
+      def development_favicon
+        # This is a separate method so that EE can return a different favicon
+        # for development environments.
+        'favicon-blue.png'
       end
 
       def status_overlay(status_name)
