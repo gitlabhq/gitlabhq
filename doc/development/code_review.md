@@ -58,7 +58,7 @@ from teams other than your own.
 
 #### Security requirements
 
-View our updated documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/index.html#internal-application-security-reviews) for **when** and **how** to request a security review.
+View the updated documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/index.html#internal-application-security-reviews) for **when** and **how** to request a sec urity review.
 
 ### The responsibility of the merge request author
 
