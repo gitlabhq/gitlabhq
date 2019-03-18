@@ -7,14 +7,11 @@ then
 fi
 
 # Generate the image name based on the project this is being run in
-ASSETS_IMAGE_NAME=$(echo ${CI_PROJECT_NAME} |
-   awk '{
-    split($1, p, "-");
-    interim = sprintf("%s-assets-%s", p[1], p[2]);
-    sub(/-$/, "", interim);
-    print interim
-  }'
-)
+ASSETS_IMAGE_NAME="gitlab-assets-ce"
+if [[ "${CI_PROJECT_NAME}" == "gitlab-ee" ]]
+then
+  ASSETS_IMAGE_NAME="gitlab-assets-ee"
+fi
 
 ASSETS_IMAGE_PATH=${CI_REGISTRY}/${CI_PROJECT_PATH}/${ASSETS_IMAGE_NAME}
 
