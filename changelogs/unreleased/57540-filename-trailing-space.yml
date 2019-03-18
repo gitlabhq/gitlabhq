@@ -1,0 +1,5 @@
+---
+title: Implemented whitespace-trimming for file names in Web IDE
+merge_request: 26270
+author:
+type: fixed
