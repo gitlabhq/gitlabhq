@@ -223,4 +223,11 @@ class ApplicationSetting < ApplicationRecord
     reset_memoized_terms
   end
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
+
+  def self.create_from_defaults
+    super
+  rescue ActiveRecord::RecordNotUnique
+    # We already have an ApplicationSetting record, so just return it.
+    current_without_cache
+  end
 end
