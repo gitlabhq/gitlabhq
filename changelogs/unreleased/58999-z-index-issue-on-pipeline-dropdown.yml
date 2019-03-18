@@ -1,0 +1,6 @@
+---
+title: Fix issue that caused the "Show all activity" button to appear on top of the
+  mini pipeline status dropdown on the merge request page
+merge_request: 26274
+author:
+type: fixed
