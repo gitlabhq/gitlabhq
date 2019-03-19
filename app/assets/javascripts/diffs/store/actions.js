@@ -266,9 +266,12 @@ export const scrollToFile = ({ state, commit }, path) => {
   commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
 };
 
-export const toggleShowTreeList = ({ commit, state }) => {
+export const toggleShowTreeList = ({ commit, state }, saving = true) => {
   commit(types.TOGGLE_SHOW_TREE_LIST);
-  localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+
+  if (saving) {
+    localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+  }
 };
 
 export const openDiffFileCommentForm = ({ commit, getters }, formData) => {
