@@ -1,0 +1,20 @@
+<ul class="nav nav-tabs new-session-tabs linked-tabs">
+<li class="nav-item">
+<a class="nav-link" data-action="tab1" data-target="div#tab1" data-toggle="tab" href="foo/bar/1">
+Tab 1
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" data-action="tab2" data-target="div#tab2" data-toggle="tab" href="foo/bar/1/context">
+Tab 2
+</a>
+</li>
+</ul>
+<div class="tab-content">
+<div class="tab-pane" id="tab1">
+Tab 1 Content
+</div>
+<div class="tab-pane" id="tab2">
+Tab 2 Content
+</div>
+</div>

@@ -3,10 +3,6 @@ require 'spec_helper'
 describe ApplicationController, '(Static JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  before(:all) do
-    clean_frontend_fixtures('static/')
-  end
-
   Dir.glob('{,ee/}spec/javascripts/fixtures/**/*.haml').map do |file_path|
     it "static/#{file_path.sub(%r{\A(ee/)?spec/javascripts/fixtures/}, '').sub(/\.haml\z/, '.raw')}" do |example|
       store_frontend_fixture(render_template(file_path), example.description)

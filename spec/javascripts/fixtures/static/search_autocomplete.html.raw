@@ -1,0 +1,15 @@
+<div class="search search-form">
+<form class="form-inline">
+<div class="search-input-container">
+<div class="search-input-wrap">
+<div class="dropdown">
+<input class="search-input dropdown-menu-toggle" id="search">
+<div class="dropdown-menu dropdown-select">
+<div class="dropdown-content"></div>
+</div>
+</div>
+</div>
+</div>
+<input class="js-search-project-options" type="hidden">
+</form>
+</div>

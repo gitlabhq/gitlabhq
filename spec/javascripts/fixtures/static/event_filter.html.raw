@@ -1,0 +1,44 @@
+<ul class="nav-links event-filter scrolling-tabs nav nav-tabs">
+<li class="active">
+<a class="event-filter-link" href="/dashboard/activity" id="all_event_filter" title="Filter by all">
+<span>
+All
+</span>
+</a>
+</li>
+<li>
+<a class="event-filter-link" href="/dashboard/activity" id="push_event_filter" title="Filter by push events">
+<span>
+Push events
+</span>
+</a>
+</li>
+<li>
+<a class="event-filter-link" href="/dashboard/activity" id="merged_event_filter" title="Filter by merge events">
+<span>
+Merge events
+</span>
+</a>
+</li>
+<li>
+<a class="event-filter-link" href="/dashboard/activity" id="issue_event_filter" title="Filter by issue events">
+<span>
+Issue events
+</span>
+</a>
+</li>
+<li>
+<a class="event-filter-link" href="/dashboard/activity" id="comments_event_filter" title="Filter by comments">
+<span>
+Comments
+</span>
+</a>
+</li>
+<li>
+<a class="event-filter-link" href="/dashboard/activity" id="team_event_filter" title="Filter by team">
+<span>
+Team
+</span>
+</a>
+</li>
+</ul>

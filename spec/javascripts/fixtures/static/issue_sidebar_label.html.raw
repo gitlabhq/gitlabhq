@@ -1,0 +1,26 @@
+<div class="block labels">
+<div class="sidebar-collapsed-icon js-sidebar-labels-tooltip"></div>
+<div class="title hide-collapsed">
+<a class="edit-link float-right" href="#">
+Edit
+</a>
+</div>
+<div class="selectbox hide-collapsed" style="display: none;">
+<div class="dropdown">
+<button class="dropdown-menu-toggle js-label-select js-multiselect" data-ability-name="issue" data-field-name="issue[label_names][]" data-issue-update="/root/test/issues/2.json" data-labels="/root/test/labels.json" data-project-id="12" data-show-any="true" data-show-no="true" data-toggle="dropdown" type="button">
+<span class="dropdown-toggle-text">
+Label
+</span>
+<i class="fa fa-chevron-down"></i>
+</button>
+<div class="dropdown-menu dropdown-select dropdown-menu-paging dropdown-menu-labels dropdown-menu-selectable">
+<div class="dropdown-page-one">
+<div class="dropdown-content"></div>
+<div class="dropdown-loading">
+<i class="fa fa-spinner fa-spin"></i>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>

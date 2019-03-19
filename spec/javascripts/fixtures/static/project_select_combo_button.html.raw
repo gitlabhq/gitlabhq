@@ -1,0 +1,9 @@
+<div class="project-item-select-holder">
+<input class="project-item-select" data-group-id="12345" data-relative-path="issues/new">
+<a class="new-project-item-link" data-label="New issue" data-type="issues" href="">
+<i class="fa fa-spinner spin"></i>
+</a>
+<a class="new-project-item-select-button">
+<i class="fa fa-caret-down"></i>
+</a>
+</div>
