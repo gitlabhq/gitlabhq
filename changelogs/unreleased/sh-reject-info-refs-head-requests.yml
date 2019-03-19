@@ -1,0 +1,5 @@
+---
+title: Reject HEAD requests to info/refs endpoint
+merge_request: 26334
+author:
+type: fixed
