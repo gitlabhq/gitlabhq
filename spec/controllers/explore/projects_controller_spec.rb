@@ -1,6 +1,36 @@
 require 'spec_helper'
 
 describe Explore::ProjectsController do
+  describe 'GET #index.json' do
+    render_views
+
+    before do
+      get :index, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+  end
+
+  describe 'GET #trending.json' do
+    render_views
+
+    before do
+      get :trending, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+  end
+
+  describe 'GET #starred.json' do
+    render_views
+
+    before do
+      get :starred, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+  end
+
   describe 'GET #trending' do
     context 'sorting by update date' do
       let(:project1) { create(:project, :public, updated_at: 3.days.ago) }

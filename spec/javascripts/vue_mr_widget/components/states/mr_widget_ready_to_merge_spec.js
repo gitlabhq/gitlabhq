@@ -377,11 +377,29 @@ describe('ReadyToMerge', () => {
     });
 
     describe('initiateMergePolling', () => {
+      beforeEach(() => {
+        jasmine.clock().install();
+      });
+
+      afterEach(() => {
+        jasmine.clock().uninstall();
+      });
+
       it('should call simplePoll', () => {
         const simplePoll = spyOnDependency(ReadyToMerge, 'simplePoll');
         vm.initiateMergePolling();
 
-        expect(simplePoll).toHaveBeenCalled();
+        expect(simplePoll).toHaveBeenCalledWith(jasmine.any(Function), { timeout: 0 });
+      });
+
+      it('should call handleMergePolling', () => {
+        spyOn(vm, 'handleMergePolling');
+
+        vm.initiateMergePolling();
+
+        jasmine.clock().tick(2000);
+
+        expect(vm.handleMergePolling).toHaveBeenCalled();
       });
     });
 

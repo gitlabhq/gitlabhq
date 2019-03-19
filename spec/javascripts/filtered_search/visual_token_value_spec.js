@@ -317,7 +317,18 @@ describe('Filtered Search Visual Tokens', () => {
     it('does not update user token appearance for `none` filter', () => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
 
-      subject.tokenType = 'none';
+      subject.tokenValue = 'none';
+
+      const { updateUserTokenAppearanceSpy } = setupSpies(subject);
+      subject.render(tokenValueContainer, tokenValueElement);
+
+      expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
+    });
+
+    it('does not update user token appearance for `None` filter', () => {
+      const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
+
+      subject.tokenValue = 'None';
 
       const { updateUserTokenAppearanceSpy } = setupSpies(subject);
       subject.render(tokenValueContainer, tokenValueElement);
@@ -328,7 +339,7 @@ describe('Filtered Search Visual Tokens', () => {
     it('does not update user token appearance for `any` filter', () => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(authorToken);
 
-      subject.tokenType = 'any';
+      subject.tokenValue = 'any';
 
       const { updateUserTokenAppearanceSpy } = setupSpies(subject);
       subject.render(tokenValueContainer, tokenValueElement);
@@ -336,10 +347,21 @@ describe('Filtered Search Visual Tokens', () => {
       expect(updateUserTokenAppearanceSpy.calls.count()).toBe(0);
     });
 
+    it('does not update label token color for `None` filter', () => {
+      const { subject, tokenValueContainer, tokenValueElement } = findElements(bugLabelToken);
+
+      subject.tokenValue = 'None';
+
+      const { updateLabelTokenColorSpy } = setupSpies(subject);
+      subject.render(tokenValueContainer, tokenValueElement);
+
+      expect(updateLabelTokenColorSpy.calls.count()).toBe(0);
+    });
+
     it('does not update label token color for `none` filter', () => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(bugLabelToken);
 
-      subject.tokenType = 'none';
+      subject.tokenValue = 'none';
 
       const { updateLabelTokenColorSpy } = setupSpies(subject);
       subject.render(tokenValueContainer, tokenValueElement);
@@ -350,7 +372,7 @@ describe('Filtered Search Visual Tokens', () => {
     it('does not update label token color for `any` filter', () => {
       const { subject, tokenValueContainer, tokenValueElement } = findElements(bugLabelToken);
 
-      subject.tokenType = 'any';
+      subject.tokenValue = 'any';
 
       const { updateLabelTokenColorSpy } = setupSpies(subject);
       subject.render(tokenValueContainer, tokenValueElement);
