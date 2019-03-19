@@ -15,7 +15,7 @@ describe RegistrationsController do
 
       context 'when send_user_confirmation_email is false' do
         it 'signs the user in' do
-          allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(false)
+          stub_application_setting(send_user_confirmation_email: false)
 
           expect { post(:create, params: user_params) }.not_to change { ActionMailer::Base.deliveries.size }
           expect(subject.current_user).not_to be_nil
@@ -24,7 +24,7 @@ describe RegistrationsController do
 
       context 'when send_user_confirmation_email is true' do
         it 'does not authenticate user and sends confirmation email' do
-          allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
+          stub_application_setting(send_user_confirmation_email: true)
 
           post(:create, params: user_params)
 
@@ -35,7 +35,7 @@ describe RegistrationsController do
 
       context 'when signup_enabled? is false' do
         it 'redirects to sign_in' do
-          allow_any_instance_of(ApplicationSetting).to receive(:signup_enabled?).and_return(false)
+          stub_application_setting(signup_enabled: false)
 
           expect { post(:create, params: user_params) }.not_to change(User, :count)
           expect(response).to redirect_to(new_user_session_path)

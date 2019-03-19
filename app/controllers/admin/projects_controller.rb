@@ -15,7 +15,7 @@ class Admin::ProjectsController < Admin::ApplicationController
       format.html
       format.json do
         render json: {
-          html: view_to_html_string("admin/projects/_projects", locals: { projects: @projects })
+          html: view_to_html_string("admin/projects/_projects", projects: @projects)
         }
       end
     end

@@ -38,6 +38,18 @@ describe Gitlab::UserExtractor do
 
       expect(extractor.users).to include(user)
     end
+
+    context 'input as array of strings' do
+      it 'is treated as one string' do
+        extractor = described_class.new(text.lines)
+
+        user_1 = create(:user, username: "USER-1")
+        user_4 = create(:user, username: "USER-4")
+        user_email = create(:user, email: 'user@gitlab.org')
+
+        expect(extractor.users).to contain_exactly(user_1, user_4, user_email)
+      end
+    end
   end
 
   describe '#matches' do

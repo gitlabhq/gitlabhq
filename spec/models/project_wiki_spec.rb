@@ -71,6 +71,14 @@ describe ProjectWiki do
       expect(project_wiki.create_page("index", "test content")).to be_truthy
     end
 
+    it "creates a new wiki repo with a default commit message" do
+      expect(project_wiki.create_page("index", "test content", :markdown, "")).to be_truthy
+
+      page = project_wiki.find_page('index')
+
+      expect(page.last_version.message).to eq("#{user.username} created page: index")
+    end
+
     it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
       # Create a fresh project which will not have a wiki
       project_wiki = described_class.new(create(:project), user)
