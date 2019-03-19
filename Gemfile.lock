@@ -784,7 +784,7 @@ GEM
     rubyntlm (0.6.2)
     rubypants (0.2.0)
     rubyzip (1.2.2)
-    rugged (0.27.5)
+    rugged (0.28.0)
     safe_yaml (1.0.4)
     sanitize (4.6.6)
       crass (~> 1.0.2)
@@ -1134,7 +1134,7 @@ DEPENDENCIES
   ruby-progressbar
   ruby_parser (~> 3.8)
   rubyzip (~> 1.2.2)
-  rugged (~> 0.27)
+  rugged (~> 0.28)
   sanitize (~> 4.6)
   sass (~> 3.5)
   sass-rails (~> 5.0.6)
