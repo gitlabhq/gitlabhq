@@ -43,6 +43,16 @@ describe Admin::ProjectsController do
     end
   end
 
+  describe 'GET /projects.json' do
+    render_views
+
+    before do
+      get :index, format: :json
+    end
+
+    it { is_expected.to respond_with(:success) }
+  end
+
   describe 'GET /projects/:id' do
     render_views
 
