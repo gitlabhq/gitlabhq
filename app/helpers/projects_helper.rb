@@ -169,7 +169,7 @@ module ProjectsHelper
     translation.html_safe
   end
 
-  def project_list_cache_key(project)
+  def project_list_cache_key(project, pipeline_status: true)
     key = [
       project.route.cache_key,
       project.cache_key,
@@ -179,10 +179,11 @@ module ProjectsHelper
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
       max_project_member_access_cache_key(project),
+      pipeline_status,
       'v2.6'
     ]
 
-    key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
+    key << pipeline_status_cache_key(project.pipeline_status) if pipeline_status && project.pipeline_status.has_status?
 
     key
   end
