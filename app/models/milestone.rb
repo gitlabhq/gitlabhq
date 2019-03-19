@@ -37,6 +37,7 @@ class Milestone < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
+  scope :started, -> { active.where('milestones.start_date <= CURRENT_DATE') }
 
   scope :for_projects_and_groups, -> (projects, groups) do
     projects = projects.compact if projects.is_a? Array
