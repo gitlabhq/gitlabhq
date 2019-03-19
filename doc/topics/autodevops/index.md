@@ -230,8 +230,25 @@ can enable/disable Auto DevOps at either the project-level or instance-level.
 1. Click **Save changes** for the changes to take effect.
 
 NOTE: **Note:**
-Even when disabled at the instance level, project maintainers are still able to enable
-Auto DevOps at the project level.
+Even when disabled at the instance level, group owners and project maintainers are still able to enable
+Auto DevOps at group-level and project-level, respectively.
+
+### Enabling/disabling Auto DevOps at the group-level
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/52447) in GitLab 11.10.
+
+To enable or disable Auto DevOps at the group-level:
+
+1. Go to group's **Settings > CI/CD > Auto DevOps** page.
+1. Toggle the **Default to Auto DevOps pipeline** checkbox (checked to enable, unchecked to disable).
+1. Click **Save changes** button for the changes to take effect.
+
+When enabling or disabling Auto DevOps at group-level, group configuration will be implicitly used for
+the subgroups and projects inside that group, unless Auto DevOps is specifically enabled or disabled on
+the subgroup or project.
+
+NOTE: **Note**
+Only administrators and group owners are allowed to enable or disable Auto DevOps at group-level.
 
 ### Enabling/disabling Auto DevOps at the project-level
 
