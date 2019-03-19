@@ -2,6 +2,7 @@
 
 require 'securerandom'
 require 'faker'
+require 'yaml'
 require_relative '../../qa'
 # This script generates testdata for Performance Testing.
 # Required environment variables: PERSONAL_ACCESS_TOKEN and GITLAB_ADDRESS
@@ -20,7 +21,8 @@ module QA
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['PERSONAL_ACCESS_TOKEN'])
         @group_name = "gitlab-qa-perf-sandbox-#{SecureRandom.hex(8)}"
         @project_name = "my-test-project-#{SecureRandom.hex(8)}"
-        @urls = {}
+        @visibility = "public"
+        @urls = { host: ENV['GITLAB_ADDRESS'] }
       end
 
       def run
@@ -39,26 +41,26 @@ module QA
         threads_arr = []
 
         methods_arr.each do |m|
-          threads_arr << Thread.new {m.call}
+          threads_arr << Thread.new { m.call }
         end
 
         threads_arr.each(&:join)
         STDOUT.puts "\nURLs: #{@urls}"
-        File.open("urls.txt", "w") { |file| file.puts @urls.to_s}
+        File.open("urls.yml", "w") { |file| file.puts @urls.to_yaml }
         STDOUT.puts "\nDone"
       end
 
       private
 
       def create_group
-        group_search_response = post Runtime::API::Request.new(@api_client, "/groups").url, "name=#{@group_name}&path=#{@group_name}"
+        group_search_response = post Runtime::API::Request.new(@api_client, "/groups").url, "name=#{@group_name}&path=#{@group_name}&visibility=#{@visibility}"
         group = JSON.parse(group_search_response.body)
         @urls[:group_page] = group["web_url"]
         group["id"]
       end
 
       def create_project(group_id)
-        create_project_response = post Runtime::API::Request.new(@api_client, "/projects").url, "name=#{@project_name}&namespace_id=#{group_id}"
+        create_project_response = post Runtime::API::Request.new(@api_client, "/projects").url, "name=#{@project_name}&namespace_id=#{group_id}&visibility=#{@visibility}"
         @urls[:project_page] = JSON.parse(create_project_response.body)["web_url"]
       end
 

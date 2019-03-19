@@ -16,3 +16,25 @@ desc "Generate Performance Testdata"
 task :generate_perf_testdata do
   QA::Tools::GeneratePerfTestdata.new.run
 end
+
+desc "Run artillery load tests"
+task :run_artillery_load_tests do
+  unless ENV['HOST_URL'] && ENV['LARGE_ISSUE_URL'] && ENV['LARGE_MR_URL']
+    urls_file = ENV['URLS_FILE_PATH'] || 'urls.yml'
+
+    unless File.exist?(urls_file)
+      raise "\n#{urls_file} file is missing. Please provide correct URLS_FILE_PATH or all of HOST_URL, LARGE_ISSUE_URL and LARGE_MR_URL\n\n"
+    end
+
+    urls = YAML.safe_load(File.read(urls_file))
+    ENV['HOST_URL'] = urls[:host]
+    ENV['LARGE_ISSUE_URL'] = urls[:large_issue]
+    ENV['LARGE_MR_URL'] = urls[:large_mr]
+  end
+
+  sh('artillery run load/artillery.yml -o report.json')
+  sh('artillery report report.json -o report.html && rm report.json')
+end
+
+desc "Generate data and run load tests"
+task generate_data_and_run_load_test: [:generate_perf_testdata, :run_artillery_load_tests]
