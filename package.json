@@ -17,6 +17,7 @@
     "prettier-all": "node ./scripts/frontend/prettier.js check-all",
     "prettier-all-save": "node ./scripts/frontend/prettier.js save-all",
     "stylelint": "node node_modules/stylelint/bin/stylelint.js app/assets/stylesheets/**/*.* --custom-formatter node_modules/stylelint-error-string-formatter",
+    "test": "yarn jest && yarn karma",
     "webpack": "webpack --config config/webpack.config.js",
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
