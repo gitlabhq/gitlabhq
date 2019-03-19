@@ -3,6 +3,12 @@
 [Gitaly](https://gitlab.com/gitlab-org/gitaly) is a high-level Git RPC service used by GitLab CE/EE,
 Workhorse and GitLab-Shell.
 
+## Beginner's guide
+
+Start by reading the gitaly repository's
+[Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md). 
+It describes how to setup gitaly, the various components of gitaly and what they do, and how to run its test suites.
+
 ## Developing new Git features
 
 To read or write Git data, a request has to be made to Gitaly. This means that
