@@ -45,7 +45,11 @@ class CommitCollection
   # Batch load any commits that are not backed by full gitaly data, and
   # replace them in the collection.
   def enrich!
-    return self if fully_enriched?
+    # A project is needed in order to fetch data from gitaly. Projects
+    # can be absent from commits in certain rare situations (like when
+    # viewing a MR of a deleted fork). In these cases, assume that the
+    # enriched data is not needed.
+    return self if project.blank? || fully_enriched?
 
     # Batch load full Commits from the repository
     # and map to a Hash of id => Commit
