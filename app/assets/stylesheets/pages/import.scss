@@ -49,3 +49,15 @@
 .import-projects-loading-icon {
   margin-top: $gl-padding-32;
 }
+
+.btn-import {
+  .loading-icon {
+    display: none;
+  }
+
+  &.is-loading {
+    .loading-icon {
+      display: inline-block;
+    }
+  }
+}

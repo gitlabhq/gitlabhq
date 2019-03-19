@@ -213,4 +213,22 @@ describe Gitlab::Utils do
       expect(subject[:variables].first[:key]).to eq('VAR1')
     end
   end
+
+  describe '.try_megabytes_to_bytes' do
+    context 'when the size can be converted to megabytes' do
+      it 'returns the size in megabytes' do
+        size = described_class.try_megabytes_to_bytes(1)
+
+        expect(size).to eq(1.megabytes)
+      end
+    end
+
+    context 'when the size can not be converted to megabytes' do
+      it 'returns the input size' do
+        size = described_class.try_megabytes_to_bytes('foo')
+
+        expect(size).to eq('foo')
+      end
+    end
+  end
 end

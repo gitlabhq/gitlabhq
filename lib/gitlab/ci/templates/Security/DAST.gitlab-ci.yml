@@ -21,20 +21,19 @@ dast:
   allow_failure: true
   services:
     - docker:stable-dind
-  before_script:
+  script:
     - export DAST_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
     - |
       function dast_run() {
         docker run \
-          --env DAST_TARGET_AVAILABILITY_TIMEOUT \
-          --volume "$PWD:/output" \
-          --volume /var/run/docker.sock:/var/run/docker.sock \
-          -w /output \
-          "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION" \
-          /analyze -t $DAST_WEBSITE \
-          "$@"
+        --env DAST_TARGET_AVAILABILITY_TIMEOUT \
+        --volume "$PWD:/output" \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        -w /output \
+        "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION" \
+        /analyze -t $DAST_WEBSITE \
+        "$@"
       }
-  script:
     - |
       if [ -n "$DAST_AUTH_URL" ]
       then

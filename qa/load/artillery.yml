@@ -1,0 +1,22 @@
+config:
+  target: "{{ $processEnvironment.HOST_URL }}"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      name: "Warm up"
+    - duration: 120
+      arrivalRate: 1
+      rampTo: 50
+      name: "Gradual ramp up"
+    - duration: 60
+      arrivalRate: 50
+      name: "Sustained max load"
+scenarios:
+  - name: "Visit large issue url"
+    flow:
+      - get:
+          url: "{{ $processEnvironment.LARGE_ISSUE_URL }}"
+  - name: "Visit large MR url"
+    flow:
+      - get:
+          url: "{{ $processEnvironment.LARGE_MR_URL }}"

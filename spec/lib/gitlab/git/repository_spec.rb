@@ -1688,6 +1688,11 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       expect(repository.delete_config(*%w[does.not.exist test.foo1 test.foo2])).to be_nil
 
+      # Workaround for https://github.com/libgit2/rugged/issues/785: If
+      # Gitaly changes .gitconfig while Rugged has the file loaded
+      # Rugged::Repository#each_key will report stale values unless a
+      # lookup is done first.
+      expect(repository_rugged.config['test.foo1']).to be_nil
       config_keys = repository_rugged.config.each_key.to_a
       expect(config_keys).not_to include('test.foo1')
       expect(config_keys).not_to include('test.foo2')

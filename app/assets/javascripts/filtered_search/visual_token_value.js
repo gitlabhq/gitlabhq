@@ -13,9 +13,9 @@ export default class VisualTokenValue {
   }
 
   render(tokenValueContainer, tokenValueElement) {
-    const { tokenType } = this;
+    const { tokenType, tokenValue } = this;
 
-    if (['none', 'any'].includes(tokenType)) {
+    if (['none', 'any'].includes(tokenValue.toLowerCase())) {
       return;
     }
 

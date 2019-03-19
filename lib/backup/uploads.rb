@@ -9,7 +9,7 @@ module Backup
     def initialize(progress)
       @progress = progress
 
-      super('uploads', Rails.root.join('public/uploads'))
+      super('uploads', File.join(Gitlab.config.uploads.storage_path, "uploads"))
     end
   end
 end

@@ -84,15 +84,22 @@ module Gitlab
         commits
       end
 
-      def list_new_blobs(newrev, limit = 0)
+      def list_new_blobs(newrev, limit = 0, dynamic_timeout: nil)
         request = Gitaly::ListNewBlobsRequest.new(
           repository: @gitaly_repo,
           commit_id: newrev,
           limit: limit
         )
 
+        timeout =
+          if dynamic_timeout
+            [dynamic_timeout, GitalyClient.medium_timeout].min
+          else
+            GitalyClient.medium_timeout
+          end
+
         response = GitalyClient
-          .call(@storage, :ref_service, :list_new_blobs, request, timeout: GitalyClient.medium_timeout)
+          .call(@storage, :ref_service, :list_new_blobs, request, timeout: timeout)
 
         response.flat_map do |msg|
           # Returns an Array of Gitaly::NewBlobObject objects
