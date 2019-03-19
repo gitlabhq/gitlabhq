@@ -17,7 +17,8 @@ module API
         blobs: Entities::Blob,
         wiki_blobs: Entities::Blob,
         snippet_titles: Entities::Snippet,
-        snippet_blobs: Entities::Snippet
+        snippet_blobs: Entities::Snippet,
+        users: Entities::UserBasic
       }.freeze
 
       def search(additional_params = {})
@@ -51,6 +52,12 @@ module API
         # Defining this method here as a noop allows us to easily extend it in
         # EE, without having to modify this file directly.
       end
+
+      def check_users_search_allowed!
+        if params[:scope].to_sym == :users && Feature.disabled?(:users_search, default_enabled: true)
+          render_api_error!({ error: _("Scope not supported with disabled 'users_search' feature!") }, 400)
+        end
+      end
     end
 
     resource :search do
@@ -67,6 +74,7 @@ module API
       end
       get do
         verify_search_scope!
+        check_users_search_allowed!
 
         present search, with: entity
       end
@@ -87,6 +95,7 @@ module API
       end
       get ':id/(-/)search' do
         verify_search_scope!
+        check_users_search_allowed!
 
         present search(group_id: user_group.id), with: entity
       end
@@ -106,6 +115,8 @@ module API
         use :pagination
       end
       get ':id/(-/)search' do
+        check_users_search_allowed!
+
         present search(project_id: user_project.id), with: entity
       end
     end

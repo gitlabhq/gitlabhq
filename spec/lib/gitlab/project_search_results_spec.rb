@@ -412,4 +412,36 @@ describe Gitlab::ProjectSearchResults do
       end
     end
   end
+
+  describe 'user search' do
+    it 'returns the user belonging to the project matching the search query' do
+      project = create(:project)
+
+      user1 = create(:user, username: 'gob_bluth')
+      create(:project_member, :developer, user: user1, project: project)
+
+      user2 = create(:user, username: 'michael_bluth')
+      create(:project_member, :developer, user: user2, project: project)
+
+      create(:user, username: 'gob_2018')
+
+      result = described_class.new(user, project, 'gob').objects('users')
+
+      expect(result).to eq [user1]
+    end
+
+    it 'returns the user belonging to the group matching the search query' do
+      group = create(:group)
+      project = create(:project, namespace: group)
+
+      user1 = create(:user, username: 'gob_bluth')
+      create(:group_member, :developer, user: user1, group: group)
+
+      create(:user, username: 'gob_2018')
+
+      result = described_class.new(user, project, 'gob').objects('users')
+
+      expect(result).to eq [user1]
+    end
+  end
 end
