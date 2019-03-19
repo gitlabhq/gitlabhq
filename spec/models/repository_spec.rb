@@ -1616,8 +1616,7 @@ describe Repository do
         :has_visible_content?,
         :issue_template_names,
         :merge_request_template_names,
-        :xcode_project?,
-        :insights_config
+        :xcode_project?
       ])
 
       repository.after_change_head
@@ -1880,26 +1879,6 @@ describe Repository do
       it 'returns false' do
         expect(repository.xcode_project?).to be_falsey
       end
-    end
-  end
-
-  describe "#insights_config", :use_clean_rails_memory_store_caching do
-    it 'returns a valid Insights config file' do
-      files = [TestBlob.new('file'), TestBlob.new('.gitlab/insights.yml')]
-
-      expect(repository.tree).to receive(:blobs).and_return(files)
-      expect(repository.insights_config.path).to eq('.gitlab/insights.yml')
-    end
-
-    it 'returns nil if does not exist' do
-      expect(repository.tree).to receive(:blobs).and_return([])
-      expect(repository.insights_config).to be_nil
-    end
-
-    it 'returns nil for an empty repository' do
-      allow(repository).to receive(:root_ref).and_raise(Gitlab::Git::Repository::NoRepository)
-
-      expect(repository.insights_config).to be_nil
     end
   end
 
