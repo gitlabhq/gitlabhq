@@ -12,7 +12,7 @@ module QA
           next unless element.required?
 
           # TODO: this wait needs to be replaced by the wait class
-          unless base_page.has_element?(element.name, wait: 10)
+          unless base_page.has_element?(element.name, wait: 60)
             raise Validatable::PageValidationError, "#{element.name} did not appear on #{self.name} as expected"
           end
         end
