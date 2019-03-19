@@ -4872,9 +4872,6 @@ msgstr ""
 msgid "MergeRequest|No files found"
 msgstr ""
 
-msgid "MergeRequest|Search files"
-msgstr ""
-
 msgid "Merged"
 msgstr ""
 
