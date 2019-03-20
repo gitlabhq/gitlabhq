@@ -498,7 +498,8 @@
       list-style: none;
     }
 
-    &:last-child {
+    // when downstream pipelines are present, the last stage isn't the last column
+    &:last-child:not(.has-downstream) {
       .build {
         // Remove right connecting horizontal line from first build in last stage
         &:first-child::after {
@@ -515,7 +516,8 @@
       }
     }
 
-    &:first-child {
+    // when upstream pipelines are present, the first stage isn't the first column
+    &:first-child:not(.has-upstream) {
       .build {
         // Remove left curved connectors from all builds in first stage
         &:not(:first-child)::before {
