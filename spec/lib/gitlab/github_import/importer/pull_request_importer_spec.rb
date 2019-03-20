@@ -273,6 +273,11 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
       mr.state = 'opened'
       mr.save
 
+      # Ensure the project owner is creating the branches because the
+      # merge request author may not have access to push to this
+      # repository.
+      allow(project.repository).to receive(:add_branch).with(project.owner, anything, anything).and_call_original
+
       importer.insert_git_data(mr, exists)
 
       expect(project.repository.branch_exists?(mr.source_branch)).to be_truthy
