@@ -10,18 +10,6 @@ module Gitlab
 
     Error = Class.new(StandardError)
 
-    KeyAdder = Struct.new(:io) do
-      def add_key(id, key)
-        key = Gitlab::Shell.strip_key(key)
-        # Newline and tab are part of the 'protocol' used to transmit id+key to the other end
-        if key.include?("\t") || key.include?("\n")
-          raise Error.new("Invalid key: #{key.inspect}")
-        end
-
-        io.puts("#{id}\t#{key}")
-      end
-    end
-
     class << self
       def secret_token
         @secret_token ||= begin
@@ -38,10 +26,6 @@ module Gitlab
       def version_required
         @version_required ||= File.read(Rails.root
                                         .join('GITLAB_SHELL_VERSION')).strip
-      end
-
-      def strip_key(key)
-        key.split(/[ ]+/)[0, 2].join(' ')
       end
 
       private
@@ -173,7 +157,7 @@ module Gitlab
       false
     end
 
-    # Add new key to gitlab-shell
+    # Add new key to authorized_keys
     #
     # Ex.
     #   add_key("key-42", "sha-rsa ...")
@@ -181,33 +165,53 @@ module Gitlab
     def add_key(key_id, key_content)
       return unless self.authorized_keys_enabled?
 
-      gitlab_shell_fast_execute([gitlab_shell_keys_path,
-                                 'add-key', key_id, self.class.strip_key(key_content)])
+      if shell_out_for_gitlab_keys?
+        gitlab_shell_fast_execute([
+          gitlab_shell_keys_path,
+          'add-key',
+          key_id,
+          strip_key(key_content)
+        ])
+      else
+        gitlab_authorized_keys.add_key(key_id, key_content)
+      end
     end
 
     # Batch-add keys to authorized_keys
     #
     # Ex.
-    #   batch_add_keys { |adder| adder.add_key("key-42", "sha-rsa ...") }
-    def batch_add_keys(&block)
+    #   batch_add_keys(Key.all)
+    def batch_add_keys(keys)
       return unless self.authorized_keys_enabled?
 
-      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys), 'w') do |io|
-        yield(KeyAdder.new(io))
+      if shell_out_for_gitlab_keys?
+        begin
+          IO.popen("#{gitlab_shell_keys_path} batch-add-keys", 'w') do |io|
+            add_keys_to_io(keys, io)
+          end
+
+          $?.success?
+        rescue Error
+          false
+        end
+      else
+        gitlab_authorized_keys.batch_add_keys(keys)
       end
     end
 
-    # Remove ssh key from gitlab shell
+    # Remove ssh key from authorized_keys
     #
     # Ex.
-    #   remove_key("key-342", "sha-rsa ...")
+    #   remove_key("key-342")
     #
-    def remove_key(key_id, key_content = nil)
+    def remove_key(id, _ = nil)
       return unless self.authorized_keys_enabled?
 
-      args = [gitlab_shell_keys_path, 'rm-key', key_id]
-      args << key_content if key_content
-      gitlab_shell_fast_execute(args)
+      if shell_out_for_gitlab_keys?
+        gitlab_shell_fast_execute([gitlab_shell_keys_path, 'rm-key', id])
+      else
+        gitlab_authorized_keys.rm_key(id)
+      end
     end
 
     # Remove all ssh keys from gitlab shell
@@ -218,7 +222,11 @@ module Gitlab
     def remove_all_keys
       return unless self.authorized_keys_enabled?
 
-      gitlab_shell_fast_execute([gitlab_shell_keys_path, 'clear'])
+      if shell_out_for_gitlab_keys?
+        gitlab_shell_fast_execute([gitlab_shell_keys_path, 'clear'])
+      else
+        gitlab_authorized_keys.clear
+      end
     end
 
     # Remove ssh keys from gitlab shell that are not in the DB
@@ -246,33 +254,6 @@ module Gitlab
       end
     end
     # rubocop: enable CodeReuse/ActiveRecord
-
-    # Iterate over all ssh key IDs from gitlab shell, in batches
-    #
-    # Ex.
-    #   batch_read_key_ids { |batch| keys = Key.where(id: batch) }
-    #
-    def batch_read_key_ids(batch_size: 100, &block)
-      return unless self.authorized_keys_enabled?
-
-      list_key_ids do |key_id_stream|
-        key_id_stream.lazy.each_slice(batch_size) do |lines|
-          key_ids = lines.map { |l| l.chomp.to_i }
-          yield(key_ids)
-        end
-      end
-    end
-
-    # Stream all ssh key IDs from gitlab shell, separated by newlines
-    #
-    # Ex.
-    #   list_key_ids
-    #
-    def list_key_ids(&block)
-      return unless self.authorized_keys_enabled?
-
-      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys list-key-ids), &block)
-    end
 
     # Add empty directory for storing repositories
     #
@@ -378,6 +359,10 @@ module Gitlab
 
     private
 
+    def shell_out_for_gitlab_keys?
+      Gitlab.config.gitlab_shell.authorized_keys_file.blank?
+    end
+
     def gitlab_shell_fast_execute(cmd)
       output, status = gitlab_shell_fast_execute_helper(cmd)
 
@@ -413,6 +398,40 @@ module Gitlab
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...
       raise Error, e
+    end
+
+    def gitlab_authorized_keys
+      @gitlab_authorized_keys ||= Gitlab::AuthorizedKeys.new
+    end
+
+    def batch_read_key_ids(batch_size: 100, &block)
+      return unless self.authorized_keys_enabled?
+
+      if shell_out_for_gitlab_keys?
+        IO.popen("#{gitlab_shell_keys_path} list-key-ids") do |key_id_stream|
+          key_id_stream.lazy.each_slice(batch_size) do |lines|
+            yield(lines.map { |l| l.chomp.to_i })
+          end
+        end
+      else
+        gitlab_authorized_keys.list_key_ids.lazy.each_slice(batch_size) do |key_ids|
+          yield(key_ids)
+        end
+      end
+    end
+
+    def strip_key(key)
+      key.split(/[ ]+/)[0, 2].join(' ')
+    end
+
+    def add_keys_to_io(keys, io)
+      keys.each do |k|
+        key = strip_key(k.key)
+
+        raise Error.new("Invalid key: #{key.inspect}") if key.include?("\t") || key.include?("\n")
+
+        io.puts("#{k.shell_id}\t#{key}")
+      end
     end
 
     class GitalyGitlabProjects

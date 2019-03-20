@@ -4,6 +4,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   include WorkhorseRequest
 
   before_action :access_check
+  prepend_before_action :deny_head_requests, only: [:info_refs]
 
   rescue_from Gitlab::GitAccess::UnauthorizedError, with: :render_403
   rescue_from Gitlab::GitAccess::NotFoundError, with: :render_404
@@ -31,6 +32,10 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   private
+
+  def deny_head_requests
+    head :forbidden if request.head?
+  end
 
   def download_request?
     upload_pack?

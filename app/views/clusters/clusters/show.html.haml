@@ -34,6 +34,8 @@
     = render 'banner'
     = render 'form'
 
+  = render_if_exists 'health'
+
   .cluster-applications-table#js-cluster-applications
 
   %section.settings#js-cluster-details{ class: ('expanded' if expanded) }

@@ -9,6 +9,7 @@
   = f.select :auth_method,
       options_for_select(auth_options, mirror.auth_method),
       {}, { class: "form-control js-mirror-auth-type qa-authentication-method" }
+  = f.hidden_field :auth_method, value: "password", class: "js-hidden-mirror-auth-type"
 
 .form-group
   .collapse.js-well-changing-auth

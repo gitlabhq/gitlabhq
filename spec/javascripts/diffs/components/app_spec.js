@@ -397,4 +397,61 @@ describe('diffs/components/app', () => {
       expect(wrapper.find(TreeList).exists()).toBe(true);
     });
   });
+
+  describe('hideTreeListIfJustOneFile', () => {
+    let toggleShowTreeList;
+
+    beforeEach(() => {
+      toggleShowTreeList = jasmine.createSpy('toggleShowTreeList');
+    });
+
+    afterEach(() => {
+      localStorage.removeItem('mr_tree_show');
+    });
+
+    it('calls toggleShowTreeList when only 1 file', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles.push({ sha: '123' });
+      });
+
+      wrapper.setMethods({
+        toggleShowTreeList,
+      });
+
+      wrapper.vm.hideTreeListIfJustOneFile();
+
+      expect(toggleShowTreeList).toHaveBeenCalledWith(false);
+    });
+
+    it('does not call toggleShowTreeList when more than 1 file', () => {
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles.push({ sha: '123' });
+        state.diffs.diffFiles.push({ sha: '124' });
+      });
+
+      wrapper.setMethods({
+        toggleShowTreeList,
+      });
+
+      wrapper.vm.hideTreeListIfJustOneFile();
+
+      expect(toggleShowTreeList).not.toHaveBeenCalled();
+    });
+
+    it('does not call toggleShowTreeList when localStorage is set', () => {
+      localStorage.setItem('mr_tree_show', 'true');
+
+      createComponent({}, ({ state }) => {
+        state.diffs.diffFiles.push({ sha: '123' });
+      });
+
+      wrapper.setMethods({
+        toggleShowTreeList,
+      });
+
+      wrapper.vm.hideTreeListIfJustOneFile();
+
+      expect(toggleShowTreeList).not.toHaveBeenCalled();
+    });
+  });
 });

@@ -19,6 +19,9 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid " You need to do this before %{grace_period_deadline}."
+msgstr ""
+
 msgid " or "
 msgstr ""
 
@@ -1378,6 +1381,9 @@ msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
 msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
+msgstr ""
+
+msgid "Cannot skip two factor authentication setup"
 msgstr ""
 
 msgid "Certificate"
@@ -4328,6 +4334,9 @@ msgstr ""
 msgid "Invalid input, please avoid emojis"
 msgstr ""
 
+msgid "Invalid pin code"
+msgstr ""
+
 msgid "Invitation"
 msgstr ""
 
@@ -4870,9 +4879,6 @@ msgid "MergeRequest|Filter files"
 msgstr ""
 
 msgid "MergeRequest|No files found"
-msgstr ""
-
-msgid "MergeRequest|Search files"
 msgstr ""
 
 msgid "Merged"
@@ -6722,6 +6728,9 @@ msgstr ""
 msgid "Scope"
 msgstr ""
 
+msgid "Scope not supported with disabled 'users_search' feature!"
+msgstr ""
+
 msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
 msgstr ""
 
@@ -7610,6 +7619,12 @@ msgid "The deployment of this job to %{environmentLink} did not succeed."
 msgstr ""
 
 msgid "The fork relationship has been removed."
+msgstr ""
+
+msgid "The global settings require you to enable Two-Factor Authentication for your account."
+msgstr ""
+
+msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
 msgstr ""
 
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
@@ -9008,6 +9023,9 @@ msgstr ""
 msgid "Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left."
 msgstr ""
 
+msgid "Your U2F device was registered!"
+msgstr ""
+
 msgid "Your applications (%{size})"
 msgstr ""
 
@@ -9126,6 +9144,18 @@ msgstr ""
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
 msgstr ""
 
+msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch}"
+msgstr ""
+
+msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch} into %{link_to_merge_request_target_branch}"
+msgstr ""
+
+msgid "for %{link_to_pipeline_ref}"
+msgstr ""
+
+msgid "for %{ref}"
+msgstr ""
+
 msgid "for this project"
 msgstr ""
 
@@ -9178,6 +9208,9 @@ msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"
+msgstr ""
+
+msgid "leave %{group_name}"
 msgstr ""
 
 msgid "manual"

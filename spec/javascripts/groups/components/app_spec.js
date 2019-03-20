@@ -502,7 +502,7 @@ describe('AppComponent', () => {
       vm.isLoading = true;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.loading-animation')).toBeDefined();
-        expect(vm.$el.querySelector('i.fa').getAttribute('aria-label')).toBe('Loading groups');
+        expect(vm.$el.querySelector('span').getAttribute('aria-label')).toBe('Loading groups');
         done();
       });
     });
