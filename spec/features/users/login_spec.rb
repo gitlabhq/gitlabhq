@@ -434,16 +434,22 @@ describe 'Login' do
 
         context 'within the grace period' do
           it 'redirects to two-factor configuration page' do
-            expect(authentication_metrics)
-              .to increment(:user_authenticated_counter)
+            Timecop.freeze do
+              expect(authentication_metrics)
+                .to increment(:user_authenticated_counter)
 
-            gitlab_sign_in(user)
+              gitlab_sign_in(user)
 
-            expect(current_path).to eq profile_two_factor_auth_path
-            expect(page).to have_content(
-              'The group settings for Group 1 and Group 2 require you to enable ' \
-              'Two-Factor Authentication for your account. You need to do this ' \
-              'before ')
+              expect(current_path).to eq profile_two_factor_auth_path
+              expect(page).to have_content(
+                'The group settings for Group 1 and Group 2 require you to enable '\
+                'Two-Factor Authentication for your account. '\
+                'You can leave Group 1 and leave Group 2. '\
+                'You need to do this '\
+                'before '\
+                "#{(Time.zone.now + 2.days).strftime("%a, %-d %b %Y %H:%M:%S %z")}"
+              )
+            end
           end
 
           it 'allows skipping two-factor configuration', :js do
@@ -500,7 +506,8 @@ describe 'Login' do
           expect(current_path).to eq profile_two_factor_auth_path
           expect(page).to have_content(
             'The group settings for Group 1 and Group 2 require you to enable ' \
-            'Two-Factor Authentication for your account.'
+            'Two-Factor Authentication for your account. '\
+            'You can leave Group 1 and leave Group 2.'
           )
         end
       end

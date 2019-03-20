@@ -19,6 +19,9 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid " You need to do this before %{grace_period_deadline}."
+msgstr ""
+
 msgid " or "
 msgstr ""
 
@@ -1378,6 +1381,9 @@ msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
 msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
+msgstr ""
+
+msgid "Cannot skip two factor authentication setup"
 msgstr ""
 
 msgid "Certificate"
@@ -4326,6 +4332,9 @@ msgid "Introducing Your Conversational Development Index"
 msgstr ""
 
 msgid "Invalid input, please avoid emojis"
+msgstr ""
+
+msgid "Invalid pin code"
 msgstr ""
 
 msgid "Invitation"
@@ -7612,6 +7621,12 @@ msgstr ""
 msgid "The fork relationship has been removed."
 msgstr ""
 
+msgid "The global settings require you to enable Two-Factor Authentication for your account."
+msgstr ""
+
+msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
+msgstr ""
+
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
@@ -9008,6 +9023,9 @@ msgstr ""
 msgid "Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left."
 msgstr ""
 
+msgid "Your U2F device was registered!"
+msgstr ""
+
 msgid "Your applications (%{size})"
 msgstr ""
 
@@ -9190,6 +9208,9 @@ msgid "latest deployment"
 msgstr ""
 
 msgid "latest version"
+msgstr ""
+
+msgid "leave %{group_name}"
 msgstr ""
 
 msgid "manual"
