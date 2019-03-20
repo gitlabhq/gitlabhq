@@ -34,7 +34,7 @@ describe MergeRequestsFinder do
         it 'includes all merge requests when user has access exceluding merge requests from projects the user does not have access to' do
           private_project = allow_gitaly_n_plus_1 { create(:project, :private, group: group) }
           private_project.add_guest(user)
-          private_mr = create(:merge_request, :simple, author: user, source_project: private_project, target_project: private_project)
+          create(:merge_request, :simple, author: user, source_project: private_project, target_project: private_project)
           params = { group_id: group.id }
 
           merge_requests = described_class.new(user, params).execute

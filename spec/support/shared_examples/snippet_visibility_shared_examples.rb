@@ -10,14 +10,6 @@ RSpec.shared_examples 'snippet visibility' do
   set(:member) { create(:user) }
   set(:external) { create(:user, :external) }
 
-  let!(:snippet_type_visibilities) do
-    {
-      public: Snippet::PUBLIC,
-      internal: Snippet::INTERNAL,
-      private: Snippet::PRIVATE
-    }
-  end
-
   context "For project snippets" do
     let!(:users) do
       {
@@ -26,14 +18,6 @@ RSpec.shared_examples 'snippet visibility' do
         non_member: create(:user),
         member: member,
         author: author
-      }
-    end
-
-    let(:project_feature_visibilities) do
-      {
-        enabled: ProjectFeature::ENABLED,
-        private: ProjectFeature::PRIVATE,
-        disabled: ProjectFeature::DISABLED
       }
     end
 
@@ -277,26 +261,26 @@ RSpec.shared_examples 'snippet visibility' do
 
     where(:snippet_visibility, :user_type, :outcome) do
       [
-        [:public,   :unauthenticated, true],
-        [:public,   :external,        true],
-        [:public,   :non_member,      true],
-        [:public,   :author,          true],
+        [Snippet::PUBLIC,   :unauthenticated, true],
+        [Snippet::PUBLIC,   :external,        true],
+        [Snippet::PUBLIC,   :non_member,      true],
+        [Snippet::PUBLIC,   :author,          true],
 
-        [:internal, :unauthenticated, false],
-        [:internal, :external,        false],
-        [:internal, :non_member,      true],
-        [:internal, :author,          true],
+        [Snippet::INTERNAL, :unauthenticated, false],
+        [Snippet::INTERNAL, :external,        false],
+        [Snippet::INTERNAL, :non_member,      true],
+        [Snippet::INTERNAL, :author,          true],
 
-        [:private,  :unauthenticated, false],
-        [:private,  :external,        false],
-        [:private,  :non_member,      false],
-        [:private,  :author,          true]
+        [Snippet::PRIVATE,  :unauthenticated, false],
+        [Snippet::PRIVATE,  :external,        false],
+        [Snippet::PRIVATE,  :non_member,      false],
+        [Snippet::PRIVATE,  :author,          true]
       ]
     end
 
     with_them do
       let!(:user) { users[user_type] }
-      let!(:snippet) { create(:personal_snippet, visibility_level: snippet_type_visibilities[snippet_visibility], author: author) }
+      let!(:snippet) { create(:personal_snippet, visibility_level: snippet_visibility, author: author) }
 
       context "For personal and #{params[:snippet_visibility]} snippets with #{params[:user_type]} user" do
         it 'should agree with read_personal_snippet policy' do
