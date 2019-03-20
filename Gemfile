@@ -170,7 +170,7 @@ gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 gem 'fugit', '~> 1.1'
 
 # HTTP requests
-gem 'httparty', '~> 0.13.3'
+gem 'httparty', '~> 0.16.4'
 
 # Colored output to console
 gem 'rainbow', '~> 3.0'
