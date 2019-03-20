@@ -239,7 +239,7 @@ describe MergeRequests::MergeService do
       it 'logs and saves error if there is an PreReceiveError exception' do
         error_message = 'error message'
 
-        allow(service).to receive(:repository).and_raise(Gitlab::Git::PreReceiveError, error_message)
+        allow(service).to receive(:repository).and_raise(Gitlab::Git::PreReceiveError, "GitLab: #{error_message}")
         allow(service).to receive(:execute_hooks)
 
         service.execute(merge_request)
