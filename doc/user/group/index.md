@@ -63,9 +63,8 @@ together in a single list view.
 
 ## Create a new group
 
-> **Notes:**
-> - For a list of words that are not allowed to be used as group names see the
->   [reserved names](../reserved_names.md).
+> For a list of words that are not allowed to be used as group names see the
+> [reserved names](../reserved_names.md).
 
 You can create a group in GitLab from:
 

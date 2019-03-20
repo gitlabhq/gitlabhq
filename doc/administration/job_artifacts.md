@@ -1,6 +1,7 @@
 # Jobs artifacts administration
 
 > **Notes:**
+>
 > - Introduced in GitLab 8.2 and GitLab Runner 0.7.0.
 > - Starting with GitLab 8.4 and GitLab Runner 1.0, the artifacts archive format changed to `ZIP`.
 > - Starting with GitLab 8.17, builds are renamed to jobs.
@@ -86,6 +87,7 @@ _The artifacts are stored by default in
 ### Using object storage
 
 > **Notes:**
+>
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in
 >   [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
 > - Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),

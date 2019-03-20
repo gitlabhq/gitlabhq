@@ -1,6 +1,5 @@
 # Group milestones API
 
-> **Notes:**
 > [Introduced][ce-12819] in GitLab 9.5.
 
 ## List group milestones
