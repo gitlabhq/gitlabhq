@@ -409,6 +409,8 @@ an access key from the Google console first:
 1. Select "Interoperability" and create an access key
 1. Make note of the "Access Key" and "Secret" and replace them in the
    configurations below
+1. In the buckets advanced settings ensure the Access Control option "Set object-level 
+   and bucket-level permissions" is selected
 1. Make sure you already have a bucket created
 
 For Omnibus GitLab packages:
