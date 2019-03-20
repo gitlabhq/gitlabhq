@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.8.3 (2019-03-19)
+
+### Security (1 change)
+
+- Remove project serialization in quick actions response.
+
+
 ## 11.8.2 (2019-03-13)
 
 ### Security (1 change)
@@ -262,6 +269,14 @@ entry.
 - Update Workhorse to v8.3.1.
 - Upgraded Codesandbox smooshpack package.
 - Creates mixin to reduce code duplication between CE and EE in graph component.
+
+
+## 11.7.7 (2019-03-19)
+
+### Security (2 changes)
+
+- Remove project serialization in quick actions response.
+- Fixed ability to see private groups by users not belonging to given group.
 
 
 ## 11.7.5 (2019-02-06)
