@@ -61,6 +61,10 @@
     border: 0;
   }
 
+  &.avatar-placeholder {
+    border: 0;
+  }
+
   &:not([href]):hover {
     border-color: darken($gray-normal, 10%);
   }
