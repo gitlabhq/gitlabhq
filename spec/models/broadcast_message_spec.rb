@@ -95,6 +95,12 @@ describe BroadcastMessage do
     end
   end
 
+  describe '#attributes' do
+    it 'includes message_html field' do
+      expect(subject.attributes.keys).to include("cached_markdown_version", "message_html")
+    end
+  end
+
   describe '#active?' do
     it 'is truthy when started and not ended' do
       message = build(:broadcast_message)

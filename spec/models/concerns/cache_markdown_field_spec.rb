@@ -23,6 +23,7 @@ describe CacheMarkdownField do
     include CacheMarkdownField
     cache_markdown_field :foo
     cache_markdown_field :baz, pipeline: :single_line
+    cache_markdown_field :zoo, whitelisted: true
 
     def self.add_attr(name)
       self.attribute_names += [name]
@@ -35,7 +36,7 @@ describe CacheMarkdownField do
 
     add_attr :cached_markdown_version
 
-    [:foo, :foo_html, :bar, :baz, :baz_html].each do |name|
+    [:foo, :foo_html, :bar, :baz, :baz_html, :zoo, :zoo_html].each do |name|
       add_attr(name)
     end
 
@@ -84,8 +85,8 @@ describe CacheMarkdownField do
   end
 
   describe '.attributes' do
-    it 'excludes cache attributes' do
-      expect(thing.attributes.keys.sort).to eq(%w[bar baz foo])
+    it 'excludes cache attributes that is blacklisted by default' do
+      expect(thing.attributes.keys.sort).to eq(%w[bar baz cached_markdown_version foo zoo zoo_html])
     end
   end
 
@@ -297,7 +298,12 @@ describe CacheMarkdownField do
     it 'saves the changes using #update_columns' do
       expect(thing).to receive(:persisted?).and_return(true)
       expect(thing).to receive(:update_columns)
-        .with("foo_html" => updated_html, "baz_html" => "", "cached_markdown_version" => cache_version)
+        .with(
+          "foo_html" => updated_html,
+          "baz_html" => "",
+          "zoo_html" => "",
+          "cached_markdown_version" => cache_version
+        )
 
       thing.refresh_markdown_cache!
     end
