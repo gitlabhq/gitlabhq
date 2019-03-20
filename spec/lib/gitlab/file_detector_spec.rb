@@ -77,10 +77,6 @@ describe Gitlab::FileDetector do
       expect(described_class.type_of('.gitlab/merge_request_templates/foo.md')).to eq(:merge_request_template)
     end
 
-    it 'returns the type of an Insights config file' do
-      expect(described_class.type_of('.gitlab/insights.yml')).to eq(:insights_config)
-    end
-
     it 'returns nil for an unknown file' do
       expect(described_class.type_of('foo.txt')).to be_nil
     end

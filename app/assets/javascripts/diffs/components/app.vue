@@ -19,6 +19,7 @@ import {
   MIN_TREE_WIDTH,
   MAX_TREE_WIDTH,
   TREE_HIDE_STATS_WIDTH,
+  MR_TREE_SHOW_KEY,
 } from '../constants';
 
 export default {
@@ -162,10 +163,13 @@ export default {
       'setHighlightedRow',
       'cacheTreeListWidth',
       'scrollToFile',
+      'toggleShowTreeList',
     ]),
     fetchData() {
       this.fetchDiffFiles()
         .then(() => {
+          this.hideTreeListIfJustOneFile();
+
           requestIdleCallback(
             () => {
               this.setDiscussions();
@@ -229,6 +233,13 @@ export default {
       const targetIndex = this.currentDiffIndex + step;
       if (targetIndex >= 0 && targetIndex < this.diffFiles.length) {
         this.scrollToFile(this.diffFiles[targetIndex].file_path);
+      }
+    },
+    hideTreeListIfJustOneFile() {
+      const storedTreeShow = localStorage.getItem(MR_TREE_SHOW_KEY);
+
+      if ((storedTreeShow === null && this.diffFiles.length <= 1) || storedTreeShow === 'false') {
+        this.toggleShowTreeList(false);
       }
     },
   },

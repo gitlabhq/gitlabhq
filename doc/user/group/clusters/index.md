@@ -25,8 +25,22 @@ deployments.
 
 | Application                                                                | GitLab version | Description | Helm Chart |
 | -----------                                                                | -------------- | ----------- | ---------- |
-| [Helm Tiller](https://docs.helm.sh)                                        | 10.2+          | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) | 10.2+          | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
+| [Helm Tiller](https://docs.helm.sh)                                        | 11.6+          | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress) | 11.6+          | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
+| [Cert-Manager](https://docs.cert-manager.io/en/latest/) | 11.6+ | Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
+
+NOTE: **Note:**
+Some [cluster
+applications](../../project/clusters/index.md#installing-applications)
+are installable only for a project-level cluster. Support for installing these
+applications in a group-level cluster is planned for future releases. For updates, see:
+
+- Support installing [Runner in group-level
+  clusters](https://gitlab.com/gitlab-org/gitlab-ce/issues/51988)
+- Support installing [JupyterHub in group-level
+  clusters](https://gitlab.com/gitlab-org/gitlab-ce/issues/51989)
+- Support installing [Prometheus in group-level
+  clusters](https://gitlab.com/gitlab-org/gitlab-ce/issues/51963)
 
 ## RBAC compatibility
 

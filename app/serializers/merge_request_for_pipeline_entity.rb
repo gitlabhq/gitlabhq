@@ -11,7 +11,7 @@ class MergeRequestForPipelineEntity < Grape::Entity
 
   expose :title
   expose :source_branch
-  expose :source_branch_path
+  expose :source_branch_commits_path, as: :source_branch_path
   expose :target_branch
-  expose :target_branch_path
+  expose :target_branch_commits_path, as: :target_branch_path
 end

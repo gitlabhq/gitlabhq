@@ -10,13 +10,7 @@
     .icon-container
       = icon('clock-o')
     = pluralize @pipeline.total_size, "job"
-    - if @pipeline.ref
-      from
-      - if @pipeline.ref_exists?
-        = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
-      - else
-        %span.ref-name
-          = @pipeline.ref
+    = @pipeline.ref_text
     - if @pipeline.duration
       in
       = time_interval_in_words(@pipeline.duration)
@@ -48,9 +42,9 @@
         content: "<a class='autodevops-link' href='#{popover_content_url}' target='_blank' rel='noopener noreferrer nofollow'>#{popover_content_text}</a>",
       } }
         Auto DevOps
-    - if @pipeline.merge_request_event?
-      %span.js-pipeline-url-mergerequest.badge.badge-info.has-tooltip{ title: "This pipeline is run in a merge request context" }
-        merge request
+    - if @pipeline.detached_merge_request_pipeline?
+      %span.js-pipeline-url-mergerequest.badge.badge-info.has-tooltip{ title: "This pipeline is run on the source branch" }
+        detached
     - if @pipeline.stuck?
       %span.js-pipeline-url-stuck.badge.badge-warning
         stuck

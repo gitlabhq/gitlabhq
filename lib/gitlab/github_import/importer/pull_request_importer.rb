@@ -89,7 +89,7 @@ module Gitlab
 
           return if project.repository.branch_exists?(source_branch)
 
-          project.repository.add_branch(merge_request.author, source_branch, pull_request.source_branch_sha)
+          project.repository.add_branch(project.owner, source_branch, pull_request.source_branch_sha)
         rescue Gitlab::Git::CommandError => e
           Gitlab::Sentry.track_acceptable_exception(e,
                                                     extra: {

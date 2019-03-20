@@ -734,6 +734,14 @@ describe('DiffsStoreActions', () => {
 
       expect(localStorage.setItem).toHaveBeenCalledWith('mr_tree_show', true);
     });
+
+    it('does not update localStorage', () => {
+      spyOn(localStorage, 'setItem');
+
+      toggleShowTreeList({ commit() {}, state: { showTreeList: true } }, false);
+
+      expect(localStorage.setItem).not.toHaveBeenCalled();
+    });
   });
 
   describe('renderFileForDiscussionId', () => {

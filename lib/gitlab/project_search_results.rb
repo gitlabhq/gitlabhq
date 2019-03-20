@@ -22,9 +22,15 @@ module Gitlab
         paginated_blobs(wiki_blobs, page)
       when 'commits'
         Kaminari.paginate_array(commits).page(page).per(per_page)
+      when 'users'
+        users.page(page).per(per_page)
       else
         super(scope, page, false)
       end
+    end
+
+    def users
+      super.where(id: @project.team.members) # rubocop:disable CodeReuse/ActiveRecord
     end
 
     def blobs_count

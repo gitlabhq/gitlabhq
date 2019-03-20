@@ -159,13 +159,13 @@ describe PipelineEntity do
           expect(subject[:merge_request][:source_branch])
             .to eq(merge_request.source_branch)
 
-          expect(project_branch_path(project, merge_request.source_branch))
+          expect(project_commits_path(project, merge_request.source_branch))
             .to include(subject[:merge_request][:source_branch_path])
 
           expect(subject[:merge_request][:target_branch])
             .to eq(merge_request.target_branch)
 
-          expect(project_branch_path(project, merge_request.target_branch))
+          expect(project_commits_path(project, merge_request.target_branch))
             .to include(subject[:merge_request][:target_branch_path])
         end
       end
