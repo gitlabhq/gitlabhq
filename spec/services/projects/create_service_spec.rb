@@ -276,6 +276,7 @@ describe Projects::CreateService, '#execute' do
     before do
       group.add_owner(user)
 
+      stub_feature_flags(ci_preparing_state: false)
       expect(Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService).to receive(:namespace_creator).and_return(service_account_creator)
       expect(Clusters::Gcp::Kubernetes::FetchKubernetesTokenService).to receive(:new).and_return(secrets_fetcher)
     end

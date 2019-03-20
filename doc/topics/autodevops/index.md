@@ -1022,6 +1022,10 @@ planned for a subsequent release.
   buildpack](#custom-buildpacks).
 - Auto Test may fail because of a mismatch between testing frameworks. In this
   case, you may need to customize your `.gitlab-ci.yml` with your test commands.
+- Auto Deploy may fail if it is unable to create a Kubernetes namespace and
+  service account for your project. See the
+  [troubleshooting failed deployments](../../user/project/clusters/index.md#troubleshooting-failed-deployment-jobs)
+  section to debug why these resources were not created.
 
 ### Disable the banner instance wide
 

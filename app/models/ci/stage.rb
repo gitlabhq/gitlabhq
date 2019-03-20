@@ -39,8 +39,12 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition created: :pending
+        transition [:created, :preparing] => :pending
         transition [:success, :failed, :canceled, :skipped] => :running
+      end
+
+      event :prepare do
+        transition any - [:preparing] => :preparing
       end
 
       event :run do
@@ -76,6 +80,7 @@ module Ci
       retry_optimistic_lock(self) do
         case statuses.latest.status
         when 'created' then nil
+        when 'preparing' then prepare
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed

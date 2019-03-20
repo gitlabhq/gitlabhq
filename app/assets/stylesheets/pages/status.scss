@@ -44,6 +44,7 @@
   }
 
   &.ci-info,
+  &.ci-preparing,
   &.ci-running {
     @include status-color($blue-100, $blue-500, $blue-600);
   }

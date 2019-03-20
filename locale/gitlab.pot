@@ -1518,6 +1518,9 @@ msgstr ""
 msgid "CiStatusLabel|pending"
 msgstr ""
 
+msgid "CiStatusLabel|preparing"
+msgstr ""
+
 msgid "CiStatusLabel|skipped"
 msgstr ""
 
@@ -1549,6 +1552,9 @@ msgid "CiStatusText|passed"
 msgstr ""
 
 msgid "CiStatusText|pending"
+msgstr ""
+
+msgid "CiStatusText|preparing"
 msgstr ""
 
 msgid "CiStatusText|skipped"
@@ -7877,6 +7883,12 @@ msgid "This job is creating a deployment to %{environmentLink}."
 msgstr ""
 
 msgid "This job is in pending state and is waiting to be picked by a runner"
+msgstr ""
+
+msgid "This job is performing tasks that must complete before it can start"
+msgstr ""
+
+msgid "This job is preparing to start"
 msgstr ""
 
 msgid "This job is stuck because you don't have any active runners online with any of these tags assigned to them:"

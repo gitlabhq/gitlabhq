@@ -795,6 +795,7 @@
     @include mini-pipeline-graph-color($white, $orange-100, $orange-200, $orange-500, $orange-600, $orange-700);
   }
 
+  &.ci-status-icon-preparing,
   &.ci-status-icon-running {
     @include mini-pipeline-graph-color($white, $blue-100, $blue-200, $blue-500, $blue-600, $blue-700);
   }

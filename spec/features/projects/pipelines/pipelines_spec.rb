@@ -282,6 +282,30 @@ describe 'Pipelines', :js do
       end
 
       context 'for generic statuses' do
+        context 'when preparing' do
+          let!(:pipeline) do
+            create(:ci_empty_pipeline,
+              status: 'preparing', project: project)
+          end
+
+          let!(:status) do
+            create(:generic_commit_status,
+              :preparing, pipeline: pipeline)
+          end
+
+          before do
+            visit_project_pipelines
+          end
+
+          it 'is cancelable' do
+            expect(page).to have_selector('.js-pipelines-cancel-button')
+          end
+
+          it 'shows the pipeline as preparing' do
+            expect(page).to have_selector('.ci-preparing')
+          end
+        end
+
         context 'when running' do
           let!(:running) do
             create(:generic_commit_status,
