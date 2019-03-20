@@ -413,6 +413,37 @@ describe Projects::NotesController do
         end
       end
     end
+
+    context 'when creating a note with quick actions' do
+      context 'with commands that return changes' do
+        let(:note_text) { "/award :thumbsup:\n/estimate 1d\n/spend 3h" }
+
+        it 'includes changes in commands_changes ' do
+          post :create, params: request_params.merge(note: { note: note_text }, format: :json)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['commands_changes']).to include('emoji_award', 'time_estimate', 'spend_time')
+          expect(json_response['commands_changes']).not_to include('target_project', 'title')
+        end
+      end
+
+      context 'with commands that do not return changes' do
+        let(:issue) { create(:issue, project: project) }
+        let(:other_project) { create(:project) }
+        let(:note_text) { "/move #{other_project.full_path}\n/title AAA" }
+
+        before do
+          other_project.add_developer(user)
+        end
+
+        it 'does not include changes in commands_changes' do
+          post :create, params: request_params.merge(note: { note: note_text }, target_type: 'issue', target_id: issue.id, format: :json)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['commands_changes']).not_to include('target_project', 'title')
+        end
+      end
+    end
   end
 
   describe 'PUT update' do
