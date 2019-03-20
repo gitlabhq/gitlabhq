@@ -9,7 +9,8 @@ import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import MonitoringStore from '../stores/monitoring_store';
-import { timeWindows } from '../constants';
+import { timeWindows, msPerMinute } from '../constants';
+import { getTimeDifferenceMinutes } from '../utils';
 
 const sidebarAnimationDuration = 150;
 let sidebarMutationObserver;
@@ -107,6 +108,7 @@ export default {
 
     this.timeWindows = timeWindows;
     this.selectedTimeWindow = this.timeWindows.eightHours;
+    this.msPerMinute = msPerMinute;
   },
   beforeDestroy() {
     if (sidebarMutationObserver) {
@@ -167,6 +169,23 @@ export default {
     },
     getGraphsDataWithTime(timeFrame) {
       this.selectedTimeWindow = this.timeWindows[timeFrame];
+      this.state = 'loading';
+      this.showEmptyState = true;
+      const end = Date.now();
+      const timeDifferenceMinutes = getTimeDifferenceMinutes(this.selectedTimeWindow);
+      const start = new Date(end - timeDifferenceMinutes * this.msPerMinute).getTime();
+      this.service
+        .getGraphsData({
+          start,
+          end,
+        })
+        .then(data => {
+          this.store.storeMetrics(data);
+          this.showEmptyState = false;
+        })
+        .catch(() => {
+          this.state = 'unableToConnect';
+        });
     },
     onSidebarMutation() {
       setTimeout(() => {

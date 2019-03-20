@@ -16,3 +16,5 @@ export const timeWindows = {
   threeDays: '3 days',
   oneWeek: '1 week',
 };
+
+export const msPerMinute = 60000;
