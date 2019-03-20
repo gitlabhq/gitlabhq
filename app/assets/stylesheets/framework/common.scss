@@ -120,7 +120,7 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  > div,
+  > div:not(.block),
   .str-truncated {
     display: inline;
   }
@@ -381,6 +381,7 @@ img.emoji {
 .prepend-left-5 { margin-left: 5px; }
 .prepend-left-8 { margin-left: 8px; }
 .prepend-left-10 { margin-left: 10px; }
+.prepend-left-15 { margin-left: 15px; }
 .prepend-left-default { margin-left: $gl-padding; }
 .prepend-left-20 { margin-left: 20px; }
 .prepend-left-32 { margin-left: 32px; }
@@ -388,6 +389,7 @@ img.emoji {
 .append-right-5 { margin-right: 5px; }
 .append-right-8 { margin-right: 8px; }
 .append-right-10 { margin-right: 10px; }
+.append-right-15 { margin-right: 15px; }
 .append-right-default { margin-right: $gl-padding; }
 .append-right-20 { margin-right: 20px; }
 .prepend-right-32 { margin-right: 32px; }
@@ -402,6 +404,8 @@ img.emoji {
 .prepend-bottom-32 { margin-bottom: 32px; }
 .inline { display: inline-block; }
 .center { text-align: center; }
+.block { display: block; }
+.flex { display: flex; }
 .vertical-align-middle { vertical-align: middle; }
 .vertical-align-sub { vertical-align: sub; }
 .flex-align-self-center { align-self: center; }
