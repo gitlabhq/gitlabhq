@@ -7897,7 +7897,7 @@ msgstr ""
 msgid "This page will be removed in a future release."
 msgstr ""
 
-msgid "This pipeline is run in a merge request context"
+msgid "This pipeline is run on the source branch"
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
@@ -9101,6 +9101,9 @@ msgid "deleted"
 msgstr ""
 
 msgid "deploy token"
+msgstr ""
+
+msgid "detached"
 msgstr ""
 
 msgid "disabled"
