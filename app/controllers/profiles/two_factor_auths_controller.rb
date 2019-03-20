@@ -18,21 +18,16 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       two_factor_authentication_reason(
         global: lambda do
           flash.now[:alert] =
-            'The global settings require you to enable Two-Factor Authentication for your account.'
+            s_('The global settings require you to enable Two-Factor Authentication for your account.')
         end,
         group: lambda do |groups|
-          group_links = groups.map { |group| view_context.link_to group.full_name, group_path(group) }.to_sentence
-
-          flash.now[:alert] = %{
-            The group settings for #{group_links} require you to enable
-            Two-Factor Authentication for your account.
-          }.html_safe
+          flash.now[:alert] = groups_notification(groups)
         end
       )
 
       unless two_factor_grace_period_expired?
         grace_period_deadline = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
-        flash.now[:alert] = flash.now[:alert] + " You need to do this before #{l(grace_period_deadline)}."
+        flash.now[:alert] = flash.now[:alert] + s_(" You need to do this before %{grace_period_deadline}.") % { grace_period_deadline: l(grace_period_deadline) }
       end
     end
 
@@ -49,7 +44,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
       render 'create'
     else
-      @error = 'Invalid pin code'
+      @error = s_('Invalid pin code')
       @qr_code = build_qr_code
       setup_u2f_registration
       render 'show'
@@ -63,7 +58,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
     if @u2f_registration.persisted?
       session.delete(:challenges)
-      redirect_to profile_two_factor_auth_path, notice: "Your U2F device was registered!"
+      redirect_to profile_two_factor_auth_path, notice: s_("Your U2F device was registered!")
     else
       @qr_code = build_qr_code
       setup_u2f_registration
@@ -85,7 +80,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def skip
     if two_factor_grace_period_expired?
-      redirect_to new_profile_two_factor_auth_path, alert: 'Cannot skip two factor authentication setup'
+      redirect_to new_profile_two_factor_auth_path, alert: s_('Cannot skip two factor authentication setup')
     else
       session[:skip_two_factor] = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
       redirect_to root_path
@@ -125,5 +120,13 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def u2f_registration_params
     params.require(:u2f_registration).permit(:device_response, :name)
+  end
+
+  def groups_notification(groups)
+    group_links = groups.map { |group| view_context.link_to group.full_name, group_path(group) }.to_sentence
+    leave_group_links = groups.map { |group| view_context.link_to (s_("leave %{group_name}") % { group_name: group.full_name }), leave_group_members_path(group), remote: false, method: :delete}.to_sentence
+
+    s_(%{The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}.})
+      .html_safe % { group_links: group_links.html_safe, leave_group_links: leave_group_links.html_safe }
   end
 end
