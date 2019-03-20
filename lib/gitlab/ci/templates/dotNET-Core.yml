@@ -1,7 +1,7 @@
 ﻿# This is a simple example illustrating how to build and test .NET Core project
 # with GitLab Continuous Integration / Continuous Delivery.
 
-# Specify the Docker image
+# ### Specify the Docker image
 #
 # Instead of installing .NET Core SDK manually, a docker image is used 
 # with already pre-installed .NET Core SDK. 
@@ -13,32 +13,89 @@
 # and the Docker itself: https://opensource.com/resources/what-docker
 image: microsoft/dotnet:latest
 
-# Define stage list
+
+# ### Define variables
+#
+variables:
+# 1) Name of directory where restore and build objects are stored.
+ OBJECTS_DIRECTORY: 'obj'    
+# 2) Name of directory used for keeping restored dependencies.        
+ NUGET_PACKAGES_DIRECTORY: '.nuget'
+# 3) A relative path to the source code from project repository root.
+# NOTE: Please edit this path so it matches the structure of your project!
+ SOURCE_CODE_PATH: '*/*/'             
+
+
+# ### Define stage list
 #
 # In this example there are only two stages. 
 # Initially, the project will be built and then tested.
 stages:
  - build
  - test
+
+
+# ### Define global cache rule
+#
+# Before building the project, all dependencies (e.g. third-party NuGet packages) 
+# must be restored. Jobs on GitLab.com's Shared Runners are executed on autoscaled machines. 
+# Each machine is used only once (for security reasons) and after that it is removed. 
+# What that means is that before every job a dependency restore must be performed 
+# because restored dependencies are removed along with machines. Fortunately,
+# GitLab provides cache mechanism with the aim of keeping restored dependencies
+# for other jobs. In this example dependencies are restored only once 
+# and then passed over to the next jobs.
+#
+# With global cache rule, cached dependencies will be downloaded before every job
+# and then unpacked to the paths as specified below.
+cache:
+ paths:
+# Specify three paths that should be cached:
+#
+# 1) Main JSON file holding information about package dependency tree, packages versions,
+# frameworks etc. It also holds information where to the dependencies were restored, 
+# so next time a 'dotnet build' is executed, the build engine will know 
+# where to look for already downloaded dependencies.
+  - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/project.assets.json'  
+# 2) Other NuGet and MSBuild related files. Also needed.
+  - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/*.csproj.nuget.*'    
+# 3) Path to the directory where restored dependencies are kept.
+  - '$NUGET_PACKAGES_DIRECTORY'   
+ policy: pull # Only download the cache, don't upload it after the job is completed.
  
+
 build:
  stage: build
-# Restore project dependencies
+# 
+# ### Restore project dependencies
 #
-# Before building the project all dependencies (e.g. third-party NuGet packages) 
-# must be restored. 
+# NuGet packages by default are restored to '.nuget/packages' directory 
+# in the user's home directory. That directory is out of scope of GitLab caching. 
+# To get around this a custom path can be specified using '--packages <PATH>' option 
+# for 'dotnet restore' command. In this example a temporary directory is created 
+# in the root of project repository, so it's content can be cached.
 #
-# Jobs on GitLab.com's Shared Runners are executed on autoscaled machines. 
-# Each machine is used only once (for security reasons) and after this it is removed. 
-# What that means is that before every job a dependency restore must be performed 
-# because restored dependencies are removed along with machines. There are ways 
-# to transfer restored packages and other output binaries, but this example 
-# does not cover that.
-#
-# Learn more about GitLab job artifacts: https://docs.gitlab.com/ee/user/project/pipelines/job_artifacts.html
+# Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
  before_script:
-  - 'dotnet restore' 
-# Build all projects discovered from solution file. 
+  - 'dotnet restore --packages $NUGET_PACKAGES_DIRECTORY'
+# Override global cache rule for uploading.
+ cache:
+  paths:
+   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/project.assets.json'  
+   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/*.csproj.nuget.*'    
+   - '$NUGET_PACKAGES_DIRECTORY' 
+#      
+# 'pull-push' policy means that latest cache will be downloaded (if exists) 
+# before executing the job, and a newer version will be uploaded afterwards. 
+# Such setting saves time when there are no changes in referenced third-party 
+# packages. For example if you run a pipeline with changes in your code, 
+# but with no changes within third-party packages which your project is using, 
+# then project restore will happen in next to no time as all required dependencies 
+# will already be there — unzipped from cache. 'pull-push' policy is a default 
+# cache policy, you do not have to specify it explicitly.
+  policy: pull-push 
+#
+# ### Build all projects discovered from solution file. 
 #
 # Note: this will fail if you have any projects in your solution that are not 
 # .NET Core based projects e.g. WCF service, which is based on .NET Framework, 
@@ -47,15 +104,13 @@ build:
 # where it is located e.g. 'dotnet build ./src/ConsoleApp'. 
 # Only one project path can be passed as a parameter to 'dotnet build' command.
  script:
-  - 'dotnet build'
+  - 'dotnet build --no-restore' 
   
+
 tests:
  stage: test
-# Despite the fact that the project was already built and restored, 
-# a dependency restore must be performed again.
- before_script:
-  - 'dotnet restore'
-# Run the tests
+# 
+# ### Run the tests
 #
 # You can either run tests for all test projects that are defined in your solution 
 # with 'dotnet test' or run tests only for specific project by specifying
@@ -64,4 +119,4 @@ tests:
 # You may want to define separate testing jobs for different types of testing
 # e.g. integration tests, unit tests etc.
  script:
- - 'dotnet test' 
+ - 'dotnet test --no-restore'
