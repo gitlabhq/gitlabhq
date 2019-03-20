@@ -22,7 +22,7 @@ export default {
     },
     selectedValue: {
       type: Number,
-      default: null,
+      default: DISCUSSION_FILTERS_DEFAULT_VALUE,
       required: false,
     },
   },
