@@ -5,6 +5,7 @@ description: 'Learn how to administer GitLab Pages.'
 # GitLab Pages administration
 
 > **Notes:**
+>
 > - [Introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
 > - GitLab Pages [were ported][ce-14605] to Community Edition in GitLab 8.17.
