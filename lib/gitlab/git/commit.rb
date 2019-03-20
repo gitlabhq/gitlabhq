@@ -184,11 +184,12 @@ module Gitlab
         end
       end
 
-      def initialize(repository, raw_commit, head = nil)
+      def initialize(repository, raw_commit, head = nil, lazy_load_parents: false)
         raise "Nil as raw commit passed" unless raw_commit
 
         @repository = repository
         @head = head
+        @lazy_load_parents = lazy_load_parents
 
         init_commit(raw_commit)
       end
@@ -223,6 +224,12 @@ module Gitlab
       # Was this commit committed by a different person than the original author?
       def different_committer?
         author_name != committer_name || author_email != committer_email
+      end
+
+      def parent_ids
+        return @parent_ids unless @lazy_load_parents
+
+        @parent_ids ||= @repository.commit(id).parent_ids
       end
 
       def parent_id
