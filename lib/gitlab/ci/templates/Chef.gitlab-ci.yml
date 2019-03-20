@@ -41,7 +41,7 @@ chefspec:
 #  - apt-get -y install rsync
 #  script:
 #  - kitchen verify default-centos-6 --destroy=always
-#  
+#
 #verify-centos-7:
 #  stage: functional
 #  before_script:

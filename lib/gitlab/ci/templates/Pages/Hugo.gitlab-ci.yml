@@ -9,7 +9,7 @@ pages:
     - public
   only:
   - master
-  
+
 test:
   script:
   - hugo
