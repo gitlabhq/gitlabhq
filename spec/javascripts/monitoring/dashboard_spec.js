@@ -39,11 +39,17 @@ describe('Dashboard', () => {
       ee: false,
     };
 
+    gon.features = {
+      metricsTimeWindow: true,
+    };
+
     mock = new MockAdapter(axios);
     DashboardComponent = Vue.extend(Dashboard);
   });
 
   afterEach(() => {
+    gon.features = {};
+
     mock.restore();
   });
 
@@ -186,9 +192,9 @@ describe('Dashboard', () => {
       const numberOfTimeWindows = Object.keys(timeWindows).length;
 
       setTimeout(() => {
-        const timeWindowDropdown = component.$el.querySelector('#time-window-dropdown');
+        const timeWindowDropdown = component.$el.querySelector('.js-time-window-dropdown');
         const timeWindowDropdownEls = component.$el.querySelectorAll(
-          '#time-window-dropdown .dropdown-item',
+          '.js-time-window-dropdown .dropdown-item',
         );
 
         expect(timeWindowDropdown).not.toBeNull();

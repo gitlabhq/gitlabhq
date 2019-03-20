@@ -99,6 +99,11 @@ export default {
       selectedTimeWindow: '',
     };
   },
+  computed: {
+    getTimeWindowFlagStatus() {
+      return gon.features.metricsTimeWindow;
+    },
+  },
   created() {
     this.service = new MonitoringService({
       metricsEndpoint: this.metricsEndpoint,
@@ -201,7 +206,10 @@ export default {
 
 <template>
   <div v-if="!showEmptyState" class="prometheus-graphs prepend-top-default">
-    <div v-if="environmentsEndpoint" class="environments d-flex align-items-center">
+    <div
+      v-if="environmentsEndpoint"
+      class="dropdowns d-flex align-items-center justify-content-between"
+    >
       <div class="d-flex align-items-center">
         <strong>{{ s__('Metrics|Environment') }}</strong>
         <gl-dropdown
@@ -219,11 +227,10 @@ export default {
           >
         </gl-dropdown>
       </div>
-      <div class="d-flex align-items-center">
+      <div v-if="getTimeWindowFlagStatus" class="d-flex align-items-center float-right">
         <span class="font-weight-bold">{{ s__('Metrics|Show Last') }}</span>
         <gl-dropdown
-          id="time-window-dropdown"
-          class="prepend-left-10"
+          class="prepend-left-10 js-time-window-dropdown"
           toggle-class="dropdown-menu-toggle"
           :text="selectedTimeWindow"
         >

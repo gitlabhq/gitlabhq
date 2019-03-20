@@ -1,8 +1,8 @@
-import { timeWindows } from './constants'
+import { timeWindows } from './constants';
 
-export const getTimeDifferenceMinutes = (timeWindow) => {
+export const getTimeDifferenceMinutes = timeWindow => {
   let timeDifferenceMinutes;
-  switch(timeWindow) {
+  switch (timeWindow) {
     case timeWindows.thirtyMinutes:
       timeDifferenceMinutes = 30;
       break;

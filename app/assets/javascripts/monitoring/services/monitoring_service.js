@@ -33,11 +33,13 @@ export default class MonitoringService {
   }
 
   getGraphsData(params = {}) {
-    return backOffRequest(() => axios.get(this.metricsEndpoint, {
-      params: {
-        ...params
-      }
-    }))
+    return backOffRequest(() =>
+      axios.get(this.metricsEndpoint, {
+        params: {
+          ...params,
+        },
+      }),
+    )
       .then(resp => resp.data)
       .then(response => {
         if (!response || !response.data || !response.success) {
