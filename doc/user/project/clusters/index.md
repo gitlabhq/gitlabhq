@@ -556,26 +556,27 @@ NOTE: **NOTE:**
 Prior to GitLab 11.5, `KUBE_TOKEN` was the Kubernetes token of the main
 service account of the cluster integration.
 
-### Troubleshooting missing `KUBECONFIG` or `KUBE_TOKEN`
+### Troubleshooting failed deployment jobs
 
-GitLab will create a new service account specifically for your CI builds. The
-new service account is created when the cluster is added to the project.
-Sometimes there may be errors that cause the service account creation to fail.
+GitLab will create a namespace and service account specifically for your
+deployment jobs. These resources are created just before the deployment
+job starts. Sometimes there may be errors that cause their creation to fail.
 
-In such instances, your build will not be passed the `KUBECONFIG` or
-`KUBE_TOKEN` variables and, if you are using Auto DevOps, your Auto DevOps
-pipelines will no longer trigger a `production` deploy build. You will need to
-check the [logs](../../../administration/logs.md) to debug why the service
-account creation failed.
+In such instances, your job will fail with the message:
+
+```The job failed to complete prerequisite tasks```
+
+You will need to check the [logs](../../../administration/logs.md) to debug
+why the namespace and service account creation failed.
 
 A common reason for failure is that the token you gave GitLab did not have
 [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
 privileges as GitLab expects.
 
-Another common problem for why these variables are not being passed to your
-builds is that they must have a matching
+Another common problem is caused by a missing `KUBECONFIG` or `KUBE_TOKEN`.
+To be passed to your job, it must have a matching
 [`environment:name`](../../../ci/environments.md#defining-environments). If
-your build has no `environment:name` set, it will not be passed the Kubernetes
+your job has no `environment:name` set, it will not be passed the Kubernetes
 credentials.
 
 ## Monitoring your Kubernetes cluster **[ULTIMATE]**
