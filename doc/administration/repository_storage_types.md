@@ -86,6 +86,11 @@ by another folder with the next 2 characters. They are both stored in a special
 
 ### Hashed object pools
 
+CAUTION: **Beta:**
+Hashed objects pools are considered beta, and are not ready for production use.
+Follow [gitaly#1548](https://gitlab.com/gitlab-org/gitaly/issues/1548) for
+updates.
+
 For deduplication of public forks and their parent repository, objects are pooled
 in an object pool. These object pools are a third repository where shared objects
 are stored.
