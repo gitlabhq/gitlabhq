@@ -225,14 +225,12 @@ See this [section][vue-test].
 
 ### Running frontend tests
 
-`rake karma` runs the frontend-only (JavaScript) tests.
-It consists of two subtasks:
+For running the frontend tests, you need the following commands:
 
-- `rake karma:fixtures` (re-)generates fixtures
-- `rake karma:tests` actually executes the tests
+- `rake karma:fixtures` (re-)generates fixtures.
+- `yarn test` executes the tests.
 
-As long as the fixtures don't change, `rake karma:tests` (or `yarn karma`)
-is sufficient (and saves you some time).
+As long as the fixtures don't change, `yarn test` is sufficient (and saves you some time).
 
 ### Live testing and focused testing
 
