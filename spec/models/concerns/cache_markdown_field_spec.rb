@@ -23,7 +23,7 @@ describe CacheMarkdownField do
     include CacheMarkdownField
     cache_markdown_field :foo
     cache_markdown_field :baz, pipeline: :single_line
-    cache_markdown_field :zoo, hidden: false
+    cache_markdown_field :zoo, whitelisted: true
 
     def self.add_attr(name)
       self.attribute_names += [name]
@@ -85,7 +85,7 @@ describe CacheMarkdownField do
   end
 
   describe '.attributes' do
-    it 'excludes cache attributes that is hidden by default' do
+    it 'excludes cache attributes that is blacklisted by default' do
       expect(thing.attributes.keys.sort).to eq(%w[bar baz cached_markdown_version foo zoo zoo_html])
     end
   end
