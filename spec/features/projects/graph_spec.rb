@@ -6,6 +6,8 @@ describe 'Project Graph', :js do
   let(:branch_name) { 'master' }
 
   before do
+    ::Projects::DetectRepositoryLanguagesService.new(project, user).execute
+
     project.add_maintainer(user)
 
     sign_in(user)
