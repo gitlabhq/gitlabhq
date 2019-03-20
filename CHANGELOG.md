@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.8.3 (2019-03-19)
+
+### Security (1 change)
+
+- Remove project serialization in quick actions response.
+
+
 ## 11.8.2 (2019-03-13)
 
 ### Security (1 change)
