@@ -47,7 +47,7 @@
                           %strong= new_subgroup_label
                           %span= s_("GroupsTree|Create a subgroup in this group.")
             - else
-              = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success"
+              = link_to new_project_label, new_project_path(namespace_id: @group.id), class: "btn btn-success prepend-top-default"
 
   - if @group.description.present?
     .group-home-desc.mt-1
