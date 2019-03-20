@@ -7,6 +7,7 @@
 #     cache_markdown_field :foo
 #     cache_markdown_field :bar
 #     cache_markdown_field :baz, pipeline: :single_line
+#     cache_markdown_field :baz, hidden: false
 #
 # Corresponding foo_html, bar_html and baz_html fields should exist.
 module CacheMarkdownField
@@ -37,7 +38,15 @@ module CacheMarkdownField
     end
 
     def html_fields
-      markdown_fields.map {|field| html_field(field) }
+      markdown_fields.map { |field| html_field(field) }
+    end
+
+    def hidden_html_fields
+      markdown_fields.each_with_object([]) do |field, fields|
+        if @data[field].fetch(:hidden, true)
+          fields << html_field(field)
+        end
+      end
     end
   end
 
@@ -149,11 +158,15 @@ module CacheMarkdownField
     alias_method :attributes_before_markdown_cache, :attributes
     def attributes
       attrs = attributes_before_markdown_cache
+      html_fields = cached_markdown_fields.html_fields
+      hidden_html_fields = cached_markdown_fields.hidden_html_fields
 
-      attrs.delete('cached_markdown_version')
-
-      cached_markdown_fields.html_fields.each do |field|
+      hidden_html_fields.each do |field|
         attrs.delete(field)
+      end
+
+      if (html_fields - hidden_html_fields).empty?
+        attrs.delete('cached_markdown_version')
       end
 
       attrs
