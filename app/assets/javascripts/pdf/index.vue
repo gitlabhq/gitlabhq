@@ -28,7 +28,7 @@ export default {
   },
   watch: { pdf: 'load' },
   mounted() {
-    pdfjsLib.PDFJS.workerSrc = workerSrc;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
     if (this.hasPDF) this.load();
   },
   methods: {
