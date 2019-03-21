@@ -537,6 +537,18 @@ describe Gitlab::Git::Commit, :seed_helper do
     end
   end
 
+  describe '#gitaly_commit?' do
+    context 'when the commit data comes from gitaly' do
+      it { expect(commit.gitaly_commit?).to eq(true) }
+    end
+
+    context 'when the commit data comes from a Hash' do
+      let(:commit) { described_class.new(repository, sample_commit_hash) }
+
+      it { expect(commit.gitaly_commit?).to eq(false) }
+    end
+  end
+
   describe '#has_zero_stats?' do
     it { expect(commit.has_zero_stats?).to eq(false) }
   end
