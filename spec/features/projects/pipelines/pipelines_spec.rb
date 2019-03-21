@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Pipelines', :js do
+  include ProjectForksHelper
+
   let(:project) { create(:project) }
 
   context 'when user is logged in' do
@@ -162,6 +164,99 @@ describe 'Pipelines', :js do
             expect(page).not_to have_selector('.js-pipelines-retry-button')
             expect(page).to have_selector('.ci-running')
           end
+        end
+      end
+
+      context 'when pipeline is detached merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_detached_merge_request_pipeline,
+            source_project: source_project,
+            target_project: target_project)
+        end
+
+        let!(:pipeline) { merge_request.all_pipelines.first }
+        let(:source_project) { project }
+        let(:target_project) { project }
+
+        before do
+          visit project_pipelines_path(source_project)
+        end
+
+        shared_examples_for 'showing detached merge request pipeline information' do
+          it 'shows detached tag for the pipeline' do
+            within '.pipeline-tags' do
+              expect(page).to have_content('detached')
+            end
+          end
+
+          it 'shows the link of the merge request' do
+            within '.branch-commit' do
+              expect(page).to have_link(merge_request.iid,
+                href: project_merge_request_path(project, merge_request))
+            end
+          end
+
+          it 'does not show the ref of the pipeline' do
+            within '.branch-commit' do
+              expect(page).not_to have_link(pipeline.ref)
+            end
+          end
+        end
+
+        it_behaves_like 'showing detached merge request pipeline information'
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+
+          it_behaves_like 'showing detached merge request pipeline information'
+        end
+      end
+
+      context 'when pipeline is merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_merge_request_pipeline,
+            source_project: source_project,
+            target_project: target_project,
+            merge_sha: target_project.commit.sha)
+        end
+
+        let!(:pipeline) { merge_request.all_pipelines.first }
+        let(:source_project) { project }
+        let(:target_project) { project }
+
+        before do
+          visit project_pipelines_path(source_project)
+        end
+
+        shared_examples_for 'Correct merge request pipeline information' do
+          it 'does not show detached tag for the pipeline' do
+            within '.pipeline-tags' do
+              expect(page).not_to have_content('detached')
+            end
+          end
+
+          it 'shows the link of the merge request' do
+            within '.branch-commit' do
+              expect(page).to have_link(merge_request.iid,
+                href: project_merge_request_path(project, merge_request))
+            end
+          end
+
+          it 'does not show the ref of the pipeline' do
+            within '.branch-commit' do
+              expect(page).not_to have_link(pipeline.ref)
+            end
+          end
+        end
+
+        it_behaves_like 'Correct merge request pipeline information'
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+
+          it_behaves_like 'Correct merge request pipeline information'
         end
       end
 

@@ -272,10 +272,11 @@ export default {
           :tag="commitTag"
           :commit-ref="commitRef"
           :commit-url="commitUrl"
+          :merge-request-ref="pipeline.merge_request"
           :short-sha="commitShortSha"
           :title="commitTitle"
           :author="commitAuthor"
-          :show-branch="!isChildView"
+          :show-ref-info="!isChildView"
         />
       </div>
     </div>
