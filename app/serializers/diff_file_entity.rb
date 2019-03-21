@@ -57,7 +57,7 @@ class DiffFileEntity < DiffFileBaseEntity
     diff_file.diff_lines_for_serializer
   end
 
-  expose :is_fully_expanded, if: -> (diff_file, _) { Feature.enabled?(:expand_diff_full_file) && diff_file.text? } do |diff_file|
+  expose :is_fully_expanded, if: -> (diff_file, _) { Feature.enabled?(:expand_diff_full_file, default_enabled: true) && diff_file.text? } do |diff_file|
     diff_file.fully_expanded?
   end
 

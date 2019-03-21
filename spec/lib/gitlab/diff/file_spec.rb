@@ -72,6 +72,13 @@ describe Gitlab::Diff::File do
       expect(diff_file.diff_lines_for_serializer.last.type).to eq('match')
     end
 
+    context 'when called multiple times' do
+      it 'only adds bottom match line once' do
+        expect(diff_file.diff_lines_for_serializer.size).to eq(31)
+        expect(diff_file.diff_lines_for_serializer.size).to eq(31)
+      end
+    end
+
     context 'when deleted' do
       let(:commit) { project.commit('d59c60028b053793cecfb4022de34602e1a9218e') }
       let(:diff_file) { commit.diffs.diff_file_with_old_path('files/js/commit.js.coffee') }
