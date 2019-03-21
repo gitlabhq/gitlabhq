@@ -3568,6 +3568,9 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
+msgid "Failed to create resources"
+msgstr ""
+
 msgid "Failed to deploy to"
 msgstr ""
 
@@ -4587,6 +4590,9 @@ msgid "Job|The artifacts were removed"
 msgstr ""
 
 msgid "Job|The artifacts will be removed"
+msgstr ""
+
+msgid "Job|This job failed because the necessary resources were not successfully created."
 msgstr ""
 
 msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
@@ -6823,6 +6829,9 @@ msgid "Retry"
 msgstr ""
 
 msgid "Retry this job"
+msgstr ""
+
+msgid "Retry this job in order to create the necessary resources."
 msgstr ""
 
 msgid "Retry verification"
