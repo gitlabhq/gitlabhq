@@ -232,7 +232,7 @@ class MergeRequest < ActiveRecord::Base
   # branch head commit, for example checking if a merge request can be merged.
   # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
   def actual_head_pipeline
-    head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
+    head_pipeline&.matches_sha_or_source_sha?(diff_head_sha) ? head_pipeline : nil
   end
 
   def merge_pipeline

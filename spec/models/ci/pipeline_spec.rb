@@ -362,6 +362,30 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#matches_sha_or_source_sha?' do
+    subject { pipeline.matches_sha_or_source_sha?(sample_sha) }
+
+    let(:sample_sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
+
+    context 'when sha matches' do
+      let(:pipeline) { build(:ci_pipeline, sha: sample_sha) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when source_sha matches' do
+      let(:pipeline) { build(:ci_pipeline, source_sha: sample_sha) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when both sha and source_sha do not matche' do
+      let(:pipeline) { build(:ci_pipeline, sha: 'test', source_sha: 'test') }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '.triggered_for_branch' do
     subject { described_class.triggered_for_branch(ref) }
 

@@ -64,8 +64,8 @@ describe EnvironmentStatus do
   end
 
   describe '.for_merge_request' do
-    let(:admin)    { create(:admin) }
-    let(:pipeline) { create(:ci_pipeline, sha: sha) }
+    let(:admin) { create(:admin) }
+    let!(:pipeline) { create(:ci_pipeline, sha: sha, merge_requests_as_head_pipeline: [merge_request]) }
 
     it 'is based on merge_request.diff_head_sha' do
       expect(merge_request).to receive(:diff_head_sha)
