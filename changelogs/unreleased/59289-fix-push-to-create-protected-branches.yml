@@ -1,0 +1,6 @@
+---
+title: Allow users who can push to protected branches to create protected branches
+  via CLI
+merge_request: 26413
+author:
+type: fixed
