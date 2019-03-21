@@ -27,6 +27,10 @@ module Gitlab
       config['adapter']
     end
 
+    def self.human_adapter_name
+      postgresql? ? 'PostgreSQL' : 'MySQL'
+    end
+
     def self.mysql?
       adapter_name.casecmp('mysql2').zero?
     end
