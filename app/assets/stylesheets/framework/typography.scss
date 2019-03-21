@@ -136,15 +136,21 @@
     margin: 0 0 16px;
   }
 
-  table:not(.js-syntax-highlight) {
+  table {
     @extend .table;
     @extend .table-bordered;
     margin: 16px 0;
     color: $gl-text-color;
     border: 0;
 
-    th {
-      background: $label-gray-bg;
+    tr {
+      th {
+        border-bottom: solid 2px $gl-gray-200;
+      }
+
+      td {
+        border-color: $gl-gray-200;
+      }
     }
   }
 
