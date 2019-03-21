@@ -24,6 +24,30 @@ module Gitlab
       end
     end
 
+    # Filters an array of pods (as returned by the kubernetes API) by their annotations
+    def filter_by_annotation(items, annotations = {})
+      items.select do |item|
+        metadata = item.fetch("metadata", {})
+        item_annotations = metadata.fetch("annotations", nil)
+        next unless item_annotations
+
+        annotations.all? { |k, v| item_annotations[k.to_s] == v }
+      end
+    end
+
+    # Filters an array of pods (as returned by the kubernetes API) by their project and environment
+    def filter_by_project_environment(items, app, env)
+      pods = filter_by_annotation(items, {
+        'app.gitlab.com/app' => app,
+        'app.gitlab.com/env' => env
+      })
+      return pods unless pods.empty?
+
+      filter_by_label(items, {
+        'app' => env, # deprecated: replaced by app.gitlab.com/env
+      })
+    end
+
     # Converts a pod (as returned by the kubernetes API) into a terminal
     def terminals_for_pod(api_url, namespace, pod)
       metadata = pod.fetch("metadata", {})

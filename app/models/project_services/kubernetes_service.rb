@@ -131,8 +131,8 @@ class KubernetesService < DeploymentService
   # short time later
   def terminals(environment)
     with_reactive_cache do |data|
-      pods = filter_by_label(data[:pods], app: environment.slug)
-      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+      pods = filter_by_project_environment(data[:pods], project.full_path_slug, environment.slug)
+      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.compact
       terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end
