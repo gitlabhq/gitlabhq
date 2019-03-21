@@ -10,7 +10,7 @@ created protected branches.
 By default, a protected branch does four simple things:
 
 - it prevents its creation, if not already created, from everybody except users
-  who are allowed to merge
+  with Maintainer permission
 - it prevents pushes from everybody except users with Maintainer permission
 - it prevents **anyone** from force pushing to the branch
 - it prevents **anyone** from deleting the branch
