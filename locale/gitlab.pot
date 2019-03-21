@@ -4439,6 +4439,9 @@ msgstr ""
 msgid "Job|Keep"
 msgstr ""
 
+msgid "Job|Pipeline"
+msgstr ""
+
 msgid "Job|Scroll to bottom"
 msgstr ""
 
@@ -4455,6 +4458,15 @@ msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
+msgstr ""
+
+msgid "Job|for"
+msgstr ""
+
+msgid "Job|into"
+msgstr ""
+
+msgid "Job|with"
 msgstr ""
 
 msgid "Jul"
