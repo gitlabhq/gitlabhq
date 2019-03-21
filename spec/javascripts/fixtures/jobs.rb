@@ -32,7 +32,7 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
     remove_repository(project)
   end
 
-  it 'builds/build-with-artifacts.html.raw' do |example|
+  it 'builds/build-with-artifacts.html' do |example|
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,

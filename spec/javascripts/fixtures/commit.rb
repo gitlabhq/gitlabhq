@@ -19,7 +19,7 @@ describe Projects::CommitController, '(JavaScript fixtures)', type: :controller 
     allow(SecureRandom).to receive(:hex).and_return('securerandomhex:thereisnospoon')
   end
 
-  it 'commit/show.html.raw' do |example|
+  it 'commit/show.html' do |example|
     params = {
       namespace_id: project.namespace,
       project_id: project,

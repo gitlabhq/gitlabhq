@@ -20,7 +20,7 @@ const DROPDOWN_ITEM_DATA = [
 ];
 
 describe('CreateItemDropdown', () => {
-  preloadFixtures('static/create_item_dropdown.html.raw');
+  preloadFixtures('static/create_item_dropdown.html');
 
   let $wrapperEl;
   let createItemDropdown;
@@ -44,7 +44,7 @@ describe('CreateItemDropdown', () => {
   }
 
   beforeEach(() => {
-    loadFixtures('static/create_item_dropdown.html.raw');
+    loadFixtures('static/create_item_dropdown.html');
     $wrapperEl = $('.js-create-item-dropdown-fixture-root');
   });
 

@@ -2,10 +2,10 @@ import $ from 'jquery';
 import initSettingsPanels from '~/settings_panels';
 
 describe('Settings Panels', () => {
-  preloadFixtures('groups/edit.html.raw');
+  preloadFixtures('groups/edit.html');
 
   beforeEach(() => {
-    loadFixtures('groups/edit.html.raw');
+    loadFixtures('groups/edit.html');
   });
 
   describe('initSettingsPane', () => {

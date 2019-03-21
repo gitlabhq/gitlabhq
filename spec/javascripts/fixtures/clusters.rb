@@ -22,7 +22,7 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
     remove_repository(project)
   end
 
-  it 'clusters/show_cluster.html.raw' do |example|
+  it 'clusters/show_cluster.html' do |example|
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,

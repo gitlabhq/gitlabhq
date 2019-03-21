@@ -11,9 +11,9 @@ describe('MergeRequest', function() {
   describe('task lists', function() {
     let mock;
 
-    preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+    preloadFixtures('merge_requests/merge_request_with_task_list.html');
     beforeEach(function() {
-      loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+      loadFixtures('merge_requests/merge_request_with_task_list.html');
 
       spyOn(axios, 'patch').and.callThrough();
       mock = new MockAdapter(axios);
@@ -125,7 +125,7 @@ describe('MergeRequest', function() {
   describe('hideCloseButton', () => {
     describe('merge request of another user', () => {
       beforeEach(() => {
-        loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+        loadFixtures('merge_requests/merge_request_with_task_list.html');
         this.el = document.querySelector('.js-issuable-actions');
         new MergeRequest(); // eslint-disable-line no-new
         MergeRequest.hideCloseButton();
@@ -145,7 +145,7 @@ describe('MergeRequest', function() {
 
     describe('merge request of current_user', () => {
       beforeEach(() => {
-        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+        loadFixtures('merge_requests/merge_request_of_current_user.html');
         this.el = document.querySelector('.js-issuable-actions');
         MergeRequest.hideCloseButton();
       });
