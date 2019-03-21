@@ -7,14 +7,14 @@ describe Gitlab::AuthorizedKeys do
 
   subject { described_class.new(logger) }
 
-  after do
-    delete_authorized_keys_file
-  end
-
   describe '#add_key' do
     context 'authorized_keys file exists' do
       before do
         create_authorized_keys_fixture
+      end
+
+      after do
+        delete_authorized_keys_file
       end
 
       it "adds a line at the end of the file and strips trailing garbage" do
@@ -28,6 +28,10 @@ describe Gitlab::AuthorizedKeys do
     end
 
     context 'authorized_keys file does not exist' do
+      before do
+        delete_authorized_keys_file
+      end
+
       it 'creates the file' do
         expect(subject.add_key('key-741', 'ssh-rsa AAAAB3NzaDAxx2E')).to be_truthy
         expect(File.exist?(tmp_authorized_keys_path)).to be_truthy
@@ -46,6 +50,10 @@ describe Gitlab::AuthorizedKeys do
     context 'authorized_keys file exists' do
       before do
         create_authorized_keys_fixture
+      end
+
+      after do
+        delete_authorized_keys_file
       end
 
       it "adds lines at the end of the file" do
@@ -69,6 +77,10 @@ describe Gitlab::AuthorizedKeys do
     end
 
     context 'authorized_keys file does not exist' do
+      before do
+        delete_authorized_keys_file
+      end
+
       it 'creates the file' do
         expect(subject.batch_add_keys(keys)).to be_truthy
         expect(File.exist?(tmp_authorized_keys_path)).to be_truthy
@@ -80,6 +92,10 @@ describe Gitlab::AuthorizedKeys do
     context 'authorized_keys file exists' do
       before do
         create_authorized_keys_fixture
+      end
+
+      after do
+        delete_authorized_keys_file
       end
 
       it "removes the right line" do
@@ -98,6 +114,10 @@ describe Gitlab::AuthorizedKeys do
     end
 
     context 'authorized_keys file does not exist' do
+      before do
+        delete_authorized_keys_file
+      end
+
       it 'returns false' do
         expect(subject.rm_key('key-741')).to be_falsey
       end
@@ -110,12 +130,20 @@ describe Gitlab::AuthorizedKeys do
         create_authorized_keys_fixture
       end
 
+      after do
+        delete_authorized_keys_file
+      end
+
       it "returns true" do
         expect(subject.clear).to be_truthy
       end
     end
 
     context 'authorized_keys file does not exist' do
+      before do
+        delete_authorized_keys_file
+      end
+
       it "still returns true" do
         expect(subject.clear).to be_truthy
       end
@@ -131,12 +159,20 @@ describe Gitlab::AuthorizedKeys do
         )
       end
 
+      after do
+        delete_authorized_keys_file
+      end
+
       it 'returns array of key IDs' do
         expect(subject.list_key_ids).to eq([1, 2, 3, 9000])
       end
     end
 
     context 'authorized_keys file does not exist' do
+      before do
+        delete_authorized_keys_file
+      end
+
       it 'returns an empty array' do
         expect(subject.list_key_ids).to be_empty
       end
