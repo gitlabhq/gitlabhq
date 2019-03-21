@@ -1,5 +1,0 @@
----
-title: Allow setting feature flags per GitLab group through the API
-merge_request: 25022
-author:
-type: added

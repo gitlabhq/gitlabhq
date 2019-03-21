@@ -1,5 +1,0 @@
----
-title: Fix rollout status for statefulsets and daemonsets
-merge_request: 24972
-author: Sergej Nikolaev <kinolaev@gmail.com>
-type: fixed

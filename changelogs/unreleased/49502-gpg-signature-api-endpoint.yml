@@ -1,5 +1,0 @@
----
-title: Add API endpoint to get a commit's GPG signature
-merge_request: 25032
-author:
-type: added

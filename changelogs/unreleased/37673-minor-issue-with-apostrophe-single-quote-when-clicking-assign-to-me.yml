@@ -1,5 +1,0 @@
----
-title: Fix username escaping when using assign to me for issues
-merge_request: 24673
-author:
-type: fixed

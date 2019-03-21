@@ -1,6 +1,0 @@
----
-title: Remove the possibility to share a project with a group that a user is not a member
-  of
-merge_request:
-author:
-type: security

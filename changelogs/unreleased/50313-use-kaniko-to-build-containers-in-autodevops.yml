@@ -1,5 +1,0 @@
----
-title: Use auto-build-image for build job in Auto-DevOps.gitlab-ci.yml
-merge_request: 24279
-author:
-type: changed

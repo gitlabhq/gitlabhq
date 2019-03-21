@@ -1,5 +1,0 @@
----
-title: Fixed blob editor deleting file content for certain file paths
-merge_request:
-author:
-type: fixed

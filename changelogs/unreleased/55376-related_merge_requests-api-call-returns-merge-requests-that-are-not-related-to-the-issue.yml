@@ -1,5 +1,0 @@
----
-title: 'API: Ensure that related merge requests are referenced cross-project'
-merge_request: 25222
-author: Robert Schilling
-type: fixed
