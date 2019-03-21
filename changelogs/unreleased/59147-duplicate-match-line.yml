@@ -1,0 +1,5 @@
+---
+title: Fix duplicated bottom match line on merge request parallel diff view
+merge_request: 26402
+author:
+type: fixed
