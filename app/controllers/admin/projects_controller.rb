@@ -50,7 +50,7 @@ class Admin::ProjectsController < Admin::ApplicationController
 
     redirect_to(
       admin_project_path(@project),
-      notice: 'Repository check was triggered.'
+      notice: _('Repository check was triggered.')
     )
   end
 
