@@ -17,7 +17,7 @@ describe Projects::BoardsController, '(JavaScript fixtures)', type: :controller 
     sign_in(admin)
   end
 
-  it 'boards/show.html.raw' do |example|
+  it 'boards/show.html' do |example|
     get(:index, params: {
       namespace_id: project.namespace,
       project_id: project

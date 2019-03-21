@@ -5,9 +5,9 @@ import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 const HIDE_CLASS = 'hide';
 
 describe('VariableList', () => {
-  preloadFixtures('pipeline_schedules/edit.html.raw');
-  preloadFixtures('pipeline_schedules/edit_with_variables.html.raw');
-  preloadFixtures('projects/ci_cd_settings.html.raw');
+  preloadFixtures('pipeline_schedules/edit.html');
+  preloadFixtures('pipeline_schedules/edit_with_variables.html');
+  preloadFixtures('projects/ci_cd_settings.html');
 
   let $wrapper;
   let variableList;
@@ -15,7 +15,7 @@ describe('VariableList', () => {
   describe('with only key/value inputs', () => {
     describe('with no variables', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit.html.raw');
+        loadFixtures('pipeline_schedules/edit.html');
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -82,7 +82,7 @@ describe('VariableList', () => {
 
     describe('with persisted variables', () => {
       beforeEach(() => {
-        loadFixtures('pipeline_schedules/edit_with_variables.html.raw');
+        loadFixtures('pipeline_schedules/edit_with_variables.html');
         $wrapper = $('.js-ci-variable-list-section');
 
         variableList = new VariableList({
@@ -115,7 +115,7 @@ describe('VariableList', () => {
 
   describe('with all inputs(key, value, protected)', () => {
     beforeEach(() => {
-      loadFixtures('projects/ci_cd_settings.html.raw');
+      loadFixtures('projects/ci_cd_settings.html');
       $wrapper = $('.js-ci-variable-list-section');
 
       $wrapper.find('.js-ci-variable-input-protected').attr('data-default', 'false');
@@ -149,7 +149,7 @@ describe('VariableList', () => {
 
   describe('toggleEnableRow method', () => {
     beforeEach(() => {
-      loadFixtures('pipeline_schedules/edit_with_variables.html.raw');
+      loadFixtures('pipeline_schedules/edit_with_variables.html');
       $wrapper = $('.js-ci-variable-list-section');
 
       variableList = new VariableList({
@@ -198,7 +198,7 @@ describe('VariableList', () => {
 
   describe('hideValues', () => {
     beforeEach(() => {
-      loadFixtures('projects/ci_cd_settings.html.raw');
+      loadFixtures('projects/ci_cd_settings.html');
       $wrapper = $('.js-ci-variable-list-section');
 
       variableList = new VariableList({

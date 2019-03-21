@@ -24,7 +24,7 @@ module JavaScriptFixturesHelpers
   #
   def clean_frontend_fixtures(directory_name)
     full_directory_name = File.expand_path(directory_name, fixture_root_path)
-    Dir[File.expand_path('*.html.raw', full_directory_name)].each do |file_name|
+    Dir[File.expand_path('*.html', full_directory_name)].each do |file_name|
       FileUtils.rm(file_name)
     end
   end

@@ -2,7 +2,7 @@ import $ from 'jquery';
 import UserInternalRegexHandler from '~/pages/admin/users/new/index';
 
 describe('UserInternalRegexHandler', () => {
-  const FIXTURE = 'admin/users/new_with_internal_user_regex.html.raw';
+  const FIXTURE = 'admin/users/new_with_internal_user_regex.html';
   let $userExternal;
   let $userEmail;
   let $warningMessage;
