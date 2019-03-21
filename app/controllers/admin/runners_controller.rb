@@ -34,17 +34,17 @@ class Admin::RunnersController < Admin::ApplicationController
 
   def resume
     if Ci::UpdateRunnerService.new(@runner).update(active: true)
-      redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
+      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
-      redirect_to admin_runners_path, alert: 'Runner was not updated.'
+      redirect_to admin_runners_path, alert: _('Runner was not updated.')
     end
   end
 
   def pause
     if Ci::UpdateRunnerService.new(@runner).update(active: false)
-      redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
+      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
-      redirect_to admin_runners_path, alert: 'Runner was not updated.'
+      redirect_to admin_runners_path, alert: _('Runner was not updated.')
     end
   end
 

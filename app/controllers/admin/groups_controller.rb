@@ -36,7 +36,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
     if @group.save
       @group.add_owner(current_user)
-      redirect_to [:admin, @group], notice: "Group '#{@group.name}' was successfully created."
+      redirect_to [:admin, @group], notice: _('Group %{group_name} was successfully created.') % { group_name: @group.name }
     else
       render "new"
     end
@@ -44,7 +44,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def update
     if @group.update(group_params)
-      redirect_to [:admin, @group], notice: 'Group was successfully updated.'
+      redirect_to [:admin, @group], notice: _('Group was successfully updated.')
     else
       render "edit"
     end
@@ -55,7 +55,7 @@ class Admin::GroupsController < Admin::ApplicationController
     result = Members::CreateService.new(current_user, member_params.merge(limit: -1)).execute(@group)
 
     if result[:status] == :success
-      redirect_to [:admin, @group], notice: 'Users were successfully added.'
+      redirect_to [:admin, @group], notice: _('Users were successfully added.')
     else
       redirect_to [:admin, @group], alert: result[:message]
     end
@@ -66,7 +66,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
     redirect_to admin_groups_path,
                 status: 302,
-                alert: "Group '#{@group.name}' was scheduled for deletion."
+                alert: _('Group %{group_name} was scheduled for deletion.') % { group_name: @group.name }
   end
 
   private

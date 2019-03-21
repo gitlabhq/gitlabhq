@@ -12,7 +12,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
     if @impersonation_token.save
       PersonalAccessToken.redis_store!(current_user.id, @impersonation_token.token)
-      redirect_to admin_user_impersonation_tokens_path, notice: "A new impersonation token has been created."
+      redirect_to admin_user_impersonation_tokens_path, notice: _("A new impersonation token has been created.")
     else
       set_index_vars
       render :index
@@ -23,9 +23,9 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
     @impersonation_token = finder.find(params[:id])
 
     if @impersonation_token.revoke!
-      flash[:notice] = "Revoked impersonation token #{@impersonation_token.name}!"
+      flash[:notice] = _("Revoked impersonation token %{token_name}!") % { token_name: @impersonation_token.name }
     else
-      flash[:alert] = "Could not revoke impersonation token #{@impersonation_token.name}."
+      flash[:alert] = _("Could not revoke impersonation token %{token_name}.") % { token_name: @impersonation_token.name }
     end
 
     redirect_to admin_user_impersonation_tokens_path

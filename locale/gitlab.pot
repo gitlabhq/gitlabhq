@@ -321,6 +321,9 @@ msgstr ""
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
+msgid "A new impersonation token has been created."
+msgstr ""
+
 msgid "A plain HTML site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
@@ -798,10 +801,25 @@ msgstr ""
 msgid "Appearance"
 msgstr ""
 
+msgid "Appearance was successfully created."
+msgstr ""
+
+msgid "Appearance was successfully updated."
+msgstr ""
+
 msgid "Application"
 msgstr ""
 
 msgid "Application ID"
+msgstr ""
+
+msgid "Application settings saved successfully"
+msgstr ""
+
+msgid "Application was successfully destroyed."
+msgstr ""
+
+msgid "Application was successfully updated."
 msgstr ""
 
 msgid "Application: %{name}"
@@ -1267,6 +1285,12 @@ msgid "Branches|project settings"
 msgstr ""
 
 msgid "Branches|protected"
+msgstr ""
+
+msgid "Broadcast Message was successfully created."
+msgstr ""
+
+msgid "Broadcast Message was successfully updated."
 msgstr ""
 
 msgid "Browse Directory"
@@ -2426,6 +2450,9 @@ msgstr ""
 msgid "Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}"
 msgstr ""
 
+msgid "Could not revoke impersonation token %{token_name}."
+msgstr ""
+
 msgid "Coverage"
 msgstr ""
 
@@ -2702,6 +2729,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Deploy Keys"
+msgstr ""
+
+msgid "Deploy key was successfully updated."
 msgstr ""
 
 msgid "DeployKeys|+%{count} others"
@@ -3313,6 +3343,18 @@ msgstr ""
 msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
+msgid "Error occurred. User was not blocked"
+msgstr ""
+
+msgid "Error occurred. User was not confirmed"
+msgstr ""
+
+msgid "Error occurred. User was not unblocked"
+msgstr ""
+
+msgid "Error occurred. User was not unlocked"
+msgstr ""
+
 msgid "Error rendering markdown preview"
 msgstr ""
 
@@ -3329,6 +3371,9 @@ msgid "Error updating todo status."
 msgstr ""
 
 msgid "Error while loading the merge request. Please try again."
+msgstr ""
+
+msgid "Error with Akismet. Please check the logs for more info."
 msgstr ""
 
 msgid "Error:"
@@ -3505,6 +3550,12 @@ msgstr ""
 msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
+msgid "Failed to remove user identity."
+msgstr ""
+
+msgid "Failed to remove user key."
+msgstr ""
+
 msgid "Failed to update issues, please try again."
 msgstr ""
 
@@ -3518,6 +3569,9 @@ msgid "Fast-forward merge without a merge commit"
 msgstr ""
 
 msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
+msgstr ""
+
+msgid "Favicon was successfully removed."
 msgstr ""
 
 msgid "Feb"
@@ -3840,6 +3894,12 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
+msgid "Group %{group_name} was scheduled for deletion."
+msgstr ""
+
+msgid "Group %{group_name} was successfully created."
+msgstr ""
+
 msgid "Group CI/CD settings"
 msgstr ""
 
@@ -3877,6 +3937,9 @@ msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
 msgid "Group name"
+msgstr ""
+
+msgid "Group was successfully updated."
 msgstr ""
 
 msgid "Group:"
@@ -4002,6 +4065,9 @@ msgstr ""
 msgid "GroupsTree|Search by name"
 msgstr ""
 
+msgid "Header logo was successfully removed."
+msgstr ""
+
 msgid "Header message"
 msgstr ""
 
@@ -4056,6 +4122,9 @@ msgid "Hide values"
 msgstr ""
 
 msgid "History"
+msgstr ""
+
+msgid "Hook was successfully created."
 msgstr ""
 
 msgid "Housekeeping successfully started"
@@ -4526,6 +4595,15 @@ msgstr ""
 msgid "Label actions dropdown"
 msgstr ""
 
+msgid "Label was created"
+msgstr ""
+
+msgid "Label was removed"
+msgstr ""
+
+msgid "Label was successfully updated."
+msgstr ""
+
 msgid "LabelSelect|%{firstLabelName} +%{remainingLabelCount} more"
 msgstr ""
 
@@ -4702,6 +4780,9 @@ msgid "Locked"
 msgstr ""
 
 msgid "Locked to current projects"
+msgstr ""
+
+msgid "Logo was successfully removed."
 msgstr ""
 
 msgid "Logs"
@@ -5138,6 +5219,9 @@ msgstr ""
 msgid "New group"
 msgstr ""
 
+msgid "New health check access token has been generated!"
+msgstr ""
+
 msgid "New identity"
 msgstr ""
 
@@ -5157,6 +5241,9 @@ msgid "New pipelines will cancel older, pending pipelines on the same branch"
 msgstr ""
 
 msgid "New project"
+msgstr ""
+
+msgid "New runners registration token has been generated!"
 msgstr ""
 
 msgid "New schedule"
@@ -6537,6 +6624,9 @@ msgstr ""
 msgid "Repository URL"
 msgstr ""
 
+msgid "Repository check was triggered."
+msgstr ""
+
 msgid "Repository cleanup"
 msgstr ""
 
@@ -6644,6 +6734,9 @@ msgstr ""
 msgid "Revoke"
 msgstr ""
 
+msgid "Revoked impersonation token %{token_name}!"
+msgstr ""
+
 msgid "Run untagged jobs"
 msgstr ""
 
@@ -6660,6 +6753,12 @@ msgid "Runner runs jobs from assigned projects"
 msgstr ""
 
 msgid "Runner token"
+msgstr ""
+
+msgid "Runner was not updated."
+msgstr ""
+
+msgid "Runner was successfully updated."
 msgstr ""
 
 msgid "Runner will not receive any new jobs"
@@ -7315,6 +7414,9 @@ msgstr ""
 msgid "Spam and Anti-bot Protection"
 msgstr ""
 
+msgid "Spam log successfully submitted as ham."
+msgstr ""
+
 msgid "Specific Runners"
 msgstr ""
 
@@ -7402,6 +7504,9 @@ msgstr ""
 msgid "Started %{startsIn}"
 msgstr ""
 
+msgid "Started asynchronous removal of all repository check states."
+msgstr ""
+
 msgid "Starts %{startsIn}"
 msgstr ""
 
@@ -7471,6 +7576,21 @@ msgstr ""
 msgid "Subscribed"
 msgstr ""
 
+msgid "Successfully blocked"
+msgstr ""
+
+msgid "Successfully confirmed"
+msgstr ""
+
+msgid "Successfully removed email."
+msgstr ""
+
+msgid "Successfully unblocked"
+msgstr ""
+
+msgid "Successfully unlocked"
+msgstr ""
+
 msgid "Suggested change"
 msgstr ""
 
@@ -7496,6 +7616,9 @@ msgid "System default (%{default})"
 msgstr ""
 
 msgid "System header and footer"
+msgstr ""
+
+msgid "System hook was successfully updated."
 msgstr ""
 
 msgid "System metrics (Custom)"
@@ -7714,6 +7837,9 @@ msgstr ""
 msgid "The usage ping is disabled, and cannot be configured through this form."
 msgstr ""
 
+msgid "The user is being deleted."
+msgstr ""
+
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
 msgstr ""
 
@@ -7754,6 +7880,9 @@ msgid "There are no unstaged changes"
 msgstr ""
 
 msgid "There was an error loading users activity calendar."
+msgstr ""
+
+msgid "There was an error removing the e-mail."
 msgstr ""
 
 msgid "There was an error saving your changes."
@@ -7973,6 +8102,9 @@ msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
 msgid "This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like \"1 hour\". Values without specification represent seconds."
+msgstr ""
+
+msgid "This user cannot be unlocked manually from GitLab"
 msgstr ""
 
 msgid "This user has no identities"
@@ -8324,6 +8456,9 @@ msgstr ""
 msgid "Twitter"
 msgstr ""
 
+msgid "Two-factor Authentication has been disabled for this user"
+msgstr ""
+
 msgid "Two-factor authentication"
 msgstr ""
 
@@ -8468,6 +8603,12 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
+msgid "User %{current_user_username} has started impersonating %{username}"
+msgstr ""
+
+msgid "User %{username} was successfully removed."
+msgstr ""
+
 msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
 msgstr ""
 
@@ -8480,7 +8621,25 @@ msgstr ""
 msgid "User and IP Rate Limits"
 msgstr ""
 
+msgid "User identity was successfully created."
+msgstr ""
+
+msgid "User identity was successfully removed."
+msgstr ""
+
+msgid "User identity was successfully updated."
+msgstr ""
+
+msgid "User key was successfully removed."
+msgstr ""
+
 msgid "User map"
+msgstr ""
+
+msgid "User was successfully created."
+msgstr ""
+
+msgid "User was successfully updated."
 msgstr ""
 
 msgid "UserProfile|Activity"
@@ -8562,6 +8721,9 @@ msgid "Users"
 msgstr ""
 
 msgid "Users requesting access to"
+msgstr ""
+
+msgid "Users were successfully added."
 msgstr ""
 
 msgid "Validate"
@@ -8888,6 +9050,9 @@ msgstr ""
 msgid "You are going to transfer %{project_full_name} to another owner. Are you ABSOLUTELY sure?"
 msgstr ""
 
+msgid "You are now impersonating %{username}"
+msgstr ""
+
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
@@ -8940,6 +9105,15 @@ msgid "You can set up jobs to only use Runners with specific tags. Separate tags
 msgstr ""
 
 msgid "You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}."
+msgstr ""
+
+msgid "You cannot impersonate a blocked user"
+msgstr ""
+
+msgid "You cannot impersonate a user who cannot log in"
+msgstr ""
+
+msgid "You cannot impersonate an internal user"
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
