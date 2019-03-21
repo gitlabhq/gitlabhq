@@ -1,5 +1,0 @@
----
-title: Fix the last-ditch memory killer pgroup SIGKILL
-merge_request: 25940
-author:
-type: fixed

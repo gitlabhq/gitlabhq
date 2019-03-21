@@ -1,5 +1,0 @@
----
-title: Fix undefined variable error on json project views
-merge_request: 26297
-author:
-type: fixed

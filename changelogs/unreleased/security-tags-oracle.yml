@@ -1,5 +1,0 @@
----
-title: Prevent releases links API to leak tag existance
-merge_request:
-author:
-type: security

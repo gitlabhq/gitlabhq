@@ -1,5 +1,0 @@
----
-title: Eliminate most N+1 queries loading UserController#calendar_activities
-merge_request: 25697
-author:
-type: performance

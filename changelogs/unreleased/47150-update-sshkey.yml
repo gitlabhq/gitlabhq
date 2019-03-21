@@ -1,5 +1,0 @@
----
-title: Fix validation of certain ed25519 keys
-merge_request: 25115
-author: Merlijn B. W. Wajer
-type: fixed

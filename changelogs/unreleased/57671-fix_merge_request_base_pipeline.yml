@@ -1,5 +1,0 @@
----
-title: Ensure the base pipeline of a Merge Request belongs to its target branch
-merge_request: 25226
-author:
-type: fixed

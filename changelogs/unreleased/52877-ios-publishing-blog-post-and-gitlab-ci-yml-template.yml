@@ -1,5 +1,0 @@
----
-title: Add iOS-fastlane template for .gitlab-ci.yml
-merge_request: 25395
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: 'sidekiq: terminate child processes at shutdown'
-merge_request: 25669
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Fix commenting on commits having SHA1 starting with a large number
-merge_request: 25278
-author:
-type: fixed

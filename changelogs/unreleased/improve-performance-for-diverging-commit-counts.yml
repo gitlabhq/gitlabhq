@@ -1,5 +1,0 @@
----
-title: Improve performance for diverging commit counts
-merge_request: 24287
-author:
-type: performance

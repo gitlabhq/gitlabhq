@@ -1,5 +1,0 @@
----
-title: Do not show file templates when creating a new directory in WebIDE
-merge_request: !25119
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Fix 500 error caused by CODEOWNERS with no matches
-merge_request: 26072
-author:
-type: fixed
