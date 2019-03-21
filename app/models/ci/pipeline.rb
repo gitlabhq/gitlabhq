@@ -738,12 +738,20 @@ module Ci
       triggered_by_merge_request? && target_sha.nil?
     end
 
+    def legacy_detached_merge_request_pipeline?
+      detached_merge_request_pipeline? && !merge_request_ref?
+    end
+
     def merge_request_pipeline?
       triggered_by_merge_request? && target_sha.present?
     end
 
     def mergeable_merge_request_pipeline?
       triggered_by_merge_request? && target_sha == merge_request.target_branch_sha
+    end
+
+    def merge_request_ref?
+      MergeRequest.merge_request_ref?(ref)
     end
 
     def matches_sha_or_source_sha?(sha)

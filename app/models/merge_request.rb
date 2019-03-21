@@ -1129,6 +1129,10 @@ class MergeRequest < ActiveRecord::Base
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/merge"
   end
 
+  def self.merge_request_ref?(ref)
+    ref.start_with?("refs/#{Repository::REF_MERGE_REQUEST}/")
+  end
+
   def in_locked_state
     begin
       lock_mr

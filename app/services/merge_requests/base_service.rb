@@ -54,7 +54,7 @@ module MergeRequests
         merge_request, merge_request.project, current_user, merge_request.assignee)
     end
 
-    def create_merge_request_pipeline(merge_request, user)
+    def create_pipeline_for(merge_request, user)
       return unless Feature.enabled?(:ci_merge_request_pipeline,
                                      merge_request.source_project,
                                      default_enabled: true)
@@ -65,12 +65,24 @@ module MergeRequests
       return if merge_request.merge_request_pipeline_exists?
       return if merge_request.has_no_commits?
 
-      Ci::CreatePipelineService
-        .new(merge_request.source_project, user, ref: merge_request.source_branch)
-        .execute(:merge_request_event,
-                 ignore_skip_ci: true,
-                 save_on_errors: false,
-                 merge_request: merge_request)
+      create_detached_merge_request_pipeline(merge_request, user)
+    end
+
+    def create_detached_merge_request_pipeline(merge_request, user)
+      if can_use_merge_request_ref?(merge_request)
+        Ci::CreatePipelineService.new(merge_request.source_project, user,
+                                      ref: merge_request.ref_path)
+          .execute(:merge_request_event, merge_request: merge_request)
+      else
+        Ci::CreatePipelineService.new(merge_request.source_project, user,
+                                      ref: merge_request.source_branch)
+          .execute(:merge_request_event, merge_request: merge_request)
+      end
+    end
+
+    def can_use_merge_request_ref?(merge_request)
+      Feature.enabled?(:ci_use_merge_request_ref, project, default_enabled: true) &&
+        !merge_request.for_fork?
     end
 
     # Returns all origin and fork merge requests from `@project` satisfying passed arguments.
