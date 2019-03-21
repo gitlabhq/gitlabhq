@@ -3383,6 +3383,9 @@ msgstr ""
 msgid "Disabled"
 msgstr ""
 
+msgid "Disabled mirrors can only be enabled by instance owners. It is recommended that you delete them."
+msgstr ""
+
 msgid "Discard"
 msgstr ""
 
