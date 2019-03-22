@@ -264,6 +264,16 @@
   }
 }
 
+.project-result {
+  .project-name {
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .project-path {
+    color: $gl-gray-400;
+  }
+}
+
 .user-result {
   min-height: 24px;
   display: flex;
