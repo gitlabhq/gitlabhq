@@ -287,10 +287,17 @@ describe 'Pages' do
           :ci_build,
           project: project,
           pipeline: pipeline,
-          ref: 'HEAD',
-          legacy_artifacts_file: fixture_file_upload(File.join('spec/fixtures/pages.zip')),
-          legacy_artifacts_metadata: fixture_file_upload(File.join('spec/fixtures/pages.zip.meta'))
-        )
+          ref: 'HEAD')
+      end
+
+      let!(:artifact) do
+        create(:ci_job_artifact, :archive,
+               file: fixture_file_upload(File.join('spec/fixtures/pages.zip')), job: ci_build)
+      end
+
+      let!(:metadata) do
+        create(:ci_job_artifact, :metadata,
+               file: fixture_file_upload(File.join('spec/fixtures/pages.zip.meta')), job: ci_build)
       end
 
       before do

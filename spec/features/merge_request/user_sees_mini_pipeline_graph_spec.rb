@@ -27,7 +27,8 @@ describe 'Merge request < User sees mini pipeline graph', :js do
     let(:artifacts_file2) { fixture_file_upload(File.join('spec/fixtures/dk.png'), 'image/png') }
 
     before do
-      create(:ci_build, :success, :trace_artifact, pipeline: pipeline, legacy_artifacts_file: artifacts_file1)
+      job = create(:ci_build, :success, :trace_artifact, pipeline: pipeline)
+      create(:ci_job_artifact, :archive, file: artifacts_file1, job: job)
       create(:ci_build, :manual, pipeline: pipeline, when: 'manual')
     end
 
@@ -35,7 +36,8 @@ describe 'Merge request < User sees mini pipeline graph', :js do
     xit 'avoids repeated database queries' do
       before = ActiveRecord::QueryRecorder.new { visit_merge_request(format: :json, serializer: 'widget') }
 
-      create(:ci_build, :success, :trace_artifact, pipeline: pipeline, legacy_artifacts_file: artifacts_file2)
+      job = create(:ci_build, :success, :trace_artifact, pipeline: pipeline)
+      create(:ci_job_artifact, :archive, file: artifacts_file2, job: job)
       create(:ci_build, :manual, pipeline: pipeline, when: 'manual')
 
       after = ActiveRecord::QueryRecorder.new { visit_merge_request(format: :json, serializer: 'widget') }

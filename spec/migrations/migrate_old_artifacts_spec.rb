@@ -45,10 +45,6 @@ describe MigrateOldArtifacts, :migration, schema: 20170918072948 do
       expect(build_with_legacy_artifacts.artifacts?).to be_falsey
     end
 
-    it "legacy artifacts are set" do
-      expect(build_with_legacy_artifacts.legacy_artifacts_file_identifier).not_to be_nil
-    end
-
     describe '#min_id' do
       subject { migration.send(:min_id) }
 
