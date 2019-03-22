@@ -2388,6 +2388,12 @@ describe Project do
       project.change_head(project.default_branch)
     end
 
+    it 'updates commit count' do
+      expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:commit_count])
+
+      project.change_head(project.default_branch)
+    end
+
     it 'copies the gitattributes' do
       expect(project.repository).to receive(:copy_gitattributes).with(project.default_branch)
       project.change_head(project.default_branch)

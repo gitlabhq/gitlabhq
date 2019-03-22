@@ -1378,6 +1378,7 @@ class Project < ActiveRecord::Base
       repository.raw_repository.write_ref('HEAD', "refs/heads/#{branch}")
       repository.copy_gitattributes(branch)
       repository.after_change_head
+      ProjectCacheWorker.perform_async(self.id, [], [:commit_count])
       reload_default_branch
     else
       errors.add(:base, "Could not change HEAD: branch '#{branch}' does not exist")
