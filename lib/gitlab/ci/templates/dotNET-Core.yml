@@ -43,29 +43,36 @@ stages:
 # What that means is that before every job a dependency restore must be performed 
 # because restored dependencies are removed along with machines. Fortunately,
 # GitLab provides cache mechanism with the aim of keeping restored dependencies
-# for other jobs. In this example dependencies are restored only once 
-# and then passed over to the next jobs.
+# for other jobs. This example shows how to configure cache to pass over restored 
+# dependencies for re-use.
 #
 # With global cache rule, cached dependencies will be downloaded before every job
 # and then unpacked to the paths as specified below.
 cache:
+# Per-stage and per-branch caching.
+ key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG" 
  paths:
 # Specify three paths that should be cached:
 #
 # 1) Main JSON file holding information about package dependency tree, packages versions,
-# frameworks etc. It also holds information where to the dependencies were restored, 
-# so next time a 'dotnet build' is executed, the build engine will know 
-# where to look for already downloaded dependencies.
+# frameworks etc. It also holds information where to the dependencies were restored.
   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/project.assets.json'  
 # 2) Other NuGet and MSBuild related files. Also needed.
   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/*.csproj.nuget.*'    
 # 3) Path to the directory where restored dependencies are kept.
   - '$NUGET_PACKAGES_DIRECTORY'   
- policy: pull # Only download the cache, don't upload it after the job is completed.
- 
+#      
+# 'pull-push' policy means that latest cache will be downloaded (if exists) 
+# before executing the job, and a newer version will be uploaded afterwards. 
+# Such setting saves time when there are no changes in referenced third-party 
+# packages. For example if you run a pipeline with changes in your code, 
+# but with no changes within third-party packages which your project is using, 
+# then project restore will happen in next to no time as all required dependencies 
+# will already be there — unzipped from cache. 'pull-push' policy is a default 
+# cache policy, you do not have to specify it explicitly.
+ policy: pull-push 
 
-build:
- stage: build
+
 # 
 # ### Restore project dependencies
 #
@@ -76,24 +83,12 @@ build:
 # in the root of project repository, so it's content can be cached.
 #
 # Learn more about GitLab cache: https://docs.gitlab.com/ee/ci/caching/index.html
- before_script:
-  - 'dotnet restore --packages $NUGET_PACKAGES_DIRECTORY'
-# Override global cache rule for uploading.
- cache:
-  paths:
-   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/project.assets.json'  
-   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/*.csproj.nuget.*'    
-   - '$NUGET_PACKAGES_DIRECTORY' 
-#      
-# 'pull-push' policy means that latest cache will be downloaded (if exists) 
-# before executing the job, and a newer version will be uploaded afterwards. 
-# Such setting saves time when there are no changes in referenced third-party 
-# packages. For example if you run a pipeline with changes in your code, 
-# but with no changes within third-party packages which your project is using, 
-# then project restore will happen in next to no time as all required dependencies 
-# will already be there — unzipped from cache. 'pull-push' policy is a default 
-# cache policy, you do not have to specify it explicitly.
-  policy: pull-push 
+before_script:
+ - 'dotnet restore --packages $NUGET_PACKAGES_DIRECTORY'
+ 
+
+build:
+ stage: build
 #
 # ### Build all projects discovered from solution file. 
 #
