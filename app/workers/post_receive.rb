@@ -38,7 +38,7 @@ class PostReceive
 
     post_received.changes_refs do |oldrev, newrev, ref|
       if Gitlab::Git.tag_ref?(ref)
-        GitTagPushService.new(
+        Git::TagPushService.new(
           post_received.project,
           @user,
           oldrev: oldrev,

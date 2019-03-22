@@ -34,7 +34,7 @@ describe PostReceive do
     context 'empty changes' do
       it "does not call any PushService but runs after project hooks" do
         expect(GitPushService).not_to receive(:new)
-        expect(GitTagPushService).not_to receive(:new)
+        expect(Git::TagPushService).not_to receive(:new)
         expect_next_instance_of(SystemHooksService) { |service| expect(service).to receive(:execute_hooks) }
 
         described_class.new.perform(gl_repository, key_id, "")
@@ -46,7 +46,7 @@ describe PostReceive do
 
       it 'returns false' do
         expect(GitPushService).not_to receive(:new)
-        expect(GitTagPushService).not_to receive(:new)
+        expect(Git::TagPushService).not_to receive(:new)
 
         expect(described_class.new.perform(gl_repository, key_id, base64_changes)).to be false
       end
@@ -62,7 +62,7 @@ describe PostReceive do
 
         it "calls GitPushService" do
           expect_any_instance_of(GitPushService).to receive(:execute).and_return(true)
-          expect_any_instance_of(GitTagPushService).not_to receive(:execute)
+          expect_any_instance_of(Git::TagPushService).not_to receive(:execute)
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
@@ -70,9 +70,9 @@ describe PostReceive do
       context "tags" do
         let(:changes) { "123456 789012 refs/tags/tag" }
 
-        it "calls GitTagPushService" do
+        it "calls Git::TagPushService" do
           expect_any_instance_of(GitPushService).not_to receive(:execute)
-          expect_any_instance_of(GitTagPushService).to receive(:execute).and_return(true)
+          expect_any_instance_of(Git::TagPushService).to receive(:execute).and_return(true)
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
@@ -82,7 +82,7 @@ describe PostReceive do
 
         it "does not call any of the services" do
           expect_any_instance_of(GitPushService).not_to receive(:execute)
-          expect_any_instance_of(GitTagPushService).not_to receive(:execute)
+          expect_any_instance_of(Git::TagPushService).not_to receive(:execute)
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitTagPushService do
+describe Git::TagPushService do
   include RepoHelpers
   include GitHelpers
 
