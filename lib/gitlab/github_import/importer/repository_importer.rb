@@ -5,6 +5,7 @@ module Gitlab
     module Importer
       class RepositoryImporter
         include Gitlab::ShellAdapter
+        include Gitlab::Utils::StrongMemoize
 
         attr_reader :project, :client, :wiki_formatter
 
@@ -17,7 +18,7 @@ module Gitlab
         # Returns true if we should import the wiki for the project.
         # rubocop: disable CodeReuse/ActiveRecord
         def import_wiki?
-          client.repository(project.import_source)&.has_wiki &&
+          client_repository&.has_wiki &&
             !project.wiki_repository_exists? &&
             Gitlab::GitalyClient::RemoteService.exists?(wiki_url)
         end
@@ -52,6 +53,7 @@ module Gitlab
           refmap = Gitlab::GithubImport.refmap
           project.repository.fetch_as_mirror(project.import_url, refmap: refmap, forced: true, remote_name: 'github')
 
+          project.change_head(default_branch) if default_branch
           true
         rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
           fail_import("Failed to import the repository: #{e.message}")
@@ -81,6 +83,18 @@ module Gitlab
         def fail_import(message)
           project.import_state.mark_as_failed(message)
           false
+        end
+
+        private
+
+        def default_branch
+          client_repository&.default_branch
+        end
+
+        def client_repository
+          strong_memoize(:client_repository) do
+            client.repository(project.import_source)
+          end
         end
       end
     end
