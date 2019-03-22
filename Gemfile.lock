@@ -583,7 +583,7 @@ GEM
       atomic (>= 1.0.0)
       peek
       redis
-    pg (1.1.3)
+    pg (1.1.4)
     po_to_json (1.0.1)
       json (>= 1.6.0)
     powerpack (0.1.1)
