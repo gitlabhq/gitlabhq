@@ -47,6 +47,34 @@ module API
           end
         end
       end
+
+      def self.update_params_at_least_one_of
+        [
+          :jobs_enabled,
+          :resolve_outdated_diff_discussions,
+          :ci_config_path,
+          :container_registry_enabled,
+          :default_branch,
+          :description,
+          :issues_enabled,
+          :lfs_enabled,
+          :merge_requests_enabled,
+          :merge_method,
+          :name,
+          :only_allow_merge_if_all_discussions_are_resolved,
+          :only_allow_merge_if_pipeline_succeeds,
+          :path,
+          :printing_merge_request_link_enabled,
+          :public_builds,
+          :request_access_enabled,
+          :shared_runners_enabled,
+          :snippets_enabled,
+          :tag_list,
+          :visibility,
+          :wiki_enabled,
+          :avatar
+        ]
+      end
     end
   end
 end

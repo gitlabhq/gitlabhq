@@ -11,12 +11,20 @@ module API
     before { authenticate_non_get! }
 
     helpers do
-      params :optional_filter_params_ee do
-        # EE::API::Projects would override this helper
-      end
+      if Gitlab.ee?
+        params :optional_filter_params_ee do
+          optional :wiki_checksum_failed, type: Grape::API::Boolean, default: false, desc: 'Limit by projects where wiki checksum is failed'
+          optional :repository_checksum_failed, type: Grape::API::Boolean, default: false, desc: 'Limit by projects where repository checksum is failed'
+        end
 
-      params :optional_update_params_ee do
-        # EE::API::Projects would override this helper
+        params :optional_update_params_ee do
+          optional :mirror_user_id, type: Integer, desc: 'User responsible for all the activity surrounding a pull mirror event'
+          optional :only_mirror_protected_branches, type: Grape::API::Boolean, desc: 'Only mirror protected branches'
+          optional :mirror_overwrites_diverged_branches, type: Grape::API::Boolean, desc: 'Pull mirror overwrites diverged branches'
+          optional :import_url, type: String, desc: 'URL from which the project is imported'
+          optional :packages_enabled, type: Grape::API::Boolean, desc: 'Enable project packages feature'
+          optional :fallback_approvals_required, type: Integer, desc: 'Overall approvals required when no rule is present'
+        end
       end
 
       # EE::API::Projects would override this method
@@ -33,34 +41,6 @@ module API
 
       def verify_update_project_attrs!(project, attrs)
       end
-    end
-
-    def self.update_params_at_least_one_of
-      [
-        :jobs_enabled,
-        :resolve_outdated_diff_discussions,
-        :ci_config_path,
-        :container_registry_enabled,
-        :default_branch,
-        :description,
-        :issues_enabled,
-        :lfs_enabled,
-        :merge_requests_enabled,
-        :merge_method,
-        :name,
-        :only_allow_merge_if_all_discussions_are_resolved,
-        :only_allow_merge_if_pipeline_succeeds,
-        :path,
-        :printing_merge_request_link_enabled,
-        :public_builds,
-        :request_access_enabled,
-        :shared_runners_enabled,
-        :snippets_enabled,
-        :tag_list,
-        :visibility,
-        :wiki_enabled,
-        :avatar
-      ]
     end
 
     helpers do
@@ -97,7 +77,7 @@ module API
         optional :with_programming_language, type: String, desc: 'Limit to repositories which use the given programming language'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
 
-        use :optional_filter_params_ee
+        use :optional_filter_params_ee if Gitlab.ee?
       end
 
       params :create_params do
@@ -316,8 +296,9 @@ module API
         optional :path, type: String, desc: 'The path of the repository'
 
         use :optional_project_params
+        use :optional_update_params_ee if Gitlab.ee?
 
-        at_least_one_of(*::API::Projects.update_params_at_least_one_of)
+        at_least_one_of(*Helpers::ProjectsHelpers.update_params_at_least_one_of)
       end
       put ':id' do
         authorize_admin_project
