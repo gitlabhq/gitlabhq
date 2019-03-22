@@ -12,7 +12,7 @@ class EnvironmentEntity < Grape::Entity
   expose :last_deployment, using: DeploymentEntity
   expose :stop_action_available?, as: :has_stop_action
 
-  expose :metrics_path, if: -> (environment, _) { environment.has_metrics? } do |environment|
+  expose :metrics_path, if: -> (*) { environment.has_metrics? } do |environment|
     metrics_project_environment_path(environment.project, environment)
   end
 
