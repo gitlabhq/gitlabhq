@@ -1,0 +1,5 @@
+---
+title: Optimize /api/v4/projects endpoint for visibility level
+merge_request: 26481
+author:
+type: performance
