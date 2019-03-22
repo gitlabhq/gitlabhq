@@ -1,6 +1,7 @@
 # Pipeline schedules
 
 > **Notes**:
+>
 > - This feature was introduced in 9.1 as [Trigger Schedule][ce-10533].
 > - In 9.2, the feature was [renamed to Pipeline Schedule][ce-10853].
 > - Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).

@@ -97,17 +97,37 @@ describe AuthHelper do
     end
   end
 
-  describe 'unlink_allowed?' do
-    [:saml, :cas3].each do |provider|
-      it "returns true if the provider is #{provider}" do
-        expect(helper.unlink_allowed?(provider)).to be false
-      end
+  describe '#link_provider_allowed?' do
+    let(:policy) { instance_double('IdentityProviderPolicy') }
+    let(:current_user) { instance_double('User') }
+    let(:provider) { double }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(IdentityProviderPolicy).to receive(:new).with(current_user, provider).and_return(policy)
     end
 
-    [:twitter, :facebook, :google_oauth2, :gitlab, :github, :bitbucket, :crowd, :auth0, :authentiq].each do |provider|
-      it "returns false if the provider is #{provider}" do
-        expect(helper.unlink_allowed?(provider)).to be true
-      end
+    it 'delegates to identity provider policy' do
+      allow(policy).to receive(:can?).with(:link).and_return('policy_link_result')
+
+      expect(helper.link_provider_allowed?(provider)).to eq 'policy_link_result'
+    end
+  end
+
+  describe '#unlink_provider_allowed?' do
+    let(:policy) { instance_double('IdentityProviderPolicy') }
+    let(:current_user) { instance_double('User') }
+    let(:provider) { double }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(IdentityProviderPolicy).to receive(:new).with(current_user, provider).and_return(policy)
+    end
+
+    it 'delegates to identity provider policy' do
+      allow(policy).to receive(:can?).with(:unlink).and_return('policy_unlink_result')
+
+      expect(helper.unlink_provider_allowed?(provider)).to eq 'policy_unlink_result'
     end
   end
 end

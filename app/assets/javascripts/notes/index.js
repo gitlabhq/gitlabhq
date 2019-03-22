@@ -6,9 +6,8 @@ import createStore from './stores';
 document.addEventListener('DOMContentLoaded', () => {
   const store = createStore();
 
-  initDiscussionFilters(store);
-
-  return new Vue({
+  // eslint-disable-next-line no-new
+  new Vue({
     el: '#js-vue-notes',
     components: {
       notesApp,
@@ -49,4 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     },
   });
+
+  initDiscussionFilters(store);
 });

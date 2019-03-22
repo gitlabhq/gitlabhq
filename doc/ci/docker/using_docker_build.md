@@ -389,6 +389,7 @@ If you're running multiple Runners you will have to modify all configuration fil
 ## Using the GitLab Container Registry
 
 > **Notes:**
+>
 > - This feature requires GitLab 8.8 and GitLab Runner 1.2.
 > - Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
 >   to pass a [personal access token][pat] instead of your password in order to

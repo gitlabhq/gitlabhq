@@ -7,7 +7,7 @@ describe Gitlab::JsonCache do
   let(:namespace) { 'geo' }
   let(:key) { 'foo' }
   let(:expanded_key) { "#{namespace}:#{key}:#{Rails.version}" }
-  let(:broadcast_message) { create(:broadcast_message) }
+  set(:broadcast_message) { create(:broadcast_message) }
 
   subject(:cache) { described_class.new(namespace: namespace, backend: backend) }
 
@@ -145,6 +145,18 @@ describe Gitlab::JsonCache do
           .and_return(broadcast_message.attributes.merge(unknown_attribute: 1).to_json)
 
         expect(cache.read(key, BroadcastMessage)).to be_nil
+      end
+
+      it 'gracefully handles excluded fields from attributes during serialization' do
+        allow(backend).to receive(:read)
+          .with(expanded_key)
+          .and_return(broadcast_message.attributes.except("message_html").to_json)
+
+        result = cache.read(key, BroadcastMessage)
+
+        BroadcastMessage.cached_markdown_fields.html_fields.each do |field|
+          expect(result.public_send(field)).to be_nil
+        end
       end
     end
 
@@ -320,6 +332,46 @@ describe Gitlab::JsonCache do
             result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
 
             expect(result).to be_new_record
+          end
+
+          it 'gracefully handles bad cached entry' do
+            allow(backend).to receive(:read)
+              .with(expanded_key)
+              .and_return('{')
+
+            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+            expect(result).to eq 'block result'
+          end
+
+          it 'gracefully handles an empty hash' do
+            allow(backend).to receive(:read)
+              .with(expanded_key)
+              .and_return('{}')
+
+            expect(cache.fetch(key, as: BroadcastMessage)).to be_a(BroadcastMessage)
+          end
+
+          it 'gracefully handles unknown attributes' do
+            allow(backend).to receive(:read)
+              .with(expanded_key)
+              .and_return(broadcast_message.attributes.merge(unknown_attribute: 1).to_json)
+
+            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+            expect(result).to eq 'block result'
+          end
+
+          it 'gracefully handles excluded fields from attributes during serialization' do
+            allow(backend).to receive(:read)
+              .with(expanded_key)
+              .and_return(broadcast_message.attributes.except("message_html").to_json)
+
+            result = cache.fetch(key, as: BroadcastMessage) { 'block result' }
+
+            BroadcastMessage.cached_markdown_fields.html_fields.each do |field|
+              expect(result.public_send(field)).to be_nil
+            end
           end
         end
 

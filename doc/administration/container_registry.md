@@ -1,6 +1,7 @@
 # GitLab Container Registry administration
 
 > **Notes:**
+>
 > - [Introduced][ce-4040] in GitLab 8.8.
 > - Container Registry manifest `v1` support was added in GitLab 8.9 to support
 >   Docker versions earlier than 1.10.

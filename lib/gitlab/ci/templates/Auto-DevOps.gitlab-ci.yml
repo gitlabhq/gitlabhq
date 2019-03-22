@@ -697,6 +697,8 @@ rollout 100%:
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
+        --set gitlab.app="$CI_PROJECT_PATH_SLUG" \
+        --set gitlab.env="$CI_ENVIRONMENT_SLUG" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
         --set image.repository="$CI_APPLICATION_REPOSITORY" \
         --set image.tag="$CI_APPLICATION_TAG" \
@@ -734,6 +736,8 @@ rollout 100%:
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
+        --set gitlab.app="$CI_PROJECT_PATH_SLUG" \
+        --set gitlab.env="$CI_ENVIRONMENT_SLUG" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
         --set image.repository="$CI_APPLICATION_REPOSITORY" \
         --set image.tag="$CI_APPLICATION_TAG" \

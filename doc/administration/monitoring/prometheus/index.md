@@ -1,6 +1,7 @@
 # Monitoring GitLab with Prometheus
 
 > **Notes:**
+>
 > - Prometheus and the various exporters listed in this page are bundled in the
 >   Omnibus GitLab package. Check each exporter's documentation for the timeline
 >   they got added. For installations from source you will have to install them

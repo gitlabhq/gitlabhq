@@ -100,7 +100,8 @@ describe('Pipeline Url Component', () => {
             latest: true,
             yaml_errors: true,
             stuck: true,
-            merge_request: true,
+            merge_request_pipeline: true,
+            detached_merge_request_pipeline: true,
           },
         },
         autoDevopsHelpPath: 'foo',
@@ -108,15 +109,16 @@ describe('Pipeline Url Component', () => {
     }).$mount();
 
     expect(component.$el.querySelector('.js-pipeline-url-latest').textContent).toContain('latest');
+
     expect(component.$el.querySelector('.js-pipeline-url-yaml').textContent).toContain(
       'yaml invalid',
     );
 
-    expect(component.$el.querySelector('.js-pipeline-url-mergerequest').textContent).toContain(
-      'merge request',
-    );
-
     expect(component.$el.querySelector('.js-pipeline-url-stuck').textContent).toContain('stuck');
+
+    expect(component.$el.querySelector('.js-pipeline-url-detached').textContent).toContain(
+      'detached',
+    );
   });
 
   it('should render a badge for autodevops', () => {

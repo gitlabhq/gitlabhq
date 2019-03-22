@@ -266,21 +266,6 @@
       padding-top: 20px;
     }
 
-    .cover-controls {
-      position: static;
-      padding: 0 16px;
-      margin-bottom: 20px;
-      display: flex;
-
-      .btn {
-        flex-grow: 1;
-
-        &:first-child {
-          margin-left: 0;
-        }
-      }
-    }
-
     .user-profile-nav {
       a {
         margin-right: 0;

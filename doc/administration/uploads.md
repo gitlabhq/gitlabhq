@@ -18,7 +18,7 @@ below.
 >**Notes:**
 For historical reasons, uploads are stored into a base directory, which by default is `uploads/-/system`. It is strongly discouraged to change this configuration option on an existing GitLab installation.
 
-_The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads/-/system`._
+_The uploads are stored by default in `/var/opt/gitlab/gitlab-rails/uploads`._
 
 1. To change the storage path for example to `/mnt/storage/uploads`, edit
    `/etc/gitlab/gitlab.rb` and add the following line:

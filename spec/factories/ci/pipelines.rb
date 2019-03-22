@@ -50,6 +50,14 @@ FactoryBot.define do
         failure_reason :config_error
       end
 
+      trait :created do
+        status :created
+      end
+
+      trait :preparing do
+        status :preparing
+      end
+
       trait :blocked do
         status :manual
       end

@@ -57,7 +57,7 @@ module Sentry
         raise Client::Error, "Sentry response status code: #{response.code}"
       end
 
-      response.as_json
+      response
     end
 
     def projects_api_url

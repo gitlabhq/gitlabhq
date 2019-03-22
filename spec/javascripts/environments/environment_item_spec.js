@@ -60,7 +60,7 @@ describe('Environment item', () => {
           sha: '500aabcb17c97bdcf2d0c410b70cb8556f0362dd',
           ref: {
             name: 'master',
-            ref_path: 'root/ci-folders/tree/master',
+            ref_url: 'root/ci-folders/tree/master',
           },
           tag: true,
           'last?': true,

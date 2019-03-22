@@ -331,7 +331,6 @@ describe API::ProjectClusters do
 
         it 'should update cluster attributes' do
           expect(cluster.platform_kubernetes.namespace).to eq('new-namespace')
-          expect(cluster.kubernetes_namespace.namespace).to eq('new-namespace')
         end
       end
 

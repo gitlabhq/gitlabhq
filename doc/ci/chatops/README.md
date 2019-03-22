@@ -2,9 +2,9 @@
 
 > **Notes:**
 >
-> * [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4466) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6. [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24780) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4466) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 10.6. [Moved](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24780) to [GitLab Core](https://about.gitlab.com/pricing/) in 11.9.
 >
-> * ChatOps is currently in alpha, with some important features missing like access control.
+> - ChatOps is currently in alpha, with some important features missing like access control.
 
 GitLab ChatOps provides a method to interact with CI/CD jobs through chat services like Slack. Many organizations' discussion, collaboration, and troubleshooting is taking place in chat services these days, and having a method to run CI/CD jobs with output posted back to the channel can significantly augment a team's workflow.
 

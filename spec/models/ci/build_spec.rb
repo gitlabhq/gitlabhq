@@ -186,6 +186,37 @@ describe Ci::Build do
     end
   end
 
+  describe '#enqueue' do
+    let(:build) { create(:ci_build, :created) }
+
+    subject { build.enqueue }
+
+    before do
+      allow(build).to receive(:any_unmet_prerequisites?).and_return(has_prerequisites)
+      allow(Ci::PrepareBuildService).to receive(:perform_async)
+    end
+
+    context 'build has unmet prerequisites' do
+      let(:has_prerequisites) { true }
+
+      it 'transitions to preparing' do
+        subject
+
+        expect(build).to be_preparing
+      end
+    end
+
+    context 'build has no prerequisites' do
+      let(:has_prerequisites) { false }
+
+      it 'transitions to pending' do
+        subject
+
+        expect(build).to be_pending
+      end
+    end
+  end
+
   describe '#actionize' do
     context 'when build is a created' do
       before do
@@ -343,6 +374,18 @@ describe Ci::Build do
         subject
 
         expect(build).to be_pending
+      end
+
+      context 'build has unmet prerequisites' do
+        before do
+          allow(build).to receive(:prerequisites).and_return([double])
+        end
+
+        it 'transits to preparing' do
+          subject
+
+          expect(build).to be_preparing
+        end
       end
     end
   end
@@ -2876,6 +2919,36 @@ describe Ci::Build do
     end
   end
 
+  describe '#any_unmet_prerequisites?' do
+    let(:build) { create(:ci_build, :created) }
+
+    subject { build.any_unmet_prerequisites? }
+
+    context 'build has prerequisites' do
+      before do
+        allow(build).to receive(:prerequisites).and_return([double])
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'and the ci_preparing_state feature is disabled' do
+        before do
+          stub_feature_flags(ci_preparing_state: false)
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'build does not have prerequisites' do
+      before do
+        allow(build).to receive(:prerequisites).and_return([])
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#yaml_variables' do
     let(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: variables) }
 
@@ -2925,6 +2998,20 @@ describe Ci::Build do
       it 'does not persist data in build metadata' do
         expect(build.metadata.read_attribute(:config_variables)).to be_nil
       end
+    end
+  end
+
+  describe 'state transition: any => [:preparing]' do
+    let(:build) { create(:ci_build, :created) }
+
+    before do
+      allow(build).to receive(:prerequisites).and_return([double])
+    end
+
+    it 'queues BuildPrepareWorker' do
+      expect(Ci::BuildPrepareWorker).to receive(:perform_async).with(build.id)
+
+      build.enqueue
     end
   end
 
