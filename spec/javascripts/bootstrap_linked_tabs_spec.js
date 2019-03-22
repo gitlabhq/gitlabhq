@@ -1,10 +1,10 @@
 import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
 describe('Linked Tabs', () => {
-  preloadFixtures('static/linked_tabs.html');
+  preloadFixtures('static/linked_tabs.html.raw');
 
   beforeEach(() => {
-    loadFixtures('static/linked_tabs.html');
+    loadFixtures('static/linked_tabs.html.raw');
   });
 
   describe('when is initialized', () => {

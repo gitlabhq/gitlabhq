@@ -1,7 +1,7 @@
 import initReadMore from '~/read_more';
 
 describe('Read more click-to-expand functionality', () => {
-  const fixtureName = 'projects/overview.html';
+  const fixtureName = 'projects/overview.html.raw';
 
   preloadFixtures(fixtureName);
 

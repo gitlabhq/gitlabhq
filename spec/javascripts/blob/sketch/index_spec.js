@@ -13,10 +13,10 @@ describe('Sketch viewer', () => {
     });
   };
 
-  preloadFixtures('static/sketch_viewer.html');
+  preloadFixtures('static/sketch_viewer.html.raw');
 
   beforeEach(() => {
-    loadFixtures('static/sketch_viewer.html');
+    loadFixtures('static/sketch_viewer.html.raw');
   });
 
   describe('with error message', () => {

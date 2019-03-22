@@ -9,12 +9,12 @@ describe('Blob viewer', () => {
   let blob;
   let mock;
 
-  preloadFixtures('snippets/show.html');
+  preloadFixtures('snippets/show.html.raw');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    loadFixtures('snippets/show.html');
+    loadFixtures('snippets/show.html.raw');
     $('#modal-upload-blob').remove();
 
     blob = new BlobViewer();

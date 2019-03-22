@@ -3,10 +3,10 @@ import axios from '~/lib/utils/axios_utils';
 import renderNotebook from '~/blob/notebook';
 
 describe('iPython notebook renderer', () => {
-  preloadFixtures('static/notebook_viewer.html');
+  preloadFixtures('static/notebook_viewer.html.raw');
 
   beforeEach(() => {
-    loadFixtures('static/notebook_viewer.html');
+    loadFixtures('static/notebook_viewer.html.raw');
   });
 
   it('shows loading icon', () => {

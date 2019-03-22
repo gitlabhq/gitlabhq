@@ -126,9 +126,9 @@ describe('Search autocomplete dropdown', () => {
     expect(list.find(mrsIHaveCreatedLink).text()).toBe("Merge requests I've created");
   };
 
-  preloadFixtures('static/search_autocomplete.html');
+  preloadFixtures('static/search_autocomplete.html.raw');
   beforeEach(function() {
-    loadFixtures('static/search_autocomplete.html');
+    loadFixtures('static/search_autocomplete.html.raw');
 
     window.gon = {};
     window.gon.current_user_id = userId;

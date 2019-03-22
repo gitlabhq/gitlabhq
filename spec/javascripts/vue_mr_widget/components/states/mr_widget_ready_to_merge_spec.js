@@ -415,7 +415,7 @@ describe('ReadyToMerge', () => {
         });
 
       beforeEach(() => {
-        loadFixtures('merge_requests/merge_request_of_current_user.html');
+        loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
       });
 
       it('should call start and stop polling when MR merged', done => {
