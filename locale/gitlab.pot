@@ -867,15 +867,9 @@ msgstr ""
 msgid "Any"
 msgstr ""
 
-<<<<<<< HEAD
-=======
-msgid "Any Label"
-msgstr ""
-
 msgid "Any encrypted tokens"
 msgstr ""
 
->>>>>>> 10e41ccd30f... Improve project settings page
 msgid "Appearance"
 msgstr ""
 
@@ -1227,24 +1221,12 @@ msgstr ""
 msgid "Badges|e.g. %{exampleUrl}"
 msgstr ""
 
-<<<<<<< HEAD
-=======
-msgid "BatchComments|Delete all pending comments"
-msgstr ""
-
-msgid "BatchComments|Discard review?"
-msgstr ""
-
-msgid "BatchComments|You're about to discard your review which will delete all of your pending comments. The deleted comments %{strong_start}cannot%{strong_end} be restored."
-msgstr ""
-
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
 msgstr ""
 
 msgid "Be careful. Renaming a project's repository can have unintended side effects."
 msgstr ""
 
->>>>>>> 10e41ccd30f... Improve project settings page
 msgid "Begin with the selected commit"
 msgstr ""
 
@@ -1452,15 +1434,9 @@ msgstr ""
 msgid "CI Lint"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "CI variables"
 msgstr ""
 
-msgid "CI will run using the credentials assigned above."
-msgstr ""
-
->>>>>>> 10e41ccd30f... Improve project settings page
 msgid "CI/CD"
 msgstr ""
 
@@ -1551,18 +1527,9 @@ msgstr ""
 msgid "Certificate (PEM)"
 msgstr ""
 
-<<<<<<< HEAD
-=======
-msgid "Certificate fingerprint"
-msgstr ""
-
-msgid "Change Weight"
-msgstr ""
-
 msgid "Change path"
 msgstr ""
 
->>>>>>> 10e41ccd30f... Improve project settings page
 msgid "Change permissions"
 msgstr ""
 
@@ -1650,12 +1617,9 @@ msgstr ""
 msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent application code"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Choose file…"
 msgstr ""
 
-=======
->>>>>>> Improve project settings page
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
@@ -1770,21 +1734,12 @@ msgstr ""
 msgid "CiVariable|Validation failed"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
-msgstr ""
-
-=======
-<<<<<<< HEAD
-=======
 msgid "Classification Label (optional)"
 msgstr ""
 
 msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
 msgstr ""
 
->>>>>>> 10e41ccd30f... Improve project settings page
->>>>>>> Improve project settings page
 msgid "Clear"
 msgstr ""
 
@@ -2879,28 +2834,13 @@ msgstr ""
 msgid "Default artifacts expiration"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Default classification label"
 msgstr ""
 
-=======
-<<<<<<< HEAD
-=======
-msgid "Default classification label"
-msgstr ""
-
-msgid "Default description template for issues"
-msgstr ""
-
->>>>>>> 10e41ccd30f... Improve project settings page
->>>>>>> Improve project settings page
 msgid "Default first day of the week"
 msgstr ""
 
 msgid "Default first day of the week in calendars and date pickers."
-msgstr ""
-
-msgid "Default issue template"
 msgstr ""
 
 msgid "Default: Directly import the Google Code email address or username"
@@ -3106,15 +3046,6 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-<<<<<<< HEAD
-=======
-msgid "Description parsed with %{link_start}GitLab Flavored Markdown%{link_end}"
-msgstr ""
-
-msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
-msgstr ""
-
->>>>>>> 10e41ccd30f... Improve project settings page
 msgid "Description:"
 msgstr ""
 
@@ -3217,21 +3148,10 @@ msgstr ""
 msgid "Download asset"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Download tar"
-=======
-<<<<<<< HEAD
-msgid "Download source code"
-=======
 msgid "Download export"
 msgstr ""
 
 msgid "Download tar"
-msgstr ""
-
-msgid "Download tar.bz2"
->>>>>>> 06f28e63f44... Improve project settings page
->>>>>>> Improve project settings page
 msgstr ""
 
 msgid "Download tar.bz2"
@@ -3801,19 +3721,6 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "External Classification Policy Authorization"
-msgstr ""
-
-=======
-<<<<<<< HEAD
-=======
-msgid "Export as CSV"
-msgstr ""
-
-msgid "Export issues"
-msgstr ""
-
 msgid "Export project"
 msgstr ""
 
@@ -3823,19 +3730,12 @@ msgstr ""
 msgid "External Classification Policy Authorization"
 msgstr ""
 
->>>>>>> 10e41ccd30f... Improve project settings page
->>>>>>> Improve project settings page
 msgid "External URL"
 msgstr ""
 
 msgid "External Wiki"
 msgstr ""
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
->>>>>>> Improve project settings page
 msgid "External authentication"
 msgstr ""
 
@@ -3845,22 +3745,12 @@ msgstr ""
 msgid "External authorization request timeout"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "ExternalAuthorizationService|Classification Label"
-msgstr ""
-
-=======
->>>>>>> Improve project settings page
 msgid "ExternalAuthorizationService|Classification label"
 msgstr ""
 
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
-<<<<<<< HEAD
-=======
->>>>>>> 10e41ccd30f... Improve project settings page
->>>>>>> Improve project settings page
 msgid "Facebook"
 msgstr ""
 
@@ -4136,15 +4026,9 @@ msgstr ""
 msgid "Generate a default set of labels"
 msgstr ""
 
-<<<<<<< HEAD
-=======
-msgid "Generate key"
-msgstr ""
-
 msgid "Generate new export"
 msgstr ""
 
->>>>>>> 10e41ccd30f... Improve project settings page
 msgid "Geo"
 msgstr ""
 
@@ -4510,6 +4394,9 @@ msgstr ""
 msgid "Hook was successfully updated."
 msgstr ""
 
+msgid "Housekeeping"
+msgstr ""
+
 msgid "Housekeeping successfully started"
 msgstr ""
 
@@ -4846,6 +4733,9 @@ msgstr ""
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr ""
 
+msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
+msgstr ""
+
 msgid "Issues, merge requests, pushes, and comments."
 msgstr ""
 
@@ -4862,6 +4752,9 @@ msgid "January"
 msgstr ""
 
 msgid "Job"
+msgstr ""
+
+msgid "Job Failed #%{build_id}"
 msgstr ""
 
 msgid "Job ID"
@@ -4873,515 +4766,10 @@ msgstr ""
 msgid "Job has been successfully erased!"
 msgstr ""
 
-msgid "Job is stuck. Check runners."
+msgid "Job has wrong arguments format."
 msgstr ""
 
-msgid "Job was retried"
-msgstr ""
-
-msgid "Jobs"
-msgstr ""
-
-msgid "Job|Browse"
-msgstr ""
-
-msgid "Job|Complete Raw"
-msgstr ""
-
-msgid "Job|Download"
-msgstr ""
-
-msgid "Job|Erase job log"
-msgstr ""
-
-msgid "Job|Job artifacts"
-msgstr ""
-
-msgid "Job|Job has been erased"
-msgstr ""
-
-msgid "Job|Job has been erased by"
-msgstr ""
-
-<<<<<<< HEAD
-msgid "Job|Keep"
-=======
-msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
-msgstr ""
-
-msgid "Hide file browser"
-msgstr ""
-
-msgid "Hide host keys manual input"
-msgstr ""
-
-msgid "Hide marketing-related entries from help"
-msgstr ""
-
-msgid "Hide payload"
-msgstr ""
-
-msgid "Hide value"
-msgid_plural "Hide values"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Hide values"
-msgstr ""
-
-msgid "Highest role:"
-msgstr ""
-
-msgid "History"
-msgstr ""
-
-msgid "Hook was successfully created."
-msgstr ""
-
-msgid "Housekeeping"
-msgstr ""
-
-msgid "Housekeeping successfully started"
-msgstr ""
-
-msgid "Housekeeping, export, path, transfer, remove, archive."
-msgstr ""
-
-msgid "However, you are already a member of this %{member_source}. Sign in using a different account to accept the invitation."
-msgstr ""
-
-msgid "I accept the %{terms_link}"
-msgstr ""
-
-msgid "I accept the|Terms of Service and Privacy Policy"
-msgstr ""
-
-msgid "ID"
-msgstr ""
-
-msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation."
-msgstr ""
-
-msgid "IDE|Back"
-msgstr ""
-
-msgid "IDE|Client side evaluation"
-msgstr ""
-
-msgid "IDE|Commit"
-msgstr ""
-
-msgid "IDE|Edit"
-msgstr ""
-
-msgid "IDE|Get started with Live Preview"
-msgstr ""
-
-msgid "IDE|Go to project"
-msgstr ""
-
-msgid "IDE|Live Preview"
-msgstr ""
-
-msgid "IDE|Open in file view"
-msgstr ""
-
-msgid "IDE|Preview your web application using Web IDE client-side evaluation."
-msgstr ""
-
-msgid "IDE|Refresh preview"
-msgstr ""
-
-msgid "IDE|Review"
-msgstr ""
-
-msgid "IP Address"
-msgstr ""
-
-msgid "Identifier"
-msgstr ""
-
-msgid "Identities"
-msgstr ""
-
-msgid "Identity provider single sign on URL"
-msgstr ""
-
-msgid "If any job surpasses this timeout threshold, it will be marked as failed. Human readable time input language is accepted like \"1 hour\". Values without specification represent seconds."
-msgstr ""
-
-msgid "If checked, group owners can manage LDAP group links and LDAP member overrides"
-msgstr ""
-
-msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
-msgstr ""
-
-msgid "If disabled, only admins will be able to set up mirrors in projects."
-msgstr ""
-
-msgid "If disabled, the access level will depend on the user's permissions in the project."
-msgstr ""
-
-msgid "If enabled"
-msgstr ""
-
-msgid "If enabled, access to projects will be validated on an external service using their classification label."
-msgstr ""
-
-msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
-msgstr ""
-
-msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
-msgstr ""
-
-msgid "ImageDiffViewer|2-up"
-msgstr ""
-
-msgid "ImageDiffViewer|Onion skin"
-msgstr ""
-
-msgid "ImageDiffViewer|Swipe"
-msgstr ""
-
-msgid "Impersonation has been disabled"
-msgstr ""
-
-msgid "Import"
-msgstr ""
-
-msgid "Import CSV"
-msgstr ""
-
-msgid "Import Projects from Gitea"
-msgstr ""
-
-msgid "Import all compatible projects"
-msgstr ""
-
-msgid "Import all projects"
-msgstr ""
-
-msgid "Import all repositories"
-msgstr ""
-
-msgid "Import an exported GitLab project"
-msgstr ""
-
-msgid "Import in progress"
-msgstr ""
-
-msgid "Import issues"
-msgstr ""
-
-msgid "Import members"
-msgstr ""
-
-msgid "Import members from another project"
-msgstr ""
-
-msgid "Import multiple repositories by uploading a manifest file."
-msgstr ""
-
-msgid "Import project"
-msgstr ""
-
-msgid "Import project members"
-msgstr ""
-
-msgid "Import projects from Bitbucket"
-msgstr ""
-
-msgid "Import projects from Bitbucket Server"
-msgstr ""
-
-msgid "Import projects from FogBugz"
-msgstr ""
-
-msgid "Import projects from GitLab.com"
-msgstr ""
-
-msgid "Import projects from Google Code"
-msgstr ""
-
-msgid "Import repositories from Bitbucket Server"
-msgstr ""
-
-msgid "Import repositories from GitHub"
-msgstr ""
-
-msgid "Import repository"
-msgstr ""
-
-msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
-msgstr ""
-
-msgid "Import/Export illustration"
-msgstr ""
-
-msgid "ImportButtons|Connect repositories from"
-msgstr ""
-
-msgid "ImportProjects|Importing the project failed"
-msgstr ""
-
-msgid "ImportProjects|Requesting your %{provider} repositories failed"
-msgstr ""
-
-msgid "ImportProjects|Select the projects you want to import"
-msgstr ""
-
-msgid "ImportProjects|Updating the imported projects failed"
-msgstr ""
-
-msgid "Improve Issue boards with GitLab Enterprise Edition."
-msgstr ""
-
-msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
-msgstr ""
-
-msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
-msgstr ""
-
-msgid "In order to enable instance-level analytics, please ask an admin to enable %{usage_ping_link_start}usage ping%{usage_ping_link_end}."
-msgstr ""
-
-msgid "In order to gather accurate feature usage data, it can take 1 to 2 weeks to see your index."
-msgstr ""
-
-msgid "In the next step, you'll be able to select the projects you want to import."
-msgstr ""
-
-msgid "Incidents"
-msgstr ""
-
-msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
-msgstr ""
-
-msgid "Include author name in notification email body"
-msgstr ""
-
-msgid "Include merge request description"
-msgstr ""
-
-msgid "Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>."
-msgstr ""
-
-msgid "Includes LFS objects. It can be overridden per group, or per project. 0 for unlimited."
-msgstr ""
-
-msgid "Includes an MVC structure to help you get started."
-msgstr ""
-
-msgid "Includes an MVC structure, Gemfile, Rakefile, along with many others, to help you get started."
-msgstr ""
-
-msgid "Includes an MVC structure, mvnw and pom.xml to help you get started."
-msgstr ""
-
-msgid "Incompatible Project"
-msgstr ""
-
-msgid "Indicates whether this runner can pick jobs without tags"
-msgstr ""
-
-msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
-msgstr ""
-
-msgid "Inline"
-msgstr ""
-
-msgid "Input host keys manually"
-msgstr ""
-
-msgid "Input your repository URL"
-msgstr ""
-
-msgid "Insert a quote"
-msgstr ""
-
-msgid "Insert code"
-msgstr ""
-
-msgid "Insert suggestion"
-msgstr ""
-
-msgid "Insights"
-msgstr ""
-
-msgid "Install GitLab Runner"
-msgstr ""
-
-msgid "Install Runner on Kubernetes"
-msgstr ""
-
-msgid "Instance"
-msgid_plural "Instances"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Instance Statistics"
-msgstr ""
-
-msgid "Instance Statistics visibility"
-msgstr ""
-
-msgid "Instance does not support multiple Kubernetes clusters"
-msgstr ""
-
-msgid "Integrations"
-msgstr ""
-
-msgid "Integrations Settings"
-msgstr ""
-
-msgid "Interested parties can even contribute by pushing commits if they want to."
-msgstr ""
-
-msgid "Internal"
-msgstr ""
-
-msgid "Internal - The group and any internal projects can be viewed by any logged in user."
-msgstr ""
-
-msgid "Internal - The project can be accessed by any logged in user."
-msgstr ""
-
-msgid "Internal users"
-msgstr ""
-
-msgid "Interval Pattern"
-msgstr ""
-
-msgid "Introducing Cycle Analytics"
-msgstr ""
-
-msgid "Introducing Your Conversational Development Index"
-msgstr ""
-
-msgid "Invalid input, please avoid emojis"
-msgstr ""
-
-msgid "Invalid pin code"
-msgstr ""
-
-msgid "Invitation"
-msgstr ""
-
-msgid "Invite"
-msgstr ""
-
-msgid "Invite group"
-msgstr ""
-
-msgid "Invite member"
-msgstr ""
-
-msgid "Invoke Count"
-msgstr ""
-
-msgid "Invoke Time"
-msgstr ""
-
-msgid "IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})"
-msgstr ""
-
-msgid "Issue"
-msgstr ""
-
-msgid "Issue Boards"
-msgstr ""
-
-msgid "Issue board focus mode"
-msgstr ""
-
-msgid "Issue events"
-msgstr ""
-
-msgid "Issue template (optional)"
-msgstr ""
-
-msgid "IssueBoards|Board"
-msgstr ""
-
-msgid "IssueBoards|Boards"
-msgstr ""
-
-msgid "IssueBoards|Create new board"
-msgstr ""
-
-msgid "IssueBoards|Delete board"
-msgstr ""
-
-msgid "IssueBoards|No matching boards found"
-msgstr ""
-
-msgid "IssueBoards|Some of your boards are hidden, activate a license to see them again."
-msgstr ""
-
-msgid "IssueBoards|Switch board"
-msgstr ""
-
-msgid "Issues"
-msgstr ""
-
-msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
-msgstr ""
-
-msgid "Issues closed"
-msgstr ""
-
-msgid "Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, and other project entities"
-msgstr ""
-
-msgid "Issues, merge requests, pushes, and comments."
-msgstr ""
-
-msgid "IssuesAnalytics|After you begin creating issues for your projects, we can start tracking and displaying metrics for them"
-msgstr ""
-
-msgid "IssuesAnalytics|Issues Created"
-msgstr ""
-
-msgid "IssuesAnalytics|Issues created per month"
-msgstr ""
-
-msgid "IssuesAnalytics|Last 12 months"
-msgstr ""
-
-msgid "IssuesAnalytics|Sorry, your filter produced no results"
-msgstr ""
-
-msgid "IssuesAnalytics|There are no issues for the projects in your group"
-msgstr ""
-
-msgid "IssuesAnalytics|To widen your search, change or remove filters in the filter bar above"
-msgstr ""
-
-msgid "It must have a header row and at least two columns: the first column is the issue title and the second column is the issue description. The separator is automatically detected."
-msgstr ""
-
-msgid "It's you"
-msgstr ""
-
-msgid "Jaeger URL"
-msgstr ""
-
-msgid "Jaeger tracing"
-msgstr ""
-
-msgid "Jan"
-msgstr ""
-
-msgid "January"
-msgstr ""
-
-msgid "Job"
-msgstr ""
-
-msgid "Job ID"
-msgstr ""
-
-msgid "Job has been erased"
+msgid "Job is missing the `model_type` argument."
 msgstr ""
 
 msgid "Job is stuck. Check runners."
@@ -5418,1421 +4806,6 @@ msgid "Job|Job has been erased by"
 msgstr ""
 
 msgid "Job|Keep"
-msgstr ""
-
-msgid "Job|Pipeline"
-msgstr ""
-
-msgid "Job|Scroll to bottom"
-msgstr ""
-
-msgid "Job|Scroll to top"
-msgstr ""
-
-msgid "Job|Show complete raw"
-msgstr ""
-
-msgid "Job|The artifacts were removed"
-msgstr ""
-
-msgid "Job|The artifacts will be removed"
-msgstr ""
-
-msgid "Job|This job is stuck because the project doesn't have any runners online assigned to it."
-msgstr ""
-
-msgid "Job|for"
-msgstr ""
-
-msgid "Job|into"
-msgstr ""
-
-msgid "Job|with"
-msgstr ""
-
-msgid "Jul"
-msgstr ""
-
-msgid "July"
-msgstr ""
-
-msgid "Jun"
-msgstr ""
-
-msgid "June"
-msgstr ""
-
-msgid "Key (PEM)"
-msgstr ""
-
-msgid "Kubernetes"
-msgstr ""
-
-msgid "Kubernetes Cluster"
-msgstr ""
-
-msgid "Kubernetes Clusters"
-msgstr ""
-
-msgid "Kubernetes cluster creation time exceeds timeout; %{timeout}"
-msgstr ""
-
-msgid "Kubernetes cluster integration was not removed."
-msgstr ""
-
-msgid "Kubernetes cluster integration was successfully removed."
-msgstr ""
-
-msgid "Kubernetes cluster was successfully updated."
-msgstr ""
-
-msgid "Kubernetes configured"
-msgstr ""
-
-msgid "Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
-msgstr ""
-
-msgid "LDAP settings"
-msgstr ""
-
-msgid "LFS"
-msgstr ""
-
-msgid "LFS objects"
-msgstr ""
-
-msgid "LFSStatus|Disabled"
-msgstr ""
-
-msgid "LFSStatus|Enabled"
-msgstr ""
-
-msgid "Label"
-msgstr ""
-
-msgid "Label actions dropdown"
-msgstr ""
-
-msgid "Label lists show all issues with the selected label."
-msgstr ""
-
-msgid "Label was created"
-msgstr ""
-
-msgid "Label was removed"
-msgstr ""
-
-msgid "Label was successfully updated."
-msgstr ""
-
-msgid "LabelSelect|%{firstLabelName} +%{remainingLabelCount} more"
-msgstr ""
-
-msgid "LabelSelect|%{labelsString}, and %{remainingLabelCount} more"
-msgstr ""
-
-msgid "LabelSelect|Labels"
-msgstr ""
-
-msgid "Labels"
-msgstr ""
-
-msgid "Labels can be applied to %{features}. Group labels are available for any project within the group."
-msgstr ""
-
-msgid "Labels can be applied to issues and merge requests to categorize them."
-msgstr ""
-
-msgid "Labels can be applied to issues and merge requests."
-msgstr ""
-
-msgid "Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>"
-msgstr ""
-
-msgid "Labels|Promote Label"
-msgstr ""
-
-msgid "Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. Existing project labels with the same title will be merged. This action cannot be reversed."
-msgstr ""
-
-msgid "Language"
-msgstr ""
-
-msgid "Large File Storage"
-msgstr ""
-
-msgid "Last %d day"
-msgid_plural "Last %d days"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Last Pipeline"
-msgstr ""
-
-msgid "Last activity"
-msgstr ""
-
-msgid "Last commit"
-msgstr ""
-
-msgid "Last contact"
-msgstr ""
-
-msgid "Last edited %{date}"
-msgstr ""
-
-msgid "Last edited by %{name}"
-msgstr ""
-
-msgid "Last reply by"
-msgstr ""
-
-msgid "Last seen"
-msgstr ""
-
-msgid "Last update"
-msgstr ""
-
-msgid "Last updated"
-msgstr ""
-
-msgid "LastPushEvent|You pushed to"
-msgstr ""
-
-msgid "LastPushEvent|at"
-msgstr ""
-
-msgid "Latest changes"
-msgstr ""
-
-msgid "Latest pipeline for this branch"
-msgstr ""
-
-msgid "Lead"
-msgstr ""
-
-msgid "Learn how to %{no_packages_link_start}publish and share your packages%{no_packages_link_end} with GitLab."
-msgstr ""
-
-msgid "Learn more"
-msgstr ""
-
-msgid "Learn more about %{issue_boards_url}, to keep track of issues in multiple lists, using labels, assignees, and milestones. If you’re missing something from issue boards, please create an issue on %{gitlab_issues_url}."
-msgstr ""
-
-msgid "Learn more about Auto DevOps"
-msgstr ""
-
-msgid "Learn more about Kubernetes"
-msgstr ""
-
-msgid "Learn more about Web Terminal"
-msgstr ""
-
-msgid "Learn more about approvals."
-msgstr ""
-
-msgid "Learn more about custom project templates"
-msgstr ""
-
-msgid "Learn more about group-level project templates"
-msgstr ""
-
-msgid "Learn more about incoming email addresses"
-msgstr ""
-
-msgid "Learn more about signing commits"
-msgstr ""
-
-msgid "Learn more in the"
-msgstr ""
-
-msgid "Learn more in the|pipeline schedules documentation"
-msgstr ""
-
-msgid "Leave"
-msgstr ""
-
-msgid "Leave group"
-msgstr ""
-
-msgid "Leave project"
-msgstr ""
-
-msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
-msgstr ""
-
-msgid "License"
-msgstr ""
-
-msgid "LicenseManagement|Add a license"
-msgstr ""
-
-msgid "LicenseManagement|Add licenses manually to approve or blacklist"
-msgstr ""
-
-msgid "LicenseManagement|Approve"
-msgstr ""
-
-msgid "LicenseManagement|Approve license"
-msgstr ""
-
-msgid "LicenseManagement|Approve license?"
-msgstr ""
-
-msgid "LicenseManagement|Approved"
-msgstr ""
-
-msgid "LicenseManagement|Blacklist"
-msgstr ""
-
-msgid "LicenseManagement|Blacklist license"
-msgstr ""
-
-msgid "LicenseManagement|Blacklist license?"
-msgstr ""
-
-msgid "LicenseManagement|Blacklisted"
-msgstr ""
-
-msgid "LicenseManagement|Cancel"
-msgstr ""
-
-msgid "LicenseManagement|License"
-msgstr ""
-
-msgid "LicenseManagement|License Management"
-msgstr ""
-
-msgid "LicenseManagement|License details"
-msgstr ""
-
-msgid "LicenseManagement|License name"
-msgstr ""
-
-msgid "LicenseManagement|Manage approved and blacklisted licenses for this project."
-msgstr ""
-
-msgid "LicenseManagement|Packages"
-msgstr ""
-
-msgid "LicenseManagement|Remove license"
-msgstr ""
-
-msgid "LicenseManagement|Remove license?"
-msgstr ""
-
-msgid "LicenseManagement|Submit"
-msgstr ""
-
-msgid "LicenseManagement|There are currently no approved or blacklisted licenses in this project."
-msgstr ""
-
-msgid "LicenseManagement|This license already exists in this project."
-msgstr ""
-
-msgid "LicenseManagement|URL"
-msgstr ""
-
-msgid "LicenseManagement|You are about to remove the license, %{name}, from this project."
-msgstr ""
-
-msgid "Licenses"
-msgstr ""
-
-msgid "Limited to showing %d event at most"
-msgid_plural "Limited to showing %d events at most"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "LinkedIn"
-msgstr ""
-
-msgid "List"
-msgstr ""
-
-msgid "List Your Gitea Repositories"
-msgstr ""
-
-msgid "List available repositories"
-msgstr ""
-
-msgid "List view"
-msgstr ""
-
-msgid "List your Bitbucket Server repositories"
-msgstr ""
-
-msgid "List your GitHub repositories"
-msgstr ""
-
-msgid "Live preview"
-msgstr ""
-
-msgid "Loading contribution stats for group members"
-msgstr ""
-
-msgid "Loading the GitLab IDE..."
-msgstr ""
-
-msgid "Loading..."
-msgstr ""
-
-msgid "Loading…"
-msgstr ""
-
-msgid "Localization"
-msgstr ""
-
-msgid "Lock"
-msgstr ""
-
-msgid "Lock %{issuableDisplayName}"
-msgstr ""
-
-msgid "Lock not found"
-msgstr ""
-
-msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
-msgstr ""
-
-msgid "Lock to current projects"
-msgstr ""
-
-msgid "Locked"
-msgstr ""
-
-msgid "Locked Files"
-msgstr ""
-
-msgid "Locked to current projects"
-msgstr ""
-
-msgid "Locks give the ability to lock specific file or folder."
-msgstr ""
-
-msgid "Login with smartcard"
-msgstr ""
-
-msgid "Logo was successfully removed."
-msgstr ""
-
-msgid "Logs"
-msgstr ""
-
-msgid "MRApprovals|Approved by"
-msgstr ""
-
-msgid "MRApprovals|Approvers"
-msgstr ""
-
-msgid "MRApprovals|Pending approvals"
-msgstr ""
-
-msgid "MRDiff|Show changes only"
-msgstr ""
-
-msgid "MRDiff|Show full file"
-msgstr ""
-
-msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
-msgstr ""
-
-msgid "Make sure you're logged into the account that owns the projects you'd like to import."
-msgstr ""
-
-msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
-msgstr ""
-
-msgid "Manage Web IDE features"
-msgstr ""
-
-msgid "Manage access"
-msgstr ""
-
-msgid "Manage all notifications"
-msgstr ""
-
-msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
-msgstr ""
-
-msgid "Manage applications that you've authorized to use your account."
-msgstr ""
-
-msgid "Manage group labels"
-msgstr ""
-
-msgid "Manage labels"
-msgstr ""
-
-msgid "Manage project labels"
-msgstr ""
-
-msgid "Manage two-factor authentication"
-msgstr ""
-
-msgid "Manage your group’s membership while adding another level of security with SAML."
-msgstr ""
-
-msgid "Manifest"
-msgstr ""
-
-msgid "Manifest file import"
-msgstr ""
-
-msgid "Manual job"
-msgstr ""
-
-msgid "Map a FogBugz account ID to a GitLab user"
-msgstr ""
-
-msgid "Map a Google Code user to a GitLab user"
-msgstr ""
-
-msgid "Map a Google Code user to a full email address"
-msgstr ""
-
-msgid "Map a Google Code user to a full name"
-msgstr ""
-
-msgid "Mar"
-msgstr ""
-
-msgid "March"
-msgstr ""
-
-msgid "Mark todo as done"
-msgstr ""
-
-msgid "Markdown"
-msgstr ""
-
-msgid "Markdown enabled"
-msgstr ""
-
-msgid "Maven Metadata"
-msgstr ""
-
-msgid "Max access level"
-msgstr ""
-
-msgid "Maximum artifacts size (MB)"
-msgstr ""
-
-msgid "Maximum attachment size (MB)"
-msgstr ""
-
-msgid "Maximum capacity"
-msgstr ""
-
-msgid "Maximum delay (Minutes)"
-msgstr ""
-
-msgid "Maximum job timeout"
-msgstr ""
-
-msgid "Maximum number of mirrors that can be synchronizing at the same time."
-msgstr ""
-
-msgid "Maximum push size (MB)"
-msgstr ""
-
-msgid "Maximum time between updates that a mirror can have when scheduled to synchronize."
-msgstr ""
-
-msgid "May"
-msgstr ""
-
-msgid "Median"
-msgstr ""
-
-msgid "Member lock"
-msgstr ""
-
-msgid "Member since %{date}"
-msgstr ""
-
-msgid "Members"
-msgstr ""
-
-msgid "Members can be added by project <i>Maintainers</i> or <i>Owners</i>"
-msgstr ""
-
-msgid "Members of <strong>%{project_name}</strong>"
-msgstr ""
-
-msgid "Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called \"SSO Service Location\", \"SAML Token Issuance Endpoint\", or \"SAML 2.0/W-Federation URL\"."
-msgstr ""
-
-msgid "Merge Request"
-msgstr ""
-
-msgid "Merge Requests"
-msgstr ""
-
-msgid "Merge Requests created"
-msgstr ""
-
-msgid "Merge commit message"
-msgstr ""
-
-msgid "Merge events"
-msgstr ""
-
-msgid "Merge immediately"
-msgstr ""
-
-msgid "Merge in progress"
-msgstr ""
-
-msgid "Merge pipelines will try to validate the post-merge result prior to merging"
-msgstr ""
-
-msgid "Merge request"
-msgstr ""
-
-msgid "Merge request approvals"
-msgstr ""
-
-msgid "Merge requests"
-msgstr ""
-
-msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
-msgstr ""
-
-msgid "Merge when pipeline succeeds"
-msgstr ""
-
-msgid "MergeRequests|Add a reply"
-msgstr ""
-
-msgid "MergeRequests|An error occurred while saving the draft comment."
-msgstr ""
-
-msgid "MergeRequests|Discussion stays resolved"
-msgstr ""
-
-msgid "MergeRequests|Discussion stays unresolved"
-msgstr ""
-
-msgid "MergeRequests|Discussion will be resolved"
-msgstr ""
-
-msgid "MergeRequests|Discussion will be unresolved"
-msgstr ""
-
-msgid "MergeRequests|Jump to next unresolved discussion"
-msgstr ""
-
-msgid "MergeRequests|Reply..."
-msgstr ""
-
-msgid "MergeRequests|Resolve this discussion in a new issue"
-msgstr ""
-
-msgid "MergeRequests|Saving the comment failed"
-msgstr ""
-
-msgid "MergeRequests|Toggle comments for this file"
-msgstr ""
-
-msgid "MergeRequests|View file @ %{commitId}"
-msgstr ""
-
-msgid "MergeRequests|View replaced file @ %{commitId}"
-msgstr ""
-
-msgid "MergeRequests|commented on commit %{commitLink}"
-msgstr ""
-
-msgid "MergeRequests|started a discussion"
-msgstr ""
-
-msgid "MergeRequests|started a discussion on %{linkStart}an old version of the diff%{linkEnd}"
-msgstr ""
-
-msgid "MergeRequests|started a discussion on %{linkStart}the diff%{linkEnd}"
-msgstr ""
-
-msgid "MergeRequests|started a discussion on an outdated change in commit %{linkStart}%{commitId}%{linkEnd}"
-msgstr ""
-
-msgid "MergeRequests|started a discussion on commit %{linkStart}%{commitId}%{linkEnd}"
-msgstr ""
-
-msgid "MergeRequest| %{paragraphStart}changed the description %{descriptionChangedTimes} times %{timeDifferenceMinutes}%{paragraphEnd}"
-msgstr ""
-
-msgid "MergeRequest|Error loading full diff. Please try again."
-msgstr ""
-
-msgid "MergeRequest|Filter files"
-msgstr ""
-
-msgid "MergeRequest|No files found"
-msgstr ""
-
-msgid "Merged"
-msgstr ""
-
-msgid "Messages"
-msgstr ""
-
-msgid "Metrics"
-msgstr ""
-
-msgid "Metrics - Influx"
-msgstr ""
-
-msgid "Metrics - Prometheus"
-msgstr ""
-
-msgid "Metrics and profiling"
-msgstr ""
-
-msgid "Metrics for environment"
-msgstr ""
-
-msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
-msgstr ""
-
-msgid "Metrics|Create metric"
-msgstr ""
-
-msgid "Metrics|Delete metric"
-msgstr ""
-
-msgid "Metrics|Delete metric?"
-msgstr ""
-
-msgid "Metrics|Edit metric"
-msgstr ""
-
-msgid "Metrics|Environment"
-msgstr ""
-
-msgid "Metrics|For grouping similar metrics"
-msgstr ""
-
-msgid "Metrics|Label of the y-axis (usually the unit). The x-axis always represents time."
-msgstr ""
-
-msgid "Metrics|Learn about environments"
-msgstr ""
-
-msgid "Metrics|Legend label (optional)"
-msgstr ""
-
-msgid "Metrics|Must be a valid PromQL query."
-msgstr ""
-
-msgid "Metrics|New metric"
-msgstr ""
-
-msgid "Metrics|No deployed environments"
-msgstr ""
-
-msgid "Metrics|PromQL query is valid"
-msgstr ""
-
-msgid "Metrics|Prometheus Query Documentation"
-msgstr ""
-
-msgid "Metrics|There was an error fetching the environments data, please try again"
-msgstr ""
-
-msgid "Metrics|There was an error getting deployment information."
-msgstr ""
-
-msgid "Metrics|There was an error getting environments information."
-msgstr ""
-
-msgid "Metrics|There was an error trying to validate your query"
-msgstr ""
-
-msgid "Metrics|There was an error while retrieving metrics"
-msgstr ""
-
-msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
-msgstr ""
-
-msgid "Metrics|Unexpected metrics data response from prometheus endpoint"
-msgstr ""
-
-msgid "Metrics|Unit label"
-msgstr ""
-
-msgid "Metrics|Used as a title for the chart"
-msgstr ""
-
-msgid "Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response."
-msgstr ""
-
-msgid "Metrics|Y-axis label"
-msgstr ""
-
-msgid "Metrics|You're about to permanently delete this metric. This cannot be undone."
-msgstr ""
-
-msgid "Metrics|e.g. Throughput"
-msgstr ""
-
-msgid "Milestone"
-msgstr ""
-
-msgid "Milestone lists not available with your current license"
-msgstr ""
-
-msgid "Milestone lists show all issues from the selected milestone."
-msgstr ""
-
-msgid "Milestones"
-msgstr ""
-
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
-msgstr ""
-
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
-msgstr ""
-
-msgid "Milestones|<p>%{milestonePromotion}</p> %{finalWarning}"
-msgstr ""
-
-msgid "Milestones|Delete milestone"
-msgstr ""
-
-msgid "Milestones|Delete milestone %{milestoneTitle}?"
-msgstr ""
-
-msgid "Milestones|Failed to delete milestone %{milestoneTitle}"
-msgstr ""
-
-msgid "Milestones|Milestone %{milestoneTitle} was not found"
-msgstr ""
-
-msgid "Milestones|Promote %{milestoneTitle} to group milestone?"
-msgstr ""
-
-msgid "Milestones|Promote Milestone"
-msgstr ""
-
-msgid "Milestones|Promoting %{milestone} will make it available for all projects inside %{groupName}. Existing project milestones with the same name will be merged. "
-msgstr ""
-
-msgid "Milestones|This action cannot be reversed."
-msgstr ""
-
-msgid "Minimum capacity to be available before we schedule more mirrors preemptively."
-msgstr ""
-
-msgid "Mirror a repository"
-msgstr ""
-
-msgid "Mirror direction"
-msgstr ""
-
-msgid "Mirror repository"
-msgstr ""
-
-msgid "Mirror user"
-msgstr ""
-
-msgid "Mirrored repositories"
-msgstr ""
-
-msgid "Mirroring repositories"
-msgstr ""
-
-msgid "MissingSSHKeyWarningLink|add an SSH key"
-msgstr ""
-
-msgid "Modal|Cancel"
-msgstr ""
-
-msgid "Modal|Close"
-msgstr ""
-
-msgid "Modify commit message"
-msgstr ""
-
-msgid "Modify commit messages"
-msgstr ""
-
-msgid "Modify merge commit"
-msgstr ""
-
-msgid "Monday"
-msgstr ""
-
-msgid "Monitor your errors by integrating with Sentry"
-msgstr ""
-
-msgid "Monitoring"
-msgstr ""
-
-msgid "Months"
-msgstr ""
-
-msgid "More"
-msgstr ""
-
-msgid "More actions"
-msgstr ""
-
-msgid "More info"
-msgstr ""
-
-msgid "More information"
-msgstr ""
-
-msgid "More information is available|here"
-msgstr ""
-
-msgid "More than %{number_commits_distance} commits different with %{default_branch}"
-msgstr ""
-
-msgid "Most stars"
-msgstr ""
-
-msgid "Move"
-msgstr ""
-
-msgid "Move issue"
-msgstr ""
-
-msgid "Multiple issue boards"
-msgstr ""
-
-msgid "Name"
-msgstr ""
-
-msgid "Name new label"
-msgstr ""
-
-msgid "Name your individual key via a title"
-msgstr ""
-
-msgid "Name:"
-msgstr ""
-
-msgid "Naming, topics, avatar"
-msgstr ""
-
-msgid "Naming, visibility"
-msgstr ""
-
-msgid "Nav|Help"
-msgstr ""
-
-msgid "Nav|Home"
-msgstr ""
-
-msgid "Nav|Sign In / Register"
-msgstr ""
-
-msgid "Nav|Sign out and sign in with a different account"
-msgstr ""
-
-msgid "Need help?"
-msgstr ""
-
-msgid "Network"
-msgstr ""
-
-msgid "Never"
-msgstr ""
-
-msgid "New"
-msgstr ""
-
-msgid "New Application"
-msgstr ""
-
-msgid "New Environment"
-msgstr ""
-
-msgid "New Group"
-msgstr ""
-
-msgid "New Identity"
-msgstr ""
-
-msgid "New Issue"
-msgid_plural "New Issues"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "New Label"
-msgstr ""
-
-msgid "New Milestone"
-msgstr ""
-
-msgid "New Pages Domain"
-msgstr ""
-
-msgid "New Password"
-msgstr ""
-
-msgid "New Pipeline Schedule"
-msgstr ""
-
-msgid "New Snippet"
-msgstr ""
-
-msgid "New branch"
-msgstr ""
-
-msgid "New branch unavailable"
-msgstr ""
-
-msgid "New deploy key"
-msgstr ""
-
-msgid "New directory"
-msgstr ""
-
-msgid "New environment"
-msgstr ""
-
-msgid "New epic"
-msgstr ""
-
-msgid "New file"
-msgstr ""
-
-msgid "New group"
-msgstr ""
-
-msgid "New health check access token has been generated!"
-msgstr ""
-
-msgid "New identity"
-msgstr ""
-
-msgid "New issue"
-msgstr ""
-
-msgid "New label"
-msgstr ""
-
-msgid "New merge request"
-msgstr ""
-
-msgid "New milestone"
-msgstr ""
-
-msgid "New pipelines will cancel older, pending pipelines on the same branch"
-msgstr ""
-
-msgid "New project"
-msgstr ""
-
-msgid "New runners registration token has been generated!"
-msgstr ""
-
-msgid "New schedule"
-msgstr ""
-
-msgid "New snippet"
-msgstr ""
-
-msgid "New subgroup"
-msgstr ""
-
-msgid "New tag"
-msgstr ""
-
-msgid "New users set to external"
-msgstr ""
-
-msgid "New..."
-msgstr ""
-
-msgid "Newly registered users will by default be external"
-msgstr ""
-
-msgid "No"
-msgstr ""
-
-msgid "No %{providerTitle} repositories available to import"
-msgstr ""
-
-msgid "No Label"
-msgstr ""
-
-msgid "No Tag"
-msgstr ""
-
-msgid "No activities found"
-msgstr ""
-
-msgid "No assignee"
-msgstr ""
-
-msgid "No branches found"
-msgstr ""
-
-msgid "No changes"
-msgstr ""
-
-msgid "No changes between %{ref_start}%{source_branch}%{ref_end} and %{ref_start}%{target_branch}%{ref_end}"
-msgstr ""
-
-msgid "No connection could be made to a Gitaly Server, please check your logs!"
-msgstr ""
-
-msgid "No container images stored for this project. Add one by following the instructions above."
-msgstr ""
-
-msgid "No contributions were found"
-msgstr ""
-
-msgid "No credit card required."
-msgstr ""
-
-msgid "No designs found."
-msgstr ""
-
-msgid "No details available"
-msgstr ""
-
-msgid "No due date"
-msgstr ""
-
-msgid "No errors to display."
-msgstr ""
-
-msgid "No estimate or time spent"
-msgstr ""
-
-msgid "No file chosen"
-msgstr ""
-
-msgid "No file selected"
-msgstr ""
-
-msgid "No files found."
-msgstr ""
-
-msgid "No issues for the selected time period."
-msgstr ""
-
-msgid "No labels with such name or description"
-msgstr ""
-
-msgid "No license. All rights reserved"
-msgstr ""
-
-msgid "No matching results"
-msgstr ""
-
-msgid "No merge requests for the selected time period."
-msgstr ""
-
-msgid "No merge requests found"
-msgstr ""
-
-msgid "No messages were logged"
-msgstr ""
-
-msgid "No milestones to show"
-msgstr ""
-
-msgid "No other labels with such name or description"
-msgstr ""
-
-msgid "No preview for this file type"
-msgstr ""
-
-msgid "No prioritised labels with such name or description"
-msgstr ""
-
-msgid "No public groups"
-msgstr ""
-
-msgid "No pushes for the selected time period."
-msgstr ""
-
-msgid "No repository"
-msgstr ""
-
-msgid "No runners found"
-msgstr ""
-
-msgid "No schedules"
-msgstr ""
-
-msgid "No start date"
-msgstr ""
-
-msgid "No, directly import the existing email addresses and usernames."
-msgstr ""
-
-msgid "Nodes"
-msgstr ""
-
-msgid "None"
-msgstr ""
-
-msgid "Not allowed to merge"
-msgstr ""
-
-msgid "Not available"
-msgstr ""
-
-msgid "Not available for private projects"
-msgstr ""
-
-msgid "Not available for protected branches"
-msgstr ""
-
-msgid "Not confidential"
-msgstr ""
-
-msgid "Not enough data"
-msgstr ""
-
-msgid "Not now"
-msgstr ""
-
-msgid "Not started"
-msgstr ""
-
-msgid "Note that this invitation was sent to %{mail_to_invite_email}, but you are signed in as %{link_to_current_user} with email %{mail_to_current_user}."
-msgstr ""
-
-msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
-msgstr ""
-
-msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
-msgstr ""
-
-msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
-msgstr ""
-
-msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
-msgstr ""
-
-msgid "Notes|Are you sure you want to cancel creating this comment?"
-msgstr ""
-
-msgid "Notes|Collapse replies"
-msgstr ""
-
-msgid "Notes|Show all activity"
-msgstr ""
-
-msgid "Notes|Show comments only"
-msgstr ""
-
-msgid "Notes|Show history only"
-msgstr ""
-
-msgid "Notification events"
-msgstr ""
-
-msgid "Notification setting"
-msgstr ""
-
-msgid "Notification setting - %{notification_title}"
-msgstr ""
-
-msgid "NotificationEvent|Close issue"
-msgstr ""
-
-msgid "NotificationEvent|Close merge request"
-msgstr ""
-
-msgid "NotificationEvent|Failed pipeline"
-msgstr ""
-
-msgid "NotificationEvent|Merge merge request"
-msgstr ""
-
-msgid "NotificationEvent|New epic"
-msgstr ""
-
-msgid "NotificationEvent|New issue"
-msgstr ""
-
-msgid "NotificationEvent|New merge request"
-msgstr ""
-
-msgid "NotificationEvent|New note"
-msgstr ""
-
-msgid "NotificationEvent|Reassign issue"
-msgstr ""
-
-msgid "NotificationEvent|Reassign merge request"
-msgstr ""
-
-msgid "NotificationEvent|Reopen issue"
-msgstr ""
-
-msgid "NotificationEvent|Successful pipeline"
-msgstr ""
-
-msgid "NotificationLevel|Custom"
-msgstr ""
-
-msgid "NotificationLevel|Disabled"
-msgstr ""
-
-msgid "NotificationLevel|Global"
-msgstr ""
-
-msgid "NotificationLevel|On mention"
-msgstr ""
-
-msgid "NotificationLevel|Participate"
-msgstr ""
-
-msgid "NotificationLevel|Watch"
-msgstr ""
-
-msgid "Notifications"
-msgstr ""
-
-msgid "Notifications off"
-msgstr ""
-
-msgid "Notifications on"
-msgstr ""
-
-msgid "Nov"
-msgstr ""
-
-msgid "November"
-msgstr ""
-
-msgid "OK"
-msgstr ""
-
-msgid "Oct"
-msgstr ""
-
-msgid "October"
-msgstr ""
-
-msgid "OfSearchInADropdown|Filter"
-msgstr ""
-
-msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
-msgstr ""
-
-msgid "Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source."
-msgstr ""
-
-msgid "Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page."
-msgstr ""
-
-msgid "One more item"
-msgid_plural "%d more items"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
-msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
-msgid "Only admins"
-msgstr ""
-
-msgid "Only mirror protected branches"
-msgstr ""
-
-msgid "Only policy:"
-msgstr ""
-
-msgid "Only proceed if you trust %{idp_url} to control your GitLab account sign in."
-msgstr ""
-
-msgid "Only project members can comment."
-msgstr ""
-
-msgid "Only project members will be imported. Group members will be skipped."
-msgstr ""
-
-msgid "Oops, are you sure?"
-msgstr ""
-
-msgid "Open"
-msgstr ""
-
-msgid "Open Documentation"
-msgstr ""
-
-msgid "Open comment type dropdown"
-msgstr ""
-
-msgid "Open errors"
-msgstr ""
-
-msgid "Open in Xcode"
-msgstr ""
-
-<<<<<<< HEAD
-msgid "Job Failed #%{build_id}"
-msgstr ""
-
-msgid "Job ID"
-=======
-msgid "Open projects"
->>>>>>> 06f28e63f44... Improve project settings page
-msgstr ""
-
-msgid "Open sidebar"
-msgstr ""
-
-msgid "Open source software to collaborate on code"
-msgstr ""
-
-<<<<<<< HEAD
-msgid "Job has wrong arguments format."
-msgstr ""
-
-msgid "Job is missing the `model_type` argument."
-msgstr ""
-
-msgid "Job is stuck. Check runners."
-=======
-msgid "Opened"
->>>>>>> Improve project settings page
-msgstr ""
-
-msgid "Opened MR"
-msgstr ""
-
-msgid "Opened issues"
-msgstr ""
-
-msgid "OpenedNDaysAgo|Opened"
-msgstr ""
-
-msgid "Opens in a new window"
-msgstr ""
-
-msgid "Operations"
-msgstr ""
-
-msgid "Operations Dashboard"
-msgstr ""
-
-msgid "Operations Settings"
-msgstr ""
-
-msgid "OperationsDashboard|Add a project to the dashboard"
-msgstr ""
-
-msgid "OperationsDashboard|The operations dashboard provides a summary of each project's operational health, including pipeline and alert statuses."
-msgstr ""
-
-msgid "OperationsDashboard|Unable to add %{invalidProjects}. The Operations Dashboard is available for public projects, and private projects in groups with a Gold plan."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Job|Pipeline"
@@ -6913,6 +4886,9 @@ msgstr ""
 msgid "LFS"
 msgstr ""
 
+msgid "LFS objects"
+msgstr ""
+
 msgid "LFSStatus|Disabled"
 msgstr ""
 
@@ -6925,14 +4901,7 @@ msgstr ""
 msgid "Label actions dropdown"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Label was created"
-=======
-msgid "Path"
-msgstr ""
-
-msgid "Path, transfer, remove"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Label was removed"
@@ -7260,14 +5229,7 @@ msgstr ""
 msgid "Merge immediately"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Merge in progress"
-=======
-msgid "Please wait a moment, this page will automatically refresh when ready."
-msgstr ""
-
-msgid "Please wait while we connect to your repository. Refresh at will."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Merge method"
@@ -7525,7 +5487,7 @@ msgstr ""
 msgid "Name:"
 msgstr ""
 
-msgid "Naming, tags, avatar"
+msgid "Naming, topics, avatar"
 msgstr ""
 
 msgid "Naming, visibility"
@@ -7623,36 +5585,16 @@ msgstr ""
 msgid "New merge request"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "New milestone"
-=======
-msgid "Project ID"
-msgstr ""
-
-msgid "Project URL"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "New pipelines will cancel older, pending pipelines on the same branch"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "New project"
 msgstr ""
 
 msgid "New runners registration token has been generated!"
-=======
-msgid "Project and wiki repositories"
-msgstr ""
-
-msgid "Project avatar"
-msgstr ""
-
-msgid "Project configuration, including services"
-msgstr ""
-
-msgid "Project description (optional)"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "New schedule"
@@ -7685,17 +5627,7 @@ msgstr ""
 msgid "No Tag"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "No activities found"
-=======
-msgid "Project uploads"
-msgstr ""
-
-msgid "Project visibility level will be changed to match namespace rules when transferring to a group."
-msgstr ""
-
-msgid "Project:"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "No branches found"
@@ -7923,6 +5855,12 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
+msgid "Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source."
+msgstr ""
+
+msgid "Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page."
+msgstr ""
+
 msgid "One more item"
 msgid_plural "%d more items"
 msgstr[0] ""
@@ -8075,6 +6013,9 @@ msgstr ""
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
 msgstr ""
 
+msgid "Path"
+msgstr ""
+
 msgid "Path, transfer, remove"
 msgstr ""
 
@@ -8198,14 +6139,7 @@ msgstr ""
 msgid "Pipelines for last week"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Pipelines for last year"
-=======
-msgid "Remove fork relationship"
-msgstr ""
-
-msgid "Remove group"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Pipelines need to be configured to enable this feature."
@@ -8217,23 +6151,10 @@ msgstr ""
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Pipelines|CI Lint"
 msgstr ""
 
 msgid "Pipelines|Clear Runner Caches"
-=======
-msgid "Removed projects cannot be restored!"
-msgstr ""
-
-msgid "Removing group will cause all child projects and resources to be removed."
-msgstr ""
-
-msgid "Removing the project will delete its repository and all related resources including issues, merge requests etc."
-msgstr ""
-
-msgid "Rename"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Pipelines|Continuous Integration can help catch bugs by running your tests automatically, while Continuous Deployment can help you deliver code to your product environment."
@@ -8392,6 +6313,9 @@ msgstr ""
 msgid "Please use this form to report users to GitLab who create spam issues, comments or behave inappropriately."
 msgstr ""
 
+msgid "Please wait a moment, this page will automatically refresh when ready."
+msgstr ""
+
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr ""
 
@@ -8482,14 +6406,7 @@ msgstr ""
 msgid "Profiles|Change username"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Profiles|Changing your username can have unintended side effects."
-=======
-msgid "Run housekeeping"
-msgstr ""
-
-msgid "Run tests against your code live using the Web Terminal"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Profiles|Choose file..."
@@ -8552,14 +6469,7 @@ msgstr ""
 msgid "Profiles|Invalid password"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Profiles|Invalid username"
-=======
-msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
-msgstr ""
-
-msgid "SAML SSO"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Profiles|Learn more"
@@ -8619,14 +6529,7 @@ msgstr ""
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Profiles|This information will appear on your profile"
-=======
-msgid "Saving project."
-msgstr ""
-
-msgid "Schedule a new pipeline"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Profiles|Two-Factor Authentication"
@@ -8749,13 +6652,25 @@ msgstr ""
 msgid "Project Badges"
 msgstr ""
 
+msgid "Project ID"
+msgstr ""
+
 msgid "Project URL"
 msgstr ""
 
 msgid "Project access must be granted explicitly to each user."
 msgstr ""
 
+msgid "Project and wiki repositories"
+msgstr ""
+
 msgid "Project avatar"
+msgstr ""
+
+msgid "Project configuration, including services"
+msgstr ""
+
+msgid "Project description (optional)"
 msgstr ""
 
 msgid "Project details"
@@ -8786,6 +6701,12 @@ msgid "Project name"
 msgstr ""
 
 msgid "Project slug"
+msgstr ""
+
+msgid "Project uploads"
+msgstr ""
+
+msgid "Project visibility level will be changed to match namespace rules when transferring to a group."
 msgstr ""
 
 msgid "Project:"
@@ -8839,14 +6760,7 @@ msgstr ""
 msgid "ProjectOverview|You must sign in to star a project"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ProjectPage|Project ID: %{project_id}"
-=======
-msgid "Select a new namespace"
-msgstr ""
-
-msgid "Select a project to read Insights configuration file"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "ProjectSettings|Badges"
@@ -8918,14 +6832,7 @@ msgstr ""
 msgid "PrometheusService|Finding and configuring metrics..."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "PrometheusService|Install Prometheus on clusters"
-=======
-msgid "Separate topics with commas."
-msgstr ""
-
-msgid "September"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "PrometheusService|Manage clusters"
@@ -8988,14 +6895,7 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Public - The group and any public projects can be viewed without any authentication."
-=======
-msgid "Set a default template for issue descriptions."
-msgstr ""
-
-msgid "Set a number of approvals required, the approvers and other approval settings."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Public - The project can be accessed without any authentication."
@@ -9123,6 +7023,9 @@ msgstr ""
 msgid "Remove avatar"
 msgstr ""
 
+msgid "Remove fork relationship"
+msgstr ""
+
 msgid "Remove group"
 msgstr ""
 
@@ -9141,7 +7044,13 @@ msgstr ""
 msgid "Removed group can not be restored!"
 msgstr ""
 
+msgid "Removed projects cannot be restored!"
+msgstr ""
+
 msgid "Removing group will cause all child projects and resources to be removed."
+msgstr ""
+
+msgid "Removing the project will delete its repository and all related resources including issues, merge requests etc."
 msgstr ""
 
 msgid "Rename"
@@ -9332,6 +7241,9 @@ msgstr ""
 msgid "Revoked personal access token %{personal_access_token_name}!"
 msgstr ""
 
+msgid "Run housekeeping"
+msgstr ""
+
 msgid "Run untagged jobs"
 msgstr ""
 
@@ -9386,6 +7298,9 @@ msgstr ""
 msgid "Running…"
 msgstr ""
 
+msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."
+msgstr ""
+
 msgid "SSH Keys"
 msgstr ""
 
@@ -9423,6 +7338,9 @@ msgid "Save pipeline schedule"
 msgstr ""
 
 msgid "Save variables"
+msgstr ""
+
+msgid "Saving project."
 msgstr ""
 
 msgid "Schedule a new pipeline"
@@ -9548,6 +7466,9 @@ msgstr ""
 msgid "Select a namespace to fork the project"
 msgstr ""
 
+msgid "Select a new namespace"
+msgstr ""
+
 msgid "Select a timezone"
 msgstr ""
 
@@ -9600,6 +7521,9 @@ msgid "Sentry API URL"
 msgstr ""
 
 msgid "Sep"
+msgstr ""
+
+msgid "Separate topics with commas."
 msgstr ""
 
 msgid "September"
@@ -10012,17 +7936,7 @@ msgstr ""
 msgid "SortOptions|Oldest last activity"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "SortOptions|Oldest sign in"
-=======
-msgid "The following items will NOT be exported:"
-msgstr ""
-
-msgid "The following items will be exported:"
-msgstr ""
-
-msgid "The fork relationship has been removed."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "SortOptions|Oldest updated"
@@ -10214,14 +8128,7 @@ msgstr ""
 msgid "Submit search"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Subscribe"
-=======
-msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
-msgstr ""
-
-msgid "This application was created by %{link_to_owner}."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Subscribe at group level"
@@ -10451,20 +8358,19 @@ msgstr ""
 msgid "The directory has been successfully created."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "The entered user map is not a valid JSON user map."
-=======
-msgid "This will remove the fork relationship to source project"
-msgstr ""
-
-msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "The file has been successfully created."
 msgstr ""
 
 msgid "The file has been successfully deleted."
+msgstr ""
+
+msgid "The following items will NOT be exported:"
+msgstr ""
+
+msgid "The following items will be exported:"
 msgstr ""
 
 msgid "The fork relationship has been removed."
@@ -10698,6 +8604,9 @@ msgstr ""
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr ""
 
+msgid "This action can lead to data loss. To prevent accidental actions we ask you to confirm your intention."
+msgstr ""
+
 msgid "This application was created by %{link_to_owner}."
 msgstr ""
 
@@ -10824,14 +8733,7 @@ msgstr ""
 msgid "This job will automatically run after its timer finishes. Often they are used for incremental roll-out deploys to production environments. When unscheduled it converts into a manual action."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "This means you can not push code until you create an empty repository or import existing one."
-=======
-msgid "Topics"
-msgstr ""
-
-msgid "Total Contributions"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "This merge request is locked."
@@ -10852,14 +8754,7 @@ msgstr ""
 msgid "This pipeline is run on the source branch"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by %{strongStart}Auto DevOps.%{strongEnd}"
-=======
-msgid "Transfer project"
-msgstr ""
-
-msgid "Tree view"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>"
@@ -10904,6 +8799,9 @@ msgstr ""
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
+msgid "This will remove the fork relationship to source project"
+msgstr ""
+
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -10928,17 +8826,7 @@ msgstr ""
 msgid "Time spent"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Time tracking"
-=======
-msgid "Unarchive project"
-msgstr ""
-
-msgid "Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments and other entities can be created. <strong>Once active this project shows up in the search and on the dashboard.</strong>"
-msgstr ""
-
-msgid "Unblock"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Time until first merge request"
@@ -11019,11 +8907,7 @@ msgstr ""
 msgid "Timeago|1 week ago"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Timeago|1 week remaining"
-=======
-msgid "Update your project name, topics, description and avatar."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Timeago|1 year ago"
@@ -11219,6 +9103,9 @@ msgstr ""
 msgid "Too many changes to show."
 msgstr ""
 
+msgid "Topics"
+msgstr ""
+
 msgid "Total Time"
 msgstr ""
 
@@ -11229,6 +9116,9 @@ msgid "Total: %{total}"
 msgstr ""
 
 msgid "Track time with quick actions"
+msgstr ""
+
+msgid "Transfer project"
 msgstr ""
 
 msgid "Tree view"
@@ -11289,6 +9179,12 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
+msgstr ""
+
+msgid "Unarchive project"
+msgstr ""
+
+msgid "Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments and other entities can be created. <strong>Once active this project shows up in the search and on the dashboard.</strong>"
 msgstr ""
 
 msgid "Unblock"
@@ -11372,7 +9268,7 @@ msgstr ""
 msgid "Update your group name, description, avatar, and visibility."
 msgstr ""
 
-msgid "Update your project name, tags, description and avatar."
+msgid "Update your project name, topics, description and avatar."
 msgstr ""
 
 msgid "Updating"
@@ -11435,14 +9331,7 @@ msgstr ""
 msgid "User %{username} was successfully removed."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "User Cohorts are only shown when the %{usage_ping_link_start}usage ping%{usage_ping_link_end} is enabled."
-=======
-msgid "Webhooks"
-msgstr ""
-
-msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "User OAuth applications"
@@ -11703,6 +9592,9 @@ msgstr ""
 msgid "Web terminal"
 msgstr ""
 
+msgid "Webhooks"
+msgstr ""
+
 msgid "Webhooks Help"
 msgstr ""
 
@@ -11726,14 +9618,7 @@ msgstr[1] ""
 msgid "When:"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Who can see this group?"
-=======
-msgid "You can only transfer the project to namespaces you manage."
-msgstr ""
-
-msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "Who will be able to see this group?"
@@ -11814,14 +9699,7 @@ msgstr ""
 msgid "WikiMarkdownTip|To link to a (new) page, simply type %{link_example}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "WikiNewPagePlaceholder|how-to-setup"
-=======
-msgid "You will need to update your local repositories to point to the new location."
-msgstr ""
-
-msgid "You will not get any notifications via email"
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "WikiNewPageTip|Tip: You can specify the full path for the new file. We will automatically create any missing directories."
@@ -11923,14 +9801,7 @@ msgstr ""
 msgid "Yes, let me map Google Code users to full names or GitLab users."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Yesterday"
-=======
-msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
-msgstr ""
-
-msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."
->>>>>>> 10e41ccd30f... Improve project settings page
 msgstr ""
 
 msgid "You"
@@ -12003,6 +9874,9 @@ msgid "You can only edit files when you are on a branch"
 msgstr ""
 
 msgid "You can only merge once the items above are resolved"
+msgstr ""
+
+msgid "You can only transfer the project to namespaces you manage."
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
@@ -12093,6 +9967,9 @@ msgid "You will lose all changes you've made to this file. This action cannot be
 msgstr ""
 
 msgid "You will lose all the unstaged changes you've made in this project. This action cannot be undone."
+msgstr ""
+
+msgid "You will need to update your local repositories to point to the new location."
 msgstr ""
 
 msgid "You will not get any notifications via email"
@@ -12195,6 +10072,9 @@ msgid "Your changes have been successfully committed."
 msgstr ""
 
 msgid "Your comment will not be visible to the public."
+msgstr ""
+
+msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
 msgstr ""
 
 msgid "Your device was successfully set up! Give it a name and register it with the GitLab server."

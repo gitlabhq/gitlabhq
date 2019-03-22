@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   dirtySubmitFactory(
     document.querySelectorAll(
-      '.js-general-settings-form, .js-mr-settings-form, .js-add-approver-form',
+      '.js-general-settings-form, .js-mr-settings-form, .js-mr-approvals-form',
     ),
   );
 });
