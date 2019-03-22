@@ -1,0 +1,5 @@
+---
+title: Expand resolved discussion when linking to a comment in the discussion
+merge_request: 26483
+author:
+type: fixed
