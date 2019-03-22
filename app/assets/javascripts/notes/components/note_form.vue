@@ -7,6 +7,7 @@ import markdownField from '../../vue_shared/components/markdown/field.vue';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 import { __ } from '~/locale';
+import { getDraft, updateDraft } from '~/lib/utils/autosave';
 
 export default {
   name: 'NoteForm',
@@ -65,10 +66,21 @@ export default {
       required: false,
       default: '',
     },
+    autosaveKey: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
+    let updatedNoteBody = this.noteBody;
+
+    if (!updatedNoteBody && this.autosaveKey) {
+      updatedNoteBody = getDraft(this.autosaveKey) || '';
+    }
+
     return {
-      updatedNoteBody: this.noteBody,
+      updatedNoteBody,
       conflictWhileEditing: false,
       isSubmitting: false,
       isResolving: this.resolveDiscussion,
@@ -175,6 +187,12 @@ export default {
       // Sends information about confirm message and if the textarea has changed
       this.$emit('cancelForm', shouldConfirm, this.noteBody !== this.updatedNoteBody);
     },
+    onInput() {
+      if (this.autosaveKey) {
+        const { autosaveKey, updatedNoteBody: text } = this;
+        updateDraft(autosaveKey, text);
+      }
+    },
   },
 };
 </script>
@@ -218,6 +236,7 @@ export default {
           @keydown.ctrl.enter="handleKeySubmit()"
           @keydown.up="editMyLastNote()"
           @keydown.esc="cancelHandler(true)"
+          @input="onInput"
         ></textarea>
       </markdown-field>
       <div class="note-form-actions clearfix">
