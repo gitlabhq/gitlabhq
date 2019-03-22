@@ -179,6 +179,17 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
 
   describe '#import_repository' do
     it 'imports the repository' do
+      repo = double(:repo, default_branch: 'develop')
+
+      expect(client)
+        .to receive(:repository)
+        .with('foo/bar')
+        .and_return(repo)
+
+      expect(project)
+        .to receive(:change_head)
+        .with('develop')
+
       expect(project)
         .to receive(:ensure_repository)
 
