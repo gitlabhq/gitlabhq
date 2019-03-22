@@ -3,6 +3,11 @@ import Translate from '~/vue_shared/translate';
 import axios from '~/lib/utils/axios_utils';
 import { initializeTestTimeout } from './helpers/timeout';
 
+// wait for pending setTimeout()s
+afterEach(() => {
+  jest.runAllTimers();
+});
+
 initializeTestTimeout(300);
 
 // fail tests for unmocked requests
