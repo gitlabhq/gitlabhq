@@ -124,7 +124,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user&.admin? ? Entities::UserWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: current_user&.admin? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts

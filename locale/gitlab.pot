@@ -4121,6 +4121,9 @@ msgstr[1] ""
 msgid "Hide values"
 msgstr ""
 
+msgid "Highest role:"
+msgstr ""
+
 msgid "History"
 msgstr ""
 
