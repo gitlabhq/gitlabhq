@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitPushService, services: true do
+describe Git::BranchPushService, services: true do
   include RepoHelpers
 
   set(:user)     { create(:user) }

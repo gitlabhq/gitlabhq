@@ -46,7 +46,7 @@ class PostReceive
           ref: ref,
           push_options: post_received.push_options).execute
       elsif Gitlab::Git.branch_ref?(ref)
-        GitPushService.new(
+        Git::BranchPushService.new(
           post_received.project,
           @user,
           oldrev: oldrev,
