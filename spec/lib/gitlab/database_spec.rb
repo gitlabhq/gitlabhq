@@ -17,6 +17,20 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.human_adapter_name' do
+    it 'returns PostgreSQL when using PostgreSQL' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+
+      expect(described_class.human_adapter_name).to eq('PostgreSQL')
+    end
+
+    it 'returns MySQL when using MySQL' do
+      allow(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(described_class.human_adapter_name).to eq('MySQL')
+    end
+  end
+
   # These are just simple smoke tests to check if the methods work (regardless
   # of what they may return).
   describe '.mysql?' do
