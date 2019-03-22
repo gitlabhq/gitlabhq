@@ -1,3 +1,0 @@
-# Initiatives
-
-> TODO: Add Initiatives
