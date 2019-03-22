@@ -86,6 +86,10 @@ module API
       expose :admin?, as: :is_admin
     end
 
+    class UserDetailsWithAdmin < UserWithAdmin
+      expose :highest_role
+    end
+
     class UserStatus < Grape::Entity
       expose :emoji
       expose :message
