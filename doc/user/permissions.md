@@ -48,6 +48,8 @@ The following table depicts the various user permission levels in a project.
 | See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Create and edit wiki pages            |         |            | ✓           | ✓        | ✓      |
+| Delete wiki pages                     |         |            |             | ✓        | ✓      |
 | View license management reports **[ULTIMATE]** | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **[ULTIMATE]**  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
@@ -80,7 +82,6 @@ The following table depicts the various user permission levels in a project.
 | Force push to non-protected branches  |         |            | ✓           | ✓        | ✓      |
 | Remove non-protected branches         |         |            | ✓           | ✓        | ✓      |
 | Add tags                              |         |            | ✓           | ✓        | ✓      |
-| Write a wiki                          |         |            | ✓           | ✓        | ✓      |
 | Cancel and retry jobs                 |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
