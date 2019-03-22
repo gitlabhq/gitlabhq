@@ -204,8 +204,10 @@ label {
   margin-top: #{$grid-size / 2};
 }
 
-.gl-field-error {
+.gl-field-error,
+.invalid-feedback {
   color: $red-500;
+  font-size: $gl-font-size;
 }
 
 .gl-show-field-errors {

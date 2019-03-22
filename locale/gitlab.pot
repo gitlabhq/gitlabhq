@@ -1710,6 +1710,9 @@ msgstr ""
 msgid "ClusterIntegration|API URL"
 msgstr ""
 
+msgid "ClusterIntegration|API URL must use http or https protocol."
+msgstr ""
+
 msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr ""
 
@@ -1768,6 +1771,9 @@ msgid "ClusterIntegration|Choose which applications to install on your Kubernete
 msgstr ""
 
 msgid "ClusterIntegration|Choose which of your environments will use this cluster."
+msgstr ""
+
+msgid "ClusterIntegration|Cluster name is required."
 msgstr ""
 
 msgid "ClusterIntegration|Clusters are utilized by selecting the nearest ancestor with a matching environment scope. For example, project clusters will override group clusters."
@@ -1983,6 +1989,9 @@ msgstr ""
 msgid "ClusterIntegration|Number of nodes"
 msgstr ""
 
+msgid "ClusterIntegration|Number of nodes must be a numerical value."
+msgstr ""
+
 msgid "ClusterIntegration|Please enter access information for your Kubernetes cluster. If you need help, you can read our %{link_to_help_page} on Kubernetes"
 msgstr ""
 
@@ -2064,7 +2073,10 @@ msgstr ""
 msgid "ClusterIntegration|Select zone to choose machine type"
 msgstr ""
 
-msgid "ClusterIntegration|Service token"
+msgid "ClusterIntegration|Service Token"
+msgstr ""
+
+msgid "ClusterIntegration|Service token is required."
 msgstr ""
 
 msgid "ClusterIntegration|Show"
