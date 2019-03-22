@@ -250,16 +250,19 @@ module KubernetesHelpers
 
   # This is a partial response, it will have many more elements in reality but
   # these are the ones we care about at the moment
-  def kube_pod(name: "kube-pod", app: "valid-pod-label", status: "Running", track: nil)
+  def kube_pod(name: "kube-pod", environment_slug: "production", project_slug: "project-path-slug", status: "Running", track: nil)
     {
       "metadata" => {
         "name" => name,
         "generate_name" => "generated-name-with-suffix",
         "creationTimestamp" => "2016-11-25T19:55:19Z",
+        "annotations" => {
+          "app.gitlab.com/env" => environment_slug,
+          "app.gitlab.com/app" => project_slug
+        },
         "labels" => {
-          "app" => app,
           "track" => track
-        }
+        }.compact
       },
       "spec" => {
         "containers" => [
@@ -293,13 +296,16 @@ module KubernetesHelpers
     }
   end
 
-  def kube_deployment(name: "kube-deployment", app: "valid-deployment-label", track: nil)
+  def kube_deployment(name: "kube-deployment", environment_slug: "production", project_slug: "project-path-slug", track: nil)
     {
       "metadata" => {
         "name" => name,
         "generation" => 4,
+        "annotations" => {
+          "app.gitlab.com/env" => environment_slug,
+          "app.gitlab.com/app" => project_slug
+        },
         "labels" => {
-          "app" => app,
           "track" => track
         }.compact
       },

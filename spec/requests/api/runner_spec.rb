@@ -918,6 +918,15 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           it { expect(job).to be_job_execution_timeout }
         end
+
+        context 'when failure_reason is unmet_prerequisites' do
+          before do
+            update_job(state: 'failed', failure_reason: 'unmet_prerequisites')
+            job.reload
+          end
+
+          it { expect(job).to be_unmet_prerequisites }
+        end
       end
 
       context 'when trace is given' do

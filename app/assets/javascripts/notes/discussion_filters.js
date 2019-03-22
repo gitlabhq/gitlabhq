@@ -6,12 +6,16 @@ export default store => {
 
   if (discussionFilterEl) {
     const { defaultFilter, notesFilters } = discussionFilterEl.dataset;
-    const selectedValue = defaultFilter ? parseInt(defaultFilter, 10) : null;
     const filterValues = notesFilters ? JSON.parse(notesFilters) : {};
     const filters = Object.keys(filterValues).map(entry => ({
       title: entry,
       value: filterValues[entry],
     }));
+    const props = { filters };
+
+    if (defaultFilter) {
+      props.selectedValue = parseInt(defaultFilter, 10);
+    }
 
     return new Vue({
       el: discussionFilterEl,
@@ -21,12 +25,7 @@ export default store => {
       },
       store,
       render(createElement) {
-        return createElement('discussion-filter', {
-          props: {
-            filters,
-            selectedValue,
-          },
-        });
+        return createElement('discussion-filter', { props });
       },
     });
   }

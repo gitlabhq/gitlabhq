@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Merge request > User sees merge request pipelines', :js do
+describe 'Merge request > User sees pipelines triggered by merge request', :js do
   include ProjectForksHelper
   include TestReportsHelper
 
@@ -47,7 +47,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
                                 .execute(:push)
     end
 
-    let!(:merge_request_pipeline) do
+    let!(:detached_merge_request_pipeline) do
       Ci::CreatePipelineService.new(project, user, ref: 'feature')
                                 .execute(:merge_request_event, merge_request: merge_request)
     end
@@ -60,16 +60,16 @@ describe 'Merge request > User sees merge request pipelines', :js do
       end
     end
 
-    it 'sees branch pipelines and merge request pipelines in correct order' do
+    it 'sees branch pipelines and detached merge request pipelines in correct order' do
       page.within('.ci-table') do
         expect(page).to have_selector('.ci-pending', count: 2)
-        expect(first('.js-pipeline-url-link')).to have_content("##{merge_request_pipeline.id}")
+        expect(first('.js-pipeline-url-link')).to have_content("##{detached_merge_request_pipeline.id}")
       end
     end
 
-    it 'sees the latest merge request pipeline as the head pipeline' do
+    it 'sees the latest detached merge request pipeline as the head pipeline' do
       page.within('.ci-widget-content') do
-        expect(page).to have_content("##{merge_request_pipeline.id}")
+        expect(page).to have_content("##{detached_merge_request_pipeline.id}")
       end
     end
 
@@ -79,7 +79,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
                                   .execute(:push)
       end
 
-      let!(:merge_request_pipeline_2) do
+      let!(:detached_merge_request_pipeline_2) do
         Ci::CreatePipelineService.new(project, user, ref: 'feature')
                                   .execute(:merge_request_event, merge_request: merge_request)
       end
@@ -92,15 +92,15 @@ describe 'Merge request > User sees merge request pipelines', :js do
         end
       end
 
-      it 'sees branch pipelines and merge request pipelines in correct order' do
+      it 'sees branch pipelines and detached merge request pipelines in correct order' do
         page.within('.ci-table') do
           expect(page).to have_selector('.ci-pending', count: 4)
 
           expect(all('.js-pipeline-url-link')[0])
-            .to have_content("##{merge_request_pipeline_2.id}")
+            .to have_content("##{detached_merge_request_pipeline_2.id}")
 
           expect(all('.js-pipeline-url-link')[1])
-            .to have_content("##{merge_request_pipeline.id}")
+            .to have_content("##{detached_merge_request_pipeline.id}")
 
           expect(all('.js-pipeline-url-link')[2])
             .to have_content("##{push_pipeline_2.id}")
@@ -110,25 +110,25 @@ describe 'Merge request > User sees merge request pipelines', :js do
         end
       end
 
-      it 'sees merge request tag for merge request pipelines' do
+      it 'sees detached tag for detached merge request pipelines' do
         page.within('.ci-table') do
           expect(all('.pipeline-tags')[0])
-            .to have_content("merge request")
+            .to have_content("detached")
 
           expect(all('.pipeline-tags')[1])
-            .to have_content("merge request")
+            .to have_content("detached")
 
           expect(all('.pipeline-tags')[2])
-            .not_to have_content("merge request")
+            .not_to have_content("detached")
 
           expect(all('.pipeline-tags')[3])
-            .not_to have_content("merge request")
+            .not_to have_content("detached")
         end
       end
 
-      it 'sees the latest merge request pipeline as the head pipeline' do
+      it 'sees the latest detached merge request pipeline as the head pipeline' do
         page.within('.ci-widget-content') do
-          expect(page).to have_content("##{merge_request_pipeline_2.id}")
+          expect(page).to have_content("##{detached_merge_request_pipeline_2.id}")
         end
       end
     end
@@ -140,16 +140,16 @@ describe 'Merge request > User sees merge request pipelines', :js do
         wait_for_requests
       end
 
-      context 'when merge request pipeline is pending' do
+      context 'when detached merge request pipeline is pending' do
         it 'waits the head pipeline' do
           expect(page).to have_content('to be merged automatically when the pipeline succeeds')
           expect(page).to have_link('Cancel automatic merge')
         end
       end
 
-      context 'when merge request pipeline succeeds' do
+      context 'when detached merge request pipeline succeeds' do
         before do
-          merge_request_pipeline.succeed!
+          detached_merge_request_pipeline.succeed!
 
           wait_for_requests
         end
@@ -218,7 +218,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
                                 .execute(:push)
     end
 
-    let!(:merge_request_pipeline) do
+    let!(:detached_merge_request_pipeline) do
       Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
                                 .execute(:merge_request_event, merge_request: merge_request)
     end
@@ -236,16 +236,16 @@ describe 'Merge request > User sees merge request pipelines', :js do
       end
     end
 
-    it 'sees branch pipelines and merge request pipelines in correct order' do
+    it 'sees branch pipelines and detached merge request pipelines in correct order' do
       page.within('.ci-table') do
         expect(page).to have_selector('.ci-pending', count: 2)
-        expect(first('.js-pipeline-url-link')).to have_content("##{merge_request_pipeline.id}")
+        expect(first('.js-pipeline-url-link')).to have_content("##{detached_merge_request_pipeline.id}")
       end
     end
 
-    it 'sees the latest merge request pipeline as the head pipeline' do
+    it 'sees the latest detached merge request pipeline as the head pipeline' do
       page.within('.ci-widget-content') do
-        expect(page).to have_content("##{merge_request_pipeline.id}")
+        expect(page).to have_content("##{detached_merge_request_pipeline.id}")
       end
     end
 
@@ -261,7 +261,7 @@ describe 'Merge request > User sees merge request pipelines', :js do
                                   .execute(:push)
       end
 
-      let!(:merge_request_pipeline_2) do
+      let!(:detached_merge_request_pipeline_2) do
         Ci::CreatePipelineService.new(forked_project, user2, ref: 'feature')
                                   .execute(:merge_request_event, merge_request: merge_request)
       end
@@ -274,15 +274,15 @@ describe 'Merge request > User sees merge request pipelines', :js do
         end
       end
 
-      it 'sees branch pipelines and merge request pipelines in correct order' do
+      it 'sees branch pipelines and detached merge request pipelines in correct order' do
         page.within('.ci-table') do
           expect(page).to have_selector('.ci-pending', count: 4)
 
           expect(all('.js-pipeline-url-link')[0])
-            .to have_content("##{merge_request_pipeline_2.id}")
+            .to have_content("##{detached_merge_request_pipeline_2.id}")
 
           expect(all('.js-pipeline-url-link')[1])
-            .to have_content("##{merge_request_pipeline.id}")
+            .to have_content("##{detached_merge_request_pipeline.id}")
 
           expect(all('.js-pipeline-url-link')[2])
             .to have_content("##{push_pipeline_2.id}")
@@ -292,25 +292,25 @@ describe 'Merge request > User sees merge request pipelines', :js do
         end
       end
 
-      it 'sees merge request tag for merge request pipelines' do
+      it 'sees detached tag for detached merge request pipelines' do
         page.within('.ci-table') do
           expect(all('.pipeline-tags')[0])
-            .to have_content("merge request")
+            .to have_content("detached")
 
           expect(all('.pipeline-tags')[1])
-            .to have_content("merge request")
+            .to have_content("detached")
 
           expect(all('.pipeline-tags')[2])
-            .not_to have_content("merge request")
+            .not_to have_content("detached")
 
           expect(all('.pipeline-tags')[3])
-            .not_to have_content("merge request")
+            .not_to have_content("detached")
         end
       end
 
-      it 'sees the latest merge request pipeline as the head pipeline' do
+      it 'sees the latest detached merge request pipeline as the head pipeline' do
         page.within('.ci-widget-content') do
-          expect(page).to have_content("##{merge_request_pipeline_2.id}")
+          expect(page).to have_content("##{detached_merge_request_pipeline_2.id}")
         end
       end
 
@@ -328,16 +328,16 @@ describe 'Merge request > User sees merge request pipelines', :js do
         wait_for_requests
       end
 
-      context 'when merge request pipeline is pending' do
+      context 'when detached merge request pipeline is pending' do
         it 'waits the head pipeline' do
           expect(page).to have_content('to be merged automatically when the pipeline succeeds')
           expect(page).to have_link('Cancel automatic merge')
         end
       end
 
-      context 'when merge request pipeline succeeds' do
+      context 'when detached merge request pipeline succeeds' do
         before do
-          merge_request_pipeline.succeed!
+          detached_merge_request_pipeline.succeed!
 
           wait_for_requests
         end

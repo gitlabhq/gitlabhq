@@ -172,6 +172,10 @@ module Ci
     end
 
     state_machine :status do
+      event :enqueue do
+        transition [:created, :skipped, :manual, :scheduled] => :preparing, if: :any_unmet_prerequisites?
+      end
+
       event :actionize do
         transition created: :manual
       end
@@ -185,8 +189,12 @@ module Ci
       end
 
       event :enqueue_scheduled do
+        transition scheduled: :preparing, if: ->(build) do
+          build.scheduled_at&.past? && build.any_unmet_prerequisites?
+        end
+
         transition scheduled: :pending, if: ->(build) do
-          build.scheduled_at && build.scheduled_at < Time.now
+          build.scheduled_at&.past? && !build.any_unmet_prerequisites?
         end
       end
 
@@ -201,6 +209,12 @@ module Ci
       after_transition created: :scheduled do |build|
         build.run_after_commit do
           Ci::BuildScheduleWorker.perform_at(build.scheduled_at, build.id)
+        end
+      end
+
+      after_transition any => [:preparing] do |build|
+        build.run_after_commit do
+          Ci::BuildPrepareWorker.perform_async(id)
         end
       end
 
@@ -353,6 +367,16 @@ module Ci
 
     def latest?
       !retried?
+    end
+
+    def any_unmet_prerequisites?
+      return false unless Feature.enabled?(:ci_preparing_state, default_enabled: true)
+
+      prerequisites.present?
+    end
+
+    def prerequisites
+      Gitlab::Ci::Build::Prerequisite::Factory.new(self).unmet
     end
 
     def expanded_environment_name

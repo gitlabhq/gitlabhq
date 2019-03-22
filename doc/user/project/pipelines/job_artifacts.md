@@ -1,6 +1,7 @@
 # Introduction to job artifacts
 
 > **Notes:**
+>
 > - Since GitLab 8.2 and GitLab Runner 0.7.0, job artifacts that are created by
 >   GitLab Runner are uploaded to GitLab and are downloadable as a single archive
 >   (`tar.gz`) using the GitLab UI.
@@ -152,7 +153,7 @@ For example:
 https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/artifacts/master/browse?job=coverage
 ```
 
-There is also a URL to specific files, including html files that 
+There is also a URL to specific files, including html files that
 are shown in [GitLab Pages](../../../administration/pages/index.md):
 
 ```
@@ -191,7 +192,7 @@ artifacts and the job's trace.
 1. Click the trash icon at the top right of the job's trace.
 1. Confirm the deletion.
 
-## Retrieve artifacts of private projects when using GitLab CI 
+## Retrieve artifacts of private projects when using GitLab CI
 
 In order to retrieve a job artifact of a different project, you might need to use a private token in order to [authenticate and download](../../../api/jobs.md#get-job-artifacts) the artifacts.
 

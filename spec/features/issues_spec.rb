@@ -497,11 +497,20 @@ describe 'Issues' do
 
         it 'allows user to unselect themselves', :js do
           issue2 = create(:issue, project: project, author: user)
+
           visit project_issue_path(project, issue2)
+
+          def close_dropdown_menu_if_visible
+            find('.dropdown-menu-toggle', visible: :all).tap do |toggle|
+              toggle.click if toggle.visible?
+            end
+          end
 
           page.within '.assignee' do
             click_link 'Edit'
             click_link user.name
+
+            close_dropdown_menu_if_visible
 
             page.within '.value .author' do
               expect(page).to have_content user.name
@@ -509,6 +518,8 @@ describe 'Issues' do
 
             click_link 'Edit'
             click_link user.name
+
+            close_dropdown_menu_if_visible
 
             page.within '.value .assign-yourself' do
               expect(page).to have_content "No assignee"

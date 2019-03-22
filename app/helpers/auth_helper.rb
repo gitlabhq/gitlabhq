@@ -100,8 +100,12 @@ module AuthHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def unlink_allowed?(provider)
-    %w(saml cas3).exclude?(provider.to_s)
+  def unlink_provider_allowed?(provider)
+    IdentityProviderPolicy.new(current_user, provider).can?(:unlink)
+  end
+
+  def link_provider_allowed?(provider)
+    IdentityProviderPolicy.new(current_user, provider).can?(:link)
   end
 
   extend self

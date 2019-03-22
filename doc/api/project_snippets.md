@@ -121,7 +121,6 @@ Parameters:
 
 ## Get user agent details
 
-> **Notes:**
 > [Introduced][ce-29508] in GitLab 9.4.
 
 Available only for admins.

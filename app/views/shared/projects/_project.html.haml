@@ -10,7 +10,7 @@
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - css_class = '' unless local_assigns[:css_class]
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
-- cache_key = project_list_cache_key(project)
+- cache_key = project_list_cache_key(project, pipeline_status: pipeline_status)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
 - css_controls_class = compact_mode ? "" : "flex-lg-row justify-content-lg-between"
 - avatar_container_class = project.creator && use_creator_avatar ? '' : 'rect-avatar'

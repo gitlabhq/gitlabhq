@@ -82,8 +82,12 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition [:created, :skipped, :scheduled] => :pending
+        transition [:created, :preparing, :skipped, :scheduled] => :pending
         transition [:success, :failed, :canceled] => :running
+      end
+
+      event :prepare do
+        transition any - [:preparing] => :preparing
       end
 
       event :run do
@@ -118,7 +122,7 @@ module Ci
       # Do not add any operations to this state_machine
       # Create a separate worker for each new operation
 
-      before_transition [:created, :pending] => :running do |pipeline|
+      before_transition [:created, :preparing, :pending] => :running do |pipeline|
         pipeline.started_at = Time.now
       end
 
@@ -141,7 +145,7 @@ module Ci
         end
       end
 
-      after_transition [:created, :pending] => :running do |pipeline|
+      after_transition [:created, :preparing, :pending] => :running do |pipeline|
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
@@ -149,7 +153,7 @@ module Ci
         pipeline.run_after_commit { PipelineMetricsWorker.perform_async(pipeline.id) }
       end
 
-      after_transition [:created, :pending, :running] => :success do |pipeline|
+      after_transition [:created, :preparing, :pending, :running] => :success do |pipeline|
         pipeline.run_after_commit { PipelineSuccessWorker.perform_async(pipeline.id) }
       end
 
@@ -597,6 +601,7 @@ module Ci
       retry_optimistic_lock(self) do
         case latest_builds_status.to_s
         when 'created' then nil
+        when 'preparing' then prepare
         when 'pending' then enqueue
         when 'running' then run
         when 'success' then succeed

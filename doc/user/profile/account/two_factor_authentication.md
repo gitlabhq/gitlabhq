@@ -59,6 +59,7 @@ of recovery codes.
 ### Enable 2FA via U2F device
 
 > **Notes:**
+>
 > - GitLab officially only supports [Yubikey] U2F devices.
 > - Support for U2F devices was added in GitLab 8.8.
 

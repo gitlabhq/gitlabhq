@@ -83,18 +83,7 @@
           = f.text_field :name, label: 'Full name', required: true, title: s_("Profiles|Using emojis in names seems fun, but please try to set a status message instead"), wrapper: { class: 'col-md-9 qa-full-name' }, help: s_("Profiles|Enter your name, so people you know can recognize you")
         = f.text_field :id, readonly: true, label: 'User ID', wrapper: { class: 'col-md-3' }
 
-      - if @user.read_only_attribute?(:email)
-        = f.text_field :email, required: true, class: 'input-lg', readonly: true, help: s_("Profiles|Your email address was automatically set based on your %{provider_label} account") % { provider_label: attribute_provider_label(:email) }
-      - else
-        = f.text_field :email, required: true, class: 'input-lg', value: (@user.email unless @user.temp_oauth_email?),
-          help: user_email_help_text(@user)
-      = f.select :public_email, options_for_select(@user.all_emails, selected: @user.public_email),
-        { help: s_("Profiles|This email will be displayed on your public profile"), include_blank: s_("Profiles|Do not show on profile") },
-        control_class: 'select2 input-lg'
-      - commit_email_docs_link = link_to s_('Profiles|Learn more'), help_page_path('user/profile/index', anchor: 'commit-email', target: '_blank')
-      = f.select :commit_email, options_for_select(commit_email_select_options(@user), selected: selected_commit_email(@user)),
-        { help: s_("Profiles|This email will be used for web based operations, such as edits and merges. %{learn_more}").html_safe % { learn_more: commit_email_docs_link } },
-        control_class: 'select2 input-lg'
+      = render_if_exists 'profiles/email_settings', form: f
       = f.text_field :skype, class: 'input-md', placeholder: s_("Profiles|username")
       = f.text_field :linkedin, class: 'input-md', help: s_("Profiles|Your LinkedIn profile name from linkedin.com/in/profilename")
       = f.text_field :twitter, class: 'input-md', placeholder: s_("Profiles|@username")

@@ -2,6 +2,9 @@ require 'spec_helper'
 require 'tempfile'
 
 describe 'Jobs', :clean_gitlab_redis_shared_state do
+  include Gitlab::Routing
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -118,6 +121,112 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         wait_for_requests
         expect(page).to have_selector('.build-job.active')
+      end
+    end
+
+    context 'pipeline info block', :js do
+      it 'shows pipeline id and source branch' do
+        visit project_job_path(project, job)
+
+        within '.js-pipeline-info' do
+          expect(page).to have_content("Pipeline ##{pipeline.id} for #{pipeline.ref}")
+        end
+      end
+
+      context 'when pipeline is detached merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_detached_merge_request_pipeline,
+            target_project: target_project,
+            source_project: source_project)
+        end
+
+        let(:source_project) { project }
+        let(:target_project) { project }
+        let(:pipeline) { merge_request.all_pipelines.last }
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'shows merge request iid and source branch' do
+          visit project_job_path(project, job)
+
+          within '.js-pipeline-info' do
+            expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                         "with #{pipeline.merge_request.source_branch}")
+            expect(page).to have_link("!#{pipeline.merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(pipeline.merge_request.source_branch,
+              href: project_commits_path(project, merge_request.source_branch))
+          end
+        end
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+          let(:target_project) { project }
+
+          it 'shows merge request iid and source branch' do
+            visit project_job_path(source_project, job)
+
+            within '.js-pipeline-info' do
+              expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                           "with #{pipeline.merge_request.source_branch}")
+              expect(page).to have_link("!#{pipeline.merge_request.iid}",
+                href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(pipeline.merge_request.source_branch,
+                href: project_commits_path(source_project, merge_request.source_branch))
+            end
+          end
+        end
+      end
+
+      context 'when pipeline is merge request pipeline' do
+        let(:merge_request) do
+          create(:merge_request,
+            :with_merge_request_pipeline,
+            target_project: target_project,
+            source_project: source_project)
+        end
+
+        let(:source_project) { project }
+        let(:target_project) { project }
+        let(:pipeline) { merge_request.all_pipelines.last }
+        let(:job) { create(:ci_build, pipeline: pipeline) }
+
+        it 'shows merge request iid and source branch' do
+          visit project_job_path(project, job)
+
+          within '.js-pipeline-info' do
+            expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                         "with #{pipeline.merge_request.source_branch} " \
+                                         "into #{pipeline.merge_request.target_branch}")
+            expect(page).to have_link("!#{pipeline.merge_request.iid}",
+              href: project_merge_request_path(project, merge_request))
+            expect(page).to have_link(pipeline.merge_request.source_branch,
+              href: project_commits_path(project, merge_request.source_branch))
+            expect(page).to have_link(pipeline.merge_request.target_branch,
+              href: project_commits_path(project, merge_request.target_branch))
+          end
+        end
+
+        context 'when source project is a forked project' do
+          let(:source_project) { fork_project(project, user, repository: true) }
+          let(:target_project) { project }
+
+          it 'shows merge request iid and source branch' do
+            visit project_job_path(source_project, job)
+
+            within '.js-pipeline-info' do
+              expect(page).to have_content("for !#{pipeline.merge_request.iid} " \
+                                           "with #{pipeline.merge_request.source_branch} " \
+                                           "into #{pipeline.merge_request.target_branch}")
+              expect(page).to have_link("!#{pipeline.merge_request.iid}",
+                href: project_merge_request_path(project, merge_request))
+              expect(page).to have_link(pipeline.merge_request.source_branch,
+                href: project_commits_path(source_project, merge_request.source_branch))
+              expect(page).to have_link(pipeline.merge_request.target_branch,
+                href: project_commits_path(project, merge_request.target_branch))
+            end
+          end
+        end
       end
     end
 

@@ -205,6 +205,7 @@ With the update permission model we also extended the support for accessing
 Container Registries for private projects.
 
 > **Notes:**
+>
 > - GitLab Runner versions prior to 1.8 don't incorporate the introduced changes
 >   for permissions. This makes the `image:` directive to not work with private
 >   projects automatically and it needs to be configured manually on Runner's host

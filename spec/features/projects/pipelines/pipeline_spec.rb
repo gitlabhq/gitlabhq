@@ -24,6 +24,11 @@ describe 'Pipeline', :js do
              pipeline: pipeline, stage: 'test', name: 'test')
     end
 
+    let!(:build_preparing) do
+      create(:ci_build, :preparing,
+             pipeline: pipeline, stage: 'deploy', name: 'prepare')
+    end
+
     let!(:build_running) do
       create(:ci_build, :running,
              pipeline: pipeline, stage: 'deploy', name: 'deploy')
@@ -101,6 +106,24 @@ describe 'Pipeline', :js do
         end
 
         it 'cancels the running build and shows retry button' do
+          find('#ci-badge-deploy .ci-action-icon-container').click
+
+          page.within('#ci-badge-deploy') do
+            expect(page).to have_css('.js-icon-retry')
+          end
+        end
+      end
+
+      context 'when pipeline has preparing builds' do
+        it 'shows a preparing icon and a cancel action' do
+          page.within('#ci-badge-prepare') do
+            expect(page).to have_selector('.js-ci-status-icon-preparing')
+            expect(page).to have_selector('.js-icon-cancel')
+            expect(page).to have_content('prepare')
+          end
+        end
+
+        it 'cancels the preparing build and shows retry button' do
           find('#ci-badge-deploy .ci-action-icon-container').click
 
           page.within('#ci-badge-deploy') do
