@@ -3,9 +3,12 @@
 GitLab has a great [issue tracker](../user/project/issues/index.md) but you can also use an external one
 such as Jira, Redmine, YouTrack, or Bugzilla. External issue trackers are configurable per GitLab project.
 
-Once configured, you can reference external issues using the format CODE-123, where CODE is a unique code
-for the tracker, and 123 is the issue number in the tracker. These references in GitLab 
-merge requests, commits, or comments are automatically converted to links to the issues.
+Once configured, you can reference external issues using the format `CODE-123`, where:
+
+- `CODE` is a unique code for the tracker.
+- `123` is the issue number in the tracker.
+
+These references in GitLab merge requests, commits, or comments are automatically converted to links to the issues.
 
 You can keep GitLab's issue tracker enabled in parallel or disable it. When enabled, the **Issues** link in the
 GitLab menu always opens the internal issue tracker. When disabled, the link is not visible in the menu.
