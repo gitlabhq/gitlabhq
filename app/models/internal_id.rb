@@ -55,7 +55,8 @@ class InternalId < ApplicationRecord
     def track_greatest(subject, scope, usage, new_value, init)
       return new_value unless available?
 
-      InternalIdGenerator.new(subject, scope, usage, init).track_greatest(new_value)
+      InternalIdGenerator.new(subject, scope, usage)
+        .track_greatest(init, new_value)
     end
 
     def generate_next(subject, scope, usage, init)
@@ -63,7 +64,15 @@ class InternalId < ApplicationRecord
       # This can be the case in other (unrelated) migration specs
       return (init.call(subject) || 0) + 1 unless available?
 
-      InternalIdGenerator.new(subject, scope, usage, init).generate
+      InternalIdGenerator.new(subject, scope, usage)
+        .generate(init)
+    end
+
+    def reset(subject, scope, usage, value)
+      return false unless available?
+
+      InternalIdGenerator.new(subject, scope, usage)
+        .reset(value)
     end
 
     # Flushing records is generally safe in a sense that those
@@ -103,14 +112,11 @@ class InternalId < ApplicationRecord
     # subject: The instance we're generating an internal id for. Gets passed to init if called.
     # scope: Attributes that define the scope for id generation.
     # usage: Symbol to define the usage of the internal id, see InternalId.usages
-    # init: Block that gets called to initialize InternalId record if not present
-    #       Make sure to not throw exceptions in the absence of records (if this is expected).
-    attr_reader :subject, :scope, :init, :scope_attrs, :usage
+    attr_reader :subject, :scope, :scope_attrs, :usage
 
-    def initialize(subject, scope, usage, init)
+    def initialize(subject, scope, usage)
       @subject = subject
       @scope = scope
-      @init = init
       @usage = usage
 
       raise ArgumentError, 'Scope is not well-defined, need at least one column for scope (given: 0)' if scope.empty?
@@ -121,23 +127,40 @@ class InternalId < ApplicationRecord
     end
 
     # Generates next internal id and returns it
-    def generate
+    # init: Block that gets called to initialize InternalId record if not present
+    #       Make sure to not throw exceptions in the absence of records (if this is expected).
+    def generate(init)
       subject.transaction do
         # Create a record in internal_ids if one does not yet exist
         # and increment its last value
         #
         # Note this will acquire a ROW SHARE lock on the InternalId record
-        (lookup || create_record).increment_and_save!
+        (lookup || create_record(init)).increment_and_save!
       end
+    end
+
+    # Reset tries to rewind to `value-1`. This will only succeed,
+    # if `value` stored in database is equal to `last_value`.
+    # value: The expected last_value to decrement
+    def reset(value)
+      return false unless value
+
+      updated =
+        InternalId
+          .where(**scope, usage: usage_value)
+          .where(last_value: value)
+          .update_all('last_value = last_value - 1')
+
+      updated > 0
     end
 
     # Create a record in internal_ids if one does not yet exist
     # and set its new_value if it is higher than the current last_value
     #
     # Note this will acquire a ROW SHARE lock on the InternalId record
-    def track_greatest(new_value)
+    def track_greatest(init, new_value)
       subject.transaction do
-        (lookup || create_record).track_greatest_and_save!(new_value)
+        (lookup || create_record(init)).track_greatest_and_save!(new_value)
       end
     end
 
@@ -158,7 +181,7 @@ class InternalId < ApplicationRecord
     # was faster in doing this, we'll realize once we hit the unique key constraint
     # violation. We can safely roll-back the nested transaction and perform
     # a lookup instead to retrieve the record.
-    def create_record
+    def create_record(init)
       subject.transaction(requires_new: true) do
         InternalId.create!(
           **scope,
