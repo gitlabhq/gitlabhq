@@ -109,6 +109,18 @@ describe('new file modal component', () => {
 
         expect(vm.entryName).toBe('index.js');
       });
+
+      it('removes leading/trailing spaces when found in the new name', () => {
+        vm.entryName = ' index.js ';
+
+        expect(vm.entryName).toBe('index.js');
+      });
+
+      it('does not remove internal spaces in the file name', () => {
+        vm.entryName = ' In Praise of Idleness.txt ';
+
+        expect(vm.entryName).toBe('In Praise of Idleness.txt');
+      });
     });
   });
 
