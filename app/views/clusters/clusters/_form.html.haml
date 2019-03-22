@@ -33,9 +33,9 @@
       - auto_devops_url = help_page_path('topics/autodevops/index')
       - auto_devops_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: auto_devops_url }
       = s_('ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain.').html_safe % { auto_devops_start: auto_devops_start, auto_devops_end: '</a>'.html_safe }
-      - if @cluster.application_ingress_external_ip.present?
+      %span{ :class => ["js-ingress-domain-help-text", ("hide" unless @cluster.application_ingress_external_ip.present?)] }
         = s_('ClusterIntegration|Alternatively')
-        %code #{@cluster.application_ingress_external_ip}.nip.io
+        %code{ :class => "js-ingress-domain-snippet" } #{@cluster.application_ingress_external_ip}.nip.io
         = s_('ClusterIntegration| can be used instead of a custom domain.')
       - custom_domain_url = help_page_path('user/project/clusters/index', anchor: 'pointing-your-dns-at-the-external-endpoint')
       - custom_domain_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: custom_domain_url }
