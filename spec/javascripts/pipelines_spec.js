@@ -1,10 +1,10 @@
 import Pipelines from '~/pipelines';
 
 describe('Pipelines', () => {
-  preloadFixtures('static/pipeline_graph.html');
+  preloadFixtures('static/pipeline_graph.html.raw');
 
   beforeEach(() => {
-    loadFixtures('static/pipeline_graph.html');
+    loadFixtures('static/pipeline_graph.html.raw');
   });
 
   it('should be defined', () => {

@@ -4,10 +4,10 @@ import 'vendor/u2f';
 import MockU2FDevice from './mock_u2f_device';
 
 describe('U2FAuthenticate', function() {
-  preloadFixtures('u2f/authenticate.html');
+  preloadFixtures('u2f/authenticate.html.raw');
 
   beforeEach(() => {
-    loadFixtures('u2f/authenticate.html');
+    loadFixtures('u2f/authenticate.html.raw');
     this.u2fDevice = new MockU2FDevice();
     this.container = $('#js-authenticate-u2f');
     this.component = new U2FAuthenticate(

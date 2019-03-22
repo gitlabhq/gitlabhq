@@ -11,11 +11,11 @@ const execImmediately = callback => {
 describe('LazyLoader', function() {
   let lazyLoader = null;
 
-  preloadFixtures('issues/issue_with_comment.html');
+  preloadFixtures('issues/issue_with_comment.html.raw');
 
   describe('without IntersectionObserver', () => {
     beforeEach(function() {
-      loadFixtures('issues/issue_with_comment.html');
+      loadFixtures('issues/issue_with_comment.html.raw');
 
       lazyLoader = new LazyLoader({
         observerNode: 'foobar',
@@ -131,7 +131,7 @@ describe('LazyLoader', function() {
 
   describe('with IntersectionObserver', () => {
     beforeEach(function() {
-      loadFixtures('issues/issue_with_comment.html');
+      loadFixtures('issues/issue_with_comment.html.raw');
 
       lazyLoader = new LazyLoader({
         observerNode: 'foobar',

@@ -2,10 +2,10 @@ import $ from 'jquery';
 import preserveUrlFragment from '~/pages/sessions/new/preserve_url_fragment';
 
 describe('preserve_url_fragment', () => {
-  preloadFixtures('sessions/new.html');
+  preloadFixtures('sessions/new.html.raw');
 
   beforeEach(() => {
-    loadFixtures('sessions/new.html');
+    loadFixtures('sessions/new.html.raw');
   });
 
   it('adds the url fragment to all login and sign up form actions', () => {

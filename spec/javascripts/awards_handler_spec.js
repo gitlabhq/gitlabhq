@@ -24,13 +24,13 @@ const lazyAssert = function(done, assertFn) {
 
 describe('AwardsHandler', function() {
   const emojiData = getJSONFixture('emojis/emojis.json');
-  preloadFixtures('snippets/show.html');
+  preloadFixtures('snippets/show.html.raw');
 
   beforeEach(function(done) {
     mock = new MockAdapter(axios);
     mock.onGet(`/-/emojis/${EMOJI_VERSION}/emojis.json`).reply(200, emojiData);
 
-    loadFixtures('snippets/show.html');
+    loadFixtures('snippets/show.html.raw');
     loadAwardsHandler(true)
       .then(obj => {
         awardsHandler = obj;

@@ -3,10 +3,10 @@ import '~/behaviors/requires_input';
 
 describe('requiresInput', () => {
   let submitButton;
-  preloadFixtures('branches/new_branch.html');
+  preloadFixtures('branches/new_branch.html.raw');
 
   beforeEach(() => {
-    loadFixtures('branches/new_branch.html');
+    loadFixtures('branches/new_branch.html.raw');
     submitButton = $('button[type="submit"]');
   });
 

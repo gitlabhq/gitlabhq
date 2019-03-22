@@ -22,8 +22,8 @@ describe('MergeRequestTabs', function() {
   };
 
   preloadFixtures(
-    'merge_requests/merge_request_with_task_list.html',
-    'merge_requests/diff_comment.html',
+    'merge_requests/merge_request_with_task_list.html.raw',
+    'merge_requests/diff_comment.html.raw',
   );
 
   beforeEach(function() {
@@ -48,7 +48,7 @@ describe('MergeRequestTabs', function() {
     var windowTarget = '_blank';
 
     beforeEach(function() {
-      loadFixtures('merge_requests/merge_request_with_task_list.html');
+      loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
 
       tabUrl = $('.commits-tab a').attr('href');
     });

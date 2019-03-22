@@ -5,7 +5,7 @@ import initUserInternalRegexPlaceholder, {
 } from '~/pages/admin/application_settings/account_and_limits';
 
 describe('AccountAndLimits', () => {
-  const FIXTURE = 'application_settings/accounts_and_limit.html';
+  const FIXTURE = 'application_settings/accounts_and_limit.html.raw';
   let $userDefaultExternal;
   let $userInternalRegex;
   preloadFixtures(FIXTURE);

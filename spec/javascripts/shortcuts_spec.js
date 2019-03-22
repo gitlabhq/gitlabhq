@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 
 describe('Shortcuts', () => {
-  const fixtureName = 'snippets/show.html';
+  const fixtureName = 'snippets/show.html.raw';
   const createEvent = (type, target) =>
     $.Event(type, {
       target,

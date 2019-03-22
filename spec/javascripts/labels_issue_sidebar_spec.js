@@ -16,10 +16,10 @@ let saveLabelCount = 0;
 let mock;
 
 describe('Issue dropdown sidebar', () => {
-  preloadFixtures('static/issue_sidebar_label.html');
+  preloadFixtures('static/issue_sidebar_label.html.raw');
 
   beforeEach(() => {
-    loadFixtures('static/issue_sidebar_label.html');
+    loadFixtures('static/issue_sidebar_label.html.raw');
 
     mock = new MockAdapter(axios);
 

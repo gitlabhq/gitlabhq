@@ -6,10 +6,10 @@ describe('Balsamiq integration spec', () => {
   let endpoint;
   let balsamiqViewer;
 
-  preloadFixtures('static/balsamiq_viewer.html');
+  preloadFixtures('static/balsamiq_viewer.html.raw');
 
   beforeEach(() => {
-    loadFixtures('static/balsamiq_viewer.html');
+    loadFixtures('static/balsamiq_viewer.html.raw');
 
     container = document.getElementById('js-balsamiq-viewer');
     balsamiqViewer = new BalsamiqViewer(container);

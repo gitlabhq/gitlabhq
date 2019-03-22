@@ -9,10 +9,10 @@ import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
 describe('Clusters', () => {
   let cluster;
-  preloadFixtures('clusters/show_cluster.html');
+  preloadFixtures('clusters/show_cluster.html.raw');
 
   beforeEach(() => {
-    loadFixtures('clusters/show_cluster.html');
+    loadFixtures('clusters/show_cluster.html.raw');
     cluster = new Clusters();
   });
 

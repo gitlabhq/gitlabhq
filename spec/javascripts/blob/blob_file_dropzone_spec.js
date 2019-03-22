@@ -2,10 +2,10 @@ import $ from 'jquery';
 import BlobFileDropzone from '~/blob/blob_file_dropzone';
 
 describe('BlobFileDropzone', function() {
-  preloadFixtures('blob/show.html');
+  preloadFixtures('blob/show.html.raw');
 
   beforeEach(() => {
-    loadFixtures('blob/show.html');
+    loadFixtures('blob/show.html.raw');
     const form = $('.js-upload-blob-form');
     this.blobFileDropzone = new BlobFileDropzone(form, 'POST');
     this.dropzone = $('.js-upload-blob-form .dropzone').get(0).dropzone;

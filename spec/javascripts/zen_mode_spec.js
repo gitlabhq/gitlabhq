@@ -6,7 +6,7 @@ import ZenMode from '~/zen_mode';
 describe('ZenMode', () => {
   let zen;
   let dropzoneForElementSpy;
-  const fixtureName = 'snippets/show.html';
+  const fixtureName = 'snippets/show.html.raw';
 
   preloadFixtures(fixtureName);
 
