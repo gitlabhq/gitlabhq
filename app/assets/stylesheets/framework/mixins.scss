@@ -29,15 +29,14 @@
   display: block;
   overflow-x: auto;
   border: 0;
-  border-color: $gl-gray-100;
 
   tr {
     th {
-      border-bottom: solid 2px $gl-gray-100;
+      border-bottom: solid 2px $gl-gray-200;
     }
 
     td {
-      border-color: $gl-gray-100;
+      border-color: $gl-gray-200;
     }
   }
 }

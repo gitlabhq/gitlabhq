@@ -36,4 +36,5 @@ module.exports = {
     '^.+\\.vue$': 'vue-jest',
   },
   transformIgnorePatterns: ['node_modules/(?!(@gitlab/ui)/)'],
+  timers: 'fake',
 };

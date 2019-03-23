@@ -1,0 +1,5 @@
+---
+title: Add missing .gitlab-ci.yml to Android template
+merge_request: 26415
+author:
+type: fixed

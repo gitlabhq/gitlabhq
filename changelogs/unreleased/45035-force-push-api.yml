@@ -1,5 +1,0 @@
----
-title: Accept force option to overwrite branch on commit via API
-merge_request: 25286
-author:
-type: added

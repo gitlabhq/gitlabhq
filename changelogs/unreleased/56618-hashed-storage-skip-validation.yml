@@ -1,5 +1,0 @@
----
-title: Skip Project validation during Hashed Storage migration or rollback
-merge_request: 25753
-author:
-type: fixed

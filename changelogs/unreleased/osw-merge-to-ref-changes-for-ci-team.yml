@@ -1,5 +1,0 @@
----
-title: Make merge to refs/merge-requests/:iid/merge not raise when FF-only enabled
-merge_request: 25653
-author:
-type: fixed

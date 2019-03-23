@@ -1,5 +1,0 @@
----
-title: Persist source sha and target sha for merge pipelines
-merge_request: 25417
-author:
-type: added

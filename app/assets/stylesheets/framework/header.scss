@@ -304,7 +304,9 @@
   }
 }
 
-.caret-down {
+.caret-down,
+.btn .caret-down {
+  top: 0;
   height: 11px;
   width: 11px;
   margin-left: 4px;

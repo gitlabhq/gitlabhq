@@ -134,12 +134,23 @@ export default {
       yaml_errors: false,
       retryable: true,
       cancelable: false,
+      merge_request_pipeline: false,
+      detached_merge_request_pipeline: true,
     },
     ref: {
       name: 'daaaa',
       path: '/root/acets-app/tree/daaaa',
       tag: false,
       branch: true,
+    },
+    merge_request: {
+      iid: 1,
+      path: '/root/detached-merge-request-pipelines/merge_requests/1',
+      title: 'Update README.md',
+      source_branch: 'feature-1',
+      source_branch_path: '/root/detached-merge-request-pipelines/branches/feature-1',
+      target_branch: 'master',
+      target_branch_path: '/root/detached-merge-request-pipelines/branches/master',
     },
     commit: {
       id: '104096c51715e12e7ae41f9333e9fa35b73f385d',

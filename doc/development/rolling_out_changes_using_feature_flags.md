@@ -105,6 +105,20 @@ Flags](feature_flags.md) guide) supports rolling out changes to a percentage of
 users. This in turn can be controlled using [GitLab
 chatops](https://docs.gitlab.com/ee/ci/chatops/).
 
+For an up to date list of feature flag commands please see [the source
+code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
+Note that all the examples in that file must be preceded by
+`/chatops run`.
+
+If you get an error "Whoops! This action is not allowed. This incident
+will be reported." that means your Slack account is not allowed to
+change feature flags. To test if you are allowed to do anything at all,
+run:
+
+```
+/chatops run feature --help
+```
+
 For example, to enable a feature for 25% of all users, run the following in
 Slack:
 

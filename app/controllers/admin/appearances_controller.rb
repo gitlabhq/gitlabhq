@@ -14,7 +14,7 @@ class Admin::AppearancesController < Admin::ApplicationController
     @appearance = Appearance.new(appearance_params)
 
     if @appearance.save
-      redirect_to admin_appearances_path, notice: 'Appearance was successfully created.'
+      redirect_to admin_appearances_path, notice: _('Appearance was successfully created.')
     else
       render action: 'show'
     end
@@ -22,7 +22,7 @@ class Admin::AppearancesController < Admin::ApplicationController
 
   def update
     if @appearance.update(appearance_params)
-      redirect_to admin_appearances_path, notice: 'Appearance was successfully updated.'
+      redirect_to admin_appearances_path, notice: _('Appearance was successfully updated.')
     else
       render action: 'show'
     end
@@ -33,21 +33,21 @@ class Admin::AppearancesController < Admin::ApplicationController
 
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Logo was successfully removed.'
+    redirect_to admin_appearances_path, notice: _('Logo was successfully removed.')
   end
 
   def header_logos
     @appearance.remove_header_logo!
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Header logo was successfully removed.'
+    redirect_to admin_appearances_path, notice: _('Header logo was successfully removed.')
   end
 
   def favicon
     @appearance.remove_favicon!
     @appearance.save
 
-    redirect_to admin_appearances_path, notice: 'Favicon was successfully removed.'
+    redirect_to admin_appearances_path, notice: _('Favicon was successfully removed.')
   end
 
   private

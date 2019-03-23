@@ -1,5 +1,0 @@
----
-title: Remove N+1 query for tags in /admin/runners page
-merge_request: 25572
-author:
-type: performance

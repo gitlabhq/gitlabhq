@@ -1,5 +1,0 @@
----
-title: Support merge ref writing (without merging to target branch)
-merge_request: 24692
-author:
-type: added

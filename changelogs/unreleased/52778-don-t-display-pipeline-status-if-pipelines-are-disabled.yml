@@ -1,5 +1,0 @@
----
-title: Hide pipeline status when pipelines are disabled on project.
-merge_request: 25204
-author:
-type: fixed

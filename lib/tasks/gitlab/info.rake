@@ -34,9 +34,6 @@ namespace :gitlab do
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
       puts "Go Version:\t#{go_version[1] || "unknown".color(:red)}"
 
-      # check database adapter
-      database_adapter = ActiveRecord::Base.connection.adapter_name.downcase
-
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs
       http_clone_url = project.http_url_to_repo
@@ -49,7 +46,8 @@ namespace :gitlab do
       puts "Version:\t#{Gitlab::VERSION}"
       puts "Revision:\t#{Gitlab.revision}"
       puts "Directory:\t#{Rails.root}"
-      puts "DB Adapter:\t#{database_adapter}"
+      puts "DB Adapter:\t#{Gitlab::Database.human_adapter_name}"
+      puts "DB Version:\t#{Gitlab::Database.version}"
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"

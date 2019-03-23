@@ -917,6 +917,10 @@ class User < ApplicationRecord
     DeployKey.unscoped.in_projects(authorized_projects.pluck(:id)).distinct(:id)
   end
 
+  def highest_role
+    members.maximum(:access_level) || Gitlab::Access::NO_ACCESS
+  end
+
   def accessible_deploy_keys
     @accessible_deploy_keys ||= begin
       key_ids = project_deploy_keys.pluck(:id)

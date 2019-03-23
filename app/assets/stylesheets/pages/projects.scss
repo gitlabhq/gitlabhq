@@ -18,12 +18,9 @@
   }
 
   .input-group {
-    display: flex;
-
     .select2-container {
       display: unset;
       max-width: unset;
-      width: unset !important;
       flex-grow: 1;
     }
 

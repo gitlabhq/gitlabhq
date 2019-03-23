@@ -1,5 +1,0 @@
----
-title: Don't show new issue link after move when a user does not have permissions
-merge_request:
-author:
-type: security

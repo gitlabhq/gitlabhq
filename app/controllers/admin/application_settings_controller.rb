@@ -48,7 +48,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     respond_to do |format|
       if successful
         format.json { head :ok }
-        format.html { redirect_to redirect_path, notice: 'Application settings saved successfully' }
+        format.html { redirect_to redirect_path, notice: _('Application settings saved successfully') }
       else
         format.json { head :bad_request }
         format.html { render :show }
@@ -70,13 +70,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def reset_registration_token
     @application_setting.reset_runners_registration_token!
 
-    flash[:notice] = 'New runners registration token has been generated!'
+    flash[:notice] = _('New runners registration token has been generated!')
     redirect_to admin_runners_path
   end
 
   def reset_health_check_token
     @application_setting.reset_health_check_access_token!
-    flash[:notice] = 'New health check access token has been generated!'
+    flash[:notice] = _('New health check access token has been generated!')
     redirect_back_or_default
   end
 
@@ -85,7 +85,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
     redirect_to(
       admin_application_settings_path,
-      notice: 'Started asynchronous removal of all repository check states.'
+      notice: _('Started asynchronous removal of all repository check states.')
     )
   end
 

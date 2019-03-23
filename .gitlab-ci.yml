@@ -1000,7 +1000,6 @@ no_ee_check:
   dependencies: []
   cache: {}
   variables:
-    GIT_DEPTH: "1"
     API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
   script:
     - apk add --update openssl curl jq

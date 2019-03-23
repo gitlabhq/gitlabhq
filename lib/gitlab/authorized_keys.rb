@@ -68,6 +68,8 @@ module Gitlab
       end
 
       true
+    rescue Errno::ENOENT
+      false
     end
 
     # Clear the authorized_keys file
@@ -96,6 +98,8 @@ module Gitlab
           end
         end
       end
+    rescue Errno::ENOENT
+      []
     end
 
     private

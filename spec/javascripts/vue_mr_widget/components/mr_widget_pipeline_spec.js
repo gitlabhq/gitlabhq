@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { trimText } from 'spec/helpers/vue_component_helper';
 import mockData from '../mock_data';
 
 describe('MRWidgetPipeline', () => {
@@ -123,7 +124,7 @@ describe('MRWidgetPipeline', () => {
 
     describe('without commit path', () => {
       beforeEach(() => {
-        const mockCopy = Object.assign({}, mockData);
+        const mockCopy = JSON.parse(JSON.stringify(mockData));
         delete mockCopy.pipeline.commit;
 
         vm = mountComponent(Component, {
@@ -164,7 +165,7 @@ describe('MRWidgetPipeline', () => {
 
     describe('without coverage', () => {
       it('should not render a coverage', () => {
-        const mockCopy = Object.assign({}, mockData);
+        const mockCopy = JSON.parse(JSON.stringify(mockData));
         delete mockCopy.pipeline.coverage;
 
         vm = mountComponent(Component, {
@@ -180,7 +181,7 @@ describe('MRWidgetPipeline', () => {
 
     describe('without a pipeline graph', () => {
       it('should not render a pipeline graph', () => {
-        const mockCopy = Object.assign({}, mockData);
+        const mockCopy = JSON.parse(JSON.stringify(mockData));
         delete mockCopy.pipeline.details.stages;
 
         vm = mountComponent(Component, {
@@ -191,6 +192,82 @@ describe('MRWidgetPipeline', () => {
         });
 
         expect(vm.$el.querySelector('.js-mini-pipeline-graph')).toEqual(null);
+      });
+    });
+
+    describe('without pipeline.merge_request', () => {
+      it('should render info that includes the commit and branch details', () => {
+        const mockCopy = JSON.parse(JSON.stringify(mockData));
+        delete mockCopy.pipeline.merge_request;
+        const { pipeline } = mockCopy;
+
+        vm = mountComponent(Component, {
+          pipeline,
+          hasCi: true,
+          ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
+          sourceBranchLink: mockCopy.source_branch_link,
+        });
+
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${
+          pipeline.commit.short_id
+        } on ${mockCopy.source_branch_link}`;
+
+        const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
+
+        expect(actual).toBe(expected);
+      });
+    });
+
+    describe('with pipeline.merge_request and flags.merge_request_pipeline', () => {
+      it('should render info that includes the commit, MR, source branch, and target branch details', () => {
+        const mockCopy = JSON.parse(JSON.stringify(mockData));
+        const { pipeline } = mockCopy;
+        pipeline.flags.merge_request_pipeline = true;
+        pipeline.flags.detached_merge_request_pipeline = false;
+
+        vm = mountComponent(Component, {
+          pipeline,
+          hasCi: true,
+          ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
+          sourceBranchLink: mockCopy.source_branch_link,
+        });
+
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${
+          pipeline.commit.short_id
+        } on !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch} into ${
+          pipeline.merge_request.target_branch
+        }`;
+
+        const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
+
+        expect(actual).toBe(expected);
+      });
+    });
+
+    describe('with pipeline.merge_request and flags.detached_merge_request_pipeline', () => {
+      it('should render info that includes the commit, MR, and source branch details', () => {
+        const mockCopy = JSON.parse(JSON.stringify(mockData));
+        const { pipeline } = mockCopy;
+        pipeline.flags.merge_request_pipeline = false;
+        pipeline.flags.detached_merge_request_pipeline = true;
+
+        vm = mountComponent(Component, {
+          pipeline,
+          hasCi: true,
+          ciStatus: 'success',
+          troubleshootingDocsPath: 'help',
+          sourceBranchLink: mockCopy.source_branch_link,
+        });
+
+        const expected = `Pipeline #${pipeline.id} ${pipeline.details.status.label} for ${
+          pipeline.commit.short_id
+        } on !${pipeline.merge_request.iid} with ${pipeline.merge_request.source_branch}`;
+
+        const actual = trimText(vm.$el.querySelector('.js-pipeline-info-container').innerText);
+
+        expect(actual).toBe(expected);
       });
     });
   });

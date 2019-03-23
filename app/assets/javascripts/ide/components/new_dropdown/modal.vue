@@ -29,7 +29,7 @@ export default {
         return this.name || (entryPath ? `${entryPath}/` : '');
       },
       set(val) {
-        this.name = val;
+        this.name = val.trim();
       },
     },
     modalTitle() {
