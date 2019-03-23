@@ -13,7 +13,7 @@ export class CopyAsGFM {
     $(document).on('copy', '.md', e => {
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
     });
-    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', e => {
+    $(document).on('copy', 'pre.code.highlight, table.code td.line_content', e => {
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection);
     });
     $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);

@@ -11,8 +11,8 @@
       = render "projects/diffs/file_header", diff_file: diff_file, url: discussion_path(discussion), show_toggle: false
 
   - if diff_file.text?
-    .diff-content.code.js-syntax-highlight
-      %table
+    .diff-content
+      %table.code.js-syntax-highlight
         - if expanded
           - discussions = { discussion.original_line_code => [discussion] }
           = render partial: "projects/diffs/line",

@@ -26,9 +26,9 @@
           %strong {{file.filePath}}
           = render partial: 'projects/merge_requests/conflicts/file_actions'
         .diff-content.diff-wrap-lines
-          .diff-wrap-lines.code.file-content.js-syntax-highlight{ "v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+          .file-content{ "v-show" => "!isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
             = render partial: "projects/merge_requests/conflicts/components/inline_conflict_lines"
-          .diff-wrap-lines.code.file-content.js-syntax-highlight{ "v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
+          .file-content{ "v-show" => "isParallel && file.resolveMode === 'interactive' && file.type === 'text'" }
             %parallel-conflict-lines{ ":file" => "file" }
           %div{ "v-show" => "file.resolveMode === 'edit' ||  file.type === 'text-editor'" }
             = render partial: "projects/merge_requests/conflicts/components/diff_file_editor"

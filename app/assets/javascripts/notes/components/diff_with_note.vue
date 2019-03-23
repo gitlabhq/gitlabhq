@@ -72,8 +72,8 @@ export default {
       :can-current-user-fork="false"
       :expanded="!discussion.diff_file.viewer.collapsed"
     />
-    <div v-if="isTextFile" :class="$options.userColorSchemeClass" class="diff-content code">
-      <table>
+    <div v-if="isTextFile" class="diff-content">
+      <table class="code js-syntax-highlight" :class="$options.userColorSchemeClass">
         <template v-if="hasTruncatedDiffLines">
           <tr
             v-for="line in discussion.truncated_diff_lines"
