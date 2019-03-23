@@ -89,13 +89,7 @@
       }
     }
 
-    .note-text {
-      table {
-        font-family: $font-family-sans-serif;
-      }
-    }
-
-    table {
+    table.code {
       width: 100%;
       font-family: $monospace-font;
       border: 0;

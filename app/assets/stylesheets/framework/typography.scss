@@ -163,7 +163,7 @@
     margin: 10px 0;
   }
 
-  table {
+  table:not(.code) {
     @extend .table;
     @extend .table-bordered;
     margin: 16px 0;

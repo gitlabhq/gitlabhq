@@ -25,10 +25,6 @@
     }
   }
 
-  table {
-    @extend .table;
-  }
-
   .file-title {
     position: relative;
     background-color: $gray-light;
