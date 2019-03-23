@@ -72,14 +72,6 @@
     height: $gl-padding * 2;
   }
 
-  // Border around images in issue and MR descriptions.
-  .description img:not(.emoji) {
-    border: 1px solid $white-normal;
-    padding: 5px;
-    max-height: calc(100vh - 100px);
-    max-width: 100%;
-  }
-
   .emoji-block {
     padding: 10px 0;
   }

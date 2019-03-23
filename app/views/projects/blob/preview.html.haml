@@ -1,7 +1,7 @@
 .diff-file.file-holder
   .diff-content
     - if markup?(@blob.name)
-      .file-content.wiki.md{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
+      .file-content.md.md-file{ class: ('use-csslab' if Feature.enabled?(:csslab)) }
         = markup(@blob.name, @content)
     - else
       .file-content.code.js-syntax-highlight

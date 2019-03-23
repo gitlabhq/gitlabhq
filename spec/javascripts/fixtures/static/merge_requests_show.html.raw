@@ -1,7 +1,7 @@
 <a class="btn-close"></a>
 <div class="detail-page-description">
 <div class="description js-task-list-container">
-<div class="wiki">
+<div class="md">
 <ul class="task-list">
 <li class="task-list-item">
 <input class="task-list-item-checkbox" type="checkbox">

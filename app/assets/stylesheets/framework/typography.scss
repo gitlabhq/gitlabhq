@@ -1,4 +1,8 @@
-@mixin md-typography {
+/**
+ * Apply Markdown typography
+ *
+ */
+.md:not(.use-csslab) {
   color: $gl-text-color;
   word-wrap: break-word;
 
@@ -26,6 +30,14 @@
     min-height: inherit;
     background-color: inherit;
     max-width: 100%;
+  }
+
+  &:not(.md-file) img:not(.emoji) {
+    border: 1px solid $white-normal;
+    padding: 5px;
+    margin: 5px 0;
+    // Ensure that image does not exceed viewport
+    max-height: calc(100vh - 100px);
   }
 
   p a:not(.no-attachment-icon) img {
@@ -365,28 +377,6 @@ code {
 
 .git-revision-dropdown .dropdown-content ul li a {
   @extend .ref-name;
-}
-
-/**
- * Apply Markdown typography
- *
- */
-.wiki:not(.use-csslab) {
-  @include md-typography;
-}
-
-.md:not(.use-csslab) {
-  @include md-typography;
-
-  &:not(.wiki) {
-    img:not(.emoji) {
-      border: 1px solid $white-normal;
-      padding: 5px;
-      margin: 5px 0;
-      // Ensure that image does not exceed viewport
-      max-height: calc(100vh - 100px);
-    }
-  }
 }
 
 /**

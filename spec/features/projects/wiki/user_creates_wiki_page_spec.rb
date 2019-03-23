@@ -136,7 +136,7 @@ describe "User creates wiki page" do
           click_button("Create page")
         end
 
-        page.within ".wiki" do
+        page.within ".md" do
           expect(page).to have_selector(".katex", count: 3).and have_content("2+2 is 4")
         end
       end

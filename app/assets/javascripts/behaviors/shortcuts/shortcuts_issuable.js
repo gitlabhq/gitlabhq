@@ -37,7 +37,7 @@ export default class ShortcutsIssuable extends Shortcuts {
     }
 
     // Sanity check: Make sure the selected text comes from a discussion : it can either contain a message...
-    let foundMessage = !!documentFragment.querySelector('.md, .wiki');
+    let foundMessage = !!documentFragment.querySelector('.md');
 
     // ... Or come from a message
     if (!foundMessage) {
@@ -46,7 +46,7 @@ export default class ShortcutsIssuable extends Shortcuts {
           let node = e;
           do {
             // Text nodes don't define the `matches` method
-            if (node.matches && node.matches('.md, .wiki')) {
+            if (node.matches && node.matches('.md')) {
               foundMessage = true;
             }
             node = node.parentNode;
