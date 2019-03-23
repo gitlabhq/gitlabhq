@@ -173,6 +173,10 @@
     display: block;
     overflow-x: auto;
 
+    tbody {
+      background-color: $white-light;
+    }
+
     tr {
       th {
         border-bottom: solid 2px $gl-gray-200;
