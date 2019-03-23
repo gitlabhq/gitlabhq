@@ -225,8 +225,6 @@ $note-form-margin-left: 72px;
       overflow-y: hidden;
 
       .note-text {
-        // Reset ul style types since we're nested inside a ul already
-        @include bulleted-list;
         word-wrap: break-word;
       }
     }

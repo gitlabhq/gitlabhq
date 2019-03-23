@@ -10,8 +10,35 @@
     text-align: initial;
   }
 
+  *:first-child {
+    margin-top: 0;
+  }
+
+  > :last-child {
+    margin-bottom: 0;
+  }
+
+  p {
+    color: $gl-text-color;
+    margin: 0 0 16px;
+
+    > code {
+      font-weight: inherit;
+    }
+
+    a:not(.no-attachment-icon) img {
+      // Remove bottom padding because
+      // <p> already has $gl-padding bottom
+      margin-bottom: 0;
+    }
+  }
+
   a {
     color: $blue-600;
+
+    > code {
+      color: $blue-600;
+    }
   }
 
   img:not(.emoji) {
@@ -40,25 +67,12 @@
     max-height: calc(100vh - 100px);
   }
 
-  p a:not(.no-attachment-icon) img {
-    // Remove bottom padding because
-    // <p> already has $gl-padding bottom
-    margin-bottom: 0;
-  }
-
-  *:first-child {
-    margin-top: 0;
-  }
-
-  > :last-child {
-    margin-bottom: 0;
-  }
-
   // Single code lines should wrap
   code {
     font-family: $monospace-font;
     white-space: pre-wrap;
     word-wrap: normal;
+    word-break: keep-all;
   }
 
   kbd {
@@ -143,9 +157,10 @@
     }
   }
 
-  p {
-    color: $gl-text-color;
-    margin: 0 0 16px;
+  hr {
+    // Darken 'whitesmoke' a bit to make it more visible in note bodies
+    border-color: darken($gray-normal, 8%);
+    margin: 10px 0;
   }
 
   table {
@@ -154,6 +169,9 @@
     margin: 16px 0;
     color: $gl-text-color;
     border: 0;
+    width: auto;
+    display: block;
+    overflow-x: auto;
 
     tr {
       th {
@@ -191,14 +209,6 @@
     }
   }
 
-  p > code {
-    font-weight: inherit;
-  }
-
-  a > code {
-    color: $blue-600;
-  }
-
   dd {
     margin-left: $gl-padding;
   }
@@ -212,6 +222,18 @@
   ul:dir(rtl),
   ol:dir(rtl) {
     margin: 3px 28px 3px 0 !important;
+  }
+
+  > ul {
+    list-style-type: disc;
+
+    ul {
+      list-style-type: circle;
+
+      ul {
+        list-style-type: square;
+      }
+    }
   }
 
   li {
@@ -257,11 +279,11 @@
     &:hover::before {
       text-decoration: none;
     }
-  }
 
-  a.no-attachment-icon {
-    &::before {
-      display: none;
+    &.no-attachment-icon {
+      &::before {
+        display: none;
+      }
     }
   }
 
