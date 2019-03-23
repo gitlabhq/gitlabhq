@@ -130,6 +130,6 @@ export default {
 <template>
   <div>
     <div class="flash-container js-suggestions-flash"></div>
-    <div v-show="isRendered" ref="container" v-html="noteHtml"></div>
+    <div v-show="isRendered" ref="container" class="md" v-html="noteHtml"></div>
   </div>
 </template>
