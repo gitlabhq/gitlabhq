@@ -25,7 +25,7 @@ See our [product handbook on permissions](https://about.gitlab.com/handbook/prod
 
 ## Instance-wide user permissions
 
-By default, users can create top-level groups and change their 
+By default, users can create top-level groups and change their
 usernames. A GitLab administrator can configure the GitLab instance to
 [modify this behavior](../administration/user_settings.md).
 
@@ -48,6 +48,8 @@ The following table depicts the various user permission levels in a project.
 | See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Create and edit wiki pages            |         |            | ✓           | ✓        | ✓      |
+| Delete wiki pages                     |         |            |             | ✓        | ✓      |
 | View license management reports **[ULTIMATE]** | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View Security reports **[ULTIMATE]**  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
@@ -80,7 +82,6 @@ The following table depicts the various user permission levels in a project.
 | Force push to non-protected branches  |         |            | ✓           | ✓        | ✓      |
 | Remove non-protected branches         |         |            | ✓           | ✓        | ✓      |
 | Add tags                              |         |            | ✓           | ✓        | ✓      |
-| Write a wiki                          |         |            | ✓           | ✓        | ✓      |
 | Cancel and retry jobs                 |         |            | ✓           | ✓        | ✓      |
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
@@ -243,7 +244,7 @@ The regex pattern format is Ruby, but it needs to be convertible to JavaScript, 
 
 Here are some examples:
 
-- Use `\.internal@domain\.com` to mark email addresses containing ".internal@domain.com" internal.
+- Use `\.internal@domain\.com$` to mark email addresses ending with ".internal@domain.com" internal.
 - Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses NOT including .ext@domain.com internal.
 
 Please be aware that this regex could lead to a DOS attack, [see](https://en.wikipedia.org/wiki/ReDoS?) ReDos on Wikipedia.

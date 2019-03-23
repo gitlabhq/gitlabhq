@@ -1,5 +1,0 @@
----
-title: Enable persisted pipeline stages by default
-merge_request: 25347
-author:
-type: performance

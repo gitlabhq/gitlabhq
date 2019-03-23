@@ -1,5 +1,0 @@
----
-title: Fix leaking private repository information in API
-merge_request:
-author:
-type: security

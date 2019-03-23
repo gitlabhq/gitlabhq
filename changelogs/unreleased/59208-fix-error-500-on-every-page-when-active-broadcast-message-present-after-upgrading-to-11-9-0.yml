@@ -1,6 +1,0 @@
----
-title: Gracefully handles excluded fields from attributes during serialization on
-  JsonCache
-merge_request: 26368
-author:
-type: fixed

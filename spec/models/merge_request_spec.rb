@@ -84,27 +84,32 @@ describe MergeRequest do
 
   describe '#default_squash_commit_message' do
     let(:project) { subject.project }
-    let(:is_multiline) { -> (c) { c.description.present? } }
-    let(:multiline_commits) { subject.commits.select(&is_multiline) }
-    let(:singleline_commits) { subject.commits.reject(&is_multiline) }
+
+    def commit_collection(commit_hashes)
+      raw_commits = commit_hashes.map { |raw| Commit.from_hash(raw, project) }
+
+      CommitCollection.new(project, raw_commits)
+    end
 
     it 'returns the oldest multiline commit message' do
-      expect(subject.default_squash_commit_message).to eq(multiline_commits.last.message)
+      commits = commit_collection([
+        { message: 'Singleline', parent_ids: [] },
+        { message: "Second multiline\nCommit message", parent_ids: [] },
+        { message: "First multiline\nCommit message", parent_ids: [] }
+      ])
+
+      expect(subject).to receive(:commits).and_return(commits)
+
+      expect(subject.default_squash_commit_message).to eq("First multiline\nCommit message")
     end
 
     it 'returns the merge request title if there are no multiline commits' do
-      expect(subject).to receive(:commits).and_return(
-        CommitCollection.new(project, singleline_commits)
-      )
+      commits = commit_collection([
+        { message: 'Singleline', parent_ids: [] }
+      ])
 
-      expect(subject.default_squash_commit_message).to eq(subject.title)
-    end
+      expect(subject).to receive(:commits).and_return(commits)
 
-    it 'does not return commit messages from multiline merge commits' do
-      collection = CommitCollection.new(project, multiline_commits).enrich!
-
-      expect(collection.commits).to all( receive(:merge_commit?).and_return(true) )
-      expect(subject).to receive(:commits).and_return(collection)
       expect(subject.default_squash_commit_message).to eq(subject.title)
     end
   end
@@ -1040,7 +1045,7 @@ describe MergeRequest do
 
   describe '#commit_authors' do
     it 'returns all the authors of every commit in the merge request' do
-      users = subject.commits.without_merge_commits.map(&:author_email).uniq.map do |email|
+      users = subject.commits.map(&:author_email).uniq.map do |email|
         create(:user, email: email)
       end
 
@@ -1054,7 +1059,7 @@ describe MergeRequest do
 
   describe '#authors' do
     it 'returns a list with all the commit authors in the merge request and author' do
-      users = subject.commits.without_merge_commits.map(&:author_email).uniq.map do |email|
+      users = subject.commits.map(&:author_email).uniq.map do |email|
         create(:user, email: email)
       end
 
@@ -1182,8 +1187,10 @@ describe MergeRequest do
   end
 
   context 'head pipeline' do
+    let(:diff_head_sha) { Digest::SHA1.hexdigest(SecureRandom.hex) }
+
     before do
-      allow(subject).to receive(:diff_head_sha).and_return('lastsha')
+      allow(subject).to receive(:diff_head_sha).and_return(diff_head_sha)
     end
 
     describe '#head_pipeline' do
@@ -1211,7 +1218,15 @@ describe MergeRequest do
       end
 
       it 'returns the pipeline for MR with recent pipeline' do
-        pipeline = create(:ci_empty_pipeline, sha: 'lastsha')
+        pipeline = create(:ci_empty_pipeline, sha: diff_head_sha)
+        subject.update_attribute(:head_pipeline_id, pipeline.id)
+
+        expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
+        expect(subject.actual_head_pipeline).to eq(pipeline)
+      end
+
+      it 'returns the pipeline for MR with recent merge request pipeline' do
+        pipeline = create(:ci_empty_pipeline, sha: 'merge-sha', source_sha: diff_head_sha)
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
         expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)

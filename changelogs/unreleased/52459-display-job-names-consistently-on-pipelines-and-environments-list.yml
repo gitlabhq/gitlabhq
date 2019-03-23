@@ -1,5 +1,0 @@
----
-title: Display job names consistently on pipelines and environments list
-merge_request: 24984
-author:
-type: fixed

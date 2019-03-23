@@ -4,6 +4,8 @@ require 'spec_helper'
 
 describe 'Clusterable > Show page' do
   let(:current_user) { create(:user) }
+  let(:cluster_ingress_help_text_selector) { '.js-ingress-domain-help-text' }
+  let(:hide_modifier_selector) { '.hide' }
 
   before do
     sign_in(current_user)
@@ -35,7 +37,7 @@ describe 'Clusterable > Show page' do
 
       it 'shows help text with the domain as an alternative to custom domain' do
         within '#cluster-integration' do
-          expect(page).to have_content('Alternatively 192.168.1.100.nip.io can be used instead of a custom domain')
+          expect(find(cluster_ingress_help_text_selector)).not_to match_css(hide_modifier_selector)
         end
       end
     end
@@ -45,7 +47,7 @@ describe 'Clusterable > Show page' do
         visit cluster_path
 
         within '#cluster-integration' do
-          expect(page).not_to have_content('can be used instead of a custom domain.')
+          expect(find(cluster_ingress_help_text_selector)).to match_css(hide_modifier_selector)
         end
       end
     end

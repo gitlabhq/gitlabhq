@@ -1,5 +1,0 @@
----
-title: Respect the should_remove_source_branch parameter to the merge API
-merge_request: 25525
-author:
-type: fixed

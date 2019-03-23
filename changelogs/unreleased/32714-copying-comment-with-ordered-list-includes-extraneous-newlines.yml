@@ -1,5 +1,0 @@
----
-title: Fixed "Copying comment with ordered list includes extraneous newlines"
-merge_request: 25695
-author:
-type: fixed

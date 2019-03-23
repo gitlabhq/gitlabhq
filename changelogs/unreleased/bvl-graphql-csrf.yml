@@ -1,5 +1,0 @@
----
-title: Allow GraphQL requests without CSRF token
-merge_request: 25719
-author:
-type: fixed

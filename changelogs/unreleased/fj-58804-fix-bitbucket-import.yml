@@ -1,5 +1,0 @@
----
-title: Fix bug in BitBucket imports with SHA shorter than 40 chars
-merge_request: 26050
-author:
-type: fixed

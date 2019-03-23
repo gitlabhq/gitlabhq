@@ -1,5 +1,0 @@
----
-title: Resolve Jobs tab border top in pipeline's page is 1px off
-merge_request: 24878
-author:
-type: fixed

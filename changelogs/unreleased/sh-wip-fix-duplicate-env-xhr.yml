@@ -1,5 +1,0 @@
----
-title: Fix pagination and duplicate requests in environments page
-merge_request: 25582
-author:
-type: fixed

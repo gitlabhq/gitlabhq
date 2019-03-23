@@ -3,6 +3,7 @@ import createStore from '~/notes/stores';
 import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import ReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
+import NoteForm from '~/notes/components/note_form.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 import mockDiffFile from '../../diffs/mock_data/diff_file';
@@ -72,7 +73,18 @@ describe('noteable_discussion component', () => {
         .then(() => wrapper.vm.$nextTick())
         .then(() => {
           expect(wrapper.vm.isReplying).toEqual(true);
-          expect(wrapper.vm.$refs.noteForm).not.toBeNull();
+
+          const noteForm = wrapper.find(NoteForm);
+
+          expect(noteForm.exists()).toBe(true);
+
+          const noteFormProps = noteForm.props();
+
+          expect(noteFormProps.discussion).toBe(discussionMock);
+          expect(noteFormProps.isEditing).toBe(false);
+          expect(noteFormProps.line).toBe(null);
+          expect(noteFormProps.saveButtonTitle).toBe('Comment');
+          expect(noteFormProps.autosaveKey).toBe(`Note/Issue/${discussionMock.id}/Reply`);
         })
         .then(done)
         .catch(done.fail);

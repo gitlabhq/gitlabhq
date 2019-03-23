@@ -1,5 +1,0 @@
----
-title: Fix ETag caching not being used for AJAX requests
-merge_request: 25400
-author:
-type: fixed

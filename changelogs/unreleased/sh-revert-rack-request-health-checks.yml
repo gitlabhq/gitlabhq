@@ -1,5 +1,0 @@
----
-title: Fix health checks not working behind load balancers
-merge_request: 26055
-author:
-type: fixed

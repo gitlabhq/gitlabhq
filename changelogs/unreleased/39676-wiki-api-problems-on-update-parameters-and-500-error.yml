@@ -1,5 +1,0 @@
----
-title: 'API: Require only one parameter when updating a wiki'
-merge_request: 25191
-author: Robert Schilling
-type: fixed

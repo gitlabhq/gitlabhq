@@ -46,6 +46,12 @@ module Gitlab
         )
       end
 
+      def options_with_none
+        options_with_owner.merge(
+          "None" => NO_ACCESS
+        )
+      end
+
       def sym_options
         {
           guest:      GUEST,
@@ -75,10 +81,18 @@ module Gitlab
       def human_access(access)
         options_with_owner.key(access)
       end
+
+      def human_access_with_none(access)
+        options_with_none.key(access)
+      end
     end
 
     def human_access
       Gitlab::Access.human_access(access_field)
+    end
+
+    def human_access_with_none
+      Gitlab::Access.human_access_with_none(access_field)
     end
 
     def owner?

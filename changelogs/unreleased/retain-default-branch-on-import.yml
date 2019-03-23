@@ -1,0 +1,5 @@
+---
+title: Set proper default-branch for repository on GitHub Import
+merge_request: 26476
+author:
+type: fixed

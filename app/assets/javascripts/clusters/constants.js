@@ -28,3 +28,4 @@ export const JUPYTER = 'jupyter';
 export const KNATIVE = 'knative';
 export const RUNNER = 'runner';
 export const CERT_MANAGER = 'cert_manager';
+export const INGRESS_DOMAIN_SUFFIX = '.nip.io';

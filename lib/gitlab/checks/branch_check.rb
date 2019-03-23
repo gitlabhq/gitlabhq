@@ -59,6 +59,8 @@ module Gitlab
 
       def protected_branch_creation_checks
         logger.log_timed(LOG_MESSAGES[:protected_branch_creation_checks]) do
+          break if user_access.can_push_to_branch?(branch_name)
+
           unless user_access.can_merge_to_branch?(branch_name)
             raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:create_protected_branch]
           end

@@ -120,6 +120,13 @@ You can read more about components in Vue.js site, [Component System][component-
 #### Vuex
 Check this [page](vuex.md) for more details.
 
+### Mixing Vue and jQuery
+
+- Mixing Vue and jQuery is not recommended.
+- If you need to use a specific jQuery plugin in Vue, [create a wrapper around it][https://vuejs.org/v2/examples/select2.html].
+- It is acceptable for Vue to listen to existing jQuery events using jQuery event listeners.
+- It is not recommended to add new jQuery events for Vue to interact with jQuery.
+
 ## Style guide
 
 Please refer to the Vue section of our [style guide](style_guide_js.md#vuejs)

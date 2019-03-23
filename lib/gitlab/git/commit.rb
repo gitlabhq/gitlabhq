@@ -318,10 +318,6 @@ module Gitlab
         parent_ids.size > 1
       end
 
-      def gitaly_commit?
-        raw_commit.is_a?(Gitaly::GitCommit)
-      end
-
       def tree_entry(path)
         return unless path.present?
 
@@ -344,7 +340,7 @@ module Gitlab
       end
 
       def to_gitaly_commit
-        return raw_commit if gitaly_commit?
+        return raw_commit if raw_commit.is_a?(Gitaly::GitCommit)
 
         message_split = raw_commit.message.split("\n", 2)
         Gitaly::GitCommit.new(

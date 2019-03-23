@@ -150,7 +150,7 @@
   }
 
 
-  table:not(.js-syntax-highlight) {
+  table {
     @include markdown-table;
   }
 }

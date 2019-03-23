@@ -1,8 +1,5 @@
 # Frontend Development Guidelines
 
-> **Notice:**
-> We are currently in the process of re-writing our development guide to make it easier to find information. The new guide is still WIP but viewable in [development/new_fe_guide](../new_fe_guide/index.md)
-
 This document describes various guidelines to ensure consistency and quality
 across GitLab's frontend team.
 
@@ -11,15 +8,6 @@ across GitLab's frontend team.
 GitLab is built on top of [Ruby on Rails][rails] using [Haml][haml] and also a JavaScript based Frontend with [Vue.js][vue].
 Be wary of [the limitations that come with using Hamlit][hamlit-limits]. We also use [SCSS][scss] and plain JavaScript with
 modern ECMAScript standards supported through [Babel][babel] and ES module support through [webpack][webpack].
-
-### Javascript development
-
-[Vue.js][vue] is used for particularly advanced, dynamic elements and based on previous iterations [jQuery][jquery] is used in lot of places through the application's JavaScript.
-
-We also use [Axios][axios] to handle all of our network requests.
-
-We also utilize [webpack][webpack] to handle the bundling, minification, and
-compression of our assets.
 
 Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
 (v1.10.0 or greater). You can find information on how to install these on our
@@ -30,6 +18,14 @@ Working with our frontend assets requires Node (v8.10.0 or greater) and Yarn
 For our currently-supported browsers, see our [requirements][requirements].
 
 ---
+
+## Initiatives
+
+Current high-level frontend goals are listed on [Frontend Epics](https://gitlab.com/groups/gitlab-org/-/epics?label_name%5B%5D=frontend).
+
+## [Principles](principles.md)
+
+High-level guidelines for contributing to GitLab.
 
 ## [Development Process](development_process.md)
 
@@ -72,6 +68,10 @@ How we use SVG for our Icons and Illustrations.
 ## [Components](components.md)
 
 How we use UI components.
+
+## [Event Tracking](event_tracking.md)
+
+How we use Snowplow to track custom events.
 
 ---
 
@@ -124,14 +124,3 @@ The [externalization part of the guide](../i18n/externalization.md) explains the
 [scss-lint]: https://github.com/brigade/scss-lint
 [install]: ../../install/installation.md#4-node
 [requirements]: ../../install/requirements.md#supported-web-browsers
-
----
-
-## [DropLab](droplab/droplab.md)
-
-Our internal `DropLab` dropdown library.
-
-- [DropLab](droplab/droplab.md)
-- [Ajax plugin](droplab/plugins/ajax.md)
-- [Filter plugin](droplab/plugins/filter.md)
-- [InputSetter plugin](droplab/plugins/input_setter.md)

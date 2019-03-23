@@ -1,5 +1,0 @@
----
-title: Allow creation of branches that match a wildcard protection, except directly through git
-merge_request: 24969
-author:
-type: added
