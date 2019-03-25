@@ -36,34 +36,34 @@ To get familiar with the concepts needed to develop code on GitLab, read the fol
 
 GitLab is a Git-based platform that integrates a great number of essential tools for software development and deployment, and project management:
 
-- Hosting code in repositories with version control
+- Hosting code in repositories with version control.
 - Tracking proposals for new implementations, bug reports, and feedback with a
-  fully featured [Issue Tracker](project/issues/index.md#issue-tracker)
-- Organizing and prioritizing with [Issue Boards](project/issues/index.md#issue-boards)
+  fully featured [Issue Tracker](project/issues/index.md#issue-tracker).
+- Organizing and prioritizing with [Issue Boards](project/issues/index.md#issue-board).
 - Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
-  branch with [Review Apps](../ci/review_apps/index.md)
-- Building, testing and deploying with built-in [Continuous Integration](../ci/README.md)
-- Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md)
-- Integrating with Docker by using [GitLab Container Registry](project/container_registry.md)
-- Tracking the development lifecycle by usingn [GitLab Cycle Analytics](project/cycle_analytics.md)
+  branch with [Review Apps](../ci/review_apps/index.md).
+- Building, testing, and deploying with built-in [Continuous Integration](../ci/README.md).
+- Deploying personal and professional static websites with [GitLab Pages](project/pages/index.md).
+- Integrating with Docker by using [GitLab Container Registry](project/container_registry.md).
+- Tracking the development lifecycle by using [GitLab Cycle Analytics](project/cycle_analytics.md).
 
 With GitLab Enterprise Edition, you can also:
 
-- Provide support with [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html)
+- Provide support with [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html).
 - Improve collaboration with
   [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/index.html#merge-request-approvals),
   [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
-  and [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards)
-- Create formal relationships between issues with [Related Issues](https://docs.gitlab.com/ee/user/project/issues/related_issues.html)
+  and [Multiple Issue Boards](project/issue_board.md#multiple-issue-boards-starter).
+- Create formal relationships between issues with [Related Issues](https://docs.gitlab.com/ee/user/project/issues/related_issues.html).
 - Use [Burndown Charts](https://docs.gitlab.com/ee/user/project/milestones/burndown_charts.html) to track progress during a sprint or while working on a new version of their software.
-- Leverage [Elasticsearch](https://docs.gitlab.com/ee/integration/elasticsearch.html) with [Advanced Global Search](https://docs.gitlab.com/ee/user/search/advanced_global_search.html) and [Advanced Syntax Search](https://docs.gitlab.com/ee/user/search/advanced_search_syntax.html) for faster, more advanced code search across your entire GitLab instance
-- [Authenticate users with Kerberos](https://docs.gitlab.com/ee/integration/kerberos.html)
+- Leverage [Elasticsearch](https://docs.gitlab.com/ee/integration/elasticsearch.html) with [Advanced Global Search](https://docs.gitlab.com/ee/user/search/advanced_global_search.html) and [Advanced Syntax Search](https://docs.gitlab.com/ee/user/search/advanced_search_syntax.html) for faster, more advanced code search across your entire GitLab instance.
+- [Authenticate users with Kerberos](https://docs.gitlab.com/ee/integration/kerberos.html).
 - [Mirror a repository](https://docs.gitlab.com/ee/workflow/repository_mirroring.html) from elsewhere on your local server.
-- [Export issues as CSV](https://docs.gitlab.com/ee/user/project/issues/csv_export.html)
-- View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html)
-- [Lock files](https://docs.gitlab.com/ee/user/project/file_lock.html) to prevent conflicts
-- View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
-- Leverage continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
+- [Export issues as CSV](https://docs.gitlab.com/ee/user/project/issues/csv_export.html).
+- View your entire CI/CD pipeline involving more than one project with [Multiple-Project Pipelines](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html).
+- [Lock files](https://docs.gitlab.com/ee/user/project/file_lock.html) to prevent conflicts.
+- View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html).
+- Leverage continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html).
 
 You can also [integrate](project/integrations/project_services.md) GitLab with
 numerous third-party applications, such as Mattermost, Microsoft Teams, Trello,
@@ -125,7 +125,7 @@ merge requests, code snippets, and commits.
 
 When performing inline reviews to implementations
 to your codebase through merge requests you can
-gather feedback through [resolvable discussions](discussions/index.md#resolvable-discussions).
+gather feedback through [resolvable discussions](discussions/index.md#resolvable-comments-and-discussions).
 
 ### GitLab Flavored Markdown (GFM)
 

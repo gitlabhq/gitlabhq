@@ -156,6 +156,12 @@ ul.content-list {
         margin-top: 3px;
         margin-bottom: 4px;
 
+        &.btn-ldap-override {
+          @include media-breakpoint-up(sm) {
+            margin-bottom: 0;
+          }
+        }
+
         &.has-tooltip,
         &:last-child {
           margin-right: 0;
