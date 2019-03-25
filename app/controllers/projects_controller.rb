@@ -328,9 +328,9 @@ class ProjectsController < Projects::ApplicationController
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def project_params(attributes: project_params_attributes)
+  def project_params(attributes: [])
     params.require(:project)
-      .permit(attributes)
+      .permit(project_params_attributes + attributes)
   end
 
   def project_params_attributes
@@ -375,7 +375,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_params_create_attributes
-    project_params_attributes << :namespace_id
+    [:namespace_id]
   end
 
   def custom_import_params
