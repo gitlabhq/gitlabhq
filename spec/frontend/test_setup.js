@@ -5,10 +5,13 @@ import { initializeTestTimeout } from './helpers/timeout';
 
 process.on('unhandledRejection', global.promiseRejectionHandler);
 
-// wait for pending setTimeout()s
-afterEach(() => {
-  jest.runAllTimers();
-});
+afterEach(() =>
+  // give Promises a bit more time so they fail the right test
+  new Promise(setImmediate).then(() => {
+    // wait for pending setTimeout()s
+    jest.runAllTimers();
+  }),
+);
 
 initializeTestTimeout(300);
 
