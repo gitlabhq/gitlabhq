@@ -396,7 +396,7 @@ describe('IDE commit module actions', () => {
             .then(() => {
               expect(visitUrl).toHaveBeenCalledWith(
                 `webUrl/merge_requests/new?merge_request[source_branch]=${
-                  store.getters['commit/newBranchName']
+                  store.getters['commit/placeholderBranchName']
                 }&merge_request[target_branch]=master`,
               );
 
