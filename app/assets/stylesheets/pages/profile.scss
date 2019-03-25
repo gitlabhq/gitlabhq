@@ -438,8 +438,17 @@ table.u2f-registrations {
     }
   }
 
+  .form-group > label {
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .form-group > .form-text {
+    font-size: $gl-font-size;
+  }
+
   .emoji-menu-toggle-button {
     @include emoji-menu-toggle-button;
+    padding: 6px 10px;
 
     .no-emoji-placeholder {
       position: relative;
