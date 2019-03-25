@@ -109,7 +109,7 @@ module Gitlab
         %r{\A(ee/)?spec/(javascripts|frontend)/} => :frontend,
         %r{\A(ee/)?vendor/assets/} => :frontend,
         %r{\Ascripts/frontend/} => :frontend,
-        %r{(
+        %r{(\A|/)(
           \.babelrc |
           \.eslintignore |
           \.eslintrc(\.yml)? |
