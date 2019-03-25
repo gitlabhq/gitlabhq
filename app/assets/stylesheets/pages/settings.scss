@@ -216,6 +216,31 @@
   }
 }
 
+.nested-settings {
+  padding-left: 20px;
+}
+
+.input-btn-group {
+  display: flex;
+
+  .input-large {
+    flex: 1;
+  }
+
+  .btn {
+    margin-left: 10px;
+  }
+}
+
+.settings-flex-row {
+  display: flex;
+  align-items: center;
+
+  .float-right {
+    margin-left: auto;
+  }
+}
+
 .prometheus-metrics-monitoring {
   .card {
     .card-toggle {
@@ -243,6 +268,27 @@
       .flash-notice {
         border-radius: 0;
       }
+    }
+  }
+
+  .custom-monitored-metrics {
+    .card-title {
+      display: flex;
+      align-items: center;
+
+      > .btn-success {
+        margin-left: auto;
+      }
+    }
+
+    .custom-metric {
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-metric-link-bold {
+      font-weight: $gl-font-weight-bold;
+      text-decoration: none;
     }
   }
 
@@ -277,6 +323,12 @@
         border-top: 1px solid $border-color;
       }
     }
+  }
+}
+
+.saml-settings.info-well {
+  .form-control[readonly] {
+    background: $white-light;
   }
 }
 
