@@ -31,7 +31,6 @@ module WorkhorseHelper
 
   # Archive a Git repository and send it through Workhorse
   def send_git_archive(repository, **kwargs)
-    kwargs.delete(:subdirectory) if kwargs[:subdirectory].nil?
     headers.store(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     head :ok
   end

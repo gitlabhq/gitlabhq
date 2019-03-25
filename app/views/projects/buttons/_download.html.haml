@@ -8,14 +8,23 @@
       %span.sr-only=  _('Select Archive Format')
       = sprite_icon("arrow-down")
     %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
-      - if is_directory
+      - if directory?
         %li.dropdown-header
           #{ _('Directory') }
         %li
-          = link_to project_archive_path(project, subdirectory: get_directory_path, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '' do
+          = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'zip'), rel: 'nofollow', download: '' do
             %span=  _('Download zip')
+        %li
+          = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar.gz'), rel: 'nofollow', download: '' do
+            %span=  _('Download tar.gz')
+        %li
+          = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar.bz2'), rel: 'nofollow', download: '' do
+            %span=  _('Download tar.bz2')
+        %li
+          = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar'), rel: 'nofollow', download: '' do
+            %span=  _('Download tar')
       %li.dropdown-header
-        #{ _('Repository') }
+        #{ _('Source code') }
       %li
         = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '' do
           %span=  _('Download zip')

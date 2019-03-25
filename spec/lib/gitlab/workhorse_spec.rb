@@ -16,20 +16,12 @@ describe Gitlab::Workhorse do
     let(:ref) { 'master' }
     let(:format) { 'zip' }
     let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
-    let(:base_params) { repository.archive_metadata(ref, storage_path, format, append_sha: nil) }
-    let(:gitaly_params) do
-      base_params.merge(
-        'GitalyServer' => {
-          'address' => Gitlab::GitalyClient.address(project.repository_storage),
-          'token' => Gitlab::GitalyClient.token(project.repository_storage)
-        },
-        'GitalyRepository' => repository.gitaly_repository.to_h.deep_stringify_keys
-      )
-    end
+    let(:path) { 'some/path' }
+    let(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: nil, path: path) }
     let(:cache_disabled) { false }
 
     subject do
-      described_class.send_git_archive(repository, ref: ref, format: format, append_sha: nil)
+      described_class.send_git_archive(repository, ref: ref, format: format, append_sha: nil, path: path)
     end
 
     before do
@@ -41,7 +33,22 @@ describe Gitlab::Workhorse do
 
       expect(key).to eq('Gitlab-Workhorse-Send-Data')
       expect(command).to eq('git-archive')
-      expect(params).to include(gitaly_params)
+      expect(params).to eq({
+        'GitalyServer' => {
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'ArchivePath' => metadata['ArchivePath'],
+        'GetArchiveRequest' => Base64.urlsafe_encode64(
+          Gitaly::GetArchiveRequest.new(
+            repository: repository.gitaly_repository,
+            commit_id: metadata['CommitId'],
+            prefix: metadata['ArchivePrefix'],
+            format: Gitaly::GetArchiveRequest::Format::ZIP,
+            path: path
+          ).to_proto
+        )
+      }.deep_stringify_keys)
     end
 
     context 'when archive caching is disabled' do
