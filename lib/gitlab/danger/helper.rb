@@ -108,7 +108,7 @@ module Gitlab
         %r{\A(ee/)?public/} => :frontend,
         %r{\A(ee/)?spec/(javascripts|frontend)/} => :frontend,
         %r{\A(ee/)?vendor/assets/} => :frontend,
-        %r{\A(jest\.config\.js|package\.json|yarn\.lock)\z} => :frontend,
+        %r{\A(jest\.config\.js|package\.json|yarn\.lock|\.eslintrc\.yml)\z} => :frontend,
 
         %r{\A(ee/)?app/(?!assets|views)[^/]+} => :backend,
         %r{\A(ee/)?(bin|config|danger|generator_templates|lib|rubocop|scripts)/} => :backend,
