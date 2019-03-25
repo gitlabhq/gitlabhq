@@ -711,3 +711,11 @@ $mr-version-controls-height: 56px;
 Compare Branches
 */
 $compare-branches-sticky-header-height: 68px;
+
+/**
+ Bootstrap 4.2.0 introduced new icons for validating forms.
+ Our design system does not use those, so we are disabling them for now:
+ - Docs: https://getbootstrap.com/docs/4.3/components/forms/#server-side
+ - Issue: https://gitlab.com/gitlab-org/design.gitlab.com/issues/242
+ */
+$enable-validation-icons: false;
