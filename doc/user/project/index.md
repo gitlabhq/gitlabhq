@@ -17,7 +17,7 @@ When you create a project in GitLab, you'll have access to a large number of
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
-  - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards-starter): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
 - [Repositories](repository/index.md): Host your code in a fully
   integrated platform
   - [Branches](repository/branches/index.md): use Git branching strategies to

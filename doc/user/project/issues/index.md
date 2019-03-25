@@ -109,7 +109,7 @@ issue within your team only, you can make that
 [issue confidential](confidential_issues.md). Even if your project
 is public, that issue will be preserved. The browser will
 respond with a 404 error whenever someone who is not a project
-member with at least [Reporter level](../../permissions.md#project) tries to
+member with at least [Reporter level](../../permissions.md#project-members-permissions) tries to
 access that issue's URL.
 
 Learn more about them on the [confidential issues documentation](confidential_issues.md).
@@ -140,7 +140,7 @@ Read through the documentation for [Issue Boards](../issue_board.md)
 to find out more about this feature.
 
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can also
-create various boards per project with [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
+create various boards per project with [Multiple Issue Boards](../issue_board.html#multiple-issue-boards-starter).
 
 ### Import Issues from CSV
 
