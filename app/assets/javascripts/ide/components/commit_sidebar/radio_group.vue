@@ -38,8 +38,8 @@ export default {
     },
   },
   computed: {
-    ...mapState('commit', ['commitAction']),
-    ...mapGetters('commit', ['newBranchName']),
+    ...mapState('commit', ['commitAction', 'newBranchName']),
+    ...mapGetters('commit', ['placeholderBranchName']),
     tooltipTitle() {
       return this.disabled ? this.title : '';
     },
@@ -73,7 +73,8 @@ export default {
     </label>
     <div v-if="commitAction === value && showInput" class="ide-commit-new-branch">
       <input
-        :placeholder="newBranchName"
+        :placeholder="placeholderBranchName"
+        :value="newBranchName"
         type="text"
         class="form-control monospace"
         @input="updateBranchName($event.target.value)"
