@@ -10,13 +10,13 @@ In the following table you can see the phases a trace goes through.
 
 | Phase          | State          | Condition                 | Data flow                                       |  Stored path |
 | -----          | -----          | ---------                 | ---------                                       |  ----------- |
-| 1: patching    | Live trace     | When a job is running     | GitLab Runner => Unicorn => file storage        |`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
-| 2: overwriting | Live trace     | When a job is finished    | GitLab Runner => Unicorn => file storage        |`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
-| 3: archiving   | Archived trace | After a job is finished   | Sidekiq moves live trace to artifacts folder    |`#{ROOT_PATH}/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log`|
+| 1: patching    | Live trace     | When a job is running     | GitLab Runner => Unicorn => file storage        |`#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+| 2: overwriting | Live trace     | When a job is finished    | GitLab Runner => Unicorn => file storage        |`#{ROOT_PATH}/gitlab-ci/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+| 3: archiving   | Archived trace | After a job is finished   | Sidekiq moves live trace to artifacts folder    |`#{ROOT_PATH}/gitlab-rails/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log`|
 | 4: uploading   | Archived trace | After a trace is archived | Sidekiq moves archived trace to [object storage](#uploading-traces-to-object-storage) (if configured)  |`#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/job.log`|
 
 The `ROOT_PATH` varies per your environment. For Omnibus GitLab it
-would be `/var/opt/gitlab/gitlab-ci`, whereas for installations from source
+would be `/var/opt/gitlab`, whereas for installations from source
 it would be `/home/git/gitlab`.
 
 ## Changing the job traces local location
