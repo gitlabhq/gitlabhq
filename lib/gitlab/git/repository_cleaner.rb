@@ -12,9 +12,9 @@ module Gitlab
         @repository = repository
       end
 
-      def apply_bfg_object_map(io)
+      def apply_bfg_object_map_stream(io, &blk)
         wrapped_gitaly_errors do
-          gitaly_cleanup_client.apply_bfg_object_map(io)
+          gitaly_cleanup_client.apply_bfg_object_map_stream(io, &blk)
         end
       end
 
