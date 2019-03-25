@@ -7,6 +7,7 @@ import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
+import BreakpointInstance from '../../breakpoints';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
@@ -193,16 +194,24 @@ export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 export const isMetaClick = e => e.metaKey || e.ctrlKey || e.which === 2;
 
 export const contentTop = () => {
-  const perfBar = $('#js-peek').height() || 0;
-  const mrTabsHeight = $('.merge-request-tabs').height() || 0;
-  const headerHeight = $('.navbar-gitlab').height() || 0;
-  const diffFilesChanged = $('.js-diff-files-changed').height() || 0;
-  const diffFileLargeEnoughScreen =
-    'matchMedia' in window ? window.matchMedia('min-width: 768') : true;
+  const perfBar = $('#js-peek').outerHeight() || 0;
+  const mrTabsHeight = $('.merge-request-tabs').outerHeight() || 0;
+  const headerHeight = $('.navbar-gitlab').outerHeight() || 0;
+  const diffFilesChanged = $('.js-diff-files-changed').outerHeight() || 0;
+  const mdScreenOrBigger = ['lg', 'md'].includes(BreakpointInstance.getBreakpointSize());
   const diffFileTitleBar =
-    (diffFileLargeEnoughScreen && $('.diff-file .file-title-flex-parent:visible').height()) || 0;
+    (mdScreenOrBigger && $('.diff-file .file-title-flex-parent:visible').outerHeight()) || 0;
+  const compareVersionsHeaderHeight =
+    (mdScreenOrBigger && $('.mr-version-controls').outerHeight()) || 0;
 
-  return perfBar + mrTabsHeight + headerHeight + diffFilesChanged + diffFileTitleBar;
+  return (
+    perfBar +
+    mrTabsHeight +
+    headerHeight +
+    diffFilesChanged +
+    diffFileTitleBar +
+    compareVersionsHeaderHeight
+  );
 };
 
 export const scrollToElement = element => {
