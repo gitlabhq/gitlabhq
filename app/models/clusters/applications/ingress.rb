@@ -45,6 +45,24 @@ module Clusters
         )
       end
 
+      def upgrade_command(values)
+        ::Gitlab::Kubernetes::Helm::InstallCommand.new(
+          name: name,
+          version: VERSION,
+          rbac: cluster.platform_kubernetes_rbac?,
+          chart: chart,
+          files: files_with_replaced_values(values)
+        )
+      end
+
+      # Returns a copy of files where the values of 'values.yaml'
+      # are replaced by the argument.
+      #
+      # See #values for the data format required
+      def files_with_replaced_values(replaced_values)
+        files.merge('values.yaml': replaced_values)
+      end
+
       def schedule_status_update
         return unless installed?
         return if external_ip
