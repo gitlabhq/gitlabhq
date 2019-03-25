@@ -27,6 +27,7 @@ class ProjectCacheWorker
   # rubocop: enable CodeReuse/ActiveRecord
 
   def update_statistics(project, statistics = [])
+    return if Gitlab::Database.read_only?
     return unless try_obtain_lease_for(project.id, :update_statistics)
 
     Rails.logger.info("Updating statistics for project #{project.id}")
