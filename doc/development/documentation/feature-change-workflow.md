@@ -78,7 +78,7 @@ For issues requiring any new or updated documentation, the Product Manager (PM)
 must:
 
 - Add the `Documentation` label.
-- Confirm or add the [documentation requirements](#documentation-requirements).
+- Confirm or add the [documentation requirements](#documentation-requirements-in-feature-issues).
 - Ensure the issue contains any new or updated feature name, overview/description,
   and use cases, as required per the [documentation structure and template](structure.md), when applicable.
 
