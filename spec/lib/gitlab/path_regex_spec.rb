@@ -100,7 +100,7 @@ describe Gitlab::PathRegex do
   end
 
   let(:ee_top_level_words) do
-    ['unsubscribes']
+    %w(unsubscribes v2)
   end
 
   let(:files_in_public) do
