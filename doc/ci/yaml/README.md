@@ -423,7 +423,7 @@ If you use multiple keys under `only` or `except`, they act as an AND. The logic
 #### `only:refs`/`except:refs`
 
 The `refs` strategy can take the same values as the
-[simplified only/except configuration](#only-and-except-simplified).
+[simplified only/except configuration](#onlyexcept-basic).
 
 In the example below, the `deploy` job is going to be created only when the
 pipeline has been [scheduled][schedules] or runs for the `master` branch:

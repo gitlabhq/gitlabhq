@@ -59,7 +59,7 @@ GitLab CI so that they can be used in your `.gitlab-ci.yml` file.
 
 To configure that a job can be executed only when the pipeline has been
 scheduled (or the opposite), you can use
-[only and except](../../../ci/yaml/README.md#only-and-except-simplified) configuration keywords.
+[only and except](../../../ci/yaml/README.md#onlyexcept-basic) configuration keywords.
 
 ```
 job:on-schedule:

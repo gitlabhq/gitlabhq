@@ -152,7 +152,7 @@ Depending on how you plan to publish your website, the steps defined in the
 
 Be aware that Pages are by default branch/tag agnostic and their deployment
 relies solely on what you specify in `.gitlab-ci.yml`. If you don't limit the
-`pages` job with the [`only` parameter](../../../ci/yaml/README.md#only-and-except-simplified),
+`pages` job with the [`only` parameter](../../../ci/yaml/README.md#onlyexcept-basic),
 whenever a new commit is pushed to whatever branch or tag, the Pages will be
 overwritten. In the example below, we limit the Pages to be deployed whenever
 a commit is pushed only on the `master` branch:
@@ -253,7 +253,7 @@ get you started.
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
-the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#only-and-except-simplified),
+the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#onlyexcept-basic),
 whenever a new commit is pushed to a branch that will be used specifically for
 your pages.
 
