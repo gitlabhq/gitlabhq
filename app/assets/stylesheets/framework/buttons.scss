@@ -443,7 +443,8 @@
     border-color: transparent;
   }
 
-  &.btn-secondary-hover-link {
+  &.btn-secondary-hover-link,
+  &.btn-default-hover-link {
     color: $gl-text-color-secondary;
 
     &:hover,
