@@ -28,11 +28,11 @@ Issue Boards** (version introduced in GitLab 8.11 - August 2016).
 ### Advanced features of Issue Boards
 
 With [GitLab Starter](https://about.gitlab.com/pricing/), you can create
-[multiple issue boards](#multiple-issue-boards) for a given project. **[STARTER]**
+[multiple issue boards](#multiple-issue-boards-starter) for a given project. **[STARTER]**
 
 With [GitLab Premium](https://about.gitlab.com/pricing/), you can also create multiple
-issue boards for your groups, and add lists for [assignees](#assignee-lists) and
-[milestones](#milestone-lists). **[PREMIUM]**
+issue boards for your groups, and add lists for [assignees](#assignee-lists-premium) and
+[milestones](#milestone-lists-premium). **[PREMIUM]**
 
 Check all the [advanced features of Issue Boards](#gitlab-enterprise-features-for-issue-boards)
 below.
@@ -97,7 +97,7 @@ If we have the labels "**backend**", "**frontend**", "**staging**", and
 
 ### Use cases for Multiple Issue Boards
 
-With [Multiple Issue Boards](#multiple-issue-boards), available only in
+With [Multiple Issue Boards](#multiple-issue-boards-starter), available only in
 [GitLab Enterprise Edition](https://about.gitlab.com/pricing/),
 each team can have their own board to organize their workflow individually.
 
@@ -220,7 +220,7 @@ Click the button at the top right to toggle focus mode on and off. In focus mode
 
 The top of each list indicates the sum of issue weights for the issues that
 belong to that list. This is useful when using boards for capacity allocation,
-especially in combination with [assignee lists](#assignee-lists).
+especially in combination with [assignee lists](#assignee-lists-premium).
 
 ![Issue Board summed weights](img/issue_board_summed_weights.png)
 

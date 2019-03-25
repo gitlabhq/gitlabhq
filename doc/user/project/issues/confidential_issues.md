@@ -1,6 +1,6 @@
 # Confidential issues
 
-> [Introduced][ce-3282] in GitLab 8.6.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3282) in GitLab 8.6.
 
 Confidential issues are issues visible only to members of a project with
 [sufficient permissions](#permissions-and-access-to-confidential-issues).
@@ -67,7 +67,7 @@ There is also an indicator on the sidebar denoting confidentiality.
 
 There are two kinds of level access for confidential issues. The general rule
 is that confidential issues are visible only to members of a project with at
-least [Reporter access][permissions]. However, a guest user can also create
+least [Reporter access](../../permissions.md#project-members-permissions). However, a guest user can also create
 confidential issues, but can only view the ones that they created themselves.
 
 Confidential issues are also hidden in search results for unprivileged users.
@@ -77,6 +77,3 @@ project's search results respectively.
 | Maintainer access | Guest access |
 | :-----------: | :----------: |
 | ![Confidential issues search master](img/confidential_issues_search_master.png) | ![Confidential issues search guest](img/confidential_issues_search_guest.png) |
-
-[permissions]: ../../permissions.md#project
-[ce-3282]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3282

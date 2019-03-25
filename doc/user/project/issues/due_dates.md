@@ -1,11 +1,11 @@
 # Due dates
 
-> [Introduced][ce-3614] in GitLab 8.7.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3614) in GitLab 8.7.
 
 Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
 
 Due dates can be used in issues to keep track of deadlines and make sure
-features are shipped on time. Due dates require at least [Reporter permissions][permissions]
+features are shipped on time. Due dates require at least [Reporter permissions](../../permissions.md#project-members-permissions)
 to be able to edit them. On the contrary, they can be seen by everybody.
 
 ## Setting a due date
@@ -47,6 +47,3 @@ on the _Subscribe to calendar_ button on the following pages:
   GitLab header
 - on the **Project Issues** page
 - on the **Group Issues** page
-
-[ce-3614]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3614
-[permissions]: ../../permissions.md#project
