@@ -3,6 +3,8 @@ import Translate from '~/vue_shared/translate';
 import axios from '~/lib/utils/axios_utils';
 import { initializeTestTimeout } from './helpers/timeout';
 
+process.on('unhandledRejection', global.promiseRejectionHandler);
+
 // wait for pending setTimeout()s
 afterEach(() => {
   jest.runAllTimers();
