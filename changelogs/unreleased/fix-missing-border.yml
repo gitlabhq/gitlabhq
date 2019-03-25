@@ -1,0 +1,5 @@
+---
+title: Fixes missing border color in discussion card component
+merge_request: 26242
+author: Farhad Yasir
+type: fixed
