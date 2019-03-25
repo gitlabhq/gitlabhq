@@ -140,7 +140,7 @@ export default {
         :id="line.left.line_code"
         :class="parallelViewLeftLineType"
         class="line_content parallel left-side"
-        @mousedown.native="handleParallelLineMouseDown"
+        @mousedown="handleParallelLineMouseDown"
         v-html="line.left.rich_text"
       ></td>
     </template>
@@ -171,7 +171,7 @@ export default {
           },
         ]"
         class="line_content parallel right-side"
-        @mousedown.native="handleParallelLineMouseDown"
+        @mousedown="handleParallelLineMouseDown"
         v-html="line.right.rich_text"
       ></td>
     </template>

@@ -69,7 +69,7 @@ new Kubernetes cluster to your project:
    - **Number of nodes** - Enter the number of nodes you wish the cluster to have.
    - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
      of the Virtual Machine instance that the cluster will be based on.
-   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#role-based-access-control-rbac-core-only) for more information.
+   - **RBAC-enabled cluster** - Leave this checked if using default GKE creation options, see the [RBAC section](#role-based-access-control-rbac) for more information.
 1. Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed

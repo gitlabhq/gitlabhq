@@ -1,5 +1,5 @@
 ---
-redirect_to: 'https://design.gitlab.com/getting-started/personas/'
+redirect_to: 'https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/'
 ---
 
-The content of this document was moved into the [GitLab Design System](https://design.gitlab.com/).
+This document was moved to [another location](https://about.gitlab.com/handbook/marketing/product-marketing/roles-personas/).

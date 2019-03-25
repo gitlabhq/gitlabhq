@@ -24,7 +24,7 @@ one for the first time.**
 [GitLab CI/CD](../../../ci/README.md) serves
 numerous purposes, to build, test, and deploy your app
 from GitLab through
-[Continuous Integration, Continuous Delivery, and Continuous Deployment](../../../ci/introduction/index.md#introduction-to-continuous-methods)
+[Continuous Integration, Continuous Delivery, and Continuous Deployment](../../../ci/introduction/index.md#introduction-to-cicd-methodologies)
 methods. You will need it to build your website with GitLab Pages,
 and deploy it to the Pages server.
 

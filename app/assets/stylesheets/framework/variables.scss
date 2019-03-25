@@ -23,6 +23,7 @@ $darken-border-dashed-factor: 25%;
 $white-light: #fff;
 $white-normal: #f0f0f0;
 $white-dark: #eaeaea;
+$white-transparent: rgba(255, 255, 255, 0.8);
 
 $gray-lightest: #fdfdfd;
 $gray-light: #fafafa;
@@ -288,6 +289,10 @@ $gl-line-height: 16px;
 $gl-line-height-24: 24px;
 $gl-line-height-14: 14px;
 
+$system-header-height: 35px;
+$issue-box-upcoming-bg: #8f8f8f;
+$pages-group-name-color: #4c4e54;
+
 /*
 * Common component specific colors
 */
@@ -410,7 +415,7 @@ $award-emoji-menu-shadow: rgba(0, 0, 0, 0.175);
 $award-emoji-positive-add-bg: #fed159;
 $award-emoji-positive-add-lines: #bb9c13;
 $award-emoji-width: 376px;
-$award-emoji-width-xs: 300px;
+$award-emoji-width-xs: 90%;
 
 /*
  * Search Box
@@ -626,6 +631,18 @@ Animation Functions
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
 
 /*
+GitLab Plans
+*/
+$gl-gold-plan: #d4af37;
+$gl-silver-plan: #91a1ab;
+$gl-bronze-plan: #cd7f32;
+
+/*
+Cross-project Pipelines
+ */
+$linked-project-column-margin: 60px;
+
+/*
 Performance Bar
 */
 $perf-bar-production: #222;
@@ -647,6 +664,17 @@ Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
 $image-comment-cursor-top-offset: 12;
+
+/*
+Add GitLab Slack Application
+*/
+$add-to-slack-popup-max-width: 400px;
+$add-to-slack-gif-max-width: 850px;
+$add-to-slack-well-max-width: 750px;
+$add-to-slack-logo-size: 100px;
+$double-headed-arrow-width: 100px;
+$double-headed-arrow-height: 25px;
+$right-arrow-size: 16px;
 
 /*
 Popup

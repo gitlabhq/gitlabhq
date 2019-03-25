@@ -53,7 +53,7 @@ export default {
 
 <template>
   <button :class="containerClass" :disabled="loading || disabled" type="button" @click="onClick">
-    <transition name="fade">
+    <transition name="fade-in">
       <gl-loading-icon
         v-if="loading"
         :inline="true"
@@ -63,7 +63,7 @@ export default {
         class="js-loading-button-icon"
       />
     </transition>
-    <transition name="fade">
+    <transition name="fade-in">
       <slot>
         <span v-if="label" class="js-loading-button-label"> {{ label }} </span>
       </slot>

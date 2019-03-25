@@ -113,8 +113,8 @@ There are a few tools that can produce JUnit reports in Java.
 
 In the following example, `gradle` is used to generate the test reports.
 If there are multiple test tasks defined, `gradle` will generate multiple
-directories under `build/test-results/`. In that case, you can leverage regex
-matching by defining the following path: `build/test-results/test/TEST-*.xml`:
+directories under `build/test-results/`. In that case, you can leverage glob
+matching by defining the following path: `build/test-results/test/**/TEST-*.xml`:
 
 ```yaml
 java:
@@ -123,7 +123,7 @@ java:
   - gradle test
   artifacts:
     reports:
-      junit: build/test-results/test/TEST-*.xml
+      junit: build/test-results/test/**/TEST-*.xml
 ```
 
 #### Maven

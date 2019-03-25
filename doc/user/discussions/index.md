@@ -11,7 +11,7 @@ You can leave a comment in the following places:
 - commit diffs
 
 There are standard comments, and you also have the option to create a comment
-in the form of a threaded discussion. A comment can also be [turned into a discussion](#start-a-discussion-by-replying-to-a-non-discussion-comment)
+in the form of a threaded discussion. A comment can also be [turned into a discussion](#start-a-discussion-by-replying-to-a-standard-comment)
 when it receives a reply.
 
 The comment area supports [Markdown] and [quick actions]. You can edit your own
