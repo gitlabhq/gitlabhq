@@ -52,7 +52,7 @@
 
             = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-sm btn-close btn-grouped"
           - unless milestone.active?
-            = link_to 'Reopen Milestone', project_milestone_path(@project, milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
+            = link_to 'Reopen Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
         - if @group
           - if can?(current_user, :admin_milestone, @group)
             - if milestone.closed?
