@@ -29,11 +29,11 @@ describe('IDE commit module getters', () => {
     });
   });
 
-  describe('newBranchName', () => {
+  describe('placeholderBranchName', () => {
     it('includes username, currentBranchId, patch & random number', () => {
       gon.current_username = 'username';
 
-      const branch = getters.newBranchName(state, null, {
+      const branch = getters.placeholderBranchName(state, null, {
         currentBranchId: 'testing',
       });
 
@@ -46,7 +46,7 @@ describe('IDE commit module getters', () => {
       currentBranchId: 'master',
     };
     const localGetters = {
-      newBranchName: 'newBranchName',
+      placeholderBranchName: 'newBranchName',
     };
 
     beforeEach(() => {
@@ -71,7 +71,7 @@ describe('IDE commit module getters', () => {
           expect(getters.branchName(state, localGetters, rootState)).toBe('state-newBranchName');
         });
 
-        it('uses getters newBranchName when state newBranchName is empty', () => {
+        it('uses placeholderBranchName when state newBranchName is empty', () => {
           Object.assign(state, {
             newBranchName: '',
           });

@@ -17,7 +17,7 @@
   install_knative_path: clusterable.install_applications_cluster_path(@cluster, :knative),
   update_knative_path: clusterable.update_applications_cluster_path(@cluster, :knative),
   toggle_status: @cluster.enabled? ? 'true': 'false',
-  has_rbac: @cluster.platform_kubernetes_rbac? ? 'true': 'false',
+  has_rbac: has_rbac_enabled?(@cluster) ? 'true': 'false',
   cluster_type: @cluster.cluster_type,
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,

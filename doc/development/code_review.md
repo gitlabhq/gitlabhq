@@ -20,7 +20,7 @@ importance of involving reviewer(s) in the section on the responsibility of the 
 If you need some guidance (e.g. it's your first merge request), feel free to ask
 one of the [Merge request coaches][team].
 
-If you need assistance with security scans or comments, feel free to include the 
+If you need assistance with security scans or comments, feel free to include the
 Security Team (`@gitlab-com/gl-security`) in the review.
 
 The `danger-review` CI job will randomly pick a reviewer and a maintainer for
@@ -58,12 +58,7 @@ from teams other than your own.
 
 #### Security requirements
 
-   1. If your merge request is processing, storing, or transferring any kind of [RED or ORANGE data](https://docs.google.com/document/d/15eNKGA3zyZazsJMldqTBFbYMnVUSQSpU14lo22JMZQY/edit) (this is a confidential document), it must be
-      **approved by a [Security Engineer][team]**.
-   1. If your merge request involves implementing, utilizing, or is otherwise related to any type of authentication, authorization, or session handling mechanism, it must be
-      **approved by a [Security Engineer][team]**.
-   1. If your merge request has a goal which requires a cryptographic function such as: confidentiality, integrity, authentication, or non-repudiation, it must be
-      **approved by a [Security Engineer][team]**.
+View the updated documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/index.html#internal-application-security-reviews) for **when** and **how** to request a security review.
 
 ### The responsibility of the merge request author
 
@@ -138,10 +133,10 @@ as a domain expert and/or reviewer, it is recommended that they are not also pic
 as the maintainer to ultimately approve and merge it.
 
 Try to review in a timely manner; doing so allows everyone involved in the merge
-request to iterate faster as the context is fresh in memory. Further, this 
+request to iterate faster as the context is fresh in memory. Further, this
 improves contributors' experiences significantly. Reviewers should aim to review
-within two working days from the date they were assigned the merge request. If 
-you don't think you'll be able to review a merge request within that time, let 
+within two working days from the date they were assigned the merge request. If
+you don't think you'll be able to review a merge request within that time, let
 the author know as soon as possible. When the author of the merge request has not
 heard anything after two days, a new reviewer should be assigned.
 
@@ -151,7 +146,7 @@ required approvers.
 Maintainers must check before merging if the merge request is introducing new
 vulnerabilities, by inspecting the list in the Merge Request [Security
 Widget](https://docs.gitlab.com/ee/user/project/merge_requests/#security-reports-ultimate).
-When in doubt, a [Security Engineer][team] can be involved. The list of detected 
+When in doubt, a [Security Engineer][team] can be involved. The list of detected
 vulnerabilities must be either empty or containing:
 
 - dismissed vulnerabilities in case of false positives

@@ -27,9 +27,9 @@ task :run_artillery_load_tests do
     end
 
     urls = YAML.safe_load(File.read(urls_file))
-    ENV['HOST_URL'] = urls[:host]
-    ENV['LARGE_ISSUE_URL'] = urls[:large_issue]
-    ENV['LARGE_MR_URL'] = urls[:large_mr]
+    ENV['HOST_URL'] = urls["host"]
+    ENV['LARGE_ISSUE_URL'] = urls["large_issue"]
+    ENV['LARGE_MR_URL'] = urls["large_mr"]
   end
 
   sh('artillery run load/artillery.yml -o report.json')

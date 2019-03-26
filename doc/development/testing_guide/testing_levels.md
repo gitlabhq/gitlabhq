@@ -160,7 +160,7 @@ Every new feature should come with a [test plan].
 > See [end-to-end tests](end_to_end_tests.md) for more information.
 
 Note that `qa/spec` contains unit tests of the QA framework itself, not to be
-confused with the application's [unit tests](#unit-tests) or 
+confused with the application's [unit tests](#unit-tests) or
 [end-to-end tests](#black-box-tests-at-the-system-level-aka-end-to-end-tests).
 
 [multiple pieces]: ../architecture.md#components
@@ -234,6 +234,8 @@ you should write an integration test using Jasmine.
 [big]: https://twitter.com/timbray/status/822470746773409794
 [picture]: https://twitter.com/withzombies/status/829716565834752000
 [tests-cost]: https://medium.com/table-xi/high-cost-tests-and-high-value-tests-a86e27a54df#.2ulyh3a4e
+[RSpec]: https://github.com/rspec/rspec-rails#feature-specs
+[Capybara]: https://github.com/teamcapybara/capybara
 
 ---
 

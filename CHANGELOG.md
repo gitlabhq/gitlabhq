@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.9.1 (2019-03-25)
+
+### Fixed (7 changes)
+
+- Fix issue that caused the "Show all activity" button to appear on top of the mini pipeline status dropdown on the merge request page. !26274
+- Fix duplicated bottom match line on merge request parallel diff view. !26402
+- Allow users who can push to protected branches to create protected branches via CLI. !26413
+- Add missing .gitlab-ci.yml to Android template. !26415
+- Refresh commit count after repository head changes. !26473
+- Set proper default-branch for repository on GitHub Import. !26476
+- GitHub importer: Use the project creator to create branches from forks. !26510
+
+### Changed (1 change)
+
+- Upgrade to Gitaly v1.27.1. !26533
+
+
 ## 11.9.0 (2019-03-22)
 
 ### Security (24 changes)

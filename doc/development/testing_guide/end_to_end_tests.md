@@ -27,10 +27,15 @@ Results are reported in the `#qa-staging` Slack channel.
 
 ### Testing code in merge requests
 
+#### Using the `package-and-qa` job
+
 It is possible to run end-to-end tests for a merge request, eventually being run in
 a pipeline in the [`gitlab-qa`](https://gitlab.com/gitlab-org/gitlab-qa/) project,
-by triggering the `package-and-qa` manual action in the `test` stage (which should
-be present in a merge request widget, unless the merge request comes from a fork).
+by triggering the `package-and-qa` manual action in the `test` stage (not
+available for forks).
+
+**This runs end-to-end tests against a custom Omnibus package built from your
+merge request's changes.**
 
 Manual action that starts end-to-end tests is also available in merge requests
 in [Omnibus GitLab][omnibus-gitlab].
@@ -85,7 +90,25 @@ subgraph gitlab-qa pipeline
 1. The result of the [GitLab QA pipeline][gitlab-qa-pipelines] is being
    propagated upstream, through Omnibus, back to the CE / EE merge request.
 
-#### How do I write tests?
+#### Using the `review-qa-all` jobs
+
+On every pipeline during the `test` stage, the `review-qa-smoke` job is
+automatically started: it runs the QA smoke suite against the
+[Review App][review-apps].
+
+You can also manually start the `review-qa-all`: it runs the full QA suite
+against the [Review App][review-apps].
+
+**This runs end-to-end tests against a Review App based on [the official GitLab
+Helm chart][helm-chart], itself deployed with custom
+[Cloud Native components][cng] built from your merge request's changes.**
+
+See [Review Apps][review-apps] for more details about Review Apps.
+
+[helm-chart]: https://gitlab.com/charts/gitlab/
+[cng]: https://gitlab.com/gitlab-org/build/CNG
+
+## How do I write tests?
 
 In order to write new tests, you first need to learn more about GitLab QA
 architecture. See the [documentation about it][gitlab-qa-architecture].
@@ -105,9 +128,11 @@ you can find an issue you would like to work on in
 
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa
+[gitlab-qa-pipelines]: https://gitlab.com/gitlab-org/gitlab-qa/pipelines
 [gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
 [quality-nightly-pipelines]: https://gitlab.com/gitlab-org/quality/nightly/pipelines
 [quality-staging-pipelines]: https://gitlab.com/gitlab-org/quality/staging/pipelines
+[review-apps]: ./review_apps.md
 [gitlab-qa-architecture]: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md
 [gitlab-qa-issues]: https://gitlab.com/gitlab-org/gitlab-qa/issues?label_name%5B%5D=new+scenario
 [gitlab-ce-issues]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name[]=QA&label_name[]=test

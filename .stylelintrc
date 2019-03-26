@@ -1,6 +1,8 @@
 {
    "plugins":[
-      "stylelint-scss"
+      "./scripts/frontend/stylelint/stylelint-duplicate-selectors.js",
+      "./scripts/frontend/stylelint/stylelint-utility-classes.js",
+      "stylelint-scss",
    ],
    "rules":{
       "at-rule-blacklist":[
@@ -95,13 +97,15 @@
          },
       ],
       "selector-list-comma-newline-after":"always",
-      "selector-max-compound-selectors":[5, { "severity": "warning" }],
+      "selector-max-compound-selectors":[3, { "severity": "warning" }],
       "selector-max-id":1,
       "selector-no-vendor-prefix":true,
       "selector-pseudo-element-colon-notation":"double",
       "selector-pseudo-element-no-unknown":true,
       "shorthand-property-no-redundant-values":true,
       "string-quotes":"single",
-      "value-no-vendor-prefix":[true, { ignoreValues: ["sticky"] }]
+      "value-no-vendor-prefix":[true, { ignoreValues: ["sticky"] }],
+      "stylelint-gitlab/duplicate-selectors":[true,{ "severity": "warning" }],
+      "stylelint-gitlab/utility-classes":[true,{ "severity": "warning" }],
    }
 }
