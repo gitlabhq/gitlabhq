@@ -1,5 +1,0 @@
----
-title: Return cached languages if they've been detected before
-merge_request:
-author:
-type: security
