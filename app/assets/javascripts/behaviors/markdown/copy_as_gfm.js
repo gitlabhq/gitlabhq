@@ -10,10 +10,10 @@ export class CopyAsGFM {
     const isIOS = /\b(iPad|iPhone|iPod)(?=;)/.test(userAgent);
     if (isIOS) return;
 
-    $(document).on('copy', '.md, .wiki', e => {
+    $(document).on('copy', '.md', e => {
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformGFMSelection);
     });
-    $(document).on('copy', 'pre.code.highlight, .diff-content .line_content', e => {
+    $(document).on('copy', 'pre.code.highlight, table.code td.line_content', e => {
       CopyAsGFM.copyAsGFM(e, CopyAsGFM.transformCodeSelection);
     });
     $(document).on('paste', '.js-gfm-input', CopyAsGFM.pasteGFM);
@@ -99,7 +99,7 @@ export class CopyAsGFM {
   }
 
   static transformGFMSelection(documentFragment) {
-    const gfmElements = documentFragment.querySelectorAll('.md, .wiki');
+    const gfmElements = documentFragment.querySelectorAll('.md');
     switch (gfmElements.length) {
       case 0: {
         return documentFragment;

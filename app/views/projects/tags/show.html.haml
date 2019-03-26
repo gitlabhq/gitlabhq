@@ -39,8 +39,7 @@
 
   .append-bottom-default.prepend-top-default
     - if @release.description.present?
-      .description
-        .wiki
-          = markdown_field(@release, :description)
+      .description.md
+        = markdown_field(@release, :description)
     - else
       = s_('TagsPage|This tag has no release notes.')

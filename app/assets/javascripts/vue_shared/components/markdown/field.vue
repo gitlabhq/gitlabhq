@@ -215,7 +215,7 @@ export default {
       <div
         v-show="previewMarkdown"
         ref="markdown-preview"
-        class="md-preview js-vue-md-preview md md-preview-holder"
+        class="js-vue-md-preview md-preview-holder"
       >
         <suggestions
           v-if="hasSuggestion"
@@ -233,7 +233,7 @@ export default {
       <div
         v-show="previewMarkdown"
         ref="markdown-preview"
-        class="md-preview js-vue-md-preview md md-preview-holder"
+        class="js-vue-md-preview md md-preview-holder"
         v-html="markdownPreview"
       ></div>
     </template>
