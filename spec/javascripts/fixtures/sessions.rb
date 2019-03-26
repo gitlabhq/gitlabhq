@@ -16,7 +16,7 @@ describe 'Sessions (JavaScript fixtures)' do
       set_devise_mapping(context: @request)
     end
 
-    it 'sessions/new.html.raw' do |example|
+    it 'sessions/new.html' do |example|
       get :new
 
       expect(response).to be_success
