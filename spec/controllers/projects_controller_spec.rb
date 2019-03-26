@@ -383,7 +383,7 @@ describe ProjectsController do
               id: project.id,
               project: params
             }
-        end.not_to change {project.reload.namespace}
+        end.not_to change { project.namespace.reload }
       end
 
       def update_project(**parameters)
