@@ -33,6 +33,11 @@ describe('Dashboard', () => {
       <div class="layout-page"></div>
     `);
 
+    window.gon = {
+      ...window.gon,
+      ee: false,
+    };
+
     mock = new MockAdapter(axios);
     DashboardComponent = Vue.extend(Dashboard);
   });
@@ -149,6 +154,25 @@ describe('Dashboard', () => {
 
         expect(dropdownItems.length).toEqual(1);
         expect(dropdownItems[0].textContent.trim()).toEqual(component.currentEnvironmentName);
+        done();
+      });
+    });
+
+    it('hides the dropdown', done => {
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          environmentsEndpoint: '',
+        },
+      });
+
+      Vue.nextTick(() => {
+        const dropdownIsActiveElement = component.$el.querySelectorAll('.environments');
+
+        expect(dropdownIsActiveElement.length).toEqual(0);
         done();
       });
     });
