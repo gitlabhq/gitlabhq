@@ -319,7 +319,7 @@ describe 'Environment' do
 
       yield
 
-      GitPushService.new(project, user, params).execute
+      Git::BranchPushService.new(project, user, params).execute
     end
   end
 

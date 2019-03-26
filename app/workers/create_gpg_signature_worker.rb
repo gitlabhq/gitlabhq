@@ -5,8 +5,8 @@ class CreateGpgSignatureWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(commit_shas, project_id)
-    # Older versions of GitPushService may push a single commit ID on the stack.
-    # We need this to be backwards compatible.
+    # Older versions of Git::BranchPushService may push a single commit ID on
+    # the stack. We need this to be backwards compatible.
     commit_shas = Array(commit_shas)
 
     return if commit_shas.empty?
