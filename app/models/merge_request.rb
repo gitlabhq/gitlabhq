@@ -67,6 +67,8 @@ class MergeRequest < ActiveRecord::Base
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
   has_many :merge_request_pipelines, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline'
 
+  has_many :merge_request_assignees
+  # Will be deprecated at https://gitlab.com/gitlab-org/gitlab-ce/issues/59457
   belongs_to :assignee, class_name: "User"
 
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
@@ -75,6 +77,10 @@ class MergeRequest < ActiveRecord::Base
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_save :ensure_metrics
+
+  # Required until the codebase starts using this relation for single or multiple assignees.
+  # TODO: Remove at gitlab-ee#2004 implementation.
+  after_save :refresh_merge_request_assignees, if: :assignee_id_changed?
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -673,6 +679,15 @@ class MergeRequest < ActiveRecord::Base
 
   def ensure_merge_request_diff
     merge_request_diff || create_merge_request_diff
+  end
+
+  def refresh_merge_request_assignees
+    transaction do
+      # Using it instead relation.delete_all in order to avoid adding a
+      # dependent: :delete_all (we already have foreign key cascade deletion).
+      MergeRequestAssignee.where(merge_request_id: self).delete_all
+      merge_request_assignees.create(user_id: assignee_id) if assignee_id
+    end
   end
 
   def create_merge_request_diff
