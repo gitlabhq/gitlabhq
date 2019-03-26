@@ -90,8 +90,8 @@ subgraph GCP `gitlab-review-apps` project
 ## QA runs
 
 On every [pipeline][gitlab-pipeline] during the `test` stage, the
-`review-qa-smoke` job is automatically started: it runs the smoke QA suite.
-You can also manually start the `review-qa-all`: it runs the full QA suite.
+`review-qa-smoke` job is automatically started: it runs the QA smoke suite.
+You can also manually start the `review-qa-all`: it runs the QA full suite.
 
 Note that both jobs first wait for the `review-deploy` job to be finished.
 

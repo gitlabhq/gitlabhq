@@ -15,6 +15,11 @@
   word-wrap: nowrap;
 }
 
+.content-list .group-name {
+  font-weight: $gl-font-weight-bold;
+  color: $pages-group-name-color;
+}
+
 .group-row {
   @include basic-list-stats;
 
@@ -170,6 +175,50 @@
   .group-list-tree .group-row:first-child {
     border-top: 0;
   }
+}
+
+.card {
+  .shared_runners_limit_under_quota {
+    color: $green-500;
+  }
+
+  .shared_runners_limit_over_quota {
+    color: $red-500;
+  }
+}
+
+.pipeline-quota {
+  border-top: 1px solid $table-border-color;
+  border-bottom: 1px solid $table-border-color;
+  margin: 0 0 $gl-padding;
+
+  .row {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
+  .right {
+    text-align: right;
+  }
+
+  .progress {
+    height: 6px;
+    width: 100%;
+    margin-bottom: 0;
+    margin-top: 4px;
+  }
+}
+
+.user-settings-pipeline-quota {
+  margin-top: $gl-padding;
+
+  .pipeline-quota {
+    border-top: 0;
+  }
+}
+
+table.pipeline-project-metrics tr td {
+  padding: $gl-padding;
 }
 
 .mattermost-icon svg {

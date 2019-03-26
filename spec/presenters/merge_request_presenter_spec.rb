@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequestPresenter do
-  let(:resource) { create :merge_request, source_project: project }
-  let(:project) { create :project }
+  let(:resource) { create(:merge_request, source_project: project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#ci_status' do
@@ -520,6 +520,48 @@ describe MergeRequestPresenter do
         it 'returns nil' do
           is_expected.to be_nil
         end
+      end
+    end
+  end
+
+  describe '#can_push_to_source_branch' do
+    before do
+      allow(resource).to receive(:source_branch_exists?) { source_branch_exists }
+
+      allow_any_instance_of(Gitlab::UserAccess::RequestCacheExtension)
+        .to receive(:can_push_to_branch?)
+              .with(resource.source_branch)
+              .and_return(can_push_to_branch)
+    end
+
+    subject do
+      described_class.new(resource, current_user: user).can_push_to_source_branch?
+    end
+
+    context 'when source branch exists AND user can push to source branch' do
+      let(:source_branch_exists) { true }
+      let(:can_push_to_branch) { true }
+
+      it 'returns true' do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when source branch does not exists' do
+      let(:source_branch_exists) { false }
+      let(:can_push_to_branch) { true }
+
+      it 'returns false' do
+        is_expected.to eq(false)
+      end
+    end
+
+    context 'when user cannot push to source branch' do
+      let(:source_branch_exists) { true }
+      let(:can_push_to_branch) { false }
+
+      it 'returns false' do
+        is_expected.to eq(false)
       end
     end
   end

@@ -46,7 +46,7 @@ module QA
 
         threads_arr.each(&:join)
         STDOUT.puts "\nURLs: #{@urls}"
-        File.open("urls.yml", "w") { |file| file.puts @urls.to_yaml }
+        File.open("urls.yml", "w") { |file| file.puts @urls.stringify_keys.to_yaml }
         STDOUT.puts "\nDone"
       end
 

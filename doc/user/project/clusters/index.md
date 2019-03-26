@@ -101,14 +101,20 @@ To add an existing Kubernetes cluster to your project:
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
       e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-    - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default.
-      -  List the secrets with `kubectl get secrets`, and one should named similar to
-       `default-token-xxxxx`. Copy that token name for use below.
-      -  Get the certificate by running this command:
 
-        ```sh
-        kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
-        ```
+      Get the API URL by running this command:
+
+      ```sh
+      kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'
+      ```
+    - **CA certificate** (required) - A valid Kubernetes certificate is needed to authenticate to the EKS cluster. We will use the certificate created by default.
+      - List the secrets with `kubectl get secrets`, and one should named similar to
+       `default-token-xxxxx`. Copy that token name for use below.
+      - Get the certificate by running this command:
+
+      ```sh
+      kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode
+      ```
     - **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`.
@@ -124,23 +130,7 @@ To add an existing Kubernetes cluster to your project:
           metadata:
             name: gitlab-admin
             namespace: kube-system
-          ```
-
-      2. Apply the service account to your cluster:
-
-          ```bash
-          kubectl apply -f gitlab-admin-service-account.yaml
-          ```
-
-          Output:
-
-            ```bash
-            serviceaccount "gitlab-admin" created
-            ```
-
-      3. Create a file called `gitlab-admin-cluster-role-binding.yaml` with contents:
-
-          ```yaml
+          ---
           apiVersion: rbac.authorization.k8s.io/v1beta1
           kind: ClusterRoleBinding
           metadata:
@@ -155,41 +145,42 @@ To add an existing Kubernetes cluster to your project:
             namespace: kube-system
           ```
 
-      4. Apply the cluster role binding to your cluster:
+      1. Apply the service account and cluster role binding to your cluster:
 
           ```bash
-          kubectl apply -f gitlab-admin-cluster-role-binding.yaml
+          kubectl apply -f gitlab-admin-service-account.yaml
           ```
 
           Output:
 
           ```bash
+          serviceaccount "gitlab-admin" created
           clusterrolebinding "gitlab-admin" created
           ```
 
-      5. Retrieve the token for the `gitlab-admin` service account:
+      1. Retrieve the token for the `gitlab-admin` service account:
 
           ```bash
           kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep gitlab-admin | awk '{print $1}')
           ```
 
-      Copy the `<authentication_token>` value from the output:
+         Copy the `<authentication_token>` value from the output:
 
-      ```yaml
-      Name:         gitlab-admin-token-b5zv4
-      Namespace:    kube-system
-      Labels:       <none>
-      Annotations:  kubernetes.io/service-account.name=gitlab-admin
-                    kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
+         ```yaml
+         Name:         gitlab-admin-token-b5zv4
+         Namespace:    kube-system
+         Labels:       <none>
+         Annotations:  kubernetes.io/service-account.name=gitlab-admin
+                       kubernetes.io/service-account.uid=bcfe66ac-39be-11e8-97e8-026dce96b6e8
 
-      Type:  kubernetes.io/service-account-token
+         Type:  kubernetes.io/service-account-token
 
-      Data
-      ====
-      ca.crt:     1025 bytes
-      namespace:  11 bytes
-      token:      <authentication_token>
-      ```
+         Data
+         ====
+         ca.crt:     1025 bytes
+         namespace:  11 bytes
+         token:      <authentication_token>
+         ```
 
       NOTE: **Note:**
       For GKE clusters, you will need the
@@ -211,14 +202,6 @@ To add an existing Kubernetes cluster to your project:
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](#installing-applications).
-
-To determine the:
-
-- API URL, run `kubectl cluster-info | grep 'Kubernetes master' | awk '/http/ {print $NF}'`.
-- Token:
-  1. List the secrets by running: `kubectl get secrets`. Note the name of the secret you need the token for.
-  1. Get the token for the appropriate secret by running: `kubectl get secret <SECRET_NAME> -o jsonpath="{['data']['token']}" | base64 --decode`.
-- CA certificate, run `kubectl get secret <secret name> -o jsonpath="{['data']['ca\.crt']}" | base64 --decode`.
 
 ## Security implications
 
