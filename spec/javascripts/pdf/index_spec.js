@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import { PDFJS } from 'vendor/pdf';
+import { GlobalWorkerOptions } from 'vendor/pdf';
 import workerSrc from 'vendor/pdf.worker.min';
 
 import PDFLab from '~/pdf/index.vue';
 import pdf from '../fixtures/blob/pdf/test.pdf';
 
-PDFJS.workerSrc = workerSrc;
+GlobalWorkerOptions.workerSrc = workerSrc;
 const Component = Vue.extend(PDFLab);
 
 describe('PDF component', () => {
