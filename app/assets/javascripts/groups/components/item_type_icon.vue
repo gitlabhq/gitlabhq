@@ -20,7 +20,7 @@ export default {
   computed: {
     iconClass() {
       if (this.itemType === ITEM_TYPE.GROUP) {
-        return this.isGroupOpen ? 'folder-open' : 'folder';
+        return this.isGroupOpen ? 'folder-open' : 'folder-o';
       }
       return 'bookmark';
     },

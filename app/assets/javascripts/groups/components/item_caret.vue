@@ -21,5 +21,5 @@ export default {
 </script>
 
 <template>
-  <span class="folder-caret"> <icon :size="12" :name="iconClass" /> </span>
+  <span class="folder-caret append-right-4"> <icon :size="10" :name="iconClass" /> </span>
 </template>

@@ -48,7 +48,7 @@ export default {
       :title="__('Subgroups')"
       :value="item.subgroupCount"
       css-class="number-subgroups"
-      icon-name="folder"
+      icon-name="folder-o"
     />
     <item-stats-value
       v-if="isGroup"
@@ -69,12 +69,6 @@ export default {
       :value="item.starCount"
       css-class="project-stars"
       icon-name="star"
-    />
-    <item-stats-value
-      :icon-name="visibilityIcon"
-      :title="visibilityTooltip"
-      css-class="item-visibility"
-      tooltip-placement="left"
     />
     <div v-if="isProject" class="last-updated">
       <time-ago-tooltip :time="item.updatedAt" tooltip-placement="bottom" />

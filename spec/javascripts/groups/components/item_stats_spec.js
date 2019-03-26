@@ -108,18 +108,6 @@ describe('ItemStatsComponent', () => {
       vm.$destroy();
     });
 
-    it('renders item visibility icon and tooltip correctly', () => {
-      const vm = createComponent();
-
-      const visibilityIconEl = vm.$el.querySelector('.item-visibility');
-
-      expect(visibilityIconEl).not.toBe(null);
-      expect(visibilityIconEl.dataset.originalTitle).toBe(vm.visibilityTooltip);
-      expect(visibilityIconEl.querySelectorAll('svg').length).toBeGreaterThan(0);
-
-      vm.$destroy();
-    });
-
     it('renders start count and last updated information for project item correctly', () => {
       const item = Object.assign({}, mockParentGroupItem, {
         type: ITEM_TYPE.PROJECT,

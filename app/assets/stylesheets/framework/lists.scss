@@ -133,7 +133,6 @@ ul.content-list {
 
     .description {
       @include str-truncated;
-      color: $gl-text-color-secondary;
     }
 
     .controls {
