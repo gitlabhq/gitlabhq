@@ -1,0 +1,92 @@
+.sortable-container {
+  background-color: $gray-light;
+
+  .flex-list {
+    padding: 5px;
+    margin-bottom: 0;
+  }
+}
+
+.sortable-row {
+  .flex-row {
+    display: flex;
+
+    &.issuable-info-container {
+      padding-right: 0;
+    }
+  }
+
+  .sortable-link {
+    color: $black;
+  }
+}
+
+.gl-sortable {
+  .header {
+    user-select: none;
+
+    &:hover {
+      cursor: pointer;
+      background-color: $gray-100;
+    }
+
+    &:focus {
+      outline: 1px solid $blue-300;
+    }
+  }
+}
+
+.related-issues-list-item {
+  .card-body,
+  .issuable-info-container {
+    padding: $gl-padding-4 $gl-padding-4 $gl-padding-4 $gl-padding;
+
+    .block-truncated {
+      padding: $gl-padding-8 0;
+      line-height: $gl-btn-line-height;
+    }
+
+    @include media-breakpoint-down(md) {
+      padding-left: $gl-padding;
+
+      .block-truncated {
+        flex-direction: column-reverse;
+        padding: $gl-padding-4 0;
+
+        .text-secondary {
+          margin-top: $gl-padding-4;
+        }
+
+        .issue-token-title-text {
+          display: block;
+        }
+      }
+
+      .issue-item-remove-button {
+        align-self: baseline;
+      }
+    }
+
+    @include media-breakpoint-only(md) {
+      .block-truncated .issue-token-title-text {
+        white-space: nowrap;
+      }
+
+      .issue-item-remove-button {
+        align-self: center;
+      }
+    }
+
+    @include media-breakpoint-down(sm) {
+      padding-left: $gl-padding-8;
+
+      .block-truncated .issue-token-title-text {
+        white-space: normal;
+      }
+    }
+  }
+
+  &.is-dragging {
+    padding: 0;
+  }
+}
