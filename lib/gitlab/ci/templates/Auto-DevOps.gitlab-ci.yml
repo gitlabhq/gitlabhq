@@ -856,7 +856,7 @@ rollout 100%:
   function check_kube_domain() {
     ensure_kube_ingress_base_domain
 
-    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ]; then
+    if [[ -z "$KUBE_INGRESS_BASE_DOMAIN" ]]; then
       echo "In order to deploy or use Review Apps,"
       echo "AUTO_DEVOPS_DOMAIN or KUBE_INGRESS_BASE_DOMAIN variables must be set"
       echo "From 11.8, you can set KUBE_INGRESS_BASE_DOMAIN in cluster settings"
