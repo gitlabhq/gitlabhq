@@ -55,6 +55,8 @@ Here's a list of the AWS services we will use, with links to pricing information
 - **ElastiCache**: An in-memory cache environment will be used to provide a
   High Availability Redis configuration. See the
   [Amazon ElastiCache pricing](https://aws.amazon.com/elasticache/pricing/).
+  
+NOTE: **Note:** Please note that while we will be using EBS for storage, we do not recommend using EFS as it may negatively impact GitLab's performance. You can review the [relevant documentation](../../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 ## Creating an IAM EC2 instance role and profile
 To minimize the permissions of the user, we'll create a new [IAM](https://docs.aws.amazon.com/IAM/latest/UserGuide/introduction.html)
