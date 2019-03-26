@@ -45,17 +45,15 @@ module Gitlab
         end
 
         def validate_regexp(value)
-          !value.nil? && Regexp.new(value.to_s) && true
-        rescue RegexpError, TypeError
-          false
+          Gitlab::UntrustedRegexp::RubySyntax.valid?(value)
         end
 
         def validate_string_or_regexp(value)
           return true if value.is_a?(Symbol)
           return false unless value.is_a?(String)
 
-          if value.first == '/' && value.last == '/'
-            validate_regexp(value[1...-1])
+          if Gitlab::UntrustedRegexp::RubySyntax.matches_syntax?(value)
+            validate_regexp(value)
           else
             true
           end
