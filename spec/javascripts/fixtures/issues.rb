@@ -21,26 +21,26 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     remove_repository(project)
   end
 
-  it 'issues/open-issue.html.raw' do |example|
+  it 'issues/open-issue.html' do |example|
     render_issue(example.description, create(:issue, project: project))
   end
 
-  it 'issues/closed-issue.html.raw' do |example|
+  it 'issues/closed-issue.html' do |example|
     render_issue(example.description, create(:closed_issue, project: project))
   end
 
-  it 'issues/issue-with-task-list.html.raw' do |example|
+  it 'issues/issue-with-task-list.html' do |example|
     issue = create(:issue, project: project, description: '- [ ] Task List Item')
     render_issue(example.description, issue)
   end
 
-  it 'issues/issue_with_comment.html.raw' do |example|
+  it 'issues/issue_with_comment.html' do |example|
     issue = create(:issue, project: project)
     create(:note, project: project, noteable: issue, note: '- [ ] Task List Item').save
     render_issue(example.description, issue)
   end
 
-  it 'issues/issue_list.html.raw' do |example|
+  it 'issues/issue_list.html' do |example|
     create(:issue, project: project)
 
     get :index, params: {

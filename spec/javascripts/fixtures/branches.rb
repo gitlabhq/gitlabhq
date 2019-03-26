@@ -21,7 +21,7 @@ describe Projects::BranchesController, '(JavaScript fixtures)', type: :controlle
     remove_repository(project)
   end
 
-  it 'branches/new_branch.html.raw' do |example|
+  it 'branches/new_branch.html' do |example|
     get :new, params: {
       namespace_id: project.namespace.to_param,
       project_id: project

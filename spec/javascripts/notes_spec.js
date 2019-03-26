@@ -34,7 +34,7 @@ const htmlEscape = comment => {
 describe('Notes', function() {
   const FLASH_TYPE_ALERT = 'alert';
   const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
-  var fixture = 'snippets/show.html.raw';
+  var fixture = 'snippets/show.html';
   preloadFixtures(fixture);
 
   beforeEach(function() {

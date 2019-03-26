@@ -3,11 +3,11 @@ import Todos from '~/pages/dashboard/todos/index/todos';
 import '~/lib/utils/common_utils';
 
 describe('Todos', () => {
-  preloadFixtures('todos/todos.html.raw');
+  preloadFixtures('todos/todos.html');
   let todoItem;
 
   beforeEach(() => {
-    loadFixtures('todos/todos.html.raw');
+    loadFixtures('todos/todos.html');
     todoItem = document.querySelector('.todos-list .todo');
 
     return new Todos();

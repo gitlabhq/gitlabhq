@@ -3,7 +3,7 @@ import '~/lib/utils/text_utility';
 import AbuseReports from '~/pages/admin/abuse_reports/abuse_reports';
 
 describe('Abuse Reports', () => {
-  const FIXTURE = 'abuse_reports/abuse_reports_list.html.raw';
+  const FIXTURE = 'abuse_reports/abuse_reports_list.html';
   const MAX_MESSAGE_LENGTH = 500;
 
   let $messages;

@@ -18,7 +18,7 @@ context 'U2F' do
       set_devise_mapping(context: @request)
     end
 
-    it 'u2f/authenticate.html.raw' do |example|
+    it 'u2f/authenticate.html' do |example|
       allow(controller).to receive(:find_user).and_return(user)
 
       post :create, params: { user: { login: user.username, password: user.password } }
@@ -36,7 +36,7 @@ context 'U2F' do
       allow_any_instance_of(Profiles::TwoFactorAuthsController).to receive(:build_qr_code).and_return('qrcode:blackandwhitesquares')
     end
 
-    it 'u2f/register.html.raw' do |example|
+    it 'u2f/register.html' do |example|
       get :show
 
       expect(response).to be_success
