@@ -25,7 +25,7 @@ message.
 ## Creating a new wiki page
 
 NOTE: **Note:**
-A [permission level][permissions] of **Developer** is needed to create Wiki pages.
+Requires Developer [permissions](../../permissions.md).
 
 Create a new page by clicking the **New page** button that can be found
 in all wiki pages. You will be asked to fill in the page name from which GitLab
@@ -58,7 +58,7 @@ repository, you will have to upload them again.
 ## Editing a wiki page
 
 NOTE: **Note:**
-A [permission level][permissions] of **Developer** is needed to edit Wiki pages.
+Requires Developer [permissions](../../permissions.md).
 
 To edit a page, simply click on the **Edit** button. From there on, you can
 change its content. When done, click **Save changes** for the changes to take
@@ -67,7 +67,7 @@ effect.
 ## Deleting a wiki page
 
 NOTE: **Note:**
-A [permission level][permissions] of **Maintainer** is needed to delete Wiki pages.
+Requires Maintainer [permissions](../../permissions.md).
 
 You can find the **Delete** button only when editing a page. Click on it and
 confirm you want the page to be deleted.
@@ -113,8 +113,6 @@ them like you would do with every other Git repository.
 
 On the right sidebar, click on **Clone repository** and follow the on-screen
 instructions.
-
-[permissions]: ../../permissions.md
 
 ## Customizing sidebar
 
