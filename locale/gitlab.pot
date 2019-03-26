@@ -1815,7 +1815,7 @@ msgstr ""
 msgid "ClusterIntegration|GitLab Runner"
 msgstr ""
 
-msgid "ClusterIntegration|GitLab Runner connects to this project's repository and executes CI/CD jobs, pushing results back and deploying, applications to production."
+msgid "ClusterIntegration|GitLab Runner connects to the repository and executes CI/CD jobs, pushing results back and deploying applications to production."
 msgstr ""
 
 msgid "ClusterIntegration|Google Cloud Platform project"

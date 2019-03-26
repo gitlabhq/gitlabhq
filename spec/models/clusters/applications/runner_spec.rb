@@ -64,24 +64,45 @@ describe Clusters::Applications::Runner do
     end
 
     context 'without a runner' do
-      let(:project) { create(:project) }
-      let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
       let(:application) { create(:clusters_applications_runner, runner: nil, cluster: cluster) }
+      let(:runner) { application.runner }
 
-      it 'creates a runner' do
-        expect do
+      shared_examples 'runner creation' do
+        it 'creates a runner' do
+          expect { subject }.to change { Ci::Runner.count }.by(1)
+        end
+
+        it 'uses the new runner token' do
+          expect(values).to match(/runnerToken: '?#{runner.token}/)
+        end
+      end
+
+      context 'project cluster' do
+        let(:project) { create(:project) }
+        let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+
+        include_examples 'runner creation'
+
+        it 'creates a project runner' do
           subject
-        end.to change { Ci::Runner.count }.by(1)
+
+          expect(runner).to be_project_type
+          expect(runner.projects).to eq [project]
+        end
       end
 
-      it 'uses the new runner token' do
-        expect(values).to match(/runnerToken: '?#{application.reload.runner.token}/)
-      end
+      context 'group cluster' do
+        let(:group) { create(:group) }
+        let(:cluster) { create(:cluster, :with_installed_helm, cluster_type: :group_type, groups: [group]) }
 
-      it 'assigns the new runner to runner' do
-        subject
+        include_examples 'runner creation'
 
-        expect(application.reload.runner).to be_project_type
+        it 'creates a group runner' do
+          subject
+
+          expect(runner).to be_group_type
+          expect(runner.groups).to eq [group]
+        end
       end
     end
 

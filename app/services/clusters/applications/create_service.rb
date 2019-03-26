@@ -13,7 +13,8 @@ module Clusters
         {
           "helm" => -> (cluster) { cluster.application_helm || cluster.build_application_helm },
           "ingress" => -> (cluster) { cluster.application_ingress || cluster.build_application_ingress },
-          "cert_manager" => -> (cluster) { cluster.application_cert_manager || cluster.build_application_cert_manager }
+          "cert_manager" => -> (cluster) { cluster.application_cert_manager || cluster.build_application_cert_manager },
+          "runner" => -> (cluster) { cluster.application_runner || cluster.build_application_runner }
         }.tap do |hash|
           hash.merge!(project_builders) if cluster.project_type?
         end
@@ -24,7 +25,6 @@ module Clusters
       def project_builders
         {
           "prometheus" => -> (cluster) { cluster.application_prometheus || cluster.build_application_prometheus },
-          "runner" => -> (cluster) { cluster.application_runner || cluster.build_application_runner },
           "jupyter" => -> (cluster) { cluster.application_jupyter || cluster.build_application_jupyter },
           "knative" => -> (cluster) { cluster.application_knative || cluster.build_application_knative }
         }
