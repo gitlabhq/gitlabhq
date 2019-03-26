@@ -22,6 +22,7 @@ import Icon from '../../vue_shared/components/icon.vue';
  * - Jobs show view header
  * - Jobs show view sidebar
  * - Linked pipelines
+ * - Extended MR Popover
  */
 const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
 
