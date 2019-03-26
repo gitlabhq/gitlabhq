@@ -241,12 +241,24 @@ repository from your GitLab server over HTTP.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22602) in GitLab 11.8.
 
-Gitaly supports TLS credentials for GRPC authentication. To be able to communicate
+Gitaly supports TLS encryption. To be able to communicate
 with a Gitaly instance that listens for secure connections you will need to use `tls://` url
 scheme in the `gitaly_address` of the corresponding storage entry in the gitlab configuration.
 
 The admin needs to bring their own certificate as we do not provide that automatically.
-The certificate to be used needs to be installed on all Gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+The certificate to be used needs to be installed on all Gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+
+Note that it is possible to configure Gitaly servers with both an
+unencrypted listening address `listen_addr` and an encrypted listening
+address `tls_listen_addr` at the same time. This allows you to do a
+gradual transition from unencrypted to encrypted traffic, if necessary.
+
+To observe what type of connections are actually being used in a
+production environment you can use the following Prometheus query:
+
+```
+sum(rate(gitaly_connections_total[5m])) by (type)
+```
 
 ### Example TLS configuration
 
