@@ -1183,6 +1183,16 @@ describe API::Projects do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response).to include 'statistics'
         end
+
+        it "includes statistics also when repository is disabled" do
+          project.add_developer(user)
+          project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
+
+          get api("/projects/#{project.id}", user), params: { statistics: true }
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to include 'statistics'
+        end
       end
 
       it "includes import_error if user can admin project" do
