@@ -126,6 +126,10 @@ class Label < ActiveRecord::Base
     fuzzy_search(query, [:title, :description])
   end
 
+  def self.by_ids(ids)
+    where(id: ids)
+  end
+
   def open_issues_count(user = nil)
     issues_count(user, state: 'opened')
   end
