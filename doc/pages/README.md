@@ -1,1 +1,5 @@
-This document was moved to [pages/index.md](../user/project/pages/index.md).
+---
+redirect_to: '../user/project/pages/index.md'
+---
+
+This document was moved to [another location](../user/project/pages/index.md).
