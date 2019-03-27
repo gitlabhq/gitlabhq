@@ -31,10 +31,49 @@ module API
             optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
           end
 
+          if Gitlab.ee?
+            params :optional_project_params_ee do
+              optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
+              optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
+              optional :external_authorization_classification_label, type: String, desc: 'The classification label for the project'
+              optional :mirror, type: Boolean, desc: 'Enables pull mirroring in a project'
+              optional :mirror_trigger_builds, type: Boolean, desc: 'Pull mirroring triggers builds'
+            end
+          end
+
           params :optional_project_params do
             use :optional_project_params_ce
+            use :optional_project_params_ee if Gitlab.ee?
           end
         end
+      end
+
+      def self.update_params_at_least_one_of
+        [
+          :jobs_enabled,
+          :resolve_outdated_diff_discussions,
+          :ci_config_path,
+          :container_registry_enabled,
+          :default_branch,
+          :description,
+          :issues_enabled,
+          :lfs_enabled,
+          :merge_requests_enabled,
+          :merge_method,
+          :name,
+          :only_allow_merge_if_all_discussions_are_resolved,
+          :only_allow_merge_if_pipeline_succeeds,
+          :path,
+          :printing_merge_request_link_enabled,
+          :public_builds,
+          :request_access_enabled,
+          :shared_runners_enabled,
+          :snippets_enabled,
+          :tag_list,
+          :visibility,
+          :wiki_enabled,
+          :avatar
+        ]
       end
     end
   end

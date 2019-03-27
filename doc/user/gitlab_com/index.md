@@ -71,6 +71,14 @@ or over the size limit, you can [reduce your repository size with Git](../projec
 | -----------             | ----------------- | ------------- |
 | Repository size including LFS | 10G         | Unlimited     |
 
+## IP range
+
+GitLab.com, CI/CD, and related services are deployed into Google Cloud Platform (GCP). Any 
+IP based firewall can be configured by looking up all 
+[IP address ranges or CIDR blocks for GCP](https://cloud.google.com/compute/docs/faq#where_can_i_find_product_name_short_ip_ranges). 
+
+[Static endpoints](https://gitlab.com/gitlab-com/gl-infra/infrastructure/issues/5071) are being considered.
+
 ## Shared Runners
 
 Shared Runners on GitLab.com run in [autoscale mode] and powered by

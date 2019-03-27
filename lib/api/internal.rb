@@ -59,7 +59,7 @@ module API
             actor
           end
 
-        access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+        access_checker_klass = repo_type.access_checker_class
         access_checker = access_checker_klass.new(actor, project,
           protocol, authentication_abilities: ssh_authentication_abilities,
                     namespace_path: namespace_path, project_path: project_path,

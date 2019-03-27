@@ -8,7 +8,7 @@ request. For more information, check the
 ---
 
 1. Before you start, you should have already [created a branch](create-branch.md)
-   and [pushed your changes](basic-git-commands.md) to GitLab.
+   and [pushed your changes](start-using-git.md#send-changes-to-gitlabcom) to GitLab.
 1. Go to the project where you'd like to merge your changes and click on the
    **Merge requests** tab.
 1. Click on **New merge request** on the right side of the screen.

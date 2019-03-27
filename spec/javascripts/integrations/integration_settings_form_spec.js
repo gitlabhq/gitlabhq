@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import IntegrationSettingsForm from '~/integrations/integration_settings_form';
 
 describe('IntegrationSettingsForm', () => {
-  const FIXTURE = 'services/edit_service.html.raw';
+  const FIXTURE = 'services/edit_service.html';
   preloadFixtures(FIXTURE);
 
   beforeEach(() => {

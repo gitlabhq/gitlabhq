@@ -241,12 +241,24 @@ repository from your GitLab server over HTTP.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22602) in GitLab 11.8.
 
-Gitaly supports TLS credentials for GRPC authentication. To be able to communicate
+Gitaly supports TLS encryption. To be able to communicate
 with a Gitaly instance that listens for secure connections you will need to use `tls://` url
 scheme in the `gitaly_address` of the corresponding storage entry in the gitlab configuration.
 
 The admin needs to bring their own certificate as we do not provide that automatically.
-The certificate to be used needs to be installed on all Gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates)
+The certificate to be used needs to be installed on all Gitaly nodes and on all client nodes that communicate with it following procedures described in [GitLab custom certificate configuration](https://docs.gitlab.com/omnibus/settings/ssl.html#install-custom-public-certificates).
+
+Note that it is possible to configure Gitaly servers with both an
+unencrypted listening address `listen_addr` and an encrypted listening
+address `tls_listen_addr` at the same time. This allows you to do a
+gradual transition from unencrypted to encrypted traffic, if necessary.
+
+To observe what type of connections are actually being used in a
+production environment you can use the following Prometheus query:
+
+```
+sum(rate(gitaly_connections_total[5m])) by (type)
+```
 
 ### Example TLS configuration
 
@@ -301,6 +313,66 @@ tls_listen_addr = '0.0.0.0:9999'
 [tls]
 certificate_path = '/path/to/cert.pem'
 key_path = '/path/to/key.pem'
+```
+
+## Gitaly-ruby
+
+Gitaly was developed to replace Ruby application code in gitlab-ce/ee.
+In order to save time and/or avoid the risk of rewriting existing
+application logic, in some cases we chose to copy some application code
+from gitlab-ce into Gitaly almost as-is. To be able to run that code, we
+made gitaly-ruby, which is a sidecar process for the main Gitaly Go
+process. Some examples of things that are implemented in gitaly-ruby are
+RPC's that deal with wiki's, and RPC's that create commits on behalf of
+a user, such as merge commits.
+
+### Number of gitaly-ruby workers
+
+Gitaly-ruby has much less capacity than Gitaly itself. If your Gitaly
+server has to handle a lot of request, the default setting of having
+just 1 active gitaly-ruby sidecar might not be enough. If you see
+ResourceExhausted errors from Gitaly it's very likely that you have not
+enough gitaly-ruby capacity.
+
+You can increase the number of gitaly-ruby processes on your Gitaly
+server with the following settings.
+
+Omnibus:
+
+```ruby
+# /etc/gitlab/gitlab.rb
+# Default is 2 workers. The minimum is 2; 1 worker is always reserved as
+# a passive stand-by.
+gitaly['ruby_num_workers'] = 4
+```
+
+Source:
+
+```toml
+# /home/git/gitaly/config.toml
+[gitaly-ruby]
+num_workers = 4
+```
+
+### Observing gitaly-ruby traffic
+
+Gitaly-ruby is a somewhat hidden, internal implementation detail of
+Gitaly. There is not that much visibility into what goes on inside
+gitaly-ruby processes.
+
+If you have Prometheus set up to scrape your Gitaly process, you can see
+request rates and error codes for individual RPC's in gitaly-ruby by
+querying `grpc_client_handled_total`. Strictly speaking this metric does
+not differentiate between gitaly-ruby and other RPC's, but in practice
+(as of GitLab 11.9), all gRPC calls made by Gitaly itself are internal
+calls from the main Gitaly process to one of its gitaly-ruby sidecars.
+
+Assuming your `grpc_client_handled_total` counter only observes Gitaly,
+the following query shows you RPC's are (most likely) internally
+implemented as calls to gitaly-ruby.
+
+```
+sum(rate(grpc_client_handled_total[5m])) by (grpc_method) > 0
 ```
 
 ## Disabling or enabling the Gitaly service in a cluster environment

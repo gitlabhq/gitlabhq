@@ -95,7 +95,6 @@ export default {
   <div ref="note-body" :class="{ 'js-task-list-container': canEdit }" class="note-body">
     <suggestions
       v-if="hasSuggestion && !isEditing"
-      class="note-text md"
       :suggestions="note.suggestions"
       :note-html="note.note_html"
       :line-type="lineType"

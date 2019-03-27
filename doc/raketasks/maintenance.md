@@ -1,3 +1,5 @@
-# Maintenance Rake Tasks
+---
+redirect_to: '../administration/raketasks/maintenance.md'
+---
 
-This document was moved to [administration/raketasks/maintenance](../administration/raketasks/maintenance.md).
+This document was moved to [another location](../administration/raketasks/maintenance.md).

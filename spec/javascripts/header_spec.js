@@ -3,7 +3,7 @@ import initTodoToggle from '~/header';
 
 describe('Header', function() {
   const todosPendingCount = '.todos-count';
-  const fixtureTemplate = 'issues/open-issue.html.raw';
+  const fixtureTemplate = 'issues/open-issue.html';
 
   function isTodosCountHidden() {
     return $(todosPendingCount).hasClass('hidden');

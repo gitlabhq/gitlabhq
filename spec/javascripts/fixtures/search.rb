@@ -9,7 +9,7 @@ describe SearchController, '(JavaScript fixtures)', type: :controller do
     clean_frontend_fixtures('search/')
   end
 
-  it 'search/show.html.raw' do |example|
+  it 'search/show.html' do |example|
     get :show
 
     expect(response).to be_success

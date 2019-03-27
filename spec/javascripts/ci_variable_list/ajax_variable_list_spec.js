@@ -7,8 +7,8 @@ const VARIABLE_PATCH_ENDPOINT = 'http://test.host/frontend-fixtures/builds-proje
 const HIDE_CLASS = 'hide';
 
 describe('AjaxFormVariableList', () => {
-  preloadFixtures('projects/ci_cd_settings.html.raw');
-  preloadFixtures('projects/ci_cd_settings_with_variables.html.raw');
+  preloadFixtures('projects/ci_cd_settings.html');
+  preloadFixtures('projects/ci_cd_settings_with_variables.html');
 
   let container;
   let saveButton;
@@ -18,7 +18,7 @@ describe('AjaxFormVariableList', () => {
   let ajaxVariableList;
 
   beforeEach(() => {
-    loadFixtures('projects/ci_cd_settings.html.raw');
+    loadFixtures('projects/ci_cd_settings.html');
     container = document.querySelector('.js-ci-variable-list-section');
 
     mock = new MockAdapter(axios);
@@ -168,7 +168,7 @@ describe('AjaxFormVariableList', () => {
 
   describe('updateRowsWithPersistedVariables', () => {
     beforeEach(() => {
-      loadFixtures('projects/ci_cd_settings_with_variables.html.raw');
+      loadFixtures('projects/ci_cd_settings_with_variables.html');
       container = document.querySelector('.js-ci-variable-list-section');
 
       const ajaxVariableListEl = document.querySelector('.js-ci-variable-list-section');

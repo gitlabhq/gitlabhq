@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import ProjectSelectComboButton from '~/project_select_combo_button';
 
-const fixturePath = 'static/project_select_combo_button.html.raw';
+const fixturePath = 'static/project_select_combo_button.html';
 
 describe('Project Select Combo Button', function() {
   preloadFixtures(fixturePath);

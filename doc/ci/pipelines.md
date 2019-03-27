@@ -45,12 +45,12 @@ Pipeline graphs can be displayed in two different ways, depending on the page yo
 access the graph from.
 
 NOTE: **Note:**
-GitLab capitalizes the stages' names when shown in the [pipeline graphs](#pipeline-graphs).
+GitLab capitalizes the stages' names when shown in the pipeline graphs (below).
 
 ### Regular pipeline graphs
 
 Regular pipeline graphs show the names of the jobs of each stage. Regular pipeline graphs can
-be found when you are on a [single pipeline page](#seeing-pipeline-status). For example:
+be found when you are on a [single pipeline page](#accessing-pipelines). For example:
 
 ![Pipelines example](img/pipelines.png)
 

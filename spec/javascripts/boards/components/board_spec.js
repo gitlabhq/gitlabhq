@@ -9,7 +9,7 @@ describe('Board component', () => {
   let el;
 
   beforeEach(done => {
-    loadFixtures('boards/show.html.raw');
+    loadFixtures('boards/show.html');
 
     el = document.createElement('div');
     document.body.appendChild(el);

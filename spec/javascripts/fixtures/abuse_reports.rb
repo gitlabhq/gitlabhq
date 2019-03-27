@@ -18,7 +18,7 @@ describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :controll
     sign_in(admin)
   end
 
-  it 'abuse_reports/abuse_reports_list.html.raw' do |example|
+  it 'abuse_reports/abuse_reports_list.html' do |example|
     get :index
 
     expect(response).to be_success

@@ -93,7 +93,7 @@ export default {
             'system-note-commit-list': hasMoreCommits,
             'hide-shade': expanded,
           }"
-          class="note-text"
+          class="note-text md"
           v-html="note.note_html"
         ></div>
         <div v-if="hasMoreCommits" class="flex-list">

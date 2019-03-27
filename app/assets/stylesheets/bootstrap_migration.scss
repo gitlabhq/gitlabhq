@@ -343,16 +343,6 @@ input[type=color].form-control {
   }
 }
 
-// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
-.input-group-btn:first-child {
-  @extend .input-group-prepend;
-}
-
-// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
-.input-group-btn:last-child {
-  @extend .input-group-append;
-}
-
 /*
  Bootstrap 4.1.2 introduced a new default vertical alignment which breaks our icons,
  so we need to reset the vertical alignment to the default value. See:
