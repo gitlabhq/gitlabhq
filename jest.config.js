@@ -37,4 +37,5 @@ module.exports = {
   },
   transformIgnorePatterns: ['node_modules/(?!(@gitlab/ui)/)'],
   timers: 'fake',
+  testEnvironment: '<rootDir>/spec/frontend/environment.js',
 };
