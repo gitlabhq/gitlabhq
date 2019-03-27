@@ -50,9 +50,11 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id)
 
     if job_id
-      flash[:notice] = "Successfully scheduled a pipeline to run. Go to the <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details.".html_safe
+      link_to_pipelines = view_context.link_to(_('Pipelines page'), project_pipelines_path(@project))
+      message = _("Successfully scheduled a pipeline to run. Go to the %{link_to_pipelines} for details.").html_safe % { link_to_pipelines: link_to_pipelines }
+      flash[:notice] = message.html_safe
     else
-      flash[:alert] = 'Unable to schedule a pipeline to run immediately'
+      flash[:alert] = _('Unable to schedule a pipeline to run immediately')
     end
 
     redirect_to pipeline_schedules_path(@project)
@@ -85,7 +87,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
     return unless limiter.throttled?([current_user, schedule], 1)
 
-    flash[:alert] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+    flash[:alert] = _('You cannot play this scheduled pipeline at the moment. Please wait a minute.')
     redirect_to pipeline_schedules_path(@project)
   end
 

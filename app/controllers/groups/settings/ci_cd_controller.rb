@@ -13,7 +13,7 @@ module Groups
       def reset_registration_token
         @group.reset_runners_token!
 
-        flash[:notice] = 'New runners registration token has been generated!'
+        flash[:notice] = _('GroupSettings|New runners registration token has been generated!')
         redirect_to group_settings_ci_cd_path
       end
 

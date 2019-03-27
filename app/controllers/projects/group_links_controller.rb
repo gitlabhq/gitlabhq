@@ -18,7 +18,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
       flash[:alert] = result[:message] if result[:http_status] == 409
     else
-      flash[:alert] = 'Please select a group.'
+      flash[:alert] = _('Please select a group.')
     end
 
     redirect_to project_project_members_path(project)

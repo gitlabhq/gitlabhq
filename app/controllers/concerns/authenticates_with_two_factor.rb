@@ -36,7 +36,7 @@ module AuthenticatesWithTwoFactor
   end
 
   def locked_user_redirect(user)
-    flash.now[:alert] = 'Invalid Login or password'
+    flash.now[:alert] = _('Invalid Login or password')
     render 'devise/sessions/new'
   end
 
@@ -66,7 +66,7 @@ module AuthenticatesWithTwoFactor
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=OTP")
-      flash.now[:alert] = 'Invalid two-factor code.'
+      flash.now[:alert] = _('Invalid two-factor code.')
       prompt_for_two_factor(user)
     end
   end
@@ -83,7 +83,7 @@ module AuthenticatesWithTwoFactor
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=U2F")
-      flash.now[:alert] = 'Authentication via U2F device failed.'
+      flash.now[:alert] = _('Authentication via U2F device failed.')
       prompt_for_two_factor(user)
     end
   end
