@@ -121,68 +121,48 @@ describe('IDE store file actions', () => {
       store._actions.scrollToTab = oldScrollToTab; // eslint-disable-line
     });
 
-    it('calls scrollToTab', done => {
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(scrollToTabSpy).toHaveBeenCalled();
+    it('calls scrollToTab', () => {
+      const dispatch = jasmine.createSpy();
 
-          done();
-        })
-        .catch(done.fail);
+      actions.setFileActive(
+        { commit() {}, state: store.state, getters: store.getters, dispatch },
+        localFile.path,
+      );
+
+      expect(dispatch).toHaveBeenCalledWith('scrollToTab');
     });
 
-    it('sets the file active', done => {
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(localFile.active).toBeTruthy();
+    it('commits SET_FILE_ACTIVE', () => {
+      const commit = jasmine.createSpy();
 
-          done();
-        })
-        .catch(done.fail);
+      actions.setFileActive(
+        { commit, state: store.state, getters: store.getters, dispatch() {} },
+        localFile.path,
+      );
+
+      expect(commit).toHaveBeenCalledWith('SET_FILE_ACTIVE', {
+        path: localFile.path,
+        active: true,
+      });
     });
 
-    it('returns early if file is already active', done => {
-      localFile.active = true;
-
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(scrollToTabSpy).not.toHaveBeenCalled();
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('sets current active file to not active', done => {
+    it('sets current active file to not active', () => {
       const f = file('newActive');
       store.state.entries[f.path] = f;
       localFile.active = true;
       store.state.openFiles.push(localFile);
 
-      store
-        .dispatch('setFileActive', f.path)
-        .then(() => {
-          expect(localFile.active).toBeFalsy();
+      const commit = jasmine.createSpy();
 
-          done();
-        })
-        .catch(done.fail);
-    });
+      actions.setFileActive(
+        { commit, state: store.state, getters: store.getters, dispatch() {} },
+        f.path,
+      );
 
-    it('resets location.hash for line highlighting', done => {
-      window.location.hash = 'test';
-
-      store
-        .dispatch('setFileActive', localFile.path)
-        .then(() => {
-          expect(window.location.hash).not.toBe('test');
-
-          done();
-        })
-        .catch(done.fail);
+      expect(commit).toHaveBeenCalledWith('SET_FILE_ACTIVE', {
+        path: localFile.path,
+        active: false,
+      });
     });
   });
 

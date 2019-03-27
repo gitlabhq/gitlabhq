@@ -4,6 +4,7 @@ import Flash from './flash';
 export default function notificationsDropdown() {
   $(document).on('click', '.update-notification', function updateNotificationCallback(e) {
     e.preventDefault();
+
     if ($(this).is('.is-active') && $(this).data('notificationLevel') === 'custom') {
       return;
     }
