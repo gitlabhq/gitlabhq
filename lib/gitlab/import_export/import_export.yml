@@ -33,6 +33,7 @@ project_tree:
     - :user
   - merge_requests:
     - :metrics
+    - :suggestions
     - notes:
       - :author
       - events:

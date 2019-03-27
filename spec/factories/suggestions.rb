@@ -16,5 +16,11 @@ FactoryBot.define do
       applied true
       commit_id { RepoHelpers.sample_commit.id }
     end
+
+    trait :content_from_repo do
+      after(:build) do |suggestion, evaluator|
+        suggestion.from_content = suggestion.fetch_from_content
+      end
+    end
   end
 end

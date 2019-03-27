@@ -1558,8 +1558,6 @@ module API
 
     class Suggestion < Grape::Entity
       expose :id
-      expose :from_original_line
-      expose :to_original_line
       expose :from_line
       expose :to_line
       expose :appliable?, as: :appliable

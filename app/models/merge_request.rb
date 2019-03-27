@@ -66,6 +66,7 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
   has_many :merge_request_pipelines, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline'
+  has_many :suggestions, through: :notes
 
   has_many :merge_request_assignees
   # Will be deprecated at https://gitlab.com/gitlab-org/gitlab-ce/issues/59457

@@ -101,6 +101,7 @@ merge_requests:
 - latest_merge_request_diff
 - merge_request_pipelines
 - merge_request_assignees
+- suggestions
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -352,3 +353,5 @@ resource_label_events:
 - label
 error_tracking_setting:
 - project
+suggestions:
+- note

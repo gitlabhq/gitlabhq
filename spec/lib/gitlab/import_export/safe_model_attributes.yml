@@ -608,3 +608,14 @@ ErrorTracking::ProjectErrorTrackingSetting:
 - project_id
 - project_name
 - organization_name
+Suggestion:
+- id
+- note_id
+- relative_order
+- applied
+- commit_id
+- from_content
+- to_content
+- outdated
+- lines_above
+- lines_below

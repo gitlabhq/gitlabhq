@@ -2039,6 +2039,9 @@ ActiveRecord::Schema.define(version: 20190322132835) do
     t.string "commit_id"
     t.text "from_content", null: false
     t.text "to_content", null: false
+    t.integer "lines_above", default: 0, null: false
+    t.integer "lines_below", default: 0, null: false
+    t.boolean "outdated", default: false, null: false
     t.index ["note_id", "relative_order"], name: "index_suggestions_on_note_id_and_relative_order", unique: true, using: :btree
   end
 

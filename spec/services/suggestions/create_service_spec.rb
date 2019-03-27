@@ -40,6 +40,14 @@ describe Suggestions::CreateService do
         ```thing
           this is not a suggestion, it's a thing
         ```
+
+        ```suggestion:-3+2
+          # multi-line suggestion 1
+        ```
+
+        ```suggestion:-5
+          # multi-line suggestion 1
+        ```
     MARKDOWN
   end
 
@@ -54,7 +62,7 @@ describe Suggestions::CreateService do
         end
 
         it 'does not try to parse suggestions' do
-          expect(Banzai::SuggestionsParser).not_to receive(:parse)
+          expect(Gitlab::Diff::SuggestionsParser).not_to receive(:parse)
 
           subject.execute
         end
@@ -71,7 +79,7 @@ describe Suggestions::CreateService do
         it 'does not try to parse suggestions' do
           allow(note).to receive(:on_text?) { false }
 
-          expect(Banzai::SuggestionsParser).not_to receive(:parse)
+          expect(Gitlab::Diff::SuggestionsParser).not_to receive(:parse)
 
           subject.execute
         end
@@ -87,7 +95,9 @@ describe Suggestions::CreateService do
       end
 
       it 'creates no suggestion when diff file is not found' do
-        expect(note).to receive(:latest_diff_file) { nil }
+        expect_next_instance_of(DiffNote) do |diff_note|
+          expect(diff_note).to receive(:latest_diff_file).twice { nil }
+        end
 
         expect { subject.execute }.not_to change(Suggestion, :count)
       end
@@ -101,43 +111,44 @@ describe Suggestions::CreateService do
                                             note: markdown)
       end
 
-      context 'single line suggestions' do
-        it 'persists suggestion records' do
-          expect { subject.execute }
-            .to change { note.suggestions.count }
-            .from(0)
-            .to(2)
-        end
+      let(:expected_suggestions) do
+        Gitlab::Diff::SuggestionsParser.parse(markdown,
+                                              project: note.project,
+                                              position: note.position)
+      end
 
-        it 'persists original from_content lines and suggested lines' do
+      it 'persists suggestion records' do
+        expect { subject.execute }.to change { note.suggestions.count }
+          .from(0).to(expected_suggestions.size)
+      end
+
+      it 'persists suggestions data correctly' do
+        subject.execute
+
+        suggestions = note.suggestions.order(:relative_order)
+
+        suggestions.zip(expected_suggestions) do |suggestion, expected_suggestion|
+          expected_data = expected_suggestion.to_hash
+
+          expect(suggestion.from_content).to eq(expected_data[:from_content])
+          expect(suggestion.to_content).to eq(expected_data[:to_content])
+          expect(suggestion.lines_above).to eq(expected_data[:lines_above])
+          expect(suggestion.lines_below).to eq(expected_data[:lines_below])
+        end
+      end
+
+      context 'outdated position note' do
+        let!(:outdated_diff) { merge_request.merge_request_diff }
+        let!(:latest_diff) { merge_request.create_merge_request_diff }
+        let(:outdated_position) { build_position(diff_refs: outdated_diff.diff_refs) }
+        let(:position) { build_position(diff_refs: latest_diff.diff_refs) }
+
+        it 'uses the correct position when creating the suggestion' do
+          expect(Gitlab::Diff::SuggestionsParser).to receive(:parse)
+            .with(note.note, project: note.project, position: note.position)
+            .and_call_original
+
           subject.execute
-
-          suggestions = note.suggestions.order(:relative_order)
-
-          suggestion_1 = suggestions.first
-          suggestion_2 = suggestions.last
-
-          expect(suggestion_1).to have_attributes(from_content: "    vars = {\n",
-                                                  to_content: "  foo\n  bar\n")
-
-          expect(suggestion_2).to have_attributes(from_content: "    vars = {\n",
-                                                  to_content: "  xpto\n  baz\n")
-        end
-
-        context 'outdated position note' do
-          let!(:outdated_diff) { merge_request.merge_request_diff }
-          let!(:latest_diff) { merge_request.create_merge_request_diff }
-          let(:outdated_position) { build_position(diff_refs: outdated_diff.diff_refs) }
-          let(:position) { build_position(diff_refs: latest_diff.diff_refs) }
-
-          it 'uses the correct position when creating the suggestion' do
-            expect(note.position)
-              .to receive(:diff_file)
-              .with(project_with_repo.repository)
-              .and_call_original
-
-            subject.execute
-          end
         end
       end
     end

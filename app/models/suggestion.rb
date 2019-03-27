@@ -1,11 +1,19 @@
 # frozen_string_literal: true
 
 class Suggestion < ApplicationRecord
+  include Suggestible
+
   belongs_to :note, inverse_of: :suggestions
   validates :note, presence: true
   validates :commit_id, presence: true, if: :applied?
 
-  delegate :original_position, :position, :noteable, to: :note
+  delegate :position, :noteable, to: :note
+
+  scope :active, -> { where(outdated: false) }
+
+  def diff_file
+    note.latest_diff_file
+  end
 
   def project
     noteable.source_project
@@ -19,35 +27,35 @@ class Suggestion < ApplicationRecord
     position.file_path
   end
 
-  # For now, suggestions only serve as a way to send patches that
-  # will change a single line (being able to apply multiple in the same place),
-  # which explains `from_line` and `to_line` being the same line.
-  # We'll iterate on that in https://gitlab.com/gitlab-org/gitlab-ce/issues/53310
-  # when allowing multi-line suggestions.
-  def from_line
-    position.new_line
-  end
-  alias_method :to_line, :from_line
-
-  def from_original_line
-    original_position.new_line
-  end
-  alias_method :to_original_line, :from_original_line
-
   # `from_line_index` and `to_line_index` represents diff/blob line numbers in
   # index-like way (N-1).
   def from_line_index
     from_line - 1
   end
-  alias_method :to_line_index, :from_line_index
 
-  def appliable?
-    return false unless note.supports_suggestion?
+  def to_line_index
+    to_line - 1
+  end
 
+  def appliable?(cached: true)
     !applied? &&
       noteable.opened? &&
+      !outdated?(cached: cached) &&
+      note.supports_suggestion? &&
       different_content? &&
       note.active?
+  end
+
+  # Overwrites outdated column
+  def outdated?(cached: true)
+    return super() if cached
+    return true unless diff_file
+
+    from_content != fetch_from_content
+  end
+
+  def target_line
+    position.new_line
   end
 
   private
