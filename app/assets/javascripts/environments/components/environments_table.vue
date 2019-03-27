@@ -99,7 +99,7 @@ export default {
       />
 
       <div
-        v-if="shouldRenderDeployBoard"
+        v-if="shouldRenderDeployBoard(model)"
         :key="`deploy-board-row-${i}`"
         class="js-deploy-board-row"
       >
