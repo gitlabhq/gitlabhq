@@ -210,6 +210,19 @@ describe('Assignee component', () => {
       expect(component.$el.querySelector('.user-list-more')).toBe(null);
     });
 
+    it('sets tooltip container to body', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(2);
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000',
+          users,
+          editable: true,
+        },
+      }).$mount();
+
+      expect(component.$el.querySelector('.user-link').getAttribute('data-container')).toBe('body');
+    });
+
     it('Shows the "show-less" assignees label', done => {
       const users = UsersMockHelper.createNumberRandomUsers(6);
       component = new AssigneeComponent({
