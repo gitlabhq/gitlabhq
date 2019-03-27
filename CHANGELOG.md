@@ -2,6 +2,55 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.7.8 (2019-03-26)
+
+### Security (7 changes)
+
+- Disallow guest users from accessing Releases.
+- Fix PDF.js vulnerability.
+- Hide "related branches" when user does not have permission.
+- Fix XSS in resolve conflicts form.
+- Added rake task for removing EXIF data from existing uploads.
+- Disallow updating namespace when updating a project.
+- Use UntrustedRegexp for matching refs policy.
+
+
+## 11.7.7 (2019-03-19)
+
+### Security (2 changes)
+
+- Remove project serialization in quick actions response.
+- Fixed ability to see private groups by users not belonging to given group.
+
+
+## 11.7.6 (2019-02-28)
+
+### Security (22 changes)
+
+- Stop linking to unrecognized package sources. !55518
+- Don't allow non-members to see private related MRs.
+- Fix potential Addressable::URI::InvalidURIError.
+- Do not display impersonated sessions under active sessions and remove ability to revoke session.
+- Display only information visible to current user on the Milestone page.
+- Show only merge requests visible to user on milestone detail page.
+- Disable issue boards API when issues are disabled.
+- Don't show new issue link after move when a user does not have permissions.
+- Fix git clone revealing private repo's presence.
+- Fix blind SSRF in Prometheus integration by checking URL before querying.
+- Check snippet attached file to be moved is within designated directory.
+- Check if desired milestone for an issue is available.
+- Fix arbitrary file read via diffs during import.
+- Display the correct number of MRs a user has access to.
+- Forbid creating discussions for users with restricted access.
+- Do not disclose milestone titles for unauthorized users.
+- Validate session key when authorizing with GCP to create a cluster.
+- Block local URLs for Kubernetes integration.
+- Limit mermaid rendering to 5K characters.
+- Remove the possibility to share a project with a group that a user is not a member of.
+- Fix leaking private repository information in API.
+- Prevent releases links API to leak tag existance.
+
+
 ## 11.7.5 (2019-02-06)
 
 ### Fixed (8 changes)

@@ -16,7 +16,9 @@ export default class Issue {
     Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
 
     Issue.initMergeRequests();
-    Issue.initRelatedBranches();
+    if (document.querySelector('#related-branches')) {
+      Issue.initRelatedBranches();
+    }
 
     this.closeButtons = $('a.btn-close');
     this.reopenButtons = $('a.btn-reopen');
