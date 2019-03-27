@@ -112,5 +112,15 @@ describe BuildDetailsEntity do
         expect(subject['merge_request_path']).to be_nil
       end
     end
+
+    context 'when the build has failed' do
+      let(:build) { create(:ci_build, :created) }
+
+      before do
+        build.drop!(:unmet_prerequisites)
+      end
+
+      it { is_expected.to include(failure_reason: 'unmet_prerequisites') }
+    end
   end
 end
