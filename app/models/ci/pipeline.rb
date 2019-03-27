@@ -781,7 +781,7 @@ module Ci
     end
 
     def git_ref
-      strong_memoize(:git_pref) do
+      strong_memoize(:git_ref) do
         if merge_request_event?
           ##
           # In the future, we're going to change this ref to

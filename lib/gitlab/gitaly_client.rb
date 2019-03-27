@@ -302,6 +302,7 @@ module Gitlab
     # branch, this method allows caching of the ref name directly.
     def self.allow_ref_name_caching
       return yield unless Gitlab::SafeRequestStore.active?
+      return yield if ref_name_caching_allowed?
 
       begin
         Gitlab::SafeRequestStore[:allow_ref_name_caching] = true
