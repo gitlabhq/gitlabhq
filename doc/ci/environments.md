@@ -467,8 +467,6 @@ To retry or rollback a deployment:
 NOTE: **Note:**
 The defined deployment process in the job's `script` determines whether the rollback succeeds or not.
 
-To avoid failed deployments being deployed in a production environment, [configure manual actions](#configing-manual-deployments) for production deployments.
-
 ### Using the environment URL
 
 The [environment URL](yaml/README.md#environmenturl) is exposed in a few
@@ -501,7 +499,7 @@ from source files to public pages on the environment set for Review Apps.
 
 Stopping an environment:
 
-- Removes it from the list of environments on the [**Environments** page](#viewing-environments-and-deployments).
+- Moves it from the list of **Available** environments to the list of **Stopped** environments on the [**Environments** page](#viewing-environments-and-deployments).
 - Executes an [`on_stop` action](yaml/README.md#environmenton_stop), if defined.
 
 This is often used when multiple developers are working on a project at the same time,
