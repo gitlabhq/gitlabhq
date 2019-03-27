@@ -12,12 +12,4 @@ module CiVariablesHelper
       ci_variable_protected_by_default?
     end
   end
-
-  def ci_variable_masked?(variable, only_key_value)
-    if variable && !only_key_value
-      variable.masked
-    else
-      true
-    end
-  end
 end
