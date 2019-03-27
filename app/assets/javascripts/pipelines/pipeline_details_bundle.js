@@ -29,15 +29,6 @@ export default () => {
         mediator,
       };
     },
-    methods: {
-      requestRefreshPipelineGraph() {
-        // When an action is clicked
-        // (wether in the dropdown or in the main nodes, we refresh the big graph)
-        this.mediator
-          .refreshPipeline()
-          .catch(() => Flash(__('An error occurred while making the request.')));
-      },
-    },
     render(createElement) {
       return createElement('pipeline-graph', {
         props: {
