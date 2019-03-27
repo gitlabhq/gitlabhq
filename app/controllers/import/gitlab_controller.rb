@@ -42,7 +42,7 @@ class Import::GitlabController < Import::BaseController
         render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
-      render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
+      render json: { errors: _('This namespace has already been taken! Please choose another one.') }, status: :unprocessable_entity
     end
   end
 

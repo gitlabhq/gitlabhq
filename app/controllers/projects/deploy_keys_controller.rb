@@ -38,7 +38,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
 
   def update
     if deploy_key.update(update_params)
-      flash[:notice] = 'Deploy key was successfully updated.'
+      flash[:notice] = _('Deploy key was successfully updated.')
       redirect_to_repository_settings(@project, anchor: 'js-deploy-keys-settings')
     else
       render 'edit'

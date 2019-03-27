@@ -49,7 +49,7 @@ class Projects::WikisController < Projects::ApplicationController
     if @page.valid?
       redirect_to(
         project_wiki_path(@project, @page),
-        notice: 'Wiki was successfully updated.'
+        notice: _('Wiki was successfully updated.')
       )
     else
       render 'edit'
@@ -65,7 +65,7 @@ class Projects::WikisController < Projects::ApplicationController
     if @page.persisted?
       redirect_to(
         project_wiki_path(@project, @page),
-        notice: 'Wiki was successfully updated.'
+        notice: _('Wiki was successfully updated.')
       )
     else
       render action: "edit"
@@ -85,7 +85,7 @@ class Projects::WikisController < Projects::ApplicationController
     else
       redirect_to(
         project_wiki_path(@project, :home),
-        notice: "Page not found"
+        notice: _("Page not found")
       )
     end
   end
@@ -95,7 +95,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     redirect_to project_wiki_path(@project, :home),
                 status: 302,
-                notice: "Page was successfully deleted"
+                notice: _("Page was successfully deleted")
   rescue Gitlab::Git::Wiki::OperationError => e
     @error = e
     render 'edit'
@@ -118,7 +118,7 @@ class Projects::WikisController < Projects::ApplicationController
       @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages(limit: 15))
     end
   rescue ProjectWiki::CouldNotCreateWikiError
-    flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
+    flash[:notice] = _("Could not create Wiki Repository at this time. Please try again later.")
     redirect_to project_path(@project)
     false
   end
@@ -155,7 +155,7 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def set_encoding_error
-    flash.now[:notice] = "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
+    flash.now[:notice] = _("The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.")
   end
 
   def file_blob
