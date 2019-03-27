@@ -45,6 +45,8 @@
                   %span
                     = _('Contribution Analytics')
 
+            = render_if_exists 'layouts/nav/group_insights_link'
+
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
       - if group_sidebar_link?(:issues)

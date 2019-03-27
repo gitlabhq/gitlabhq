@@ -41,6 +41,8 @@
               = link_to project_cycle_analytics_path(@project), title: _('Cycle Analytics'), class: 'shortcuts-project-cycle-analytics' do
                 %span= _('Cycle Analytics')
 
+          = render_if_exists 'layouts/nav/project_insights_link'
+
       - if project_nav_tab? :files
         = nav_link(controller: sidebar_repository_paths) do
           = link_to project_tree_path(@project), class: 'shortcuts-tree qa-project-menu-repo' do
