@@ -389,14 +389,20 @@ to obtain the endpoint. You can use either
 In order to publish your web application, you first need to find the endpoint which will be either an IP
 address or a hostname associated with your load balancer.
 
-### Let GitLab fetch the external endpoint
+### Automatically determining the external endpoint
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
 
-If you [installed Ingress or Knative](#installing-applications),
-you should see the Ingress Endpoint on this same page within a few minutes.
-If you don't see this, GitLab might not be able to determine the external endpoint of
-your ingress application in which case you should manually determine it.
+After you install [Ingress or Knative](#installing-applications), Gitlab attempts to determine the external endpoint
+and it should be available within a few minutes. If the endpoint doesn't appear
+and your cluster runs on Google Kubernetes Engine:
+
+1. Check your [Kubernetes cluster on Google Kubernetes Engine](https://console.cloud.google.com/kubernetes) to ensure there are no errors on its nodes.
+1. Ensure you have enough [Quotas](https://console.cloud.google.com/iam-admin/quotas) on Google Kubernetes Engine. For more information, see [Resource Quotas](https://cloud.google.com/compute/quotas).
+1. Check [Google Cloud's Status](https://status.cloud.google.com/) to ensure they are not having any disruptions.
+
+If GitLab is still unable to determine the endpoint of your Ingress or Knative application, you can
+manually determine it by following the steps below.
 
 ### Manually determining the external endpoint
 
