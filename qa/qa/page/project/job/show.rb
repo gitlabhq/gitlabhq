@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA::Page
   module Project::Job
     class Show < QA::Page::Base
@@ -31,7 +33,9 @@ module QA::Page
       private
 
       def loaded?(wait: 60)
-        has_element?(:build_trace, wait: wait)
+        wait(reload: true, max: wait, interval: 1) do
+          has_element?(:build_trace, wait: 1)
+        end
       end
 
       def completed?(timeout: 60)
