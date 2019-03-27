@@ -26,7 +26,7 @@ Reviewers and maintainers should pay attention to:
 
 - `defer` functions: ensure the presence when needed, and after `err` check.
 - Inject dependencies as parameters.
-- Void structs when marshalling to JSON (generates `null` instead of `[]`).
+- Void structs when marshaling to JSON (generates `null` instead of `[]`).
 
 ### Security
 
@@ -185,7 +185,7 @@ There are a few guidelines one should follow when using the
 
 - When printing an error use
   [WithError](https://godoc.org/github.com/sirupsen/logrus#WithError). For
-  exmaple, `logrus.WithError(err).Error("Failed to do something")`.
+  example, `logrus.WithError(err).Error("Failed to do something")`.
 - Since we use [structured logging](#structured-json-logging) we can log
   fields in the context of that code path, such as the URI of the request using
   [`WithField`](https://godoc.org/github.com/sirupsen/logrus#WithField) or
