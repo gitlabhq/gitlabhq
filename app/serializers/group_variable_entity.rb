@@ -6,4 +6,5 @@ class GroupVariableEntity < Grape::Entity
   expose :value
 
   expose :protected?, as: :protected
+  expose :masked?, as: :masked
 end
