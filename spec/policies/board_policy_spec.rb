@@ -17,14 +17,6 @@ describe BoardPolicy do
     ]
   end
 
-  def expect_allowed(*permissions)
-    permissions.each { |p| is_expected.to be_allowed(p) }
-  end
-
-  def expect_disallowed(*permissions)
-    permissions.each { |p| is_expected.not_to be_allowed(p) }
-  end
-
   context 'group board' do
     subject { described_class.new(user, group_board) }
 

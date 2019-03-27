@@ -51,14 +51,6 @@ describe GroupPolicy do
 
   subject { described_class.new(current_user, group) }
 
-  def expect_allowed(*permissions)
-    permissions.each { |p| is_expected.to be_allowed(p) }
-  end
-
-  def expect_disallowed(*permissions)
-    permissions.each { |p| is_expected.not_to be_allowed(p) }
-  end
-
   context 'with no user' do
     let(:group) { create(:group, :public) }
     let(:current_user) { nil }
