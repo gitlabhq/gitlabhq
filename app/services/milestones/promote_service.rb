@@ -26,17 +26,15 @@ module Milestones
 
     private
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def milestone_ids_for_merge(group_milestone)
       # Pluck need to be used here instead of select so the array of ids
       # is persistent after old milestones gets deleted.
       @milestone_ids_for_merge ||= begin
         search_params = { title: group_milestone.title, project_ids: group_project_ids, state: 'all' }
         milestones = MilestonesFinder.new(search_params).execute
-        milestones.pluck(:id)
+        milestones.pluck_primary_key
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def move_children_to_group_milestone(group_milestone)
       milestone_ids_for_merge(group_milestone).in_groups_of(100, false) do |milestone_ids|

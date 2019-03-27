@@ -554,7 +554,7 @@ module QuickActions
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable) &&
         issuable.project.boards.count == 1
     end
-    # rubocop: disable CodeReuse/ActiveRecord
+
     command :board_move do |target_list_name|
       label_ids = find_label_ids(target_list_name)
 
@@ -562,14 +562,17 @@ module QuickActions
         label_id = label_ids.first
 
         # Ensure this label corresponds to a list on the board
-        next unless Label.on_project_boards(issuable.project_id).where(id: label_id).exists?
+        next unless Label.on_project_boards(issuable.project_id).id_in(label_id).exists?
 
-        @updates[:remove_label_ids] =
-          issuable.labels.on_project_boards(issuable.project_id).where.not(id: label_id).pluck(:id)
+        @updates[:remove_label_ids] = issuable
+            .labels
+            .on_project_boards(issuable.project_id)
+            .id_not_in(label_id)
+            .pluck_primary_key
+
         @updates[:add_label_ids] = [label_id]
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     desc 'Mark this issue as a duplicate of another issue'
     explanation do |duplicate_reference|
