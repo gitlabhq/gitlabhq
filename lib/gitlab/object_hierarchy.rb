@@ -144,7 +144,7 @@ module Gitlab
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
 
       base_query = ancestors_base.except(:order)
-      base_query = base_query.select("1 as #{DEPTH_COLUMN}", objects_table[Arel.star]) if hierarchy_order
+      base_query = base_query.select("1 as #{DEPTH_COLUMN}", "ARRAY[id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if hierarchy_order
 
       cte << base_query
 
@@ -154,7 +154,17 @@ module Gitlab
         .where(objects_table[:id].eq(cte.table[:parent_id]))
         .except(:order)
 
-      parent_query = parent_query.select(cte.table[DEPTH_COLUMN] + 1, objects_table[Arel.star]) if hierarchy_order
+      if hierarchy_order
+        quoted_objects_table_name = model.connection.quote_table_name(objects_table.name)
+
+        parent_query = parent_query.select(
+          cte.table[DEPTH_COLUMN] + 1,
+          "tree_path || #{quoted_objects_table_name}.id",
+          "#{quoted_objects_table_name}.id = ANY(tree_path)",
+          objects_table[Arel.star]
+        ).where(cte.table[:tree_cycle].eq(false))
+      end
+
       parent_query = parent_query.where(cte.table[:parent_id].not_eq(stop_id)) if stop_id
 
       cte << parent_query
@@ -167,7 +177,7 @@ module Gitlab
       cte = SQL::RecursiveCTE.new(:base_and_descendants)
 
       base_query = descendants_base.except(:order)
-      base_query = base_query.select("1 as #{DEPTH_COLUMN}", objects_table[Arel.star]) if with_depth
+      base_query = base_query.select("1 AS #{DEPTH_COLUMN}", "ARRAY[id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if with_depth
 
       cte << base_query
 
@@ -177,7 +187,16 @@ module Gitlab
         .where(objects_table[:parent_id].eq(cte.table[:id]))
         .except(:order)
 
-      descendants_query = descendants_query.select(cte.table[DEPTH_COLUMN] + 1, objects_table[Arel.star]) if with_depth
+      if with_depth
+        quoted_objects_table_name = model.connection.quote_table_name(objects_table.name)
+
+        descendants_query = descendants_query.select(
+          cte.table[DEPTH_COLUMN] + 1,
+          "tree_path || #{quoted_objects_table_name}.id",
+          "#{quoted_objects_table_name}.id = ANY(tree_path)",
+          objects_table[Arel.star]
+        ).where(cte.table[:tree_cycle].eq(false))
+      end
 
       cte << descendants_query
       cte
