@@ -471,14 +471,29 @@ class Project < ActiveRecord::Base
     return public_to_user unless user
 
     visible_levels = Gitlab::VisibilityLevel.levels_for_user(user)
-    visible_levels &= Array(requested_visibility_levels) if requested_visibility_levels.present?
+    include_private = true
+    requested_visibility_levels = Array(requested_visibility_levels)
 
-    if visible_levels.present?
-      where('EXISTS (?) OR projects.visibility_level IN (?)',
-            user.authorizations_for_projects, visible_levels)
-    else
-      where('EXISTS (?)', user.authorizations_for_projects)
+    if requested_visibility_levels.present?
+      visible_levels &= requested_visibility_levels
+      include_private = requested_visibility_levels.include?(Gitlab::VisibilityLevel::PRIVATE)
     end
+
+    public_or_internal_rel =
+      if visible_levels.present?
+        where('projects.visibility_level IN (?)', visible_levels)
+      else
+        Project.none
+      end
+
+    private_rel =
+      if include_private
+        where('EXISTS (?)', user.authorizations_for_projects)
+      else
+        Project.none
+      end
+
+    public_or_internal_rel.or(private_rel)
   end
 
   # project features may be "disabled", "internal", "enabled" or "public". If "internal",
