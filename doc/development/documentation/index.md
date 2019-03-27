@@ -10,8 +10,8 @@ In addition to this page, the following resources to help craft and contribute d
 
 - [Style Guide](styleguide.md) - What belongs in the docs, language guidelines, and more.
 - [Structure and template](structure.md) - Learn the typical parts of a doc page and how to write each one.
-- [Workflow](workflow.md) - A landing page for our key workflows:
-  - [Feature-change documentation workflow](feature-change-workflow.md) - Adding required documentation when developing a GitLab feature.
+- [Workflows](workflow.md) - A landing page for our key workflows:
+  - [Documentation process for feature changes](feature-change-workflow.md) - Adding required documentation when developing a GitLab feature.
   - [Documentation improvement workflow](improvement-workflow.md) - New content not associated with a new feature.
 - [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
 - [Site architecture](site_architecture/index.md) - How docs.gitlab.com is built.
@@ -511,10 +511,10 @@ Currently, the following tests are in place:
 
 1. `docs lint`: Check that all internal (relative) links work correctly and
    that all cURL examples in API docs use the full switches. It's recommended
-   to [check locally](#previewing-locally) before pushing to GitLab by executing the command
+   to [check locally](#previewing-the-changes-live) before pushing to GitLab by executing the command
    `bundle exec nanoc check internal_links` on your local
    [`gitlab-docs`](https://gitlab.com/gitlab-com/gitlab-docs) directory.
-1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-gt-ee-merge-conflicts-beforehand) (runs on CE only):
+1. [`ee_compat_check`](../automatic_ce_ee_merge.md#avoiding-ce-ee-merge-conflicts-beforehand) (runs on CE only):
     When you submit a merge request to GitLab Community Edition (CE),
     there is this additional job that runs against Enterprise Edition (EE)
     and checks if your changes can apply cleanly to the EE codebase.

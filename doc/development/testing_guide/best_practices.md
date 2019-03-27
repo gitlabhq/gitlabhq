@@ -40,7 +40,7 @@ bundle exec rspec spec/[path]/[to]/[spec].rb
   to separate phases.
 - Use `Gitlab.config.gitlab.host` rather than hard coding `'localhost'`
 - Don't assert against the absolute value of a sequence-generated attribute (see
-  [Gotchas](../gotchas.md#dont-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
+  [Gotchas](../gotchas.md#do-not-assert-against-the-absolute-value-of-a-sequence-generated-attribute)).
 - Don't supply the `:each` argument to hooks since it's the default.
 - On `before` and `after` hooks, prefer it scoped to `:context` over `:all`
 - When using `evaluate_script("$('.js-foo').testSomething()")` (or `execute_script`) which acts on a given element,
@@ -168,12 +168,13 @@ instead of 30+ seconds in case of a regular `spec_helper`.
 
 ### `let` variables
 
-GitLab's RSpec suite has made extensive use of `let` variables to reduce
-duplication. However, this sometimes [comes at the cost of clarity][lets-not],
+GitLab's RSpec suite has made extensive use of `let`(along with it strict, non-lazy
+version `let!`) variables to reduce duplication. However, this sometimes [comes at the cost of clarity][lets-not], 
 so we need to set some guidelines for their use going forward:
 
-- `let` variables are preferable to instance variables. Local variables are
-  preferable to `let` variables.
+- `let!` variables are preferable to instance variables. `let` variables
+  are preferable to `let!` variables. Local variables are preferable to 
+  `let` variables.
 - Use `let` to reduce duplication throughout an entire spec file.
 - Don't use `let` to define variables used by a single test; define them as
   local variables inside the test's `it` block.
@@ -183,6 +184,9 @@ so we need to set some guidelines for their use going forward:
 - Try to avoid overriding the definition of one `let` variable with another.
 - Don't define a `let` variable that's only used by the definition of another.
   Use a helper method instead.
+- `let!` variables should be used only in case if strict evaluation with defined 
+  order is required, otherwise `let` will suffice. Remember that `let` is lazy and won't 
+  be evaluated until it is referenced.
 
 [lets-not]: https://robots.thoughtbot.com/lets-not
 
@@ -358,16 +362,11 @@ range of inputs, might look like this:
 describe "#==" do
   using RSpec::Parameterized::TableSyntax
 
-  let(:project1) { create(:project) }
-  let(:project2) { create(:project) }
   where(:a, :b, :result) do
     1         | 1        | true
     1         | 2        | false
     true      | true     | true
     true      | false    | false
-    project1  | project1 | true
-    project2  | project2 | true
-    project 1 | project2 | false
   end
 
   with_them do
@@ -379,6 +378,11 @@ describe "#==" do
   end
 end
 ```
+
+CAUTION: **Caution:**
+Only use simple values as input in the `where` block. Using procs, stateful
+objects, FactoryBot-created objects etc. can lead to
+[unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
 
 ### Prometheus tests
 

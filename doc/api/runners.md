@@ -13,13 +13,15 @@ GET /runners
 GET /runners?scope=active
 GET /runners?type=project_type
 GET /runners?status=active
+GET /runners?tag_list=tag1,tag2
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| Attribute   | Type           | Required | Description         |
+|-------------|----------------|----------|---------------------|
+| `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| `tag_list`  | Array[String]  | no       | List of of the runner's tags |
 
 ```
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners"
@@ -62,13 +64,15 @@ GET /runners/all
 GET /runners/all?scope=online
 GET /runners/all?type=project_type
 GET /runners/all?status=active
+GET /runners/all?tag_list=tag1,tag2
 ```
 
-| Attribute | Type    | Required | Description         |
-|-----------|---------|----------|---------------------|
-| `scope`   | string  | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`    | string  | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`  | string  | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| Attribute   | Type           | Required | Description         |
+|-------------|----------------|----------|---------------------|
+| `scope`     | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to show, one of: `specific`, `shared`, `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`      | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`    | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| `tag_list`  | Array[String]  | no       | List of of the runner's tags |
 
 ```
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/all"
@@ -347,14 +351,16 @@ GET /projects/:id/runners
 GET /projects/:id/runners?scope=active
 GET /projects/:id/runners?type=project_type
 GET /projects/:id/runners?status=active
+GET /projects/:id/runners?tag_list=tag1,tag2
 ```
 
-| Attribute | Type           | Required | Description         |
-|-----------|----------------|----------|---------------------|
-| `id`      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-| `scope`   | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
-| `type`    | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
-| `status`  | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| Attribute  | Type           | Required | Description         |
+|------------|----------------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `scope`    | string         | no       | Deprecated: Use `type` or `status` instead. The scope of specific runners to show, one of: `active`, `paused`, `online`, `offline`; showing all runners if none provided |
+| `type`     | string         | no       | The type of runners to show, one of: `instance_type`, `group_type`, `project_type` |
+| `status`   | string         | no       | The status of runners to show, one of: `active`, `paused`, `online`, `offline` |
+| `tag_list` | Array[String]  | no       | List of of the runner's tags |
 
 ```
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/9/runners"
@@ -478,7 +484,7 @@ Example response:
 
 ## Delete a registered Runner
 
-Deletes a registed Runner.
+Deletes a registered Runner.
 
 ```
 DELETE /runners

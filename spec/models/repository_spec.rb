@@ -1095,6 +1095,49 @@ describe Repository do
     end
   end
 
+  shared_examples 'asymmetric cached method' do |method|
+    context 'asymmetric caching', :use_clean_rails_memory_store_caching, :request_store do
+      let(:cache) { repository.send(:cache) }
+      let(:request_store_cache) { repository.send(:request_store_cache) }
+
+      context 'when it returns true' do
+        before do
+          expect(repository.raw_repository).to receive(method).once.and_return(true)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.send(method)
+          end.to change { request_store_cache.read(method) }.from(nil).to(true)
+        end
+
+        it 'caches the output in RepositoryCache' do
+          expect do
+            repository.send(method)
+          end.to change { cache.read(method) }.from(nil).to(true)
+        end
+      end
+
+      context 'when it returns false' do
+        before do
+          expect(repository.raw_repository).to receive(method).once.and_return(false)
+        end
+
+        it 'caches the output in RequestStore' do
+          expect do
+            repository.send(method)
+          end.to change { request_store_cache.read(method) }.from(nil).to(false)
+        end
+
+        it 'does NOT cache the output in RepositoryCache' do
+          expect do
+            repository.send(method)
+          end.not_to change { cache.read(method) }.from(nil)
+        end
+      end
+    end
+  end
+
   describe '#exists?' do
     it 'returns true when a repository exists' do
       expect(repository.exists?).to be(true)
@@ -1112,46 +1155,7 @@ describe Repository do
       end
     end
 
-    context 'asymmetric caching', :use_clean_rails_memory_store_caching, :request_store do
-      let(:cache) { repository.send(:cache) }
-      let(:request_store_cache) { repository.send(:request_store_cache) }
-
-      context 'when it returns true' do
-        before do
-          expect(repository.raw_repository).to receive(:exists?).once.and_return(true)
-        end
-
-        it 'caches the output in RequestStore' do
-          expect do
-            repository.exists?
-          end.to change { request_store_cache.read(:exists?) }.from(nil).to(true)
-        end
-
-        it 'caches the output in RepositoryCache' do
-          expect do
-            repository.exists?
-          end.to change { cache.read(:exists?) }.from(nil).to(true)
-        end
-      end
-
-      context 'when it returns false' do
-        before do
-          expect(repository.raw_repository).to receive(:exists?).once.and_return(false)
-        end
-
-        it 'caches the output in RequestStore' do
-          expect do
-            repository.exists?
-          end.to change { request_store_cache.read(:exists?) }.from(nil).to(false)
-        end
-
-        it 'does NOT cache the output in RepositoryCache' do
-          expect do
-            repository.exists?
-          end.not_to change { cache.read(:exists?) }.from(nil)
-        end
-      end
-    end
+    it_behaves_like 'asymmetric cached method', :exists?
   end
 
   describe '#has_visible_content?' do
@@ -1271,6 +1275,8 @@ describe Repository do
       repository.root_ref
       repository.root_ref
     end
+
+    it_behaves_like 'asymmetric cached method', :root_ref
   end
 
   describe '#expire_root_ref_cache' do
@@ -1370,6 +1376,29 @@ describe Repository do
 
     def merge(repository, user, merge_request, message)
       repository.merge(user, merge_request.diff_head_sha, merge_request, message)
+    end
+  end
+
+  describe '#merge_to_ref' do
+    let(:merge_request) do
+      create(:merge_request, source_branch: 'feature',
+                             target_branch: 'master',
+                             source_project: project)
+    end
+
+    it 'writes merge of source and target to MR merge_ref_path' do
+      merge_commit_id = repository.merge_to_ref(user,
+                                                merge_request.diff_head_sha,
+                                                merge_request,
+                                                merge_request.merge_ref_path,
+                                                'Custom message')
+
+      merge_commit = repository.commit(merge_commit_id)
+
+      expect(merge_commit.message).to eq('Custom message')
+      expect(merge_commit.author_name).to eq(user.name)
+      expect(merge_commit.author_email).to eq(user.commit_email)
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
   end
 
@@ -2214,7 +2243,7 @@ describe Repository do
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
-  describe '#ancestor?' do
+  shared_examples '#ancestor?' do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
@@ -2236,6 +2265,20 @@ describe Repository do
       expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
       expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
     end
+  end
+
+  describe '#ancestor? with Gitaly enabled' do
+    it_behaves_like "#ancestor?"
+  end
+
+  describe '#ancestor? with Rugged enabled', :enable_rugged do
+    it 'calls out to the Rugged implementation' do
+      allow_any_instance_of(Rugged).to receive(:merge_base).with(repository.commit.id, Gitlab::Git::BLANK_SHA).and_call_original
+
+      repository.ancestor?(repository.commit.id, Gitlab::Git::BLANK_SHA)
+    end
+
+    it_behaves_like '#ancestor?'
   end
 
   describe '#archive_metadata' do

@@ -4,7 +4,7 @@ require 'securerandom'
 
 module QA
   module Resource
-    class ProjectImportedFromGithub < Project
+    class ProjectImportedFromGithub < Base
       attr_accessor :name
       attr_writer :personal_access_token, :github_repository_path
 

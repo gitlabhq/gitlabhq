@@ -22,6 +22,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
 
+  validates :base_commit_sha, :head_commit_sha, :start_commit_sha, sha: true
+
   state_machine :state, initial: :empty do
     event :clean do
       transition any => :without_files
@@ -284,17 +286,20 @@ class MergeRequestDiff < ActiveRecord::Base
     return yield(@external_diff_file) if @external_diff_file
 
     external_diff.open do |file|
-      begin
-        @external_diff_file = file
+      @external_diff_file = file
 
-        yield(@external_diff_file)
-      ensure
-        @external_diff_file = nil
-      end
+      yield(@external_diff_file)
+    ensure
+      @external_diff_file = nil
     end
   end
 
   private
+
+  def encode_in_base64?(diff_text)
+    (diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?) ||
+      diff_text.include?("\0")
+  end
 
   def create_merge_request_diff_files(diffs)
     rows =
@@ -348,7 +353,7 @@ class MergeRequestDiff < ActiveRecord::Base
       diff_hash.tap do |hash|
         diff_text = hash[:diff]
 
-        if diff_text.encoding == Encoding::BINARY && !diff_text.ascii_only?
+        if encode_in_base64?(diff_text)
           hash[:binary] = true
           hash[:diff] = [diff_text].pack('m0')
         end

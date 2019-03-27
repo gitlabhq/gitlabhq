@@ -26,32 +26,39 @@ module TokenAuthenticatable
         end
       end
 
-      define_method(token_field) do
+      mod = token_authenticatable_module
+
+      mod.define_method(token_field) do
         strategy.get_token(self)
       end
 
-      define_method("set_#{token_field}") do |token|
+      mod.define_method("set_#{token_field}") do |token|
         strategy.set_token(self, token)
       end
 
-      define_method("ensure_#{token_field}") do
+      mod.define_method("ensure_#{token_field}") do
         strategy.ensure_token(self)
       end
 
       # Returns a token, but only saves when the database is in read & write mode
-      define_method("ensure_#{token_field}!") do
+      mod.define_method("ensure_#{token_field}!") do
         strategy.ensure_token!(self)
       end
 
       # Resets the token, but only saves when the database is in read & write mode
-      define_method("reset_#{token_field}!") do
+      mod.define_method("reset_#{token_field}!") do
         strategy.reset_token!(self)
       end
 
-      define_method("#{token_field}_matches?") do |other_token|
+      mod.define_method("#{token_field}_matches?") do |other_token|
         token = read_attribute(token_field)
         token.present? && ActiveSupport::SecurityUtils.variable_size_secure_compare(other_token, token)
       end
+    end
+
+    def token_authenticatable_module
+      @token_authenticatable_module ||=
+        const_set(:TokenAuthenticatable, Module.new).tap(&method(:include))
     end
 
     def token_authenticatable_fields

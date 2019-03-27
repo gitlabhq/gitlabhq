@@ -18,12 +18,10 @@ module GraphqlHelpers
   # Runs a block inside a BatchLoader::Executor wrapper
   def batch(max_queries: nil, &blk)
     wrapper = proc do
-      begin
-        BatchLoader::Executor.ensure_current
-        yield
-      ensure
-        BatchLoader::Executor.clear_current
-      end
+      BatchLoader::Executor.ensure_current
+      yield
+    ensure
+      BatchLoader::Executor.clear_current
     end
 
     if max_queries
@@ -77,11 +75,21 @@ module GraphqlHelpers
   def query_graphql_field(name, attributes = {}, fields = nil)
     fields ||= all_graphql_fields_for(name.classify)
     attributes = attributes_to_graphql(attributes)
+    attributes = "(#{attributes})" if attributes.present?
     <<~QUERY
-      #{name}(#{attributes}) {
-        #{fields}
-      }
+      #{name}#{attributes}
+      #{wrap_fields(fields)}
     QUERY
+  end
+
+  def wrap_fields(fields)
+    return unless fields.strip.present?
+
+    <<~FIELDS
+    {
+      #{fields}
+    }
+    FIELDS
   end
 
   def all_graphql_fields_for(class_name, parent_types = Set.new)
@@ -115,8 +123,8 @@ module GraphqlHelpers
     end.join(", ")
   end
 
-  def post_graphql(query, current_user: nil, variables: nil)
-    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }
+  def post_graphql(query, current_user: nil, variables: nil, headers: {})
+    post api('/', current_user, version: 'graphql'), params: { query: query, variables: variables }, headers: headers
   end
 
   def post_graphql_mutation(mutation, current_user: nil)

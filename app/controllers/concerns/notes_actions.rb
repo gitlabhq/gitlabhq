@@ -6,7 +6,6 @@ module NotesActions
   extend ActiveSupport::Concern
 
   included do
-    prepend_before_action :normalize_create_params, only: [:create]
     before_action :set_polling_interval_header, only: [:index]
     before_action :require_noteable!, only: [:index, :create]
     before_action :authorize_admin_note!, only: [:update, :destroy]
@@ -44,17 +43,12 @@ module NotesActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create
-    create_params = note_params.merge(
-      merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
-      in_reply_to_discussion_id: params[:in_reply_to_discussion_id]
-    )
-
-    @note = Notes::CreateService.new(note_project, current_user, create_params).execute
+    @note = Notes::CreateService.new(note_project, current_user, create_note_params).execute
 
     respond_to do |format|
       format.json do
         json = {
-          commands_changes: @note.commands_changes
+          commands_changes: @note.commands_changes&.slice(:emoji_award, :time_estimate, :spend_time)
         }
 
         if @note.persisted? && return_discussion?
@@ -78,7 +72,7 @@ module NotesActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
-    @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
+    @note = Notes::UpdateService.new(project, current_user, update_note_params).execute(note)
     prepare_notes_for_rendering([@note])
 
     respond_to do |format|
@@ -196,24 +190,36 @@ module NotesActions
     return access_denied! unless can?(current_user, :admin_note, note)
   end
 
-  def note_params
+  def create_note_params
     params.require(:note).permit(
-      :project_id,
-      :noteable_type,
-      :noteable_id,
-      :commit_id,
-      :noteable,
       :type,
-
       :note,
-      :attachment,
+      :line_code, # LegacyDiffNote
+      :position # DiffNote
+    ).tap do |create_params|
+      create_params.merge!(
+        params.permit(:merge_request_diff_head_sha, :in_reply_to_discussion_id)
+      )
 
-      # LegacyDiffNote
-      :line_code,
+      # These params are also sent by the client but we need to set these based on
+      # target_type and target_id because we're checking permissions based on that
+      create_params[:noteable_type] = params[:target_type].classify
 
-      # DiffNote
-      :position
-    )
+      case params[:target_type]
+      when 'commit'
+        create_params[:commit_id] = params[:target_id]
+      when 'merge_request'
+        create_params[:noteable_id] = params[:target_id]
+        # Notes on MergeRequest can have an extra `commit_id` context
+        create_params[:commit_id] = params.dig(:note, :commit_id)
+      else
+        create_params[:noteable_id] = params[:target_id]
+      end
+    end
+  end
+
+  def update_note_params
+    params.require(:note).permit(:note)
   end
 
   def set_polling_interval_header
@@ -246,15 +252,6 @@ module NotesActions
 
   def discussion_serializer
     DiscussionSerializer.new(project: project, noteable: noteable, current_user: current_user, note_entity: ProjectNoteEntity)
-  end
-
-  # Avoids checking permissions in the wrong object - this ensures that the object we checked permissions for
-  # is the object we're actually creating a note in.
-  def normalize_create_params
-    params[:note].try do |note|
-      note[:noteable_id] = params[:target_id]
-      note[:noteable_type] = params[:target_type].classify
-    end
   end
 
   def note_project

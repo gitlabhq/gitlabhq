@@ -20,6 +20,7 @@ export default class SSHMirror {
     this.$btnDetectHostKeys = this.$form.find('.js-detect-host-keys');
     this.$btnSSHHostsShowAdvanced = this.$form.find('.btn-show-advanced');
     this.$dropdownAuthType = this.$form.find('.js-mirror-auth-type');
+    this.$hiddenAuthType = this.$form.find('.js-hidden-mirror-auth-type');
 
     this.$wellAuthTypeChanging = this.$form.find('.js-well-changing-auth');
     this.$wellPasswordAuth = this.$form.find('.js-well-password-auth');
@@ -167,6 +168,7 @@ export default class SSHMirror {
 
     this.$wellPasswordAuth.collapse('hide');
     this.$wellSSHAuth.collapse('hide');
+    this.updateHiddenAuthType(selectedAuthType);
 
     // This request should happen only if selected Auth type was SSH
     // and SSH Public key was not present on page load
@@ -234,6 +236,12 @@ export default class SSHMirror {
   toggleAuthWell(authType) {
     this.$wellPasswordAuth.collapse(authType === AUTH_METHOD.PASSWORD ? 'show' : 'hide');
     this.$wellSSHAuth.collapse(authType === AUTH_METHOD.SSH ? 'show' : 'hide');
+    this.updateHiddenAuthType(authType);
+  }
+
+  updateHiddenAuthType(authType) {
+    this.$hiddenAuthType.val(authType);
+    this.$hiddenAuthType.prop('disabled', authType === AUTH_METHOD.SSH);
   }
 
   /**

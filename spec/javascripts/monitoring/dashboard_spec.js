@@ -98,7 +98,7 @@ describe('Dashboard', () => {
       });
     });
 
-    it('renders the dropdown with a number of environments', done => {
+    it('renders the environments dropdown with a number of environments', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showPanels: false },
@@ -107,14 +107,16 @@ describe('Dashboard', () => {
       component.store.storeEnvironmentsData(environmentData);
 
       setTimeout(() => {
-        const dropdownMenuEnvironments = component.$el.querySelectorAll('.dropdown-menu ul li a');
+        const dropdownMenuEnvironments = component.$el.querySelectorAll(
+          '.js-environments-dropdown .dropdown-item',
+        );
 
         expect(dropdownMenuEnvironments.length).toEqual(component.store.environmentsData.length);
         done();
       });
     });
 
-    it('hides the dropdown list when there is no environments', done => {
+    it('hides the environments dropdown list when there is no environments', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showPanels: false },
@@ -123,14 +125,16 @@ describe('Dashboard', () => {
       component.store.storeEnvironmentsData([]);
 
       setTimeout(() => {
-        const dropdownMenuEnvironments = component.$el.querySelectorAll('.dropdown-menu ul');
+        const dropdownMenuEnvironments = component.$el.querySelectorAll(
+          '.js-environments-dropdown .dropdown-item',
+        );
 
         expect(dropdownMenuEnvironments.length).toEqual(0);
         done();
       });
     });
 
-    it('renders the dropdown with a single is-active element', done => {
+    it('renders the environments dropdown with a single is-active element', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showPanels: false },
@@ -139,14 +143,12 @@ describe('Dashboard', () => {
       component.store.storeEnvironmentsData(environmentData);
 
       setTimeout(() => {
-        const dropdownIsActiveElement = component.$el.querySelectorAll(
-          '.dropdown-menu ul li a.is-active',
+        const dropdownItems = component.$el.querySelectorAll(
+          '.js-environments-dropdown .dropdown-item[active="true"]',
         );
 
-        expect(dropdownIsActiveElement.length).toEqual(1);
-        expect(dropdownIsActiveElement[0].textContent.trim()).toEqual(
-          component.currentEnvironmentName,
-        );
+        expect(dropdownItems.length).toEqual(1);
+        expect(dropdownItems[0].textContent.trim()).toEqual(component.currentEnvironmentName);
         done();
       });
     });

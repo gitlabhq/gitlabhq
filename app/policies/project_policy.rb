@@ -152,7 +152,6 @@ class ProjectPolicy < BasePolicy
     enable :remove_fork_project
     enable :destroy_merge_request
     enable :destroy_issue
-    enable :remove_pages
 
     enable :set_issue_iid
     enable :set_issue_created_at
@@ -188,6 +187,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) }.policy do
     enable :download_code
+    enable :read_statistics
     enable :download_wiki_code
     enable :fork_project
     enable :create_project_snippet
@@ -232,6 +232,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_merge_request
     enable :admin_milestone
     enable :update_merge_request
+    enable :reopen_merge_request
     enable :create_commit_status
     enable :update_commit_status
     enable :create_build
@@ -271,6 +272,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_pages
     enable :read_pages
     enable :update_pages
+    enable :remove_pages
     enable :read_cluster
     enable :add_cluster
     enable :create_cluster
@@ -278,6 +280,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_cluster
     enable :create_environment_terminal
     enable :destroy_release
+    enable :destroy_artifacts
+    enable :daily_statistics
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
@@ -299,6 +303,8 @@ class ProjectPolicy < BasePolicy
 
   rule { issues_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:issue))
+    prevent(*create_read_update_admin_destroy(:board))
+    prevent(*create_read_update_admin_destroy(:list))
   end
 
   rule { merge_requests_disabled | repository_disabled }.policy do
@@ -462,7 +468,7 @@ class ProjectPolicy < BasePolicy
     when ProjectFeature::DISABLED
       false
     when ProjectFeature::PRIVATE
-      guest? || admin?
+      admin? || team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true
     end

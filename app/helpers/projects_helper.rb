@@ -169,7 +169,7 @@ module ProjectsHelper
     translation.html_safe
   end
 
-  def project_list_cache_key(project)
+  def project_list_cache_key(project, pipeline_status: true)
     key = [
       project.route.cache_key,
       project.cache_key,
@@ -179,10 +179,11 @@ module ProjectsHelper
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
       max_project_member_access_cache_key(project),
+      pipeline_status,
       'v2.6'
     ]
 
-    key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
+    key << pipeline_status_cache_key(project.pipeline_status) if pipeline_status && project.pipeline_status.has_status?
 
     key
   end
@@ -284,6 +285,20 @@ module ProjectsHelper
     can?(current_user, :read_environment, @project)
   end
 
+  def error_tracking_setting_project_json
+    setting = @project.error_tracking_setting
+
+    return if setting.blank? || setting.project_slug.blank? ||
+        setting.organization_slug.blank?
+
+    {
+      name: setting.project_name,
+      organization_name: setting.organization_name,
+      organization_slug: setting.organization_slug,
+      slug: setting.project_slug
+    }.to_json
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -350,7 +365,8 @@ module ProjectsHelper
       blobs:          :download_code,
       commits:        :download_code,
       merge_requests: :read_merge_request,
-      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet]
+      notes:          [:read_merge_request, :download_code, :read_issue, :read_project_snippet],
+      members:        :read_project_member
     )
   end
 

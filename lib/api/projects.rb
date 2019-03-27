@@ -11,12 +11,20 @@ module API
     before { authenticate_non_get! }
 
     helpers do
-      params :optional_filter_params_ee do
-        # EE::API::Projects would override this helper
-      end
+      if Gitlab.ee?
+        params :optional_filter_params_ee do
+          optional :wiki_checksum_failed, type: Grape::API::Boolean, default: false, desc: 'Limit by projects where wiki checksum is failed'
+          optional :repository_checksum_failed, type: Grape::API::Boolean, default: false, desc: 'Limit by projects where repository checksum is failed'
+        end
 
-      params :optional_update_params_ee do
-        # EE::API::Projects would override this helper
+        params :optional_update_params_ee do
+          optional :mirror_user_id, type: Integer, desc: 'User responsible for all the activity surrounding a pull mirror event'
+          optional :only_mirror_protected_branches, type: Grape::API::Boolean, desc: 'Only mirror protected branches'
+          optional :mirror_overwrites_diverged_branches, type: Grape::API::Boolean, desc: 'Pull mirror overwrites diverged branches'
+          optional :import_url, type: String, desc: 'URL from which the project is imported'
+          optional :packages_enabled, type: Grape::API::Boolean, desc: 'Enable project packages feature'
+          optional :fallback_approvals_required, type: Integer, desc: 'Overall approvals required when no rule is present'
+        end
       end
 
       # EE::API::Projects would override this method
@@ -33,34 +41,6 @@ module API
 
       def verify_update_project_attrs!(project, attrs)
       end
-    end
-
-    def self.update_params_at_least_one_of
-      [
-        :jobs_enabled,
-        :resolve_outdated_diff_discussions,
-        :ci_config_path,
-        :container_registry_enabled,
-        :default_branch,
-        :description,
-        :issues_enabled,
-        :lfs_enabled,
-        :merge_requests_enabled,
-        :merge_method,
-        :name,
-        :only_allow_merge_if_all_discussions_are_resolved,
-        :only_allow_merge_if_pipeline_succeeds,
-        :path,
-        :printing_merge_request_link_enabled,
-        :public_builds,
-        :request_access_enabled,
-        :shared_runners_enabled,
-        :snippets_enabled,
-        :tag_list,
-        :visibility,
-        :wiki_enabled,
-        :avatar
-      ]
     end
 
     helpers do
@@ -97,7 +77,7 @@ module API
         optional :with_programming_language, type: String, desc: 'Limit to repositories which use the given programming language'
         optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
 
-        use :optional_filter_params_ee
+        use :optional_filter_params_ee if Gitlab.ee?
       end
 
       params :create_params do
@@ -184,7 +164,8 @@ module API
 
         if project.saved?
           present project, with: Entities::Project,
-                           user_can_admin_project: can?(current_user, :admin_project, project)
+                           user_can_admin_project: can?(current_user, :admin_project, project),
+                           current_user: current_user
         else
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
@@ -217,7 +198,8 @@ module API
 
         if project.saved?
           present project, with: Entities::Project,
-                           user_can_admin_project: can?(current_user, :admin_project, project)
+                           user_can_admin_project: can?(current_user, :admin_project, project),
+                           current_user: current_user
         else
           render_validation_error!(project)
         end
@@ -258,6 +240,8 @@ module API
       end
       params do
         optional :namespace, type: String, desc: 'The ID or name of the namespace that the project will be forked into'
+        optional :path, type: String, desc: 'The path that will be assigned to the fork'
+        optional :name, type: String, desc: 'The name that will be assigned to the fork'
       end
       post ':id/fork' do
         Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42284')
@@ -279,7 +263,8 @@ module API
           conflict!(forked_project.errors.messages)
         else
           present forked_project, with: Entities::Project,
-                                  user_can_admin_project: can?(current_user, :admin_project, forked_project)
+                                  user_can_admin_project: can?(current_user, :admin_project, forked_project),
+                                  current_user: current_user
         end
       end
 
@@ -311,8 +296,9 @@ module API
         optional :path, type: String, desc: 'The path of the repository'
 
         use :optional_project_params
+        use :optional_update_params_ee if Gitlab.ee?
 
-        at_least_one_of(*::API::Projects.update_params_at_least_one_of)
+        at_least_one_of(*Helpers::ProjectsHelpers.update_params_at_least_one_of)
       end
       put ':id' do
         authorize_admin_project
@@ -328,7 +314,8 @@ module API
 
         if result[:status] == :success
           present user_project, with: Entities::Project,
-                                user_can_admin_project: can?(current_user, :admin_project, user_project)
+                                user_can_admin_project: can?(current_user, :admin_project, user_project),
+                                current_user: current_user
         else
           render_validation_error!(user_project)
         end
@@ -342,7 +329,7 @@ module API
 
         ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
 
-        present user_project, with: Entities::Project
+        present user_project, with: Entities::Project, current_user: current_user
       end
 
       desc 'Unarchive a project' do
@@ -353,7 +340,7 @@ module API
 
         ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
-        present user_project, with: Entities::Project
+        present user_project, with: Entities::Project, current_user: current_user
       end
 
       desc 'Star a project' do
@@ -366,7 +353,7 @@ module API
           current_user.toggle_star(user_project)
           user_project.reload
 
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project, current_user: current_user
         end
       end
 
@@ -378,7 +365,7 @@ module API
           current_user.toggle_star(user_project)
           user_project.reload
 
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project, current_user: current_user
         else
           not_modified!
         end
@@ -386,7 +373,11 @@ module API
 
       desc 'Get languages in project repository'
       get ':id/languages' do
-        user_project.repository.languages.map { |language| language.values_at(:label, :value) }.to_h
+        if user_project.repository_languages.present?
+          user_project.repository_languages.map { |l| [l.name, l.share] }.to_h
+        else
+          user_project.repository.languages.map { |language| language.values_at(:label, :value) }.to_h
+        end
       end
 
       desc 'Remove a project'
@@ -414,7 +405,7 @@ module API
         result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
 
         if result
-          present user_project.reload, with: Entities::Project
+          present user_project.reload, with: Entities::Project, current_user: current_user
         else
           render_api_error!("Project already forked", 409) if user_project.forked?
         end
@@ -436,27 +427,24 @@ module API
       end
       params do
         requires :group_id, type: Integer, desc: 'The ID of a group'
-        requires :group_access, type: Integer, values: Gitlab::Access.values, desc: 'The group access level'
+        requires :group_access, type: Integer, values: Gitlab::Access.values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
       post ":id/share" do
         authorize! :admin_project, user_project
         group = Group.find_by_id(params[:group_id])
 
-        unless group && can?(current_user, :read_group, group)
-          not_found!('Group')
-        end
-
         unless user_project.allowed_to_share_with_group?
           break render_api_error!("The project sharing with group is disabled", 400)
         end
 
-        link = user_project.project_group_links.new(declared_params(include_missing: false))
+        result = ::Projects::GroupLinks::CreateService.new(user_project, current_user, declared_params(include_missing: false))
+          .execute(group)
 
-        if link.save
-          present link, with: Entities::ProjectGroupLink
+        if result[:status] == :success
+          present result[:link], with: Entities::ProjectGroupLink
         else
-          render_api_error!(link.errors.full_messages.first, 409)
+          render_api_error!(result[:message], result[:http_status])
         end
       end
 
@@ -520,7 +508,7 @@ module API
         result = ::Projects::TransferService.new(user_project, current_user).execute(namespace)
 
         if result
-          present user_project, with: Entities::Project
+          present user_project, with: Entities::Project, current_user: current_user
         else
           render_api_error!("Failed to transfer project #{user_project.errors.messages}", 400)
         end

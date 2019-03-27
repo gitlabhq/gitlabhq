@@ -110,6 +110,37 @@ describe "Projects > Settings > Pipelines settings" do
             expect(page).not_to have_content('instance enabled')
           end
         end
+
+        context 'when auto devops is turned on group level' do
+          before do
+            project.update!(namespace: create(:group, :auto_devops_enabled))
+          end
+
+          it 'renders group enabled badge' do
+            visit project_settings_ci_cd_path(project)
+
+            page.within '#autodevops-settings' do
+              expect(page).to have_content('group enabled')
+              expect(find_field('project_auto_devops_attributes_enabled')).to be_checked
+            end
+          end
+        end
+
+        context 'when auto devops is turned on group parent level', :nested_groups do
+          before do
+            group = create(:group, parent: create(:group, :auto_devops_enabled))
+            project.update!(namespace: group)
+          end
+
+          it 'renders group enabled badge' do
+            visit project_settings_ci_cd_path(project)
+
+            page.within '#autodevops-settings' do
+              expect(page).to have_content('group enabled')
+              expect(find_field('project_auto_devops_attributes_enabled')).to be_checked
+            end
+          end
+        end
       end
     end
 

@@ -67,7 +67,7 @@ developer documentation.
 Before you begin, ensure that any GitHub users who you want to map to GitLab users have either:
 
 - A GitLab account that has logged in using the GitHub icon
-\- or -
+  \- or -
 - A GitLab account with an email address that matches the [public email address](https://help.github.com/articles/setting-your-commit-email-address-on-github/) of the GitHub user
 
 User-matching attempts occur in that order, and if a user is not identified either way, the activity is associated with

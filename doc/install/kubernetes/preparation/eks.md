@@ -5,6 +5,7 @@ There are a few nuances to Amazon EKS which are important to be aware of, when d
 ## Persistent volume management
 
 There are two methods to manage volume claims on Kubernetes:
+
 1. Manually creating each persistent volume (recommended on EKS)
 1. Utilizing dynamic provisioning to automatically create the persistent volumes
 

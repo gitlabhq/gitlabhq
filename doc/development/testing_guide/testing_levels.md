@@ -46,7 +46,7 @@ They're useful to test permissions, redirections, what view is rendered etc.
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `lib/ci/api/` | `spec/requests/ci/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [JavaScript](#javascript) section. |
+| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Karma JavaScript test suite](frontend_testing.md#karma-test-suite) section. |
 
 ### About controller tests
 
@@ -159,6 +159,10 @@ Every new feature should come with a [test plan].
 
 > See [end-to-end tests](end_to_end_tests.md) for more information.
 
+Note that `qa/spec` contains unit tests of the QA framework itself, not to be
+confused with the application's [unit tests](#unit-tests) or
+[end-to-end tests](#black-box-tests-at-the-system-level-aka-end-to-end-tests).
+
 [multiple pieces]: ../architecture.md#components
 [GitLab Shell]: https://gitlab.com/gitlab-org/gitlab-shell
 [GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
@@ -206,7 +210,7 @@ trade-off:
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
-  a JavaScript driver. Make sure to follow the guidelines in the [Speed](#test-speed)
+  a JavaScript driver. Make sure to follow the guidelines in the [Speed](best_practices.md#test-speed)
   section.
 
 Another way to see it is to think about the "cost of tests", this is well
@@ -230,6 +234,8 @@ you should write an integration test using Jasmine.
 [big]: https://twitter.com/timbray/status/822470746773409794
 [picture]: https://twitter.com/withzombies/status/829716565834752000
 [tests-cost]: https://medium.com/table-xi/high-cost-tests-and-high-value-tests-a86e27a54df#.2ulyh3a4e
+[RSpec]: https://github.com/rspec/rspec-rails#feature-specs
+[Capybara]: https://github.com/teamcapybara/capybara
 
 ---
 

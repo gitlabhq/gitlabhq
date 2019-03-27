@@ -775,4 +775,28 @@ describe Namespace do
       end
     end
   end
+
+  describe '#auto_devops_enabled' do
+    context 'with users' do
+      let(:user) { create(:user) }
+
+      subject { user.namespace.auto_devops_enabled? }
+
+      before do
+        user.namespace.update!(auto_devops_enabled: auto_devops_enabled)
+      end
+
+      context 'when auto devops is explicitly enabled' do
+        let(:auto_devops_enabled) { true }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when auto devops is explicitly disabled' do
+        let(:auto_devops_enabled) { false }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
 end

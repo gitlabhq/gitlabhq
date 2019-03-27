@@ -11,6 +11,12 @@ module Search
       @group = group
     end
 
+    def execute
+      Gitlab::GroupSearchResults.new(
+        current_user, projects, group, params[:search], default_project_filter: default_project_filter
+      )
+    end
+
     def projects
       return Project.none unless group
       return @projects if defined? @projects

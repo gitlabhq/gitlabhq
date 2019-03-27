@@ -4,7 +4,7 @@ Thank you for your interest in contributing to GitLab. This guide details how
 to contribute to GitLab in a way that is easy for everyone.
 
 We want to create a welcoming environment for everyone who is interested in contributing.
-Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our committment to an open and welcoming environment.
+Please visit our [Code of Conduct page](https://about.gitlab.com/contributing/code-of-conduct) to learn more about our commitment to an open and welcoming environment.
 
 For a first-time step-by-step guide to the contribution process, please see
 ["Contributing to GitLab"](https://about.gitlab.com/contributing/).
@@ -119,6 +119,7 @@ This [documentation](merge_request_workflow.md) outlines the current merge reque
 - [Merge request guidelines](merge_request_workflow.md#merge-request-guidelines)
 - [Contribution acceptance criteria](merge_request_workflow.md#contribution-acceptance-criteria)
 - [Definition of done](merge_request_workflow.md#definition-of-done)
+- [Dependencies](merge_request_workflow.md#dependencies)
 
 ## Style guides
 

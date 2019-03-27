@@ -82,7 +82,6 @@
 }
 
 .mr-widget-body,
-.mr-widget-section,
 .mr-widget-content,
 .mr-widget-footer {
   padding: $gl-padding;
@@ -167,6 +166,7 @@
       float: left;
 
       .accept-merge-request {
+        &.ci-preparing,
         &.ci-pending,
         &.ci-running {
           @include btn-blue;
@@ -492,11 +492,9 @@
   .merge-request {
     padding: 10px 0 10px 15px;
     position: relative;
-    display: -webkit-flex;
     display: flex;
 
     .issuable-info-container {
-      -webkit-flex: 1;
       flex: 1;
     }
 
@@ -809,13 +807,13 @@
 
 .merge-request-tabs-holder {
   top: $header-height;
-  z-index: 300;
+  z-index: 250;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
   @include media-breakpoint-up(sm) {
-    position: sticky;
     position: -webkit-sticky;
+    position: sticky;
   }
 
   &.affix {
@@ -1021,4 +1019,14 @@
 .source-branch-removal-status {
   padding-left: 50px;
   padding-bottom: $gl-padding;
+}
+
+.mr-compare {
+  .diff-file .file-title-flex-parent {
+    top: $header-height + 51px;
+
+    .with-performance-bar & {
+      top: $performance-bar-height + $header-height + 51px;
+    }
+  }
 }

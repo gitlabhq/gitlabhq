@@ -31,7 +31,7 @@ module Groups
     private
 
     def before_assignment_hook(group, params)
-      # overriden in EE
+      # overridden in EE
     end
 
     def after_update

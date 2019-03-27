@@ -72,7 +72,7 @@ describe Gitlab::QuickActions::CommandDefinition do
   end
 
   describe "#execute" do
-    let(:context) { OpenStruct.new(run: false) }
+    let(:context) { OpenStruct.new(run: false, commands_executed_count: nil) }
 
     context "when the command is a noop" do
       it "doesn't execute the command" do
@@ -80,6 +80,7 @@ describe Gitlab::QuickActions::CommandDefinition do
 
         subject.execute(context, nil)
 
+        expect(context.commands_executed_count).to be_nil
         expect(context.run).to be false
       end
     end
@@ -97,6 +98,7 @@ describe Gitlab::QuickActions::CommandDefinition do
         it "doesn't execute the command" do
           subject.execute(context, nil)
 
+          expect(context.commands_executed_count).to be_nil
           expect(context.run).to be false
         end
       end
@@ -112,6 +114,7 @@ describe Gitlab::QuickActions::CommandDefinition do
               subject.execute(context, true)
 
               expect(context.run).to be true
+              expect(context.commands_executed_count).to eq(1)
             end
           end
 
@@ -120,6 +123,7 @@ describe Gitlab::QuickActions::CommandDefinition do
               subject.execute(context, nil)
 
               expect(context.run).to be true
+              expect(context.commands_executed_count).to eq(1)
             end
           end
         end
@@ -134,6 +138,7 @@ describe Gitlab::QuickActions::CommandDefinition do
               subject.execute(context, true)
 
               expect(context.run).to be true
+              expect(context.commands_executed_count).to eq(1)
             end
           end
 

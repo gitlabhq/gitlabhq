@@ -20,14 +20,14 @@ module Gitlab
     SECRET_LENGTH = 32
 
     class << self
-      def git_http_ok(repository, is_wiki, user, action, show_all_refs: false)
+      def git_http_ok(repository, repo_type, user, action, show_all_refs: false)
         raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
         project = repository.project
 
         attrs = {
           GL_ID: Gitlab::GlId.gl_id(user),
-          GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
+          GL_REPOSITORY: repo_type.identifier_for_subject(project),
           GL_USERNAME: user&.username,
           ShowAllRefs: show_all_refs,
           Repository: repository.gitaly_repository.to_h,

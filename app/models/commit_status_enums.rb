@@ -14,7 +14,8 @@ module CommitStatusEnums
       runner_unsupported: 6,
       stale_schedule: 7,
       job_execution_timeout: 8,
-      archived_failure: 9
+      archived_failure: 9,
+      unmet_prerequisites: 10
     }
   end
 end

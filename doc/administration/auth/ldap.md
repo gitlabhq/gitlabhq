@@ -81,6 +81,9 @@ library. `tls` corresponds to StartTLS, not to be confused with regular TLS.
 Normally, if you specify `ssl` it will be on port 636, while `tls` (StartTLS)
 would be on port 389. `plain` also operates on port 389.
 
+NOTE: **Note:**
+LDAP users must have an email address set, regardless of whether it is used to log in.
+
 **Omnibus configuration**
 
 ```ruby
@@ -136,14 +139,54 @@ main:
   ##
   verify_certificates: true
 
-  ##
-  ## Specifies the SSL version for OpenSSL to use, if the OpenSSL default
-  ## is not appropriate.
-  ##
-  ##   Example: 'TLSv1_1'
-  ##
-  ##
-  ssl_version: ''
+  # OpenSSL::SSL::SSLContext options.
+  tls_options:
+    # Specifies the path to a file containing a PEM-format CA certificate,
+    # e.g. if you need to use an internal CA.
+    #
+    #   Example: '/etc/ca.pem'
+    #
+    ca_file: ''
+
+    # Specifies the SSL version for OpenSSL to use, if the OpenSSL default
+    # is not appropriate.
+    #
+    #   Example: 'TLSv1_1'
+    #
+    ssl_version: ''
+
+    # Specific SSL ciphers to use in communication with LDAP servers.
+    #
+    # Example: 'ALL:!EXPORT:!LOW:!aNULL:!eNULL:!SSLv2'
+    ciphers: ''
+
+    # Client certificate
+    #
+    # Example:
+    #   cert: |
+    #     -----BEGIN CERTIFICATE-----
+    #     MIIDbDCCAlSgAwIBAgIGAWkJxLmKMA0GCSqGSIb3DQEBCwUAMHcxFDASBgNVBAoTC0dvb2dsZSBJ
+    #     bmMuMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQDEwtMREFQIENsaWVudDEPMA0GA1UE
+    #     CxMGR1N1aXRlMQswCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTAeFw0xOTAyMjAwNzE4
+    #     rntnF4d+0dd7zP3jrWkbdtoqjLDT/5D7NYRmVCD5vizV98FJ5//PIHbD1gL3a9b2MPAc6k7NV8tl
+    #     ...
+    #     4SbuJPAiJxC1LQ0t39dR6oMCAMab3hXQqhL56LrR6cRBp6Mtlphv7alu9xb/x51y2x+g2zWtsf80
+    #     Jrv/vKMsIh/sAyuogb7hqMtp55ecnKxceg==
+    #     -----END CERTIFICATE -----
+    cert: ''
+
+    # Client private key
+    #   key: |
+    #     -----BEGIN PRIVATE KEY-----
+    #     MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC3DmJtLRmJGY4xU1QtI3yjvxO6
+    #     bNuyE4z1NF6Xn7VSbcAaQtavWQ6GZi5uukMo+W5DHVtEkgDwh92ySZMuJdJogFbNvJvHAayheCdN
+    #     7mCQ2UUT9jGXIbmksUn9QMeJVXTZjgJWJzPXToeUdinx9G7+lpVa62UATEd1gaI3oyL72WmpDy/C
+    #     rntnF4d+0dd7zP3jrWkbdtoqjLDT/5D7NYRmVCD5vizV98FJ5//PIHbD1gL3a9b2MPAc6k7NV8tl
+    #     ...
+    #     +9IhSYX+XIg7BZOVDeYqlPfxRvQh8vy3qjt/KUihmEPioAjLaGiihs1Fk5ctLk9A2hIUyP+sEQv9
+    #     l6RG+a/mW+0rCWn8JAd464Ps9hE=
+    #     -----END PRIVATE KEY-----
+    key: ''
 
   ##
   ## Set a timeout, in seconds, for LDAP queries. This helps avoid blocking
@@ -451,7 +494,7 @@ ldapsearch -H ldaps://$host:$port -D "$bind_dn" -y bind_dn_password.txt  -b "$ba
 ### Invalid credentials when logging in
 
 - Make sure the user you are binding with has enough permissions to read the user's
-tree and traverse it.
+  tree and traverse it.
 - Check that the `user_filter` is not blocking otherwise valid users.
 - Run the following check command to make sure that the LDAP settings are
   correct and GitLab can see your users:

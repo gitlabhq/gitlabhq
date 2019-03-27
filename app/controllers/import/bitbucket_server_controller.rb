@@ -25,7 +25,7 @@ class Import::BitbucketServerController < Import::BaseController
     repo = bitbucket_client.repo(@project_key, @repo_slug)
 
     unless repo
-      return render json: { errors: "Project #{@project_key}/#{@repo_slug} could not be found" }, status: :unprocessable_entity
+      return render json: { errors: _("Project %{project_repo} could not be found") % { project_repo: "#{@project_key}/#{@repo_slug}" } }, status: :unprocessable_entity
     end
 
     project_name = params[:new_name].presence || repo.name
@@ -41,10 +41,10 @@ class Import::BitbucketServerController < Import::BaseController
         render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
-      render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
+      render json: { errors: _('This namespace has already been taken! Please choose another one.') }, status: :unprocessable_entity
     end
-  rescue BitbucketServer::Connection::ConnectionError => e
-    render json: { errors: "Unable to connect to server: #{e}" }, status: :unprocessable_entity
+  rescue BitbucketServer::Connection::ConnectionError => error
+    render json: { errors: _("Unable to connect to server: %{error}") % { error: error } }, status: :unprocessable_entity
   end
 
   def configure
@@ -65,8 +65,8 @@ class Import::BitbucketServerController < Import::BaseController
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.reject! { |repo| already_added_projects_names.include?(repo.browse_url) }
-  rescue BitbucketServer::Connection::ConnectionError => e
-    flash[:alert] = "Unable to connect to server: #{e}"
+  rescue BitbucketServer::Connection::ConnectionError => error
+    flash[:alert] = _("Unable to connect to server: %{error}") % { error: error }
     clear_session_data
     redirect_to new_import_bitbucket_server_path
   end

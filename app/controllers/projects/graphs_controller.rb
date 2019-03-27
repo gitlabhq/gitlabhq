@@ -45,7 +45,14 @@ class Projects::GraphsController < Projects::ApplicationController
   end
 
   def get_languages
-    @languages = @project.repository.languages
+    @languages =
+      if @project.repository_languages.present?
+        @project.repository_languages.map do |lang|
+          { value: lang.share, label: lang.name, color: lang.color, highlight: lang.color }
+        end
+      else
+        @project.repository.languages
+      end
   end
 
   def fetch_graph

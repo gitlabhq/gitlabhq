@@ -16,7 +16,7 @@ Variables of different types can take precedence over other variables, depending
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/README.md#pass-job-variables-to-a-trigger) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
+1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
 1. Project-level [variables](#variables) or [protected variables](#protected-variables).
 1. Group-level [variables](#variables) or [protected variables](#protected-variables).
 1. YAML-defined [job-level variables](../yaml/README.md#variables).
@@ -46,13 +46,15 @@ version of Runner required.
 
 NOTE: **Note:**
 Starting with GitLab 9.0, we have deprecated some variables. Read the
-[9.0 Renaming](#9-0-renaming) section to find out their replacements. **You are
+[9.0 Renaming](#gitlab-90-renaming) section to find out their replacements. **You are
 strongly advised to use the new variables as we will remove the old ones in
 future GitLab releases.**
 
 | Variable                                  | GitLab | Runner | Description |
 |-------------------------------------------|--------|--------|-------------|
 | **ARTIFACT_DOWNLOAD_ATTEMPTS**            | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
+| **CHAT_INPUT**                            | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command |
+| **CHAT_CHANNEL**                          | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command |
 | **CI**                                    | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_BEFORE_SHA**                  | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | **CI_COMMIT_DESCRIPTION**                 | 10.8   | all    | The description of the commit: the message without first line, if the title is shorter than 100 characters; full message in other case. |
@@ -77,17 +79,23 @@ future GitLab releases.**
 | **CI_JOB_STAGE**                          | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
 | **CI_JOB_TOKEN**                          | 9.0    | 1.2    | Token used for authenticating with the [GitLab Container Registry][registry] and downloading [dependent repositories][dependent-repositories] |
 | **CI_JOB_URL**                            | 11.1   | 0.5    | Job details URL |
-| **CI_MERGE_REQUEST_ID**                   | 11.6   | all    | The ID of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
-| **CI_MERGE_REQUEST_IID**                  | 11.6   | all    | The IID of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
-| **CI_MERGE_REQUEST_PROJECT_ID**           | 11.6   | all    | The ID of the project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
-| **CI_MERGE_REQUEST_PROJECT_PATH**         | 11.6   | all    | The path of the project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) (e.g. `namespace/awesome-project`) |
-| **CI_MERGE_REQUEST_PROJECT_URL**          | 11.6   | all    | The URL of the project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) (e.g. `http://192.168.10.15:3000/namespace/awesome-project`) |
-| **CI_MERGE_REQUEST_REF_PATH**             | 11.6   | all    | The ref path of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md). (e.g. `refs/merge-requests/1/head`) |
-| **CI_MERGE_REQUEST_SOURCE_BRANCH_NAME**   | 11.6   | all    | The source branch name of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
-| **CI_MERGE_REQUEST_SOURCE_PROJECT_ID**    | 11.6   | all    | The ID of the source project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
-| **CI_MERGE_REQUEST_SOURCE_PROJECT_PATH**  | 11.6   | all    | The path of the source project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
-| **CI_MERGE_REQUEST_SOURCE_PROJECT_URL**   | 11.6   | all    | The URL of the source project of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
-| **CI_MERGE_REQUEST_TARGET_BRANCH_NAME**   | 11.6   | all    | The target branch name of the merge request if it's [pipelines for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_ID**                   | 11.6   | all    | The ID of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_IID**                  | 11.6   | all    | The IID of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_PROJECT_ID**           | 11.6   | all    | The ID of the project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_PROJECT_PATH**         | 11.6   | all    | The path of the project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) (e.g. `namespace/awesome-project`) |
+| **CI_MERGE_REQUEST_PROJECT_URL**          | 11.6   | all    | The URL of the project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) (e.g. `http://192.168.10.15:3000/namespace/awesome-project`) |
+| **CI_MERGE_REQUEST_REF_PATH**             | 11.6   | all    | The ref path of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). (e.g. `refs/merge-requests/1/head`) |
+| **CI_MERGE_REQUEST_SOURCE_BRANCH_NAME**   | 11.6   | all    | The source branch name of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_SOURCE_BRANCH_SHA**    | 11.9   | all    | The HEAD sha of the source branch of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_SOURCE_PROJECT_ID**    | 11.6   | all    | The ID of the source project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_SOURCE_PROJECT_PATH**  | 11.6   | all    | The path of the source project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_SOURCE_PROJECT_URL**   | 11.6   | all    | The URL of the source project of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_TARGET_BRANCH_NAME**   | 11.6   | all    | The target branch name of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_TARGET_BRANCH_SHA**    | 11.9   | all    | The HEAD sha of the target branch of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_TITLE**                | 11.9   | all    | The title of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_ASSIGNEES**            | 11.9   | all    | Comma-separated list of usernames of assignees for the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md). [Multiple assignees for merge requests](https://gitlab.com/gitlab-org/gitlab-ee/issues/2004) is scheduled for a future release |
+| **CI_MERGE_REQUEST_MILESTONE**            | 11.9   | all    | The milestone title of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
+| **CI_MERGE_REQUEST_LABELS**               | 11.9   | all    | Comma-separated label names of the merge request if [the pipelines are for merge requests](../merge_request_pipelines/index.md) |
 | **CI_NODE_INDEX**                         | 11.5   | all    | Index of the job in the job set. If the job is not parallelized, this variable is not set. |
 | **CI_NODE_TOTAL**                         | 11.5   | all    | Total number of instances of this job running in parallel. If the job is not parallelized, this variable is set to `1`. |
 | **CI_API_V4_URL**                         | 11.7   | all    | The GitLab API v4 root URL |
@@ -303,7 +311,7 @@ variables that were set, etc.
 
 Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines.md#seeing-build-status) all generated job traces
+also [erase](../pipelines.md#accessing-individual-jobs) all generated job traces
 before making them visible again.
 
 To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:
@@ -565,7 +573,7 @@ If any of the conditions in `variables` evaluates to truth when using `only`,
 a new job is going to be created. If any of the expressions evaluates to truth
 when `except` is being used, a job is not going to be created.
 
-This follows usual rules for [`only` / `except` policies][builds-policies].
+This follows usual rules for [`only` / `except` policies](../yaml/README.md#onlyexcept-advanced).
 
 ### Supported syntax
 
@@ -631,7 +639,6 @@ Below you can find supported syntax reference:
 [protected tags]: ../../user/project/protected_tags.md
 [shellexecutors]: https://docs.gitlab.com/runner/executors/
 [triggered]: ../triggers/README.md
-[builds-policies]: ../yaml/README.md#only-and-except-complex
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
 [registry]: ../../user/project/container_registry.md
 [dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories

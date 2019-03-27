@@ -11,7 +11,12 @@ module QA
             end
 
             view 'app/assets/javascripts/clusters/components/applications.vue' do
-              element :ingress_ip_address, 'id="ingress-ip-address"' # rubocop:disable QA/ElementWithPattern
+              element :ingress_ip_address, 'id="ingress-endpoint"' # rubocop:disable QA/ElementWithPattern
+            end
+
+            view 'app/views/clusters/clusters/_form.html.haml' do
+              element :base_domain
+              element :save_domain
             end
 
             def install!(application_name)
@@ -30,7 +35,15 @@ module QA
             def ingress_ip
               # We need to wait longer since it can take some time before the
               # ip address is assigned for the ingress controller
-              page.find('#ingress-ip-address', wait: 1200).value
+              page.find('#ingress-endpoint', wait: 1200).value
+            end
+
+            def set_domain(domain)
+              fill_element :base_domain, domain
+            end
+
+            def save_domain
+              click_element :save_domain
             end
           end
         end

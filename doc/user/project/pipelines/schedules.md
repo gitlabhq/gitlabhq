@@ -1,6 +1,7 @@
-# Pipeline Schedules
+# Pipeline schedules
 
 > **Notes**:
+>
 > - This feature was introduced in 9.1 as [Trigger Schedule][ce-10533].
 > - In 9.2, the feature was [renamed to Pipeline Schedule][ce-10853].
 > - Cron notation is parsed by [Fugit](https://github.com/floraison/fugit).
@@ -58,7 +59,7 @@ GitLab CI so that they can be used in your `.gitlab-ci.yml` file.
 
 To configure that a job can be executed only when the pipeline has been
 scheduled (or the opposite), you can use
-[only and except](../../../ci/yaml/README.md#only-and-except-simplified) configuration keywords.
+[only and except](../../../ci/yaml/README.md#onlyexcept-basic) configuration keywords.
 
 ```
 job:on-schedule:

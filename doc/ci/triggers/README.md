@@ -4,7 +4,7 @@
 >
 > - [Introduced](https://about.gitlab.com/2015/08/22/gitlab-7-14-released/) in GitLab 7.14.
 > - GitLab 8.12 has a completely redesigned job permissions system. Read all
->   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#job-triggers).
+>   about the [new model and its implications](../../user/project/new_ci_build_permissions_model.md#pipeline-triggers).
 
 Triggers can be used to force a pipeline rerun of a specific `ref` (branch or
 tag) with an API call.
@@ -16,6 +16,12 @@ The following methods of authentication are supported.
 ### Trigger token
 
 A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
+
+DANGER: **Danger:**
+Passing plain text tokens in public projects is a security issue. Potential
+attackers can impersonate the user that exposed their trigger token publicly in
+their `.gitlab-ci.yml` file. Use [variables](../variables/README.md#variables)
+to protect trigger tokens.
 
 ## Adding a new trigger
 
@@ -53,9 +59,6 @@ The action is irreversible.
 >
 > - Valid refs are only the branches and tags. If you pass a commit SHA as a ref,
 >   it will not trigger a job.
-> - If your project is public, passing the token in plain text is probably not the
->   wisest idea, so you might want to use a
->   [variable](../variables/README.md#variables) for that purpose.
 
 To trigger a job you need to send a `POST` request to GitLab's API endpoint:
 
@@ -219,7 +222,7 @@ Old triggers, created before GitLab 9.0 will be marked as legacy.
 Triggers with the legacy label do not have an associated user and only have
 access to the current project. They are considered deprecated and will be
 removed with one of the future versions of GitLab. You are advised to
-[take ownership](#taking-ownership) of any legacy triggers.
+[take ownership](#taking-ownership-of-a-trigger) of any legacy triggers.
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
 [ee]: https://about.gitlab.com/pricing/

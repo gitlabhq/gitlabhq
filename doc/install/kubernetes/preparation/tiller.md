@@ -7,7 +7,7 @@ Helm consists of two parts, the `helm` client and a `tiller` server inside Kuber
 
 NOTE: **Note:**
 If you are not able to run Tiller in your cluster, for example on OpenShift, it
-is possible to use [Tiller locally](https://gitlab.com/charts/gitlab/tree/master/doc/helm#local-tiller)
+is possible to use [Tiller locally](https://docs.gitlab.com/charts/installation/tools.html#local-tiller)
 and avoid deploying it into the cluster. This should only be used when Tiller
 cannot be normally deployed.
 
@@ -15,7 +15,7 @@ cannot be normally deployed.
 
 Tiller is deployed into the cluster and interacts with the Kubernetes API to deploy your applications. If role based access control (RBAC) is enabled, Tiller will need to be [granted permissions](#preparing-for-helm-with-rbac) to allow it to talk to the Kubernetes API.
 
-If RBAC is not enabled, skip to [initalizing Helm](#initialize-helm).
+If RBAC is not enabled, skip to [initializing Helm](#initialize-helm).
 
 If you are not sure whether RBAC is enabled in your cluster, or to learn more, read through our [RBAC documentation](rbac.md).
 
@@ -54,19 +54,25 @@ Some clusters require authentication to use `kubectl` to create the Tiller roles
 
 #### Upload the RBAC config as an admin user (GKE)
 
-For GKE, you need to grab the admin credentials:
+For GKE, you need to obtain the admin credentials. This command will output the admin password:
 
 ```
 gcloud container clusters describe <cluster-name> --zone <zone> --project <project-id> --format='value(masterAuth.password)'
 ```
 
-This command will output the admin password. We need the password to authenticate with `kubectl` and create the role.
+Use the admin password to set the admin credentials. Replace the password value below with the output value from the above step:
 
 ```
-kubectl --username=admin --password=xxxxxxxxxxxxxx create -f rbac-config.yaml
+kubectl config set-credentials admin --username=admin --password=xxxxxxxxxxxxxx
 ```
 
-#### Upload the RBAC config (Other clusters)
+Once credentials have been set, create the role:
+
+```
+kubectl --user=admin create -f rbac-config.yaml
+```
+
+#### Upload the RBAC config (Non-GKE clusters)
 
 For other clusters like Amazon EKS, you can directly upload the RBAC configuration.
 

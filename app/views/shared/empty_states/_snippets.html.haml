@@ -1,0 +1,20 @@
+- button_path = local_assigns.fetch(:button_path, false)
+
+.row.empty-state
+  .col-12
+    .svg-content
+      = image_tag 'illustrations/snippets_empty.svg'
+    .text-content
+      - if current_user
+        %h4
+          = s_('SnippetsEmptyState|Snippets are small pieces of code or notes that you want to keep.')
+        %p
+          = s_('SnippetsEmptyState|They can be either public or private.')
+        .text-center
+          = link_to s_('SnippetsEmptyState|New snippet'), button_path, class: 'btn btn-success', title: s_('SnippetsEmptyState|New snippet'), id: 'new_snippet_link'
+          - unless current_page?(dashboard_snippets_path)
+            = link_to s_('SnippetsEmptyState|Explore public snippets'), explore_snippets_path, class: 'btn btn-default', title: s_('SnippetsEmptyState|Explore public snippets')
+      - else
+        %h4.text-center= s_('SnippetsEmptyState|There are no snippets to show.')
+
+

@@ -43,7 +43,10 @@ class ApplicationController < ActionController::Base
     :git_import_enabled?, :gitlab_project_import_enabled?,
     :manifest_import_enabled?
 
+  # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
+  # concerns due to caching private data.
   DEFAULT_GITLAB_CACHE_CONTROL = "#{ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL}, no-store".freeze
+  DEFAULT_GITLAB_CONTROL_NO_CACHE = "#{DEFAULT_GITLAB_CACHE_CONTROL}, no-cache".freeze
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -235,9 +238,9 @@ class ApplicationController < ActionController::Base
   end
 
   def no_cache_headers
-    response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+    headers['Cache-Control'] = DEFAULT_GITLAB_CONTROL_NO_CACHE
+    headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
+    headers['Expires'] = 'Fri, 01 Jan 1990 00:00:00 GMT'
   end
 
   def default_headers
@@ -247,10 +250,16 @@ class ApplicationController < ActionController::Base
     headers['X-Content-Type-Options'] = 'nosniff'
 
     if current_user
-      # Adds `no-store` to the DEFAULT_CACHE_CONTROL, to prevent security
-      # concerns due to caching private data.
-      headers['Cache-Control'] = DEFAULT_GITLAB_CACHE_CONTROL
-      headers["Pragma"] = "no-cache" # HTTP 1.0 compatibility
+      headers['Cache-Control'] = default_cache_control
+      headers['Pragma'] = 'no-cache' # HTTP 1.0 compatibility
+    end
+  end
+
+  def default_cache_control
+    if request.xhr?
+      ActionDispatch::Http::Cache::Response::DEFAULT_CACHE_CONTROL
+    else
+      DEFAULT_GITLAB_CACHE_CONTROL
     end
   end
 

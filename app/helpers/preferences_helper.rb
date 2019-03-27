@@ -46,7 +46,8 @@ module PreferencesHelper
   def first_day_of_week_choices
     [
       [_('Sunday'), 0],
-      [_('Monday'), 1]
+      [_('Monday'), 1],
+      [_('Saturday'), 6]
     ]
   end
 
@@ -60,6 +61,10 @@ module PreferencesHelper
 
   def user_color_scheme
     Gitlab::ColorSchemes.for_user(current_user).css_class
+  end
+
+  def language_choices
+    Gitlab::I18n::AVAILABLE_LANGUAGES.map { |value, label| [label, value] }
   end
 
   private

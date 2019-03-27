@@ -100,6 +100,8 @@ merge_requests:
 - head_pipeline
 - latest_merge_request_diff
 - merge_request_pipelines
+- merge_request_assignees
+- suggestions
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -127,10 +129,11 @@ ci_pipelines:
 - scheduled_actions
 - artifacts
 - pipeline_schedule
-- merge_requests
+- merge_requests_as_head_pipeline
 - merge_request
 - deployments
 - environments
+- chat_data
 pipeline_variables:
 - pipeline
 stages:
@@ -232,6 +235,7 @@ project:
 - pushover_service
 - jira_service
 - redmine_service
+- youtrack_service
 - custom_issue_tracker_service
 - bugzilla_service
 - gitlab_issue_tracker_service
@@ -349,3 +353,5 @@ resource_label_events:
 - label
 error_tracking_setting:
 - project
+suggestions:
+- note

@@ -456,21 +456,6 @@ export const historyPushState = newUrl => {
 export const parseBoolean = value => (value && value.toString()) === 'true';
 
 /**
- * Converts permission provided as strings to booleans.
- *
- * @param  {String} string
- * @returns {Boolean}
- */
-export const convertPermissionToBoolean = permission => {
-  if (process.env.NODE_ENV !== 'production') {
-    // eslint-disable-next-line no-console
-    console.warn('convertPermissionToBoolean is deprecated! Please use parseBoolean instead.');
-  }
-
-  return parseBoolean(permission);
-};
-
-/**
  * @callback backOffCallback
  * @param {Function} next
  * @param {Function} stop
@@ -722,6 +707,14 @@ export const NavigationType = {
   TYPE_BACK_FORWARD: 2,
   TYPE_RESERVED: 255,
 };
+
+/**
+ * Returns the value of `gon.ee`
+ * Used to check if it's the EE codebase or the CE one.
+ *
+ * @returns Boolean
+ */
+export const isEE = () => window.gon && window.gon.ee;
 
 window.gl = window.gl || {};
 window.gl.utils = {

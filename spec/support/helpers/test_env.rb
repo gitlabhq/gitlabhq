@@ -63,7 +63,8 @@ module TestEnv
     'after-create-delete-modify-move'    => 'ba3faa7',
     'with-codeowners'                    => '219560e',
     'submodule_inside_folder'            => 'b491b92',
-    'png-lfs'                            => 'fe42f41'
+    'png-lfs'                            => 'fe42f41',
+    'sha-starting-with-large-number'     => '8426165'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -146,12 +147,15 @@ module TestEnv
       version: Gitlab::Shell.version_required,
       task: 'gitlab:shell:install')
 
-    create_fake_git_hooks
+    # gitlab-shell hooks don't work in our test environment because they try to make internal API calls
+    sabotage_gitlab_shell_hooks
   end
 
-  def create_fake_git_hooks
-    # gitlab-shell hooks don't work in our test environment because they try to make internal API calls
-    hooks_dir = File.join(Gitlab.config.gitlab_shell.path, 'hooks')
+  def sabotage_gitlab_shell_hooks
+    create_fake_git_hooks(Gitlab::Shell.new.hooks_path)
+  end
+
+  def create_fake_git_hooks(hooks_dir)
     %w[pre-receive post-receive update].each do |hook|
       File.open(File.join(hooks_dir, hook), 'w', 0755) { |f| f.puts '#!/bin/sh' }
     end
@@ -168,6 +172,7 @@ module TestEnv
       task: "gitlab:gitaly:install[#{install_gitaly_args}]") do
 
         Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, { 'default' => repos_path }, force: true)
+        create_fake_git_hooks(File.join(gitaly_dir, 'ruby/git-hooks'))
         start_gitaly(gitaly_dir)
       end
   end
@@ -197,12 +202,10 @@ module TestEnv
     socket = Gitlab::GitalyClient.address('default').sub('unix:', '')
 
     Integer(sleep_time / sleep_interval).times do
-      begin
-        Socket.unix(socket)
-        return
-      rescue
-        sleep sleep_interval
-      end
+      Socket.unix(socket)
+      return
+    rescue
+      sleep sleep_interval
     end
 
     raise "could not connect to gitaly at #{socket.inspect} after #{sleep_time} seconds"

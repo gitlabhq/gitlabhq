@@ -46,6 +46,10 @@ module Clusters
         @install_command ||= app.install_command
       end
 
+      def update_command
+        @update_command ||= app.update_command
+      end
+
       def upgrade_command(new_values = "")
         app.upgrade_command(new_values)
       end

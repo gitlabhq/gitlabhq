@@ -38,6 +38,5 @@
       "items": { "$ref": "label.json" }
     },
     "assignees": { "type": ["array", "null"] }
-  },
-  "additionalProperties": false
+  }
 }

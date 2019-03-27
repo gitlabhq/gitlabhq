@@ -5,6 +5,7 @@ import { __ } from '~/locale';
 import createFlash from '~/flash';
 import { GlLoadingIcon } from '@gitlab/ui';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
+import Mousetrap from 'mousetrap';
 import eventHub from '../../notes/event_hub';
 import CompareVersions from './compare_versions.vue';
 import DiffFile from './diff_file.vue';
@@ -18,6 +19,7 @@ import {
   MIN_TREE_WIDTH,
   MAX_TREE_WIDTH,
   TREE_HIDE_STATS_WIDTH,
+  MR_TREE_SHOW_KEY,
 } from '../constants';
 
 export default {
@@ -87,7 +89,7 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapState('diffs', ['showTreeList', 'isLoading', 'startVersion']),
-    ...mapGetters('diffs', ['isParallelView']),
+    ...mapGetters('diffs', ['isParallelView', 'currentDiffIndex']),
     ...mapGetters(['isNotesFetched', 'getNoteableData']),
     targetBranch() {
       return {
@@ -149,6 +151,7 @@ export default {
   },
   beforeDestroy() {
     eventHub.$off('fetchDiffData', this.fetchData);
+    this.removeEventListeners();
   },
   methods: {
     ...mapActions(['startTaskList']),
@@ -159,10 +162,14 @@ export default {
       'assignDiscussionsToDiff',
       'setHighlightedRow',
       'cacheTreeListWidth',
+      'scrollToFile',
+      'toggleShowTreeList',
     ]),
     fetchData() {
       this.fetchDiffFiles()
         .then(() => {
+          this.hideTreeListIfJustOneFile();
+
           requestIdleCallback(
             () => {
               this.setDiscussions();
@@ -197,7 +204,42 @@ export default {
         this.$nextTick(() => {
           window.mrTabs.resetViewContainer();
           window.mrTabs.expandViewContainer(this.showTreeList);
+          this.setEventListeners();
         });
+      } else {
+        this.removeEventListeners();
+      }
+    },
+    setEventListeners() {
+      Mousetrap.bind(['[', 'k', ']', 'j'], (e, combo) => {
+        switch (combo) {
+          case '[':
+          case 'k':
+            this.jumpToFile(-1);
+            break;
+          case ']':
+          case 'j':
+            this.jumpToFile(+1);
+            break;
+          default:
+            break;
+        }
+      });
+    },
+    removeEventListeners() {
+      Mousetrap.unbind(['[', 'k', ']', 'j']);
+    },
+    jumpToFile(step) {
+      const targetIndex = this.currentDiffIndex + step;
+      if (targetIndex >= 0 && targetIndex < this.diffFiles.length) {
+        this.scrollToFile(this.diffFiles[targetIndex].file_path);
+      }
+    },
+    hideTreeListIfJustOneFile() {
+      const storedTreeShow = localStorage.getItem(MR_TREE_SHOW_KEY);
+
+      if ((storedTreeShow === null && this.diffFiles.length <= 1) || storedTreeShow === 'false') {
+        this.toggleShowTreeList(false);
       }
     },
   },

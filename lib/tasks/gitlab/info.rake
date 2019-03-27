@@ -34,9 +34,6 @@ namespace :gitlab do
       puts "Sidekiq Version:#{Sidekiq::VERSION}"
       puts "Go Version:\t#{go_version[1] || "unknown".color(:red)}"
 
-      # check database adapter
-      database_adapter = ActiveRecord::Base.connection.adapter_name.downcase
-
       project = Group.new(path: "some-group").projects.build(path: "some-project")
       # construct clone URLs
       http_clone_url = project.http_url_to_repo
@@ -49,7 +46,8 @@ namespace :gitlab do
       puts "Version:\t#{Gitlab::VERSION}"
       puts "Revision:\t#{Gitlab.revision}"
       puts "Directory:\t#{Rails.root}"
-      puts "DB Adapter:\t#{database_adapter}"
+      puts "DB Adapter:\t#{Gitlab::Database.human_adapter_name}"
+      puts "DB Version:\t#{Gitlab::Database.version}"
       puts "URL:\t\t#{Gitlab.config.gitlab.url}"
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
@@ -58,7 +56,7 @@ namespace :gitlab do
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab::Auth.omniauth_enabled?
 
       # check Gitolite version
-      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.hooks_path}/../VERSION"
+      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.path}/VERSION"
       if File.readable?(gitlab_shell_version_file)
         gitlab_shell_version = File.read(gitlab_shell_version_file)
       end
@@ -72,7 +70,7 @@ namespace :gitlab do
           puts "- #{name}: \t#{repository_storage.legacy_disk_path}"
         end
       end
-      puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
+      puts "GitLab Shell path:\t\t#{Gitlab.config.gitlab_shell.path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"
     end
   end

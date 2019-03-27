@@ -8,6 +8,7 @@ require:
   - rubocop-rspec
 
 AllCops:
+  TargetRubyVersion: 2.5
   TargetRailsVersion: 5.0
   Exclude:
     - 'vendor/**/*'
@@ -181,3 +182,11 @@ Cop/InjectEnterpriseEditionModule:
   Exclude:
     - 'spec/**/*'
     - 'ee/spec/**/*'
+
+Style/ReturnNil:
+  Enabled: true
+
+# It isn't always safe to replace `=~` with `.match?`, especially when there are
+# nil values on the left hand side
+Performance/RegexpMatch:
+  Enabled: false

@@ -36,7 +36,7 @@ module Gitlab
 
         def perform_count(model, estimate)
           # If we estimate 0, we may not have statistics at all. Don't use them.
-          return nil unless estimate && estimate > 0
+          return unless estimate && estimate > 0
 
           if estimate < EXACT_COUNT_THRESHOLD
             # The table is considered small, the assumption here is that
@@ -48,12 +48,21 @@ module Gitlab
           end
         end
 
+        def where_clause(model)
+          return unless sti_model?(model)
+
+          "WHERE #{model.inheritance_column} = '#{model.name}'"
+        end
+
         def tablesample_count(model, estimate)
           portion = (TABLESAMPLE_ROW_TARGET.to_f / estimate).round(4)
           inverse = 1 / portion
           query = <<~SQL
             SELECT (COUNT(*)*#{inverse})::integer AS count
-            FROM #{model.table_name} TABLESAMPLE SYSTEM (#{portion * 100})
+            FROM #{model.table_name}
+            TABLESAMPLE SYSTEM (#{portion * 100})
+            REPEATABLE (0)
+            #{where_clause(model)}
           SQL
 
           rows = ActiveRecord::Base.connection.select_all(query)

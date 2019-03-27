@@ -409,13 +409,6 @@ describe('common_utils', () => {
     });
   });
 
-  describe('convertPermissionToBoolean', () => {
-    it('should convert a boolean in a string to a boolean', () => {
-      expect(commonUtils.convertPermissionToBoolean('true')).toEqual(true);
-      expect(commonUtils.convertPermissionToBoolean('false')).toEqual(false);
-    });
-  });
-
   describe('backOff', () => {
     beforeEach(() => {
       // shortcut our timeouts otherwise these tests will take a long time to finish

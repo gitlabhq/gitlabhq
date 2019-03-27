@@ -24,9 +24,15 @@ module QA
         end
 
         def choose_test_namespace
-          click_element :project_namespace_select
+          choose_namespace(Runtime::Namespace.path)
+        end
 
-          search_and_select(Runtime::Namespace.path)
+        def choose_namespace(namespace)
+          retry_on_exception do
+            click_body
+            click_element :project_namespace_select
+            search_and_select(namespace)
+          end
         end
 
         def go_to_import_project

@@ -13,6 +13,8 @@ function expectToToggleDisableOnDirtyUpdate(submit, input) {
 }
 
 describe('DirtySubmitForm', () => {
+  DirtySubmitForm.THROTTLE_DURATION = 0;
+
   it('disables submit until there are changes', done => {
     const { form, input, submit } = createForm();
 

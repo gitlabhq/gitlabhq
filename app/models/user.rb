@@ -162,9 +162,9 @@ class User < ApplicationRecord
   validates :name, presence: true
   validates :email, confirmation: true
   validates :notification_email, presence: true
-  validates :notification_email, email: true, if: ->(user) { user.notification_email != user.email }
-  validates :public_email, presence: true, uniqueness: true, email: true, allow_blank: true
-  validates :commit_email, email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
+  validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
+  validates :public_email, presence: true, uniqueness: true, devise_email: true, allow_blank: true
+  validates :commit_email, devise_email: true, allow_nil: true, if: ->(user) { user.commit_email != user.email }
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :projects_limit,
     presence: true,
@@ -388,7 +388,7 @@ class User < ApplicationRecord
       find_by(id: user_id)
     end
 
-    def filter(filter_name)
+    def filter_items(filter_name)
       case filter_name
       when 'admins'
         admins
@@ -470,7 +470,7 @@ class User < ApplicationRecord
     end
 
     def by_login(login)
-      return nil unless login
+      return unless login
 
       if login.include?('@'.freeze)
         unscoped.iwhere(email: login).take
@@ -915,6 +915,10 @@ class User < ApplicationRecord
 
   def project_deploy_keys
     DeployKey.unscoped.in_projects(authorized_projects.pluck(:id)).distinct(:id)
+  end
+
+  def highest_role
+    members.maximum(:access_level) || Gitlab::Access::NO_ACCESS
   end
 
   def accessible_deploy_keys

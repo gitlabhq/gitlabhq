@@ -1,0 +1,33 @@
+- form = local_assigns.fetch(:form)
+
+%hr
+.row
+  .col-lg-4.profile-settings-sidebar
+    %h4.prepend-top-0
+      = _('System header and footer')
+
+  .col-lg-8
+    .form-group
+      = form.label :header_message, _('Header message'), class: 'col-form-label label-bold'
+      = form.text_area :header_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
+    .form-group
+      = form.label :footer_message, _('Footer message'), class: 'col-form-label label-bold'
+      = form.text_area :footer_message, placeholder: _('State your message to activate'), class: "form-control js-autosize"
+    .form-group
+      .form-check
+        = form.check_box :email_header_and_footer_enabled, class: 'form-check-input'
+        = form.label :email_header_and_footer_enabled, class: 'label-bold' do
+          = _('Enable header and footer in emails')
+
+        .hint
+          = _('Add header and footer to emails. Please note that color settings will only be applied within the application interface')
+
+    .form-group.js-toggle-colors-container
+      %button.btn.btn-link.js-toggle-colors-link{ type: 'button' }
+        = _('Customize colors')
+    .form-group.js-toggle-colors-container.hide
+      = form.label :message_background_color, _('Background Color'), class: 'col-form-label label-bold'
+      = form.color_field :message_background_color, class: "form-control"
+    .form-group.js-toggle-colors-container.hide
+      = form.label :message_font_color, _('Font Color'), class: 'col-form-label label-bold'
+      = form.color_field :message_font_color, class: "form-control"

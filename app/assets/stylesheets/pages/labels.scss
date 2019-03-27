@@ -34,7 +34,7 @@
 
 .dropdown-new-label {
   .dropdown-content {
-    max-height: 136px;
+    max-height: initial;
   }
 }
 
@@ -95,13 +95,11 @@
     .prioritized-labels & {
       box-shadow: 0 1px 2px $issue-boards-card-shadow;
       cursor: move;
-      cursor: -webkit-grab;
-      cursor: -moz-grab;
+      cursor: grab;
       border: 0;
 
       &:active {
-        cursor: -webkit-grabbing;
-        cursor: -moz-grabbing;
+        cursor: grabbing;
       }
     }
   }

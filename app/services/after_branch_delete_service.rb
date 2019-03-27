@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-##
-# Branch can be deleted either by DeleteBranchService
-# or by GitPushService.
-#
+# Branch can be deleted either by DeleteBranchService or by Git::BranchPushService.
 class AfterBranchDeleteService < BaseService
   attr_reader :branch_name
 

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 const webpack = require('webpack');
@@ -11,6 +12,10 @@ const ROOT_PATH = path.resolve(__dirname, '..');
 const CACHE_PATH = process.env.WEBPACK_CACHE_PATH || path.join(ROOT_PATH, 'tmp/cache');
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 const IS_DEV_SERVER = process.argv.join(' ').indexOf('webpack-dev-server') !== -1;
+const IS_EE =
+  process.env.EE !== undefined
+    ? JSON.parse(process.env.EE)
+    : fs.existsSync(path.join(ROOT_PATH, 'ee'));
 const DEV_SERVER_HOST = process.env.DEV_SERVER_HOST || 'localhost';
 const DEV_SERVER_PORT = parseInt(process.env.DEV_SERVER_PORT, 10) || 3808;
 const DEV_SERVER_LIVERELOAD = IS_DEV_SERVER && process.env.DEV_SERVER_LIVERELOAD !== 'false';
@@ -44,6 +49,14 @@ function generateEntries() {
 
   pageEntries.forEach(path => generateAutoEntries(path));
 
+  if (IS_EE) {
+    const eePageEntries = glob.sync('pages/**/index.js', {
+      cwd: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+    });
+    eePageEntries.forEach(path => generateAutoEntries(path, 'ee'));
+    watchAutoEntries.push(path.join(ROOT_PATH, 'ee/app/assets/javascripts/pages/'));
+  }
+
   const autoEntryKeys = Object.keys(autoEntriesMap);
   autoEntriesCount = autoEntryKeys.length;
 
@@ -68,6 +81,31 @@ function generateEntries() {
   return Object.assign(manualEntries, autoEntries);
 }
 
+const alias = {
+  '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
+  emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
+  empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
+  icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
+  images: path.join(ROOT_PATH, 'app/assets/images'),
+  vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
+  vue$: 'vue/dist/vue.esm.js',
+  spec: path.join(ROOT_PATH, 'spec/javascripts'),
+
+  // the following resolves files which are different between CE and EE
+  ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
+};
+
+if (IS_EE) {
+  Object.assign(alias, {
+    ee: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+    ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
+    ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
+    ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
+    ee_spec: path.join(ROOT_PATH, 'ee/spec/javascripts'),
+    ee_else_ce: path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
+  });
+}
+
 module.exports = {
   mode: IS_PRODUCTION ? 'production' : 'development',
 
@@ -85,19 +123,7 @@ module.exports = {
 
   resolve: {
     extensions: ['.js', '.gql', '.graphql'],
-    alias: {
-      '~': path.join(ROOT_PATH, 'app/assets/javascripts'),
-      emojis: path.join(ROOT_PATH, 'fixtures/emojis'),
-      empty_states: path.join(ROOT_PATH, 'app/views/shared/empty_states'),
-      icons: path.join(ROOT_PATH, 'app/views/shared/icons'),
-      images: path.join(ROOT_PATH, 'app/assets/images'),
-      vendor: path.join(ROOT_PATH, 'vendor/assets/javascripts'),
-      vue$: 'vue/dist/vue.esm.js',
-      spec: path.join(ROOT_PATH, 'spec/javascripts'),
-
-      // the following resolves files which are different between CE and EE
-      ee_else_ce: path.join(ROOT_PATH, 'app/assets/javascripts'),
-    },
+    alias,
   },
 
   module: {
@@ -245,6 +271,17 @@ module.exports = {
       jQuery: 'jquery',
     }),
 
+    new webpack.NormalModuleReplacementPlugin(/^ee_component\/(.*)\.vue/, function(resource) {
+      if (Object.keys(module.exports.resolve.alias).indexOf('ee') >= 0) {
+        resource.request = resource.request.replace(/^ee_component/, 'ee');
+      } else {
+        resource.request = path.join(
+          ROOT_PATH,
+          'app/assets/javascripts/vue_shared/components/empty_component.js',
+        );
+      }
+    }),
+
     // compression can require a lot of compute time and is disabled in CI
     IS_PRODUCTION && !NO_COMPRESSION && new CompressionPlugin(),
 
@@ -256,7 +293,7 @@ module.exports = {
           const missingDeps = Array.from(compilation.missingDependencies);
           const nodeModulesPath = path.join(ROOT_PATH, 'node_modules');
           const hasMissingNodeModules = missingDeps.some(
-            file => file.indexOf(nodeModulesPath) !== -1
+            file => file.indexOf(nodeModulesPath) !== -1,
           );
 
           // watch for changes to missing node_modules
@@ -267,7 +304,7 @@ module.exports = {
 
           // report our auto-generated bundle count
           console.log(
-            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`
+            `${autoEntriesCount} entries from '/pages' automatically added to webpack output.`,
           );
 
           callback();
@@ -287,6 +324,10 @@ module.exports = {
         reportFilename: path.join(ROOT_PATH, 'webpack-report/index.html'),
         statsFilename: path.join(ROOT_PATH, 'webpack-report/stats.json'),
       }),
+
+    new webpack.DefinePlugin({
+      'process.env.EE': JSON.stringify(IS_EE),
+    }),
   ].filter(Boolean),
 
   devServer: {

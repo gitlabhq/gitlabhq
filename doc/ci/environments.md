@@ -21,7 +21,7 @@ all within GitLab. All you need to do is define them in your project's
 history of your deployments per every environment.
 
 Environments are like tags for your CI jobs, describing where code gets deployed.
-Deployments are created when [jobs] deploy versions of code to environments,
+Deployments are created when [jobs](yaml/README.md#introduction) deploy versions of code to environments,
 so every environment can have one or more deployments. GitLab keeps track of
 your deployments, so you always know what is currently being deployed on your
 servers. If you have a deployment service such as [Kubernetes][kube]
@@ -103,7 +103,7 @@ the Git SHA and environment name.
 To sum up, with the above `.gitlab-ci.yml` we have achieved that:
 
 - All branches will run the `test` and `build` jobs.
-- The `deploy_staging` job will run [only](yaml/README.md#only) on the `master`
+- The `deploy_staging` job will run [only](yaml/README.md#onlyexcept-basic) on the `master`
   branch which means all merge requests that are created from branches don't
   get to deploy to the staging server
 - When a merge request is merged, all jobs will run and the `deploy_staging`
@@ -298,8 +298,8 @@ here because it is guaranteed to be unique, but if you're using a workflow like
 environment names to be more closely based on the branch name - the example
 above would give you an URL like `https://100-do-the-thing.example.com`
 
-Last but not least, we tell the job to run [`only`][only] on branches
-[`except`][only] master.
+Last but not least, we tell the job to run [`only`](yaml/README.md#onlyexcept-basic) on branches
+[`except`](yaml/README.md#onlyexcept-basic) master.
 
 >**Note:**
 You are not bound to use the same prefix or only slashes in the dynamic
@@ -401,7 +401,7 @@ Let's briefly see where URL that's defined in the environments is exposed.
 
 ## Making use of the environment URL
 
-The [environment URL](yaml/README.md#environments-url) is exposed in a few
+The [environment URL](yaml/README.md#environmenturl) is exposed in a few
 places within GitLab.
 
 | In a merge request widget as a link | In the Environments view as a button | In the Deployments view as a button |
@@ -613,15 +613,13 @@ Below are some links you may find interesting:
 - [Review Apps - Use dynamic environments to deploy your code for every branch](review_apps/index.md)
 
 [Pipelines]: pipelines.md
-[jobs]: yaml/README.md#jobs
 [yaml]: yaml/README.md
 [environments]: #environments
 [deployments]: #deployments
 [permissions]: ../user/permissions.md
 [variables]: variables/README.md
-[env-name]: yaml/README.md#environment-name
-[only]: yaml/README.md#only-and-except
-[onstop]: yaml/README.md#environment-on_stop
+[env-name]: yaml/README.md#environmentname
+[onstop]: yaml/README.md#environmenton_stop
 [ce-7015]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7015
 [gitlab-flow]: ../workflow/gitlab_flow.md
 [gitlab runner]: https://docs.gitlab.com/runner/

@@ -69,7 +69,16 @@ class IssuesFinder < IssuableFinder
   end
 
   def filter_items(items)
-    by_due_date(super)
+    issues = super
+    issues = by_due_date(issues)
+    issues = by_confidential(issues)
+    issues
+  end
+
+  def by_confidential(items)
+    return items if params[:confidential].nil?
+
+    params[:confidential] ? items.confidential_only : items.public_only
   end
 
   def by_due_date(items)

@@ -23,6 +23,7 @@
 - cronjob:prune_web_hook_logs
 
 - gcp_cluster:cluster_install_app
+- gcp_cluster:cluster_patch_app
 - gcp_cluster:cluster_upgrade_app
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
@@ -47,6 +48,9 @@
 - github_importer:github_import_stage_import_repository
 
 - hashed_storage:hashed_storage_migrator
+- hashed_storage:hashed_storage_rollbacker
+- hashed_storage:hashed_storage_project_migrate
+- hashed_storage:hashed_storage_project_rollback
 
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
@@ -67,6 +71,7 @@
 - pipeline_hooks:build_hooks
 - pipeline_hooks:pipeline_hooks
 - pipeline_processing:build_finished
+- pipeline_processing:ci_build_prepare
 - pipeline_processing:build_queue
 - pipeline_processing:build_success
 - pipeline_processing:pipeline_process
@@ -101,6 +106,7 @@
 
 - authorized_projects
 - background_migration
+- chat_notification
 - create_gpg_signature
 - delete_merged_branches
 - delete_user
@@ -125,7 +131,6 @@
 - project_cache
 - project_destroy
 - project_export
-- project_migrate_hashed_storage
 - project_service
 - propagate_service_template
 - reactive_caching
@@ -145,3 +150,4 @@
 - repository_cleanup
 - delete_stored_files
 - import_issues_csv
+- project_daily_statistics

@@ -22,32 +22,6 @@
 }
 
 /*
- * Mixin for markdown tables
- */
-@mixin markdown-table {
-  width: auto;
-  display: inline-block;
-  overflow-x: auto;
-  border: 0;
-  border-color: $gl-gray-100;
-
-  @supports (width: fit-content) {
-    display: block;
-    width: fit-content;
-  }
-
-  tr {
-    th {
-      border-bottom: solid 2px $gl-gray-100;
-    }
-
-    td {
-      border-color: $gl-gray-100;
-    }
-  }
-}
-
-/*
  * Base mixin for lists in GitLab
  */
 @mixin basic-list {
@@ -99,25 +73,6 @@
   }
 }
 
-@mixin bulleted-list {
-  > ul {
-    list-style-type: disc;
-
-    ul {
-      list-style-type: circle;
-
-      ul {
-        list-style-type: square;
-      }
-    }
-  }
-}
-
-@mixin dark-diff-match-line {
-  color: $dark-diff-match-bg;
-  background: $dark-diff-match-color;
-}
-
 @mixin webkit-prefix($property, $value) {
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
@@ -125,16 +80,13 @@
 
 /* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
 @mixin on-webkit-only {
+  /* stylelint-disable-next-line media-feature-name-no-vendor-prefix */
   @media screen and (-webkit-min-device-pixel-ratio: 0) {
     @content;
   }
 }
 
 @mixin keyframes($animation-name) {
-  @-webkit-keyframes #{$animation-name} {
-    @content;
-  }
-
   @keyframes #{$animation-name} {
     @content;
   }
@@ -174,12 +126,10 @@
   width: 43px;
   height: 30px;
   transition-duration: 0.3s;
-  -webkit-transform: translateZ(0);
-  background: linear-gradient(
-    to $gradient-direction,
-    $gradient-color 45%,
-    rgba($gradient-color, 0.4)
-  );
+  transform: translateZ(0);
+  background: linear-gradient(to $gradient-direction,
+  $gradient-color 45%,
+  rgba($gradient-color, 0.4));
 
   &.scrolling {
     visibility: visible;
@@ -274,8 +224,8 @@
   background: $gray-light;
   border: 1px solid $border-color;
   color: $gl-text-color;
-  position: sticky;
   position: -webkit-sticky;
+  position: sticky;
   top: $header-height;
   padding: $grid-size;
 

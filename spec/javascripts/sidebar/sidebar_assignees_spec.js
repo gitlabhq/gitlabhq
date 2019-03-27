@@ -11,12 +11,12 @@ describe('sidebar assignees', () => {
   let vm;
   let mediator;
   let sidebarAssigneesEl;
-  preloadFixtures('issues/open-issue.html.raw');
+  preloadFixtures('issues/open-issue.html');
 
   beforeEach(() => {
     Vue.http.interceptors.push(Mock.sidebarMockInterceptor);
 
-    loadFixtures('issues/open-issue.html.raw');
+    loadFixtures('issues/open-issue.html');
 
     mediator = new SidebarMediator(Mock.mediator);
     spyOn(mediator, 'saveAssignees').and.callThrough();

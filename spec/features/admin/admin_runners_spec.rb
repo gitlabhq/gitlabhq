@@ -141,6 +141,56 @@ describe "Admin Runners" do
         end
       end
 
+      describe 'filter by tag', :js do
+        it 'shows correct runner when tag matches' do
+          create :ci_runner, description: 'runner-blue', tag_list: ['blue']
+          create :ci_runner, description: 'runner-red', tag_list: ['red']
+
+          visit admin_runners_path
+
+          expect(page).to have_content 'runner-blue'
+          expect(page).to have_content 'runner-red'
+
+          input_filtered_search_keys('tag:blue')
+
+          expect(page).to have_content 'runner-blue'
+          expect(page).not_to have_content 'runner-red'
+        end
+
+        it 'shows no runner when tag does not match' do
+          create :ci_runner, description: 'runner-blue', tag_list: ['blue']
+          create :ci_runner, description: 'runner-red', tag_list: ['blue']
+
+          visit admin_runners_path
+
+          input_filtered_search_keys('tag:red')
+
+          expect(page).not_to have_content 'runner-blue'
+          expect(page).not_to have_content 'runner-blue'
+          expect(page).to have_text 'No runners found'
+        end
+
+        it 'shows correct runner when tag is selected and search term is entered' do
+          create :ci_runner, description: 'runner-a-1', tag_list: ['blue']
+          create :ci_runner, description: 'runner-a-2', tag_list: ['red']
+          create :ci_runner, description: 'runner-b-1', tag_list: ['blue']
+
+          visit admin_runners_path
+
+          input_filtered_search_keys('tag:blue')
+
+          expect(page).to have_content 'runner-a-1'
+          expect(page).to have_content 'runner-b-1'
+          expect(page).not_to have_content 'runner-a-2'
+
+          input_filtered_search_keys('tag:blue runner-a')
+
+          expect(page).to have_content 'runner-a-1'
+          expect(page).not_to have_content 'runner-b-1'
+          expect(page).not_to have_content 'runner-a-2'
+        end
+      end
+
       it 'sorts by last contact date', :js do
         create(:ci_runner, description: 'runner-1', created_at: '2018-07-12 15:37', contacted_at: '2018-07-12 15:37')
         create(:ci_runner, description: 'runner-2', created_at: '2018-07-12 16:37', contacted_at: '2018-07-12 16:37')

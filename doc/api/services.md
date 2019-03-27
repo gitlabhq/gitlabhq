@@ -505,10 +505,9 @@ GET /projects/:id/services/jira
 
 Set JIRA service for a project.
 
-> **Notes:**
-> - Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
->   `project_url` are replaced by `project_key`, `url`. If you are using an
->   older version, [follow this documentation][old-jira-api].
+> Starting with GitLab 8.14, `api_url`, `issues_url`, `new_issue_url` and
+> `project_url` are replaced by `project_key`, `url`. If you are using an
+> older version, [follow this documentation][old-jira-api].
 
 ```
 PUT /projects/:id/services/jira
@@ -522,6 +521,7 @@ Parameters:
 | `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
 | `username`      | string | yes  | The username of the user created to be used with GitLab/JIRA. |
 | `password`      | string | yes  | The password of the user created to be used with GitLab/JIRA. |
+| `active`        | boolean | no  | Activates or deactivates the service. Defaults to false (deactivated). |
 | `jira_issue_transition_id` | integer | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 
 ### Delete JIRA service
@@ -1101,3 +1101,39 @@ GET /projects/:id/services/mock-ci
 ```
 
 [11435]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11435
+
+## YouTrack
+
+YouTrack issue tracker
+
+### Create/Edit YouTrack service
+
+Set YouTrack service for a project.
+
+```
+PUT /projects/:id/services/youtrack
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `issues_url` | string | true | Issue url |
+| `project_url` | string | true | Project url |
+| `description` | string | false | Description |
+
+### Delete YouTrack Service
+
+Delete YouTrack service for a project.
+
+```
+DELETE /projects/:id/services/youtrack
+```
+
+### Get YouTrack Service Settings
+
+Get YouTrack service settings for a project.
+
+```
+GET /projects/:id/services/youtrack
+```

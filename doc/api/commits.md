@@ -79,6 +79,7 @@ POST /projects/:id/repository/commits
 | `author_email` | string | no | Specify the commit author's email address |
 | `author_name` | string | no | Specify the commit author's name |
 | `stats` | boolean | no | Include commit stats. Default is true |
+| `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` |
 
 | `actions[]` Attribute | Type | Required | Description |
 | --------------------- | ---- | -------- | ----------- |
@@ -474,7 +475,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `sha`     | string  | yes | The commit SHA
 | `ref`     | string  | no  | The name of a repository branch or tag or, if not given, the default branch
 | `stage`   | string  | no  | Filter by [build stage](../ci/yaml/README.md#stages), e.g., `test`
-| `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#jobs), e.g., `bundler:audit`
+| `name`    | string  | no  | Filter by [job name](../ci/yaml/README.md#introduction), e.g., `bundler:audit`
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```bash

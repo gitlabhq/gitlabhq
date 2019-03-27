@@ -12,19 +12,9 @@ describe TokenAuthenticatableStrategies::Encrypted do
     described_class.new(model, 'some_field', options)
   end
 
-  describe '.new' do
-    context 'when fallback and migration strategies are set' do
-      let(:options) { { fallback: true, migrating: true } }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error ArgumentError, /not compatible/
-      end
-    end
-  end
-
   describe '#find_token_authenticatable' do
-    context 'when using fallback strategy' do
-      let(:options) { { fallback: true } }
+    context 'when using optional strategy' do
+      let(:options) { { encrypted: :optional } }
 
       it 'finds the encrypted resource by cleartext' do
         allow(model).to receive(:find_by)
@@ -50,7 +40,7 @@ describe TokenAuthenticatableStrategies::Encrypted do
     end
 
     context 'when using migration strategy' do
-      let(:options) { { migrating: true } }
+      let(:options) { { encrypted: :migrating } }
 
       it 'finds the cleartext resource by cleartext' do
         allow(model).to receive(:find_by)
@@ -73,8 +63,8 @@ describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#get_token' do
-    context 'when using fallback strategy' do
-      let(:options) { { fallback: true } }
+    context 'when using optional strategy' do
+      let(:options) { { encrypted: :optional } }
 
       it 'returns decrypted token when an encrypted token is present' do
         allow(instance).to receive(:read_attribute)
@@ -98,7 +88,7 @@ describe TokenAuthenticatableStrategies::Encrypted do
     end
 
     context 'when using migration strategy' do
-      let(:options) { { migrating: true } }
+      let(:options) { { encrypted: :migrating } }
 
       it 'returns cleartext token when an encrypted token is present' do
         allow(instance).to receive(:read_attribute)
@@ -127,8 +117,8 @@ describe TokenAuthenticatableStrategies::Encrypted do
   end
 
   describe '#set_token' do
-    context 'when using fallback strategy' do
-      let(:options) { { fallback: true } }
+    context 'when using optional strategy' do
+      let(:options) { { encrypted: :optional } }
 
       it 'writes encrypted token and removes plaintext token and returns it' do
         expect(instance).to receive(:[]=)
@@ -141,7 +131,7 @@ describe TokenAuthenticatableStrategies::Encrypted do
     end
 
     context 'when using migration strategy' do
-      let(:options) { { migrating: true } }
+      let(:options) { { encrypted: :migrating } }
 
       it 'writes encrypted token and writes plaintext token' do
         expect(instance).to receive(:[]=)

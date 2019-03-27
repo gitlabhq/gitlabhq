@@ -134,7 +134,7 @@ Endpoints are available for:
 ## Road to GraphQL
 
 Going forward, we will start on moving to
-[GraphQL](http://graphql.org/learn/best-practices/) and deprecate the use of
+[GraphQL](graphql/index.md) and deprecate the use of
 controller-specific endpoints. GraphQL has a number of benefits:
 
 1. We avoid having to maintain two different APIs.
@@ -274,7 +274,7 @@ personal access tokens, and to using the [Sudo](#sudo) feature, since the user's
 password/token may not be known or may change over time.
 
 For more information, refer to the
-[users API](users.md#retrieve-user-impersonation-tokens) docs.
+[users API](users.md#create-an-impersonation-token) docs.
 
 Impersonation tokens are used exactly like regular personal access tokens, and can be passed in either the
 `private_token` parameter or the `Private-Token` header.

@@ -67,18 +67,14 @@ $status-box-line-height: 26px;
   .card-header {
     line-height: $line-height-base;
     padding: 14px 16px;
-    display: -webkit-flex;
     display: flex;
 
     .title {
-      -webkit-flex: 1;
-      -webkit-flex-grow: 1;
       flex: 1;
       flex-grow: 2;
     }
 
     .counter {
-      -webkit-flex: 1;
       flex: 0;
       padding-left: 16px;
     }
@@ -239,6 +235,7 @@ $status-box-line-height: 26px;
     padding: 0;
   }
 
+  .popover-body,
   .popover-content {
     padding: 0;
   }

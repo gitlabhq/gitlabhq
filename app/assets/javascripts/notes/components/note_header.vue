@@ -69,7 +69,7 @@ export default {
         type="button"
         @click="handleToggle"
       >
-        <i :class="toggleChevronClass" class="fa" aria-hidden="true"> </i>
+        <i :class="toggleChevronClass" class="fa" aria-hidden="true"></i>
         {{ __('Toggle discussion') }}
       </button>
     </div>
@@ -81,35 +81,31 @@ export default {
       :data-user-id="author.id"
       :data-username="author.username"
     >
+      <slot name="note-header-info"></slot>
       <span class="note-header-author-name">{{ author.name }}</span>
       <span v-if="author.status_tooltip_html" v-html="author.status_tooltip_html"></span>
-      <span class="note-headline-light"> @{{ author.username }} </span>
+      <span class="note-headline-light">@{{ author.username }}</span>
     </a>
-    <span v-else> {{ __('A deleted user') }} </span>
-    <span class="note-headline-light">
-      <span class="note-headline-meta">
-        <span class="system-note-message"> <slot></slot> </span>
-        <template v-if="createdAt">
-          <span class="system-note-separator">
-            <template v-if="actionText">
-              {{ actionText }}
-            </template>
-          </span>
-          <a
-            :href="noteTimestampLink"
-            class="note-timestamp system-note-separator"
-            @click="updateTargetNoteHash"
-          >
-            <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
-          </a>
-        </template>
-        <i
-          class="fa fa-spinner fa-spin editing-spinner"
-          aria-label="Comment is being updated"
-          aria-hidden="true"
+    <span v-else>{{ __('A deleted user') }}</span>
+    <span class="note-headline-light note-headline-meta">
+      <span class="system-note-message"> <slot></slot> </span>
+      <template v-if="createdAt">
+        <span class="system-note-separator">
+          <template v-if="actionText">{{ actionText }}</template>
+        </span>
+        <a
+          :href="noteTimestampLink"
+          class="note-timestamp system-note-separator"
+          @click="updateTargetNoteHash"
         >
-        </i>
-      </span>
+          <time-ago-tooltip :time="createdAt" tooltip-placement="bottom" />
+        </a>
+      </template>
+      <i
+        class="fa fa-spinner fa-spin editing-spinner"
+        aria-label="Comment is being updated"
+        aria-hidden="true"
+      ></i>
     </span>
   </div>
 </template>

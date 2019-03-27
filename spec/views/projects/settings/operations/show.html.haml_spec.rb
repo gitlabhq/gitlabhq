@@ -18,6 +18,7 @@ describe 'projects/settings/operations/show' do
       allow(view).to receive(:error_tracking_setting)
         .and_return(error_tracking_setting)
       allow(view).to receive(:current_user).and_return(user)
+      allow(view).to receive(:incident_management_available?) { false }
     end
 
     let!(:error_tracking_setting) do
@@ -30,7 +31,6 @@ describe 'projects/settings/operations/show' do
 
         expect(rendered).to have_content _('Error Tracking')
         expect(rendered).to have_content _('To link Sentry to GitLab, enter your Sentry URL and Auth Token')
-        expect(rendered).to have_content _('Active')
       end
     end
   end

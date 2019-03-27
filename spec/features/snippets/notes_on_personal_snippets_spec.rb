@@ -70,7 +70,7 @@ describe 'Comments on personal snippets', :js do
       fill_in 'note[note]', with: 'This is **awesome**!'
       find('.js-md-preview-button').click
 
-      page.within('.new-note .md-preview') do
+      page.within('.new-note .md-preview-holder') do
         expect(page).to have_content('This is awesome!')
         expect(page).to have_selector('strong')
       end

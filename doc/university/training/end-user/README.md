@@ -86,6 +86,7 @@ git config --global user.email you@example.com
 ```bash
 git config --global --list
 ```
+
 - You might want or be required to use an SSH key.
     - Instructions: [SSH](http://doc.gitlab.com/ce/ssh/README.html)
 
@@ -413,6 +414,7 @@ Revert is safer considering we can revert a revert
 ---
 
 ### Version Control
+
  - Local VCS was used with a filesystem or a simple db.
  - Centralized VCS such as Subversion includes collaboration but
    still is prone to data loss as the main server is the single point of

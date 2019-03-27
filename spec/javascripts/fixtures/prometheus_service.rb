@@ -22,7 +22,7 @@ describe Projects::ServicesController, '(JavaScript fixtures)', type: :controlle
     remove_repository(project)
   end
 
-  it 'services/prometheus/prometheus_service.html.raw' do |example|
+  it 'services/prometheus/prometheus_service.html' do |example|
     get :edit, params: {
       namespace_id: namespace,
       project_id: project,

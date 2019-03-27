@@ -54,10 +54,10 @@ module Sentry
 
     def handle_response(response)
       unless response.code == 200
-        raise Client::Error, "Sentry response error: #{response.code}"
+        raise Client::Error, "Sentry response status code: #{response.code}"
       end
 
-      response.as_json
+      response
     end
 
     def projects_api_url

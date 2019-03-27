@@ -36,7 +36,7 @@ describe AddForeignKeysToTodos, :migration do
   end
 
   context 'add foreign key on note_id' do
-    let(:note) { create(:note) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+    let(:note) { table(:notes).create! }
     let!(:todo_with_note) { create_todo(note_id: note.id) }
     let!(:todo_with_invalid_note) { create_todo(note_id: 4711) }
     let!(:todo_without_note) { create_todo(note_id: nil) }

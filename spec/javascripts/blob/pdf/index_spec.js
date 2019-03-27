@@ -15,10 +15,10 @@ describe('PDF renderer', () => {
     }
   };
 
-  preloadFixtures('static/pdf_viewer.html.raw');
+  preloadFixtures('static/pdf_viewer.html');
 
   beforeEach(() => {
-    loadFixtures('static/pdf_viewer.html.raw');
+    loadFixtures('static/pdf_viewer.html');
     viewer = document.getElementById('js-pdf-viewer');
     viewer.dataset.endpoint = testPDF;
   });

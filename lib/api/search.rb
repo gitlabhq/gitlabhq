@@ -17,7 +17,8 @@ module API
         blobs: Entities::Blob,
         wiki_blobs: Entities::Blob,
         snippet_titles: Entities::Snippet,
-        snippet_blobs: Entities::Snippet
+        snippet_blobs: Entities::Snippet,
+        users: Entities::UserBasic
       }.freeze
 
       def search(additional_params = {})
@@ -45,6 +46,18 @@ module API
       def entity
         SCOPE_ENTITY[params[:scope].to_sym]
       end
+
+      def verify_search_scope!
+        # In EE we have additional validation requirements for searches.
+        # Defining this method here as a noop allows us to easily extend it in
+        # EE, without having to modify this file directly.
+      end
+
+      def check_users_search_allowed!
+        if params[:scope].to_sym == :users && Feature.disabled?(:users_search, default_enabled: true)
+          render_api_error!({ error: _("Scope not supported with disabled 'users_search' feature!") }, 400)
+        end
+      end
     end
 
     resource :search do
@@ -55,12 +68,14 @@ module API
         requires :search, type: String, desc: 'The expression it should be searched for'
         requires :scope,
           type: String,
-          desc: 'The scope of search, available scopes:
-            projects, issues, merge_requests, milestones, snippet_titles, snippet_blobs',
-          values: %w(projects issues merge_requests milestones snippet_titles snippet_blobs)
+          desc: 'The scope of the search',
+          values: Helpers::SearchHelpers.global_search_scopes
         use :pagination
       end
       get do
+        verify_search_scope!
+        check_users_search_allowed!
+
         present search, with: entity
       end
     end
@@ -74,12 +89,14 @@ module API
         requires :search, type: String, desc: 'The expression it should be searched for'
         requires :scope,
           type: String,
-          desc: 'The scope of search, available scopes:
-            projects, issues, merge_requests, milestones',
-          values: %w(projects issues merge_requests milestones)
+          desc: 'The scope of the search',
+          values: Helpers::SearchHelpers.group_search_scopes
         use :pagination
       end
       get ':id/(-/)search' do
+        verify_search_scope!
+        check_users_search_allowed!
+
         present search(group_id: user_group.id), with: entity
       end
     end
@@ -93,12 +110,13 @@ module API
         requires :search, type: String, desc: 'The expression it should be searched for'
         requires :scope,
           type: String,
-          desc: 'The scope of search, available scopes:
-            issues, merge_requests, milestones, notes, wiki_blobs, commits, blobs',
-          values: %w(issues merge_requests milestones notes wiki_blobs commits blobs)
+          desc: 'The scope of the search',
+          values: Helpers::SearchHelpers.project_search_scopes
         use :pagination
       end
       get ':id/(-/)search' do
+        check_users_search_allowed!
+
         present search(project_id: user_project.id), with: entity
       end
     end

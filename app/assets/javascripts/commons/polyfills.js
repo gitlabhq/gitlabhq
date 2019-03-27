@@ -7,6 +7,7 @@ import 'core-js/fn/array/includes';
 import 'core-js/fn/object/assign';
 import 'core-js/fn/object/values';
 import 'core-js/fn/promise';
+import 'core-js/fn/promise/finally';
 import 'core-js/fn/string/code-point-at';
 import 'core-js/fn/string/from-code-point';
 import 'core-js/fn/string/includes';

@@ -33,8 +33,13 @@ module SearchHelper
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
   end
 
-  def find_project_for_result_blob(result)
+  def find_project_for_result_blob(projects, result)
     @project
+  end
+
+  # Used in EE
+  def blob_projects(results)
+    nil
   end
 
   def parse_search_result(result)
@@ -200,5 +205,15 @@ module SearchHelper
 
   def limited_count(count, limit = 1000)
     count > limit ? "#{limit}+" : count
+  end
+
+  def search_tabs?(tab)
+    return false if Feature.disabled?(:users_search, default_enabled: true)
+
+    if @project
+      project_search_tabs?(:members)
+    else
+      can?(current_user, :read_users_list)
+    end
   end
 end

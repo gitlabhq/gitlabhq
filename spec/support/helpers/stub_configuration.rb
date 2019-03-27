@@ -84,6 +84,10 @@ module StubConfiguration
     allow(Gitlab.config.kerberos).to receive_messages(to_settings(messages))
   end
 
+  def stub_gitlab_shell_setting(messages)
+    allow(Gitlab.config.gitlab_shell).to receive_messages(to_settings(messages))
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

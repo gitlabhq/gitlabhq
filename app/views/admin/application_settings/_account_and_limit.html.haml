@@ -6,32 +6,35 @@
       .form-check
         = f.check_box :gravatar_enabled, class: 'form-check-input'
         = f.label :gravatar_enabled, class: 'form-check-label' do
-          Gravatar enabled
+          = _('Gravatar enabled')
     .form-group
       = f.label :default_projects_limit, class: 'label-bold'
       = f.number_field :default_projects_limit, class: 'form-control'
     .form-group
-      = f.label :max_attachment_size, 'Maximum attachment size (MB)', class: 'label-bold'
+      = f.label :max_attachment_size, _('Maximum attachment size (MB)'), class: 'label-bold'
       = f.number_field :max_attachment_size, class: 'form-control'
+
+    = render_if_exists 'admin/application_settings/repository_size_limit_setting', form: f
+
     .form-group
-      = f.label :receive_max_input_size, 'Maximum push size (MB)', class: 'label-light'
+      = f.label :receive_max_input_size, _('Maximum push size (MB)'), class: 'label-light'
       = f.number_field :receive_max_input_size, class: 'form-control qa-receive-max-input-size-field'
     .form-group
-      = f.label :session_expire_delay, 'Session duration (minutes)', class: 'label-light'
+      = f.label :session_expire_delay, _('Session duration (minutes)'), class: 'label-light'
       = f.number_field :session_expire_delay, class: 'form-control'
-      %span.form-text.text-muted#session_expire_delay_help_block GitLab restart is required to apply changes
+      %span.form-text.text-muted#session_expire_delay_help_block= _('GitLab restart is required to apply changes')
     .form-group
-      = f.label :user_oauth_applications, 'User OAuth applications', class: 'label-bold'
+      = f.label :user_oauth_applications, _('User OAuth applications'), class: 'label-bold'
       .form-check
         = f.check_box :user_oauth_applications, class: 'form-check-input'
         = f.label :user_oauth_applications, class: 'form-check-label' do
-          Allow users to register any application to use GitLab as an OAuth provider
+          = _('Allow users to register any application to use GitLab as an OAuth provider')
     .form-group
-      = f.label :user_default_external, 'New users set to external', class: 'label-bold'
+      = f.label :user_default_external, _('New users set to external'), class: 'label-bold'
       .form-check
         = f.check_box :user_default_external, class: 'form-check-input'
         = f.label :user_default_external, class: 'form-check-label' do
-          Newly registered users will by default be external
+          = _('Newly registered users will by default be external')
       .prepend-top-10
         = _('Internal users')
       = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control prepend-top-5'
@@ -40,10 +43,12 @@
         = link_to _('More information'), help_page_path('user/permissions', anchor: 'external-users-permissions'),
           target: '_blank'
     .form-group
-      = f.label :user_show_add_ssh_key_message, 'Prompt users to upload SSH keys', class: 'label-bold'
+      = f.label :user_show_add_ssh_key_message, _('Prompt users to upload SSH keys'), class: 'label-bold'
       .form-check
         = f.check_box :user_show_add_ssh_key_message, class: 'form-check-input'
         = f.label :user_show_add_ssh_key_message, class: 'form-check-label' do
-          Inform users without uploaded SSH keys that they can't push over SSH until one is added
+          = _("Inform users without uploaded SSH keys that they can't push over SSH until one is added")
 
-  = f.submit 'Save changes', class: 'btn btn-success qa-save-changes-button'
+    = render_if_exists 'admin/application_settings/availability_on_namespace_setting', form: f
+
+  = f.submit _('Save changes'), class: 'btn btn-success qa-save-changes-button'

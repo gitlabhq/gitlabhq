@@ -119,7 +119,7 @@ class Environment < ActiveRecord::Base
   def first_deployment_for(commit_sha)
     ref = project.repository.ref_name_for_sha(ref_path, commit_sha)
 
-    return nil unless ref
+    return unless ref
 
     deployment_iid = ref.split('/').last
     deployments.find_by(iid: deployment_iid)
@@ -130,7 +130,7 @@ class Environment < ActiveRecord::Base
   end
 
   def formatted_external_url
-    return nil unless external_url
+    return unless external_url
 
     external_url.gsub(%r{\A.*?://}, '')
   end
@@ -241,6 +241,10 @@ class Environment < ActiveRecord::Base
 
   def folder_name
     self.environment_type || self.name
+  end
+
+  def name_without_type
+    @name_without_type ||= name.delete_prefix("#{environment_type}/")
   end
 
   def deployment_platform

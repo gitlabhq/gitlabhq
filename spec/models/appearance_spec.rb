@@ -63,4 +63,37 @@ describe Appearance do
   %i(logo header_logo favicon).each do |logo_type|
     it_behaves_like 'logo paths', logo_type
   end
+
+  describe 'validations' do
+    let(:triplet) { '#000' }
+    let(:hex)     { '#AABBCC' }
+
+    it { is_expected.to allow_value(nil).for(:message_background_color) }
+    it { is_expected.to allow_value(triplet).for(:message_background_color) }
+    it { is_expected.to allow_value(hex).for(:message_background_color) }
+    it { is_expected.not_to allow_value('000').for(:message_background_color) }
+
+    it { is_expected.to allow_value(nil).for(:message_font_color) }
+    it { is_expected.to allow_value(triplet).for(:message_font_color) }
+    it { is_expected.to allow_value(hex).for(:message_font_color) }
+    it { is_expected.not_to allow_value('000').for(:message_font_color) }
+  end
+
+  describe 'email_header_and_footer_enabled' do
+    context 'default email_header_and_footer_enabled flag value' do
+      it 'returns email_header_and_footer_enabled as true' do
+        appearance = build(:appearance)
+
+        expect(appearance.email_header_and_footer_enabled?).to eq(false)
+      end
+    end
+
+    context 'when setting email_header_and_footer_enabled flag value' do
+      it 'returns email_header_and_footer_enabled as true' do
+        appearance = build(:appearance, email_header_and_footer_enabled: true)
+
+        expect(appearance.email_header_and_footer_enabled?).to eq(true)
+      end
+    end
+  end
 end

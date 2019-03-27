@@ -11,6 +11,10 @@ queues_config_hash[:namespace] = Gitlab::Redis::Queues::SIDEKIQ_NAMESPACE
 # Default is to retry 25 times with exponential backoff. That's too much.
 Sidekiq.default_worker_options = { retry: 3 }
 
+if Rails.env.development?
+  Sidekiq.default_worker_options[:backtrace] = true
+end
+
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 
 Sidekiq.configure_server do |config|
@@ -18,7 +22,7 @@ Sidekiq.configure_server do |config|
 
   config.server_middleware do |chain|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS'] && !enable_json_logs
-    chain.add Gitlab::SidekiqMiddleware::Shutdown
+    chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
     chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
     chain.add Gitlab::SidekiqMiddleware::BatchLoader
     chain.add Gitlab::SidekiqMiddleware::CorrelationLogger
@@ -73,6 +77,9 @@ Sidekiq.configure_server do |config|
   # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
   # https://github.com/mikel/mail/issues/912#issuecomment-214850355
   Mail.eager_autoload!
+
+  # Ensure the whole process group is terminated if possible
+  Gitlab::SidekiqSignals.install!(Sidekiq::CLI::SIGNAL_HANDLERS)
 end
 
 Sidekiq.configure_client do |config|

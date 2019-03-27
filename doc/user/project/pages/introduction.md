@@ -1,6 +1,7 @@
 # Exploring GitLab Pages
 
 > **Notes:**
+>
 > - This feature was [introduced][ee-80] in GitLab EE 8.3.
 > - Custom CNAMEs with TLS support were [introduced][ee-173] in GitLab EE 8.5.
 > - GitLab Pages [was ported][ce-14605] to Community Edition in GitLab 8.17.
@@ -11,7 +12,7 @@ With GitLab Pages you can host for free your static websites on GitLab.
 Combined with the power of [GitLab CI] and the help of [GitLab Runner] you can
 deploy static pages for your individual projects, your user or your group.
 
-Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlab-com) for specific
+Read [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom) for specific
 information, if you are using GitLab.com to host your website.
 
 ## Getting started with GitLab Pages domains
@@ -115,7 +116,7 @@ gives you absolute control over the build process. You can actually watch your
 website being built live by following the CI job traces.
 
 For a simplified user guide on setting up GitLab CI/CD for Pages, read through
-the article [GitLab Pages from A to Z: Part 4 - Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md#creating-and-tweaking-gitlab-ci-yml-for-gitlab-pages)
+the article [GitLab Pages from A to Z: Part 4 - Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](getting_started_part_four.md)
 
 > **Note:**
 > Before reading this section, make sure you familiarize yourself with GitLab CI
@@ -151,7 +152,7 @@ Depending on how you plan to publish your website, the steps defined in the
 
 Be aware that Pages are by default branch/tag agnostic and their deployment
 relies solely on what you specify in `.gitlab-ci.yml`. If you don't limit the
-`pages` job with the [`only` parameter](../../../ci/yaml/README.md#only-and-except),
+`pages` job with the [`only` parameter](../../../ci/yaml/README.md#onlyexcept-basic),
 whenever a new commit is pushed to whatever branch or tag, the Pages will be
 overwritten. In the example below, we limit the Pages to be deployed whenever
 a commit is pushed only on the `master` branch:
@@ -252,7 +253,7 @@ get you started.
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
-the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#only-and-except),
+the `pages` job with the [`only` parameter](../../../ci/yaml/README.md#onlyexcept-basic),
 whenever a new commit is pushed to a branch that will be used specifically for
 your pages.
 
@@ -410,7 +411,7 @@ file for both the `/data` and `/data/` URL paths.
 ### Add a custom domain to your Pages website
 
 For a complete guide on Pages domains, read through the article
-[GitLab Pages from A to Z: Part 3 - Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md#setting-up-custom-domains-dns-records-and-ssl-tls-certificates)
+[GitLab Pages from A to Z: Part 3 - GitLab Pages custom domains and SSL/TLS Certificates](getting_started_part_three.md)
 
 If this setting is enabled by your GitLab administrator, you should be able to
 see the **New Domain** button when visiting your project's settings through the
@@ -451,7 +452,7 @@ private key when adding a new domain.
 ![Pages upload cert](img/pages_upload_cert.png)
 
 For a complete guide on Pages domains, read through the article
-[GitLab Pages from A to Z: Part 3 - Setting Up Custom Domains - DNS Records and SSL/TLS Certificates](getting_started_part_three.md#setting-up-custom-domains-dns-records-and-ssl-tls-certificates)
+[GitLab Pages from A to Z: Part 3 - GitLab Pages custom domains and SSL/TLS Certificates](getting_started_part_three.md)
 
 ### Custom error codes pages
 

@@ -126,6 +126,13 @@ class Label < ActiveRecord::Base
     fuzzy_search(query, [:title, :description])
   end
 
+  # Override Gitlab::SQL::Pattern.min_chars_for_partial_matching as
+  # label queries are never global, and so will not use a trigram
+  # index. That means we can have just one character in the LIKE.
+  def self.min_chars_for_partial_matching
+    1
+  end
+
   def open_issues_count(user = nil)
     issues_count(user, state: 'opened')
   end

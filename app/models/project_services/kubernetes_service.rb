@@ -113,7 +113,7 @@ class KubernetesService < DeploymentService
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       variables
         .append(key: 'KUBE_URL', value: api_url)
-        .append(key: 'KUBE_TOKEN', value: token, public: false)
+        .append(key: 'KUBE_TOKEN', value: token, public: false, masked: true)
         .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
         .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
 
@@ -131,8 +131,8 @@ class KubernetesService < DeploymentService
   # short time later
   def terminals(environment)
     with_reactive_cache do |data|
-      pods = filter_by_label(data[:pods], app: environment.slug)
-      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }
+      pods = filter_by_project_environment(data[:pods], project.full_path_slug, environment.slug)
+      terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.compact
       terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
     end
   end

@@ -126,11 +126,9 @@ module ObjectStorage
 
     def process_uploader(uploader)
       MigrationResult.new(uploader.upload).tap do |result|
-        begin
-          uploader.migrate!(@to_store)
-        rescue => e
-          result.error = e
-        end
+        uploader.migrate!(@to_store)
+      rescue => e
+        result.error = e
       end
     end
   end

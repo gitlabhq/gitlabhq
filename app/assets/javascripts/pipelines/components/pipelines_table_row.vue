@@ -243,7 +243,7 @@ export default {
   methods: {
     handleCancelClick() {
       eventHub.$emit('openConfirmationModal', {
-        pipelineId: this.pipeline.id,
+        pipeline: this.pipeline,
         endpoint: this.pipeline.cancel_path,
       });
     },
@@ -272,10 +272,11 @@ export default {
           :tag="commitTag"
           :commit-ref="commitRef"
           :commit-url="commitUrl"
+          :merge-request-ref="pipeline.merge_request"
           :short-sha="commitShortSha"
           :title="commitTitle"
           :author="commitAuthor"
-          :show-branch="!isChildView"
+          :show-ref-info="!isChildView"
         />
       </div>
     </div>

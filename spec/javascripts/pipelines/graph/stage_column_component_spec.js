@@ -35,6 +35,7 @@ describe('stage column component', () => {
     component = mountComponent(StageColumnComponent, {
       title: 'foo',
       groups: mockGroups,
+      hasTriggeredBy: false,
     });
   });
 
@@ -54,13 +55,14 @@ describe('stage column component', () => {
             id: 4259,
             name: '<img src=x onerror=alert(document.domain)>',
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               label: 'success',
               tooltip: '<img src=x onerror=alert(document.domain)>',
             },
           },
         ],
         title: 'test',
+        hasTriggeredBy: false,
       });
 
       expect(component.$el.querySelector('.builds-container li').getAttribute('id')).toEqual(

@@ -810,4 +810,125 @@ describe Group do
       it { is_expected.to be_truthy }
     end
   end
+
+  describe '#first_auto_devops_config' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:group) { create(:group) }
+
+    subject { group.first_auto_devops_config }
+
+    where(:instance_value, :group_value, :config) do
+      # Instance level enabled
+      true | nil    | { status: true, scope: :instance }
+      true | true   | { status: true, scope: :group }
+      true | false  | { status: false, scope: :group }
+
+      # Instance level disabled
+      false | nil    | { status: false, scope: :instance }
+      false | true   | { status: true, scope: :group }
+      false | false  | { status: false, scope: :group }
+    end
+
+    with_them do
+      before do
+        stub_application_setting(auto_devops_enabled: instance_value)
+
+        group.update_attribute(:auto_devops_enabled, group_value)
+      end
+
+      it { is_expected.to eq(config) }
+    end
+
+    context 'with parent groups', :nested_groups do
+      where(:instance_value, :parent_value, :group_value, :config) do
+        # Instance level enabled
+        true | nil   | nil    | { status: true, scope: :instance }
+        true | nil   | true   | { status: true, scope: :group }
+        true | nil   | false  | { status: false, scope: :group }
+
+        true | true  | nil    | { status: true, scope: :group }
+        true | true  | true   | { status: true, scope: :group }
+        true | true  | false  | { status: false, scope: :group }
+
+        true | false | nil    | { status: false, scope: :group }
+        true | false | true   | { status: true, scope: :group }
+        true | false | false  | { status: false, scope: :group }
+
+        # Instance level disable
+        false | nil  | nil    | { status: false, scope: :instance }
+        false | nil  | true   | { status: true, scope: :group }
+        false | nil  | false  | { status: false, scope: :group }
+
+        false | true | nil    | { status: true, scope: :group }
+        false | true | true   | { status: true, scope: :group }
+        false | true | false  | { status: false, scope: :group }
+
+        false | false | nil   | { status: false, scope: :group }
+        false | false | true  | { status: true, scope: :group }
+        false | false | false | { status: false, scope: :group }
+      end
+
+      with_them do
+        before do
+          stub_application_setting(auto_devops_enabled: instance_value)
+          parent = create(:group, auto_devops_enabled: parent_value)
+
+          group.update!(
+            auto_devops_enabled: group_value,
+            parent: parent
+          )
+        end
+
+        it { is_expected.to eq(config) }
+      end
+    end
+  end
+
+  describe '#auto_devops_enabled?' do
+    subject { group.auto_devops_enabled? }
+
+    context 'when auto devops is explicitly enabled on group' do
+      let(:group) { create(:group, :auto_devops_enabled) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when auto devops is explicitly disabled on group' do
+      let(:group) { create(:group, :auto_devops_disabled) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when auto devops is implicitly enabled or disabled' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+
+        group.update!(parent: parent_group)
+      end
+
+      context 'when auto devops is enabled on root group' do
+        let(:root_group) { create(:group, :auto_devops_enabled) }
+        let(:subgroup) { create(:group, parent: root_group) }
+        let(:parent_group) { create(:group, parent: subgroup) }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when auto devops is disabled on root group' do
+        let(:root_group) { create(:group, :auto_devops_disabled) }
+        let(:subgroup) { create(:group, parent: root_group) }
+        let(:parent_group) { create(:group, parent: subgroup) }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'when auto devops is disabled on parent group and enabled on root group' do
+        let(:root_group) { create(:group, :auto_devops_enabled) }
+        let(:parent_group) { create(:group, :auto_devops_disabled, parent: root_group) }
+
+        it { is_expected.to be_falsy }
+      end
+    end
+  end
 end

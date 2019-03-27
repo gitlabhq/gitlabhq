@@ -7,7 +7,7 @@ class Email < ActiveRecord::Base
   belongs_to :user
 
   validates :user_id, presence: true
-  validates :email, presence: true, uniqueness: true, email: true
+  validates :email, presence: true, uniqueness: true, devise_email: true
   validate :unique_email, if: ->(email) { email.email_changed? }
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }

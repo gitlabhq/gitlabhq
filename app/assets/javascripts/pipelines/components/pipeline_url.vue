@@ -110,12 +110,12 @@ export default {
         {{ __('stuck') }}
       </span>
       <span
-        v-if="pipeline.flags.merge_request"
+        v-if="pipeline.flags.detached_merge_request_pipeline"
         v-gl-tooltip
-        :title="__('This pipeline is run in a merge request context')"
-        class="js-pipeline-url-mergerequest badge badge-info"
+        :title="__('This pipeline is run on the source branch')"
+        class="js-pipeline-url-detached badge badge-info"
       >
-        {{ __('merge request') }}
+        {{ __('detached') }}
       </span>
     </div>
   </div>

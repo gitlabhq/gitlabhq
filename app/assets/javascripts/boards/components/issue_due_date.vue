@@ -53,7 +53,7 @@ export default {
       } else if (timeDifference === -1) {
         return __('Yesterday');
       } else if (timeDifference > 0 && timeDifference < 7) {
-        return dateFormat(issueDueDate, 'dddd', true);
+        return dateFormat(issueDueDate, 'dddd');
       }
 
       return standardDateFormat;

@@ -32,7 +32,7 @@ class Projects::HooksController < Projects::ApplicationController
 
   def update
     if hook.update(hook_params)
-      flash[:notice] = 'Hook was successfully updated.'
+      flash[:notice] = _('Hook was successfully updated.')
       redirect_to project_settings_integrations_path(@project)
     else
       render 'edit'

@@ -1,8 +1,8 @@
 # Subgroups
 
 NOTE: **Note:**
-[Introduced][ce-2772] in GitLab 9.0. Not available when using MySQL as external
-database (support removed in GitLab 9.3 [due to performance reasons][issue]).
+[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2772) in GitLab 9.0. Not available when using MySQL as external
+database (support removed in GitLab 9.3 [due to performance reasons](https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600)).
 
 With subgroups (aka nested groups or hierarchical groups) you can have
 up to 20 levels of nested groups, which among other things can help you to:
@@ -13,7 +13,7 @@ up to 20 levels of nested groups, which among other things can help you to:
 - **Organize large projects.** For large projects, subgroups makes it
   potentially easier to separate permissions on parts of the source code.
 - **Make it easier to manage people and control visibility.** Give people
-  different [permissions][] depending on their group [membership](#membership).
+  different [permissions](../../permissions.md#group-members-permissions) depending on their group [membership](#membership).
 
 ## Database Requirements
 
@@ -80,9 +80,9 @@ structure.
 
 NOTE: **Note:**
 You need to be an Owner of a group in order to be able to create a subgroup. For
-more information check the [permissions table][permissions].
+more information check the [permissions table](../../permissions.md#group-members-permissions).
 For a list of words that are not allowed to be used as group names see the
-[reserved names][reserved].
+[reserved names](../../reserved_names.md).
 Users can always create subgroups if they are explicitly added as an Owner to
 a parent group even if group creation is disabled by an administrator in their
 settings.
@@ -176,6 +176,6 @@ Here's a list of what you can't do with subgroups:
   `group/subgroup01/subgroup03`.
 
 [ce-2772]: https://gitlab.com/gitlab-org/gitlab-ce/issues/2772
-[permissions]: ../../permissions.md#group
+[permissions]: ../../permissions.md#group-members-permissions
 [reserved]:  ../../reserved_names.md
 [issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/30472#note_27747600

@@ -56,6 +56,7 @@ When connecting to **JIRA Cloud**, which supports authentication via API token, 
 ### Configuring GitLab
 
 > **Notes:**
+>
 > - The currently supported Jira versions are `v6.x` and `v7.x.`. GitLab 7.8 or
 >   higher is required.
 > - GitLab 8.14 introduced a new way to integrate with Jira which greatly simplified
@@ -142,6 +143,7 @@ the same goal:
 where `PROJECT-1` is the issue ID of the Jira project.
 
 > **Notes:**
+>
 > - Only commits and merges into the project's default branch (usually **master**) will
 >   close an issue in Jira. You can change your projects default branch under
 >   [project settings](img/jira_project_settings.png).

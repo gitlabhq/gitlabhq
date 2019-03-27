@@ -13,8 +13,16 @@ module Gitlab
       #
       # @param [Integer] start first project id for the range
       # @param [Integer] finish last project id for the range
-      def bulk_schedule(start:, finish:)
+      def bulk_schedule_migration(start:, finish:)
         ::HashedStorage::MigratorWorker.perform_async(start, finish)
+      end
+
+      # Schedule a range of projects to be bulk rolledback with #bulk_rollback asynchronously
+      #
+      # @param [Integer] start first project id for the range
+      # @param [Integer] finish last project id for the range
+      def bulk_schedule_rollback(start:, finish:)
+        ::HashedStorage::RollbackerWorker.perform_async(start, finish)
       end
 
       # Start migration of projects from specified range
@@ -34,6 +42,23 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      # Start rollback of projects from specified range
+      #
+      # Flagging a project to be rolled back is a synchronous action
+      # but the rollback runs through async jobs
+      #
+      # @param [Integer] start first project id for the range
+      # @param [Integer] finish last project id for the range
+      # rubocop: disable CodeReuse/ActiveRecord
+      def bulk_rollback(start:, finish:)
+        projects = build_relation(start, finish)
+
+        projects.with_route.find_each(batch_size: BATCH_SIZE) do |project|
+          rollback(project)
+        end
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
+
       # Flag a project to be migrated to Hashed Storage
       #
       # @param [Project] project that will be migrated
@@ -45,11 +70,36 @@ module Gitlab
         Rails.logger.error("#{err.message} migrating storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
       end
 
+      # Flag a project to be rolled-back to Legacy Storage
+      #
+      # @param [Project] project that will be rolled-back
       def rollback(project)
-        # TODO: implement rollback strategy
+        Rails.logger.info "Starting storage rollback of #{project.full_path} (ID=#{project.id})..."
+
+        project.rollback_to_legacy_storage!
+      rescue => err
+        Rails.logger.error("#{err.message} rolling-back storage of #{project.full_path} (ID=#{project.id}), trace - #{err.backtrace}")
+      end
+
+      # Returns whether we have any pending storage migration
+      #
+      def migration_pending?
+        any_non_empty_queue?(::HashedStorage::MigratorWorker, ::HashedStorage::ProjectMigrateWorker)
+      end
+
+      # Returns whether we have any pending storage rollback
+      #
+      def rollback_pending?
+        any_non_empty_queue?(::HashedStorage::RollbackerWorker, ::HashedStorage::ProjectRollbackWorker)
       end
 
       private
+
+      def any_non_empty_queue?(*workers)
+        workers.any? do |worker|
+          !Sidekiq::Queue.new(worker.queue).size.zero?
+        end
+      end
 
       # rubocop: disable CodeReuse/ActiveRecord
       def build_relation(start, finish)

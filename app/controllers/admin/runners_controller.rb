@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Admin::RunnersController < Admin::ApplicationController
-  before_action :runner, except: :index
+  before_action :runner, except: [:index, :tag_list]
 
   def index
     finder = Admin::RunnersFinder.new(params: params)
@@ -34,18 +34,24 @@ class Admin::RunnersController < Admin::ApplicationController
 
   def resume
     if Ci::UpdateRunnerService.new(@runner).update(active: true)
-      redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
+      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
-      redirect_to admin_runners_path, alert: 'Runner was not updated.'
+      redirect_to admin_runners_path, alert: _('Runner was not updated.')
     end
   end
 
   def pause
     if Ci::UpdateRunnerService.new(@runner).update(active: false)
-      redirect_to admin_runners_path, notice: 'Runner was successfully updated.'
+      redirect_to admin_runners_path, notice: _('Runner was successfully updated.')
     else
-      redirect_to admin_runners_path, alert: 'Runner was not updated.'
+      redirect_to admin_runners_path, alert: _('Runner was not updated.')
     end
+  end
+
+  def tag_list
+    tags = Autocomplete::ActsAsTaggableOn::TagsFinder.new(params: params).execute
+
+    render json: ActsAsTaggableOn::TagSerializer.new.represent(tags)
   end
 
   private

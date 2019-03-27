@@ -114,7 +114,16 @@ describe 'Dashboard Projects' do
     end
   end
 
-  context 'when on Starred projects tab' do
+  context 'when on Starred projects tab', :js do
+    it 'shows the empty state when there are no starred projects' do
+      visit(starred_dashboard_projects_path)
+
+      element = page.find('.row.empty-state')
+
+      expect(element).to have_content("You don't have starred projects yet.")
+      expect(element.find('.svg-content img')['src']).to have_content('illustrations/starred_empty')
+    end
+
     it 'shows only starred projects' do
       user.toggle_star(project2)
 

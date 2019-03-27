@@ -16,7 +16,7 @@ module UploadsActions
         end
       else
         format.json do
-          render json: 'Invalid file.', status: :unprocessable_entity
+          render json: _('Invalid file.'), status: :unprocessable_entity
         end
       end
     end
@@ -57,7 +57,7 @@ module UploadsActions
 
     render json: authorized
   rescue SocketError
-    render json: "Error uploading file", status: :internal_server_error
+    render json: _("Error uploading file"), status: :internal_server_error
   end
 
   private

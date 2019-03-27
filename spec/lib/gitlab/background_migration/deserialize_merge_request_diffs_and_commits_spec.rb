@@ -172,10 +172,8 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
         let(:exception) { ActiveRecord::RecordNotFound }
 
         let(:perform_ignoring_exceptions) do
-          begin
-            subject.perform(start_id, stop_id)
-          rescue described_class::Error
-          end
+          subject.perform(start_id, stop_id)
+        rescue described_class::Error
         end
 
         before do

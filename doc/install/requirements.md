@@ -33,7 +33,7 @@ Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
 
-GitLab requires Ruby (MRI) 2.3. Support for Ruby versions below 2.3 (2.1, 2.2) will stop with GitLab 8.13.
+GitLab requires Ruby (MRI) 2.5. Support for Ruby versions below 2.5 (2.3, 2.4) will stop with GitLab 11.6.
 
 You will have to use the standard MRI implementation of Ruby.
 We love [JRuby](https://www.jruby.org/) and [Rubinius](https://rubinius.com) but GitLab
@@ -50,6 +50,8 @@ If you want to be flexible about growing your hard drive space in the future con
 Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
 
 If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
+
+NOTE: **Note:** Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 ### CPU
 
@@ -204,6 +206,9 @@ We support the current and the previous major release of:
 - Safari
 - Microsoft Edge
 - Internet Explorer 11
+
+The browser vendors release regular minor version updates with important bug fixes and security updates.
+Support is only provided for the current minor version of the major version you are running.
 
 Each time a new browser version is released, we begin supporting that version and stop supporting the third most recent version.
 

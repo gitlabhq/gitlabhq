@@ -11,7 +11,7 @@ export const requestReleases = ({ commit }) => commit(types.REQUEST_RELEASES);
 /**
  * Fetches the main endpoint.
  * Will dispatch requestNamespace action before starting the request.
- * Will dispatch receiveNamespaceSuccess if the request is successfull
+ * Will dispatch receiveNamespaceSuccess if the request is successful
  * Will dispatch receiveNamesapceError if the request returns an error
  *
  * @param {String} projectId
@@ -30,7 +30,7 @@ export const receiveReleasesSuccess = ({ commit }, data) =>
 
 export const receiveReleasesError = ({ commit }) => {
   commit(types.RECEIVE_RELEASES_ERROR);
-  createFlash(__('An error occured while fetching the releases. Please try again.'));
+  createFlash(__('An error occurred while fetching the releases. Please try again.'));
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

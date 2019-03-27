@@ -44,11 +44,9 @@ describe 'Puma' do
   end
 
   after(:all) do
-    begin
-      WebMock.disable_net_connect!(allow_localhost: true)
-      Process.kill('TERM', @puma_master_pid)
-    rescue Errno::ESRCH
-    end
+    WebMock.disable_net_connect!(allow_localhost: true)
+    Process.kill('TERM', @puma_master_pid)
+  rescue Errno::ESRCH
   end
 
   def wait_puma_boot!(master_pid, ready_file)

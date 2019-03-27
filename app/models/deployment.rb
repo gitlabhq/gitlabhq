@@ -78,6 +78,10 @@ class Deployment < ActiveRecord::Base
     Commit.truncate_sha(sha)
   end
 
+  def cluster
+    project.deployment_platform(environment: environment.name)&.cluster
+  end
+
   def last?
     self == environment.last_deployment
   end

@@ -105,6 +105,20 @@ Flags](feature_flags.md) guide) supports rolling out changes to a percentage of
 users. This in turn can be controlled using [GitLab
 chatops](https://docs.gitlab.com/ee/ci/chatops/).
 
+For an up to date list of feature flag commands please see [the source
+code](https://gitlab.com/gitlab-com/chatops/blob/master/lib/chatops/commands/feature.rb).
+Note that all the examples in that file must be preceded by
+`/chatops run`.
+
+If you get an error "Whoops! This action is not allowed. This incident
+will be reported." that means your Slack account is not allowed to
+change feature flags. To test if you are allowed to do anything at all,
+run:
+
+```
+/chatops run feature --help
+```
+
 For example, to enable a feature for 25% of all users, run the following in
 Slack:
 
@@ -134,6 +148,20 @@ may differ. For some features a few minutes is enough, while for others you may
 want to wait several hours or even days. This is entirely up to you, just make
 sure it is clearly communicated to your team, and the Production team if you
 anticipate any potential problems.
+
+Feature gates can also be actor based, for example a feature could first be
+enabled for only the `gitlab-ce` project. The project is passed by supplying a
+`--project` flag:
+
+```
+/chatops run feature set --project=gitlab-org/gitlab-ce some_feature true
+```
+
+For groups the `--group` flag is available:
+
+```
+/chatops run feature set --group=gitlab-org some_feature true
+```
 
 Once a change is deemed stable, submit a new merge request to remove the
 feature flag. This ensures the change is available to all users and self-hosted
@@ -188,3 +216,12 @@ to be shipped. You can do this via ChatOps:
 
 Note that you can do this at any time, even before the merge request using the
 flag has been merged!
+
+### Cleaning up
+
+When a feature gate has been removed from the code base, the value still exists
+in the database. This can be removed through ChatOps:
+
+```
+/chatops run feature delete some_feature
+```

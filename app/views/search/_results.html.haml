@@ -20,7 +20,9 @@
       .search-results
         - if @scope == 'projects'
           .term
-            = render 'shared/projects/list', projects: @search_objects
+            = render 'shared/projects/list', projects: @search_objects, pipeline_status: false
+        - elsif %w[blobs wiki_blobs].include?(@scope)
+          = render partial: 'search/results/blob', collection: @search_objects, locals: { projects: blob_projects(@search_objects) }
         - else
           = render partial: "search/results/#{@scope.singularize}", collection: @search_objects
 

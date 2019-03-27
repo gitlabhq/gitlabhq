@@ -765,6 +765,15 @@ describe Issue do
     end
   end
 
+  describe '.confidential_only' do
+    it 'only returns confidential_only issues' do
+      create(:issue)
+      confidential_issue = create(:issue, confidential: true)
+
+      expect(described_class.confidential_only).to eq([confidential_issue])
+    end
+  end
+
   it_behaves_like 'throttled touch' do
     subject { create(:issue, updated_at: 1.hour.ago) }
   end

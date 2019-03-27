@@ -5,8 +5,8 @@ require 'spec_helper'
 describe 'Group CI/CD settings' do
   include WaitForRequests
 
-  let(:user) {create(:user)}
-  let(:group) {create(:group)}
+  let(:user) { create(:user) }
+  let(:group) { create(:group) }
 
   before do
     group.add_owner(user)
@@ -33,6 +33,47 @@ describe 'Group CI/CD settings' do
 
       it 'changes registration token' do
         expect(page_token).not_to eq token
+      end
+    end
+  end
+
+  describe 'Auto DevOps form' do
+    before do
+      stub_application_setting(auto_devops_enabled: true)
+    end
+
+    context 'as owner first visiting group settings' do
+      it 'should see instance enabled badge' do
+        visit group_settings_ci_cd_path(group)
+
+        page.within '#auto-devops-settings' do
+          expect(page).to have_content('instance enabled')
+        end
+      end
+    end
+
+    context 'when Auto DevOps group has been enabled' do
+      it 'should see group enabled badge' do
+        group.update!(auto_devops_enabled: true)
+
+        visit group_settings_ci_cd_path(group)
+
+        page.within '#auto-devops-settings' do
+          expect(page).to have_content('group enabled')
+        end
+      end
+    end
+
+    context 'when Auto DevOps group has been disabled' do
+      it 'should not see a badge' do
+        group.update!(auto_devops_enabled: false)
+
+        visit group_settings_ci_cd_path(group)
+
+        page.within '#auto-devops-settings' do
+          expect(page).not_to have_content('instance enabled')
+          expect(page).not_to have_content('group enabled')
+        end
       end
     end
   end

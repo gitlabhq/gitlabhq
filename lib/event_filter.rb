@@ -33,7 +33,7 @@ class EventFilter
     when TEAM
       events.where(action: [Event::JOINED, Event::LEFT, Event::EXPIRED])
     when ISSUE
-      events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED])
+      events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED], target_type: 'Issue')
     else
       events
     end

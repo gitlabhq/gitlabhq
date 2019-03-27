@@ -149,9 +149,19 @@ describe Gitlab::GitalyClient do
       end
     end
 
-    context 'when RequestStore is enabled', :request_store do
+    context 'when RequestStore is enabled and the maximum number of calls is not enforced by a feature flag', :request_store do
+      before do
+        stub_feature_flags(gitaly_enforce_requests_limits: false)
+      end
+
       it 'allows up the maximum number of allowed calls' do
         expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS) }.not_to raise_error
+      end
+
+      it 'allows the maximum number of calls to be exceeded if GITALY_DISABLE_REQUEST_LIMITS is set' do
+        stub_env('GITALY_DISABLE_REQUEST_LIMITS', 'true')
+
+        expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.not_to raise_error
       end
 
       context 'when the maximum number of calls has been reached' do
@@ -185,6 +195,32 @@ describe Gitlab::GitalyClient do
 
         it 'does not allow the maximum number of calls to be exceeded outside of an allow_n_plus_1_calls block' do
           expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.to raise_error(Gitlab::GitalyClient::TooManyInvocationsError)
+        end
+      end
+    end
+
+    context 'in production and when RequestStore is enabled', :request_store do
+      before do
+        allow(Rails.env).to receive(:production?).and_return(true)
+      end
+
+      context 'when the maximum number of calls is enforced by a feature flag' do
+        before do
+          stub_feature_flags(gitaly_enforce_requests_limits: true)
+        end
+
+        it 'does not allow the maximum number of calls to be exceeded' do
+          expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.to raise_error(Gitlab::GitalyClient::TooManyInvocationsError)
+        end
+      end
+
+      context 'when the maximum number of calls is not enforced by a feature flag' do
+        before do
+          stub_feature_flags(gitaly_enforce_requests_limits: false)
+        end
+
+        it 'allows the maximum number of calls to be exceeded' do
+          expect { call_gitaly(Gitlab::GitalyClient::MAXIMUM_GITALY_CALLS + 1) }.not_to raise_error
         end
       end
     end

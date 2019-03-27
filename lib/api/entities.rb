@@ -86,6 +86,10 @@ module API
       expose :admin?, as: :is_admin
     end
 
+    class UserDetailsWithAdmin < UserWithAdmin
+      expose :highest_role
+    end
+
     class UserStatus < Grape::Entity
       expose :emoji
       expose :message
@@ -156,7 +160,7 @@ module API
     class BasicProjectDetails < ProjectIdentity
       include ::API::ProjectsRelationBuilder
 
-      expose :default_branch
+      expose :default_branch, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
       expose :tag_list do |project|
         # project.tags.order(:name).pluck(:name) is the most suitable option
@@ -261,7 +265,7 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
-      expose :ci_config_path
+      expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
       end
@@ -270,8 +274,9 @@ module API
       expose :only_allow_merge_if_all_discussions_are_resolved
       expose :printing_merge_request_link_enabled
       expose :merge_method
-
-      expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
+      expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
+        options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
+      }
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
@@ -298,6 +303,18 @@ module API
       expose :repository_size
       expose :lfs_objects_size
       expose :build_artifacts_size, as: :job_artifacts_size
+    end
+
+    class ProjectDailyFetches < Grape::Entity
+      expose :fetch_count, as: :count
+      expose :date
+    end
+
+    class ProjectDailyStatistics < Grape::Entity
+      expose :fetches do
+        expose :total_fetch_count, as: :total
+        expose :fetches, as: :days, using: ProjectDailyFetches
+      end
     end
 
     class Member < Grape::Entity
@@ -473,6 +490,12 @@ module API
       expose(:project_id) { |entity| entity&.project.try(:id) }
       expose :title, :description
       expose :state, :created_at, :updated_at
+
+      # Avoids an N+1 query when metadata is included
+      def issuable_metadata(subject, options, method)
+        cached_subject = options.dig(:issuable_metadata, subject.id)
+        (cached_subject || subject).public_send(method) # rubocop: disable GitlabSecurity/PublicSend
+      end
     end
 
     class Diff < Grape::Entity
@@ -518,53 +541,31 @@ module API
     class IssueBasic < ProjectEntity
       expose :closed_at
       expose :closed_by, using: Entities::UserBasic
-      expose :labels do |issue, options|
+      expose :labels do |issue|
         # Avoids an N+1 query since labels are preloaded
         issue.labels.map(&:title).sort
       end
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
 
-      expose :assignee, using: ::API::Entities::UserBasic do |issue, options|
+      expose :assignee, using: ::API::Entities::UserBasic do |issue|
         issue.assignees.first
       end
 
-      expose :user_notes_count
-      expose :upvotes do |issue, options|
-        if options[:issuable_metadata]
-          # Avoids an N+1 query when metadata is included
-          options[:issuable_metadata][issue.id].upvotes
-        else
-          issue.upvotes
-        end
-      end
-      expose :downvotes do |issue, options|
-        if options[:issuable_metadata]
-          # Avoids an N+1 query when metadata is included
-          options[:issuable_metadata][issue.id].downvotes
-        else
-          issue.downvotes
-        end
-      end
+      expose(:user_notes_count)     { |issue, options| issuable_metadata(issue, options, :user_notes_count) }
+      expose(:merge_requests_count) { |issue, options| issuable_metadata(issue, options, :merge_requests_count) }
+      expose(:upvotes)              { |issue, options| issuable_metadata(issue, options, :upvotes) }
+      expose(:downvotes)            { |issue, options| issuable_metadata(issue, options, :downvotes) }
       expose :due_date
       expose :confidential
       expose :discussion_locked
 
-      expose :web_url do |issue, options|
+      expose :web_url do |issue|
         Gitlab::UrlBuilder.build(issue)
       end
 
       expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |issue|
         issue
-      end
-
-      expose :merge_requests_count do |issue, options|
-        if options[:issuable_metadata]
-          # Avoids an N+1 query when metadata is included
-          options[:issuable_metadata][issue.id].merge_requests_count
-        else
-          issue.merge_requests_closing_issues.count
-        end
       end
     end
 
@@ -659,23 +660,12 @@ module API
         MarkupHelper.markdown_field(entity, :description)
       end
       expose :target_branch, :source_branch
-      expose :upvotes do |merge_request, options|
-        if options[:issuable_metadata]
-          options[:issuable_metadata][merge_request.id].upvotes
-        else
-          merge_request.upvotes
-        end
-      end
-      expose :downvotes do |merge_request, options|
-        if options[:issuable_metadata]
-          options[:issuable_metadata][merge_request.id].downvotes
-        else
-          merge_request.downvotes
-        end
-      end
+      expose(:user_notes_count) { |merge_request, options| issuable_metadata(merge_request, options, :user_notes_count) }
+      expose(:upvotes)          { |merge_request, options| issuable_metadata(merge_request, options, :upvotes) }
+      expose(:downvotes)        { |merge_request, options| issuable_metadata(merge_request, options, :downvotes) }
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
-      expose :labels do |merge_request, options|
+      expose :labels do |merge_request|
         # Avoids an N+1 query since labels are preloaded
         merge_request.labels.map(&:title).sort
       end
@@ -693,7 +683,6 @@ module API
       end
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
-      expose :user_notes_count
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
@@ -701,7 +690,7 @@ module API
       # Deprecated
       expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
-      expose :web_url do |merge_request, options|
+      expose :web_url do |merge_request|
         Gitlab::UrlBuilder.build(merge_request)
       end
 
@@ -898,7 +887,8 @@ module API
       expose :target_type
 
       expose :target do |todo, options|
-        todo_target_class(todo.target_type).represent(todo.target, options)
+        todo_options = options.fetch(todo.target_type, {})
+        todo_target_class(todo.target_type).represent(todo.target, todo_options)
       end
 
       expose :target_url do |todo, options|
@@ -1385,13 +1375,9 @@ module API
 
       class GitInfo < Grape::Entity
         expose :repo_url, :ref, :sha, :before_sha
-        expose :ref_type do |model|
-          if model.tag
-            'tag'
-          else
-            'branch'
-          end
-        end
+        expose :ref_type
+        expose :refspecs
+        expose :git_depth, as: :depth
       end
 
       class RunnerInfo < Grape::Entity
@@ -1572,8 +1558,6 @@ module API
 
     class Suggestion < Grape::Entity
       expose :id
-      expose :from_original_line
-      expose :to_original_line
       expose :from_line
       expose :to_line
       expose :appliable?, as: :appliable

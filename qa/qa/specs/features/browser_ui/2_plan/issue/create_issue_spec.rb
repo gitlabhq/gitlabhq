@@ -5,15 +5,6 @@ module QA
     describe 'Issue creation' do
       let(:issue_title) { 'issue title' }
 
-      def create_issue
-        Runtime::Browser.visit(:gitlab, Page::Main::Login)
-        Page::Main::Login.act { sign_in_using_credentials }
-
-        Resource::Issue.fabricate! do |issue|
-          issue.title = issue_title
-        end
-      end
-
       it 'user creates an issue' do
         create_issue
 
@@ -44,6 +35,15 @@ module QA
 
             expect(found).to be_truthy
           end
+        end
+      end
+
+      def create_issue
+        Runtime::Browser.visit(:gitlab, Page::Main::Login)
+        Page::Main::Login.act { sign_in_using_credentials }
+
+        Resource::Issue.fabricate! do |issue|
+          issue.title = issue_title
         end
       end
     end

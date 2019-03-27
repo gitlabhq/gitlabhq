@@ -98,6 +98,22 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it { expect(kubernetes.save).to be_truthy }
       end
+
+      context 'when api_url is localhost' do
+        let(:api_url) { 'http://localhost:22' }
+
+        it { expect(kubernetes.save).to be_falsey }
+
+        context 'Application settings allows local requests' do
+          before do
+            allow(ApplicationSetting)
+              .to receive(:current)
+              .and_return(ApplicationSetting.build_from_defaults(allow_local_requests_from_hooks_and_services: true))
+          end
+
+          it { expect(kubernetes.save).to be_truthy }
+        end
+      end
     end
 
     context 'when validates token' do
@@ -253,7 +269,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -265,7 +281,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
         )
       end
     end
@@ -281,7 +297,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -293,7 +309,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
       it 'sets KUBE_TOKEN' do
         expect(subject).to include(
-          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false }
+          { key: 'KUBE_TOKEN', value: kubernetes.token, public: false, masked: true }
         )
       end
     end
@@ -322,7 +338,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
         it 'sets KUBE_TOKEN' do
           expect(subject).to include(
-            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false }
+            { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
           )
         end
       end
@@ -359,14 +375,14 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'with valid pods' do
-      let(:pod) { kube_pod(app: environment.slug) }
-      let(:pod_with_no_terminal) { kube_pod(app: environment.slug, status: "Pending") }
+      let(:pod) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug) }
+      let(:pod_with_no_terminal) { kube_pod(environment_slug: environment.slug, project_slug: project.full_path_slug, status: "Pending") }
       let(:terminals) { kube_terminals(service, pod) }
 
       before do
         stub_reactive_cache(
           service,
-          pods: [pod, pod, pod_with_no_terminal, kube_pod(app: "should-be-filtered-out")]
+          pods: [pod, pod, pod_with_no_terminal, kube_pod(environment_slug: "should-be-filtered-out")]
         )
       end
 

@@ -28,13 +28,11 @@ describe Releases::DestroyService do
       end
     end
 
-    context 'when tag is not found' do
+    context 'when tag does not exist in the repository' do
       let(:tag) { 'v1.1.1' }
 
-      it 'returns an error' do
-        is_expected.to include(status: :error,
-                               message: 'Tag does not exist',
-                               http_status: 404)
+      it 'removes the orphaned release' do
+        expect { subject }.to change { project.releases.count }.by(-1)
       end
     end
 

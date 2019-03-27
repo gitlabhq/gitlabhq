@@ -28,12 +28,12 @@ project_tree:
     - notes:
         :author
   - releases:
-    - :author
     - :links
   - project_members:
     - :user
   - merge_requests:
     - :metrics
+    - :suggestions
     - notes:
       - :author
       - events:
@@ -118,6 +118,7 @@ excluded_attributes:
     - :description_html
     - :repository_languages
     - :bfg_object_map
+    - :tag_list
   namespaces:
     - :runners_token
     - :runners_token_encrypted

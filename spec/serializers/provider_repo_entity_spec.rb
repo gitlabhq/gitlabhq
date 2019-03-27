@@ -13,7 +13,7 @@ describe ProviderRepoEntity do
   describe '#as_json' do
     subject { entity.as_json }
 
-    it 'includes requried fields' do
+    it 'includes required fields' do
       expect(subject[:id]).to eq(provider_repo[:id])
       expect(subject[:full_name]).to eq(provider_repo[:full_name])
       expect(subject[:owner_name]).to eq(provider_repo[:owner][:login])

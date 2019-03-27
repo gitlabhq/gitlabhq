@@ -10,17 +10,18 @@
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - css_class = '' unless local_assigns[:css_class]
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
-- cache_key = project_list_cache_key(project)
+- cache_key = project_list_cache_key(project, pipeline_status: pipeline_status)
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_date)
 - css_controls_class = compact_mode ? "" : "flex-lg-row justify-content-lg-between"
+- avatar_container_class = project.creator && use_creator_avatar ? '' : 'rect-avatar'
 
 %li.project-row.d-flex{ class: css_class }
   = cache(cache_key) do
     - if avatar
-      .avatar-container.s48.flex-grow-0.flex-shrink-0
+      .avatar-container.s48.flex-grow-0.flex-shrink-0{ class: avatar_container_class }
         = link_to project_path(project), class: dom_class(project) do
           - if project.creator && use_creator_avatar
-            = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s65", alt:''
+            = image_tag avatar_icon_for_user(project.creator, 48), class: "avatar s48", alt:''
           - else
             = project_icon(project, alt: '', class: 'avatar project-avatar s48', width: 48, height: 48)
     .project-details.d-sm-flex.flex-sm-fill.align-items-center
@@ -84,7 +85,8 @@
               = sprite_icon('issues', size: 14, css_class: 'append-right-4')
               = number_with_delimiter(project.open_issues_count)
           - if pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
+            - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)
             %span.icon-wrapper.pipeline-status
-              = render_project_pipeline_status(project.pipeline_status, tooltip_placement: 'top')
+              = render 'ci/status/icon', status: project.commit.last_pipeline.detailed_status(current_user), type: 'commit', tooltip_placement: 'top', path: pipeline_path
         .updated-note
           %span Updated #{updated_tooltip}

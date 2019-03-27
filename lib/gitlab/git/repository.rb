@@ -11,6 +11,7 @@ module Gitlab
       include Gitlab::Git::WrapsGitalyErrors
       include Gitlab::EncodingHelper
       include Gitlab::Utils::StrongMemoize
+      prepend Gitlab::Git::RuggedImpl::Repository
 
       SEARCH_CONTEXT_LINES = 3
       REV_LIST_COMMIT_LIMIT = 2_000
@@ -275,7 +276,7 @@ module Gitlab
       # senddata response.
       def archive_file_path(storage_path, sha, name, format = "tar.gz")
         # Build file path
-        return nil unless name
+        return unless name
 
         extension =
           case format
@@ -343,12 +344,12 @@ module Gitlab
         end
       end
 
-      def new_blobs(newrev)
+      def new_blobs(newrev, dynamic_timeout: nil)
         return [] if newrev.blank? || newrev == ::Gitlab::Git::BLANK_SHA
 
         strong_memoize("new_blobs_#{newrev}") do
           wrapped_gitaly_errors do
-            gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT)
+            gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT, dynamic_timeout: dynamic_timeout)
           end
         end
       end
@@ -554,6 +555,12 @@ module Gitlab
 
       def find_tag(name)
         tags.find { |tag| tag.name == name }
+      end
+
+      def merge_to_ref(user, source_sha, branch, target_ref, message)
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_merge_to_ref(user, source_sha, branch, target_ref, message)
+        end
       end
 
       def merge(user, source_sha, target_branch, message, &block)
@@ -846,17 +853,20 @@ module Gitlab
         true
       end
 
+      # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
-        start_branch_name: nil, start_repository: self)
+        start_branch_name: nil, start_repository: self,
+        force: false)
 
         wrapped_gitaly_errors do
           gitaly_operation_client.user_commit_files(user, branch_name,
               message, actions, author_email, author_name,
-              start_branch_name, start_repository)
+              start_branch_name, start_repository, force)
         end
       end
+      # rubocop:enable Metrics/ParameterLists
 
       def write_config(full_path:)
         return unless full_path.present?

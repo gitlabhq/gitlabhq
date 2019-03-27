@@ -38,6 +38,7 @@ Have a look at some of our most popular documentation resources:
 | [GitLab CI/CD examples](ci/examples/README.md)                  | Get up to speed quickly with common CI/CD scenarios.             |
 | [GitLab Container Registry](user/project/container_registry.md) | Host containers within GitLab.                                   |
 | [GitLab Pages](user/project/pages/index.md)                     | Host static websites for your projects with GitLab.              |
+| [GitLab.com settings](user/gitlab_com/index.md)                 | Settings for [GitLab.com](#gitlabcom).                           |
 | [Kubernetes integration](user/project/clusters/index.md)        | Use GitLab with Kubernetes.                                      |
 | [SSH authentication](ssh/README.md)                             | Secure your network communications.                              |
 | [Using Docker images](ci/docker/using_docker_images.md)         | Build and test your applications with Docker.                    |
@@ -221,7 +222,7 @@ The following documentation relates to the DevOps **Verify** stage:
 |:---------------------------------------------------|:-----------------------------------------------------------------------------|
 | [GitLab CI/CD](ci/README.md)                       | Explore the features and capabilities of Continuous Integration with GitLab. |
 | [JUnit test reports](ci/junit_test_reports.md)     | Display JUnit test reports on merge requests.                                |
-| [Pipeline Graphs](ci/pipelines.md#pipeline-graphs) | Visualize builds.                                                            |
+| [Pipeline Graphs](ci/pipelines.md#visualizing-pipelines) | Visualize builds.                                                      |
 | [Review Apps](ci/review_apps/index.md)             | Preview changes to your application right from a merge request.              |
 
 <div align="right">
@@ -284,9 +285,11 @@ The following documentation relates to the DevOps **Configure** stage:
 | [Auto DevOps](topics/autodevops/index.md)                                                                                          | Automatically employ a complete DevOps lifecycle.                         |
 | [Easy creation of Kubernetes<br/>clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab) | Use Google Kubernetes Engine and GitLab.                                  |
 | [Executable Runbooks](user/project/clusters/runbooks/index.md)                                                                     | Documented procedures that explain how to carry out particular processes. |
+| [GitLab ChatOps](ci/chatops/README.md)                                                                                             | Interact with CI/CD jobs through chat services.                           |
 | [Installing Applications](user/project/clusters/index.md#installing-applications)                                                  | Deploy Helm, Ingress, and Prometheus on Kubernetes.                       |
 | [Mattermost slash commands](user/project/integrations/mattermost_slash_commands.md)                                                | Enable and use slash commands from within Mattermost.                     |
 | [Protected variables](ci/variables/README.md#protected-variables)                                                                  | Restrict variables to protected branches and tags.                        |
+| [Serverless](user/project/clusters/serverless/index.md)                                                                            | Run serverless workloads on Kubernetes.                                   |
 | [Slack slash commands](user/project/integrations/slack_slash_commands.md)                                                          | Enable and use slash commands from within Slack.                          |
 
 <div align="right">

@@ -106,9 +106,9 @@ The following variables are known as "persisted":
 
 They are:
 
-- Supported for definitions where the ["Expansion place"](#gitlab-ci-yml-file) is:
+- Supported for definitions where the ["Expansion place"](#gitlab-ciyml-file) is:
   - Runner.
   - Script execution shell.
 - Not supported:
-  - For definitions where the ["Expansion place"](#gitlab-ci-yml-file) is GitLab.
+  - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
   - In the `only` and `except` [variables expressions](README.md#variables-expressions).

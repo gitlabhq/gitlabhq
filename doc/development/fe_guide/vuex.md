@@ -52,7 +52,7 @@ The first thing you should do before writing any code is to design the state.
 Often we need to provide data from haml to our Vue application. Let's store it in the state for better access.
 
 ```javascript
-  export default {
+  export default () => ({
     endpoint: null,
 
     isLoading: false,
@@ -62,7 +62,7 @@ Often we need to provide data from haml to our Vue application. Let's store it i
     errorAddingUser: false,
 
     users: [],
-  };
+  });
 ```
 
 #### Access `state` properties

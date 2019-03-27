@@ -31,10 +31,10 @@ module Backup
           raise Backup::Error, 'Backup failed'
         end
 
-        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{@backup_files_dir} -cf - .), gzip_cmd], out: [backup_tarball, 'w', 0600])
         FileUtils.rm_rf(@backup_files_dir)
       else
-        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(#{tar} --exclude=lost+found -C #{app_files_dir} -cf - .), gzip_cmd], out: [backup_tarball, 'w', 0600])
       end
     end
 

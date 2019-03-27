@@ -3,7 +3,29 @@
 module QA
   context 'Create' do
     describe 'Merge request creation' do
-      it 'user creates a new merge request' do
+      it 'user creates a new merge request', :smoke do
+        Runtime::Browser.visit(:gitlab, Page::Main::Login)
+        Page::Main::Login.act { sign_in_using_credentials }
+
+        current_project = Resource::Project.fabricate! do |project|
+          project.name = 'project-with-merge-request'
+        end
+
+        merge_request_title = 'This is a merge request'
+        merge_request_description = 'Great feature'
+
+        Resource::MergeRequest.fabricate! do |merge_request|
+          merge_request.title = merge_request_title
+          merge_request.description = merge_request_description
+          merge_request.project = current_project
+        end
+
+        expect(page).to have_content(merge_request_title)
+        expect(page).to have_content(merge_request_description)
+        expect(page).to have_content(/Opened [\w\s]+ ago/)
+      end
+
+      it 'user creates a new merge request with a milestone and label' do
         gitlab_account_username = "@#{Runtime::User.username}"
 
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
@@ -24,9 +46,12 @@ module QA
           label.description = 'Merge Request label'
         end
 
+        merge_request_title = 'This is a merge request with a milestone and a label'
+        merge_request_description = 'Great feature with milestone'
+
         Resource::MergeRequest.fabricate! do |merge_request|
-          merge_request.title = 'This is a merge request with a milestone'
-          merge_request.description = 'Great feature with milestone'
+          merge_request.title = merge_request_title
+          merge_request.description = merge_request_description
           merge_request.project = current_project
           merge_request.milestone = current_milestone
           merge_request.assignee = 'me'
@@ -34,8 +59,8 @@ module QA
         end
 
         Page::MergeRequest::Show.perform do |merge_request|
-          expect(merge_request).to have_content('This is a merge request with a milestone')
-          expect(merge_request).to have_content('Great feature with milestone')
+          expect(merge_request).to have_content(merge_request_title)
+          expect(merge_request).to have_content(merge_request_description)
           expect(merge_request).to have_content(/Opened [\w\s]+ ago/)
           expect(merge_request).to have_assignee(gitlab_account_username)
           expect(merge_request).to have_label(new_label.title)
@@ -45,27 +70,6 @@ module QA
           expect(sidebar).to have_milestone(current_milestone.title)
         end
       end
-    end
-  end
-
-  describe 'creates a merge request', :smoke do
-    it 'user creates a new merge request' do
-      Runtime::Browser.visit(:gitlab, Page::Main::Login)
-      Page::Main::Login.act { sign_in_using_credentials }
-
-      current_project = Resource::Project.fabricate! do |project|
-        project.name = 'project-with-merge-request'
-      end
-
-      Resource::MergeRequest.fabricate! do |merge_request|
-        merge_request.title = 'This is a merge request'
-        merge_request.description = 'Great feature'
-        merge_request.project = current_project
-      end
-
-      expect(page).to have_content('This is a merge request')
-      expect(page).to have_content('Great feature')
-      expect(page).to have_content(/Opened [\w\s]+ ago/)
     end
   end
 end

@@ -7,6 +7,7 @@
 #     cache_markdown_field :foo
 #     cache_markdown_field :bar
 #     cache_markdown_field :baz, pipeline: :single_line
+#     cache_markdown_field :baz, whitelisted: true
 #
 # Corresponding foo_html, bar_html and baz_html fields should exist.
 module CacheMarkdownField
@@ -14,7 +15,7 @@ module CacheMarkdownField
 
   # Increment this number every time the renderer changes its output
   CACHE_COMMONMARK_VERSION_START  = 10
-  CACHE_COMMONMARK_VERSION        = 14
+  CACHE_COMMONMARK_VERSION        = 15
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
@@ -37,7 +38,15 @@ module CacheMarkdownField
     end
 
     def html_fields
-      markdown_fields.map {|field| html_field(field) }
+      markdown_fields.map { |field| html_field(field) }
+    end
+
+    def html_fields_whitelisted
+      markdown_fields.each_with_object([]) do |field, fields|
+        if @data[field].fetch(:whitelisted, false)
+          fields << html_field(field)
+        end
+      end
     end
   end
 
@@ -149,11 +158,16 @@ module CacheMarkdownField
     alias_method :attributes_before_markdown_cache, :attributes
     def attributes
       attrs = attributes_before_markdown_cache
+      html_fields = cached_markdown_fields.html_fields
+      whitelisted = cached_markdown_fields.html_fields_whitelisted
+      exclude_fields = html_fields - whitelisted
 
-      attrs.delete('cached_markdown_version')
-
-      cached_markdown_fields.html_fields.each do |field|
+      exclude_fields.each do |field|
         attrs.delete(field)
+      end
+
+      if whitelisted.empty?
+        attrs.delete('cached_markdown_version')
       end
 
       attrs

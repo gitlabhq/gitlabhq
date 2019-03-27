@@ -252,8 +252,8 @@ describe Projects::NotesController do
           note: 'some note',
           noteable_id: merge_request.id.to_s,
           noteable_type: 'MergeRequest',
-          merge_request_diff_head_sha: 'sha',
-          in_reply_to_discussion_id: nil
+          commit_id: nil,
+          merge_request_diff_head_sha: 'sha'
         }).permit!
 
         expect(Notes::CreateService).to receive(:new).with(project, user, service_params).and_return(double(execute: true))
@@ -263,6 +263,22 @@ describe Projects::NotesController do
         post :create, params: request_params
 
         expect(response).to have_gitlab_http_status(302)
+      end
+    end
+
+    context 'when creating a comment on a commit with SHA1 starting with a large number' do
+      let(:commit) { create(:commit, project: project, id: '842616594688d2351480dfebd67b3d8d15571e6d') }
+
+      it 'creates a note successfully' do
+        expect do
+          post :create, params: {
+            note: { note: 'some note', commit_id: commit.id },
+            namespace_id: project.namespace,
+            project_id: project,
+            target_type: 'commit',
+            target_id: commit.id
+          }
+        end.to change { Note.count }.by(1)
       end
     end
 
@@ -394,6 +410,37 @@ describe Projects::NotesController do
 
         it 'does not create a new note' do
           expect { post :create, params: request_params }.not_to change { Note.count }
+        end
+      end
+    end
+
+    context 'when creating a note with quick actions' do
+      context 'with commands that return changes' do
+        let(:note_text) { "/award :thumbsup:\n/estimate 1d\n/spend 3h" }
+
+        it 'includes changes in commands_changes ' do
+          post :create, params: request_params.merge(note: { note: note_text }, format: :json)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['commands_changes']).to include('emoji_award', 'time_estimate', 'spend_time')
+          expect(json_response['commands_changes']).not_to include('target_project', 'title')
+        end
+      end
+
+      context 'with commands that do not return changes' do
+        let(:issue) { create(:issue, project: project) }
+        let(:other_project) { create(:project) }
+        let(:note_text) { "/move #{other_project.full_path}\n/title AAA" }
+
+        before do
+          other_project.add_developer(user)
+        end
+
+        it 'does not include changes in commands_changes' do
+          post :create, params: request_params.merge(note: { note: note_text }, target_type: 'issue', target_id: issue.id, format: :json)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response['commands_changes']).not_to include('target_project', 'title')
         end
       end
     end

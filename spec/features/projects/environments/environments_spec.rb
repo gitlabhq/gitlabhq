@@ -38,6 +38,23 @@ describe 'Environments page', :js do
         end
       end
 
+      describe 'with environments spanning multiple pages', :js do
+        before do
+          allow(Kaminari.config).to receive(:default_per_page).and_return(3)
+          create_list(:environment, 4, project: project, state: :available)
+        end
+
+        it 'should render second page of pipelines' do
+          visit_environments(project, scope: 'available')
+
+          find('.js-next-button').click
+          wait_for_requests
+
+          expect(page).to have_selector('.gl-pagination .page', count: 2)
+          expect(find('.gl-pagination .page-item.active .page-link').text).to eq("2")
+        end
+      end
+
       describe 'in stopped tab page' do
         it 'should show no environments' do
           visit_environments(project, scope: 'stopped')
@@ -166,14 +183,14 @@ describe 'Environments page', :js do
         it 'shows a play button' do
           find('.js-environment-actions-dropdown').click
 
-          expect(page).to have_content(action.name.humanize)
+          expect(page).to have_content(action.name)
         end
 
         it 'allows to play a manual action', :js do
           expect(action).to be_manual
 
           find('.js-environment-actions-dropdown').click
-          expect(page).to have_content(action.name.humanize)
+          expect(page).to have_content(action.name)
 
           expect { find('.js-manual-action-link').click }
             .not_to change { Ci::Pipeline.count }
@@ -294,7 +311,7 @@ describe 'Environments page', :js do
         it "has link to the delayed job's action" do
           find('.js-environment-actions-dropdown').click
 
-          expect(page).to have_button('Delayed job')
+          expect(page).to have_button('delayed job')
           expect(page).to have_content(/\d{2}:\d{2}:\d{2}/)
         end
 
@@ -316,7 +333,7 @@ describe 'Environments page', :js do
         context 'when user played a delayed job immediately' do
           before do
             find('.js-environment-actions-dropdown').click
-            page.accept_confirm { click_button('Delayed job') }
+            page.accept_confirm { click_button('delayed job') }
             wait_for_requests
           end
 

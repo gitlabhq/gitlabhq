@@ -23,6 +23,6 @@ class MergeRequestDiffFile < ActiveRecord::Base
         super
       end
 
-    binary? ? content.unpack('m0').first : content
+    binary? ? content.unpack1('m0') : content
   end
 end

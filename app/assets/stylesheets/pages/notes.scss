@@ -44,6 +44,7 @@ $note-form-margin-left: 72px;
     border: 1px solid $border-color;
     border-radius: $border-radius-default;
     margin: $gl-padding 0;
+    overflow: auto;
 
     &.system-note,
     &.note-form {
@@ -224,14 +225,7 @@ $note-form-margin-left: 72px;
       overflow-y: hidden;
 
       .note-text {
-        @include md-typography;
-        // Reset ul style types since we're nested inside a ul already
-        @include bulleted-list;
         word-wrap: break-word;
-
-        table {
-          @include markdown-table;
-        }
       }
     }
 
@@ -283,8 +277,6 @@ $note-form-margin-left: 72px;
     }
 
     .system-note-message {
-      display: inline;
-
       &::first-letter {
         text-transform: lowercase;
       }
@@ -300,26 +292,6 @@ $note-form-margin-left: 72px;
         &::first-letter {
           text-transform: lowercase;
         }
-      }
-    }
-
-    .timeline-icon {
-      float: left;
-      display: flex;
-      align-items: center;
-      background-color: $white-light;
-      width: $system-note-icon-size;
-      height: $system-note-icon-size;
-      border: 1px solid $border-color;
-      border-radius: $system-note-icon-size;
-      margin: -6px $gl-padding 0 0;
-
-      svg {
-        width: $system-note-svg-size;
-        height: $system-note-svg-size;
-        fill: $gray-darkest;
-        display: block;
-        margin: 0 auto;
       }
     }
 
@@ -378,6 +350,37 @@ $note-form-margin-left: 72px;
           }
         }
       }
+    }
+  }
+
+  .system-note,
+  .discussion-filter-note {
+    .timeline-icon {
+      float: left;
+      display: flex;
+      align-items: center;
+      background-color: $white-light;
+      width: $system-note-icon-size;
+      height: $system-note-icon-size;
+      border: 1px solid $border-color;
+      border-radius: $system-note-icon-size;
+      margin: -6px $gl-padding 0 0;
+
+      svg {
+        width: $system-note-svg-size;
+        height: $system-note-svg-size;
+        fill: $gray-darkest;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  .discussion-filter-note {
+    .timeline-icon {
+      width: $system-note-icon-size + 6;
+      height: $system-note-icon-size + 6;
+      margin-top: -8px;
     }
   }
 }
@@ -596,12 +599,6 @@ $note-form-margin-left: 72px;
 }
 
 .note-headline-meta {
-  display: inline-block;
-
-  .system-note-message {
-    white-space: normal;
-  }
-
   .system-note-separator {
     color: $gl-text-color-disabled;
   }
@@ -739,7 +736,7 @@ $note-form-margin-left: 72px;
 .add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
-  margin-left: -55px;
+  margin-left: -50px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -905,7 +902,6 @@ $note-form-margin-left: 72px;
 }
 
 .discussion-filter-container {
-
   .btn > svg {
     width: $gl-col-padding;
     height: $gl-col-padding;
@@ -927,7 +923,6 @@ $note-form-margin-left: 72px;
 //This needs to be deleted when Snippet/Commit comments are convered to Vue
 // See https://gitlab.com/gitlab-org/gitlab-ce/issues/53918#note_117038785
 .unstyled-comments {
-
   .discussion-header {
     padding: $gl-padding;
     border-bottom: 1px solid $border-color;

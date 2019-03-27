@@ -44,7 +44,7 @@ module Gitlab
             end
 
             def parent
-              return nil unless has_parent?
+              return unless has_parent?
 
               self.class.new(@path.to_s.chomp(basename), @entries)
             end

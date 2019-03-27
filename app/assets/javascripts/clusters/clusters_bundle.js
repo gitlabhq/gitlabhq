@@ -12,6 +12,8 @@ import {
   REQUEST_FAILURE,
   UPGRADE_REQUESTED,
   UPGRADE_REQUEST_FAILURE,
+  INGRESS,
+  INGRESS_DOMAIN_SUFFIX,
 } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
@@ -36,6 +38,7 @@ export default class Clusters {
       installRunnerPath,
       installJupyterPath,
       installKnativePath,
+      updateKnativePath,
       installPrometheusPath,
       managePrometheusPath,
       hasRbac,
@@ -62,6 +65,7 @@ export default class Clusters {
       installPrometheusEndpoint: installPrometheusPath,
       installJupyterEndpoint: installJupyterPath,
       installKnativeEndpoint: installKnativePath,
+      updateKnativeEndpoint: updateKnativePath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -74,6 +78,10 @@ export default class Clusters {
     this.successApplicationContainer = document.querySelector('.js-cluster-application-notice');
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
+    this.ingressDomainHelpText = document.querySelector('.js-ingress-domain-help-text');
+    this.ingressDomainSnippet = this.ingressDomainHelpText.querySelector(
+      '.js-ingress-domain-snippet',
+    );
 
     Clusters.initDismissableCallout();
     initSettingsPanels();
@@ -119,8 +127,7 @@ export default class Clusters {
 
   static initDismissableCallout() {
     const callout = document.querySelector('.js-cluster-security-warning');
-
-    if (callout) new PersistentUserCallout(callout); // eslint-disable-line no-new
+    PersistentUserCallout.factory(callout);
   }
 
   addListeners() {
@@ -129,6 +136,8 @@ export default class Clusters {
     eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
     eventHub.$on('upgradeFailed', appId => this.upgradeFailed(appId));
     eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
+    eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
+    eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
   }
 
   removeListeners() {
@@ -137,6 +146,8 @@ export default class Clusters {
     eventHub.$off('upgradeApplication', this.upgradeApplication);
     eventHub.$off('upgradeFailed', this.upgradeFailed);
     eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
+    eventHub.$off('saveKnativeDomain');
+    eventHub.$off('setKnativeHostname');
   }
 
   initPolling() {
@@ -177,6 +188,10 @@ export default class Clusters {
 
     this.checkForNewInstalls(prevApplicationMap, this.store.state.applications);
     this.updateContainer(prevStatus, this.store.state.status, this.store.state.statusReason);
+    this.toggleIngressDomainHelpText(
+      prevApplicationMap[INGRESS],
+      this.store.state.applications[INGRESS],
+    );
   }
 
   showToken() {
@@ -270,6 +285,28 @@ export default class Clusters {
 
   dismissUpgradeSuccess(appId) {
     this.store.updateAppProperty(appId, 'requestStatus', null);
+  }
+
+  toggleIngressDomainHelpText(ingressPreviousState, ingressNewState) {
+    const helpTextHidden = ingressNewState.status !== APPLICATION_STATUS.INSTALLED;
+    const domainSnippetText = `${ingressNewState.externalIp}${INGRESS_DOMAIN_SUFFIX}`;
+
+    if (ingressPreviousState.status !== ingressNewState.status) {
+      this.ingressDomainHelpText.classList.toggle('hide', helpTextHidden);
+      this.ingressDomainSnippet.textContent = domainSnippetText;
+    }
+  }
+
+  saveKnativeDomain(data) {
+    const appId = data.id;
+    this.store.updateAppProperty(appId, 'status', APPLICATION_STATUS.UPDATING);
+    this.service.updateApplication(appId, data.params);
+  }
+
+  setKnativeHostname(data) {
+    const appId = data.id;
+    this.store.updateAppProperty(appId, 'isEditingHostName', true);
+    this.store.updateAppProperty(appId, 'hostname', data.hostname);
   }
 
   destroy() {

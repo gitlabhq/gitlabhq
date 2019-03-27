@@ -18,7 +18,7 @@ gem 'gitlab-default_value_for', '~> 3.1.1', require: 'default_value_for'
 gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 1.1', group: :postgres
 
-gem 'rugged', '~> 0.27'
+gem 'rugged', '~> 0.28'
 gem 'grape-path-helpers', '~> 1.0'
 
 gem 'faraday', '~> 0.12'
@@ -42,11 +42,11 @@ gem 'omniauth-shibboleth', '~> 1.3.0'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.3'
-gem 'rack-oauth2', '~> 1.2.1'
+gem 'rack-oauth2', '~> 1.9.3'
 gem 'jwt', '~> 2.1.0'
 
 # Spam and anti-bot protection
-gem 'recaptcha', '~> 3.0', require: 'recaptcha/rails'
+gem 'recaptcha', '~> 4.11', require: 'recaptcha/rails'
 gem 'akismet', '~> 2.0'
 
 # Two-factor authentication
@@ -68,7 +68,7 @@ gem 'gpgme', '~> 2.0.18'
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 2.0.4', require: 'omniauth-ldap'
+gem 'gitlab_omniauth-ldap', '~> 2.1.1', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # API
@@ -94,13 +94,15 @@ gem 'carrierwave', '~> 1.3'
 gem 'mini_magick'
 
 # for backups
-gem 'fog-aws', '~> 2.0.1'
-gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.7.1'
-gem 'fog-local', '~> 0.3'
-gem 'fog-openstack', '~> 0.1'
+gem 'fog-aws', '~> 3.3'
+# Locked until fog-google resolves https://github.com/fog/fog-google/issues/421.
+# Also see config/initializers/fog_core_patch.rb.
+gem 'fog-core', '= 2.1.0'
+gem 'fog-google', '~> 1.8'
+gem 'fog-local', '~> 0.6'
+gem 'fog-openstack', '~> 1.0'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.2.0'
+gem 'fog-aliyun', '~> 0.3'
 
 # for Google storage
 gem 'google-api-client', '~> 0.23'
@@ -126,7 +128,7 @@ gem 'asciidoctor', '~> 1.5.8'
 gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.11'
-gem 'bootstrap_form', '~> 2.7.0'
+gem 'bootstrap_form', '~> 4.2.0'
 gem 'nokogiri', '~> 1.10.1'
 gem 'escape_utils', '~> 1.1'
 
@@ -156,7 +158,7 @@ end
 gem 'state_machines-activerecord', '~> 0.5.1'
 
 # Issue tags
-gem 'acts-as-taggable-on', '~> 5.0'
+gem 'acts-as-taggable-on', '~> 6.0'
 
 # Background jobs
 gem 'sidekiq', '~> 5.2.1'
@@ -168,7 +170,7 @@ gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
 gem 'fugit', '~> 1.1'
 
 # HTTP requests
-gem 'httparty', '~> 0.13.3'
+gem 'httparty', '~> 0.16.4'
 
 # Colored output to console
 gem 'rainbow', '~> 3.0'
@@ -184,7 +186,7 @@ gem 're2', '~> 1.1.1'
 
 # Misc
 
-gem 'version_sorter', '~> 2.1.0'
+gem 'version_sorter', '~> 2.2.4'
 
 # Export Ruby Regex to Javascript
 gem 'js_regex', '~> 3.1'
@@ -263,9 +265,7 @@ gem 'addressable', '~> 2.5.2'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
 gem 'gon', '~> 6.2'
-gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'request_store', '~> 1.3'
-gem 'select2-rails', '~> 3.5.9'
 gem 'virtus', '~> 1.0.1'
 gem 'base32', '~> 0.3.0'
 
@@ -323,7 +323,7 @@ group :development do
 end
 
 group :development, :test do
-  gem 'bootsnap', '~> 1.3'
+  gem 'bootsnap', '~> 1.4'
   gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.5.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
@@ -380,7 +380,7 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
-  gem 'webmock', '~> 2.3.2'
+  gem 'webmock', '~> 3.5.1'
   gem 'rails-controller-testing'
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.1'
@@ -419,7 +419,8 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.10.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.13.0', require: 'gitaly'
+
 gem 'grpc', '~> 1.15.0'
 
 gem 'google-protobuf', '~> 3.6'

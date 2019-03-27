@@ -250,11 +250,11 @@ describe Gitlab::Workhorse do
       }
     end
 
-    subject { described_class.git_http_ok(repository, false, user, action) }
+    subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action) }
 
     it { expect(subject).to include(params) }
 
-    context 'when is_wiki' do
+    context 'when the repo_type is a wiki' do
       let(:params) do
         {
           GL_ID: "user-#{user.id}",
@@ -264,7 +264,7 @@ describe Gitlab::Workhorse do
         }
       end
 
-      subject { described_class.git_http_ok(repository, true, user, action) }
+      subject { described_class.git_http_ok(repository, Gitlab::GlRepository::WIKI, user, action) }
 
       it { expect(subject).to include(params) }
     end
@@ -304,7 +304,7 @@ describe Gitlab::Workhorse do
         end
 
         context 'show_all_refs enabled' do
-          subject { described_class.git_http_ok(repository, false, user, action, show_all_refs: true) }
+          subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true) }
 
           it { is_expected.to include(ShowAllRefs: true) }
         end
@@ -322,7 +322,7 @@ describe Gitlab::Workhorse do
         it { expect(subject).to include(gitaly_params) }
 
         context 'show_all_refs enabled' do
-          subject { described_class.git_http_ok(repository, false, user, action, show_all_refs: true) }
+          subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true) }
 
           it { is_expected.to include(ShowAllRefs: true) }
         end

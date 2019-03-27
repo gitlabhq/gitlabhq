@@ -18,12 +18,9 @@
   }
 
   .input-group {
-    display: flex;
-
     .select2-container {
       display: unset;
       max-width: unset;
-      width: unset !important;
       flex-grow: 1;
     }
 
@@ -571,9 +568,7 @@
 
   .import-buttons {
     padding-left: 0;
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
 
     .btn {
@@ -693,10 +688,6 @@
       }
     }
   }
-}
-
-.project-empty-note-panel {
-  border-bottom: 1px solid $border-color;
 }
 
 .project-stats,

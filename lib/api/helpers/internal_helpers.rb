@@ -5,9 +5,11 @@ module API
     module InternalHelpers
       attr_reader :redirected_path
 
-      def wiki?
-        set_project unless defined?(@wiki) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-        @wiki # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      delegate :wiki?, to: :repo_type
+
+      def repo_type
+        set_project unless defined?(@repo_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @repo_type # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def project
@@ -67,10 +69,10 @@ module API
       # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
         if params[:gl_repository]
-          @project, @wiki = Gitlab::GlRepository.parse(params[:gl_repository])
+          @project, @repo_type = Gitlab::GlRepository.parse(params[:gl_repository])
           @redirected_path = nil
         else
-          @project, @wiki, @redirected_path = Gitlab::RepoPath.parse(params[:project])
+          @project, @repo_type, @redirected_path = Gitlab::RepoPath.parse(params[:project])
         end
       end
       # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -78,7 +80,7 @@ module API
       # Project id to pass between components that don't share/don't have
       # access to the same filesystem mounts
       def gl_repository
-        Gitlab::GlRepository.gl_repository(project, wiki?)
+        repo_type.identifier_for_subject(project)
       end
 
       def gl_project_path
@@ -92,7 +94,7 @@ module API
       # Return the repository depending on whether we want the wiki or the
       # regular repository
       def repository
-        if wiki?
+        if repo_type.wiki?
           project.wiki.repository
         else
           project.repository

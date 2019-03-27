@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
   get '/autocomplete/award_emojis' => 'autocomplete#award_emojis'
+  get '/autocomplete/merge_request_target_branches' => 'autocomplete#merge_request_target_branches'
 
   # Search
   get 'search' => 'search#show'
@@ -101,6 +102,7 @@ Rails.application.routes.draw do
       member do
         scope :applications do
           post '/:application', to: 'clusters/applications#create', as: :install_applications
+          patch '/:application', to: 'clusters/applications#update', as: :update_applications
         end
 
         get :cluster_status, format: :json

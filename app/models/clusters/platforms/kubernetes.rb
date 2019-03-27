@@ -41,7 +41,7 @@ module Clusters
       validate :no_namespace, unless: :allow_user_defined_namespace?
 
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
-      validates :api_url, url: true, presence: true
+      validates :api_url, public_url: true, presence: true
       validates :token, presence: true
       validates :ca_cert, certificate: true, allow_blank: true, if: :ca_cert_changed?
 
@@ -95,7 +95,7 @@ module Clusters
             # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/22433
             variables
               .append(key: 'KUBE_URL', value: api_url)
-              .append(key: 'KUBE_TOKEN', value: token, public: false)
+              .append(key: 'KUBE_TOKEN', value: token, public: false, masked: true)
               .append(key: 'KUBE_NAMESPACE', value: actual_namespace)
               .append(key: 'KUBECONFIG', value: kubeconfig, public: false, file: true)
           end
@@ -110,7 +110,7 @@ module Clusters
       # short time later
       def terminals(environment)
         with_reactive_cache do |data|
-          pods = filter_by_label(data[:pods], app: environment.slug)
+          pods = filter_by_project_environment(data[:pods], project.full_path_slug, environment.slug)
           terminals = pods.flat_map { |pod| terminals_for_pod(api_url, actual_namespace, pod) }.compact
           terminals.each { |terminal| add_terminal_auth(terminal, terminal_auth) }
         end

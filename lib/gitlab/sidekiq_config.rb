@@ -48,7 +48,9 @@ module Gitlab
     end
 
     def self.workers
-      @workers ||= find_workers(Rails.root.join('app', 'workers'))
+      @workers ||=
+        find_workers(Rails.root.join('app', 'workers')) +
+        find_workers(Rails.root.join('ee', 'app', 'workers'))
     end
 
     def self.find_workers(root)

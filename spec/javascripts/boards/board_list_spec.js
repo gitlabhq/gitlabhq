@@ -195,7 +195,7 @@ describe('Board list component', () => {
     component.list.loadingMore = true;
 
     Vue.nextTick(() => {
-      expect(component.$el.querySelector('.board-list-count .fa-spinner')).not.toBeNull();
+      expect(component.$el.querySelector('.board-list-count .spinner')).not.toBeNull();
 
       done();
     });

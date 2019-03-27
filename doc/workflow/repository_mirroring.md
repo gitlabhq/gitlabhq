@@ -408,3 +408,11 @@ settings are recommended:
   Perforce Helix.
 
 Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/perforce/doc.current/manuals/git-fusion/Content/Git-Fusion/section_vss_bdw_w3.html#section_zdp_zz1_3l).
+
+## Troubleshooting
+
+Should an error occur during a push, GitLab will display an "Error" highlight for that repository. Details on the error can then be seen by hovering over the highlight text.
+
+### 13:Received RST_STREAM with error code 2 with GitHub
+
+If you receive an "13:Received RST_STREAM with error code 2" while mirroring to a GitHub repository, your GitHub settings might be set to block pushes that expose your email address used in commits. Either set your email address on GitHub to be public, or disable the [Block command line pushes that expose my email](http://github.com/settings/emails) setting.

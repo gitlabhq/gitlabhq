@@ -1,0 +1,5 @@
+---
+title: Disallow reopening of a locked merge request
+merge_request: 24882
+author: Jan Beckmann
+type: fixed

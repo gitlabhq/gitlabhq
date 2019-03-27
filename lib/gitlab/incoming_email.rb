@@ -57,7 +57,7 @@ module Gitlab
 
       def address_regex
         wildcard_address = config.address
-        return nil unless wildcard_address
+        return unless wildcard_address
 
         regex = Regexp.escape(wildcard_address)
         regex = regex.sub(Regexp.escape(WILDCARD_PLACEHOLDER), '(.+)')

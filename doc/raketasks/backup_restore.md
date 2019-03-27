@@ -100,6 +100,13 @@ the gitlab task runner pod via `kubectl`. Refer to [backing up a GitLab installa
 kubectl exec -it <gitlab task-runner pod> backup-utility
 ```
 
+Similarly to the Kubernetes case, if you have scaled out your GitLab
+cluster to use multiple application servers, you should pick a
+designated node (that won't be auto-scaled away) for running the
+backup rake task. Because the backup rake task is tightly coupled to
+the main Rails application, this is typically a node on which you're
+also running Unicorn/Puma and/or Sidekiq.
+
 Example output:
 
 ```
@@ -193,6 +200,26 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 
 ```sh
 sudo gitlab-rake gitlab:backup:create STRATEGY=copy
+```
+
+### Backup filename
+
+By default a backup file is created according to the specification in [the Backup timestamp](#backup-timestamp) section above. You can however override the `[TIMESTAMP]` part of the filename by setting the `BACKUP` environment variable. For example:
+
+```sh
+sudo gitlab-rake gitlab:backup:create BACKUP=dump
+```
+
+The resulting file will then be `dump_gitlab_backup.tar`. This is useful for systems that make use of rsync and incremental backups, and will result in considerably faster transfer speeds.
+
+### Rsyncable
+
+To make sure the generated archive is intelligently transferable by rsync, the `GZIP_RSYNCABLE=yes` option can be set. This will set the `--rsyncable` option to `gzip`. This is only useful in combination with setting [the Backup filename option](#backup-filename).
+
+Note that the `--rsyncable` option in `gzip` is not guaranteed to be available on all distributions. To verify that it is available in your distribution you can run `gzip --help` or consult the man pages.
+
+```sh
+sudo gitlab-rake gitlab:backup:create BACKUP=dump GZIP_RSYNCABLE=yes
 ```
 
 ### Excluding specific directories from the backup
@@ -382,6 +409,8 @@ an access key from the Google console first:
 1. Select "Interoperability" and create an access key
 1. Make note of the "Access Key" and "Secret" and replace them in the
    configurations below
+1. In the buckets advanced settings ensure the Access Control option "Set object-level 
+   and bucket-level permissions" is selected
 1. Make sure you already have a bucket created
 
 For Omnibus GitLab packages:
@@ -441,6 +470,8 @@ The `backup_upload_remote_directory` **must** be set in addition to the
 backups will be copied to, and will be created if it does not exist. If the
 directory that you want to copy the tarballs to is the root of your mounted
 directory, just use `.` instead.
+
+NOTE: **Note:** Since file system performance may affect GitLab's overall performance, we do not recommend using EFS for storage. See the [relevant documentation](../administration/high_availability/nfs.md#avoid-using-awss-elastic-file-system-efs) for more details.
 
 For Omnibus GitLab packages:
 

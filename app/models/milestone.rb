@@ -37,6 +37,7 @@ class Milestone < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
+  scope :started, -> { active.where('milestones.start_date <= CURRENT_DATE') }
 
   scope :for_projects_and_groups, -> (projects, groups) do
     projects = projects.compact if projects.is_a? Array
@@ -149,7 +150,7 @@ class Milestone < ActiveRecord::Base
   def self.upcoming_ids(projects, groups)
     rel = unscoped
             .for_projects_and_groups(projects, groups)
-            .active.where('milestones.due_date > NOW()')
+            .active.where('milestones.due_date > CURRENT_DATE')
 
     if Gitlab::Database.postgresql?
       rel.order(:project_id, :group_id, :due_date).select('DISTINCT ON (project_id, group_id) id')
@@ -161,7 +162,7 @@ class Milestone < ActiveRecord::Base
           ON milestones.project_id <=> earlier_milestones.project_id
             AND milestones.group_id <=> earlier_milestones.group_id
             AND milestones.due_date > earlier_milestones.due_date
-            AND earlier_milestones.due_date > NOW()
+            AND earlier_milestones.due_date > CURRENT_DATE
             AND earlier_milestones.state = 'active'
       HEREDOC
 

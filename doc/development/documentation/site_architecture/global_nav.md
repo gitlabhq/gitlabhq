@@ -62,7 +62,7 @@ the consent of one of the technical writers.
 The global nav is built from two files:
 
 - [Data](#data-file)
-- [Layout](#layout-file)
+- [Layout](#layout-file-logic)
 
 The data file feeds the layout with the links to the docs. The layout organizes
 the data among the nav in containers properly [styled](#css-classes).

@@ -11,11 +11,14 @@ module Gitlab
     USERNAME_REGEXP = User.reference_pattern
 
     def initialize(text)
-      @text = text
+      # EE passes an Array to `text` in a few places, so we want to support both
+      # here.
+      @text = Array(text).join(' ')
     end
 
     def users
       return User.none unless @text.present?
+      return User.none if references.empty?
 
       @users ||= User.from_union(union_relations)
     end

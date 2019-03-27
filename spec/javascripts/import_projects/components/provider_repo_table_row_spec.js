@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import store from '~/import_projects/store';
+import createStore from '~/import_projects/store';
 import providerRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
 import STATUS_MAP, { STATUSES } from '~/import_projects/constants';
 import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 describe('ProviderRepoTableRow', () => {
+  let store;
   let vm;
   const repo = {
     id: 10,
@@ -28,6 +29,10 @@ describe('ProviderRepoTableRow', () => {
     }).$mount();
   }
 
+  beforeEach(() => {
+    store = createStore();
+  });
+
   afterEach(() => {
     vm.$destroy();
   });
@@ -47,6 +52,19 @@ describe('ProviderRepoTableRow', () => {
 
     expect(vm.$el.querySelector(`.ic-status_${statusObject.icon}`)).not.toBeNull();
     expect(vm.$el.querySelector('.js-import-button')).not.toBeNull();
+  });
+
+  it('renders a select2 namespace select', () => {
+    vm = createComponent();
+
+    const dropdownTrigger = vm.$el.querySelector('.js-namespace-select');
+
+    expect(dropdownTrigger).not.toBeNull();
+    expect(dropdownTrigger.classList.contains('select2-container')).toBe(true);
+
+    dropdownTrigger.click();
+
+    expect(vm.$el.querySelector('.select2-drop')).not.toBeNull();
   });
 
   it('imports repo when clicking import button', done => {

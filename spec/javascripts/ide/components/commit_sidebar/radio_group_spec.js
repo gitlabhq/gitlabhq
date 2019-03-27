@@ -76,6 +76,7 @@ describe('IDE commit sidebar radio group', () => {
       const Component = Vue.extend(radioGroup);
 
       store.state.commit.commitAction = '1';
+      store.state.commit.newBranchName = 'test-123';
 
       vm = createComponentWithStore(Component, store, {
         value: '1',
@@ -112,6 +113,12 @@ describe('IDE commit sidebar radio group', () => {
 
         done();
       });
+    });
+
+    it('renders newBranchName if present', () => {
+      const input = vm.$el.querySelector('.form-control');
+
+      expect(input.value).toBe('test-123');
     });
   });
 

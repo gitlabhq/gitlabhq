@@ -58,13 +58,15 @@ describe('DiffsStoreMutations', () => {
   describe('EXPAND_ALL_FILES', () => {
     it('should change the collapsed prop from diffFiles', () => {
       const diffFile = {
-        collapsed: true,
+        viewer: {
+          collapsed: true,
+        },
       };
       const state = { expandAllFiles: true, diffFiles: [diffFile] };
 
       mutations[types.EXPAND_ALL_FILES](state);
 
-      expect(state.diffFiles[0].collapsed).toEqual(false);
+      expect(state.diffFiles[0].viewer.collapsed).toEqual(false);
     });
   });
 
@@ -678,6 +680,80 @@ describe('DiffsStoreMutations', () => {
       mutations[types.SET_SHOW_WHITESPACE](state, false);
 
       expect(state.showWhitespace).toBe(false);
+    });
+  });
+
+  describe('REQUEST_FULL_DIFF', () => {
+    it('sets isLoadingFullFile to true', () => {
+      const state = {
+        diffFiles: [{ file_path: 'test', isLoadingFullFile: false }],
+      };
+
+      mutations[types.REQUEST_FULL_DIFF](state, 'test');
+
+      expect(state.diffFiles[0].isLoadingFullFile).toBe(true);
+    });
+  });
+
+  describe('RECEIVE_FULL_DIFF_ERROR', () => {
+    it('sets isLoadingFullFile to false', () => {
+      const state = {
+        diffFiles: [{ file_path: 'test', isLoadingFullFile: true }],
+      };
+
+      mutations[types.RECEIVE_FULL_DIFF_ERROR](state, 'test');
+
+      expect(state.diffFiles[0].isLoadingFullFile).toBe(false);
+    });
+  });
+
+  describe('RECEIVE_FULL_DIFF_SUCCESS', () => {
+    it('sets isLoadingFullFile to false', () => {
+      const state = {
+        diffFiles: [
+          {
+            file_path: 'test',
+            isLoadingFullFile: true,
+            isShowingFullFile: false,
+            highlighted_diff_lines: [],
+            parallel_diff_lines: [],
+          },
+        ],
+      };
+
+      mutations[types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath: 'test', data: [] });
+
+      expect(state.diffFiles[0].isLoadingFullFile).toBe(false);
+    });
+
+    it('sets isShowingFullFile to true', () => {
+      const state = {
+        diffFiles: [
+          {
+            file_path: 'test',
+            isLoadingFullFile: true,
+            isShowingFullFile: false,
+            highlighted_diff_lines: [],
+            parallel_diff_lines: [],
+          },
+        ],
+      };
+
+      mutations[types.RECEIVE_FULL_DIFF_SUCCESS](state, { filePath: 'test', data: [] });
+
+      expect(state.diffFiles[0].isShowingFullFile).toBe(true);
+    });
+  });
+
+  describe('SET_FILE_COLLAPSED', () => {
+    it('sets collapsed', () => {
+      const state = {
+        diffFiles: [{ file_path: 'test', viewer: { collapsed: false } }],
+      };
+
+      mutations[types.SET_FILE_COLLAPSED](state, { filePath: 'test', collapsed: true });
+
+      expect(state.diffFiles[0].viewer.collapsed).toBe(true);
     });
   });
 });

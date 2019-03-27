@@ -58,8 +58,6 @@ form.edit-issue {
 }
 
 ul.related-merge-requests > li {
-  display: -ms-flexbox;
-  display: -webkit-flex;
   display: flex;
   align-items: center;
 
@@ -145,6 +143,11 @@ ul.related-merge-requests > li {
   .select2-container {
     width: 250px !important;
   }
+}
+
+.issues-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
 }
 
 .issues-nav-controls {

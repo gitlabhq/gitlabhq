@@ -64,9 +64,9 @@ Get all namespaces that match a string in their name or path.
 GET /namespaces?search=foobar
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `search`  | string | no | Returns a list of namespaces the user is authorized to see based on the search criteria |
+| Attribute | Type   | Required | Description |
+| --------- | ------ | -------- | ----------- |
+| `search`  | string | no       | Returns a list of namespaces the user is authorized to see based on the search criteria |
 
 Example request:
 
@@ -98,9 +98,9 @@ Get a namespace by ID.
 GET /namespaces/:id
 ```
 
-| Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | ID or path of the namespace |
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](README.md#namespaced-path-encoding) |
 
 Example request:
 

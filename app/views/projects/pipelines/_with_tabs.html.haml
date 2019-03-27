@@ -2,15 +2,15 @@
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs
     %li.js-pipeline-tab-link
       = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' }, class: 'pipeline-tab' do
-        = _("Pipeline")
+        = _('Pipeline')
     %li.js-builds-tab-link
       = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
-        = _("Jobs")
+        = _('Jobs')
         %span.badge.badge-pill.js-builds-counter= pipeline.total_size
     - if @pipeline.failed_builds.present?
       %li.js-failures-tab-link
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
-          = _("Failed Jobs")
+          = _('Failed Jobs')
           %span.badge.badge-pill.js-failures-counter= @pipeline.failed_builds.count
     = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
@@ -24,41 +24,41 @@
         %table.table.ci-table.pipeline
           %thead
             %tr
-              %th Status
-              %th Job ID
-              %th Name
+              %th= _('Status')
+              %th= _('Job ID')
+              %th= _('Name')
               %th
-              %th Coverage
+              %th= _('Coverage')
               %th
           = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
 
     - elsif pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
       .bs-callout.bs-callout-warning
-        \.gitlab-ci.yml not found in this commit
+        = _("%{gitlab_ci_yml} not found in this commit") % { gitlab_ci_yml: ".gitlab-ci.yml" }
 
   - if @pipeline.failed_builds.present?
     #js-tab-failures.build-failures.tab-pane.build-page
       %table.table.responsive-table.ci-table.responsive-table-sm-rounded
         %thead
           %th.table-th-transparent
-          %th.table-th-transparent= _("Name")
-          %th.table-th-transparent= _("Stage")
-          %th.table-th-transparent= _("Failure")
+          %th.table-th-transparent= _('Name')
+          %th.table-th-transparent= _('Stage')
+          %th.table-th-transparent= _('Failure')
 
         %tbody
           - @pipeline.failed_builds.each_with_index do |build, index|
             - job = build.present(current_user: current_user)
             %tr.build-state.responsive-table-border-start
-              %td.responsive-table-cell.ci-status-icon-failed{ data: { column: "Status"} }
+              %td.responsive-table-cell.ci-status-icon-failed{ data: { column: _('Status')} }
                 .d-none.d-md-block.build-icon
                   = custom_icon("icon_status_#{build.status}")
                 .d-md-none.build-badge
                   = render "ci/status/badge", link: false, status: job.detailed_status(current_user)
-              %td.responsive-table-cell.build-name{ data: { column: _("Name")} }
+              %td.responsive-table-cell.build-name{ data: { column: _('Name')} }
                 = link_to build.name, pipeline_job_url(pipeline, build)
-              %td.responsive-table-cell.build-stage{ data: { column: _("Stage")} }
+              %td.responsive-table-cell.build-stage{ data: { column: _('Stage')} }
                 = build.stage.titleize
-              %td.responsive-table-cell.build-failure{ data: { column: _("Failure")} }
+              %td.responsive-table-cell.build-failure{ data: { column: _('Failure')} }
                 = build.present.callout_failure_message
               %td.responsive-table-cell.build-actions
                 - if can?(current_user, :update_build, job)

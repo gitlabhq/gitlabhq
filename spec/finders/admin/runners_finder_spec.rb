@@ -37,6 +37,14 @@ describe Admin::RunnersFinder do
       end
     end
 
+    context 'filter by tag_name' do
+      it 'calls the corresponding scope on Ci::Runner' do
+        expect(Ci::Runner).to receive(:tagged_with).with(%w[tag1 tag2]).and_call_original
+
+        described_class.new(params: { tag_name: %w[tag1 tag2] }).execute
+      end
+    end
+
     context 'sort' do
       context 'without sort param' do
         it 'sorts by created_at' do

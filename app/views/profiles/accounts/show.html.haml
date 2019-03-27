@@ -29,24 +29,7 @@
       %p
         = s_('Profiles|Activate signin with one of the following services')
     .col-lg-8
-      %label.label-bold
-        = s_('Profiles|Connected Accounts')
-      %p= s_('Profiles|Click on icon to activate signin with one of the following services')
-      - button_based_providers.each do |provider|
-        .provider-btn-group
-          .provider-btn-image
-            = provider_image_tag(provider)
-          - if auth_active?(provider)
-            - if unlink_allowed?(provider)
-              = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
-                = s_('Profiles|Disconnect')
-            - else
-              %a.provider-btn
-                = s_('Profiles|Active')
-          - else
-            = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active' do
-              = s_('Profiles|Connect')
-      = render_if_exists 'profiles/accounts/group_saml_unlink_buttons', group_saml_identities: local_assigns[:group_saml_identities]
+      = render 'providers', providers: button_based_providers, group_saml_identities: local_assigns[:group_saml_identities]
   %hr
 - if current_user.can_change_username?
   .row.prepend-top-default

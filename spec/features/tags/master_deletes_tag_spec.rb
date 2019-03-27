@@ -37,7 +37,7 @@ describe 'Maintainer deletes tag' do
   context 'when pre-receive hook fails', :js do
     before do
       allow_any_instance_of(Gitlab::GitalyClient::OperationService).to receive(:rm_tag)
-        .and_raise(Gitlab::Git::PreReceiveError, 'Do not delete tags')
+        .and_raise(Gitlab::Git::PreReceiveError, 'GitLab: Do not delete tags')
     end
 
     it 'shows the error message' do

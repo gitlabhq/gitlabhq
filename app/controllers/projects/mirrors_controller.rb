@@ -18,7 +18,7 @@ class Projects::MirrorsController < Projects::ApplicationController
     result = ::Projects::UpdateService.new(project, current_user, mirror_params).execute
 
     if result[:status] == :success
-      flash[:notice] = 'Mirroring settings were successfully updated.'
+      flash[:notice] = _('Mirroring settings were successfully updated.')
     else
       flash[:alert] = project.errors.full_messages.join(', ').html_safe
     end
@@ -38,7 +38,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   def update_now
     if params[:sync_remote]
       project.update_remote_mirrors
-      flash[:notice] = "The remote repository is being updated..."
+      flash[:notice] = _("The remote repository is being updated...")
     end
 
     redirect_to_repository_settings(project, anchor: 'js-push-remote-settings')

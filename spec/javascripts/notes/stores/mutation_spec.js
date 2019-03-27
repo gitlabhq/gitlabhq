@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import mutations from '~/notes/stores/mutations';
+import { DISCUSSION_NOTE } from '~/notes/constants';
 import {
   note,
   discussionMock,
@@ -326,6 +327,18 @@ describe('Notes Store mutations', () => {
 
       expect(state.discussions[0].notes[0].note).toEqual('Foo');
     });
+
+    it('transforms an individual note to discussion', () => {
+      const state = {
+        discussions: [individualNote],
+      };
+
+      const transformedNote = { ...individualNote.notes[0], type: DISCUSSION_NOTE };
+
+      mutations.UPDATE_NOTE(state, transformedNote);
+
+      expect(state.discussions[0].individual_note).toEqual(false);
+    });
   });
 
   describe('CLOSE_ISSUE', () => {
@@ -530,7 +543,7 @@ describe('Notes Store mutations', () => {
       state = { convertedDisscussionIds: [] };
     });
 
-    it('adds a disucssion to convertedDisscussionIds', () => {
+    it('adds a discussion to convertedDisscussionIds', () => {
       mutations.CONVERT_TO_DISCUSSION(state, discussion.id);
 
       expect(state.convertedDisscussionIds).toContain(discussion.id);
@@ -549,7 +562,7 @@ describe('Notes Store mutations', () => {
       state = { convertedDisscussionIds: [41, 42] };
     });
 
-    it('removes a disucssion from convertedDisscussionIds', () => {
+    it('removes a discussion from convertedDisscussionIds', () => {
       mutations.REMOVE_CONVERTED_DISCUSSION(state, discussion.id);
 
       expect(state.convertedDisscussionIds).not.toContain(discussion.id);

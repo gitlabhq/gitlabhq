@@ -23,15 +23,13 @@ module StubObjectStorage
     Fog.mock!
 
     ::Fog::Storage.new(connection_params).tap do |connection|
-      begin
-        connection.directories.create(key: remote_directory)
+      connection.directories.create(key: remote_directory)
 
-        # Cleanup remaining files
-        connection.directories.each do |directory|
-          directory.files.map(&:destroy)
-        end
-      rescue Excon::Error::Conflict
+      # Cleanup remaining files
+      connection.directories.each do |directory|
+        directory.files.map(&:destroy)
       end
+    rescue Excon::Error::Conflict
     end
   end
 

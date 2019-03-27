@@ -7,6 +7,7 @@
     .form-group
       = field.label :environment_scope, s_('ClusterIntegration|Environment scope'), class: 'label-bold'
       = field.text_field :environment_scope, class: 'form-control', placeholder: s_('ClusterIntegration|Environment scope')
+      .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster.")
 
   = field.fields_for :platform_kubernetes, @user_cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group

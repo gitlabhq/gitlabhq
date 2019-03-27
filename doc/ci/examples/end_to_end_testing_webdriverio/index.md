@@ -89,7 +89,7 @@ page and to interact with them - for example, to click on the link back to the h
 The simple test shown above
 can already give us a lot of confidence if it passes: we know our deployment has succeeded, that the
 elements are visible on the page and that actual browsers can interact with it, and that routing
-works as expected. And all that in just 10 lines with gratituous whitespace! Add to that succeeding
+works as expected. And all that in just 10 lines with gratuitous whitespace! Add to that succeeding
 unit tests and a successfully completed pipeline, and you can be fairly confident that the
 dependency upgrade did not break anything without even having to look at your website.
 
@@ -139,7 +139,7 @@ new browser window interacting with your app as you specified.
 Which brings us to the exciting part: how do we run this in GitLab CI/CD? There are two things we
 need to do for this:
 
-1. Set up [CI/CD jobs](../../yaml/README.md#jobs) that actually have a browser available.
+1. Set up [CI/CD jobs](../../yaml/README.md#introduction) that actually have a browser available.
 2. Update our WebdriverIO configuration to use those browsers to visit the review apps.
 
 For the scope of this article, we've defined an additional [CI/CD stage](../../yaml/README.md#stages)
@@ -184,7 +184,7 @@ option as an argument to `npm run confidence-check` on the command line.
 However, we still need to tell WebdriverIO which browser is available for it to use.
 
 [GitLab CI/CD makes
-a number of variables available](../../variables/README.html#predefined-variables-environment-variables)
+a number of variables available](../../variables/README.html#predefined-environment-variables)
 with information about the current CI job. We can use this information to dynamically set
 up our WebdriverIO configuration according to the job that is running. More specifically, we can
 tell WebdriverIO what browser to execute the test on depending on the name of the currently running

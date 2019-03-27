@@ -17,7 +17,7 @@ used to create and test an image:
 
 ```bash
 docker build -t my-image dockerfiles/
-docker run my-docker-image /script/to/run/tests
+docker run my-image /script/to/run/tests
 docker tag my-image my-registry:5000/my-image
 docker push my-registry:5000/my-image
 ```
@@ -389,6 +389,7 @@ If you're running multiple Runners you will have to modify all configuration fil
 ## Using the GitLab Container Registry
 
 > **Notes:**
+>
 > - This feature requires GitLab 8.8 and GitLab Runner 1.2.
 > - Starting from GitLab 8.12, if you have [2FA] enabled in your account, you need
 >   to pass a [personal access token][pat] instead of your password in order to

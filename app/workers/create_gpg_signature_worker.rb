@@ -5,8 +5,8 @@ class CreateGpgSignatureWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform(commit_shas, project_id)
-    # Older versions of GitPushService may push a single commit ID on the stack.
-    # We need this to be backwards compatible.
+    # Older versions of Git::BranchPushService may push a single commit ID on
+    # the stack. We need this to be backwards compatible.
     commit_shas = Array(commit_shas)
 
     return if commit_shas.empty?
@@ -20,11 +20,9 @@ class CreateGpgSignatureWorker
 
     # This calculates and caches the signature in the database
     commits.each do |commit|
-      begin
-        Gitlab::Gpg::Commit.new(commit).signature
-      rescue => e
-        Rails.logger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}")
-      end
+      Gitlab::Gpg::Commit.new(commit).signature
+    rescue => e
+      Rails.logger.error("Failed to create signature for commit #{commit.id}. Error: #{e.message}")
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

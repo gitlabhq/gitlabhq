@@ -7,10 +7,11 @@ module Gitlab
       module Chain
         Command = Struct.new(
           :source, :project, :current_user,
-          :origin_ref, :checkout_sha, :after_sha, :before_sha,
+          :origin_ref, :checkout_sha, :after_sha, :before_sha, :source_sha, :target_sha,
           :trigger_request, :schedule, :merge_request,
           :ignore_skip_ci, :save_incompleted,
-          :seeds_block, :variables_attributes, :push_options
+          :seeds_block, :variables_attributes, :push_options,
+          :chat_data, :allow_mirror_update
         ) do
           include Gitlab::Utils::StrongMemoize
 

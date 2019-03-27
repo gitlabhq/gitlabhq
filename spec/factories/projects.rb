@@ -271,6 +271,10 @@ FactoryBot.define do
     trait :auto_devops do
       association :auto_devops, factory: :project_auto_devops
     end
+
+    trait :auto_devops_disabled do
+      association :auto_devops, factory: [:project_auto_devops, :disabled]
+    end
   end
 
   # Project with empty repository
@@ -308,6 +312,20 @@ FactoryBot.define do
           'project_url' => 'http://redmine/projects/project_name_in_redmine',
           'issues_url' => 'http://redmine/projects/project_name_in_redmine/issues/:id',
           'new_issue_url' => 'http://redmine/projects/project_name_in_redmine/issues/new'
+        }
+      )
+    end
+  end
+
+  factory :youtrack_project, parent: :project do
+    has_external_issue_tracker true
+
+    after :create do |project|
+      project.create_youtrack_service(
+        active: true,
+        properties: {
+          'project_url' => 'http://youtrack/projects/project_guid_in_youtrack',
+          'issues_url' => 'http://youtrack/issues/:id'
         }
       )
     end

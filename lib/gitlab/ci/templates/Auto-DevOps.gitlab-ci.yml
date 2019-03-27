@@ -48,9 +48,10 @@ variables:
   POSTGRES_PASSWORD: testing-password
   POSTGRES_ENABLED: "true"
   POSTGRES_DB: $CI_ENVIRONMENT_SLUG
+  POSTGRES_VERSION: 9.6.2
 
-  KUBERNETES_VERSION: 1.11.6
-  HELM_VERSION: 2.12.2
+  KUBERNETES_VERSION: 1.11.7
+  HELM_VERSION: 2.12.3
 
   DOCKER_DRIVER: overlay2
 
@@ -73,14 +74,14 @@ stages:
 
 build:
   stage: build
-  image: docker:stable-git
+  image: "registry.gitlab.com/gitlab-org/cluster-integration/auto-build-image/master:stable"
   services:
-  - docker:stable-dind
+    - docker:stable-dind
   script:
-    - setup_docker
-    - build
+    - /build/build.sh
   only:
     - branches
+    - tags
 
 test:
   services:
@@ -95,6 +96,7 @@ test:
     - /bin/herokuish buildpack test
   only:
     - branches
+    - tags
   except:
     variables:
       - $TEST_DISABLED
@@ -112,6 +114,7 @@ code_quality:
     paths: [gl-code-quality-report.json]
   only:
     - branches
+    - tags
   except:
     variables:
       - $CODE_QUALITY_DISABLED
@@ -129,6 +132,7 @@ license_management:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\blicense_management\b/
   except:
@@ -151,6 +155,7 @@ performance:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     variables:
@@ -171,6 +176,7 @@ sast:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\bsast\b/
   except:
@@ -192,6 +198,7 @@ dependency_scanning:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\bdependency_scanning\b/
   except:
@@ -212,6 +219,7 @@ container_scanning:
   only:
     refs:
       - branches
+      - tags
     variables:
       - $GITLAB_FEATURES =~ /\bcontainer_scanning\b/
   except:
@@ -231,6 +239,7 @@ dast:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
     variables:
       - $GITLAB_FEATURES =~ /\bdast\b/
@@ -253,13 +262,14 @@ review:
     - persist_environment_url
   environment:
     name: review/$CI_COMMIT_REF_NAME
-    url: http://$CI_PROJECT_PATH_SLUG-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
+    url: http://$CI_PROJECT_ID-$CI_ENVIRONMENT_SLUG.$KUBE_INGRESS_BASE_DOMAIN
     on_stop: stop_review
   artifacts:
     paths: [environment_url.txt]
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     refs:
@@ -283,6 +293,7 @@ stop_review:
   only:
     refs:
       - branches
+      - tags
     kubernetes: active
   except:
     refs:
@@ -488,9 +499,13 @@ rollout 100%:
   [[ "$TRACE" ]] && set -x
   auto_database_url=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${CI_ENVIRONMENT_SLUG}-postgres:5432/${POSTGRES_DB}
   export DATABASE_URL=${DATABASE_URL-$auto_database_url}
-  export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
-  export CI_APPLICATION_TAG=$CI_COMMIT_SHA
-  export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
+  if [[ -z "$CI_COMMIT_TAG" ]]; then
+    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
+    export CI_APPLICATION_TAG=$CI_COMMIT_SHA
+  else
+    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
+    export CI_APPLICATION_TAG=$CI_COMMIT_TAG
+  fi
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
   # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
   export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
@@ -507,7 +522,7 @@ rollout 100%:
     registry_login
 
     docker run -d --name db arminc/clair-db:latest
-    docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
+    docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.6
     apk add -U wget ca-certificates
     docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
     wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
@@ -682,6 +697,8 @@ rollout 100%:
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
+        --set gitlab.app="$CI_PROJECT_PATH_SLUG" \
+        --set gitlab.env="$CI_ENVIRONMENT_SLUG" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
         --set image.repository="$CI_APPLICATION_REPOSITORY" \
         --set image.tag="$CI_APPLICATION_TAG" \
@@ -700,6 +717,7 @@ rollout 100%:
         --set postgresql.postgresUser="$POSTGRES_USER" \
         --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
         --set postgresql.postgresDatabase="$POSTGRES_DB" \
+        --set postgresql.imageTag="$POSTGRES_VERSION" \
         --set application.initializeCommand="$DB_INITIALIZE" \
         --namespace="$KUBE_NAMESPACE" \
         "$name" \
@@ -718,6 +736,8 @@ rollout 100%:
       helm upgrade --install \
         --wait \
         --set service.enabled="$service_enabled" \
+        --set gitlab.app="$CI_PROJECT_PATH_SLUG" \
+        --set gitlab.env="$CI_ENVIRONMENT_SLUG" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
         --set image.repository="$CI_APPLICATION_REPOSITORY" \
         --set image.tag="$CI_APPLICATION_TAG" \
@@ -764,18 +784,18 @@ rollout 100%:
 
   function install_dependencies() {
     apk add -U openssl curl tar gzip bash ca-certificates git
-    curl -L -o /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
-    curl -L -O https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
+    curl -sSL -o /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
+    curl -sSL -O https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
     apk add glibc-2.28-r0.apk
     rm glibc-2.28-r0.apk
 
-    curl "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
+    curl -sS "https://kubernetes-helm.storage.googleapis.com/helm-v${HELM_VERSION}-linux-amd64.tar.gz" | tar zx
     mv linux-amd64/helm /usr/bin/
     mv linux-amd64/tiller /usr/bin/
     helm version --client
     tiller -version
 
-    curl -L -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
+    curl -sSL -o /usr/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl"
     chmod +x /usr/bin/kubectl
     kubectl version --client
   }
@@ -828,7 +848,7 @@ rollout 100%:
 
   # Function to ensure backwards compatibility with AUTO_DEVOPS_DOMAIN
   function ensure_kube_ingress_base_domain() {
-    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ]; then
+    if [ -z ${KUBE_INGRESS_BASE_DOMAIN+x} ] && [ -n "$AUTO_DEVOPS_DOMAIN" ] ; then
       export KUBE_INGRESS_BASE_DOMAIN=$AUTO_DEVOPS_DOMAIN
     fi
   }
@@ -847,50 +867,6 @@ rollout 100%:
     else
       true
     fi
-  }
-
-  function build() {
-    registry_login
-
-    if [[ -f Dockerfile ]]; then
-      echo "Building Dockerfile-based application..."
-      docker build \
-        --build-arg HTTP_PROXY="$HTTP_PROXY" \
-        --build-arg http_proxy="$http_proxy" \
-        --build-arg HTTPS_PROXY="$HTTPS_PROXY" \
-        --build-arg https_proxy="$https_proxy" \
-        --build-arg FTP_PROXY="$FTP_PROXY" \
-        --build-arg ftp_proxy="$ftp_proxy" \
-        --build-arg NO_PROXY="$NO_PROXY" \
-        --build-arg no_proxy="$no_proxy" \
-        -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
-    else
-      echo "Building Heroku-based application using gliderlabs/herokuish docker image..."
-      docker run -i \
-        -e BUILDPACK_URL \
-        -e HTTP_PROXY \
-        -e http_proxy \
-        -e HTTPS_PROXY \
-        -e https_proxy \
-        -e FTP_PROXY \
-        -e ftp_proxy \
-        -e NO_PROXY \
-        -e no_proxy \
-        --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
-      docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
-      docker rm "$CI_CONTAINER_NAME" >/dev/null
-      echo ""
-
-      echo "Configuring $CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG docker image..."
-      docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
-      docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
-      docker rm "$CI_CONTAINER_NAME" >/dev/null
-      echo ""
-    fi
-
-    echo "Pushing to GitLab Container Registry..."
-    docker push "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
-    echo ""
   }
 
   function initialize_tiller() {

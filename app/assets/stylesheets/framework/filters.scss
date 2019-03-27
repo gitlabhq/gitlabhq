@@ -50,19 +50,15 @@
 }
 
 .filtered-search-wrapper {
-  display: -webkit-flex;
   display: flex;
 
   @include media-breakpoint-down(xs) {
-    -webkit-flex-direction: column;
     flex-direction: column;
   }
 
   .tokens-container {
-    display: -webkit-flex;
     display: flex;
     flex: 1;
-    -webkit-flex: 1;
     padding-left: 12px;
     position: relative;
     margin-bottom: 0;
@@ -82,21 +78,18 @@
   .input-token:only-child,
   .input-token:last-child {
     flex: 1;
-    -webkit-flex: 1;
     max-width: inherit;
   }
 }
 
 .filtered-search-token,
 .filtered-search-term {
-  display: -webkit-flex;
   display: flex;
   flex-shrink: 0;
   margin-top: 4px;
   margin-bottom: 4px;
 
   .selectable {
-    display: -webkit-flex;
     display: flex;
   }
 
@@ -115,6 +108,8 @@
   }
 
   .value-container {
+    display: flex;
+    align-items: center;
     background-color: $white-normal;
     color: $filter-value-text-color;
     border-radius: 0 2px 2px 0;
@@ -128,7 +123,7 @@
 
   .remove-token {
     display: inline-block;
-    padding-left: 4px;
+    padding-left: 8px;
     padding-right: 0;
 
     .fa-close {
@@ -176,7 +171,6 @@
 }
 
 .scroll-container {
-  display: -webkit-flex;
   display: flex;
   overflow-x: auto;
   white-space: nowrap;
@@ -186,7 +180,6 @@
 .filtered-search-box {
   position: relative;
   flex: 1;
-  display: -webkit-flex;
   display: flex;
   width: 100%;
   min-width: 0;
@@ -194,7 +187,6 @@
   background-color: $white-light;
 
   @include media-breakpoint-down(xs) {
-    -webkit-flex: 1 1 auto;
     flex: 1 1 auto;
     margin-bottom: 10px;
   }
@@ -349,7 +341,6 @@
 }
 
 .filter-dropdown-container {
-  display: -webkit-flex;
   display: flex;
 
   .dropdown-toggle {
@@ -422,4 +413,11 @@
 .filter-dropdown-loading {
   padding: 8px 16px;
   text-align: center;
+}
+
+.search-token-target-branch {
+  .value {
+    font-family: $monospace-font;
+    font-size: 13px;
+  }
 }

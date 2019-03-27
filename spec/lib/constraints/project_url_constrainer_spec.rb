@@ -16,6 +16,10 @@ describe Constraints::ProjectUrlConstrainer do
         let(:request) { build_request('foo', 'bar') }
 
         it { expect(subject.matches?(request)).to be_falsey }
+
+        context 'existence_check is false' do
+          it { expect(subject.matches?(request, existence_check: false)).to be_truthy }
+        end
       end
 
       context "project id ending with .git" do

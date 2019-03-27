@@ -2,11 +2,11 @@ import Service from '../services';
 import * as types from './mutation_types';
 import createFlash from '~/flash';
 import Poll from '~/lib/utils/poll';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 
 let eTagPoll;
 
-export function startPolling({ commit }, endpoint) {
+export function startPolling({ commit, dispatch }, endpoint) {
   eTagPoll = new Poll({
     resource: Service,
     method: 'getErrorList',
@@ -18,14 +18,35 @@ export function startPolling({ commit }, endpoint) {
       commit(types.SET_ERRORS, data.errors);
       commit(types.SET_EXTERNAL_URL, data.external_url);
       commit(types.SET_LOADING, false);
+      dispatch('stopPolling');
     },
-    errorCallback: () => {
+    errorCallback: response => {
+      let errorMessage = '';
+      if (response && response.data && response.data.message) {
+        errorMessage = response.data.message;
+      }
       commit(types.SET_LOADING, false);
-      createFlash(__('Failed to load errors from Sentry'));
+      createFlash(
+        sprintf(__(`Failed to load errors from Sentry. Error message: %{errorMessage}`), {
+          errorMessage,
+        }),
+      );
     },
   });
 
   eTagPoll.makeRequest();
+}
+
+export const stopPolling = () => {
+  if (eTagPoll) eTagPoll.stop();
+};
+
+export function restartPolling({ commit }) {
+  commit(types.SET_ERRORS, []);
+  commit(types.SET_EXTERNAL_URL, '');
+  commit(types.SET_LOADING, true);
+
+  if (eTagPoll) eTagPoll.restart();
 }
 
 export default () => {};

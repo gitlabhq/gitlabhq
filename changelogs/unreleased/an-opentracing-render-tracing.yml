@@ -1,5 +1,0 @@
----
-title: Add OpenTracing instrumentation for Action View Render events
-merge_request: 24728
-author:
-type: other

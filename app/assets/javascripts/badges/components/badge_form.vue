@@ -90,7 +90,7 @@ export default {
     },
     badgeImageUrlExample() {
       const exampleUrl =
-        'https://example.gitlab.com/%{project_path}/badges/%{default_branch}/badge.svg';
+        'https://example.gitlab.com/%{project_path}/badges/%{default_branch}/pipeline.svg';
       return sprintf(s__('Badges|e.g. %{exampleUrl}'), {
         exampleUrl,
       });

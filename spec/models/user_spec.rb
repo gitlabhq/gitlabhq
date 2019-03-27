@@ -660,6 +660,68 @@ describe User do
     end
   end
 
+  describe '#highest_role' do
+    let(:user) { create(:user) }
+
+    let(:group) { create(:group) }
+
+    it 'returns NO_ACCESS if none has been set' do
+      expect(user.highest_role).to eq(Gitlab::Access::NO_ACCESS)
+    end
+
+    it 'returns MAINTAINER if user is maintainer of a project' do
+      create(:project, group: group) do |project|
+        project.add_maintainer(user)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns the highest role if user is member of multiple projects' do
+      create(:project, group: group) do |project|
+        project.add_maintainer(user)
+      end
+
+      create(:project, group: group) do |project|
+        project.add_developer(user)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns MAINTAINER if user is maintainer of a group' do
+      create(:group) do |group|
+        group.add_user(user, GroupMember::MAINTAINER)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns the highest role if user is member of multiple groups' do
+      create(:group) do |group|
+        group.add_user(user, GroupMember::MAINTAINER)
+      end
+
+      create(:group) do |group|
+        group.add_user(user, GroupMember::DEVELOPER)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+
+    it 'returns the highest role if user is member of multiple groups and projects' do
+      create(:group) do |group|
+        group.add_user(user, GroupMember::DEVELOPER)
+      end
+
+      create(:project, group: group) do |project|
+        project.add_maintainer(user)
+      end
+
+      expect(user.highest_role).to eq(Gitlab::Access::MAINTAINER)
+    end
+  end
+
   describe '#update_tracked_fields!', :clean_gitlab_redis_shared_state do
     let(:request) { OpenStruct.new(remote_ip: "127.0.0.1") }
     let(:user) { create(:user) }
@@ -976,43 +1038,43 @@ describe User do
     end
   end
 
-  describe '.filter' do
+  describe '.filter_items' do
     let(:user) { double }
 
     it 'filters by active users by default' do
       expect(described_class).to receive(:active).and_return([user])
 
-      expect(described_class.filter(nil)).to include user
+      expect(described_class.filter_items(nil)).to include user
     end
 
     it 'filters by admins' do
       expect(described_class).to receive(:admins).and_return([user])
 
-      expect(described_class.filter('admins')).to include user
+      expect(described_class.filter_items('admins')).to include user
     end
 
     it 'filters by blocked' do
       expect(described_class).to receive(:blocked).and_return([user])
 
-      expect(described_class.filter('blocked')).to include user
+      expect(described_class.filter_items('blocked')).to include user
     end
 
     it 'filters by two_factor_disabled' do
       expect(described_class).to receive(:without_two_factor).and_return([user])
 
-      expect(described_class.filter('two_factor_disabled')).to include user
+      expect(described_class.filter_items('two_factor_disabled')).to include user
     end
 
     it 'filters by two_factor_enabled' do
       expect(described_class).to receive(:with_two_factor).and_return([user])
 
-      expect(described_class.filter('two_factor_enabled')).to include user
+      expect(described_class.filter_items('two_factor_enabled')).to include user
     end
 
     it 'filters by wop' do
       expect(described_class).to receive(:without_projects).and_return([user])
 
-      expect(described_class.filter('wop')).to include user
+      expect(described_class.filter_items('wop')).to include user
     end
   end
 

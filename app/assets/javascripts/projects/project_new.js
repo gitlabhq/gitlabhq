@@ -125,6 +125,22 @@ const bindEvents = () => {
         text: 'Spring',
         icon: '.template-option .icon-spring',
       },
+      iosswift: {
+        text: 'iOS (Swift)',
+        icon: '.template-option svg.icon-gitlab',
+      },
+      dotnetcore: {
+        text: '.NET Core',
+        icon: '.template-option .icon-dotnet',
+      },
+      android: {
+        text: 'Android',
+        icon: '.template-option svg.icon-android',
+      },
+      gomicro: {
+        text: 'Go Micro',
+        icon: '.template-option .icon-gomicro',
+      },
       hugo: {
         text: 'Pages/Hugo',
         icon: '.template-option .icon-hugo',
@@ -144,6 +160,26 @@ const bindEvents = () => {
       hexo: {
         text: 'Pages/Hexo',
         icon: '.template-option .icon-hexo',
+      },
+      nfhugo: {
+        text: 'Netlify/Hugo',
+        icon: '.template-option .icon-netlify',
+      },
+      nfjekyll: {
+        text: 'Netlify/Jekyll',
+        icon: '.template-option .icon-netlify',
+      },
+      nfplainhtml: {
+        text: 'Netlify/Plain HTML',
+        icon: '.template-option .icon-netlify',
+      },
+      nfgitbook: {
+        text: 'Netlify/GitBook',
+        icon: '.template-option .icon-netlify',
+      },
+      nfhexo: {
+        text: 'Netlify/Hexo',
+        icon: '.template-option .icon-netlify',
       },
     };
 

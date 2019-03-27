@@ -26,7 +26,7 @@ describe 'Todos (JavaScript fixtures)' do
       sign_in(admin)
     end
 
-    it 'todos/todos.html.raw' do |example|
+    it 'todos/todos.html' do |example|
       get :index
 
       expect(response).to be_success

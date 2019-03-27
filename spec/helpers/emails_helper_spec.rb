@@ -142,4 +142,58 @@ describe EmailsHelper do
       end
     end
   end
+
+  describe 'header and footer messages' do
+    context 'when email_header_and_footer_enabled is enabled' do
+      it 'returns header and footer messages' do
+        create :appearance, header_message: 'Foo', footer_message: 'Bar', email_header_and_footer_enabled: true
+
+        aggregate_failures do
+          expect(html_header_message).to eq(%{<div class="header-message" style=""><p>Foo</p></div>})
+          expect(html_footer_message).to eq(%{<div class="footer-message" style=""><p>Bar</p></div>})
+          expect(text_header_message).to eq('Foo')
+          expect(text_footer_message).to eq('Bar')
+        end
+      end
+
+      context 'when header and footer messages are empty' do
+        it 'returns nil' do
+          create :appearance, header_message: '', footer_message: '', email_header_and_footer_enabled: true
+
+          aggregate_failures do
+            expect(html_header_message).to eq(nil)
+            expect(html_footer_message).to eq(nil)
+            expect(text_header_message).to eq(nil)
+            expect(text_footer_message).to eq(nil)
+          end
+        end
+      end
+
+      context 'when header and footer messages are nil' do
+        it 'returns nil' do
+          create :appearance, header_message: nil, footer_message: nil, email_header_and_footer_enabled: true
+
+          aggregate_failures do
+            expect(html_header_message).to eq(nil)
+            expect(html_footer_message).to eq(nil)
+            expect(text_header_message).to eq(nil)
+            expect(text_footer_message).to eq(nil)
+          end
+        end
+      end
+    end
+
+    context 'when email_header_and_footer_enabled is disabled' do
+      it 'returns header and footer messages' do
+        create :appearance, header_message: 'Foo', footer_message: 'Bar', email_header_and_footer_enabled: false
+
+        aggregate_failures do
+          expect(html_header_message).to eq(nil)
+          expect(html_footer_message).to eq(nil)
+          expect(text_header_message).to eq(nil)
+          expect(text_footer_message).to eq(nil)
+        end
+      end
+    end
+  end
 end

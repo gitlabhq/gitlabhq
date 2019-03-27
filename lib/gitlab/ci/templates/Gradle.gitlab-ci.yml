@@ -23,7 +23,6 @@ build:
       - build
       - .gradle
 
-
 test:
   stage: test
   script: gradle check
@@ -33,4 +32,3 @@ test:
     paths:
       - build
       - .gradle
-

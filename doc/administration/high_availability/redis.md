@@ -14,6 +14,7 @@ a hosted cloud solution or you can use the one that comes bundled with
 Omnibus GitLab packages.
 
 > **Notes:**
+>
 > - Redis requires authentication for High Availability. See
 >  [Redis Security](https://redis.io/topics/security) documentation for more
 >  information. We recommend using a combination of a Redis password and tight
@@ -55,6 +56,7 @@ components below.
 ### High Availability with Sentinel
 
 > **Notes:**
+>
 > - Starting with GitLab `8.11`, you can configure a list of Redis Sentinel
 >   servers that will monitor a group of Redis servers to provide failover support.
 > - Starting with GitLab `8.14`, the Omnibus GitLab Enterprise Edition package
@@ -231,6 +233,7 @@ Pick the one that suits your needs.
 This is the section where we install and set up the new Redis instances.
 
 > **Notes:**
+>
 > - We assume that you have installed GitLab and all HA components from scratch. If you
 >   already have it installed and running, read how to
 >   [switch from a single-machine installation to Redis HA](#switching-from-an-existing-single-machine-installation-to-redis-ha).
@@ -359,11 +362,17 @@ following section assumes you are using Omnibus GitLab Enterprise Edition.
 For the Omnibus Community Edition and installations from source, follow the
 [Redis HA source install](redis_source.md) guide.
 
+NOTE: **Note:** If you are using an external Redis Sentinel instance, be sure
+to exclude the `requirepass` parameter from the Sentinel
+configuration. This parameter will cause clients to report `NOAUTH
+Authentication required.`. [Redis Sentinel 3.2.x does not support
+password authentication](https://github.com/antirez/redis/issues/3279).
+
 Now that the Redis servers are all set up, let's configure the Sentinel
 servers.
 
 If you are not sure if your Redis servers are working and replicating
-correctly, please read the [Troubleshooting Replication](#troubleshooting-replication)
+correctly, please read the [Troubleshooting Replication](#troubleshooting-redis-replication)
 and fix it before proceeding with Sentinel setup.
 
 You must have at least `3` Redis Sentinel servers, and they need to

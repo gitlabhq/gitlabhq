@@ -25,10 +25,6 @@
     }
   }
 
-  table {
-    @extend .table;
-  }
-
   .file-title {
     position: relative;
     background-color: $gray-light;
@@ -123,7 +119,7 @@
       }
     }
 
-    &.wiki {
+    &.md {
       padding: $gl-padding;
 
       @include media-breakpoint-up(md) {

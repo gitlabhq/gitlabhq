@@ -30,6 +30,23 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
     end
   end
 
+  describe 'all references' do
+    let(:doc) { reference_filter(merge.to_reference) }
+    let(:tag_el) { doc.css('a').first }
+
+    it 'adds merge request iid' do
+      expect(tag_el["data-iid"]).to eq(merge.iid.to_s)
+    end
+
+    it 'adds project data attribute with project id' do
+      expect(tag_el["data-project-path"]).to eq(project.full_path)
+    end
+
+    it 'does not add `has-tooltip` class' do
+      expect(tag_el["class"]).not_to include('has-tooltip')
+    end
+  end
+
   context 'internal reference' do
     let(:reference) { merge.to_reference }
 
@@ -57,9 +74,9 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
       expect(reference_filter(act).to_html).to eq exp
     end
 
-    it 'includes a title attribute' do
+    it 'has no title' do
       doc = reference_filter("Merge #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq merge.title
+      expect(doc.css('a').first.attr('title')).to eq ""
     end
 
     it 'escapes the title attribute' do
@@ -69,9 +86,9 @@ describe Banzai::Filter::MergeRequestReferenceFilter do
       expect(doc.text).to eq "Merge #{reference}"
     end
 
-    it 'includes default classes' do
+    it 'includes default classes, without tooltip' do
       doc = reference_filter("Merge #{reference}")
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-merge_request has-tooltip'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-merge_request'
     end
 
     it 'includes a data-project attribute' do

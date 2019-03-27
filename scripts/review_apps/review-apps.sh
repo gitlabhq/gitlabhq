@@ -4,6 +4,16 @@ export TILLER_NAMESPACE="$KUBE_NAMESPACE"
 function echoerr() { printf "\033[0;31m%s\n\033[0m" "$*" >&2; }
 function echoinfo() { printf "\033[0;33m%s\n\033[0m" "$*" >&2; }
 
+function perform_review_app_deployment() {
+  check_kube_domain
+  download_gitlab_chart
+  ensure_namespace
+  install_tiller
+  install_external_dns
+  time deploy
+  add_license
+}
+
 function check_kube_domain() {
   if [ -z ${REVIEW_APPS_DOMAIN+x} ]; then
     echo "In order to deploy or use Review Apps, REVIEW_APPS_DOMAIN variable must be set"

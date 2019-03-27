@@ -8,15 +8,6 @@ module API
 
     helpers ::Gitlab::IssuableMetadata
 
-    # EE::API::Issues would override the following helpers
-    helpers do
-      params :issues_params_ee do
-      end
-
-      params :issue_params_ee do
-      end
-    end
-
     helpers do
       # rubocop: disable CodeReuse/ActiveRecord
       def find_issues(args = {})
@@ -28,13 +19,23 @@ module API
         args[:scope] = args[:scope].underscore if args[:scope]
 
         issues = IssuesFinder.new(current_user, args).execute
-          .preload(:assignees, :labels, :notes, :timelogs, :project, :author, :closed_by)
+                   .with_api_entity_associations
         issues.reorder(order_options_with_tie_breaker)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
+      if Gitlab.ee?
+        params :issues_params_ee do
+          optional :weight, types: [Integer, String], integer_none_any: true, desc: 'The weight of the issue'
+        end
+
+        params :issue_params_ee do
+          optional :weight, type: Integer, desc: 'The weight of the issue'
+        end
+      end
+
       params :issues_params do
-        optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
                             desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
@@ -54,9 +55,10 @@ module API
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
                          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
+        optional :confidential, type: Boolean, desc: 'Filter confidential or public issues'
         use :pagination
 
-        use :issues_params_ee
+        use :issues_params_ee if Gitlab.ee?
       end
 
       params :issue_params do
@@ -64,12 +66,12 @@ module API
         optional :assignee_ids, type: Array[Integer], desc: 'The array of user IDs to assign issue'
         optional :assignee_id,  type: Integer, desc: '[Deprecated] The ID of a user to assign issue'
         optional :milestone_id, type: Integer, desc: 'The ID of a milestone to assign issue'
-        optional :labels, type: String, desc: 'Comma-separated list of label names'
+        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
         optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
 
-        use :issue_params_ee
+        use :issue_params_ee if Gitlab.ee?
       end
     end
 
@@ -218,8 +220,8 @@ module API
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
-        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id, :discussion_locked,
-                        :labels, :created_at, :due_date, :confidential, :state_event
+
+        at_least_one_of(*Helpers::IssuesHelpers.update_params_at_least_one_of)
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/issues/:issue_iid' do

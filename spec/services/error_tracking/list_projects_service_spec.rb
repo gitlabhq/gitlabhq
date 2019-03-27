@@ -32,7 +32,7 @@ describe ErrorTracking::ListProjectsService do
       end
 
       context 'set model attributes to new values' do
-        let(:new_api_url) { new_api_host + 'api/0/projects/' }
+        let(:new_api_url) { new_api_host + 'api/0/projects/org/proj/' }
 
         before do
           expect(error_tracking_setting).to receive(:list_sentry_projects)
@@ -53,11 +53,11 @@ describe ErrorTracking::ListProjectsService do
       context 'sentry client raises exception' do
         before do
           expect(error_tracking_setting).to receive(:list_sentry_projects)
-            .and_raise(Sentry::Client::Error, 'Sentry response error: 500')
+            .and_raise(Sentry::Client::Error, 'Sentry response status code: 500')
         end
 
         it 'returns error response' do
-          expect(result[:message]).to eq('Sentry response error: 500')
+          expect(result[:message]).to eq('Sentry response status code: 500')
           expect(result[:http_status]).to eq(:bad_request)
         end
       end
@@ -121,7 +121,7 @@ describe ErrorTracking::ListProjectsService do
 
     context 'error_tracking_setting is nil' do
       let(:error_tracking_setting) { build(:project_error_tracking_setting) }
-      let(:new_api_url) { new_api_host + 'api/0/projects/' }
+      let(:new_api_url) { new_api_host + 'api/0/projects/org/proj/' }
 
       before do
         expect(project).to receive(:build_error_tracking_setting).once

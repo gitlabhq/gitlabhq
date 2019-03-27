@@ -41,6 +41,14 @@ class DiffNote < Note
     create_note_diff_file(creation_params)
   end
 
+  # Returns the diff file from `position`
+  def latest_diff_file
+    strong_memoize(:latest_diff_file) do
+      position.diff_file(project.repository)
+    end
+  end
+
+  # Returns the diff file from `original_position`
   def diff_file
     strong_memoize(:diff_file) do
       enqueue_diff_file_creation_job if should_create_diff_file?
@@ -69,8 +77,8 @@ class DiffNote < Note
   def supports_suggestion?
     return false unless noteable.supports_suggestion? && on_text?
     # We don't want to trigger side-effects of `diff_file` call.
-    return false unless file = fetch_diff_file
-    return false unless line = file.line_for_position(self.original_position)
+    return false unless file = latest_diff_file
+    return false unless line = file.line_for_position(self.position)
 
     line&.suggestible?
   end
@@ -80,7 +88,7 @@ class DiffNote < Note
   end
 
   def banzai_render_context(field)
-    super.merge(suggestions_filter_enabled: supports_suggestion?)
+    super.merge(project: project, suggestions_filter_enabled: supports_suggestion?)
   end
 
   private

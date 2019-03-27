@@ -1,54 +1,53 @@
-<!--See the general documentation guidelines https://docs.gitlab.com/ee/development/documentation -->
+<!--
 
-<!-- Mention "documentation" or "docs" in the issue title -->
+* Use this issue template for suggesting new docs or updates to existing docs.
+  Note: Doc work as part of feature development is covered in the Feature Request template.
+  
+* For issues related to features of the docs.gitlab.com site, see
+     https://gitlab.com/gitlab-com/gitlab-docs/issues/       
 
-<!-- Use this description template for new docs or updates to existing docs. -->
+* For information about documentation content and process, see
+     https://docs.gitlab.com/ee/development/documentation/ -->
 
-<!-- Check the documentation structure guidelines for guidance: https://docs.gitlab.com/ee/development/documentation/structure.html-->
+<!-- Type of issue -->
 
-- [ ] Documents Feature A <!-- feature name -->
-- [ ] Follow-up from: #XXX, !YYY <!-- Mention related issues, MRs, and epics when available -->
+<!-- Un-comment the line for the applicable doc issue type to add its label.
+     Note that all text on that line is deleted upon issue creation. -->
+<!-- /label ~"docs:fix" - Correction or clarification needed. -->
+<!-- /label ~"docs:new" - New doc needed to cover a new topic or use case. -->
+<!-- /label ~"docs:improvement" - Improving an existing doc; e.g. adding a diagram, adding or rewording text, resolving redundancies, cross-linking, etc. -->
+<!-- /label ~"docs:revamp" - Review a page or group of pages in order to plan and implement major improvements/rewrites. -->
+<!-- /label ~"docs:other" - Anything else. -->
 
-## New doc or update?
+### Problem to solve
 
-<!-- Mark either of these boxes: -->
+<!-- Include the following detail as necessary:
+* What product or feature(s) affected?
+* What docs or doc section affected? Include links or paths.
+* Is there a problem with a specific document, or a feature/process that's not addressed sufficiently in docs?
+* Any other ideas or requests?
+-->
 
-- [ ] New documentation
-- [ ] Update existing documentation
+### Further details
 
-## Checklists
+<!--
+* Any concepts, procedures, reference info we could add to make it easier to successfully use GitLab?
+* Include use cases, benefits, and/or goals for this work.
+* If adding content: What audience is it intended for? (What roles and scenarios?)
+  For ideas, see personas at https://design.gitlab.com/research/personas or the persona labels at
+  https://gitlab.com/groups/gitlab-org/-/labels?utf8=%E2%9C%93&subscribed=&search=persona%3A
+-->
 
-### Product Manager
+### Proposal
 
-<!-- Reference: https://docs.gitlab.com/ee/development/documentation/workflow.html#1-product-manager-s-role-in-the-documentation-process -->
+<!-- Further specifics for how can we solve the problem. -->
 
-- [ ] Add the correct labels
-- [ ] Add the correct milestone
-- [ ] Indicate the correct document/directory for this feature <!-- (ping the tech writers for help if you're not sure) -->
-- [ ] Fill the doc blurb below
+### Who can address the issue
 
-#### Documentation blurb
+<!-- What if any special expertise is required to resolve this issue? -->
 
-<!-- Documentation template: https://docs.gitlab.com/ee/development/documentation/structure.html#documentation-template-for-new-docs -->
+### Other links/references
 
-- Doc **title**
-
-    <!-- write the doc title here -->
-
-- Feature **overview/description**
-
-    <!-- Write the feature overview here -->
-
-- Feature **use cases**
-
-    <!-- Write the use cases here -->
-
-### Developer
-
-<!-- Reference: https://docs.gitlab.com/ee/development/documentation/workflow.html#2-developer-s-role-in-the-documentation-process -->
-
-- [ ] Copy the doc blurb above and paste it into the doc
-- [ ] Write the tutorial - explain how to use the feature
-- [ ] Submit the MR using the appropriate MR description template
+<!-- E.g. related GitLab issues/MRs -->
 
 /label ~Documentation

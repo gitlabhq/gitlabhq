@@ -33,14 +33,14 @@ module QA
 
           def find_fingerprint(title)
             within_project_deploy_keys do
-              find_element(:key, title)
+              find_element(:key, text: title)
                 .find(element_selector_css(:key_fingerprint)).text
             end
           end
 
           def has_key?(title, fingerprint)
             within_project_deploy_keys do
-              find_element(:key, title)
+              find_element(:key, text: title)
                 .has_css?(element_selector_css(:key_fingerprint), text: fingerprint)
             end
           end

@@ -59,7 +59,7 @@ which is highly recommendable and much faster than hardcoding.
 
 If you set up a GitLab Pages project on GitLab.com,
 it will automatically be accessible under a
-[subdomain of `namespace.gitlab.io`](introduction.md#gitlab-pages-on-gitlab-com).
+[subdomain of `namespace.gitlab.io`](introduction.md#gitlab-pages-on-gitlabcom).
 The `namespace` is defined by your username on GitLab.com,
 or the group name you created this project under.
 
@@ -77,41 +77,41 @@ Learn more about [namespaces](../../group/index.md#namespaces).
 #### Project Websites
 
 - You created a project called `blog` under your username `john`,
-therefore your project URL is `https://gitlab.com/john/blog/`.
-Once you enable GitLab Pages for this project, and build your site,
-it will be available under `https://john.gitlab.io/blog/`.
+  therefore your project URL is `https://gitlab.com/john/blog/`.
+  Once you enable GitLab Pages for this project, and build your site,
+  it will be available under `https://john.gitlab.io/blog/`.
 - You created a group for all your websites called `websites`,
-and a project within this group is called `blog`. Your project
-URL is `https://gitlab.com/websites/blog/`. Once you enable
-GitLab Pages for this project, the site will live under
-`https://websites.gitlab.io/blog/`.
+  and a project within this group is called `blog`. Your project
+  URL is `https://gitlab.com/websites/blog/`. Once you enable
+  GitLab Pages for this project, the site will live under
+  `https://websites.gitlab.io/blog/`.
 - You created a group for your engineering department called `engineering`,
-a subgroup for all your documentation websites called `docs`,
-and a project within this subgroup is called `workflows`. Your project
-URL is `https://gitlab.com/engineering/docs/workflows/`. Once you enable
-GitLab Pages for this project, the site will live under
-`https://engineering.gitlab.io/docs/workflows`.
+  a subgroup for all your documentation websites called `docs`,
+  and a project within this subgroup is called `workflows`. Your project
+  URL is `https://gitlab.com/engineering/docs/workflows/`. Once you enable
+  GitLab Pages for this project, the site will live under
+  `https://engineering.gitlab.io/docs/workflows`.
 
 #### User and Group Websites
 
 - Under your username, `john`, you created a project called
-`john.gitlab.io`. Your project URL will be `https://gitlab.com/john/john.gitlab.io`.
-Once you enable GitLab Pages for your project, your website
-will be published under `https://john.gitlab.io`.
+  `john.gitlab.io`. Your project URL will be `https://gitlab.com/john/john.gitlab.io`.
+  Once you enable GitLab Pages for your project, your website
+  will be published under `https://john.gitlab.io`.
 - Under your group `websites`, you created a project called
-`websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`.
-Once you enable GitLab Pages for your project,
-your website will be published under `https://websites.gitlab.io`.
+  `websites.gitlab.io`. your project's URL will be `https://gitlab.com/websites/websites.gitlab.io`.
+  Once you enable GitLab Pages for your project,
+  your website will be published under `https://websites.gitlab.io`.
 
 > Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
 
 **General example:**
 
 - On GitLab.com, a project site will always be available under
-`https://namespace.gitlab.io/project-name`
+  `https://namespace.gitlab.io/project-name`
 - On GitLab.com, a user or group website will be available under
-`https://namespace.gitlab.io/`
+  `https://namespace.gitlab.io/`
 - On your GitLab instance, replace `gitlab.io` above with your
-Pages server domain. Ask your sysadmin for this information.
+  Pages server domain. Ask your sysadmin for this information.
 
 _Read on about [Projects for GitLab Pages and URL structure](getting_started_part_two.md)._

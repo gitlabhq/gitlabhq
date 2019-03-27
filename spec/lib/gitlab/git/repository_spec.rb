@@ -31,7 +31,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   describe '.create_hooks' do
     let(:repo_path) { File.join(storage_path, 'hook-test.git') }
     let(:hooks_dir) { File.join(repo_path, 'hooks') }
-    let(:target_hooks_dir) { Gitlab.config.gitlab_shell.hooks_path }
+    let(:target_hooks_dir) { Gitlab::Shell.new.hooks_path }
     let(:existing_target) { File.join(repo_path, 'foobar') }
 
     before do
@@ -617,16 +617,6 @@ describe Gitlab::Git::Repository, :seed_helper do
     it_should_behave_like 'search files by content' do
       let(:search_results) do
         repository.search_files_by_content('search-files-by-content', 'search-files-by-content-branch')
-      end
-    end
-
-    it_should_behave_like 'search files by content' do
-      let(:search_results) do
-        repository.gitaly_repository_client.search_files_by_content(
-          'search-files-by-content-branch',
-          'search-files-by-content',
-          chunked_response: false
-        )
       end
     end
   end
@@ -1698,9 +1688,45 @@ describe Gitlab::Git::Repository, :seed_helper do
 
       expect(repository.delete_config(*%w[does.not.exist test.foo1 test.foo2])).to be_nil
 
+      # Workaround for https://github.com/libgit2/rugged/issues/785: If
+      # Gitaly changes .gitconfig while Rugged has the file loaded
+      # Rugged::Repository#each_key will report stale values unless a
+      # lookup is done first.
+      expect(repository_rugged.config['test.foo1']).to be_nil
       config_keys = repository_rugged.config.each_key.to_a
       expect(config_keys).not_to include('test.foo1')
       expect(config_keys).not_to include('test.foo2')
+    end
+  end
+
+  describe '#merge_to_ref' do
+    let(:repository) { mutable_repository }
+    let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+    let(:left_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+    let(:right_branch) { 'test-master' }
+    let(:target_ref) { 'refs/merge-requests/999/merge' }
+
+    before do
+      repository.create_branch(right_branch, branch_head) unless repository.branch_exists?(right_branch)
+    end
+
+    def merge_to_ref
+      repository.merge_to_ref(user, left_sha, right_branch, target_ref, 'Merge message')
+    end
+
+    it 'generates a commit in the target_ref' do
+      expect(repository.ref_exists?(target_ref)).to be(false)
+
+      commit_sha = merge_to_ref
+      ref_head = repository.commit(target_ref)
+
+      expect(commit_sha).to be_present
+      expect(repository.ref_exists?(target_ref)).to be(true)
+      expect(ref_head.id).to eq(commit_sha)
+    end
+
+    it 'does not change the right branch HEAD' do
+      expect { merge_to_ref }.not_to change { repository.find_branch(right_branch).target }
     end
   end
 
@@ -1914,7 +1940,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       imported_repo.create_from_bundle(valid_bundle_path)
       hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
 
-      expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+      expect(File.readlink(hooks_path)).to eq(Gitlab::Shell.new.hooks_path)
     end
 
     it 'raises an error if the bundle is an attempted malicious payload' do

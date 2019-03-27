@@ -10,6 +10,7 @@ GET /projects/:id/milestones?iids[]=42
 GET /projects/:id/milestones?iids[]=42&iids[]=43
 GET /projects/:id/milestones?state=active
 GET /projects/:id/milestones?state=closed
+GET /projects/:id/milestones?title=1.0
 GET /projects/:id/milestones?search=version
 ```
 
@@ -20,6 +21,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iids[]` | Array[integer] | optional | Return only the milestones having the given `iid` |
 | `state` | string | optional | Return only `active` or `closed` milestones |
+| `title` | string | optional | Return only the milestones having the given `title` |
 | `search` | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```bash
@@ -124,6 +126,21 @@ Gets all merge requests assigned to a single project milestone.
 
 ```
 GET /projects/:id/milestones/:milestone_id/merge_requests
+```
+
+Parameters:
+
+- `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
+- `milestone_id` (required) - The ID of a project milestone
+
+## Promote project milestone to a group milestone
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53861) in GitLab 11.9
+
+Only for users with developer access to the group.
+
+```
+POST /projects/:id/milestones/:milestone_id/promote
 ```
 
 Parameters:

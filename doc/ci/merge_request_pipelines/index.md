@@ -9,13 +9,18 @@ For example, unit tests, lint checks, and [Review Apps](../review_apps/index.md)
 are often used in this cycle.
 
 With pipelines for merge requests, you can design a specific pipeline structure
-for merge requests. All you need to do is just adding `only: [merge_requests]` to
-the jobs that you want it to run for only merge requests.
-Every time, when developers create or update merge requests, a pipeline runs on
-their new commits at every push to GitLab.
+for merge requests.
+
+## Configuring pipelines for merge requests
+
+To configure pipelines for merge requests, add the `only: merge_requests` parameter to
+the jobs that you want to run only for merge requests.
+
+Then, when developers create or update merge requests, a pipeline runs
+every time a commit is pushed to GitLab.
 
 NOTE: **Note**:
-If you use both this feature and [Merge When Pipeline Succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md),
+If you use this feature with [merge when pipeline succeeds](../../user/project/merge_requests/merge_when_pipeline_succeeds.md),
 pipelines for merge requests take precedence over the other regular pipelines.
 
 For example, consider the following [`.gitlab-ci.yml`](../yaml/README.md):
@@ -40,15 +45,17 @@ deploy:
   script: ./deploy
 ```
 
-After the merge request is updated with new commits, GitLab detects that changes
-have occurred and creates a new pipeline for the merge request.
-The pipeline fetches the latest code from the source branch and run tests against it.
+After the merge request is updated with new commits:
+
+- GitLab detects that changes have occurred and creates a new pipeline for the merge request.
+- The pipeline fetches the latest code from the source branch and run tests against it.
+
 In the above example, the pipeline contains only `build` and `test` jobs.
-Since the `deploy` job doesn't have the `only: [merge_requests]` rule,
+Since the `deploy` job doesn't have the `only: merge_requests` parameter,
 deployment jobs will not happen in the merge request.
 
-Pipelines tagged as **merge request** indicate that they were triggered
-when a merge request was created or updated.
+Pipelines tagged with the **merge request** badge indicate that they were triggered
+when a merge request was created or updated. For example:
 
 ![Merge request page](img/merge_request.png)
 
@@ -58,13 +65,18 @@ The same tag is shown on the pipeline's details:
 
 ## Excluding certain jobs
 
-The behavior of the `only: merge_requests` rule is such that _only_ jobs with
-that rule are run in the context of a merge request; no other jobs will be run.
+The behavior of the `only: merge_requests` parameter is such that _only_ jobs with
+that parameter are run in the context of a merge request; no other jobs will be run.
 
-However, you may want to reverse this behaviour, having all of your jobs to run _except_
-for one or two. Consider the following pipeline, with jobs `A`, `B`, and `C`. If you want
-all pipelines to always run `A` and `B`, but only want `C` to run for a merge request,
-you can configure your `.gitlab-ci.yml` file as follows:
+However, you may want to reverse this behavior, having all of your jobs to run _except_
+for one or two.
+
+Consider the following pipeline, with jobs `A`, `B`, and `C`. Imagine you want:
+
+- All pipelines to always run `A` and `B`.
+- `C` to run only for merge requests.
+
+To achieve this, you can configure your `.gitlab-ci.yml` file as follows:
 
 ``` yaml
 .only-default: &only-default
@@ -90,9 +102,11 @@ C:
     - merge_requests
 ```
 
-Since `A` and `B` are getting the `only:` rule to execute in all cases, they will
-always run. `C` specifies that it should only run for merge requests, so for any
-pipeline except a merge request pipeline, it will not run.
+Therefore:
+
+- Since `A` and `B` are getting the `only:` rule to execute in all cases, they will always run.
+- Since `C` specifies that it should only run for merge requests, it will not run for any pipeline
+  except a merge request pipeline.
 
 As you can see, this will help you avoid a lot of boilerplate where you'd need
 to add that `only:` rule to all of your jobs in order to make them always run. You
@@ -106,10 +120,10 @@ flow, external contributors follow the following steps:
 
 1. Fork a parent project.
 1. Create a merge request from the forked project that targets the `master` branch
-in the parent project.
+   in the parent project.
 1. A pipeline runs on the merge request.
 1. A maintainer from the parent project checks the pipeline result, and merge
-into a target branch if the latest pipeline has passed.
+   into a target branch if the latest pipeline has passed.
 
 Currently, those pipelines are created in a **forked** project, not in the
 parent project. This means you cannot completely trust the pipeline result,

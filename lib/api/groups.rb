@@ -20,8 +20,19 @@ module API
         optional :share_with_group_lock, type: Boolean, desc: 'Prevent sharing a project with another group within this group'
       end
 
+      if Gitlab.ee?
+        params :optional_params_ee do
+          optional :membership_lock, type: Boolean, desc: 'Prevent adding new members to project membership within this group'
+          optional :ldap_cn, type: String, desc: 'LDAP Common Name'
+          optional :ldap_access, type: Integer, desc: 'A valid access level'
+          optional :shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Pipeline minutes quota for this group'
+          all_or_none_of :ldap_cn, :ldap_access
+        end
+      end
+
       params :optional_params do
         use :optional_params_ce
+        use :optional_params_ee if Gitlab.ee?
       end
 
       params :statistics_params do
@@ -57,6 +68,22 @@ module API
         groups
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def create_group
+        # This is a separate method so that EE can extend its behaviour, without
+        # having to modify this code directly.
+        ::Groups::CreateService
+          .new(current_user, declared_params(include_missing: false))
+          .execute
+      end
+
+      def update_group(group)
+        # This is a separate method so that EE can extend its behaviour, without
+        # having to modify this code directly.
+        ::Groups::UpdateService
+          .new(group, current_user, declared_params(include_missing: false))
+          .execute
+      end
 
       def find_group_projects(params)
         group = find_group!(params[:id])
@@ -127,7 +154,7 @@ module API
           authorize! :create_group
         end
 
-        group = ::Groups::CreateService.new(current_user, declared_params(include_missing: false)).execute
+        group = create_group
 
         if group.persisted?
           present group, with: Entities::GroupDetail, current_user: current_user
@@ -148,12 +175,16 @@ module API
         optional :name, type: String, desc: 'The name of the group'
         optional :path, type: String, desc: 'The path of the group'
         use :optional_params
+
+        if Gitlab.ee?
+          optional :file_template_project_id, type: Integer, desc: 'The ID of a project to use for custom templates in this group'
+        end
       end
       put ':id' do
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
-        if ::Groups::UpdateService.new(group, current_user, declared_params(include_missing: false)).execute
+        if update_group(group)
           present group, with: Entities::GroupDetail, current_user: current_user
         else
           render_validation_error!(group)

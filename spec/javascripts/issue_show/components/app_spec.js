@@ -75,7 +75,7 @@ describe('Issuable output', () => {
       .then(() => {
         expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
         expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
-        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
+        expect(vm.$el.querySelector('.md').innerHTML).toContain('<p>this is a description!</p>');
         expect(vm.$el.querySelector('.js-task-list-field').value).toContain(
           'this is a description',
         );
@@ -92,7 +92,7 @@ describe('Issuable output', () => {
       .then(() => {
         expect(document.querySelector('title').innerText).toContain('2 (#1)');
         expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
-        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
+        expect(vm.$el.querySelector('.md').innerHTML).toContain('<p>42</p>');
         expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
         expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
         expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(

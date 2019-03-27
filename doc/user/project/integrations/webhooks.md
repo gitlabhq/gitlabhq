@@ -48,9 +48,9 @@ Navigate to the webhooks page by going to your project's
 ## Use-cases
 
 - You can set up a webhook in GitLab to send a notification to
-[Slack](https://api.slack.com/incoming-webhooks) every time a build fails, for example
+  [Slack](https://api.slack.com/incoming-webhooks) every time a build fails, for example
 - You can [integrate with Twilio to be notified via SMS](https://www.datadoghq.com/blog/send-alerts-sms-customizable-webhooks-twilio/)
-every time an issue is created for a specific project or group within GitLab
+  every time an issue is created for a specific project or group within GitLab
 - You can use them to [automatically assign labels to merge requests](https://about.gitlab.com/2016/08/19/applying-gitlab-labels-automatically/).
 
 ## Webhook endpoint tips
@@ -1041,7 +1041,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null
@@ -1062,7 +1067,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null
@@ -1083,7 +1093,12 @@ X-Gitlab-Event: Pipeline Hook
             "username": "root",
             "avatar_url": "http://www.gravatar.com/avatar/e32bd13e2add097461cb96824b7a829c?s=80\u0026d=identicon"
          },
-         "runner": null,
+         "runner": {
+            "id":380987,
+            "description":"shared-runners-manager-6.gitlab.com",
+            "active":true,
+            "is_shared":true
+         },
          "artifacts_file":{
             "filename": null,
             "size": null

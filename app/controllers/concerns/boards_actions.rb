@@ -1,0 +1,38 @@
+# frozen_string_literal: true
+
+module BoardsActions
+  include Gitlab::Utils::StrongMemoize
+  extend ActiveSupport::Concern
+
+  included do
+    include BoardsResponses
+
+    before_action :boards, only: :index
+    before_action :board, only: :show
+  end
+
+  def index
+    respond_with_boards
+  end
+
+  def show
+    # Add / update the board in the recent visits table
+    Boards::Visits::CreateService.new(parent, current_user).execute(board) if request.format.html?
+
+    respond_with_board
+  end
+
+  private
+
+  def boards
+    strong_memoize(:boards) do
+      Boards::ListService.new(parent, current_user).execute
+    end
+  end
+
+  def board
+    strong_memoize(:board) do
+      boards.find(params[:id])
+    end
+  end
+end

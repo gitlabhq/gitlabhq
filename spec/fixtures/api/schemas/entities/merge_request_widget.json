@@ -52,6 +52,7 @@
     "mergeable_discussions_state": { "type": "boolean" },
     "conflicts_can_be_resolved_in_ui": { "type": "boolean" },
     "branch_missing": { "type": "boolean" },
+    "commits_count": { "type": ["integer", "null"] },
     "has_conflicts": { "type": "boolean" },
     "can_be_merged": { "type": "boolean" },
     "mergeable": { "type": "boolean" },
@@ -125,6 +126,5 @@
     "can_receive_suggestion": { "type": "boolean" },
     "source_branch_protected": { "type": "boolean" },
     "conflicts_docs_path": { "type": ["string", "null"] }
-  },
-  "additionalProperties": false
+  }
 }

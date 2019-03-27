@@ -26,7 +26,7 @@ class GroupPolicy < BasePolicy
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
 
   condition(:has_projects) do
-    GroupProjectsFinder.new(group: @subject, current_user: @user, options: { include_subgroups: true }).execute.any?
+    GroupProjectsFinder.new(group: @subject, current_user: @user, options: { include_subgroups: true, only_owned: true }).execute.any?
   end
 
   condition(:has_clusters, scope: :subject) { clusterable_has_clusters? }
@@ -53,8 +53,9 @@ class GroupPolicy < BasePolicy
   rule { admin }.enable :read_group
 
   rule { has_projects }.policy do
-    enable :read_group
+    enable :read_list
     enable :read_label
+    enable :read_group
   end
 
   rule { has_access }.enable :read_namespace

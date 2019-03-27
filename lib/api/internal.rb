@@ -15,6 +15,12 @@ module API
         status code
         { status: success, message: message }.merge(extra_options).compact
       end
+
+      def lfs_authentication_url(project)
+        # This is a separate method so that EE can alter its behaviour more
+        # easily.
+        project.http_url_to_repo
+      end
     end
 
     namespace 'internal' do
@@ -53,7 +59,7 @@ module API
             actor
           end
 
-        access_checker_klass = wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+        access_checker_klass = repo_type.access_checker_class
         access_checker = access_checker_klass.new(actor, project,
           protocol, authentication_abilities: ssh_authentication_abilities,
                     namespace_path: namespace_path, project_path: project_path,
@@ -81,11 +87,6 @@ module API
             gl_id: Gitlab::GlId.gl_id(user),
             gl_username: user&.username,
             git_config_options: [],
-
-            # This repository_path is a bogus value but gitlab-shell still requires
-            # its presence. https://gitlab.com/gitlab-org/gitlab-shell/issues/135
-            repository_path: '/',
-
             gitaly: gitaly_payload(params[:action])
           }
 
@@ -118,7 +119,9 @@ module API
           raise ActiveRecord::RecordNotFound.new("No key_id or user_id passed!")
         end
 
-        Gitlab::LfsToken.new(actor).authentication_payload(project.http_url_to_repo)
+        Gitlab::LfsToken
+          .new(actor)
+          .authentication_payload(lfs_authentication_url(project))
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

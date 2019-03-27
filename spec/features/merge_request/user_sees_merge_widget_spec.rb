@@ -145,6 +145,119 @@ describe 'Merge request > User sees merge widget', :js do
     end
   end
 
+  context 'when merge request has a branch pipeline as the head pipeline' do
+    let!(:pipeline) do
+      create(:ci_pipeline,
+        ref: merge_request.source_branch,
+        sha: merge_request.source_branch_sha,
+        project: merge_request.source_project)
+    end
+
+    before do
+      merge_request.update_head_pipeline
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows head pipeline information' do
+      within '.ci-widget-content' do
+        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+                                     "for #{pipeline.short_sha} " \
+                                     "on #{pipeline.ref}")
+      end
+    end
+  end
+
+  context 'when merge request has a detached merge request pipeline as the head pipeline' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_detached_merge_request_pipeline,
+        source_project: source_project,
+        target_project: target_project)
+    end
+
+    let!(:pipeline) do
+      merge_request.all_pipelines.last
+    end
+
+    let(:source_project) { project }
+    let(:target_project) { project }
+
+    before do
+      merge_request.update_head_pipeline
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows head pipeline information' do
+      within '.ci-widget-content' do
+        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+                                     "for #{pipeline.short_sha} " \
+                                     "on #{merge_request.to_reference} " \
+                                     "with #{merge_request.source_branch}")
+      end
+    end
+
+    context 'when source project is a forked project' do
+      let(:source_project) { fork_project(project, user, repository: true) }
+
+      it 'shows head pipeline information' do
+        within '.ci-widget-content' do
+          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+                                       "for #{pipeline.short_sha} " \
+                                       "on #{merge_request.to_reference} " \
+                                       "with #{merge_request.source_branch}")
+        end
+      end
+    end
+  end
+
+  context 'when merge request has a merge request pipeline as the head pipeline' do
+    let(:merge_request) do
+      create(:merge_request,
+        :with_merge_request_pipeline,
+        source_project: source_project,
+        target_project: target_project,
+        merge_sha: merge_sha)
+    end
+
+    let!(:pipeline) do
+      merge_request.all_pipelines.last
+    end
+
+    let(:source_project) { project }
+    let(:target_project) { project }
+    let(:merge_sha) { project.commit.sha }
+
+    before do
+      merge_request.update_head_pipeline
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'shows head pipeline information' do
+      within '.ci-widget-content' do
+        expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+                                     "for #{pipeline.short_sha} " \
+                                     "on #{merge_request.to_reference} " \
+                                     "with #{merge_request.source_branch} " \
+                                     "into #{merge_request.target_branch}")
+      end
+    end
+
+    context 'when source project is a forked project' do
+      let(:source_project) { fork_project(project, user, repository: true) }
+      let(:merge_sha) { source_project.commit.sha }
+
+      it 'shows head pipeline information' do
+        within '.ci-widget-content' do
+          expect(page).to have_content("Pipeline ##{pipeline.id} pending " \
+                                       "for #{pipeline.short_sha} " \
+                                       "on #{merge_request.to_reference} " \
+                                       "with #{merge_request.source_branch} " \
+                                       "into #{merge_request.target_branch}")
+        end
+      end
+    end
+  end
+
   context 'view merge request with MWBS button' do
     before do
       commit_status = create(:commit_status, project: project, status: 'pending')

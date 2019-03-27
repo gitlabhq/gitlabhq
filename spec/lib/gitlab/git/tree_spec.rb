@@ -3,7 +3,7 @@ require "spec_helper"
 describe Gitlab::Git::Tree, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '', 'group/project') }
 
-  context :repo do
+  shared_examples :repo do
     let(:tree) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID) }
 
     it { expect(tree).to be_kind_of Array }
@@ -11,6 +11,17 @@ describe Gitlab::Git::Tree, :seed_helper do
     it { expect(tree.select(&:dir?).size).to eq(2) }
     it { expect(tree.select(&:file?).size).to eq(10) }
     it { expect(tree.select(&:submodule?).size).to eq(2) }
+
+    it 'returns an empty array when called with an invalid ref' do
+      expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
+    end
+
+    it 'returns a list of tree objects' do
+      entries = described_class.where(repository, SeedRepo::Commit::ID, 'files', true)
+
+      expect(entries.count).to be > 10
+      expect(entries).to all(be_a(Gitlab::Git::Tree))
+    end
 
     describe '#dir?' do
       let(:dir) { tree.select(&:dir?).first }
@@ -20,8 +31,8 @@ describe Gitlab::Git::Tree, :seed_helper do
       it { expect(dir.commit_id).to eq(SeedRepo::Commit::ID) }
       it { expect(dir.name).to eq('encoding') }
       it { expect(dir.path).to eq('encoding') }
-      it { expect(dir.flat_path).to eq('encoding') }
       it { expect(dir.mode).to eq('40000') }
+      it { expect(dir.flat_path).to eq('encoding') }
 
       context :subdir do
         let(:subdir) { Gitlab::Git::Tree.where(repository, SeedRepo::Commit::ID, 'files').first }
@@ -43,6 +54,51 @@ describe Gitlab::Git::Tree, :seed_helper do
         it { expect(subdir_file.name).to eq('popen.rb') }
         it { expect(subdir_file.path).to eq('files/ruby/popen.rb') }
         it { expect(subdir_file.flat_path).to eq('files/ruby/popen.rb') }
+      end
+
+      context :flat_path do
+        let(:filename) { 'files/flat/path/correct/content.txt' }
+        let(:oid) { create_file(filename) }
+        let(:subdir_file) { Gitlab::Git::Tree.where(repository, oid, 'files/flat').first }
+        let(:repository_rugged) { Rugged::Repository.new(File.join(SEED_STORAGE_PATH, TEST_REPO_PATH)) }
+
+        it { expect(subdir_file.flat_path).to eq('files/flat/path/correct') }
+      end
+
+      def create_file(path)
+        oid = repository_rugged.write('test', :blob)
+        index = repository_rugged.index
+        index.add(path: filename, oid: oid, mode: 0100644)
+
+        options = commit_options(
+          repository_rugged,
+          index,
+          repository_rugged.head.target,
+          'HEAD',
+          'Add new file')
+
+        Rugged::Commit.create(repository_rugged, options)
+      end
+
+      # Build the options hash that's passed to Rugged::Commit#create
+      def commit_options(repo, index, target, ref, message)
+        options = {}
+        options[:tree] = index.write_tree(repo)
+        options[:author] = {
+          email: "test@example.com",
+          name: "Test Author",
+          time: Time.gm(2014, "mar", 3, 20, 15, 1)
+        }
+        options[:committer] = {
+          email: "test@example.com",
+          name: "Test Author",
+          time: Time.gm(2014, "mar", 3, 20, 15, 1)
+        }
+        options[:message] ||= message
+        options[:parents] = repo.empty? ? [] : [target].compact
+        options[:update_ref] = ref
+
+        options
       end
     end
 
@@ -79,9 +135,17 @@ describe Gitlab::Git::Tree, :seed_helper do
     end
   end
 
-  describe '#where' do
-    it 'returns an empty array when called with an invalid ref' do
-      expect(described_class.where(repository, 'foobar-does-not-exist')).to eq([])
+  describe '.where with Gitaly enabled' do
+    it_behaves_like :repo
+  end
+
+  describe '.where with Rugged enabled', :enable_rugged do
+    it 'calls out to the Rugged implementation' do
+      allow_any_instance_of(Rugged).to receive(:lookup).with(SeedRepo::Commit::ID)
+
+      described_class.where(repository, SeedRepo::Commit::ID, 'files', false)
     end
+
+    it_behaves_like :repo
   end
 end

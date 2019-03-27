@@ -26,7 +26,6 @@ variables:
   MSI_RELEASE_FOLDER: 'Setup\bin\Release'
   TEST_FOLDER: 'Tests\bin\Release'
   DEPLOY_FOLDER: 'P:\Projects\YourApp\Builds'
-  
   NUGET_PATH: 'C:\NuGet\nuget.exe'
   MSBUILD_PATH: 'C:\Program Files (x86)\MSBuild\14.0\Bin\msbuild.exe'
   NUNIT_PATH: 'C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe'
@@ -84,4 +83,3 @@ deploy_job:
   dependencies:
     - build_job
     - test_job
-  

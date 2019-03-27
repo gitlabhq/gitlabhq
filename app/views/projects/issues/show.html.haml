@@ -14,9 +14,12 @@
   .detail-page-header-body
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
       = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
-      %span.d-none.d-sm-block
+      .d-none.d-sm-block
         - if @issue.moved?
-          = _("Closed (moved)")
+          - moved_link_start = "<a href=\"#{issue_path(@issue.moved_to)}\" class=\"text-white text-underline\">".html_safe
+          - moved_link_end = '</a>'.html_safe
+          = s_('IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})').html_safe % {moved_link_start: moved_link_start,
+            moved_link_end: moved_link_end}
         - else
           = _("Closed")
     .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
@@ -69,7 +72,7 @@
       %h2.title= markdown_field(@issue, :title)
       - if @issue.description.present?
         .description{ class: can?(current_user, :update_issue, @issue) ? 'js-task-list-container' : '' }
-          .wiki= markdown_field(@issue, :description)
+          .md= markdown_field(@issue, :description)
           %textarea.hidden.js-task-list-field= @issue.description
 
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
@@ -88,7 +91,6 @@
         #js-vue-discussion-filter{ data: { default_filter: current_user&.notes_filter_for(@issue), notes_filters: UserPreference.notes_filters.to_json } }
         = render 'new_branch' unless @issue.confidential?
 
-  %section.issuable-discussion
-    = render 'projects/issues/discussion'
+  = render_if_exists 'projects/issues/discussion'
 
 = render 'shared/issuable/sidebar', issuable_sidebar: @issuable_sidebar, assignees: @issue.assignees

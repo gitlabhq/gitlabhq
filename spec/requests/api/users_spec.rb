@@ -68,6 +68,13 @@ describe API::Users do
         expect(json_response.size).to eq(0)
       end
 
+      it "does not return the highest role" do
+        get api("/users"), params: { username: user.username }
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(json_response.first.keys).not_to include 'highest_role'
+      end
+
       context "when public level is restricted" do
         before do
           stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
@@ -286,6 +293,13 @@ describe API::Users do
       expect(json_response.keys).not_to include 'is_admin'
     end
 
+    it "does not return the user's `highest_role`" do
+      get api("/users/#{user.id}", user)
+
+      expect(response).to match_response_schema('public_api/v4/user/basic')
+      expect(json_response.keys).not_to include 'highest_role'
+    end
+
     context 'when authenticated as admin' do
       it 'includes the `is_admin` field' do
         get api("/users/#{user.id}", admin)
@@ -299,6 +313,12 @@ describe API::Users do
 
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response.keys).to include 'created_at'
+      end
+      it 'includes the `highest_role` field' do
+        get api("/users/#{user.id}", admin)
+
+        expect(response).to match_response_schema('public_api/v4/user/admin')
+        expect(json_response['highest_role']).to be(0)
       end
     end
 
@@ -335,7 +355,7 @@ describe API::Users do
     end
 
     it "returns a 404 error if user id not found" do
-      get api("/users/9999", user)
+      get api("/users/0", user)
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -732,7 +752,7 @@ describe API::Users do
     end
 
     it "returns 404 for non-existing user" do
-      put api("/users/999999", admin), params: { bio: 'update should fail' }
+      put api("/users/0", admin), params: { bio: 'update should fail' }
 
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
@@ -836,7 +856,7 @@ describe API::Users do
     end
 
     it "returns 400 for invalid ID" do
-      post api("/users/999999/keys", admin)
+      post api("/users/0/keys", admin)
       expect(response).to have_gitlab_http_status(400)
     end
   end
@@ -895,7 +915,7 @@ describe API::Users do
       it 'returns 404 error if user not found' do
         user.keys << key
         user.save
-        delete api("/users/999999/keys/#{key.id}", admin)
+        delete api("/users/0/keys/#{key.id}", admin)
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
       end
@@ -930,7 +950,7 @@ describe API::Users do
     end
 
     it 'returns 400 for invalid ID' do
-      post api('/users/999999/gpg_keys', admin)
+      post api('/users/0/gpg_keys', admin)
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -951,7 +971,7 @@ describe API::Users do
 
     context 'when authenticated' do
       it 'returns 404 for non-existing user' do
-        get api('/users/999999/gpg_keys', admin)
+        get api('/users/0/gpg_keys', admin)
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
@@ -1007,7 +1027,7 @@ describe API::Users do
         user.keys << key
         user.save
 
-        delete api("/users/999999/gpg_keys/#{gpg_key.id}", admin)
+        delete api("/users/0/gpg_keys/#{gpg_key.id}", admin)
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
@@ -1051,7 +1071,7 @@ describe API::Users do
         user.gpg_keys << gpg_key
         user.save
 
-        post api("/users/999999/gpg_keys/#{gpg_key.id}/revoke", admin)
+        post api("/users/0/gpg_keys/#{gpg_key.id}/revoke", admin)
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
@@ -1089,7 +1109,7 @@ describe API::Users do
     end
 
     it "returns a 400 for invalid ID" do
-      post api("/users/999999/emails", admin)
+      post api("/users/0/emails", admin)
 
       expect(response).to have_gitlab_http_status(400)
     end
@@ -1121,7 +1141,7 @@ describe API::Users do
 
     context 'when authenticated' do
       it 'returns 404 for non-existing user' do
-        get api('/users/999999/emails', admin)
+        get api('/users/0/emails', admin)
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
       end
@@ -1177,7 +1197,7 @@ describe API::Users do
       it 'returns 404 error if user not found' do
         user.emails << email
         user.save
-        delete api("/users/999999/emails/#{email.id}", admin)
+        delete api("/users/0/emails/#{email.id}", admin)
         expect(response).to have_gitlab_http_status(404)
         expect(json_response['message']).to eq('404 User Not Found')
       end
@@ -1227,7 +1247,7 @@ describe API::Users do
     end
 
     it "returns 404 for non-existing user" do
-      perform_enqueued_jobs { delete api("/users/999999", admin) }
+      perform_enqueued_jobs { delete api("/users/0", admin) }
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
@@ -1778,7 +1798,7 @@ describe API::Users do
     end
 
     it 'returns a 404 error if user id not found' do
-      post api('/users/9999/block', admin)
+      post api('/users/0/block', admin)
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
@@ -1816,7 +1836,7 @@ describe API::Users do
     end
 
     it 'returns a 404 error if user id not found' do
-      post api('/users/9999/block', admin)
+      post api('/users/0/block', admin)
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end

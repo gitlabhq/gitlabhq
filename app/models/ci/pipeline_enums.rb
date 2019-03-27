@@ -22,7 +22,8 @@ module Ci
         schedule: 4,
         api: 5,
         external: 6,
-        merge_request: 10
+        chat: 8,
+        merge_request_event: 10
       }
     end
 

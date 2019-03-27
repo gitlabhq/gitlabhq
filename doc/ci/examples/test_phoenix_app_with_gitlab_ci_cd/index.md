@@ -4,6 +4,7 @@ author_gitlab: Hostert
 level: beginner
 article_type: tutorial
 date: 2018-02-20
+last_updated: 2019-03-06
 ---
 
 # Testing a Phoenix application with GitLab CI/CD
@@ -75,7 +76,7 @@ When we call `mix` command, we'll pass two arguments:
 
 - The task we want it to run: `phoenix.new`
 - And the parameter `phoenix.new` requires, which is the name of the new project. In this case,
-we're calling it `hello_gitlab_ci`, but you're free to set your own name:
+  we're calling it `hello_gitlab_ci`, but you're free to set your own name:
 
 ```bash
 mix phoenix.new hello_gitlab_ci
@@ -177,7 +178,7 @@ environment it can run. Since we will work with a single environment, we'll edit
 configuration file (`test.exs`).
 
 But, why do we need to adjust our configuration? Well, GitLab CI/CD builds and tests our code in one
-isolated virtual machine, called [Runner][runner-site], using Docker technology. In this Runner,
+isolated virtual machine, called [Runner](../../runners/README.md), using Docker technology. In this Runner,
 GitLab CI/CD has access to everything our Phoenix application need to run, exactly as we have in our
 `localhost`, but we have to tell GitLab CI/CD where to create and find this database using system
 variables. This way, GitLab CI/CD will create our test database inside the Runner, just like we do
@@ -249,7 +250,7 @@ project.
     ![Set up CI](img/setup-ci.png)
 
 - On next screen, we can select a template ready to go. Click on **Apply a GitLab CI/CD Yaml
-template** and select **Elixir**:
+  template** and select **Elixir**:
 
     ![Select template](img/select-template.png)
 
@@ -417,7 +418,6 @@ other reasons][ci-reasons] to keep using GitLab CI/CD. The benefits to our teams
 [ci-docs]: ../../README.md "GitLab CI/CD Documentation"
 [skipping-jobs]: ../../yaml/README.md#skipping-jobs "Skipping Jobs"
 [gitlab-runners]: ../../runners/README.md "GitLab Runners Documentation"
-[runner-site]: ../../runners/README.md#runners "Runners"
 [docker-image]: https://hub.docker.com/r/trenpixster/elixir/ "Elixir Docker Image"
 [using-docker]: ../../docker/using_docker_images.md "Using Docker Images"
 [hello-gitlab]: https://gitlab.com/Hostert/hello_gitlab_ci "Hello GitLab CI/CD"

@@ -52,7 +52,9 @@ export const fetchDiffFiles = ({ state, commit }) => {
 };
 
 export const setHighlightedRow = ({ commit }, lineCode) => {
+  const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);
+  commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
 };
 
 // This is adding line discussions to the actual lines in the diff tree
@@ -262,13 +264,14 @@ export const scrollToFile = ({ state, commit }, path) => {
   document.location.hash = fileHash;
 
   commit(types.UPDATE_CURRENT_DIFF_FILE_ID, fileHash);
-
-  setTimeout(() => commit(types.UPDATE_CURRENT_DIFF_FILE_ID, ''), 1000);
 };
 
-export const toggleShowTreeList = ({ commit, state }) => {
+export const toggleShowTreeList = ({ commit, state }, saving = true) => {
   commit(types.TOGGLE_SHOW_TREE_LIST);
-  localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+
+  if (saving) {
+    localStorage.setItem(MR_TREE_SHOW_KEY, state.showTreeList);
+  }
 };
 
 export const openDiffFileCommentForm = ({ commit, getters }, formData) => {
@@ -308,6 +311,44 @@ export const toggleFileFinder = ({ commit }, visible) => {
 export const cacheTreeListWidth = (_, size) => {
   localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
 };
+
+export const requestFullDiff = ({ commit }, filePath) => commit(types.REQUEST_FULL_DIFF, filePath);
+export const receiveFullDiffSucess = ({ commit }, { filePath, data }) =>
+  commit(types.RECEIVE_FULL_DIFF_SUCCESS, { filePath, data });
+export const receiveFullDiffError = ({ commit }, filePath) => {
+  commit(types.RECEIVE_FULL_DIFF_ERROR, filePath);
+  createFlash(s__('MergeRequest|Error loading full diff. Please try again.'));
+};
+
+export const fetchFullDiff = ({ dispatch }, file) =>
+  axios
+    .get(file.context_lines_path, {
+      params: {
+        full: true,
+        from_merge_request: true,
+      },
+    })
+    .then(({ data }) => dispatch('receiveFullDiffSucess', { filePath: file.file_path, data }))
+    .then(() => scrollToElement(`#${file.file_hash}`))
+    .catch(() => dispatch('receiveFullDiffError', file.file_path));
+
+export const toggleFullDiff = ({ dispatch, getters, state }, filePath) => {
+  const file = state.diffFiles.find(f => f.file_path === filePath);
+
+  dispatch('requestFullDiff', filePath);
+
+  if (file.isShowingFullFile) {
+    dispatch('loadCollapsedDiff', file)
+      .then(() => dispatch('assignDiscussionsToDiff', getters.getDiffFileDiscussions(file)))
+      .then(() => scrollToElement(`#${file.file_hash}`))
+      .catch(() => dispatch('receiveFullDiffError', filePath));
+  } else {
+    dispatch('fetchFullDiff', file);
+  }
+};
+
+export const setFileCollapsed = ({ commit }, { filePath, collapsed }) =>
+  commit(types.SET_FILE_COLLAPSED, { filePath, collapsed });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
