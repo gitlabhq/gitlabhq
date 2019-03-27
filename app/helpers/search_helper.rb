@@ -33,8 +33,13 @@ module SearchHelper
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
   end
 
-  def find_project_for_result_blob(result)
+  def find_project_for_result_blob(projects, result)
     @project
+  end
+
+  # Used in EE
+  def blob_projects(results)
+    nil
   end
 
   def parse_search_result(result)
