@@ -6,6 +6,7 @@ const JSDOMEnvironment = require('jest-environment-jsdom');
 class CustomEnvironment extends JSDOMEnvironment {
   constructor(config, context) {
     super(config, context);
+
     Object.assign(context.console, {
       error(...args) {
         throw new ErrorWithStack(
