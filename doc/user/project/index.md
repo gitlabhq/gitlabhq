@@ -55,11 +55,11 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Auto Deploy](../../ci/autodeploy/index.md): Configure GitLab CI/CD
   to automatically set up your app's deployment
   - [Enable and disable GitLab CI](../../ci/enable_or_disable_ci.md)
-  - [Pipelines](../../ci/pipelines.md#pipelines): Configure and visualize
+  - [Pipelines](../../ci/pipelines.md): Configure and visualize
   your GitLab CI/CD pipelines from the UI
      - [Scheduled Pipelines](pipelines/schedules.md): Schedule a pipeline
      to start at a chosen time
-     - [Pipeline Graphs](../../ci/pipelines.md#pipeline-graphs): View your
+     - [Pipeline Graphs](../../ci/pipelines.md#visualizing-pipelines): View your
      entire pipeline from the UI
      - [Job artifacts](pipelines/job_artifacts.md): Define,
      browse, and download job artifacts

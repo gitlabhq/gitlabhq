@@ -222,7 +222,7 @@ The following documentation relates to the DevOps **Verify** stage:
 |:---------------------------------------------------|:-----------------------------------------------------------------------------|
 | [GitLab CI/CD](ci/README.md)                       | Explore the features and capabilities of Continuous Integration with GitLab. |
 | [JUnit test reports](ci/junit_test_reports.md)     | Display JUnit test reports on merge requests.                                |
-| [Pipeline Graphs](ci/pipelines.md#pipeline-graphs) | Visualize builds.                                                            |
+| [Pipeline Graphs](ci/pipelines.md#visualizing-pipelines) | Visualize builds.                                                      |
 | [Review Apps](ci/review_apps/index.md)             | Preview changes to your application right from a merge request.              |
 
 <div align="right">

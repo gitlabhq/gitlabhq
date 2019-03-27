@@ -311,7 +311,7 @@ variables that were set, etc.
 
 Before enabling this, you should ensure jobs are visible to
 [team members only](../../user/permissions.md#project-features). You should
-also [erase](../pipelines.md#seeing-job-status) all generated job traces
+also [erase](../pipelines.md#accessing-individual-jobs) all generated job traces
 before making them visible again.
 
 To enable debug traces, set the `CI_DEBUG_TRACE` variable to `true`:
