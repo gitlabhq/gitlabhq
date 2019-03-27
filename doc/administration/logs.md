@@ -23,16 +23,19 @@ requests from the API are logged to a separate file in `api_json.log`.
 Each line contains a JSON line that can be ingested by Elasticsearch, Splunk, etc. For example:
 
 ```json
-{"method":"GET","path":"/gitlab/gitlab-ce/issues/1234","format":"html","controller":"Projects::IssuesController","action":"show","status":200,"duration":229.03,"view":174.07,"db":13.24,"time":"2017-08-08T20:15:54.821Z","params":[{"key":"param_key","value":"param_value"}],"remote_ip":"18.245.0.1","user_id":1,"username":"admin","gitaly_calls":76,"queue_duration": 112.47}
+{"method":"GET","path":"/gitlab/gitlab-ce/issues/1234","format":"html","controller":"Projects::IssuesController","action":"show","status":200,"duration":229.03,"view":174.07,"db":13.24,"time":"2017-08-08T20:15:54.821Z","params":[{"key":"param_key","value":"param_value"}],"remote_ip":"18.245.0.1","user_id":1,"username":"admin","gitaly_calls":76,"gitaly_duration":7.41,"queue_duration": 112.47}
 ```
 
-In this example, you can see this was a GET request for a specific issue. Notice each line also contains performance data:
+In this example, you can see this was a GET request for a specific
+issue. Notice each line also contains performance data. All times are in
+milliseconds:
 
-1. `duration`: total time in milliseconds taken to retrieve the request
-1. `queue_duration`: total time in milliseconds that the request was queued inside GitLab Workhorse
+1. `duration`: total time taken to retrieve the request
+1. `queue_duration`: total time that the request was queued inside GitLab Workhorse
 1. `view`: total time taken inside the Rails views
 1. `db`: total time to retrieve data from the database
 1. `gitaly_calls`: total number of calls made to Gitaly
+1. `gitaly_duration`: total time taken by Gitaly calls
 
 User clone/fetch activity using http transport appears in this log as `action: git_upload_pack`.
 
@@ -85,7 +88,7 @@ Introduced in GitLab 10.0, this file lives in
 It helps you see requests made directly to the API. For example:
 
 ```json
-{"time":"2018-10-29T12:49:42.123Z","severity":"INFO","duration":709.08,"db":14.59,"view":694.49,"status":200,"method":"GET","path":"/api/v4/projects","params":[{"key":"action","value":"git-upload-pack"},{"key":"changes","value":"_any"},{"key":"key_id","value":"secret"},{"key":"secret_token","value":"[FILTERED]"}],"host":"localhost","ip":"::1","ua":"Ruby","route":"/api/:version/projects","user_id":1,"username":"root","queue_duration":100.31,"gitaly_calls":30}
+{"time":"2018-10-29T12:49:42.123Z","severity":"INFO","duration":709.08,"db":14.59,"view":694.49,"status":200,"method":"GET","path":"/api/v4/projects","params":[{"key":"action","value":"git-upload-pack"},{"key":"changes","value":"_any"},{"key":"key_id","value":"secret"},{"key":"secret_token","value":"[FILTERED]"}],"host":"localhost","ip":"::1","ua":"Ruby","route":"/api/:version/projects","user_id":1,"username":"root","queue_duration":100.31,"gitaly_calls":30,"gitaly_duration":5.36}
 ```
 
 This entry above shows an access to an internal endpoint to check whether an
