@@ -192,9 +192,9 @@ describe('note_app', () => {
 
         expect(service.updateNote).toHaveBeenCalled();
         // Wait for the requests to finish before destroying
-        Vue.nextTick()
-          .then(done)
-          .catch(done.fail);
+        setTimeout(() => {
+          done();
+        });
       });
     });
 
@@ -227,9 +227,9 @@ describe('note_app', () => {
 
         expect(service.updateNote).toHaveBeenCalled();
         // Wait for the requests to finish before destroying
-        Vue.nextTick()
-          .then(done)
-          .catch(done.fail);
+        setTimeout(() => {
+          done();
+        });
       });
     });
   });

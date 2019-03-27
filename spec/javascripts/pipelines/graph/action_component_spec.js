@@ -55,13 +55,16 @@ describe('pipeline graph action component', () => {
 
       component.$el.click();
 
-      component
-        .$nextTick()
-        .then(() => {
-          expect(component.$emit).toHaveBeenCalledWith('pipelineActionRequestComplete');
-        })
-        .then(done)
-        .catch(done.fail);
+      setTimeout(() => {
+        component
+          .$nextTick()
+          .then(() => {
+            expect(component.$emit).toHaveBeenCalledWith('pipelineActionRequestComplete');
+          })
+          .catch(done.fail);
+
+        done();
+      }, 0);
     });
   });
 });
