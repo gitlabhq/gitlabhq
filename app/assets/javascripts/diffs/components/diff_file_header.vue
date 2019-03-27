@@ -128,9 +128,6 @@ export default {
     isModeChanged() {
       return this.diffFile.viewer.name === diffViewerModes.mode_changed;
     },
-    showExpandDiffToFullFileEnabled() {
-      return gon.features.expandDiffFullFile && !this.diffFile.is_fully_expanded;
-    },
   },
   mounted() {
     polyfillSticky(this.$refs.header);
@@ -258,7 +255,7 @@ export default {
         <icon name="external-link" />
       </gl-button>
       <gl-button
-        v-if="showExpandDiffToFullFileEnabled"
+        v-if="!diffFile.is_fully_expanded"
         class="expand-file js-expand-file"
         @click="toggleFullDiff(diffFile.file_path)"
       >
