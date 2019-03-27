@@ -55,7 +55,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
 
   def render_ok
     set_workhorse_internal_api_content_type
-    render json: Gitlab::Workhorse.git_http_ok(repository, wiki?, user, action_name)
+    render json: Gitlab::Workhorse.git_http_ok(repository, repo_type, user, action_name)
   end
 
   def render_403(exception)
@@ -99,7 +99,7 @@ class Projects::GitHttpController < Projects::GitHttpClientController
   end
 
   def access_klass
-    @access_klass ||= wiki? ? Gitlab::GitAccessWiki : Gitlab::GitAccess
+    @access_klass ||= repo_type.access_checker_class
   end
 
   def project_path
