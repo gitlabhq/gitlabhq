@@ -22,26 +22,6 @@
 }
 
 /*
- * Mixin for markdown tables
- */
-@mixin markdown-table {
-  width: auto;
-  display: block;
-  overflow-x: auto;
-  border: 0;
-
-  tr {
-    th {
-      border-bottom: solid 2px $gl-gray-200;
-    }
-
-    td {
-      border-color: $gl-gray-200;
-    }
-  }
-}
-
-/*
  * Base mixin for lists in GitLab
  */
 @mixin basic-list {
@@ -89,20 +69,6 @@
 
     span {
       margin-right: 15px;
-    }
-  }
-}
-
-@mixin bulleted-list {
-  > ul {
-    list-style-type: disc;
-
-    ul {
-      list-style-type: circle;
-
-      ul {
-        list-style-type: square;
-      }
     }
   }
 }

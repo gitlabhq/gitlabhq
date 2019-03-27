@@ -59,7 +59,7 @@ class ProjectWiki
   # Returns the Gitlab::Git::Wiki object.
   def wiki
     @wiki ||= begin
-      gl_repository = Gitlab::GlRepository.gl_repository(project, true)
+      gl_repository = Gitlab::GlRepository::WIKI.identifier_for_subject(project)
       raw_repository = Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', gl_repository, full_path)
 
       create_repo!(raw_repository) unless raw_repository.exists?
@@ -151,7 +151,7 @@ class ProjectWiki
   end
 
   def repository
-    @repository ||= Repository.new(full_path, @project, disk_path: disk_path, is_wiki: true)
+    @repository ||= Repository.new(full_path, @project, disk_path: disk_path, repo_type: Gitlab::GlRepository::WIKI)
   end
 
   def default_branch

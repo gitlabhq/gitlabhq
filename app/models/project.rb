@@ -2003,12 +2003,8 @@ class Project < ActiveRecord::Base
     @storage = nil if storage_version_changed?
   end
 
-  def gl_repository(is_wiki:)
-    Gitlab::GlRepository.gl_repository(self, is_wiki)
-  end
-
-  def reference_counter(wiki: false)
-    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
+  def reference_counter(type: Gitlab::GlRepository::PROJECT)
+    Gitlab::ReferenceCounter.new(type.identifier_for_subject(self))
   end
 
   def badges
@@ -2152,7 +2148,7 @@ class Project < ActiveRecord::Base
   end
 
   def wiki_reference_count
-    reference_counter(wiki: true).value
+    reference_counter(type: Gitlab::GlRepository::WIKI).value
   end
 
   def check_repository_absence!

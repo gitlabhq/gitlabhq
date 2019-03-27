@@ -135,7 +135,43 @@ module API
                  desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
       end
 
+      if Gitlab.ee?
+        optional :elasticsearch_aws, type: Boolean, desc: 'Enable support for AWS hosted elasticsearch'
+
+        given elasticsearch_aws: ->(val) { val } do
+          optional :elasticsearch_aws_access_key, type: String, desc: 'AWS IAM access key'
+          requires :elasticsearch_aws_region, type: String, desc: 'The AWS region the elasticsearch domain is configured'
+          optional :elasticsearch_aws_secret_access_key, type: String, desc: 'AWS IAM secret access key'
+        end
+
+        optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
+
+        given elasticsearch_indexing: ->(val) { val } do
+          optional :elasticsearch_search, type: Boolean, desc: 'Enable Elasticsearch search'
+          requires :elasticsearch_url, type: String, desc: 'The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201")'
+        end
+
+        optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
+        optional :help_text, type: String, desc: 'GitLab server administrator information'
+        optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
+        optional :file_template_project_id, type: Integer, desc: 'ID of project where instance-level file templates are stored.'
+        optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
+        optional :snowplow_enabled, type: Boolean, desc: 'Enable Snowplow'
+
+        given snowplow_enabled: ->(val) { val } do
+          requires :snowplow_collector_uri, type: String, desc: 'Snowplow Collector URI'
+          optional :snowplow_cookie_domain, type: String, desc: 'Snowplow cookie domain'
+          optional :snowplow_site_id, type: String, desc: 'Snowplow Site/Application ID'
+        end
+
+        optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
+      end
+
       optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
+
+      if Gitlab.ee?
+        optional_attributes += EE::ApplicationSettingsHelper.possible_licensed_attributes
+      end
 
       optional(*optional_attributes)
       at_least_one_of(*optional_attributes)

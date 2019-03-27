@@ -17,7 +17,7 @@ const DEFAULT_PROPS = {
 const UserPopover = Vue.extend(userPopover);
 
 describe('User Popover Component', () => {
-  const fixtureTemplate = 'merge_requests/diff_comment.html.raw';
+  const fixtureTemplate = 'merge_requests/diff_comment.html';
   preloadFixtures(fixtureTemplate);
 
   let vm;

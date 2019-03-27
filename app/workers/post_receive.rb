@@ -4,7 +4,7 @@ class PostReceive
   include ApplicationWorker
 
   def perform(gl_repository, identifier, changes, push_options = [])
-    project, is_wiki = Gitlab::GlRepository.parse(gl_repository)
+    project, repo_type = Gitlab::GlRepository.parse(gl_repository)
 
     if project.nil?
       log("Triggered hook for non-existing project with gl_repository \"#{gl_repository}\"")
@@ -17,7 +17,7 @@ class PostReceive
     Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
     post_received = Gitlab::GitPostReceive.new(project, identifier, changes, push_options)
 
-    if is_wiki
+    if repo_type.wiki?
       process_wiki_changes(post_received)
     else
       process_project_changes(post_received)
@@ -38,7 +38,7 @@ class PostReceive
 
     post_received.changes_refs do |oldrev, newrev, ref|
       if Gitlab::Git.tag_ref?(ref)
-        GitTagPushService.new(
+        Git::TagPushService.new(
           post_received.project,
           @user,
           oldrev: oldrev,
@@ -46,7 +46,7 @@ class PostReceive
           ref: ref,
           push_options: post_received.push_options).execute
       elsif Gitlab::Git.branch_ref?(ref)
-        GitPushService.new(
+        Git::BranchPushService.new(
           post_received.project,
           @user,
           oldrev: oldrev,

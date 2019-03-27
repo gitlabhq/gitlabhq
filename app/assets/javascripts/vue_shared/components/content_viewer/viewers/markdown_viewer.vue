@@ -78,8 +78,8 @@ export default {
 </script>
 
 <template>
-  <div ref="markdown-preview" class="md md-previewer">
+  <div ref="markdown-preview" class="md-previewer">
     <gl-skeleton-loading v-if="isLoading" />
-    <div v-else v-html="previewContent"></div>
+    <div v-else class="md" v-html="previewContent"></div>
   </div>
 </template>

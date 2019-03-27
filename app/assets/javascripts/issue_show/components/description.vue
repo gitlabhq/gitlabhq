@@ -140,7 +140,7 @@ export default {
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
-      class="wiki"
+      class="md"
       v-html="descriptionHtml"
     ></div>
     <textarea

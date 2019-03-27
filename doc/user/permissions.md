@@ -119,7 +119,7 @@ The following table depicts the various user permission levels in a project.
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
 | View project Audit Events             |         |            |             | ✓        | ✓      |
-| View project statistics               |         |            |             | ✓        | ✓      |
+| View project statistics               |         | ✓          | ✓           | ✓        | ✓      |
 
 ## Project features permissions
 

@@ -5,7 +5,7 @@ import LineHighlighter from '~/line_highlighter';
 
 describe('LineHighlighter', function() {
   var clickLine;
-  preloadFixtures('static/line_highlighter.html.raw');
+  preloadFixtures('static/line_highlighter.html');
   clickLine = function(number, eventData = {}) {
     if ($.isEmptyObject(eventData)) {
       return $('#L' + number).click();
@@ -15,7 +15,7 @@ describe('LineHighlighter', function() {
     }
   };
   beforeEach(function() {
-    loadFixtures('static/line_highlighter.html.raw');
+    loadFixtures('static/line_highlighter.html');
     this['class'] = new LineHighlighter();
     this.css = this['class'].highlightLineClass;
     return (this.spies = {

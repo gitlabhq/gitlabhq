@@ -187,6 +187,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) }.policy do
     enable :download_code
+    enable :read_statistics
     enable :download_wiki_code
     enable :fork_project
     enable :create_project_snippet

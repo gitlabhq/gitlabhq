@@ -54,9 +54,8 @@
 
     %div
       - if @milestone.description.present?
-        .description
-          .wiki
-            = markdown_field(@milestone, :description)
+        .description.md
+          = markdown_field(@milestone, :description)
 
   = render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 

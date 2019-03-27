@@ -197,3 +197,82 @@ as a [CI environment variable](../ci/variables/README.md#variables).
 ---
 
 [Return to Development documentation](README.md)
+
+## Wrapping RPCs in Feature Flags
+
+Here are the steps to gate a new feature in Gitaly behind a feature flag.
+
+### Gitaly
+
+1. Create a package scoped flag name:
+
+   ```go
+   var findAllTagsFeatureFlag = "go-find-all-tags"
+   ```
+
+1. Create a switch in the code using the `featureflag` package:
+
+   ```go
+   if featureflag.IsEnabled(ctx, findAllTagsFeatureFlag) {
+     // go implementation
+   } else {
+     // ruby implementation
+   }
+   ```
+
+1. Create prometheus metrics:
+
+   ```go
+   var	findAllTagsRequests = prometheus.NewCounterVec(
+   		prometheus.CounterOpts{
+   			Name: "gitaly_find_all_tags_requests_total",
+   			Help: "Counter of go vs ruby implementation of FindAllTags",
+   		},
+   		[]string{"implementation"},
+   	)
+   )
+
+   func init() {
+   	prometheus.Register(findAllTagsRequests)
+   }
+
+   if featureflag.IsEnabled(ctx, findAllTagsFeatureFlag) {
+   	findAllTagsRequests.WithLabelValues("go").Inc()
+     // go implementation
+   } else {
+   	findAllTagsRequests.WithLabelValues("ruby").Inc()
+     // ruby impelmentation
+   }
+   ```
+
+1. Set headers in tests:
+
+   ```go
+   import (
+     "google.golang.org/grpc/metadata"
+
+     "gitlab.com/gitlab-org/gitaly/internal/featureflag"
+   )
+
+   //...
+
+   md := metadata.New(map[string]string{featureflag.HeaderKey(findAllTagsFeatureFlag): "true"})
+   ctx = metadata.NewOutgoingContext(context.Background(), md)
+
+   c, err = client.FindAllTags(ctx, rpcRequest)
+   require.NoError(t, err)
+   ```
+
+### Gitlab-Rails
+
+1. Add feature flag to `lib/gitlab/gitaly_client.rb` (in gitlab-rails):
+
+   ```ruby
+   SERVER_FEATURE_FLAGS = %w[go-find-all-tags].freeze
+   ```
+
+1. Test in rails console by setting feature flag:
+
+   ```ruby
+   Feature.enable('gitaly_go-find-all-tags')
+   ```

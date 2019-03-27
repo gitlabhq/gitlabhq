@@ -110,7 +110,7 @@ module.exports = function(config) {
     frameworks: ['jasmine'],
     files: [
       { pattern: 'spec/javascripts/test_bundle.js', watched: false },
-      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.html.raw|.png)', included: false },
+      { pattern: 'spec/javascripts/fixtures/**/*@(.json|.html|.png)', included: false },
     ],
     preprocessors: {
       'spec/javascripts/**/*.js': ['webpack', 'sourcemap'],

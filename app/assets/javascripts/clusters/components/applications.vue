@@ -393,7 +393,6 @@ export default {
         <div slot="description" v-html="prometheusDescription"></div>
       </application-row>
       <application-row
-        v-if="isProjectCluster"
         id="runner"
         :logo-url="gitlabLogo"
         :title="applications.runner.title"
@@ -409,9 +408,9 @@ export default {
       >
         <div slot="description">
           {{
-            s__(`ClusterIntegration|GitLab Runner connects to this
-            project's repository and executes CI/CD jobs,
-            pushing results back and deploying,
+            s__(`ClusterIntegration|GitLab Runner connects to the
+            repository and executes CI/CD jobs,
+            pushing results back and deploying
             applications to production.`)
           }}
         </div>

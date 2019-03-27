@@ -6,42 +6,46 @@ describe ::Gitlab::RepoPath do
 
     context 'a repository storage path' do
       it 'parses a full repository path' do
-        expect(described_class.parse(project.repository.full_path)).to eq([project, false, nil])
+        expect(described_class.parse(project.repository.full_path)).to eq([project, Gitlab::GlRepository::PROJECT, nil])
       end
 
       it 'parses a full wiki path' do
-        expect(described_class.parse(project.wiki.repository.full_path)).to eq([project, true, nil])
+        expect(described_class.parse(project.wiki.repository.full_path)).to eq([project, Gitlab::GlRepository::WIKI, nil])
       end
     end
 
     context 'a relative path' do
       it 'parses a relative repository path' do
-        expect(described_class.parse(project.full_path + '.git')).to eq([project, false, nil])
+        expect(described_class.parse(project.full_path + '.git')).to eq([project, Gitlab::GlRepository::PROJECT, nil])
       end
 
       it 'parses a relative wiki path' do
-        expect(described_class.parse(project.full_path + '.wiki.git')).to eq([project, true, nil])
+        expect(described_class.parse(project.full_path + '.wiki.git')).to eq([project, Gitlab::GlRepository::WIKI, nil])
       end
 
       it 'parses a relative path starting with /' do
-        expect(described_class.parse('/' + project.full_path + '.git')).to eq([project, false, nil])
+        expect(described_class.parse('/' + project.full_path + '.git')).to eq([project, Gitlab::GlRepository::PROJECT, nil])
       end
 
       context 'of a redirected project' do
         let(:redirect) { project.route.create_redirect('foo/bar') }
 
         it 'parses a relative repository path' do
-          expect(described_class.parse(redirect.path + '.git')).to eq([project, false, 'foo/bar'])
+          expect(described_class.parse(redirect.path + '.git')).to eq([project, Gitlab::GlRepository::PROJECT, 'foo/bar'])
         end
 
         it 'parses a relative wiki path' do
-          expect(described_class.parse(redirect.path + '.wiki.git')).to eq([project, true, 'foo/bar.wiki'])
+          expect(described_class.parse(redirect.path + '.wiki.git')).to eq([project, Gitlab::GlRepository::WIKI, 'foo/bar.wiki'])
         end
 
         it 'parses a relative path starting with /' do
-          expect(described_class.parse('/' + redirect.path + '.git')).to eq([project, false, 'foo/bar'])
+          expect(described_class.parse('/' + redirect.path + '.git')).to eq([project, Gitlab::GlRepository::PROJECT, 'foo/bar'])
         end
       end
+    end
+
+    it "returns nil for non existent paths" do
+      expect(described_class.parse("path/non-existent.git")).to eq(nil)
     end
   end
 

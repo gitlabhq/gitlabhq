@@ -1,1 +1,5 @@
-This document was moved to [administration/operations/unicorn](../administration/operations/unicorn.md).
+---
+redirect_to: '../administration/operations/unicorn.md'
+---
+
+This document was moved to [another location](../administration/operations/unicorn.md).

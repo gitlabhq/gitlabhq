@@ -1,7 +1,7 @@
 / Side-by-side diff view
 
-.text-file.diff-wrap-lines.code.js-syntax-highlight{ data: diff_view_data }
-  %table
+.text-file{ data: diff_view_data }
+  %table.diff-wrap-lines.code.js-syntax-highlight
     - diff_file.parallel_diff_lines.each do |line|
       - left = line[:left]
       - right = line[:right]
@@ -23,7 +23,7 @@
               - discussion_left = discussions_left.try(:first)
               - if discussion_left && discussion_left.resolvable?
                 %diff-note-avatars{ "discussion-id" => discussion_left.id }
-            %td.line_content.parallel.noteable_line.left-side{ id: left_line_code, class: left.type }= diff_line_content(left.rich_text)
+            %td.line_content.parallel.left-side{ id: left_line_code, class: left.type }= diff_line_content(left.rich_text)
         - else
           %td.old_line.diff-line-num.empty-cell
           %td.line_content.parallel.left-side
@@ -44,7 +44,7 @@
               - discussion_right = discussions_right.try(:first)
               - if discussion_right && discussion_right.resolvable?
                 %diff-note-avatars{ "discussion-id" => discussion_right.id }
-            %td.line_content.parallel.noteable_line.right-side{ id: right_line_code, class: right.type }= diff_line_content(right.rich_text)
+            %td.line_content.parallel.right-side{ id: right_line_code, class: right.type }= diff_line_content(right.rich_text)
         - else
           %td.old_line.diff-line-num.empty-cell
           %td.line_content.parallel.right-side

@@ -51,7 +51,7 @@ Hooks can be also placed in `hooks/<hook_name>.d` (global) or
 execution of the hooks.
 
 NOTE: **Note:** `<hook_name>.d` would need to be either `pre-receive.d`,
-`post-receive.d`, or `update.d` to work properly. Any other names will be ignored. 
+`post-receive.d`, or `update.d` to work properly. Any other names will be ignored.
 
 To look in a different directory for the global custom hooks (those in
 `hooks/<hook_name.d>`), set `custom_hooks_dir` in gitlab-shell config. For
@@ -76,9 +76,21 @@ first script exiting with a non-zero value.
 
 > [Introduced][5073] in GitLab 8.10.
 
-If the commit is declined or an error occurs during the Git hook check,
-the STDERR or STDOUT message of the hook will be present in GitLab's UI.
-STDERR takes precedence over STDOUT.
+To have custom error messages appear in GitLab's UI when the commit is
+declined or an error occurs during the Git hook, your script should:
+
+- Send the custom error messages to either the script's `stdout` or `stderr`.
+- Prefix each message with `GL-HOOK-ERR:` with no characters appearing before the prefix.
+
+### Example custom error message
+
+This hook script written in bash will generate the following message in GitLab's UI:
+
+```bash
+#!/bin/sh
+echo "GL-HOOK-ERR: My custom error message.";
+exit 1
+```
 
 ![Custom message from custom Git hook](img/custom_hooks_error_msg.png)
 

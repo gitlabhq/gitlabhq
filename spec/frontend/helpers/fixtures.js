@@ -3,8 +3,6 @@
 import fs from 'fs';
 import path from 'path';
 
-// jest-util is part of Jest
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { ErrorWithStack } from 'jest-util';
 
 const fixturesBasePath = path.join(process.cwd(), 'spec', 'javascripts', 'fixtures');

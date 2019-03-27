@@ -5,7 +5,7 @@ import fieldComponent from '~/vue_shared/components/markdown/field.vue';
 function assertMarkdownTabs(isWrite, writeLink, previewLink, vm) {
   expect(writeLink.parentNode.classList.contains('active')).toEqual(isWrite);
   expect(previewLink.parentNode.classList.contains('active')).toEqual(!isWrite);
-  expect(vm.$el.querySelector('.md-preview').style.display).toEqual(isWrite ? 'none' : '');
+  expect(vm.$el.querySelector('.md-preview-holder').style.display).toEqual(isWrite ? 'none' : '');
 }
 
 describe('Markdown field component', () => {
@@ -80,7 +80,9 @@ describe('Markdown field component', () => {
         previewLink.click();
 
         Vue.nextTick(() => {
-          expect(vm.$el.querySelector('.md-preview').textContent.trim()).toContain('Loading…');
+          expect(vm.$el.querySelector('.md-preview-holder').textContent.trim()).toContain(
+            'Loading…',
+          );
 
           done();
         });
@@ -90,7 +92,7 @@ describe('Markdown field component', () => {
         previewLink.click();
 
         setTimeout(() => {
-          expect(vm.$el.querySelector('.md-preview').innerHTML).toContain(
+          expect(vm.$el.querySelector('.md-preview-holder').innerHTML).toContain(
             '<p>markdown preview</p>',
           );
 

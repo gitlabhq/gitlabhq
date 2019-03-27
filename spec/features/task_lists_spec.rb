@@ -79,7 +79,7 @@ describe 'Task Lists' do
         visit_issue(project, issue)
         wait_for_requests
 
-        expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
+        expect(page).to have_selector(".md .task-list .task-list-item .task-list-item-checkbox")
         expect(page).to have_selector('a.btn-close')
       end
 
@@ -87,14 +87,14 @@ describe 'Task Lists' do
         visit_issue(project, issue)
         wait_for_requests
 
-        expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
+        expect(page).to have_selector(".md .task-list .task-list-item .task-list-item-checkbox")
 
         logout(:user)
         login_as(user2)
         visit current_path
         wait_for_requests
 
-        expect(page).to have_selector(".wiki .task-list .task-list-item .task-list-item-checkbox")
+        expect(page).to have_selector(".md .task-list .task-list-item .task-list-item-checkbox")
       end
 
       it 'provides a summary on Issues#index' do
@@ -231,7 +231,7 @@ describe 'Task Lists' do
         container = '.detail-page-description .description.js-task-list-container'
 
         expect(page).to have_selector(container)
-        expect(page).to have_selector("#{container} .wiki .task-list .task-list-item .task-list-item-checkbox")
+        expect(page).to have_selector("#{container} .md .task-list .task-list-item .task-list-item-checkbox")
         expect(page).to have_selector("#{container} .js-task-list-field")
         expect(page).to have_selector('form.js-issuable-update')
         expect(page).to have_selector('a.btn-close')

@@ -14,6 +14,12 @@
 }
 
 .member {
+  &.is-overriden {
+    .btn-ldap-override {
+      display: none !important;
+    }
+  }
+
   .list-item-name {
     @include media-breakpoint-up(sm) {
       float: left;
@@ -120,6 +126,49 @@
   background: transparent;
   border: 0;
   outline: 0;
+}
+
+.members-ldap {
+  align-self: center;
+  height: 100%;
+  margin-right: 10px;
+  margin-left: -49px;
+}
+
+.alert-member-ldap {
+  background-color: $orange-50;
+
+  @include media-breakpoint-up(sm) {
+    line-height: 40px;
+  }
+
+  > p {
+    float: left;
+    margin-bottom: 10px;
+    color: $orange-600;
+
+    @include media-breakpoint-up(sm) {
+      padding-left: 55px;
+      margin-bottom: 0;
+    }
+  }
+
+  .controls {
+    width: 100%;
+
+    @include media-breakpoint-up(sm) {
+      width: auto;
+    }
+  }
+}
+
+.btn-ldap-override {
+  width: 100%;
+
+  @include media-breakpoint-up(sm) {
+    margin-left: 10px;
+    width: auto;
+  }
 }
 
 .flex-project-members-panel {

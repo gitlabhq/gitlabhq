@@ -1,1 +1,5 @@
-This document was moved to [administration/operations/sidekiq_memory_killer](../administration/operations/sidekiq_memory_killer.md).
+---
+redirect_to: '../administration/operations/sidekiq_memory_killer.md'
+---
+
+This document was moved to [another location](../administration/operations/sidekiq_memory_killer.md).

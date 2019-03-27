@@ -225,8 +225,6 @@ $note-form-margin-left: 72px;
       overflow-y: hidden;
 
       .note-text {
-        // Reset ul style types since we're nested inside a ul already
-        @include bulleted-list;
         word-wrap: break-word;
       }
     }
@@ -738,7 +736,7 @@ $note-form-margin-left: 72px;
 .add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
-  margin-left: -55px;
+  margin-left: -50px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);

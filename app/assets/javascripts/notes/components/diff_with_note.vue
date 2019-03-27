@@ -72,8 +72,8 @@ export default {
       :can-current-user-fork="false"
       :expanded="!discussion.diff_file.viewer.collapsed"
     />
-    <div v-if="isTextFile" :class="$options.userColorSchemeClass" class="diff-content code">
-      <table>
+    <div v-if="isTextFile" class="diff-content">
+      <table class="code js-syntax-highlight" :class="$options.userColorSchemeClass">
         <template v-if="hasTruncatedDiffLines">
           <tr
             v-for="line in discussion.truncated_diff_lines"
@@ -81,8 +81,8 @@ export default {
             :key="line.line_code"
             class="line_holder"
           >
-            <td class="diff-line-num old_line">{{ line.old_line }}</td>
-            <td class="diff-line-num new_line">{{ line.new_line }}</td>
+            <td :class="line.type" class="diff-line-num old_line">{{ line.old_line }}</td>
+            <td :class="line.type" class="diff-line-num new_line">{{ line.new_line }}</td>
             <td :class="line.type" class="line_content" v-html="line.rich_text"></td>
           </tr>
         </template>

@@ -79,7 +79,7 @@ describe('Applications', () => {
     });
 
     it('renders a row for GitLab Runner', () => {
-      expect(vm.$el.querySelector('.js-cluster-application-row-runner')).toBeNull();
+      expect(vm.$el.querySelector('.js-cluster-application-row-runner')).not.toBeNull();
     });
 
     it('renders a row for Jupyter', () => {

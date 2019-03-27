@@ -2,7 +2,7 @@ import AccessorUtilities from '~/lib/utils/accessor';
 import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 
 describe('SigninTabsMemoizer', () => {
-  const fixtureTemplate = 'static/signin_tabs.html.raw';
+  const fixtureTemplate = 'static/signin_tabs.html';
   const tabSelector = 'ul.new-session-tabs';
   const currentTabKey = 'current_signin_tab';
   let memo;

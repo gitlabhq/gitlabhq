@@ -38,7 +38,6 @@ module Gitlab
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def insert_or_replace_git_data(merge_request, source_branch_sha, target_branch_sha, already_exists = false)
         # These fields are set so we can create the correct merge request
         # diffs.
@@ -47,24 +46,21 @@ module Gitlab
 
         merge_request.keep_around_commit
 
+        # We force to recreate all diffs to replace all existing data
+        # We use `.all` as otherwise `dependent: :nullify` (the default)
+        # takes an effect
+        merge_request.merge_request_diffs.all.delete_all if already_exists
+
         # MR diffs normally use an "after_save" hook to pull data from Git.
         # All of this happens in the transaction started by calling
         # create/save/etc. This in turn can lead to these transactions being
         # held open for much longer than necessary. To work around this we
         # first save the diff, then populate it.
-        diff =
-          if already_exists
-            merge_request.merge_request_diffs.take ||
-              merge_request.merge_request_diffs.build
-          else
-            merge_request.merge_request_diffs.build
-          end
-
+        diff = merge_request.merge_request_diffs.build
         diff.importing = true
         diff.save
         diff.save_git_content
       end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

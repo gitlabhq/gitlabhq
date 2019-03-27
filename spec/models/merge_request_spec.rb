@@ -179,6 +179,31 @@ describe MergeRequest do
         expect(MergeRequest::Metrics.count).to eq(1)
       end
     end
+
+    describe '#refresh_merge_request_assignees' do
+      set(:user) { create(:user) }
+
+      it 'creates merge request assignees relation upon MR creation' do
+        merge_request = create(:merge_request, assignee: nil)
+
+        expect(merge_request.merge_request_assignees).to be_empty
+
+        expect { merge_request.update!(assignee: user) }
+          .to change { merge_request.reload.merge_request_assignees.count }
+          .from(0).to(1)
+      end
+
+      it 'updates merge request assignees relation upon MR assignee change' do
+        another_user = create(:user)
+        merge_request = create(:merge_request, assignee: user)
+
+        expect { merge_request.update!(assignee: another_user) }
+          .to change { merge_request.reload.merge_request_assignees.first.assignee }
+          .from(user).to(another_user)
+
+        expect(merge_request.merge_request_assignees.count).to eq(1)
+      end
+    end
   end
 
   describe 'respond to' do
