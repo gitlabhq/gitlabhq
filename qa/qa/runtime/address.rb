@@ -15,6 +15,13 @@ module QA
           @instance.to_s
         end
       end
+
+      def self.valid?(value)
+        uri = URI.parse(value)
+        uri.is_a?(URI::HTTP) && !uri.host.nil?
+      rescue URI::InvalidURIError
+        false
+      end
     end
   end
 end
