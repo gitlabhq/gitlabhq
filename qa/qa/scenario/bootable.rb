@@ -23,7 +23,7 @@ module QA
 
           arguments.parse!(argv)
 
-          self.perform(Runtime::Scenario.attributes, *arguments.default_argv)
+          self.perform(Runtime::Scenario.attributes, *argv)
         end
 
         private
@@ -33,7 +33,13 @@ module QA
         end
 
         def options
-          @options ||= []
+          # Scenario options/attributes are global. There's only ever one
+          # scenario at a time, but they can be inherited and we want scenarios
+          # to share the attributes of their ancestors. For example, `Mattermost`
+          # inherits from `Test::Instance::All` but if this were an instance
+          # variable then `Mattermost` wouldn't have access to the attributes
+          # in `All`
+          @@options ||= [] # rubocop:disable Style/ClassVars
         end
 
         def has_attributes?

@@ -8,6 +8,7 @@ module QA
       module Instance
         class All < Template
           include Bootable
+          include SharedAttributes
         end
       end
     end

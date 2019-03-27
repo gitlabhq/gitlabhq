@@ -12,7 +12,7 @@ describe QA::Scenario::Test::Integration::Github do
       let(:tags) { [:github] }
 
       it 'requires a GitHub access token' do
-        subject.perform('gitlab_address')
+        subject.perform(args)
 
         expect(env).to have_received(:require_github_access_token!)
       end
