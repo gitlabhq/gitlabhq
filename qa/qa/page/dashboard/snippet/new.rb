@@ -37,7 +37,7 @@ module QA
             text_area.set content
           end
 
-          def create_snippet
+          def click_create_snippet_button
             click_element :create_snippet_button
           end
 

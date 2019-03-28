@@ -21,7 +21,7 @@ module QA
         end
         source_project_push.project.visit!
 
-        Page::Project::Menu.perform(&:click_repository_settings)
+        Page::Project::Menu.perform(&:go_to_repository_settings)
         Page::Project::Settings::Repository.perform do |settings|
           settings.expand_mirroring_repositories do |mirror_settings|
             # Configure the source project to push to the target project

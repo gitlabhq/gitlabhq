@@ -13,13 +13,13 @@ module QA
       end
 
       def fabricate!
-        Page::Main::Menu.perform(&:go_to_profile_settings)
+        Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_access_tokens)
 
         Page::Profile::PersonalAccessTokens.perform do |page|
           page.fill_token_name(name || 'api-test-token')
           page.check_api
-          page.create_token
+          page.click_create_token_button
         end
       end
     end

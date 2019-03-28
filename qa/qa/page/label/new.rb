@@ -9,7 +9,7 @@ module QA
           element :label_create_button
         end
 
-        def create_label
+        def click_label_create_button
           click_element :label_create_button
         end
 

@@ -46,7 +46,7 @@ module QA
         # to `allow_to_push` variable.
         return branch unless @protected
 
-        Page::Project::Menu.perform(&:click_repository_settings)
+        Page::Project::Menu.perform(&:go_to_repository_settings)
 
         Page::Project::Settings::Repository.perform do |setting|
           setting.expand_protected_branches do |page|

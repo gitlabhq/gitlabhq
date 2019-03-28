@@ -22,7 +22,7 @@ module QA
           page.set_visibility(@visibility)
           page.fill_file_name(@file_name)
           page.fill_file_content(@file_content)
-          page.create_snippet
+          page.click_create_snippet_button
         end
       end
     end

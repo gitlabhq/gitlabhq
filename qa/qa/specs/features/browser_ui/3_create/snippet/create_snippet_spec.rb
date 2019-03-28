@@ -7,7 +7,7 @@ module QA
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.perform(&:sign_in_using_credentials)
 
-        Page::Main::Menu.perform(&:go_to_snippets)
+        Page::Main::Menu.perform(&:click_snippets_link)
 
         Resource::Snippet.fabricate_via_browser_ui! do |snippet|
           snippet.title = 'Snippet title'

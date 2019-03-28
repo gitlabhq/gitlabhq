@@ -21,7 +21,7 @@ module QA
 
         Page::Group::Show.perform do |group_show|
           if group_show.has_subgroup?(path)
-            group_show.go_to_subgroup(path)
+            group_show.click_subgroup(path)
           else
             group_show.go_to_new_subgroup
 

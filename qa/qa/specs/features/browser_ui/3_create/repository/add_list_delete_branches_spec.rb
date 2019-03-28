@@ -57,7 +57,7 @@ module QA
       end
 
       it 'branches are correctly listed after CRUD operations' do
-        Page::Project::Menu.perform(&:click_repository_branches)
+        Page::Project::Menu.perform(&:go_to_repository_branches)
 
         expect(page).to have_content(master_branch)
         expect(page).to have_content(second_branch)

@@ -15,7 +15,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Menu.perform(&:click_ci_cd_settings)
+        Page::Project::Menu.perform(&:go_to_ci_cd_settings)
 
         Page::Project::Settings::CICD.perform do |setting|
           setting.expand_ci_variables do |page|

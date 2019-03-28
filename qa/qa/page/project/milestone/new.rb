@@ -17,7 +17,7 @@ module QA
             fill_element :milestone_description, description
           end
 
-          def create_new_milestone
+          def click_milestone_create_button
             click_element :milestone_create_button
           end
         end

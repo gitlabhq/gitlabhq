@@ -23,7 +23,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Menu.perform(&:click_repository_settings)
+        Page::Project::Menu.perform(&:go_to_repository_settings)
 
         Page::Project::Settings::Repository.perform do |setting|
           setting.expand_deploy_keys do |page|
