@@ -1353,7 +1353,12 @@ describe API::MergeRequests do
     end
 
     it 'returns 405 if the build failed for a merge request that requires success' do
-      allow_any_instance_of(MergeRequest).to receive(:mergeable_ci_state?).and_return(false)
+      project.update!(only_allow_merge_if_pipeline_succeeds: true)
+
+      create(:ci_pipeline,
+             :failed,
+             sha: merge_request.diff_head_sha,
+             merge_requests_as_head_pipeline: [merge_request])
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
