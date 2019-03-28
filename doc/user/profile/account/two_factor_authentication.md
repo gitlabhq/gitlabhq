@@ -18,9 +18,10 @@ the second factor of authentication. Once enabled, in addition to supplying your
 password to login, you'll be prompted to activate your U2F device (usually by pressing
 a button on it), and it will perform secure authentication on your behalf.
 
-The U2F workflow is only [supported by](https://caniuse.com/#search=U2F) Google Chrome, Opera and Firefox at this point, so we _strongly_ recommend
-that you set up both methods of two-factor authentication, so you can still access your account
-from other browsers.
+The U2F workflow is [supported by](https://caniuse.com/#search=U2F) Google Chrome, Opera, and Firefox.
+
+We recommend that you set up 2FA with both a [one-time password authenticator](#enable-2fa-via-one-time-password-authenticator) and a [U2F device](#enable-2fa-via-u2f-device), so you can still access your account
+if you lose your U2F device.
 
 ## Enabling 2FA
 
