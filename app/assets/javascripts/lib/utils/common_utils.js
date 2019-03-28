@@ -7,7 +7,7 @@ import axios from './axios_utils';
 import { getLocationHash } from './url_utility';
 import { convertToCamelCase } from './text_utility';
 import { isObject } from './type_utility';
-import BreakpointInstance from '../../breakpoints';
+import breakpointInstance from '../../breakpoints';
 
 export const getPagePath = (index = 0) => {
   const page = $('body').attr('data-page') || '';
@@ -198,11 +198,10 @@ export const contentTop = () => {
   const mrTabsHeight = $('.merge-request-tabs').outerHeight() || 0;
   const headerHeight = $('.navbar-gitlab').outerHeight() || 0;
   const diffFilesChanged = $('.js-diff-files-changed').outerHeight() || 0;
-  const mdScreenOrBigger = ['lg', 'md'].includes(BreakpointInstance.getBreakpointSize());
+  const isDesktop = breakpointInstance.isDesktop();
   const diffFileTitleBar =
-    (mdScreenOrBigger && $('.diff-file .file-title-flex-parent:visible').outerHeight()) || 0;
-  const compareVersionsHeaderHeight =
-    (mdScreenOrBigger && $('.mr-version-controls').outerHeight()) || 0;
+    (isDesktop && $('.diff-file .file-title-flex-parent:visible').outerHeight()) || 0;
+  const compareVersionsHeaderHeight = (isDesktop && $('.mr-version-controls').outerHeight()) || 0;
 
   return (
     perfBar +
