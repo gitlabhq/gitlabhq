@@ -548,25 +548,23 @@ service account of the cluster integration.
 ### Troubleshooting failed deployment jobs
 
 GitLab will create a namespace and service account specifically for your
-deployment jobs. These resources are created just before the deployment
-job starts. Sometimes there may be errors that cause their creation to fail.
+deployment jobs, immediately before the jobs starts.
 
-In such instances, your job will fail with the message:
+However, sometimes GitLab can not create them. In such instances, your job will fail with the message:
 
-```The job failed to complete prerequisite tasks```
+```text
+The job failed to complete prerequisite tasks
+```
 
-You will need to check the [logs](../../../administration/logs.md) to debug
-why the namespace and service account creation failed.
+To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#sidekiqlog).
 
-A common reason for failure is that the token you gave GitLab did not have
-[`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-privileges as GitLab expects.
+Common reasons for failure include:
 
-Another common problem is caused by a missing `KUBECONFIG` or `KUBE_TOKEN`.
-To be passed to your job, it must have a matching
-[`environment:name`](../../../ci/environments.md#defining-environments). If
-your job has no `environment:name` set, it will not be passed the Kubernetes
-credentials.
+- The token you gave GitLab did not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+  privileges required by GitLab.
+- Missing `KUBECONFIG` or `KUBE_TOKEN` variables. To be passed to your job, they must have a matching
+  [`environment:name`](../../../ci/environments.md#defining-environments). If your job has no
+  `environment:name` set, it will not be passed the Kubernetes credentials.
 
 ## Monitoring your Kubernetes cluster **[ULTIMATE]**
 
