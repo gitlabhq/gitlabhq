@@ -102,6 +102,9 @@
                 tap --coverage-report=text-summary (NodeJS) -
                 %code ^Statements\s*:\s*([^%]+)
               %li
+                nyc npm test (NodeJS) -
+                %code All files[^|]*\|[^|]*\s+([\d\.]+)
+              %li
                 excoveralls (Elixir) -
                 %code \[TOTAL\]\s+(\d+\.\d+)%
               %li
@@ -110,9 +113,6 @@
               %li
                 go test -cover (Go)
                 %code coverage: \d+.\d+% of statements
-              %li
-                nyc npm test (NodeJS) -
-                %code All files[^|]*\|[^|]*\s+([\d\.]+)
 
         = f.submit _('Save changes'), class: "btn btn-success"
 
