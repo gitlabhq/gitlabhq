@@ -138,7 +138,7 @@ describe('Dashboard', () => {
 
       setTimeout(() => {
         const dropdownMenuEnvironments = component.$el.querySelectorAll(
-          '.js-environments-dropdown ul',
+          '.js-environments-dropdown .dropdown-item',
         );
 
         expect(dropdownMenuEnvironments.length).toEqual(0);
