@@ -1,12 +1,4 @@
-
-const fs = require('fs');
-const path = require('path');
-
-const ROOT_PATH = __dirname;
-const IS_EE =
-  process.env.EE !== undefined
-    ? JSON.parse(process.env.EE)
-    : fs.existsSync(path.join(ROOT_PATH, 'ee'));
+const IS_EE = require('./config/helpers/is_ee_env');
 
 const reporters = ['default'];
 
@@ -46,4 +38,7 @@ module.exports = {
   transformIgnorePatterns: ['node_modules/(?!(@gitlab/ui)/)'],
   timers: 'fake',
   testEnvironment: '<rootDir>/spec/frontend/environment.js',
+  testEnvironmentOptions: {
+    IS_EE,
+  },
 };
