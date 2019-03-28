@@ -145,11 +145,11 @@ module QA
           click_element :squash_checkbox
         end
 
-        def go_to_discussions_tab
+        def click_discussions_tab
           click_element :notes_tab
         end
 
-        def go_to_diffs_tab
+        def click_diffs_tab
           click_element :diffs_tab
         end
 

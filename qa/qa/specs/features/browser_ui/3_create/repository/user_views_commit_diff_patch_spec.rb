@@ -33,7 +33,7 @@ module QA
       def view_commit
         @project.visit!
         Page::Project::Show.perform do |page|
-          page.go_to_commit(@commit_message)
+          page.click_commit(@commit_message)
         end
       end
 

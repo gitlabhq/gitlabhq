@@ -7,7 +7,7 @@ module QA
             element :issue_link, 'link_to issue.title' # rubocop:disable QA/ElementWithPattern
           end
 
-          def go_to_issue(title)
+          def click_issue_link(title)
             click_link(title)
           end
         end

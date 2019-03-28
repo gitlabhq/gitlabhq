@@ -63,10 +63,10 @@ module QA
           end
 
           Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-          Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
+          Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
 
           Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.go_to_job('build')
+            pipeline.click_job('build')
           end
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 600)
@@ -75,7 +75,7 @@ module QA
           end
 
           Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.go_to_job('test')
+            pipeline.click_job('test')
           end
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 600)
@@ -84,7 +84,7 @@ module QA
           end
 
           Page::Project::Pipeline::Show.perform do |pipeline|
-            pipeline.go_to_job('production')
+            pipeline.click_job('production')
           end
           Page::Project::Job::Show.perform do |job|
             expect(job).to be_successful(timeout: 1200)
@@ -92,9 +92,9 @@ module QA
             job.click_element(:pipeline_path)
           end
 
-          Page::Project::Menu.perform(&:click_operations_environments)
+          Page::Project::Menu.perform(&:go_to_operations_environments)
           Page::Project::Operations::Environments::Index.perform do |index|
-            index.go_to_environment('production')
+            index.click_environment_linkindex.go_to_environment('production')
           end
           Page::Project::Operations::Environments::Show.perform do |show|
             show.view_deployment do
@@ -125,7 +125,7 @@ module QA
         end
 
         Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:go_to_latest_pipeline)
+        Page::Project::Pipeline::Index.perform(&:click_on_latest_pipeline)
 
         Page::Project::Pipeline::Show.perform do |pipeline|
           expect(pipeline).to have_tag('Auto DevOps')

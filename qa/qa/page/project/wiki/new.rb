@@ -23,7 +23,7 @@ module QA
             element :svg_content
           end
 
-          def go_to_create_first_page
+          def click_create_your_first_page_button
             # The svg takes a fraction of a second to load after which the
             # "Create your first page" button shifts up a bit. This can cause
             # webdriver to miss the hit so we wait for the svg to load before

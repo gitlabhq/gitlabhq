@@ -14,7 +14,7 @@ module QA
       end
 
       def fabricate!
-        Page::Main::Menu.perform(&:go_to_profile_settings)
+        Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
 
         Page::Profile::SSHKeys.perform do |page|

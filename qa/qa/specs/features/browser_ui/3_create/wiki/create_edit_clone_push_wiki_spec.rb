@@ -20,7 +20,7 @@ module QA
 
         validate_content('My First Wiki Content')
 
-        Page::Project::Wiki::Edit.perform(&:go_to_edit_page)
+        Page::Project::Wiki::Edit.perform(&:click_edit)
         Page::Project::Wiki::New.perform do |page|
           page.set_content("My Second Wiki Content")
           page.save_changes
