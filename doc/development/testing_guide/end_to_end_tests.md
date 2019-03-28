@@ -7,6 +7,24 @@ as expected across the entire software stack and architecture, including
 integration of all micro-services and components that are supposed to work
 together.
 
+## Branch naming
+
+If your contribution contains **only** changes under the
+[`qa/` folder](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa), you can
+speed up the CI process by following some branch naming conventions. You have
+three choices:
+
+| Branch name           | Valid example                |
+|:----------------------|:-----------------------------|
+| Starting with `qa/`   | `qa/new-oauth-login-test`     |
+| Starting with `qa-`   | `qa-new-oauth-login-test`     |
+| Ending in `-qa`       | `123-new-oauth-login-test-qa` |
+
+If your branch name matches any of the above, it will run only the QA-related
+jobs.
+If it does not, the whole application test suite will run (including QA-related
+jobs).
+
 ## How do we test GitLab?
 
 We use [Omnibus GitLab][omnibus-gitlab] to build GitLab packages and then we
