@@ -459,12 +459,7 @@ export default {
     class="gl-responsive-table-row"
     role="row"
   >
-    <div
-      v-gl-tooltip
-      :title="model.name"
-      class="table-section section-wrap section-15 text-truncate"
-      role="gridcell"
-    >
+    <div class="table-section section-wrap section-15 text-truncate" role="gridcell">
       <div v-if="!model.isFolder" class="table-mobile-header" role="rowheader">
         {{ s__('Environments|Environment') }}
       </div>
@@ -473,14 +468,28 @@ export default {
         <icon :name="deployIconName" />
       </span>
 
-      <span v-if="!model.isFolder" class="environment-name table-mobile-content">
-        <a class="qa-environment-link" :href="environmentPath"> {{ model.name }} </a>
+      <span
+        v-if="!model.isFolder"
+        v-gl-tooltip
+        :title="model.name"
+        class="environment-name table-mobile-content"
+      >
+        <a class="qa-environment-link" :href="environmentPath">
+          <span v-if="model.size === 1">{{ model.name }}</span>
+          <span v-else>{{ model.name_without_type }}</span>
+        </a>
         <span v-if="isProtected" class="badge badge-success">
           {{ s__('Environments|protected') }}
         </span>
       </span>
-
-      <span v-else class="folder-name" role="button" @click="onClickFolder">
+      <span
+        v-else
+        v-gl-tooltip
+        :title="model.folderName"
+        class="folder-name"
+        role="button"
+        @click="onClickFolder"
+      >
         <icon :name="folderIconName" class="folder-icon" />
 
         <icon name="folder" class="folder-icon" />
