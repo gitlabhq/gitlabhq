@@ -16,6 +16,7 @@ module Gitlab
         ImageSize
         Copyright
         CopyrightNotice
+        Orientation
       ).freeze
 
       # these tags are common in exiftool output, these
