@@ -16,9 +16,9 @@ describe('Abuse Reports', () => {
 
   preloadFixtures(FIXTURE);
 
-  beforeEach(function() {
+  beforeEach(() => {
     loadFixtures(FIXTURE);
-    this.abuseReports = new AbuseReports();
+    new AbuseReports(); // eslint-disable-line no-new
     $messages = $('.abuse-reports .message');
   });
 
