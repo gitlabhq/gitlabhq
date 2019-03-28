@@ -17,11 +17,9 @@ module IssuableStates
     # Needed to prevent breaking some migration specs that
     # rollback database to a point where state_id does not exist.
     # We can use this guard clause for now since this file will
-    # be removed on a future the next release.
-    return unless self.respond_to?(:state_id)
+    # be removed in the next release.
+    return unless self.has_attribute?(:state_id)
 
-    states_hash = self.class.available_states
-
-    self.state_id = states_hash[state]
+    self.state_id = self.class.available_states[state]
   end
 end

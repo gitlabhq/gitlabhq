@@ -5,7 +5,7 @@ module Gitlab
   module BackgroundMigration
     class SyncIssuesStateId
       def perform(start_id, end_id)
-        Rails.logger.info("Issues - Populating state_id: #{start_id} - #{end_id}")
+        Gitlab::AppLogger.info("Issues - Populating state_id: #{start_id} - #{end_id}")
 
         ActiveRecord::Base.connection.execute <<~SQL
           UPDATE issues
