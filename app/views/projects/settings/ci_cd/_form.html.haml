@@ -108,6 +108,9 @@
                 excoveralls (Elixir) -
                 %code \[TOTAL\]\s+(\d+\.\d+)%
               %li
+                mix test --cover (Elixir) -
+                %code \d+.\d+\%\s+\|\s+Total
+              %li
                 JaCoCo (Java/Kotlin)
                 %code Total.*?([0-9]{1,3})%
               %li
