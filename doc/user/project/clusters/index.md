@@ -389,14 +389,20 @@ to obtain the endpoint. You can use either
 In order to publish your web application, you first need to find the endpoint which will be either an IP
 address or a hostname associated with your load balancer.
 
-### Let GitLab fetch the external endpoint
+### Automatically determining the external endpoint
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17052) in GitLab 10.6.
 
-If you [installed Ingress or Knative](#installing-applications),
-you should see the Ingress Endpoint on this same page within a few minutes.
-If you don't see this, GitLab might not be able to determine the external endpoint of
-your ingress application in which case you should manually determine it.
+After you install [Ingress or Knative](#installing-applications), Gitlab attempts to determine the external endpoint
+and it should be available within a few minutes. If the endpoint doesn't appear
+and your cluster runs on Google Kubernetes Engine:
+
+1. Check your [Kubernetes cluster on Google Kubernetes Engine](https://console.cloud.google.com/kubernetes) to ensure there are no errors on its nodes.
+1. Ensure you have enough [Quotas](https://console.cloud.google.com/iam-admin/quotas) on Google Kubernetes Engine. For more information, see [Resource Quotas](https://cloud.google.com/compute/quotas).
+1. Check [Google Cloud's Status](https://status.cloud.google.com/) to ensure they are not having any disruptions.
+
+If GitLab is still unable to determine the endpoint of your Ingress or Knative application, you can
+manually determine it by following the steps below.
 
 ### Manually determining the external endpoint
 
@@ -542,25 +548,23 @@ service account of the cluster integration.
 ### Troubleshooting failed deployment jobs
 
 GitLab will create a namespace and service account specifically for your
-deployment jobs. These resources are created just before the deployment
-job starts. Sometimes there may be errors that cause their creation to fail.
+deployment jobs, immediately before the jobs starts.
 
-In such instances, your job will fail with the message:
+However, sometimes GitLab can not create them. In such instances, your job will fail with the message:
 
-```The job failed to complete prerequisite tasks```
+```text
+The job failed to complete prerequisite tasks
+```
 
-You will need to check the [logs](../../../administration/logs.md) to debug
-why the namespace and service account creation failed.
+To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#sidekiqlog).
 
-A common reason for failure is that the token you gave GitLab did not have
-[`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-privileges as GitLab expects.
+Common reasons for failure include:
 
-Another common problem is caused by a missing `KUBECONFIG` or `KUBE_TOKEN`.
-To be passed to your job, it must have a matching
-[`environment:name`](../../../ci/environments.md#defining-environments). If
-your job has no `environment:name` set, it will not be passed the Kubernetes
-credentials.
+- The token you gave GitLab did not have [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
+  privileges required by GitLab.
+- Missing `KUBECONFIG` or `KUBE_TOKEN` variables. To be passed to your job, they must have a matching
+  [`environment:name`](../../../ci/environments.md#defining-environments). If your job has no
+  `environment:name` set, it will not be passed the Kubernetes credentials.
 
 ## Monitoring your Kubernetes cluster **[ULTIMATE]**
 

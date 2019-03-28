@@ -10,6 +10,7 @@ GET /projects/:id/milestones?iids[]=42
 GET /projects/:id/milestones?iids[]=42&iids[]=43
 GET /projects/:id/milestones?state=active
 GET /projects/:id/milestones?state=closed
+GET /projects/:id/milestones?title=1.0
 GET /projects/:id/milestones?search=version
 ```
 
@@ -20,6 +21,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iids[]` | Array[integer] | optional | Return only the milestones having the given `iid` |
 | `state` | string | optional | Return only `active` or `closed` milestones |
+| `title` | string | optional | Return only the milestones having the given `title` |
 | `search` | string | optional | Return only milestones with a title or description matching the provided string |
 
 ```bash

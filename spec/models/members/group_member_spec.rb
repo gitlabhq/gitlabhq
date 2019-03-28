@@ -1,6 +1,22 @@
 require 'spec_helper'
 
 describe GroupMember do
+  describe '.count_users_by_group_id' do
+    it 'counts users by group ID' do
+      user_1 = create(:user)
+      user_2 = create(:user)
+      group_1 = create(:group)
+      group_2 = create(:group)
+
+      group_1.add_owner(user_1)
+      group_1.add_owner(user_2)
+      group_2.add_owner(user_1)
+
+      expect(described_class.count_users_by_group_id).to eq(group_1.id => 2,
+                                                            group_2.id => 1)
+    end
+  end
+
   describe '.access_level_roles' do
     it 'returns Gitlab::Access.options_with_owner' do
       expect(described_class.access_level_roles).to eq(Gitlab::Access.options_with_owner)

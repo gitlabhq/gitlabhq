@@ -41,8 +41,6 @@ describe('issue_note_form component', () => {
       noteBody: 'Magni suscipit eius consectetur enim et ex et commodi.',
       noteId: '545',
     };
-
-    wrapper = createComponentWrapper();
   });
 
   afterEach(() => {
@@ -50,6 +48,10 @@ describe('issue_note_form component', () => {
   });
 
   describe('noteHash', () => {
+    beforeEach(() => {
+      wrapper = createComponentWrapper();
+    });
+
     it('returns note hash string based on `noteId`', () => {
       expect(wrapper.vm.noteHash).toBe(`#note_${props.noteId}`);
     });
@@ -71,6 +73,10 @@ describe('issue_note_form component', () => {
   });
 
   describe('conflicts editing', () => {
+    beforeEach(() => {
+      wrapper = createComponentWrapper();
+    });
+
     it('should show conflict message if note changes outside the component', done => {
       wrapper.setProps({
         ...props,
@@ -100,6 +106,10 @@ describe('issue_note_form component', () => {
   });
 
   describe('form', () => {
+    beforeEach(() => {
+      wrapper = createComponentWrapper();
+    });
+
     it('should render text area with placeholder', () => {
       const textarea = wrapper.find('textarea');
 
@@ -198,10 +208,6 @@ describe('issue_note_form component', () => {
   });
 
   describe('with autosaveKey', () => {
-    beforeEach(() => {
-      wrapper.destroy();
-    });
-
     describe('with draft', () => {
       beforeEach(done => {
         Object.assign(props, {

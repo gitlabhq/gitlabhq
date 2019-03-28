@@ -97,6 +97,15 @@ describe MergeRequests::RefreshService do
         }
       end
 
+      it 'outdates MR suggestions' do
+        expect_next_instance_of(Suggestions::OutdateService) do |service|
+          expect(service).to receive(:execute).with(@merge_request).and_call_original
+          expect(service).to receive(:execute).with(@another_merge_request).and_call_original
+        end
+
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+      end
+
       context 'when source branch ref does not exists' do
         before do
           DeleteBranchService.new(@project, @user).execute(@merge_request.source_branch)
@@ -329,14 +338,16 @@ describe MergeRequests::RefreshService do
     context 'push to fork repo source branch' do
       let(:refresh_service) { service.new(@fork_project, @user) }
 
-      context 'open fork merge request' do
-        before do
-          allow(refresh_service).to receive(:execute_hooks)
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-          reload_mrs
-        end
+      def refresh
+        allow(refresh_service).to receive(:execute_hooks)
+        refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
+        reload_mrs
+      end
 
+      context 'open fork merge request' do
         it 'executes hooks with update action' do
+          refresh
+
           expect(refresh_service).to have_received(:execute_hooks)
             .with(@fork_merge_request, 'update', old_rev: @oldrev)
 
@@ -347,21 +358,30 @@ describe MergeRequests::RefreshService do
           expect(@build_failed_todo).to be_pending
           expect(@fork_build_failed_todo).to be_pending
         end
+
+        it 'outdates opened forked MR suggestions' do
+          expect_next_instance_of(Suggestions::OutdateService) do |service|
+            expect(service).to receive(:execute).with(@fork_merge_request).and_call_original
+          end
+
+          refresh
+        end
       end
 
       context 'closed fork merge request' do
         before do
           @fork_merge_request.close!
-          allow(refresh_service).to receive(:execute_hooks)
-          refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
-          reload_mrs
         end
 
         it 'do not execute hooks with update action' do
+          refresh
+
           expect(refresh_service).not_to have_received(:execute_hooks)
         end
 
         it 'updates merge request to closed state' do
+          refresh
+
           expect(@merge_request.notes).to be_empty
           expect(@merge_request).to be_open
           expect(@fork_merge_request.notes).to be_empty

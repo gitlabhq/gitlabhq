@@ -77,8 +77,8 @@ class DiffNote < Note
   def supports_suggestion?
     return false unless noteable.supports_suggestion? && on_text?
     # We don't want to trigger side-effects of `diff_file` call.
-    return false unless file = fetch_diff_file
-    return false unless line = file.line_for_position(self.original_position)
+    return false unless file = latest_diff_file
+    return false unless line = file.line_for_position(self.position)
 
     line&.suggestible?
   end

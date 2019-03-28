@@ -652,7 +652,7 @@ repo or by specifying a project variable:
 
 ### Custom Helm chart per environment **[PREMIUM]**
 
-You can specify the use of a custom Helm chart per environment by scoping the environment variable 
+You can specify the use of a custom Helm chart per environment by scoping the environment variable
 to the desired environment. See [Limiting environment scopes of variables](https://docs.gitlab.com/ee/ci/variables/#limiting-environment-scopes-of-variables-premium).
 
 ### Customizing `.gitlab-ci.yml`
@@ -1022,10 +1022,9 @@ planned for a subsequent release.
   buildpack](#custom-buildpacks).
 - Auto Test may fail because of a mismatch between testing frameworks. In this
   case, you may need to customize your `.gitlab-ci.yml` with your test commands.
-- Auto Deploy may fail if it is unable to create a Kubernetes namespace and
-  service account for your project. See the
-  [troubleshooting failed deployments](../../user/project/clusters/index.md#troubleshooting-failed-deployment-jobs)
-  section to debug why these resources were not created.
+- Auto Deploy will fail if GitLab can not create a Kubernetes namespace and
+  service account for your project. For help debugging this issue, see
+  [Troubleshooting failed deployment jobs](../../user/project/clusters/index.md#troubleshooting-failed-deployment-jobs).
 
 ### Disable the banner instance wide
 

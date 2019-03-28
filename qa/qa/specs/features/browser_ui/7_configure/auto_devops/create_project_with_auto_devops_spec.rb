@@ -106,8 +106,7 @@ module QA
       end
     end
 
-    # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/87
-    describe 'Auto DevOps', :smoke, :quarantine do
+    describe 'Auto DevOps', :smoke do
       it 'enables AutoDevOps by default' do
         login
 

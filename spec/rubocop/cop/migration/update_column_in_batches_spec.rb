@@ -93,4 +93,22 @@ describe RuboCop::Cop::Migration::UpdateColumnInBatches do
     it_behaves_like 'a migration file with no spec file'
     it_behaves_like 'a migration file with a spec file'
   end
+
+  context 'EE migrations' do
+    let(:spec_filepath) { tmp_rails_root.join('ee', 'spec', 'migrations', 'my_super_migration_spec.rb') }
+
+    context 'in a migration' do
+      let(:migration_filepath) { tmp_rails_root.join('ee', 'db', 'migrate', '20121220064453_my_super_migration.rb') }
+
+      it_behaves_like 'a migration file with no spec file'
+      it_behaves_like 'a migration file with a spec file'
+    end
+
+    context 'in a post migration' do
+      let(:migration_filepath) { tmp_rails_root.join('ee', 'db', 'post_migrate', '20121220064453_my_super_migration.rb') }
+
+      it_behaves_like 'a migration file with no spec file'
+      it_behaves_like 'a migration file with a spec file'
+    end
+  end
 end

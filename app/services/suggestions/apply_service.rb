@@ -7,7 +7,7 @@ module Suggestions
     end
 
     def execute(suggestion)
-      unless suggestion.appliable?
+      unless suggestion.appliable?(cached: false)
         return error('Suggestion is not appliable')
       end
 
@@ -15,7 +15,7 @@ module Suggestions
         return error('The file has been changed')
       end
 
-      diff_file = suggestion.note.latest_diff_file
+      diff_file = suggestion.diff_file
 
       unless diff_file
         return error('The file was not found')

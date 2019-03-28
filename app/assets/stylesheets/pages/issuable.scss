@@ -256,6 +256,10 @@
 
   .selectbox {
     display: none;
+
+    &.show {
+      display: block;
+    }
   }
 
   .btn-clipboard:hover {
@@ -309,6 +313,7 @@
     }
 
     .no-value,
+    .btn-default-hover-link,
     .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
     }
@@ -592,7 +597,6 @@
   margin: -7px;
 }
 
-
 .user-list {
   display: flex;
   flex-wrap: wrap;
@@ -716,6 +720,7 @@
       .issuable-main-info {
         flex: 1 auto;
         margin-right: 10px;
+        min-width: 0;
 
         .issue-weight-icon {
           vertical-align: sub;
@@ -777,6 +782,7 @@
     @media(max-width: map-get($grid-breakpoints, lg)-1) {
       .task-status,
       .issuable-due-date,
+      .issuable-weight,
       .project-ref-path {
         display: none;
       }

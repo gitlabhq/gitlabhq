@@ -84,7 +84,7 @@ describe('IDE error message component', () => {
 
       expect(vm.isLoading).toBe(true);
 
-      vm.$nextTick(() => {
+      setTimeout(() => {
         expect(vm.isLoading).toBe(false);
 
         done();

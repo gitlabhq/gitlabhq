@@ -12,9 +12,9 @@ module SpammableActions
 
   def mark_as_spam
     if SpamService.new(spammable).mark_as_spam!
-      redirect_to spammable_path, notice: "#{spammable.spammable_entity_type.titlecase} was submitted to Akismet successfully."
+      redirect_to spammable_path, notice: _("%{spammable_titlecase} was submitted to Akismet successfully.") % { spammable_titlecase: spammable.spammable_entity_type.titlecase }
     else
-      redirect_to spammable_path, alert: 'Error with Akismet. Please check the logs for more info.'
+      redirect_to spammable_path, alert: _('Error with Akismet. Please check the logs for more info.')
     end
   end
 
@@ -33,7 +33,7 @@ module SpammableActions
       ensure_spam_config_loaded!
 
       if params[:recaptcha_verification]
-        flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
+        flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
       end
 
       respond_to do |format|

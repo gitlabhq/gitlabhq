@@ -144,6 +144,15 @@ msgstr ""
 msgid "%{percent}%% complete"
 msgstr ""
 
+msgid "%{service_title} activated."
+msgstr ""
+
+msgid "%{service_title} settings saved, but not activated."
+msgstr ""
+
+msgid "%{spammable_titlecase} was submitted to Akismet successfully."
+msgstr ""
+
 msgid "%{strong_start}%{branch_count}%{strong_end} Branch"
 msgid_plural "%{strong_start}%{branch_count}%{strong_end} Branches"
 msgstr[0] ""
@@ -370,6 +379,9 @@ msgid "Access denied! Please verify you can add deploy keys to this repository."
 msgstr ""
 
 msgid "Access expiration date"
+msgstr ""
+
+msgid "Access forbidden. Check your access level."
 msgstr ""
 
 msgid "Account"
@@ -609,7 +621,16 @@ msgstr ""
 msgid "All issues for this milestone are closed. You may close this milestone now."
 msgstr ""
 
+msgid "All merge conflicts were resolved. The merge request can now be merged."
+msgstr ""
+
+msgid "All todos were marked as done."
+msgstr ""
+
 msgid "All users"
+msgstr ""
+
+msgid "All users must have a name."
 msgstr ""
 
 msgid "Allow commits from members who can merge to the target branch."
@@ -952,6 +973,9 @@ msgid "Authentication log"
 msgstr ""
 
 msgid "Authentication method"
+msgstr ""
+
+msgid "Authentication via U2F device failed."
 msgstr ""
 
 msgid "Author"
@@ -2447,6 +2471,15 @@ msgstr ""
 msgid "Copy token to clipboard"
 msgstr ""
 
+msgid "Could not connect to FogBugz, check your URL"
+msgstr ""
+
+msgid "Could not create Wiki Repository at this time. Please try again later."
+msgstr ""
+
+msgid "Could not remove the trigger."
+msgstr ""
+
 msgid "Could not retrieve the pipeline status. For troubleshooting steps, read the %{linkStart}documentation.%{linkEnd}"
 msgstr ""
 
@@ -3370,6 +3403,9 @@ msgstr ""
 msgid "Error updating todo status."
 msgstr ""
 
+msgid "Error uploading file"
+msgstr ""
+
 msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
@@ -3539,6 +3575,9 @@ msgid "Failed to load emoji list."
 msgstr ""
 
 msgid "Failed to load errors from Sentry. Error message: %{errorMessage}"
+msgstr ""
+
+msgid "Failed to promote label due to internal error. Please contact administrators."
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
@@ -3786,6 +3825,9 @@ msgstr ""
 msgid "Git"
 msgstr ""
 
+msgid "Git LFS is not enabled on this GitLab server, contact your admin."
+msgstr ""
+
 msgid "Git global setup"
 msgstr ""
 
@@ -3966,6 +4008,9 @@ msgstr ""
 msgid "GroupSettings|Learn more about badges."
 msgstr ""
 
+msgid "GroupSettings|New runners registration token has been generated!"
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -4128,6 +4173,9 @@ msgid "History"
 msgstr ""
 
 msgid "Hook was successfully created."
+msgstr ""
+
+msgid "Hook was successfully updated."
 msgstr ""
 
 msgid "Housekeeping successfully started"
@@ -4409,10 +4457,19 @@ msgstr ""
 msgid "Introducing Your Conversational Development Index"
 msgstr ""
 
+msgid "Invalid Login or password"
+msgstr ""
+
+msgid "Invalid file."
+msgstr ""
+
 msgid "Invalid input, please avoid emojis"
 msgstr ""
 
 msgid "Invalid pin code"
+msgstr ""
+
+msgid "Invalid two-factor code."
 msgstr ""
 
 msgid "Invitation"
@@ -4476,6 +4533,9 @@ msgid "Job ID"
 msgstr ""
 
 msgid "Job has been erased"
+msgstr ""
+
+msgid "Job has been successfully erased!"
 msgstr ""
 
 msgid "Job is stuck. Check runners."
@@ -4986,6 +5046,9 @@ msgstr ""
 msgid "Merged"
 msgstr ""
 
+msgid "Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes."
+msgstr ""
+
 msgid "Messages"
 msgstr ""
 
@@ -5077,6 +5140,9 @@ msgid "Mirrored repositories"
 msgstr ""
 
 msgid "Mirroring repositories"
+msgstr ""
+
+msgid "Mirroring settings were successfully updated."
 msgstr ""
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
@@ -5384,6 +5450,9 @@ msgstr ""
 msgid "Not enough data"
 msgstr ""
 
+msgid "Not found."
+msgstr ""
+
 msgid "Not now"
 msgstr ""
 
@@ -5489,6 +5558,9 @@ msgstr ""
 msgid "November"
 msgstr ""
 
+msgid "Object does not exist on the server or you don't have permissions to access it"
+msgstr ""
+
 msgid "Oct"
 msgstr ""
 
@@ -5588,6 +5660,12 @@ msgid "Overview"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Page not found"
+msgstr ""
+
+msgid "Page was successfully deleted"
 msgstr ""
 
 msgid "Pages"
@@ -5752,6 +5830,12 @@ msgstr ""
 msgid "Pipelines for last year"
 msgstr ""
 
+msgid "Pipelines page"
+msgstr ""
+
+msgid "Pipelines settings for '%{project_name}' were successfully updated."
+msgstr ""
+
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
@@ -5894,6 +5978,9 @@ msgid "Please fill in a descriptive name for your group."
 msgstr ""
 
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
+msgstr ""
+
+msgid "Please select a group."
 msgstr ""
 
 msgid "Please select at least one filter to see results"
@@ -6215,6 +6302,12 @@ msgid "Project"
 msgstr ""
 
 msgid "Project \"%{name}\" is no longer available. Select another project to continue."
+msgstr ""
+
+msgid "Project %{project_repo} could not be found"
+msgstr ""
+
+msgid "Project '%{project_name}' is being imported."
 msgstr ""
 
 msgid "Project '%{project_name}' is in the process of being deleted."
@@ -6696,6 +6789,12 @@ msgstr ""
 msgid "Resolved"
 msgstr ""
 
+msgid "Resolved 1 discussion."
+msgstr ""
+
+msgid "Resolved all discussions."
+msgstr ""
+
 msgid "Response metrics (AWS ELB)"
 msgstr ""
 
@@ -7017,6 +7116,9 @@ msgid "Sep"
 msgstr ""
 
 msgid "September"
+msgstr ""
+
+msgid "Server supports batch API only, please update your Git LFS client to version 1.0.1 and up."
 msgstr ""
 
 msgid "Server version"
@@ -7603,6 +7705,9 @@ msgstr ""
 msgid "Successfully removed email."
 msgstr ""
 
+msgid "Successfully scheduled a pipeline to run. Go to the %{link_to_pipelines} for details."
+msgstr ""
+
 msgid "Successfully unblocked"
 msgstr ""
 
@@ -7756,6 +7861,9 @@ msgstr ""
 msgid "Test coverage parsing"
 msgstr ""
 
+msgid "Test failed."
+msgstr ""
+
 msgid "The Git LFS objects will <strong>not</strong> be synced."
 msgstr ""
 
@@ -7774,7 +7882,22 @@ msgstr ""
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
+msgid "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
+msgstr ""
+
 msgid "The deployment of this job to %{environmentLink} did not succeed."
+msgstr ""
+
+msgid "The directory has been successfully created."
+msgstr ""
+
+msgid "The entered user map is not a valid JSON user map."
+msgstr ""
+
+msgid "The file has been successfully created."
+msgstr ""
+
+msgid "The file has been successfully deleted."
 msgstr ""
 
 msgid "The fork relationship has been removed."
@@ -7789,6 +7912,12 @@ msgstr ""
 msgid "The import will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
 msgstr ""
 
+msgid "The invitation has already been accepted."
+msgstr ""
+
+msgid "The invitation was successfully resent."
+msgstr ""
+
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
 msgstr ""
 
@@ -7796,6 +7925,15 @@ msgid "The maximum file size allowed is %{size}."
 msgstr ""
 
 msgid "The maximum file size allowed is 200KB."
+msgstr ""
+
+msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
+msgstr ""
+
+msgid "The merge conflicts for this merge request have already been resolved."
+msgstr ""
+
+msgid "The merge conflicts for this merge request have already been resolved. Please return to the merge request."
 msgstr ""
 
 msgid "The name %{entryName} is already taken in this directory."
@@ -7820,6 +7958,15 @@ msgid "The project can be accessed by any logged in user."
 msgstr ""
 
 msgid "The project can be accessed without any authentication."
+msgstr ""
+
+msgid "The project was successfully forked."
+msgstr ""
+
+msgid "The project was successfully imported."
+msgstr ""
+
+msgid "The remote repository is being updated..."
 msgstr ""
 
 msgid "The repository for this project does not exist."
@@ -7852,10 +7999,16 @@ msgstr ""
 msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
+msgid "The uploaded file is not a valid Google Takeout archive."
+msgstr ""
+
 msgid "The usage ping is disabled, and cannot be configured through this form."
 msgstr ""
 
 msgid "The user is being deleted."
+msgstr ""
+
+msgid "The user map has been saved. Continue by selecting the projects you want to import."
 msgstr ""
 
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
@@ -7919,6 +8072,9 @@ msgid "There was an error when subscribing to this label."
 msgstr ""
 
 msgid "There was an error when unsubscribing from this label."
+msgstr ""
+
+msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
 msgstr ""
 
 msgid "These existing issues have a similar title. It might be better to comment there instead of creating another similar issue."
@@ -8071,6 +8227,9 @@ msgstr ""
 msgid "This merge request is locked."
 msgstr ""
 
+msgid "This namespace has already been taken! Please choose another one."
+msgstr ""
+
 msgid "This option is disabled as you don't have write permissions for the current branch"
 msgstr ""
 
@@ -8105,6 +8264,9 @@ msgid "This project does not have billing enabled. To create a cluster, <a href=
 msgstr ""
 
 msgid "This repository"
+msgstr ""
+
+msgid "This repository is currently empty. A new Auto DevOps pipeline will be created after a new file has been pushed to a branch."
 msgstr ""
 
 msgid "This runner will only run on pipelines triggered on protected branches"
@@ -8393,6 +8555,9 @@ msgstr ""
 msgid "Todo"
 msgstr ""
 
+msgid "Todo was successfully marked as done."
+msgstr ""
+
 msgid "Todos"
 msgstr ""
 
@@ -8450,6 +8615,9 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "Trigger removed."
+msgstr ""
+
 msgid "Trigger this manual action"
 msgstr ""
 
@@ -8457,6 +8625,15 @@ msgid "Trigger token:"
 msgstr ""
 
 msgid "Trigger variables:"
+msgstr ""
+
+msgid "Trigger was created successfully."
+msgstr ""
+
+msgid "Trigger was re-assigned."
+msgstr ""
+
+msgid "Trigger was successfully updated."
 msgstr ""
 
 msgid "Triggers can force a specific branch or tag to get rebuilt with an API call.  These tokens will impersonate their associated user including their access to projects and their project permissions."
@@ -8483,7 +8660,13 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "Unable to connect to server: %{error}"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
+msgstr ""
+
+msgid "Unable to schedule a pipeline to run immediately"
 msgstr ""
 
 msgid "Unblock"
@@ -8559,6 +8742,9 @@ msgid "Update failed"
 msgstr ""
 
 msgid "Update now"
+msgstr ""
+
+msgid "Update your bookmarked URLs as filtered/sorted branches URL has been changed."
 msgstr ""
 
 msgid "Update your group name, description, avatar, and visibility."
@@ -8657,6 +8843,12 @@ msgstr ""
 msgid "User was successfully created."
 msgstr ""
 
+msgid "User was successfully removed from group and any subresources."
+msgstr ""
+
+msgid "User was successfully removed from project."
+msgstr ""
+
 msgid "User was successfully updated."
 msgstr ""
 
@@ -8748,6 +8940,9 @@ msgid "Validate"
 msgstr ""
 
 msgid "Validate your GitLab CI configuration file"
+msgstr ""
+
+msgid "Validations failed."
 msgstr ""
 
 msgid "Value"
@@ -8886,6 +9081,9 @@ msgid "Who will be able to see this group?"
 msgstr ""
 
 msgid "Wiki"
+msgstr ""
+
+msgid "Wiki was successfully updated."
 msgstr ""
 
 msgid "WikiClone|Clone your wiki"
@@ -9107,6 +9305,12 @@ msgstr ""
 msgid "You can move around the graph by using the arrow keys."
 msgstr ""
 
+msgid "You can now submit a merge request to get this change into the original branch."
+msgstr ""
+
+msgid "You can now submit a merge request to get this change into the original project."
+msgstr ""
+
 msgid "You can only add files when you are on a branch"
 msgstr ""
 
@@ -9134,7 +9338,16 @@ msgstr ""
 msgid "You cannot impersonate an internal user"
 msgstr ""
 
+msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."
+msgstr ""
+
 msgid "You cannot write to this read-only GitLab instance."
+msgstr ""
+
+msgid "You could not create a new trigger."
+msgstr ""
+
+msgid "You could not take ownership of trigger."
 msgstr ""
 
 msgid "You do not have any subscriptions yet"
@@ -9155,6 +9368,9 @@ msgstr ""
 msgid "You have reached your project limit"
 msgstr ""
 
+msgid "You left the \"%{membershipable_human_name}\" %{source_type}."
+msgstr ""
+
 msgid "You may also add variables that are made available to the running application by prepending the variable key with <code>K8S_SECRET_</code>."
 msgstr ""
 
@@ -9168,6 +9384,15 @@ msgid "You need permission."
 msgstr ""
 
 msgid "You need to register a two-factor authentication app before you can set up a U2F device."
+msgstr ""
+
+msgid "You need to specify both an Access Token and a Host URL."
+msgstr ""
+
+msgid "You need to upload a GitLab project export archive (ending in .gz)."
+msgstr ""
+
+msgid "You need to upload a Google Takeout archive."
 msgstr ""
 
 msgid "You will lose all changes you've made to this file. This action cannot be undone."
@@ -9242,6 +9467,9 @@ msgstr ""
 msgid "Your U2F device was registered!"
 msgstr ""
 
+msgid "Your access request to the %{source_type} has been withdrawn."
+msgstr ""
+
 msgid "Your account uses dedicated credentials for the \"%{group_name}\" group and can only be updated through SSO."
 msgstr ""
 
@@ -9261,6 +9489,9 @@ msgid "Your changes have been committed. Commit %{commitId} %{commitStats}"
 msgstr ""
 
 msgid "Your changes have been saved"
+msgstr ""
+
+msgid "Your changes have been successfully committed."
 msgstr ""
 
 msgid "Your comment will not be visible to the public."
@@ -9285,6 +9516,9 @@ msgid "Your project limit is %{limit} projects! Please contact your administrato
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "Your request for access has been queued for review."
 msgstr ""
 
 msgid "a deleted user"
@@ -9364,6 +9598,9 @@ msgid "error code:"
 msgstr ""
 
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
+msgstr ""
+
+msgid "failed"
 msgstr ""
 
 msgid "for %{link_to_merge_request} with %{link_to_merge_request_source_branch}"
@@ -9741,6 +9978,9 @@ msgid "started"
 msgstr ""
 
 msgid "stuck"
+msgstr ""
+
+msgid "success"
 msgstr ""
 
 msgid "syntax is correct"

@@ -55,15 +55,18 @@ You can also supply specific tests to run as another parameter. For example, to
 run the repository-related specs, you can execute:
 
 ```
-bin/qa Test::Instance::All http://localhost qa/specs/features/repository/
+bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/repository
 ```
 
 Since the arguments would be passed to `rspec`, you could use all `rspec`
 options there. For example, passing `--backtrace` and also line number:
 
 ```
-bin/qa Test::Instance::All http://localhost qa/specs/features/project/create_spec.rb:3 --backtrace
+bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb:6 --backtrace
 ```
+
+Note that the separator `--` is required; all subsequent options will be
+ignored by the QA framework and passed to `rspec`.
 
 ### Overriding the authenticated user
 
@@ -117,7 +120,7 @@ tests that are expected to fail while a fix is in progress (similar to how
  can be used).
 
 ```
-bin/qa Test::Instance::All http://localhost --tag quarantine
+bin/qa Test::Instance::All http://localhost -- --tag quarantine
 ```
 
 If `quarantine` is used with other tags, tests will only be run if they have at
@@ -128,3 +131,25 @@ For example, suppose one test has `:smoke` and `:quarantine` metadata, and
 another test has `:ldap` and `:quarantine` metadata. If the tests are run with
 `--tag smoke --tag quarantine`, only the first test will run. The test with
 `:ldap` will not run even though it also has `:quarantine`.
+
+### Running tests with a feature flag enabled
+
+Tests can be run with with a feature flag enabled by using the command-line
+option `--enable-feature FEATURE_FLAG`. For example, to enable the feature flag
+that enforces Gitaly request limits, you would use the command:
+
+```
+bin/qa Test::Instance::All http://localhost --enable-feature gitaly_enforce_requests_limits
+```
+
+This will instruct the QA framework to enable the `gitaly_enforce_requests_limits`
+feature flag ([via the API](https://docs.gitlab.com/ee/api/features.html)), run
+all the tests in the `Test::Instance::All` scenario, and then disable the
+feature flag again.
+
+Note: the QA framework doesn't currently allow you to easily toggle a feature
+flag during a single test, [as you can in unit tests](https://docs.gitlab.com/ee/development/feature_flags.html#specs),
+but [that capability is planned](https://gitlab.com/gitlab-org/quality/team-tasks/issues/77).
+
+Note also that the `--` separator isn't used because `--enable-feature` is a QA
+framework option, not an `rspec` option.

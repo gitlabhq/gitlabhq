@@ -8,6 +8,7 @@ module QA
         #
         class Smoke < Template
           include Bootable
+          include SharedAttributes
 
           tags :smoke
         end

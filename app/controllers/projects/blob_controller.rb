@@ -29,7 +29,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def create
-    create_commit(Files::CreateService, success_notice: "The file has been successfully created.",
+    create_commit(Files::CreateService, success_notice: _("The file has been successfully created."),
                                         success_path: -> { project_blob_path(@project, File.join(@branch_name, @file_path)) },
                                         failure_view: :new,
                                         failure_path: project_new_blob_path(@project, @ref))
@@ -81,7 +81,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    create_commit(Files::DeleteService, success_notice: "The file has been successfully deleted.",
+    create_commit(Files::DeleteService, success_notice: _("The file has been successfully deleted."),
                                         success_path: -> { after_delete_path },
                                         failure_view: :show,
                                         failure_path: project_blob_path(@project, @id))

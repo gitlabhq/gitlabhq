@@ -42,8 +42,7 @@ describe API::Suggestions do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response)
-          .to include('id', 'from_original_line', 'to_original_line',
-                      'from_line', 'to_line', 'appliable', 'applied',
+          .to include('id', 'from_line', 'to_line', 'appliable', 'applied',
                       'from_content', 'to_content')
       end
     end
