@@ -4,16 +4,7 @@ entry.
 
 ## 11.8.5 (2019-03-27)
 
-### Security (7 changes)
-
-- Disallow guest users from accessing Releases.
-- Fix PDF.js vulnerability.
-- Hide "related branches" when user does not have permission.
-- Fix XSS in resolve conflicts form.
-- Added rake task for removing EXIF data from existing uploads.
-- Disallow updating namespace when updating a project.
-- Use UntrustedRegexp for matching refs policy.
-
+- Unreleased due to QA failure.
 
 ## 11.8.4 (2019-03-26)
 

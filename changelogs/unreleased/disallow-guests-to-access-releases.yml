@@ -1,0 +1,5 @@
+---
+title: Disallow guest users from accessing Releases
+merge_request:
+author:
+type: security
