@@ -115,7 +115,7 @@ describe Gitlab::CurrentSettings do
           shared_examples 'a non-persisted ApplicationSetting object' do
             let(:current_settings) { described_class.current_application_settings }
 
-            it 'returns a non-persisted ApplicationSetting object' do
+            it 'returns a FakeApplicationSettings object' do
               expect(current_settings).to be_a(Gitlab::FakeApplicationSettings)
             end
 
