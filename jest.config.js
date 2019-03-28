@@ -1,4 +1,12 @@
-/* eslint-disable filenames/match-regex */
+
+const fs = require('fs');
+const path = require('path');
+
+const ROOT_PATH = __dirname;
+const IS_EE =
+  process.env.EE !== undefined
+    ? JSON.parse(process.env.EE)
+    : fs.existsSync(path.join(ROOT_PATH, 'ee'));
 
 const reporters = ['default'];
 
