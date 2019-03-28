@@ -232,7 +232,7 @@ module Gitlab
       result
     end
 
-    SERVER_FEATURE_FLAGS = %w[go-find-all-tags].freeze
+    SERVER_FEATURE_FLAGS = %w[].freeze
 
     def self.server_feature_flags
       SERVER_FEATURE_FLAGS.map do |f|
