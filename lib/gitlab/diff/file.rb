@@ -133,11 +133,15 @@ module Gitlab
       end
 
       def new_blob
-        new_blob_lazy&.itself
+        strong_memoize(:new_blob) do
+          new_blob_lazy&.itself
+        end
       end
 
       def old_blob
-        old_blob_lazy&.itself
+        strong_memoize(:old_blob) do
+          old_blob_lazy&.itself
+        end
       end
 
       def new_blob_lines_between(from_line, to_line)
