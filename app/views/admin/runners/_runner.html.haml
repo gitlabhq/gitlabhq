@@ -50,7 +50,7 @@
     .table-mobile-header{ role: 'rowheader' }= _('Tags')
     .table-mobile-content
       - runner.tags.map(&:name).sort.each do |tag|
-        %span.badge.badge-primary
+        %span.badge.badge-primary.str-truncated.has-tooltip{ title: tag }
           = tag
 
   .table-section.section-10
