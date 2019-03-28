@@ -30,7 +30,7 @@ describe NamespacePolicy do
     context 'user who has exceeded project limit' do
       let(:owner) { create(:user, projects_limit: 0) }
 
-      it { is_expected.not_to be_allowed(:create_projects) }
+      it { is_expected.to be_disallowed(:create_projects) }
     end
   end
 

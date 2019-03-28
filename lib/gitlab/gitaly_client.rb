@@ -33,12 +33,6 @@ module Gitlab
 
     MUTEX = Mutex.new
 
-    class << self
-      attr_accessor :query_time
-    end
-
-    self.query_time = 0
-
     define_histogram :gitaly_controller_action_duration_seconds do
       docstring "Gitaly endpoint histogram by controller and action combination"
       base_labels Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil)
@@ -172,6 +166,18 @@ module Gitlab
         duration)
 
       add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc)
+    end
+
+    def self.query_time
+      SafeRequestStore[:gitaly_query_time] ||= 0
+    end
+
+    def self.query_time=(duration)
+      SafeRequestStore[:gitaly_query_time] = duration
+    end
+
+    def self.query_time_ms
+      (self.query_time * 1000).round(2)
     end
 
     def self.current_transaction_labels

@@ -33,7 +33,7 @@ changes should be tested.
 
 ## [Testing best practices](best_practices.md)
 
-Everything you should know about how to write good tests: RSpec, FactoryBot,
+Everything you should know about how to write good tests: Test Design, RSpec, FactoryBot,
 system tests, parameterized tests etc.
 
 ---

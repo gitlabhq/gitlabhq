@@ -4,7 +4,7 @@
 = render "projects/jobs/header"
 
 - add_to_breadcrumbs(s_('CICD|Jobs'), project_jobs_path(@project))
-- add_to_breadcrumbs("##{@build.id}", project_jobs_path(@project))
+- add_to_breadcrumbs("##{@build.id}", project_job_path(@project, @build))
 
 .tree-holder
   .nav-block

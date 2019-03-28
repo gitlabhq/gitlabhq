@@ -17,6 +17,7 @@ module QA
     autoload :Env, 'qa/runtime/env'
     autoload :Address, 'qa/runtime/address'
     autoload :Path, 'qa/runtime/path'
+    autoload :Feature, 'qa/runtime/feature'
     autoload :Fixtures, 'qa/runtime/fixtures'
     autoload :Logger, 'qa/runtime/logger'
 
@@ -89,6 +90,7 @@ module QA
     autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
     autoload :Template, 'qa/scenario/template'
+    autoload :SharedAttributes, 'qa/scenario/shared_attributes'
 
     ##
     # Test scenario entrypoints.

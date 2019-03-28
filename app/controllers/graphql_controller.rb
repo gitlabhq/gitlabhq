@@ -12,6 +12,7 @@ class GraphqlController < ApplicationController
   protect_from_forgery with: :null_session, only: :execute
 
   before_action :check_graphql_feature_flag!
+  before_action :authorize_access_api!
   before_action(only: [:execute]) { authenticate_sessionless_user!(:api) }
 
   def execute
@@ -36,6 +37,10 @@ class GraphqlController < ApplicationController
   end
 
   private
+
+  def authorize_access_api!
+    access_denied!("API not accessible for user.") unless can?(current_user, :access_api)
+  end
 
   # Overridden from the ApplicationController to make the response look like
   # a GraphQL response. That is nicely picked up in Graphiql.

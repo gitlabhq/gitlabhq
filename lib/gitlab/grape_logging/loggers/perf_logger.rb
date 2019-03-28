@@ -6,7 +6,10 @@ module Gitlab
     module Loggers
       class PerfLogger < ::GrapeLogging::Loggers::Base
         def parameters(_, _)
-          { gitaly_calls: Gitlab::GitalyClient.get_request_count }
+          {
+            gitaly_calls: Gitlab::GitalyClient.get_request_count,
+            gitaly_duration: Gitlab::GitalyClient.query_time_ms
+          }
         end
       end
     end

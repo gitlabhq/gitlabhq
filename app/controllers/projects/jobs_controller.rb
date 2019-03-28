@@ -122,7 +122,7 @@ class Projects::JobsController < Projects::ApplicationController
   def erase
     if @build.erase(erased_by: current_user)
       redirect_to project_job_path(project, @build),
-                notice: "Job has been successfully erased!"
+                notice: _("Job has been successfully erased!")
     else
       respond_422
     end

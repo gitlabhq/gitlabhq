@@ -9,7 +9,7 @@ module MembershipActions
     result = Members::CreateService.new(current_user, create_params).execute(membershipable)
 
     if result[:status] == :success
-      redirect_to members_page_url, notice: 'Users were successfully added.'
+      redirect_to members_page_url, notice: _('Users were successfully added.')
     else
       redirect_to members_page_url, alert: result[:message]
     end
@@ -35,9 +35,16 @@ module MembershipActions
 
     respond_to do |format|
       format.html do
-        source = source_type == 'group' ? 'group and any subresources' : source_type
+        message =
+          begin
+            case membershipable
+            when Namespace
+              _("User was successfully removed from group and any subresources.")
+            else
+              _("User was successfully removed from project.")
+            end
+          end
 
-        message = "User was successfully removed from #{source}."
         redirect_to members_page_url, notice: message
       end
 
@@ -49,7 +56,7 @@ module MembershipActions
     membershipable.request_access(current_user)
 
     redirect_to polymorphic_path(membershipable),
-                notice: 'Your request for access has been queued for review.'
+                notice: _('Your request for access has been queued for review.')
   end
 
   def approve_access_request
@@ -68,9 +75,9 @@ module MembershipActions
 
     notice =
       if member.request?
-        "Your access request to the #{source_type} has been withdrawn."
+        _("Your access request to the %{source_type} has been withdrawn.") % { source_type: source_type }
       else
-        "You left the \"#{membershipable.human_name}\" #{source_type}."
+        _("You left the \"%{membershipable_human_name}\" %{source_type}.") % { membershipable_human_name: membershipable.human_name, source_type: source_type }
       end
 
     respond_to do |format|
@@ -90,9 +97,9 @@ module MembershipActions
     if member.invite?
       member.resend_invite
 
-      redirect_to members_page_url, notice: 'The invitation was successfully resent.'
+      redirect_to members_page_url, notice: _('The invitation was successfully resent.')
     else
-      redirect_to members_page_url, alert: 'The invitation has already been accepted.'
+      redirect_to members_page_url, alert: _('The invitation has already been accepted.')
     end
   end
 
@@ -125,6 +132,16 @@ module MembershipActions
   end
 
   def source_type
-    @source_type ||= membershipable.class.to_s.humanize(capitalize: false)
+    @source_type ||=
+      begin
+        case membershipable
+        when Namespace
+          _("group")
+        when Project
+          _("project")
+        else
+          raise "Unknown membershipable type: #{membershipable}!"
+        end
+      end
   end
 end

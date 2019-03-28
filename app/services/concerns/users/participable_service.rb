@@ -28,19 +28,35 @@ module Users
     end
 
     def groups
-      current_user.authorized_groups.sort_by(&:path).map do |group|
-        group_as_hash(group)
+      group_counts = GroupMember
+                       .in_groups(current_user.authorized_groups)
+                       .non_request
+                       .count_users_by_group_id
+
+      current_user.authorized_groups.with_route.sort_by(&:path).map do |group|
+        group_as_hash(group, group_counts)
       end
     end
 
     private
 
     def user_as_hash(user)
-      { type: user.class.name, username: user.username, name: user.name, avatar_url: user.avatar_url }
+      {
+        type: user.class.name,
+        username: user.username,
+        name: user.name,
+        avatar_url: user.avatar_url
+      }
     end
 
-    def group_as_hash(group)
-      { type: group.class.name, username: group.full_path, name: group.full_name, avatar_url: group.avatar_url, count: group.users.count }
+    def group_as_hash(group, group_counts)
+      {
+        type: group.class.name,
+        username: group.full_path,
+        name: group.full_name,
+        avatar_url: group.avatar_url,
+        count: group_counts.fetch(group.id, 0)
+      }
     end
   end
 end

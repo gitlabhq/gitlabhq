@@ -24,8 +24,6 @@ Example response:
 ```json
   {
     "id": 36,
-    "from_original_line": 10,
-    "to_original_line": 10,
     "from_line": 10,
     "to_line": 10,
     "appliable": false,

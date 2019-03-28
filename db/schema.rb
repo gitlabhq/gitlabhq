@@ -1256,6 +1256,7 @@ ActiveRecord::Schema.define(version: 20190322132835) do
     t.integer "external_diff_store"
     t.boolean "stored_externally"
     t.index ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
+    t.index ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id_partial", where: "((NOT stored_externally) OR (stored_externally IS NULL))", using: :btree
   end
 
   create_table "merge_request_metrics", force: :cascade do |t|
@@ -1271,7 +1272,9 @@ ActiveRecord::Schema.define(version: 20190322132835) do
     t.integer "latest_closed_by_id"
     t.datetime_with_timezone "latest_closed_at"
     t.index ["first_deployed_to_production_at"], name: "index_merge_request_metrics_on_first_deployed_to_production_at", using: :btree
+    t.index ["latest_closed_at"], name: "index_merge_request_metrics_on_latest_closed_at", where: "(latest_closed_at IS NOT NULL)", using: :btree
     t.index ["latest_closed_by_id"], name: "index_merge_request_metrics_on_latest_closed_by_id", using: :btree
+    t.index ["merge_request_id", "merged_at"], name: "index_merge_request_metrics_on_merge_request_id_and_merged_at", where: "(merged_at IS NOT NULL)", using: :btree
     t.index ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
     t.index ["merged_by_id"], name: "index_merge_request_metrics_on_merged_by_id", using: :btree
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
@@ -2039,6 +2042,9 @@ ActiveRecord::Schema.define(version: 20190322132835) do
     t.string "commit_id"
     t.text "from_content", null: false
     t.text "to_content", null: false
+    t.integer "lines_above", default: 0, null: false
+    t.integer "lines_below", default: 0, null: false
+    t.boolean "outdated", default: false, null: false
     t.index ["note_id", "relative_order"], name: "index_suggestions_on_note_id_and_relative_order", unique: true, using: :btree
   end
 
