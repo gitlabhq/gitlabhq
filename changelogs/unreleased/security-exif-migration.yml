@@ -1,5 +1,0 @@
----
-title: Added rake task for removing EXIF data from existing uploads.
-merge_request:
-author:
-type: security
