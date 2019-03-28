@@ -1,4 +1,3 @@
-import _ from 'underscore';
 import ProjectListItem from '~/vue_shared/components/project_selector/project_list_item.vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import { trimText } from 'spec/helpers/vue_component_helper';
@@ -6,99 +5,106 @@ import { trimText } from 'spec/helpers/vue_component_helper';
 const localVue = createLocalVue();
 
 describe('ProjectListItem component', () => {
+  const Component = localVue.extend(ProjectListItem);
   let wrapper;
   let vm;
+  let options;
   loadJSONFixtures('projects.json');
   const project = getJSONFixture('projects.json')[0];
 
   beforeEach(() => {
-    wrapper = shallowMount(localVue.extend(ProjectListItem), {
+    options = {
       propsData: {
         project,
         selected: false,
       },
       sync: false,
       localVue,
-    });
-
-    ({ vm } = wrapper);
+    };
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.vm.$destroy();
   });
 
   it('does not render a check mark icon if selected === false', () => {
-    expect(vm.$el.querySelector('.js-selected-icon.js-unselected')).toBeTruthy();
+    wrapper = shallowMount(Component, options);
+
+    expect(wrapper.contains('.js-selected-icon.js-unselected')).toBe(true);
   });
 
-  it('renders a check mark icon if selected === true', done => {
-    wrapper.setProps({ selected: true });
+  it('renders a check mark icon if selected === true', () => {
+    options.propsData.selected = true;
 
-    vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.js-selected-icon.js-selected')).toBeTruthy();
-      done();
-    });
+    wrapper = shallowMount(Component, options);
+
+    expect(wrapper.contains('.js-selected-icon.js-selected')).toBe(true);
   });
 
   it(`emits a "clicked" event when clicked`, () => {
-    spyOn(vm, '$emit');
-    vm.onClick();
+    wrapper = shallowMount(Component, options);
+    ({ vm } = wrapper);
 
-    expect(vm.$emit).toHaveBeenCalledWith('click');
+    spyOn(vm, '$emit');
+    wrapper.vm.onClick();
+
+    expect(wrapper.vm.$emit).toHaveBeenCalledWith('click');
   });
 
   it(`renders the project avatar`, () => {
-    expect(vm.$el.querySelector('.js-project-avatar')).toBeTruthy();
+    wrapper = shallowMount(Component, options);
+
+    expect(wrapper.contains('.js-project-avatar')).toBe(true);
   });
 
-  it(`renders a simple namespace name with a trailing slash`, done => {
-    project.name_with_namespace = 'a / b';
-    wrapper.setProps({ project: _.clone(project) });
+  it(`renders a simple namespace name with a trailing slash`, () => {
+    options.propsData.project.name_with_namespace = 'a / b';
 
-    vm.$nextTick(() => {
-      const renderedNamespace = trimText(vm.$el.querySelector('.js-project-namespace').textContent);
+    wrapper = shallowMount(Component, options);
+    const renderedNamespace = trimText(wrapper.find('.js-project-namespace').text());
 
-      expect(renderedNamespace).toBe('a /');
-      done();
-    });
+    expect(renderedNamespace).toBe('a /');
   });
 
-  it(`renders a properly truncated namespace with a trailing slash`, done => {
-    project.name_with_namespace = 'a / b / c / d / e / f';
-    wrapper.setProps({ project: _.clone(project) });
+  it(`renders a properly truncated namespace with a trailing slash`, () => {
+    options.propsData.project.name_with_namespace = 'a / b / c / d / e / f';
 
-    vm.$nextTick(() => {
-      const renderedNamespace = trimText(vm.$el.querySelector('.js-project-namespace').textContent);
+    wrapper = shallowMount(Component, options);
+    const renderedNamespace = trimText(wrapper.find('.js-project-namespace').text());
 
-      expect(renderedNamespace).toBe('a / ... / e /');
-      done();
-    });
+    expect(renderedNamespace).toBe('a / ... / e /');
   });
 
-  it(`renders the project name`, done => {
-    project.name = 'my-test-project';
-    wrapper.setProps({ project: _.clone(project) });
+  it(`renders the project name`, () => {
+    options.propsData.project.name = 'my-test-project';
 
-    vm.$nextTick(() => {
-      const renderedName = trimText(vm.$el.querySelector('.js-project-name').innerHTML);
+    wrapper = shallowMount(Component, options);
+    const renderedName = trimText(wrapper.find('.js-project-name').text());
 
-      expect(renderedName).toBe('my-test-project');
-      done();
-    });
+    expect(renderedName).toBe('my-test-project');
   });
 
-  it(`renders the project name with highlighting in the case of a search query match`, done => {
-    project.name = 'my-test-project';
-    wrapper.setProps({ project: _.clone(project), matcher: 'pro' });
+  it(`renders the project name with highlighting in the case of a search query match`, () => {
+    options.propsData.project.name = 'my-test-project';
+    options.propsData.matcher = 'pro';
 
-    vm.$nextTick(() => {
-      const renderedName = trimText(vm.$el.querySelector('.js-project-name').innerHTML);
+    wrapper = shallowMount(Component, options);
+    const renderedName = trimText(wrapper.find('.js-project-name').html());
+    const expected = 'my-test-<b>p</b><b>r</b><b>o</b>ject';
 
-      const expected = 'my-test-<b>p</b><b>r</b><b>o</b>ject';
+    expect(renderedName).toContain(expected);
+  });
 
-      expect(renderedName).toBe(expected);
-      done();
-    });
+  it('prevents search query and project name XSS', () => {
+    const alertSpy = spyOn(window, 'alert');
+    options.propsData.project.name = "my-xss-pro<script>alert('XSS');</script>ject";
+    options.propsData.matcher = "pro<script>alert('XSS');</script>";
+
+    wrapper = shallowMount(Component, options);
+    const renderedName = trimText(wrapper.find('.js-project-name').html());
+    const expected = 'my-xss-project';
+
+    expect(renderedName).toContain(expected);
+    expect(alertSpy).not.toHaveBeenCalled();
   });
 });

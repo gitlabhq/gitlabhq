@@ -38,28 +38,25 @@ describe('ProjectSelector component', () => {
   });
 
   it('renders the search results', () => {
-    expect(vm.$el.querySelectorAll('.js-project-list-item').length).toBe(5);
+    expect(wrapper.findAll('.js-project-list-item').length).toBe(5);
   });
 
-  it(`triggers a (debounced) search when the search input value changes`, done => {
+  it(`triggers a (debounced) search when the search input value changes`, () => {
     spyOn(vm, '$emit');
     const query = 'my test query!';
-    const searchInput = vm.$el.querySelector('.js-project-selector-input');
-    searchInput.value = query;
-    searchInput.dispatchEvent(new Event('input'));
+    const searchInput = wrapper.find('.js-project-selector-input');
+    searchInput.setValue(query);
+    searchInput.trigger('input');
 
-    vm.$nextTick(() => {
-      expect(vm.$emit).not.toHaveBeenCalledWith();
-      jasmine.clock().tick(501);
+    expect(vm.$emit).not.toHaveBeenCalledWith();
+    jasmine.clock().tick(501);
 
-      expect(vm.$emit).toHaveBeenCalledWith('searched', query);
-      done();
-    });
+    expect(vm.$emit).toHaveBeenCalledWith('searched', query);
   });
 
-  it(`debounces the search input`, done => {
+  it(`debounces the search input`, () => {
     spyOn(vm, '$emit');
-    const searchInput = vm.$el.querySelector('.js-project-selector-input');
+    const searchInput = wrapper.find('.js-project-selector-input');
 
     const updateSearchQuery = (count = 0) => {
       if (count === 10) {
@@ -67,15 +64,12 @@ describe('ProjectSelector component', () => {
 
         expect(vm.$emit).toHaveBeenCalledTimes(1);
         expect(vm.$emit).toHaveBeenCalledWith('searched', `search query #9`);
-        done();
       } else {
-        searchInput.value = `search query #${count}`;
-        searchInput.dispatchEvent(new Event('input'));
+        searchInput.setValue(`search query #${count}`);
+        searchInput.trigger('input');
 
-        vm.$nextTick(() => {
-          jasmine.clock().tick(400);
-          updateSearchQuery(count + 1);
-        });
+        jasmine.clock().tick(400);
+        updateSearchQuery(count + 1);
       }
     };
 
@@ -83,7 +77,7 @@ describe('ProjectSelector component', () => {
   });
 
   it(`includes a placeholder in the search box`, () => {
-    expect(vm.$el.querySelector('.js-project-selector-input').placeholder).toBe(
+    expect(wrapper.find('.js-project-selector-input').attributes('placeholder')).toBe(
       'Search your projects',
     );
   });
@@ -95,58 +89,44 @@ describe('ProjectSelector component', () => {
     expect(vm.$emit).toHaveBeenCalledWith('projectClicked', _.first(searchResults));
   });
 
-  it(`shows a "no results" message if showNoResultsMessage === true`, done => {
+  it(`shows a "no results" message if showNoResultsMessage === true`, () => {
     wrapper.setProps({ showNoResultsMessage: true });
 
-    vm.$nextTick(() => {
-      const noResultsEl = vm.$el.querySelector('.js-no-results-message');
+    expect(wrapper.contains('.js-no-results-message')).toBe(true);
 
-      expect(noResultsEl).toBeTruthy();
+    const noResultsEl = wrapper.find('.js-no-results-message');
 
-      expect(trimText(noResultsEl.textContent)).toEqual('Sorry, no projects matched your search');
-
-      done();
-    });
+    expect(trimText(noResultsEl.text())).toEqual('Sorry, no projects matched your search');
   });
 
-  it(`shows a "minimum seach query" message if showMinimumSearchQueryMessage === true`, done => {
+  it(`shows a "minimum seach query" message if showMinimumSearchQueryMessage === true`, () => {
     wrapper.setProps({ showMinimumSearchQueryMessage: true });
 
-    vm.$nextTick(() => {
-      const minimumSearchEl = vm.$el.querySelector('.js-minimum-search-query-message');
+    expect(wrapper.contains('.js-minimum-search-query-message')).toBe(true);
 
-      expect(minimumSearchEl).toBeTruthy();
+    const minimumSearchEl = wrapper.find('.js-minimum-search-query-message');
 
-      expect(trimText(minimumSearchEl.textContent)).toEqual(
-        'Enter at least three characters to search',
-      );
-
-      done();
-    });
+    expect(trimText(minimumSearchEl.text())).toEqual('Enter at least three characters to search');
   });
 
-  it(`shows a error message if showSearchErrorMessage === true`, done => {
+  it(`shows a error message if showSearchErrorMessage === true`, () => {
     wrapper.setProps({ showSearchErrorMessage: true });
 
-    vm.$nextTick(() => {
-      const errorMessageEl = vm.$el.querySelector('.js-search-error-message');
+    expect(wrapper.contains('.js-search-error-message')).toBe(true);
 
-      expect(errorMessageEl).toBeTruthy();
+    const errorMessageEl = wrapper.find('.js-search-error-message');
 
-      expect(trimText(errorMessageEl.textContent)).toEqual(
-        'Something went wrong, unable to search projects',
-      );
-
-      done();
-    });
+    expect(trimText(errorMessageEl.text())).toEqual(
+      'Something went wrong, unable to search projects',
+    );
   });
 
   it(`focuses the input element when the focusSearchInput() method is called`, () => {
-    const input = vm.$el.querySelector('.js-project-selector-input');
+    const input = wrapper.find('.js-project-selector-input');
 
-    expect(document.activeElement).not.toBe(input);
+    expect(document.activeElement).not.toBe(input.element);
     vm.focusSearchInput();
 
-    expect(document.activeElement).toBe(input);
+    expect(document.activeElement).toBe(input.element);
   });
 });

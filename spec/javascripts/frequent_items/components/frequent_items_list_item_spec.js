@@ -1,26 +1,31 @@
 import Vue from 'vue';
 import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 import { trimText } from 'spec/helpers/vue_component_helper';
 import { mockProject } from '../mock_data'; // can also use 'mockGroup', but not useful to test here
 
 const createComponent = () => {
   const Component = Vue.extend(frequentItemsListItemComponent);
 
-  return mountComponent(Component, {
-    itemId: mockProject.id,
-    itemName: mockProject.name,
-    namespace: mockProject.namespace,
-    webUrl: mockProject.webUrl,
-    avatarUrl: mockProject.avatarUrl,
+  return shallowMount(Component, {
+    propsData: {
+      itemId: mockProject.id,
+      itemName: mockProject.name,
+      namespace: mockProject.namespace,
+      webUrl: mockProject.webUrl,
+      avatarUrl: mockProject.avatarUrl,
+    },
   });
 };
 
 describe('FrequentItemsListItemComponent', () => {
+  let wrapper;
   let vm;
 
   beforeEach(() => {
-    vm = createComponent();
+    wrapper = createComponent();
+
+    ({ vm } = wrapper);
   });
 
   afterEach(() => {
@@ -30,81 +35,61 @@ describe('FrequentItemsListItemComponent', () => {
   describe('computed', () => {
     describe('hasAvatar', () => {
       it('should return `true` or `false` if whether avatar is present or not', () => {
-        vm.avatarUrl = 'path/to/avatar.png';
+        wrapper.setProps({ avatarUrl: 'path/to/avatar.png' });
 
         expect(vm.hasAvatar).toBe(true);
 
-        vm.avatarUrl = null;
+        wrapper.setProps({ avatarUrl: null });
 
         expect(vm.hasAvatar).toBe(false);
       });
     });
 
     describe('highlightedItemName', () => {
-      it('should enclose part of project name in <b> & </b> which matches with `matcher` prop', done => {
-        vm.matcher = 'lab';
+      it('should enclose part of project name in <b> & </b> which matches with `matcher` prop', () => {
+        wrapper.setProps({ matcher: 'lab' });
 
-        vm.$nextTick()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-frequent-items-item-title').innerHTML).toContain(
-              '<b>L</b><b>a</b><b>b</b>',
-            );
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(wrapper.find('.js-frequent-items-item-title').html()).toContain(
+          '<b>L</b><b>a</b><b>b</b>',
+        );
       });
 
-      it('should return project name as it is if `matcher` is not available', done => {
-        vm.matcher = null;
+      it('should return project name as it is if `matcher` is not available', () => {
+        wrapper.setProps({ matcher: null });
 
-        vm.$nextTick()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-frequent-items-item-title').innerHTML).toBe(
-              mockProject.name,
-            );
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(trimText(wrapper.find('.js-frequent-items-item-title').text())).toBe(
+          mockProject.name,
+        );
       });
     });
 
     describe('truncatedNamespace', () => {
-      it('should truncate project name from namespace string', done => {
-        vm.namespace = 'platform / nokia-3310';
+      it('should truncate project name from namespace string', () => {
+        wrapper.setProps({ namespace: 'platform / nokia-3310' });
 
-        vm.$nextTick()
-          .then(() => {
-            expect(
-              trimText(vm.$el.querySelector('.js-frequent-items-item-namespace').innerHTML),
-            ).toBe('platform');
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(trimText(wrapper.find('.js-frequent-items-item-namespace').text())).toBe('platform');
       });
 
-      it('should truncate namespace string from the middle if it includes more than two groups in path', done => {
-        vm.namespace = 'platform / hardware / broadcom / Wifi Group / Mobile Chipset / nokia-3310';
+      it('should truncate namespace string from the middle if it includes more than two groups in path', () => {
+        wrapper.setProps({
+          namespace: 'platform / hardware / broadcom / Wifi Group / Mobile Chipset / nokia-3310',
+        });
 
-        vm.$nextTick()
-          .then(() => {
-            expect(
-              trimText(vm.$el.querySelector('.js-frequent-items-item-namespace').innerHTML),
-            ).toBe('platform / ... / Mobile Chipset');
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(trimText(wrapper.find('.js-frequent-items-item-namespace').text())).toBe(
+          'platform / ... / Mobile Chipset',
+        );
       });
     });
   });
 
   describe('template', () => {
     it('should render component element', () => {
-      expect(vm.$el.classList.contains('frequent-items-list-item-container')).toBeTruthy();
-      expect(vm.$el.querySelectorAll('a').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.frequent-items-item-avatar-container').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.frequent-items-item-metadata-container').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.js-frequent-items-item-title').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.js-frequent-items-item-namespace').length).toBe(1);
+      expect(wrapper.classes()).toContain('frequent-items-list-item-container');
+      expect(wrapper.findAll('a').length).toBe(1);
+      expect(wrapper.findAll('.frequent-items-item-avatar-container').length).toBe(1);
+      expect(wrapper.findAll('.frequent-items-item-metadata-container').length).toBe(1);
+      expect(wrapper.findAll('.frequent-items-item-title').length).toBe(1);
+      expect(wrapper.findAll('.frequent-items-item-namespace').length).toBe(1);
     });
   });
 });

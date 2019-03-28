@@ -56,8 +56,8 @@ export default {
     focusSearchInput() {
       this.$refs.searchInput.focus();
     },
-    onInput: _.debounce(function debouncedOnInput(e) {
-      this.$emit('searched', e.target.value);
+    onInput: _.debounce(function debouncedOnInput() {
+      this.$emit('searched', this.searchQuery);
     }, SEARCH_INPUT_TIMEOUT_MS),
   },
 };

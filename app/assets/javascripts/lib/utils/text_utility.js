@@ -172,8 +172,8 @@ export const splitCamelCase = string =>
  * @param {String} string A string namespace,
  *      i.e. "My Group / My Subgroup / My Project"
  */
-export const truncateNamespace = string => {
-  if (_.isUndefined(string) || _.isNull(string) || !_.isString(string)) {
+export const truncateNamespace = (string = '') => {
+  if (_.isNull(string) || !_.isString(string)) {
     return '';
   }
 

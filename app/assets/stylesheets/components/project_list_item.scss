@@ -17,9 +17,6 @@
     margin-left: -$gl-padding;
     margin-right: -$gl-padding;
 
-    // should be replaced by Bootstrap's
-    // .overflow-hidden utility class once
-    // we upgrade Bootstrap to at least 4.2.x
     .project-namespace-name-container {
       overflow: hidden;
     }
