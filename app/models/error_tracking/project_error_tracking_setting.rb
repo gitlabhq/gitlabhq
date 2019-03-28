@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ErrorTracking
-  class ProjectErrorTrackingSetting < ActiveRecord::Base
+  class ProjectErrorTrackingSetting < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
     include ReactiveCaching
 

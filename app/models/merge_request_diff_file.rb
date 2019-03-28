@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MergeRequestDiffFile < ActiveRecord::Base
+class MergeRequestDiffFile < ApplicationRecord
   include Gitlab::EncodingHelper
   include DiffFile
 

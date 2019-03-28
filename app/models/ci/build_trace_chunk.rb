@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class BuildTraceChunk < ActiveRecord::Base
+  class BuildTraceChunk < ApplicationRecord
     include FastDestroyAll
     include ::Gitlab::ExclusiveLeaseHelpers
     extend Gitlab::Ci::Model

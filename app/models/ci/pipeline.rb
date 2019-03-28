@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class Pipeline < ActiveRecord::Base
+  class Pipeline < ApplicationRecord
     extend Gitlab::Ci::Model
     include HasStatus
     include Importable
@@ -184,7 +184,7 @@ module Ci
 
     scope :sort_by_merge_request_pipelines, -> do
       sql = 'CASE ci_pipelines.source WHEN (?) THEN 0 ELSE 1 END, ci_pipelines.id DESC'
-      query = ActiveRecord::Base.send(:sanitize_sql_array, [sql, sources[:merge_request_event]]) # rubocop:disable GitlabSecurity/PublicSend
+      query = ApplicationRecord.send(:sanitize_sql_array, [sql, sources[:merge_request_event]]) # rubocop:disable GitlabSecurity/PublicSend
 
       order(query)
     end

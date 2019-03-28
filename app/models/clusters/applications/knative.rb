@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class Knative < ActiveRecord::Base
+    class Knative < ApplicationRecord
       VERSION = '0.3.0'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
       METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'.freeze

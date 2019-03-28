@@ -2,7 +2,7 @@
 
 module Clusters
   module Platforms
-    class Kubernetes < ActiveRecord::Base
+    class Kubernetes < ApplicationRecord
       include Gitlab::Kubernetes
       include ReactiveCaching
       include EnumWithNil

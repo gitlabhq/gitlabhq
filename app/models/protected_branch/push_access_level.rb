@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
+class ProtectedBranch::PushAccessLevel < ApplicationRecord
   include ProtectedBranchAccess
 end

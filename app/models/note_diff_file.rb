@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NoteDiffFile < ActiveRecord::Base
+class NoteDiffFile < ApplicationRecord
   include DiffFile
 
   scope :for_commit_or_unresolved, -> do

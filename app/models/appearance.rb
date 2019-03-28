@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Appearance < ActiveRecord::Base
+class Appearance < ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
   include ObjectStorage::BackgroundMove

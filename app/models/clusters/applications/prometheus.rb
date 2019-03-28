@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class Prometheus < ActiveRecord::Base
+    class Prometheus < ApplicationRecord
       include PrometheusAdapter
 
       VERSION = '6.7.3'

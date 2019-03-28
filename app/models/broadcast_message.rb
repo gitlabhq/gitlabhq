@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class BroadcastMessage < ActiveRecord::Base
+class BroadcastMessage < ApplicationRecord
   include CacheMarkdownField
   include Sortable
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Environment < ActiveRecord::Base
+class Environment < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   # Used to generate random suffixes for the slug
   LETTERS = 'a'..'z'

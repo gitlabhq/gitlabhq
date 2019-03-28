@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectAutoDevops < ActiveRecord::Base
+class ProjectAutoDevops < ApplicationRecord
   belongs_to :project
 
   enum deploy_strategy: {

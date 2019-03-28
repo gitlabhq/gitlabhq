@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Todo < ActiveRecord::Base
+class Todo < ApplicationRecord
   include Sortable
   include FromUnion
 

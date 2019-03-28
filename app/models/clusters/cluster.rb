@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Clusters
-  class Cluster < ActiveRecord::Base
+  class Cluster < ApplicationRecord
     include Presentable
     include Gitlab::Utils::StrongMemoize
     include FromUnion

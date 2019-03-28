@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WebHookLog < ActiveRecord::Base
+class WebHookLog < ApplicationRecord
   belongs_to :web_hook
 
   serialize :request_headers, Hash # rubocop:disable Cop/ActiveRecordSerialize

@@ -2,7 +2,7 @@
 
 require 'carrierwave/orm/activerecord'
 
-class ProjectImportData < ActiveRecord::Base
+class ProjectImportData < ApplicationRecord
   belongs_to :project, inverse_of: :import_data
   attr_encrypted :credentials,
                  key: Settings.attr_encrypted_db_key_base,
