@@ -46,8 +46,24 @@ FactoryBot.define do
       target_branch "improve/awesome"
     end
 
+    trait :merged_last_month do
+      merged
+
+      after(:build) do |merge_request|
+        merge_request.build_metrics.merged_at = 1.month.ago
+      end
+    end
+
     trait :closed do
       state :closed
+    end
+
+    trait :closed_last_month do
+      closed
+
+      after(:build) do |merge_request|
+        merge_request.build_metrics.latest_closed_at = 1.month.ago
+      end
     end
 
     trait :opened do
