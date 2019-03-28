@@ -3,7 +3,7 @@
 require_relative '../../qa'
 
 # This script deletes all subgroups of a group specified by ENV['GROUP_NAME_OR_PATH']
-# Required environment variables: PERSONAL_ACCESS_TOKEN and GITLAB_ADDRESS
+# Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 # Optional environment variable: GROUP_NAME_OR_PATH (defaults to 'gitlab-qa-sandbox-group')
 # Run `rake delete_subgroups`
 
@@ -14,9 +14,9 @@ module QA
 
       def initialize
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
-        raise ArgumentError, "Please provide PERSONAL_ACCESS_TOKEN" unless ENV['PERSONAL_ACCESS_TOKEN']
+        raise ArgumentError, "Please provide GITLAB_QA_ACCESS_TOKEN" unless ENV['GITLAB_QA_ACCESS_TOKEN']
 
-        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['PERSONAL_ACCESS_TOKEN'])
+        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
       end
 
       def run

@@ -53,7 +53,7 @@ module QA
 
       # specifies token that can be used for the api
       def personal_access_token
-        @personal_access_token ||= ENV['PERSONAL_ACCESS_TOKEN']
+        @personal_access_token ||= ENV['GITLAB_QA_ACCESS_TOKEN']
       end
 
       def remote_grid

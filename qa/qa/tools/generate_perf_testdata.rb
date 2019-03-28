@@ -5,7 +5,7 @@ require 'faker'
 require 'yaml'
 require_relative '../../qa'
 # This script generates testdata for Performance Testing.
-# Required environment variables: PERSONAL_ACCESS_TOKEN and GITLAB_ADDRESS
+# Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 # This job creates a urls.txt which contains a hash of all the URLs needed for Performance Testing
 # Run `rake generate_perf_testdata`
 
@@ -16,9 +16,9 @@ module QA
 
       def initialize
         raise ArgumentError, "Please provide GITLAB_ADDRESS" unless ENV['GITLAB_ADDRESS']
-        raise ArgumentError, "Please provide PERSONAL_ACCESS_TOKEN" unless ENV['PERSONAL_ACCESS_TOKEN']
+        raise ArgumentError, "Please provide GITLAB_QA_ACCESS_TOKEN" unless ENV['GITLAB_QA_ACCESS_TOKEN']
 
-        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['PERSONAL_ACCESS_TOKEN'])
+        @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
         @group_name = "gitlab-qa-perf-sandbox-#{SecureRandom.hex(8)}"
         @project_name = "my-test-project-#{SecureRandom.hex(8)}"
         @visibility = "public"
