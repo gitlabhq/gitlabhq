@@ -54,7 +54,7 @@ module Clusters
 
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
-      delegate :managed?, to: :cluster, allow_nil: true
+      delegate :provided_by_user?, to: :cluster, allow_nil: true
       delegate :allow_user_defined_namespace?, to: :cluster, allow_nil: true
       delegate :kubernetes_namespace, to: :cluster
 
@@ -219,7 +219,7 @@ module Clusters
       end
 
       def prevent_modification
-        return unless managed?
+        return if provided_by_user?
 
         if api_url_changed? || token_changed? || ca_pem_changed?
           errors.add(:base, _('Cannot modify managed Kubernetes cluster'))

@@ -2,7 +2,7 @@
   = form_errors(cluster)
 
   .form-group
-    - if cluster.managed?
+    - if cluster.read_only_kubernetes_platform_fields?
       %label.append-bottom-10{ for: 'cluster-name' }
         = s_('ClusterIntegration|Kubernetes cluster name')
       .input-group
@@ -18,27 +18,27 @@
     .form-group
       = platform_field.label :api_url, s_('ClusterIntegration|API URL')
       .input-group
-        = platform_field.text_field :api_url, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|API URL'), readonly: cluster.managed?
-        - if cluster.managed?
+        = platform_field.text_field :api_url, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|API URL'), readonly: cluster.read_only_kubernetes_platform_fields?
+        - if cluster.read_only_kubernetes_platform_fields?
           %span.input-group-append
             = clipboard_button(text: platform.api_url, title: s_('ClusterIntegration|Copy API URL'), class: 'input-group-text btn-default')
 
     .form-group
       = platform_field.label :ca_cert, s_('ClusterIntegration|CA Certificate')
       .input-group
-        = platform_field.text_area :ca_cert, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'), readonly: cluster.managed?
-        - if cluster.managed?
+        = platform_field.text_area :ca_cert, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'), readonly: cluster.read_only_kubernetes_platform_fields?
+        - if cluster.read_only_kubernetes_platform_fields?
           %span.input-group-append.clipboard-addon
             = clipboard_button(text: platform.ca_cert, title: s_('ClusterIntegration|Copy CA Certificate'), class: 'input-group-text btn-blank')
 
     .form-group
       = platform_field.label :token, s_('ClusterIntegration|Token')
       .input-group
-        = platform_field.text_field :token, class: 'form-control js-cluster-token js-select-on-focus', type: 'password', placeholder: s_('ClusterIntegration|Token'), readonly: cluster.managed?
+        = platform_field.text_field :token, class: 'form-control js-cluster-token js-select-on-focus', type: 'password', placeholder: s_('ClusterIntegration|Token'), readonly: cluster.read_only_kubernetes_platform_fields?
         %span.input-group-append
           %button.btn.btn-default.input-group-text.js-show-cluster-token{ type: 'button' }
             = s_('ClusterIntegration|Show')
-          - if cluster.managed?
+          - if cluster.read_only_kubernetes_platform_fields?
             = clipboard_button(text: platform.token, title: s_('ClusterIntegration|Copy Token'), class: 'btn-default')
 
     - if cluster.allow_user_defined_namespace?
