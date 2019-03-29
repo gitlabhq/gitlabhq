@@ -249,8 +249,8 @@ package-and-qa:
     - ./scripts/trigger-build omnibus
   when: manual
   only:
-    - //@gitlab-org/gitlab-ce
-    - //@gitlab-org/gitlab-ee
+    - /.+/@gitlab-org/gitlab-ce
+    - /.+/@gitlab-org/gitlab-ee
 
 # Review docs base
 .review-docs: &review-docs
@@ -685,10 +685,10 @@ gitlab:assets:compile:
       - public/assets/
   <<: *assets-compile-cache
   only:
-    - //@gitlab-org/gitlab-ce
-    - //@gitlab-org/gitlab-ee
-    - //@gitlab/gitlabhq
-    - //@gitlab/gitlab-ee
+    - /.+/@gitlab-org/gitlab-ce
+    - /.+/@gitlab-org/gitlab-ee
+    - /.+/@gitlab/gitlabhq
+    - /.+/@gitlab/gitlab-ee
   tags:
     - docker
     - gitlab-org
@@ -990,7 +990,7 @@ no_ee_check:
   script:
     - scripts/no-ee-check
   only:
-    - //@gitlab-org/gitlab-ce
+    - /.+/@gitlab-org/gitlab-ce
 
 # GitLab Review apps
 .review-build-cng-base: &review-build-cng-base
