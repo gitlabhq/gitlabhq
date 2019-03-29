@@ -40,6 +40,12 @@ export default class VariableList {
         // converted. we need the value as a string.
         default: $('.js-ci-variable-input-protected').attr('data-default'),
       },
+      masked: {
+        selector: '.js-ci-variable-input-masked',
+        // use `attr` instead of `data` as we don't want the value to be
+        // converted. we need the value as a string.
+        default: $('.js-ci-variable-input-masked').attr('data-default'),
+      },
       environment_scope: {
         // We can't use a `.js-` class here because
         // gl_dropdown replaces the <input> and doesn't copy over the class
@@ -88,13 +94,16 @@ export default class VariableList {
       }
     });
 
-    // Always make sure there is an empty last row
-    this.$container.on('input trigger-change', inputSelector, () => {
+    this.$container.on('input trigger-change', inputSelector, e => {
+      // Always make sure there is an empty last row
       const $lastRow = this.$container.find('.js-row').last();
 
       if (this.checkIfRowTouched($lastRow)) {
         this.insertRow($lastRow);
       }
+
+      // If masked, validate value against regex
+      this.validateMaskability($(e.currentTarget).closest('.js-row'));
     });
   }
 
@@ -171,10 +180,31 @@ export default class VariableList {
 
   checkIfRowTouched($row) {
     return Object.keys(this.inputMap).some(name => {
+      // Row should not qualify as touched if only switches have been touched
+      if (['protected', 'masked'].includes(name)) return false;
+
       const entry = this.inputMap[name];
       const $el = $row.find(entry.selector);
       return $el.length && $el.val() !== entry.default;
     });
+  }
+
+  validateMaskability($row) {
+    const invalidInputClass = 'gl-field-error-outline';
+
+    const maskableRegex = /^\w{8,}$/; // Eight or more alphanumeric characters plus underscores
+    const variableValue = $row.find(this.inputMap.secret_value.selector).val();
+    const isValueMaskable = maskableRegex.test(variableValue) || variableValue === '';
+    const isMaskedChecked = $row.find(this.inputMap.masked.selector).val() === 'true';
+
+    // Show a validation error if the user wants to mask an unmaskable variable value
+    $row
+      .find(this.inputMap.secret_value.selector)
+      .toggleClass(invalidInputClass, isMaskedChecked && !isValueMaskable);
+    $row
+      .find('.js-secret-value-placeholder')
+      .toggleClass(invalidInputClass, isMaskedChecked && !isValueMaskable);
+    $row.find('.masking-validation-error').toggle(isMaskedChecked && !isValueMaskable);
   }
 
   toggleEnableRow(isEnabled = true) {
