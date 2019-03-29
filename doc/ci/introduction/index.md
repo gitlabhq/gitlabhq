@@ -154,7 +154,7 @@ Once you're happy with your implementation:
   - GitLab CI/CD deploys your changes automatically to a production environment.
 -  And finally, you and your team can easily roll it back if something goes wrong.
 
-<img src="img/gitlab_workflow_example.png" alt="GitLab workflow example" class="image-noshadow">
+<img src="img/gitlab_workflow_example_11_9.png" alt="GitLab workflow example" class="image-noshadow">
 
 GitLab CI/CD is capable of a doing a lot more, but this workflow
 exemplifies GitLab's ability to track the entire process,
