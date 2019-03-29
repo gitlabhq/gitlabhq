@@ -40,15 +40,6 @@ describe MergeRequests::MergeToRefService do
   end
 
   shared_examples_for 'successfully evaluates pre-condition checks' do
-    it 'returns error when feature is disabled' do
-      stub_feature_flags(merge_to_tmp_merge_ref_path: false)
-
-      result = service.execute(merge_request)
-
-      expect(result[:status]).to eq(:error)
-      expect(result[:message]).to eq('Feature is not enabled')
-    end
-
     it 'returns an error when the failing to process the merge' do
       allow(project.repository).to receive(:merge_to_ref).and_return(nil)
 
@@ -178,6 +169,17 @@ describe MergeRequests::MergeToRefService do
       end
 
       it { expect(todo).not_to be_done }
+    end
+
+    context 'when merge request is WIP state' do
+      it 'fails to merge' do
+        merge_request = create(:merge_request, title: 'WIP: The feature')
+
+        result = service.execute(merge_request)
+
+        expect(result[:status]).to eq(:error)
+        expect(result[:message]).to eq("Merge request is not mergeable to #{merge_request.merge_ref_path}")
+      end
     end
 
     it 'returns error when user has no authorization to admin the merge request' do
