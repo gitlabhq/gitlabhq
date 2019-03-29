@@ -10,7 +10,7 @@ describe Gitlab do
   end
 
   describe '.revision' do
-    let(:cmd) { %W[#{described_class.config.git.bin_path} log --pretty=format:%h -n 1] }
+    let(:cmd) { %W[#{described_class.config.git.bin_path} log --pretty=format:%h --abbrev=11 -n 1] }
 
     around do |example|
       described_class.instance_variable_set(:@_revision, nil)
