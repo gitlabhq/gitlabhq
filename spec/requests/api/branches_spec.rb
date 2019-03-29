@@ -36,10 +36,30 @@ describe API::Branches do
         expect(branch_names).to match_array(project.repository.branch_names)
       end
 
+      def check_merge_status(json_response)
+        merged, unmerged = json_response.partition { |branch| branch['merged'] }
+        merged_branches = merged.map { |branch| branch['name'] }
+        unmerged_branches = unmerged.map { |branch| branch['name'] }
+        expect(Set.new(merged_branches)).to eq(project.repository.merged_branch_names(merged_branches + unmerged_branches))
+        expect(project.repository.merged_branch_names(unmerged_branches)).to be_empty
+      end
+
       it 'determines only a limited number of merged branch names' do
-        expect(API::Entities::Branch).to receive(:represent).with(anything, has_merged_branch_names_count(2))
+        expect(API::Entities::Branch).to receive(:represent).with(anything, has_merged_branch_names_count(1)).and_call_original
 
         get api(route, current_user), params: { per_page: 2 }
+
+        expect(response).to have_gitlab_http_status(200)
+
+        check_merge_status(json_response)
+      end
+
+      it 'merge status matches reality on paginated input' do
+        get api(route, current_user), params: { per_page: 20, page: 2 }
+
+        expect(response).to have_gitlab_http_status(200)
+
+        check_merge_status(json_response)
       end
 
       context 'when repository is disabled' do
