@@ -14,8 +14,6 @@ class SearchController < ApplicationController
   layout 'search'
 
   def show
-    search_service = SearchService.new(current_user, params)
-
     @project = search_service.project
     @group = search_service.group
 
