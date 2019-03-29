@@ -173,7 +173,7 @@ describe MergeRequests::CreateService do
         end
       end
 
-      describe 'Merge request pipelines' do
+      describe 'Pipelines for merge requests' do
         before do
           stub_ci_pipeline_yaml_file(YAML.dump(config))
         end
@@ -189,12 +189,46 @@ describe MergeRequests::CreateService do
             }
           end
 
-          it 'creates a merge request pipeline and sets it as a head pipeline' do
+          it 'creates a detached merge request pipeline and sets it as a head pipeline' do
             expect(merge_request).to be_persisted
 
             merge_request.reload
             expect(merge_request.merge_request_pipelines.count).to eq(1)
-            expect(merge_request.actual_head_pipeline).to be_merge_request_event
+            expect(merge_request.actual_head_pipeline).to be_detached_merge_request_pipeline
+          end
+
+          context 'when merge request is submitted from forked project' do
+            let(:target_project) { fork_project(project, nil, repository: true) }
+
+            let(:opts) do
+              {
+                title: 'Awesome merge_request',
+                source_branch: 'feature',
+                target_branch: 'master',
+                target_project_id: target_project.id
+              }
+            end
+
+            before do
+              target_project.add_developer(assignee)
+              target_project.add_maintainer(user)
+            end
+
+            it 'create legacy detached merge request pipeline for fork merge request' do
+              expect(merge_request.actual_head_pipeline)
+                .to be_legacy_detached_merge_request_pipeline
+            end
+          end
+
+          context 'when ci_use_merge_request_ref feature flag is false' do
+            before do
+              stub_feature_flags(ci_use_merge_request_ref: false)
+            end
+
+            it 'create legacy detached merge request pipeline for non-fork merge request' do
+              expect(merge_request.actual_head_pipeline)
+                .to be_legacy_detached_merge_request_pipeline
+            end
           end
 
           context 'when there are no commits between source branch and target branch' do
@@ -207,7 +241,7 @@ describe MergeRequests::CreateService do
               }
             end
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(merge_request).to be_persisted
 
               merge_request.reload
@@ -225,7 +259,7 @@ describe MergeRequests::CreateService do
               merge_request
             end
 
-            it 'sets the latest merge request pipeline as the head pipeline' do
+            it 'sets the latest detached merge request pipeline as the head pipeline' do
               expect(merge_request.actual_head_pipeline).to be_merge_request_event
             end
           end
@@ -235,7 +269,7 @@ describe MergeRequests::CreateService do
               stub_feature_flags(ci_merge_request_pipeline: false)
             end
 
-            it 'does not create a merge request pipeline' do
+            it 'does not create a detached merge request pipeline' do
               expect(merge_request).to be_persisted
 
               merge_request.reload
@@ -254,7 +288,7 @@ describe MergeRequests::CreateService do
             }
           end
 
-          it 'does not create a merge request pipeline' do
+          it 'does not create a detached merge request pipeline' do
             expect(merge_request).to be_persisted
 
             merge_request.reload
