@@ -3,12 +3,13 @@ require Rails.root.join('db', 'post_migrate', '20180307012445_migrate_update_hea
 
 describe MigrateUpdateHeadPipelineForMergeRequestSidekiqQueue, :sidekiq, :redis do
   include Gitlab::Database::MigrationHelpers
+  include StubWorker
 
   context 'when there are jobs in the queues' do
     it 'correctly migrates queue when migrating up' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: 'pipeline_default:update_head_pipeline_for_merge_request').perform_async('Something', [1])
-        stubbed_worker(queue: 'pipeline_processing:update_head_pipeline_for_merge_request').perform_async('Something', [1])
+        stub_worker(queue: 'pipeline_default:update_head_pipeline_for_merge_request').perform_async('Something', [1])
+        stub_worker(queue: 'pipeline_processing:update_head_pipeline_for_merge_request').perform_async('Something', [1])
 
         described_class.new.up
 
@@ -19,10 +20,10 @@ describe MigrateUpdateHeadPipelineForMergeRequestSidekiqQueue, :sidekiq, :redis 
 
     it 'does not affect other queues under the same namespace' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: 'pipeline_default:build_coverage').perform_async('Something', [1])
-        stubbed_worker(queue: 'pipeline_default:build_trace_sections').perform_async('Something', [1])
-        stubbed_worker(queue: 'pipeline_default:pipeline_metrics').perform_async('Something', [1])
-        stubbed_worker(queue: 'pipeline_default:pipeline_notification').perform_async('Something', [1])
+        stub_worker(queue: 'pipeline_default:build_coverage').perform_async('Something', [1])
+        stub_worker(queue: 'pipeline_default:build_trace_sections').perform_async('Something', [1])
+        stub_worker(queue: 'pipeline_default:pipeline_metrics').perform_async('Something', [1])
+        stub_worker(queue: 'pipeline_default:pipeline_notification').perform_async('Something', [1])
 
         described_class.new.up
 
@@ -35,7 +36,7 @@ describe MigrateUpdateHeadPipelineForMergeRequestSidekiqQueue, :sidekiq, :redis 
 
     it 'correctly migrates queue when migrating down' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: 'pipeline_processing:update_head_pipeline_for_merge_request').perform_async('Something', [1])
+        stub_worker(queue: 'pipeline_processing:update_head_pipeline_for_merge_request').perform_async('Something', [1])
 
         described_class.new.down
 
@@ -52,13 +53,6 @@ describe MigrateUpdateHeadPipelineForMergeRequestSidekiqQueue, :sidekiq, :redis 
 
     it 'does not raise error when migrating down' do
       expect { described_class.new.down }.not_to raise_error
-    end
-  end
-
-  def stubbed_worker(queue:)
-    Class.new do
-      include Sidekiq::Worker
-      sidekiq_options queue: queue
     end
   end
 end
