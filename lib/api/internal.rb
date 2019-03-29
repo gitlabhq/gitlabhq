@@ -256,19 +256,41 @@ module API
       post '/post_receive' do
         status 200
 
+        output = {} # Messages to gitlab-shell
+        user = identify(params[:identifier])
+        project = Gitlab::GlRepository.parse(params[:gl_repository]).first
+        push_options = Gitlab::PushOptions.new(params[:push_options])
+
         PostReceive.perform_async(params[:gl_repository], params[:identifier],
           params[:changes], params[:push_options].to_a)
+
+        if (mr_options = push_options.get(:merge_request))
+          begin
+            service = ::MergeRequests::PushOptionsHandlerService.new(
+              project,
+              user,
+              params[:changes],
+              mr_options
+            ).execute
+
+            if service.errors.present?
+              output[:warnings] = push_options_warning(service.errors.join("\n\n"))
+            end
+          rescue ::MergeRequests::PushOptionsHandlerService::Error => e
+            output[:warnings] = push_options_warning(e.message)
+          rescue Gitlab::Access::AccessDeniedError
+            output[:warnings] = push_options_warning('User access was denied')
+          end
+        end
+
         broadcast_message = BroadcastMessage.current&.last&.message
         reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
 
-        output = {
-          merge_request_urls: merge_request_urls,
+        output.merge!(
           broadcast_message: broadcast_message,
-          reference_counter_decreased: reference_counter_decreased
-        }
-
-        project = Gitlab::GlRepository.parse(params[:gl_repository]).first
-        user = identify(params[:identifier])
+          reference_counter_decreased: reference_counter_decreased,
+          merge_request_urls: merge_request_urls
+        )
 
         # A user is not guaranteed to be returned; an orphaned write deploy
         # key could be used

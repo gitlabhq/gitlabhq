@@ -938,6 +938,67 @@ describe API::Internal do
       expect(json_response['merge_request_urls']).to eq([])
     end
 
+    it 'does not invoke MergeRequests::PushOptionsHandlerService' do
+      expect(MergeRequests::PushOptionsHandlerService).not_to receive(:new)
+
+      post api("/internal/post_receive"), params: valid_params
+    end
+
+    context 'when there are merge_request push options' do
+      before do
+        valid_params[:push_options] = ['merge_request.create']
+      end
+
+      it 'invokes MergeRequests::PushOptionsHandlerService' do
+        expect(MergeRequests::PushOptionsHandlerService).to receive(:new)
+
+        post api("/internal/post_receive"), params: valid_params
+      end
+
+      it 'links to the newly created merge request' do
+        post api("/internal/post_receive"), params: valid_params
+
+        expect(json_response['merge_request_urls']).to match [{
+          "branch_name" => "new_branch",
+          "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/1",
+          "new_merge_request" => false
+        }]
+      end
+
+      it 'adds errors raised from MergeRequests::PushOptionsHandlerService to warnings' do
+        expect(MergeRequests::PushOptionsHandlerService).to receive(:new).and_raise(
+          MergeRequests::PushOptionsHandlerService::Error, 'my warning'
+        )
+
+        post api("/internal/post_receive"), params: valid_params
+
+        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my warning')
+      end
+
+      it 'adds errors on the service instance to warnings' do
+        expect_any_instance_of(
+          MergeRequests::PushOptionsHandlerService
+        ).to receive(:errors).at_least(:once).and_return(['my error'])
+
+        post api("/internal/post_receive"), params: valid_params
+
+        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my error')
+      end
+
+      it 'adds ActiveRecord errors on invalid MergeRequest records to warnings' do
+        invalid_merge_request = MergeRequest.new
+        invalid_merge_request.errors.add(:base, 'my error')
+
+        expect_any_instance_of(
+          MergeRequests::CreateService
+        ).to receive(:execute).and_return(invalid_merge_request)
+
+        post api("/internal/post_receive"), params: valid_params
+
+        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my error')
+      end
+    end
+
     context 'broadcast message exists' do
       let!(:broadcast_message) { create(:broadcast_message, starts_at: 1.day.ago, ends_at: 1.day.from_now ) }
 
