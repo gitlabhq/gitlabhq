@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Postgresql
-  class ReplicationSlot < ActiveRecord::Base
+  class ReplicationSlot < ApplicationRecord
     self.table_name = 'pg_replication_slots'
 
     # Returns true if there are any replication slots in use.

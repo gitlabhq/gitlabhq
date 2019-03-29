@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class Runner < ActiveRecord::Base
+    class Runner < ApplicationRecord
       VERSION = '0.3.0'.freeze
 
       self.table_name = 'clusters_applications_runners'

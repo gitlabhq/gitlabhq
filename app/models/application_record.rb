@@ -7,6 +7,14 @@ class ApplicationRecord < ActiveRecord::Base
     where(id: ids)
   end
 
+  def self.id_not_in(ids)
+    where.not(id: ids)
+  end
+
+  def self.pluck_primary_key
+    where(nil).pluck(self.primary_key)
+  end
+
   def self.safe_find_or_create_by!(*args)
     safe_find_or_create_by(*args).tap do |record|
       record.validate! unless record.persisted?

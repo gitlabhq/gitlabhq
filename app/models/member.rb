@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Member < ActiveRecord::Base
+class Member < ApplicationRecord
   include AfterCommitQueue
   include Sortable
   include Importable

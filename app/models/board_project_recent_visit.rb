@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Tracks which boards in a specific project a user has visited
-class BoardProjectRecentVisit < ActiveRecord::Base
+class BoardProjectRecentVisit < ApplicationRecord
   belongs_to :user
   belongs_to :project
   belongs_to :board

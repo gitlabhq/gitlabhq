@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class GroupVariable < ActiveRecord::Base
+  class GroupVariable < ApplicationRecord
     extend Gitlab::Ci::Model
     include HasVariable
     include Presentable

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectFeature < ActiveRecord::Base
+class ProjectFeature < ApplicationRecord
   # == Project features permissions
   #
   # Grants access level to project tools

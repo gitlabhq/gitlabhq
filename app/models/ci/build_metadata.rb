@@ -3,7 +3,7 @@
 module Ci
   # The purpose of this class is to store Build related data that can be disposed.
   # Data that should be persisted forever, should be stored with Ci::Build model.
-  class BuildMetadata < ActiveRecord::Base
+  class BuildMetadata < ApplicationRecord
     extend Gitlab::Ci::Model
     include Presentable
     include ChronicDurationAttribute

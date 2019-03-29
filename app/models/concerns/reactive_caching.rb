@@ -7,7 +7,7 @@
 #
 # Example of use:
 #
-#    class Foo < ActiveRecord::Base
+#    class Foo < ApplicationRecord
 #      include ReactiveCaching
 #
 #      self.reactive_cache_key = ->(thing) { ["foo", thing.id] }

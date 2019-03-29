@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Release < ActiveRecord::Base
+class Release < ApplicationRecord
   include CacheMarkdownField
   include Gitlab::Utils::StrongMemoize
 

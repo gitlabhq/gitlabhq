@@ -39,7 +39,7 @@ module ShaAttribute
     end
 
     def database_exists?
-      ActiveRecord::Base.connection
+      ApplicationRecord.connection
 
       true
     rescue

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class NotificationSetting < ActiveRecord::Base
+class NotificationSetting < ApplicationRecord
   include IgnorableColumn
 
   ignore_column :events

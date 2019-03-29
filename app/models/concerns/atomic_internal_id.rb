@@ -7,7 +7,7 @@
 #
 # For example, let's generate internal ids for Issue per Project:
 # ```
-# class Issue < ActiveRecord::Base
+# class Issue < ApplicationRecord
 #   has_internal_id :iid, scope: :project, init: ->(s) { s.project.issues.maximum(:iid) }
 # end
 # ```
