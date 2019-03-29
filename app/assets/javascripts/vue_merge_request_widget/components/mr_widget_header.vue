@@ -109,29 +109,31 @@ export default {
         ></div>
       </div>
 
-      <div v-if="mr.isOpen" class="branch-actions d-flex">
-        <a
-          v-if="!mr.sourceBranchRemoved"
-          v-tooltip
-          :href="webIdePath"
-          :title="ideButtonTitle"
-          :class="{ disabled: !mr.canPushToSourceBranch }"
-          class="btn btn-default js-web-ide d-none d-md-inline-block append-right-8"
-          data-placement="bottom"
-          tabindex="0"
-          role="button"
-        >
-          {{ s__('mrWidget|Open in Web IDE') }}
-        </a>
-        <button
-          :disabled="mr.sourceBranchRemoved"
-          data-target="#modal_merge_info"
-          data-toggle="modal"
-          class="btn btn-default js-check-out-branch append-right-default"
-          type="button"
-        >
-          {{ s__('mrWidget|Check out branch') }}
-        </button>
+      <div class="branch-actions d-flex">
+        <template v-if="mr.isOpen">
+          <a
+            v-if="!mr.sourceBranchRemoved"
+            v-tooltip
+            :href="webIdePath"
+            :title="ideButtonTitle"
+            :class="{ disabled: !mr.canPushToSourceBranch }"
+            class="btn btn-default js-web-ide d-none d-md-inline-block append-right-8"
+            data-placement="bottom"
+            tabindex="0"
+            role="button"
+          >
+            {{ s__('mrWidget|Open in Web IDE') }}
+          </a>
+          <button
+            :disabled="mr.sourceBranchRemoved"
+            data-target="#modal_merge_info"
+            data-toggle="modal"
+            class="btn btn-default js-check-out-branch append-right-default"
+            type="button"
+          >
+            {{ s__('mrWidget|Check out branch') }}
+          </button>
+        </template>
         <span class="dropdown">
           <button
             type="button"
