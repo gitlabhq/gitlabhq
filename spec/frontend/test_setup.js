@@ -22,4 +22,7 @@ beforeEach(done => {
   done();
 });
 
+Vue.config.devtools = false;
+Vue.config.productionTip = false;
+
 Vue.use(Translate);
