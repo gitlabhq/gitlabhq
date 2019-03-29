@@ -19,6 +19,7 @@
 
 .is-ghost {
   opacity: 0.3;
+  pointer-events: none;
 }
 
 .dropdown-projects {
@@ -50,6 +51,19 @@
   .content-wrapper {
     padding-bottom: 0;
   }
+
+  .issues-details-filters {
+    display: flex;
+  }
+
+  .filter-form {
+    width: 100%;
+  }
+}
+
+.board-extra-actions {
+  font-size: 0;
+  white-space: nowrap;
 }
 
 .boards-app {
@@ -236,7 +250,8 @@
   }
 }
 
-.board-blank-state {
+.board-blank-state,
+.board-promotion-state {
   padding: $gl-padding;
   background-color: $white-light;
   flex: 1;

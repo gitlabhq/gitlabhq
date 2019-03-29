@@ -26,7 +26,7 @@ module QA
           check_element(:api_radio)
         end
 
-        def create_token
+        def click_create_token_button
           click_element(:create_token_button)
         end
 

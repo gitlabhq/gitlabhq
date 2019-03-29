@@ -28,7 +28,7 @@ module QA
         expect(page).to have_content('README.md')
         expect(page).to have_content('Test Use SSH Key')
 
-        Page::Main::Menu.perform(&:go_to_profile_settings)
+        Page::Main::Menu.perform(&:click_settings_link)
         Page::Profile::Menu.perform(&:click_ssh_keys)
 
         Page::Profile::SSHKeys.perform do |ssh_keys|

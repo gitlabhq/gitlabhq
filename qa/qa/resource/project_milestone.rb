@@ -28,7 +28,7 @@ module QA
         Page::Project::Milestone::New.perform do |milestone_new|
           milestone_new.set_title(@title)
           milestone_new.set_description(@description)
-          milestone_new.create_new_milestone
+          milestone_new.click_milestone_create_button
         end
       end
     end

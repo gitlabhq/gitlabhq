@@ -320,7 +320,7 @@ cloud-native-image:
   variables:
     GIT_DEPTH: "1"
   cache: {}
-  when: always
+  when: manual
   script:
     - gem install gitlab --no-document
     - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng

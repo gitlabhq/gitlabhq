@@ -20,7 +20,7 @@ module QA
             end
           end
 
-          def click_repository_branches
+          def go_to_repository_branches
             hover_repository do
               within_submenu do
                 click_element(:branches_link)

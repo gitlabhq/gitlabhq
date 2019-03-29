@@ -65,12 +65,10 @@ describe AppearancesHelper do
   end
 
   describe '#brand_title' do
-    it 'returns the default CE title when no appearance is present' do
-      allow(helper)
-        .to receive(:current_appearance)
-              .and_return(nil)
+    it 'returns the default title when no appearance is present' do
+      allow(helper).to receive(:current_appearance).and_return(nil)
 
-      expect(helper.brand_title).to eq('GitLab Community Edition')
+      expect(helper.brand_title).to eq(helper.default_brand_title)
     end
   end
 end

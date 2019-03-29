@@ -14,7 +14,7 @@ module QA
             end
           end
 
-          def click_ci_cd_settings
+          def go_to_ci_cd_settings
             hover_settings do
               within_submenu do
                 click_link('CI / CD')
@@ -22,7 +22,7 @@ module QA
             end
           end
 
-          def click_members_settings
+          def go_to_members_settings
             hover_settings do
               within_submenu do
                 click_element :link_members_settings
@@ -30,7 +30,7 @@ module QA
             end
           end
 
-          def click_repository_settings
+          def go_to_repository_settings
             hover_settings do
               within_submenu do
                 click_link('Repository')
@@ -38,7 +38,7 @@ module QA
             end
           end
 
-          def go_to_settings
+          def click_settings
             within_sidebar do
               click_on 'Settings'
             end

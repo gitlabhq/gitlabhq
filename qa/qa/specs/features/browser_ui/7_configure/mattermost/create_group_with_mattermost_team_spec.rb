@@ -9,7 +9,7 @@ module QA
         Page::Main::Menu.act { go_to_groups }
 
         Page::Dashboard::Groups.perform do |page|
-          page.go_to_new_group
+          page.click_new_group
 
           expect(page).to have_content(
             /Create a Mattermost team for this group/

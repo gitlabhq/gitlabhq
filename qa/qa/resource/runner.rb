@@ -29,7 +29,7 @@ module QA
       def fabricate!
         project.visit!
 
-        Page::Project::Menu.perform(&:click_ci_cd_settings)
+        Page::Project::Menu.perform(&:go_to_ci_cd_settings)
 
         Service::Runner.new(name).tap do |runner|
           Page::Project::Settings::CICD.perform do |settings|

@@ -107,7 +107,7 @@ describe Clusters::Applications::Knative do
     subject { knative.install_command }
 
     it 'should be initialized with latest version' do
-      expect(subject.version).to eq('0.2.2')
+      expect(subject.version).to eq('0.3.0')
     end
 
     it_behaves_like 'a command'

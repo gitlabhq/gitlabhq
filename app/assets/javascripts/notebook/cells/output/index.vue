@@ -20,12 +20,20 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      outputType: '',
-    };
-  },
   methods: {
+    outputType(output) {
+      if (output.text) {
+        return 'text/plain';
+      } else if (output.data['image/png']) {
+        return 'image/png';
+      } else if (output.data['text/html']) {
+        return 'text/html';
+      } else if (output.data['image/svg+xml']) {
+        return 'image/svg+xml';
+      }
+
+      return 'text/plain';
+    },
     dataForType(output, type) {
       let data = output.data[type];
 
@@ -39,20 +47,13 @@ export default {
       if (output.text) {
         return CodeOutput;
       } else if (output.data['image/png']) {
-        this.outputType = 'image/png';
-
         return ImageOutput;
       } else if (output.data['text/html']) {
-        this.outputType = 'text/html';
-
         return HtmlOutput;
       } else if (output.data['image/svg+xml']) {
-        this.outputType = 'image/svg+xml';
-
         return HtmlOutput;
       }
 
-      this.outputType = 'text/plain';
       return CodeOutput;
     },
     rawCode(output) {
@@ -60,7 +61,7 @@ export default {
         return output.text.join('');
       }
 
-      return this.dataForType(output, this.outputType);
+      return this.dataForType(output, this.outputType(output));
     },
   },
 };
@@ -73,7 +74,7 @@ export default {
       v-for="(output, index) in outputs"
       :key="index"
       type="output"
-      :output-type="outputType"
+      :output-type="outputType(output)"
       :count="count"
       :index="index"
       :raw-code="rawCode(output)"

@@ -19,11 +19,13 @@ module QA
           has_filtered_group?(name)
         end
 
-        def go_to_group(name)
+        def click_group(name)
+          raise "Group with name #{name} not found!" unless has_group?(name)
+
           click_link name
         end
 
-        def go_to_new_group
+        def click_new_group
           click_on 'New group'
         end
       end

@@ -14,7 +14,7 @@ module QA
         end
         project.visit!
 
-        Page::Project::Menu.perform(&:click_members_settings)
+        Page::Project::Menu.perform(&:go_to_members_settings)
         Page::Project::Settings::Members.perform do |page|
           page.add_member(user.username)
         end

@@ -32,22 +32,22 @@ module QA
           end
 
           def allow_no_one_to_push
-            click_allow(:push, 'No one')
+            go_to_allow(:push, 'No one')
           end
 
           def allow_devs_and_maintainers_to_push
-            click_allow(:push, 'Developers + Maintainers')
+            go_to_allow(:push, 'Developers + Maintainers')
           end
 
           # @deprecated
           alias_method :allow_devs_and_masters_to_push, :allow_devs_and_maintainers_to_push
 
           def allow_no_one_to_merge
-            click_allow(:merge, 'No one')
+            go_to_allow(:merge, 'No one')
           end
 
           def allow_devs_and_maintainers_to_merge
-            click_allow(:merge, 'Developers + Maintainers')
+            go_to_allow(:merge, 'Developers + Maintainers')
           end
 
           # @deprecated
@@ -59,7 +59,7 @@ module QA
 
           private
 
-          def click_allow(action, text)
+          def go_to_allow(action, text)
             click_element :"allowed_to_#{action}_select"
 
             within_element(:"allowed_to_#{action}_dropdown") do
