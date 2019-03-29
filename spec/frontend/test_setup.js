@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Translate from '~/vue_shared/translate';
 import axios from '~/lib/utils/axios_utils';
 import { initializeTestTimeout } from './helpers/timeout';
+import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
 
 // wait for pending setTimeout()s
 afterEach(() => {
@@ -26,3 +27,20 @@ Vue.config.devtools = false;
 Vue.config.productionTip = false;
 
 Vue.use(Translate);
+
+// workaround for JSDOM not supporting innerText
+// see https://github.com/jsdom/jsdom/issues/1245
+Object.defineProperty(global.Element.prototype, 'innerText', {
+  get() {
+    return this.textContent;
+  },
+  configurable: true, // make it so that it doesn't blow chunks on re-running tests with things like --watch
+});
+
+// convenience wrapper for migration from Karma
+Object.assign(global, {
+  loadFixtures: loadHTMLFixture,
+  loadJSONFixtures: getJSONFixture,
+  preloadFixtures() {},
+  setFixtures: setHTMLFixture,
+});
