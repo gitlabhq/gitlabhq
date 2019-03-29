@@ -69,17 +69,17 @@ export default {
           appearance && appearance.line && appearance.line.type
             ? appearance.line.type
             : lineTypes.default;
-        const lineColor = lineType === lineTypes.threshold ? this.primaryColor : undefined;
+        const lineWidth =
+          appearance && appearance.line && appearance.line.width
+            ? appearance.line.width
+            : undefined;
 
         return {
           name: this.formatLegendLabel(query),
           data: this.concatenateResults(query.result),
           lineStyle: {
             type: lineType,
-            color: lineColor,
-          },
-          itemStyle: {
-            color: lineColor,
+            width: lineWidth,
           },
           areaStyle: {
             opacity:
