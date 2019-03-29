@@ -4,7 +4,7 @@ module Gitlab
   module QuickActions
     class CommandDefinition
       attr_accessor :name, :aliases, :description, :explanation, :params,
-        :condition_block, :parse_params_block, :action_block, :warning
+        :condition_block, :parse_params_block, :action_block, :warning, :types
 
       def initialize(name, attributes = {})
         @name = name
@@ -17,6 +17,7 @@ module Gitlab
         @condition_block = attributes[:condition_block]
         @parse_params_block = attributes[:parse_params_block]
         @action_block = attributes[:action_block]
+        @types = attributes[:types] || []
       end
 
       def all_names
@@ -28,6 +29,7 @@ module Gitlab
       end
 
       def available?(context)
+        return false unless valid_type?(context)
         return true unless condition_block
 
         context.instance_exec(&condition_block)
@@ -95,6 +97,10 @@ module Gitlab
         return arg unless parse_params_block
 
         context.instance_exec(arg, &parse_params_block)
+      end
+
+      def valid_type?(context)
+        types.blank? || types.any? { |type| context.quick_action_target.is_a?(type) }
       end
     end
   end

@@ -9,9 +9,41 @@ describe 'Merge request > User uses quick actions', :js do
   let(:merge_request) { create(:merge_request, source_project: project) }
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
 
-  it_behaves_like 'issuable record that supports quick actions in its description and notes', :merge_request do
+  context "issuable common quick actions" do
+    let!(:new_url_opts) { { merge_request: { source_branch: 'feature', target_branch: 'master' } } }
+    let(:maintainer) { create(:user) }
+    let(:project) { create(:project, :public, :repository) }
+    let!(:label_bug) { create(:label, project: project, title: 'bug') }
+    let!(:label_feature) { create(:label, project: project, title: 'feature') }
+    let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
     let(:issuable) { create(:merge_request, source_project: project) }
-    let(:new_url_opts) { { merge_request: { source_branch: 'feature', target_branch: 'master' } } }
+    let(:source_issuable) { create(:issue, project: project, milestone: milestone, labels: [label_bug, label_feature])}
+
+    it_behaves_like 'assign quick action', :merge_request
+    it_behaves_like 'unassign quick action', :merge_request
+    it_behaves_like 'close quick action', :merge_request
+    it_behaves_like 'reopen quick action', :merge_request
+    it_behaves_like 'title quick action', :merge_request
+    it_behaves_like 'todo quick action', :merge_request
+    it_behaves_like 'done quick action', :merge_request
+    it_behaves_like 'subscribe quick action', :merge_request
+    it_behaves_like 'unsubscribe quick action', :merge_request
+    it_behaves_like 'lock quick action', :merge_request
+    it_behaves_like 'unlock quick action', :merge_request
+    it_behaves_like 'milestone quick action', :merge_request
+    it_behaves_like 'remove_milestone quick action', :merge_request
+    it_behaves_like 'label quick action', :merge_request
+    it_behaves_like 'unlabel quick action', :merge_request
+    it_behaves_like 'relabel quick action', :merge_request
+    it_behaves_like 'award quick action', :merge_request
+    it_behaves_like 'estimate quick action', :merge_request
+    it_behaves_like 'remove_estimate quick action', :merge_request
+    it_behaves_like 'spend quick action', :merge_request
+    it_behaves_like 'remove_time_spent quick action', :merge_request
+    it_behaves_like 'shrug quick action', :merge_request
+    it_behaves_like 'tableflip quick action', :merge_request
+    it_behaves_like 'copy_metadata quick action', :merge_request
+    it_behaves_like 'issuable time tracker', :merge_request
   end
 
   describe 'merge-request-only commands' do
@@ -24,20 +56,12 @@ describe 'Merge request > User uses quick actions', :js do
       project.add_maintainer(user)
     end
 
-    describe 'time tracking' do
-      before do
-        sign_in(user)
-        visit project_merge_request_path(project, merge_request)
-      end
-
-      it_behaves_like 'issuable time tracker'
-    end
-
     describe 'toggling the WIP prefix in the title from note' do
       context 'when the current user can toggle the WIP prefix' do
         before do
           sign_in(user)
           visit project_merge_request_path(project, merge_request)
+          wait_for_requests
         end
 
         it 'adds the WIP: prefix to the title' do
@@ -135,11 +159,16 @@ describe 'Merge request > User uses quick actions', :js do
         visit project_merge_request_path(project, merge_request)
       end
 
-      it 'does not recognize the command nor create a note' do
-        add_note('/due 2016-08-28')
+      it_behaves_like 'due quick action not available'
+    end
 
-        expect(page).not_to have_content '/due 2016-08-28'
+    describe 'removing a due date from note' do
+      before do
+        sign_in(user)
+        visit project_merge_request_path(project, merge_request)
       end
+
+      it_behaves_like 'remove_due_date action not available'
     end
 
     describe '/target_branch command in merge request' do
