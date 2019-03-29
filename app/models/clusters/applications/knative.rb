@@ -3,7 +3,7 @@
 module Clusters
   module Applications
     class Knative < ActiveRecord::Base
-      VERSION = '0.2.2'.freeze
+      VERSION = '0.3.0'.freeze
       REPOSITORY = 'https://storage.googleapis.com/triggermesh-charts'.freeze
       METRICS_CONFIG = 'https://storage.googleapis.com/triggermesh-charts/istio-metrics.yaml'.freeze
       FETCH_IP_ADDRESS_DELAY = 30.seconds
@@ -86,7 +86,7 @@ module Clusters
       end
 
       def ingress_service
-        cluster.kubeclient.get_service('knative-ingressgateway', 'istio-system')
+        cluster.kubeclient.get_service('istio-ingressgateway', 'istio-system')
       end
 
       def services_for(ns: namespace)

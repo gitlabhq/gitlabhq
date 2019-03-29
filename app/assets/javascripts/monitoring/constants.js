@@ -6,5 +6,4 @@ export const graphTypes = {
 
 export const lineTypes = {
   default: 'solid',
-  threshold: 'dashed',
 };

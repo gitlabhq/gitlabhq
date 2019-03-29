@@ -32,7 +32,7 @@ module QA
         project.visit!
 
         Page::Project::Menu.act do
-          click_repository_settings
+          go_to_repository_settings
         end
 
         Page::Project::Settings::Repository.perform do |setting|

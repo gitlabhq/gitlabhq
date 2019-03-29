@@ -203,6 +203,10 @@ describe('Area component', () => {
             .length,
         ).toBe(data.length);
       });
+
+      it('formats line width correctly', () => {
+        expect(chartData[0].lineStyle.width).toBe(2);
+      });
     });
 
     describe('scatterSeries', () => {

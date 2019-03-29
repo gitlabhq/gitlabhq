@@ -18,11 +18,11 @@ module QA
         Page::Group::Show.perform(&:go_to_new_project)
 
         Page::Project::New.perform do |page|
-          page.go_to_import_project
+          page.click_import_project
         end
 
         Page::Project::New.perform do |page|
-          page.go_to_github_import
+          page.click_github_link
         end
 
         Page::Project::Import::Github.perform do |page|

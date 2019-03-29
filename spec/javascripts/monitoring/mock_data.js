@@ -330,6 +330,11 @@ export const metricsGroupsAPIResponse = {
           weight: 1,
           queries: [
             {
+              appearance: {
+                line: {
+                  width: 2,
+                },
+              },
               query_range:
                 'avg(rate(container_cpu_usage_seconds_total{%{environment_filter}}[2m])) * 100',
               label: 'Core Usage',

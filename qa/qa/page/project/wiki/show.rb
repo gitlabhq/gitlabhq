@@ -11,7 +11,7 @@ module QA
             element :clone_repository_link, 'Clone repository' # rubocop:disable QA/ElementWithPattern
           end
 
-          def go_to_clone_repository
+          def click_clone_repository
             click_on 'Clone repository'
           end
         end

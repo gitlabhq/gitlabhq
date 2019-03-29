@@ -45,7 +45,7 @@ module QA
       end
 
       def set_file_size_limit(limit)
-        Page::Main::Menu.perform(&:go_to_admin_area)
+        Page::Main::Menu.perform(&:click_admin_area)
         Page::Admin::Menu.perform(&:go_to_general_settings)
 
         Page::Admin::Settings::General.perform do |setting|

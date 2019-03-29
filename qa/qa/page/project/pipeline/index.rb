@@ -5,7 +5,7 @@ module QA::Page
         element :pipeline_link, 'class="js-pipeline-url-link"' # rubocop:disable QA/ElementWithPattern
       end
 
-      def go_to_latest_pipeline
+      def click_on_latest_pipeline
         css = '.js-pipeline-url-link'
 
         link = wait(reload: false) do
