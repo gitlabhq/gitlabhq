@@ -1460,6 +1460,14 @@ describe Ci::Pipeline, :mailer do
         end
       end
 
+      context 'with a branch name as the ref' do
+        it 'looks up commit with the full ref name' do
+          expect(pipeline.project).to receive(:commit).with('refs/heads/master').and_call_original
+
+          expect(pipeline).to be_latest
+        end
+      end
+
       context 'with not latest sha' do
         before do
           pipeline.update(

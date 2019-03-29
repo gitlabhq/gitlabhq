@@ -465,9 +465,9 @@ module Ci
     end
 
     def latest?
-      return false unless ref && commit.present?
+      return false unless git_ref && commit.present?
 
-      project.commit(ref) == commit
+      project.commit(git_ref) == commit
     end
 
     def retried
@@ -781,16 +781,18 @@ module Ci
     end
 
     def git_ref
-      if merge_request_event?
-        ##
-        # In the future, we're going to change this ref to
-        # merge request's merged reference, such as "refs/merge-requests/:iid/merge".
-        # In order to do that, we have to update GitLab-Runner's source pulling
-        # logic.
-        # See https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1092
-        Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
-      else
-        super
+      strong_memoize(:git_ref) do
+        if merge_request_event?
+          ##
+          # In the future, we're going to change this ref to
+          # merge request's merged reference, such as "refs/merge-requests/:iid/merge".
+          # In order to do that, we have to update GitLab-Runner's source pulling
+          # logic.
+          # See https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1092
+          Gitlab::Git::BRANCH_REF_PREFIX + ref.to_s
+        else
+          super
+        end
       end
     end
 

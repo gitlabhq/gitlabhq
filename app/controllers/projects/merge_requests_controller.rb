@@ -315,7 +315,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def serializer
-    MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
+    ::Gitlab::GitalyClient.allow_ref_name_caching do
+      MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
+    end
   end
 
   def define_edit_vars

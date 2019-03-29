@@ -221,6 +221,21 @@ describe Gitlab::GitalyClient::CommitService do
           expect(commit).to eq(commit_dbl)
         end
       end
+
+      context 'when caching of the ref name is enabled' do
+        it 'returns a cached commit' do
+          expect_any_instance_of(Gitaly::CommitService::Stub).to receive(:find_commit).once.and_return(double(commit: commit_dbl))
+
+          commit = nil
+          2.times do
+            ::Gitlab::GitalyClient.allow_ref_name_caching do
+              commit = described_class.new(repository).find_commit('master')
+            end
+          end
+
+          expect(commit).to eq(commit_dbl)
+        end
+      end
     end
   end
 
