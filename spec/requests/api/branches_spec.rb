@@ -20,9 +20,9 @@ describe API::Branches do
     let(:route) { "/projects/#{project_id}/repository/branches" }
 
     shared_examples_for 'repository branches' do
-      RSpec::Matchers.define :has_merged_branch_names_count do |expected|
+      RSpec::Matchers.define :has_up_to_merged_branch_names_count do |expected|
         match do |actual|
-          actual[:merged_branch_names].count == expected
+          expected >= actual[:merged_branch_names].count
         end
       end
 
@@ -45,7 +45,7 @@ describe API::Branches do
       end
 
       it 'determines only a limited number of merged branch names' do
-        expect(API::Entities::Branch).to receive(:represent).with(anything, has_merged_branch_names_count(1)).and_call_original
+        expect(API::Entities::Branch).to receive(:represent).with(anything, has_up_to_merged_branch_names_count(2)).and_call_original
 
         get api(route, current_user), params: { per_page: 2 }
 
