@@ -531,8 +531,8 @@ rollout 100%:
     touch clair-whitelist.yml
     retries=0
     echo "Waiting for clair daemon to start"
-    while( ! wget -T 10 -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
-    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+    while( ! wget -T 10 -q -O /dev/null http://${DOCKER_SERVICE}:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
+    ./clair-scanner -c http://${DOCKER_SERVICE}:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
   }
 
   function code_quality() {
@@ -800,10 +800,15 @@ rollout 100%:
     kubectl version --client
   }
 
+  # With the Kubernetes executor, 'localhost' must be used instead
+  # https://docs.gitlab.com/runner/executors/kubernetes.html
   function setup_docker() {
     if ! docker info &>/dev/null; then
       if [ -z "$DOCKER_HOST" -a "$KUBERNETES_PORT" ]; then
         export DOCKER_HOST='tcp://localhost:2375'
+        export DOCKER_SERVICE="localhost"
+      else
+        export DOCKER_SERVICE="docker"
       fi
     fi
   }
