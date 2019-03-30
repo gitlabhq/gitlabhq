@@ -278,8 +278,12 @@ module ObjectStorage
       self.class.object_store_credentials
     end
 
+    # Set ACL of uploaded objects to not-public (fog-aws)[1] or no ACL at all
+    # (fog-google).  Value is ignored by other supported backends (fog-aliyun,
+    # fog-openstack, fog-rackspace)
+    # [1]: https://github.com/fog/fog-aws/blob/daa50bb3717a462baf4d04d0e0cbfc18baacb541/lib/fog/aws/models/storage/file.rb#L152-L159
     def fog_public
-      false
+      nil
     end
 
     def delete_migrated_file(migrated_file)
