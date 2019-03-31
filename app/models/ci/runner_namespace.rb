@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ci
-  class RunnerNamespace < ActiveRecord::Base
+  class RunnerNamespace < ApplicationRecord
     extend Gitlab::Ci::Model
 
     belongs_to :runner, inverse_of: :runner_namespaces, validate: true

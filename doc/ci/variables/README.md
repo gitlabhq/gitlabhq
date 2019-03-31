@@ -45,10 +45,11 @@ version of [GitLab Runner](https://docs.gitlab.com/runner/) is used. Consult the
 version of Runner required.
 
 NOTE: **Note:**
-Starting with GitLab 9.0, we have deprecated some variables. Read the
-[9.0 Renaming](#gitlab-90-renaming) section to find out their replacements. **You are
-strongly advised to use the new variables as we will remove the old ones in
-future GitLab releases.**
+Starting with GitLab 9.0, we have deprecated some variables.
+Read the [deprecated variables](deprecated_variables.md)
+document to find out their replacements. **You are strongly advised
+to use the new variables as we will remove the old ones in future
+GitLab releases.**
 
 | Variable                                  | GitLab | Runner | Description |
 |-------------------------------------------|--------|--------|-------------|
@@ -140,32 +141,6 @@ future GitLab releases.**
 | **GITLAB_USER_LOGIN**                     | 10.0   | all    | The login username of the user who started the job |
 | **GITLAB_USER_NAME**                      | 10.0   | all    | The real name of the user who started the job |
 | **RESTORE_CACHE_ATTEMPTS**                | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
-
-## GitLab 9.0 renaming
-
-To follow conventions of naming across GitLab, and to further move away from the
-`build` term and toward `job` CI variables have been renamed for the 9.0
-release.
-
-NOTE: **Note:**
-Starting with GitLab 9.0, we have deprecated the `$CI_BUILD_*` variables. **You are
-strongly advised to use the new variables as we will remove the old ones in
-future GitLab releases.**
-
-| 8.x name              | 9.0+ name               |
-| --------------------- |------------------------ |
-| `CI_BUILD_ID`         | `CI_JOB_ID`             |
-| `CI_BUILD_REF`        | `CI_COMMIT_SHA`         |
-| `CI_BUILD_TAG`        | `CI_COMMIT_TAG`         |
-| `CI_BUILD_BEFORE_SHA` | `CI_COMMIT_BEFORE_SHA`  |
-| `CI_BUILD_REF_NAME`   | `CI_COMMIT_REF_NAME`    |
-| `CI_BUILD_REF_SLUG`   | `CI_COMMIT_REF_SLUG`    |
-| `CI_BUILD_NAME`       | `CI_JOB_NAME`           |
-| `CI_BUILD_STAGE`      | `CI_JOB_STAGE`          |
-| `CI_BUILD_REPO`       | `CI_REPOSITORY_URL`     |
-| `CI_BUILD_TRIGGERED`  | `CI_PIPELINE_TRIGGERED` |
-| `CI_BUILD_MANUAL`     | `CI_JOB_MANUAL`         |
-| `CI_BUILD_TOKEN`      | `CI_JOB_TOKEN`          |
 
 ## `.gitlab-ci.yml` defined variables
 

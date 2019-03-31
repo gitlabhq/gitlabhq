@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Issue::Metrics < ActiveRecord::Base
+class Issue::Metrics < ApplicationRecord
   belongs_to :issue
 
   def record!

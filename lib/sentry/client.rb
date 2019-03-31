@@ -3,7 +3,7 @@
 module Sentry
   class Client
     Error = Class.new(StandardError)
-    SentryError = Class.new(StandardError)
+    MissingKeysError = Class.new(StandardError)
 
     attr_accessor :url, :token
 
@@ -14,17 +14,28 @@ module Sentry
 
     def list_issues(issue_status:, limit:)
       issues = get_issues(issue_status: issue_status, limit: limit)
-      map_to_errors(issues)
+
+      handle_mapping_exceptions do
+        map_to_errors(issues)
+      end
     end
 
     def list_projects
       projects = get_projects
-      map_to_projects(projects)
-    rescue KeyError => e
-      raise Client::SentryError, "Sentry API response is missing keys. #{e.message}"
+
+      handle_mapping_exceptions do
+        map_to_projects(projects)
+      end
     end
 
     private
+
+    def handle_mapping_exceptions(&block)
+      yield
+    rescue KeyError => e
+      Gitlab::Sentry.track_acceptable_exception(e)
+      raise Client::MissingKeysError, "Sentry API response is missing keys. #{e.message}"
+    end
 
     def request_params
       {
@@ -94,7 +105,6 @@ module Sentry
 
     def map_to_error(issue)
       id = issue.fetch('id')
-      project = issue.fetch('project')
 
       count = issue.fetch('count', nil)
 
@@ -117,9 +127,9 @@ module Sentry
         short_id: issue.fetch('shortId', nil),
         status: issue.fetch('status', nil),
         frequency: frequency,
-        project_id: project.fetch('id'),
-        project_name: project.fetch('name', nil),
-        project_slug: project.fetch('slug', nil)
+        project_id: issue.dig('project', 'id'),
+        project_name: issue.dig('project', 'name'),
+        project_slug: issue.dig('project', 'slug')
       )
     end
 
@@ -127,12 +137,12 @@ module Sentry
       organization = project.fetch('organization')
 
       Gitlab::ErrorTracking::Project.new(
-        id: project.fetch('id'),
+        id: project.fetch('id', nil),
         name: project.fetch('name'),
         slug: project.fetch('slug'),
         status: project.dig('status'),
         organization_name: organization.fetch('name'),
-        organization_id: organization.fetch('id'),
+        organization_id: organization.fetch('id', nil),
         organization_slug: organization.fetch('slug')
       )
     end

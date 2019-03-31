@@ -24,6 +24,8 @@ describe Ci::Build do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
   it { is_expected.to delegate_method(:merge_request_event?).to(:pipeline) }
+  it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
+  it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
   it { is_expected.to be_a(ArtifactMigratable) }
 
@@ -3622,6 +3624,24 @@ describe Ci::Build do
         let(:runner_features) do
           {}
         end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+
+    context 'when refspecs feature is required by build' do
+      before do
+        allow(build).to receive(:merge_request_ref?) { true }
+      end
+
+      context 'when runner provides given feature' do
+        let(:runner_features) { { refspecs: true } }
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when runner does not provide given feature' do
+        let(:runner_features) { {} }
 
         it { is_expected.to be_falsey }
       end

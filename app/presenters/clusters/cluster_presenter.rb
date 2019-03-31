@@ -48,6 +48,10 @@ module Clusters
       end
     end
 
+    def read_only_kubernetes_platform_fields?
+      !cluster.provided_by_user?
+    end
+
     private
 
     def clusterable

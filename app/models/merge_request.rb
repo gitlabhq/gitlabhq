@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class MergeRequest < ActiveRecord::Base
+class MergeRequest < ApplicationRecord
   include AtomicInternalId
   include IidRoutes
   include Issuable
@@ -1127,6 +1127,10 @@ class MergeRequest < ActiveRecord::Base
 
   def merge_ref_path
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/merge"
+  end
+
+  def self.merge_request_ref?(ref)
+    ref.start_with?("refs/#{Repository::REF_MERGE_REQUEST}/")
   end
 
   def in_locked_state

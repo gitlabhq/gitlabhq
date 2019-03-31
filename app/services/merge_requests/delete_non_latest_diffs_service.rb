@@ -8,15 +8,13 @@ module MergeRequests
       @merge_request = merge_request
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def execute
       diffs = @merge_request.non_latest_diffs.with_files
 
       diffs.each_batch(of: BATCH_SIZE) do |relation, index|
-        ids = relation.pluck(:id).map { |id| [id] }
+        ids = relation.pluck_primary_key.map { |id| [id] }
         DeleteDiffFilesWorker.bulk_perform_in(index * 5.minutes, ids)
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

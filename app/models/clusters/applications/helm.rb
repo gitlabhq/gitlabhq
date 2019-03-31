@@ -4,7 +4,7 @@ require 'openssl'
 
 module Clusters
   module Applications
-    class Helm < ActiveRecord::Base
+    class Helm < ApplicationRecord
       self.table_name = 'clusters_applications_helm'
 
       attr_encrypted :ca_key,

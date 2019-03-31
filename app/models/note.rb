@@ -3,7 +3,7 @@
 # A note on the root of an issue, merge request, commit, or snippet.
 #
 # A note of this type is never resolvable.
-class Note < ActiveRecord::Base
+class Note < ApplicationRecord
   extend ActiveModel::Naming
   include Participable
   include Mentionable

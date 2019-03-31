@@ -9,5 +9,6 @@
 /scripts/
 /tmp/
 /vendor/
+jest.config.js
 karma.config.js
 webpack.config.js

@@ -42,6 +42,25 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
     end
   end
 
+  context 'when origin ref is a merge request ref' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project, current_user: user, origin_ref: origin_ref, checkout_sha: checkout_sha)
+    end
+
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:origin_ref) { merge_request.ref_path }
+    let(:checkout_sha) { project.repository.commit(merge_request.ref_path).id }
+
+    it 'does not break the chain' do
+      expect(step.break?).to be false
+    end
+
+    it 'does not append pipeline errors' do
+      expect(pipeline.errors).to be_empty
+    end
+  end
+
   context 'when ref is ambiguous' do
     let(:project) do
       create(:project, :repository).tap do |proj|

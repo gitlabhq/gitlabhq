@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserStatus < ActiveRecord::Base
+class UserStatus < ApplicationRecord
   include CacheMarkdownField
 
   self.primary_key = :user_id

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Clusters
-  class KubernetesNamespace < ActiveRecord::Base
+  class KubernetesNamespace < ApplicationRecord
     include Gitlab::Kubernetes
 
     self.table_name = 'clusters_kubernetes_namespaces'

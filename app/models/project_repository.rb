@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectRepository < ActiveRecord::Base
+class ProjectRepository < ApplicationRecord
   include Shardable
 
   belongs_to :project, inverse_of: :project_repository

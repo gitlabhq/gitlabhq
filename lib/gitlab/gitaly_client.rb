@@ -302,6 +302,26 @@ module Gitlab
       end
     end
 
+    # Normally a FindCommit RPC will cache the commit with its SHA
+    # instead of a ref name, since it's possible the branch is mutated
+    # afterwards. However, for read-only requests that never mutate the
+    # branch, this method allows caching of the ref name directly.
+    def self.allow_ref_name_caching
+      return yield unless Gitlab::SafeRequestStore.active?
+      return yield if ref_name_caching_allowed?
+
+      begin
+        Gitlab::SafeRequestStore[:allow_ref_name_caching] = true
+        yield
+      ensure
+        Gitlab::SafeRequestStore[:allow_ref_name_caching] = false
+      end
+    end
+
+    def self.ref_name_caching_allowed?
+      Gitlab::SafeRequestStore[:allow_ref_name_caching]
+    end
+
     def self.get_call_count(key)
       Gitlab::SafeRequestStore[key] || 0
     end

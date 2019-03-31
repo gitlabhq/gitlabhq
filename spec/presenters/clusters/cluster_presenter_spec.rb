@@ -228,4 +228,20 @@ describe Clusters::ClusterPresenter do
       it { is_expected.to eq(group_cluster_path(group, cluster)) }
     end
   end
+
+  describe '#read_only_kubernetes_platform_fields?' do
+    subject { described_class.new(cluster).read_only_kubernetes_platform_fields? }
+
+    context 'with a user-provided cluster' do
+      let(:cluster) { build_stubbed(:cluster, :provided_by_user) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'with a GCP-provided cluster' do
+      let(:cluster) { build_stubbed(:cluster, :provided_by_gcp) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

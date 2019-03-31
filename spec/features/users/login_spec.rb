@@ -447,7 +447,7 @@ describe 'Login' do
                 'You can leave Group 1 and leave Group 2. '\
                 'You need to do this '\
                 'before '\
-                "#{(Time.zone.now + 2.days).strftime("%a, %-d %b %Y %H:%M:%S %z")}"
+                "#{(Time.zone.now + 2.days).strftime("%a, %d %b %Y %H:%M:%S %z")}"
               )
             end
           end

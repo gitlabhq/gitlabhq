@@ -3,7 +3,7 @@
 # The PoolRepository model is the database equivalent of an ObjectPool for Gitaly
 # That is; PoolRepository is the record in the database, ObjectPool is the
 # repository on disk
-class PoolRepository < ActiveRecord::Base
+class PoolRepository < ApplicationRecord
   include Shardable
   include AfterCommitQueue
 

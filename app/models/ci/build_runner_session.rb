@@ -3,7 +3,7 @@
 module Ci
   # The purpose of this class is to store Build related runner session.
   # Data will be removed after transitioning from running to any state.
-  class BuildRunnerSession < ActiveRecord::Base
+  class BuildRunnerSession < ApplicationRecord
     extend Gitlab::Ci::Model
 
     self.table_name = 'ci_builds_runner_session'

@@ -48,6 +48,24 @@ describe Gitlab::Ci::Pipeline::Chain::Command do
       end
     end
 
+    describe '#merge_request_ref_exists?' do
+      subject { command.merge_request_ref_exists? }
+
+      let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+
+      context 'for existing merge request ref' do
+        let(:origin_ref) { merge_request.ref_path }
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'for branch ref' do
+        let(:origin_ref) { merge_request.source_branch }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+
     describe '#ref' do
       subject { command.ref }
 

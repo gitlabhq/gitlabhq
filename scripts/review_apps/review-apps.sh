@@ -1,12 +1,115 @@
 [[ "$TRACE" ]] && set -x
 export TILLER_NAMESPACE="$KUBE_NAMESPACE"
 
-function echoerr() { printf "\033[0;31m%s\n\033[0m" "$*" >&2; }
-function echoinfo() { printf "\033[0;33m%s\n\033[0m" "$*" >&2; }
+function echoerr() {
+  local header="${2}"
+
+  if [ -n "${header}" ]; then
+    printf "\n\033[0;31m** %s **\n\033[0m" "${1}" >&2;
+  else
+    printf "\033[0;31m%s\n\033[0m" "${1}" >&2;
+  fi
+}
+
+function echoinfo() {
+  local header="${2}"
+
+  if [ -n "${header}" ]; then
+    printf "\n\033[0;33m** %s **\n\033[0m" "${1}" >&2;
+  else
+    printf "\033[0;33m%s\n\033[0m" "${1}" >&2;
+  fi
+}
+
+function deployExists() {
+  local namespace="${1}"
+  local deploy="${2}"
+  echoinfo "Checking if ${deploy} exists in the ${namespace} namespace..." true
+
+  helm status --tiller-namespace "${namespace}" "${deploy}" >/dev/null 2>&1
+  local deploy_exists=$?
+
+  echoinfo "Deployment status for ${deploy} is ${deploy_exists}"
+  return $deploy_exists
+}
+
+function previousDeployFailed() {
+  set +e
+  local deploy="${1}"
+  echoinfo "Checking for previous deployment of ${deploy}" true
+
+  helm status ${deploy} >/dev/null 2>&1
+  local status=$?
+
+  # if `status` is `0`, deployment exists, has a status
+  if [ $status -eq 0 ]; then
+    echoinfo "Previous deployment found, checking status..."
+    deployment_status=$(helm status ${deploy} | grep ^STATUS | cut -d' ' -f2)
+    echoinfo "Previous deployment state: ${deployment_status}"
+    if [[ "$deployment_status" == "FAILED" || "$deployment_status" == "PENDING_UPGRADE" || "$deployment_status" == "PENDING_INSTALL" ]]; then
+      status=0;
+    else
+      status=1;
+    fi
+  else
+    echoerr "Previous deployment NOT found."
+  fi
+  set -e
+  return $status
+}
+
+function delete() {
+  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
+    echoerr "No release given, aborting the delete!"
+    return
+  fi
+
+  local track="${1-stable}"
+  local name="$CI_ENVIRONMENT_SLUG"
+
+  if [[ "$track" != "stable" ]]; then
+    name="$name-$track"
+  fi
+
+  echoinfo "Deleting release '$name'..." true
+
+  helm delete --purge "$name" || true
+}
+
+function cleanup() {
+  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
+    echoerr "No release given, aborting the delete!"
+    return
+  fi
+
+  echoinfo "Cleaning up '$CI_ENVIRONMENT_SLUG'..." true
+
+  kubectl -n "$KUBE_NAMESPACE" delete \
+    ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa \
+    -l release="$CI_ENVIRONMENT_SLUG" \
+    || true
+}
+
+function get_pod() {
+  local app_name="${1}"
+  local status="${2-Running}"
+  get_pod_cmd="kubectl get pods -n ${KUBE_NAMESPACE} --field-selector=status.phase=${status} -lapp=${app_name},release=${CI_ENVIRONMENT_SLUG} --no-headers -o=custom-columns=NAME:.metadata.name"
+  echoinfo "Running '${get_pod_cmd}'" true
+
+  while true; do
+    local pod_name="$(eval $get_pod_cmd)"
+    [[ "${pod_name}" == "" ]] || break
+
+    echoinfo "Waiting till '${app_name}' pod is ready";
+    sleep 5;
+  done
+
+  echoinfo "The pod name is '${pod_name}'."
+  echo "${pod_name}"
+}
 
 function perform_review_app_deployment() {
   check_kube_domain
-  download_gitlab_chart
   ensure_namespace
   install_tiller
   install_external_dns
@@ -15,6 +118,8 @@ function perform_review_app_deployment() {
 }
 
 function check_kube_domain() {
+  echoinfo "Checking that Kube domain exists..." true
+
   if [ -z ${REVIEW_APPS_DOMAIN+x} ]; then
     echo "In order to deploy or use Review Apps, REVIEW_APPS_DOMAIN variable must be set"
     echo "You can do it in Auto DevOps project settings or defining a variable at group or project level"
@@ -25,36 +130,56 @@ function check_kube_domain() {
   fi
 }
 
-function download_gitlab_chart() {
-  curl -o gitlab.tar.bz2 https://gitlab.com/charts/gitlab/-/archive/$GITLAB_HELM_CHART_REF/gitlab-$GITLAB_HELM_CHART_REF.tar.bz2
-  tar -xjf gitlab.tar.bz2
-  cd gitlab-$GITLAB_HELM_CHART_REF
-
-  helm init --client-only
-  helm repo add gitlab https://charts.gitlab.io
-  helm dependency update
-  helm dependency build
-}
-
 function ensure_namespace() {
+  echoinfo "Ensuring the ${KUBE_NAMESPACE} namespace exists..." true
+
   kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
 }
 
 function install_tiller() {
-  echo "Checking Tiller..."
+  echoinfo "Checking deployment/tiller-deploy status in the ${TILLER_NAMESPACE} namespace..." true
+
+  echoinfo "Initiating the Helm client..."
+  helm init --client-only
+
   helm init \
     --upgrade \
     --replicas 2
+
   kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
+
   if ! helm version --debug; then
     echo "Failed to init Tiller."
     return 1
   fi
-  echo ""
+}
+
+function install_external_dns() {
+  local release_name="dns-gitlab-review-app"
+  local domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
+  echoinfo "Installing external DNS for domain ${domain}..." true
+
+  if ! deployExists "${KUBE_NAMESPACE}" "${release_name}" || previousDeployFailed "${release_name}" ; then
+    echoinfo "Installing external-dns Helm chart"
+    helm repo update
+    helm install stable/external-dns \
+      -n "${release_name}" \
+      --namespace "${KUBE_NAMESPACE}" \
+      --set provider="aws" \
+      --set aws.secretKey="${REVIEW_APPS_AWS_SECRET_KEY}" \
+      --set aws.accessKey="${REVIEW_APPS_AWS_ACCESS_KEY}" \
+      --set aws.zoneType="public" \
+      --set domainFilters[0]="${domain}" \
+      --set txtOwnerId="${KUBE_NAMESPACE}" \
+      --set rbac.create="true" \
+      --set policy="sync"
+  else
+    echoinfo "The external-dns Helm chart is already successfully deployed."
+  fi
 }
 
 function create_secret() {
-  echo "Create secret..."
+  echoinfo "Creating the ${CI_ENVIRONMENT_SLUG}-gitlab-initial-root-password secret in the ${KUBE_NAMESPACE} namespace..." true
 
   kubectl create secret generic -n "$KUBE_NAMESPACE" \
     $CI_ENVIRONMENT_SLUG-gitlab-initial-root-password \
@@ -62,43 +187,28 @@ function create_secret() {
     --dry-run -o json | kubectl apply -f -
 }
 
-function deployExists() {
-  local namespace="${1}"
-  local deploy="${2}"
-  helm status --tiller-namespace "${namespace}" "${deploy}" >/dev/null 2>&1
-  return $?
-}
+function download_gitlab_chart() {
+  echoinfo "Downloading the GitLab chart..." true
 
-function previousDeployFailed() {
-  set +e
-  deploy="${1}"
-  echo "Checking for previous deployment of ${deploy}"
-  deployment_status=$(helm status ${deploy} >/dev/null 2>&1)
-  status=$?
-  # if `status` is `0`, deployment exists, has a status
-  if [ $status -eq 0 ]; then
-    echo "Previous deployment found, checking status"
-    deployment_status=$(helm status ${deploy} | grep ^STATUS | cut -d' ' -f2)
-    echo "Previous deployment state: $deployment_status"
-    if [[ "$deployment_status" == "FAILED" || "$deployment_status" == "PENDING_UPGRADE" || "$deployment_status" == "PENDING_INSTALL" ]]; then
-      status=0;
-    else
-      status=1;
-    fi
-  else
-    echo "Previous deployment NOT found."
-  fi
-  set -e
-  return $status
+  curl -o gitlab.tar.bz2 https://gitlab.com/charts/gitlab/-/archive/$GITLAB_HELM_CHART_REF/gitlab-$GITLAB_HELM_CHART_REF.tar.bz2
+  tar -xjf gitlab.tar.bz2
+  cd gitlab-$GITLAB_HELM_CHART_REF
+
+  echoinfo "Adding the gitlab repo to Helm..."
+  helm repo add gitlab https://charts.gitlab.io
+
+  echoinfo "Building the gitlab chart's dependencies..."
+  helm dependency build .
 }
 
 function deploy() {
-  track="${1-stable}"
-  name="$CI_ENVIRONMENT_SLUG"
+  local track="${1-stable}"
+  local name="$CI_ENVIRONMENT_SLUG"
 
   if [[ "$track" != "stable" ]]; then
     name="$name-$track"
   fi
+  echoinfo "Deploying ${name}..." true
 
   replicas="1"
   service_enabled="false"
@@ -140,9 +250,7 @@ function deploy() {
   fi
 
   create_secret
-
-  helm repo add gitlab https://charts.gitlab.io/
-  helm dep update .
+  download_gitlab_chart
 
 HELM_CMD=$(cat << EOF
   helm upgrade --install \
@@ -188,84 +296,10 @@ HELM_CMD=$(cat << EOF
 EOF
 )
 
-  echo "Deploying with:"
-  echo $HELM_CMD
+  echoinfo "Deploying with:"
+  echoinfo "${HELM_CMD}"
 
   eval $HELM_CMD
-}
-
-function delete() {
-  track="${1-stable}"
-  name="$CI_ENVIRONMENT_SLUG"
-
-  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
-    echo "No release given, aborting the delete!"
-    return
-  fi
-
-  if [[ "$track" != "stable" ]]; then
-    name="$name-$track"
-  fi
-
-  if ! deployExists "${KUBE_NAMESPACE}" "${name}"; then
-    echo "The release $name doesn't exist, aborting the cleanup!"
-    return
-  fi
-
-  echo "Deleting release '$name'..."
-  helm delete --purge "$name" || true
-}
-
-function cleanup() {
-  if [ -z "$CI_ENVIRONMENT_SLUG" ]; then
-    echo "No release given, aborting the delete!"
-    return
-  fi
-
-  echo "Cleaning up '$CI_ENVIRONMENT_SLUG'..."
-  kubectl -n "$KUBE_NAMESPACE" delete \
-    ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa \
-    -l release="$CI_ENVIRONMENT_SLUG" \
-  || true
-}
-
-function install_external_dns() {
-  local release_name="dns-gitlab-review-app"
-  local domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
-
-  if ! deployExists "${KUBE_NAMESPACE}" "${release_name}" || previousDeployFailed "${release_name}" ; then
-    echo "Installing external-dns helm chart"
-    helm repo update
-    helm install stable/external-dns \
-      -n "${release_name}" \
-      --namespace "${KUBE_NAMESPACE}" \
-      --set provider="aws" \
-      --set aws.secretKey="${REVIEW_APPS_AWS_SECRET_KEY}" \
-      --set aws.accessKey="${REVIEW_APPS_AWS_ACCESS_KEY}" \
-      --set aws.zoneType="public" \
-      --set domainFilters[0]="${domain}" \
-      --set txtOwnerId="${KUBE_NAMESPACE}" \
-      --set rbac.create="true" \
-      --set policy="sync"
-  fi
-}
-
-function get_pod() {
-  local app_name="${1}"
-  local status="${2-Running}"
-  get_pod_cmd="kubectl get pods -n ${KUBE_NAMESPACE} --field-selector=status.phase=${status} -lapp=${app_name},release=${CI_ENVIRONMENT_SLUG} --no-headers -o=custom-columns=NAME:.metadata.name"
-  echoinfo "Running '${get_pod_cmd}'"
-
-  while true; do
-    local pod_name="$(eval $get_pod_cmd)"
-    [[ "${pod_name}" == "" ]] || break
-
-    echoinfo "Waiting till '${app_name}' pod is ready";
-    sleep 5;
-  done
-
-  echoinfo "The pod name is '${pod_name}'."
-  echo "${pod_name}"
 }
 
 function add_license() {
@@ -273,6 +307,8 @@ function add_license() {
 
   task_runner_pod=$(get_pod "task-runner");
   if [ -z "${task_runner_pod}" ]; then echo "Task runner pod not found" && return; fi
+
+  echoinfo "Installing license..." true
 
   echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
   kubectl -n "$KUBE_NAMESPACE" cp /tmp/license.gitlab ${task_runner_pod}:/tmp/license.gitlab

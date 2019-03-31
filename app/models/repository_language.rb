@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RepositoryLanguage < ActiveRecord::Base
+class RepositoryLanguage < ApplicationRecord
   belongs_to :project
   belongs_to :programming_language
 

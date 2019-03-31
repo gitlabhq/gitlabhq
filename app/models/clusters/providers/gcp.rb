@@ -2,7 +2,7 @@
 
 module Clusters
   module Providers
-    class Gcp < ActiveRecord::Base
+    class Gcp < ApplicationRecord
       self.table_name = 'cluster_providers_gcp'
 
       belongs_to :cluster, inverse_of: :provider_gcp, class_name: 'Clusters::Cluster'

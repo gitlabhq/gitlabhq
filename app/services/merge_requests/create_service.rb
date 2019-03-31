@@ -25,7 +25,7 @@ module MergeRequests
     def after_create(issuable)
       todo_service.new_merge_request(issuable, current_user)
       issuable.cache_merge_request_closes_issues!(current_user)
-      create_merge_request_pipeline(issuable, current_user)
+      create_pipeline_for(issuable, current_user)
       issuable.update_head_pipeline
 
       super

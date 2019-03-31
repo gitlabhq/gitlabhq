@@ -123,16 +123,7 @@ class Clusters::ClustersController < Clusters::BaseController
   private
 
   def update_params
-    if cluster.managed?
-      params.require(:cluster).permit(
-        :enabled,
-        :environment_scope,
-        :base_domain,
-        platform_kubernetes_attributes: [
-          :namespace
-        ]
-      )
-    else
+    if cluster.provided_by_user?
       params.require(:cluster).permit(
         :enabled,
         :name,
@@ -142,6 +133,15 @@ class Clusters::ClustersController < Clusters::BaseController
           :api_url,
           :token,
           :ca_cert,
+          :namespace
+        ]
+      )
+    else
+      params.require(:cluster).permit(
+        :enabled,
+        :environment_scope,
+        :base_domain,
+        platform_kubernetes_attributes: [
           :namespace
         ]
       )

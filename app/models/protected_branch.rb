@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProtectedBranch < ActiveRecord::Base
+class ProtectedBranch < ApplicationRecord
   include ProtectedRef
 
   protected_ref_access_levels :merge, :push
