@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Upload < ActiveRecord::Base
+class Upload < ApplicationRecord
   # Upper limit for foreground checksum processing
   CHECKSUM_THRESHOLD = 100.megabytes
 

@@ -69,6 +69,36 @@ describe Gitlab::QuickActions::CommandDefinition do
         expect(subject.available?(opts)).to be true
       end
     end
+
+    context "when the command has types" do
+      before do
+        subject.types = [Issue, Commit]
+      end
+
+      context "when the command target type is allowed" do
+        it "returns true" do
+          opts[:quick_action_target] = Issue.new
+          expect(subject.available?(opts)).to be true
+        end
+      end
+
+      context "when the command target type is not allowed" do
+        it "returns true" do
+          opts[:quick_action_target] = MergeRequest.new
+          expect(subject.available?(opts)).to be false
+        end
+      end
+    end
+
+    context "when the command has no types" do
+      it "any target type is allowed" do
+        opts[:quick_action_target] = Issue.new
+        expect(subject.available?(opts)).to be true
+
+        opts[:quick_action_target] = MergeRequest.new
+        expect(subject.available?(opts)).to be true
+      end
+    end
   end
 
   describe "#execute" do

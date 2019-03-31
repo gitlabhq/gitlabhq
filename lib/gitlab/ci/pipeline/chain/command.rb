@@ -33,6 +33,13 @@ module Gitlab
             end
           end
 
+          def merge_request_ref_exists?
+            strong_memoize(:merge_request_ref_exists) do
+              MergeRequest.merge_request_ref?(origin_ref) &&
+                project.repository.ref_exists?(origin_ref)
+            end
+          end
+
           def ref
             strong_memoize(:ref) do
               Gitlab::Git.ref_name(origin_ref)

@@ -2,7 +2,7 @@
 
 module Clusters
   module Applications
-    class Ingress < ActiveRecord::Base
+    class Ingress < ApplicationRecord
       VERSION = '1.1.2'.freeze
 
       self.table_name = 'clusters_applications_ingress'

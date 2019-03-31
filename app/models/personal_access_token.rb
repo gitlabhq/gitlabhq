@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PersonalAccessToken < ActiveRecord::Base
+class PersonalAccessToken < ApplicationRecord
   include Expirable
   include IgnorableColumn
   include TokenAuthenticatable

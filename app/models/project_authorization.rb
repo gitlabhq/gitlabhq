@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectAuthorization < ActiveRecord::Base
+class ProjectAuthorization < ApplicationRecord
   include FromUnion
 
   belongs_to :user

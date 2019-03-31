@@ -40,8 +40,8 @@ module QA
         set_file_size_limit(1)
         expect(page).to have_content("Application settings saved successfully")
 
-        push = push_new_file('oversize_file_2.bin', wait_for_push: false)
-        expect(push.output).to have_content 'remote: fatal: pack exceeds maximum allowed size'
+        expect { push_new_file('oversize_file_2.bin', wait_for_push: false) }
+          .to raise_error(QA::Git::Repository::RepositoryCommandError, /remote: fatal: pack exceeds maximum allowed size/)
       end
 
       def set_file_size_limit(limit)
@@ -65,6 +65,7 @@ module QA
           p.file_content = SecureRandom.random_bytes(2000000)
           p.commit_message = 'Adding a new file'
           p.wait_for_push = wait_for_push
+          p.new_branch = false
         end
       end
     end

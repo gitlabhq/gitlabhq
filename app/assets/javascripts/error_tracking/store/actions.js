@@ -20,7 +20,7 @@ export function startPolling({ commit, dispatch }, endpoint) {
       commit(types.SET_LOADING, false);
       dispatch('stopPolling');
     },
-    errorCallback: response => {
+    errorCallback: ({ response }) => {
       let errorMessage = '';
       if (response && response.data && response.data.message) {
         errorMessage = response.data.message;

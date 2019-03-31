@@ -375,7 +375,7 @@ describe ObjectStorage do
   describe '#fog_public' do
     subject { uploader.fog_public }
 
-    it { is_expected.to eq(false) }
+    it { is_expected.to eq(nil) }
   end
 
   describe '.workhorse_authorize' do

@@ -3,11 +3,12 @@ require Rails.root.join('db', 'post_migrate', '20190124200344_migrate_storage_mi
 
 describe MigrateStorageMigratorSidekiqQueue, :sidekiq, :redis do
   include Gitlab::Database::MigrationHelpers
+  include StubWorker
 
   context 'when there are jobs in the queues' do
     it 'correctly migrates queue when migrating up' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: :storage_migrator).perform_async(1, 5)
+        stub_worker(queue: :storage_migrator).perform_async(1, 5)
 
         described_class.new.up
 
@@ -18,7 +19,7 @@ describe MigrateStorageMigratorSidekiqQueue, :sidekiq, :redis do
 
     it 'correctly migrates queue when migrating down' do
       Sidekiq::Testing.disable! do
-        stubbed_worker(queue: :'hashed_storage:hashed_storage_migrator').perform_async(1, 5)
+        stub_worker(queue: :'hashed_storage:hashed_storage_migrator').perform_async(1, 5)
 
         described_class.new.down
 
@@ -35,13 +36,6 @@ describe MigrateStorageMigratorSidekiqQueue, :sidekiq, :redis do
 
     it 'does not raise error when migrating down' do
       expect { described_class.new.down }.not_to raise_error
-    end
-  end
-
-  def stubbed_worker(queue:)
-    Class.new do
-      include Sidekiq::Worker
-      sidekiq_options queue: queue
     end
   end
 end

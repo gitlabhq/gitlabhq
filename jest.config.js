@@ -1,4 +1,4 @@
-/* eslint-disable filenames/match-regex */
+const IS_EE = require('./config/helpers/is_ee_env');
 
 const reporters = ['default'];
 
@@ -38,4 +38,7 @@ module.exports = {
   transformIgnorePatterns: ['node_modules/(?!(@gitlab/ui)/)'],
   timers: 'fake',
   testEnvironment: '<rootDir>/spec/frontend/environment.js',
+  testEnvironmentOptions: {
+    IS_EE,
+  },
 };

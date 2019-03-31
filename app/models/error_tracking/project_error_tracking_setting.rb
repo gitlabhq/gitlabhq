@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 module ErrorTracking
-  class ProjectErrorTrackingSetting < ActiveRecord::Base
+  class ProjectErrorTrackingSetting < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
     include ReactiveCaching
+
+    SENTRY_API_ERROR_TYPE_MISSING_KEYS = 'missing_keys_in_sentry_response'
+    SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE = 'non_20x_response_from_sentry'
 
     API_URL_PATH_REGEXP = %r{
       \A
@@ -90,7 +93,9 @@ module ErrorTracking
         { issues: sentry_client.list_issues(**opts.symbolize_keys) }
       end
     rescue Sentry::Client::Error => e
-      { error: e.message }
+      { error: e.message, error_type: SENTRY_API_ERROR_TYPE_NON_20X_RESPONSE }
+    rescue Sentry::Client::MissingKeysError => e
+      { error: e.message, error_type: SENTRY_API_ERROR_TYPE_MISSING_KEYS }
     end
 
     # http://HOST/api/0/projects/ORG/PROJECT

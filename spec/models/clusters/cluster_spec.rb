@@ -620,4 +620,20 @@ describe Clusters::Cluster do
       end
     end
   end
+
+  describe '#provided_by_user?' do
+    subject { cluster.provided_by_user? }
+
+    context 'with a GCP provider' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'with an user provider' do
+      let(:cluster) { create(:cluster, :provided_by_user) }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

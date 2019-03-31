@@ -1,5 +1,5 @@
 - if can?(current_user, :admin_cluster, @cluster)
-  - if @cluster.managed?
+  - unless @cluster.provided_by_user?
     .append-bottom-20
       %label.append-bottom-10
         = s_('ClusterIntegration|Google Kubernetes Engine')

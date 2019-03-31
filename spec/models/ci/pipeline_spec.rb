@@ -362,6 +362,42 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#merge_request_ref?' do
+    subject { pipeline.merge_request_ref? }
+
+    it 'calls MergeRequest#merge_request_ref?' do
+      expect(MergeRequest).to receive(:merge_request_ref?).with(pipeline.ref)
+
+      subject
+    end
+  end
+
+  describe '#legacy_detached_merge_request_pipeline?' do
+    subject { pipeline.legacy_detached_merge_request_pipeline? }
+
+    set(:merge_request) { create(:merge_request) }
+    let(:ref) { 'feature' }
+    let(:target_sha) { nil }
+
+    let(:pipeline) do
+      build(:ci_pipeline, source: :merge_request_event, merge_request: merge_request, ref: ref, target_sha: target_sha)
+    end
+
+    it { is_expected.to be_truthy }
+
+    context 'when pipeline ref is a merge request ref' do
+      let(:ref) { 'refs/merge-requests/1/head' }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when target sha is set' do
+      let(:target_sha) { 'target-sha' }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#matches_sha_or_source_sha?' do
     subject { pipeline.matches_sha_or_source_sha?(sample_sha) }
 
@@ -1456,6 +1492,14 @@ describe Ci::Pipeline, :mailer do
     describe '#latest?' do
       context 'with latest sha' do
         it 'returns true' do
+          expect(pipeline).to be_latest
+        end
+      end
+
+      context 'with a branch name as the ref' do
+        it 'looks up commit with the full ref name' do
+          expect(pipeline.project).to receive(:commit).with('refs/heads/master').and_call_original
+
           expect(pipeline).to be_latest
         end
       end

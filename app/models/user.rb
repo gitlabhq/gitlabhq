@@ -432,7 +432,7 @@ class User < ApplicationRecord
         fuzzy_arel_match(:name, query, lower_exact_match: true)
           .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
+      ).reorder(order % { query: ApplicationRecord.connection.quote(query) }, :name)
     end
 
     # Limits the result set to users _not_ in the given query/list of IDs.

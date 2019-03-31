@@ -10,12 +10,33 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
-      project: project, current_user: user, origin_ref: ref)
+      project: project, current_user: user, origin_ref: origin_ref, merge_request: merge_request)
   end
 
   let(:step) { described_class.new(pipeline, command) }
 
   let(:ref) { 'master' }
+  let(:origin_ref) { ref }
+  let(:merge_request) { nil }
+
+  shared_context 'detached merge request pipeline' do
+    let(:merge_request) do
+      create(:merge_request,
+        source_project: project,
+        source_branch: ref,
+        target_project: project,
+        target_branch: 'feature')
+    end
+
+    let(:pipeline) do
+      build(:ci_pipeline,
+        source: :merge_request_event,
+        merge_request: merge_request,
+        project: project)
+    end
+
+    let(:origin_ref) { merge_request.ref_path }
+  end
 
   context 'when users has no ability to run a pipeline' do
     before do
@@ -58,12 +79,24 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
 
       it { is_expected.to be_truthy }
 
+      context 'when pipeline is a detached merge request pipeline' do
+        include_context 'detached merge request pipeline'
+
+        it { is_expected.to be_truthy }
+      end
+
       context 'when the branch is protected' do
         let!(:protected_branch) do
           create(:protected_branch, project: project, name: ref)
         end
 
         it { is_expected.to be_falsey }
+
+        context 'when pipeline is a detached merge request pipeline' do
+          include_context 'detached merge request pipeline'
+
+          it { is_expected.to be_falsey }
+        end
 
         context 'when developers are allowed to merge' do
           let!(:protected_branch) do
@@ -74,6 +107,12 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
           end
 
           it { is_expected.to be_truthy }
+
+          context 'when pipeline is a detached merge request pipeline' do
+            include_context 'detached merge request pipeline'
+
+            it { is_expected.to be_truthy }
+          end
         end
       end
 
@@ -112,6 +151,12 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
         end
 
         it { is_expected.to be_truthy }
+
+        context 'when pipeline is a detached merge request pipeline' do
+          include_context 'detached merge request pipeline'
+
+          it { is_expected.to be_truthy }
+        end
       end
 
       context 'when the tag is protected' do

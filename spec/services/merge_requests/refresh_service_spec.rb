@@ -141,7 +141,7 @@ describe MergeRequests::RefreshService do
       end
     end
 
-    describe 'Merge request pipelines' do
+    describe 'Pipelines for merge requests' do
       before do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
       end
@@ -159,7 +159,7 @@ describe MergeRequests::RefreshService do
           }
         end
 
-        it 'create merge request pipeline with commits' do
+        it 'create detached merge request pipeline with commits' do
           expect { subject }
             .to change { @merge_request.merge_request_pipelines.count }.by(1)
             .and change { @fork_merge_request.merge_request_pipelines.count }.by(1)
@@ -170,7 +170,34 @@ describe MergeRequests::RefreshService do
           expect(@another_merge_request.has_commits?).to be_falsy
         end
 
-        context "when branch pipeline was created before a merge request pipline has been created" do
+        it 'create detached merge request pipeline for non-fork merge request' do
+          subject
+
+          expect(@merge_request.merge_request_pipelines.first)
+            .to be_detached_merge_request_pipeline
+        end
+
+        it 'create legacy detached merge request pipeline for fork merge request' do
+          subject
+
+          expect(@fork_merge_request.merge_request_pipelines.first)
+            .to be_legacy_detached_merge_request_pipeline
+        end
+
+        context 'when ci_use_merge_request_ref feature flag is false' do
+          before do
+            stub_feature_flags(ci_use_merge_request_ref: false)
+          end
+
+          it 'create legacy detached merge request pipeline for non-fork merge request' do
+            subject
+
+            expect(@merge_request.merge_request_pipelines.first)
+              .to be_legacy_detached_merge_request_pipeline
+          end
+        end
+
+        context "when branch pipeline was created before a detaced merge request pipeline has been created" do
           before do
             create(:ci_pipeline, project: @merge_request.source_project,
                                  sha: @merge_request.diff_head_sha,
@@ -180,7 +207,7 @@ describe MergeRequests::RefreshService do
             subject
           end
 
-          it 'sets the latest merge request pipeline as a head pipeline' do
+          it 'sets the latest detached merge request pipeline as a head pipeline' do
             @merge_request.reload
             expect(@merge_request.actual_head_pipeline).to be_merge_request_event
           end
@@ -193,7 +220,7 @@ describe MergeRequests::RefreshService do
         end
 
         context "when MergeRequestUpdateWorker is retried by an exception" do
-          it 'does not re-create a duplicate merge request pipeline' do
+          it 'does not re-create a duplicate detached merge request pipeline' do
             expect do
               service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master')
             end.to change { @merge_request.merge_request_pipelines.count }.by(1)
@@ -209,7 +236,7 @@ describe MergeRequests::RefreshService do
             stub_feature_flags(ci_merge_request_pipeline: false)
           end
 
-          it 'does not create a merge request pipeline' do
+          it 'does not create a detached merge request pipeline' do
             expect { subject }
               .not_to change { @merge_request.merge_request_pipelines.count }
           end
@@ -226,7 +253,7 @@ describe MergeRequests::RefreshService do
           }
         end
 
-        it 'does not create a merge request pipeline' do
+        it 'does not create a detached merge request pipeline' do
           expect { subject }
             .not_to change { @merge_request.merge_request_pipelines.count }
         end

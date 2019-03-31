@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectDailyStatistic < ActiveRecord::Base
+class ProjectDailyStatistic < ApplicationRecord
   belongs_to :project
 
   scope :of_project, -> (project) { where(project: project) }

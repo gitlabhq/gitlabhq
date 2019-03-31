@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ContainerRepository < ActiveRecord::Base
+class ContainerRepository < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
 
   belongs_to :project

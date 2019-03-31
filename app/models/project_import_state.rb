@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ProjectImportState < ActiveRecord::Base
+class ProjectImportState < ApplicationRecord
   include AfterCommitQueue
 
   self.table_name = "project_mirror_data"

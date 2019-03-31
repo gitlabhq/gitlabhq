@@ -76,13 +76,11 @@ class IssuableBaseService < BaseService
     find_or_create_label_ids
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def filter_labels_in_param(key)
     return if params[key].to_a.empty?
 
-    params[key] = available_labels.where(id: params[key]).pluck(:id)
+    params[key] = available_labels.id_in(params[key]).pluck_primary_key
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def find_or_create_label_ids
     labels = params.delete(:labels)

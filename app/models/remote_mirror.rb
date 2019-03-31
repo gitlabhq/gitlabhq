@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RemoteMirror < ActiveRecord::Base
+class RemoteMirror < ApplicationRecord
   include AfterCommitQueue
   include MirrorAuthentication
 

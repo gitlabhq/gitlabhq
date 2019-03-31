@@ -15,7 +15,7 @@
 # In order to leverage InternalId for other usages, the idea is to
 # * Add `usage` value to enum
 # * (Optionally) add columns to `internal_ids` if needed for scope.
-class InternalId < ActiveRecord::Base
+class InternalId < ApplicationRecord
   belongs_to :project
   belongs_to :namespace
 

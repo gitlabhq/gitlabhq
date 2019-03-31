@@ -26,7 +26,8 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     RUNNER_FEATURES = {
-      upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }
+      upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? },
+      refspecs: -> (build) { build.merge_request_ref? }
     }.freeze
 
     has_one :deployment, as: :deployable, class_name: 'Deployment'
@@ -47,7 +48,8 @@ module Ci
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
-    delegate :merge_request_event?, to: :pipeline
+    delegate :merge_request_event?, :merge_request_ref?,
+             :legacy_detached_merge_request_pipeline?, to: :pipeline
 
     ##
     # Since Gitlab 11.5, deployments records started being created right after

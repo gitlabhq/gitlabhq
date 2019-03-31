@@ -50,6 +50,10 @@ module SearchHelper
     filename
   end
 
+  def search_service
+    @search_service ||= ::SearchService.new(current_user, params)
+  end
+
   private
 
   # Autocomplete results for various settings pages
