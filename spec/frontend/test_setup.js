@@ -5,10 +5,15 @@ import axios from '~/lib/utils/axios_utils';
 import { initializeTestTimeout } from './helpers/timeout';
 import { getJSONFixture, loadHTMLFixture, setHTMLFixture } from './helpers/fixtures';
 
-// wait for pending setTimeout()s
-afterEach(() => {
-  jest.runAllTimers();
-});
+process.on('unhandledRejection', global.promiseRejectionHandler);
+
+afterEach(() =>
+  // give Promises a bit more time so they fail the right test
+  new Promise(setImmediate).then(() => {
+    // wait for pending setTimeout()s
+    jest.runAllTimers();
+  }),
+);
 
 initializeTestTimeout(300);
 
