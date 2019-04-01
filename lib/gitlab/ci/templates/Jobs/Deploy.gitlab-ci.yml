@@ -245,13 +245,6 @@ rollout 100%:
   [[ "$TRACE" ]] && set -x
   auto_database_url=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${CI_ENVIRONMENT_SLUG}-postgres:5432/${POSTGRES_DB}
   export DATABASE_URL=${DATABASE_URL-$auto_database_url}
-  if [[ -z "$CI_COMMIT_TAG" ]]; then
-    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG
-    export CI_APPLICATION_TAG=$CI_COMMIT_SHA
-  else
-    export CI_APPLICATION_REPOSITORY=$CI_REGISTRY_IMAGE
-    export CI_APPLICATION_TAG=$CI_COMMIT_TAG
-  fi
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
   # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
 
@@ -337,6 +330,14 @@ rollout 100%:
     percentage="${2:-100}"
     name=$(deploy_name "$track")
 
+    if [[ -z "$CI_COMMIT_TAG" ]]; then
+      image_repository=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG}
+      image_tag=${CI_APPLICATION_TAG:-$CI_COMMIT_SHA}
+    else
+      image_repository=${CI_APPLICATION_REPOSITORY:-$CI_REGISTRY_IMAGE}
+      image_tag=${CI_APPLICATION_TAG:-$CI_COMMIT_TAG}
+    fi
+
     replicas="1"
     service_enabled="true"
     postgres_enabled="$POSTGRES_ENABLED"
@@ -374,8 +375,8 @@ rollout 100%:
         --set gitlab.app="$CI_PROJECT_PATH_SLUG" \
         --set gitlab.env="$CI_ENVIRONMENT_SLUG" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
-        --set image.repository="$CI_APPLICATION_REPOSITORY" \
-        --set image.tag="$CI_APPLICATION_TAG" \
+        --set image.repository="$image_repository" \
+        --set image.tag="$image_tag" \
         --set image.pullPolicy=IfNotPresent \
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
@@ -413,8 +414,8 @@ rollout 100%:
         --set gitlab.app="$CI_PROJECT_PATH_SLUG" \
         --set gitlab.env="$CI_ENVIRONMENT_SLUG" \
         --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
-        --set image.repository="$CI_APPLICATION_REPOSITORY" \
-        --set image.tag="$CI_APPLICATION_TAG" \
+        --set image.repository="$image_repository" \
+        --set image.tag="$image_tag" \
         --set image.pullPolicy=IfNotPresent \
         --set image.secrets[0].name="$secret_name" \
         --set application.track="$track" \
