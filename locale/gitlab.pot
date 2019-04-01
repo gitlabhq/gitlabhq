@@ -1710,7 +1710,7 @@ msgstr ""
 msgid "ClusterIntegration|API URL"
 msgstr ""
 
-msgid "ClusterIntegration|API URL must use http or https protocol."
+msgid "ClusterIntegration|API URL should be a valid http/https url."
 msgstr ""
 
 msgid "ClusterIntegration|Add Kubernetes cluster"

@@ -12,7 +12,7 @@
 
   = field.fields_for :platform_kubernetes, @user_cluster.platform_kubernetes do |platform_kubernetes_field|
     = platform_kubernetes_field.url_field :api_url, required: true,
-      title: s_('ClusterIntegration|API URL must use http or https protocol.'),
+      title: s_('ClusterIntegration|API URL should be a valid http/https url.'),
       label: s_('ClusterIntegration|API URL'), label_class: 'label-bold'
     = platform_kubernetes_field.text_area :ca_cert,
       placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'),
