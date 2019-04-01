@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'spec_helper'
 
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
