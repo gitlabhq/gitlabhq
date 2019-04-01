@@ -125,7 +125,7 @@ The Pages daemon doesn't listen to the outside world.
     pages_external_url 'http://example.io'
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 Watch the [video tutorial][video-admin] for this configuration.
 
@@ -157,7 +157,22 @@ outside world.
     where `pages-nginx.crt` and `pages-nginx.key` are the SSL cert and key,
     respectively.
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
+
+### Additional configuration for Docker container
+
+The GitLab Pages daemon will not have permissions to bind mounts when it runs
+in a Docker container. To overcome this issue you'll need to change the chroot
+behavior:
+
+1. Edit `/etc/gitlab/gitlab.rb`.
+1. Set the `inplace_chroot` to `true` for GitLab Pages:
+
+    ```shell
+    gitlab_pages['inplace_chroot'] = true
+    ```
+
+1. [Reconfigure GitLab][reconfigure].
 
 ## Advanced configuration
 
@@ -195,7 +210,7 @@ world. Custom domains are supported, but no TLS.
     `192.0.2.2` and `2001::2` are the secondary IPs the GitLab Pages daemon
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ### Custom domains with TLS support
 
@@ -229,7 +244,7 @@ world. Custom domains and TLS are supported.
     `192.0.2.2` and `2001::2` are the secondary IPs where the GitLab Pages daemon
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ### Custom domain verification
 
@@ -287,7 +302,7 @@ Follow the steps below to configure verbose logging of GitLab Pages daemon.
     gitlab_pages['log_verbose'] = true
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ## Change storage path
 
@@ -302,7 +317,7 @@ are stored.
     gitlab_rails['pages_path'] = "/mnt/storage/pages"
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ## Configure listener for reverse proxy requests
 
@@ -325,7 +340,7 @@ Omnibus GitLab 11.1.
     gitlab_pages['listen_proxy'] = "localhost:10080"
     ```
 
-1. [Reconfigure GitLab][reconfigure]
+1. [Reconfigure GitLab][reconfigure].
 
 ## Set maximum pages size
 
