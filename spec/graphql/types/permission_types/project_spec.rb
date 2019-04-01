@@ -13,6 +13,8 @@ describe Types::PermissionTypes::Project do
       :update_wiki, :destroy_wiki, :create_pages, :destroy_pages, :read_pages_content
     ]
 
-    expect(described_class).to have_graphql_fields(expected_permissions)
+    expected_permissions.each do |permission|
+      expect(described_class).to have_graphql_field(permission)
+    end
   end
 end
