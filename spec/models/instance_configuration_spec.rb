@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe InstanceConfiguration do
@@ -30,8 +32,8 @@ describe InstanceConfiguration do
         end
 
         def stub_pub_file(exist: true)
-          path = 'spec/fixtures/ssh_host_example_key.pub'
-          path << 'random' unless exist
+          path = exist ? 'spec/fixtures/ssh_host_example_key.pub' : 'spec/fixtures/ssh_host_example_key.pub.random'
+
           allow(subject).to receive(:ssh_algorithm_file).and_return(Rails.root.join(path))
         end
       end
