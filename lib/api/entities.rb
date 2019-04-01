@@ -1588,7 +1588,7 @@ module API
     end
 
     class Cluster < Grape::Entity
-      expose :id, :name, :created_at
+      expose :id, :name, :created_at, :domain
       expose :provider_type, :platform_type, :environment_scope, :cluster_type
       expose :user, using: Entities::UserBasic
       expose :platform_kubernetes, using: Entities::Platform::Kubernetes

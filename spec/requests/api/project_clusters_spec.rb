@@ -60,7 +60,7 @@ describe API::ProjectClusters do
     end
 
     let(:cluster) do
-      create(:cluster, :project, :provided_by_gcp,
+      create(:cluster, :project, :provided_by_gcp, :with_domain,
              platform_kubernetes: platform_kubernetes,
              user: current_user,
              projects: [project])
@@ -88,6 +88,7 @@ describe API::ProjectClusters do
         expect(json_response['platform_type']).to eq('kubernetes')
         expect(json_response['environment_scope']).to eq('*')
         expect(json_response['cluster_type']).to eq('project_type')
+        expect(json_response['domain']).to eq('example.com')
       end
 
       it 'returns project information' do
@@ -187,6 +188,7 @@ describe API::ProjectClusters do
     let(:cluster_params) do
       {
         name: 'test-cluster',
+        domain: 'domain.example.com',
         platform_kubernetes_attributes: platform_kubernetes_attributes
       }
     end
@@ -217,6 +219,7 @@ describe API::ProjectClusters do
           expect(cluster_result).to be_kubernetes
           expect(cluster_result.project).to eq(project)
           expect(cluster_result.name).to eq('test-cluster')
+          expect(cluster_result.domain).to eq('domain.example.com')
           expect(platform_kubernetes.rbac?).to be_truthy
           expect(platform_kubernetes.api_url).to eq(api_url)
           expect(platform_kubernetes.namespace).to eq(namespace)
@@ -294,6 +297,7 @@ describe API::ProjectClusters do
 
     let(:update_params) do
       {
+        domain: 'new-domain.com',
         platform_kubernetes_attributes: platform_kubernetes_attributes
       }
     end
@@ -330,6 +334,7 @@ describe API::ProjectClusters do
         end
 
         it 'should update cluster attributes' do
+          expect(cluster.domain).to eq('new-domain.com')
           expect(cluster.platform_kubernetes.namespace).to eq('new-namespace')
         end
       end
@@ -342,6 +347,7 @@ describe API::ProjectClusters do
         end
 
         it 'should not update cluster attributes' do
+          expect(cluster.domain).not_to eq('new_domain.com')
           expect(cluster.platform_kubernetes.namespace).not_to eq('invalid_namespace')
           expect(cluster.kubernetes_namespace.namespace).not_to eq('invalid_namespace')
         end
