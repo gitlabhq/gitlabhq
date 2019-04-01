@@ -109,6 +109,7 @@ Here is a configuration example with GCS.
 _NOTE: The service account must have permission to access the bucket. [See more](https://cloud.google.com/storage/docs/authentication)_
 
 Here is a configuration example with Rackspace Cloud Files.
+
 | Setting | Description | example |
 |---------|-------------|---------|
 | `provider` | The provider name | `Rackspace` |
