@@ -34,11 +34,11 @@ module API
         repository = user_project.repository
 
         branches = BranchesFinder.new(repository, declared_params(include_missing: false)).execute
-        branches = ::Kaminari.paginate_array(branches)
+        branches = paginate(::Kaminari.paginate_array(branches))
         merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
         present(
-          paginate(branches),
+          branches,
           with: Entities::Branch,
           current_user: current_user,
           project: user_project,
