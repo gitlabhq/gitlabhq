@@ -3090,6 +3090,38 @@ describe MergeRequest do
     end
   end
 
+  describe '#mergeable_to_ref?' do
+    it 'returns true when merge request is mergeable' do
+      subject = create(:merge_request)
+
+      expect(subject.mergeable_to_ref?).to be(true)
+    end
+
+    it 'returns false when merge request is already merged' do
+      subject = create(:merge_request, :merged)
+
+      expect(subject.mergeable_to_ref?).to be(false)
+    end
+
+    it 'returns false when merge request is closed' do
+      subject = create(:merge_request, :closed)
+
+      expect(subject.mergeable_to_ref?).to be(false)
+    end
+
+    it 'returns false when merge request is work in progress' do
+      subject = create(:merge_request, title: 'WIP: The feature')
+
+      expect(subject.mergeable_to_ref?).to be(false)
+    end
+
+    it 'returns false when merge request has no commits' do
+      subject = create(:merge_request, source_branch: 'empty-branch', target_branch: 'master')
+
+      expect(subject.mergeable_to_ref?).to be(false)
+    end
+  end
+
   describe '#merge_participants' do
     it 'contains author' do
       expect(subject.merge_participants).to eq([subject.author])
