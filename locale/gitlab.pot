@@ -3004,19 +3004,10 @@ msgstr ""
 msgid "Download asset"
 msgstr ""
 
-msgid "Download tar"
+msgid "Download source code"
 msgstr ""
 
-msgid "Download tar.bz2"
-msgstr ""
-
-msgid "Download tar.gz"
-msgstr ""
-
-msgid "Download zip"
-msgstr ""
-
-msgid "DownloadArtifacts|Download"
+msgid "Download this directory"
 msgstr ""
 
 msgid "DownloadCommit|Email Patches"
@@ -6017,6 +6008,9 @@ msgid "Preview"
 msgstr ""
 
 msgid "Preview payload"
+msgstr ""
+
+msgid "Previous Artifacts"
 msgstr ""
 
 msgid "Prioritize"
@@ -9989,6 +9983,15 @@ msgstr ""
 msgid "syntax is incorrect"
 msgstr ""
 
+msgid "tar"
+msgstr ""
+
+msgid "tar.bz2"
+msgstr ""
+
+msgid "tar.gz"
+msgstr ""
+
 msgid "this document"
 msgstr ""
 
@@ -10022,4 +10025,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "yaml invalid"
+msgstr ""
+
+msgid "zip"
 msgstr ""
