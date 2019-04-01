@@ -1343,7 +1343,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_commits?
-    merge_request_diff && commits_count > 0
+    merge_request_diff && commits_count.to_i > 0
   end
 
   def has_no_commits?
