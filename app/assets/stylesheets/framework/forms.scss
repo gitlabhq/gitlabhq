@@ -128,7 +128,7 @@ label {
 
 .form-control {
   @include box-shadow(none);
-  border-radius: 2px;
+  border-radius: $border-radius-default;
   padding: $gl-vert-padding $gl-input-padding;
 
   &.input-short {
