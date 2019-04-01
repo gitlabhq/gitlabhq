@@ -272,8 +272,8 @@ describe('Job App ', () => {
                 title: 'Failed to create resources',
               },
             },
+            failure_reason: 'unmet_prerequisites',
             has_trace: false,
-            unmet_prerequisites: true,
             runners: {
               available: true,
             },

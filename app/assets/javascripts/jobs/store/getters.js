@@ -7,9 +7,7 @@ export const hasUnmetPrerequisitesFailure = state =>
   state.job && state.job.failure_reason && state.job.failure_reason === 'unmet_prerequisites';
 
 export const shouldRenderCalloutMessage = state =>
-  !_.isEmpty(state.job.status) &&
-  !_.isEmpty(state.job.callout_message) &&
-  !hasUnmetPrerequisitesFailure;
+  !_.isEmpty(state.job.status) && !_.isEmpty(state.job.callout_message);
 
 /**
  * When job has not started the key will be null
