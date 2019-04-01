@@ -108,6 +108,17 @@ Here is a configuration example with GCS.
 
 _NOTE: The service account must have permission to access the bucket. [See more](https://cloud.google.com/storage/docs/authentication)_
 
+Here is a configuration example with Rackspace Cloud Files.
+| Setting | Description | example |
+|---------|-------------|---------|
+| `provider` | The provider name | `Rackspace` |
+| `rackspace_username` | The username of the Rackspace account with access to the container | `joe.smith` |
+| `rackspace_api_key` | The API key of the Rackspace account with access to the container | `ABC123DEF456ABC123DEF456ABC123DE` |
+| `rackspace_region` | The Rackspace storage region to use, a three letter code from the [list of service access endpoints](https://developer.rackspace.com/docs/cloud-files/v1/general-api-info/service-access/) | `iad` |
+| `rackspace_temp_url_key` | The private key you have set in the Rackspace API for temporary URLs. Read more [here](https://developer.rackspace.com/docs/cloud-files/v1/use-cases/public-access-to-your-cloud-files-account/#tempurl) | `ABC123DEF456ABC123DEF456ABC123DE` |
+
+_NOTES: Regardless of whether the container has public access enabled or disabled, Fog will use the TempURL method to grant access to LFS objects. If you see errors in logs referencing instantiating storage with a temp-url-key, ensure that you have set they key properly on the Rackspace API and in gitlab.rb. You can verify the value of the key Rackspace has set by sending a GET request with token header to the service access endpoint URL and comparing the output of the returned headers._
+
 ### Manual uploading to an object storage
 
 There are two ways to manually do the same thing as automatic uploading (described above).
