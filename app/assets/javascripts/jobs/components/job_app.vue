@@ -218,7 +218,10 @@ export default {
             />
           </div>
 
-          <callout v-if="shouldRenderCalloutMessage && !hasUnmetPrerequisitesFailure" :message="job.callout_message" />
+          <callout
+            v-if="shouldRenderCalloutMessage && !hasUnmetPrerequisitesFailure"
+            :message="job.callout_message"
+          />
         </header>
         <!-- EO Header Section -->
 
