@@ -113,4 +113,56 @@ describe 'layouts/nav/sidebar/_project' do
       end
     end
   end
+
+  describe 'ci/cd settings tab' do
+    before do
+      project.update!(archived: project_archived)
+    end
+
+    context 'when project is archived' do
+      let(:project_archived) { true }
+
+      it 'does not show the ci/cd settings tab' do
+        render
+
+        expect(rendered).not_to have_link('CI / CD', href: project_settings_ci_cd_path(project))
+      end
+    end
+
+    context 'when project is active' do
+      let(:project_archived) { false }
+
+      it 'shows the ci/cd settings tab' do
+        render
+
+        expect(rendered).to have_link('CI / CD', href: project_settings_ci_cd_path(project))
+      end
+    end
+  end
+
+  describe 'operations settings tab' do
+    before do
+      project.update!(archived: project_archived)
+    end
+
+    context 'when project is archived' do
+      let(:project_archived) { true }
+
+      it 'does not show the operations settings tab' do
+        render
+
+        expect(rendered).not_to have_link('Operations', href: project_settings_operations_path(project))
+      end
+    end
+
+    context 'when project is active' do
+      let(:project_archived) { false }
+
+      it 'shows the operations settings tab' do
+        render
+
+        expect(rendered).to have_link('Operations', href: project_settings_operations_path(project))
+      end
+    end
+  end
 end
