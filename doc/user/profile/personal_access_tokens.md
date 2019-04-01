@@ -5,12 +5,9 @@
 Personal access tokens are the preferred way for third party applications and scripts to
 authenticate with the [GitLab API][api], if using [OAuth2](../../api/oauth2.md) is not practical.
 
-You can also use them to authenticate against Git over HTTP. They are the only
-accepted method of authentication when you have
-[Two-Factor Authentication (2FA)][2fa] enabled.
+You can also use personal access tokens to authenticate against Git over HTTP or SSH. They must be used when you have [Two-Factor Authentication (2FA)][2fa] enabled. Authenticate with a token in place of your password.
 
-Once you have your token, [pass it to the API][usage] using either the
-`private_token` parameter or the `Private-Token` header.
+To make [authenticated requests to the API][usage], use either the `private_token` parameter or the `Private-Token` header.
 
 The expiration of personal access tokens happens on the date you define,
 at midnight UTC.
