@@ -172,8 +172,7 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
     if params[:file].present?
-      params[:content] = Base64.encode64(params[:file].read)
-      params[:encoding] = 'base64'
+      params[:content] = params[:file]
     end
 
     @commit_params = {
