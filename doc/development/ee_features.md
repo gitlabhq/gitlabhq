@@ -909,14 +909,15 @@ export default {
  - Since we [can't async load a mixin](https://github.com/vuejs/vue-loader/issues/418#issuecomment-254032223) we will use the [`ee_else_ce`](https://docs.gitlab.com/ee/development/ee_features.html#javascript-code-in-assetsjavascripts) alias we already have for webpack.
   - This means all the EE specific props, computed properties, methods, etc that are EE only should be in a mixin in the `ee/` folder and we need to create a CE counterpart of the mixin
 
-  ##### Example:
-  ```javascript
-  import mixin from 'ee_else_ce/path/mixin';
+##### Example:
+```javascript
+import mixin from 'ee_else_ce/path/mixin';
 
-  {
+{
     mixins: [mixin]
-  }
-  ```
+}
+```
+  
 - Computed Properties/methods and getters only used in the child import still need a counterpart in CE
 
 - For store modules, we will need a CE counterpart too.
