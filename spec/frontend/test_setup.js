@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as jqueryMatchers from 'custom-jquery-matchers';
 import Translate from '~/vue_shared/translate';
 import axios from '~/lib/utils/axios_utils';
 import { initializeTestTimeout } from './helpers/timeout';
@@ -43,4 +44,11 @@ Object.assign(global, {
   loadJSONFixtures: getJSONFixture,
   preloadFixtures() {},
   setFixtures: setHTMLFixture,
+});
+
+// custom-jquery-matchers was written for an old Jest version, we need to make it compatible
+Object.entries(jqueryMatchers).forEach(([matcherName, matcherFactory]) => {
+  expect.extend({
+    [matcherName]: matcherFactory().compare,
+  });
 });

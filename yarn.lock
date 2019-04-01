@@ -2742,6 +2742,11 @@ custom-event@~1.0.0:
   resolved "https://registry.yarnpkg.com/custom-event/-/custom-event-1.0.1.tgz#5d02a46850adf1b4a317946a3928fccb5bfd0425"
   integrity sha1-XQKkaFCt8bSjF5RqOSj8y1v9BCU=
 
+custom-jquery-matchers@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/custom-jquery-matchers/-/custom-jquery-matchers-2.1.0.tgz#e5988fa9715c416b0986b372563f872d9e91e024"
+  integrity sha512-f2vQrncnwqbeDne9ag/BRjrmG9BxIEKnZ9Z8TyG5l9B8wwyINWd7LvuHDlTkMPqLTd3ghcvqFoTsxjhOP371JQ==
+
 cyclist@~0.2.2:
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-0.2.2.tgz#1b33792e11e914a2fd6d6ed6447464444e5fa640"
