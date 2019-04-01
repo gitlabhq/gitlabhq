@@ -7,9 +7,9 @@ describe ProjectCacheWorker do
 
   let(:worker) { described_class.new }
   let(:project) { create(:project, :repository) }
-  let(:statistics) { project.statistics }
-  let(:lease_key) { "project_cache_worker:#{project.id}:update_statistics" }
+  let(:lease_key) { (["project_cache_worker", project.id] + statistics.sort).join(":") }
   let(:lease_timeout) { ProjectCacheWorker::LEASE_TIMEOUT }
+  let(:statistics) { [] }
 
   describe '#perform' do
     before do
@@ -35,20 +35,24 @@ describe ProjectCacheWorker do
     end
 
     context 'with an existing project' do
-      it 'updates the project statistics' do
-        expect(worker).to receive(:update_statistics)
-          .with(kind_of(Project), %i(repository_size))
-          .and_call_original
-
-        worker.perform(project.id, [], %w(repository_size))
-      end
-
       it 'refreshes the method caches' do
         expect_any_instance_of(Repository).to receive(:refresh_method_caches)
           .with(%i(readme))
           .and_call_original
 
         worker.perform(project.id, %w(readme))
+      end
+
+      context 'with statistics' do
+        let(:statistics) { %w(repository_size) }
+
+        it 'updates the project statistics' do
+          expect(worker).to receive(:update_statistics)
+            .with(kind_of(Project), %i(repository_size))
+            .and_call_original
+
+          worker.perform(project.id, [], statistics)
+        end
       end
 
       context 'with plain readme' do
@@ -66,13 +70,15 @@ describe ProjectCacheWorker do
   end
 
   describe '#update_statistics' do
+    let(:statistics) { %w(repository_size) }
+
     context 'when a lease could not be obtained' do
       it 'does not update the repository size' do
         stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
 
-        expect(statistics).not_to receive(:refresh!)
+        expect(UpdateProjectStatisticsWorker).not_to receive(:perform_in)
 
-        worker.update_statistics(project)
+        worker.update_statistics(project, statistics.map(&:to_sym))
       end
     end
 
@@ -80,11 +86,11 @@ describe ProjectCacheWorker do
       it 'updates the project statistics' do
         stub_exclusive_lease(lease_key, timeout: lease_timeout)
 
-        expect(statistics).to receive(:refresh!)
-          .with(only: %i(repository_size))
+        expect(UpdateProjectStatisticsWorker).to receive(:perform_in)
+          .with(lease_timeout, project.id, statistics.map(&:to_sym))
           .and_call_original
 
-        worker.update_statistics(project, %i(repository_size))
+        worker.update_statistics(project, statistics.map(&:to_sym))
       end
     end
   end
