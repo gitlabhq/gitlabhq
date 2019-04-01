@@ -88,6 +88,19 @@ describe Projects::HousekeepingService do
         expect(project.pushes_since_gc).to eq(1)
       end
     end
+
+    it 'runs the task specifically requested' do
+      housekeeping = described_class.new(project, :gc)
+
+      allow(housekeeping).to receive(:try_obtain_lease).and_return(:gc_uuid)
+      allow(housekeeping).to receive(:lease_key).and_return(:gc_lease_key)
+
+      expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :gc_lease_key, :gc_uuid).twice
+
+      2.times do
+        housekeeping.execute
+      end
+    end
   end
 
   describe '#needed?' do
