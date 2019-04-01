@@ -9,8 +9,8 @@ import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import MonitoringStore from '../stores/monitoring_store';
-import { timeWindows, msPerMinute } from '../constants';
-import { getTimeDifferenceMinutes } from '../utils';
+import { timeWindows } from '../constants';
+import { getTimeDiff } from '../utils';
 
 const sidebarAnimationDuration = 150;
 let sidebarMutationObserver;
@@ -100,7 +100,7 @@ export default {
     };
   },
   computed: {
-    getTimeWindowFlagStatus() {
+    showTimeWindowDropdown() {
       return gon.features.metricsTimeWindow;
     },
   },
@@ -113,7 +113,6 @@ export default {
 
     this.timeWindows = timeWindows;
     this.selectedTimeWindow = this.timeWindows.eightHours;
-    this.msPerMinute = msPerMinute;
   },
   beforeDestroy() {
     if (sidebarMutationObserver) {
@@ -173,23 +172,18 @@ export default {
         });
     },
     getGraphsDataWithTime(timeFrame) {
-      this.selectedTimeWindow = this.timeWindows[timeFrame];
       this.state = 'loading';
       this.showEmptyState = true;
-      const end = Date.now();
-      const timeDifferenceMinutes = getTimeDifferenceMinutes(this.selectedTimeWindow);
-      const start = new Date(end - timeDifferenceMinutes * this.msPerMinute).getTime();
       this.service
-        .getGraphsData({
-          start,
-          end,
-        })
+        .getGraphsData(getTimeDiff(this.timeWindows[timeFrame]))
         .then(data => {
           this.store.storeMetrics(data);
+          this.selectedTimeWindow = this.timeWindows[timeFrame];
           this.showEmptyState = false;
         })
         .catch(() => {
-          this.state = 'unableToConnect';
+          this.showEmptyState = false;
+          Flash(s__('Metrics|Not enough data to display'));
         });
     },
     onSidebarMutation() {
@@ -227,8 +221,8 @@ export default {
           >
         </gl-dropdown>
       </div>
-      <div v-if="getTimeWindowFlagStatus" class="d-flex align-items-center float-right">
-        <span class="font-weight-bold">{{ s__('Metrics|Show Last') }}</span>
+      <div v-if="showTimeWindowDropdown" class="d-flex align-items-center">
+        <strong>{{ s__('Metrics|Show last') }}</strong>
         <gl-dropdown
           class="prepend-left-10 js-time-window-dropdown"
           toggle-class="dropdown-menu-toggle"

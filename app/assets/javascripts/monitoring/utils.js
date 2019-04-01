@@ -1,32 +1,30 @@
-import { timeWindows } from './constants';
+import { timeWindows, msPerMinute } from './constants';
 
 export const getTimeDifferenceMinutes = timeWindow => {
-  let timeDifferenceMinutes;
   switch (timeWindow) {
     case timeWindows.thirtyMinutes:
-      timeDifferenceMinutes = 30;
-      break;
+      return 30;
     case timeWindows.threeHours:
-      timeDifferenceMinutes = 60 * 3;
-      break;
+      return 60 * 3;
     case timeWindows.eightHours:
-      timeDifferenceMinutes = 60 * 8;
-      break;
+      return 60 * 8;
     case timeWindows.oneDay:
-      timeDifferenceMinutes = 60 * 24 * 1;
-      break;
+      return 60 * 24 * 1;
     case timeWindows.threeDays:
-      timeDifferenceMinutes = 60 * 24 * 3;
-      break;
+      return 60 * 24 * 3;
     case timeWindows.oneWeek:
-      timeDifferenceMinutes = 60 * 24 * 7 * 1;
-      break;
+      return 60 * 24 * 7 * 1;
     default:
-      timeDifferenceMinutes = 60 * 8;
-      break;
+      return 60 * 8;
   }
+};
 
-  return timeDifferenceMinutes;
+export const getTimeDiff = selectedTimeWindow => {
+  const end = Date.now();
+  const timeDifferenceMinutes = getTimeDifferenceMinutes(selectedTimeWindow);
+  const start = new Date(end - timeDifferenceMinutes * msPerMinute).getTime();
+
+  return { start, end };
 };
 
 export default {};

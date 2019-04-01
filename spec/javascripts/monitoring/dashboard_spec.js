@@ -184,7 +184,23 @@ describe('Dashboard', () => {
       });
     });
 
-    it('renders the time window dropdown with a set of options ', done => {
+    it('renders the time window dropdown with a set of options', done => {
+      gon.features.metricsTimeWindow = false;
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+      });
+
+      setTimeout(() => {
+        const timeWindowDropdown = component.$el.querySelector('.js-time-window-dropdown');
+
+        expect(timeWindowDropdown).toBeNull();
+
+        done();
+      });
+    });
+
+    it('does not show the time window dropdown when the feature flag is not set', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showPanels: false },

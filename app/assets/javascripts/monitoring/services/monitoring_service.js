@@ -36,7 +36,7 @@ export default class MonitoringService {
     return backOffRequest(() =>
       axios.get(this.metricsEndpoint, {
         params: {
-          ...params,
+          params,
         },
       }),
     )
