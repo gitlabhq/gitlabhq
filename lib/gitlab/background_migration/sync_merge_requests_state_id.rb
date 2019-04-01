@@ -5,8 +5,6 @@ module Gitlab
   module BackgroundMigration
     class SyncMergeRequestsStateId
       def perform(start_id, end_id)
-        Rails.logger.info("Merge Requests - Populating state_id: #{start_id} - #{end_id}")
-
         ActiveRecord::Base.connection.execute <<~SQL
           UPDATE merge_requests
           SET state_id =
