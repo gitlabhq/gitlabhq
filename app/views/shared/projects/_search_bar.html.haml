@@ -1,0 +1,26 @@
+- @sort ||= sort_value_latest_activity
+-# TODO: simplify multiple utility classes into single class?
+.filtered-search-block.row-content-block
+  .filtered-search-wrapper.d-flex.flex-column.flex-md-row.mt-2.mt-md-0
+    .d-inline.d-md-flex.mb-2.mb-md-0
+      = render 'dashboard/projects/nav'
+    .filtered-search-box.mb-2.mb-md-0.ml-md-2
+      .filtered-search-box-input-container.pl-2
+        = render 'shared/projects/search_form', admin_view: false, search_form_placeholder: _("Search projects...")
+      -# TODO: double check if theres a point to this button, or is it just aesthetic for now
+      -# TODO: fix right hand border
+      %button.input-group-append.btn.btn-secondary{ type: 'submit' }
+        = sprite_icon('search', size: 18, css_class: 'search-icon ')
+    -# TODO: need to double check visibility is applying correctly
+    .d-inline.d-md-flex.mb-2.mb-md-0.ml-md-2.flex-row
+      .d-flex.align-items-center.px-2.font-weight-bold
+        %span
+          = _("Visibility")
+      .dropdown.js-project-filter-dropdown-wrap.inline-md
+        = render 'explore/projects/filter', has_label: true
+    .d-inline.d-md-flex.mb-2.mb-md-0.ml-md-2.flex-row
+      .d-flex.align-items-center.px-2.font-weight-bold
+        %span
+          = _("Sort by")
+      = render 'shared/projects/dropdown'
+

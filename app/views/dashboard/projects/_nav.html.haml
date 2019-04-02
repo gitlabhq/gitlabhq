@@ -1,6 +1,13 @@
 .nav-block
-  %ul.nav-links.mobile-separator.nav.nav-tabs
-    = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
-      = link_to s_('DashboardProjects|All'), dashboard_projects_path
-    = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do
-      = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true)
+  - if !Feature.enabled?(:project_list_filter_bar)
+    %ul.nav-links.mobile-separator.nav.nav-tabs
+      = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
+        = link_to s_('DashboardProjects|All'), dashboard_projects_path
+      = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do
+        = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true)
+  - else
+    %ul.btn-group.button-filter-group.d-flex.m-0.p-0
+      = nav_link(html_options: { class: params[:personal].present? ? "btn p-2" : "btn p-2 active" }) do
+        = link_to s_('DashboardProjects|All'), dashboard_projects_path
+      = nav_link(html_options: { class: params[:personal].present? ? "btn p-2 active" : "btn p-2" }) do
+        = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true)

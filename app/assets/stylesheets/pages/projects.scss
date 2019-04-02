@@ -1446,3 +1446,25 @@ pre.light-well {
     }
   }
 }
+
+.project-filters {
+  .button-filter-group {
+    .btn {
+      width: 96px;
+    }
+
+    a {
+      color: $black;
+    }
+
+    .active {
+      background: $btn-active-gray;
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    .dropdown-menu-toggle {
+      width: 100%;
+    }
+  }
+}
