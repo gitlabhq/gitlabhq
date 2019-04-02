@@ -32,7 +32,7 @@ describe Prometheus::ProxyService do
 
     subject { described_class.new(environment, 'GET', 'query', { query: '1' }) }
 
-    context 'When prometheus_adapter is nil' do
+    context 'when prometheus_adapter is nil' do
       before do
         allow(environment).to receive(:prometheus_adapter).and_return(nil)
       end
@@ -46,7 +46,7 @@ describe Prometheus::ProxyService do
       end
     end
 
-    context 'When prometheus_adapter cannot query' do
+    context 'when prometheus_adapter cannot query' do
       before do
         allow(environment).to receive(:prometheus_adapter).and_return(prometheus_adapter)
         allow(prometheus_adapter).to receive(:can_query?).and_return(false)
@@ -61,7 +61,7 @@ describe Prometheus::ProxyService do
       end
     end
 
-    context 'Cannot proxy' do
+    context 'cannot proxy' do
       subject { described_class.new(environment, 'POST', 'query', { query: '1' }) }
 
       it 'returns error' do
@@ -72,7 +72,7 @@ describe Prometheus::ProxyService do
       end
     end
 
-    context 'When cached', :use_clean_rails_memory_store_caching do
+    context 'when cached', :use_clean_rails_memory_store_caching do
       let(:return_value) { { 'http_status' => 200, 'body' => 'body' } }
       let(:opts) { [environment.class.name, environment.id, 'GET', 'query', { query: '1' }] }
 
@@ -92,7 +92,7 @@ describe Prometheus::ProxyService do
       end
     end
 
-    context 'When not cached' do
+    context 'when not cached' do
       let(:return_value) { { 'http_status' => 200, 'body' => 'body' } }
       let(:opts) { [environment.class.name, environment.id, 'GET', 'query', { query: '1' }] }
 
@@ -113,7 +113,7 @@ describe Prometheus::ProxyService do
       end
     end
 
-    context 'Call prometheus api' do
+    context 'call prometheus api' do
       let(:prometheus_client) { instance_double(Gitlab::PrometheusClient) }
 
       before do
@@ -126,7 +126,7 @@ describe Prometheus::ProxyService do
           .and_return(prometheus_client)
       end
 
-      context 'Connection to prometheus server succeeds' do
+      context 'connection to prometheus server succeeds' do
         let(:rest_client_response) { instance_double(RestClient::Response) }
         let(:prometheus_http_status_code) { 400 }
 
