@@ -6,7 +6,7 @@
       = _("Project members")
     - if can?(current_user, :admin_project_member, @project)
       %p
-        = _("You can invite a new member to <strong>%{project_name}</strong> or invite another group.").html_safe % { project_name: sanitize_project_name(@project.name) }
+        = _("You can invite a new member to <strong>%{project_name}</strong> or invite another group.").html_safe % { project_name: sanitize(@project.name, tags: []) }
     - else
       %p
         = _("Members can be added by project <i>Maintainers</i> or <i>Owners</i>").html_safe
