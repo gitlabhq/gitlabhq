@@ -9,7 +9,7 @@ describe Prometheus::ProxyService do
   set(:environment) { create(:environment, project: project) }
 
   describe '#initialize' do
-    let(:params) { ActionController::Parameters.new({ query: '1' }).permit! }
+    let(:params) { ActionController::Parameters.new(query: '1').permit! }
 
     it 'initializes attributes' do
       result = described_class.new(environment, 'GET', 'query', { query: '1' })
@@ -17,7 +17,7 @@ describe Prometheus::ProxyService do
       expect(result.prometheus_owner).to eq(environment)
       expect(result.method).to eq('GET')
       expect(result.path).to eq('query')
-      expect(result.params).to eq({ query: '1' })
+      expect(result.params).to eq(query: '1')
     end
 
     it 'converts ActionController::Parameters into hash' do
@@ -38,11 +38,11 @@ describe Prometheus::ProxyService do
       end
 
       it 'should return error' do
-        expect(subject.execute).to eq({
+        expect(subject.execute).to eq(
           status: :error,
           message: 'No prometheus server found',
           http_status: :service_unavailable
-        })
+        )
       end
     end
 
@@ -53,11 +53,11 @@ describe Prometheus::ProxyService do
       end
 
       it 'should return error' do
-        expect(subject.execute).to eq({
+        expect(subject.execute).to eq(
           status: :error,
           message: 'No prometheus server found',
           http_status: :service_unavailable
-        })
+        )
       end
     end
 
@@ -65,10 +65,10 @@ describe Prometheus::ProxyService do
       subject { described_class.new(environment, 'POST', 'query', { query: '1' }) }
 
       it 'returns error' do
-        expect(subject.execute).to eq({
+        expect(subject.execute).to eq(
           message: 'Proxy support for this API is not available currently',
           status: :error
-        })
+        )
       end
     end
 
@@ -159,11 +159,11 @@ describe Prometheus::ProxyService do
           end
 
           it 'returns error' do
-            expect(subject.execute).to eq({
+            expect(subject.execute).to eq(
               status: :error,
               message: 'Network connection error',
               http_status: :service_unavailable
-            })
+            )
           end
         end
       end
@@ -178,7 +178,7 @@ describe Prometheus::ProxyService do
       expect(result.prometheus_owner).to eq(environment)
       expect(result.method).to eq('GET')
       expect(result.path).to eq('query')
-      expect(result.params).to eq({ query: '1' })
+      expect(result.params).to eq(query: '1')
     end
   end
 end

@@ -61,7 +61,6 @@ module Prometheus
       response = prometheus_client_wrapper.proxy(path, params)
 
       success(http_status: response.code, body: response.body)
-
     rescue Gitlab::PrometheusClient::Error => err
       service_unavailable_response(err)
     end
