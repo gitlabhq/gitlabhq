@@ -120,7 +120,7 @@ See also the [Why CI/CD?](https://docs.google.com/presentation/d/1OGgk2Tcxbpl7DJ
 
 As GitLab CI/CD has evolved, certain breaking changes have been necessary. These are:
 
-- [CI variables renaming for GitLab 9.0](variables/README.md#gitlab-90-renaming). Read about the
+- [CI variables renaming for GitLab 9.0](variables/deprecated_variables.md#gitlab-90-renamed-variables). Read about the
   deprecated CI variables and what you should use for GitLab 9.0+.
 - [New CI job permissions model](../user/project/new_ci_build_permissions_model.md).
   See what changed in GitLab 8.12 and how that affects your jobs.
