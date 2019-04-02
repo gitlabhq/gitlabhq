@@ -96,8 +96,7 @@ module Gitlab
     end
 
     def get(path, args)
-      response = rest_client[path].get(params: args)
-      response
+      rest_client[path].get(params: args)
     rescue SocketError
       raise PrometheusClient::Error, "Can't connect to #{rest_client.url}"
     rescue OpenSSL::SSL::SSLError
