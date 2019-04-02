@@ -14,7 +14,7 @@ describe Prometheus::ProxyService do
     it 'initializes attributes' do
       result = described_class.new(environment, 'GET', 'query', { query: '1' })
 
-      expect(result.prometheus_owner).to eq(environment)
+      expect(result.proxyable).to eq(environment)
       expect(result.method).to eq('GET')
       expect(result.path).to eq('query')
       expect(result.params).to eq(query: '1')
@@ -175,7 +175,7 @@ describe Prometheus::ProxyService do
       result = described_class.from_cache(environment.class.name, environment.id, 'GET', 'query', { query: '1' })
 
       expect(result).to be_an_instance_of(described_class)
-      expect(result.prometheus_owner).to eq(environment)
+      expect(result.proxyable).to eq(environment)
       expect(result.method).to eq('GET')
       expect(result.path).to eq('query')
       expect(result.params).to eq(query: '1')

@@ -10,30 +10,30 @@ module Prometheus
     self.reactive_cache_lifetime = 1.minute
     self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
 
-    attr_accessor :prometheus_owner, :method, :path, :params
+    attr_accessor :proxyable, :method, :path, :params
 
     PROXY_SUPPORT = {
       'query' => 'GET',
       'query_range' => 'GET'
     }.freeze
 
-    def self.from_cache(prometheus_owner_class_name, prometheus_owner_id, method, path, params)
-      prometheus_owner_class = begin
-        prometheus_owner_class_name.constantize
+    def self.from_cache(proxyable_class_name, proxyable_id, method, path, params)
+      proxyable_class = begin
+        proxyable_class_name.constantize
       rescue NameError
         nil
       end
-      return unless prometheus_owner_class
+      return unless proxyable_class
 
-      prometheus_owner = prometheus_owner_class.find(prometheus_owner_id)
+      proxyable = proxyable_class.find(proxyable_id)
 
-      new(prometheus_owner, method, path, params)
+      new(proxyable, method, path, params)
     end
 
-    # prometheus_owner can be any model which responds to .prometheus_adapter
+    # proxyable can be any model which responds to .prometheus_adapter
     # like Environment.
-    def initialize(prometheus_owner, method, path, params)
-      @prometheus_owner = prometheus_owner
+    def initialize(proxyable, method, path, params)
+      @proxyable = proxyable
       @path = path
       # Convert ActionController::Parameters to hash because reactive_cache_worker
       # does not play nice with ActionController::Parameters.
@@ -54,7 +54,7 @@ module Prometheus
       end
     end
 
-    def calculate_reactive_cache(prometheus_owner_class_name, prometheus_owner_id, method, path, params)
+    def calculate_reactive_cache(proxyable_class_name, proxyable_id, method, path, params)
       return no_prometheus_response unless can_query?
 
       response = prometheus_client_wrapper.proxy(path, params)
@@ -65,7 +65,7 @@ module Prometheus
     end
 
     def cache_key
-      [@prometheus_owner.class.name, @prometheus_owner.id, @method, @path, @params]
+      [@proxyable.class.name, @proxyable.id, @method, @path, @params]
     end
 
     private
@@ -83,7 +83,7 @@ module Prometheus
     end
 
     def prometheus_adapter
-      @prometheus_adapter ||= @prometheus_owner.prometheus_adapter
+      @prometheus_adapter ||= @proxyable.prometheus_adapter
     end
 
     def prometheus_client_wrapper
