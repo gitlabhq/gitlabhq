@@ -12,26 +12,26 @@
       %li.dropdown-menu-content
         %ul
           %li.d-inline-block.m-0.p-0
-            = link_to _('zip'), project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '', class: 'btn btn-primary btn-xs'
+            = link_to 'zip', project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '', class: 'btn btn-primary btn-xs'
           %li.d-inline-block.m-0.p-0
-            = link_to _('tar.gz'), project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.gz'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+            = link_to 'tar.gz', project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.gz'), rel: 'nofollow', download: '', class: 'btn btn-xs'
           %li.d-inline-block.m-0.p-0
-            = link_to _('tar.bz2'), project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.bz2'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+            = link_to 'tar.bz2', project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar.bz2'), rel: 'nofollow', download: '', class: 'btn btn-xs'
           %li.d-inline-block.m-0.p-0
-            = link_to _('tar'), project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+            = link_to 'tar', project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'tar'), rel: 'nofollow', download: '', class: 'btn btn-xs'
       - if directory?
         %li.separator
         %li.dropdown-bold-header= _('Download this directory')
         %li.dropdown-menu-content
           %ul
             %li.d-inline-block.m-0.p-0
-              = link_to _('zip'), project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'zip'), rel: 'nofollow', download: '', class: 'btn btn-primary btn-xs'
+              = link_to 'zip', project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'zip'), rel: 'nofollow', download: '', class: 'btn btn-primary btn-xs'
             %li.d-inline-block.m-0.p-0
-              = link_to _('tar.gz'), project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar.gz'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+              = link_to 'tar.gz', project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar.gz'), rel: 'nofollow', download: '', class: 'btn btn-xs'
             %li.d-inline-block.m-0.p-0
-              = link_to _('tar.bz2'), project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar.bz2'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+              = link_to 'tar.bz2', project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar.bz2'), rel: 'nofollow', download: '', class: 'btn btn-xs'
             %li.d-inline-block.m-0.p-0
-              = link_to _('tar'), project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+              = link_to 'tar', project_archive_path(project, id: tree_join(ref, archive_prefix), path: @path, format: 'tar'), rel: 'nofollow', download: '', class: 'btn btn-xs'
       - if pipeline && pipeline.latest_builds_with_artifacts.any?
         %li.separator
         %li.dropdown-bold-header= _('Download artifacts')

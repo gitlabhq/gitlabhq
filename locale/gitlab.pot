@@ -9983,15 +9983,6 @@ msgstr ""
 msgid "syntax is incorrect"
 msgstr ""
 
-msgid "tar"
-msgstr ""
-
-msgid "tar.bz2"
-msgstr ""
-
-msgid "tar.gz"
-msgstr ""
-
 msgid "this document"
 msgstr ""
 
@@ -10025,7 +10016,4 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "yaml invalid"
-msgstr ""
-
-msgid "zip"
 msgstr ""
