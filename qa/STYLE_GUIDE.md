@@ -43,4 +43,4 @@ end
 
 Notice that in the above example, before clicking the `:operations_environments_link`, another element is hovered over.
 
-> We can create these methods as helpers to abstrac multi-step navigation.
+> We can create these methods as helpers to abstract multi-step navigation.
