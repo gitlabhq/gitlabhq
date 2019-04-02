@@ -14,26 +14,26 @@ describe CommitCollection do
     end
   end
 
-  describe '.authors' do
+  describe '.committers' do
     it 'returns a relation of users when users are found' do
-      user = create(:user, email: commit.author_email.upcase)
+      user = create(:user, email: commit.committer_email.upcase)
       collection = described_class.new(project, [commit])
 
-      expect(collection.authors).to contain_exactly(user)
+      expect(collection.committers).to contain_exactly(user)
     end
 
-    it 'returns empty array when authors cannot be found' do
+    it 'returns empty array when committers cannot be found' do
       collection = described_class.new(project, [commit])
 
-      expect(collection.authors).to be_empty
+      expect(collection.committers).to be_empty
     end
 
     it 'excludes authors of merge commits' do
       commit = project.commit("60ecb67744cb56576c30214ff52294f8ce2def98")
-      create(:user, email: commit.author_email.upcase)
+      create(:user, email: commit.committer_email.upcase)
       collection = described_class.new(project, [commit])
 
-      expect(collection.authors).to be_empty
+      expect(collection.committers).to be_empty
     end
   end
 
