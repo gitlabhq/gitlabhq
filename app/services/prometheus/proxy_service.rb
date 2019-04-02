@@ -55,7 +55,6 @@ module Prometheus
     end
 
     def calculate_reactive_cache(prometheus_owner_class_name, prometheus_owner_id, method, path, params)
-      return cannot_proxy_response unless can_proxy?
       return no_prometheus_response unless can_query?
 
       response = prometheus_client_wrapper.proxy(path, params)
