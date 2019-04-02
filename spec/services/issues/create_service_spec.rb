@@ -138,6 +138,20 @@ describe Issues::CreateService do
         end
       end
 
+      context 'when duplicate label titles are given' do
+        let(:label) { create(:label, project: project) }
+
+        let(:opts) do
+          { title: 'Title',
+            description: 'Description',
+            labels: [label.title, label.title] }
+        end
+
+        it 'assigns the label once' do
+          expect(issue.labels).to contain_exactly(label)
+        end
+      end
+
       it 'executes issue hooks when issue is not confidential' do
         opts = { title: 'Title', description: 'Description', confidential: false }
 

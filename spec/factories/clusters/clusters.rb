@@ -3,6 +3,7 @@ FactoryBot.define do
     user
     name 'test-cluster'
     cluster_type :project_type
+    managed true
 
     trait :instance do
       cluster_type { Clusters::Cluster.cluster_types[:instance_type] }
@@ -62,6 +63,10 @@ FactoryBot.define do
 
     trait :with_domain do
       domain 'example.com'
+    end
+
+    trait :user_managed do
+      managed false
     end
   end
 end

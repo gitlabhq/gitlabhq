@@ -24,7 +24,7 @@ namespace :tokens do
   end
 end
 
-class TmpUser < ActiveRecord::Base
+class TmpUser < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
   include TokenAuthenticatable
 
   self.table_name = 'users'

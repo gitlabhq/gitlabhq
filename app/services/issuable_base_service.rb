@@ -113,7 +113,7 @@ class IssuableBaseService < BaseService
       new_label_ids -= remove_label_ids if remove_label_ids
     end
 
-    new_label_ids
+    new_label_ids.uniq
   end
 
   def available_labels

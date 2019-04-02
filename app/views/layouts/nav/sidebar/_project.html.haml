@@ -357,12 +357,12 @@
                 = link_to project_settings_repository_path(@project), title: _('Repository') do
                   %span
                     = _('Repository')
-              - if @project.feature_available?(:builds, current_user)
+              - if !@project.archived? && @project.feature_available?(:builds, current_user)
                 = nav_link(controller: :ci_cd) do
                   = link_to project_settings_ci_cd_path(@project), title: _('CI / CD') do
                     %span
                       = _('CI / CD')
-              - if settings_operations_available?
+              - if !@project.archived? && settings_operations_available?
                 = nav_link(controller: [:operations]) do
                   = link_to project_settings_operations_path(@project), title: _('Operations') do
                     = _('Operations')

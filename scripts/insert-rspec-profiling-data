@@ -22,7 +22,7 @@ module RspecProfiling
         ENV['RSPEC_PROFILING_POSTGRES_URL']
       end
 
-      class Result < ActiveRecord::Base
+      class Result < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
         acts_as_copy_target
       end
     end

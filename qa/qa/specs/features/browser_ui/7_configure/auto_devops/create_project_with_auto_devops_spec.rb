@@ -94,7 +94,7 @@ module QA
 
           Page::Project::Menu.perform(&:go_to_operations_environments)
           Page::Project::Operations::Environments::Index.perform do |index|
-            index.click_environment_linkindex.go_to_environment('production')
+            index.click_environment_link('production')
           end
           Page::Project::Operations::Environments::Show.perform do |show|
             show.view_deployment do

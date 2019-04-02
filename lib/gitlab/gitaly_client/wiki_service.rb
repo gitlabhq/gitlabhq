@@ -22,7 +22,7 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = binary_stringio(content)
+        strio = binary_io(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?
@@ -49,7 +49,7 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = binary_stringio(content)
+        strio = binary_io(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?

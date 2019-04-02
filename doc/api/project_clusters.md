@@ -33,6 +33,7 @@ Example response:
   {
     "id":18,
     "name":"cluster-1",
+    "domain":"example.com",
     "created_at":"2019-01-02T20:18:12.563Z",
     "provider_type":"user",
     "platform_type":"kubernetes",
@@ -90,6 +91,7 @@ Example response:
 {
   "id":18,
   "name":"cluster-1",
+  "domain":"example.com",
   "created_at":"2019-01-02T20:18:12.563Z",
   "provider_type":"user",
   "platform_type":"kubernetes",
@@ -157,6 +159,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of the project owned by the authenticated user |
 | `name` | String | yes | The name of the cluster |
+| `domain` | String | no | The [base domain](../user/project/clusters/index.md#base_domain) of the cluster |
 | `enabled` | Boolean | no | Determines if cluster is active or not, defaults to true |
 | `platform_kubernetes_attributes[api_url]` | String | yes | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | String | yes | The token to authenticate against Kubernetes |
@@ -247,6 +250,7 @@ Parameters:
 | `id` | integer | yes | The ID of the project owned by the authenticated user |
 | `cluster_id` | integer | yes | The ID of the cluster |
 | `name` | String | no | The name of the cluster |
+| `domain` | String | no | The [base domain](../user/project/clusters/index.md#base_domain) of the cluster |
 | `platform_kubernetes_attributes[api_url]` | String | no | The URL to access the Kubernetes API |
 | `platform_kubernetes_attributes[token]` | String | no | The token to authenticate against Kubernetes |
 | `platform_kubernetes_attributes[ca_cert]` | String | no | TLS certificate (needed if API is using a self-signed TLS certificate |
@@ -262,7 +266,7 @@ Example request:
 ```bash
 curl --header 'Private-Token: <your_access_token>' https://gitlab.example.com/api/v4/projects/26/clusters/24 \
 -H "Content-Type:application/json" \
--X PUT --data '{"name":"new-cluster-name","api_url":"https://new-api-url.com"}'
+-X PUT --data '{"name":"new-cluster-name","domain":"new-domain.com","api_url":"https://new-api-url.com"}'
 ```
 
 Example response:
@@ -271,6 +275,7 @@ Example response:
 {
   "id":24,
   "name":"new-cluster-name",
+  "domain":"new-domain.com",
   "created_at":"2019-01-03T21:53:40.610Z",
   "provider_type":"user",
   "platform_type":"kubernetes",
