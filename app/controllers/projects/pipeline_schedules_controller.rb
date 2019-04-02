@@ -50,8 +50,8 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id)
 
     if job_id
-      link_to_pipelines = view_context.link_to(_('Pipelines page'), project_pipelines_path(@project))
-      message = _("Successfully scheduled a pipeline to run. Go to the %{link_to_pipelines} for details.").html_safe % { link_to_pipelines: link_to_pipelines }
+      pipelines_link_start = "<a href=\"#{project_pipelines_path(@project)}\">"
+      message = _("Successfully scheduled a pipeline to run. Go to the %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details.") % { pipelines_link_start: pipelines_link_start, pipelines_link_end: "</a>" }
       flash[:notice] = message.html_safe
     else
       flash[:alert] = _('Unable to schedule a pipeline to run immediately')
