@@ -60,15 +60,13 @@ describe Gitlab::PrometheusClient do
   end
 
   describe 'failure to reach a provided prometheus url' do
-    let(:prometheus_url) {"https://prometheus.invalid.example.com"}
+    let(:prometheus_url) {"https://prometheus.invalid.example.com/api/v1/query?query=1"}
 
-    subject { described_class.new(RestClient::Resource.new(prometheus_url)) }
-
-    context 'exceptions are raised' do
+    shared_examples 'exceptions are raised' do
       it 'raises a Gitlab::PrometheusClient::Error error when a SocketError is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, SocketError)
 
-        expect { subject.send(:get, '/', {}) }
+        expect { subject }
           .to raise_error(Gitlab::PrometheusClient::Error, "Can't connect to #{prometheus_url}")
         expect(req_stub).to have_been_requested
       end
@@ -76,7 +74,7 @@ describe Gitlab::PrometheusClient do
       it 'raises a Gitlab::PrometheusClient::Error error when a SSLError is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, OpenSSL::SSL::SSLError)
 
-        expect { subject.send(:get, '/', {}) }
+        expect { subject }
           .to raise_error(Gitlab::PrometheusClient::Error, "#{prometheus_url} contains invalid SSL data")
         expect(req_stub).to have_been_requested
       end
@@ -84,10 +82,22 @@ describe Gitlab::PrometheusClient do
       it 'raises a Gitlab::PrometheusClient::Error error when a RestClient::Exception is rescued' do
         req_stub = stub_prometheus_request_with_exception(prometheus_url, RestClient::Exception)
 
-        expect { subject.send(:get, '/', {}) }
+        expect { subject }
           .to raise_error(Gitlab::PrometheusClient::Error, "Network connection error")
         expect(req_stub).to have_been_requested
       end
+    end
+
+    context 'ping' do
+      subject { described_class.new(RestClient::Resource.new(prometheus_url)).ping }
+
+      it_behaves_like 'exceptions are raised'
+    end
+
+    context 'proxy' do
+      subject { described_class.new(RestClient::Resource.new(prometheus_url)).proxy('query', { query: '1' }) }
+
+      it_behaves_like 'exceptions are raised'
     end
   end
 
@@ -256,6 +266,71 @@ describe Gitlab::PrometheusClient do
       let(:stop) { now }
 
       it { is_expected.to eq(step) }
+    end
+  end
+
+  describe 'proxy' do
+    context 'query' do
+      let(:prometheus_query) { prometheus_cpu_query('env-slug') }
+      let(:query_url) { prometheus_query_url(prometheus_query) }
+
+      around do |example|
+        Timecop.freeze { example.run }
+      end
+
+      it 'returns full response from the API call' do
+        req_stub = stub_prometheus_request(query_url, body: prometheus_value_body('vector'))
+
+        response = subject.proxy('query', { query: prometheus_query })
+        json_response = JSON.parse(response.body)
+
+        expect(response.code).to eq(200)
+        expect(json_response).to eq({
+          'status' => 'success',
+          'data' => {
+            'resultType' => 'vector',
+            'result' => [{ "metric" => {}, "value" => [1488772511.004, "0.000041021495238095323"] }]
+          }
+        })
+        expect(req_stub).to have_been_requested
+      end
+    end
+
+    context 'query_range' do
+      let(:prometheus_query) { prometheus_memory_query('env-slug') }
+      let(:query_url) { prometheus_query_range_url(prometheus_query, start: 2.hours.ago) }
+
+      around do |example|
+        Timecop.freeze { example.run }
+      end
+
+      it 'returns full response' do
+        req_stub = stub_prometheus_request(query_url, body: prometheus_values_body('vector'))
+
+        response = subject.proxy('query_range', {
+          query: prometheus_query,
+          start: 2.hours.ago.to_f,
+          end: Time.now.to_f,
+          step: 60
+        })
+        json_response = JSON.parse(response.body)
+
+        expect(response.code).to eq(200)
+        expect(json_response).to eq({
+          "status" => "success",
+          "data" => {
+            "resultType" => "vector",
+            "result" => [{
+              "metric" => {},
+              "values" => [
+                [1488758662.506, "0.00002996364761904785"],
+                [1488758722.506, "0.00003090239047619091"]
+              ]
+            }]
+          }
+        })
+        expect(req_stub).to have_been_requested
+      end
     end
   end
 end
