@@ -155,6 +155,21 @@ The _only_ time you should use `pluck` is when you actually need to operate on
 the values in Ruby itself (e.g. write them to a file). In almost all other cases
 you should ask yourself "Can I not just use a sub-query?".
 
+In line with our `CodeReuse/ActiveRecord` cop, you should only use forms like
+`pluck(:id)` or `pluck(:user_id)` within model code. In the former case, you can
+use the `ApplicationRecord`-provided `.pluck_primary_key` helper method instead.
+In the latter, you should add a small helper method to the relevant model.
+
+## Inherit from ApplicationRecord
+
+Most models in the GitLab codebase should inherit from `ApplicationRecord`,
+rather than from `ActiveRecord::Base`. This allows helper methods to be easily
+added.
+
+An exception to this rule exists for models created in database migrations. As
+these should be isolated from application code, they should continue to subclass
+from `ActiveRecord::Base`.
+
 ## Use UNIONs
 
 UNIONs aren't very commonly used in most Rails applications but they're very

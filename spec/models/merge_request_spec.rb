@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe MergeRequest do
@@ -2712,13 +2714,20 @@ describe MergeRequest do
   end
 
   describe '#has_commits?' do
-    before do
+    it 'returns true when merge request diff has commits' do
       allow(subject.merge_request_diff).to receive(:commits_count)
         .and_return(2)
+
+      expect(subject.has_commits?).to be_truthy
     end
 
-    it 'returns true when merge request diff has commits' do
-      expect(subject.has_commits?).to be_truthy
+    context 'when commits_count is nil' do
+      it 'returns false' do
+        allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(nil)
+
+        expect(subject.has_commits?).to be_falsey
+      end
     end
   end
 
@@ -3078,6 +3087,38 @@ describe MergeRequest do
       source_project.add_developer(user)
 
       expect(merge_request.can_allow_collaboration?(user)).to be_truthy
+    end
+  end
+
+  describe '#mergeable_to_ref?' do
+    it 'returns true when merge request is mergeable' do
+      subject = create(:merge_request)
+
+      expect(subject.mergeable_to_ref?).to be(true)
+    end
+
+    it 'returns false when merge request is already merged' do
+      subject = create(:merge_request, :merged)
+
+      expect(subject.mergeable_to_ref?).to be(false)
+    end
+
+    it 'returns false when merge request is closed' do
+      subject = create(:merge_request, :closed)
+
+      expect(subject.mergeable_to_ref?).to be(false)
+    end
+
+    it 'returns false when merge request is work in progress' do
+      subject = create(:merge_request, title: 'WIP: The feature')
+
+      expect(subject.mergeable_to_ref?).to be(false)
+    end
+
+    it 'returns false when merge request has no commits' do
+      subject = create(:merge_request, source_branch: 'empty-branch', target_branch: 'master')
+
+      expect(subject.mergeable_to_ref?).to be(false)
     end
   end
 

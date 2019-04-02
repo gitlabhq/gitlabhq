@@ -11,6 +11,7 @@
 #     parent: Group
 #     all_available: boolean (defaults to true)
 #     min_access_level: integer
+#     exclude_group_ids: array of integers
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -29,6 +30,7 @@ class GroupsFinder < UnionFinder
     items = all_groups.map do |item|
       item = by_parent(item)
       item = by_custom_attributes(item)
+      item = exclude_group_ids(item)
 
       item
     end
@@ -71,6 +73,12 @@ class GroupsFinder < UnionFinder
       .base_and_descendants
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def exclude_group_ids(groups)
+    return groups unless params[:exclude_group_ids]
+
+    groups.id_not_in(params[:exclude_group_ids])
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_parent(groups)

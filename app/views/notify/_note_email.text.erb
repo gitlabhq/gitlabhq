@@ -1,5 +1,6 @@
 <% note = local_assigns.fetch(:note, @note) -%>
 <% diff_limit = local_assigns.fetch(:diff_limit, nil) -%>
+<% target_url = local_assigns.fetch(:target_url, @target_url) -%>
 
 <%  discussion = note.discussion if note.part_of_discussion? -%>
 <%  if discussion && !discussion.individual_note? -%>
@@ -13,6 +14,9 @@
 <%=     " on #{discussion.file_path}" -%>
 <%    end -%>
 <%=   ":" -%>
+<%    if discussion.diff_discussion? || !discussion.new_discussion? -%>
+<%=     " #{target_url}" -%>
+<%    end -%>
 
 
 <%  elsif Gitlab::CurrentSettings.email_author_in_body -%>

@@ -8,15 +8,17 @@ module Clusters
 
     self.table_name = 'clusters'
 
+    PROJECT_ONLY_APPLICATIONS = {
+      Applications::Jupyter.application_name => Applications::Jupyter,
+      Applications::Knative.application_name => Applications::Knative,
+      Applications::Prometheus.application_name => Applications::Prometheus
+    }.freeze
     APPLICATIONS = {
       Applications::Helm.application_name => Applications::Helm,
       Applications::Ingress.application_name => Applications::Ingress,
       Applications::CertManager.application_name => Applications::CertManager,
-      Applications::Prometheus.application_name => Applications::Prometheus,
-      Applications::Runner.application_name => Applications::Runner,
-      Applications::Jupyter.application_name => Applications::Jupyter,
-      Applications::Knative.application_name => Applications::Knative
-    }.freeze
+      Applications::Runner.application_name => Applications::Runner
+    }.merge(PROJECT_ONLY_APPLICATIONS).freeze
     DEFAULT_ENVIRONMENT = '*'.freeze
     KUBE_INGRESS_BASE_DOMAIN = 'KUBE_INGRESS_BASE_DOMAIN'.freeze
 

@@ -41,7 +41,7 @@ module Clusters
         raise NotImplementedError
       end
 
-      def builders
+      def builder
         raise NotImplementedError
       end
 
@@ -50,11 +50,27 @@ module Clusters
       end
 
       def instantiate_application
-        builder.call(@cluster) || raise(InvalidApplicationError, "invalid application: #{application_name}")
+        raise_invalid_application_error if invalid_application?
+
+        builder || raise(InvalidApplicationError, "invalid application: #{application_name}")
       end
 
-      def builder
-        builders[application_name] || raise(InvalidApplicationError, "invalid application: #{application_name}")
+      def raise_invalid_application_error
+        raise(InvalidApplicationError, "invalid application: #{application_name}")
+      end
+
+      def invalid_application?
+        unknown_application? || (!cluster.project_type? && project_only_application?)
+      end
+
+      def unknown_application?
+        Clusters::Cluster::APPLICATIONS.keys.exclude?(application_name)
+      end
+
+      # These applications will need extra configuration to enable them to work
+      # with groups of projects
+      def project_only_application?
+        Clusters::Cluster::PROJECT_ONLY_APPLICATIONS.include?(application_name)
       end
 
       def application_name

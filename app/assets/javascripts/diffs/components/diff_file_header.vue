@@ -11,6 +11,7 @@ import { __, s__, sprintf } from '~/locale';
 import { diffViewerModes } from '~/ide/constants';
 import EditButton from './edit_button.vue';
 import DiffStats from './diff_stats.vue';
+import { scrollToElement } from '~/lib/utils/common_utils';
 
 export default {
   components: {
@@ -66,6 +67,9 @@ export default {
     hasExpandedDiscussions() {
       return this.diffHasExpandedDiscussions(this.diffFile);
     },
+    diffContentIDSelector() {
+      return `#diff-content-${this.diffFile.file_hash}`;
+    },
     icon() {
       if (this.diffFile.submodule) {
         return 'archive';
@@ -77,6 +81,11 @@ export default {
       if (this.diffFile.submodule) {
         return this.diffFile.submodule_tree_url || this.diffFile.submodule_link;
       }
+
+      if (!this.discussionPath) {
+        return this.diffContentIDSelector;
+      }
+
       return this.discussionPath;
     },
     filePath() {
@@ -149,6 +158,18 @@ export default {
     handleToggleDiscussions() {
       this.toggleFileDiscussions(this.diffFile);
     },
+    handleFileNameClick(e) {
+      const isLinkToOtherPage =
+        this.diffFile.submodule_tree_url || this.diffFile.submodule_link || this.discussionPath;
+
+      if (!isLinkToOtherPage) {
+        e.preventDefault();
+        const selector = this.diffContentIDSelector;
+
+        scrollToElement(document.querySelector(selector));
+        window.location.hash = selector;
+      }
+    },
   },
 };
 </script>
@@ -168,7 +189,14 @@ export default {
         class="diff-toggle-caret append-right-5"
         @click.stop="handleToggle"
       />
-      <a v-once ref="titleWrapper" :href="titleLink" class="append-right-4 js-title-wrapper">
+      <a
+        v-once
+        id="diffFile.file_path"
+        ref="titleWrapper"
+        class="append-right-4 js-title-wrapper"
+        :href="titleLink"
+        @click="handleFileNameClick"
+      >
         <file-icon
           :file-name="filePath"
           :size="18"

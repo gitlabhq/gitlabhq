@@ -592,6 +592,16 @@ describe Issues::UpdateService, :mailer do
           expect(result.label_ids).not_to include(label.id)
         end
       end
+
+      context 'when duplicate label titles are given' do
+        let(:params) do
+          { labels: [label3.title, label3.title] }
+        end
+
+        it 'assigns the label once' do
+          expect(result.labels).to contain_exactly(label3)
+        end
+      end
     end
 
     context 'updating asssignee_id' do

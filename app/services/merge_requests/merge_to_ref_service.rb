@@ -41,9 +41,7 @@ module MergeRequests
       super
 
       error =
-        if Feature.disabled?(:merge_to_tmp_merge_ref_path, project)
-          'Feature is not enabled'
-        elsif !hooks_validation_pass?(merge_request)
+        if !hooks_validation_pass?(merge_request)
           hooks_validation_error(merge_request)
         elsif !@merge_request.mergeable_to_ref?
           "Merge request is not mergeable to #{target_ref}"

@@ -189,7 +189,7 @@ export default {
   <div
     ref="gl-form"
     :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
-    class="md-area js-vue-markdown-field"
+    class="js-vue-markdown-field md-area position-relative"
   >
     <markdown-header
       :preview-markdown="previewMarkdown"

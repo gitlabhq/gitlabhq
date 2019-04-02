@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import reportSection from '~/reports/components/report_section.vue';
-import mountComponent, { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
+import mountComponent, { mountComponentWithSlots } from 'helpers/vue_mount_component_helper';
 
 describe('Report section', () => {
   let vm;
