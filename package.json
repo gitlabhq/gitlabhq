@@ -110,7 +110,7 @@
     "sql.js": "^0.4.0",
     "stickyfilljs": "^2.0.5",
     "style-loader": "^0.23.1",
-    "stylelint-error-string-formatter": "^1.0.1",
+    "stylelint-error-string-formatter": "1.0.2",
     "svg4everybody": "2.1.9",
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",
