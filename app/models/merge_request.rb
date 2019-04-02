@@ -210,6 +210,10 @@ class MergeRequest < ApplicationRecord
     '!'
   end
 
+  def self.available_states
+    @available_states ||= super.merge(merged: 3, locked: 4)
+  end
+
   # Returns the top 100 target branches
   #
   # The returned value is a Array containing branch names
