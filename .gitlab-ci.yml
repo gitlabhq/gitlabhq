@@ -852,8 +852,6 @@ qa:selectors:
 .qa-frontend-node: &qa-frontend-node
   <<: *dedicated-no-docs-no-db-pull-cache-job
   stage: test
-  variables:
-    NODE_OPTIONS: --max_old_space_size=3584
   cache:
     key: "$CI_JOB_NAME"
     paths:
@@ -1145,3 +1143,4 @@ schedule:review-performance:
   <<: *review-schedules-only
   script:
     - wait_for_job_to_be_done "schedule:review-deploy"
+
