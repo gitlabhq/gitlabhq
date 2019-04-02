@@ -31,7 +31,7 @@ discussions, and descriptions:
 | `/reassign @user1 @user2`  | Change assignee                | ✓     | ✓             |
 | `/milestone %milestone`    | Set milestone                  | ✓     | ✓             |
 | `/remove_milestone`        | Remove milestone               | ✓     | ✓             |
-| `/label ~label1 ~label2`   | Add label(s)                   | ✓     | ✓             |
+| `/label ~label1 ~label2`   | Add label(s). Label names can also start without ~ but mixed syntax is not supported.                   | ✓     | ✓             |
 | `/unlabel ~label1 ~label2` | Remove all or specific label(s)| ✓     | ✓             |
 | `/relabel ~label1 ~label2` | Replace label                  | ✓     | ✓             |
 | <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request | ✓     | ✓             |
