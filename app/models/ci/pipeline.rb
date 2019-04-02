@@ -206,10 +206,6 @@ module Ci
       triggered_by_merge_request(merge_request).for_source_sha(source_sha)
     end
 
-    scope :mergeable_merge_request_pipelines, -> (merge_request) do
-      triggered_by_merge_request(merge_request).where(target_sha: merge_request.target_branch_sha)
-    end
-
     scope :triggered_for_branch, -> (ref) do
       where(source: branch_pipeline_sources).where(ref: ref, tag: false)
     end
@@ -744,10 +740,6 @@ module Ci
 
     def merge_request_pipeline?
       triggered_by_merge_request? && target_sha.present?
-    end
-
-    def mergeable_merge_request_pipeline?
-      triggered_by_merge_request? && target_sha == merge_request.target_branch_sha
     end
 
     def merge_request_ref?

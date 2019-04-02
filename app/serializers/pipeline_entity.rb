@@ -59,6 +59,8 @@ class PipelineEntity < Grape::Entity
   end
 
   expose :commit, using: CommitEntity
+  expose :source_sha, if: -> (pipeline, _) { pipeline.merge_request_pipeline? }
+  expose :target_sha, if: -> (pipeline, _) { pipeline.merge_request_pipeline? }
   expose :yaml_errors, if: -> (pipeline, _) { pipeline.has_yaml_errors? }
 
   expose :failure_reason, if: -> (pipeline, _) { pipeline.failure_reason? } do |pipeline|

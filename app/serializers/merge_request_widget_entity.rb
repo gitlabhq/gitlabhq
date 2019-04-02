@@ -20,6 +20,7 @@ class MergeRequestWidgetEntity < IssuableEntity
   end
   expose :squash
   expose :target_branch
+  expose :target_branch_sha
   expose :target_project_id
   expose :target_project_full_path do |merge_request|
     merge_request.project&.full_path
