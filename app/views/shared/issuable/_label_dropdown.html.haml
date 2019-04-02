@@ -8,7 +8,7 @@
 - classes = local_assigns.fetch(:classes, [])
 - selected = local_assigns.fetch(:selected, nil)
 - dropdown_title = local_assigns.fetch(:dropdown_title, "Filter by label")
-- dropdown_data = {toggle: 'dropdown', field_name: "label_name[]", show_no: "true", show_any: "true", namespace_path: @project.try(:namespace).try(:full_path), project_path: @project.try(:path), labels: labels_filter_path_with_defaults, default_label: "Labels"}
+- dropdown_data = label_dropdown_data(@project, labels: labels_filter_path_with_defaults, default_label: "Labels")
 - dropdown_data.merge!(data_options)
 - label_name = local_assigns.fetch(:label_name, "Labels")
 - no_default_styles = local_assigns.fetch(:no_default_styles, false)
