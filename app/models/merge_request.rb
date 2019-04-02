@@ -323,12 +323,8 @@ class MergeRequest < ApplicationRecord
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def commit_authors
-    @commit_authors ||= commits.authors
-  end
-
-  def authors
-    User.from_union([commit_authors, User.where(id: self.author_id)])
+  def committers
+    @committers ||= commits.committers
   end
 
   # Verifies if title has changed not taking into account WIP prefix
