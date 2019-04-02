@@ -249,15 +249,15 @@ By clicking the download icon, a dropdown will open with links to download the f
 
 ![Download source code](img/download_source_code.png)
 
+- **Source Code:**
+  This allows users to download the source code on branch they're currently
+  viewing. Available zip, tar, tar.gz and tar.bz2.
 - **Directory:**
   > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/24704) in GitLab 11.10
 
   Only shows up when viewing a sub-directory. This allows users to download
-  the specific directory they're currently viewing. Available in zip, tar, tar.gz
-  and tar.bz2.
-- **Source Code:**
-  This allows users to download the source code on branch they're currently
-  viewing. Also available zip, tar, tar.gz and tar.bz2.
+  the specific directory they're currently viewing. Also available in zip, tar,
+  tar.gz and tar.bz2.
 - **Artifacts:**
   This allows users to download the artifacts of the latest CI build.
 
