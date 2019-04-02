@@ -2,49 +2,244 @@
 table_display_block: true
 ---
 
-# GitLab CI/CD Variables
+# GitLab CI/CD environment variables
+{: #variables}
 
-When receiving a job from GitLab CI, the [Runner](https://docs.gitlab.com/runner/) prepares the build environment.
-It starts by setting a list of:
+After a brief overview over the use of environment
+variables, this document teaches you how to use GitLab CI/CD's
+variables, presents the full reference for predefined variables,
+and dives into more advanced applications.
 
-- [Predefined environment variables](#predefined-environment-variables).
-- Other variables.
+## Overview
 
-## Priority of variables
+An environment variable is a dynamic-named value that can
+affect the way running processes will behave on an operating
+system.
 
-Variables of different types can take precedence over other variables, depending on where they are defined.
+They are part of the environment in which a process runs.
+For example, a running process can query the value of the
+`TEMP` environment variable to discover a suitable location
+to store temporary files, or to define a `URL` for a database
+that can be reused in different scripts.
 
-The order of precedence for variables is (from highest to lowest):
+Variables are useful for customizing your jobs in GitLab
+CI/CD's pipelines. Using variables means no hardcoded values.
 
-1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
-1. Project-level [variables](#variables) or [protected variables](#protected-variables).
-1. Group-level [variables](#variables) or [protected variables](#protected-variables).
-1. YAML-defined [job-level variables](../yaml/README.md#variables).
-1. YAML-defined [global variables](../yaml/README.md#variables).
-1. [Deployment variables](#deployment-variables).
-1. [Predefined environment variables](#predefined-environment-variables).
+### Predefined environment variables
 
-For example, you define:
+GitLab CI/CD has a default set of
+[predefined variables](predefined_variables.md)
+which can be used without any specification needed.
+You can call issues numbers, user names, branch names,
+pipeline and commit IDs, and much more.
 
-- `API_TOKEN=secure` as a project variable.
-- `API_TOKEN=yaml` in your `.gitlab-ci.yml`.
+Predefined environment variables are the ones that GitLab
+provides out of the box for the local environment of the Runner.
 
-`API_TOKEN` will take the value `secure` as the project variables take precedence over those defined
-in `.gitlab-ci.yml`.
+GitLab reads the .gitlab-ci.yml file, sends the information
+to the Runner (which runs the script commands), under which
+the variables are exposed.
 
-## Unsupported variables
+For example, two jobs under the same pipeline can share the same
+`CI_PIPELINE_ID` variable, but each one has its own `CI_JOB_ID`
+variable.
 
-There are cases where some variables cannot be used in the context of a
-`.gitlab-ci.yml` definition (for example under `script`). Read more
-about which variables are [not supported](where_variables_can_be_used.md).
+### Custom environment variables
 
-## Predefined environment variables
+When your use case requires a specific variable, you can
+[set them up easily from the UI](#creating-a-custom-environment-variable)
+or directly in the `.gitlab-ci.yml` file and reuse them as you wish.
 
-See [full reference of predefined environment variables](predefined_variables.md).
+That can be very powerful as it can be used for scripting without
+the need to specify the value itself.
 
-## `.gitlab-ci.yml` defined variables
+## Getting started
 
-NOTE **Note:**
+To get started with environment variables in the scope of GitLab
+CI/CD, let's go over a few examples.
+
+### Using predefined environment variables
+
+To get started, choose one of the existing
+[predefined variables](predefined_variables.md)
+to be output by the Runner. For example, let's say that you want
+a given job you're running through your script to output the
+stage that job is running for. In your `.gitlab-ci.yml` file,
+call the variable from your script according to the [syntaxes](#syntax-of-variables-in-job-scripts) available. To
+output the job stage, use the predefined variable `CI_JOB_STAGE`:
+
+```yaml
+test_variable:
+  stage: test
+  script:
+    - echo $CI_JOB_STAGE
+```
+
+For this case, the Runner will output the `stage` for the
+job `test_variable`, which is `test`:
+
+![Output `$CI_JOB_STAGE`](img/ci_job_stage_output_example.png)
+
+As another example, let's say you're using your own GitLab
+instance you want to know what domain your GitLab Pages are
+served under. You can easily call it with the predefined
+variable `$CI_PAGES_DOMAIN` in your script:
+
+```yaml
+pages:
+  script:
+    - ...
+    - echo $CI_PAGES_DOMAIN
+```
+
+For GitLab.com users, the output will be `gitlab.io`. For your
+private instance, the output will be whatever your sysadmin has
+defined.
+
+### Creating a custom environment variable
+
+Assume you have something you want to repeat through your scripts
+in GitLab CI/CD's configuration file. To keep this example simple,
+let's say you want to output `HELLO WORLD` for a `TEST` variable.
+
+You can either set the variable directly in the `.gitlab-ci.yml`
+file or through the UI.
+
+#### Via [`.gitlab-ci.yml`](../yaml/README.md#variables)
+
+```yaml
+variables:
+  TEST: "HELLO WORLD"
+```
+
+For a deeper look into them, see [`.gitlab-ci.yml` defined variables](#gitlab-ciyml-defined-variables).
+
+#### Via the UI
+
+From the UI, navigate to your project's **Settings > CI/CD** and
+expand **Environment variables**. Create a new variable by naming
+it in the field **Input variable key**, and define its value in the
+**Input variable value** field:
+
+![CI/CD settings - new variable](img/new_custom_variable_example.png)
+
+Once you've set the variables, call them from the `.gitlab-ci.yml` file:
+
+```yaml
+test_variable:
+  stage: test
+  script:
+    - echo $CI_JOB_STAGE # calls a predefined variable
+    - echo $TEST # calls a custom variable
+```
+
+The output will be:
+
+![Output custom variable](img/custom_variable_output.png)
+
+CAUTION: **Important:**
+Be aware that variables are not masked, and their values can be shown
+in the job logs if explicitly asked to do so. If your project is public or
+internal, you can set the pipelines private from your [project's Pipelines
+settings](../../user/project/pipelines/settings.md#visibility-of-pipelines).
+Follow the discussion in issue [#13784][ce-13784] for masking the variables.
+
+### Syntax of environment variables in job scripts
+{: #syntax-of-variables-in-job-scripts}
+
+All variables are set as environment variables in the build environment, and
+they are accessible with normal methods that are used to access such variables.
+In most cases `bash` or `sh` is used to execute the job script.
+
+To access environment variables, use the syntax for your Runner's [shell][shellexecutors].
+
+| Shell                | Usage           |
+|----------------------|-----------------|
+| bash/sh              | `$variable`     |
+| windows batch        | `%variable%`    |
+| PowerShell           | `$env:variable` |
+
+To access environment variables in bash, prefix the variable name with (`$`):
+
+```yaml
+job_name:
+  script:
+    - echo $CI_JOB_ID
+```
+
+To access environment variables in **Windows Batch**, surround the variable
+with (`%`):
+
+```yaml
+job_name:
+  script:
+    - echo %CI_JOB_ID%
+```
+
+To access environment variables in a **Windows PowerShell** environment, prefix
+the variable name with (`$env:`):
+
+```yaml
+job_name:
+  script:
+    - echo $env:CI_JOB_ID
+```
+
+You can also list all environment variables with the `export` command,
+but be aware that this will also expose the values of all the variables
+you set, in the job log:
+
+```yaml
+job_name:
+  script:
+    - export
+```
+
+Example values:
+
+```bash
+export CI_JOB_ID="50"
+export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
+export CI_COMMIT_SHORT_SHA="1ecfd275"
+export CI_COMMIT_REF_NAME="master"
+export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
+export CI_COMMIT_TAG="1.0.0"
+export CI_JOB_NAME="spec:other"
+export CI_JOB_STAGE="test"
+export CI_JOB_MANUAL="true"
+export CI_JOB_TRIGGERED="true"
+export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
+export CI_PIPELINE_ID="1000"
+export CI_PIPELINE_IID="10"
+export CI_PAGES_DOMAIN="gitlab.io"
+export CI_PAGES_URL="https://gitlab-org.gitlab.io/gitlab-ce"
+export CI_PROJECT_ID="34"
+export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
+export CI_PROJECT_NAME="gitlab-ce"
+export CI_PROJECT_NAMESPACE="gitlab-org"
+export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
+export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
+export CI_REGISTRY="registry.example.com"
+export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
+export CI_RUNNER_ID="10"
+export CI_RUNNER_DESCRIPTION="my runner"
+export CI_RUNNER_TAGS="docker, linux"
+export CI_SERVER="yes"
+export CI_SERVER_NAME="GitLab"
+export CI_SERVER_REVISION="70606bf"
+export CI_SERVER_VERSION="8.9.0"
+export CI_SERVER_VERSION_MAJOR="8"
+export CI_SERVER_VERSION_MINOR="9"
+export CI_SERVER_VERSION_PATCH="0"
+export GITLAB_USER_ID="42"
+export GITLAB_USER_EMAIL="user@example.com"
+export CI_REGISTRY_USER="gitlab-ci-token"
+export CI_REGISTRY_PASSWORD="longalfanumstring"
+```
+
+### `.gitlab-ci.yml` defined variables
+
+NOTE: **Note:**
 This feature requires GitLab Runner 0.5.0 or higher and GitLab 7.14 or higher.
 
 GitLab CI allows you to add to `.gitlab-ci.yml` variables that are set in the
@@ -82,42 +277,63 @@ script:
   - 'eval $LS_CMD'  # will execute 'ls -al $TMP_DIR'
 ```
 
-## Variables
+### Group-level environment variables
+{: #group-level-variables}
 
-> Group-level variables were introduced in GitLab 9.4.
+> Introduced in GitLab 9.4.
 
-CAUTION: **Important:**
-Be aware that variables are not masked, and their values can be shown
-in the job logs if explicitly asked to do so. If your project is public or
-internal, you can set the pipelines private from your [project's Pipelines
-settings](../../user/project/pipelines/settings.md#visibility-of-pipelines).
-Follow the discussion in issue [#13784][ce-13784] for masking the variables.
-
-GitLab CI allows you to define per-project or per-group variables
-that are set in the pipeline environment. The variables are stored out of
+GitLab CI/CD allows you to define per-project or per-group variables
+that are set in the pipeline environment. Group-level variables are stored out of
 the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner
-making them available during a pipeline run. It's the recommended method to
+making them available during a pipeline run. It's the **recommended method** to
 use for storing things like passwords, SSH keys, and credentials.
-
-Project-level variables can be added by:
-
-1. Navigating to your project's **Settings > CI/CD** page.
-1. Inputing variable keys and values in the **Environment variables** section.
 
 Group-level variables can be added by:
 
 1. Navigating to your group's **Settings > CI/CD** page.
-1. Inputing variable keys and values in the **Environment variables** section. Any variables of
-   [subgroups](../../user/group/subgroups/index.md) will be inherited recursively.
+1. Inputing variable keys and values in the **Environment variables** section.
+Any variables of [subgroups](../../user/group/subgroups/index.md) will be inherited recursively.
 
-Once you set them, they will be available for all subsequent pipelines. You can also
-[protect your variables](#protected-variables).
+Once you set them, they will be available for all subsequent pipelines.
 
-### Protected variables
+## Priority of environment variables
+{: #priority-of-variables}
+
+Variables of different types can take precedence over other
+variables, depending on where they are defined.
+
+The order of precedence for variables is (from highest to lowest):
+
+1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
+1. Project-level [variables](#creating-a-custom-environment-variable) or [protected variables](#protected-variables).
+1. Group-level [variables](#group-level-variables) or [protected variables](#protected-variables).
+1. YAML-defined [job-level variables](../yaml/README.md#variables).
+1. YAML-defined [global variables](../yaml/README.md#variables).
+1. [Deployment variables](#deployment-variables).
+1. [Predefined environment variables](predefined_variables.md).
+
+For example, if you define:
+
+- `API_TOKEN=secure` as a project variable.
+- `API_TOKEN=yaml` in your `.gitlab-ci.yml`.
+
+`API_TOKEN` will take the value `secure` as the project
+variables take precedence over those defined in `.gitlab-ci.yml`.
+
+## Unsupported variables
+
+There are cases where some variables cannot be used in the context of a
+`.gitlab-ci.yml` definition (for example under `script`). Read more
+about which variables are [not supported](where_variables_can_be_used.md).
+
+## Advanced use
+
+### Protected environment variables
+{: #protected-variables}
 
 > Introduced in GitLab 9.3.
 
-Variables could be protected. Whenever a variable is
+Variables can be protected. Whenever a variable is
 protected, it would only be securely passed to pipelines running on the
 [protected branches] or [protected tags]. The other pipelines would not get any
 protected variables.
@@ -128,13 +344,8 @@ Protected variables can be added by going to your project's
 
 Once you set them, they will be available for all subsequent pipelines.
 
-### Manually-specified variables
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44059) in GitLab 10.8.
-
-Variables can be specified for a single pipeline run when a [manual pipeline](../pipelines.md#manually-executing-pipelines) is created.
-
-## Deployment variables
+### Deployment environment variables
+{: #deployment-variables}
 
 > Introduced in GitLab 8.15.
 
@@ -147,7 +358,7 @@ the project services that you are using to learn which variables they define.
 An example project service that defines deployment variables is the
 [Kubernetes integration](../../user/project/clusters/index.md#deployment-variables).
 
-## Auto DevOps application variables
+### Auto DevOps environment variables
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/49056) in GitLab 11.7.
 
@@ -163,6 +374,113 @@ container.
 CAUTION: **Caution:**
 Variables with multiline values are not currently supported due to
 limitations with the current Auto DevOps scripting environment.
+
+### Environment variables triggered manually
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/44059) in GitLab 10.8.
+
+[Manually triggered pipelines](../pipelines.md#manually-executing-pipelines) allow you to override the value of a current variable.
+
+For instance, suppose you added a
+[custom variable `$TEST`](#creating-a-custom-variable)
+as exemplified above and you want to override it in a manual pipeline.
+Navigate to your project's **CI/CD > Pipelines** and click **Run pipeline**.
+Choose the branch you want to run the pipeline for, then add a new variable
+pair through the UI:
+
+![Override variable value](img/override_variable_manual_pipeline.png)
+
+The Runner will override the value previously set and use the custom
+value you set for this specific pipeline:
+
+![Manually overridden variable output](img/override_value_via_manual_pipeline_output.png)
+
+## Environment variables expressions
+{: #variables-expressions}
+
+> Introduced in GitLab 10.7.
+
+It is possible to use variables expressions with only / except policies in
+`.gitlab-ci.yml`. By using this approach you can limit what jobs are going to
+be created within a pipeline after pushing a code to GitLab.
+
+This is particularly useful in combination with variables and triggered
+pipeline variables.
+
+```yaml
+deploy:
+  script: cap staging deploy
+  environment: staging
+  only:
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Each expression provided is going to be evaluated before creating a pipeline.
+
+If any of the conditions in `variables` evaluates to truth when using `only`,
+a new job is going to be created. If any of the expressions evaluates to truth
+when `except` is being used, a job is not going to be created.
+
+This follows usual rules for [`only` / `except` policies](../yaml/README.md#onlyexcept-advanced).
+
+### Supported syntax
+
+Below you can find supported syntax reference:
+
+1. Equality matching using a string
+
+    > Example: `$VARIABLE == "some value"`
+
+    You can use equality operator `==` to compare a variable content to a
+    string. We support both, double quotes and single quotes to define a string
+    value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
+    are supported. `"some value" == $VARIABLE` is correct too.
+
+1. Checking for an undefined value
+
+    > Example: `$VARIABLE == null`
+
+    It sometimes happens that you want to check whether a variable is defined
+    or not. To do that, you can compare a variable to `null` keyword, like
+    `$VARIABLE == null`. This expression is going to evaluate to truth if
+    variable is not defined.
+
+1. Checking for an empty variable
+
+    > Example: `$VARIABLE == ""`
+
+    If you want to check whether a variable is defined, but is empty, you can
+    simply compare it against an empty string, like `$VAR == ''`.
+
+1. Comparing two variables
+
+    > Example: `$VARIABLE_1 == $VARIABLE_2`
+
+    It is possible to compare two variables. This is going to compare values
+    of these variables.
+
+1. Variable presence check
+
+    > Example: `$STAGING`
+
+    If you only want to create a job when there is some variable present,
+    which means that it is defined and non-empty, you can simply use
+    variable name as an expression, like `$STAGING`. If `$STAGING` variable
+    is defined, and is non empty, expression will evaluate to truth.
+    `$STAGING` value needs to a string, with length higher than zero.
+    Variable that contains only whitespace characters is not an empty variable.
+
+1. Pattern matching  _(added in 11.0)_
+
+    > Example: `$VARIABLE =~ /^content.*/`
+
+    It is possible perform pattern matching against a variable and regular
+    expression. Expression like this evaluates to truth if matches are found.
+
+    Pattern matching is case-sensitive by default. Use `i` flag modifier, like
+    `/pattern/i` to make a pattern case-insensitive.
 
 ## Debug tracing
 
@@ -328,184 +646,6 @@ MIIFQzCCBCugAwIBAgIRAL/ElDjuf15xwja1ZnCocWAwDQYJKoZIhvcNAQELBQAw'
 
 ...
 ```
-
-## Using the CI variables in your job scripts
-
-All variables are set as environment variables in the build environment, and
-they are accessible with normal methods that are used to access such variables.
-In most cases `bash` or `sh` is used to execute the job script.
-
-To access environment variables, use the syntax for your Runner's [shell][shellexecutors].
-
-| Shell                | Usage           |
-|----------------------|-----------------|
-| bash/sh              | `$variable`     |
-| windows batch        | `%variable%`    |
-| PowerShell           | `$env:variable` |
-
-To access environment variables in bash, prefix the variable name with (`$`):
-
-```yaml
-job_name:
-  script:
-    - echo $CI_JOB_ID
-```
-
-To access environment variables in **Windows Batch**, surround the variable
-with (`%`):
-
-```yaml
-job_name:
-  script:
-    - echo %CI_JOB_ID%
-```
-
-To access environment variables in a **Windows PowerShell** environment, prefix
-the variable name with (`$env:`):
-
-```yaml
-job_name:
-  script:
-    - echo $env:CI_JOB_ID
-```
-
-You can also list all environment variables with the `export` command,
-but be aware that this will also expose the values of all the variables
-you set, in the job log:
-
-```yaml
-job_name:
-  script:
-    - export
-```
-
-Example values:
-
-```bash
-export CI_JOB_ID="50"
-export CI_COMMIT_SHA="1ecfd275763eff1d6b4844ea3168962458c9f27a"
-export CI_COMMIT_SHORT_SHA="1ecfd275"
-export CI_COMMIT_REF_NAME="master"
-export CI_REPOSITORY_URL="https://gitlab-ci-token:abcde-1234ABCD5678ef@example.com/gitlab-org/gitlab-ce.git"
-export CI_COMMIT_TAG="1.0.0"
-export CI_JOB_NAME="spec:other"
-export CI_JOB_STAGE="test"
-export CI_JOB_MANUAL="true"
-export CI_JOB_TRIGGERED="true"
-export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
-export CI_PIPELINE_ID="1000"
-export CI_PIPELINE_IID="10"
-export CI_PAGES_DOMAIN="gitlab.io"
-export CI_PAGES_URL="https://gitlab-org.gitlab.io/gitlab-ce"
-export CI_PROJECT_ID="34"
-export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
-export CI_PROJECT_NAME="gitlab-ce"
-export CI_PROJECT_NAMESPACE="gitlab-org"
-export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
-export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-ce"
-export CI_REGISTRY="registry.example.com"
-export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-ce"
-export CI_RUNNER_ID="10"
-export CI_RUNNER_DESCRIPTION="my runner"
-export CI_RUNNER_TAGS="docker, linux"
-export CI_SERVER="yes"
-export CI_SERVER_NAME="GitLab"
-export CI_SERVER_REVISION="70606bf"
-export CI_SERVER_VERSION="8.9.0"
-export CI_SERVER_VERSION_MAJOR="8"
-export CI_SERVER_VERSION_MINOR="9"
-export CI_SERVER_VERSION_PATCH="0"
-export GITLAB_USER_ID="42"
-export GITLAB_USER_EMAIL="user@example.com"
-export CI_REGISTRY_USER="gitlab-ci-token"
-export CI_REGISTRY_PASSWORD="longalfanumstring"
-```
-
-## Variables expressions
-
-> Introduced in GitLab 10.7.
-
-It is possible to use variables expressions with only / except policies in
-`.gitlab-ci.yml`. By using this approach you can limit what jobs are going to
-be created within a pipeline after pushing a code to GitLab.
-
-This is particularly useful in combination with variables and triggered
-pipeline variables.
-
-```yaml
-deploy:
-  script: cap staging deploy
-  environment: staging
-  only:
-    variables:
-      - $RELEASE == "staging"
-      - $STAGING
-```
-
-Each expression provided is going to be evaluated before creating a pipeline.
-
-If any of the conditions in `variables` evaluates to truth when using `only`,
-a new job is going to be created. If any of the expressions evaluates to truth
-when `except` is being used, a job is not going to be created.
-
-This follows usual rules for [`only` / `except` policies](../yaml/README.md#onlyexcept-advanced).
-
-### Supported syntax
-
-Below you can find supported syntax reference:
-
-1. Equality matching using a string
-
-    > Example: `$VARIABLE == "some value"`
-
-    You can use equality operator `==` to compare a variable content to a
-    string. We support both, double quotes and single quotes to define a string
-    value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
-    are supported. `"some value" == $VARIABLE` is correct too.
-
-1. Checking for an undefined value
-
-    > Example: `$VARIABLE == null`
-
-    It sometimes happens that you want to check whether a variable is defined
-    or not. To do that, you can compare a variable to `null` keyword, like
-    `$VARIABLE == null`. This expression is going to evaluate to truth if
-    variable is not defined.
-
-1. Checking for an empty variable
-
-    > Example: `$VARIABLE == ""`
-
-    If you want to check whether a variable is defined, but is empty, you can
-    simply compare it against an empty string, like `$VAR == ''`.
-
-1. Comparing two variables
-
-    > Example: `$VARIABLE_1 == $VARIABLE_2`
-
-    It is possible to compare two variables. This is going to compare values
-    of these variables.
-
-1. Variable presence check
-
-    > Example: `$STAGING`
-
-    If you only want to create a job when there is some variable present,
-    which means that it is defined and non-empty, you can simply use
-    variable name as an expression, like `$STAGING`. If `$STAGING` variable
-    is defined, and is non empty, expression will evaluate to truth.
-    `$STAGING` value needs to a string, with length higher than zero.
-    Variable that contains only whitespace characters is not an empty variable.
-
-1. Pattern matching  _(added in 11.0)_
-
-    > Example: `$VARIABLE =~ /^content.*/`
-
-    It is possible perform pattern matching against a variable and regular
-    expression. Expression like this evaluates to truth if matches are found.
-
-    Pattern matching is case-sensitive by default. Use `i` flag modifier, like
-    `/pattern/i` to make a pattern case-insensitive.
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
 [eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
