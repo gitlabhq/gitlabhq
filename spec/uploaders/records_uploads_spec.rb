@@ -94,4 +94,13 @@ describe RecordsUploads do
       expect { uploader.remove! }.to change { Upload.count }.from(1).to(0)
     end
   end
+
+  describe '#filename' do
+    it 'gets the filename from the path recorded in the database, not CarrierWave' do
+      uploader.store!(upload_fixture('rails_sample.jpg'))
+      expect_any_instance_of(GitlabUploader).not_to receive(:filename)
+
+      expect(uploader.filename).to eq('rails_sample.jpg')
+    end
+  end
 end
