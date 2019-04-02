@@ -143,6 +143,11 @@ describe PipelineEntity do
         expect(subject[:flags][:detached_merge_request_pipeline]).to be_truthy
       end
 
+      it 'does not expose source sha and target sha' do
+        expect(subject[:source_sha]).to be_nil
+        expect(subject[:target_sha]).to be_nil
+      end
+
       context 'when user is a developer' do
         before do
           project.add_developer(user)
@@ -188,6 +193,11 @@ describe PipelineEntity do
 
       it 'makes atached flag true' do
         expect(subject[:flags][:merge_request_pipeline]).to be_truthy
+      end
+
+      it 'exposes source sha and target sha' do
+        expect(subject[:source_sha]).to be_present
+        expect(subject[:target_sha]).to be_present
       end
     end
   end
