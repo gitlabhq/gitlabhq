@@ -15,9 +15,20 @@ module Gitlab
           override :tree_entries
           def tree_entries(repository, sha, path, recursive)
             if Feature.enabled?(:rugged_tree_entries)
-              tree_entries_from_rugged(repository, sha, path, recursive)
+              tree_entries_with_flat_path_from_rugged(repository, sha, path, recursive)
             else
               super
+            end
+          end
+
+          def tree_entries_with_flat_path_from_rugged(repository, sha, path, recursive)
+            tree_entries_from_rugged(repository, sha, path, recursive).tap do |entries|
+              # This was an optimization to reduce N+1 queries for Gitaly
+              # (https://gitlab.com/gitlab-org/gitaly/issues/530).  It
+              # used to be done lazily in the view via
+              # TreeHelper#flatten_tree, so it's possible there's a
+              # performance impact by loading this eagerly.
+              rugged_populate_flat_path(repository, sha, path, entries)
             end
           end
 
@@ -32,13 +43,6 @@ module Gitlab
                 ordered_entries.concat(tree_entries_from_rugged(repository, sha, entry.path, true))
               end
             end
-
-            # This was an optimization to reduce N+1 queries for Gitaly
-            # (https://gitlab.com/gitlab-org/gitaly/issues/530).  It
-            # used to be done lazily in the view via
-            # TreeHelper#flatten_tree, so it's possible there's a
-            # performance impact by loading this eagerly.
-            rugged_populate_flat_path(repository, sha, path, ordered_entries)
           end
 
           def rugged_populate_flat_path(repository, sha, path, entries)
