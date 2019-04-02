@@ -29,7 +29,10 @@ namespace :gitlab do
       # If MySQL, turn off foreign key checks
       connection.execute('SET FOREIGN_KEY_CHECKS=0') if Gitlab::Database.mysql?
 
-      tables = connection.data_sources
+      # connection.tables is deprecated in MySQLAdapter, but in PostgreSQLAdapter
+      # data_sources returns both views and tables, so use #tables instead
+      tables = Gitlab::Database.mysql? ? connection.data_sources : connection.tables
+
       # Removes the entry from the array
       tables.delete 'schema_migrations'
       # Truncate schema_migrations to ensure migrations re-run
