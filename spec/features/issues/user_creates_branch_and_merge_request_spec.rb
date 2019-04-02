@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe 'User creates branch and merge request on issue page', :js do
+  let(:membership_level) { :developer }
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
@@ -17,7 +18,7 @@ describe 'User creates branch and merge request on issue page', :js do
 
   context 'when signed in' do
     before do
-      project.add_developer(user)
+      project.add_user(user, membership_level)
 
       sign_in(user)
     end
@@ -165,6 +166,39 @@ describe 'User creates branch and merge request on issue page', :js do
         visit project_issue_path(project, issue)
 
         expect(page).not_to have_css('.create-mr-dropdown-wrap')
+      end
+    end
+
+    context 'when related branch exists' do
+      let!(:project) { create(:project, :repository, :private) }
+      let(:branch_name) { "#{issue.iid}-foo" }
+
+      before do
+        project.repository.create_branch(branch_name, 'master')
+
+        visit project_issue_path(project, issue)
+      end
+
+      context 'when user is developer' do
+        it 'shows related branches' do
+          expect(page).to have_css('#related-branches')
+
+          wait_for_requests
+
+          expect(page).to have_content(branch_name)
+        end
+      end
+
+      context 'when user is guest' do
+        let(:membership_level) { :guest }
+
+        it 'does not show related branches' do
+          expect(page).not_to have_css('#related-branches')
+
+          wait_for_requests
+
+          expect(page).not_to have_content(branch_name)
+        end
       end
     end
   end
