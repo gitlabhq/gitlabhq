@@ -89,6 +89,10 @@ export default {
       type: String,
       required: true,
     },
+    showTimeWindowDropdown: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -98,11 +102,6 @@ export default {
       elWidth: 0,
       selectedTimeWindow: '',
     };
-  },
-  computed: {
-    showTimeWindowDropdown() {
-      return gon.features.metricsTimeWindow;
-    },
   },
   created() {
     this.service = new MonitoringService({

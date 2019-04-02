@@ -1,13 +1,11 @@
 import { timeWindows, msPerMinute } from './constants';
 
-export const getTimeDifferenceMinutes = timeWindow => {
+const getTimeDifferenceMinutes = timeWindow => {
   switch (timeWindow) {
     case timeWindows.thirtyMinutes:
       return 30;
     case timeWindows.threeHours:
       return 60 * 3;
-    case timeWindows.eightHours:
-      return 60 * 8;
     case timeWindows.oneDay:
       return 60 * 24 * 1;
     case timeWindows.threeDays:

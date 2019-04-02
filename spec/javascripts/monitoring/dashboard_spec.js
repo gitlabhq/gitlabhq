@@ -39,17 +39,11 @@ describe('Dashboard', () => {
       ee: false,
     };
 
-    gon.features = {
-      metricsTimeWindow: true,
-    };
-
     mock = new MockAdapter(axios);
     DashboardComponent = Vue.extend(Dashboard);
   });
 
   afterEach(() => {
-    gon.features = {};
-
     mock.restore();
   });
 
@@ -57,7 +51,7 @@ describe('Dashboard', () => {
     it('shows a getting started empty state when no metrics are present', () => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData,
+        propsData: { ...propsData, showTimeWindowDropdown: false },
       });
 
       expect(component.$el.querySelector('.prometheus-graphs')).toBe(null);
@@ -73,7 +67,7 @@ describe('Dashboard', () => {
     it('shows up a loading state', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true },
+        propsData: { ...propsData, hasMetrics: true, showTimeWindowDropdown: false },
       });
 
       Vue.nextTick(() => {
@@ -85,7 +79,12 @@ describe('Dashboard', () => {
     it('hides the legend when showLegend is false', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showLegend: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showLegend: false,
+          showTimeWindowDropdown: false,
+        },
       });
 
       setTimeout(() => {
@@ -99,7 +98,12 @@ describe('Dashboard', () => {
     it('hides the group panels when showPanels is false', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showTimeWindowDropdown: false,
+        },
       });
 
       setTimeout(() => {
@@ -113,7 +117,12 @@ describe('Dashboard', () => {
     it('renders the environments dropdown with a number of environments', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showTimeWindowDropdown: false,
+        },
       });
 
       component.store.storeEnvironmentsData(environmentData);
@@ -131,7 +140,12 @@ describe('Dashboard', () => {
     it('hides the environments dropdown list when there is no environments', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showTimeWindowDropdown: false,
+        },
       });
 
       component.store.storeEnvironmentsData([]);
@@ -149,7 +163,12 @@ describe('Dashboard', () => {
     it('renders the environments dropdown with a single is-active element', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showTimeWindowDropdown: false,
+        },
       });
 
       component.store.storeEnvironmentsData(environmentData);
@@ -173,6 +192,7 @@ describe('Dashboard', () => {
           hasMetrics: true,
           showPanels: false,
           environmentsEndpoint: '',
+          showTimeWindowDropdown: false,
         },
       });
 
@@ -184,11 +204,15 @@ describe('Dashboard', () => {
       });
     });
 
-    it('renders the time window dropdown with a set of options', done => {
-      gon.features.metricsTimeWindow = false;
+    it('does not show the time window dropdown when the feature flag is not set', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showTimeWindowDropdown: false,
+        },
       });
 
       setTimeout(() => {
@@ -200,10 +224,15 @@ describe('Dashboard', () => {
       });
     });
 
-    it('does not show the time window dropdown when the feature flag is not set', done => {
+    it('rewnders the time window dropdown with a set of options', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showTimeWindowDropdown: true,
+        },
       });
       const numberOfTimeWindows = Object.keys(timeWindows).length;
 
@@ -234,7 +263,12 @@ describe('Dashboard', () => {
     it('sets elWidth to page width when the sidebar is resized', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
-        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showTimeWindowDropdown: false,
+        },
       });
 
       expect(component.elWidth).toEqual(0);
