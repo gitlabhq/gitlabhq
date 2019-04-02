@@ -35,8 +35,8 @@ module Gitlab
             # patterns can be matched only when branch or tag is used
             # the pattern matching does not work for merge requests pipelines
             if pipeline.branch? || pipeline.tag?
-              if pattern.first == "/" && pattern.last == "/"
-                Regexp.new(pattern[1...-1]) =~ pipeline.ref
+              if regexp = Gitlab::UntrustedRegexp::RubySyntax.fabricate(pattern)
+                regexp.match?(pipeline.ref)
               else
                 pattern == pipeline.ref
               end

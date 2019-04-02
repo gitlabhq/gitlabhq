@@ -373,11 +373,9 @@ module API
 
       desc 'Get languages in project repository'
       get ':id/languages' do
-        if user_project.repository_languages.present?
-          user_project.repository_languages.map { |l| [l.name, l.share] }.to_h
-        else
-          user_project.repository.languages.map { |language| language.values_at(:label, :value) }.to_h
-        end
+        ::Projects::RepositoryLanguagesService
+          .new(user_project, current_user)
+          .execute.map { |lang| [lang.name, lang.share] }.to_h
       end
 
       desc 'Remove a project'

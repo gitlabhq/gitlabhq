@@ -351,6 +351,19 @@ job:
     - branches
 ```
 
+Pattern matching is case-sensitive by default. Use `i` flag modifier, like
+`/pattern/i` to make a pattern case-insensitive:
+
+```yaml
+job:
+  # use regexp
+  only:
+    - /^issue-.*$/i
+  # use special keyword
+  except:
+    - branches
+```
+
 In this example, `job` will run only for refs that are tagged, or if a build is
 explicitly requested via an API trigger or a [Pipeline Schedule][schedules]:
 

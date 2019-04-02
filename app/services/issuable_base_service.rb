@@ -70,10 +70,14 @@ class IssuableBaseService < BaseService
   end
 
   def filter_labels
-    filter_labels_in_param(:add_label_ids)
-    filter_labels_in_param(:remove_label_ids)
-    filter_labels_in_param(:label_ids)
-    find_or_create_label_ids
+    params[:add_label_ids] = labels_service.filter_labels_ids_in_param(:add_label_ids) if params[:add_label_ids]
+    params[:remove_label_ids] = labels_service.filter_labels_ids_in_param(:remove_label_ids) if params[:remove_label_ids]
+
+    if params[:label_ids]
+      params[:label_ids] = labels_service.filter_labels_ids_in_param(:label_ids)
+    elsif params[:labels]
+      params[:label_ids] = labels_service.find_or_create_by_titles.map(&:id)
+    end
   end
 
   def filter_labels_in_param(key)
@@ -99,6 +103,10 @@ class IssuableBaseService < BaseService
     end.compact
   end
 
+  def labels_service
+    @labels_service ||= ::Labels::AvailableLabelsService.new(current_user, parent, params)
+  end
+
   def process_label_ids(attributes, existing_label_ids: nil)
     label_ids = attributes.delete(:label_ids)
     add_label_ids = attributes.delete(:add_label_ids)
@@ -114,10 +122,6 @@ class IssuableBaseService < BaseService
     end
 
     new_label_ids.uniq
-  end
-
-  def available_labels
-    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id, include_ancestor_groups: true).execute
   end
 
   def handle_quick_actions_on_create(issuable)

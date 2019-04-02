@@ -46,12 +46,8 @@ class Projects::GraphsController < Projects::ApplicationController
 
   def get_languages
     @languages =
-      if @project.repository_languages.present?
-        @project.repository_languages.map do |lang|
-          { value: lang.share, label: lang.name, color: lang.color, highlight: lang.color }
-        end
-      else
-        @project.repository.languages
+      ::Projects::RepositoryLanguagesService.new(@project, current_user).execute.map do |lang|
+        { value: lang.share, label: lang.name, color: lang.color, highlight: lang.color }
       end
   end
 

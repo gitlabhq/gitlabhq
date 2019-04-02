@@ -369,6 +369,23 @@ describe ProjectsController do
         end
       end
 
+      it 'does not update namespace' do
+        controller.instance_variable_set(:@project, project)
+
+        params = {
+          namespace_id: 'test'
+        }
+
+        expect do
+          put :update,
+            params: {
+              namespace_id: project.namespace,
+              id: project.id,
+              project: params
+            }
+        end.not_to change { project.namespace.reload }
+      end
+
       def update_project(**parameters)
         put :update,
             params: {
