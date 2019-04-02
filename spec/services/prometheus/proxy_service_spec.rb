@@ -128,6 +128,11 @@ describe Prometheus::ProxyService do
 
       context 'Connection to prometheus server succeeds' do
         let(:rest_client_response) { instance_double(RestClient::Response) }
+        let(:prometheus_http_status_code) { 400 }
+
+        let(:response_body) do
+          '{"status":"error","errorType":"bad_data","error":"parse error at char 1: no expression found in input"}'
+        end
 
         before do
           allow(prometheus_client).to receive(:proxy).and_return(rest_client_response)
@@ -137,37 +142,12 @@ describe Prometheus::ProxyService do
           allow(rest_client_response).to receive(:body).and_return(response_body)
         end
 
-        shared_examples 'return prometheus http status code and body' do
-          it do
-            expect(subject.execute).to eq({
-              http_status: prometheus_http_status_code,
-              body: response_body,
-              status: :success
-            })
-          end
-        end
-
-        context 'prometheus returns success' do
-          let(:prometheus_http_status_code) { 200 }
-
-          let(:response_body) do
-            '{"status":"success","data":{"resultType":"scalar","result":[1553864609.117,"1"]}}'
-          end
-
-          before do
-          end
-
-          it_behaves_like 'return prometheus http status code and body'
-        end
-
-        context 'prometheus returns error' do
-          let(:prometheus_http_status_code) { 400 }
-
-          let(:response_body) do
-            '{"status":"error","errorType":"bad_data","error":"parse error at char 1: no expression found in input"}'
-          end
-
-          it_behaves_like 'return prometheus http status code and body'
+        it 'returns the http status code and body from prometheus' do
+          expect(subject.execute).to eq(
+            http_status: prometheus_http_status_code,
+            body: response_body,
+            status: :success
+          )
         end
       end
 

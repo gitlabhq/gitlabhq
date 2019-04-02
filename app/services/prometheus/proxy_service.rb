@@ -46,7 +46,7 @@ module Prometheus
     end
 
     def execute
-      return cannot_proxy_response unless can_proxy?(@method, @path)
+      return cannot_proxy_response unless can_proxy?
       return no_prometheus_response unless can_query?
 
       with_reactive_cache(*cache_key) do |result|
@@ -55,15 +55,15 @@ module Prometheus
     end
 
     def calculate_reactive_cache(prometheus_owner_class_name, prometheus_owner_id, method, path, params)
-      return cannot_proxy_response unless can_proxy?(method, path)
+      return cannot_proxy_response unless can_proxy?
       return no_prometheus_response unless can_query?
 
       response = prometheus_client_wrapper.proxy(path, params)
 
-      success({ http_status: response.code, body: response.body })
+      success(http_status: response.code, body: response.body)
 
     rescue Gitlab::PrometheusClient::Error => err
-      error(err.message, :service_unavailable)
+      service_unavailable_response(err)
     end
 
     def cache_key
@@ -71,6 +71,10 @@ module Prometheus
     end
 
     private
+
+    def service_unavailable_response(exception)
+      error(exception.message, :service_unavailable)
+    end
 
     def no_prometheus_response
       error('No prometheus server found', :service_unavailable)
@@ -92,8 +96,8 @@ module Prometheus
       prometheus_adapter&.can_query?
     end
 
-    def can_proxy?(method, path)
-      PROXY_SUPPORT[path] == method
+    def can_proxy?
+      PROXY_SUPPORT[@path] == @method
     end
   end
 end
