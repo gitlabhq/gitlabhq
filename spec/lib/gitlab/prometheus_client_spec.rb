@@ -270,7 +270,7 @@ describe Gitlab::PrometheusClient do
   end
 
   describe 'proxy' do
-    context 'query' do
+    context 'get API' do
       let(:prometheus_query) { prometheus_cpu_query('env-slug') }
       let(:query_url) { prometheus_query_url(prometheus_query) }
 
@@ -278,58 +278,48 @@ describe Gitlab::PrometheusClient do
         Timecop.freeze { example.run }
       end
 
-      it 'returns full response from the API call' do
-        req_stub = stub_prometheus_request(query_url, body: prometheus_value_body('vector'))
+      context 'when response status code is 200' do
+        it 'returns response object' do
+          req_stub = stub_prometheus_request(query_url, body: prometheus_value_body('vector'))
 
-        response = subject.proxy('query', { query: prometheus_query })
-        json_response = JSON.parse(response.body)
+          response = subject.proxy('query', { query: prometheus_query })
+          json_response = JSON.parse(response.body)
 
-        expect(response.code).to eq(200)
-        expect(json_response).to eq({
-          'status' => 'success',
-          'data' => {
-            'resultType' => 'vector',
-            'result' => [{ "metric" => {}, "value" => [1488772511.004, "0.000041021495238095323"] }]
-          }
-        })
-        expect(req_stub).to have_been_requested
-      end
-    end
-
-    context 'query_range' do
-      let(:prometheus_query) { prometheus_memory_query('env-slug') }
-      let(:query_url) { prometheus_query_range_url(prometheus_query, start: 2.hours.ago) }
-
-      around do |example|
-        Timecop.freeze { example.run }
+          expect(response.code).to eq(200)
+          expect(json_response).to eq({
+            'status' => 'success',
+            'data' => {
+              'resultType' => 'vector',
+              'result' => [{ "metric" => {}, "value" => [1488772511.004, "0.000041021495238095323"] }]
+            }
+          })
+          expect(req_stub).to have_been_requested
+        end
       end
 
-      it 'returns full response' do
-        req_stub = stub_prometheus_request(query_url, body: prometheus_values_body('vector'))
+      context 'when response status code is not 200' do
+        it 'returns response object' do
+          req_stub = stub_prometheus_request(query_url, status: 400, body: { error: 'error' })
 
-        response = subject.proxy('query_range', {
-          query: prometheus_query,
-          start: 2.hours.ago.to_f,
-          end: Time.now.to_f,
-          step: 60
-        })
-        json_response = JSON.parse(response.body)
+          response = subject.proxy('query', { query: prometheus_query })
+          json_response = JSON.parse(response.body)
 
-        expect(response.code).to eq(200)
-        expect(json_response).to eq({
-          "status" => "success",
-          "data" => {
-            "resultType" => "vector",
-            "result" => [{
-              "metric" => {},
-              "values" => [
-                [1488758662.506, "0.00002996364761904785"],
-                [1488758722.506, "0.00003090239047619091"]
-              ]
-            }]
-          }
-        })
-        expect(req_stub).to have_been_requested
+          expect(req_stub).to have_been_requested
+          expect(response.code).to eq(400)
+          expect(json_response).to eq('error' => 'error')
+        end
+      end
+
+      context 'when RestClient::Exception is raised' do
+        before do
+          stub_prometheus_request_with_exception(query_url, RestClient::Exception)
+        end
+
+        it 'raises PrometheusClient::Error' do
+          expect { subject.proxy('query', { query: prometheus_query }) }.to(
+            raise_error(Gitlab::PrometheusClient::Error, 'Network connection error')
+          )
+        end
       end
     end
   end
