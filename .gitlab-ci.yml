@@ -1018,10 +1018,8 @@ schedule:review-build-cng:
 
 .review-deploy-base: &review-deploy-base
   <<: *review-base
-  retry: 2
   allow_failure: true
   variables:
-    GIT_DEPTH: "1"
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
     GITLAB_HELM_CHART_REF: "master"
