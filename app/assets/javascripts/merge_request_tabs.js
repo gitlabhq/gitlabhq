@@ -398,7 +398,7 @@ export default class MergeRequestTabs {
         const hash = getLocationHash();
         const anchor = hash && $container.find(`.note[id="${hash}"]`);
         if (anchor && anchor.length > 0) {
-          const notesContent = anchor.closest('.notes_content');
+          const notesContent = anchor.closest('.notes-content');
           const lineType = notesContent.hasClass('new') ? 'new' : 'old';
           Notes.instance.toggleDiffNote({
             target: anchor,

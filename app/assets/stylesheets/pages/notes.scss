@@ -68,7 +68,7 @@ $note-form-margin-left: 72px;
       }
     }
 
-    .notes_content {
+    .notes-content {
       border: 0;
       border-top: 1px solid $border-color;
     }
@@ -453,7 +453,7 @@ $note-form-margin-left: 72px;
 
   // Merge request notes in diffs
   // Diff is inline
-  .notes_content .note-header .note-headline-light {
+  .notes-content .note-header .note-headline-light {
     display: inline-block;
     position: relative;
   }
@@ -465,7 +465,7 @@ $note-form-margin-left: 72px;
       border: 1px solid $border-color;
       border-left: 0;
 
-      &.notes_content {
+      &.notes-content {
         border-width: 1px 0;
         padding: 0;
         vertical-align: top;
@@ -512,7 +512,7 @@ $note-form-margin-left: 72px;
 }
 
 .commit-diff {
-  .notes_content {
+  .notes-content {
     background-color: $white-light;
   }
 }
