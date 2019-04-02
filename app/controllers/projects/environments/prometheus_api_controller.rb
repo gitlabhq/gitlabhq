@@ -25,10 +25,8 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
     if result[:status] == :success
       render status: result[:http_status], json: result[:body]
     else
-      render status: result[:http_status] || :bad_request, json: {
-          status: result[:status],
-          message: result[:message]
-        }
+      render status: result[:http_status] || :bad_request,
+        json: { status: result[:status], message: result[:message] }
     end
   end
 
