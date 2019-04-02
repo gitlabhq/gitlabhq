@@ -2,7 +2,7 @@
 
 module Projects
   class DetectRepositoryLanguagesService < BaseService
-    attr_reader :detected_repository_languages, :programming_languages
+    attr_reader :programming_languages
 
     # rubocop: disable CodeReuse/ActiveRecord
     def execute
@@ -25,6 +25,8 @@ module Projects
           RepositoryLanguage.table_name,
           detection.insertions(matching_programming_languages)
         )
+
+        set_detected_repository_languages
       end
 
       project.repository_languages.reload
@@ -56,5 +58,11 @@ module Projects
       retry
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def set_detected_repository_languages
+      return if project.detected_repository_languages?
+
+      project.update_column(:detected_repository_languages, true)
+    end
   end
 end

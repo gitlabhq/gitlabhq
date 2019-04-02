@@ -13,12 +13,18 @@ shared_examples 'languages and percentages JSON response' do
     )
   end
 
-  it 'returns expected language values' do
-    get api("/projects/#{project.id}/languages", user)
+  context "when the languages haven't been detected yet" do
+    it 'returns expected language values' do
+      get api("/projects/#{project.id}/languages", user)
 
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response).to eq(expected_languages)
-    expect(json_response.count).to be > 1
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to eq({})
+
+      get api("/projects/#{project.id}/languages", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(JSON.parse(response.body)).to eq(expected_languages)
+    end
   end
 
   context 'when the languages were detected before' do
