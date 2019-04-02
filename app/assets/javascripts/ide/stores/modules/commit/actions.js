@@ -6,7 +6,7 @@ import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import router from '../../../ide_router';
 import service from '../../../services';
 import * as types from './mutation_types';
-import * as consts from './constants';
+import consts from './constants';
 import { activityBarViews } from '../../../constants';
 import eventHub from '../../../eventhub';
 
@@ -18,16 +18,23 @@ export const discardDraft = ({ commit }) => {
   commit(types.UPDATE_COMMIT_MESSAGE, '');
 };
 
-export const updateCommitAction = ({ commit }, commitAction) => {
-  commit(types.UPDATE_COMMIT_ACTION, commitAction);
+export const updateCommitAction = ({ commit, rootGetters }, commitAction) => {
+  commit(types.UPDATE_COMMIT_ACTION, {
+    commitAction,
+    currentMergeRequest: rootGetters.currentMergeRequest,
+  });
+};
+
+export const toggleShouldCreateMR = ({ commit }) => {
+  commit(types.TOGGLE_SHOULD_CREATE_MR);
 };
 
 export const updateBranchName = ({ commit }, branchName) => {
   commit(types.UPDATE_NEW_BRANCH_NAME, branchName);
 };
 
-export const setLastCommitMessage = ({ rootState, commit }, data) => {
-  const currentProject = rootState.projects[rootState.currentProjectId];
+export const setLastCommitMessage = ({ commit, rootGetters }, data) => {
+  const { currentProject } = rootGetters;
   const commitStats = data.stats
     ? sprintf(__('with %{additions} additions, %{deletions} deletions.'), {
         additions: data.stats.additions,
@@ -48,8 +55,8 @@ export const setLastCommitMessage = ({ rootState, commit }, data) => {
   commit(rootTypes.SET_LAST_COMMIT_MSG, commitMsg, { root: true });
 };
 
-export const updateFilesAfterCommit = ({ commit, dispatch, rootState }, { data }) => {
-  const selectedProject = rootState.projects[rootState.currentProjectId];
+export const updateFilesAfterCommit = ({ commit, dispatch, rootState, rootGetters }, { data }) => {
+  const selectedProject = rootGetters.currentProject;
   const lastCommit = {
     commit_path: `${selectedProject.web_url}/commit/${data.id}`,
     commit: {
@@ -135,14 +142,15 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
         branch: getters.branchName,
       })
         .then(() => {
-          if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR) {
+          if (state.shouldCreateMR) {
+            const { currentProject } = rootGetters;
+            const targetBranch = getters.isCreatingNewBranch
+              ? rootState.currentBranchId
+              : currentProject.default_branch;
+
             dispatch(
               'redirectToUrl',
-              createNewMergeRequestUrl(
-                rootState.projects[rootState.currentProjectId].web_url,
-                getters.branchName,
-                rootState.currentBranchId,
-              ),
+              createNewMergeRequestUrl(currentProject.web_url, getters.branchName, targetBranch),
               { root: true },
             );
           }
