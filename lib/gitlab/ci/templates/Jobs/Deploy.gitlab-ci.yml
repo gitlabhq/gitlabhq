@@ -404,6 +404,7 @@ rollout 100%:
         --wait \
         --set application.initializeCommand="" \
         --set application.migrateCommand="$DB_MIGRATE" \
+        $HELM_EXTRA_ARGS \
         --namespace="$KUBE_NAMESPACE" \
         "$name" \
         chart/
