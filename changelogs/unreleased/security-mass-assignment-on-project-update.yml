@@ -1,0 +1,5 @@
+---
+title: Disallow updating namespace when updating a project
+merge_request:
+author:
+type: security
