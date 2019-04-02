@@ -55,8 +55,6 @@ module Prometheus
     end
 
     def calculate_reactive_cache(prometheus_owner_class_name, prometheus_owner_id, method, path, params)
-      @prometheus_owner = prometheus_owner_from_class(prometheus_owner_class_name, prometheus_owner_id)
-
       return cannot_proxy_response unless can_proxy?(method, path)
       return no_prometheus_response unless can_query?
 
@@ -80,10 +78,6 @@ module Prometheus
 
     def cannot_proxy_response
       error('Proxy support for this API is not available currently')
-    end
-
-    def prometheus_owner_from_class(prometheus_owner_class_name, prometheus_owner_id)
-      Kernel.const_get(prometheus_owner_class_name).find(prometheus_owner_id)
     end
 
     def prometheus_adapter
