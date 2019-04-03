@@ -134,7 +134,7 @@ Now that your certificate has been issued, let's add it to your Pages site:
     sudo cat /etc/letsencrypt/live/example.com/fullchain.pem | pbcopy
     ```
 
-1. Copy and paste the public key into the second field **Key (PEM)**:
+1. Copy and paste the private key into the second field **Key (PEM)**:
 
     ```bash
     sudo cat /etc/letsencrypt/live/example.com/privkey.pem | pbcopy
