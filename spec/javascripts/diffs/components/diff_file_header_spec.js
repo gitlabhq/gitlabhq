@@ -23,9 +23,6 @@ describe('diff_file_header', () => {
   });
 
   beforeEach(() => {
-    gon.features = {
-      expandDiffFullFile: true,
-    };
     const diffFile = diffDiscussionMock.diff_file;
 
     diffFile.added_lines = 2;

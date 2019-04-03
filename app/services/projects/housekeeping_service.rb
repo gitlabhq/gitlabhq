@@ -18,8 +18,9 @@ module Projects
       end
     end
 
-    def initialize(project)
+    def initialize(project, task = nil)
       @project = project
+      @task = task
     end
 
     def execute
@@ -69,6 +70,8 @@ module Projects
     end
 
     def task
+      return @task if @task
+
       if pushes_since_gc % gc_period == 0
         :gc
       elsif pushes_since_gc % full_repack_period == 0
