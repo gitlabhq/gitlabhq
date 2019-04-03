@@ -15,11 +15,11 @@ module Prometheus
     PROXY_SUPPORT = {
       'query' => {
         method: ['GET'],
-        params: [:query, :time, :timeout]
+        params: %w(query time timeout)
       },
       'query_range' => {
         method: ['GET'],
-        params: [:query, :start, :end, :step, :timeout]
+        params: %w(query start end step timeout)
       }
     }.freeze
 
@@ -44,7 +44,7 @@ module Prometheus
 
       # Convert ActionController::Parameters to hash because reactive_cache_worker
       # does not play nice with ActionController::Parameters.
-      @params = permit_params(params, path).to_hash
+      @params = filter_params(params, path).to_hash
 
       @method = method
     end
@@ -102,12 +102,8 @@ module Prometheus
       prometheus_adapter&.can_query?
     end
 
-    def permit_params(params, path)
-      if params.is_a?(ActionController::Parameters)
-        params.permit(PROXY_SUPPORT.dig(path, :params))
-      else
-        params
-      end
+    def filter_params(params, path)
+      params.slice(*PROXY_SUPPORT.dig(path, :params))
     end
 
     def can_proxy?

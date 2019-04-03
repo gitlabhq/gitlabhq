@@ -9,15 +9,15 @@ describe Prometheus::ProxyService do
   set(:environment) { create(:environment, project: project) }
 
   describe '#initialize' do
-    let(:params) { ActionController::Parameters.new(query: '1') }
+    let(:params) { ActionController::Parameters.new(query: '1').permit! }
 
     it 'initializes attributes' do
-      result = described_class.new(environment, 'GET', 'query', { query: '1' })
+      result = described_class.new(environment, 'GET', 'query', params)
 
       expect(result.proxyable).to eq(environment)
       expect(result.method).to eq('GET')
       expect(result.path).to eq('query')
-      expect(result.params).to eq(query: '1')
+      expect(result.params).to eq('query' => '1')
     end
 
     it 'converts ActionController::Parameters into hash' do
@@ -27,7 +27,7 @@ describe Prometheus::ProxyService do
     end
 
     context 'with unknown params' do
-      let(:params) { ActionController::Parameters.new(query: '1', other_param: 'val') }
+      let(:params) { ActionController::Parameters.new(query: '1', other_param: 'val').permit! }
 
       it 'filters unknown params' do
         result = described_class.new(environment, 'GET', 'query', params)
@@ -39,7 +39,7 @@ describe Prometheus::ProxyService do
 
   describe '#execute' do
     let(:prometheus_adapter) { instance_double(PrometheusService) }
-    let(:params) { ActionController::Parameters.new(query: '1') }
+    let(:params) { ActionController::Parameters.new(query: '1').permit! }
 
     subject { described_class.new(environment, 'GET', 'query', params) }
 
@@ -182,14 +182,14 @@ describe Prometheus::ProxyService do
   describe '.from_cache' do
     it 'initializes an instance of ProxyService class' do
       result = described_class.from_cache(
-        environment.class.name, environment.id, 'GET', 'query', { query: '1' }
+        environment.class.name, environment.id, 'GET', 'query', { 'query' => '1' }
       )
 
       expect(result).to be_an_instance_of(described_class)
       expect(result.proxyable).to eq(environment)
       expect(result.method).to eq('GET')
       expect(result.path).to eq('query')
-      expect(result.params).to eq(query: '1')
+      expect(result.params).to eq('query' => '1')
     end
   end
 end
