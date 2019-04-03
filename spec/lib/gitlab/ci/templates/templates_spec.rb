@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe "CI YML Templates" do
   ABSTRACT_TEMPLATES = %w[Serverless].freeze
+  PROJECT_DEPENDENT_TEMPLATES = %w[Auto-DevOps].freeze
 
   def self.concrete_templates
     Gitlab::Template::GitlabCiYmlTemplate.all.reject do |template|
@@ -20,7 +21,10 @@ describe "CI YML Templates" do
   describe 'concrete templates with CI/CD jobs' do
     concrete_templates.each do |template|
       it "#{template.name} template should be valid" do
-        expect { Gitlab::Ci::YamlProcessor.new(template.content) }
+        # Trigger processing of included files
+        project = create(:project, :test_repo) if PROJECT_DEPENDENT_TEMPLATES.include?(template.name)
+
+        expect { Gitlab::Ci::YamlProcessor.new(template.content, project: project) }
           .not_to raise_error
       end
     end
