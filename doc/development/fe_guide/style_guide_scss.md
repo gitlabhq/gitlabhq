@@ -12,7 +12,7 @@ led by the [GitLab UI WG](https://gitlab.com/gitlab-com/www-gitlab-com/merge_req
 We have a few internal utility classes in [`common.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/framework/common.scss)
 and we use [Bootstrap's Utility Classes](https://getbootstrap.com/docs/4.3/utilities/)
 
-New utility classes should be added to [`common.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/framework/common.scss).
+New utility classes should be added to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/app/assets/stylesheets/utilities.scss).
 
 ### Naming
 
