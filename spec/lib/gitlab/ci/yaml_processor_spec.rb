@@ -1233,7 +1233,7 @@ module Gitlab
           config = YAML.dump({ services: [10, "test"], rspec: { script: "test" } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "service config should be a hash or a string")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "services:service config should be a hash or a string")
         end
 
         it "returns errors if job services parameter is not an array" do
@@ -1247,7 +1247,7 @@ module Gitlab
           config = YAML.dump({ rspec: { script: "test", services: [10, "test"] } })
           expect do
             Gitlab::Ci::YamlProcessor.new(config)
-          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "service config should be a hash or a string")
+          end.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, "jobs:rspec:services:service config should be a hash or a string")
         end
 
         it "returns error if job configuration is invalid" do

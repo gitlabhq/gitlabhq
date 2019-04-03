@@ -19,7 +19,10 @@ module Gitlab
 
           entry = self.class.entry_class(strategy)
 
-          super(@subject = entry.new(config, metadata))
+          @subject = entry.new(config, metadata)
+
+          yield(@subject) if block_given?
+          super(@subject)
         end
 
         def self.strategy(name, **opts)

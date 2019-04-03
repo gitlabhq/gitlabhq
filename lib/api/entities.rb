@@ -1389,8 +1389,13 @@ module API
         expose :name, :script, :timeout, :when, :allow_failure
       end
 
+      class Port < Grape::Entity
+        expose :number, :protocol, :name
+      end
+
       class Image < Grape::Entity
         expose :name, :entrypoint
+        expose :ports, using: JobRequest::Port
       end
 
       class Service < Image
