@@ -81,7 +81,7 @@ The process of adding Review Apps in your workflow is as follows:
 
 1. Set up the infrastructure to host and deploy the Review Apps.
 1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a Runner to do deployment.
-1. Set up a job in `.gitlab-ci.yml` that uses the predefined [predefined CI environment variable](../variables/README.md) `${CI_COMMIT_REF_NAME}` to create dynamic environments and restrict it to run only on branches.
+1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI environment variable](../variables/README.md) `${CI_COMMIT_REF_NAME}` to create dynamic environments and restrict it to run only on branches.
 1. Optionally, set a job that [manually stops](../environments.md#stopping-an-environment) the Review Apps.
 
 After adding Review Apps to your workflow, you follow the branched Git flow. That is:
