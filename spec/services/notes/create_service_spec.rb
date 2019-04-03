@@ -298,41 +298,20 @@ describe Notes::CreateService do
 
       subject { described_class.new(project, user, reply_opts).execute }
 
-      context 'when reply_to_individual_notes is disabled' do
-        before do
-          stub_feature_flags(reply_to_individual_notes: false)
-        end
-
-        it 'creates an individual note' do
-          expect(subject.type).to eq(nil)
-          expect(subject.discussion_id).not_to eq(existing_note.discussion_id)
-        end
-
-        it 'does not convert existing note' do
-          expect { subject }.not_to change { existing_note.reload.type }
-        end
+      it 'creates a DiscussionNote in reply to existing note' do
+        expect(subject).to be_a(DiscussionNote)
+        expect(subject.discussion_id).to eq(existing_note.discussion_id)
       end
 
-      context 'when reply_to_individual_notes is enabled' do
-        before do
-          stub_feature_flags(reply_to_individual_notes: true)
-        end
+      it 'converts existing note to DiscussionNote' do
+        expect do
+          existing_note
 
-        it 'creates a DiscussionNote in reply to existing note' do
-          expect(subject).to be_a(DiscussionNote)
-          expect(subject.discussion_id).to eq(existing_note.discussion_id)
-        end
+          Timecop.freeze(Time.now + 1.minute) { subject }
 
-        it 'converts existing note to DiscussionNote' do
-          expect do
-            existing_note
-
-            Timecop.freeze(Time.now + 1.minute) { subject }
-
-            existing_note.reload
-          end.to change { existing_note.type }.from(nil).to('DiscussionNote')
-             .and change { existing_note.updated_at }
-        end
+          existing_note.reload
+        end.to change { existing_note.type }.from(nil).to('DiscussionNote')
+            .and change { existing_note.updated_at }
       end
     end
   end

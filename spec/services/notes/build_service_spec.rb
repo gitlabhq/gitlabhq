@@ -128,37 +128,19 @@ describe Notes::BuildService do
 
       subject { described_class.new(project, author, note: 'Test', in_reply_to_discussion_id: note.discussion_id).execute }
 
-      shared_examples 'an individual note reply' do
+      it 'sets the note up to be in reply to that note' do
+        expect(subject).to be_valid
+        expect(subject).to be_a(DiscussionNote)
+        expect(subject.discussion_id).to eq(note.discussion_id)
+      end
+
+      context 'when noteable does not support replies' do
+        let(:note) { create(:note_on_commit) }
+
         it 'builds another individual note' do
           expect(subject).to be_valid
           expect(subject).to be_a(Note)
           expect(subject.discussion_id).not_to eq(note.discussion_id)
-        end
-      end
-
-      context 'when reply_to_individual_notes is disabled' do
-        before do
-          stub_feature_flags(reply_to_individual_notes: false)
-        end
-
-        it_behaves_like 'an individual note reply'
-      end
-
-      context 'when reply_to_individual_notes is enabled' do
-        before do
-          stub_feature_flags(reply_to_individual_notes: true)
-        end
-
-        it 'sets the note up to be in reply to that note' do
-          expect(subject).to be_valid
-          expect(subject).to be_a(DiscussionNote)
-          expect(subject.discussion_id).to eq(note.discussion_id)
-        end
-
-        context 'when noteable does not support replies' do
-          let(:note) { create(:note_on_commit) }
-
-          it_behaves_like 'an individual note reply'
         end
       end
     end
