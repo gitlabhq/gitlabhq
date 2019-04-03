@@ -546,6 +546,8 @@ $'\''git'\'' "checkout" "-f" "-q" "dd648b2e48ce6518303b0bb580b2ee32fadaf045"
 Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-machine-1480971377-317a7d0f-digital-ocean-4gb...
 ++ export CI=true
 ++ CI=true
+++ export CI_API_V4_API_URL=https://example.com:3000/api/v4
+++ CI_API_V4_API_URL=https://example.com:3000/api/v4
 ++ export CI_DEBUG_TRACE=false
 ++ CI_DEBUG_TRACE=false
 ++ export CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
@@ -584,6 +586,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ GITLAB_CI=true
 ++ export CI=true
 ++ CI=true
+++ export CI_API_V4_API_URL=https://example.com:3000/api/v4
+++ CI_API_V4_API_URL=https://example.com:3000/api/v4
 ++ export GITLAB_CI=true
 ++ GITLAB_CI=true
 ++ export CI_JOB_ID=7046507
