@@ -391,6 +391,11 @@ job:
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except `master` and those with names prefixed with `release/`.
 
+NOTE: **Note:**
+Because `@` is used to denote the beginning of a ref's repository path,
+matching a ref name containing the `@` character in a regular expression
+requires the use of the hex character code match `\x40`.
+
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
 default. If it doesn't have an `except` rule, it is empty.
 
