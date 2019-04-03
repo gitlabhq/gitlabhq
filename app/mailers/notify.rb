@@ -79,10 +79,9 @@ class Notify < BaseMailer
   # Returns a String containing the User's email address.
   def recipient(recipient_id, notification_group = nil)
     @current_user = User.find(recipient_id)
+    group_notification_email = nil
 
     if notification_group
-      group_notification_email = nil
-
       # Get notification group's and ancestors' notification settings
       group_ids = notification_group.self_and_ancestors_ids
       notification_settings = notification_group.notification_settings.where(user: @current_user) # rubocop: disable CodeReuse/ActiveRecord
