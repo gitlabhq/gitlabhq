@@ -19,8 +19,12 @@ module BlobHelper
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
     segments = [ide_path, 'project', project.full_path, 'edit', ref]
-    segments.concat(['-', path]) if path.present?
+    segments.concat(['-', encode_ide_path(path)]) if path.present?
     File.join(segments)
+  end
+
+  def encode_ide_path(path)
+    url_encode(path).gsub('%2F', '/')
   end
 
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})

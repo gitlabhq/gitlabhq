@@ -1,6 +1,8 @@
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { decorateData, sortTree } from '../stores/utils';
 
+export const escapeFileUrl = fileUrl => encodeURIComponent(fileUrl).replace(/%2F/g, '/');
+
 export const splitParent = path => {
   const idx = path.lastIndexOf('/');
 
@@ -45,7 +47,7 @@ export const decorateFiles = ({
       id: path,
       name,
       path,
-      url: `/${projectId}/tree/${branchId}/-/${path}/`,
+      url: `/${projectId}/tree/${branchId}/-/${escapeFileUrl(path)}/`,
       type: 'tree',
       parentTreeUrl: parentFolder ? parentFolder.url : `/${projectId}/tree/${branchId}/`,
       tempFile,
@@ -81,7 +83,7 @@ export const decorateFiles = ({
         id: path,
         name,
         path,
-        url: `/${projectId}/blob/${branchId}/-/${path}`,
+        url: `/${projectId}/blob/${branchId}/-/${escapeFileUrl(path)}`,
         type: 'blob',
         parentTreeUrl: fileFolder ? fileFolder.url : `/${projectId}/blob/${branchId}`,
         tempFile,
