@@ -11,13 +11,12 @@ Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/
 
 Knative extends Kubernetes to provide a set of middleware components that are useful to build modern, source-centric, container-based applications. Knative brings some significant benefits out of the box through its main components:
 
-- [Build](https://github.com/knative/build): Source-to-container build orchestration.
-- [Eventing](https://github.com/knative/eventing): Management and delivery of events.
 - [Serving](https://github.com/knative/serving): Request-driven compute that can scale to zero.
+- [Eventing](https://github.com/knative/eventing): Management and delivery of events.
 
 For more information on Knative, visit the [Knative docs repo](https://github.com/knative/docs).
 
-With GitLab serverless, you can deploy both functions-as-a-service (FaaS) and serverless applications.
+With GitLab Serverless, you can deploy both functions-as-a-service (FaaS) and serverless applications.
 
 ## Prerequisites
 
@@ -41,13 +40,16 @@ To run Knative on Gitlab, you will need:
     wildcard domain where your applications will be served. Configure your DNS server to use the
     external IP address or hostname for that domain.
 1. **`.gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
-    to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm) to simplify the
-    deployment of knative services and functions.
+    to build the application. We also use [gitlabktl](https://gitlab.com/gitlab-org/gitlabktl)
+    and [TriggerMesh CLI](https://github.com/triggermesh/tm) CLIs to simplify the
+    deployment of services and functions to Knative.
 1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yml` file
     will contain the information for all the functions being hosted in the repository as well as a reference to the
     runtime being used.
-1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a `Dockerfile` in order to build your application. It should be included
-    at the root of your project's repo and expose port `8080`.
+1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a
+    `Dockerfile` in order to build your applications. It should be included at the root of your
+    project's repo and expose port `8080`. `Dockerfile` is not require if you plan to build serverless functions
+    using our [runtimes](https://gitlab.com/gitlab-org/serverless/runtimes).
 1. **Prometheus** (optional): Installing Prometheus allows you to monitor the scale and traffic of your serverless function/application.
     See [Installing Applications](../index.md#installing-applications) for more information.
 
