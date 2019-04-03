@@ -115,8 +115,11 @@ export default {
     author() {
       return this.getUserData;
     },
-    canUpdateIssue() {
-      return this.getNoteableData.current_user.can_update;
+    canToggleIssueState() {
+      return (
+        this.getNoteableData.current_user.can_update &&
+        this.getNoteableData.state !== constants.MERGED
+      );
     },
     endpoint() {
       return this.getNoteableData.create_note_path;
@@ -415,7 +418,7 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
               </div>
 
               <loading-button
-                v-if="canUpdateIssue"
+                v-if="canToggleIssueState"
                 :loading="isToggleStateButtonLoading"
                 :container-class="[
                   actionButtonClassNames,
