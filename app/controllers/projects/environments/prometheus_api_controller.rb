@@ -9,7 +9,7 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
       environment,
       request.method,
       params[:proxy_path],
-      params
+      params.permit!
     ).execute
 
     if result.nil?

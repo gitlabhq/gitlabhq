@@ -14,11 +14,22 @@ describe Projects::Environments::PrometheusApiController do
 
   describe 'GET #proxy' do
     let(:prometheus_proxy_service) { instance_double(Prometheus::ProxyService) }
+    let(:expected_params) do
+      ActionController::Parameters.new(
+        "query" => "1",
+        "id" => "1",
+        "namespace_id" => "namespace1",
+        "project_id" => "project1",
+        "proxy_path" => "query",
+        "controller" => "projects/environments/prometheus_api",
+        "action" => "proxy"
+      ).permit!
+    end
 
     context 'with valid requests' do
       before do
         allow(Prometheus::ProxyService).to receive(:new)
-          .with(environment, 'GET', 'query', anything)
+          .with(environment, 'GET', 'query', expected_params)
           .and_return(prometheus_proxy_service)
 
         allow(prometheus_proxy_service).to receive(:execute)
@@ -33,6 +44,8 @@ describe Projects::Environments::PrometheusApiController do
         it 'returns prometheus response' do
           get :proxy, params: environment_params
 
+          expect(Prometheus::ProxyService).to have_received(:new)
+            .with(environment, 'GET', 'query', expected_params)
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq(prometheus_json_body)
         end
