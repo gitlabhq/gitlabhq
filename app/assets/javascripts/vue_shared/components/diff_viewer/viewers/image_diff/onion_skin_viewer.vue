@@ -102,7 +102,7 @@ export default {
       :style="{
         width: onionMaxPixelWidth,
         height: onionMaxPixelHeight,
-        'user-select': dragging === true ? 'none' : '',
+        'user-select': dragging ? 'none' : null,
       }"
       class="onion-skin-frame"
     >

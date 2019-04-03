@@ -68,12 +68,10 @@ export default {
     },
     startDrag() {
       this.dragging = true;
-      document.body.style.userSelect = 'none';
       document.body.addEventListener('mousemove', this.dragMove);
     },
     stopDrag() {
       this.dragging = false;
-      document.body.style.userSelect = '';
       document.body.removeEventListener('mousemove', this.dragMove);
     },
     prepareSwipe() {
@@ -104,7 +102,13 @@ export default {
 
 <template>
   <div class="swipe view">
-    <div ref="swipeFrame" class="swipe-frame">
+    <div
+      ref="swipeFrame"
+      :style="{
+        'user-select': dragging ? 'none' : null,
+      }"
+      class="swipe-frame"
+    >
       <image-viewer
         key="swipeOldImg"
         ref="swipeOldImg"
