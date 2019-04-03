@@ -8359,9 +8359,6 @@ msgstr ""
 msgid "Timeago|%s months remaining"
 msgstr ""
 
-msgid "Timeago|%s seconds ago"
-msgstr ""
-
 msgid "Timeago|%s seconds remaining"
 msgstr ""
 
