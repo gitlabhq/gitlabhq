@@ -37,11 +37,13 @@ describe Projects::Environments::PrometheusApiController do
           expect(json_response).to eq(prometheus_json_body)
         end
 
-        it 'filters params' do
-          get :proxy, params: environment_params({ extra_param: 'dangerous value' })
+        it 'filters unknown params' do
+          get :proxy, params: environment_params(unknown_param: 'value')
 
-          expect(Prometheus::ProxyService).to have_received(:new)
-            .with(environment, 'GET', 'query', ActionController::Parameters.new({ 'query' => '1' }).permit!)
+          params = ActionController::Parameters.new('query' => '1').permit!
+          expect(Prometheus::ProxyService)
+            .to have_received(:new)
+            .with(environment, 'GET', 'query', params)
         end
       end
 
@@ -133,6 +135,6 @@ describe Projects::Environments::PrometheusApiController do
       project_id: project,
       proxy_path: 'query',
       query: '1'
-    }.reverse_merge(params)
+    }.merge(params)
   end
 end
