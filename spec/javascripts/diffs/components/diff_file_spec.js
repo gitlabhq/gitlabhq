@@ -141,17 +141,15 @@ describe('DiffFile', () => {
     it('should have too large warning and blob link', done => {
       const BLOB_LINK = '/file/view/path';
       vm.file.viewer.error = diffViewerErrors.too_large;
+      vm.file.viewer.error_message =
+        'This source diff could not be displayed because it is too large';
       vm.file.view_path = BLOB_LINK;
+      vm.file.renderIt = true;
 
       vm.$nextTick(() => {
         expect(vm.$el.innerText).toContain(
           'This source diff could not be displayed because it is too large',
         );
-
-        expect(vm.$el.querySelector('.js-too-large-diff')).toBeDefined();
-        expect(
-          vm.$el.querySelector('.js-too-large-diff a').href.indexOf(BLOB_LINK),
-        ).toBeGreaterThan(-1);
 
         done();
       });

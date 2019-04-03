@@ -11,6 +11,7 @@ Issue:
 - branch_name
 - description
 - state
+- state_id
 - iid
 - updated_by_id
 - confidential
@@ -158,6 +159,7 @@ MergeRequest:
 - created_at
 - updated_at
 - state
+- state_id
 - merge_status
 - target_project_id
 - iid

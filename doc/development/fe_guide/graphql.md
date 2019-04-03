@@ -46,7 +46,9 @@ Read more about [Vue Apollo][vue-apollo] in the [Vue Apollo documentation][vue-a
 ### Local state with `apollo-link-state`
 
 It is possible to use our Apollo setup with [apollo-link-state][apollo-link-state] by passing
-in the client state object when creating the default client.
+in a resolvers object when creating the default client. The default state can be set by writing
+to the cache after setting up the default client.
+
 
 ```javascript
 import Vue from 'vue';
@@ -54,15 +56,23 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 Vue.use(VueApollo);
 
+const defaultClient = createDefaultClient({
+  Query: {
+    ...
+  },
+  Mutations: {
+    ...
+  },
+});
+
+defaultClient.cache.writeData({
+  data: {
+    isLoading: true,
+  },
+});
+
 const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient({
-    defaults: {
-      testing: true,
-    },
-    resolvers: {
-      ...
-    },
-  }),
+  defaultClient,
 });
 ```
 

@@ -5833,9 +5833,6 @@ msgstr ""
 msgid "Pipelines for last year"
 msgstr ""
 
-msgid "Pipelines page"
-msgstr ""
-
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -7708,7 +7705,7 @@ msgstr ""
 msgid "Successfully removed email."
 msgstr ""
 
-msgid "Successfully scheduled a pipeline to run. Go to the %{link_to_pipelines} for details."
+msgid "Successfully scheduled a pipeline to run. Go to the %{pipelines_link_start}Pipelines page%{pipelines_link_end} for details."
 msgstr ""
 
 msgid "Successfully unblocked"
@@ -8279,9 +8276,6 @@ msgid "This setting can be overridden in each project."
 msgstr ""
 
 msgid "This setting will update the hostname that is used to generate private commit emails. %{learn_more}"
-msgstr ""
-
-msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
 msgid "This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like \"1 hour\". Values without specification represent seconds."

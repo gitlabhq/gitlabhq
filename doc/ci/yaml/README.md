@@ -351,6 +351,19 @@ job:
     - branches
 ```
 
+Pattern matching is case-sensitive by default. Use `i` flag modifier, like
+`/pattern/i` to make a pattern case-insensitive:
+
+```yaml
+job:
+  # use regexp
+  only:
+    - /^issue-.*$/i
+  # use special keyword
+  except:
+    - branches
+```
+
 In this example, `job` will run only for refs that are tagged, or if a build is
 explicitly requested via an API trigger or a [Pipeline Schedule][schedules]:
 
@@ -377,6 +390,11 @@ job:
 
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except `master` and those with names prefixed with `release/`.
+
+NOTE: **Note:**
+Because `@` is used to denote the beginning of a ref's repository path,
+matching a ref name containing the `@` character in a regular expression
+requires the use of the hex character code match `\x40`.
 
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
 default. If it doesn't have an `except` rule, it is empty.

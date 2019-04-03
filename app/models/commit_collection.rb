@@ -20,8 +20,8 @@ class CommitCollection
     commits.each(&block)
   end
 
-  def authors
-    emails = without_merge_commits.map(&:author_email).uniq
+  def committers
+    emails = without_merge_commits.map(&:committer_email).uniq
 
     User.by_any_email(emails)
   end

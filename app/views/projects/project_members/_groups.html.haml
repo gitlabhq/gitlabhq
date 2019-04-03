@@ -1,6 +1,6 @@
 .card.project-members-groups
   .card-header
-    = _("Groups with access to <strong>%{project_name}</strong>").html_safe % { project_name: sanitize_project_name(@project.name) }
+    = _("Groups with access to <strong>%{project_name}</strong>").html_safe % { project_name: sanitize(@project.name, tags: []) }
     %span.badge.badge-pill= group_links.size
   %ul.content-list.members-list
     = render partial: 'shared/members/group', collection: group_links, as: :group_link

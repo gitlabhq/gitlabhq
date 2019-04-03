@@ -23,6 +23,7 @@ module Issuable
   include Sortable
   include CreatedAtFilterable
   include UpdatedAtFilterable
+  include IssuableStates
   include ClosedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
@@ -141,6 +142,15 @@ module Issuable
     # Returns an ActiveRecord::Relation.
     def search(query)
       fuzzy_search(query, [:title])
+    end
+
+    # Available state values persisted in state_id column using state machine
+    #
+    # Override this on subclasses if different states are needed
+    #
+    # Check MergeRequest.available_states for example
+    def available_states
+      @available_states ||= { opened: 1, closed: 2 }.with_indifferent_access
     end
 
     # Searches for records with a matching title or description.
