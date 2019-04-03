@@ -112,6 +112,21 @@ describe MergeRequests::MergeWhenPipelineSucceedsService do
         service.trigger(unrelated_pipeline)
       end
     end
+
+    context 'when pipeline is merge request pipeline' do
+      let(:pipeline) do
+        create(:ci_pipeline, :success,
+          source: :merge_request_event,
+          ref: mr_merge_if_green_enabled.merge_ref_path,
+          merge_request: mr_merge_if_green_enabled,
+          merge_requests_as_head_pipeline: [mr_merge_if_green_enabled])
+      end
+
+      it 'merges the associated merge request' do
+        expect(MergeWorker).to receive(:perform_async)
+        service.trigger(pipeline)
+      end
+    end
   end
 
   describe "#cancel" do

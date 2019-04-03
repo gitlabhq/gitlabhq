@@ -3216,7 +3216,7 @@ describe Ci::Build do
       it 'does not try to create a todo' do
         project.add_developer(user)
 
-        expect(service).not_to receive(:commit_status_merge_requests)
+        expect(service).not_to receive(:pipeline_merge_requests)
 
         subject.drop!
       end
@@ -3252,7 +3252,23 @@ describe Ci::Build do
     end
 
     context 'when build is not configured to be retried' do
-      subject { create(:ci_build, :running, project: project, user: user) }
+      subject { create(:ci_build, :running, project: project, user: user, pipeline: pipeline) }
+
+      let(:pipeline) do
+        create(:ci_pipeline,
+          project: project,
+          ref: 'feature',
+          sha: merge_request.diff_head_sha,
+          merge_requests_as_head_pipeline: [merge_request])
+      end
+
+      let(:merge_request) do
+        create(:merge_request, :opened,
+          source_branch: 'feature',
+          source_project: project,
+          target_branch: 'master',
+          target_project: project)
+      end
 
       it 'does not retry build' do
         expect(described_class).not_to receive(:retry)
@@ -3271,7 +3287,10 @@ describe Ci::Build do
       it 'creates a todo' do
         project.add_developer(user)
 
-        expect(service).to receive(:commit_status_merge_requests)
+        expect_next_instance_of(TodoService) do |todo_service|
+          expect(todo_service)
+            .to receive(:merge_request_build_failed).with(merge_request)
+        end
 
         subject.drop!
       end
