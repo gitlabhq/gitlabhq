@@ -96,7 +96,7 @@ export default {
         return '';
       }
 
-      // We need to do this to ensure we have the currect sentence order
+      // We need to do this to ensure we have the correct sentence order
       // when translating this as the sentence order may change from one
       // language to the next. See:
       // https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/24427#note_133713771
