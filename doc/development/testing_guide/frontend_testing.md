@@ -26,6 +26,10 @@ It is not yet a requirement to use Jest. You can view the
 [epic](https://gitlab.com/groups/gitlab-org/-/epics/873) of issues
 we need to solve before being able to use Jest for all our needs.
 
+### Debugging Jest tests
+
+Running `yarn jest-debug` will run Jest in debug mode, allowing you to debug/inspect as described in the [Jest docs](https://jestjs.io/docs/en/troubleshooting#tests-are-failing-and-you-don-t-know-why).
+
 ### Timeout error
 
 The default timeout for Jest is set in
