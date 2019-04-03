@@ -42,7 +42,9 @@ module Banzai
       def call
         @text.gsub(REGEX) do
           if $~[:quote]
-            $~[:quote].gsub(/^/, "> ").gsub(/^> $/, ">")
+            # keep the same number of source lines/positions by replacing the
+            # fence lines with newlines
+            "\n" + $~[:quote].gsub(/^/, "> ").gsub(/^> $/, ">") + "\n"
           else
             $~[0]
           end
