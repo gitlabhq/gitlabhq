@@ -13,8 +13,14 @@ module Prometheus
     attr_accessor :proxyable, :method, :path, :params
 
     PROXY_SUPPORT = {
-      'query' => 'GET',
-      'query_range' => 'GET'
+      'query' => {
+        method: ['GET'],
+        params: [:query, :time, :timeout]
+      },
+      'query_range' => {
+        method: ['GET'],
+        params: [:query, :start, :end, :step, :timeout]
+      }
     }.freeze
 
     def self.from_cache(proxyable_class_name, proxyable_id, method, path, params)
@@ -35,9 +41,11 @@ module Prometheus
     def initialize(proxyable, method, path, params)
       @proxyable = proxyable
       @path = path
+
       # Convert ActionController::Parameters to hash because reactive_cache_worker
       # does not play nice with ActionController::Parameters.
-      @params = params.to_hash
+      @params = permit_params(params, path).to_hash
+
       @method = method
     end
 
@@ -94,8 +102,16 @@ module Prometheus
       prometheus_adapter&.can_query?
     end
 
+    def permit_params(params, path)
+      if params.is_a?(ActionController::Parameters)
+        params.permit(PROXY_SUPPORT.dig(path, :params))
+      else
+        params
+      end
+    end
+
     def can_proxy?
-      PROXY_SUPPORT[@path] == @method
+      PROXY_SUPPORT.dig(@path, :method)&.include?(@method)
     end
   end
 end

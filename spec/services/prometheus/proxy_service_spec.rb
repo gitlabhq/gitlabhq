@@ -9,7 +9,7 @@ describe Prometheus::ProxyService do
   set(:environment) { create(:environment, project: project) }
 
   describe '#initialize' do
-    let(:params) { ActionController::Parameters.new(query: '1').permit! }
+    let(:params) { ActionController::Parameters.new(query: '1') }
 
     it 'initializes attributes' do
       result = described_class.new(environment, 'GET', 'query', { query: '1' })
@@ -25,12 +25,23 @@ describe Prometheus::ProxyService do
 
       expect(result.params).to be_an_instance_of(Hash)
     end
+
+    context 'with unknown params' do
+      let(:params) { ActionController::Parameters.new(query: '1', other_param: 'val') }
+
+      it 'filters unknown params' do
+        result = described_class.new(environment, 'GET', 'query', params)
+
+        expect(result.params).to eq('query' => '1')
+      end
+    end
   end
 
   describe '#execute' do
     let(:prometheus_adapter) { instance_double(PrometheusService) }
+    let(:params) { ActionController::Parameters.new(query: '1') }
 
-    subject { described_class.new(environment, 'GET', 'query', { query: '1' }) }
+    subject { described_class.new(environment, 'GET', 'query', params) }
 
     context 'when prometheus_adapter is nil' do
       before do
@@ -62,7 +73,7 @@ describe Prometheus::ProxyService do
     end
 
     context 'cannot proxy' do
-      subject { described_class.new(environment, 'POST', 'query', { query: '1' }) }
+      subject { described_class.new(environment, 'POST', 'garbage', params) }
 
       it 'returns error' do
         expect(subject.execute).to eq(
@@ -72,29 +83,12 @@ describe Prometheus::ProxyService do
       end
     end
 
-    context 'when cached', :use_clean_rails_memory_store_caching do
+    context 'with caching', :use_clean_rails_memory_store_caching do
       let(:return_value) { { 'http_status' => 200, 'body' => 'body' } }
-      let(:opts) { [environment.class.name, environment.id, 'GET', 'query', { query: '1' }] }
 
-      before do
-        stub_reactive_cache(subject, return_value, opts)
-
-        allow(environment).to receive(:prometheus_adapter)
-          .and_return(prometheus_adapter)
-        allow(prometheus_adapter).to receive(:can_query?).and_return(true)
+      let(:opts) do
+        [environment.class.name, environment.id, 'GET', 'query', { 'query' => '1' }]
       end
-
-      it 'returns cached value' do
-        result = subject.execute
-
-        expect(result[:http_status]).to eq(return_value[:http_status])
-        expect(result[:body]).to eq(return_value[:body])
-      end
-    end
-
-    context 'when not cached' do
-      let(:return_value) { { 'http_status' => 200, 'body' => 'body' } }
-      let(:opts) { [environment.class.name, environment.id, 'GET', 'query', { query: '1' }] }
 
       before do
         allow(environment).to receive(:prometheus_adapter)
@@ -102,14 +96,29 @@ describe Prometheus::ProxyService do
         allow(prometheus_adapter).to receive(:can_query?).and_return(true)
       end
 
-      it 'returns nil' do
-        expect(ReactiveCachingWorker)
-          .to receive(:perform_async)
-          .with(subject.class, subject.id, *opts)
+      context 'when value present in cache' do
+        before do
+          stub_reactive_cache(subject, return_value, opts)
+        end
 
-        result = subject.execute
+        it 'returns cached value' do
+          result = subject.execute
 
-        expect(result).to eq(nil)
+          expect(result[:http_status]).to eq(return_value[:http_status])
+          expect(result[:body]).to eq(return_value[:body])
+        end
+      end
+
+      context 'when value not present in cache' do
+        it 'returns nil' do
+          expect(ReactiveCachingWorker)
+            .to receive(:perform_async)
+            .with(subject.class, subject.id, *opts)
+
+          result = subject.execute
+
+          expect(result).to eq(nil)
+        end
       end
     end
 
@@ -172,7 +181,9 @@ describe Prometheus::ProxyService do
 
   describe '.from_cache' do
     it 'initializes an instance of ProxyService class' do
-      result = described_class.from_cache(environment.class.name, environment.id, 'GET', 'query', { query: '1' })
+      result = described_class.from_cache(
+        environment.class.name, environment.id, 'GET', 'query', { query: '1' }
+      )
 
       expect(result).to be_an_instance_of(described_class)
       expect(result.proxyable).to eq(environment)
