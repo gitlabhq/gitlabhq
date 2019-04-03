@@ -1,5 +1,0 @@
----
-title: Force a full GC after importing a project
-merge_request: 26803
-author:
-type: performance
