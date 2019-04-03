@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import Flash from './flash';
+import { __ } from '~/locale';
 
 export default function notificationsDropdown() {
   $(document).on('click', '.update-notification', function updateNotificationCallback(e) {
@@ -27,7 +28,7 @@ export default function notificationsDropdown() {
         .closest('.js-notification-dropdown')
         .replaceWith(data.html);
     } else {
-      Flash('Failed to save new settings', 'alert');
+      Flash(__('Failed to save new settings'), 'alert');
     }
   });
 }

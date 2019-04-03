@@ -3595,6 +3595,9 @@ msgstr ""
 msgid "Failed to remove user key."
 msgstr ""
 
+msgid "Failed to save new settings"
+msgstr ""
+
 msgid "Failed to update issues, please try again."
 msgstr ""
 
