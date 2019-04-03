@@ -1797,7 +1797,7 @@ msgstr ""
 msgid "ClusterIntegration|Copy Kubernetes cluster name"
 msgstr ""
 
-msgid "ClusterIntegration|Copy Token"
+msgid "ClusterIntegration|Copy Service Token"
 msgstr ""
 
 msgid "ClusterIntegration|Create Kubernetes cluster"
@@ -2004,9 +2004,6 @@ msgstr ""
 msgid "ClusterIntegration|Project cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Project namespace"
-msgstr ""
-
 msgid "ClusterIntegration|Project namespace (optional, unique)"
 msgstr ""
 
@@ -2107,9 +2104,6 @@ msgid "ClusterIntegration|To access your application after deployment, point a w
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Token"
 msgstr ""
 
 msgid "ClusterIntegration|Update failed. Please check the logs and try again."
