@@ -23,25 +23,7 @@ shared_examples 'variable list' do
     end
   end
 
-  it 'adds empty variable' do
-    page.within('.js-ci-variable-list-section .js-row:last-child') do
-      find('.js-ci-variable-input-key').set('key')
-      find('.js-ci-variable-input-value').set('')
-    end
-
-    click_button('Save variables')
-    wait_for_requests
-
-    visit page_path
-
-    # We check the first row because it re-sorts to alphabetical order on refresh
-    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
-      expect(find('.js-ci-variable-input-key').value).to eq('key')
-      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('')
-    end
-  end
-
-  it 'adds new protected variable' do
+  it 'adds a new protected variable' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('key')
       find('.js-ci-variable-input-value').set('key_value')
@@ -60,6 +42,27 @@ shared_examples 'variable list' do
       expect(find('.js-ci-variable-input-key').value).to eq('key')
       expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
       expect(find('.js-ci-variable-input-protected', visible: false).value).to eq('true')
+    end
+  end
+
+  it 'defaults to masked' do
+    page.within('.js-ci-variable-list-section .js-row:last-child') do
+      find('.js-ci-variable-input-key').set('key')
+      find('.js-ci-variable-input-value').set('key_value')
+
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    visit page_path
+
+    # We check the first row because it re-sorts to alphabetical order on refresh
+    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+      expect(find('.js-ci-variable-input-key').value).to eq('key')
+      expect(find('.js-ci-variable-input-value', visible: false).value).to eq('key_value')
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
     end
   end
 
@@ -163,27 +166,6 @@ shared_examples 'variable list' do
     end
   end
 
-  it 'edits variable with empty value' do
-    page.within('.js-ci-variable-list-section') do
-      click_button('Reveal value')
-
-      page.within('.js-row:nth-child(1)') do
-        find('.js-ci-variable-input-key').set('new_key')
-        find('.js-ci-variable-input-value').set('')
-      end
-
-      click_button('Save variables')
-      wait_for_requests
-
-      visit page_path
-
-      page.within('.js-row:nth-child(1)') do
-        expect(find('.js-ci-variable-input-key').value).to eq('new_key')
-        expect(find('.js-ci-variable-input-value', visible: false).value).to eq('')
-      end
-    end
-  end
-
   it 'edits variable to be protected' do
     # Create the unprotected variable
     page.within('.js-ci-variable-list-section .js-row:last-child') do
@@ -251,6 +233,57 @@ shared_examples 'variable list' do
     end
   end
 
+  it 'edits variable to be unmasked' do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+
+      find('.ci-variable-masked-item .js-project-feature-toggle').click
+
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    visit page_path
+
+    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
+    end
+  end
+
+  it 'edits variable to be masked' do
+    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+
+      find('.ci-variable-masked-item .js-project-feature-toggle').click
+
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    visit page_path
+
+    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('false')
+
+      find('.ci-variable-masked-item .js-project-feature-toggle').click
+
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    visit page_path
+
+    page.within('.js-ci-variable-list-section .js-row:nth-child(1)') do
+      expect(find('.js-ci-variable-input-masked', visible: false).value).to eq('true')
+    end
+  end
+
   it 'handles multiple edits and deletion in the middle' do
     page.within('.js-ci-variable-list-section') do
       # Create 2 variables
@@ -297,11 +330,11 @@ shared_examples 'variable list' do
   it 'shows validation error box about duplicate keys' do
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('samekey')
-      find('.js-ci-variable-input-value').set('value1')
+      find('.js-ci-variable-input-value').set('value123')
     end
     page.within('.js-ci-variable-list-section .js-row:last-child') do
       find('.js-ci-variable-input-key').set('samekey')
-      find('.js-ci-variable-input-value').set('value2')
+      find('.js-ci-variable-input-value').set('value456')
     end
 
     click_button('Save variables')
@@ -312,6 +345,36 @@ shared_examples 'variable list' do
     # We check the first row because it re-sorts to alphabetical order on refresh
     page.within('.js-ci-variable-list-section') do
       expect(find('.js-ci-variable-error-box')).to have_content(/Validation failed Variables have duplicate values \(.+\)/)
+    end
+  end
+
+  it 'shows validation error box about empty values' do
+    page.within('.js-ci-variable-list-section .js-row:last-child') do
+      find('.js-ci-variable-input-key').set('empty_value')
+      find('.js-ci-variable-input-value').set('')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    page.within('.js-ci-variable-list-section') do
+      expect(all('.js-ci-variable-error-box ul li').count).to eq(1)
+      expect(find('.js-ci-variable-error-box')).to have_content(/Validation failed Variables value is invalid/)
+    end
+  end
+
+  it 'shows validation error box about unmaskable values' do
+    page.within('.js-ci-variable-list-section .js-row:last-child') do
+      find('.js-ci-variable-input-key').set('unmaskable_value')
+      find('.js-ci-variable-input-value').set('???')
+    end
+
+    click_button('Save variables')
+    wait_for_requests
+
+    page.within('.js-ci-variable-list-section') do
+      expect(all('.js-ci-variable-error-box ul li').count).to eq(1)
+      expect(find('.js-ci-variable-error-box')).to have_content(/Validation failed Variables value is invalid/)
     end
   end
 end
