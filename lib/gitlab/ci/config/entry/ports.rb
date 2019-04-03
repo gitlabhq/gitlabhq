@@ -5,23 +5,24 @@ module Gitlab
     class Config
       module Entry
         ##
-        # Entry that represents a configuration of Docker services.
+        # Entry that represents a configuration of the ports of a Docker service.
         #
-        class Services < ::Gitlab::Config::Entry::Node
+        class Ports < ::Gitlab::Config::Entry::Node
           include ::Gitlab::Config::Entry::Validatable
 
           validations do
             validates :config, type: Array
-            validates :config, services_with_ports_alias_unique: true, if: ->(record) { record.opt(:with_image_ports) }
+            validates :config, port_name_present_and_unique: true
+            validates :config, port_unique: true
           end
 
           def compose!(deps = nil)
             super do
               @entries = []
               @config.each do |config|
-                @entries << ::Gitlab::Config::Entry::Factory.new(Entry::Service)
+                @entries << ::Gitlab::Config::Entry::Factory.new(Entry::Port)
                   .value(config || {})
-                  .with(key: "service", parent: self, description: "service definition.") # rubocop:disable CodeReuse/ActiveRecord
+                  .with(key: "port", parent: self, description: "port definition.") # rubocop:disable CodeReuse/ActiveRecord
                   .create!
               end
 
