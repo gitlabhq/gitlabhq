@@ -100,6 +100,7 @@ module IssuableCollections
 
     if @project
       options[:project_id] = @project.id
+      options[:attempt_project_search_optimizations] = true
     elsif @group
       options[:group_id] = @group.id
       options[:include_subgroups] = true
