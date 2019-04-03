@@ -256,6 +256,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 ## List runner's jobs
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15432) in GitLab 10.3.
+
 List jobs that are being processed or were processed by specified Runner.
 
 ```
