@@ -5,13 +5,11 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
   before_action :environment
 
   def proxy
-    permitted = permit_params
-
     result = Prometheus::ProxyService.new(
       environment,
       request.method,
-      permitted[:proxy_path],
-      permitted.except(:proxy_path) # rubocop: disable CodeReuse/ActiveRecord
+      params[:proxy_path],
+      params
     ).execute
 
     if result.nil?
@@ -24,19 +22,14 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
     if result[:status] == :success
       render status: result[:http_status], json: result[:body]
     else
-      render status: result[:http_status] || :bad_request,
+      render(
+        status: result[:http_status] || :bad_request,
         json: { status: result[:status], message: result[:message] }
+      )
     end
   end
 
   private
-
-  def permit_params
-    params.permit([
-      :proxy_path, :query, :time, :timeout, :start, :end, :step, { match: [] },
-      :match_target, :metric, :limit
-    ])
-  end
 
   def environment
     @environment ||= project.environments.find(params[:id])

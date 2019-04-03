@@ -36,15 +36,6 @@ describe Projects::Environments::PrometheusApiController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq(prometheus_json_body)
         end
-
-        it 'filters unknown params' do
-          get :proxy, params: environment_params(unknown_param: 'value')
-
-          params = ActionController::Parameters.new('query' => '1').permit!
-          expect(Prometheus::ProxyService)
-            .to have_received(:new)
-            .with(environment, 'GET', 'query', params)
-        end
       end
 
       context 'with nil result' do
