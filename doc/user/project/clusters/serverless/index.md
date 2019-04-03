@@ -150,29 +150,29 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
      environment:
        FOO: value
 
- 	 functions:
-		 echo-js:
-			 handler: echo-js
-			 source: ./echo-js
-			 runtime: https://gitlab.com/gitlab-org/serverless/runtimes/nodejs
-			 description: "node.js runtime function"
-			 environment:
-				 MY_FUNCTION: echo-js
+   functions:
+     echo-js:
+       handler: echo-js
+       source: ./echo-js
+       runtime: https://gitlab.com/gitlab-org/serverless/runtimes/nodejs
+       description: "node.js runtime function"
+       environment:
+         MY_FUNCTION: echo-js
 
-		 echo-rb:
-			 handler: MyEcho.my_function
-			 source: ./echo-rb
-			 runtime: https://gitlab.com/gitlab-org/serverless/runtimes/ruby
-			 description: "Ruby runtime function"
-			 environment:
-				 MY_FUNCTION: echo-rb
+     echo-rb:
+       handler: MyEcho.my_function
+       source: ./echo-rb
+       runtime: https://gitlab.com/gitlab-org/serverless/runtimes/ruby
+       description: "Ruby runtime function"
+       environment:
+         MY_FUNCTION: echo-rb
 
-		 echo-docker:
-			 handler: echo-docker
-			 source: ./echo-docker
-			 description: "Dockerfile runtime function"
-			 environment:
-				 MY_FUNCTION: echo-docker
+     echo-docker:
+       handler: echo-docker
+       source: ./echo-docker
+       description: "Dockerfile runtime function"
+       environment:
+         MY_FUNCTION: echo-docker
    ```
 
 Explanation of fields used above:
