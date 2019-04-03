@@ -214,7 +214,7 @@ The sample function can now be triggered from any HTTP client using a simple `PO
       --header "Content-Type: application/json" \
       --request POST \
       --data '{"GitLab":"FaaS"}' \
-      <http://functions-echo.functions-1.functions.example.com/>
+      http://functions-echo.functions-1.functions.example.com
       ```
   2. Using a web-based tool (ie. postman, restlet, etc)
 
