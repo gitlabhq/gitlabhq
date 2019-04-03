@@ -124,6 +124,16 @@ describe Projects::Environments::PrometheusApiController do
         end
       end
     end
+
+    context 'with invalid environment id' do
+      let(:other_environment) { create(:environment) }
+
+      it 'returns 404' do
+        get :proxy, params: environment_params(id: other_environment.id)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   private
