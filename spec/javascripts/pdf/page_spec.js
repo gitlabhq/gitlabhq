@@ -12,7 +12,7 @@ describe('Page component', () => {
   let testPage;
 
   beforeEach(done => {
-    pdfjsLib.PDFJS.workerSrc = workerSrc;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
     pdfjsLib
       .getDocument(testPDF)
       .then(pdf => pdf.getPage(1))

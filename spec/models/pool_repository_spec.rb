@@ -24,14 +24,14 @@ describe PoolRepository do
     end
   end
 
-  describe '#unlink_repository' do
+  describe '#mark_obsolete_if_last' do
     let(:pool) { create(:pool_repository, :ready) }
 
     context 'when the last member leaves' do
       it 'schedules pool removal' do
         expect(::ObjectPool::DestroyWorker).to receive(:perform_async).with(pool.id).and_call_original
 
-        pool.unlink_repository(pool.source_project.repository)
+        pool.mark_obsolete_if_last(pool.source_project.repository)
       end
     end
 
@@ -40,7 +40,7 @@ describe PoolRepository do
         create(:project, :repository, pool_repository: pool)
         expect(::ObjectPool::DestroyWorker).not_to receive(:perform_async).with(pool.id)
 
-        pool.unlink_repository(pool.source_project.repository)
+        pool.mark_obsolete_if_last(pool.source_project.repository)
       end
     end
   end

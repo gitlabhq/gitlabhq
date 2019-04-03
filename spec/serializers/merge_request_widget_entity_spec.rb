@@ -13,6 +13,10 @@ describe MergeRequestWidgetEntity do
     described_class.new(resource, request: request).as_json
   end
 
+  it 'has the latest sha of the target branch' do
+    is_expected.to include(:target_branch_sha)
+  end
+
   describe 'source_project_full_path' do
     it 'includes the full path of the source project' do
       expect(subject[:source_project_full_path]).to be_present

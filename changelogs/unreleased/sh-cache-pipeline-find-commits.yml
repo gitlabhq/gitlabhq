@@ -1,0 +1,5 @@
+---
+title: Cache FindCommit results in pipelines view
+merge_request: 26776
+author:
+type: performance

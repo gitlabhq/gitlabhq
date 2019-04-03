@@ -210,6 +210,10 @@ class MergeRequest < ApplicationRecord
     '!'
   end
 
+  def self.available_states
+    @available_states ||= super.merge(merged: 3, locked: 4)
+  end
+
   # Returns the top 100 target branches
   #
   # The returned value is a Array containing branch names
@@ -319,12 +323,8 @@ class MergeRequest < ApplicationRecord
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
-  def commit_authors
-    @commit_authors ||= commits.authors
-  end
-
-  def authors
-    User.from_union([commit_authors, User.where(id: self.author_id)])
+  def committers
+    @committers ||= commits.committers
   end
 
   # Verifies if title has changed not taking into account WIP prefix

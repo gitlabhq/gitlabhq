@@ -1059,7 +1059,10 @@ table.code {
     flex-direction: column;
 
     .diff-tree-list {
-      width: 100%;
+      position: relative;
+      top: 0;
+      // !important is required to override inline styles of resizable sidebar
+      width: 100% !important;
     }
 
     .tree-list-holder {

@@ -179,6 +179,14 @@ $ide-commit-header-height: 48px;
     display: none;
   }
 
+  .monaco-editor .selected-text {
+    z-index: 1;
+  }
+
+  .monaco-editor .view-lines {
+    z-index: 2;
+  }
+
   .is-readonly,
   .editor.original {
     .view-lines {
