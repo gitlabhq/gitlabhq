@@ -59,7 +59,7 @@ module Emails
       @member_source = member_source_class.find(source_id)
       @invite_email = invite_email
 
-      mail(to: recipient(created_by_id, member_source_type == 'project' ? @member_source.group : @member_source),
+      mail(to: recipient(created_by_id, member_source_type == 'Project' ? @member_source.group : @member_source),
            subject: subject('Invitation declined'))
     end
 

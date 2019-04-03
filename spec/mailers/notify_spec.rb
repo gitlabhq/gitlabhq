@@ -779,7 +779,7 @@ describe Notify do
         invitee
       end
 
-      subject { described_class.member_invite_declined_email('project', project.id, project_member.invite_email, maintainer.id) }
+      subject { described_class.member_invite_declined_email('Project', project.id, project_member.invite_email, maintainer.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
