@@ -224,7 +224,7 @@ describe('Dashboard', () => {
       });
     });
 
-    it('rewnders the time window dropdown with a set of options', done => {
+    it('renders the time window dropdown with a set of options', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: {

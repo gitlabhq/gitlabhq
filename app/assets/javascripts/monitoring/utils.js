@@ -1,5 +1,11 @@
 import { timeWindows, msPerMinute } from './constants';
 
+/**
+ * method that converts a predetermined time window to minutes
+ * defaults to 8 hours as the default option
+ * @param {String} timeWindow - The time window to convert to minutes
+ * @returns {number} The time window in minutes
+ */
 const getTimeDifferenceMinutes = timeWindow => {
   switch (timeWindow) {
     case timeWindows.thirtyMinutes:

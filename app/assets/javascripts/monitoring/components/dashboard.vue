@@ -178,11 +178,12 @@ export default {
         .then(data => {
           this.store.storeMetrics(data);
           this.selectedTimeWindow = this.timeWindows[timeFrame];
-          this.showEmptyState = false;
         })
         .catch(() => {
-          this.showEmptyState = false;
           Flash(s__('Metrics|Not enough data to display'));
+        })
+        .finally(() => {
+          this.showEmptyState = false;
         });
     },
     onSidebarMutation() {
