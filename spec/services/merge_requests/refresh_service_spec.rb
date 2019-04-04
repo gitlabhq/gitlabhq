@@ -230,17 +230,6 @@ describe MergeRequests::RefreshService do
             end.not_to change { @merge_request.merge_request_pipelines.count }
           end
         end
-
-        context "when the 'ci_merge_request_pipeline' feature flag is disabled" do
-          before do
-            stub_feature_flags(ci_merge_request_pipeline: false)
-          end
-
-          it 'does not create a detached merge request pipeline' do
-            expect { subject }
-              .not_to change { @merge_request.merge_request_pipelines.count }
-          end
-        end
       end
 
       context "when .gitlab-ci.yml does not have merge_requests keywords" do
