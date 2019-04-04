@@ -1,0 +1,5 @@
+---
+title: Add initial complexity limits to GraphQL queries
+merge_request: 26629
+author:
+type: performance

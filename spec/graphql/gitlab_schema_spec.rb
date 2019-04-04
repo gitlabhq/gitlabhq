@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe GitlabSchema do
@@ -29,6 +31,36 @@ describe GitlabSchema do
     connection = GraphQL::Relay::BaseConnection::CONNECTION_IMPLEMENTATIONS[ActiveRecord::Relation.name]
 
     expect(connection).to eq(Gitlab::Graphql::Connections::KeysetConnection)
+  end
+
+  context 'for different types of users' do
+    it 'returns DEFAULT_MAX_COMPLEXITY for no user' do
+      expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
+
+      described_class.execute('query')
+    end
+
+    it 'returns AUTHENTICATED_COMPLEXITY for a logged in user' do
+      user = build :user
+
+      expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::AUTHENTICATED_COMPLEXITY))
+
+      described_class.execute('query', context: { current_user: user })
+    end
+
+    it 'returns ADMIN_COMPLEXITY for an admin user' do
+      user = build :user, :admin
+
+      expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::ADMIN_COMPLEXITY))
+
+      described_class.execute('query', context: { current_user: user })
+    end
+
+    it 'returns what was passed on the query' do
+      expect(GraphQL::Schema).to receive(:execute).with('query', { max_complexity: 1234 })
+
+      described_class.execute('query', max_complexity: 1234)
+    end
   end
 
   def field_instrumenters
