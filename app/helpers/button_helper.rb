@@ -21,7 +21,7 @@ module ButtonHelper
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
-    title = data[:title] || 'Copy to clipboard'
+    title = data[:title] || _('Copy to clipboard')
     button_text = data[:button_text] || ''
     hide_tooltip = data[:hide_tooltip] || false
     hide_button_icon = data[:hide_button_icon] || false
