@@ -7,7 +7,7 @@ describe ProjectCacheWorker do
 
   let(:worker) { described_class.new }
   let(:project) { create(:project, :repository) }
-  let(:lease_key) { (["project_cache_worker", project.id] + statistics.sort).join(":") }
+  let(:lease_key) { ["project_cache_worker", project.id, *statistics.sort].join(":") }
   let(:lease_timeout) { ProjectCacheWorker::LEASE_TIMEOUT }
   let(:statistics) { [] }
 
