@@ -344,6 +344,24 @@ and push the suggested change directly into the codebase in the merge request's 
 Custom commit messages will be introduced by
 [#54404](https://gitlab.com/gitlab-org/gitlab-ce/issues/54404).
 
+### Multi-line suggestions
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310) in GitLab 11.10.
+
+Reviewers can also suggest changes to
+multiple lines with a single suggestion within Merge Request diff discussions.
+
+![Multi-line suggestion syntax](img/multi-line-suggestion-syntax.png)
+
+In the example above, the suggestion covers three lines above and four lines below the commented diff line.
+It'd change from 3 lines _above_ to 4 lines _below_ the commented Diff line.
+
+![Multi-line suggestion preview](img/multi-line-suggestion-preview.png)
+
+NOTE: **Note:**
+Suggestions covering multiple lines are limited to 100 lines _above_ and 100 lines _below_ 
+the commented diff line, allowing up to 200 changed lines per suggestion.
+
 ## Start a discussion by replying to a standard comment
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30299) in GitLab 11.9

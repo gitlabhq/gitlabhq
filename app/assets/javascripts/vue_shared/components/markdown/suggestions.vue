@@ -6,16 +6,6 @@ import Flash from '~/flash';
 export default {
   components: { SuggestionDiff },
   props: {
-    fromLine: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
-    fromContent: {
-      type: String,
-      required: false,
-      default: '',
-    },
     lineType: {
       type: String,
       required: false,
@@ -71,41 +61,19 @@ export default {
 
       suggestionElements.forEach((suggestionEl, i) => {
         const suggestionParentEl = suggestionEl.parentElement;
-        const newLines = this.extractNewLines(suggestionParentEl);
-        const diffComponent = this.generateDiff(newLines, i);
+        const diffComponent = this.generateDiff(i);
         diffComponent.$mount(suggestionParentEl);
       });
 
       this.isRendered = true;
     },
-    extractNewLines(suggestionEl) {
-      // extracts the suggested lines from the markdown
-      // calculates a line number for each line
-
-      const newLines = suggestionEl.querySelectorAll('.line');
-      const fromLine = this.suggestions.length ? this.suggestions[0].from_line : this.fromLine;
-      const lines = [];
-
-      newLines.forEach((line, i) => {
-        const content = `${line.innerText}\n`;
-        const lineNumber = fromLine + i;
-        lines.push({ content, lineNumber });
-      });
-
-      return lines;
-    },
-    generateDiff(newLines, suggestionIndex) {
-      // generates the diff <suggestion-diff /> component
-      // all `suggestion` markdown will be swapped out by this component
-
+    generateDiff(suggestionIndex) {
       const { suggestions, disabled, helpPagePath } = this;
       const suggestion =
         suggestions && suggestions[suggestionIndex] ? suggestions[suggestionIndex] : {};
-      const fromContent = suggestion.from_content || this.fromContent;
-      const fromLine = suggestion.from_line || this.fromLine;
       const SuggestionDiffComponent = Vue.extend(SuggestionDiff);
       const suggestionDiff = new SuggestionDiffComponent({
-        propsData: { newLines, fromLine, fromContent, disabled, suggestion, helpPagePath },
+        propsData: { disabled, suggestion, helpPagePath },
       });
 
       suggestionDiff.$on('apply', ({ suggestionId, callback }) => {

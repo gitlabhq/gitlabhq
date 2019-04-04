@@ -13,8 +13,7 @@ describe SuggestionEntity do
   subject { entity.as_json }
 
   it 'exposes correct attributes' do
-    expect(subject).to include(:id, :from_line, :to_line, :appliable,
-                               :applied, :from_content, :to_content)
+    expect(subject.keys).to match_array([:id, :appliable, :applied, :diff_lines, :current_user])
   end
 
   it 'exposes current user abilities' do

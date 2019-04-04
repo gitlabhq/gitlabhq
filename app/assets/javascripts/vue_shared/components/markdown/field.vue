@@ -76,6 +76,7 @@ export default {
       hasSuggestion: false,
       markdownPreviewLoading: false,
       previewMarkdown: false,
+      suggestions: this.note.suggestions || [],
     };
   },
   computed: {
@@ -108,9 +109,6 @@ export default {
         lineNumber = newLine || oldLine;
       }
       return lineNumber;
-    },
-    suggestions() {
-      return this.note.suggestions || [];
     },
     lineType() {
       return this.line ? this.line.type : '';
@@ -175,6 +173,7 @@ export default {
         this.referencedCommands = data.references.commands;
         this.referencedUsers = data.references.users;
         this.hasSuggestion = data.references.suggestions && data.references.suggestions.length;
+        this.suggestions = data.references.suggestions;
       }
 
       this.$nextTick()

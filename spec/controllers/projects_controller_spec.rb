@@ -703,6 +703,16 @@ describe ProjectsController do
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
     end
 
+    context 'when not authorized' do
+      let(:private_project) { create(:project, :private) }
+
+      it 'returns 404' do
+        post :preview_markdown, params: { namespace_id: private_project.namespace, id: private_project, text: '*Markdown* text' }
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
     context 'state filter on references' do
       let(:issue) { create(:issue, :closed, project: public_project) }
       let(:merge_request) { create(:merge_request, :closed, target_project: public_project) }
