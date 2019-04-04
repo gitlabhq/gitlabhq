@@ -5483,6 +5483,9 @@ msgstr ""
 msgid "Not now"
 msgstr ""
 
+msgid "Not ready yet. Try again later."
+msgstr ""
+
 msgid "Not started"
 msgstr ""
 
@@ -10038,6 +10041,9 @@ msgid "personal access token"
 msgstr ""
 
 msgid "private"
+msgstr ""
+
+msgid "processing"
 msgstr ""
 
 msgid "project"
