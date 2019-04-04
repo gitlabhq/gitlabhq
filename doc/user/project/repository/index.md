@@ -241,4 +241,24 @@ Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be clon
 in Xcode using the new **Open in Xcode** button, located next to the Git URL
 used for cloning your project. The button is only shown on macOS.
 
+## Download Source Code
+
+Source code stored in the repository can be downloaded.
+
+By clicking the download icon, a dropdown will open with links to download the following:
+
+![Download source code](img/download_source_code.png)
+
+- **Source Code:**
+  This allows users to download the source code on branch they're currently
+  viewing. Available zip, tar, tar.gz and tar.bz2.
+- **Directory:**
+  > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/24704) in GitLab 11.10
+
+  Only shows up when viewing a sub-directory. This allows users to download
+  the specific directory they're currently viewing. Also available in zip, tar,
+  tar.gz and tar.bz2.
+- **Artifacts:**
+  This allows users to download the artifacts of the latest CI build.
+
 [jupyter]: https://jupyter.org
