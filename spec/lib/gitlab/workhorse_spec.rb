@@ -94,7 +94,7 @@ describe Gitlab::Workhorse do
     end
   end
 
-  describe '.terminal_websocket' do
+  describe '.channel_websocket' do
     def terminal(ca_pem: nil)
       out = {
         subprotocols: ['foo'],
@@ -108,25 +108,25 @@ describe Gitlab::Workhorse do
 
     def workhorse(ca_pem: nil)
       out = {
-        'Terminal' => {
+        'Channel' => {
           'Subprotocols' => ['foo'],
           'Url' => 'wss://example.com/terminal.ws',
           'Header' => { 'Authorization' => ['Token x'] },
           'MaxSessionTime' => 600
         }
       }
-      out['Terminal']['CAPem'] = ca_pem if ca_pem
+      out['Channel']['CAPem'] = ca_pem if ca_pem
       out
     end
 
     context 'without ca_pem' do
-      subject { described_class.terminal_websocket(terminal) }
+      subject { described_class.channel_websocket(terminal) }
 
       it { is_expected.to eq(workhorse) }
     end
 
     context 'with ca_pem' do
-      subject { described_class.terminal_websocket(terminal(ca_pem: "foo")) }
+      subject { described_class.channel_websocket(terminal(ca_pem: "foo")) }
 
       it { is_expected.to eq(workhorse(ca_pem: "foo")) }
     end

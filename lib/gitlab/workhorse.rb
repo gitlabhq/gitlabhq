@@ -162,16 +162,16 @@ module Gitlab
         ]
       end
 
-      def terminal_websocket(terminal)
+      def channel_websocket(channel)
         details = {
-          'Terminal' => {
-            'Subprotocols' => terminal[:subprotocols],
-            'Url' => terminal[:url],
-            'Header' => terminal[:headers],
-            'MaxSessionTime' => terminal[:max_session_time]
+          'Channel' => {
+            'Subprotocols' => channel[:subprotocols],
+            'Url' => channel[:url],
+            'Header' => channel[:headers],
+            'MaxSessionTime' => channel[:max_session_time]
           }
         }
-        details['Terminal']['CAPem'] = terminal[:ca_pem] if terminal.key?(:ca_pem)
+        details['Channel']['CAPem'] = channel[:ca_pem] if channel.key?(:ca_pem)
 
         details
       end
