@@ -25,12 +25,16 @@ module PrometheusHelpers
     "https://prometheus.example.com/api/v1/query?#{query}"
   end
 
-  def prometheus_query_range_url(prometheus_query, start: 8.hours.ago, stop: Time.now.to_f)
+  def prometheus_query_range_url(prometheus_query, start: 8.hours.ago, stop: Time.now, step: nil)
+    start = start.to_f
+    stop = stop.to_f
+    step ||= Gitlab::PrometheusClient.compute_step(start, stop)
+
     query = {
       query: prometheus_query,
-      start: start.to_f,
+      start: start,
       end: stop,
-      step: 1.minute.to_i
+      step: step
     }.to_query
 
     "https://prometheus.example.com/api/v1/query_range?#{query}"
