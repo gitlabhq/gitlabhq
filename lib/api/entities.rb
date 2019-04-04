@@ -690,6 +690,10 @@ module API
       # Deprecated
       expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
+      expose :reference do |merge_request, options|
+        merge_request.to_reference(options[:project])
+      end
+
       expose :web_url do |merge_request|
         Gitlab::UrlBuilder.build(merge_request)
       end
@@ -725,6 +729,8 @@ module API
       expose :pipeline, using: Entities::PipelineBasic, if: -> (_, options) { build_available?(options) } do |merge_request, _options|
         merge_request.metrics&.pipeline
       end
+
+      expose :head_pipeline, using: 'API::Entities::Pipeline'
 
       expose :diff_refs, using: Entities::DiffRefs
 
@@ -1267,6 +1273,9 @@ module API
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
       expose :duration
       expose :coverage
+      expose :detailed_status, using: DetailedStatusEntity do |pipeline, options|
+        pipeline.detailed_status(options[:current_user])
+      end
     end
 
     class PipelineSchedule < Grape::Entity
