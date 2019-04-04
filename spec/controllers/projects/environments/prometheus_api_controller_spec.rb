@@ -17,9 +17,9 @@ describe Projects::Environments::PrometheusApiController do
     let(:expected_params) do
       ActionController::Parameters.new(
         "query" => "1",
-        "id" => "1",
-        "namespace_id" => "namespace1",
-        "project_id" => "project1",
+        "id" => environment.id.to_s,
+        "namespace_id" => project.namespace.name,
+        "project_id" => project.name,
         "proxy_path" => "query",
         "controller" => "projects/environments/prometheus_api",
         "action" => "proxy"
