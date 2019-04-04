@@ -4,6 +4,8 @@ module Types
   class UserType < BaseObject
     graphql_name 'User'
 
+    authorize :read_user
+
     present_using UserPresenter
 
     field :name, GraphQL::STRING_TYPE, null: false
