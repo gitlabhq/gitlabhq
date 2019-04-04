@@ -1,0 +1,5 @@
+---
+title: Remove `path` and `branch` labels from metrics
+merge_request: 26744
+author:
+type: fixed
