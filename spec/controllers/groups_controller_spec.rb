@@ -616,7 +616,7 @@ describe GroupsController do
       end
 
       it 'should redirect to the current path' do
-        expect(response).to render_template(:edit)
+        expect(response).to redirect_to(edit_group_path(group))
       end
     end
 

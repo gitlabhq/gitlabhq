@@ -181,8 +181,8 @@ module LabelsHelper
 
   def label_deletion_confirm_text(label)
     case label
-    when GroupLabel then 'Remove this label? This will affect all projects within the group. Are you sure?'
-    when ProjectLabel then 'Remove this label? Are you sure?'
+    when GroupLabel then _('Remove this label? This will affect all projects within the group. Are you sure?')
+    when ProjectLabel then _('Remove this label? Are you sure?')
     end
   end
 

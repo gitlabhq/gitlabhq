@@ -283,7 +283,7 @@ describe Projects::EnvironmentsController do
             .and_return([:fake_terminal])
 
           expect(Gitlab::Workhorse)
-            .to receive(:terminal_websocket)
+            .to receive(:channel_websocket)
             .with(:fake_terminal)
             .and_return(workhorse: :response)
 

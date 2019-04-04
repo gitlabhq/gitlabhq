@@ -77,7 +77,7 @@ module BlobHelper
       project,
       ref,
       path,
-      label:      "Replace",
+      label:      _("Replace"),
       action:     "replace",
       btn_class:  "default",
       modal_type: "upload"
@@ -89,7 +89,7 @@ module BlobHelper
       project,
       ref,
       path,
-      label:      "Delete",
+      label:      _("Delete"),
       action:     "delete",
       btn_class:  "remove",
       modal_type: "remove"
@@ -101,14 +101,14 @@ module BlobHelper
   end
 
   def leave_edit_message
-    "Leave edit mode?\nAll unsaved changes will be lost."
+    _("Leave edit mode? All unsaved changes will be lost.")
   end
 
   def editing_preview_title(filename)
     if Gitlab::MarkupHelper.previewable?(filename)
-      'Preview'
+      _('Preview')
     else
-      'Preview changes'
+      _('Preview changes')
     end
   end
 
@@ -201,14 +201,14 @@ module BlobHelper
     return if blob.empty?
     return if blob.binary? || blob.stored_externally?
 
-    title = 'Open raw'
+    title = _('Open raw')
     link_to icon('file-code-o'), blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def download_blob_button(blob)
     return if blob.empty?
 
-    title = 'Download'
+    title = _('Download')
     link_to sprite_icon('download'), blob_raw_path(inline: false), download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 

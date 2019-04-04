@@ -230,4 +230,32 @@ describe Gitlab::PrometheusClient do
       let(:execute_query) { subject.query_range(prometheus_query) }
     end
   end
+
+  describe '.compute_step' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:now) { Time.now.utc }
+
+    subject { described_class.compute_step(start, stop) }
+
+    where(:time_interval_in_seconds, :step) do
+      0               | 60
+      10.hours        | 60
+      10.hours + 1    | 61
+      # frontend options
+      30.minutes      | 60
+      3.hours         | 60
+      8.hours         | 60
+      1.day           | 144
+      3.days          | 432
+      1.week          | 1008
+    end
+
+    with_them do
+      let(:start) { now - time_interval_in_seconds }
+      let(:stop) { now }
+
+      it { is_expected.to eq(step) }
+    end
+  end
 end

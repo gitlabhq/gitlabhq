@@ -4,8 +4,7 @@ module FormHelper
   def form_errors(model, type: 'form')
     return unless model.errors.any?
 
-    pluralized = 'error'.pluralize(model.errors.count)
-    headline   = "The #{type} contains the following #{pluralized}:"
+    headline = n_('The %{type} contains the following error:', 'The %{type} contains the following errors:', model.errors.count) % { type: type }
 
     content_tag(:div, class: 'alert alert-danger', id: 'error_explanation') do
       content_tag(:h4, headline) <<
@@ -24,7 +23,7 @@ module FormHelper
       title: 'Select assignee',
       filter: true,
       dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee',
-      placeholder: 'Search users',
+      placeholder: _('Search users'),
       data: {
         first_user: current_user&.username,
         null_user: true,

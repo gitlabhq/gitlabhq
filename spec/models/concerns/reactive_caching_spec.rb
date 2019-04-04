@@ -16,6 +16,10 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
     attr_reader :id
 
+    def self.primary_key
+      :id
+    end
+
     def initialize(id, &blk)
       @id = id
       @calculator = blk
@@ -103,6 +107,46 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe '.reactive_cache_worker_finder' do
+    context 'with default reactive_cache_worker_finder' do
+      let(:args) { %w(other args) }
+
+      before do
+        allow(instance.class).to receive(:find_by).with(id: instance.id)
+          .and_return(instance)
+      end
+
+      it 'calls the activerecord find_by method' do
+        result = instance.class.reactive_cache_worker_finder.call(instance.id, *args)
+
+        expect(result).to eq(instance)
+        expect(instance.class).to have_received(:find_by).with(id: instance.id)
+      end
+    end
+
+    context 'with custom reactive_cache_worker_finder' do
+      let(:args) { %w(arg1 arg2) }
+      let(:instance) { CustomFinderCacheTest.new(666, &calculation) }
+
+      class CustomFinderCacheTest < CacheTest
+        self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
+
+        def self.from_cache(*args); end
+      end
+
+      before do
+        allow(instance.class).to receive(:from_cache).with(*args).and_return(instance)
+      end
+
+      it 'overrides the default reactive_cache_worker_finder' do
+        result = instance.class.reactive_cache_worker_finder.call(instance.id, *args)
+
+        expect(result).to eq(instance)
+        expect(instance.class).to have_received(:from_cache).with(*args)
+      end
     end
   end
 

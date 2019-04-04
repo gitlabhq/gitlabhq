@@ -24,7 +24,13 @@ export default {
     ...mapState(['pipelinesEmptyStateSvgPath', 'links']),
     ...mapGetters(['currentProject']),
     ...mapGetters('pipelines', ['jobsCount', 'failedJobsCount', 'failedStages', 'pipelineFailed']),
-    ...mapState('pipelines', ['isLoadingPipeline', 'latestPipeline', 'stages', 'isLoadingJobs']),
+    ...mapState('pipelines', [
+      'isLoadingPipeline',
+      'hasLoadedPipeline',
+      'latestPipeline',
+      'stages',
+      'isLoadingJobs',
+    ]),
     ciLintText() {
       return sprintf(
         __('You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}.'),
@@ -36,7 +42,7 @@ export default {
       );
     },
     showLoadingIcon() {
-      return this.isLoadingPipeline && this.latestPipeline === null;
+      return this.isLoadingPipeline && !this.hasLoadedPipeline;
     },
   },
   created() {
@@ -51,7 +57,7 @@ export default {
 <template>
   <div class="ide-pipeline">
     <gl-loading-icon v-if="showLoadingIcon" :size="2" class="prepend-top-default" />
-    <template v-else-if="latestPipeline !== null">
+    <template v-else-if="hasLoadedPipeline">
       <header v-if="latestPipeline" class="ide-tree-header ide-pipeline-header">
         <ci-icon :status="latestPipeline.details.status" :size="24" />
         <span class="prepend-left-8">
@@ -62,7 +68,7 @@ export default {
         </span>
       </header>
       <empty-state
-        v-if="latestPipeline === false"
+        v-if="!latestPipeline"
         :help-page-path="links.ciHelpPagePath"
         :empty-state-svg-path="pipelinesEmptyStateSvgPath"
         :can-set-ci="true"
