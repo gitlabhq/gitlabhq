@@ -3,8 +3,6 @@
 shared_examples 'logs kubernetes errors' do
   let(:error_hash) do
     {
-      exception: error_name,
-      message: error_message,
       service: service.class.name,
       app_id: application.id,
       project_ids: application.cluster.project_ids,
@@ -15,6 +13,8 @@ shared_examples 'logs kubernetes errors' do
 
   let(:logger_hash) do
     error_hash.merge(
+      exception: error_name,
+      message: error_message,
       backtrace: instance_of(Array)
     )
   end
