@@ -34,10 +34,20 @@ describe GitlabSchema do
   end
 
   context 'for different types of users' do
-    it 'returns DEFAULT_MAX_COMPLEXITY for no user' do
-      expect(GraphQL::Schema).to receive(:execute).with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
+    it 'returns DEFAULT_MAX_COMPLEXITY for no context' do
+      expect(GraphQL::Schema)
+        .to receive(:execute)
+        .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
 
       described_class.execute('query')
+    end
+
+    it 'returns DEFAULT_MAX_COMPLEXITY for no user' do
+      expect(GraphQL::Schema)
+        .to receive(:execute)
+        .with('query', hash_including(max_complexity: GitlabSchema::DEFAULT_MAX_COMPLEXITY))
+
+      described_class.execute('query', context: {})
     end
 
     it 'returns AUTHENTICATED_COMPLEXITY for a logged in user' do

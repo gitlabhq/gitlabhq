@@ -31,7 +31,7 @@ class GitlabSchema < GraphQL::Schema
   end
 
   def self.max_query_complexity(ctx)
-    current_user = ctx&.fetch(:current_user)
+    current_user = ctx&.fetch(:current_user, nil)
 
     if current_user&.admin
       ADMIN_COMPLEXITY
