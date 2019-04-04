@@ -46,6 +46,10 @@ module RecordsUploads
       File.join(store_dir, filename.to_s)
     end
 
+    def filename
+      upload&.path ? File.basename(upload.path) : super
+    end
+
     private
 
     # rubocop: disable CodeReuse/ActiveRecord
