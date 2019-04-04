@@ -7,8 +7,7 @@ module Types
     field :project, Types::ProjectType,
           null: true,
           resolver: Resolvers::ProjectResolver,
-          description: "Find a project",
-          authorize: :read_project
+          description: "Find a project"
 
     field :metadata, Types::MetadataType,
           null: true,

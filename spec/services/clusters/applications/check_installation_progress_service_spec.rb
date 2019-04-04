@@ -33,14 +33,22 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
     end
   end
 
-  shared_examples 'error logging' do
+  shared_examples 'error handling' do
     context 'when installation raises a Kubeclient::HttpError' do
       let(:cluster) { create(:cluster, :provided_by_user, :project) }
+      let(:logger) { service.send(:logger) }
+      let(:error) { Kubeclient::HttpError.new(401, 'Unauthorized', nil) }
 
       before do
         application.update!(cluster: cluster)
 
-        expect(service).to receive(:installation_phase).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
+        expect(service).to receive(:installation_phase).and_raise(error)
+      end
+
+      include_examples 'logs kubernetes errors' do
+        let(:error_name) { 'Kubeclient::HttpError' }
+        let(:error_message) { 'Unauthorized' }
+        let(:error_code) { 401 }
       end
 
       it 'shows the response code from the error' do
@@ -48,12 +56,6 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
 
         expect(application).to be_errored.or(be_update_errored)
         expect(application.status_reason).to eq('Kubernetes error: 401')
-      end
-
-      it 'should log error' do
-        expect(service.send(:logger)).to receive(:error)
-
-        service.execute
       end
     end
   end
@@ -66,7 +68,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
   context 'when application is updating' do
     let(:application) { create(:clusters_applications_helm, :updating) }
 
-    include_examples 'error logging'
+    include_examples 'error handling'
 
     RESCHEDULE_PHASES.each { |phase| it_behaves_like 'a not yet terminated installation', phase }
 
@@ -127,7 +129,7 @@ describe Clusters::Applications::CheckInstallationProgressService, '#execute' do
   end
 
   context 'when application is installing' do
-    include_examples 'error logging'
+    include_examples 'error handling'
 
     RESCHEDULE_PHASES.each { |phase| it_behaves_like 'a not yet terminated installation', phase }
 

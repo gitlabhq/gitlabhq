@@ -41,40 +41,17 @@ describe Clusters::Applications::UpgradeService do
         expect(helm_client).to receive(:update).with(install_command).and_raise(error)
       end
 
+      include_examples 'logs kubernetes errors' do
+        let(:error_name) { 'Kubeclient::HttpError' }
+        let(:error_message) { 'system failure' }
+        let(:error_code) { 500 }
+      end
+
       it 'make the application errored' do
         service.execute
 
         expect(application).to be_update_errored
         expect(application.status_reason).to match('Kubernetes error: 500')
-      end
-
-      it 'logs errors' do
-        expect(service.send(:logger)).to receive(:error).with(
-          {
-            exception: 'Kubeclient::HttpError',
-            message: 'system failure',
-            service: 'Clusters::Applications::UpgradeService',
-            app_id: application.id,
-            project_ids: application.cluster.project_ids,
-            group_ids: [],
-            error_code: 500
-          }
-        )
-
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).with(
-          error,
-          extra: {
-            exception: 'Kubeclient::HttpError',
-            message: 'system failure',
-            service: 'Clusters::Applications::UpgradeService',
-            app_id: application.id,
-            project_ids: application.cluster.project_ids,
-            group_ids: [],
-            error_code: 500
-          }
-        )
-
-        service.execute
       end
     end
 
@@ -86,6 +63,12 @@ describe Clusters::Applications::UpgradeService do
         expect(application).to receive(:make_updating!).once.and_raise(error)
       end
 
+      include_examples 'logs kubernetes errors' do
+        let(:error_name) { 'StandardError' }
+        let(:error_message) { 'something bad happened' }
+        let(:error_code) { nil }
+      end
+
       it 'make the application errored' do
         expect(helm_client).not_to receive(:update)
 
@@ -93,35 +76,6 @@ describe Clusters::Applications::UpgradeService do
 
         expect(application).to be_update_errored
         expect(application.status_reason).to eq("Can't start upgrade process.")
-      end
-
-      it 'logs errors' do
-        expect(service.send(:logger)).to receive(:error).with(
-          {
-            exception: 'StandardError',
-            error_code: nil,
-            message: 'something bad happened',
-            service: 'Clusters::Applications::UpgradeService',
-            app_id: application.id,
-            project_ids: application.cluster.projects.pluck(:id),
-            group_ids: []
-          }
-        )
-
-        expect(Gitlab::Sentry).to receive(:track_acceptable_exception).with(
-          error,
-          extra: {
-            exception: 'StandardError',
-            error_code: nil,
-            message: 'something bad happened',
-            service: 'Clusters::Applications::UpgradeService',
-            app_id: application.id,
-            project_ids: application.cluster.projects.pluck(:id),
-            group_ids: []
-          }
-        )
-
-        service.execute
       end
     end
   end

@@ -9,38 +9,6 @@ can be shared.
 It is also possible to add a `private_token` to the querystring, or
 add a `HTTP_PRIVATE_TOKEN` header.
 
-### Authorization
-
-Fields can be authorized using the same abilities used in the Rails
-app. This can be done by supplying the `authorize` option:
-
-```ruby
-module Types
-  class QueryType < BaseObject
-    graphql_name 'Query'
-
-    field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver, authorize: :read_project
-  end
-end
-```
-
-Fields can be authorized against multiple abilities, in which case all
-ability checks must pass. This requires explicitly passing a block to `field`:
-
-```ruby
-field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver do
-  authorize [:read_project, :another_ability]
-end
-```
-
-The object found by the resolve call is used for authorization.
-
-TIP: **Tip:**
-When authorizing collections, try to load only what the currently
-authenticated user is allowed to view with our existing finders first.
-This minimizes database queries and unnecessary authorization checks of
-the loaded records.
-
 ## Types
 
 When exposing a model through the GraphQL API, we do so by creating a
@@ -196,6 +164,114 @@ end
 - **`abilities`**: Allows exposing several abilities defined in our
   policies at once. The fields for these will all have be non-nullable
   booleans with a default description.
+
+## Authorization
+
+Authorizations can be applied to both types and fields using the same
+abilities as in the Rails app.
+
+If the:
+
+- Currently authenticated user fails the authorization, the authorized
+resource will be returned as `null`.
+- Resource is part of a collection, the collection will be filtered to
+exclude the objects that the user's authorization checks failed against.
+
+TIP: **Tip:**
+Try to load only what the currently authenticated user is allowed to
+view with our existing finders first, without relying on authorization
+to filter the records. This minimizes database queries and unnecessary
+authorization checks of the loaded records.
+
+### Type authorization
+
+Authorize a type by passing an ability to the `authorize` method. All
+fields with the same type will be authorized by checking that the
+currently authenticated user has the required ability.
+
+For example, the following authorization ensures that the currently
+authenticated user can only see projects that they have the
+`read_project` ability for (so long as the project is returned in a
+field that uses `Types::ProjectType`):
+
+```ruby
+module Types
+  class ProjectType < BaseObject
+    authorize :read_project
+  end
+end
+```
+
+You can also authorize against multiple abilities, in which case all of
+the ability checks must pass.
+
+For example, the following authorization ensures that the currently
+authenticated user must have `read_project` and `another_ability`
+abilities to see a project:
+
+```ruby
+module Types
+  class ProjectType < BaseObject
+    authorize [:read_project, :another_ability]
+  end
+end
+```
+
+### Field authorization
+
+Fields can be authorized with the `authorize` option.
+
+For example, the following authorization ensures that the currently
+authenticated user must have the `owner_access` ability to see the
+project:
+
+```ruby
+module Types
+  class MyType < BaseObject
+    field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver, authorize: :owner_access
+  end
+end
+```
+
+Fields can also be authorized against multiple abilities, in which case
+all of ability checks must pass. **Note:** This requires explicitly
+passing a block to `field`:
+
+```ruby
+module Types
+  class MyType < BaseObject
+    field :project, Types::ProjectType, null: true, resolver: Resolvers::ProjectResolver do
+      authorize [:owner_access, :another_ability]
+    end
+  end
+end
+```
+
+NOTE: **Note:** If the field's type already [has a particular
+authorization](#type-authorization) then there is no need to add that
+same authorization to the field.
+
+### Type and Field authorizations together
+
+Authorizations are cumulative, so where authorizations are defined on
+a field, and also on the field's type, then the currently authenticated
+user would need to pass all ability checks.
+
+In the following simplified example the currently authenticated user
+would need both `first_permission` and `second_permission` abilities in
+order to see the author of the issue.
+
+```ruby
+class UserType
+  authorize :first_permission
+end
+```
+
+```ruby
+class IssueType
+  field :author, UserType, authorize: :second_permission
+end
+```
 
 ## Resolvers
 

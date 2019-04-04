@@ -57,6 +57,7 @@ module Gitlab
       unsubscribes
       uploads
       users
+      v2
     ].freeze
 
     # This list should contain all words following `/*namespace_id/:project_id` in
