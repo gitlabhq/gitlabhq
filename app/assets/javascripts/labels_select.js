@@ -160,7 +160,7 @@ export default class LabelsSelect {
                  * and then remove the excess ones.
                  */
                 const toRemoveIds = Array.from(
-                  $form.find("input[type='hidden'][name='" + fieldName + "']"),
+                  $form.find(`input[type="hidden"][name="${fieldName}"]`),
                 )
                   .map(el => el.value)
                   .map(Number);
@@ -172,7 +172,8 @@ export default class LabelsSelect {
 
                 toRemoveIds.forEach(id => {
                   $form
-                    .find("input[type='hidden'][name='" + fieldName + "'][value='" + id + "']")
+                    .find(`input[type="hidden"][name="${fieldName}"][value="${id}"]`)
+                    .last()
                     .remove();
                 });
               }
@@ -518,7 +519,7 @@ export default class LabelsSelect {
     const labelTemplate = _.template(
       [
         '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>">',
-        '<span class="badge label has-tooltip color-label" <%= linkAttrs %> title="<%= tooltipTitleTemplate({ label, isScopedLabel, enableScopedLabels }) %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
+        '<span class="badge label has-tooltip color-label" <%= linkAttrs %> title="<%= tooltipTitleTemplate({ label, isScopedLabel, enableScopedLabels, escapeStr }) %>" style="background-color: <%= escapeStr(label.color) %>; color: <%= escapeStr(label.text_color) %>;">',
         '<%- label.title %>',
         '</span>',
         '</a>',
@@ -528,7 +529,7 @@ export default class LabelsSelect {
     const infoIconTemplate = _.template(
       [
         '<a href="<%= scopedLabelsDocumentationLink %>" class="label scoped-label" target="_blank" rel="noopener">',
-        '<i class="fa fa-question-circle" style="background-color: <%- label.color %>; color: <%- label.text_color %>;"></i>',
+        '<i class="fa fa-question-circle" style="background-color: <%= escapeStr(label.color) %>; color: <%= escapeStr(label.text_color) %>;"></i>',
         '</a>',
       ].join(''),
     );
@@ -538,9 +539,9 @@ export default class LabelsSelect {
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
         "<span class='font-weight-bold scoped-label-tooltip-title'>Scoped label</span>",
         '<br />',
-        '<%- label.description %>',
+        '<%= escapeStr(label.description) %>',
         '<% } else { %>',
-        '<%- label.description %>',
+        '<%= escapeStr(label.description) %>',
         '<% } %>',
       ].join(''),
     );
@@ -552,11 +553,11 @@ export default class LabelsSelect {
         '<% _.each(labels, function(label){ %>',
         '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
         '<span class="d-inline-block position-relative scoped-label-wrapper">',
-        '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, linkAttrs: \'data-html="true"\' }) %>',
-        '<%= infoIconTemplate({ label,scopedLabelsDocumentationLink }) %>',
+        '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, escapeStr, linkAttrs: \'data-html="true"\' }) %>',
+        '<%= infoIconTemplate({ label, scopedLabelsDocumentationLink, escapeStr }) %>',
         '</span>',
         '<% } else { %>',
-        '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, linkAttrs: "" }) %>',
+        '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, escapeStr, linkAttrs: "" }) %>',
         '<% } %>',
         '<% }); %>',
       ].join(''),
@@ -568,6 +569,7 @@ export default class LabelsSelect {
       infoIconTemplate,
       tooltipTitleTemplate,
       isScopedLabel,
+      escapeStr: _.escape,
     });
   }
 
