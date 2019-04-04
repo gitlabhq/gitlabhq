@@ -75,6 +75,59 @@ describe 'Gitlab::Graphql::Authorization' do
     end
   end
 
+  describe 'Field authorizations when field is a built in type' do
+    let(:query_type) do
+      query_factory do |query|
+        query.field :object, type, null: true, resolve: ->(obj, args, ctx) { test_object }
+      end
+    end
+
+    describe 'with a single permission' do
+      let(:type) do
+        type_factory do |type|
+          type.field :name, GraphQL::STRING_TYPE, null: true, authorize: permission_single
+        end
+      end
+
+      it 'returns the protected field when user has permission' do
+        permit(permission_single)
+
+        expect(subject).to eq('name' => test_object.name)
+      end
+
+      it 'returns nil when user is not authorized' do
+        expect(subject).to eq('name' => nil)
+      end
+    end
+
+    describe 'with a collection of permissions' do
+      let(:type) do
+        permissions = permission_collection
+        type_factory do |type|
+          type.field :name, GraphQL::STRING_TYPE, null: true do
+            authorize permissions
+          end
+        end
+      end
+
+      it 'returns the protected field when user has all permissions' do
+        permit(*permission_collection)
+
+        expect(subject).to eq('name' => test_object.name)
+      end
+
+      it 'returns nil when user only has one of the permissions' do
+        permit(permission_collection.first)
+
+        expect(subject).to eq('name' => nil)
+      end
+
+      it 'returns nil when user only has none of the permissions' do
+        expect(subject).to eq('name' => nil)
+      end
+    end
+  end
+
   describe 'Type authorizations' do
     let(:query_type) do
       query_factory do |query|
