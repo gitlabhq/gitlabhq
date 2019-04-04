@@ -118,6 +118,12 @@ module Gitlab
             end
           end
 
+          protected
+
+          def fallback
+            false
+          end
+
           private
 
           def matches_syntax?(value)
@@ -126,7 +132,7 @@ module Gitlab
 
           def validate_regexp(value)
             matches_syntax?(value) &&
-              Gitlab::UntrustedRegexp::RubySyntax.valid?(value)
+              Gitlab::UntrustedRegexp::RubySyntax.valid?(value, fallback: fallback)
           end
         end
 
@@ -147,6 +153,14 @@ module Gitlab
             return false unless value.is_a?(String)
             return validate_regexp(value) if matches_syntax?(value)
 
+            true
+          end
+        end
+
+        class ArrayOfStringsOrRegexpsWithFallbackValidator < ArrayOfStringsOrRegexpsValidator
+          protected
+
+          def fallback
             true
           end
         end
