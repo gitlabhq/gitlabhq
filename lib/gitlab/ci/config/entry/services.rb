@@ -12,6 +12,7 @@ module Gitlab
 
           validations do
             validates :config, type: Array
+            validates :config, services_with_ports_alias_unique: true, if: ->(record) { record.opt(:with_image_ports) }
           end
 
           def compose!(deps = nil)
@@ -20,6 +21,7 @@ module Gitlab
               @config.each do |config|
                 @entries << ::Gitlab::Config::Entry::Factory.new(Entry::Service)
                   .value(config || {})
+                  .with(key: "service", parent: self, description: "service definition.") # rubocop:disable CodeReuse/ActiveRecord
                   .create!
               end
 

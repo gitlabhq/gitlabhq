@@ -391,6 +391,11 @@ job:
 The above example will run `job` for all branches on `gitlab-org/gitlab-ce`,
 except `master` and those with names prefixed with `release/`.
 
+NOTE: **Note:**
+Because `@` is used to denote the beginning of a ref's repository path,
+matching a ref name containing the `@` character in a regular expression
+requires the use of the hex character code match `\x40`.
+
 If a job does not have an `only` rule, `only: ['branches', 'tags']` is set by
 default. If it doesn't have an `except` rule, it is empty.
 
@@ -496,7 +501,7 @@ Learn more about [variables expressions](../variables/README.md#variables-expres
 
 #### `only:changes`/`except:changes`
 
-Using the `changes` keyword with `only` or `except`, makes it possible to define if
+Using the `changes` keyword with `only` or `except` makes it possible to define if
 a job should be created based on files modified by a git push event.
 
 For example:
@@ -513,13 +518,37 @@ docker build:
 ```
 
 In the scenario above, when pushing multiple commits to GitLab to an existing
-branch, GitLab creates and triggers `docker build` job, provided that one of the
-commits contains changes to either:
+branch, GitLab creates and triggers the `docker build` job, provided that one of the
+commits contains changes to any of the following:
 
 - The `Dockerfile` file.
 - Any of the files inside `docker/scripts/` directory.
 - Any of the files and subdirectories inside the `dockerfiles` directory.
 - Any of the files with `rb`, `py`, `sh` extensions inside the `more_scripts` directory.
+
+You can also use glob patterns to match multiple files in either the root directory of the repo, or in _any_ directory within the repo. For example:
+
+```yaml
+test:
+  script: npm run test
+  only:
+    changes:
+      - "*.json"
+      - "**/*.sql"
+```
+
+NOTE: **Note:**
+In the example above, the expressions are wrapped double quotes because they are glob patterns. GitLab will fail to parse `.gitlab-ci.yml` files with unwrapped glob patterns.
+
+The following example will skip the CI job if a change is detected in any file in the root directory of the repo with a `.md` extension:
+
+```yaml
+build:
+  script: npm run build
+  except:
+    changes:
+      - "*.md"
+```
 
 CAUTION: **Warning:**
 There are some caveats when using this feature with new branches and tags. See

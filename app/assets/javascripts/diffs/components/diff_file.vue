@@ -188,10 +188,6 @@ export default {
         />
       </div>
     </template>
-    <div v-if="isFileTooLarge" class="nothing-here-block diff-collapsed js-too-large-diff">
-      {{ __('This source diff could not be displayed because it is too large.') }}
-      <span v-html="viewBlobLink"></span>
-    </div>
   </div>
 </template>
 

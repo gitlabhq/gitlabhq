@@ -310,7 +310,7 @@ module API
           .flatten
 
         present paginate(::Kaminari.paginate_array(merge_requests)),
-          with: Entities::MergeRequestBasic,
+          with: Entities::MergeRequest,
           current_user: current_user,
           project: user_project
       end

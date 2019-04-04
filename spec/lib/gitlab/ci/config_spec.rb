@@ -123,6 +123,63 @@ describe Gitlab::Ci::Config do
         )
       end
     end
+
+    context 'when ports have been set' do
+      context 'in the main image' do
+        let(:yml) do
+          <<-EOS
+            image:
+              name: ruby:2.2
+              ports:
+                - 80
+          EOS
+        end
+
+        it 'raises an error' do
+          expect(config.errors).to include("image config contains disallowed keys: ports")
+        end
+      end
+
+      context 'in the job image' do
+        let(:yml) do
+          <<-EOS
+            image: ruby:2.2
+
+            test:
+              script: rspec
+              image:
+                name: ruby:2.2
+                ports:
+                  - 80
+          EOS
+        end
+
+        it 'raises an error' do
+          expect(config.errors).to include("jobs:test:image config contains disallowed keys: ports")
+        end
+      end
+
+      context 'in the services' do
+        let(:yml) do
+          <<-EOS
+            image: ruby:2.2
+
+            test:
+              script: rspec
+              image: ruby:2.2
+              services:
+                - name: test
+                  alias: test
+                  ports:
+                    - 80
+          EOS
+        end
+
+        it 'raises an error' do
+          expect(config.errors).to include("jobs:test:services:service config contains disallowed keys: ports")
+        end
+      end
+    end
   end
 
   context "when using 'include' directive" do

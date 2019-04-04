@@ -5,7 +5,6 @@ class GitlabSchema < GraphQL::Schema
   use Gitlab::Graphql::Authorize
   use Gitlab::Graphql::Present
   use Gitlab::Graphql::Connections
-  use Gitlab::Graphql::Tracing
 
   query(Types::QueryType)
 

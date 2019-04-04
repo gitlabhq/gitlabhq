@@ -805,6 +805,14 @@ describe MergeRequest do
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.related_notes.count).to eq(3)
     end
+
+    it "excludes system notes for commits" do
+      system_note = create(:note_on_commit, :system, commit_id: merge_request.commits.first.id,
+                                                     project: merge_request.project)
+
+      expect(merge_request.related_notes.count).to eq(2)
+      expect(merge_request.related_notes).not_to include(system_note)
+    end
   end
 
   describe '#for_fork?' do

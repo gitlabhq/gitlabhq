@@ -1,0 +1,5 @@
+---
+title: Fixed bug with hashes in urls in WebIDE
+merge_request: 54376
+author: Kieran Andrews
+type: fixed

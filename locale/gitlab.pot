@@ -1620,6 +1620,9 @@ msgstr ""
 msgid "CiVariables|Remove variable row"
 msgstr ""
 
+msgid "CiVariables|This variable will not be masked"
+msgstr ""
+
 msgid "CiVariable|* (All environments)"
 msgstr ""
 
@@ -1629,7 +1632,13 @@ msgstr ""
 msgid "CiVariable|Error occurred while saving variables"
 msgstr ""
 
+msgid "CiVariable|Masked"
+msgstr ""
+
 msgid "CiVariable|Protected"
+msgstr ""
+
+msgid "CiVariable|Toggle masked"
 msgstr ""
 
 msgid "CiVariable|Toggle protected"
@@ -3181,10 +3190,7 @@ msgstr ""
 msgid "Enter the merge request title"
 msgstr ""
 
-msgid "Environment variables"
-msgstr ""
-
-msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. You can use environment variables for passwords, secret keys, or whatever you want."
+msgid "Environment variables are applied to environments via the runner. They can be protected by only exposing them to protected branches or tags. Additionally, they will be masked by default so they are hidden in job logs, though they must match certain regexp requirements to do so. You can use environment variables for passwords, secret keys, or whatever you want."
 msgstr ""
 
 msgid "Environment variables are configured by your administrator to be %{link_start}protected%{link_end} by default"
@@ -3593,6 +3599,9 @@ msgid "Failed to remove user identity."
 msgstr ""
 
 msgid "Failed to remove user key."
+msgstr ""
+
+msgid "Failed to save new settings"
 msgstr ""
 
 msgid "Failed to update issues, please try again."
@@ -8278,9 +8287,6 @@ msgstr ""
 msgid "This setting will update the hostname that is used to generate private commit emails. %{learn_more}"
 msgstr ""
 
-msgid "This source diff could not be displayed because it is too large."
-msgstr ""
-
 msgid "This timeout will take precedence when lower than project-defined timeout and accepts a human readable time input language like \"1 hour\". Values without specification represent seconds."
 msgstr ""
 
@@ -8351,9 +8357,6 @@ msgid "Timeago|%s months ago"
 msgstr ""
 
 msgid "Timeago|%s months remaining"
-msgstr ""
-
-msgid "Timeago|%s seconds ago"
 msgstr ""
 
 msgid "Timeago|%s seconds remaining"
@@ -8946,6 +8949,9 @@ msgid "Validations failed."
 msgstr ""
 
 msgid "Value"
+msgstr ""
+
+msgid "Variables"
 msgstr ""
 
 msgid "Various container registry settings."

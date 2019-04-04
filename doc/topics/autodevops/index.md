@@ -699,6 +699,21 @@ renaming `.staging` to `staging`. Then make sure to uncomment the `when` key of
 the `production` job to turn it into a manual action instead of deploying
 automatically.
 
+### Using components of Auto-DevOps
+
+If you only require a subset of the features offered by Auto-DevOps, you can include
+individual Auto-DevOps jobs into your own `.gitlab-ci.yml`.
+
+For example, to make use of [Auto Build](#auto-build), you can add the following to
+your `.gitlab-ci.yml`:
+
+```yaml
+include:
+  - template: Jobs/Build.gitlab-ci.yml
+```
+
+Consult the [Auto DevOps template] for information on available jobs.
+
 ### PostgreSQL database support
 
 In order to support applications that require a database,

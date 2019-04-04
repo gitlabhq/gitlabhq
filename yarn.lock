@@ -658,10 +658,10 @@
     eslint-plugin-promise "^4.0.1"
     eslint-plugin-vue "^5.0.0"
 
-"@gitlab/svgs@^1.57.0":
-  version "1.57.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.57.0.tgz#969ac7bf16337d5de3808fee6fb5c13eefd99478"
-  integrity sha512-AAVvPDaxCsojmOyVVTyaOcob+bPhtYJ+GbtmmNNCHg2dXYDAEgy3+TYzAfV5fQ08TCZ9DPiKEjDIi2ODh0x/8g==
+"@gitlab/svgs@^1.58.0":
+  version "1.58.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-1.58.0.tgz#bb05263ff2eb7ca09a25cd14d0b1a932d2ea9c2f"
+  integrity sha512-RlWSjjBT4lMIFuNC1ziCO1nws9zqZtxCjhrqK2DxDDTgp2W0At9M/BFkHp8RHyMCrO3g1fHTrLPUgzr5oR3Epg==
 
 "@gitlab/ui@^3.0.0":
   version "3.0.0"
@@ -1164,15 +1164,7 @@ apollo-link-http-common@^0.2.8:
     ts-invariant "^0.3.2"
     tslib "^1.9.3"
 
-apollo-link@^1.0.0, apollo-link@^1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.3.tgz#9bd8d5fe1d88d31dc91dae9ecc22474d451fb70d"
-  integrity sha512-iL9yS2OfxYhigme5bpTbmRyC+Htt6tyo2fRMHT3K1XRL/C5IQDDz37OjpPy4ndx7WInSvfSZaaOTKFja9VWqSw==
-  dependencies:
-    apollo-utilities "^1.0.0"
-    zen-observable-ts "^0.8.10"
-
-apollo-link@^1.2.11, apollo-link@^1.2.6:
+apollo-link@^1.0.0, apollo-link@^1.2.11, apollo-link@^1.2.3, apollo-link@^1.2.6:
   version "1.2.11"
   resolved "https://registry.yarnpkg.com/apollo-link/-/apollo-link-1.2.11.tgz#493293b747ad3237114ccd22e9f559e5e24a194d"
   integrity sha512-PQvRCg13VduLy3X/0L79M6uOpTh5iHdxnxYuo8yL7sJlWybKRJwsv4IcRBJpMFbChOOaHY7Og9wgPo6DLKDKDA==
@@ -1191,7 +1183,7 @@ apollo-upload-client@^10.0.0:
     apollo-link-http-common "^0.2.8"
     extract-files "^5.0.0"
 
-apollo-utilities@1.2.1, apollo-utilities@^1.0.0, apollo-utilities@^1.2.1:
+apollo-utilities@1.2.1, apollo-utilities@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/apollo-utilities/-/apollo-utilities-1.2.1.tgz#1c3a1ebf5607d7c8efe7636daaf58e7463b41b3c"
   integrity sha512-Zv8Udp9XTSFiN8oyXOjf6PMHepD4yxxReLsl6dPUy5Ths7jti3nmlBzZUOxuTWRwZn0MoclqL7RQ5UEJN8MAxg==
@@ -2804,7 +2796,7 @@ d3-dsv@1, d3-dsv@1.0.8:
     iconv-lite "0.4"
     rw "1"
 
-d3-ease@1, d3-ease@1.0.3:
+d3-ease@1, d3-ease@1.0.3, d3-ease@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/d3-ease/-/d3-ease-1.0.3.tgz#68bfbc349338a380c44d8acc4fbc3304aa2d8c0e"
   integrity sha1-aL+8NJM4o4DETYrMT7wzBKotjA4=
@@ -2920,7 +2912,7 @@ d3-timer@1, d3-timer@1.0.7:
   resolved "https://registry.yarnpkg.com/d3-timer/-/d3-timer-1.0.7.tgz#df9650ca587f6c96607ff4e60cc38229e8dd8531"
   integrity sha512-vMZXR88XujmG/L5oB96NNKH5lCWwiLM/S2HyyAQLcjWJCloK5shxta4CwOFYLZoY3AWX73v8Lgv4cCAdWtRmOA==
 
-d3-transition@1, d3-transition@1.1.1:
+d3-transition@1, d3-transition@1.1.1, d3-transition@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/d3-transition/-/d3-transition-1.1.1.tgz#d8ef89c3b848735b060e54a39b32aaebaa421039"
   integrity sha512-xeg8oggyQ+y5eb4J13iDgKIjUcEfIOZs2BqV/eEmXm2twx80wTzJ4tB4vaZ5BKfz7XsI/DFmQL5me6O27/5ykQ==
@@ -11535,13 +11527,6 @@ yeast@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/yeast/-/yeast-0.1.2.tgz#008e06d8094320c372dbc2f8ed76a0ca6c8ac419"
   integrity sha1-AI4G2AlDIMNy28L47XagymyKxBk=
-
-zen-observable-ts@^0.8.10:
-  version "0.8.10"
-  resolved "https://registry.yarnpkg.com/zen-observable-ts/-/zen-observable-ts-0.8.10.tgz#18e2ce1c89fe026e9621fd83cc05168228fce829"
-  integrity sha512-5vqMtRggU/2GhePC9OU4sYEWOdvmayp2k3gjPf4F0mXwB3CSbbNznfDUvDJx9O2ZTa1EIXdJhPchQveFKwNXPQ==
-  dependencies:
-    zen-observable "^0.8.0"
 
 zen-observable-ts@^0.8.18:
   version "0.8.18"

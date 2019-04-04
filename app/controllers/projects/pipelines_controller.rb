@@ -31,10 +31,7 @@ class Projects::PipelinesController < Projects::ApplicationController
         Gitlab::PollingInterval.set_header(response, interval: POLLING_INTERVAL)
 
         render json: {
-          pipelines: PipelineSerializer
-            .new(project: @project, current_user: @current_user)
-            .with_pagination(request, response)
-            .represent(@pipelines, disable_coverage: true, preload: true),
+          pipelines: serialize_pipelines,
           count: {
             all: @pipelines_count,
             running: @running_count,
@@ -149,6 +146,15 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   private
+
+  def serialize_pipelines
+    ::Gitlab::GitalyClient.allow_ref_name_caching do
+      PipelineSerializer
+        .new(project: @project, current_user: @current_user)
+        .with_pagination(request, response)
+        .represent(@pipelines, disable_coverage: true, preload: true)
+    end
+  end
 
   def render_show
     respond_to do |format|
