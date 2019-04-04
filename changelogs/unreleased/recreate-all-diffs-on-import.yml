@@ -1,5 +1,0 @@
----
-title: Force to recreate all MR diffs on import
-merge_request: 26480
-author:
-type: fixed
