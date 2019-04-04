@@ -399,6 +399,13 @@ describe API::Pipelines do
 
   describe 'GET /projects/:id/pipelines/:pipeline_id' do
     context 'authorized user' do
+      it 'exposes known attributes' do
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to match_response_schema('public_api/v4/pipeline/detail')
+      end
+
       it 'returns project pipelines' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", user)
 
