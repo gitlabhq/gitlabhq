@@ -56,11 +56,11 @@ describe('new dropdown component', () => {
     });
   });
 
-  describe('dropdownOpen', () => {
+  describe('isOpen', () => {
     it('scrolls dropdown into view', done => {
       spyOn(vm.$refs.dropdownMenu, 'scrollIntoView');
 
-      vm.dropdownOpen = true;
+      vm.isOpen = true;
 
       setTimeout(() => {
         expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
