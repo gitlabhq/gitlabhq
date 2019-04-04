@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "clean": "rm -rf public/assets tmp/cache/*-loader",
-    "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
+    "dev-server": "NODE_OPTIONS=\"--max-old-space-size=3584\" nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
     "eslint": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue .",
     "eslint-fix": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",
@@ -21,8 +21,8 @@
     "stylelint-file": "node node_modules/stylelint/bin/stylelint.js",
     "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint-utility-map.js",
     "test": "yarn jest && yarn karma",
-    "webpack": "webpack --config config/webpack.config.js",
-    "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
+    "webpack": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.config.js",
+    "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
     "@babel/core": "^7.2.2",
