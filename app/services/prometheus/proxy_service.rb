@@ -3,6 +3,7 @@
 module Prometheus
   class ProxyService < BaseService
     include ReactiveCaching
+    include Gitlab::Utils::StrongMemoize
 
     self.reactive_cache_key = ->(service) { service.cache_key }
     self.reactive_cache_lease_timeout = 30.seconds
@@ -91,7 +92,9 @@ module Prometheus
     end
 
     def prometheus_adapter
-      @prometheus_adapter ||= @proxyable.prometheus_adapter
+      strong_memoize(:prometheus_adapter) do
+        @proxyable.prometheus_adapter
+      end
     end
 
     def prometheus_client_wrapper

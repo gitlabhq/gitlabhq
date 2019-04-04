@@ -48,7 +48,7 @@ describe Prometheus::ProxyService do
         allow(environment).to receive(:prometheus_adapter).and_return(nil)
       end
 
-      it 'should return error' do
+      it 'returns error' do
         expect(subject.execute).to eq(
           status: :error,
           message: 'No prometheus server found',
@@ -63,7 +63,7 @@ describe Prometheus::ProxyService do
         allow(prometheus_adapter).to receive(:can_query?).and_return(false)
       end
 
-      it 'should return error' do
+      it 'returns error' do
         expect(subject.execute).to eq(
           status: :error,
           message: 'No prometheus server found',
