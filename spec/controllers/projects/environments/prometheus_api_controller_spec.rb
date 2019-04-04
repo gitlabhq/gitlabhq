@@ -16,13 +16,11 @@ describe Projects::Environments::PrometheusApiController do
     let(:prometheus_proxy_service) { instance_double(Prometheus::ProxyService) }
     let(:expected_params) do
       ActionController::Parameters.new(
-        "query" => "1",
-        "id" => environment.id.to_s,
-        "namespace_id" => project.namespace.name,
-        "project_id" => project.name,
-        "proxy_path" => "query",
-        "controller" => "projects/environments/prometheus_api",
-        "action" => "proxy"
+        environment_params(
+          proxy_path: 'query',
+          controller: 'projects/environments/prometheus_api',
+          action: 'proxy'
+        )
       ).permit!
     end
 
@@ -144,9 +142,9 @@ describe Projects::Environments::PrometheusApiController do
 
   def environment_params(params = {})
     {
-      id: environment.id,
-      namespace_id: project.namespace,
-      project_id: project,
+      id: environment.id.to_s,
+      namespace_id: project.namespace.name,
+      project_id: project.name,
       proxy_path: 'query',
       query: '1'
     }.merge(params)
