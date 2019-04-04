@@ -26,6 +26,7 @@ module API
           optional :ldap_cn, type: String, desc: 'LDAP Common Name'
           optional :ldap_access, type: Integer, desc: 'A valid access level'
           optional :shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Pipeline minutes quota for this group'
+          optional :extra_shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Extra pipeline minutes quota for this group'
           all_or_none_of :ldap_cn, :ldap_access
         end
       end

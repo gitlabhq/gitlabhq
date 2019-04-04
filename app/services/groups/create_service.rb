@@ -8,6 +8,8 @@ module Groups
     end
 
     def execute
+      remove_unallowed_params
+
       @group = Group.new(params)
 
       after_build_hook(@group, params)
