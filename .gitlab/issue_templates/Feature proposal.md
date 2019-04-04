@@ -24,6 +24,10 @@ Personas can be found at https://about.gitlab.com/handbook/marketing/product-mar
 <!-- See the Feature Change Documentation Workflow https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html
 Add all known Documentation Requirements here, per https://docs.gitlab.com/ee/development/documentation/feature-change-workflow.html#documentation-requirements -->
 
+### Testing
+
+<!-- What risks does this change pose? How might it affect the quality of the product? What additional test coverage or changes to tests will be needed? Will it require cross-browser testing? See the test engineering process for further guidelines: https://about.gitlab.com/handbook/engineering/quality/guidelines/test-engineering/ -->
+
 ### What does success look like, and how can we measure that?
 
 <!-- Define both the success metrics and acceptance criteria. Note that success metrics indicate the desired business outcomes, while acceptance criteria indicate when the solution is working correctly. If there is no way to measure success, link to an issue that will implement a way to measure this. -->
