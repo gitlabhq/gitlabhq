@@ -2705,18 +2705,19 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#latest_builds_with_artifacts' do
-    let!(:pipeline) { create(:ci_pipeline, :success) }
-
-    let!(:build) do
-      create(:ci_build, :success, :artifacts, pipeline: pipeline)
-    end
+    let!(:fresh_build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+    let!(:stale_build) { create(:ci_build, :success, :expired, :artifacts, pipeline: pipeline) }
 
     it 'returns an Array' do
       expect(pipeline.latest_builds_with_artifacts).to be_an_instance_of(Array)
     end
 
-    it 'returns the latest builds' do
-      expect(pipeline.latest_builds_with_artifacts).to eq([build])
+    it 'returns the latest builds with non-expired artifacts' do
+      expect(pipeline.latest_builds_with_artifacts).to contain_exactly(fresh_build)
+    end
+
+    it 'does not return builds with expired artifacts' do
+      expect(pipeline.latest_builds_with_artifacts).not_to include(stale_build)
     end
 
     it 'memoizes the returned relation' do
