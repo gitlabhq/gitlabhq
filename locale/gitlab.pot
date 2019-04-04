@@ -19,6 +19,9 @@ msgstr ""
 msgid " Status"
 msgstr ""
 
+msgid " Try to %{action} this file again."
+msgstr ""
+
 msgid " You need to do this before %{grace_period_deadline}."
 msgstr ""
 
@@ -124,6 +127,9 @@ msgid "%{issuableType} will be removed! Are you sure?"
 msgstr ""
 
 msgid "%{label_for_message} unavailable"
+msgstr ""
+
+msgid "%{level_name} visibility has been restricted by the administrator."
 msgstr ""
 
 msgid "%{link_start}Read more%{link_end} about role permissions"
@@ -351,6 +357,9 @@ msgstr ""
 msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
+msgid "API Help"
+msgstr ""
+
 msgid "About GitLab"
 msgstr ""
 
@@ -478,6 +487,9 @@ msgid "Admin Area"
 msgstr ""
 
 msgid "Admin Overview"
+msgstr ""
+
+msgid "Admin Section"
 msgstr ""
 
 msgid "AdminArea| You are about to permanently delete the user %{username}. Issues, merge requests, and groups linked to them will be transferred to a system-wide \"Ghost-user\". To avoid data loss, consider using the %{strong_start}block user%{strong_end} feature instead. Once you %{strong_start}Delete user%{strong_end}, it cannot be undone or recovered."
@@ -4529,6 +4541,9 @@ msgstr ""
 msgid "Job"
 msgstr ""
 
+msgid "Job Failed #%{build_id}"
+msgstr ""
+
 msgid "Job ID"
 msgstr ""
 
@@ -4774,6 +4789,9 @@ msgstr ""
 msgid "Leave"
 msgstr ""
 
+msgid "Leave edit mode? All unsaved changes will be lost."
+msgstr ""
+
 msgid "Leave group"
 msgstr ""
 
@@ -4921,6 +4939,9 @@ msgid "Mark todo as done"
 msgstr ""
 
 msgid "Markdown"
+msgstr ""
+
+msgid "Markdown Help"
 msgstr ""
 
 msgid "Markdown enabled"
@@ -5393,6 +5414,9 @@ msgstr ""
 msgid "No files found."
 msgstr ""
 
+msgid "No job trace"
+msgstr ""
+
 msgid "No labels with such name or description"
 msgstr ""
 
@@ -5617,6 +5641,9 @@ msgstr ""
 msgid "Open in Xcode"
 msgstr ""
 
+msgid "Open raw"
+msgstr ""
+
 msgid "Open sidebar"
 msgstr ""
 
@@ -5738,6 +5765,9 @@ msgid "Performance optimization"
 msgstr ""
 
 msgid "Permissions"
+msgstr ""
+
+msgid "Permissions Help"
 msgstr ""
 
 msgid "Permissions, LFS, 2FA"
@@ -6014,6 +6044,9 @@ msgid "Press Enter or click to search"
 msgstr ""
 
 msgid "Preview"
+msgstr ""
+
+msgid "Preview changes"
 msgstr ""
 
 msgid "Preview payload"
@@ -6547,6 +6580,9 @@ msgstr ""
 msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
+msgid "Public Access Help"
+msgstr ""
+
 msgid "Public deploy keys (%{deploy_keys_count})"
 msgstr ""
 
@@ -6575,6 +6611,9 @@ msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
 msgid "README"
+msgstr ""
+
+msgid "Rake Tasks Help"
 msgstr ""
 
 msgid "Read more"
@@ -6672,6 +6711,12 @@ msgstr ""
 msgid "Remove project"
 msgstr ""
 
+msgid "Remove this label? Are you sure?"
+msgstr ""
+
+msgid "Remove this label? This will affect all projects within the group. Are you sure?"
+msgstr ""
+
 msgid "Removed group can not be restored!"
 msgstr ""
 
@@ -6688,6 +6733,9 @@ msgid "Rename folder"
 msgstr ""
 
 msgid "Reopen milestone"
+msgstr ""
+
+msgid "Replace"
 msgstr ""
 
 msgid "Reply to comment"
@@ -6914,6 +6962,9 @@ msgstr ""
 msgid "SSH Keys"
 msgstr ""
 
+msgid "SSH Keys Help"
+msgstr ""
+
 msgid "SSH host keys"
 msgstr ""
 
@@ -7038,6 +7089,9 @@ msgid "SearchAutocomplete|in this group"
 msgstr ""
 
 msgid "SearchAutocomplete|in this project"
+msgstr ""
+
+msgid "SearchResults|Showing %{from} - %{to} of %{count} %{scope} for \"%{term}\""
 msgstr ""
 
 msgid "Secret"
@@ -7738,6 +7792,9 @@ msgstr ""
 msgid "System Hooks"
 msgstr ""
 
+msgid "System Hooks Help"
+msgstr ""
+
 msgid "System Info"
 msgstr ""
 
@@ -7870,6 +7927,11 @@ msgstr ""
 msgid "Test failed."
 msgstr ""
 
+msgid "The %{type} contains the following error:"
+msgid_plural "The %{type} contains the following errors:"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "The Git LFS objects will <strong>not</strong> be synced."
 msgstr ""
 
@@ -7910,6 +7972,15 @@ msgid "The fork relationship has been removed."
 msgstr ""
 
 msgid "The global settings require you to enable Two-Factor Authentication for your account."
+msgstr ""
+
+msgid "The group and any internal projects can be viewed by any logged in user."
+msgstr ""
+
+msgid "The group and any public projects can be viewed without any authentication."
+msgstr ""
+
+msgid "The group and its projects can only be viewed by members."
 msgstr ""
 
 msgid "The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}."
@@ -7988,6 +8059,18 @@ msgid "The repository must be accessible over <code>http://</code>, <code>https:
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr ""
+
+msgid "The snippet can be accessed without any authentication."
+msgstr ""
+
+msgid "The snippet is visible only to me."
+msgstr ""
+
+msgid "The snippet is visible only to project members."
+msgstr ""
+
+msgid "The snippet is visible to any logged in user."
 msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
@@ -8840,6 +8923,9 @@ msgstr ""
 msgid "User map"
 msgstr ""
 
+msgid "User settings"
+msgstr ""
+
 msgid "User was successfully created."
 msgstr ""
 
@@ -8993,6 +9079,9 @@ msgstr ""
 msgid "View it on GitLab"
 msgstr ""
 
+msgid "View job trace"
+msgstr ""
+
 msgid "View jobs"
 msgstr ""
 
@@ -9066,6 +9155,9 @@ msgid "Web IDE"
 msgstr ""
 
 msgid "Web terminal"
+msgstr ""
+
+msgid "Webhooks Help"
 msgstr ""
 
 msgid "When a runner is locked, it cannot be assigned to other projects"
@@ -9231,6 +9323,9 @@ msgid "Will deploy to"
 msgstr ""
 
 msgid "Withdraw Access Request"
+msgstr ""
+
+msgid "Workflow Help"
 msgstr ""
 
 msgid "Write"
@@ -9435,6 +9530,12 @@ msgid "You won't be able to pull or push project code via SSH until you add an S
 msgstr ""
 
 msgid "You'll need to use different branch names to get a valid comparison."
+msgstr ""
+
+msgid "You're not allowed to make changes to this project directly. A fork of this project has been created that you can make changes in, so you can submit a merge request."
+msgstr ""
+
+msgid "You're not allowed to make changes to this project directly. A fork of this project is being created that you can make changes in, so you can submit a merge request."
 msgstr ""
 
 msgid "You're only seeing %{startTag}other activity%{endTag} in the feed. To add a comment, switch to one of the following options."
