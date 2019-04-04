@@ -89,7 +89,7 @@ module LabelsHelper
 
   def render_colored_label(label, label_suffix: '', tooltip: true, title: nil)
     text_color = text_color_for_bg(label.color)
-    title ||= label_tooltip_title(label)
+    title ||= tooltip ? label_tooltip_title(label) : ''
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
@@ -268,6 +268,12 @@ module LabelsHelper
      labels: issuable_sidebar[:project_labels_path],
      display: 'static'
     })
+  end
+
+  def label_from_hash(hash)
+    klass = hash[:group_id] ? GroupLabel : ProjectLabel
+
+    klass.new(hash.slice(:color, :description, :title, :group_id, :project_id))
   end
 
   # Required for Banzai::Filter::LabelReferenceFilter
