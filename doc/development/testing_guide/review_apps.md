@@ -130,9 +130,9 @@ secure note named **gitlab-{ce,ee} Review App's root password**.
 1. Find and open the `task-runner` Deployment, e.g. `review-29951-issu-id2qax-task-runner`.
 1. Click on the Pod in the "Managed pods" section, e.g. `review-29951-issu-id2qax-task-runner-d5455cc8-2lsvz`.
 1. Click on the `KUBECTL` dropdown, then `Exec` -> `task-runner`.
-1. Replace `-c task-runner -- ls` with `-- /srv/gitlab/bin/rails c` from the
+1. Replace `-c task-runner -- ls` with `-it -- gitlab-rails console` from the
   default command or
-  - Run `kubectl exec --namespace review-apps-ce -it review-29951-issu-id2qax-task-runner-d5455cc8-2lsvz -- /srv/gitlab/bin/rails c`
+  - Run `kubectl exec --namespace review-apps-ce review-29951-issu-id2qax-task-runner-d5455cc8-2lsvz -it -- gitlab-rails console`
     and
   - Replace `review-apps-ce` with `review-apps-ee` if the Review App
     is running EE, and
