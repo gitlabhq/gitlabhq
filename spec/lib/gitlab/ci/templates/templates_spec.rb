@@ -4,7 +4,9 @@ require 'spec_helper'
 
 describe "CI YML Templates" do
   ABSTRACT_TEMPLATES = %w[Serverless].freeze
-  PROJECT_DEPENDENT_TEMPLATES = %w[Auto-DevOps].freeze
+  # These templates depend on the presence of the `project`
+  # param to enable processing of `include:` within CI config.
+  PROJECT_DEPENDENT_TEMPLATES = %w[Auto-DevOps DAST].freeze
 
   def self.concrete_templates
     Gitlab::Template::GitlabCiYmlTemplate.all.reject do |template|
