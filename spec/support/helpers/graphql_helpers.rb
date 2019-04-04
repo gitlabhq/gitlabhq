@@ -93,6 +93,8 @@ module GraphqlHelpers
   end
 
   def all_graphql_fields_for(class_name, parent_types = Set.new)
+    allow_unlimited_graphql_complexity
+
     type = GitlabSchema.types[class_name.to_s]
     return "" unless type
 
@@ -169,5 +171,11 @@ module GraphqlHelpers
     field_type = field_type.of_type while field_type.respond_to?(:of_type)
 
     field_type
+  end
+
+  # for most tests, we want to allow unlimited complexity
+  def allow_unlimited_graphql_complexity
+    allow_any_instance_of(GitlabSchema).to receive(:max_complexity).and_return nil
+    allow(GitlabSchema).to receive(:max_query_complexity).with(any_args).and_return nil
   end
 end

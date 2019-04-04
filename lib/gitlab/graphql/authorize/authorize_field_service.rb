@@ -14,9 +14,10 @@ module Gitlab
         end
 
         def authorized_resolve
-          proc do |obj, args, ctx|
-            resolved_obj = @old_resolve_proc.call(obj, args, ctx)
-            checker = build_checker(ctx[:current_user])
+          proc do |parent_typed_object, args, ctx|
+            resolved_obj = @old_resolve_proc.call(parent_typed_object, args, ctx)
+            authorizing_obj = authorize_against(parent_typed_object)
+            checker = build_checker(ctx[:current_user], authorizing_obj)
 
             if resolved_obj.respond_to?(:then)
               resolved_obj.then(&checker)
@@ -51,22 +52,28 @@ module Gitlab
           Array.wrap(@field.metadata[:authorize])
         end
 
-        def build_checker(current_user)
-          lambda do |value|
+        # If it's a built-in/scalar type, authorize using its parent object.
+        # nil means authorize using the resolved object
+        def authorize_against(parent_typed_object)
+          parent_typed_object.object if built_in_type? && parent_typed_object.respond_to?(:object)
+        end
+
+        def build_checker(current_user, authorizing_obj)
+          lambda do |resolved_obj|
             # Load the elements if they were not loaded by BatchLoader yet
-            value = value.sync if value.respond_to?(:sync)
+            resolved_obj = resolved_obj.sync if resolved_obj.respond_to?(:sync)
 
             check = lambda do |object|
               authorizations.all? do |ability|
-                Ability.allowed?(current_user, ability, object)
+                Ability.allowed?(current_user, ability, authorizing_obj || object)
               end
             end
 
-            case value
+            case resolved_obj
             when Array, ActiveRecord::Relation
-              value.select(&check)
+              resolved_obj.select(&check)
             else
-              value if check.call(value)
+              resolved_obj if check.call(resolved_obj)
             end
           end
         end
@@ -87,6 +94,10 @@ module Gitlab
         # Returns the singular type for basic connections, for example `[Types::ProjectType]`
         def node_type_for_basic_connection(type)
           type.unwrap
+        end
+
+        def built_in_type?
+          GraphQL::Schema::BUILT_IN_TYPES.has_value?(node_type_for_basic_connection(@field.type))
         end
       end
     end

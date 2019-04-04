@@ -4,12 +4,12 @@ module BuildsHelper
   def build_summary(build, skip: false)
     if build.has_trace?
       if skip
-        link_to "View job trace", pipeline_job_url(build.pipeline, build)
+        link_to _("View job trace"), pipeline_job_url(build.pipeline, build)
       else
         build.trace.html(last_lines: 10).html_safe
       end
     else
-      "No job trace"
+      _("No job trace")
     end
   end
 
@@ -31,7 +31,7 @@ module BuildsHelper
 
   def build_failed_issue_options
     {
-      title: "Job Failed ##{@build.id}",
+      title: _("Job Failed #%{build_id}") % { build_id: @build.id },
       description: project_job_url(@project, @build)
     }
   end

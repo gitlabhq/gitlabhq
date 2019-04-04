@@ -43,6 +43,7 @@ describe 'Issues > User uses quick actions', :js do
   describe 'issue-only commands' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public) }
+    let(:issue) { create(:issue, project: project) }
 
     before do
       project.add_maintainer(user)
@@ -54,6 +55,8 @@ describe 'Issues > User uses quick actions', :js do
     after do
       wait_for_requests
     end
+
+    it_behaves_like 'confidential quick action'
 
     describe 'adding a due date from note' do
       let(:issue) { create(:issue, project: project) }
@@ -133,42 +136,6 @@ describe 'Issues > User uses quick actions', :js do
           expect(page).not_to have_content "marked this issue as a duplicate of #{original_issue.to_reference}"
 
           expect(issue.reload).to be_open
-        end
-      end
-    end
-
-    describe 'make issue confidential' do
-      let(:issue) { create(:issue, project: project) }
-      let(:original_issue) { create(:issue, project: project) }
-
-      context 'when the current user can update issues' do
-        it 'does not create a note, and marks the issue as confidential' do
-          add_note("/confidential")
-
-          expect(page).not_to have_content "/confidential"
-          expect(page).to have_content 'Commands applied'
-          expect(page).to have_content "made the issue confidential"
-
-          expect(issue.reload).to be_confidential
-        end
-      end
-
-      context 'when the current user cannot update the issue' do
-        let(:guest) { create(:user) }
-        before do
-          project.add_guest(guest)
-          gitlab_sign_out
-          sign_in(guest)
-          visit project_issue_path(project, issue)
-        end
-
-        it 'does not create a note, and does not mark the issue as confidential' do
-          add_note("/confidential")
-
-          expect(page).not_to have_content 'Commands applied'
-          expect(page).not_to have_content "made the issue confidential"
-
-          expect(issue.reload).not_to be_confidential
         end
       end
     end

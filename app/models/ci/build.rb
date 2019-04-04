@@ -83,8 +83,13 @@ module Ci
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts_archive, ->() do
-      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
-        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+      if Feature.enabled?(:ci_enable_legacy_artifacts)
+        where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
+          '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+      else
+        where('EXISTS (?)',
+          Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
+      end
     end
 
     scope :with_existing_job_artifacts, ->(query) do
@@ -135,6 +140,8 @@ module Ci
       where("EXISTS (?)", matcher)
     end
 
+    ##
+    # TODO: Remove these mounters when we remove :ci_enable_legacy_artifacts feature flag
     mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
     mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
@@ -775,7 +782,7 @@ module Ci
     private
 
     def erase_old_artifacts!
-      # TODO: To be removed once we get rid of
+      # TODO: To be removed once we get rid of ci_enable_legacy_artifacts feature flag
       remove_artifacts_file!
       remove_artifacts_metadata!
       save

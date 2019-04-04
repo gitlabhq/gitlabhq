@@ -6,7 +6,7 @@ module QA
           class AddExisting < Page::Base
             view 'app/views/clusters/clusters/user/_form.html.haml' do
               element :cluster_name, 'text_field :name' # rubocop:disable QA/ElementWithPattern
-              element :api_url, 'text_field :api_url' # rubocop:disable QA/ElementWithPattern
+              element :api_url, 'url_field :api_url' # rubocop:disable QA/ElementWithPattern
               element :ca_certificate, 'text_area :ca_cert' # rubocop:disable QA/ElementWithPattern
               element :token, 'text_field :token' # rubocop:disable QA/ElementWithPattern
               element :add_cluster_button, "submit s_('ClusterIntegration|Add Kubernetes cluster')" # rubocop:disable QA/ElementWithPattern

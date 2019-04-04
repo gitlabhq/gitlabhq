@@ -1,0 +1,5 @@
+---
+title: Allow to use untrusted Regexp via feature flag
+merge_request: 26905
+author:
+type: deprecated

@@ -1,0 +1,5 @@
+---
+title: Automatically set Prometheus step interval
+merge_request: 26441
+author:
+type: changed

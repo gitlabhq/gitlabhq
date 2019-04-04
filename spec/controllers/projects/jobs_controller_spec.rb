@@ -989,7 +989,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       context 'and valid id' do
         it 'returns the terminal for the job' do
           expect(Gitlab::Workhorse)
-            .to receive(:terminal_websocket)
+            .to receive(:channel_websocket)
             .and_return(workhorse: :response)
 
           get_terminal_websocket(id: job.id)

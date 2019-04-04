@@ -6,6 +6,14 @@ module Gitlab
     Error = Class.new(StandardError)
     QueryError = Class.new(Gitlab::PrometheusClient::Error)
 
+    # Target number of data points for `query_range`.
+    # Please don't exceed the limit of 11000 data points
+    # See https://github.com/prometheus/prometheus/blob/91306bdf24f5395e2601773316945a478b4b263d/web/api/v1/api.go#L347
+    QUERY_RANGE_DATA_POINTS = 600
+
+    # Minimal value of the `step` parameter for `query_range` in seconds.
+    QUERY_RANGE_MIN_STEP = 60
+
     attr_reader :rest_client, :headers
 
     def initialize(rest_client)
@@ -23,12 +31,18 @@ module Gitlab
     end
 
     def query_range(query, start: 8.hours.ago, stop: Time.now)
+      start = start.to_f
+      stop = stop.to_f
+      step = self.class.compute_step(start, stop)
+
       get_result('matrix') do
-        json_api_get('query_range',
-                     query: query,
-                     start: start.to_f,
-                     end: stop.to_f,
-                     step: 1.minute.to_i)
+        json_api_get(
+          'query_range',
+          query: query,
+          start: start,
+          end: stop,
+          step: step
+        )
       end
     end
 
@@ -38,6 +52,14 @@ module Gitlab
 
     def series(*matches, start: 8.hours.ago, stop: Time.now)
       json_api_get('series', 'match': matches, start: start.to_f, end: stop.to_f)
+    end
+
+    def self.compute_step(start, stop)
+      diff = stop - start
+
+      step = (diff / QUERY_RANGE_DATA_POINTS).ceil
+
+      [QUERY_RANGE_MIN_STEP, step].max
     end
 
     private

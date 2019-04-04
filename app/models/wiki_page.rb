@@ -28,16 +28,15 @@ class WikiPage
   def self.group_by_directory(pages)
     return [] if pages.blank?
 
-    pages.sort_by { |page| [page.directory, page.slug] }
-      .group_by(&:directory)
-      .map do |dir, pages|
-        if dir.present?
-          WikiDirectory.new(dir, pages)
-        else
-          pages
-        end
-      end
-      .flatten
+    pages.each_with_object([]) do |page, grouped_pages|
+      next grouped_pages << page unless page.directory.present?
+
+      directory = grouped_pages.find { |dir| dir.slug == page.directory }
+
+      next directory.pages << page if directory
+
+      grouped_pages << WikiDirectory.new(page.directory, [page])
+    end
   end
 
   def self.unhyphenize(name)
