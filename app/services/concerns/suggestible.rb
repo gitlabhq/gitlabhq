@@ -2,9 +2,16 @@
 
 module Suggestible
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   # This translates into limiting suggestion changes to `suggestion:-100+100`.
   MAX_LINES_CONTEXT = 100.freeze
+
+  def diff_lines
+    strong_memoize(:diff_lines) do
+      Gitlab::Diff::SuggestionDiff.new(self).diff_lines
+    end
+  end
 
   def fetch_from_content
     diff_file.new_blob_lines_between(from_line, to_line).join

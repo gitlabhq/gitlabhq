@@ -61,6 +61,11 @@ export default {
       required: false,
       default: null,
     },
+    diffFile: {
+      type: Object,
+      required: false,
+      default: null,
+    },
     helpPagePath: {
       type: String,
       required: false,
@@ -102,9 +107,42 @@ export default {
       }
       return '#';
     },
+    diffParams() {
+      if (this.diffFile) {
+        return {
+          filePath: this.diffFile.file_path,
+          refs: this.diffFile.diff_refs,
+        };
+      } else if (this.note && this.note.position) {
+        return {
+          filePath: this.note.position.new_path,
+          refs: this.note.position,
+        };
+      } else if (this.discussion && this.discussion.diff_file) {
+        return {
+          filePath: this.discussion.diff_file.file_path,
+          refs: this.discussion.diff_file.diff_refs,
+        };
+      }
+
+      return null;
+    },
     markdownPreviewPath() {
       const notable = this.getNoteableDataByProp('preview_note_path');
-      return mergeUrlParams({ preview_suggestions: true }, notable);
+
+      const previewSuggestions = this.line && this.diffParams;
+      const params = previewSuggestions
+        ? {
+            preview_suggestions: previewSuggestions,
+            line: this.line.new_line,
+            file_path: this.diffParams.filePath,
+            base_sha: this.diffParams.refs.base_sha,
+            start_sha: this.diffParams.refs.start_sha,
+            head_sha: this.diffParams.refs.head_sha,
+          }
+        : {};
+
+      return mergeUrlParams(params, notable);
     },
     markdownDocsPath() {
       return this.getNotesDataByProp('markdownDocsPath');
@@ -234,8 +272,8 @@ export default {
           placeholder="Write a comment or drag your files here…"
           @keydown.meta.enter="handleKeySubmit()"
           @keydown.ctrl.enter="handleKeySubmit()"
-          @keydown.up="editMyLastNote()"
-          @keydown.esc="cancelHandler(true)"
+          @keydown.exact.up="editMyLastNote()"
+          @keydown.exact.esc="cancelHandler(true)"
           @input="onInput"
         ></textarea>
       </markdown-field>
