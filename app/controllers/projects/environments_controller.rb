@@ -10,6 +10,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
+  before_action only: [:metrics, :additional_metrics] do
+    push_frontend_feature_flag(:metrics_time_window)
+  end
 
   def index
     @environments = project.environments
@@ -146,7 +149,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   def additional_metrics
     respond_to do |format|
       format.json do
-        additional_metrics = environment.additional_metrics || {}
+        additional_metrics = environment.additional_metrics(*metrics_params) || {}
 
         render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
       end
@@ -184,6 +187,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def metrics_params
+    return unless Feature.enabled?(:metrics_time_window, project)
+    return unless params[:start].present? || params[:end].present?
+
+    params.require([:start, :end]).values_at(:start, :end)
   end
 
   def search_environment_names
