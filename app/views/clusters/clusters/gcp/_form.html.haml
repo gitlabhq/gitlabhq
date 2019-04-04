@@ -7,25 +7,27 @@
 - help_link_end = ' %{external_link_icon}</a>'.html_safe % { external_link_icon: external_link_icon }
 
 %p
-  - link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
-  = s_('ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
+  - link_to_help_page = link_to(s_('ClusterIntegration|help page'),
+    help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
+  = s_('ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration.').html_safe % { link_to_help_page: link_to_help_page }
 
 %p= link_to('Select a different Google account', @authorize_url)
 
-= form_for @gcp_cluster, html: { class: 'js-gke-cluster-creation prepend-top-20', data: { token: token_in_session } }, url: clusterable.create_gcp_clusters_path, as: :cluster do |field|
-  = form_errors(@gcp_cluster)
-  .form-group
-    = field.label :name, s_('ClusterIntegration|Kubernetes cluster name'), class: 'label-bold'
-    = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Kubernetes cluster name')
+= bootstrap_form_for @gcp_cluster, html: { class: 'gl-show-field-errors js-gke-cluster-creation prepend-top-20',
+  data: { token: token_in_session } }, url: clusterable.create_gcp_clusters_path, as: :cluster do |field|
+  = field.text_field :name, required: true, title: s_('ClusterIntegration|Cluster name is required.'),
+    label: s_('ClusterIntegration|Kubernetes cluster name'), label_class: 'label-bold'
   - if has_multiple_clusters?
-    .form-group
-      = field.label :environment_scope, s_('ClusterIntegration|Environment scope'), class: 'label-bold'
-      = field.text_field :environment_scope, class: 'form-control', placeholder: s_('ClusterIntegration|Environment scope')
+    = field.form_group :environment_scope, label: { text: s_('ClusterIntegration|Environment scope'),
+      class: 'label-bold' } do
+      = field.text_field :environment_scope, required: true, class: 'form-control',
+        title: 'Environment scope is required.', wrapper: false
       .form-text.text-muted= s_("ClusterIntegration|Choose which of your environments will use this cluster.")
 
   = field.fields_for :provider_gcp, @gcp_cluster.provider_gcp do |provider_gcp_field|
     .form-group
-      = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project'), class: 'label-bold'
+      = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project'),
+        class: 'label-bold'
       .js-gcp-project-id-dropdown-entry-point{ data: { docsUrl: 'https://console.cloud.google.com/home/dashboard' } }
         = provider_gcp_field.hidden_field :gcp_project_id
         .dropdown
@@ -47,9 +49,9 @@
       %p.form-text.text-muted
         = s_('ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}.').html_safe % { help_link_start: help_link_start % { url: zones_link_url }, help_link_end: help_link_end }
 
-    .form-group
-      = provider_gcp_field.label :num_nodes, s_('ClusterIntegration|Number of nodes'), class: 'label-bold'
-      = provider_gcp_field.text_field :num_nodes, class: 'form-control', placeholder: '3'
+    = provider_gcp_field.number_field :num_nodes, required: true, placeholder: '3',
+      title: s_('ClusterIntegration|Number of nodes must be a numerical value.'),
+      label: s_('ClusterIntegration|Number of nodes'), label_class: 'label-bold'
 
     .form-group
       = provider_gcp_field.label :machine_type, s_('ClusterIntegration|Machine type'), class: 'label-bold'
@@ -64,13 +66,14 @@
         = s_('ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}.').html_safe % { help_link_start_machine_type: help_link_start % { url: machine_type_link_url }, help_link_start_pricing: help_link_start % { url: pricing_link_url }, help_link_end: help_link_end }
 
     .form-group
-      .form-check
-        = provider_gcp_field.check_box :legacy_abac, { class: 'form-check-input' }, false, true
-        = provider_gcp_field.label :legacy_abac, s_('ClusterIntegration|RBAC-enabled cluster'), class: 'form-check-label label-bold'
-        .form-text.text-muted
-          = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).')
-          = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
-          = link_to _('More information'), help_page_path('user/project/clusters/index.md', anchor: 'role-based-access-control-rbac-core-only'), target: '_blank'
+      = provider_gcp_field.check_box :legacy_abac, { label: s_('ClusterIntegration|RBAC-enabled cluster'),
+        label_class: 'label-bold' }, false, true
+      .form-text.text-muted
+        = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).')
+        = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
+        = link_to _('More information'), help_page_path('user/project/clusters/index.md',
+          anchor: 'role-based-access-control-rbac-core-only'), target: '_blank'
 
     .form-group
-      = field.submit s_('ClusterIntegration|Create Kubernetes cluster'), class: 'js-gke-cluster-creation-submit btn btn-success', disabled: true
+      = field.submit s_('ClusterIntegration|Create Kubernetes cluster'),
+        class: 'js-gke-cluster-creation-submit btn btn-success', disabled: true
