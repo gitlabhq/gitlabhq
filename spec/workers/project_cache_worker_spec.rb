@@ -86,6 +86,10 @@ describe ProjectCacheWorker do
       it 'updates the project statistics' do
         stub_exclusive_lease(lease_key, timeout: lease_timeout)
 
+        expect(project.statistics).to receive(:refresh!)
+          .with(only: statistics.map(&:to_sym))
+          .and_call_original
+
         expect(UpdateProjectStatisticsWorker).to receive(:perform_in)
           .with(lease_timeout, project.id, statistics.map(&:to_sym))
           .and_call_original

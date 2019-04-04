@@ -26,10 +26,17 @@ class ProjectCacheWorker
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # NOTE: triggering both an immediate update and one in 15 minutes if we
+  # successfully obtain the lease. That way, we only need to wait for the
+  # statistics to become accurate if they were already updated once in the
+  # last 15 minutes.
   def update_statistics(project, statistics = [])
     return if Gitlab::Database.read_only?
     return unless try_obtain_lease_for(project.id, statistics)
 
+    Rails.logger.info("Updating statistics for project #{project.id}")
+
+    project.statistics.refresh!(only: statistics)
     UpdateProjectStatisticsWorker.perform_in(LEASE_TIMEOUT, project.id, statistics)
   end
 
