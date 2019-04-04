@@ -30,6 +30,6 @@ describe Gitlab::BackgroundMigration::MigrateStageIndex, :migration, schema: 201
 
     described_class.new.perform(100, 101)
 
-    expect(stages.all.pluck(:position)).to eq [2, 3]
+    expect(stages.all.order(:id).pluck(:position)).to eq [2, 3]
   end
 end
