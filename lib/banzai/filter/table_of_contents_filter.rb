@@ -18,6 +18,7 @@ module Banzai
     #          `li` child elements.
     class TableOfContentsFilter < HTML::Pipeline::Filter
       PUNCTUATION_REGEXP = /[^\p{Word}\- ]/u
+      LEADING_OR_TRAILING_SPACE_REGEXP = /^\p{Space}|\p{Space}$/
 
       def call
         return doc if context[:no_header_anchors]
@@ -31,6 +32,7 @@ module Banzai
           if header_content = node.children.first
             id = node
               .text
+              .gsub(LEADING_OR_TRAILING_SPACE_REGEXP, '') # remove leading and trailing spaces
               .downcase
               .gsub(PUNCTUATION_REGEXP, '') # remove punctuation
               .tr(' ', '-') # replace spaces with dash
