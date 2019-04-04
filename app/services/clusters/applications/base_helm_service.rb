@@ -19,11 +19,14 @@ module Clusters
           app_id: app.id,
           project_ids: app.cluster.project_ids,
           group_ids: app.cluster.group_ids,
-          message: error.message,
-          backtrace: Gitlab::Profiler.clean_backtrace(error.backtrace)
+          message: error.message
         }
 
-        logger.error(meta)
+        logger_meta = meta.merge(
+          backtrace: Gitlab::Profiler.clean_backtrace(error.backtrace)
+        )
+
+        logger.error(logger_meta)
         Gitlab::Sentry.track_acceptable_exception(error, extra: meta)
       end
 

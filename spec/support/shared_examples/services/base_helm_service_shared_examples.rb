@@ -5,7 +5,6 @@ shared_examples 'logs kubernetes errors' do
     {
       exception: error_name,
       message: error_message,
-      backtrace: instance_of(Array),
       service: service.class.name,
       app_id: application.id,
       project_ids: application.cluster.project_ids,
@@ -14,8 +13,14 @@ shared_examples 'logs kubernetes errors' do
     }
   end
 
+  let(:logger_hash) do
+    error_hash.merge(
+      backtrace: instance_of(Array)
+    )
+  end
+
   it 'logs into kubernetes.log and Sentry' do
-    expect(service.send(:logger)).to receive(:error).with(error_hash)
+    expect(service.send(:logger)).to receive(:error).with(logger_hash)
 
     expect(Gitlab::Sentry).to receive(:track_acceptable_exception).with(
       error,
