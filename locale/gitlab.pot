@@ -7417,6 +7417,9 @@ msgstr ""
 msgid "Sort by"
 msgstr ""
 
+msgid "Sort direction"
+msgstr ""
+
 msgid "SortOptions|Access level, ascending"
 msgstr ""
 
@@ -9197,6 +9200,9 @@ msgstr ""
 msgid "Wiki|Create page"
 msgstr ""
 
+msgid "Wiki|Created date"
+msgstr ""
+
 msgid "Wiki|Edit Page"
 msgstr ""
 
@@ -9213,6 +9219,9 @@ msgid "Wiki|Page version"
 msgstr ""
 
 msgid "Wiki|Pages"
+msgstr ""
+
+msgid "Wiki|Title"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"
