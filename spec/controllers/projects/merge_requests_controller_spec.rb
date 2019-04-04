@@ -60,6 +60,8 @@ describe Projects::MergeRequestsController do
       end
 
       it "renders merge request page" do
+        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
         go(format: :html)
 
         expect(response).to be_success
