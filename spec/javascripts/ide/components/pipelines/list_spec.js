@@ -11,6 +11,8 @@ describe('IDE pipelines list', () => {
   let vm;
   let mock;
 
+  const findLoadingState = () => vm.$el.querySelector('.loading-container');
+
   beforeEach(done => {
     const store = createStore();
 
@@ -95,7 +97,7 @@ describe('IDE pipelines list', () => {
 
   describe('empty state', () => {
     it('renders pipelines empty state', done => {
-      vm.$store.state.pipelines.latestPipeline = false;
+      vm.$store.state.pipelines.latestPipeline = null;
 
       vm.$nextTick(() => {
         expect(vm.$el.querySelector('.empty-state')).not.toBe(null);
@@ -106,15 +108,30 @@ describe('IDE pipelines list', () => {
   });
 
   describe('loading state', () => {
-    it('renders loading state when there is no latest pipeline', done => {
-      vm.$store.state.pipelines.latestPipeline = null;
+    beforeEach(() => {
       vm.$store.state.pipelines.isLoadingPipeline = true;
+    });
 
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.loading-container')).not.toBe(null);
+    it('does not render when pipeline has loaded before', done => {
+      vm.$store.state.pipelines.hasLoadedPipeline = true;
 
-        done();
-      });
+      vm.$nextTick()
+        .then(() => {
+          expect(findLoadingState()).toBe(null);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('renders loading state when there is no latest pipeline', done => {
+      vm.$store.state.pipelines.hasLoadedPipeline = false;
+
+      vm.$nextTick()
+        .then(() => {
+          expect(findLoadingState()).not.toBe(null);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });
