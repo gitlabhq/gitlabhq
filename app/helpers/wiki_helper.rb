@@ -47,4 +47,24 @@ module WikiHelper
   def wiki_attachment_upload_url
     expose_url(api_v4_projects_wikis_attachments_path(id: @project.id))
   end
+
+  def wiki_sort_controls(project, sort, direction)
+    sort ||= ProjectWiki::TITLE_ORDER
+    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
+    reversed_direction = direction == 'desc' ? 'asc' : 'desc'
+    icon_class = direction == 'desc' ? 'highest' : 'lowest'
+
+    link_to(project_wikis_pages_path(project, sort: sort, direction: reversed_direction),
+      type: 'button', class: link_class, title: _('Sort direction')) do
+      sprite_icon("sort-#{icon_class}", size: 16)
+    end
+  end
+
+  def wiki_sort_title(key)
+    if key == ProjectWiki::CREATED_AT_ORDER
+      s_("Wiki|Created date")
+    else
+      s_("Wiki|Title")
+    end
+  end
 end

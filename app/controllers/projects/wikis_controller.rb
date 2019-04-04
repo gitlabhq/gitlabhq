@@ -16,7 +16,10 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def pages
-    @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page])
+    @wiki_pages = Kaminari.paginate_array(
+      @project_wiki.pages(sort: params[:sort], direction: params[:direction])
+    ).page(params[:page])
+
     @wiki_entries = WikiPage.group_by_directory(@wiki_pages)
   end
 

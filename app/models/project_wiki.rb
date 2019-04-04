@@ -13,6 +13,11 @@ class ProjectWiki
   CouldNotCreateWikiError = Class.new(StandardError)
   SIDEBAR = '_sidebar'
 
+  TITLE_ORDER = 'title'
+  CREATED_AT_ORDER = 'created_at'
+  DIRECTION_DESC = 'desc'
+  DIRECTION_ASC = 'asc'
+
   # Returns a string describing what went wrong after
   # an operation fails.
   attr_reader :error_message
@@ -82,8 +87,15 @@ class ProjectWiki
 
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def pages(limit: 0)
-    wiki.pages(limit: limit).map { |page| WikiPage.new(self, page, true) }
+  def pages(limit: 0, sort: nil, direction: DIRECTION_ASC)
+    sort ||= TITLE_ORDER
+    direction_desc = direction == DIRECTION_DESC
+
+    wiki.pages(
+      limit: limit, sort: sort, direction_desc: direction_desc
+    ).map do |page|
+      WikiPage.new(self, page, true)
+    end
   end
 
   # Finds a page within the repository based on a tile
