@@ -1,0 +1,5 @@
+---
+title: Removes the undescriptive CI Charts header
+merge_request: !26869
+author:
+type: changed

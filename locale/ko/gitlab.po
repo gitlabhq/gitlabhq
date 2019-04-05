@@ -359,9 +359,6 @@ msgstr ""
 msgid "A Jekyll site that uses Netlify for CI/CD instead of GitLab, but still with all the other great GitLab features."
 msgstr ""
 
-msgid "A collection of graphs regarding Continuous Integration"
-msgstr "지속적인 통합에 관한 그래프 모음"
-
 msgid "A default branch cannot be chosen for an empty project."
 msgstr "빈 프로젝트에서는 기본 브랜치를 선택할 수 없습니다."
 
