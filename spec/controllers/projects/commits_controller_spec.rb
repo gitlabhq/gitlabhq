@@ -113,6 +113,8 @@ describe Projects::CommitsController do
       render_views
 
       before do
+        expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original unless id.include?(' ')
+
         get(:signatures,
             params: {
               namespace_id: project.namespace,
