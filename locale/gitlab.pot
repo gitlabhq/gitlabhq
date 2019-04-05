@@ -393,6 +393,9 @@ msgstr ""
 msgid "Access forbidden. Check your access level."
 msgstr ""
 
+msgid "Access to '%{classification_label}' not allowed"
+msgstr ""
+
 msgid "Account"
 msgstr ""
 
@@ -1656,6 +1659,9 @@ msgstr ""
 msgid "CiVariable|Validation failed"
 msgstr ""
 
+msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
+msgstr ""
+
 msgid "Clear"
 msgstr ""
 
@@ -1684,6 +1690,15 @@ msgid "Click to expand it."
 msgstr ""
 
 msgid "Click to expand text"
+msgstr ""
+
+msgid "Client authentication certificate"
+msgstr ""
+
+msgid "Client authentication key"
+msgstr ""
+
+msgid "Client authentication key password"
 msgstr ""
 
 msgid "Clients"
@@ -2723,6 +2738,9 @@ msgstr ""
 msgid "Default artifacts expiration"
 msgstr ""
 
+msgid "Default classification label"
+msgstr ""
+
 msgid "Default first day of the week"
 msgstr ""
 
@@ -3131,6 +3149,9 @@ msgid "Enable and configure InfluxDB metrics."
 msgstr ""
 
 msgid "Enable and configure Prometheus metrics."
+msgstr ""
+
+msgid "Enable classification control using an external service"
 msgstr ""
 
 msgid "Enable error tracking"
@@ -3559,10 +3580,31 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+msgid "External Classification Policy Authorization"
+msgstr ""
+
 msgid "External URL"
 msgstr ""
 
 msgid "External Wiki"
+msgstr ""
+
+msgid "External authentication"
+msgstr ""
+
+msgid "External authorization denied access to this project"
+msgstr ""
+
+msgid "External authorization request timeout"
+msgstr ""
+
+msgid "ExternalAuthorizationService|Classification Label"
+msgstr ""
+
+msgid "ExternalAuthorizationService|Classification label"
+msgstr ""
+
+msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
 msgid "Facebook"
@@ -4269,6 +4311,9 @@ msgid "If disabled, the access level will depend on the user's permissions in th
 msgstr ""
 
 msgid "If enabled"
+msgstr ""
+
+msgid "If enabled, access to projects will be validated on an external service using their classification label."
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
@@ -7241,6 +7286,9 @@ msgstr ""
 msgid "Service Templates"
 msgstr ""
 
+msgid "Service URL"
+msgstr ""
+
 msgid "Session duration (minutes)"
 msgstr ""
 
@@ -7956,6 +8004,9 @@ msgstr ""
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr ""
 
+msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
+msgstr ""
+
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
@@ -8031,6 +8082,9 @@ msgstr ""
 msgid "The name %{entryName} is already taken in this directory."
 msgstr ""
 
+msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
+msgstr ""
+
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
 msgstr ""
 
@@ -8041,6 +8095,9 @@ msgid "The pipelines schedule runs pipelines in the future, repeatedly, for spec
 msgstr ""
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
+msgstr ""
+
+msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
 msgstr ""
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
@@ -8407,6 +8464,9 @@ msgid "Time between merge request creation and merge/close"
 msgstr ""
 
 msgid "Time estimate"
+msgstr ""
+
+msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
 msgstr ""
 
 msgid "Time remaining"
@@ -9181,6 +9241,9 @@ msgstr ""
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr ""
 
+msgid "When leaving the URL blank, classification labels can still be specified without disabling cross project features or performing external authorization checks."
+msgstr ""
+
 msgid "When:"
 msgstr ""
 
@@ -9685,6 +9748,9 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
+msgid "could not read private key, is the passphrase correct?"
+msgstr ""
+
 msgid "customize"
 msgstr ""
 
@@ -9771,6 +9837,9 @@ msgid "in project %{link_to_project}"
 msgstr ""
 
 msgid "index"
+msgstr ""
+
+msgid "is not a valid X509 certificate."
 msgstr ""
 
 msgid "issue boards"
@@ -10053,6 +10122,9 @@ msgid "personal access token"
 msgstr ""
 
 msgid "private"
+msgstr ""
+
+msgid "private key does not match certificate."
 msgstr ""
 
 msgid "processing"

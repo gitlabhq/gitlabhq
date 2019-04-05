@@ -13,13 +13,17 @@ describe Dashboard::LabelsController do
   describe "#index" do
     let!(:unrelated_label) { create(:label, project: create(:project, :public)) }
 
+    subject { get :index, format: :json }
+
     it 'returns global labels for projects the user has a relationship with' do
-      get :index, format: :json
+      subject
 
       expect(json_response).to be_kind_of(Array)
       expect(json_response.size).to eq(1)
       expect(json_response[0]["id"]).to be_nil
       expect(json_response[0]["title"]).to eq(label.title)
     end
+
+    it_behaves_like 'disabled when using an external authorization service'
   end
 end
