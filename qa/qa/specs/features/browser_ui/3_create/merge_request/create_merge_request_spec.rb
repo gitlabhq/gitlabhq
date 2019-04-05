@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/50
+  context 'Create', :quarantine do
     describe 'Merge request creation' do
       it 'user creates a new merge request', :smoke do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
