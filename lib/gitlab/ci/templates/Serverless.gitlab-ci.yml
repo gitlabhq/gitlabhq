@@ -4,6 +4,7 @@ image: alpine:latest
 
 stages:
   - build
+  - test
   - deploy
 
 .serverless:build:image:
