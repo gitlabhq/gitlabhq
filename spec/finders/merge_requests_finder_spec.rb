@@ -83,6 +83,14 @@ describe MergeRequestsFinder do
         expect(merge_requests).to contain_exactly(merge_request2)
       end
 
+      it 'filters by source project id' do
+        params = { source_project_id: merge_request2.source_project_id }
+
+        merge_requests = described_class.new(user, params).execute
+
+        expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3)
+      end
+
       it 'filters by state' do
         params = { state: 'locked' }
 

@@ -4,10 +4,11 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import { activityBarViews } from '../../constants';
 
-export const getMergeRequestsForBranch = ({ commit }, { projectId, branchId } = {}) =>
+export const getMergeRequestsForBranch = ({ commit, state }, { projectId, branchId } = {}) =>
   service
     .getProjectMergeRequests(`${projectId}`, {
       source_branch: branchId,
+      source_project_id: state.projects[projectId].id,
       order_by: 'created_at',
       per_page: 1,
     })
