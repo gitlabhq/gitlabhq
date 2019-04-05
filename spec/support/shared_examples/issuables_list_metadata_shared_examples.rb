@@ -1,11 +1,11 @@
 shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
   include ProjectForksHelper
 
-  def get_action(action, project)
+  def get_action(action, project, extra_params = {})
     if action
-      get action, params: { author_id: project.creator.id }
+      get action, params: { author_id: project.creator.id }.merge(extra_params)
     else
-      get :index, params: { namespace_id: project.namespace, project_id: project }
+      get :index, params: { namespace_id: project.namespace, project_id: project }.merge(extra_params)
     end
   end
 
@@ -17,11 +17,13 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     end
   end
 
-  before do
-    @issuable_ids = %w[fix improve/awesome].map do |source_branch|
-      create_issuable(issuable_type, project, source_branch: source_branch).id
+  let!(:issuables) do
+    %w[fix improve/awesome].map do |source_branch|
+      create_issuable(issuable_type, project, source_branch: source_branch)
     end
   end
+
+  let(:issuable_ids) { issuables.map(&:id) }
 
   it "creates indexed meta-data object for issuable notes and votes count" do
     get_action(action, project)
@@ -29,8 +31,27 @@ shared_examples 'issuables list meta-data' do |issuable_type, action = nil|
     meta_data = assigns(:issuable_meta_data)
 
     aggregate_failures do
-      expect(meta_data.keys).to match_array(@issuable_ids)
+      expect(meta_data.keys).to match_array(issuables.map(&:id))
       expect(meta_data.values).to all(be_kind_of(Issuable::IssuableMeta))
+    end
+  end
+
+  context 'searching' do
+    let(:result_issuable) { issuables.first }
+    let(:search) { result_issuable.title }
+
+    before do
+      stub_feature_flags(attempt_project_search_optimizations: true)
+    end
+
+    # .simple_sorts is the same across all Sortable classes
+    sorts = ::Issue.simple_sorts.keys + %w[popularity priority label_priority]
+    sorts.each do |sort|
+      it "works when sorting by #{sort}" do
+        get_action(action, project, search: search, sort: sort)
+
+        expect(assigns(:issuable_meta_data).keys).to include(result_issuable.id)
+      end
     end
   end
 
