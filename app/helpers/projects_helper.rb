@@ -303,6 +303,16 @@ module ProjectsHelper
     @path.present?
   end
 
+  def external_classification_label_help_message
+    default_label = ::Gitlab::CurrentSettings.current_application_settings
+                      .external_authorization_service_default_label
+
+    s_(
+      "ExternalAuthorizationService|When no classification label is set the "\
+        "default label `%{default_label}` will be used."
+    ) % { default_label: default_label }
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)

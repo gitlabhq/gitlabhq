@@ -81,5 +81,11 @@ describe Dashboard::MilestonesController do
       expect(response.body).to include("Open\n<span class=\"badge badge-pill\">2</span>")
       expect(response.body).to include("Closed\n<span class=\"badge badge-pill\">0</span>")
     end
+
+    context 'external authorization' do
+      subject { get :index }
+
+      it_behaves_like 'disabled when using an external authorization service'
+    end
   end
 end
