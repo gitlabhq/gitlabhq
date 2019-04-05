@@ -8,7 +8,7 @@
   .form-group.row.group-description-holder
     = f.label :avatar, _("Group avatar"), class: 'col-form-label col-sm-2'
     .col-sm-10
-      = render 'shared/choose_group_avatar_button', f: f
+      = render 'shared/choose_avatar_button', f: f
 
   = render 'shared/old_visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 
