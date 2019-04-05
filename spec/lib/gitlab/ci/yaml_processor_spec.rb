@@ -615,6 +615,14 @@ module Gitlab
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config), opts) }
 
         context "when validating a ci config file with no project context" do
+          context "when a single string is provided" do
+            let(:include_content) { "/local.gitlab-ci.yml" }
+
+            it "does not return any error" do
+              expect { subject }.not_to raise_error
+            end
+          end
+
           context "when an array is provided" do
             let(:include_content) { ["/local.gitlab-ci.yml"] }
 

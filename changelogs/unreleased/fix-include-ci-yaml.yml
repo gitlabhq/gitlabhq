@@ -1,0 +1,5 @@
+---
+title: Fix single string values for the 'include' keyword validation of gitlab-ci.yml.
+merge_request: 26998
+author: Paul Bonaud (@paulrbr)
+type: fixed
