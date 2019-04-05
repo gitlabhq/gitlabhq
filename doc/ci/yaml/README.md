@@ -2362,8 +2362,35 @@ variables:
   GIT_STRATEGY: clone
   GIT_CHECKOUT: "false"
 script:
-  - git checkout master
-  - git merge $CI_BUILD_REF_NAME
+  - git checkout -B master origin/master
+  - git merge $CI_COMMIT_SHA
+```
+
+#### Git clean flags
+
+> Introduced in GitLab Runner 11.10
+
+The `GIT_CLEAN_FLAGS` variable is used to control the default behavior of
+`git clean` after checking out the sources. You can set it globally or per-job in the
+[`variables`](#variables) section.
+
+`GIT_CLEAN_FLAGS` accepts all possible options of the [git clean](https://git-scm.com/docs/git-clean)
+command.
+
+`git clean` is disabled if `GIT_CHECKOUT: "false"` is specified.
+
+If `GIT_CLEAN_FLAGS` is:
+
+- Not specified, `git clean` flags default to `-ffdx`.
+- Given the value `none`, `git clean` is not executed.
+
+For example:
+
+```yaml
+variables:
+  GIT_CLEAN_FLAGS: -ffdx -e cache/
+script:
+  - ls -al cache/
 ```
 
 #### Job stages attempts
@@ -2438,6 +2465,72 @@ Use [`stages`](#stages) instead.
 CAUTION: **Deprecated:**
 `type` is deprecated, and could be removed in one of the future releases.
 Use [`stage`](#stage) instead.
+
+## Custom build directories
+
+> [Introduced][https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1267] in Gitlab Runner 11.10
+
+NOTE: **Note:**
+This can only be used when `custom_build_dir` is enabled in the [Runner's
+configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscustom_build_dir-section).
+This is the default configuration for `docker` and `kubernetes` executor.
+
+By default, GitLab Runner clones the repository in a unique subpath of the `$CI_BUILDS_DIR` directory.
+However, sometimes your project might require the code in a specific directory,
+but sometimes your project might require to have the code in a specific directory,
+like Go projects, for example. In that case, you can specify the `GIT_CLONE_PATH` variable
+to tell the Runner in which directory to clone the repository:
+
+```yml
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/project-name
+
+test:
+  script:
+    - pwd
+```
+
+The `GIT_CLONE_PATH` has to always be within `$CI_BUILDS_DIR`. The directory set in `$CI_BUILDS_DIR`
+is dependent on executor and configuration of [runners.builds_dir](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+setting.
+
+### Handling concurrency
+
+An executor using a concurrency greater than `1` might lead
+to failures because multiple jobs might be working on the same directory if the `builds_dir`
+is shared between jobs.
+GitLab Runner does not try to prevent this situation. It is up to the administrator
+and developers to comply with the requirements of Runner configuration.
+
+To avoid this scenario, you can use a unique path within `$CI_BUILDS_DIR`, because Runner
+exposes two additional variables that provide a unique `ID` of concurrency:
+
+- `$CI_CONCURRENT_ID`: Unique ID for all jobs running within the given executor.
+- `$CI_CONCURRENT_PROJECT_ID`: Unique ID for all jobs running within the given executor and project.
+
+The most stable configuration that should work well in any scenario and on any executor
+is to use `$CI_CONCURRENT_ID` in the `GIT_CLONE_PATH`. For example:
+
+```yml
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/project-name
+
+test:
+  script:
+    - pwd
+```
+
+The `$CI_CONCURRENT_PROJECT_ID` should be used in conjunction with `$CI_PROJECT_PATH`
+as the `$CI_PROJECT_PATH` provides a path of a repository. That is, `group/subgroup/project`. For example:
+
+```yml
+variables:
+  GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_PATH
+
+test:
+  script:
+    - pwd
+```
 
 ## Special YAML features
 
