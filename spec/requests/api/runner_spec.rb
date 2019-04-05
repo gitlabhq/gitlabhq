@@ -470,11 +470,11 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             expect(json_response['token']).to eq(job.token)
             expect(json_response['job_info']).to eq(expected_job_info)
             expect(json_response['git_info']).to eq(expected_git_info)
-            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh' })
+            expect(json_response['image']).to eq({ 'name' => 'ruby:2.1', 'entrypoint' => '/bin/sh', 'ports' => [] })
             expect(json_response['services']).to eq([{ 'name' => 'postgres', 'entrypoint' => nil,
-                                                       'alias' => nil, 'command' => nil },
+                                                       'alias' => nil, 'command' => nil, 'ports' => [] },
                                                      { 'name' => 'docker:stable-dind', 'entrypoint' => '/bin/sh',
-                                                       'alias' => 'docker', 'command' => 'sleep 30' }])
+                                                       'alias' => 'docker', 'command' => 'sleep 30', 'ports' => [] }])
             expect(json_response['steps']).to eq(expected_steps)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to eq(expected_cache)
@@ -849,6 +849,56 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                   expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
                 end
               end
+            end
+          end
+        end
+
+        describe 'port support' do
+          let(:job) { create(:ci_build, pipeline: pipeline, options: options) }
+
+          context 'when job image has ports' do
+            let(:options) do
+              {
+                image: {
+                  name: 'ruby',
+                  ports: [80]
+                },
+                services: ['mysql']
+              }
+            end
+
+            it 'returns the image ports' do
+              request_job
+
+              expect(response).to have_http_status(:created)
+              expect(json_response).to include(
+                'id' => job.id,
+                'image' => a_hash_including('name' => 'ruby', 'ports' => [{ 'number' => 80, 'protocol' => 'http', 'name' => 'default_port' }]),
+                'services' => all(a_hash_including('name' => 'mysql')))
+            end
+          end
+
+          context 'when job services settings has ports' do
+            let(:options) do
+              {
+                image: 'ruby',
+                services: [
+                  {
+                    name: 'tomcat',
+                    ports: [{ number: 8081, protocol: 'http', name: 'custom_port' }]
+                  }
+                ]
+              }
+            end
+
+            it 'returns the service ports' do
+              request_job
+
+              expect(response).to have_http_status(:created)
+              expect(json_response).to include(
+                'id' => job.id,
+                'image' => a_hash_including('name' => 'ruby'),
+                'services' => all(a_hash_including('name' => 'tomcat', 'ports' => [{ 'number' => 8081, 'protocol' => 'http', 'name' => 'custom_port' }])))
             end
           end
         end

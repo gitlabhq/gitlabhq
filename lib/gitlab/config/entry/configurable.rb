@@ -21,7 +21,7 @@ module Gitlab
           include Validatable
 
           validations do
-            validates :config, type: Hash
+            validates :config, type: Hash, unless: :skip_config_hash_validation?
           end
         end
 
@@ -30,6 +30,10 @@ module Gitlab
           return unless valid?
 
           self.class.nodes.each do |key, factory|
+            # If we override the config type validation
+            # we can end with different config types like String
+            next unless config.is_a?(Hash)
+
             factory
               .value(config[key])
               .with(key: key, parent: self)
@@ -44,6 +48,10 @@ module Gitlab
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord
+
+        def skip_config_hash_validation?
+          false
+        end
 
         class_methods do
           def nodes

@@ -1,5 +1,0 @@
----
-title: Fix API /project/:id/branches not returning correct merge status
-merge_request: 26785
-author:
-type: fixed

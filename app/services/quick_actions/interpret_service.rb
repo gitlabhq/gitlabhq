@@ -96,14 +96,27 @@ module QuickActions
     end
 
     def find_labels(labels_params = nil)
+      extract_references(labels_params, :label) | find_labels_by_name_no_tilde(labels_params)
+    end
+
+    def find_labels_by_name_no_tilde(labels_params)
+      return Label.none if label_with_tilde?(labels_params)
+
       finder_params = { include_ancestor_groups: true }
       finder_params[:project_id] = project.id if project
       finder_params[:group_id] = group.id if group
-      finder_params[:name] = labels_params.split if labels_params
+      finder_params[:name] = extract_label_names(labels_params) if labels_params
 
-      result = LabelsFinder.new(current_user, finder_params).execute
+      LabelsFinder.new(current_user, finder_params).execute
+    end
 
-      extract_references(labels_params, :label) | result
+    def label_with_tilde?(labels_params)
+      labels_params&.include?('~')
+    end
+
+    def extract_label_names(labels_params)
+      # '"A" "A B C" A B' => ["A", "A B C", "A", "B"]
+      labels_params.scan(/"([^"]+)"|([^ ]+)/).flatten.compact
     end
 
     def find_label_references(labels_param)

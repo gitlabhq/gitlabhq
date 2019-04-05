@@ -7,6 +7,7 @@
     "eslint-fix": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",
     "jest": "BABEL_ENV=jest jest",
+    "jest-debug": "BABEL_ENV=jest node --inspect-brk node_modules/.bin/jest --runInBand",
     "jsdoc": "jsdoc -c config/jsdocs.config.js",
     "karma": "BABEL_ENV=${BABEL_ENV:=karma} karma start --single-run true config/karma.config.js",
     "karma-coverage": "BABEL_ENV=coverage karma start --single-run true config/karma.config.js",

@@ -12,7 +12,7 @@
             = @project.name
             %span.visibility-icon.text-secondary.prepend-left-4.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
               = visibility_level_icon(@project.visibility_level, fw: false, options: {class: 'icon'})
-        .home-panel-metadata.d-flex.align-items-center.text-secondary
+        .home-panel-metadata.d-flex.flex-wrap.text-secondary
           - if can?(current_user, :read_project, @project)
             %span.text-secondary
               = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
@@ -20,7 +20,7 @@
             %span.access-request-links.prepend-left-8
               = render 'shared/members/access_request_links', source: @project
           - if @project.tag_list.present?
-            %span.home-panel-topic-list.d-inline-flex.prepend-left-8
+            %span.home-panel-topic-list.mt-2.w-100.d-inline-flex
               = sprite_icon('tag', size: 16, css_class: 'icon append-right-4')
 
               - @project.topics_to_show.each do |topic|

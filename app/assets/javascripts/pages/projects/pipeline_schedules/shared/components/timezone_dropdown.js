@@ -1,17 +1,33 @@
-/* eslint-disable class-methods-use-this */
-
-import $ from 'jquery';
-
 const defaultTimezone = 'UTC';
 
+export const formatUtcOffset = offset => {
+  const parsed = parseInt(offset, 10);
+  if (Number.isNaN(parsed) || parsed === 0) {
+    return `0`;
+  }
+  const prefix = offset > 0 ? '+' : '-';
+  return `${prefix} ${Math.abs(offset / 3600)}`;
+};
+
+export const formatTimezone = item => `[UTC ${formatUtcOffset(item.offset)}] ${item.name}`;
+
+const defaults = {
+  $inputEl: null,
+  $dropdownEl: null,
+  onSelectTimezone: null,
+};
+
 export default class TimezoneDropdown {
-  constructor() {
-    this.$dropdown = $('.js-timezone-dropdown');
+  constructor({ $dropdownEl, $inputEl, onSelectTimezone } = defaults) {
+    this.$dropdown = $dropdownEl;
     this.$dropdownToggle = this.$dropdown.find('.dropdown-toggle-text');
-    this.$input = $('#schedule_cron_timezone');
+    this.$input = $inputEl;
     this.timezoneData = this.$dropdown.data('data');
+
     this.initDefaultTimezone();
     this.initDropdown();
+
+    this.onSelectTimezone = onSelectTimezone;
   }
 
   initDropdown() {
@@ -24,26 +40,10 @@ export default class TimezoneDropdown {
         fields: ['name'],
       },
       clicked: cfg => this.updateInputValue(cfg),
-      text: item => this.formatTimezone(item),
+      text: item => formatTimezone(item),
     });
 
     this.setDropdownToggle();
-  }
-
-  formatUtcOffset(offset) {
-    let prefix = '';
-
-    if (offset > 0) {
-      prefix = '+';
-    } else if (offset < 0) {
-      prefix = '-';
-    }
-
-    return `${prefix} ${Math.abs(offset / 3600)}`;
-  }
-
-  formatTimezone(item) {
-    return `[UTC ${this.formatUtcOffset(item.offset)}] ${item.name}`;
   }
 
   initDefaultTimezone() {
@@ -56,13 +56,14 @@ export default class TimezoneDropdown {
 
   setDropdownToggle() {
     const initialValue = this.$input.val();
-
     this.$dropdownToggle.text(initialValue);
   }
 
   updateInputValue({ selectedObj, e }) {
     e.preventDefault();
     this.$input.val(selectedObj.identifier);
-    gl.pipelineScheduleFieldErrors.updateFormValidityState();
+    if (this.onSelectTimezone) {
+      this.onSelectTimezone({ selectedObj, e });
+    }
   }
 }

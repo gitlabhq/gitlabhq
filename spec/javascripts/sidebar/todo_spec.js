@@ -116,7 +116,7 @@ describe('SidebarTodo', () => {
       const dataAttributes = {
         issuableId: '1',
         issuableType: 'epic',
-        originalTitle: 'Mark todo as done',
+        originalTitle: '',
         placement: 'left',
         container: 'body',
         boundary: 'viewport',
@@ -128,6 +128,10 @@ describe('SidebarTodo', () => {
       Object.keys(elDataAttrs).forEach(attr => {
         expect(elDataAttrs[attr]).toBe(dataAttributes[attr]);
       });
+    });
+
+    it('check button label computed property', () => {
+      expect(vm.buttonLabel).toEqual('Mark todo as done');
     });
 
     it('renders button label element when `collapsed` prop is `false`', () => {

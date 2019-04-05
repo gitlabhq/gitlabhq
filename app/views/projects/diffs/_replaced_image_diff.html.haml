@@ -37,7 +37,7 @@
     .swipe-frame
       .frame.deleted
         = image_tag(old_blob_raw_url, alt: diff_file.old_path, lazy: false)
-      .swipe-wrap
+      .swipe-wrap.left-oriented
         = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "added js-image-frame #{class_name}", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.new_path }
       %span.swipe-bar
         %span.top-handle

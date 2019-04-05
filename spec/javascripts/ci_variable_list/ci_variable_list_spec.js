@@ -127,20 +127,25 @@ describe('VariableList', () => {
       variableList.init();
     });
 
-    it('should add another row when editing the last rows protected checkbox', done => {
+    it('should not add another row when editing the last rows protected checkbox', done => {
       const $row = $wrapper.find('.js-row:last-child');
       $row.find('.ci-variable-protected-item .js-project-feature-toggle').click();
 
       getSetTimeoutPromise()
         .then(() => {
-          expect($wrapper.find('.js-row').length).toBe(2);
+          expect($wrapper.find('.js-row').length).toBe(1);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
 
-          // Check for the correct default in the new row
-          const $protectedInput = $wrapper
-            .find('.js-row:last-child')
-            .find('.js-ci-variable-input-protected');
+    it('should not add another row when editing the last rows masked checkbox', done => {
+      const $row = $wrapper.find('.js-row:last-child');
+      $row.find('.ci-variable-masked-item .js-project-feature-toggle').click();
 
-          expect($protectedInput.val()).toBe('false');
+      getSetTimeoutPromise()
+        .then(() => {
+          expect($wrapper.find('.js-row').length).toBe(1);
         })
         .then(done)
         .catch(done.fail);

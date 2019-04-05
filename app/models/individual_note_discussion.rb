@@ -14,7 +14,7 @@ class IndividualNoteDiscussion < Discussion
   end
 
   def can_convert_to_discussion?
-    noteable.supports_replying_to_individual_notes? && Feature.enabled?(:reply_to_individual_notes, default_enabled: true)
+    noteable.supports_replying_to_individual_notes?
   end
 
   def convert_to_discussion!(save: false)

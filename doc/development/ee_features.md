@@ -943,7 +943,7 @@ import mixin from 'ee_else_ce/path/mixin';
 
 
 ```html
-  <ul v-if="renderIfEE">
+  <ul v-if="ifEE">
     <li>One wrapped</li>
     <li>element</li>
     <li>that is rendered</li>
@@ -962,7 +962,7 @@ For regular JS files, the approach is similar.
 
 ```javascript
 import { ifEE } from '~/lib/utils/common_utils'
-if (renderIfEE) {
+if (ifEE) {
   $('.js-import-git-toggle-button').on('click', () => {
     const $projectMirror = $('#project_mirror');
 
@@ -976,7 +976,7 @@ if (renderIfEE) {
 To separate EE-specific styles in SCSS files, if a component you're adding styles for
 is limited to only EE, it is better to have a separate SCSS file in appropriate directory
 within `app/assets/stylesheets`.
-See [backporting changes](#backporting-changes-from-EE-to-CE) for instructions on how to merge changes safely.
+See [backporting changes](#backporting-changes-from-ee-to-ce) for instructions on how to merge changes safely.
 
 In some cases, this is not entirely possible or creating dedicated SCSS file is an overkill,
 e.g. a text style of some component is different for EE. In such cases,

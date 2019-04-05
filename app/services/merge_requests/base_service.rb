@@ -55,15 +55,7 @@ module MergeRequests
     end
 
     def create_pipeline_for(merge_request, user)
-      return unless Feature.enabled?(:ci_merge_request_pipeline,
-                                     merge_request.source_project,
-                                     default_enabled: true)
-
-      ##
-      # UpdateMergeRequestsWorker could be retried by an exception.
-      # MR pipelines should not be recreated in such case.
-      return if merge_request.merge_request_pipeline_exists?
-      return if merge_request.has_no_commits?
+      return unless can_create_pipeline_for?(merge_request)
 
       create_detached_merge_request_pipeline(merge_request, user)
     end
@@ -78,6 +70,16 @@ module MergeRequests
                                       ref: merge_request.source_branch)
           .execute(:merge_request_event, merge_request: merge_request)
       end
+    end
+
+    def can_create_pipeline_for?(merge_request)
+      ##
+      # UpdateMergeRequestsWorker could be retried by an exception.
+      # pipelines for merge request should not be recreated in such case.
+      return false if merge_request.merge_request_pipeline_exists?
+      return false if merge_request.has_no_commits?
+
+      true
     end
 
     def can_use_merge_request_ref?(merge_request)

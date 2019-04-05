@@ -7,12 +7,15 @@
 - value = variable&.value
 - is_protected_default = ci_variable_protected_by_default?
 - is_protected = ci_variable_protected?(variable, only_key_value)
+- is_masked_default = true
+- is_masked = ci_variable_masked?(variable, only_key_value)
 
 - id_input_name = "#{form_field}[variables_attributes][][id]"
 - destroy_input_name = "#{form_field}[variables_attributes][][_destroy]"
 - key_input_name = "#{form_field}[variables_attributes][][key]"
 - value_input_name = "#{form_field}[variables_attributes][][secret_value]"
 - protected_input_name = "#{form_field}[variables_attributes][][protected]"
+- masked_input_name = "#{form_field}[variables_attributes][][masked]"
 
 %li.js-row.ci-variable-row{ data: { is_persisted: "#{!id.nil?}" } }
   .ci-variable-row-body
@@ -22,7 +25,7 @@
       name: key_input_name,
       value: key,
       placeholder: s_('CiVariables|Input variable key') }
-    .ci-variable-body-item
+    .ci-variable-body-item.gl-show-field-errors
       .form-control.js-secret-value-placeholder.qa-ci-variable-input-value{ class: ('hide' unless id) }
         = '*' * 20
       %textarea.js-ci-variable-input-value.js-secret-value.qa-ci-variable-input-value.form-control{ class: ('hide' if id),
@@ -30,6 +33,7 @@
         name: value_input_name,
         placeholder: s_('CiVariables|Input variable value') }
         = value
+      %p.masking-validation-error.gl-field-error.hide= s_("CiVariables|This variable will not be masked")
     - unless only_key_value
       .ci-variable-body-item.ci-variable-protected-item
         .append-right-default
@@ -42,6 +46,20 @@
             name: protected_input_name,
             value: is_protected,
             data: { default: is_protected_default.to_s } }
+          %span.toggle-icon
+            = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
+            = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
+      .ci-variable-body-item.ci-variable-masked-item
+        .append-right-default
+          = s_("CiVariable|Masked")
+        %button{ type: 'button',
+          class: "js-project-feature-toggle project-feature-toggle #{'is-checked' if is_masked}",
+          "aria-label": s_("CiVariable|Toggle masked") }
+          %input{ type: "hidden",
+            class: 'js-ci-variable-input-masked js-project-feature-toggle-input',
+            name: masked_input_name,
+            value: is_masked,
+            data: { default: is_masked_default.to_s } }
           %span.toggle-icon
             = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
             = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')

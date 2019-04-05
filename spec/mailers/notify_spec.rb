@@ -30,6 +30,19 @@ describe Notify do
                    description: 'My awesome description!')
   end
 
+  describe 'with HTML-encoded entities' do
+    before do
+      described_class.test_email('test@test.com', 'Subject', 'Some body with &mdash;').deliver
+    end
+
+    subject { ActionMailer::Base.deliveries.last }
+
+    it 'retains 7bit encoding' do
+      expect(subject.body.ascii_only?).to eq(true)
+      expect(subject.body.encoding).to eq('7bit')
+    end
+  end
+
   context 'for a project' do
     shared_examples 'an assignee email' do
       it 'is sent to the assignee as the author' do

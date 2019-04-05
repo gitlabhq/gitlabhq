@@ -15,6 +15,16 @@ describe('MRWidgetHeader', () => {
     gon.relative_url_root = '';
   });
 
+  const expectDownloadDropdownItems = () => {
+    const downloadEmailPatchesEl = vm.$el.querySelector('.js-download-email-patches');
+    const downloadPlainDiffEl = vm.$el.querySelector('.js-download-plain-diff');
+
+    expect(downloadEmailPatchesEl.textContent.trim()).toEqual('Email patches');
+    expect(downloadEmailPatchesEl.getAttribute('href')).toEqual('/mr/email-patches');
+    expect(downloadPlainDiffEl.textContent.trim()).toEqual('Plain diff');
+    expect(downloadPlainDiffEl.getAttribute('href')).toEqual('/mr/plainDiffPath');
+  };
+
   describe('computed', () => {
     describe('shouldShowCommitsBehindText', () => {
       it('return true when there are divergedCommitsCount', () => {
@@ -207,21 +217,7 @@ describe('MRWidgetHeader', () => {
       });
 
       it('renders download dropdown with links', () => {
-        expect(vm.$el.querySelector('.js-download-email-patches').textContent.trim()).toEqual(
-          'Email patches',
-        );
-
-        expect(vm.$el.querySelector('.js-download-email-patches').getAttribute('href')).toEqual(
-          '/mr/email-patches',
-        );
-
-        expect(vm.$el.querySelector('.js-download-plain-diff').textContent.trim()).toEqual(
-          'Plain diff',
-        );
-
-        expect(vm.$el.querySelector('.js-download-plain-diff').getAttribute('href')).toEqual(
-          '/mr/plainDiffPath',
-        );
+        expectDownloadDropdownItems();
       });
     });
 
@@ -250,10 +246,8 @@ describe('MRWidgetHeader', () => {
         expect(button).toEqual(null);
       });
 
-      it('does not render download dropdown with links', () => {
-        expect(vm.$el.querySelector('.js-download-email-patches')).toEqual(null);
-
-        expect(vm.$el.querySelector('.js-download-plain-diff')).toEqual(null);
+      it('renders download dropdown with links', () => {
+        expectDownloadDropdownItems();
       });
     });
 

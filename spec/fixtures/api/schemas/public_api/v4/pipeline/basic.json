@@ -13,6 +13,5 @@
     "ref": { "type": "string" },
     "status": { "type": "string" },
     "web_url": { "type": "string" }
-  },
-  "additionalProperties": false
+  }
 }
