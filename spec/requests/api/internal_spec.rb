@@ -644,6 +644,22 @@ describe API::Internal do
         expect(response).to have_gitlab_http_status(404)
         expect(json_response["status"]).to be_falsey
       end
+
+      it 'returns a 200 response when using a project path that does not exist' do
+        post(
+          api("/internal/allowed"),
+          params: {
+            key_id: key.id,
+            project: 'project/does-not-exist.git',
+            action: 'git-upload-pack',
+            secret_token: secret_token,
+            protocol: 'ssh'
+          }
+        )
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response["status"]).to be_falsey
+      end
     end
 
     context 'user does not exist' do
