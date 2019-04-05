@@ -712,15 +712,9 @@
   top: 8px;
 }
 
+.ci-build-text,
 .ci-status-text {
-  max-width: 110px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-  display: inline-block;
-  position: relative;
-  font-weight: $gl-font-weight-normal;
+  font-weight: 200;
 }
 
 @mixin mini-pipeline-graph-color(
@@ -912,26 +906,6 @@ button.mini-pipeline-graph-dropdown-toggle {
         flex: 1;
       }
 
-      // build name
-      .ci-build-text,
-      .ci-status-text {
-        font-weight: 200;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        max-width: 70%;
-        margin-left: 2px;
-        display: inline-block;
-
-        &::after {
-          content: '';
-          display: block;
-        }
-
-        @include media-breakpoint-down(xs) {
-          max-width: 60%;
-        }
-      }
 
       .ci-status-icon {
         @extend .append-right-8;
