@@ -54,6 +54,14 @@ module Gitlab
           end
         end
 
+        class ArrayOrStringValidator < ActiveModel::EachValidator
+          def validate_each(record, attribute, value)
+            unless value.is_a?(Array) || value.is_a?(String)
+              record.errors.add(attribute, 'should be an array or a string')
+            end
+          end
+        end
+
         class BooleanValidator < ActiveModel::EachValidator
           include LegacyValidationHelpers
 
