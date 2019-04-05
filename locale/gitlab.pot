@@ -5947,12 +5947,6 @@ msgstr ""
 msgid "Pipeline|Coverage"
 msgstr ""
 
-msgid "Pipeline|Create for"
-msgstr ""
-
-msgid "Pipeline|Create pipeline"
-msgstr ""
-
 msgid "Pipeline|Duration"
 msgstr ""
 
@@ -5963,6 +5957,9 @@ msgid "Pipeline|Pipeline"
 msgstr ""
 
 msgid "Pipeline|Run Pipeline"
+msgstr ""
+
+msgid "Pipeline|Run for"
 msgstr ""
 
 msgid "Pipeline|Search branches"
