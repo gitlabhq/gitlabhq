@@ -137,6 +137,7 @@ module ApplicationSettingsHelper
       :default_artifacts_expire_in,
       :default_branch_protection,
       :default_group_visibility,
+      :default_project_creation,
       :default_project_visibility,
       :default_projects_limit,
       :default_snippet_visibility,

@@ -6418,6 +6418,21 @@ msgstr ""
 msgid "ProjectActivityRSS|Subscribe"
 msgstr ""
 
+msgid "ProjectCreationLevel|Allowed to create projects"
+msgstr ""
+
+msgid "ProjectCreationLevel|Default project creation protection"
+msgstr ""
+
+msgid "ProjectCreationLevel|Developers + Maintainers"
+msgstr ""
+
+msgid "ProjectCreationLevel|Maintainers"
+msgstr ""
+
+msgid "ProjectCreationLevel|No one"
+msgstr ""
+
 msgid "ProjectFileTree|Name"
 msgstr ""
 

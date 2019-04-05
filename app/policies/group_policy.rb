@@ -35,6 +35,14 @@ class GroupPolicy < BasePolicy
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
 
+  condition(:create_projects_disabled) do
+    @subject.project_creation_level == ::Gitlab::Access::NO_ONE_PROJECT_ACCESS
+  end
+
+  condition(:developer_maintainer_access) do
+    @subject.project_creation_level == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+  end
+
   rule { public_group }.policy do
     enable :read_group
     enable :read_list
@@ -114,6 +122,9 @@ class GroupPolicy < BasePolicy
   rule { owner & (~share_with_group_locked | ~has_parent | ~parent_share_with_group_locked | can_change_parent_share_with_group_lock) }.enable :change_share_with_group_lock
 
   rule { ~can_have_multiple_clusters & has_clusters }.prevent :add_cluster
+
+  rule { developer & developer_maintainer_access }.enable :create_projects
+  rule { create_projects_disabled }.prevent :create_projects
 
   def access_level
     return GroupMember::NO_ACCESS if @user.nil?
