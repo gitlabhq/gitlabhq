@@ -139,6 +139,7 @@
   @include btn-white;
 
   color: $gl-text-color;
+  white-space: nowrap;
 
   &:focus:active {
     outline: 0;
