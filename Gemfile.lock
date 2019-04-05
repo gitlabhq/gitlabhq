@@ -617,7 +617,7 @@ GEM
       puma (>= 2.7, < 4)
     pyu-ruby-sasl (0.0.3.3)
     raabro (1.1.6)
-    rack (2.0.6)
+    rack (2.0.7)
     rack-accept (0.4.5)
       rack (>= 0.4)
     rack-attack (4.4.1)
@@ -1100,7 +1100,7 @@ DEPENDENCIES
   pry-rails (~> 0.3.4)
   puma (~> 3.12)
   puma_worker_killer
-  rack (= 2.0.6)
+  rack (~> 2.0.7)
   rack-attack (~> 4.4.1)
   rack-cors (~> 1.0.0)
   rack-oauth2 (~> 1.9.3)

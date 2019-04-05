@@ -139,10 +139,7 @@ gem 'icalendar'
 gem 'diffy', '~> 3.1.0'
 
 # Application server
-# The 2.0.6 version of rack requires monkeypatch to be present in
-# `config.ru`. This can be removed once a new update for Rack
-# is available that contains https://github.com/rack/rack/pull/1201.
-gem 'rack', '2.0.6'
+gem 'rack', '~> 2.0.7'
 
 group :unicorn do
   gem 'unicorn', '~> 5.4.1'
