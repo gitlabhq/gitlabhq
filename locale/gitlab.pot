@@ -2537,9 +2537,6 @@ msgstr ""
 msgid "Create a new branch"
 msgstr ""
 
-msgid "Create a new branch and merge request"
-msgstr ""
-
 msgid "Create a new issue"
 msgstr ""
 
@@ -7717,6 +7714,9 @@ msgstr ""
 msgid "Start a %{new_merge_request} with these changes"
 msgstr ""
 
+msgid "Start a new merge request"
+msgstr ""
+
 msgid "Start and due date"
 msgstr ""
 
@@ -8389,9 +8389,6 @@ msgid "This namespace has already been taken! Please choose another one."
 msgstr ""
 
 msgid "This option is disabled as you don't have write permissions for the current branch"
-msgstr ""
-
-msgid "This option is disabled while you still have unstaged changes"
 msgstr ""
 
 msgid "This page is unavailable because you are not allowed to read information across multiple projects."

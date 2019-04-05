@@ -1,5 +1,5 @@
 import { sprintf, n__, __ } from '../../../../locale';
-import * as consts from './constants';
+import consts from './constants';
 
 const BRANCH_SUFFIX_COUNT = 5;
 const createTranslatedTextForFiles = (files, text) => {
@@ -20,10 +20,7 @@ export const placeholderBranchName = (state, _, rootState) =>
   )}`;
 
 export const branchName = (state, getters, rootState) => {
-  if (
-    state.commitAction === consts.COMMIT_TO_NEW_BRANCH ||
-    state.commitAction === consts.COMMIT_TO_NEW_BRANCH_MR
-  ) {
+  if (state.commitAction === consts.COMMIT_TO_NEW_BRANCH) {
     if (state.newBranchName === '') {
       return getters.placeholderBranchName;
     }
@@ -48,6 +45,11 @@ export const preBuiltCommitMessage = (state, _, rootState) => {
     .filter(t => t)
     .join('\n');
 };
+
+export const isCreatingNewBranch = state => state.commitAction === consts.COMMIT_TO_NEW_BRANCH;
+
+export const shouldDisableNewMrOption = (state, _getters, _rootState, rootGetters) =>
+  rootGetters.currentMergeRequest && state.commitAction === consts.COMMIT_TO_CURRENT_BRANCH;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
