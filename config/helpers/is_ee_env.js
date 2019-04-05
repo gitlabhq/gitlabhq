@@ -4,6 +4,6 @@ const path = require('path');
 const ROOT_PATH = path.resolve(__dirname, '../..');
 
 module.exports =
-  process.env.EE !== undefined
-    ? JSON.parse(process.env.EE)
+  process.env.IS_GITLAB_EE !== undefined
+    ? JSON.parse(process.env.IS_GITLAB_EE)
     : fs.existsSync(path.join(ROOT_PATH, 'ee'));

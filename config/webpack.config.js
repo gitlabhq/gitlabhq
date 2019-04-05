@@ -322,7 +322,7 @@ module.exports = {
       }),
 
     new webpack.DefinePlugin({
-      'process.env.EE': JSON.stringify(IS_EE),
+      'process.env.IS_GITLAB_EE': JSON.stringify(IS_EE),
     }),
   ].filter(Boolean),
 
