@@ -43,7 +43,7 @@ describe 'Issues > User uses quick actions', :js do
   describe 'issue-only commands' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public) }
-    let(:issue) { create(:issue, project: project) }
+    let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
     before do
       project.add_maintainer(user)
@@ -57,6 +57,7 @@ describe 'Issues > User uses quick actions', :js do
     end
 
     it_behaves_like 'confidential quick action'
+    it_behaves_like 'remove_due_date quick action'
 
     describe 'adding a due date from note' do
       let(:issue) { create(:issue, project: project) }
@@ -73,24 +74,6 @@ describe 'Issues > User uses quick actions', :js do
         end
 
         it_behaves_like 'due quick action not available'
-      end
-    end
-
-    describe 'removing a due date from note' do
-      let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
-
-      it_behaves_like 'remove_due_date action available and due date can be removed'
-
-      context 'when the current user cannot update the due date' do
-        let(:guest) { create(:user) }
-        before do
-          project.add_guest(guest)
-          gitlab_sign_out
-          sign_in(guest)
-          visit project_issue_path(project, issue)
-        end
-
-        it_behaves_like 'remove_due_date action not available'
       end
     end
 
