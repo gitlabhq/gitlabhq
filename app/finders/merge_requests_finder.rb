@@ -40,7 +40,8 @@ class MergeRequestsFinder < IssuableFinder
     items = by_commit(super)
     items = by_source_branch(items)
     items = by_wip(items)
-    by_target_branch(items)
+    items = by_target_branch(items)
+    by_source_project_id(items)
   end
 
   private
@@ -72,6 +73,16 @@ class MergeRequestsFinder < IssuableFinder
     return items unless target_branch
 
     items.where(target_branch: target_branch)
+  end
+
+  def source_project_id
+    @source_project_id ||= params[:source_project_id].presence
+  end
+
+  def by_source_project_id(items)
+    return items unless source_project_id
+
+    items.where(source_project_id: source_project_id)
   end
 
   def by_wip(items)
