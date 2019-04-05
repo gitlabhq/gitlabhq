@@ -12,8 +12,6 @@
 
 stages:
   - build
-  - test
-  - deploy
 
 variables:
   LC_ALL: "en_US.UTF-8"
