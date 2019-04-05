@@ -238,6 +238,9 @@ msgid_plural "%d closed merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 day"
+msgstr ""
+
 msgid "1 merged merge request"
 msgid_plural "%d merged merge requests"
 msgstr[0] ""
@@ -258,6 +261,9 @@ msgid_plural "%d pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "1 week"
+msgstr ""
+
 msgid "1st contribution!"
 msgstr ""
 
@@ -265,6 +271,15 @@ msgid "2FA"
 msgstr ""
 
 msgid "2FA enabled"
+msgstr ""
+
+msgid "3 days"
+msgstr ""
+
+msgid "3 hours"
+msgstr ""
+
+msgid "30 minutes"
 msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get permission."
@@ -280,6 +295,9 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "8 hours"
 msgstr ""
 
 msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
@@ -5107,6 +5125,12 @@ msgid "Metrics|Learn about environments"
 msgstr ""
 
 msgid "Metrics|No deployed environments"
+msgstr ""
+
+msgid "Metrics|Not enough data to display"
+msgstr ""
+
+msgid "Metrics|Show last"
 msgstr ""
 
 msgid "Metrics|There was an error fetching the environments data, please try again"
