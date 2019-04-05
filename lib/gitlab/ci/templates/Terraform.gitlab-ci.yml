@@ -24,7 +24,6 @@ before_script:
 stages:
   - validate
   - build
-  - test
   - deploy
 
 validate:

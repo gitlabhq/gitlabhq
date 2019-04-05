@@ -6,7 +6,6 @@ stages:
   - environment
   - build
   - test
-  - deploy
   - internal
   - alpha
   - beta
