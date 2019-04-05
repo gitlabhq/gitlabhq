@@ -4,6 +4,29 @@
 
 [ce-2640]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2640
 
+## Registration and authentication tokens
+
+There are two tokens to take into account when connecting a Runner with GitLab.
+
+| Token | Description |
+| ----- | ----------- |
+| Registration token   | Token used to [register the Runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/README.md). |
+| Authentication token | Token used to authenticate the Runner with the GitLab instance. It is obtained either automatically when [registering a Runner](https://docs.gitlab.com/runner/register/), or manually when [registering the Runner via the Runners API](#register-a-new-runner). |
+
+Here's an example of how the two tokens are used in Runner registration:
+
+1. You register the Runner via the GitLab API using a registration token, and an
+   authentication token is returned.
+1. You use that authentication token and add it to the
+   [Runner's configuration file](https://docs.gitlab.com/runner/commands/#configuration-file):
+
+    ```toml
+    [[runners]]
+      token = "<authentication_token>"
+    ```
+
+GitLab and Runner are then connected.
+
 ## List owned runners
 
 Get a list of specific runners available to the user.
@@ -456,7 +479,7 @@ POST /runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | Registration token ([Read how to obtain a token](../ci/runners/README.md)) |
+| `token`     | string  | yes      | [Registration token](#registration-and-authentication-tokens).  |
 | `description`| string | no       | Runner's description|
 | `info`       | hash   | no       | Runner's metadata   |
 | `active`     | boolean| no       | Whether the Runner is active   |
@@ -466,7 +489,7 @@ POST /runners
 | `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
 
 ```
-curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=ipzXrMhuyyJPifUt6ANz" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=<registration_token>" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
 ```
 
 Response:
@@ -494,10 +517,10 @@ DELETE /runners
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | Runner's authentication token  |
+| `token`     | string  | yes      | Runner's [authentication token](#registration-and-authentication-tokens).  |
 
 ```
-curl --request DELETE "https://gitlab.example.com/api/v4/runners" --form "token=ebb6fc00521627750c8bb750f2490e"
+curl --request DELETE "https://gitlab.example.com/api/v4/runners" --form "token=<authentication_token>"
 ```
 
 Response:
@@ -516,10 +539,10 @@ POST /runners/verify
 
 | Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
-| `token`     | string  | yes      | Runner's authentication token  |
+| `token`     | string  | yes      | Runner's [authentication token](#registration-and-authentication-tokens).  |
 
 ```
-curl --request POST "https://gitlab.example.com/api/v4/runners/verify" --form "token=ebb6fc00521627750c8bb750f2490e"
+curl --request POST "https://gitlab.example.com/api/v4/runners/verify" --form "token=<authentication_token>"
 ```
 
 Response:
