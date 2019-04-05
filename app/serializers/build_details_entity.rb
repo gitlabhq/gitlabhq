@@ -45,6 +45,8 @@ class BuildDetailsEntity < JobEntity
     erase_project_job_path(project, build)
   end
 
+  expose :failure_reason, if: -> (*) { build.failed? }
+
   expose :terminal_path, if: -> (*) { can_create_build_terminal? } do |build|
     terminal_project_job_path(project, build)
   end
