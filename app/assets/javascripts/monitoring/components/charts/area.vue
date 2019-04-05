@@ -1,5 +1,5 @@
 <script>
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import dateFormat from 'dateformat';
 import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
@@ -12,6 +12,7 @@ let debouncedResize;
 export default {
   components: {
     GlAreaChart,
+    GlChartSeriesLabel,
     Icon,
   },
   inheritAttrs: false,
@@ -137,6 +138,9 @@ export default {
         return timestamp < acc || acc === null ? timestamp : acc;
       }, null);
     },
+    isMultiSeries() {
+      return this.tooltip.content.length > 1;
+    },
     recentDeployments() {
       return this.deploymentData.reduce((acc, deployment) => {
         if (deployment.created_at >= this.earliestDatapoint) {
@@ -197,7 +201,7 @@ export default {
           );
           this.tooltip.sha = deploy.sha.substring(0, 8);
         } else {
-          const { seriesName } = seriesData;
+          const { seriesName, color } = seriesData;
           // seriesData.value contains the chart's [x, y] value pair
           // seriesData.value[1] is threfore the chart y value
           const value = seriesData.value[1].toFixed(3);
@@ -205,6 +209,7 @@ export default {
           this.tooltip.content.push({
             name: seriesName,
             value,
+            color,
           });
         }
       });
@@ -246,24 +251,33 @@ export default {
       :height="height"
       @updated="onChartUpdated"
     >
-      <template slot="tooltipTitle">
-        <div v-if="tooltip.isDeployment">
+      <template v-if="tooltip.isDeployment">
+        <template slot="tooltipTitle">
           {{ __('Deployed') }}
-        </div>
-        {{ tooltip.title }}
-      </template>
-      <template slot="tooltipContent">
-        <div v-if="tooltip.isDeployment" class="d-flex align-items-center">
+        </template>
+        <div slot="tooltipContent" class="d-flex align-items-center">
           <icon name="commit" class="mr-2" />
           {{ tooltip.sha }}
         </div>
-        <template v-else>
+      </template>
+      <template v-else>
+        <template slot="tooltipTitle">
+          <div class="text-nowrap">
+            {{ tooltip.title }}
+          </div>
+        </template>
+        <template slot="tooltipContent">
           <div
             v-for="(content, key) in tooltip.content"
             :key="key"
             class="d-flex justify-content-between"
           >
-            {{ content.name }} {{ content.value }}
+            <gl-chart-series-label :color="isMultiSeries ? content.color : ''">
+              {{ content.name }}
+            </gl-chart-series-label>
+            <div class="prepend-left-32">
+              {{ content.value }}
+            </div>
           </div>
         </template>
       </template>

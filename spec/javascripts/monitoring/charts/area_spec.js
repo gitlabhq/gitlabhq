@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'spec/helpers/vue_test_utils_helper';
 import Area from '~/monitoring/components/charts/area.vue';
 import MonitoringStore from '~/monitoring/stores/monitoring_store';
@@ -121,13 +121,15 @@ describe('Area component', () => {
         });
 
         it('formats tooltip content', () => {
-          expect(areaChart.vm.tooltip.content).toEqual([{ name: 'Core Usage', value: '5.556' }]);
+          const name = 'Core Usage';
+          const value = '5.556';
+          const seriesLabel = areaChart.find(GlChartSeriesLabel);
+
+          expect(seriesLabel.vm.color).toBe('');
+          expect(shallowWrapperContainsSlotText(seriesLabel, 'default', name)).toBe(true);
+          expect(areaChart.vm.tooltip.content).toEqual([{ name, value, color: undefined }]);
           expect(
-            shallowWrapperContainsSlotText(
-              areaChart.find(GlAreaChart),
-              'tooltipContent',
-              'Core Usage 5.556',
-            ),
+            shallowWrapperContainsSlotText(areaChart.find(GlAreaChart), 'tooltipContent', value),
           ).toBe(true);
         });
       });
