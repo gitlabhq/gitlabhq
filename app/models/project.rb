@@ -2062,11 +2062,6 @@ class Project < ApplicationRecord
     fetch_branch_allows_collaboration(user, branch_name)
   end
 
-  def external_authorization_classification_label
-    super || ::Gitlab::CurrentSettings.current_application_settings
-               .external_authorization_service_default_label
-  end
-
   def licensed_features
     []
   end

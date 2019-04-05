@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe NotificationService, :mailer do
   include EmailSpec::Matchers
-  include ExternalAuthorizationServiceHelpers
   include NotificationHelpers
 
   let(:notification) { described_class.new }
@@ -2214,46 +2213,6 @@ describe NotificationService, :mailer do
         notification.remote_mirror_update_failed(remote_mirror)
 
         should_only_email(u_maintainer1, u_maintainer2, u_owner)
-      end
-    end
-  end
-
-  context 'with external authorization service' do
-    let(:issue) { create(:issue) }
-    let(:project) { issue.project }
-    let(:note) { create(:note, noteable: issue, project: project) }
-    let(:member) { create(:user) }
-
-    subject { NotificationService.new }
-
-    before do
-      project.add_maintainer(member)
-      member.global_notification_setting.update!(level: :watch)
-    end
-
-    it 'sends email when the service is not enabled' do
-      expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
-
-      subject.new_issue(issue, member)
-    end
-
-    context 'when the service is enabled' do
-      before do
-        enable_external_authorization_service_check
-      end
-
-      it 'does not send an email' do
-        expect(Notify).not_to receive(:new_issue_email)
-
-        subject.new_issue(issue, member)
-      end
-
-      it 'still delivers email to admins' do
-        member.update!(admin: true)
-
-        expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
-
-        subject.new_issue(issue, member)
       end
     end
   end

@@ -2,8 +2,6 @@
 
 module Projects
   class CreateService < BaseService
-    include ValidatesClassificationLabel
-
     def initialize(user, params)
       @current_user, @params = user, params.dup
       @skip_wiki = @params.delete(:skip_wiki)
@@ -46,8 +44,6 @@ module Projects
 
       relations_block&.call(@project)
       yield(@project) if block_given?
-
-      validate_classification_label(@project, :external_authorization_classification_label)
 
       # If the block added errors, don't try to save the project
       return @project if @project.errors.any?
