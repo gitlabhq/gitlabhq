@@ -453,6 +453,9 @@ msgstr ""
 msgid "Add license"
 msgstr ""
 
+msgid "Add list"
+msgstr ""
+
 msgid "Add new application"
 msgstr ""
 

@@ -345,7 +345,7 @@ describe 'Issue Boards', :js do
 
           click_link 'Create project label'
 
-          fill_in('new_label_name', with: 'Testing New Label')
+          fill_in('new_label_name', with: 'Testing New Label - with list')
 
           first('.suggest-colors a').click
 

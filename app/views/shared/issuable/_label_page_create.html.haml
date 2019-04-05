@@ -1,4 +1,7 @@
 - show_close = local_assigns.fetch(:show_close, true)
+- show_add_list = local_assigns.fetch(:show_add_list, false)
+- add_list = local_assigns.fetch(:add_list, false)
+- add_list_class = local_assigns.fetch(:add_list_class, '')
 - subject = @project || @group
 .dropdown-page-two.dropdown-new-label
   = dropdown_title(create_label_title(subject), options: { back: true, close: show_close })
@@ -12,6 +15,11 @@
     .dropdown-label-color-input
       .dropdown-label-color-preview.js-dropdown-label-color-preview
       %input#new_label_color.default-dropdown-input{ type: "text", placeholder: _('Assign custom color like #FF0000') }
+    - if show_add_list
+      .dropdown-label-input{ class: add_list_class }
+        %label
+          %input.js-add-list{ type: "checkbox", name: "add_list", checked: add_list }
+          %span= _('Add list')
     .clearfix
       %button.btn.btn-primary.float-left.js-new-label-btn{ type: "button" }
         = _('Create')
