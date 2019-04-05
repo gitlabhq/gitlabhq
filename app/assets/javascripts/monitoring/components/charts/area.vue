@@ -5,6 +5,7 @@ import { debounceByAnimationFrame } from '~/lib/utils/common_utils';
 import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import Icon from '~/vue_shared/components/icon.vue';
 import { chartHeight, graphTypes, lineTypes } from '../../constants';
+import { makeDataSeries } from '~/helpers/monitor_helper';
 
 let debouncedResize;
 
@@ -63,7 +64,7 @@ export default {
   },
   computed: {
     chartData() {
-      return this.graphData.queries.map(query => {
+      return this.graphData.queries.reduce((acc, query) => {
         const { appearance } = query;
         const lineType =
           appearance && appearance.line && appearance.line.type
@@ -74,9 +75,8 @@ export default {
             ? appearance.line.width
             : undefined;
 
-        return {
+        const series = makeDataSeries(query.result, {
           name: this.formatLegendLabel(query),
-          data: this.concatenateResults(query.result),
           lineStyle: {
             type: lineType,
             width: lineWidth,
@@ -87,8 +87,10 @@ export default {
                 ? appearance.area.opacity
                 : undefined,
           },
-        };
-      });
+        });
+
+        return acc.concat(series);
+      }, []);
     },
     chartOptions() {
       return {
@@ -175,9 +177,6 @@ export default {
     this.setSvg('scroll-handle');
   },
   methods: {
-    concatenateResults(results) {
-      return results.reduce((acc, result) => acc.concat(result.values), []);
-    },
     formatLegendLabel(query) {
       return `${query.label}`;
     },
