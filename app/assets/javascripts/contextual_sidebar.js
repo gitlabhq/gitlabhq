@@ -41,6 +41,9 @@ export default class ContextualSidebar {
         this.toggleCollapsedSidebar(value, true);
       }
     });
+    this.$page.on('transitionstart transitionend', () => {
+      $(document).trigger('content.resize');
+    });
 
     $(window).on('resize', () => _.debounce(this.render(), 100));
   }
