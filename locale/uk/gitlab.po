@@ -4645,9 +4645,6 @@ msgstr "Вузол не працює або зламаний."
 msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
 msgstr "Вузол працює повільно, перевантажений або тільки що відновився після збою."
 
-msgid "GeoNodes|Alternate URL"
-msgstr ""
-
 msgid "GeoNodes|Checksummed"
 msgstr "Із контрольною сумою"
 
@@ -4827,9 +4824,6 @@ msgstr "Всі проекти плануються для повторної п�
 
 msgid "Geo|All projects are being scheduled for re-sync"
 msgstr "Всі проекти плануються для повторної синхронізації"
-
-msgid "Geo|Alternate URL"
-msgstr ""
 
 msgid "Geo|Batch operations"
 msgstr "Групові операції"
@@ -12607,4 +12601,3 @@ msgstr[3] "протягом %d хвилин "
 
 msgid "yaml invalid"
 msgstr ""
-
