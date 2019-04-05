@@ -28,6 +28,8 @@ export default {
       :tooltip-text="user.name"
       class="prepend-left-default js-pipeline-url-user"
     />
-    <span v-else class="prepend-left-default js-pipeline-url-api api"> API </span>
+    <span v-else class="prepend-left-default js-pipeline-url-api api">
+      {{ s__('Pipelines|API') }}
+    </span>
   </div>
 </template>
