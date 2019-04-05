@@ -687,7 +687,8 @@ describe Environment do
 
   describe '#additional_metrics' do
     let(:project) { create(:prometheus_project) }
-    subject { environment.additional_metrics }
+    let(:metric_params) { [] }
+    subject { environment.additional_metrics(*metric_params) }
 
     context 'when the environment has additional metrics' do
       before do
@@ -695,11 +696,25 @@ describe Environment do
       end
 
       it 'returns the additional metrics from the deployment service' do
-        expect(environment.prometheus_adapter).to receive(:query)
-                                                .with(:additional_metrics_environment, environment)
-                                                .and_return(:fake_metrics)
+        expect(environment.prometheus_adapter)
+          .to receive(:query)
+          .with(:additional_metrics_environment, environment)
+          .and_return(:fake_metrics)
 
         is_expected.to eq(:fake_metrics)
+      end
+
+      context 'when time window arguments are provided' do
+        let(:metric_params) { [1552642245.067, Time.now] }
+
+        it 'queries with the expected parameters' do
+          expect(environment.prometheus_adapter)
+            .to receive(:query)
+            .with(:additional_metrics_environment, environment, *metric_params.map(&:to_f))
+            .and_return(:fake_metrics)
+
+          is_expected.to eq(:fake_metrics)
+        end
       end
     end
 

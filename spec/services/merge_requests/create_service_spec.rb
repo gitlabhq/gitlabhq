@@ -263,19 +263,6 @@ describe MergeRequests::CreateService do
               expect(merge_request.actual_head_pipeline).to be_merge_request_event
             end
           end
-
-          context "when the 'ci_merge_request_pipeline' feature flag is disabled" do
-            before do
-              stub_feature_flags(ci_merge_request_pipeline: false)
-            end
-
-            it 'does not create a detached merge request pipeline' do
-              expect(merge_request).to be_persisted
-
-              merge_request.reload
-              expect(merge_request.merge_request_pipelines.count).to eq(0)
-            end
-          end
         end
 
         context "when .gitlab-ci.yml does not have merge_requests keywords" do

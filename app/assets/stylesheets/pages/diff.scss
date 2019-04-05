@@ -154,11 +154,17 @@
 
       .swipe-wrap {
         overflow: hidden;
-        border-left: 1px solid $gl-gray-400;
+        border-right: 1px solid $gl-gray-400;
         position: absolute;
         display: block;
         top: 13px;
         right: 7px;
+
+        &.left-oriented {
+          /* only for commit view (different swipe viewer) */
+          border-right: 0;
+          border-left: 1px solid $gl-gray-400;
+        }
       }
 
       .swipe-bar {

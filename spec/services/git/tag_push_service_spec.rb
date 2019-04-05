@@ -31,6 +31,20 @@ describe Git::TagPushService do
     end
   end
 
+  describe 'System Hooks' do
+    let!(:push_data) { service.tap(&:execute).push_data }
+
+    it "executes system hooks after pushing a tag" do
+      expect_next_instance_of(SystemHooksService) do |system_hooks_service|
+        expect(system_hooks_service)
+          .to receive(:execute_hooks)
+          .with(push_data, :tag_push_hooks)
+      end
+
+      service.execute
+    end
+  end
+
   describe "Pipelines" do
     subject { service.execute }
 

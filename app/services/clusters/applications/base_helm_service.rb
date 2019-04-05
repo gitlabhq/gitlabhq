@@ -13,16 +13,20 @@ module Clusters
 
       def log_error(error)
         meta = {
-          exception: error.class.name,
           error_code: error.respond_to?(:error_code) ? error.error_code : nil,
           service: self.class.name,
           app_id: app.id,
           project_ids: app.cluster.project_ids,
-          group_ids: app.cluster.group_ids,
-          message: error.message
+          group_ids: app.cluster.group_ids
         }
 
-        logger.error(meta)
+        logger_meta = meta.merge(
+          exception: error.class.name,
+          message: error.message,
+          backtrace: Gitlab::Profiler.clean_backtrace(error.backtrace)
+        )
+
+        logger.error(logger_meta)
         Gitlab::Sentry.track_acceptable_exception(error, extra: meta)
       end
 

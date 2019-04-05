@@ -41,7 +41,13 @@ export default () => {
 
   const formElement = document.getElementById('new-pipeline-schedule-form');
 
-  gl.timezoneDropdown = new TimezoneDropdown();
+  gl.timezoneDropdown = new TimezoneDropdown({
+    $dropdownEl: $('.js-timezone-dropdown'),
+    $inputEl: $('#schedule_cron_timezone'),
+    onSelectTimezone: () => {
+      gl.pipelineScheduleFieldErrors.updateFormValidityState();
+    },
+  });
   gl.targetBranchDropdown = new TargetBranchDropdown();
   gl.pipelineScheduleFieldErrors = new GlFieldErrors(formElement);
 

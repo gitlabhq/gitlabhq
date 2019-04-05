@@ -306,6 +306,56 @@ describe Ci::CreatePipelineService do
 
         it_behaves_like 'a failed pipeline'
       end
+
+      context 'when config has ports' do
+        context 'in the main image' do
+          let(:ci_yaml) do
+            <<-EOS
+              image:
+                name: ruby:2.2
+                ports:
+                  - 80
+            EOS
+          end
+
+          it_behaves_like 'a failed pipeline'
+        end
+
+        context 'in the job image' do
+          let(:ci_yaml) do
+            <<-EOS
+              image: ruby:2.2
+
+              test:
+                script: rspec
+                image:
+                  name: ruby:2.2
+                  ports:
+                    - 80
+            EOS
+          end
+
+          it_behaves_like 'a failed pipeline'
+        end
+
+        context 'in the service' do
+          let(:ci_yaml) do
+            <<-EOS
+              image: ruby:2.2
+
+              test:
+                script: rspec
+                image: ruby:2.2
+                services:
+                  - name: test
+                    ports:
+                      - 80
+            EOS
+          end
+
+          it_behaves_like 'a failed pipeline'
+        end
+      end
     end
 
     context 'when commit contains a [ci skip] directive' do

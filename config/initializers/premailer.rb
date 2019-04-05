@@ -4,5 +4,6 @@ Premailer::Rails.config.merge!(
   preserve_styles: true,
   remove_comments: true,
   remove_ids: false,
-  remove_scripts: false
+  remove_scripts: false,
+  output_encoding: 'US-ASCII'
 )

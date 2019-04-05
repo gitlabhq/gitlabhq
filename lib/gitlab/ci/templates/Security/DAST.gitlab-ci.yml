@@ -4,6 +4,9 @@
 # List of the variables: https://gitlab.com/gitlab-org/security-products/dast#settings
 # How to set: https://docs.gitlab.com/ee/ci/yaml/#variables
 
+include:
+  - template: Jobs/DAST.gitlab-ci.yml
+
 variables:
   DAST_WEBSITE: http://example.com # Please edit to be your website to scan for vulnerabilities
 
@@ -14,46 +17,10 @@ stages:
   - dast
 
 dast:
-  stage: dast
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export DAST_VERSION=${SP_VERSION:-$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')}
-    - |
-      function dast_run() {
-        docker run \
-        --env DAST_TARGET_AVAILABILITY_TIMEOUT \
-        --volume "$PWD:/output" \
-        --volume /var/run/docker.sock:/var/run/docker.sock \
-        -w /output \
-        "registry.gitlab.com/gitlab-org/security-products/dast:$DAST_VERSION" \
-        /analyze -t $DAST_WEBSITE \
-        "$@"
-      }
-    - |
-      if [ -n "$DAST_AUTH_URL" ]
-      then
-        dast_run \
-          --auth-url $DAST_AUTH_URL \
-          --auth-username $DAST_USERNAME \
-          --auth-password $DAST_PASSWORD \
-          --auth-username-field $DAST_USERNAME_FIELD \
-          --auth-password-field $DAST_PASSWORD_FIELD
-      else
-        dast_run
-      fi
-  artifacts:
-    reports:
-      dast: gl-dast-report.json
   only:
     refs:
       - branches
-    variables:
-      - $GITLAB_FEATURES =~ /\bdast\b/
   except:
+    refs: [] # Override default from template
     variables:
       - $DAST_DISABLED

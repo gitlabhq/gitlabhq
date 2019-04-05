@@ -54,6 +54,7 @@ module API
 
           if Gitlab.ee?
             optional :shared_runners_minutes_limit, type: Integer, desc: 'Pipeline minutes quota for this user'
+            optional :extra_shared_runners_minutes_limit, type: Integer, desc: '(admin-only) Extra pipeline minutes quota for this user'
           end
         end
 

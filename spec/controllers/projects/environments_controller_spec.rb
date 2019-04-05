@@ -392,7 +392,7 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting metrics as JSON' do
         it 'returns a metrics JSON document' do
-          get :additional_metrics, params: environment_params(format: :json)
+          additional_metrics
 
           expect(response).to have_gitlab_http_status(204)
           expect(json_response).to eq({})
@@ -412,12 +412,38 @@ describe Projects::EnvironmentsController do
       end
 
       it 'returns a metrics JSON document' do
-        get :additional_metrics, params: environment_params(format: :json)
+        additional_metrics
 
         expect(response).to be_ok
         expect(json_response['success']).to be(true)
         expect(json_response['data']).to eq({})
         expect(json_response['last_update']).to eq(42)
+      end
+    end
+
+    context 'when only one time param is provided' do
+      context 'when :metrics_time_window feature flag is disabled' do
+        before do
+          stub_feature_flags(metrics_time_window: false)
+          expect(environment).to receive(:additional_metrics).with(no_args).and_return(nil)
+        end
+
+        it 'returns a time-window agnostic response' do
+          additional_metrics(start: '1552647300.651094')
+
+          expect(response).to have_gitlab_http_status(204)
+          expect(json_response).to eq({})
+        end
+      end
+
+      it 'raises an error when start is missing' do
+        expect { additional_metrics(start: '1552647300.651094') }
+          .to raise_error(ActionController::ParameterMissing)
+      end
+
+      it 'raises an error when end is missing' do
+        expect { additional_metrics(start: '1552647300.651094') }
+          .to raise_error(ActionController::ParameterMissing)
       end
     end
   end
@@ -499,5 +525,9 @@ describe Projects::EnvironmentsController do
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,
                        id: environment.id)
+  end
+
+  def additional_metrics(opts = {})
+    get :additional_metrics, params: environment_params(format: :json, **opts)
   end
 end

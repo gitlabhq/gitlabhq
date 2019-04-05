@@ -858,15 +858,6 @@ class MergeRequest < ApplicationRecord
   end
 
   def related_notes
-    # Fetch comments only from last 100 commits
-    commits_for_notes_limit = 100
-    commit_ids = commit_shas.take(commits_for_notes_limit)
-
-    commit_notes = Note
-      .except(:order)
-      .where(project_id: [source_project_id, target_project_id])
-      .for_commit_id(commit_ids)
-
     # We're using a UNION ALL here since this results in better performance
     # compared to using OR statements. We're using UNION ALL since the queries
     # used won't produce any duplicates (e.g. a note for a commit can't also be
@@ -877,6 +868,16 @@ class MergeRequest < ApplicationRecord
   end
 
   alias_method :discussion_notes, :related_notes
+
+  def commit_notes
+    # Fetch comments only from last 100 commits
+    commit_ids = commit_shas.take(100)
+
+    Note
+      .user
+      .where(project_id: [source_project_id, target_project_id])
+      .for_commit_id(commit_ids)
+  end
 
   def mergeable_discussions_state?
     return true unless project.only_allow_merge_if_all_discussions_are_resolved?
