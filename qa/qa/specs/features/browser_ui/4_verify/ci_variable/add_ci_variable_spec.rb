@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Verify' do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/nightly/issues/91
+  context 'Verify', :quarantine do
     describe 'CI variable support' do
       it 'user adds a CI variable' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
