@@ -79,7 +79,7 @@ module Git
         limited_commits,
         event_message,
         commits_count: commits_count,
-        push_options: params[:push_options] || []
+        push_options: params[:push_options] || {}
       )
 
       # Dependent code may modify the push data, so return a duplicate each time

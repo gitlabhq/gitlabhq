@@ -39,6 +39,18 @@ describe Gitlab::PushOptions do
     end
   end
 
+  describe '#as_json' do
+    it 'returns all options' do
+      options = described_class.new(['merge_request.target=value'])
+
+      expect(options.as_json).to include(
+        merge_request: {
+          target: 'value'
+        }
+      )
+    end
+  end
+
   it 'can parse multiple push options' do
     options = described_class.new([
       'merge_request.create',

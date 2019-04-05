@@ -905,7 +905,7 @@ describe API::Internal do
 
     it 'enqueues a PostReceive worker job' do
       expect(PostReceive).to receive(:perform_async)
-        .with(gl_repository, identifier, changes, push_options)
+        .with(gl_repository, identifier, changes, { ci: { skip: true } })
 
       post api('/internal/post_receive'), params: valid_params
     end
