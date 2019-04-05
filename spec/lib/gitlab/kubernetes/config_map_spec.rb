@@ -18,7 +18,7 @@ describe Gitlab::Kubernetes::ConfigMap do
     let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: application.files) }
     subject { config_map.generate }
 
-    it 'should build a Kubeclient Resource' do
+    it 'builds a Kubeclient Resource' do
       is_expected.to eq(resource)
     end
   end

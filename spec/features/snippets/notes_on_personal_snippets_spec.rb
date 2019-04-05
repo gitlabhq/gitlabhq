@@ -83,7 +83,7 @@ describe 'Comments on personal snippets', :js do
       expect(find('div#notes')).to have_content('This is awesome!')
     end
 
-    it 'should not have autocomplete' do
+    it 'does not have autocomplete' do
       wait_for_requests
 
       find('#note_note').native.send_keys('')

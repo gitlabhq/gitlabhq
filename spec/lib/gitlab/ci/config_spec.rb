@@ -225,7 +225,7 @@ describe Gitlab::Ci::Config do
     end
 
     context "when gitlab_ci_yml has valid 'include' defined" do
-      it 'should return a composed hash' do
+      it 'returns a composed hash' do
         before_script_values = [
           "apt-get update -qq && apt-get install -y -qq sqlite3 libsqlite3-dev nodejs", "ruby -v",
           "which ruby",
@@ -316,7 +316,7 @@ describe Gitlab::Ci::Config do
         HEREDOC
       end
 
-      it 'should take precedence' do
+      it 'takes precedence' do
         expect(config.to_hash).to eq({ image: 'ruby:2.2' })
       end
     end
@@ -341,7 +341,7 @@ describe Gitlab::Ci::Config do
         HEREDOC
       end
 
-      it 'should merge the variables dictionaries' do
+      it 'merges the variables dictionaries' do
         expect(config.to_hash).to eq({ variables: { A: 'alpha', B: 'beta', C: 'gamma', D: 'delta' } })
       end
     end

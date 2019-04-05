@@ -154,15 +154,15 @@ describe JobEntity do
       expect(subject[:status][:label]).to eq('failed')
     end
 
-    it 'should indicate the failure reason on tooltip' do
+    it 'indicates the failure reason on tooltip' do
       expect(subject[:status][:tooltip]).to eq('failed - (API failure)')
     end
 
-    it 'should include a callout message with a verbose output' do
+    it 'includes a callout message with a verbose output' do
       expect(subject[:callout_message]).to eq('There has been an API failure, please try again')
     end
 
-    it 'should state that it is not recoverable' do
+    it 'states that it is not recoverable' do
       expect(subject[:recoverable]).to be_truthy
     end
   end
@@ -178,15 +178,15 @@ describe JobEntity do
       expect(subject[:status][:label]).to eq('failed (allowed to fail)')
     end
 
-    it 'should indicate the failure reason on tooltip' do
+    it 'indicates the failure reason on tooltip' do
       expect(subject[:status][:tooltip]).to eq('failed - (API failure) (allowed to fail)')
     end
 
-    it 'should include a callout message with a verbose output' do
+    it 'includes a callout message with a verbose output' do
       expect(subject[:callout_message]).to eq('There has been an API failure, please try again')
     end
 
-    it 'should state that it is not recoverable' do
+    it 'states that it is not recoverable' do
       expect(subject[:recoverable]).to be_truthy
     end
   end
@@ -194,7 +194,7 @@ describe JobEntity do
   context 'when the job failed with a script failure' do
     let(:job) { create(:ci_build, :failed, :script_failure) }
 
-    it 'should not include callout message or recoverable keys' do
+    it 'does not include callout message or recoverable keys' do
       expect(subject).not_to include('callout_message')
       expect(subject).not_to include('recoverable')
     end
@@ -203,7 +203,7 @@ describe JobEntity do
   context 'when job failed and is recoverable' do
     let(:job) { create(:ci_build, :api_failure) }
 
-    it 'should state it is recoverable' do
+    it 'states it is recoverable' do
       expect(subject[:recoverable]).to be_truthy
     end
   end
@@ -211,7 +211,7 @@ describe JobEntity do
   context 'when job passed' do
     let(:job) { create(:ci_build, :success) }
 
-    it 'should not include callout message or recoverable keys' do
+    it 'does not include callout message or recoverable keys' do
       expect(subject).not_to include('callout_message')
       expect(subject).not_to include('recoverable')
     end

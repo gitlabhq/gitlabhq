@@ -15,7 +15,7 @@ describe Projects::CommitsController do
 
     describe "GET commits_root" do
       context "no ref is provided" do
-        it 'should redirect to the default branch of the project' do
+        it 'redirects to the default branch of the project' do
           get(:commits_root,
               params: {
                 namespace_id: project.namespace,

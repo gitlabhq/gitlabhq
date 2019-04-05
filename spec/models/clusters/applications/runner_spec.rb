@@ -21,7 +21,7 @@ describe Clusters::Applications::Runner do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with 4 arguments' do
+    it 'is initialized with 4 arguments' do
       expect(subject.name).to eq('runner')
       expect(subject.chart).to eq('runner/gitlab-runner')
       expect(subject.version).to eq('0.3.0')
@@ -41,7 +41,7 @@ describe Clusters::Applications::Runner do
     context 'application failed to install previously' do
       let(:gitlab_runner) { create(:clusters_applications_runner, :errored, runner: ci_runner, version: '0.1.13') }
 
-      it 'should be initialized with the locked version' do
+      it 'is initialized with the locked version' do
         expect(subject.version).to eq('0.3.0')
       end
     end
@@ -53,7 +53,7 @@ describe Clusters::Applications::Runner do
 
     subject { application.files }
 
-    it 'should include runner valid values' do
+    it 'includes runner valid values' do
       expect(values).to include('concurrent')
       expect(values).to include('checkInterval')
       expect(values).to include('rbac')
@@ -131,7 +131,7 @@ describe Clusters::Applications::Runner do
         allow(application).to receive(:chart_values).and_return(stub_values)
       end
 
-      it 'should overwrite values.yaml' do
+      it 'overwrites values.yaml' do
         expect(values).to match(/privileged: '?#{application.privileged}/)
       end
     end

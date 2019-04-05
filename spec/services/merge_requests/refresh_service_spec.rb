@@ -454,35 +454,35 @@ describe MergeRequests::RefreshService do
       end
       let(:force_push_commit) { @project.commit('feature').id }
 
-      it 'should reload a new diff for a push to the forked project' do
+      it 'reloads a new diff for a push to the forked project' do
         expect do
           service.new(@fork_project, @user).execute(@oldrev, first_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
-      it 'should reload a new diff for a force push to the source branch' do
+      it 'reloads a new diff for a force push to the source branch' do
         expect do
           service.new(@fork_project, @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
-      it 'should reload a new diff for a force push to the target branch' do
+      it 'reloads a new diff for a force push to the target branch' do
         expect do
           service.new(@project, @user).execute(@oldrev, force_push_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
-      it 'should reload a new diff for a push to the target project that contains a commit in the MR' do
+      it 'reloads a new diff for a push to the target project that contains a commit in the MR' do
         expect do
           service.new(@project, @user).execute(@oldrev, first_commit, 'refs/heads/master')
           reload_mrs
         end.to change { forked_master_mr.merge_request_diffs.count }.by(1)
       end
 
-      it 'should not increase the diff count for a new push to target branch' do
+      it 'does not increase the diff count for a new push to target branch' do
         new_commit = @project.repository.create_file(@user, 'new-file.txt', 'A new file',
                                                      message: 'This is a test',
                                                      branch_name: 'master')

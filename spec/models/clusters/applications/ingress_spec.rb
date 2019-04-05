@@ -73,7 +73,7 @@ describe Clusters::Applications::Ingress do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
-    it 'should be initialized with ingress arguments' do
+    it 'is initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
       expect(subject.version).to eq('1.1.2')
@@ -92,7 +92,7 @@ describe Clusters::Applications::Ingress do
     context 'application failed to install previously' do
       let(:ingress) { create(:clusters_applications_ingress, :errored, version: 'nginx') }
 
-      it 'should be initialized with the locked version' do
+      it 'is initialized with the locked version' do
         expect(subject.version).to eq('1.1.2')
       end
     end
@@ -104,7 +104,7 @@ describe Clusters::Applications::Ingress do
 
     subject { application.files }
 
-    it 'should include ingress valid keys in values' do
+    it 'includes ingress valid keys in values' do
       expect(values).to include('image')
       expect(values).to include('repository')
       expect(values).to include('stats')

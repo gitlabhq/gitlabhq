@@ -566,11 +566,11 @@ describe GroupsController do
           }
       end
 
-      it 'should return a notice' do
+      it 'returns a notice' do
         expect(flash[:notice]).to eq("Group '#{group.name}' was successfully transferred.")
       end
 
-      it 'should redirect to the new path' do
+      it 'redirects to the new path' do
         expect(response).to redirect_to("/#{new_parent_group.path}/#{group.path}")
       end
     end
@@ -587,11 +587,11 @@ describe GroupsController do
           }
       end
 
-      it 'should return a notice' do
+      it 'returns a notice' do
         expect(flash[:notice]).to eq("Group '#{group.name}' was successfully transferred.")
       end
 
-      it 'should redirect to the new path' do
+      it 'redirects to the new path' do
         expect(response).to redirect_to("/#{group.path}")
       end
     end
@@ -611,11 +611,11 @@ describe GroupsController do
           }
       end
 
-      it 'should return an alert' do
+      it 'returns an alert' do
         expect(flash[:alert]).to eq "Transfer failed: namespace directory cannot be moved"
       end
 
-      it 'should redirect to the current path' do
+      it 'redirects to the current path' do
         expect(response).to redirect_to(edit_group_path(group))
       end
     end
@@ -633,7 +633,7 @@ describe GroupsController do
           }
       end
 
-      it 'should be denied' do
+      it 'is denied' do
         expect(response).to have_gitlab_http_status(404)
       end
     end

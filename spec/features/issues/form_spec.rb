@@ -45,7 +45,7 @@ describe 'New/edit issue', :js do
         wait_for_requests
       end
 
-      it 'should display selected users even if they are not part of the original API call' do
+      it 'displays selected users even if they are not part of the original API call' do
         find('.dropdown-input-field').native.send_keys user2.name
 
         page.within '.dropdown-menu-user' do

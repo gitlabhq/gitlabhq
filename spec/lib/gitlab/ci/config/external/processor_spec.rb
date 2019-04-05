@@ -21,7 +21,7 @@ describe Gitlab::Ci::Config::External::Processor do
     context 'when no external files defined' do
       let(:values) { { image: 'ruby:2.2' } }
 
-      it 'should return the same values' do
+      it 'returns the same values' do
         expect(processor.perform).to eq(values)
       end
     end
@@ -29,7 +29,7 @@ describe Gitlab::Ci::Config::External::Processor do
     context 'when an invalid local file is defined' do
       let(:values) { { include: '/lib/gitlab/ci/templates/non-existent-file.yml', image: 'ruby:2.2' } }
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
           "Local file `/lib/gitlab/ci/templates/non-existent-file.yml` does not exist!"
@@ -45,7 +45,7 @@ describe Gitlab::Ci::Config::External::Processor do
         WebMock.stub_request(:get, remote_file).to_raise(SocketError.new('Some HTTP error'))
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
           "Remote file `#{remote_file}` could not be fetched because of a socket error!"
@@ -78,12 +78,12 @@ describe Gitlab::Ci::Config::External::Processor do
         WebMock.stub_request(:get, remote_file).to_return(body: external_file_content)
       end
 
-      it 'should append the file to the values' do
+      it 'appends the file to the values' do
         output = processor.perform
         expect(output.keys).to match_array([:image, :before_script, :rspec, :rubocop])
       end
 
-      it "should remove the 'include' keyword" do
+      it "removes the 'include' keyword" do
         expect(processor.perform[:include]).to be_nil
       end
     end
@@ -105,12 +105,12 @@ describe Gitlab::Ci::Config::External::Processor do
           .to receive(:fetch_local_content).and_return(local_file_content)
       end
 
-      it 'should append the file to the values' do
+      it 'appends the file to the values' do
         output = processor.perform
         expect(output.keys).to match_array([:image, :before_script])
       end
 
-      it "should remove the 'include' keyword" do
+      it "removes the 'include' keyword" do
         expect(processor.perform[:include]).to be_nil
       end
     end
@@ -148,11 +148,11 @@ describe Gitlab::Ci::Config::External::Processor do
         WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
       end
 
-      it 'should append the files to the values' do
+      it 'appends the files to the values' do
         expect(processor.perform.keys).to match_array([:image, :stages, :before_script, :rspec])
       end
 
-      it "should remove the 'include' keyword" do
+      it "removes the 'include' keyword" do
         expect(processor.perform[:include]).to be_nil
       end
     end
@@ -167,7 +167,7 @@ describe Gitlab::Ci::Config::External::Processor do
           .to receive(:fetch_local_content).and_return(local_file_content)
       end
 
-      it 'should raise an error' do
+      it 'raises an error' do
         expect { processor.perform }.to raise_error(
           described_class::IncludeError,
           "Included file `/lib/gitlab/ci/templates/template.yml` does not have valid YAML syntax!"
@@ -190,7 +190,7 @@ describe Gitlab::Ci::Config::External::Processor do
         HEREDOC
       end
 
-      it 'should take precedence' do
+      it 'takes precedence' do
         WebMock.stub_request(:get, remote_file).to_return(body: remote_file_content)
         expect(processor.perform[:image]).to eq('ruby:2.2')
       end

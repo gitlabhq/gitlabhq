@@ -788,14 +788,14 @@ describe Group do
 
   describe '#has_parent?' do
     context 'when the group has a parent' do
-      it 'should be truthy' do
+      it 'is truthy' do
         group = create(:group, :nested)
         expect(group.has_parent?).to be_truthy
       end
     end
 
     context 'when the group has no parent' do
-      it 'should be falsy' do
+      it 'is falsy' do
         group = create(:group, parent: nil)
         expect(group.has_parent?).to be_falsy
       end

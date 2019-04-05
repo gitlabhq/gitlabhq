@@ -14,7 +14,7 @@ describe ProjectBadge do
   end
 
   shared_examples 'rendered_links' do
-    it 'should use the badge project information to populate the url placeholders' do
+    it 'uses the badge project information to populate the url placeholders' do
       stub_project_commit_info(project)
 
       expect(badge.public_send("rendered_#{method}")).to eq "http://www.example.com/#{project.full_path}/#{project.id}/master/whatever"

@@ -285,7 +285,7 @@ describe Projects::BlobController do
           merge_request.update!(source_project: other_project, target_project: other_project)
         end
 
-        it "it redirect to blob" do
+        it "redirects to blob" do
           put :update, params: mr_params
 
           expect(response).to redirect_to(blob_after_edit_path)

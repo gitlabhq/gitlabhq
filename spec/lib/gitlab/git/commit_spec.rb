@@ -113,13 +113,13 @@ describe Gitlab::Git::Commit, :seed_helper do
 
   context 'Class methods' do
     shared_examples '.find' do
-      it "should return first head commit if without params" do
+      it "returns first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
           rugged_repo.head.target.oid
         )
       end
 
-      it "should return valid commit" do
+      it "returns valid commit" do
         expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_valid_commit
       end
 
@@ -127,21 +127,21 @@ describe Gitlab::Git::Commit, :seed_helper do
         expect(described_class.find(repository, SeedRepo::Commit::ID).parent_ids).to be_an(Array)
       end
 
-      it "should return valid commit for tag" do
+      it "returns valid commit for tag" do
         expect(described_class.find(repository, 'v1.0.0').id).to eq('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
       end
 
-      it "should return nil for non-commit ids" do
+      it "returns nil for non-commit ids" do
         blob = Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb")
         expect(described_class.find(repository, blob.id)).to be_nil
       end
 
-      it "should return nil for parent of non-commit object" do
+      it "returns nil for parent of non-commit object" do
         blob = Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "files/ruby/popen.rb")
         expect(described_class.find(repository, "#{blob.id}^")).to be_nil
       end
 
-      it "should return nil for nonexisting ids" do
+      it "returns nil for nonexisting ids" do
         expect(described_class.find(repository, "+123_4532530XYZ")).to be_nil
       end
 
@@ -328,7 +328,7 @@ describe Gitlab::Git::Commit, :seed_helper do
     end
 
     describe '.find_all' do
-      it 'should return a return a collection of commits' do
+      it 'returns a return a collection of commits' do
         commits = described_class.find_all(repository)
 
         expect(commits).to all( be_a_kind_of(described_class) )

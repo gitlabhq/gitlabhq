@@ -230,7 +230,7 @@ describe 'Merge request > User sees versions', :js do
       wait_for_requests
     end
 
-    it 'should only show diffs from the commit' do
+    it 'only shows diffs from the commit' do
       diff_commit_ids = find_all('.diff-file [data-commit-id]').map {|diff| diff['data-commit-id']}
 
       expect(diff_commit_ids).not_to be_empty

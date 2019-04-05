@@ -36,11 +36,11 @@ describe Clusters::Applications::Helm do
 
     it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InitCommand) }
 
-    it 'should be initialized with 1 arguments' do
+    it 'is initialized with 1 arguments' do
       expect(subject.name).to eq('helm')
     end
 
-    it 'should have cert files' do
+    it 'has cert files' do
       expect(subject.files[:'ca.pem']).to be_present
       expect(subject.files[:'ca.pem']).to eq(helm.ca_cert)
 

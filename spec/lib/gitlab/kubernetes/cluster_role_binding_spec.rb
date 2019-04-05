@@ -28,7 +28,7 @@ describe Gitlab::Kubernetes::ClusterRoleBinding do
 
     subject { cluster_role_binding.generate }
 
-    it 'should build a Kubeclient Resource' do
+    it 'builds a Kubeclient Resource' do
       is_expected.to eq(resource)
     end
   end
