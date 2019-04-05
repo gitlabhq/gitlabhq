@@ -16,6 +16,12 @@ module Gitlab
       end
       alias_method :key, :name
 
+      def full_name
+        Pathname.new(@path)
+          .relative_path_from(self.class.base_dir)
+          .to_s
+      end
+
       def content
         @finder.read(@path)
       end
