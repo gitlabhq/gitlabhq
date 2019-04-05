@@ -24,7 +24,10 @@ module Gitlab
         return [project, type, redirected_path] if project
       end
 
-      nil
+      # When a project did not exist, the parsed repo_type would be empty.
+      # In that case, we want to continue with a regular project repository. As we
+      # could create the project if the user pushing is allowed to do so.
+      [nil, Gitlab::GlRepository.default_type, nil]
     end
 
     def self.find_project(project_path)
