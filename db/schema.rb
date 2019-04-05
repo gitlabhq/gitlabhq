@@ -177,15 +177,6 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.string "runners_registration_token_encrypted"
     t.integer "local_markdown_version", default: 0, null: false
     t.integer "first_day_of_week", default: 0, null: false
-    t.boolean "external_authorization_service_enabled", default: false, null: false
-    t.string "external_authorization_service_url"
-    t.string "external_authorization_service_default_label"
-    t.float "external_authorization_service_timeout", default: 0.5
-    t.text "external_auth_client_cert"
-    t.text "encrypted_external_auth_client_key"
-    t.string "encrypted_external_auth_client_key_iv"
-    t.string "encrypted_external_auth_client_key_pass"
-    t.string "encrypted_external_auth_client_key_pass_iv"
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
@@ -1763,7 +1754,6 @@ ActiveRecord::Schema.define(version: 20190325165127) do
     t.string "runners_token_encrypted"
     t.string "bfg_object_map"
     t.boolean "detected_repository_languages"
-    t.string "external_authorization_classification_label"
     t.index ["ci_id"], name: "index_projects_on_ci_id", using: :btree
     t.index ["created_at"], name: "index_projects_on_created_at", using: :btree
     t.index ["creator_id"], name: "index_projects_on_creator_id", using: :btree

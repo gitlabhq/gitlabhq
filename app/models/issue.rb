@@ -230,13 +230,7 @@ class Issue < ApplicationRecord
   def visible_to_user?(user = nil)
     return false unless project && project.feature_available?(:issues, user)
 
-    return publicly_visible? unless user
-
-    return false unless readable_by?(user)
-
-    user.full_private_access? ||
-      ::Gitlab::ExternalAuthorization.access_allowed?(
-        user, project.external_authorization_classification_label)
+    user ? readable_by?(user) : publicly_visible?
   end
 
   def check_for_spam?
@@ -304,7 +298,7 @@ class Issue < ApplicationRecord
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && !confidential? && !::Gitlab::ExternalAuthorization.enabled?
+    project.public? && !confidential?
   end
 
   def expire_etag_cache

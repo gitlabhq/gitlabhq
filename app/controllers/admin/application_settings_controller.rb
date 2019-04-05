@@ -124,9 +124,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   end
 
   def visible_application_setting_attributes
-    [
-      *::ApplicationSettingsHelper.visible_attributes,
-      *::ApplicationSettingsHelper.external_authorization_service_attributes,
+    ApplicationSettingsHelper.visible_attributes + [
       :domain_blacklist_file,
       disabled_oauth_sign_in_sources: [],
       import_sources: [],

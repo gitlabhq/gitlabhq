@@ -253,13 +253,6 @@ describe MergeRequestsFinder do
         expect(finder.row_count).to eq(1)
       end
     end
-
-    context 'external authorization' do
-      it_behaves_like 'a finder with external authorization service' do
-        let!(:subject) { create(:merge_request, source_project: project) }
-        let(:project_params) { { project_id: project.id } }
-      end
-    end
   end
 
   context 'when projects require different access levels for merge requests' do
