@@ -4,7 +4,7 @@ module Gitlab
   class PushOptions
     VALID_OPTIONS = HashWithIndifferentAccess.new({
       merge_request: {
-        keys: [:create, :target]
+        keys: [:create, :merge_when_pipeline_succeeds, :target]
       },
       ci: {
         keys: [:skip]

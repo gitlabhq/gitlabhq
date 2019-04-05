@@ -7,7 +7,7 @@ module MergeRequests
     LIMIT = 10
 
     attr_reader :branches, :changes_by_branch, :current_user, :errors,
-                :project, :push_options, :target
+                :project, :push_options
 
     def initialize(project, current_user, changes, push_options)
       @project = project
@@ -16,7 +16,6 @@ module MergeRequests
       @push_options = push_options
       @errors = []
       @branches = @changes_by_branch.keys
-      @target = @push_options[:target] || @project.default_branch
 
       raise Error, 'User is required' if @current_user.nil?
 
@@ -28,8 +27,8 @@ module MergeRequests
         raise Error, "Too many branches pushed (#{@branches.size} were pushed, limit is #{LIMIT})"
       end
 
-      if @push_options[:target] && !@project.repository.branch_exists?(@target)
-        raise Error, "Branch #{@target} does not exist"
+      if @push_options[:target] && !@project.repository.branch_exists?(@push_options[:target])
+        raise Error, "Branch #{@push_options[:target]} does not exist"
       end
     end
 
@@ -93,12 +92,10 @@ module MergeRequests
     end
 
     def update!(merge_request)
-      return if target == merge_request.target_branch
-
       merge_request = ::MergeRequests::UpdateService.new(
         project,
         current_user,
-        { target_branch: target }
+        update_params
       ).execute(merge_request)
 
       collect_errors_from_merge_request(merge_request) unless merge_request.valid?
@@ -111,13 +108,39 @@ module MergeRequests
       commits = CommitCollection.new(project, commits)
       commit = commits.without_merge_commits.first
 
-      {
+      params = {
         assignee: current_user,
         source_branch: branch,
-        target_branch: target,
+        target_branch: push_options[:target] || project.default_branch,
         title: commit&.title&.strip || 'New Merge Request',
         description: commit&.description&.strip
       }
+
+      if push_options.key?(:merge_when_pipeline_succeeds)
+        params.merge!(
+          merge_when_pipeline_succeeds: push_options[:merge_when_pipeline_succeeds],
+          merge_user: current_user
+        )
+      end
+
+      params
+    end
+
+    def update_params
+      params = {}
+
+      if push_options.key?(:merge_when_pipeline_succeeds)
+        params.merge!(
+          merge_when_pipeline_succeeds: push_options[:merge_when_pipeline_succeeds],
+          merge_user: current_user
+        )
+      end
+
+      if push_options.key?(:target)
+        params[:target_branch] = push_options[:target]
+      end
+
+      params
     end
 
     def collect_errors_from_merge_request(merge_request)
