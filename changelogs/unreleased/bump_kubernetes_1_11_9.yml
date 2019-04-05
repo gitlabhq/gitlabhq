@@ -1,0 +1,5 @@
+---
+title: Bump Helm and kubectl used in Kubernetes integration to 2.13.1 and 1.11.9 respectively
+merge_request: 26991
+author:
+type: other
