@@ -18,6 +18,7 @@
           %span.descr.text-muted= share_with_group_lock_help_text(@group)
 
     = render 'groups/settings/lfs', f: f
+    = render 'groups/settings/project_creation_level', f: f, group: @group
     = render 'groups/settings/two_factor_auth', f: f
     = render_if_exists 'groups/member_lock_setting', f: f, group: @group
 

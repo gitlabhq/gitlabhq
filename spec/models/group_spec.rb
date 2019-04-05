@@ -959,4 +959,12 @@ describe Group do
       end
     end
   end
+
+  describe 'project_creation_level' do
+    it 'outputs the default one if it is nil' do
+      group = create(:group, project_creation_level: nil)
+
+      expect(group.project_creation_level).to eq(Gitlab::CurrentSettings.default_project_creation)
+    end
+  end
 end

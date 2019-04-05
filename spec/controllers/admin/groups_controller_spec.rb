@@ -60,5 +60,11 @@ describe Admin::GroupsController do
       expect(response).to redirect_to(admin_group_path(group))
       expect(group.users).not_to include group_user
     end
+
+    it 'updates the project_creation_level successfully' do
+      expect do
+        post :update, params: { id: group.to_param, group: { project_creation_level: ::Gitlab::Access::NO_ONE_PROJECT_ACCESS } }
+      end.to change { group.reload.project_creation_level }.to(::Gitlab::Access::NO_ONE_PROJECT_ACCESS)
+    end
   end
 end
