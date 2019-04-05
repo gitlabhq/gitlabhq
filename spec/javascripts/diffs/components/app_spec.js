@@ -57,6 +57,24 @@ describe('diffs/components/app', () => {
     wrapper.destroy();
   });
 
+  it('adds container-limiting classes when showFileTree is false with inline diffs', () => {
+    createComponent({}, ({ state }) => {
+      state.diffs.showTreeList = false;
+      state.diffs.isParallelView = false;
+    });
+
+    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(true);
+  });
+
+  it('does not add container-limiting classes when showFileTree is false with inline diffs', () => {
+    createComponent({}, ({ state }) => {
+      state.diffs.showTreeList = true;
+      state.diffs.isParallelView = false;
+    });
+
+    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(false);
+  });
+
   it('displays loading icon on loading', () => {
     createComponent({}, ({ state }) => {
       state.diffs.isLoading = true;

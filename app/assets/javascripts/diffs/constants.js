@@ -47,3 +47,6 @@ export const OLD_LINE_KEY = 'old_line';
 export const NEW_LINE_KEY = 'new_line';
 export const TYPE_KEY = 'type';
 export const LEFT_LINE_KEY = 'left';
+
+export const CENTERED_LIMITED_CONTAINER_CLASSES =
+  'container-limited limit-container-width mx-auto px-3';
