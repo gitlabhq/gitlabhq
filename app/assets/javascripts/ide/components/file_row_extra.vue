@@ -23,7 +23,7 @@ export default {
       type: Object,
       required: true,
     },
-    mouseOver: {
+    dropdownOpen: {
       type: Boolean,
       required: true,
     },
@@ -92,8 +92,9 @@ export default {
     <new-dropdown
       :type="file.type"
       :path="file.path"
-      :mouse-over="mouseOver"
+      :is-open="dropdownOpen"
       class="prepend-left-8"
+      v-on="$listeners"
     />
   </div>
 </template>
