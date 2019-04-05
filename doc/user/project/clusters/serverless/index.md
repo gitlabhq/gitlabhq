@@ -123,7 +123,7 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
      environment: production
    ```
 
-    This `.gitlab-ci.yml` creates jobs that invokes some predefined commands to
+    This `.gitlab-ci.yml` creates jobs that invoke some predefined commands to
     build and deploy your functions to your cluster.
 
     `Serverless.gitlab-ci.yml` is a template that allows customization.
@@ -175,7 +175,7 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
          MY_FUNCTION: echo-docker
    ```
 
-Explanation of fields used above:
+Explanation of the fields used above:
 
 ### `service`
 
