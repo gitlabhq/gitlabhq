@@ -542,19 +542,19 @@ describe 'Pipelines', :js do
           visit_project_pipelines
         end
 
-        it 'should render a mini pipeline graph' do
+        it 'renders a mini pipeline graph' do
           expect(page).to have_selector('.js-mini-pipeline-graph')
           expect(page).to have_selector('.js-builds-dropdown-button')
         end
 
         context 'when clicking a stage badge' do
-          it 'should open a dropdown' do
+          it 'opens a dropdown' do
             find('.js-builds-dropdown-button').click
 
             expect(page).to have_link build.name
           end
 
-          it 'should be possible to cancel pending build' do
+          it 'is possible to cancel pending build' do
             find('.js-builds-dropdown-button').click
             find('.js-ci-action').click
             wait_for_requests
@@ -570,7 +570,7 @@ describe 'Pipelines', :js do
                                        name: 'build')
           end
 
-          it 'should display the failure reason' do
+          it 'displays the failure reason' do
             find('.js-builds-dropdown-button').click
 
             within('.js-builds-dropdown-list') do
@@ -587,21 +587,21 @@ describe 'Pipelines', :js do
           create(:ci_empty_pipeline, project: project)
         end
 
-        it 'should render pagination' do
+        it 'renders pagination' do
           visit project_pipelines_path(project)
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination')
         end
 
-        it 'should render second page of pipelines' do
+        it 'renders second page of pipelines' do
           visit project_pipelines_path(project, page: '2')
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
 
-        it 'should show updated content' do
+        it 'shows updated content' do
           visit project_pipelines_path(project)
           wait_for_requests
           page.find('.js-next-button .page-link').click

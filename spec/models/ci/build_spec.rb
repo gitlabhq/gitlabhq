@@ -2726,13 +2726,13 @@ describe Ci::Build do
           project.deploy_tokens << deploy_token
         end
 
-        it 'should include deploy token variables' do
+        it 'includes deploy token variables' do
           is_expected.to include(*deploy_token_variables)
         end
       end
 
       context 'when gitlab-deploy-token does not exist' do
-        it 'should not include deploy token variables' do
+        it 'does not include deploy token variables' do
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_USER'}).to be_nil
           expect(subject.find { |v| v[:key] == 'CI_DEPLOY_PASSWORD'}).to be_nil
         end

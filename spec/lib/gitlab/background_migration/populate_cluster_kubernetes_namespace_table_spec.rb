@@ -19,7 +19,7 @@ describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, :
   end
 
   shared_examples 'consistent kubernetes namespace attributes' do
-    it 'should populate namespace and service account information' do
+    it 'populates namespace and service account information' do
       migration.perform
 
       clusters_with_namespace.each do |cluster|
@@ -41,7 +41,7 @@ describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, :
   context 'when no Clusters::Project has a Clusters::KubernetesNamespace' do
     let(:cluster_projects) { cluster_projects_table.all }
 
-    it 'should create a Clusters::KubernetesNamespace per Clusters::Project' do
+    it 'creates a Clusters::KubernetesNamespace per Clusters::Project' do
       expect do
         migration.perform
       end.to change(Clusters::KubernetesNamespace, :count).by(cluster_projects_table.count)
@@ -57,7 +57,7 @@ describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, :
       create_kubernetes_namespace(clusters_table.all)
     end
 
-    it 'should not create any Clusters::KubernetesNamespace' do
+    it 'does not create any Clusters::KubernetesNamespace' do
       expect do
         migration.perform
       end.not_to change(Clusters::KubernetesNamespace, :count)
@@ -78,7 +78,7 @@ describe Gitlab::BackgroundMigration::PopulateClusterKubernetesNamespaceTable, :
       end.to change(Clusters::KubernetesNamespace, :count).by(with_no_kubernetes_namespace.count)
     end
 
-    it 'should not modify clusters with Clusters::KubernetesNamespace' do
+    it 'does not modify clusters with Clusters::KubernetesNamespace' do
       migration.perform
 
       with_kubernetes_namespace.each do |cluster|

@@ -12,7 +12,7 @@ describe Spammable do
   end
 
   describe 'ClassMethods' do
-    it 'should return correct attr_spammable' do
+    it 'returns correct attr_spammable' do
       expect(issue.spammable_text).to eq("#{issue.title}\n#{issue.description}")
     end
   end
@@ -20,7 +20,7 @@ describe Spammable do
   describe 'InstanceMethods' do
     let(:issue) { build(:issue, spam: true) }
 
-    it 'should be invalid if spam' do
+    it 'is invalid if spam' do
       expect(issue.valid?).to be_falsey
     end
 

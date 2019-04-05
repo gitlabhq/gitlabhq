@@ -50,7 +50,7 @@ describe Repository do
     it { is_expected.not_to include('fix') }
 
     describe 'when storage is broken', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error do
           broken_repository.branch_names_contains(sample_commit.id)
         end
@@ -225,7 +225,7 @@ describe Repository do
     it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
 
     describe 'when storage is broken', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error do
           broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
         end
@@ -249,7 +249,7 @@ describe Repository do
     end
 
     describe 'when storage is broken', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error do
           broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
         end
@@ -390,7 +390,7 @@ describe Repository do
     end
 
     describe 'when storage is broken', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
       end
     end
@@ -726,7 +726,7 @@ describe Repository do
     end
 
     describe 'when storage is broken', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error do
           broken_repository.search_files_by_content('feature', 'master')
         end
@@ -775,7 +775,7 @@ describe Repository do
     end
 
     describe 'when storage is broken', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
       end
     end
@@ -817,7 +817,7 @@ describe Repository do
     let(:broken_repository) { create(:project, :broken_storage).repository }
 
     describe 'when storage is broken', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error do
           broken_repository.fetch_ref(broken_repository, source_ref: '1', target_ref: '2')
         end
@@ -1018,7 +1018,7 @@ describe Repository do
         repository.add_branch(project.creator, ref, 'master')
       end
 
-      it 'should be true' do
+      it 'is true' do
         is_expected.to eq(true)
       end
     end
@@ -1028,7 +1028,7 @@ describe Repository do
         repository.add_tag(project.creator, ref, 'master')
       end
 
-      it 'should be false' do
+      it 'is false' do
         is_expected.to eq(false)
       end
     end
@@ -1152,7 +1152,7 @@ describe Repository do
     end
 
     context 'with broken storage', :broken_storage do
-      it 'should raise a storage error' do
+      it 'raises a storage error' do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
     end
@@ -2249,11 +2249,11 @@ describe Repository do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
-    it 'it is an ancestor' do
+    it 'is an ancestor' do
       expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
     end
 
-    it 'it is not an ancestor' do
+    it 'is not an ancestor' do
       expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
     end
 

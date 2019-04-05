@@ -60,7 +60,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
       context 'when platform has a namespace assigned' do
         let(:namespace) { 'platform-namespace' }
 
-        it 'should copy the namespace' do
+        it 'copies the namespace' do
           subject
 
           expect(kubernetes_namespace.namespace).to eq('platform-namespace')
@@ -72,7 +72,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
         let(:namespace) { nil }
         let(:project_slug) { "#{project.path}-#{project.id}" }
 
-        it 'should fallback to project namespace' do
+        it 'fallbacks to project namespace' do
           subject
 
           expect(kubernetes_namespace.namespace).to eq(project_slug)
@@ -83,7 +83,7 @@ RSpec.describe Clusters::KubernetesNamespace, type: :model do
     describe '#service_account_name' do
       let(:service_account_name) { "#{kubernetes_namespace.namespace}-service-account" }
 
-      it 'should set a service account name based on namespace' do
+      it 'sets a service account name based on namespace' do
         subject
 
         expect(kubernetes_namespace.service_account_name).to eq(service_account_name)

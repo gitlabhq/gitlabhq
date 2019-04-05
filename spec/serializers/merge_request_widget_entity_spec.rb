@@ -287,7 +287,7 @@ describe MergeRequestWidgetEntity do
       resource.commits.find { |c| c.short_id == short_id }
     end
 
-    it 'should not include merge commits' do
+    it 'does not include merge commits' do
       commits_in_widget = subject[:commits_without_merge_commits]
 
       expect(commits_in_widget.length).to be < resource.commits.length

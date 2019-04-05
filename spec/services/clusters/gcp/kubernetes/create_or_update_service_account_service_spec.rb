@@ -89,7 +89,7 @@ describe Clusters::Gcp::Kubernetes::CreateOrUpdateServiceAccountService do
 
       it_behaves_like 'creates service account and token'
 
-      it 'should create a cluster role binding with cluster-admin access' do
+      it 'creates a cluster role binding with cluster-admin access' do
         subject
 
         expect(WebMock).to have_requested(:post, api_url + "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings").with(

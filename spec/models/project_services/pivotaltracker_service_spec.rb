@@ -56,7 +56,7 @@ describe PivotaltrackerService do
       WebMock.stub_request(:post, url)
     end
 
-    it 'should post correct message' do
+    it 'posts correct message' do
       service.execute(push_data)
       expect(WebMock).to have_requested(:post, url).with(
         body: {
@@ -81,14 +81,14 @@ describe PivotaltrackerService do
         end
       end
 
-      it 'should post message if branch is in the list' do
+      it 'posts message if branch is in the list' do
         service.execute(push_data(branch: 'master'))
         service.execute(push_data(branch: 'v10'))
 
         expect(WebMock).to have_requested(:post, url).twice
       end
 
-      it 'should not post message if branch is not in the list' do
+      it 'does not post message if branch is not in the list' do
         service.execute(push_data(branch: 'mas'))
         service.execute(push_data(branch: 'v11'))
 

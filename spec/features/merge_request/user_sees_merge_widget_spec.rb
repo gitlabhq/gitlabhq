@@ -302,7 +302,7 @@ describe 'Merge request > User sees merge widget', :js do
       visit project_merge_request_path(project_only_mwps, merge_request_in_only_mwps_project)
     end
 
-    it 'should be allowed to merge' do
+    it 'is allowed to merge' do
       # Wait for the `ci_status` and `merge_check` requests
       wait_for_requests
 

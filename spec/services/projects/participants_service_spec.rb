@@ -41,12 +41,12 @@ describe Projects::ParticipantsService do
         group.add_owner(user)
       end
 
-      it 'should return an url for the avatar' do
+      it 'returns an url for the avatar' do
         expect(service.groups.size).to eq 1
         expect(service.groups.first[:avatar_url]).to eq("/uploads/-/system/group/avatar/#{group.id}/dk.png")
       end
 
-      it 'should return an url for the avatar with relative url' do
+      it 'returns an url for the avatar with relative url' do
         stub_config_setting(relative_url_root: '/gitlab')
         stub_config_setting(url: Settings.send(:build_gitlab_url))
 

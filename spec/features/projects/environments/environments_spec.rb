@@ -30,7 +30,7 @@ describe 'Environments page', :js do
       end
 
       describe 'in available tab page' do
-        it 'should show one environment' do
+        it 'shows one environment' do
           visit_environments(project, scope: 'available')
 
           expect(page).to have_css('.environments-container')
@@ -44,7 +44,7 @@ describe 'Environments page', :js do
           create_list(:environment, 4, project: project, state: :available)
         end
 
-        it 'should render second page of pipelines' do
+        it 'renders second page of pipelines' do
           visit_environments(project, scope: 'available')
 
           find('.js-next-button').click
@@ -56,7 +56,7 @@ describe 'Environments page', :js do
       end
 
       describe 'in stopped tab page' do
-        it 'should show no environments' do
+        it 'shows no environments' do
           visit_environments(project, scope: 'stopped')
 
           expect(page).to have_css('.environments-container')
@@ -72,7 +72,7 @@ describe 'Environments page', :js do
           allow_any_instance_of(Kubeclient::Client).to receive(:proxy_url).and_raise(Kubeclient::HttpError.new(401, 'Unauthorized', nil))
         end
 
-        it 'should show one environment without error' do
+        it 'shows one environment without error' do
           visit_environments(project, scope: 'available')
 
           expect(page).to have_css('.environments-container')
@@ -87,7 +87,7 @@ describe 'Environments page', :js do
       end
 
       describe 'in available tab page' do
-        it 'should show no environments' do
+        it 'shows no environments' do
           visit_environments(project, scope: 'available')
 
           expect(page).to have_css('.environments-container')
@@ -96,7 +96,7 @@ describe 'Environments page', :js do
       end
 
       describe 'in stopped tab page' do
-        it 'should show one environment' do
+        it 'shows one environment' do
           visit_environments(project, scope: 'stopped')
 
           expect(page).to have_css('.environments-container')

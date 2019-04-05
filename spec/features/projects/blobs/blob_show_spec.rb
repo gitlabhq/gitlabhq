@@ -572,7 +572,7 @@ describe 'File blob', :js do
       visit_blob('files/ruby/test.rb', ref: 'feature')
     end
 
-    it 'should show the realtime pipeline status' do
+    it 'shows the realtime pipeline status' do
       page.within('.commit-actions') do
         expect(page).to have_css('.ci-status-icon')
         expect(page).to have_css('.ci-status-icon-running')

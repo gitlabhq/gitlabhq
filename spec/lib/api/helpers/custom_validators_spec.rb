@@ -21,7 +21,7 @@ describe API::Helpers::CustomValidators do
     end
 
     context 'invalid parameters' do
-      it 'should raise a validation error' do
+      it 'raises a validation error' do
         expect_validation_error({ 'test' => 'some_value' })
       end
     end
@@ -44,7 +44,7 @@ describe API::Helpers::CustomValidators do
     end
 
     context 'invalid parameters' do
-      it 'should raise a validation error' do
+      it 'raises a validation error' do
         expect_validation_error({ 'test' => 'some_other_string' })
       end
     end
@@ -67,7 +67,7 @@ describe API::Helpers::CustomValidators do
     end
 
     context 'invalid parameters' do
-      it 'should raise a validation error' do
+      it 'raises a validation error' do
         expect_validation_error({ 'test' => 'some_other_string' })
       end
     end

@@ -14,7 +14,7 @@ describe Gitlab::Tracing do
     end
 
     with_them do
-      it 'should return the correct state for .enabled?' do
+      it 'returns the correct state for .enabled?' do
         expect(described_class).to receive(:connection_string).and_return(connection_string)
 
         expect(described_class.enabled?).to eq(enabled_state)
@@ -33,7 +33,7 @@ describe Gitlab::Tracing do
     end
 
     with_them do
-      it 'should return the correct state for .tracing_url_enabled?' do
+      it 'returns the correct state for .tracing_url_enabled?' do
         expect(described_class).to receive(:enabled?).and_return(enabled?)
         allow(described_class).to receive(:tracing_url_template).and_return(tracing_url_template)
 
@@ -56,7 +56,7 @@ describe Gitlab::Tracing do
     end
 
     with_them do
-      it 'should return the correct state for .tracing_url' do
+      it 'returns the correct state for .tracing_url' do
         expect(described_class).to receive(:tracing_url_enabled?).and_return(tracing_url_enabled?)
         allow(described_class).to receive(:tracing_url_template).and_return(tracing_url_template)
         allow(Gitlab::CorrelationId).to receive(:current_id).and_return(correlation_id)

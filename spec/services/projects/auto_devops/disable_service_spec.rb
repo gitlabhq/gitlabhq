@@ -46,7 +46,7 @@ describe Projects::AutoDevops::DisableService, '#execute' do
           create(:ci_pipeline, :failed, :auto_devops_source, project: project)
         end
 
-        it 'should disable Auto DevOps for project' do
+        it 'disables Auto DevOps for project' do
           subject
 
           expect(auto_devops.enabled).to eq(false)
@@ -58,7 +58,7 @@ describe Projects::AutoDevops::DisableService, '#execute' do
           create_list(:ci_pipeline, 2, :failed, :auto_devops_source, project: project)
         end
 
-        it 'should explicitly disable Auto DevOps for project' do
+        it 'explicitly disables Auto DevOps for project' do
           subject
 
           expect(auto_devops.reload.enabled).to eq(false)
@@ -70,7 +70,7 @@ describe Projects::AutoDevops::DisableService, '#execute' do
           create(:ci_pipeline, :success, :auto_devops_source, project: project)
         end
 
-        it 'should not disable Auto DevOps for project' do
+        it 'does not disable Auto DevOps for project' do
           subject
 
           expect(auto_devops.reload.enabled).to be_nil
@@ -85,14 +85,14 @@ describe Projects::AutoDevops::DisableService, '#execute' do
         create(:ci_pipeline, :failed, :auto_devops_source, project: project)
       end
 
-      it 'should disable Auto DevOps for project' do
+      it 'disables Auto DevOps for project' do
         subject
         auto_devops = project.reload.auto_devops
 
         expect(auto_devops.enabled).to eq(false)
       end
 
-      it 'should create a ProjectAutoDevops record' do
+      it 'creates a ProjectAutoDevops record' do
         expect { subject }.to change { ProjectAutoDevops.count }.from(0).to(1)
       end
     end

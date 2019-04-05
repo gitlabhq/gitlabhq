@@ -93,14 +93,14 @@ describe 'Pipeline Schedules', :js do
         expect(page).to have_button('UTC')
       end
 
-      it 'it creates a new scheduled pipeline' do
+      it 'creates a new scheduled pipeline' do
         fill_in_schedule_form
         save_pipeline_schedule
 
         expect(page).to have_content('my fancy description')
       end
 
-      it 'it prevents an invalid form from being submitted' do
+      it 'prevents an invalid form from being submitted' do
         save_pipeline_schedule
 
         expect(page).to have_content('This field is required')
@@ -112,7 +112,7 @@ describe 'Pipeline Schedules', :js do
         edit_pipeline_schedule
       end
 
-      it 'it displays existing properties' do
+      it 'displays existing properties' do
         description = find_field('schedule_description').value
         expect(description).to eq('pipeline schedule')
         expect(page).to have_button('master')

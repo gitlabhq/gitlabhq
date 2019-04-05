@@ -26,7 +26,7 @@ describe 'Issue Detail', :js do
       wait_for_requests
     end
 
-    it 'should encode the description to prevent xss issues' do
+    it 'encodes the description to prevent xss issues' do
       page.within('.issuable-details .detail-page-description') do
         expect(page).to have_selector('img', count: 1)
         expect(find('img')['onerror']).to be_nil

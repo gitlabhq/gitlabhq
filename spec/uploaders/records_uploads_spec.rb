@@ -71,7 +71,7 @@ describe RecordsUploads do
       expect { uploader.store!(upload_fixture('rails_sample.jpg')) }.not_to change { Upload.count }
     end
 
-    it 'it destroys Upload records at the same path before recording' do
+    it 'destroys Upload records at the same path before recording' do
       existing = Upload.create!(
         path: File.join('uploads', 'rails_sample.jpg'),
         size: 512.kilobytes,
@@ -88,7 +88,7 @@ describe RecordsUploads do
   end
 
   describe '#destroy_upload callback' do
-    it 'it destroys Upload records at the same path after removal' do
+    it 'destroys Upload records at the same path after removal' do
       uploader.store!(upload_fixture('rails_sample.jpg'))
 
       expect { uploader.remove! }.to change { Upload.count }.from(1).to(0)
