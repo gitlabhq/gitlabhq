@@ -59,7 +59,5 @@ dast:
     variables:
       - $GITLAB_FEATURES =~ /\bdast\b/
   except:
-    refs:
-      - master
     variables:
       - $DAST_DISABLED
