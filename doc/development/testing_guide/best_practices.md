@@ -216,8 +216,10 @@ project, one project will do for the entire file. This can be achieved by using
 reloads or recreates the model, _only_ if needed. That is, when you changed
 properties or destroyed the object.
 
-There is one gotcha; you can't reference a model defined in a `let` block in a
-`set` block.
+Note that you can't reference a model defined in a `let` block in a `set` block.
+
+Also, `set` is not supported in `:js` specs since those don't use transactions
+to clean up database state after each example.
 
 ### Time-sensitive tests
 
