@@ -75,6 +75,16 @@ export default {
       required: false,
       default: false,
     },
+    enableScopedLabels: {
+      type: Boolean,
+      require: false,
+      default: false,
+    },
+    scopedLabelsDocumentationLink: {
+      type: String,
+      require: false,
+      default: '#',
+    },
   },
   computed: {
     hiddenInputName() {
@@ -123,7 +133,12 @@ export default {
       @onValueClick="handleCollapsedValueClick"
     />
     <dropdown-title :can-edit="canEdit" />
-    <dropdown-value :labels="context.labels" :label-filter-base-path="labelFilterBasePath">
+    <dropdown-value
+      :labels="context.labels"
+      :label-filter-base-path="labelFilterBasePath"
+      :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
+      :enable-scoped-labels="enableScopedLabels"
+    >
       <slot></slot>
     </dropdown-value>
     <div v-if="canEdit" class="selectbox js-selectbox" style="display: none;">
@@ -142,6 +157,8 @@ export default {
           :namespace="namespace"
           :labels="context.labels"
           :show-extra-options="!showCreate"
+          :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
+          :enable-scoped-labels="enableScopedLabels"
         />
         <div
           class="dropdown-menu dropdown-select dropdown-menu-paging

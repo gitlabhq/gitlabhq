@@ -195,13 +195,19 @@ module Banzai
 
             content = link_content || object_link_text(object, matches)
 
-            %(<a href="#{url}" #{data}
-                 title="#{escape_once(title)}"
-                 class="#{klass}">#{content}</a>)
+            link = %(<a href="#{url}" #{data}
+                        title="#{escape_once(title)}"
+                        class="#{klass}">#{content}</a>)
+
+            wrap_link(link, object)
           else
             match
           end
         end
+      end
+
+      def wrap_link(link, object)
+        link
       end
 
       def data_attributes_for(text, parent, object, link_content: false, link_reference: false)

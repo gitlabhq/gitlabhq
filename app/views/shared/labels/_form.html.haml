@@ -4,7 +4,9 @@
   .form-group.row
     = f.label :title, class: 'col-form-label col-sm-2'
     .col-sm-10
-      = f.text_field :title, class: "form-control qa-label-title", required: true, autofocus: true
+      = f.text_field :title, class: "form-control js-label-title qa-label-title", required: true, autofocus: true
+    = render_if_exists 'shared/labels/create_label_help_text'
+
   .form-group.row
     = f.label :description, class: 'col-form-label col-sm-2'
     .col-sm-10

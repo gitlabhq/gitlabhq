@@ -46,7 +46,7 @@ module LabelsHelper
     if block_given?
       link_to link, class: css_class, &block
     else
-      link_to render_colored_label(label, tooltip: tooltip), link, class: css_class
+      render_label(label, tooltip: tooltip, link: link, css: css_class)
     end
   end
 
@@ -78,17 +78,31 @@ module LabelsHelper
     end
   end
 
-  def render_colored_label(label, label_suffix = '', tooltip: true)
+  def render_label(label, tooltip: true, link: nil, css: nil)
+    # if scoped label is used then EE wraps label tag with scoped label
+    # doc link
+    html = render_colored_label(label, tooltip: tooltip)
+    html = link_to(html, link, class: css) if link
+
+    html
+  end
+
+  def render_colored_label(label, label_suffix: '', tooltip: true, title: nil)
     text_color = text_color_for_bg(label.color)
+    title ||= tooltip ? label_tooltip_title(label) : ''
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter
     span = %(<span class="badge color-label #{"has-tooltip" if tooltip}" ) +
-      %(style="background-color: #{label.color}; color: #{text_color}" ) +
-      %(title="#{escape_once(label.description)}" data-container="body">) +
+      %(data-html="true" style="background-color: #{label.color}; color: #{text_color}" ) +
+      %(title="#{escape_once(title)}" data-container="body">) +
       %(#{escape_once(label.name)}#{label_suffix}</span>)
 
     span.html_safe
+  end
+
+  def label_tooltip_title(label)
+    label.description
   end
 
   def suggested_colors
@@ -231,6 +245,37 @@ module LabelsHelper
     labels.sort_by(&:title)
   end
 
+  def label_dropdown_data(project, opts = {})
+    {
+      toggle: "dropdown",
+      field_name: opts[:field_name] || "label_name[]",
+      show_no: "true",
+      show_any: "true",
+      project_id: project&.try(:id),
+      namespace_path: project&.try(:namespace)&.try(:full_path),
+      project_path: project&.try(:path)
+    }.merge(opts)
+  end
+
+  def sidebar_label_dropdown_data(issuable_type, issuable_sidebar)
+    label_dropdown_data(nil, {
+     default_label: "Labels",
+     field_name: "#{issuable_type}[label_names][]",
+     ability_name: issuable_type,
+     namespace_path: issuable_sidebar[:namespace_path],
+     project_path: issuable_sidebar[:project_path],
+     issue_update: issuable_sidebar[:issuable_json_path],
+     labels: issuable_sidebar[:project_labels_path],
+     display: 'static'
+    })
+  end
+
+  def label_from_hash(hash)
+    klass = hash[:group_id] ? GroupLabel : ProjectLabel
+
+    klass.new(hash.slice(:color, :description, :title, :group_id, :project_id))
+  end
+
   # Required for Banzai::Filter::LabelReferenceFilter
-  module_function :render_colored_label, :text_color_for_bg, :escape_once
+  module_function :render_colored_label, :text_color_for_bg, :escape_once, :label_tooltip_title
 end

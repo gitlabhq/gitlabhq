@@ -91,7 +91,11 @@ module Banzai
           label_suffix = " <i>in #{reference}</i>" if reference.present?
         end
 
-        LabelsHelper.render_colored_label(object, label_suffix)
+        LabelsHelper.render_colored_label(object, label_suffix: label_suffix, title: tooltip_title(object))
+      end
+
+      def tooltip_title(label)
+        nil
       end
 
       def full_path_ref?(matches)
