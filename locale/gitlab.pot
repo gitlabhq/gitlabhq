@@ -141,6 +141,9 @@ msgstr ""
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr ""
 
+msgid "%{mrText}, this issue will be closed automatically."
+msgstr ""
+
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
@@ -5806,6 +5809,9 @@ msgstr ""
 msgid "Pipeline triggers"
 msgstr ""
 
+msgid "Pipeline: %{status}"
+msgstr ""
+
 msgid "PipelineCharts|Failed:"
 msgstr ""
 
@@ -7460,6 +7466,9 @@ msgid "Something went wrong while deleting the source branch. Please try again."
 msgstr ""
 
 msgid "Something went wrong while fetching comments. Please try again."
+msgstr ""
+
+msgid "Something went wrong while fetching related merge requests."
 msgstr ""
 
 msgid "Something went wrong while fetching the environments for this merge request. Please try again."
@@ -9189,6 +9198,11 @@ msgstr ""
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr ""
+
+msgid "When this merge request is accepted"
+msgid_plural "When these merge requests are accepted"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "When:"
 msgstr ""
