@@ -65,7 +65,7 @@ describe('Area component', () => {
         expect(props.data).toBe(areaChart.vm.chartData);
         expect(props.option).toBe(areaChart.vm.chartOptions);
         expect(props.formatTooltipText).toBe(areaChart.vm.formatTooltipText);
-        expect(props.thresholds).toBe(areaChart.props('alertData'));
+        expect(props.thresholds).toBe(areaChart.vm.thresholds);
       });
 
       it('recieves a tooltip title', () => {
@@ -105,12 +105,13 @@ describe('Area component', () => {
             seriesName: areaChart.vm.chartData[0].name,
             componentSubType: type,
             value: [mockDate, 5.55555],
+            seriesIndex: 0,
           },
         ],
         value: mockDate,
       });
 
-      describe('series is of line type', () => {
+      describe('when series is of line type', () => {
         beforeEach(() => {
           areaChart.vm.formatTooltipText(generateSeriesData('line'));
         });
@@ -131,7 +132,7 @@ describe('Area component', () => {
         });
       });
 
-      describe('series is of scatter type', () => {
+      describe('when series is of scatter type', () => {
         beforeEach(() => {
           areaChart.vm.formatTooltipText(generateSeriesData('scatter'));
         });

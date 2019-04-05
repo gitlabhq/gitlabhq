@@ -1,5 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import _ from 'underscore';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import '~/vue_shared/mixins/is_ee';
@@ -142,8 +143,13 @@ export default {
     }
   },
   methods: {
-    getGraphAlerts(graphId) {
-      return this.alertData ? this.alertData[graphId] || {} : {};
+    getGraphAlerts(queries) {
+      if (!this.allAlerts) return {};
+      const metricIdsForChart = queries.map(q => q.metricId);
+      return _.pick(this.allAlerts, alert => metricIdsForChart.includes(alert.metricId));
+    },
+    getGraphAlertValues(queries) {
+      return Object.values(this.getGraphAlerts(queries));
     },
     getGraphsData() {
       this.state = 'loading';
@@ -199,17 +205,15 @@ export default {
         :key="graphIndex"
         :graph-data="graphData"
         :deployment-data="store.deploymentData"
-        :alert-data="getGraphAlerts(graphData.id)"
+        :thresholds="getGraphAlertValues(graphData.queries)"
         :container-width="elWidth"
         group-id="monitor-area-chart"
       >
         <alert-widget
-          v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData.id"
+          v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData"
           :alerts-endpoint="alertsEndpoint"
-          :label="getGraphLabel(graphData)"
-          :current-alerts="getQueryAlerts(graphData)"
-          :custom-metric-id="graphData.id"
-          :alert-data="alertData[graphData.id]"
+          :relevant-queries="graphData.queries"
+          :alerts-to-manage="getGraphAlerts(graphData.queries)"
           @setAlerts="setAlerts"
         />
       </monitor-area-chart>

@@ -42,10 +42,10 @@ export default {
       required: false,
       default: () => [],
     },
-    alertData: {
-      type: Object,
+    thresholds: {
+      type: Array,
       required: false,
-      default: () => ({}),
+      default: () => [],
     },
   },
   data() {
@@ -64,6 +64,9 @@ export default {
   },
   computed: {
     chartData() {
+      // Transforms & supplements query data to render appropriate labels & styles
+      // Input: [{ queryAttributes1 }, { queryAttributes2 }]
+      // Output: [{ seriesAttributes1 }, { seriesAttributes2 }]
       return this.graphData.queries.reduce((acc, query) => {
         const { appearance } = query;
         const lineType =
@@ -121,6 +124,9 @@ export default {
     },
     earliestDatapoint() {
       return this.chartData.reduce((acc, series) => {
+        if (!series.data.length) {
+          return acc;
+        }
         const [[timestamp]] = series.data.sort(([a], [b]) => {
           if (a < b) {
             return -1;
@@ -235,7 +241,7 @@ export default {
       :data="chartData"
       :option="chartOptions"
       :format-tooltip-text="formatTooltipText"
-      :thresholds="alertData"
+      :thresholds="thresholds"
       :width="width"
       :height="height"
       @updated="onChartUpdated"
