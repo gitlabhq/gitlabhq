@@ -151,4 +151,31 @@ describe('text_utility', () => {
       );
     });
   });
+
+  describe('truncateNamespace', () => {
+    it(`should return the root namespace if the namespace only includes one level`, () => {
+      expect(textUtils.truncateNamespace('a / b')).toBe('a');
+    });
+
+    it(`should return the first 2 namespaces if the namespace inlcudes exactly 2 levels`, () => {
+      expect(textUtils.truncateNamespace('a / b / c')).toBe('a / b');
+    });
+
+    it(`should return the first and last namespaces, separated by "...", if the namespace inlcudes more than 2 levels`, () => {
+      expect(textUtils.truncateNamespace('a / b / c / d')).toBe('a / ... / c');
+      expect(textUtils.truncateNamespace('a / b / c / d / e / f / g / h / i')).toBe('a / ... / h');
+    });
+
+    it(`should return an empty string for invalid inputs`, () => {
+      [undefined, null, 4, {}, true, new Date()].forEach(input => {
+        expect(textUtils.truncateNamespace(input)).toBe('');
+      });
+    });
+
+    it(`should not alter strings that aren't formatted as namespaces`, () => {
+      ['', ' ', '\t', 'a', 'a \\ b'].forEach(input => {
+        expect(textUtils.truncateNamespace(input)).toBe(input);
+      });
+    });
+  });
 });
