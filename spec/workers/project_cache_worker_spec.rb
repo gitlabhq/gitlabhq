@@ -48,7 +48,7 @@ describe ProjectCacheWorker do
 
         it 'updates the project statistics' do
           expect(worker).to receive(:update_statistics)
-            .with(kind_of(Project), %i(repository_size))
+            .with(kind_of(Project), statistics)
             .and_call_original
 
           worker.perform(project.id, [], statistics)
@@ -73,28 +73,31 @@ describe ProjectCacheWorker do
     let(:statistics) { %w(repository_size) }
 
     context 'when a lease could not be obtained' do
-      it 'does not update the repository size' do
+      it 'does not update the project statistics' do
         stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
+
+        expect(Projects::UpdateStatisticsService).not_to receive(:new)
 
         expect(UpdateProjectStatisticsWorker).not_to receive(:perform_in)
 
-        worker.update_statistics(project, statistics.map(&:to_sym))
+        worker.update_statistics(project, statistics)
       end
     end
 
     context 'when a lease could be obtained' do
-      it 'updates the project statistics' do
+      it 'updates the project statistics twice' do
         stub_exclusive_lease(lease_key, timeout: lease_timeout)
 
-        expect(project.statistics).to receive(:refresh!)
-          .with(only: statistics.map(&:to_sym))
+        expect(Projects::UpdateStatisticsService).to receive(:new)
+          .with(project, nil, statistics: statistics)
           .and_call_original
+          .twice
 
         expect(UpdateProjectStatisticsWorker).to receive(:perform_in)
-          .with(lease_timeout, project.id, statistics.map(&:to_sym))
+          .with(lease_timeout, project.id, statistics)
           .and_call_original
 
-        worker.update_statistics(project, statistics.map(&:to_sym))
+        worker.update_statistics(project, statistics)
       end
     end
   end

@@ -12,11 +12,7 @@ class UpdateProjectStatisticsWorker
   def perform(project_id, statistics = [])
     project = Project.find_by(id: project_id)
 
-    return unless project && project.repository.exists?
-
-    Rails.logger.info("Updating statistics for project #{project.id}")
-
-    project.statistics.refresh!(only: statistics.map(&:to_sym))
+    Projects::UpdateStatisticsService.new(project, nil, statistics: statistics).execute
   end
   # rubocop: enable CodeReuse/ActiveRecord
 end

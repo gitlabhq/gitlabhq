@@ -18,7 +18,7 @@ class ProjectCacheWorker
 
     return unless project && project.repository.exists?
 
-    update_statistics(project, statistics.map(&:to_sym))
+    update_statistics(project, statistics)
 
     project.repository.refresh_method_caches(files.map(&:to_sym))
 
@@ -34,9 +34,8 @@ class ProjectCacheWorker
     return if Gitlab::Database.read_only?
     return unless try_obtain_lease_for(project.id, statistics)
 
-    Rails.logger.info("Updating statistics for project #{project.id}")
+    Projects::UpdateStatisticsService.new(project, nil, statistics: statistics).execute
 
-    project.statistics.refresh!(only: statistics)
     UpdateProjectStatisticsWorker.perform_in(LEASE_TIMEOUT, project.id, statistics)
   end
 
