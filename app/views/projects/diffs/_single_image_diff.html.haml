@@ -10,5 +10,5 @@
 .image.js-single-image{ data: diff_view_data }
   .wrap
     - single_class_name = diff_file.deleted_file? ? 'deleted' : 'added'
-    = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "#{single_class_name} #{class_name} js-image-frame", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.file_path }
+    = render partial: "projects/diffs/image_diff_frame", locals: { class_name: "#{single_class_name} #{class_name} old-diff js-image-frame", position: position, note_type: DiffNote.name, image_path: blob_raw_url, alt: diff_file.file_path }
   %p.image-info= number_to_human_size(blob.size)
