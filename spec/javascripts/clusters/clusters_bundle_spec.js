@@ -300,9 +300,13 @@ describe('Clusters', () => {
 
   describe('toggleIngressDomainHelpText', () => {
     const { INSTALLED, INSTALLABLE, NOT_INSTALLABLE } = APPLICATION_STATUS;
+    let ingressPreviousState;
+    let ingressNewState;
 
-    const ingressPreviousState = { status: INSTALLABLE };
-    const ingressNewState = { status: INSTALLED, externalIp: '127.0.0.1' };
+    beforeEach(() => {
+      ingressPreviousState = { status: INSTALLABLE };
+      ingressNewState = { status: INSTALLED, externalIp: '127.0.0.1' };
+    });
 
     describe(`when ingress application new status is ${INSTALLED}`, () => {
       beforeEach(() => {
@@ -333,9 +337,19 @@ describe('Clusters', () => {
     });
 
     describe('when ingress application new status and old status are the same', () => {
-      it('does not modify custom domain help text', () => {
+      it('does not display custom domain help text', () => {
         ingressPreviousState.status = INSTALLED;
         ingressNewState.status = ingressPreviousState.status;
+
+        cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
+
+        expect(cluster.ingressDomainHelpText.classList.contains('hide')).toEqual(true);
+      });
+    });
+
+    describe(`when ingress new status is ${INSTALLED} and there isn’t an ip assigned`, () => {
+      it('does not display custom domain help text', () => {
+        ingressNewState.externalIp = null;
 
         cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
 

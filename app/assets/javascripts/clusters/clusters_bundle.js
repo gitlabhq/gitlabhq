@@ -288,10 +288,11 @@ export default class Clusters {
   }
 
   toggleIngressDomainHelpText(ingressPreviousState, ingressNewState) {
-    const helpTextHidden = ingressNewState.status !== APPLICATION_STATUS.INSTALLED;
-    const domainSnippetText = `${ingressNewState.externalIp}${INGRESS_DOMAIN_SUFFIX}`;
+    const { externalIp, status } = ingressNewState;
+    const helpTextHidden = status !== APPLICATION_STATUS.INSTALLED || !externalIp;
+    const domainSnippetText = `${externalIp}${INGRESS_DOMAIN_SUFFIX}`;
 
-    if (ingressPreviousState.status !== ingressNewState.status) {
+    if (ingressPreviousState.status !== status) {
       this.ingressDomainHelpText.classList.toggle('hide', helpTextHidden);
       this.ingressDomainSnippet.textContent = domainSnippetText;
     }
