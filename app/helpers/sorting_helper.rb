@@ -29,14 +29,13 @@ module SortingHelper
     }
   end
 
+  # TODO: stars_asc doesnt seem to work
   def projects_sort_options_hash
     options = {
       sort_value_latest_activity  => sort_title_latest_activity,
-      sort_value_name             => sort_title_name,
-      sort_value_oldest_activity  => sort_title_oldest_activity,
-      sort_value_oldest_created   => sort_title_oldest_created,
       sort_value_recently_created => sort_title_recently_created,
-      sort_value_most_stars       => sort_title_most_stars
+      sort_value_name             => sort_title_name,
+      sort_value_most_stars       => sort_title_stars
     }
 
     if current_controller?('admin/projects')
@@ -44,6 +43,32 @@ module SortingHelper
     end
 
     options
+  end
+
+  def projects_sort_option_titles
+    {
+      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_name             => sort_title_name,
+      sort_value_most_stars       => sort_title_stars,
+      sort_value_oldest_activity  => sort_title_latest_activity,
+      sort_value_oldest_created   => sort_title_recently_created,
+      sort_value_name_desc        => sort_title_name,
+      sort_value_most_stars_asc   => sort_title_stars
+    }
+  end
+
+  def projects_reverse_sort_options_hash
+    {
+      sort_value_latest_activity  => sort_value_oldest_activity,
+      sort_value_recently_created => sort_value_oldest_created,
+      sort_value_name             => sort_value_name_desc,
+      sort_value_most_stars       => sort_value_most_stars_asc,
+      sort_value_oldest_activity  => sort_value_latest_activity,
+      sort_value_oldest_created   => sort_value_recently_created,
+      sort_value_name_desc        => sort_value_name,
+      sort_value_most_stars_asc   => sort_value_most_stars
+    }
   end
 
   def groups_sort_options_hash
@@ -192,6 +217,22 @@ module SortingHelper
     end
   end
 
+  def project_sort_direction_button(sort_value)
+    link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
+    reverse_sort = projects_reverse_sort_options_hash[sort_value]
+
+    if reverse_sort
+      reverse_url = filter_projects_path(sort: reverse_sort)
+    else
+      reverse_url = '#'
+      link_class += ' disabled'
+    end
+
+    link_to(reverse_url, type: 'button', class: link_class, title: 'Sort direction') do
+      sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
+    end
+  end
+
   # Titles.
   def sort_title_access_level_asc
     s_('SortOptions|Access level, ascending')
@@ -323,6 +364,10 @@ module SortingHelper
 
   def sort_title_most_stars
     s_('SortOptions|Most stars')
+  end
+
+  def sort_title_stars
+    s_('SortOptions|Stars')
   end
 
   def sort_title_oldest_last_activity
@@ -468,6 +513,11 @@ module SortingHelper
 
   def sort_value_most_stars
     'stars_desc'
+  end
+
+  # TODO: currently not implemented AFAIK
+  def sort_value_most_stars_asc
+    'stars_asc'
   end
 
   def sort_value_oldest_last_activity

@@ -1448,6 +1448,14 @@ pre.light-well {
 }
 
 .project-filters {
+  .row-content-block {
+    border-top: 0;
+  }
+
+  .btn svg {
+    color: $gl-gray-700;
+  }
+
   .button-filter-group {
     .btn {
       width: 96px;
@@ -1462,9 +1470,144 @@ pre.light-well {
     }
   }
 
-  @include media-breakpoint-down(sm) {
-    .dropdown-menu-toggle {
+  .filter-with-icon {
+    border-radius: 3px 0 0 3px;
+  }
+
+  .filtered-search-wrapper {
+    flex-wrap: nowrap;
+    flex-direction: row;
+  }
+
+  .filtered-search-dropdown {
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .filtered-search,
+  .filtered-search-nav,
+  .filtered-search-dropdown {
+    display: flex;
+    min-width: auto;
+    margin: 0;
+  }
+
+  .filtered-search-dropdown-label {
+    padding: 0 8px 0 16px;
+    font-weight: bold;
+    min-width: 76px;
+  }
+
+  .filtered-search {
+    margin: 0 0 0 16px;
+    min-width: 30%;
+    width: 100%;
+    flex: 1 1 0;
+
+    .project-filter-form .project-filter-form-field {
+      padding-right: 8px;
+    }
+  }
+
+  .filtered-search,
+  .filtered-search-dropdown {
+    .btn-group {
+      width: 100%;
+    }
+
+    .qa-reverse-sort {
+      max-width: 38px;
+    }
+  }
+
+  .filtered-search-box {
+    border-radius: 3px 0 0 3px;
+  }
+
+  @include media-breakpoint-down(lg) {
+    .filtered-search {
+      min-width: 15%;
+
+      .project-filter-form-field {
+        min-width: 150px;
+      }
+    }
+
+    .extended-filtered-search.filtered-search {
+      margin-left: 0;
+      min-width: 65%;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    .filtered-search {
+      margin: 0 0 8px 16px;
+      min-width: 30%;
+    }
+
+    .filtered-search-nav {
+      margin: 0 0 8px;
+    }
+
+
+    .filtered-search-wrapper {
+      flex-wrap: wrap;
+    }
+
+    .filtered-search-dropdown {
+      width: 50%;
+    }
+
+    .filtered-search-dropdown .dropdown {
+      display: flex;
+      flex: 1 1 0;
+    }
+
+    .filtered-search-dropdown .dropdown button {
       width: 100%;
     }
   }
+
+  @include media-breakpoint-down(xs) {
+    .dropdown-menu-toggle {
+      width: 100%;
+    }
+
+    .filtered-search-wrapper {
+      display: flex;
+      flex-flow: column nowrap;
+    }
+
+    .filtered-search,
+    .filtered-search-nav,
+    .filtered-search-dropdown {
+      flex: 1 1 0;
+      width: 100%;
+    }
+
+    .filtered-search {
+      margin-left: 0;
+    }
+
+    .filtered-search-box {
+      margin: 0;
+    }
+
+    .filtered-search-nav .nav-block {
+      width: 100%;
+    }
+
+    .filtered-search-dropdown {
+      margin: 0 0 8px;
+    }
+
+    .filtered-search-dropdown-label {
+      padding-left: 0;
+    }
+
+  }
+
+  
 }
+

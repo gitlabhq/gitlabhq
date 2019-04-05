@@ -4,7 +4,7 @@
 = form_tag filter_projects_path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
   = search_field_tag :name, params[:name],
     placeholder: placeholder,
-    class: "project-filter-form-field form-control js-projects-list-filter #{form_field_classes}",
+    class: "project-filter-form-field form-control #{form_field_classes}",
     spellcheck: false,
     id: 'project-filter-form-field',
     tabindex: "2",
