@@ -9,11 +9,11 @@ describe DeployTokens::CreateService do
     subject { described_class.new(project, user, deploy_token_params).execute }
 
     context 'when the deploy token is valid' do
-      it 'should create a new DeployToken' do
+      it 'creates a new DeployToken' do
         expect { subject }.to change { DeployToken.count }.by(1)
       end
 
-      it 'should create a new ProjectDeployToken' do
+      it 'creates a new ProjectDeployToken' do
         expect { subject }.to change { ProjectDeployToken.count }.by(1)
       end
 
@@ -25,7 +25,7 @@ describe DeployTokens::CreateService do
     context 'when expires at date is not passed' do
       let(:deploy_token_params) { attributes_for(:deploy_token, expires_at: '') }
 
-      it 'should set Forever.date' do
+      it 'sets Forever.date' do
         expect(subject.read_attribute(:expires_at)).to eq(Forever.date)
       end
     end
@@ -33,11 +33,11 @@ describe DeployTokens::CreateService do
     context 'when the deploy token is invalid' do
       let(:deploy_token_params) { attributes_for(:deploy_token, read_repository: false, read_registry: false) }
 
-      it 'should not create a new DeployToken' do
+      it 'does not create a new DeployToken' do
         expect { subject }.not_to change { DeployToken.count }
       end
 
-      it 'should not create a new ProjectDeployToken' do
+      it 'does not create a new ProjectDeployToken' do
         expect { subject }.not_to change { ProjectDeployToken.count }
       end
     end

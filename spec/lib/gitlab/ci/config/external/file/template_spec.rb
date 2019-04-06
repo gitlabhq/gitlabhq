@@ -16,7 +16,7 @@ describe Gitlab::Ci::Config::External::File::Template do
     context 'when a template is specified' do
       let(:params) { { template: 'some-template' } }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(template_file).to be_matching
       end
     end
@@ -24,7 +24,7 @@ describe Gitlab::Ci::Config::External::File::Template do
     context 'with a missing template' do
       let(:params) { { template: nil } }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(template_file).not_to be_matching
       end
     end
@@ -32,7 +32,7 @@ describe Gitlab::Ci::Config::External::File::Template do
     context 'with a missing template key' do
       let(:params) { {} }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(template_file).not_to be_matching
       end
     end
@@ -42,7 +42,7 @@ describe Gitlab::Ci::Config::External::File::Template do
     context 'when is a valid template name' do
       let(:template) { 'Auto-DevOps.gitlab-ci.yml' }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(template_file).to be_valid
       end
     end
@@ -50,7 +50,7 @@ describe Gitlab::Ci::Config::External::File::Template do
     context 'with invalid template name' do
       let(:template) { 'Template.yml' }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(template_file).not_to be_valid
         expect(template_file.error_message).to include('Template file `Template.yml` is not a valid location!')
       end
@@ -59,7 +59,7 @@ describe Gitlab::Ci::Config::External::File::Template do
     context 'with a non-existing template' do
       let(:template) { 'I-Do-Not-Have-This-Template.gitlab-ci.yml' }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(template_file).not_to be_valid
         expect(template_file.error_message).to include('Included file `I-Do-Not-Have-This-Template.gitlab-ci.yml` is empty or does not exist!')
       end

@@ -41,7 +41,7 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
     migration.perform(1, 3)
   end
 
-  it 'it creates the fork network' do
+  it 'creates the fork network' do
     expect(fork_network1).not_to be_nil
     expect(fork_network2).not_to be_nil
   end

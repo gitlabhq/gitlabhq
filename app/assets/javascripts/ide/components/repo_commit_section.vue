@@ -5,7 +5,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import CommitFilesList from './commit_sidebar/list.vue';
 import EmptyState from './commit_sidebar/empty_state.vue';
-import * as consts from '../stores/modules/commit/constants';
+import consts from '../stores/modules/commit/constants';
 import { activityBarViews, stageKeys } from '../constants';
 
 export default {

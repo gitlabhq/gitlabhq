@@ -52,9 +52,6 @@ msgid_plural "%d pipelines"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "A collection of graphs regarding Continuous Integration"
-msgstr ""
-
 msgid "About auto deploy"
 msgstr ""
 

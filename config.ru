@@ -13,10 +13,6 @@ if defined?(Unicorn)
     # Max memory size (RSS) per worker
     use Unicorn::WorkerKiller::Oom, min, max
   end
-
-  # Monkey patch for fixing Rack 2.0.6 bug:
-  # https://gitlab.com/gitlab-org/gitlab-ee/issues/8539
-  Unicorn::StreamInput.send(:public, :eof?) # rubocop:disable GitlabSecurity/PublicSend
 end
 
 require ::File.expand_path('../config/environment', __FILE__)

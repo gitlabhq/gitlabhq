@@ -124,8 +124,8 @@ class GroupsController < Groups::ApplicationController
       flash[:notice] = "Group '#{@group.name}' was successfully transferred."
       redirect_to group_path(@group)
     else
-      flash.now[:alert] = service.error
-      render :edit
+      flash[:alert] = service.error
+      redirect_to edit_group_path(@group)
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

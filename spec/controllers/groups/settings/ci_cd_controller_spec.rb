@@ -124,7 +124,7 @@ describe Groups::Settings::CiCdController do
         end
 
         context 'when explicitly enabling auto devops' do
-          it 'should update group attribute' do
+          it 'updates group attribute' do
             expect(group.auto_devops_enabled).to eq(true)
           end
         end
@@ -132,7 +132,7 @@ describe Groups::Settings::CiCdController do
         context 'when explicitly disabling auto devops' do
           let(:auto_devops_param) { '0' }
 
-          it 'should update group attribute' do
+          it 'updates group attribute' do
             expect(group.auto_devops_enabled).to eq(false)
           end
         end

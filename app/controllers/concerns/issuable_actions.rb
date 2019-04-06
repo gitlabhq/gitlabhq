@@ -7,6 +7,9 @@ module IssuableActions
   included do
     before_action :authorize_destroy_issuable!, only: :destroy
     before_action :authorize_admin_issuable!, only: :bulk_update
+    before_action only: :show do
+      push_frontend_feature_flag(:scoped_labels, default_enabled: true)
+    end
   end
 
   def permitted_keys

@@ -157,7 +157,7 @@ class Projects::JobsController < Projects::ApplicationController
   # GET .../terminal.ws : implemented in gitlab-workhorse
   def terminal_websocket_authorize
     set_workhorse_internal_api_content_type
-    render json: Gitlab::Workhorse.terminal_websocket(@build.terminal_specification)
+    render json: Gitlab::Workhorse.channel_websocket(@build.terminal_specification)
   end
 
   private

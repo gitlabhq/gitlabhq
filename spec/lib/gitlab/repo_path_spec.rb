@@ -44,8 +44,10 @@ describe ::Gitlab::RepoPath do
       end
     end
 
-    it "returns nil for non existent paths" do
-      expect(described_class.parse("path/non-existent.git")).to eq(nil)
+    it "returns the default type for non existent paths" do
+      _project, type, _redirected = described_class.parse("path/non-existent.git")
+
+      expect(type).to eq(Gitlab::GlRepository.default_type)
     end
   end
 

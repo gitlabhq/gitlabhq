@@ -145,7 +145,7 @@ describe 'Labels Hierarchy', :js, :nested_groups do
       visit new_project_issue_path(project_1)
     end
 
-    it 'should be able to assign ancestor group labels' do
+    it 'is able to assign ancestor group labels' do
       fill_in 'issue_title', with: 'new created issue'
       fill_in 'issue_description', with: 'new issue description'
 

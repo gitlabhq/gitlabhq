@@ -249,4 +249,24 @@ describe LabelsHelper do
         .to match_array([label2, label4, label1, label3])
     end
   end
+
+  describe 'label_from_hash' do
+    it 'builds a group label with whitelisted attributes' do
+      label = label_from_hash({ title: 'foo', color: 'bar', id: 1, group_id: 1 })
+
+      expect(label).to be_a(GroupLabel)
+      expect(label.id).to be_nil
+      expect(label.title).to eq('foo')
+      expect(label.color).to eq('bar')
+    end
+
+    it 'builds a project label with whitelisted attributes' do
+      label = label_from_hash({ title: 'foo', color: 'bar', id: 1, project_id: 1 })
+
+      expect(label).to be_a(ProjectLabel)
+      expect(label.id).to be_nil
+      expect(label.title).to eq('foo')
+      expect(label.color).to eq('bar')
+    end
+  end
 end

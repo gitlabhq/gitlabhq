@@ -14,7 +14,7 @@ describe AnalyticsStageSerializer do
     allow_any_instance_of(Gitlab::CycleAnalytics::BaseEventFetcher).to receive(:event_result).and_return({})
   end
 
-  it 'it generates payload for single object' do
+  it 'generates payload for single object' do
     expect(subject).to be_kind_of Hash
   end
 

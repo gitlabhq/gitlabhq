@@ -185,6 +185,7 @@ describe Notes::QuickActionsService do
       end
 
       before do
+        stub_licensed_features(multiple_issue_assignees: false)
         project.add_maintainer(maintainer)
         project.add_maintainer(assignee)
       end

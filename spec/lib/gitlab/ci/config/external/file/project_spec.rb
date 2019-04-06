@@ -19,7 +19,7 @@ describe Gitlab::Ci::Config::External::File::Project do
     context 'when a file and project is specified' do
       let(:params) { { file: 'file.yml', project: 'project' } }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(project_file).to be_matching
       end
     end
@@ -27,7 +27,7 @@ describe Gitlab::Ci::Config::External::File::Project do
     context 'with only file is specified' do
       let(:params) { { file: 'file.yml' } }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(project_file).not_to be_matching
       end
     end
@@ -35,7 +35,7 @@ describe Gitlab::Ci::Config::External::File::Project do
     context 'with only project is specified' do
       let(:params) { { project: 'project' } }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(project_file).not_to be_matching
       end
     end
@@ -43,7 +43,7 @@ describe Gitlab::Ci::Config::External::File::Project do
     context 'with a missing local key' do
       let(:params) { {} }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(project_file).not_to be_matching
       end
     end
@@ -61,14 +61,14 @@ describe Gitlab::Ci::Config::External::File::Project do
         stub_project_blob(root_ref_sha, '/file.yml') { 'image: ruby:2.1' }
       end
 
-      it 'should return true' do
+      it 'returns true' do
         expect(project_file).to be_valid
       end
 
       context 'when user does not have permission to access file' do
         let(:context_user) { create(:user) }
 
-        it 'should return false' do
+        it 'returns false' do
           expect(project_file).not_to be_valid
           expect(project_file.error_message).to include("Project `#{project.full_path}` not found or access denied!")
         end
@@ -86,7 +86,7 @@ describe Gitlab::Ci::Config::External::File::Project do
         stub_project_blob(ref_sha, '/file.yml') { 'image: ruby:2.1' }
       end
 
-      it 'should return true' do
+      it 'returns true' do
         expect(project_file).to be_valid
       end
     end
@@ -102,7 +102,7 @@ describe Gitlab::Ci::Config::External::File::Project do
         stub_project_blob(root_ref_sha, '/file.yml') { '' }
       end
 
-      it 'should return false' do
+      it 'returns false' do
         expect(project_file).not_to be_valid
         expect(project_file.error_message).to include("Project `#{project.full_path}` file `/file.yml` is empty!")
       end
@@ -113,7 +113,7 @@ describe Gitlab::Ci::Config::External::File::Project do
         { project: project.full_path, ref: 'I-Do-Not-Exist', file: '/file.yml' }
       end
 
-      it 'should return false' do
+      it 'returns false' do
         expect(project_file).not_to be_valid
         expect(project_file.error_message).to include("Project `#{project.full_path}` reference `I-Do-Not-Exist` does not exist!")
       end
@@ -124,7 +124,7 @@ describe Gitlab::Ci::Config::External::File::Project do
         { project: project.full_path, file: '/invalid-file.yml' }
       end
 
-      it 'should return false' do
+      it 'returns false' do
         expect(project_file).not_to be_valid
         expect(project_file.error_message).to include("Project `#{project.full_path}` file `/invalid-file.yml` does not exist!")
       end
@@ -135,7 +135,7 @@ describe Gitlab::Ci::Config::External::File::Project do
         { project: project.full_path, file: '/invalid-file' }
       end
 
-      it 'should return false' do
+      it 'returns false' do
         expect(project_file).not_to be_valid
         expect(project_file.error_message).to include('Included file `/invalid-file` does not have YAML extension!')
       end

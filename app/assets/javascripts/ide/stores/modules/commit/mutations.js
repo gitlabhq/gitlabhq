@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import consts from './constants';
 
 export default {
   [types.UPDATE_COMMIT_MESSAGE](state, commitMessage) {
@@ -6,9 +7,13 @@ export default {
       commitMessage,
     });
   },
-  [types.UPDATE_COMMIT_ACTION](state, commitAction) {
+  [types.UPDATE_COMMIT_ACTION](state, { commitAction, currentMergeRequest }) {
     Object.assign(state, {
       commitAction,
+      shouldCreateMR:
+        commitAction === consts.COMMIT_TO_CURRENT_BRANCH && currentMergeRequest
+          ? false
+          : state.shouldCreateMR,
     });
   },
   [types.UPDATE_NEW_BRANCH_NAME](state, newBranchName) {
@@ -19,6 +24,11 @@ export default {
   [types.UPDATE_LOADING](state, submitCommitLoading) {
     Object.assign(state, {
       submitCommitLoading,
+    });
+  },
+  [types.TOGGLE_SHOULD_CREATE_MR](state) {
+    Object.assign(state, {
+      shouldCreateMR: !state.shouldCreateMR,
     });
   },
 };

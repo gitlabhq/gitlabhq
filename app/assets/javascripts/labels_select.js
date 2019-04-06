@@ -11,6 +11,7 @@ import CreateLabelDropdown from './create_label';
 import flash from './flash';
 import ModalStore from './boards/stores/modal_store';
 import boardsStore from './boards/stores/boards_store';
+import { isEE } from '~/lib/utils/common_utils';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -86,8 +87,9 @@ export default class LabelsSelect {
           return this.value;
         })
         .get();
+      const scopedLabels = $dropdown.data('scopedLabels');
+      const scopedLabelsDocumentationLink = $dropdown.data('scopedLabelsDocumentationLink');
       const { handleClick } = options;
-
       $sidebarLabelTooltip.tooltip();
 
       if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
@@ -132,8 +134,49 @@ export default class LabelsSelect {
               template = LabelsSelect.getLabelTemplate({
                 labels: data.labels,
                 issueUpdateURL,
+                enableScopedLabels: scopedLabels,
+                scopedLabelsDocumentationLink,
               });
               labelCount = data.labels.length;
+
+              // EE Specific
+              if (isEE) {
+                /**
+                 * For Scoped labels, the last label selected with the
+                 * same key will be applied to the current issueable.
+                 *
+                 * If these are the labels - priority::1, priority::2; and if
+                 * we apply them in the same order, only priority::2 will stick
+                 * with the issuable.
+                 *
+                 * In the current dropdown implementation, we keep track of all
+                 * the labels selected via a hidden DOM element. Since a User
+                 * can select priority::1 and priority::2 at the same time, the
+                 * DOM will have 2 hidden input and the dropdown will show both
+                 * the items selected but in reality server only applied
+                 * priority::2.
+                 *
+                 * We find all the labels then find all the labels server accepted
+                 * and then remove the excess ones.
+                 */
+                const toRemoveIds = Array.from(
+                  $form.find(`input[type="hidden"][name="${fieldName}"]`),
+                )
+                  .map(el => el.value)
+                  .map(Number);
+
+                data.labels.forEach(label => {
+                  const index = toRemoveIds.indexOf(label.id);
+                  toRemoveIds.splice(index, 1);
+                });
+
+                toRemoveIds.forEach(id => {
+                  $form
+                    .find(`input[type="hidden"][name="${fieldName}"][value="${id}"]`)
+                    .last()
+                    .remove();
+                });
+              }
             } else {
               template = '<span class="no-value">None</span>';
             }
@@ -358,6 +401,7 @@ export default class LabelsSelect {
             } else {
               if (!$dropdown.hasClass('js-filter-bulk-update')) {
                 saveLabelData();
+                $dropdown.data('glDropdown').clearMenu();
               }
             }
           }
@@ -471,19 +515,62 @@ export default class LabelsSelect {
     // so best approach is to use traditional way of
     // concatenation
     // see: http://2ality.com/2016/05/template-literal-whitespace.html#joining-arrays
-    const tpl = _.template(
+
+    const labelTemplate = _.template(
       [
-        '<% _.each(labels, function(label){ %>',
         '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>">',
-        '<span class="badge label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
+        '<span class="badge label has-tooltip color-label" <%= linkAttrs %> title="<%= tooltipTitleTemplate({ label, isScopedLabel, enableScopedLabels, escapeStr }) %>" style="background-color: <%= escapeStr(label.color) %>; color: <%= escapeStr(label.text_color) %>;">',
         '<%- label.title %>',
         '</span>',
         '</a>',
+      ].join(''),
+    );
+
+    const infoIconTemplate = _.template(
+      [
+        '<a href="<%= scopedLabelsDocumentationLink %>" class="label scoped-label" target="_blank" rel="noopener">',
+        '<i class="fa fa-question-circle" style="background-color: <%= escapeStr(label.color) %>; color: <%= escapeStr(label.text_color) %>;"></i>',
+        '</a>',
+      ].join(''),
+    );
+
+    const tooltipTitleTemplate = _.template(
+      [
+        '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
+        "<span class='font-weight-bold scoped-label-tooltip-title'>Scoped label</span>",
+        '<br />',
+        '<%= escapeStr(label.description) %>',
+        '<% } else { %>',
+        '<%= escapeStr(label.description) %>',
+        '<% } %>',
+      ].join(''),
+    );
+
+    const isScopedLabel = label => label.title.indexOf('::') !== -1;
+
+    const tpl = _.template(
+      [
+        '<% _.each(labels, function(label){ %>',
+        '<% if (isScopedLabel(label) && enableScopedLabels) { %>',
+        '<span class="d-inline-block position-relative scoped-label-wrapper">',
+        '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, escapeStr, linkAttrs: \'data-html="true"\' }) %>',
+        '<%= infoIconTemplate({ label, scopedLabelsDocumentationLink, escapeStr }) %>',
+        '</span>',
+        '<% } else { %>',
+        '<%= labelTemplate({ label, issueUpdateURL, isScopedLabel, enableScopedLabels, tooltipTitleTemplate, escapeStr, linkAttrs: "" }) %>',
+        '<% } %>',
         '<% }); %>',
       ].join(''),
     );
 
-    return tpl(tplData);
+    return tpl({
+      ...tplData,
+      labelTemplate,
+      infoIconTemplate,
+      tooltipTitleTemplate,
+      isScopedLabel,
+      escapeStr: _.escape,
+    });
   }
 
   bindEvents() {

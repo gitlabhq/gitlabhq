@@ -18,7 +18,7 @@ describe AnalyticsSummarySerializer do
       .to receive(:value).and_return(1.12)
   end
 
-  it 'it generates payload for single object' do
+  it 'generates payload for single object' do
     expect(subject).to be_kind_of Hash
   end
 

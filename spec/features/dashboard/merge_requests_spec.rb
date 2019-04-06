@@ -44,6 +44,8 @@ describe 'Dashboard Merge Requests' do
   end
 
   context 'merge requests exist' do
+    let(:label) { create(:label) }
+
     let!(:assigned_merge_request) do
       create(:merge_request,
         assignee: current_user,
@@ -72,6 +74,14 @@ describe 'Dashboard Merge Requests' do
               target_project: public_project, source_project: forked_project)
     end
 
+    let!(:labeled_merge_request) do
+      create(:labeled_merge_request,
+              source_branch: 'labeled',
+              labels: [label],
+              author: current_user,
+              source_project: project)
+    end
+
     let!(:other_merge_request) do
       create(:merge_request,
               source_branch: 'fix',
@@ -90,6 +100,7 @@ describe 'Dashboard Merge Requests' do
       expect(page).not_to have_content(authored_merge_request.title)
       expect(page).not_to have_content(authored_merge_request_from_fork.title)
       expect(page).not_to have_content(other_merge_request.title)
+      expect(page).not_to have_content(labeled_merge_request.title)
     end
 
     it 'shows authored merge requests', :js do
@@ -98,7 +109,21 @@ describe 'Dashboard Merge Requests' do
 
       expect(page).to have_content(authored_merge_request.title)
       expect(page).to have_content(authored_merge_request_from_fork.title)
+      expect(page).to have_content(labeled_merge_request.title)
 
+      expect(page).not_to have_content(assigned_merge_request.title)
+      expect(page).not_to have_content(assigned_merge_request_from_fork.title)
+      expect(page).not_to have_content(other_merge_request.title)
+    end
+
+    it 'shows labeled merge requests', :js do
+      reset_filters
+      input_filtered_search("label:#{label.name}")
+
+      expect(page).to have_content(labeled_merge_request.title)
+
+      expect(page).not_to have_content(authored_merge_request.title)
+      expect(page).not_to have_content(authored_merge_request_from_fork.title)
       expect(page).not_to have_content(assigned_merge_request.title)
       expect(page).not_to have_content(assigned_merge_request_from_fork.title)
       expect(page).not_to have_content(other_merge_request.title)

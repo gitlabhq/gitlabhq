@@ -362,6 +362,10 @@ configuring a different storage driver. By default the GitLab Container Registry
 is configured to use the filesystem driver, which makes use of [storage path](#container-registry-storage-path)
 configuration.
 
+NOTE: **Note:** Enabling a storage driver other than `filesystem` would mean
+that your Docker client needs to be able to access the storage backend directly.
+In that case, you must use an address that resolves and is accessible outside GitLab server.
+
 The different supported drivers are:
 
 | Driver     | Description                         |
@@ -369,20 +373,16 @@ The different supported drivers are:
 | filesystem | Uses a path on the local filesystem |
 | azure      | Microsoft Azure Blob Storage        |
 | gcs        | Google Cloud Storage                |
-| s3         | Amazon Simple Storage Service       |
+| s3         | Amazon Simple Storage Service. Be sure to configure your storage bucket with the correct [S3 Permission Scopes](https://docs.docker.com/registry/storage-drivers/s3/#s3-permission-scopes).       |
 | swift      | OpenStack Swift Object Storage      |
 | oss        | Aliyun OSS                          |
 
 Read more about the individual driver's config options in the
 [Docker Registry docs][storage-config].
 
-> **Warning** GitLab will not backup Docker images that are not stored on the
+CAUTION: **Warning:** GitLab will not backup Docker images that are not stored on the
 filesystem. Remember to enable backups with your object storage provider if
 desired.
->
-> **Important** Enabling storage driver other than `filesystem` would mean
-that your Docker client needs to be able to access the storage backend directly.
-So you must use an address that resolves and is accessible outside GitLab server.
 
 ---
 

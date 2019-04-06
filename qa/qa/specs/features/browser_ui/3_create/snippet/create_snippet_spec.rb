@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module QA
-  context 'Create', :smoke do
+  # Failure issue: https://gitlab.com/gitlab-org/quality/staging/issues/49
+  context 'Create', :smoke, :quarantine do
     describe 'Snippet creation' do
       it 'User creates a snippet' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

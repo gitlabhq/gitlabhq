@@ -7,19 +7,19 @@ describe Gitlab::Tracing::Rails::ActionViewSubscriber do
   using RSpec::Parameterized::TableSyntax
 
   shared_examples 'an actionview notification' do
-    it 'should notify the tracer when the hash contains null values' do
+    it 'notifies the tracer when the hash contains null values' do
       expect(subject).to receive(:postnotify_span).with(notification_name, start, finish, tags: expected_tags, exception: exception)
 
       subject.public_send(notify_method, start, finish, payload)
     end
 
-    it 'should notify the tracer when the payload is missing values' do
+    it 'notifies the tracer when the payload is missing values' do
       expect(subject).to receive(:postnotify_span).with(notification_name, start, finish, tags: expected_tags, exception: exception)
 
       subject.public_send(notify_method, start, finish, payload.compact)
     end
 
-    it 'should not throw exceptions when with the default tracer' do
+    it 'does not throw exceptions when with the default tracer' do
       expect { subject.public_send(notify_method, start, finish, payload) }.not_to raise_error
     end
   end

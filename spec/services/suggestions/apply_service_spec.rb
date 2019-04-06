@@ -51,6 +51,10 @@ describe Suggestions::ApplyService do
                                diff_refs: merge_request.diff_refs)
   end
 
+  let(:diff_note) do
+    create(:diff_note_on_merge_request, noteable: merge_request, position: position, project: project)
+  end
+
   let(:suggestion) do
     create(:suggestion, :content_from_repo, note: diff_note,
                                             to_content: "      raise RuntimeError, 'Explosion'\n      # explosion?\n")
@@ -106,12 +110,6 @@ describe Suggestions::ApplyService do
       let(:merge_request) do
         create(:merge_request, source_project: project,
                                target_project: project)
-      end
-
-      let!(:diff_note) do
-        create(:diff_note_on_merge_request, noteable: merge_request,
-                                            position: position,
-                                            project: project)
       end
 
       before do
@@ -190,11 +188,6 @@ describe Suggestions::ApplyService do
                 end
               end
           CONTENT
-        end
-
-        let(:merge_request) do
-          create(:merge_request, source_project: project,
-                                 target_project: project)
         end
 
         def create_suggestion(diff, old_line: nil, new_line: nil, from_content:, to_content:, path:)
@@ -290,6 +283,55 @@ describe Suggestions::ApplyService do
           expect(suggestion_1_diff.strip).to eq(expected_suggestion_1_diff.strip)
           expect(suggestion_2_diff.strip).to eq(expected_suggestion_2_diff.strip)
         end
+      end
+
+      context 'multi-line suggestion' do
+        let(:expected_content) do
+          <<~CONTENT
+            require 'fileutils'
+            require 'open3'
+
+            module Popen
+              extend self
+
+            # multi
+            # line
+
+                vars = {
+                  "PWD" => path
+                }
+
+                options = {
+                  chdir: path
+                }
+
+                unless File.directory?(path)
+                  FileUtils.mkdir_p(path)
+                end
+
+                @cmd_output = ""
+                @cmd_status = 0
+
+                Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
+                  @cmd_output << stdout.read
+                  @cmd_output << stderr.read
+                  @cmd_status = wait_thr.value.exitstatus
+                end
+
+                return @cmd_output, @cmd_status
+              end
+            end
+          CONTENT
+        end
+
+        let(:suggestion) do
+          create(:suggestion, :content_from_repo, note: diff_note,
+                                                  lines_above: 2,
+                                                  lines_below: 3,
+                                                  to_content: "# multi\n# line\n")
+        end
+
+        it_behaves_like 'successfully creates commit and updates suggestion'
       end
     end
 

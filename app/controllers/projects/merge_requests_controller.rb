@@ -16,6 +16,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
+
   def index
     @merge_requests = @issuables
 
@@ -315,9 +317,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def serializer
-    ::Gitlab::GitalyClient.allow_ref_name_caching do
-      MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
-    end
+    MergeRequestSerializer.new(current_user: current_user, project: merge_request.project)
   end
 
   def define_edit_vars

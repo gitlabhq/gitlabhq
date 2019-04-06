@@ -110,6 +110,16 @@
     font-size: 0;
     margin-bottom: -5px;
   }
+
+  .scoped-label-wrapper {
+    .color-label {
+      padding-right: $gl-padding-24;
+    }
+
+    .scoped-label {
+      right: 12px;
+    }
+  }
 }
 
 .right-sidebar {

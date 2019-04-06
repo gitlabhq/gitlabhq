@@ -6,6 +6,7 @@ describe ApplicationSetting do
   let(:setting) { described_class.create_from_defaults }
 
   it { include(CacheableAttributes) }
+  it { include(ApplicationSettingImplementation) }
   it { expect(described_class.current_without_cache).to eq(described_class.last) }
 
   it { expect(setting).to be_valid }
@@ -286,12 +287,10 @@ describe ApplicationSetting do
   end
 
   context 'restrict creating duplicates' do
-    before do
-      described_class.create_from_defaults
-    end
+    let!(:current_settings) { described_class.create_from_defaults }
 
-    it 'raises an record creation violation if already created' do
-      expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
+    it 'returns the current settings' do
+      expect(described_class.create_from_defaults).to eq(current_settings)
     end
   end
 

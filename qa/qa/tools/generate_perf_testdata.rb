@@ -33,6 +33,7 @@ module QA
         add_new_file
         methods_arr = [
           method(:create_issues),
+          method(:create_labels),
           method(:create_todos),
           method(:create_merge_requests),
           method(:create_issue_with_500_discussions),
@@ -80,6 +81,15 @@ module QA
         STDOUT.puts "Created todos"
       end
 
+      def create_labels
+        30.times do |i|
+          post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/labels").url,
+          "name=label#{i}&color=#{Faker::Color.hex_color}"
+        end
+        @urls[:labels_page] = @urls[:project_page] + "/labels"
+        STDOUT.puts "Created labels"
+      end
+
       def create_merge_requests
         30.times do |i|
           post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/merge_requests").url, "source_branch=branch#{i}&target_branch=master&title=MR#{i}"
@@ -108,35 +118,76 @@ module QA
         500.times do
           post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/issues/#{issue_id}/discussions").url, "body=\"Let us discuss\""
         end
+
+        labels_list = (0..15).map {|i| "label#{i}"}.join(',')
+        # Add description and labels
+        put Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/issues/#{issue_id}").url, "description=#{Faker::Lorem.sentences(500).join(" ")}&labels=#{labels_list}"
         @urls[:large_issue] = @urls[:project_page] + "/issues/#{issue_id}"
         STDOUT.puts "Created Issue with 500 Discussions"
       end
 
       def create_mr_with_large_files
         content_arr = []
-        20.times do |i|
+        16.times do |i|
           faker_line_arr = Faker::Lorem.sentences(1500)
           content = faker_line_arr.join("\n\r")
-          post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/repository/files/hello#{i}.txt").url, "branch=master&commit_message=\"Add hello#{i}.txt\"&content=#{content}"
+          post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/repository/files/hello#{i}.txt").url,
+            "branch=master&commit_message=\"Add hello#{i}.txt\"&content=#{content}"
           content_arr[i] = faker_line_arr
         end
 
-        post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/repository/branches").url, "branch=performance&ref=master"
+        post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/repository/branches").url,
+        "branch=performance&ref=master"
 
-        20.times do |i|
+        16.times do |i|
           missed_line_array = content_arr[i].each_slice(2).map(&:first)
           content = missed_line_array.join("\n\rIm new!:D \n\r ")
-          put Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/repository/files/hello#{i}.txt").url, "branch=performance&commit_message=\"Update hello#{i}.txt\"&content=#{content}"
+          put Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/repository/files/hello#{i}.txt").url,
+          "branch=performance&commit_message=\"Update hello#{i}.txt\"&content=#{content}"
         end
 
-        create_mr_response = post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/merge_requests").url, "source_branch=performance&target_branch=master&title=Large_MR"
+        create_mr_response = post Runtime::API::Request.new(@api_client, """/projects/#{@group_name}%2F#{@project_name}/merge_requests""").url,
+        "source_branch=performance&target_branch=master&title=Large_MR"
 
         iid = JSON.parse(create_mr_response.body)["iid"]
-        500.times do
-          post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/merge_requests/#{iid}/discussions").url, "body=\"Let us discuss\""
+        diff_refs = JSON.parse(create_mr_response.body)["diff_refs"]
+
+        # Add discussions to diff tab and resolve a few!
+        should_resolve = false
+        16.times do |i|
+          1.upto(9) do |j|
+            create_diff_note(iid, i, j, diff_refs["head_sha"], diff_refs["start_sha"], diff_refs["base_sha"], "new_line")
+            create_diff_note_response = create_diff_note(iid, i, j, diff_refs["head_sha"], diff_refs["start_sha"], diff_refs["base_sha"], "old_line")
+
+            if should_resolve
+              discussion_id = JSON.parse(create_diff_note_response.body)["id"]
+              put Runtime::API::Request.new(@api_client, """/projects/#{@group_name}%2F#{@project_name}/merge_requests/#{iid}/discussions/#{discussion_id}""").url,
+              "resolved=true"
+            end
+
+            should_resolve ^= true
+          end
+        end
+
+        # Add discussions to main tab
+        100.times do
+          post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/merge_requests/#{iid}/discussions").url,
+          "body=\"Let us discuss\""
         end
         @urls[:large_mr] = JSON.parse(create_mr_response.body)["web_url"]
         STDOUT.puts "Created MR with 500 Discussions and 20 Very Large Files"
+      end
+
+      def create_diff_note(iid, file_count, line_count, head_sha, start_sha, base_sha, line_type)
+        post Runtime::API::Request.new(@api_client, "/projects/#{@group_name}%2F#{@project_name}/merge_requests/#{iid}/discussions").url,
+          """body=\"Let us discuss\"&
+          position[position_type]=text&
+          position[new_path]=hello#{file_count}.txt&
+          position[old_path]=hello#{file_count}.txt&
+          position[#{line_type}]=#{line_count * 100}&
+          position[head_sha]=#{head_sha}&
+          position[start_sha]=#{start_sha}&
+          position[base_sha]=#{base_sha}"""
       end
     end
   end

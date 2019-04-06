@@ -117,7 +117,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     terminal = environment.terminals.try(:first)
     if terminal
       set_workhorse_internal_api_content_type
-      render json: Gitlab::Workhorse.terminal_websocket(terminal)
+      render json: Gitlab::Workhorse.channel_websocket(terminal)
     else
       render html: 'Not found', status: :not_found
     end

@@ -2,14 +2,16 @@
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/15310) in GitLab 11.6.
 
-Usually, when you create a new merge request, a pipeline runs on the
+Usually, when you create a new merge request, a pipeline runs with the
 new change and checks if it's qualified to be merged into a target branch. This
-pipeline should contain only necessary jobs for checking the new changes.
+pipeline should contain only necessary jobs for validating the new changes.
 For example, unit tests, lint checks, and [Review Apps](../review_apps/index.md)
 are often used in this cycle.
 
 With pipelines for merge requests, you can design a specific pipeline structure
-for merge requests.
+for when you are running a pipeline in a merge request. This
+could be either adding or removing steps in the pipeline, to make sure that
+your pipelines are as efficient as possible.
 
 ## Configuring pipelines for merge requests
 
@@ -30,9 +32,7 @@ build:
   stage: build
   script: ./build
   only:
-  - branches
-  - tags
-  - merge_requests
+  - master
 
 test:
   stage: test
@@ -43,6 +43,8 @@ test:
 deploy:
   stage: deploy
   script: ./deploy
+  only:
+  - master
 ```
 
 After the merge request is updated with new commits:
@@ -50,18 +52,58 @@ After the merge request is updated with new commits:
 - GitLab detects that changes have occurred and creates a new pipeline for the merge request.
 - The pipeline fetches the latest code from the source branch and run tests against it.
 
-In the above example, the pipeline contains only `build` and `test` jobs.
-Since the `deploy` job doesn't have the `only: merge_requests` parameter,
-deployment jobs will not happen in the merge request.
+In the above example, the pipeline contains only a `test` job.
+Since the `build` and `deploy` jobs don't have the `only: merge_requests` parameter,
+they will not run in the merge request.
 
-Pipelines tagged with the **merge request** badge indicate that they were triggered
+Pipelines tagged with the **detached** badge indicate that they were triggered
 when a merge request was created or updated. For example:
 
 ![Merge request page](img/merge_request.png)
 
-The same tag is shown on the pipeline's details:
+## Combined ref pipelines **[PREMIUM]**
 
-![Pipeline's details](img/pipeline_detail.png)
+> [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+
+It's possible for your source and target branches to diverge, which can result
+in the scenario that source branch's pipeline was green, the target's pipeline was green,
+but the combined output fails. By having your merge request pipeline automatically
+create a new ref that contains the merge result of the source and target branch 
+(then running a pipeline on that ref), we can better test that the combined result
+is also valid.
+
+From GitLab 11.10, pipelines for merge requests run by default
+on this merged result. That is, where the source and target branches are combined into a
+new ref and a pipeline for this ref validates the result prior to merging.
+
+![Merge request pipeline as the head pipeline](img/merge_request_pipeline.png)
+
+There are some cases where creating a combined ref is not possible or not wanted.
+For example, a source branch that has conflicts with the target branch
+or a merge request that is still in WIP status. In this case, the merge request pipeline falls back to a "detached" state
+and runs on the source branch ref as if it was a regular pipeline.
+
+The detached state serves to warn you that you are working in a situation
+subjected to merge problems, and helps to highlight that you should
+get out of WIP status or resolve merge conflicts as soon as possible.
+
+### Enabling combined ref pipelines
+
+This feature disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186). It can be enabled at the project level:
+
+1. Visit your project's **Settings > General** and expand **Merge requests**.
+1. Check **Merge pipelines will try to validate the post-merge result prior to merging**.
+1. Click **Save changes** button.
+
+![Merge request pipeline config](img/merge_request_pipeline_config.png)
+
+### Combined ref pipeline's limitations
+
+- This feature requires [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or newer.
+- This feature requires [Gitaly](https://gitlab.com/gitlab-org/gitaly) 1.21.0 or newer.
+- After the merge request pipeline succeeds, if the target branch has moved forward, the result of the pipeline is stale and must be retried. In busy repos, this can become a problem as it is highly probable that the target branch will have moved ahead. Improvements are [planned](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186) for future versions of GitLab.
+- Forking/cross-repo workflows are not currently supported. To follow progress, see [#9713](https://gitlab.com/gitlab-org/gitlab-ee/issues/9713).
+- This feature is not available for [fast forward merges](../../user/project/merge_requests/fast_forward_merge.md) yet. To follow progress, see [#58226](https://gitlab.com/gitlab-org/gitlab-ce/issues/58226).
 
 ## Excluding certain jobs
 
@@ -138,3 +180,12 @@ External users could steal secret variables from the parent project by modifying
 We're discussing a secure solution of running pipelines for merge requests
 that submitted from forked projects,
 see [the issue about the permission extension](https://gitlab.com/gitlab-org/gitlab-ce/issues/23902).
+
+## Additional predefined variables
+
+By using pipelines for merge requests, GitLab exposes additional predefined variables to the pipeline jobs.
+Those variables contain information of the associated merge request, so that it's useful
+to integrate your job with [GitLab Merge Request API](../../api/merge_requests.md).
+
+You can find the list of avilable variables in [the reference sheet](../variables/predefined_variables.md).
+The variable names begin with the `CI_MERGE_REQUEST_` prefix.

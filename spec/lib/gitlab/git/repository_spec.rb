@@ -450,20 +450,20 @@ describe Gitlab::Git::Repository, :seed_helper do
       ensure_seeds
     end
 
-    it "should create a new branch" do
+    it "creates a new branch" do
       expect(repository.create_branch('new_branch', 'master')).not_to be_nil
     end
 
-    it "should create a new branch with the right name" do
+    it "creates a new branch with the right name" do
       expect(repository.create_branch('another_branch', 'master').name).to eq('another_branch')
     end
 
-    it "should fail if we create an existing branch" do
+    it "fails if we create an existing branch" do
       repository.create_branch('duplicated_branch', 'master')
       expect {repository.create_branch('duplicated_branch', 'master')}.to raise_error("Branch duplicated_branch already exists")
     end
 
-    it "should fail if we create a branch from a non existing ref" do
+    it "fails if we create a branch from a non existing ref" do
       expect {repository.create_branch('branch_based_in_wrong_ref', 'master_2_the_revenge')}.to raise_error("Invalid reference master_2_the_revenge")
     end
   end
@@ -522,7 +522,7 @@ describe Gitlab::Git::Repository, :seed_helper do
   describe "#refs_hash" do
     subject { repository.refs_hash }
 
-    it "should have as many entries as branches and tags" do
+    it "has as many entries as branches and tags" do
       expected_refs = SeedRepo::Repo::BRANCHES + SeedRepo::Repo::TAGS
       # We flatten in case a commit is pointed at by more than one branch and/or tag
       expect(subject.values.flatten.size).to eq(expected_refs.size)
@@ -613,11 +613,11 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
 
     shared_examples 'search files by content' do
-      it 'should have 2 items' do
+      it 'has 2 items' do
         expect(search_results.size).to eq(2)
       end
 
-      it 'should have the correct matching line' do
+      it 'has the correct matching line' do
         expect(search_results).to contain_exactly("search-files-by-content-branch:encoding/CHANGELOG\u00001\u0000search-files-by-content change\n",
                                                   "search-files-by-content-branch:anotherfile\u00001\u0000search-files-by-content change\n")
       end
@@ -850,7 +850,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       context "where provides 'after' timestamp" do
         options = { after: Time.iso8601('2014-03-03T20:15:01+00:00') }
 
-        it "should returns commits on or after that timestamp" do
+        it "returns commits on or after that timestamp" do
           commits = repository.log(options)
 
           expect(commits.size).to be > 0
@@ -863,7 +863,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       context "where provides 'before' timestamp" do
         options = { before: Time.iso8601('2014-03-03T20:15:01+00:00') }
 
-        it "should returns commits on or before that timestamp" do
+        it "returns commits on or before that timestamp" do
           commits = repository.log(options)
 
           expect(commits.size).to be > 0
@@ -1064,14 +1064,14 @@ describe Gitlab::Git::Repository, :seed_helper do
   end
 
   describe '#find_branch' do
-    it 'should return a Branch for master' do
+    it 'returns a Branch for master' do
       branch = repository.find_branch('master')
 
       expect(branch).to be_a_kind_of(Gitlab::Git::Branch)
       expect(branch.name).to eq('master')
     end
 
-    it 'should handle non-existent branch' do
+    it 'handles non-existent branch' do
       branch = repository.find_branch('this-is-garbage')
 
       expect(branch).to eq(nil)
