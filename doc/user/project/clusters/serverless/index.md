@@ -301,3 +301,23 @@ The second to last line, labeled **Service domain** contains the URL for the dep
 browser to see the app live.
 
 ![knative app](img/knative-app.png)
+
+## Function details
+
+Go to the **Operations > Serverless** page and click on one of the function
+rows to bring up the function details page.
+
+![function_details](img/function-details-loaded.png)
+
+The pod count will give you the number of pods running the serverless function instances on a given cluster.
+
+### Prometheus support
+
+For the Knative function invocations to appear,
+[Prometheus must be installed](../index.md#installing-applications).
+
+Once Prometheus is installed, a message may appear indicating that the metrics data _is
+loading or is not available at this time._  It will appear upon the first access of the
+page, but should go away after a few seconds. If the message does not disappear, then it
+is possible that GitLab is unable to connect to the Prometheus instance running on the
+cluster.

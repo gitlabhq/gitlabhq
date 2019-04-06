@@ -76,6 +76,15 @@ describe Projects::Serverless::FunctionsController do
     end
   end
 
+  describe 'GET #metrics' do
+    context 'invalid data' do
+      it 'has a bad function name' do
+        get :metrics, params: params({ format: :json, environment_id: "*", id: "foo" })
+        expect(response).to have_gitlab_http_status(204)
+      end
+    end
+  end
+
   describe 'GET #index with data', :use_clean_rails_memory_store_caching do
     before do
       stub_kubeclient_service_pods

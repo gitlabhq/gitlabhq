@@ -7,6 +7,10 @@ module PrometheusHelpers
     %{avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="#{environment_slug}"}[2m])) * 100}
   end
 
+  def prometheus_istio_query(function_name, kube_namespace)
+    %{floor(sum(rate(istio_revision_request_count{destination_configuration=\"#{function_name}\", destination_namespace=\"#{kube_namespace}\"}[1m])*30))}
+  end
+
   def prometheus_ping_url(prometheus_query)
     query = { query: prometheus_query }.to_query
 

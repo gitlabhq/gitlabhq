@@ -4,6 +4,7 @@ require 'spec_helper'
 
 describe Projects::Serverless::FunctionsFinder do
   include KubernetesHelpers
+  include PrometheusHelpers
   include ReactiveCachingHelpers
 
   let(:user) { create(:user) }
@@ -24,12 +25,12 @@ describe Projects::Serverless::FunctionsFinder do
 
   describe 'retrieve data from knative' do
     it 'does not have knative installed' do
-      expect(described_class.new(project.clusters).execute).to be_empty
+      expect(described_class.new(project).execute).to be_empty
     end
 
     context 'has knative installed' do
       let!(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
-      let(:finder) { described_class.new(project.clusters) }
+      let(:finder) { described_class.new(project) }
 
       it 'there are no functions' do
         expect(finder.execute).to be_empty
@@ -58,13 +59,36 @@ describe Projects::Serverless::FunctionsFinder do
         expect(result).not_to be_empty
         expect(result["metadata"]["name"]).to be_eql(cluster.project.name)
       end
+
+      it 'has metrics', :use_clean_rails_memory_store_caching do
+      end
+    end
+
+    context 'has prometheus' do
+      let(:prometheus_adapter) { double('prometheus_adapter', can_query?: true) }
+      let!(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
+      let!(:prometheus) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+      let(:finder) { described_class.new(project) }
+
+      before do
+        allow(finder).to receive(:prometheus_adapter).and_return(prometheus_adapter)
+        allow(prometheus_adapter).to receive(:query).and_return(prometheus_empty_body('matrix'))
+      end
+
+      it 'is available' do
+        expect(finder.has_prometheus?("*")).to be true
+      end
+
+      it 'has query data' do
+        expect(finder.invocation_metrics("*", cluster.project.name)).not_to be_nil
+      end
     end
   end
 
   describe 'verify if knative is installed' do
     context 'knative is not installed' do
       it 'does not have knative installed' do
-        expect(described_class.new(project.clusters).installed?).to be false
+        expect(described_class.new(project).installed?).to be false
       end
     end
 
@@ -72,7 +96,7 @@ describe Projects::Serverless::FunctionsFinder do
       let!(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
 
       it 'does have knative installed' do
-        expect(described_class.new(project.clusters).installed?).to be true
+        expect(described_class.new(project).installed?).to be true
       end
     end
   end

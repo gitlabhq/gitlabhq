@@ -50,7 +50,7 @@ describe 'Functions', :js do
     end
 
     it 'sees an empty listing of serverless functions' do
-      expect(page).to have_selector('.gl-responsive-table-row')
+      expect(page).to have_selector('.empty-state')
     end
   end
 end
