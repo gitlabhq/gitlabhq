@@ -9,6 +9,8 @@ class Projects::BlobController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
   prepend_before_action :authenticate_user!, only: [:edit]
 
+  around_action :allow_gitaly_ref_name_caching, only: [:show]
+
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :authorize_download_code!
 
