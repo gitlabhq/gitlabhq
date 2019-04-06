@@ -1,68 +1,101 @@
-import Vue from 'vue';
+import Vuex from 'vuex';
 
 import functionsComponent from '~/serverless/components/functions.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import ServerlessStore from '~/serverless/stores/serverless_store';
-
+import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createStore } from '~/serverless/store';
 import { mockServerlessFunctions } from '../mock_data';
 
-const createComponent = (
-  functions,
-  installed = true,
-  loadingData = true,
-  hasFunctionData = true,
-) => {
-  const component = Vue.extend(functionsComponent);
-
-  return mountComponent(component, {
-    functions,
-    installed,
-    clustersPath: '/testClusterPath',
-    helpPath: '/helpPath',
-    loadingData,
-    hasFunctionData,
-  });
-};
-
 describe('functionsComponent', () => {
+  let component;
+  let store;
+  let localVue;
+
+  beforeEach(() => {
+    localVue = createLocalVue();
+    localVue.use(Vuex);
+
+    store = createStore();
+  });
+
+  afterEach(() => {
+    component.vm.$destroy();
+  });
+
   it('should render empty state when Knative is not installed', () => {
-    const vm = createComponent({}, false);
+    component = shallowMount(functionsComponent, {
+      localVue,
+      store,
+      propsData: {
+        installed: false,
+        clustersPath: '',
+        helpPath: '',
+        statusPath: '',
+      },
+      sync: false,
+    });
 
-    expect(vm.$el.querySelector('div.row').classList.contains('js-empty-state')).toBe(true);
-    expect(vm.$el.querySelector('h4.state-title').innerHTML.trim()).toEqual(
-      'Getting started with serverless',
-    );
-
-    vm.$destroy();
+    expect(component.vm.$el.querySelector('emptystate-stub')).not.toBe(null);
   });
 
   it('should render a loading component', () => {
-    const vm = createComponent({});
+    store.dispatch('requestFunctionsLoading');
+    component = shallowMount(functionsComponent, {
+      localVue,
+      store,
+      propsData: {
+        installed: true,
+        clustersPath: '',
+        helpPath: '',
+        statusPath: '',
+      },
+      sync: false,
+    });
 
-    expect(vm.$el.querySelector('.gl-responsive-table-row')).not.toBe(null);
-    expect(vm.$el.querySelector('div.animation-container')).not.toBe(null);
+    expect(component.vm.$el.querySelector('glloadingicon-stub')).not.toBe(null);
   });
 
   it('should render empty state when there is no function data', () => {
-    const vm = createComponent({}, true, false, false);
+    store.dispatch('receiveFunctionsNoDataSuccess');
+    component = shallowMount(functionsComponent, {
+      localVue,
+      store,
+      propsData: {
+        installed: true,
+        clustersPath: '',
+        helpPath: '',
+        statusPath: '',
+      },
+      sync: false,
+    });
 
     expect(
-      vm.$el.querySelector('.empty-state, .js-empty-state').classList.contains('js-empty-state'),
+      component.vm.$el
+        .querySelector('.empty-state, .js-empty-state')
+        .classList.contains('js-empty-state'),
     ).toBe(true);
 
-    expect(vm.$el.querySelector('h4.state-title').innerHTML.trim()).toEqual(
+    expect(component.vm.$el.querySelector('.state-title, .text-center').innerHTML.trim()).toEqual(
       'No functions available',
     );
-
-    vm.$destroy();
   });
 
   it('should render the functions list', () => {
-    const store = new ServerlessStore(false, '/cluster_path', 'help_path');
-    store.updateFunctionsFromServer(mockServerlessFunctions);
-    const vm = createComponent(store.state.functions, true, false);
+    component = shallowMount(functionsComponent, {
+      localVue,
+      store,
+      propsData: {
+        installed: true,
+        clustersPath: '',
+        helpPath: '',
+        statusPath: '',
+      },
+      sync: false,
+    });
 
-    expect(vm.$el.querySelector('div.groups-list-tree-container')).not.toBe(null);
-    expect(vm.$el.querySelector('#env-global').classList.contains('has-children')).toBe(true);
+    component.vm.$store.dispatch('receiveFunctionsSuccess', mockServerlessFunctions);
+
+    return component.vm.$nextTick().then(() => {
+      expect(component.vm.$el.querySelector('environmentrow-stub')).not.toBe(null);
+    });
   });
 });

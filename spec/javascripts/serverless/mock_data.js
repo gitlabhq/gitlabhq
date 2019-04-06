@@ -77,3 +77,60 @@ export const mockMultilineServerlessFunction = {
   description: 'testfunc1\nA test service line\\nWith additional services',
   image: 'knative-test-container-buildtemplate',
 };
+
+export const mockMetrics = {
+  success: true,
+  last_update: '2019-02-28T19:11:38.926Z',
+  metrics: {
+    id: 22,
+    title: 'Knative function invocations',
+    required_metrics: ['container_memory_usage_bytes', 'container_cpu_usage_seconds_total'],
+    weight: 0,
+    y_label: 'Invocations',
+    queries: [
+      {
+        query_range:
+          'floor(sum(rate(istio_revision_request_count{destination_configuration="%{function_name}", destination_namespace="%{kube_namespace}"}[1m])*30))',
+        unit: 'requests',
+        label: 'invocations / minute',
+        result: [
+          {
+            metric: {},
+            values: [[1551352298.756, '0'], [1551352358.756, '0']],
+          },
+        ],
+      },
+    ],
+  },
+};
+
+export const mockNormalizedMetrics = {
+  id: 22,
+  title: 'Knative function invocations',
+  required_metrics: ['container_memory_usage_bytes', 'container_cpu_usage_seconds_total'],
+  weight: 0,
+  y_label: 'Invocations',
+  queries: [
+    {
+      query_range:
+        'floor(sum(rate(istio_revision_request_count{destination_configuration="%{function_name}", destination_namespace="%{kube_namespace}"}[1m])*30))',
+      unit: 'requests',
+      label: 'invocations / minute',
+      result: [
+        {
+          metric: {},
+          values: [
+            {
+              time: '2019-02-28T11:11:38.756Z',
+              value: 0,
+            },
+            {
+              time: '2019-02-28T11:12:38.756Z',
+              value: 0,
+            },
+          ],
+        },
+      ],
+    },
+  ],
+};

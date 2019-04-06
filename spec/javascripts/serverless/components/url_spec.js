@@ -1,15 +1,13 @@
 import Vue from 'vue';
-
 import urlComponent from '~/serverless/components/url.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { shallowMount } from '@vue/test-utils';
 
-const createComponent = uri => {
-  const component = Vue.extend(urlComponent);
-
-  return mountComponent(component, {
-    uri,
-  });
-};
+const createComponent = uri =>
+  shallowMount(Vue.extend(urlComponent), {
+    propsData: {
+      uri,
+    },
+  }).vm;
 
 describe('urlComponent', () => {
   it('should render correctly', () => {
@@ -17,9 +15,7 @@ describe('urlComponent', () => {
     const vm = createComponent(uri);
 
     expect(vm.$el.classList.contains('clipboard-group')).toBe(true);
-    expect(vm.$el.querySelector('.js-clipboard-btn').getAttribute('data-clipboard-text')).toEqual(
-      uri,
-    );
+    expect(vm.$el.querySelector('clipboardbutton-stub').getAttribute('text')).toEqual(uri);
 
     expect(vm.$el.querySelector('.url-text-field').innerHTML).toEqual(uri);
 
