@@ -364,6 +364,32 @@ describe Group do
     it { expect(group.has_maintainer?(nil)).to be_falsey }
   end
 
+  describe '#last_owner?' do
+    before do
+      @members = setup_group_members(group)
+    end
+
+    it { expect(group.last_owner?(@members[:owner])).to be_truthy }
+
+    context 'with two owners' do
+      before do
+        create(:group_member, :owner, group: group)
+      end
+
+      it { expect(group.last_owner?(@members[:owner])).to be_falsy }
+    end
+
+    context 'with owners from a parent', :postgresql do
+      before do
+        parent_group = create(:group)
+        create(:group_member, :owner, group: parent_group)
+        group.update(parent: parent_group)
+      end
+
+      it { expect(group.last_owner?(@members[:owner])).to be_falsy }
+    end
+  end
+
   describe '#lfs_enabled?' do
     context 'LFS enabled globally' do
       before do
@@ -762,14 +788,14 @@ describe Group do
 
   describe '#has_parent?' do
     context 'when the group has a parent' do
-      it 'should be truthy' do
+      it 'is truthy' do
         group = create(:group, :nested)
         expect(group.has_parent?).to be_truthy
       end
     end
 
     context 'when the group has no parent' do
-      it 'should be falsy' do
+      it 'is falsy' do
         group = create(:group, parent: nil)
         expect(group.has_parent?).to be_falsy
       end

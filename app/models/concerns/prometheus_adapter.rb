@@ -36,7 +36,7 @@ module PrometheusAdapter
     def calculate_reactive_cache(query_class_name, *args)
       return unless prometheus_client
 
-      data = Kernel.const_get(query_class_name).new(prometheus_client_wrapper).query(*args)
+      data = Object.const_get(query_class_name, false).new(prometheus_client_wrapper).query(*args)
       {
         success: true,
         data: data,

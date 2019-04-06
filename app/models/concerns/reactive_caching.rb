@@ -29,6 +29,40 @@
 # However, it will enqueue a background worker to call `#calculate_reactive_cache`
 # and set an initial cache lifetime of ten minutes.
 #
+# The background worker needs to find or generate the object on which
+# `with_reactive_cache` was called.
+# The default behaviour can be overridden by defining a custom
+# `reactive_cache_worker_finder`.
+# Otherwise the background worker will use the class name and primary key to get
+# the object using the ActiveRecord find_by method.
+#
+#    class Bar
+#      include ReactiveCaching
+#
+#      self.reactive_cache_key = ->() { ["bar", "thing"] }
+#      self.reactive_cache_worker_finder = ->(_id, *args) { from_cache(*args) }
+#
+#      def self.from_cache(var1, var2)
+#        # This method will be called by the background worker with "bar1" and
+#        # "bar2" as arguments.
+#        new(var1, var2)
+#      end
+#
+#      def initialize(var1, var2)
+#        # ...
+#      end
+#
+#      def calculate_reactive_cache
+#        # Expensive operation here. The return value of this method is cached
+#      end
+#
+#      def result
+#        with_reactive_cache("bar1", "bar2") do |data|
+#          # ...
+#        end
+#      end
+#    end
+#
 # Each time the background job completes, it stores the return value of
 # `#calculate_reactive_cache`. It is also re-enqueued to run again after
 # `reactive_cache_refresh_interval`, so keeping the stored value up to date.
@@ -52,12 +86,17 @@ module ReactiveCaching
     class_attribute :reactive_cache_key
     class_attribute :reactive_cache_lifetime
     class_attribute :reactive_cache_refresh_interval
+    class_attribute :reactive_cache_worker_finder
 
     # defaults
     self.reactive_cache_lease_timeout = 2.minutes
 
     self.reactive_cache_refresh_interval = 1.minute
     self.reactive_cache_lifetime = 10.minutes
+
+    self.reactive_cache_worker_finder = ->(id, *_args) do
+      find_by(primary_key => id)
+    end
 
     def calculate_reactive_cache(*args)
       raise NotImplementedError

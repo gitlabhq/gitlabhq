@@ -12,6 +12,7 @@ export default () => {
     render(createElement) {
       return createElement('job-app', {
         props: {
+          deploymentHelpUrl: element.dataset.deploymentHelpUrl,
           runnerHelpUrl: element.dataset.runnerHelpUrl,
           runnerSettingsUrl: element.dataset.runnerSettingsUrl,
           endpoint: element.dataset.endpoint,

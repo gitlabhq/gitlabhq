@@ -43,7 +43,7 @@ describe 'Mini Pipeline Graph in Commit View', :js do
       visit project_commit_path(project, project.commit.id)
     end
 
-    it 'should not display a mini pipeline graph' do
+    it 'does not display a mini pipeline graph' do
       expect(page).not_to have_selector('.mr-widget-pipeline-graph')
     end
   end

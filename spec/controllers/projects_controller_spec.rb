@@ -77,6 +77,10 @@ describe ProjectsController do
       end
 
       context "user has access to project" do
+        before do
+          expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+        end
+
         context "and does not have notification setting" do
           it "initializes notification as disabled" do
             get :show, params: { namespace_id: public_project.namespace, id: public_project }
@@ -701,6 +705,16 @@ describe ProjectsController do
       post :preview_markdown, params: { namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text' }
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+    end
+
+    context 'when not authorized' do
+      let(:private_project) { create(:project, :private) }
+
+      it 'returns 404' do
+        post :preview_markdown, params: { namespace_id: private_project.namespace, id: private_project, text: '*Markdown* text' }
+
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
 
     context 'state filter on references' do

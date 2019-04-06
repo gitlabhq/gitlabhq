@@ -235,4 +235,129 @@ describe('Multi-file store utils', () => {
       ]);
     });
   });
+
+  describe('mergeTrees', () => {
+    let fromTree;
+    let toTree;
+
+    beforeEach(() => {
+      fromTree = [file('foo')];
+      toTree = [file('bar')];
+    });
+
+    it('merges simple trees with sorting the result', () => {
+      toTree = [file('beta'), file('alpha'), file('gamma')];
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res.length).toEqual(4);
+      expect(res[0].name).toEqual('alpha');
+      expect(res[1].name).toEqual('beta');
+      expect(res[2].name).toEqual('foo');
+      expect(res[3].name).toEqual('gamma');
+      expect(res[2]).toBe(fromTree[0]);
+    });
+
+    it('handles edge cases', () => {
+      expect(utils.mergeTrees({}, []).length).toEqual(0);
+
+      let res = utils.mergeTrees({}, toTree);
+
+      expect(res.length).toEqual(1);
+      expect(res[0].name).toEqual('bar');
+
+      res = utils.mergeTrees(fromTree, []);
+
+      expect(res.length).toEqual(1);
+      expect(res[0].name).toEqual('foo');
+      expect(res[0]).toBe(fromTree[0]);
+    });
+
+    it('merges simple trees without producing duplicates', () => {
+      toTree.push(file('foo'));
+
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res.length).toEqual(2);
+      expect(res[0].name).toEqual('bar');
+      expect(res[1].name).toEqual('foo');
+      expect(res[1]).not.toBe(fromTree[0]);
+    });
+
+    it('merges nested tree into the main one without duplicates', () => {
+      fromTree[0].tree.push({
+        ...file('alpha'),
+        path: 'foo/alpha',
+        tree: [
+          {
+            ...file('beta.md'),
+            path: 'foo/alpha/beta.md',
+          },
+        ],
+      });
+
+      toTree.push({
+        ...file('foo'),
+        tree: [
+          {
+            ...file('alpha'),
+            path: 'foo/alpha',
+            tree: [
+              {
+                ...file('gamma.md'),
+                path: 'foo/alpha/gamma.md',
+              },
+            ],
+          },
+        ],
+      });
+
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res.length).toEqual(2);
+      expect(res[1].name).toEqual('foo');
+
+      const finalBranch = res[1].tree[0].tree;
+
+      expect(finalBranch.length).toEqual(2);
+      expect(finalBranch[0].name).toEqual('beta.md');
+      expect(finalBranch[1].name).toEqual('gamma.md');
+    });
+
+    it('marks correct folders as opened as the parsing goes on', () => {
+      fromTree[0].tree.push({
+        ...file('alpha'),
+        path: 'foo/alpha',
+        tree: [
+          {
+            ...file('beta.md'),
+            path: 'foo/alpha/beta.md',
+          },
+        ],
+      });
+
+      toTree.push({
+        ...file('foo'),
+        tree: [
+          {
+            ...file('alpha'),
+            path: 'foo/alpha',
+            tree: [
+              {
+                ...file('gamma.md'),
+                path: 'foo/alpha/gamma.md',
+              },
+            ],
+          },
+        ],
+      });
+
+      const res = utils.mergeTrees(fromTree, toTree);
+
+      expect(res[1].name).toEqual('foo');
+      expect(res[1].opened).toEqual(true);
+
+      expect(res[1].tree[0].name).toEqual('alpha');
+      expect(res[1].tree[0].opened).toEqual(true);
+    });
+  });
 });

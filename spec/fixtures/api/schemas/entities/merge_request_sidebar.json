@@ -51,6 +51,5 @@
     "toggle_subscription_path": { "type": "string" },
     "move_issue_path": { "type": "string" },
     "projects_autocomplete_path": { "type": "string" }
-  },
-  "additionalProperties": false
+  }
 }

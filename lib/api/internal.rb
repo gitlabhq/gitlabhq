@@ -87,7 +87,8 @@ module API
             gl_id: Gitlab::GlId.gl_id(user),
             gl_username: user&.username,
             git_config_options: [],
-            gitaly: gitaly_payload(params[:action])
+            gitaly: gitaly_payload(params[:action]),
+            gl_console_messages: check_result.console_messages
           }
 
           # Custom option for git-receive-pack command

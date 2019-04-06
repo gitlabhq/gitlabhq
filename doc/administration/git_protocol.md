@@ -31,7 +31,7 @@ From the client side, `git` `v2.18.0` or newer must be installed.
 From the server side, if we want to configure SSH we need to set the `sshd`
 server to accept the `GIT_PROTOCOL` environment.
 
-In installations using [GitLab Helm Charts](../install/kubernetes/gitlab_chart.md)
+In installations using [GitLab Helm Charts](https://docs.gitlab.com/charts/)
 and [All-in-one docker image](https://docs.gitlab.com/omnibus/docker/), the SSH
 service is already configured to accept the `GIT_PROTOCOL` environment and users
 need not do anything more.

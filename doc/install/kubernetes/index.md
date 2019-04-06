@@ -21,16 +21,15 @@ of the application including how it should be deployed, upgraded, and configured
 ## GitLab Chart
 
 This chart contains all the required components to get started, and can scale to
-large deployments. It offers a number of benefits:
+large deployments. It offers a number of benefits, among others:
 
-- Horizontal scaling of individual components
-- No requirement for shared storage to scale
-- Containers do not need `root` permissions
-- Automatic SSL with Let's Encrypt
-- An unprivileged GitLab Runner
-- and plenty more.
+- Horizontal scaling of individual components.
+- No requirement for shared storage to scale.
+- Containers do not need `root` permissions.
+- Automatic SSL with Let's Encrypt.
+- An unprivileged GitLab Runner.
 
-Learn more about the [GitLab chart](gitlab_chart.md).
+Learn more about the [GitLab chart](https://docs.gitlab.com/charts/).
 
 ## GitLab Runner Chart
 
@@ -39,4 +38,4 @@ and you'd like to leverage the Runner's
 [Kubernetes capabilities](https://docs.gitlab.com/runner/executors/kubernetes.html),
 it can be deployed with the GitLab Runner chart.
 
-Learn more about [gitlab-runner chart](gitlab_runner_chart.md).
+Learn more about the [GitLab Runner chart](https://docs.gitlab.com/runner/install/kubernetes.html).

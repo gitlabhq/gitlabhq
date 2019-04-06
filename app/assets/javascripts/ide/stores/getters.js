@@ -25,7 +25,10 @@ export const projectsWithTrees = state =>
   });
 
 export const currentMergeRequest = state => {
-  if (state.projects[state.currentProjectId]) {
+  if (
+    state.projects[state.currentProjectId] &&
+    state.projects[state.currentProjectId].mergeRequests
+  ) {
     return state.projects[state.currentProjectId].mergeRequests[state.currentMergeRequestId];
   }
   return null;

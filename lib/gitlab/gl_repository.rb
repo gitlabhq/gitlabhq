@@ -35,5 +35,9 @@ module Gitlab
 
       [project, type]
     end
+
+    def self.default_type
+      PROJECT
+    end
   end
 end

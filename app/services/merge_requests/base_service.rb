@@ -99,19 +99,8 @@ module MergeRequests
     # rubocop: enable CodeReuse/ActiveRecord
 
     def pipeline_merge_requests(pipeline)
-      merge_requests_for(pipeline.ref).each do |merge_request|
+      pipeline.all_merge_requests.opened.each do |merge_request|
         next unless pipeline == merge_request.head_pipeline
-
-        yield merge_request
-      end
-    end
-
-    def commit_status_merge_requests(commit_status)
-      merge_requests_for(commit_status.ref).each do |merge_request|
-        pipeline = merge_request.head_pipeline
-
-        next unless pipeline
-        next unless pipeline.sha == commit_status.sha
 
         yield merge_request
       end

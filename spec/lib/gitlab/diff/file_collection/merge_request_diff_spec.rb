@@ -27,7 +27,7 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     let(:diffable) { merge_request.merge_request_diff }
   end
 
-  it 'it uses a different cache key if diff line keys change' do
+  it 'uses a different cache key if diff line keys change' do
     mr_diff = described_class.new(merge_request.merge_request_diff, diff_options: nil)
     key = mr_diff.cache_key
 

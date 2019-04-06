@@ -415,7 +415,7 @@ describe Project do
         project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
       end
 
-      it 'should return .external pipelines' do
+      it 'returns .external pipelines' do
         expect(project.all_pipelines).to all(have_attributes(source: 'external'))
         expect(project.all_pipelines.size).to eq(1)
       end
@@ -439,7 +439,7 @@ describe Project do
         project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
       end
 
-      it 'should return .external pipelines' do
+      it 'returns .external pipelines' do
         expect(project.ci_pipelines).to all(have_attributes(source: 'external'))
         expect(project.ci_pipelines.size).to eq(1)
       end
@@ -1910,7 +1910,7 @@ describe Project do
                                        tags: %w[latest rc1])
         end
 
-        it 'should have image tags' do
+        it 'has image tags' do
           expect(project).to have_container_registry_tags
         end
       end
@@ -1921,7 +1921,7 @@ describe Project do
                                        tags: %w[latest rc1 pre1])
         end
 
-        it 'should have image tags' do
+        it 'has image tags' do
           expect(project).to have_container_registry_tags
         end
       end
@@ -1931,7 +1931,7 @@ describe Project do
           stub_container_registry_tags(repository: :any, tags: [])
         end
 
-        it 'should not have image tags' do
+        it 'does not have image tags' do
           expect(project).not_to have_container_registry_tags
         end
       end
@@ -1942,16 +1942,16 @@ describe Project do
         stub_container_registry_config(enabled: false)
       end
 
-      it 'should not have image tags' do
+      it 'does not have image tags' do
         expect(project).not_to have_container_registry_tags
       end
 
-      it 'should not check root repository tags' do
+      it 'does not check root repository tags' do
         expect(project).not_to receive(:full_path)
         expect(project).not_to have_container_registry_tags
       end
 
-      it 'should iterate through container repositories' do
+      it 'iterates through container repositories' do
         expect(project).to receive(:container_repositories)
         expect(project).not_to have_container_registry_tags
       end
@@ -2638,7 +2638,7 @@ describe Project do
         let!(:cluster) { kubernetes_namespace.cluster }
         let(:project) { kubernetes_namespace.project }
 
-        it 'should return token from kubernetes namespace' do
+        it 'returns token from kubernetes namespace' do
           expect(project.deployment_variables).to include(
             { key: 'KUBE_TOKEN', value: kubernetes_namespace.service_account_token, public: false, masked: true }
           )

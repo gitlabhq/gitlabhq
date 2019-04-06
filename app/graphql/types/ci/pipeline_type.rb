@@ -3,9 +3,11 @@
 module Types
   module Ci
     class PipelineType < BaseObject
-      expose_permissions Types::PermissionTypes::Ci::Pipeline
-
       graphql_name 'Pipeline'
+
+      authorize :read_pipeline
+
+      expose_permissions Types::PermissionTypes::Ci::Pipeline
 
       field :id, GraphQL::ID_TYPE, null: false
       field :iid, GraphQL::ID_TYPE, null: false

@@ -154,7 +154,7 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to retry the success job' do
+        it 'is possible to retry the success job' do
           find('#ci-badge-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
@@ -194,13 +194,13 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to retry the failed build' do
+        it 'is possible to retry the failed build' do
           find('#ci-badge-test .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
         end
 
-        it 'should include the failure reason' do
+        it 'includes the failure reason' do
           page.within('#ci-badge-test') do
             build_link = page.find('.js-pipeline-graph-job-link')
             expect(build_link['data-original-title']).to eq('test - failed - (unknown failure)')
@@ -220,7 +220,7 @@ describe 'Pipeline', :js do
           end
         end
 
-        it 'should be possible to play the manual job' do
+        it 'is possible to play the manual job' do
           find('#ci-badge-manual-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Play job')
@@ -454,7 +454,7 @@ describe 'Pipeline', :js do
         expect(page).to have_content('Cancel running')
       end
 
-      it 'should not link to job' do
+      it 'does not link to job' do
         expect(page).not_to have_selector('.js-pipeline-graph-job-link')
       end
     end

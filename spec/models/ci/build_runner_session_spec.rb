@@ -13,25 +13,33 @@ describe Ci::BuildRunnerSession, model: true do
   it { is_expected.to validate_presence_of(:url).with_message('must be a valid URL') }
 
   describe '#terminal_specification' do
-    let(:terminal_specification) { subject.terminal_specification }
+    let(:specification) { subject.terminal_specification }
+
+    it 'returns terminal.gitlab.com protocol' do
+      expect(specification[:subprotocols]).to eq ['terminal.gitlab.com']
+    end
+
+    it 'returns a wss url' do
+      expect(specification[:url]).to start_with('wss://')
+    end
 
     it 'returns empty hash if no url' do
       subject.url = ''
 
-      expect(terminal_specification).to be_empty
+      expect(specification).to be_empty
     end
 
     context 'when url is present' do
       it 'returns ca_pem nil if empty certificate' do
         subject.certificate = ''
 
-        expect(terminal_specification[:ca_pem]).to be_nil
+        expect(specification[:ca_pem]).to be_nil
       end
 
       it 'adds Authorization header if authorization is present' do
         subject.authorization = 'whatever'
 
-        expect(terminal_specification[:headers]).to include(Authorization: ['whatever'])
+        expect(specification[:headers]).to include(Authorization: ['whatever'])
       end
     end
   end

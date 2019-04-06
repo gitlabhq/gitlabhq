@@ -25,7 +25,7 @@ describe MigrateAutoDevOpsDomainToClusterDomain, :migration do
   context 'with ProjectAutoDevOps with no domain' do
     let(:domain) { nil }
 
-    it 'should not update cluster project' do
+    it 'does not update cluster project' do
       migrate!
 
       expect(clusters_without_domain.count).to eq(clusters_table.count)
@@ -35,7 +35,7 @@ describe MigrateAutoDevOpsDomainToClusterDomain, :migration do
   context 'with ProjectAutoDevOps with domain' do
     let(:domain) { 'example-domain.com' }
 
-    it 'should update all cluster projects' do
+    it 'updates all cluster projects' do
       migrate!
 
       expect(clusters_with_domain.count).to eq(clusters_table.count)
@@ -49,7 +49,7 @@ describe MigrateAutoDevOpsDomainToClusterDomain, :migration do
       setup_cluster_projects_with_domain(quantity: 25, domain: nil)
     end
 
-    it 'should only update specific cluster projects' do
+    it 'only updates specific cluster projects' do
       migrate!
 
       expect(clusters_with_domain.count).to eq(20)

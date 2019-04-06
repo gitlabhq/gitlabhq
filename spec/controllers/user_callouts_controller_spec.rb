@@ -14,11 +14,11 @@ describe UserCalloutsController do
       let(:feature_name) { UserCallout.feature_names.keys.first }
 
       context 'when callout entry does not exist' do
-        it 'should create a callout entry with dismissed state' do
+        it 'creates a callout entry with dismissed state' do
           expect { subject }.to change { UserCallout.count }.by(1)
         end
 
-        it 'should return success' do
+        it 'returns success' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -28,7 +28,7 @@ describe UserCalloutsController do
       context 'when callout entry already exists' do
         let!(:callout) { create(:user_callout, feature_name: UserCallout.feature_names.keys.first, user: user) }
 
-        it 'should return success' do
+        it 'returns success' do
           subject
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -39,7 +39,7 @@ describe UserCalloutsController do
     context 'with invalid feature name' do
       let(:feature_name) { 'bogus_feature_name' }
 
-      it 'should return bad request' do
+      it 'returns bad request' do
         subject
 
         expect(response).to have_gitlab_http_status(:bad_request)

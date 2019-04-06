@@ -167,6 +167,23 @@
         }
       }
 
+      .frame {
+        top: 0;
+        right: 0;
+
+        &.old-diff {
+          /* only for commit / compare view */
+          position: absolute;
+        }
+
+        &.deleted {
+          margin: 0;
+          display: block;
+          top: 13px;
+          right: 7px;
+        }
+      }
+
       .swipe-bar {
         display: block;
         height: 100%;

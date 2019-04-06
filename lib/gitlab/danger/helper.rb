@@ -7,6 +7,7 @@ require_relative 'teammate'
 module Gitlab
   module Danger
     module Helper
+      RELEASE_TOOLS_BOT = 'gitlab-release-tools-bot'
       ROULETTE_DATA_URL = URI.parse('https://about.gitlab.com/roulette.json').freeze
 
       # Returns a list of all files that have been added, modified or renamed.
@@ -38,6 +39,10 @@ module Gitlab
 
       def ee?
         ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('../../CHANGELOG-EE.md')
+      end
+
+      def release_automation?
+        gitlab.mr_author == RELEASE_TOOLS_BOT
       end
 
       def project_name

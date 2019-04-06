@@ -55,9 +55,9 @@ need to be aware of:
 - It can be more expensive for smaller installations. The default installation
   requires more resources than a single node Omnibus deployment, as most services
   are deployed in a redundant fashion.
-- There are some feature [limitations to be aware of](kubernetes/gitlab_chart.md#limitations).
+- There are some feature [limitations to be aware of](https://docs.gitlab.com/charts/#limitations).
 
-[**> Install GitLab on Kubernetes using the GitLab Helm charts.**](kubernetes/index.md)
+[**> Install GitLab on Kubernetes using the GitLab Helm charts.**](https://docs.gitlab.com/charts/)
 
 ## Installing GitLab with Docker
 

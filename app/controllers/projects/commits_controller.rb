@@ -14,6 +14,8 @@ class Projects::CommitsController < Projects::ApplicationController
   before_action :validate_ref!, except: :commits_root
   before_action :set_commits, except: :commits_root
 
+  around_action :allow_gitaly_ref_name_caching
+
   def commits_root
     redirect_to project_commits_path(@project, @project.default_branch)
   end

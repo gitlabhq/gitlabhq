@@ -10,6 +10,7 @@ export default {
   },
   [types.RECEIVE_LASTEST_PIPELINE_SUCCESS](state, pipeline) {
     state.isLoadingPipeline = false;
+    state.hasLoadedPipeline = true;
 
     if (pipeline) {
       state.latestPipeline = {
@@ -34,7 +35,7 @@ export default {
         };
       });
     } else {
-      state.latestPipeline = false;
+      state.latestPipeline = null;
     }
   },
   [types.REQUEST_JOBS](state, id) {

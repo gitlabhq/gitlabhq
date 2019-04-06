@@ -65,7 +65,7 @@ describe Projects::MirrorsController do
         expect(flash[:notice]).to match(/successfully updated/)
       end
 
-      it 'should create a RemoteMirror object' do
+      it 'creates a RemoteMirror object' do
         expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change(RemoteMirror, :count).by(1)
       end
     end
@@ -82,7 +82,7 @@ describe Projects::MirrorsController do
         expect(flash[:alert]).to match(/Only allowed protocols are/)
       end
 
-      it 'should not create a RemoteMirror object' do
+      it 'does not create a RemoteMirror object' do
         expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
       end
     end

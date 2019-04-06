@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe VersionCheckHelper do
   describe '#version_status_badge' do
-    it 'should return nil if not dev environment and not enabled' do
+    it 'returns nil if not dev environment and not enabled' do
       allow(Rails.env).to receive(:production?) { false }
       allow(Gitlab::CurrentSettings.current_application_settings).to receive(:version_check_enabled) { false }
 
@@ -16,16 +16,16 @@ describe VersionCheckHelper do
         allow(VersionCheck).to receive(:url) { 'https://version.host.com/check.svg?gitlab_info=xxx' }
       end
 
-      it 'should return an image tag' do
+      it 'returns an image tag' do
         expect(helper.version_status_badge).to start_with('<img')
       end
 
-      it 'should have a js prefixed css class' do
+      it 'has a js prefixed css class' do
         expect(helper.version_status_badge)
           .to match(/class="js-version-status-badge lazy"/)
       end
 
-      it 'should have a VersionCheck url as the src' do
+      it 'has a VersionCheck url as the src' do
         expect(helper.version_status_badge)
           .to include(%{src="https://version.host.com/check.svg?gitlab_info=xxx"})
       end

@@ -43,7 +43,7 @@ describe 'Group CI/CD settings' do
     end
 
     context 'as owner first visiting group settings' do
-      it 'should see instance enabled badge' do
+      it 'sees instance enabled badge' do
         visit group_settings_ci_cd_path(group)
 
         page.within '#auto-devops-settings' do
@@ -53,7 +53,7 @@ describe 'Group CI/CD settings' do
     end
 
     context 'when Auto DevOps group has been enabled' do
-      it 'should see group enabled badge' do
+      it 'sees group enabled badge' do
         group.update!(auto_devops_enabled: true)
 
         visit group_settings_ci_cd_path(group)
@@ -65,7 +65,7 @@ describe 'Group CI/CD settings' do
     end
 
     context 'when Auto DevOps group has been disabled' do
-      it 'should not see a badge' do
+      it 'does not see a badge' do
         group.update!(auto_devops_enabled: false)
 
         visit group_settings_ci_cd_path(group)

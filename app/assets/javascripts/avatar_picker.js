@@ -1,11 +1,12 @@
 import $ from 'jquery';
 
-export default function groupAvatar() {
-  $('.js-choose-group-avatar-button').on('click', function onClickGroupAvatar() {
+export default function initAvatarPicker() {
+  $('.js-choose-avatar-button').on('click', function onClickAvatar() {
     const form = $(this).closest('form');
-    return form.find('.js-group-avatar-input').click();
+    return form.find('.js-avatar-input').click();
   });
-  $('.js-group-avatar-input').on('change', function onChangeAvatarInput() {
+
+  $('.js-avatar-input').on('change', function onChangeAvatarInput() {
     const form = $(this).closest('form');
     const filename = $(this)
       .val()

@@ -83,6 +83,7 @@ Currently the following names are reserved as top level groups:
 - unsubscribes
 - uploads
 - users
+- v2
 
 These group names are unavailable as subgroup names:
 

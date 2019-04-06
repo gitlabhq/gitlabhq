@@ -11,7 +11,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
 
           validations do
-            validates :config, type: Array
+            validates :config, array_or_string: true
           end
 
           def self.aspects

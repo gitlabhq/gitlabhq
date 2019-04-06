@@ -38,7 +38,7 @@ export default {
       ].join('\n');
     },
     mdSuggestion() {
-      return ['```suggestion', `{text}`, '```'].join('\n');
+      return ['```suggestion:-0+0', `{text}`, '```'].join('\n');
     },
   },
   mounted() {

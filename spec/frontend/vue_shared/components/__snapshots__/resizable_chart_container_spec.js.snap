@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Resizable Chart Container renders the component 1`] = `
+<div>
+  <div
+    class="slot"
+  >
+    <span
+      class="width"
+    >
+      0
+    </span>
+     
+    <span
+      class="height"
+    >
+      0
+    </span>
+  </div>
+</div>
+`;

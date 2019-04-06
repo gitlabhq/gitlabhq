@@ -87,8 +87,13 @@ module Gitlab
         wiki_page_from_iterator(response)
       end
 
-      def get_all_pages(limit: 0)
-        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo, limit: limit)
+      def get_all_pages(limit: 0, sort: nil, direction_desc: false)
+        sort_value = Gitaly::WikiGetAllPagesRequest::SortBy.resolve(sort.to_s.upcase.to_sym)
+
+        params = { repository: @gitaly_repo, limit: limit, direction_desc: direction_desc }
+        params[:sort] = sort_value if sort_value
+
+        request = Gitaly::WikiGetAllPagesRequest.new(params)
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request, timeout: GitalyClient.medium_timeout)
         pages = []
 

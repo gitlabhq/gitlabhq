@@ -15,7 +15,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'when a local is specified' do
       let(:params) { { local: 'file' } }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(local_file).to be_matching
       end
     end
@@ -23,7 +23,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'with a missing local' do
       let(:params) { { local: nil } }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file).not_to be_matching
       end
     end
@@ -31,7 +31,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'with a missing local key' do
       let(:params) { {} }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file).not_to be_matching
       end
     end
@@ -45,7 +45,7 @@ describe Gitlab::Ci::Config::External::File::Local do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return("image: 'ruby2:2'")
       end
 
-      it 'should return true' do
+      it 'returns true' do
         expect(local_file.valid?).to be_truthy
       end
     end
@@ -53,7 +53,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'when is not a valid local path' do
       let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file.valid?).to be_falsy
       end
     end
@@ -61,7 +61,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'when is not a yaml file' do
       let(:location) { '/config/application.rb' }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(local_file.valid?).to be_falsy
       end
     end
@@ -84,7 +84,7 @@ describe Gitlab::Ci::Config::External::File::Local do
         allow_any_instance_of(described_class).to receive(:fetch_local_content).and_return(local_file_content)
       end
 
-      it 'should return the content of the file' do
+      it 'returns the content of the file' do
         expect(local_file.content).to eq(local_file_content)
       end
     end
@@ -92,7 +92,7 @@ describe Gitlab::Ci::Config::External::File::Local do
     context 'with an invalid file' do
       let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-      it 'should be nil' do
+      it 'is nil' do
         expect(local_file.content).to be_nil
       end
     end
@@ -101,7 +101,7 @@ describe Gitlab::Ci::Config::External::File::Local do
   describe '#error_message' do
     let(:location) { '/lib/gitlab/ci/templates/non-existent-file.yml' }
 
-    it 'should return an error message' do
+    it 'returns an error message' do
       expect(local_file.error_message).to eq("Local file `#{location}` does not exist!")
     end
   end

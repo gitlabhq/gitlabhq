@@ -447,7 +447,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     let(:platform) { cluster.platform }
 
     context 'when namespace is updated' do
-      it 'should call ConfigureWorker' do
+      it 'calls ConfigureWorker' do
         expect(ClusterConfigureWorker).to receive(:perform_async).with(cluster.id).once
 
         platform.namespace = 'new-namespace'
@@ -456,7 +456,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'when namespace is not updated' do
-      it 'should not call ConfigureWorker' do
+      it 'does not call ConfigureWorker' do
         expect(ClusterConfigureWorker).not_to receive(:perform_async)
 
         platform.username = "new-username"

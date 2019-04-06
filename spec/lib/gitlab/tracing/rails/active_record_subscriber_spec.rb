@@ -53,19 +53,19 @@ describe Gitlab::Tracing::Rails::ActiveRecordSubscriber do
         }
       end
 
-      it 'should notify the tracer when the hash contains null values' do
+      it 'notifies the tracer when the hash contains null values' do
         expect(subject).to receive(:postnotify_span).with(operation_name, start, finish, tags: expected_tags, exception: exception)
 
         subject.notify(start, finish, payload)
       end
 
-      it 'should notify the tracer when the payload is missing values' do
+      it 'notifies the tracer when the payload is missing values' do
         expect(subject).to receive(:postnotify_span).with(operation_name, start, finish, tags: expected_tags, exception: exception)
 
         subject.notify(start, finish, payload.compact)
       end
 
-      it 'should not throw exceptions when with the default tracer' do
+      it 'does not throw exceptions when with the default tracer' do
         expect { subject.notify(start, finish, payload) }.not_to raise_error
       end
     end

@@ -8,6 +8,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
 
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
+
   wrap_parameters Ci::Pipeline
 
   POLLING_INTERVAL = 10_000
@@ -148,12 +150,10 @@ class Projects::PipelinesController < Projects::ApplicationController
   private
 
   def serialize_pipelines
-    ::Gitlab::GitalyClient.allow_ref_name_caching do
-      PipelineSerializer
-        .new(project: @project, current_user: @current_user)
-        .with_pagination(request, response)
-        .represent(@pipelines, disable_coverage: true, preload: true)
-    end
+    PipelineSerializer
+      .new(project: @project, current_user: @current_user)
+      .with_pagination(request, response)
+      .represent(@pipelines, disable_coverage: true, preload: true)
   end
 
   def render_show

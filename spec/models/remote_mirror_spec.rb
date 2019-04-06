@@ -7,14 +7,14 @@ describe RemoteMirror, :mailer do
 
   describe 'URL validation' do
     context 'with a valid URL' do
-      it 'should be valid' do
+      it 'is valid' do
         remote_mirror = build(:remote_mirror)
         expect(remote_mirror).to be_valid
       end
     end
 
     context 'with an invalid URL' do
-      it 'should not be valid' do
+      it 'is not valid' do
         remote_mirror = build(:remote_mirror, url: 'ftp://invalid.invalid')
 
         expect(remote_mirror).not_to be_valid

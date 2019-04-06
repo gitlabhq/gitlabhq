@@ -119,7 +119,17 @@ class ListIssue {
     }
 
     const projectPath = this.project ? this.project.path : '';
-    return Vue.http.patch(`${this.path}.json`, data);
+    return Vue.http.patch(`${this.path}.json`, data).then(({ body = {} } = {}) => {
+      /**
+       * Since post implementation of Scoped labels, server can reject
+       * same key-ed labels. To keep the UI and server Model consistent,
+       * we're just assigning labels that server echo's back to us when we
+       * PATCH the said object.
+       */
+      if (body) {
+        this.labels = body.labels;
+      }
+    });
   }
 }
 

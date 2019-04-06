@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.9.6 (2019-04-04)
+
+### Fixed (3 changes)
+
+- Force to recreate all MR diffs on import. !26480
+- Fix API /project/:id/branches not returning correct merge status. !26785
+- Avoid excessive recursive calls with Rugged TreeEntries. !26813
+
+### Performance (1 change)
+
+- Force a full GC after importing a project. !26803
+
+
 ## 11.9.5 (2019-04-03)
 
 ### Fixed (3 changes)

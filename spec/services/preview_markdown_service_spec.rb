@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PreviewMarkdownService do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :repository) }
 
   before do
     project.add_developer(user)
@@ -20,23 +20,72 @@ describe PreviewMarkdownService do
   end
 
   describe 'suggestions' do
-    let(:params) { { text: "```suggestion\nfoo\n```", preview_suggestions: preview_suggestions } }
+    let(:merge_request) do
+      create(:merge_request, target_project: project, source_project: project)
+    end
+    let(:text) { "```suggestion\nfoo\n```" }
+    let(:params) do
+      suggestion_params.merge(text: text,
+                              target_type: 'MergeRequest',
+                              target_id: merge_request.iid)
+    end
     let(:service) { described_class.new(project, user, params) }
 
     context 'when preview markdown param is present' do
-      let(:preview_suggestions) { true }
+      let(:path) { "files/ruby/popen.rb" }
+      let(:line) { 10 }
+      let(:diff_refs) { merge_request.diff_refs }
 
-      it 'returns users referenced in text' do
+      let(:suggestion_params) do
+        {
+          preview_suggestions: true,
+          file_path: path,
+          line: line,
+          base_sha: diff_refs.base_sha,
+          start_sha: diff_refs.start_sha,
+          head_sha: diff_refs.head_sha
+        }
+      end
+
+      it 'returns suggestions referenced in text' do
+        position = Gitlab::Diff::Position.new(new_path: path,
+                                              new_line: line,
+                                              diff_refs: diff_refs)
+
+        expect(Gitlab::Diff::SuggestionsParser)
+          .to receive(:parse)
+          .with(text, position: position, project: merge_request.project)
+          .and_call_original
+
         result = service.execute
 
-        expect(result[:suggestions]).to eq(['foo'])
+        expect(result[:suggestions]).to all(be_a(Gitlab::Diff::Suggestion))
+      end
+
+      context 'when user is not authorized' do
+        let(:another_user) { create(:user) }
+        let(:service) { described_class.new(project, another_user, params) }
+
+        before do
+          project.add_guest(another_user)
+        end
+
+        it 'returns no suggestions' do
+          result = service.execute
+
+          expect(result[:suggestions]).to be_empty
+        end
       end
     end
 
     context 'when preview markdown param is not present' do
-      let(:preview_suggestions) { false }
+      let(:suggestion_params) do
+        {
+          preview_suggestions: false
+        }
+      end
 
-      it 'returns users referenced in text' do
+      it 'returns suggestions referenced in text' do
         result = service.execute
 
         expect(result[:suggestions]).to eq([])
@@ -49,8 +98,8 @@ describe PreviewMarkdownService do
     let(:params) do
       {
         text: "Please do it\n/assign #{user.to_reference}",
-        quick_actions_target_type: 'Issue',
-        quick_actions_target_id: issue.id
+        target_type: 'Issue',
+        target_id: issue.id
       }
     end
     let(:service) { described_class.new(project, user, params) }
@@ -72,7 +121,7 @@ describe PreviewMarkdownService do
     let(:params) do
       {
         text: "My work\n/estimate 2y",
-        quick_actions_target_type: 'MergeRequest'
+        target_type: 'MergeRequest'
       }
     end
     let(:service) { described_class.new(project, user, params) }
@@ -96,8 +145,8 @@ describe PreviewMarkdownService do
     let(:params) do
       {
         text: "My work\n/tag v1.2.3 Stable release",
-        quick_actions_target_type: 'Commit',
-        quick_actions_target_id: commit.id
+        target_type: 'Commit',
+        target_id: commit.id
       }
     end
     let(:service) { described_class.new(project, user, params) }
