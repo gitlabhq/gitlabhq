@@ -216,6 +216,14 @@ Settings.registry['host_port']     ||= [Settings.registry['host'], Settings.regi
 Settings.registry['path']            = Settings.absolute(Settings.registry['path'] || File.join(Settings.shared['path'], 'registry'))
 
 #
+# Error Reporting and Logging with Sentry
+#
+Settings['sentry'] ||= Settingslogic.new({})
+Settings.sentry['enabled'] ||= false
+Settings.sentry['dsn'] ||= nil
+Settings.sentry['environment'] ||= nil
+
+#
 # Pages
 #
 Settings['pages'] ||= Settingslogic.new({})
