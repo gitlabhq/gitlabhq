@@ -439,22 +439,6 @@ class IssuableFinder
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  # rubocop: disable CodeReuse/ActiveRecord
-  def by_assignee(items)
-    if filter_by_no_assignee?
-      items.where(assignee_id: nil)
-    elsif filter_by_any_assignee?
-      items.where('assignee_id IS NOT NULL')
-    elsif assignee
-      items.where(assignee_id: assignee.id)
-    elsif assignee_id? || assignee_username? # assignee not found
-      items.none
-    else
-      items
-    end
-  end
-  # rubocop: enable CodeReuse/ActiveRecord
-
   def filter_by_no_assignee?
     # Assignee_id takes precedence over assignee_username
     [NONE, FILTER_NONE].include?(params[:assignee_id].to_s.downcase) || params[:assignee_username].to_s == NONE
@@ -477,6 +461,20 @@ class IssuableFinder
     items
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def by_assignee(items)
+    if filter_by_no_assignee?
+      items.unassigned
+    elsif filter_by_any_assignee?
+      items.assigned
+    elsif assignee
+      items.assigned_to(assignee)
+    elsif assignee_id? || assignee_username? # assignee not found
+      items.none
+    else
+      items
+    end
+  end
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_milestone(items)

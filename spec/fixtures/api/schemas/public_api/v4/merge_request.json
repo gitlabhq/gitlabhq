@@ -64,6 +64,11 @@
         },
         "additionalProperties": false
       },
+      "assignees": {
+        "items": {
+          "$ref": "./merge_request.json"
+        }
+      },
       "source_project_id": { "type": "integer" },
       "target_project_id": { "type": "integer" },
       "labels": {

@@ -166,8 +166,8 @@ describe SystemNoteService do
     end
   end
 
-  describe '.change_issue_assignees' do
-    subject { described_class.change_issue_assignees(noteable, project, author, [assignee]) }
+  describe '.change_issuable_assignees' do
+    subject { described_class.change_issuable_assignees(noteable, project, author, [assignee]) }
 
     let(:assignee) { create(:user) }
     let(:assignee1) { create(:user) }
@@ -180,7 +180,7 @@ describe SystemNoteService do
 
     def build_note(old_assignees, new_assignees)
       issue.assignees = new_assignees
-      described_class.change_issue_assignees(issue, project, author, old_assignees).note
+      described_class.change_issuable_assignees(issue, project, author, old_assignees).note
     end
 
     it_behaves_like 'a note with overridable created_at'

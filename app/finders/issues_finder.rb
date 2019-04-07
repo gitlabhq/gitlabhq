@@ -144,18 +144,4 @@ class IssuesFinder < IssuableFinder
 
     current_user.blank?
   end
-
-  def by_assignee(items)
-    if filter_by_no_assignee?
-      items.unassigned
-    elsif filter_by_any_assignee?
-      items.assigned
-    elsif assignee
-      items.assigned_to(assignee)
-    elsif assignee_id? || assignee_username? # assignee not found
-      items.none
-    else
-      items
-    end
-  end
 end

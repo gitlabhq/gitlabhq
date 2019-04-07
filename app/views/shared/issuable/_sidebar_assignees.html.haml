@@ -1,42 +1,10 @@
 - issuable_type = issuable_sidebar[:type]
 - signed_in = !!issuable_sidebar.dig(:current_user, :id)
-- can_edit_issuable = issuable_sidebar.dig(:current_user, :can_edit)
 
-- if issuable_type == "issue"
-  #js-vue-sidebar-assignees{ data: { field: "#{issuable_type}[assignee_ids]", signed_in: signed_in } }
-    .title.hide-collapsed
-      = _('Assignee')
-      = icon('spinner spin')
-- else
-  - assignee = assignees.first
-  .sidebar-collapsed-icon.sidebar-collapsed-user{ data: { toggle: "tooltip", placement: "left", container: "body", boundary: 'viewport' }, title: (issuable_sidebar.dig(:assignee, :name) || _('Assignee')) }
-    - if issuable_sidebar[:assignee]
-      = link_to_member(@project, assignee, size: 24)
-    - else
-      = icon('user', 'aria-hidden': 'true')
+#js-vue-sidebar-assignees{ data: { field: "#{issuable_type}[assignee_ids]", signed_in: signed_in } }
   .title.hide-collapsed
     = _('Assignee')
-    = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
-    - if can_edit_issuable
-      = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
-    - if !signed_in
-      %a.gutter-toggle.float-right.js-sidebar-toggle{ role: "button", href: "#", "aria-label" => _('Toggle sidebar') }
-        = sidebar_gutter_toggle_icon
-  .value.hide-collapsed
-    - if issuable_sidebar[:assignee]
-      = link_to_member(@project, assignee, size: 32, extra_class: 'bold') do
-        - unless issuable_sidebar[:assignee][:can_merge]
-          %span.float-right.cannot-be-merged{ data: { toggle: 'tooltip', placement: 'left' }, title: _('Not allowed to merge') }
-            = icon('exclamation-triangle', 'aria-hidden': 'true')
-        %span.username
-          @#{issuable_sidebar[:assignee][:username]}
-    - else
-      %span.assign-yourself.no-value
-        = _('No assignee')
-        - if can_edit_issuable
-          \-
-          %a.js-assign-yourself{ href: '#' }
-            = _('assign yourself')
+    = icon('spinner spin')
 
 .selectbox.hide-collapsed
   - if assignees.none?
@@ -59,17 +27,15 @@
       ability_name: issuable_type,
       null_user: true,
       display: 'static' } }
-  - title = _('Select assignee')
 
-  - if issuable_type == "issue"
-    - dropdown_options = issue_assignees_dropdown_options
-    - title = dropdown_options[:title]
-    - options[:toggle_class] += ' js-multiselect js-save-user-data'
-    - data = { field_name: "#{issuable_type}[assignee_ids][]" }
-    - data[:multi_select] = true
-    - data['dropdown-title'] = title
-    - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
-    - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
-    - options[:data].merge!(data)
+  - dropdown_options = assignees_dropdown_options(issuable_type)
+  - title = dropdown_options[:title]
+  - options[:toggle_class] += ' js-multiselect js-save-user-data'
+  - data = { field_name: "#{issuable_type}[assignee_ids][]" }
+  - data[:multi_select] = true
+  - data['dropdown-title'] = title
+  - data['dropdown-header'] = dropdown_options[:data][:'dropdown-header']
+  - data['max-select'] = dropdown_options[:data][:'max-select'] if dropdown_options[:data][:'max-select']
+  - options[:data].merge!(data)
 
   = dropdown_tag(title, options: options)

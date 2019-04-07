@@ -684,12 +684,12 @@ describe Ci::Pipeline, :mailer do
                source_branch: 'feature',
                target_project: project,
                target_branch: 'master',
-               assignee: assignee,
+               assignees: assignees,
                milestone: milestone,
                labels: labels)
       end
 
-      let(:assignee) { create(:user) }
+      let(:assignees) { create_list(:user, 2) }
       let(:milestone) { create(:milestone, project: project) }
       let(:labels) { create_list(:label, 2) }
 
@@ -710,7 +710,7 @@ describe Ci::Pipeline, :mailer do
             'CI_MERGE_REQUEST_SOURCE_BRANCH_NAME' => merge_request.source_branch.to_s,
             'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA' => pipeline.source_sha.to_s,
             'CI_MERGE_REQUEST_TITLE' => merge_request.title,
-            'CI_MERGE_REQUEST_ASSIGNEES' => assignee.username,
+            'CI_MERGE_REQUEST_ASSIGNEES' => merge_request.assignee_username_list,
             'CI_MERGE_REQUEST_MILESTONE' => milestone.title,
             'CI_MERGE_REQUEST_LABELS' => labels.map(&:title).join(','))
       end
@@ -730,7 +730,7 @@ describe Ci::Pipeline, :mailer do
       end
 
       context 'without assignee' do
-        let(:assignee) { nil }
+        let(:assignees) { [] }
 
         it 'does not expose assignee variable' do
           expect(subject.to_hash.keys).not_to include('CI_MERGE_REQUEST_ASSIGNEES')

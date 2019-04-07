@@ -2,5 +2,5 @@ Reassigned Merge Request <%= @merge_request.iid %>
 
 <%= url_for([@merge_request.project.namespace.becomes(Namespace), @merge_request.project, @merge_request, { only_path: false }]) %>
 
-Assignee changed <%= "from #{sanitize_name(@previous_assignee.name)}" if @previous_assignee -%>
- to <%= "#{@merge_request.assignee_id ? sanitize_name(@merge_request.assignee_name) : 'Unassigned'}" %>
+Assignee changed <%= "from #{sanitize_name(@previous_assignees.map(&:name).to_sentence)}" if @previous_assignees.any? -%>
+ to <%= "#{@merge_request.assignees.any? ? @merge_request.assignee_list : 'Unassigned'}" %>

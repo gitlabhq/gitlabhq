@@ -987,9 +987,6 @@ msgstr ""
 msgid "Assigned Merge Requests"
 msgstr ""
 
-msgid "Assigned to :name"
-msgstr ""
-
 msgid "Assigned to me"
 msgstr ""
 
@@ -5474,9 +5471,6 @@ msgstr ""
 msgid "No activities found"
 msgstr ""
 
-msgid "No assignee"
-msgstr ""
-
 msgid "No branches found"
 msgstr ""
 
@@ -5562,9 +5556,6 @@ msgid "No, directly import the existing email addresses and usernames."
 msgstr ""
 
 msgid "None"
-msgstr ""
-
-msgid "Not allowed to merge"
 msgstr ""
 
 msgid "Not available"
@@ -7277,9 +7268,6 @@ msgstr ""
 msgid "Select an existing Kubernetes cluster or create a new one"
 msgstr ""
 
-msgid "Select assignee"
-msgstr ""
-
 msgid "Select branch/tag"
 msgstr ""
 
@@ -8860,9 +8848,6 @@ msgstr ""
 msgid "Toggle navigation"
 msgstr ""
 
-msgid "Toggle sidebar"
-msgstr ""
-
 msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
@@ -9868,9 +9853,6 @@ msgid "allowed to fail"
 msgstr ""
 
 msgid "among other things"
-msgstr ""
-
-msgid "assign yourself"
 msgstr ""
 
 msgid "attach a new file"

@@ -46,7 +46,7 @@
               CLOSED
           - if issue.assignees.any?
             %li
-              = render 'shared/issuable/assignees', project: @project, issue: issue
+              = render 'shared/issuable/assignees', project: @project, issuable: issue
 
           = render 'shared/issuable_meta_data', issuable: issue
 

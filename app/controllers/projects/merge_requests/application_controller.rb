@@ -20,7 +20,6 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   def merge_request_params_attributes
     [
       :allow_collaboration,
-      :assignee_id,
       :description,
       :force_remove_source_branch,
       :lock_version,
@@ -35,6 +34,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :title,
       :discussion_locked,
       label_ids: [],
+      assignee_ids: [],
       update_task: [:index, :checked, :line_number, :line_source]
     ]
   end

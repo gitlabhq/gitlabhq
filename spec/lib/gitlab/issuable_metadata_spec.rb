@@ -19,7 +19,7 @@ describe Gitlab::IssuableMetadata do
     let!(:closed_issue) { create(:issue, state: :closed, author: user, project: project) }
     let!(:downvote) { create(:award_emoji, :downvote, awardable: closed_issue) }
     let!(:upvote) { create(:award_emoji, :upvote, awardable: issue) }
-    let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
+    let!(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, title: "Test") }
     let!(:closing_issues) { create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request) }
 
     it 'aggregates stats on issues' do
@@ -39,7 +39,7 @@ describe Gitlab::IssuableMetadata do
   end
 
   context 'merge requests' do
-    let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
+    let!(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, title: "Test") }
     let!(:merge_request_closed) { create(:merge_request, state: "closed", source_project: project, target_project: project, title: "Closed Test") }
     let!(:downvote) { create(:award_emoji, :downvote, awardable: merge_request) }
     let!(:upvote) { create(:award_emoji, :upvote, awardable: merge_request) }

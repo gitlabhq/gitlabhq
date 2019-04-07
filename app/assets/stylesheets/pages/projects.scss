@@ -1158,6 +1158,8 @@ pre.light-well {
 .cannot-be-merged:hover {
   color: $red-500;
   margin-top: 2px;
+  position: relative;
+  z-index: 2;
 }
 
 .private-forks-notice .private-fork-icon {

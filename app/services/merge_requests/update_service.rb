@@ -24,13 +24,13 @@ module MergeRequests
       update_task_event(merge_request) || update(merge_request)
     end
 
-    # rubocop:disable Metrics/AbcSize
     def handle_changes(merge_request, options)
       old_associations = options.fetch(:old_associations, {})
       old_labels = old_associations.fetch(:labels, [])
       old_mentioned_users = old_associations.fetch(:mentioned_users, [])
+      old_assignees = old_associations.fetch(:assignees, [])
 
-      if has_changes?(merge_request, old_labels: old_labels)
+      if has_changes?(merge_request, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.mark_pending_todos_as_done(merge_request, current_user)
       end
 
@@ -45,15 +45,10 @@ module MergeRequests
                                   merge_request.target_branch)
       end
 
-      if merge_request.previous_changes.include?('assignee_id')
-        reassigned_merge_request_args = [merge_request, current_user]
-
-        old_assignee_id = merge_request.previous_changes['assignee_id'].first
-        reassigned_merge_request_args << User.find(old_assignee_id) if old_assignee_id
-
-        create_assignee_note(merge_request)
-        notification_service.async.reassigned_merge_request(*reassigned_merge_request_args)
-        todo_service.reassigned_merge_request(merge_request, current_user)
+      if merge_request.assignees != old_assignees
+        create_assignee_note(merge_request, old_assignees)
+        notification_service.async.reassigned_merge_request(merge_request, current_user, old_assignees)
+        todo_service.reassigned_issuable(merge_request, current_user, old_assignees)
       end
 
       if merge_request.previous_changes.include?('target_branch') ||
@@ -81,7 +76,6 @@ module MergeRequests
         )
       end
     end
-    # rubocop:enable Metrics/AbcSize
 
     def handle_task_changes(merge_request)
       todo_service.mark_pending_todos_as_done(merge_request, current_user)

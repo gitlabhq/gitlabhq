@@ -49,9 +49,9 @@ module MergeRequests
       MergeRequestMetricsService.new(merge_request.metrics)
     end
 
-    def create_assignee_note(merge_request)
-      SystemNoteService.change_assignee(
-        merge_request, merge_request.project, current_user, merge_request.assignee)
+    def create_assignee_note(merge_request, old_assignees)
+      SystemNoteService.change_issuable_assignees(
+        merge_request, merge_request.project, current_user, old_assignees)
     end
 
     def create_pipeline_for(merge_request, user)

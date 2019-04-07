@@ -663,7 +663,11 @@ module API
       expose(:user_notes_count) { |merge_request, options| issuable_metadata(merge_request, options, :user_notes_count) }
       expose(:upvotes)          { |merge_request, options| issuable_metadata(merge_request, options, :upvotes) }
       expose(:downvotes)        { |merge_request, options| issuable_metadata(merge_request, options, :downvotes) }
-      expose :author, :assignee, using: Entities::UserBasic
+      expose :assignee, using: ::API::Entities::UserBasic do |merge_request|
+        merge_request.assignee
+      end
+      expose :author, :assignees, using: Entities::UserBasic
+
       expose :source_project_id, :target_project_id
       expose :labels do |merge_request|
         # Avoids an N+1 query since labels are preloaded
