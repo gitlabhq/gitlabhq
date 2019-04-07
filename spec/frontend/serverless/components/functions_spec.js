@@ -1,5 +1,6 @@
 import Vuex from 'vuex';
-
+import AxiosMockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import functionsComponent from '~/serverless/components/functions.vue';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { createStore } from '~/serverless/store';
@@ -79,15 +80,19 @@ describe('functionsComponent', () => {
     );
   });
 
-  it('should render the functions list', () => {
+  fit('should render the functions list', () => {
+    const statusPath = 'statusPath';
+    const axiosMock = new AxiosMockAdapter(axios);
+    axiosMock.onGet(statusPath).reply(200);
+
     component = shallowMount(functionsComponent, {
       localVue,
       store,
       propsData: {
         installed: true,
-        clustersPath: '',
-        helpPath: '',
-        statusPath: '',
+        clustersPath: 'clustersPath',
+        helpPath: 'helpPath',
+        statusPath,
       },
       sync: false,
     });
