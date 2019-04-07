@@ -8,6 +8,7 @@ const createComponent = missingData =>
       helpPath: '/help',
       missingData,
     },
+    sync: false,
   }).vm;
 
 describe('missingPrometheusComponent', () => {

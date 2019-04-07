@@ -7,6 +7,7 @@ const createComponent = uri =>
     propsData: {
       uri,
     },
+    sync: false,
   }).vm;
 
 describe('urlComponent', () => {

@@ -5,7 +5,7 @@ import { mockServerlessFunctions, mockServerlessFunctionsDiffEnv } from '../mock
 import { translate } from '~/serverless/utils';
 
 const createComponent = (localVue, env, envName) =>
-  shallowMount(environmentRowComponent, { localVue, propsData: { env, envName } }).vm;
+  shallowMount(environmentRowComponent, { localVue, propsData: { env, envName }, sync: false }).vm;
 
 describe('environment row component', () => {
   describe('default global cluster case', () => {

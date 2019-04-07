@@ -41,6 +41,7 @@ describe('functionDetailsComponent', () => {
           clustersPath: '/clusters',
           helpPath: '/help',
         },
+        sync: false,
       });
 
       expect(
@@ -68,6 +69,7 @@ describe('functionDetailsComponent', () => {
           clustersPath: '/clusters',
           helpPath: '/help',
         },
+        sync: false,
       });
 
       expect(component.vm.$el.querySelector('p').innerHTML.trim()).toContain('1 pod in use');
@@ -85,6 +87,7 @@ describe('functionDetailsComponent', () => {
           clustersPath: '/clusters',
           helpPath: '/help',
         },
+        sync: false,
       });
 
       expect(component.vm.$el.querySelector('p').innerHTML.trim()).toContain('3 pods in use');
@@ -102,6 +105,7 @@ describe('functionDetailsComponent', () => {
           clustersPath: '/clusters',
           helpPath: '/help',
         },
+        sync: false,
       });
 
       expect(
