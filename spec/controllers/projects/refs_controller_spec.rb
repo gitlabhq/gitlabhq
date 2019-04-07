@@ -44,11 +44,15 @@ describe Projects::RefsController do
     end
 
     it 'renders JS' do
+      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
       xhr_get(:js)
       expect(response).to be_success
     end
 
     it 'renders JSON' do
+      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
       xhr_get(:json)
 
       expect(response).to be_success

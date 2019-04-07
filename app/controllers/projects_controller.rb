@@ -10,6 +10,8 @@ class ProjectsController < Projects::ApplicationController
 
   prepend_before_action(only: [:show]) { authenticate_sessionless_user!(:rss) }
 
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
+
   before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs, :resolve]
   before_action :redirect_git_extension, only: [:show]
@@ -25,8 +27,6 @@ class ProjectsController < Projects::ApplicationController
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :event_filter, only: [:show, :activity]
-
-  around_action :allow_gitaly_ref_name_caching, only: [:index, :show]
 
   layout :determine_layout
 
