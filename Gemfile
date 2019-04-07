@@ -418,9 +418,9 @@ end
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 1.19.0', require: 'gitaly'
 
-gem 'grpc', '~> 1.15.0'
+gem 'grpc', '~> 1.19.0'
 
-gem 'google-protobuf', '~> 3.6'
+gem 'google-protobuf', '~> 3.7.1'
 
 gem 'toml-rb', '~> 1.0.0', require: false
 
