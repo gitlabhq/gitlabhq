@@ -35,7 +35,10 @@ def spin(team, project, category)
   maintainers = team.select { |member| member.maintainer?(project, category) }
 
   # TODO: filter out people who are currently not in the office
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/57652
+  #
   # TODO: take CODEOWNERS into account?
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/57653
 
   # Make traintainers have triple the chance to be picked as a reviewer
   reviewer = (reviewers + traintainers + traintainers).sample
