@@ -8,7 +8,7 @@ describe('RecentSearchesServiceError', () => {
   });
 
   it('instantiates an instance of RecentSearchesServiceError and not an Error', () => {
-    expect(recentSearchesServiceError).toEqual(jasmine.any(RecentSearchesServiceError));
+    expect(recentSearchesServiceError).toEqual(expect.any(RecentSearchesServiceError));
     expect(recentSearchesServiceError.name).toBe('RecentSearchesServiceError');
   });
 
