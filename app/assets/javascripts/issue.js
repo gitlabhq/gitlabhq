@@ -15,7 +15,6 @@ export default class Issue {
     Issue.$btnNewBranch = $('#new-branch');
     Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
 
-    Issue.initMergeRequests();
     if (document.querySelector('#related-branches')) {
       Issue.initRelatedBranches();
     }
@@ -141,19 +140,6 @@ export default class Issue {
     if (noteText && noteText.trim().length > 0) {
       return form.submit();
     }
-  }
-
-  static initMergeRequests() {
-    var $container;
-    $container = $('#merge-requests');
-    return axios
-      .get($container.data('url'))
-      .then(({ data }) => {
-        if ('html' in data) {
-          $container.html(data.html);
-        }
-      })
-      .catch(() => flash('Failed to load referenced merge requests'));
   }
 
   static initRelatedBranches() {

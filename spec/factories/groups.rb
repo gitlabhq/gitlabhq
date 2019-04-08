@@ -4,6 +4,7 @@ FactoryBot.define do
     path { name.downcase.gsub(/\s/, '_') }
     type 'Group'
     owner nil
+    project_creation_level ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS
 
     after(:create) do |group|
       if group.owner

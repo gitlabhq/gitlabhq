@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import Timeago from '~/vue_shared/components/time_ago_tooltip.vue';
 import Url from './url.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -19,6 +20,10 @@ export default {
       return this.func.name;
     },
     description() {
+      if (!_.isString(this.func.description)) {
+        return '';
+      }
+
       const desc = this.func.description.split('\n');
       if (desc.length > 1) {
         return desc[1];

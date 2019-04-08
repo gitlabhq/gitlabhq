@@ -151,6 +151,17 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
+### Default project creation level
+
+Group owners or administrators can allow users with the
+Developer role to create projects under groups.
+
+By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under agroup, but this can be changed either within the group settings for a group, or
+be set globally by a GitLab administrator in the Admin area
+at **Settings > General > Visibility and access controls**.
+
+Available settings are `No one`, `Maintainers`, or `Developers + Maintainers`.
+
 ## Transfer projects into groups
 
 Learn how to [transfer a project into a group](../project/settings/index.md#transferring-an-existing-project-into-another-namespace).

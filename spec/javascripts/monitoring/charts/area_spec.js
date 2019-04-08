@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import { GlAreaChart } from '@gitlab/ui/dist/charts';
+import { GlAreaChart, GlChartSeriesLabel } from '@gitlab/ui/dist/charts';
 import { shallowWrapperContainsSlotText } from 'spec/helpers/vue_test_utils_helper';
 import Area from '~/monitoring/components/charts/area.vue';
 import MonitoringStore from '~/monitoring/stores/monitoring_store';
@@ -65,7 +65,7 @@ describe('Area component', () => {
         expect(props.data).toBe(areaChart.vm.chartData);
         expect(props.option).toBe(areaChart.vm.chartOptions);
         expect(props.formatTooltipText).toBe(areaChart.vm.formatTooltipText);
-        expect(props.thresholds).toBe(areaChart.props('alertData'));
+        expect(props.thresholds).toBe(areaChart.vm.thresholds);
       });
 
       it('recieves a tooltip title', () => {
@@ -105,12 +105,13 @@ describe('Area component', () => {
             seriesName: areaChart.vm.chartData[0].name,
             componentSubType: type,
             value: [mockDate, 5.55555],
+            seriesIndex: 0,
           },
         ],
         value: mockDate,
       });
 
-      describe('series is of line type', () => {
+      describe('when series is of line type', () => {
         beforeEach(() => {
           areaChart.vm.formatTooltipText(generateSeriesData('line'));
         });
@@ -120,18 +121,20 @@ describe('Area component', () => {
         });
 
         it('formats tooltip content', () => {
-          expect(areaChart.vm.tooltip.content).toEqual([{ name: 'Core Usage', value: '5.556' }]);
+          const name = 'Core Usage';
+          const value = '5.556';
+          const seriesLabel = areaChart.find(GlChartSeriesLabel);
+
+          expect(seriesLabel.vm.color).toBe('');
+          expect(shallowWrapperContainsSlotText(seriesLabel, 'default', name)).toBe(true);
+          expect(areaChart.vm.tooltip.content).toEqual([{ name, value, color: undefined }]);
           expect(
-            shallowWrapperContainsSlotText(
-              areaChart.find(GlAreaChart),
-              'tooltipContent',
-              'Core Usage 5.556',
-            ),
+            shallowWrapperContainsSlotText(areaChart.find(GlAreaChart), 'tooltipContent', value),
           ).toBe(true);
         });
       });
 
-      describe('series is of scatter type', () => {
+      describe('when series is of scatter type', () => {
         beforeEach(() => {
           areaChart.vm.formatTooltipText(generateSeriesData('scatter'));
         });

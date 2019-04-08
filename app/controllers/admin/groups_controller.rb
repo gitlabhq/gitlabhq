@@ -89,7 +89,8 @@ class Admin::GroupsController < Admin::ApplicationController
       :request_access_enabled,
       :visibility_level,
       :require_two_factor_authentication,
-      :two_factor_grace_period
+      :two_factor_grace_period,
+      :project_creation_level
     ]
   end
 end

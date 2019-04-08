@@ -77,12 +77,11 @@
 
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
-    #merge-requests{ data: { url: referenced_merge_requests_project_issue_path(@project, @issue) } }
-      // This element is filled in using JavaScript.
+    #js-related-merge-requests{ data: { endpoint: api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: @issue.iid), project_namespace: @project.namespace.path, project_path: @project.path } }
 
     - if can?(current_user, :download_code, @project)
       #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
-        // This element is filled in using JavaScript.
+        -# This element is filled in using JavaScript.
 
   .content-block.emoji-block.emoji-block-sticky
     .row

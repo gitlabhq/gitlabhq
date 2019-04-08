@@ -66,6 +66,26 @@ describe('CompareVersions', () => {
       expect(inlineBtn.innerHTML).toContain('Inline');
       expect(parallelBtn.innerHTML).toContain('Side-by-side');
     });
+
+    it('adds container-limiting classes when showFileTree is false with inline diffs', () => {
+      vm.isLimitedContainer = true;
+
+      vm.$nextTick(() => {
+        const limitedContainer = vm.$el.querySelector('.container-limited.limit-container-width');
+
+        expect(limitedContainer).not.toBeNull();
+      });
+    });
+
+    it('does not add container-limiting classes when showFileTree is false with inline diffs', () => {
+      vm.isLimitedContainer = false;
+
+      vm.$nextTick(() => {
+        const limitedContainer = vm.$el.querySelector('.container-limited.limit-container-width');
+
+        expect(limitedContainer).toBeNull();
+      });
+    });
   });
 
   describe('setInlineDiffViewType', () => {

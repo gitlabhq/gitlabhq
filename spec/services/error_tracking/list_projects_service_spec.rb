@@ -51,14 +51,28 @@ describe ErrorTracking::ListProjectsService do
       end
 
       context 'sentry client raises exception' do
-        before do
-          expect(error_tracking_setting).to receive(:list_sentry_projects)
-            .and_raise(Sentry::Client::Error, 'Sentry response status code: 500')
+        context 'Sentry::Client::Error' do
+          before do
+            expect(error_tracking_setting).to receive(:list_sentry_projects)
+              .and_raise(Sentry::Client::Error, 'Sentry response status code: 500')
+          end
+
+          it 'returns error response' do
+            expect(result[:message]).to eq('Sentry response status code: 500')
+            expect(result[:http_status]).to eq(:bad_request)
+          end
         end
 
-        it 'returns error response' do
-          expect(result[:message]).to eq('Sentry response status code: 500')
-          expect(result[:http_status]).to eq(:bad_request)
+        context 'Sentry::Client::MissingKeysError' do
+          before do
+            expect(error_tracking_setting).to receive(:list_sentry_projects)
+              .and_raise(Sentry::Client::MissingKeysError, 'Sentry API response is missing keys. key not found: "id"')
+          end
+
+          it 'returns error response' do
+            expect(result[:message]).to eq('Sentry API response is missing keys. key not found: "id"')
+            expect(result[:http_status]).to eq(:internal_server_error)
+          end
         end
       end
 

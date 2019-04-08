@@ -11,13 +11,12 @@ Run serverless workloads on Kubernetes using [Knative](https://cloud.google.com/
 
 Knative extends Kubernetes to provide a set of middleware components that are useful to build modern, source-centric, container-based applications. Knative brings some significant benefits out of the box through its main components:
 
-- [Build](https://github.com/knative/build): Source-to-container build orchestration.
-- [Eventing](https://github.com/knative/eventing): Management and delivery of events.
 - [Serving](https://github.com/knative/serving): Request-driven compute that can scale to zero.
+- [Eventing](https://github.com/knative/eventing): Management and delivery of events.
 
 For more information on Knative, visit the [Knative docs repo](https://github.com/knative/docs).
 
-With GitLab serverless, you can deploy both functions-as-a-service (FaaS) and serverless applications.
+With GitLab Serverless, you can deploy both functions-as-a-service (FaaS) and serverless applications.
 
 ## Prerequisites
 
@@ -41,13 +40,16 @@ To run Knative on Gitlab, you will need:
     wildcard domain where your applications will be served. Configure your DNS server to use the
     external IP address or hostname for that domain.
 1. **`.gitlab-ci.yml`:** GitLab uses [Kaniko](https://github.com/GoogleContainerTools/kaniko)
-    to build the application and the [TriggerMesh CLI](https://github.com/triggermesh/tm) to simplify the
-    deployment of knative services and functions.
+    to build the application. We also use [gitlabktl](https://gitlab.com/gitlab-org/gitlabktl)
+    and [TriggerMesh CLI](https://github.com/triggermesh/tm) CLIs to simplify the
+    deployment of services and functions to Knative.
 1. **`serverless.yml`** (for [functions only](#deploying-functions)): When using serverless to deploy functions, the `serverless.yml` file
     will contain the information for all the functions being hosted in the repository as well as a reference to the
     runtime being used.
-1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a `Dockerfile` in order to build your application. It should be included
-    at the root of your project's repo and expose port `8080`.
+1. **`Dockerfile`** (for [applications only](#deploying-serverless-applications): Knative requires a
+    `Dockerfile` in order to build your applications. It should be included at the root of your
+    project's repo and expose port `8080`. `Dockerfile` is not require if you plan to build serverless functions
+    using our [runtimes](https://gitlab.com/gitlab-org/serverless/runtimes).
 1. **Prometheus** (optional): Installing Prometheus allows you to monitor the scale and traffic of your serverless function/application.
     See [Installing Applications](../index.md#installing-applications) for more information.
 
@@ -89,10 +91,11 @@ Using functions is useful for dealing with independent
 events without needing to maintain a complex unified infrastructure. This allows
 you to focus on a single task that can be executed/scaled automatically and independently.
 
-Currently the following [runtimes](https://gitlab.com/triggermesh/runtimes) are offered:
+Currently the following [runtimes](https://gitlab.com/gitlab-org/serverless/runtimes) are offered:
 
+- ruby
 - node.js
-- kaniko
+- Dockerfile
 
 You can find and import all the files referenced in this doc in the **[functions example project](https://gitlab.com/knative-examples/functions)**.
 
@@ -111,13 +114,17 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
    include:
      template: Serverless.gitlab-ci.yml
 
-   functions:
+   functions:build:
+     extends: .serverless:build:functions
+     environment: production
+
+   functions:deploy:
      extends: .serverless:deploy:functions
      environment: production
    ```
 
-    This `.gitlab-ci.yml` creates a `functions` job that invokes some
-    predefined commands to deploy your functions to your cluster.
+    This `.gitlab-ci.yml` creates jobs that invoke some predefined commands to
+    build and deploy your functions to your cluster.
 
     `Serverless.gitlab-ci.yml` is a template that allows customization.
     You can either import it with `include` parameter and use `extends` to
@@ -135,29 +142,40 @@ Follow these steps to deploy a function using the Node.js runtime to your Knativ
    You can find the relevant files for this project in the [functions example project](https://gitlab.com/knative-examples/functions).
 
    ```yaml
-   service: my-functions
-   description: "Deploying functions from GitLab using Knative"
+   service: functions
+   description: "GitLab Serverless functions using Knative"
 
    provider:
      name: triggermesh
-     registry-secret: gitlab-registry
      environment:
-       FOO: BAR
+       FOO: value
 
    functions:
-     echo:
-       handler: echo
-       runtime: https://gitlab.com/triggermesh/runtimes/raw/master/nodejs.yaml
-       description: "echo function using node.js runtime"
-       buildargs:
-        - DIRECTORY=echo
+     echo-js:
+       handler: echo-js
+       source: ./echo-js
+       runtime: https://gitlab.com/gitlab-org/serverless/runtimes/nodejs
+       description: "node.js runtime function"
        environment:
-        FUNCTION: echo
+         MY_FUNCTION: echo-js
+
+     echo-rb:
+       handler: MyEcho.my_function
+       source: ./echo-rb
+       runtime: https://gitlab.com/gitlab-org/serverless/runtimes/ruby
+       description: "Ruby runtime function"
+       environment:
+         MY_FUNCTION: echo-rb
+
+     echo-docker:
+       handler: echo-docker
+       source: ./echo-docker
+       description: "Dockerfile runtime function"
+       environment:
+         MY_FUNCTION: echo-docker
    ```
 
-The `serverless.yml` file references both an `echo` directory (under `buildargs`) and an `echo` file (under `handler`),
-which is a reference to `echo.js` in the [repository](https://gitlab.com/knative-examples/functions). Additionally, it
-contains three sections with distinct parameters:
+Explanation of the fields used above:
 
 ### `service`
 
@@ -171,7 +189,6 @@ contains three sections with distinct parameters:
 | Parameter | Description |
 |-----------|-------------|
 | `name` | Indicates which provider is used to execute the `serverless.yml` file. In this case, the TriggerMesh `tm` CLI. |
-| `registry-secret` | Indicates which registry will be used to store docker images. The sample function is using the GitLab Registry (`gitlab-registry`). A different registry host may be specified using `registry` key in the `provider` object. If changing the default, update the permission and the secret value on the `gitlab-ci.yml` file |
 | `environment` | Includes the environment variables to be passed as part of function execution for **all** functions in the file, where `FOO` is the variable name and `BAR` are he variable contents. You may replace this with you own variables. |
 
 ### `functions`
@@ -180,10 +197,10 @@ In the `serverless.yml` example above, the function name is `echo` and the subse
 
 | Parameter | Description |
 |-----------|-------------|
-| `handler` | The function's file name. In the example above, both the function name and the handler are the same. |
+| `handler` | The function's name. |
+| `source` | Directory with sources of a functions. |
 | `runtime` | The runtime to be used to execute the function. |
 | `description` | A short description of the function. |
-| `buildargs` | Pointer to the function file in the repo. In the sample the function is located in the `echo` directory. |
 | `environment` | Sets an environment variable for the specific function only. |
 
 After the `gitlab-ci.yml` template has been added and the `serverless.yml` file has been
@@ -284,3 +301,23 @@ The second to last line, labeled **Service domain** contains the URL for the dep
 browser to see the app live.
 
 ![knative app](img/knative-app.png)
+
+## Function details
+
+Go to the **Operations > Serverless** page and click on one of the function
+rows to bring up the function details page.
+
+![function_details](img/function-details-loaded.png)
+
+The pod count will give you the number of pods running the serverless function instances on a given cluster.
+
+### Prometheus support
+
+For the Knative function invocations to appear,
+[Prometheus must be installed](../index.md#installing-applications).
+
+Once Prometheus is installed, a message may appear indicating that the metrics data _is
+loading or is not available at this time._  It will appear upon the first access of the
+page, but should go away after a few seconds. If the message does not disappear, then it
+is possible that GitLab is unable to connect to the Prometheus instance running on the
+cluster.

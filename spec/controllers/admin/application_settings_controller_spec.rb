@@ -85,6 +85,13 @@ describe Admin::ApplicationSettingsController do
       expect(response).to redirect_to(admin_application_settings_path)
       expect(ApplicationSetting.current.receive_max_input_size).to eq(1024)
     end
+
+    it 'updates the default_project_creation for string value' do
+      put :update, params: { application_setting: { default_project_creation: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS } }
+
+      expect(response).to redirect_to(admin_application_settings_path)
+      expect(ApplicationSetting.current.default_project_creation).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
+    end
   end
 
   describe 'PUT #reset_registration_token' do

@@ -5,6 +5,8 @@ module Gitlab
   #
   # This class uses recursive CTEs and as a result will only work on PostgreSQL.
   class ObjectHierarchy
+    DEPTH_COLUMN = :depth
+
     attr_reader :ancestors_base, :descendants_base, :model
 
     # ancestors_base - An instance of ActiveRecord::Relation for which to
@@ -26,6 +28,17 @@ module Gitlab
       base_and_descendants.where.not(id: descendants_base.select(:id))
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    # Returns the maximum depth starting from the base
+    # A base object with no children has a maximum depth of `1`
+    def max_descendants_depth
+      unless hierarchy_supported?
+        # This makes the return value consistent with the case where hierarchy is supported
+        return descendants_base.exists? ? 1 : nil
+      end
+
+      base_and_descendants(with_depth: true).maximum(DEPTH_COLUMN)
+    end
 
     # Returns the set of ancestors of a given relation, but excluding the given
     # relation
@@ -64,10 +77,15 @@ module Gitlab
 
     # Returns a relation that includes the descendants_base set of objects
     # and all their descendants (recursively).
-    def base_and_descendants
-      return descendants_base unless hierarchy_supported?
+    #
+    # When `with_depth` is `true`, a `depth` column is included where it starts with `1` for the base objects
+    # and incremented as we go down the descendant tree
+    def base_and_descendants(with_depth: false)
+      unless hierarchy_supported?
+        return with_depth ? descendants_base.select("1 as #{DEPTH_COLUMN}", objects_table[Arel.star]) : descendants_base
+      end
 
-      read_only(base_and_descendants_cte.apply_to(model.all))
+      read_only(base_and_descendants_cte(with_depth: with_depth).apply_to(model.all))
     end
 
     # Returns a relation that includes the base objects, their ancestors,
@@ -124,10 +142,9 @@ module Gitlab
     # rubocop: disable CodeReuse/ActiveRecord
     def base_and_ancestors_cte(stop_id = nil, hierarchy_order = nil)
       cte = SQL::RecursiveCTE.new(:base_and_ancestors)
-      depth_column = :depth
 
       base_query = ancestors_base.except(:order)
-      base_query = base_query.select("1 as #{depth_column}", objects_table[Arel.star]) if hierarchy_order
+      base_query = base_query.select("1 as #{DEPTH_COLUMN}", "ARRAY[id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if hierarchy_order
 
       cte << base_query
 
@@ -137,7 +154,17 @@ module Gitlab
         .where(objects_table[:id].eq(cte.table[:parent_id]))
         .except(:order)
 
-      parent_query = parent_query.select(cte.table[depth_column] + 1, objects_table[Arel.star]) if hierarchy_order
+      if hierarchy_order
+        quoted_objects_table_name = model.connection.quote_table_name(objects_table.name)
+
+        parent_query = parent_query.select(
+          cte.table[DEPTH_COLUMN] + 1,
+          "tree_path || #{quoted_objects_table_name}.id",
+          "#{quoted_objects_table_name}.id = ANY(tree_path)",
+          objects_table[Arel.star]
+        ).where(cte.table[:tree_cycle].eq(false))
+      end
+
       parent_query = parent_query.where(cte.table[:parent_id].not_eq(stop_id)) if stop_id
 
       cte << parent_query
@@ -146,17 +173,32 @@ module Gitlab
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def base_and_descendants_cte
+    def base_and_descendants_cte(with_depth: false)
       cte = SQL::RecursiveCTE.new(:base_and_descendants)
 
-      cte << descendants_base.except(:order)
+      base_query = descendants_base.except(:order)
+      base_query = base_query.select("1 AS #{DEPTH_COLUMN}", "ARRAY[id] AS tree_path", "false AS tree_cycle", objects_table[Arel.star]) if with_depth
+
+      cte << base_query
 
       # Recursively get all the descendants of the base set.
-      cte << model
+      descendants_query = model
         .from([objects_table, cte.table])
         .where(objects_table[:parent_id].eq(cte.table[:id]))
         .except(:order)
 
+      if with_depth
+        quoted_objects_table_name = model.connection.quote_table_name(objects_table.name)
+
+        descendants_query = descendants_query.select(
+          cte.table[DEPTH_COLUMN] + 1,
+          "tree_path || #{quoted_objects_table_name}.id",
+          "#{quoted_objects_table_name}.id = ANY(tree_path)",
+          objects_table[Arel.star]
+        ).where(cte.table[:tree_cycle].eq(false))
+      end
+
+      cte << descendants_query
       cte
     end
     # rubocop: enable CodeReuse/ActiveRecord

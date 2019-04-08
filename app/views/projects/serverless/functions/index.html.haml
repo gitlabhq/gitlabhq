@@ -5,7 +5,10 @@
 - status_path = project_serverless_functions_path(@project, format: :json)
 - clusters_path = project_clusters_path(@project)
 
-.serverless-functions-page.js-serverless-functions-page{ data: { status_path: status_path, installed: @installed, clusters_path: clusters_path, help_path: help_page_path('user/project/clusters/serverless/index') } }
+.serverless-functions-page.js-serverless-functions-page{ data: { status_path: status_path,
+  installed: @installed,
+  clusters_path: clusters_path,
+  help_path: help_page_path('user/project/clusters/serverless/index') } }
 
 %div{ class: [container_class, ('limit-container-width' unless fluid_layout)] }
   .js-serverless-functions-notice

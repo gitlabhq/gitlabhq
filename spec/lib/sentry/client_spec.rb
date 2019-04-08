@@ -61,13 +61,37 @@ describe Sentry::Client do
     end
   end
 
+  shared_examples 'maps exceptions' do
+    exceptions = {
+      HTTParty::Error => 'Error when connecting to Sentry',
+      Net::OpenTimeout => 'Connection to Sentry timed out',
+      SocketError => 'Received SocketError when trying to connect to Sentry',
+      OpenSSL::SSL::SSLError => 'Sentry returned invalid SSL data',
+      Errno::ECONNREFUSED => 'Connection refused',
+      StandardError => 'Sentry request failed due to StandardError'
+    }
+
+    exceptions.each do |exception, message|
+      context "#{exception}" do
+        before do
+          stub_request(:get, sentry_request_url).to_raise(exception)
+        end
+
+        it do
+          expect { subject }
+            .to raise_exception(Sentry::Client::Error, message)
+        end
+      end
+    end
+  end
+
   describe '#list_issues' do
     let(:issue_status) { 'unresolved' }
     let(:limit) { 20 }
-
     let(:sentry_api_response) { issues_sample_response }
+    let(:sentry_request_url) { sentry_url + '/issues/?limit=20&query=is:unresolved' }
 
-    let!(:sentry_api_request) { stub_sentry_request(sentry_url + '/issues/?limit=20&query=is:unresolved', body: sentry_api_response) }
+    let!(:sentry_api_request) { stub_sentry_request(sentry_request_url, body: sentry_api_response) }
 
     subject { client.list_issues(issue_status: issue_status, limit: limit) }
 
@@ -121,16 +145,14 @@ describe Sentry::Client do
     # Sentry API returns 404 if there are extra slashes in the URL!
     context 'extra slashes in URL' do
       let(:sentry_url) { 'https://sentrytest.gitlab.com/api/0/projects//sentry-org/sentry-project/' }
-      let(:client) { described_class.new(sentry_url, token) }
 
-      let!(:valid_req_stub) do
-        stub_sentry_request(
-          'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/' \
+      let(:sentry_request_url) do
+        'https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/' \
           'issues/?limit=20&query=is:unresolved'
-        )
       end
 
       it 'removes extra slashes in api url' do
+        expect(client.url).to eq(sentry_url)
         expect(Gitlab::HTTP).to receive(:get).with(
           URI('https://sentrytest.gitlab.com/api/0/projects/sentry-org/sentry-project/issues/'),
           anything
@@ -138,7 +160,7 @@ describe Sentry::Client do
 
         subject
 
-        expect(valid_req_stub).to have_been_requested
+        expect(sentry_api_request).to have_been_requested
       end
     end
 
@@ -169,6 +191,8 @@ describe Sentry::Client do
         expect { subject }.to raise_error(Sentry::Client::MissingKeysError, 'Sentry API response is missing keys. key not found: "id"')
       end
     end
+
+    it_behaves_like 'maps exceptions'
   end
 
   describe '#list_projects' do
@@ -260,12 +284,18 @@ describe Sentry::Client do
         expect(valid_req_stub).to have_been_requested
       end
     end
+
+    context 'when exception is raised' do
+      let(:sentry_request_url) { sentry_list_projects_url }
+
+      it_behaves_like 'maps exceptions'
+    end
   end
 
   private
 
   def stub_sentry_request(url, body: {}, status: 200, headers: {})
-    WebMock.stub_request(:get, url)
+    stub_request(:get, url)
       .to_return(
         status: status,
         headers: { 'Content-Type' => 'application/json' }.merge(headers),

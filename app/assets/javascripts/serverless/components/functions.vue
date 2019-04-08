@@ -1,5 +1,6 @@
 <script>
-import { GlSkeletonLoading } from '@gitlab/ui';
+import { mapState, mapActions, mapGetters } from 'vuex';
+import { GlLoadingIcon } from '@gitlab/ui';
 import FunctionRow from './function_row.vue';
 import EnvironmentRow from './environment_row.vue';
 import EmptyState from './empty_state.vue';
@@ -9,14 +10,9 @@ export default {
     EnvironmentRow,
     FunctionRow,
     EmptyState,
-    GlSkeletonLoading,
+    GlLoadingIcon,
   },
   props: {
-    functions: {
-      type: Object,
-      required: true,
-      default: () => ({}),
-    },
     installed: {
       type: Boolean,
       required: true,
@@ -29,16 +25,22 @@ export default {
       type: String,
       required: true,
     },
-    loadingData: {
-      type: Boolean,
-      required: false,
-      default: true,
+    statusPath: {
+      type: String,
+      required: true,
     },
-    hasFunctionData: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+  },
+  computed: {
+    ...mapState(['isLoading', 'hasFunctionData']),
+    ...mapGetters(['getFunctions']),
+  },
+  created() {
+    this.fetchFunctions({
+      functionsPath: this.statusPath,
+    });
+  },
+  methods: {
+    ...mapActions(['fetchFunctions']),
   },
 };
 </script>
@@ -47,14 +49,16 @@ export default {
   <section id="serverless-functions">
     <div v-if="installed">
       <div v-if="hasFunctionData">
-        <template v-if="loadingData">
-          <div v-for="j in 3" :key="j" class="gl-responsive-table-row"><gl-skeleton-loading /></div>
-        </template>
+        <gl-loading-icon
+          v-if="isLoading"
+          :size="2"
+          class="prepend-top-default append-bottom-default"
+        />
         <template v-else>
           <div class="groups-list-tree-container">
             <ul class="content-list group-list-tree">
               <environment-row
-                v-for="(env, index) in functions"
+                v-for="(env, index) in getFunctions"
                 :key="index"
                 :env="env"
                 :env-name="index"

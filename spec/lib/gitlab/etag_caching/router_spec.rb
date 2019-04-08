@@ -19,6 +19,24 @@ describe Gitlab::EtagCaching::Router do
     expect(result.name).to eq 'issue_title'
   end
 
+  it 'matches with a project name that includes a suffix of create' do
+    result = described_class.match(
+      '/group/test-create/issues/123/realtime_changes'
+    )
+
+    expect(result).to be_present
+    expect(result.name).to eq 'issue_title'
+  end
+
+  it 'matches with a project name that includes a prefix of create' do
+    result = described_class.match(
+      '/group/create-test/issues/123/realtime_changes'
+    )
+
+    expect(result).to be_present
+    expect(result.name).to eq 'issue_title'
+  end
+
   it 'matches project pipelines endpoint' do
     result = described_class.match(
       '/my-group/my-project/pipelines.json'

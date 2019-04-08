@@ -16,6 +16,8 @@ describe Projects::TreeController do
     render_views
 
     before do
+      expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+
       get(:show,
           params: {
             namespace_id: project.namespace.to_param,

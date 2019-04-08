@@ -685,7 +685,7 @@ describe 'Pipelines', :js do
           end
 
           it 'creates a new pipeline' do
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run Pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
 
             expect(Ci::Pipeline.last).to be_web
@@ -698,7 +698,7 @@ describe 'Pipelines', :js do
                 fill_in "Input variable value", with: "value"
               end
 
-              expect { click_on 'Create pipeline' }
+              expect { click_on 'Run Pipeline' }
                 .to change { Ci::Pipeline.count }.by(1)
 
               expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :secret_value) })
@@ -709,7 +709,7 @@ describe 'Pipelines', :js do
 
         context 'without gitlab-ci.yml' do
           before do
-            click_on 'Create pipeline'
+            click_on 'Run Pipeline'
           end
 
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
@@ -722,14 +722,14 @@ describe 'Pipelines', :js do
               click_link 'master'
             end
 
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run Pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
           end
         end
       end
     end
 
-    describe 'Create pipelines' do
+    describe 'Run Pipelines' do
       let(:project) { create(:project, :repository) }
 
       before do
@@ -740,7 +740,7 @@ describe 'Pipelines', :js do
         it 'has field to add a new pipeline' do
           expect(page).to have_selector('.js-branch-select')
           expect(find('.js-branch-select')).to have_content project.default_branch
-          expect(page).to have_content('Create for')
+          expect(page).to have_content('Run for')
         end
       end
 

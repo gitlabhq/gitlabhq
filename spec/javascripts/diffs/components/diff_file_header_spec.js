@@ -672,7 +672,7 @@ describe('diff_file_header', () => {
 
       vm = mountComponentWithStore(Component, { props, store });
 
-      expect(vm.$el.querySelector('.js-expand-file').textContent).toContain('Show changes only');
+      expect(vm.$el.querySelector('.ic-doc-changes')).not.toBeNull();
     });
 
     it('shows expand text', () => {
@@ -680,7 +680,7 @@ describe('diff_file_header', () => {
 
       vm = mountComponentWithStore(Component, { props, store });
 
-      expect(vm.$el.querySelector('.js-expand-file').textContent).toContain('Show full file');
+      expect(vm.$el.querySelector('.ic-doc-expand')).not.toBeNull();
     });
 
     it('renders loading icon', () => {

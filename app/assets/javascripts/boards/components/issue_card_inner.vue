@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -92,6 +93,9 @@ export default {
       const { referencePath, groupId } = this.issue;
       return !groupId ? referencePath.split('#')[0] : null;
     },
+    orderedLabels() {
+      return _.sortBy(this.issue.labels, 'title');
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -176,7 +180,7 @@ export default {
     </div>
     <div v-if="showLabelFooter" class="board-card-labels prepend-top-4 d-flex flex-wrap">
       <button
-        v-for="label in issue.labels"
+        v-for="label in orderedLabels"
         v-if="showLabel(label)"
         :key="label.id"
         v-gl-tooltip

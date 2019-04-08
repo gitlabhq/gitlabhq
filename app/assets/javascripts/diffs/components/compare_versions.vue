@@ -7,6 +7,7 @@ import Icon from '~/vue_shared/components/icon.vue';
 import CompareVersionsDropdown from './compare_versions_dropdown.vue';
 import SettingsDropdown from './settings_dropdown.vue';
 import DiffStats from './diff_stats.vue';
+import { CENTERED_LIMITED_CONTAINER_CLASSES } from '../constants';
 
 export default {
   components: {
@@ -35,6 +36,11 @@ export default {
       required: false,
       default: null,
     },
+    isLimitedContainer: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters('diffs', ['hasCollapsedFile', 'diffFilesLength']),
@@ -62,6 +68,9 @@ export default {
       return this.mergeRequestDiff.base_version_path;
     },
   },
+  created() {
+    this.CENTERED_LIMITED_CONTAINER_CLASSES = CENTERED_LIMITED_CONTAINER_CLASSES;
+  },
   mounted() {
     polyfillSticky(this.$el);
   },
@@ -77,8 +86,13 @@ export default {
 </script>
 
 <template>
-  <div class="mr-version-controls" :class="{ 'is-fileTreeOpen': showTreeList }">
-    <div class="mr-version-menus-container content-block">
+  <div class="mr-version-controls border-top border-bottom">
+    <div
+      class="mr-version-menus-container content-block"
+      :class="{
+        [CENTERED_LIMITED_CONTAINER_CLASSES]: isLimitedContainer,
+      }"
+    >
       <button
         v-gl-tooltip.hover
         type="button"

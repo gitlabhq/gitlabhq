@@ -127,7 +127,7 @@ displayed by GitLab:
 ![pipeline status](img/pipeline_status.png)
 
 At the end, if anything goes wrong, you can easily
-[roll back](../environments.md#rolling-back-changes) all the changes:
+[roll back](../environments.md#retrying-and-rolling-back) all the changes:
 
 ![rollback button](img/rollback.png)
 
