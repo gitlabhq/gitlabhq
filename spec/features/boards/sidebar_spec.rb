@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Issue Boards', :js do
   include BoardHelpers
+  include FilteredSearchHelpers
 
   let(:user)         { create(:user) }
   let(:user2)        { create(:user) }
