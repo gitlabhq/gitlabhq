@@ -6,6 +6,8 @@ class Projects::TreeController < Projects::ApplicationController
   include CreatesCommit
   include ActionView::Helpers::SanitizeHelper
 
+  around_action :allow_gitaly_ref_name_caching, only: [:show]
+
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :assign_ref_vars
   before_action :assign_dir_vars, only: [:create_dir]

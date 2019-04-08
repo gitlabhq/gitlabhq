@@ -8,7 +8,11 @@ import boardsStore from '../stores/boards_store';
 
 $(document)
   .off('created.label')
-  .on('created.label', (e, label) => {
+  .on('created.label', (e, label, addNewList) => {
+    if (!addNewList) {
+      return;
+    }
+
     boardsStore.new({
       title: label.title,
       position: boardsStore.state.lists.length - 2,

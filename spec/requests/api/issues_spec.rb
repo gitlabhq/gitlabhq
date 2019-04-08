@@ -2189,6 +2189,18 @@ describe API::Issues do
       expect_paginated_array_response(related_mr.id)
     end
 
+    context 'merge request closes an issue' do
+      let!(:closing_issue_mr_rel) do
+        create(:merge_requests_closing_issues, issue: issue, merge_request: related_mr)
+      end
+
+      it 'returns closing MR only once' do
+        get_related_merge_requests(project.id, issue.iid, user)
+
+        expect_paginated_array_response([related_mr.id])
+      end
+    end
+
     context 'no merge request mentioned a issue' do
       it 'returns empty array' do
         get_related_merge_requests(project.id, closed_issue.iid, user)

@@ -155,7 +155,7 @@ Example response:
 }
 ```
 
-GitLab supports [form encoding](../README.md#encoding-api-parameters-of-array-and-hash-types). The following is an example using Commit API with form encoding:
+GitLab supports [form encoding](README.md#encoding-api-parameters-of-array-and-hash-types). The following is an example using Commit API with form encoding:
 
 ```bash
 curl --request POST \

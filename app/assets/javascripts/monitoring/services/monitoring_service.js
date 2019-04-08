@@ -32,11 +32,11 @@ export default class MonitoringService {
     this.environmentsEndpoint = environmentsEndpoint;
   }
 
-  getGraphsData() {
-    return backOffRequest(() => axios.get(this.metricsEndpoint))
+  getGraphsData(params = {}) {
+    return backOffRequest(() => axios.get(this.metricsEndpoint, { params }))
       .then(resp => resp.data)
       .then(response => {
-        if (!response || !response.data) {
+        if (!response || !response.data || !response.success) {
           throw new Error(s__('Metrics|Unexpected metrics data response from prometheus endpoint'));
         }
         return response.data;

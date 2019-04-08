@@ -3,8 +3,9 @@
 module Projects
   module Serverless
     class FunctionsFinder
-      def initialize(clusters)
-        @clusters = clusters
+      def initialize(project)
+        @clusters = project.clusters
+        @project = project
       end
 
       def execute
@@ -17,6 +18,23 @@ module Projects
 
       def service(environment_scope, name)
         knative_service(environment_scope, name)&.first
+      end
+
+      def invocation_metrics(environment_scope, name)
+        return unless prometheus_adapter&.can_query?
+
+        cluster = clusters_with_knative_installed.preload_knative.find do |c|
+          environment_scope == c.environment_scope
+        end
+
+        func = ::Serverless::Function.new(@project, name, cluster.platform_kubernetes&.actual_namespace)
+        prometheus_adapter.query(:knative_invocation, func)
+      end
+
+      def has_prometheus?(environment_scope)
+        clusters_with_knative_installed.preload_knative.to_a.any? do |cluster|
+          environment_scope == cluster.environment_scope && cluster.application_prometheus_available?
+        end
       end
 
       private
@@ -55,6 +73,12 @@ module Projects
       def clusters_with_knative_installed
         @clusters.with_knative_installed
       end
+
+      # rubocop: disable CodeReuse/ServiceClass
+      def prometheus_adapter
+        @prometheus_adapter ||= ::Prometheus::AdapterService.new(@project).prometheus_adapter
+      end
+      # rubocop: enable CodeReuse/ServiceClass
     end
   end
 end

@@ -347,6 +347,120 @@ describe GroupPolicy do
     end
   end
 
+  context "create_projects" do
+    context 'when group has no project creation level set' do
+      let(:group) { create(:group, project_creation_level: nil) }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+    end
+
+    context 'when group has project creation level set to no one' do
+      let(:group) { create(:group, project_creation_level: ::Gitlab::Access::NO_ONE_PROJECT_ACCESS) }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+    end
+
+    context 'when group has project creation level set to maintainer only' do
+      let(:group) { create(:group, project_creation_level: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+    end
+
+    context 'when group has project creation level set to developers + maintainer' do
+      let(:group) { create(:group, project_creation_level: ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+
+      context 'reporter' do
+        let(:current_user) { reporter }
+
+        it { is_expected.to be_disallowed(:create_projects) }
+      end
+
+      context 'developer' do
+        let(:current_user) { developer }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+
+      context 'maintainer' do
+        let(:current_user) { maintainer }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+
+      context 'owner' do
+        let(:current_user) { owner }
+
+        it { is_expected.to be_allowed(:create_projects) }
+      end
+    end
+  end
+
   it_behaves_like 'clusterable policies' do
     let(:clusterable) { create(:group) }
     let(:cluster) do

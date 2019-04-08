@@ -54,6 +54,11 @@ module Gitlab
           project.repository.fetch_as_mirror(project.import_url, refmap: refmap, forced: true, remote_name: 'github')
 
           project.change_head(default_branch) if default_branch
+
+          # The initial fetch can bring in lots of loose refs and objects.
+          # Running a `git gc` will make importing pull requests faster.
+          Projects::HousekeepingService.new(project, :gc).execute
+
           true
         rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
           fail_import("Failed to import the repository: #{e.message}")

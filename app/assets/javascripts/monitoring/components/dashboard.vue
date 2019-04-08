@@ -1,5 +1,6 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import _ from 'underscore';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import '~/vue_shared/mixins/is_ee';
@@ -9,6 +10,8 @@ import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import MonitoringStore from '../stores/monitoring_store';
+import { timeWindows } from '../constants';
+import { getTimeDiff } from '../utils';
 
 const sidebarAnimationDuration = 150;
 let sidebarMutationObserver;
@@ -87,6 +90,10 @@ export default {
       type: String,
       required: true,
     },
+    showTimeWindowDropdown: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
@@ -94,6 +101,7 @@ export default {
       state: 'gettingStarted',
       showEmptyState: true,
       elWidth: 0,
+      selectedTimeWindow: '',
     };
   },
   created() {
@@ -102,6 +110,9 @@ export default {
       deploymentEndpoint: this.deploymentEndpoint,
       environmentsEndpoint: this.environmentsEndpoint,
     });
+
+    this.timeWindows = timeWindows;
+    this.selectedTimeWindow = this.timeWindows.eightHours;
   },
   beforeDestroy() {
     if (sidebarMutationObserver) {
@@ -142,8 +153,13 @@ export default {
     }
   },
   methods: {
-    getGraphAlerts(graphId) {
-      return this.alertData ? this.alertData[graphId] || {} : {};
+    getGraphAlerts(queries) {
+      if (!this.allAlerts) return {};
+      const metricIdsForChart = queries.map(q => q.metricId);
+      return _.pick(this.allAlerts, alert => metricIdsForChart.includes(alert.metricId));
+    },
+    getGraphAlertValues(queries) {
+      return Object.values(this.getGraphAlerts(queries));
     },
     getGraphsData() {
       this.state = 'loading';
@@ -160,10 +176,29 @@ export default {
           this.state = 'unableToConnect';
         });
     },
+    getGraphsDataWithTime(timeFrame) {
+      this.state = 'loading';
+      this.showEmptyState = true;
+      this.service
+        .getGraphsData(getTimeDiff(this.timeWindows[timeFrame]))
+        .then(data => {
+          this.store.storeMetrics(data);
+          this.selectedTimeWindow = this.timeWindows[timeFrame];
+        })
+        .catch(() => {
+          Flash(s__('Metrics|Not enough data to display'));
+        })
+        .finally(() => {
+          this.showEmptyState = false;
+        });
+    },
     onSidebarMutation() {
       setTimeout(() => {
         this.elWidth = this.$el.clientWidth;
       }, sidebarAnimationDuration);
+    },
+    activeTimeWindow(key) {
+      return this.timeWindows[key] === this.selectedTimeWindow;
     },
   },
 };
@@ -171,22 +206,43 @@ export default {
 
 <template>
   <div v-if="!showEmptyState" class="prometheus-graphs prepend-top-default">
-    <div v-if="environmentsEndpoint" class="environments d-flex align-items-center">
-      <strong>{{ s__('Metrics|Environment') }}</strong>
-      <gl-dropdown
-        class="prepend-left-10 js-environments-dropdown"
-        toggle-class="dropdown-menu-toggle"
-        :text="currentEnvironmentName"
-        :disabled="store.environmentsData.length === 0"
-      >
-        <gl-dropdown-item
-          v-for="environment in store.environmentsData"
-          :key="environment.id"
-          :active="environment.name === currentEnvironmentName"
-          active-class="is-active"
-          >{{ environment.name }}</gl-dropdown-item
+    <div
+      v-if="environmentsEndpoint"
+      class="dropdowns d-flex align-items-center justify-content-between"
+    >
+      <div class="d-flex align-items-center">
+        <strong>{{ s__('Metrics|Environment') }}</strong>
+        <gl-dropdown
+          class="prepend-left-10 js-environments-dropdown"
+          toggle-class="dropdown-menu-toggle"
+          :text="currentEnvironmentName"
+          :disabled="store.environmentsData.length === 0"
         >
-      </gl-dropdown>
+          <gl-dropdown-item
+            v-for="environment in store.environmentsData"
+            :key="environment.id"
+            :active="environment.name === currentEnvironmentName"
+            active-class="is-active"
+            >{{ environment.name }}</gl-dropdown-item
+          >
+        </gl-dropdown>
+      </div>
+      <div v-if="showTimeWindowDropdown" class="d-flex align-items-center">
+        <strong>{{ s__('Metrics|Show last') }}</strong>
+        <gl-dropdown
+          class="prepend-left-10 js-time-window-dropdown"
+          toggle-class="dropdown-menu-toggle"
+          :text="selectedTimeWindow"
+        >
+          <gl-dropdown-item
+            v-for="(value, key) in timeWindows"
+            :key="key"
+            :active="activeTimeWindow(key)"
+            @click="getGraphsDataWithTime(key)"
+            >{{ value }}</gl-dropdown-item
+          >
+        </gl-dropdown>
+      </div>
     </div>
     <graph-group
       v-for="(groupData, index) in store.groups"
@@ -199,17 +255,15 @@ export default {
         :key="graphIndex"
         :graph-data="graphData"
         :deployment-data="store.deploymentData"
-        :alert-data="getGraphAlerts(graphData.id)"
+        :thresholds="getGraphAlertValues(graphData.queries)"
         :container-width="elWidth"
         group-id="monitor-area-chart"
       >
         <alert-widget
-          v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData.id"
+          v-if="isEE && prometheusAlertsAvailable && alertsEndpoint && graphData"
           :alerts-endpoint="alertsEndpoint"
-          :label="getGraphLabel(graphData)"
-          :current-alerts="getQueryAlerts(graphData)"
-          :custom-metric-id="graphData.id"
-          :alert-data="alertData[graphData.id]"
+          :relevant-queries="graphData.queries"
+          :alerts-to-manage="getGraphAlerts(graphData.queries)"
           @setAlerts="setAlerts"
         />
       </monitor-area-chart>

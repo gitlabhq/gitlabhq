@@ -31,11 +31,14 @@ stages:
     - echo "$CI_REGISTRY_IMAGE"
     - tm -n "$KUBE_NAMESPACE" --config "$KUBECONFIG" deploy service "$CI_PROJECT_NAME" --from-image "$CI_REGISTRY_IMAGE" --wait
 
+.serverless:build:functions:
+  stage: build
+  environment: development
+  image: registry.gitlab.com/gitlab-org/gitlabktl:latest
+  script: /usr/bin/gitlabktl serverless build
+
 .serverless:deploy:functions:
   stage: deploy
   environment: development
-  image: gcr.io/triggermesh/tm:v0.0.9
-  script:
-   - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_REGISTRY_USER" --password "$CI_JOB_TOKEN" --push
-   - tm -n "$KUBE_NAMESPACE" set registry-auth gitlab-registry --registry "$CI_REGISTRY" --username "$CI_DEPLOY_USER" --password "$CI_DEPLOY_PASSWORD" --pull
-   - tm -n "$KUBE_NAMESPACE" deploy --wait
+  image: registry.gitlab.com/gitlab-org/gitlabktl:latest
+  script: /usr/bin/gitlabktl serverless deploy

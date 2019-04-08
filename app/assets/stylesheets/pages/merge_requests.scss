@@ -736,7 +736,6 @@
   background: $gray-light;
   color: $gl-text-color;
   margin-top: -1px;
-  border-top: 1px solid $border-color;
 
   .mr-version-menus-container {
     display: flex;
@@ -759,6 +758,7 @@
 
   .content-block {
     padding: $gl-padding-top $gl-padding;
+    border-bottom: 0;
   }
 
   .comments-disabled-notif {
@@ -783,16 +783,18 @@
     padding-right: 5px;
   }
 
+  // Shortening button height by 1px to make compare-versions
+  // header 56px and fit into our 8px design grid
+  button {
+    height: 34px;
+  }
+
   @include media-breakpoint-up(md) {
     position: -webkit-sticky;
     position: sticky;
     top: $header-height + $mr-tabs-height;
-    width: 100%;
-
-    &.is-fileTreeOpen {
-      margin-left: -16px;
-      width: calc(100% + 32px);
-    }
+    margin-left: -16px;
+    width: calc(100% + 32px);
 
     .mr-version-menus-container {
       flex-wrap: nowrap;

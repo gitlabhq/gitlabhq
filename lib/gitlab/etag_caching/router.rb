@@ -15,50 +15,51 @@ module Gitlab
                           new environments].freeze
       RESERVED_WORDS = Gitlab::PathRegex::ILLEGAL_PROJECT_PATH_WORDS - USED_IN_ROUTES
       RESERVED_WORDS_REGEX = Regexp.union(*RESERVED_WORDS.map(&Regexp.method(:escape)))
+      RESERVED_WORDS_PREFIX = %Q(^(?!.*\/(#{RESERVED_WORDS_REGEX})\/).*)
 
       ROUTES = [
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/noteable/issue/\d+/notes\z),
+          %r(#{RESERVED_WORDS_PREFIX}/noteable/issue/\d+/notes\z),
           'issue_notes'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/issues/\d+/realtime_changes\z),
+          %r(#{RESERVED_WORDS_PREFIX}/issues/\d+/realtime_changes\z),
           'issue_title'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/commit/\S+/pipelines\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/commit/\S+/pipelines\.json\z),
           'commit_pipelines'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/merge_requests/new\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/merge_requests/new\.json\z),
           'new_merge_request_pipelines'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/merge_requests/\d+/pipelines\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/merge_requests/\d+/pipelines\.json\z),
           'merge_request_pipelines'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/pipelines\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/pipelines\.json\z),
           'project_pipelines'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/pipelines/\d+\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/pipelines/\d+\.json\z),
           'project_pipeline'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/builds/\d+\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/builds/\d+\.json\z),
           'project_build'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/environments\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/environments\.json\z),
           'environments'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/import/github/realtime_changes\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/import/github/realtime_changes\.json\z),
           'realtime_changes_import_github'
         ),
         Gitlab::EtagCaching::Router::Route.new(
-          %r(^(?!.*(#{RESERVED_WORDS_REGEX})).*/import/gitea/realtime_changes\.json\z),
+          %r(#{RESERVED_WORDS_PREFIX}/import/gitea/realtime_changes\.json\z),
           'realtime_changes_import_gitea'
         )
       ].freeze
