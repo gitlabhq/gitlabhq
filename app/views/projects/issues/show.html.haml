@@ -15,7 +15,7 @@
     .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
       = sprite_icon('mobile-issue-close', size: 16, css_class: 'd-block d-sm-none')
       .d-none.d-sm-block
-        - if @issue.moved?
+        - if @issue.moved? && can?(current_user, :read_issue, @issue.moved_to)
           - moved_link_start = "<a href=\"#{issue_path(@issue.moved_to)}\" class=\"text-white text-underline\">".html_safe
           - moved_link_end = '</a>'.html_safe
           = s_('IssuableStatus|Closed (%{moved_link_start}moved%{moved_link_end})').html_safe % {moved_link_start: moved_link_start,
