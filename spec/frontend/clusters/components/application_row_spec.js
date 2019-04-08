@@ -2,7 +2,7 @@ import Vue from 'vue';
 import eventHub from '~/clusters/event_hub';
 import { APPLICATION_STATUS, REQUEST_SUBMITTED, REQUEST_FAILURE } from '~/clusters/constants';
 import applicationRow from '~/clusters/components/application_row.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
 
 describe('Application Row', () => {
@@ -160,7 +160,7 @@ describe('Application Row', () => {
     });
 
     it('clicking install button emits event', () => {
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.INSTALLABLE,
@@ -176,7 +176,7 @@ describe('Application Row', () => {
     });
 
     it('clicking install button when installApplicationRequestParams are provided emits event', () => {
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.INSTALLABLE,
@@ -193,7 +193,7 @@ describe('Application Row', () => {
     });
 
     it('clicking disabled install button emits nothing', () => {
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.INSTALLING,
@@ -255,7 +255,7 @@ describe('Application Row', () => {
     });
 
     it('clicking upgrade button emits event', () => {
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.UPDATE_ERRORED,
@@ -271,7 +271,7 @@ describe('Application Row', () => {
     });
 
     it('clicking disabled upgrade button emits nothing', () => {
-      spyOn(eventHub, '$emit');
+      jest.spyOn(eventHub, '$emit');
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.UPDATING,
