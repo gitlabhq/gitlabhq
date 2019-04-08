@@ -6,10 +6,14 @@ class AddDefaultProjectCreationSetting < ActiveRecord::Migration[4.2]
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:application_settings, :default_project_creation, :integer, default: 2)
+    unless column_exists?(:application_settings, :default_project_creation)
+      add_column_with_default(:application_settings, :default_project_creation, :integer, default: 2)
+    end
   end
 
   def down
-    remove_column(:application_settings, :default_project_creation)
+    if column_exists?(:application_settings, :default_project_creation)
+      remove_column(:application_settings, :default_project_creation)
+    end
   end
 end
