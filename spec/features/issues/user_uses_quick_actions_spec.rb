@@ -42,7 +42,7 @@ describe 'Issues > User uses quick actions', :js do
 
   describe 'issue-only commands' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, :public) }
+    let(:project) { create(:project, :public, :repository) }
     let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
     before do
@@ -59,6 +59,7 @@ describe 'Issues > User uses quick actions', :js do
     it_behaves_like 'confidential quick action'
     it_behaves_like 'remove_due_date quick action'
     it_behaves_like 'duplicate quick action'
+    it_behaves_like 'create_merge_request quick action'
 
     describe 'adding a due date from note' do
       let(:issue) { create(:issue, project: project) }
@@ -205,64 +206,6 @@ describe 'Issues > User uses quick actions', :js do
           expect(page).to have_content 'wontfix'
           expect(page).to have_content '1.0'
         end
-      end
-    end
-
-    describe 'create a merge request starting from an issue' do
-      let(:project) { create(:project, :public, :repository) }
-      let(:issue) { create(:issue, project: project) }
-
-      def expect_mr_quickaction(success)
-        expect(page).to have_content 'Commands applied'
-
-        if success
-          expect(page).to have_content 'created merge request'
-        else
-          expect(page).not_to have_content 'created merge request'
-        end
-      end
-
-      it "doesn't create a merge request when the branch name is invalid" do
-        add_note("/create_merge_request invalid branch name")
-
-        wait_for_requests
-
-        expect_mr_quickaction(false)
-      end
-
-      it "doesn't create a merge request when a branch with that name already exists" do
-        add_note("/create_merge_request feature")
-
-        wait_for_requests
-
-        expect_mr_quickaction(false)
-      end
-
-      it 'creates a new merge request using issue iid and title as branch name when the branch name is empty' do
-        add_note("/create_merge_request")
-
-        wait_for_requests
-
-        expect_mr_quickaction(true)
-
-        created_mr = project.merge_requests.last
-        expect(created_mr.source_branch).to eq(issue.to_branch_name)
-
-        visit project_merge_request_path(project, created_mr)
-        expect(page).to have_content %{WIP: Resolve "#{issue.title}"}
-      end
-
-      it 'creates a merge request using the given branch name' do
-        branch_name = '1-feature'
-        add_note("/create_merge_request #{branch_name}")
-
-        expect_mr_quickaction(true)
-
-        created_mr = project.merge_requests.last
-        expect(created_mr.source_branch).to eq(branch_name)
-
-        visit project_merge_request_path(project, created_mr)
-        expect(page).to have_content %{WIP: Resolve "#{issue.title}"}
       end
     end
   end
