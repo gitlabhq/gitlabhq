@@ -254,7 +254,7 @@ To prevent merge requests from accidentally being accepted before they're
 completely ready, GitLab blocks the "Accept" button for merge requests that
 have been marked as a **Work In Progress**.
 
-[Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
+[Learn more about setting a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
 ## Merge request diff file navigation
 
