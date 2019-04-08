@@ -275,6 +275,14 @@ class IssuableFinder
     params[:assignee_username].present?
   end
 
+  def assignee_username
+    if params[:assignee_username].is_a?(Array)
+      params[:assignee_username].first
+    else
+      params[:assignee_username]
+    end
+  end
+
   # rubocop: disable CodeReuse/ActiveRecord
   def assignee
     return @assignee if defined?(@assignee)
@@ -283,7 +291,7 @@ class IssuableFinder
       if assignee_id?
         User.find_by(id: params[:assignee_id])
       elsif assignee_username?
-        User.find_by_username(params[:assignee_username])
+        User.find_by_username(assignee_username)
       else
         nil
       end
