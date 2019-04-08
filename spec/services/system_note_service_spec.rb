@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe SystemNoteService do
+  include ProjectForksHelper
   include Gitlab::Routing
   include RepoHelpers
   include AssetsHelpers
@@ -653,7 +656,7 @@ describe SystemNoteService do
 
     context 'commit with cross-reference from fork' do
       let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
-      let(:forked_project) { Projects::ForkService.new(project, author2).execute }
+      let(:forked_project) { fork_project(project, author2, repository: true) }
       let(:commit2) { forked_project.commit }
 
       before do
@@ -930,6 +933,28 @@ describe SystemNoteService do
     end
   end
 
+  describe '.change_time_estimate' do
+    subject { described_class.change_time_estimate(noteable, project, author) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'time_tracking' }
+    end
+
+    context 'with a time estimate' do
+      it 'sets the note text' do
+        noteable.update_attribute(:time_estimate, 277200)
+
+        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
+      end
+    end
+
+    context 'without a time estimate' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "removed time estimate"
+      end
+    end
+  end
+
   describe '.discussion_continued_in_issue' do
     let(:discussion) { create(:diff_note_on_merge_request, project: project).to_discussion }
     let(:merge_request) { discussion.noteable }
@@ -953,28 +978,6 @@ describe SystemNoteService do
 
     it 'mentions the created issue in the system note' do
       expect(subject.note).to include(issue.to_reference)
-    end
-  end
-
-  describe '.change_time_estimate' do
-    subject { described_class.change_time_estimate(noteable, project, author) }
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'time_tracking' }
-    end
-
-    context 'with a time estimate' do
-      it 'sets the note text' do
-        noteable.update_attribute(:time_estimate, 277200)
-
-        expect(subject.note).to eq "changed time estimate to 1w 4d 5h"
-      end
-    end
-
-    context 'without a time estimate' do
-      it 'sets the note text' do
-        expect(subject.note).to eq "removed time estimate"
-      end
     end
   end
 
