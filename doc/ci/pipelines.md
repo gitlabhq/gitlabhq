@@ -295,7 +295,7 @@ You can do this straight from the pipeline graph. Just click on the play button
 to execute that particular job.
 
 For example, your pipeline start automatically, but require manual action to
-[deploy to production](environments.md#manually-deploying-to-environments). In the example below, the `production`
+[deploy to production](environments.md#configuring-manual-deployments). In the example below, the `production`
 stage has a job with a manual action.
 
 ![Pipelines example](img/pipelines.png)
@@ -313,7 +313,7 @@ For example, if you start rolling out new code and:
 
 - Users do not experience trouble, GitLab can automatically complete the deployment from 0% to 100%.
 - Users experience trouble with the new code, you can stop the timed incremental rollout by canceling the pipeline
-  and [rolling](environments.md#rolling-back-changes) back to the last stable version.
+  and [rolling](environments.md#retrying-and-rolling-back) back to the last stable version.
 
 ![Pipelines example](img/pipeline_incremental_rollout.png)
 
