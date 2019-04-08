@@ -3,7 +3,8 @@ import { shallowMount } from '@vue/test-utils';
 
 import { mockServerlessFunction } from '../mock_data';
 
-const createComponent = func => shallowMount(functionRowComponent, { propsData: { func } }).vm;
+const createComponent = func =>
+  shallowMount(functionRowComponent, { propsData: { func }, sync: false }).vm;
 
 describe('functionRowComponent', () => {
   it('Parses the function details correctly', () => {

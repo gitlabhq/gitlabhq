@@ -16,6 +16,7 @@ describe('Area component', () => {
       slots: {
         default: mockWidgets,
       },
+      sync: false,
     });
   });
 
@@ -67,7 +68,7 @@ describe('Area component', () => {
       const mockWidth = 233;
 
       beforeEach(() => {
-        spyOn(Element.prototype, 'getBoundingClientRect').and.callFake(() => ({
+        jest.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(() => ({
           width: mockWidth,
         }));
         areaChart.vm.onResize();

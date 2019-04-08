@@ -32,7 +32,9 @@ describe('ServerlessActions', () => {
     it('should successfully retry', done => {
       const endpoint = '/functions';
       const mock = new MockAdapter(axios);
-      mock.onGet(endpoint).reply(statusCodes.NO_CONTENT);
+      mock
+        .onGet(endpoint)
+        .reply(() => new Promise(resolve => setTimeout(() => resolve(200), Infinity)));
 
       testAction(
         fetchFunctions,
