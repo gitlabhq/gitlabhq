@@ -24,6 +24,9 @@ module MergeRequests
         execute_for_branch(branch)
       rescue Gitlab::Access::AccessDeniedError
         errors << 'User access was denied'
+      rescue StandardError => e
+        Gitlab::AppLogger.error(e)
+        errors << 'An unknown error occurred'
       end
 
       self

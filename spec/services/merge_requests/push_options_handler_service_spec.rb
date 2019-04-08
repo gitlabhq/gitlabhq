@@ -334,6 +334,32 @@ describe MergeRequests::PushOptionsHandlerService do
     end
   end
 
+  describe 'handling unexpected exceptions' do
+    let(:push_options) { { create: true } }
+    let(:changes) { new_branch_changes }
+    let(:exception) { StandardError.new('My standard error') }
+
+    def run_service_with_exception
+      allow_any_instance_of(
+        MergeRequests::BuildService
+      ).to receive(:execute).and_raise(exception)
+
+      service.execute
+    end
+
+    it 'records an error' do
+      run_service_with_exception
+
+      expect(service.errors).to eq(['An unknown error occurred'])
+    end
+
+    it 'writes to Gitlab::AppLogger' do
+      expect(Gitlab::AppLogger).to receive(:error).with(exception)
+
+      run_service_with_exception
+    end
+  end
+
   describe 'when target is not a valid branch name' do
     let(:push_options) { { create: true, target: 'my-branch' } }
     let(:changes) { new_branch_changes }
