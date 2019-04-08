@@ -93,11 +93,13 @@ describe 'Projects > Settings > User manages merge request settings' do
     it 'when unchecked sets :printing_merge_request_link_enabled to false' do
       uncheck('project_printing_merge_request_link_enabled')
       within('.merge-request-settings-form') do
+        find('.qa-save-merge-request-changes')
         click_on('Save changes')
       end
 
-      # Wait for save to complete and page to reload
+      find('.flash-notice')
       checkbox = find_field('project_printing_merge_request_link_enabled')
+
       expect(checkbox).not_to be_checked
 
       project.reload
