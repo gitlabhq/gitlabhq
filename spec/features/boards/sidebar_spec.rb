@@ -129,6 +129,7 @@ describe 'Issue Boards', :js do
           click_link 'Unassigned'
         end
 
+        close_dropdown_menu_if_visible
         wait_for_requests
 
         expect(page).to have_content('No assignee')
