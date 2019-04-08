@@ -18,7 +18,7 @@ describe('IDE commit module mutations', () => {
 
   describe('UPDATE_COMMIT_ACTION', () => {
     it('updates commitAction', () => {
-      mutations.UPDATE_COMMIT_ACTION(state, 'testing');
+      mutations.UPDATE_COMMIT_ACTION(state, { commitAction: 'testing' });
 
       expect(state.commitAction).toBe('testing');
     });
@@ -37,6 +37,22 @@ describe('IDE commit module mutations', () => {
       mutations.UPDATE_LOADING(state, true);
 
       expect(state.submitCommitLoading).toBeTruthy();
+    });
+  });
+
+  describe('TOGGLE_SHOULD_CREATE_MR', () => {
+    it('changes shouldCreateMR to true when initial state is false', () => {
+      state.shouldCreateMR = false;
+      mutations.TOGGLE_SHOULD_CREATE_MR(state);
+
+      expect(state.shouldCreateMR).toBe(true);
+    });
+
+    it('changes shouldCreateMR to false when initial state is true', () => {
+      state.shouldCreateMR = true;
+      mutations.TOGGLE_SHOULD_CREATE_MR(state);
+
+      expect(state.shouldCreateMR).toBe(false);
     });
   });
 });

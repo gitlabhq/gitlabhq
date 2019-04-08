@@ -44,6 +44,7 @@ describe API::Settings, 'Settings' do
         put api("/application/settings", admin),
           params: {
             default_projects_limit: 3,
+            default_project_creation: 2,
             password_authentication_enabled_for_web: false,
             repository_storages: ['custom'],
             plantuml_enabled: true,
@@ -64,12 +65,13 @@ describe API::Settings, 'Settings' do
             performance_bar_allowed_group_path: group.full_path,
             instance_statistics_visibility_private: true,
             diff_max_patch_bytes: 150_000,
-            default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
+            default_branch_protection: ::Gitlab::Access::PROTECTION_DEV_CAN_MERGE,
             local_markdown_version: 3
           }
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
+        expect(json_response['default_project_creation']).to eq(::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS)
         expect(json_response['password_authentication_enabled_for_web']).to be_falsey
         expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['plantuml_enabled']).to be_truthy

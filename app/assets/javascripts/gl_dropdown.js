@@ -561,10 +561,9 @@ GitLabDropdown = (function() {
         !$target.data('isLink')
       ) {
         e.stopPropagation();
-        return false;
-      } else {
-        return true;
       }
+
+      return true;
     }
   };
 

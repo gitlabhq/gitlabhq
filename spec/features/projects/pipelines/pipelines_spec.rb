@@ -542,19 +542,19 @@ describe 'Pipelines', :js do
           visit_project_pipelines
         end
 
-        it 'should render a mini pipeline graph' do
+        it 'renders a mini pipeline graph' do
           expect(page).to have_selector('.js-mini-pipeline-graph')
           expect(page).to have_selector('.js-builds-dropdown-button')
         end
 
         context 'when clicking a stage badge' do
-          it 'should open a dropdown' do
+          it 'opens a dropdown' do
             find('.js-builds-dropdown-button').click
 
             expect(page).to have_link build.name
           end
 
-          it 'should be possible to cancel pending build' do
+          it 'is possible to cancel pending build' do
             find('.js-builds-dropdown-button').click
             find('.js-ci-action').click
             wait_for_requests
@@ -570,7 +570,7 @@ describe 'Pipelines', :js do
                                        name: 'build')
           end
 
-          it 'should display the failure reason' do
+          it 'displays the failure reason' do
             find('.js-builds-dropdown-button').click
 
             within('.js-builds-dropdown-list') do
@@ -587,21 +587,21 @@ describe 'Pipelines', :js do
           create(:ci_empty_pipeline, project: project)
         end
 
-        it 'should render pagination' do
+        it 'renders pagination' do
           visit project_pipelines_path(project)
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination')
         end
 
-        it 'should render second page of pipelines' do
+        it 'renders second page of pipelines' do
           visit project_pipelines_path(project, page: '2')
           wait_for_requests
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
 
-        it 'should show updated content' do
+        it 'shows updated content' do
           visit project_pipelines_path(project)
           wait_for_requests
           page.find('.js-next-button .page-link').click
@@ -685,7 +685,7 @@ describe 'Pipelines', :js do
           end
 
           it 'creates a new pipeline' do
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run Pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
 
             expect(Ci::Pipeline.last).to be_web
@@ -698,7 +698,7 @@ describe 'Pipelines', :js do
                 fill_in "Input variable value", with: "value"
               end
 
-              expect { click_on 'Create pipeline' }
+              expect { click_on 'Run Pipeline' }
                 .to change { Ci::Pipeline.count }.by(1)
 
               expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :secret_value) })
@@ -709,7 +709,7 @@ describe 'Pipelines', :js do
 
         context 'without gitlab-ci.yml' do
           before do
-            click_on 'Create pipeline'
+            click_on 'Run Pipeline'
           end
 
           it { expect(page).to have_content('Missing .gitlab-ci.yml file') }
@@ -722,14 +722,14 @@ describe 'Pipelines', :js do
               click_link 'master'
             end
 
-            expect { click_on 'Create pipeline' }
+            expect { click_on 'Run Pipeline' }
               .to change { Ci::Pipeline.count }.by(1)
           end
         end
       end
     end
 
-    describe 'Create pipelines' do
+    describe 'Run Pipelines' do
       let(:project) { create(:project, :repository) }
 
       before do
@@ -740,7 +740,7 @@ describe 'Pipelines', :js do
         it 'has field to add a new pipeline' do
           expect(page).to have_selector('.js-branch-select')
           expect(find('.js-branch-select')).to have_content project.default_branch
-          expect(page).to have_content('Create for')
+          expect(page).to have_content('Run for')
         end
       end
 

@@ -331,6 +331,10 @@ span.idiff {
     padding: 5px $gl-padding;
     margin: 0;
     border-radius: $border-radius-default $border-radius-default 0 0;
+
+    &.is-stuck {
+      border-radius: 0;
+    }
   }
 
   .file-header-content {

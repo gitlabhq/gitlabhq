@@ -282,6 +282,7 @@ module Gitlab
       # Updates the value of a column in batches.
       #
       # This method updates the table in batches of 5% of the total row count.
+      # A `batch_size` option can also be passed to set this to a fixed number.
       # This method will continue updating rows until no rows remain.
       #
       # When given a block this method will yield two values to the block:
@@ -320,7 +321,7 @@ module Gitlab
       # make things _more_ complex).
       #
       # rubocop: disable Metrics/AbcSize
-      def update_column_in_batches(table, column, value)
+      def update_column_in_batches(table, column, value, batch_size: nil)
         if transaction_open?
           raise 'update_column_in_batches can not be run inside a transaction, ' \
             'you can disable transactions by calling disable_ddl_transaction! ' \
@@ -336,14 +337,16 @@ module Gitlab
 
         return if total == 0
 
-        # Update in batches of 5% until we run out of any rows to update.
-        batch_size = ((total / 100.0) * 5.0).ceil
-        max_size = 1000
+        if batch_size.nil?
+          # Update in batches of 5% until we run out of any rows to update.
+          batch_size = ((total / 100.0) * 5.0).ceil
+          max_size = 1000
 
-        # The upper limit is 1000 to ensure we don't lock too many rows. For
-        # example, for "merge_requests" even 1% of the table is around 35 000
-        # rows for GitLab.com.
-        batch_size = max_size if batch_size > max_size
+          # The upper limit is 1000 to ensure we don't lock too many rows. For
+          # example, for "merge_requests" even 1% of the table is around 35 000
+          # rows for GitLab.com.
+          batch_size = max_size if batch_size > max_size
+        end
 
         start_arel = table.project(table[:id]).order(table[:id].asc).take(1)
         start_arel = yield table, start_arel if block_given?

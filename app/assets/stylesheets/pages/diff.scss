@@ -7,12 +7,15 @@
     cursor: pointer;
 
     @media (min-width: map-get($grid-breakpoints, md)) {
-      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height;
+      // The `-1` below is to prevent two borders from clashing up against eachother -
+      // the bottom of the compare-versions header and the top of the file header
+      $mr-file-header-top: $mr-version-controls-height + $header-height + $mr-tabs-height - 1;
 
       position: -webkit-sticky;
       position: sticky;
       top: $mr-file-header-top;
       z-index: 102;
+      height: $mr-version-controls-height;
 
       &::before {
         content: '';
@@ -54,7 +57,8 @@
       background-color: $gray-normal;
     }
 
-    a {
+    a,
+    button {
       color: $gray-700;
     }
 
@@ -164,6 +168,23 @@
           /* only for commit view (different swipe viewer) */
           border-right: 0;
           border-left: 1px solid $gl-gray-400;
+        }
+      }
+
+      .frame {
+        top: 0;
+        right: 0;
+
+        &.old-diff {
+          /* only for commit / compare view */
+          position: absolute;
+        }
+
+        &.deleted {
+          margin: 0;
+          display: block;
+          top: 13px;
+          right: 7px;
         }
       }
 

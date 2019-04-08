@@ -42,7 +42,7 @@ describe Gitlab::Kubernetes::RoleBinding, '#generate' do
     ).generate
   end
 
-  it 'should build a Kubeclient Resource' do
+  it 'builds a Kubeclient Resource' do
     is_expected.to eq(resource)
   end
 end

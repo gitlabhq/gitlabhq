@@ -1,6 +1,6 @@
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'spec/helpers/vuex_action_helper';
-import { showTreeEntry, getFiles } from '~/ide/stores/actions/tree';
+import { showTreeEntry, getFiles, setDirectoryData } from '~/ide/stores/actions/tree';
 import * as types from '~/ide/stores/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
@@ -202,6 +202,37 @@ describe('Multi-file store tree actions', () => {
         store.state,
         [{ type: types.SET_TREE_OPEN, payload: 'grandparent/parent' }],
         [{ type: 'showTreeEntry', payload: 'grandparent/parent' }],
+        done,
+      );
+    });
+  });
+
+  describe('setDirectoryData', () => {
+    it('sets tree correctly if there are no opened files yet', done => {
+      const treeFile = file({ name: 'README.md' });
+      store.state.trees['abcproject/master'] = {};
+
+      testAction(
+        setDirectoryData,
+        { projectId: 'abcproject', branchId: 'master', treeList: [treeFile] },
+        store.state,
+        [
+          {
+            type: types.SET_DIRECTORY_DATA,
+            payload: {
+              treePath: 'abcproject/master',
+              data: [treeFile],
+            },
+          },
+          {
+            type: types.TOGGLE_LOADING,
+            payload: {
+              entry: {},
+              forceValue: false,
+            },
+          },
+        ],
+        [],
         done,
       );
     });

@@ -35,9 +35,12 @@ describe('DropdownValueCollapsedComponent', () => {
       });
 
       it('returns labels names separated by coma when `labels` prop has more than one item', () => {
-        const vmMoreLabels = createComponent(mockLabels.concat(mockLabels));
+        const labels = mockLabels.concat(mockLabels);
+        const vmMoreLabels = createComponent(labels);
 
-        expect(vmMoreLabels.labelsList).toBe('Foo Label, Foo Label');
+        const expectedText = labels.map(label => label.title).join(', ');
+
+        expect(vmMoreLabels.labelsList).toBe(expectedText);
         vmMoreLabels.$destroy();
       });
 
@@ -49,14 +52,19 @@ describe('DropdownValueCollapsedComponent', () => {
 
         const vmMoreLabels = createComponent(mockMoreLabels);
 
-        expect(vmMoreLabels.labelsList).toBe(
-          'Foo Label, Foo Label, Foo Label, Foo Label, Foo Label, and 2 more',
-        );
+        const expectedText = `${mockMoreLabels
+          .slice(0, 5)
+          .map(label => label.title)
+          .join(', ')}, and ${mockMoreLabels.length - 5} more`;
+
+        expect(vmMoreLabels.labelsList).toBe(expectedText);
         vmMoreLabels.$destroy();
       });
 
       it('returns first label name when `labels` prop has only one item present', () => {
-        expect(vm.labelsList).toBe('Foo Label');
+        const text = mockLabels.map(label => label.title).join(', ');
+
+        expect(vm.labelsList).toBe(text);
       });
     });
   });

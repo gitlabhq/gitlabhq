@@ -9,12 +9,12 @@ shared_examples 'cluster application helm specs' do |application_name|
         application.cluster.application_helm.ca_cert = nil
       end
 
-      it 'should not include cert files when there is no ca_cert entry' do
+      it 'does not include cert files when there is no ca_cert entry' do
         expect(subject).not_to include(:'ca.pem', :'cert.pem', :'key.pem')
       end
     end
 
-    it 'should include cert files when there is a ca_cert entry' do
+    it 'includes cert files when there is a ca_cert entry' do
       expect(subject).to include(:'ca.pem', :'cert.pem', :'key.pem')
       expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
 

@@ -511,7 +511,7 @@ Errors can be easily debugged through GitLab's build logs, and within minutes of
 you can see the changes live on your game.
 
 Setting up Continuous Integration and Continuous Deployment from the start with Dark Nova enables
-rapid but stable development. We can easily test changes in a separate [environment](../../../ci/environments.md#introduction-to-environments-and-deployments),
+rapid but stable development. We can easily test changes in a separate [environment](../../environments.md),
 or multiple environments if needed. Balancing and updating a multiplayer game can be ongoing
 and tedious, but having faith in a stable deployment with GitLab CI/CD allows
 a lot of breathing room in quickly getting changes to players.

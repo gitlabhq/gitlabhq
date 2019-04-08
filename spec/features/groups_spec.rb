@@ -237,7 +237,7 @@ describe 'Group' do
     let!(:project) { create(:project, namespace: group) }
     let!(:path) { group_path(group) }
 
-    it 'it renders projects and groups on the page' do
+    it 'renders projects and groups on the page' do
       visit path
       wait_for_requests
 

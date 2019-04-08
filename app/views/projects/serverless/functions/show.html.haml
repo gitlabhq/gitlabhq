@@ -1,14 +1,19 @@
 - @no_container = true
 - @content_class = "limit-container-width" unless fluid_layout
+- clusters_path = project_clusters_path(@project)
+- help_path = help_page_path('user/project/clusters/serverless/index')
 
 - add_to_breadcrumbs('Serverless', project_serverless_functions_path(@project))
 
 - page_title @service[:name]
 
-.serverless-function-details-page.js-serverless-function-details-page{ data: { service: @service.as_json } }
+.serverless-function-details-page.js-serverless-function-details-page{ data: { service: @service.as_json,
+  prometheus: @prometheus,
+  clusters_path: clusters_path,
+  help_path: help_path } }
+
 %div{ class: [container_class, ('limit-container-width' unless fluid_layout)] }
-  .top-area.adjust
-    .serverless-function-details#js-serverless-function-details
+  .serverless-function-details#js-serverless-function-details
 
   .js-serverless-function-notice
     .flash-container

@@ -147,7 +147,7 @@ describe Projects::ServicesController do
           params: { namespace_id: project.namespace, project_id: project, id: service.to_param, service: { namespace: 'updated_namespace' } }
       end
 
-      it 'should not update the service' do
+      it 'does not update the service' do
         service.reload
         expect(service.namespace).not_to eq('updated_namespace')
       end
@@ -172,7 +172,7 @@ describe Projects::ServicesController do
     context 'with approved services' do
       let(:service_id) { 'jira' }
 
-      it 'should render edit page' do
+      it 'renders edit page' do
         expect(response).to be_success
       end
     end
@@ -180,7 +180,7 @@ describe Projects::ServicesController do
     context 'with a deprecated service' do
       let(:service_id) { 'kubernetes' }
 
-      it 'should render edit page' do
+      it 'renders edit page' do
         expect(response).to be_success
       end
     end

@@ -14,12 +14,15 @@ export default class CreateLabelDropdown {
     this.$newLabelField = $('#new_label_name', this.$el);
     this.$newColorField = $('#new_label_color', this.$el);
     this.$colorPreview = $('.js-dropdown-label-color-preview', this.$el);
+    this.$addList = $('.js-add-list', this.$el);
     this.$newLabelError = $('.js-label-error', this.$el);
     this.$newLabelCreateButton = $('.js-new-label-btn', this.$el);
     this.$colorSuggestions = $('.suggest-colors-dropdown a', this.$el);
 
     this.$newLabelError.hide();
     this.$newLabelCreateButton.disable();
+
+    this.addListDefault = this.$addList.is(':checked');
 
     this.cleanBinding();
     this.addBinding();
@@ -83,6 +86,8 @@ export default class CreateLabelDropdown {
 
     this.$newColorField.val('').trigger('change');
 
+    this.$addList.prop('checked', this.addListDefault);
+
     this.$colorPreview
       .css('background-color', '')
       .parent()
@@ -116,9 +121,9 @@ export default class CreateLabelDropdown {
 
           this.$newLabelError.html(errors).show();
         } else {
+          const addNewList = this.$addList.is(':checked');
           this.$dropdownBack.trigger('click');
-
-          $(document).trigger('created.label', label);
+          $(document).trigger('created.label', [label, addNewList]);
         }
       },
     );

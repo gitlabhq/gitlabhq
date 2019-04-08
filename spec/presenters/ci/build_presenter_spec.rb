@@ -180,7 +180,7 @@ describe Ci::BuildPresenter do
     context 'When build has failed and retried' do
       let(:build) { create(:ci_build, :script_failure, :retried, pipeline: pipeline) }
 
-      it 'should include the reason of failure and the retried title' do
+      it 'includes the reason of failure and the retried title' do
         tooltip = subject.tooltip_message
 
         expect(tooltip).to eq("#{build.name} - failed - (script failure) (retried)")
@@ -190,7 +190,7 @@ describe Ci::BuildPresenter do
     context 'When build has failed and is allowed to' do
       let(:build) { create(:ci_build, :script_failure, :allowed_to_fail, pipeline: pipeline) }
 
-      it 'should include the reason of failure' do
+      it 'includes the reason of failure' do
         tooltip = subject.tooltip_message
 
         expect(tooltip).to eq("#{build.name} - failed - (script failure) (allowed to fail)")
@@ -200,7 +200,7 @@ describe Ci::BuildPresenter do
     context 'For any other build (no retried)' do
       let(:build) { create(:ci_build, :success, pipeline: pipeline) }
 
-      it 'should include build name and status' do
+      it 'includes build name and status' do
         tooltip = subject.tooltip_message
 
         expect(tooltip).to eq("#{build.name} - passed")
@@ -210,7 +210,7 @@ describe Ci::BuildPresenter do
     context 'For any other build (retried)' do
       let(:build) { create(:ci_build, :success, :retried, pipeline: pipeline) }
 
-      it 'should include build name and status' do
+      it 'includes build name and status' do
         tooltip = subject.tooltip_message
 
         expect(tooltip).to eq("#{build.name} - passed (retried)")
@@ -269,7 +269,7 @@ describe Ci::BuildPresenter do
     context 'when is a script or missing dependency failure' do
       let(:failure_reasons) { %w(script_failure missing_dependency_failure archived_failure) }
 
-      it 'should return false' do
+      it 'returns false' do
         failure_reasons.each do |failure_reason|
           build.update_attribute(:failure_reason, failure_reason)
           expect(presenter.recoverable?).to be_falsy
@@ -280,7 +280,7 @@ describe Ci::BuildPresenter do
     context 'when is any other failure type' do
       let(:failure_reasons) { %w(unknown_failure api_failure stuck_or_timeout_failure runner_system_failure) }
 
-      it 'should return true' do
+      it 'returns true' do
         failure_reasons.each do |failure_reason|
           build.update_attribute(:failure_reason, failure_reason)
           expect(presenter.recoverable?).to be_truthy

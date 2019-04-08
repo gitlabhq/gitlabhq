@@ -1,9 +1,11 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
+import DropdownValueScopedLabel from './dropdown_value_scoped_label.vue';
+import DropdownValueRegularLabel from './dropdown_value_regular_label.vue';
 
 export default {
-  directives: {
-    tooltip,
+  components: {
+    DropdownValueScopedLabel,
+    DropdownValueRegularLabel,
   },
   props: {
     labels: {
@@ -13,6 +15,16 @@ export default {
     labelFilterBasePath: {
       type: String,
       required: true,
+    },
+    enableScopedLabels: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    scopedLabelsDocumentationLink: {
+      type: String,
+      required: false,
+      default: '#',
     },
   },
   computed: {
@@ -30,6 +42,12 @@ export default {
         backgroundColor: label.color,
       };
     },
+    scopedLabelsDescription({ description = '' }) {
+      return `<span class="font-weight-bold scoped-label-tooltip-title">Scoped label</span><br />${description}`;
+    },
+    showScopedLabels({ title = '' }) {
+      return this.enableScopedLabels && title.indexOf('::') !== -1;
+    },
   },
 };
 </script>
@@ -44,17 +62,24 @@ export default {
     <span v-if="isEmpty" class="text-secondary">
       <slot>{{ __('None') }}</slot>
     </span>
-    <a v-for="label in labels" v-else :key="label.id" :href="labelFilterUrl(label)">
-      <span
-        v-tooltip
-        :style="labelStyle(label)"
-        :title="label.description"
-        class="badge color-label"
-        data-placement="bottom"
-        data-container="body"
-      >
-        {{ label.title }}
-      </span>
-    </a>
+
+    <template v-for="label in labels" v-else>
+      <dropdown-value-scoped-label
+        v-if="showScopedLabels(label)"
+        :key="label.id"
+        :label="label"
+        :label-filter-url="labelFilterUrl(label)"
+        :label-style="labelStyle(label)"
+        :scoped-labels-documentation-link="scopedLabelsDocumentationLink"
+      />
+
+      <dropdown-value-regular-label
+        v-else
+        :key="label.id"
+        :label="label"
+        :label-filter-url="labelFilterUrl(label)"
+        :label-style="labelStyle(label)"
+      />
+    </template>
   </div>
 </template>

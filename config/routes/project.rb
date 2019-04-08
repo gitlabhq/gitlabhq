@@ -219,6 +219,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :metrics
           get :additional_metrics
           get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', constraints: { format: nil }
+
+          get '/prometheus/api/v1/*proxy_path', to: 'environments/prometheus_api#proxy'
         end
 
         collection do
@@ -250,7 +252,11 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
 
       namespace :serverless do
-        get '/functions/:environment_id/:id', to: 'functions#show'
+        scope :functions do
+          get '/:environment_id/:id', to: 'functions#show'
+          get '/:environment_id/:id/metrics', to: 'functions#metrics', as: :metrics
+        end
+
         resources :functions, only: [:index]
       end
 

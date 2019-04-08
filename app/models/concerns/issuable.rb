@@ -172,6 +172,10 @@ module Issuable
       fuzzy_search(query, matched_columns)
     end
 
+    def simple_sorts
+      super.except('name_asc', 'name_desc')
+    end
+
     def sort_by_attribute(method, excluded_labels: [])
       sorted =
         case method.to_s

@@ -788,14 +788,14 @@ describe Group do
 
   describe '#has_parent?' do
     context 'when the group has a parent' do
-      it 'should be truthy' do
+      it 'is truthy' do
         group = create(:group, :nested)
         expect(group.has_parent?).to be_truthy
       end
     end
 
     context 'when the group has no parent' do
-      it 'should be falsy' do
+      it 'is falsy' do
         group = create(:group, parent: nil)
         expect(group.has_parent?).to be_falsy
       end
@@ -957,6 +957,14 @@ describe Group do
 
         it { is_expected.to be_falsy }
       end
+    end
+  end
+
+  describe 'project_creation_level' do
+    it 'outputs the default one if it is nil' do
+      group = create(:group, project_creation_level: nil)
+
+      expect(group.project_creation_level).to eq(Gitlab::CurrentSettings.default_project_creation)
     end
   end
 end

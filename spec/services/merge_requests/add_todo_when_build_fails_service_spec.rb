@@ -77,6 +77,22 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
         service.execute(commit_status)
       end
     end
+
+    context 'when build belongs to a merge request pipeline' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event,
+                             ref: merge_request.merge_ref_path,
+                             merge_request: merge_request,
+                             merge_requests_as_head_pipeline: [merge_request])
+      end
+
+      let(:commit_status) { create(:ci_build, ref: merge_request.merge_ref_path, pipeline: pipeline) }
+
+      it 'notifies the todo service' do
+        expect(todo_service).to receive(:merge_request_build_failed).with(merge_request)
+        service.execute(commit_status)
+      end
+    end
   end
 
   describe '#close' do
@@ -103,6 +119,22 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
 
       it 'does not notify the todo service' do
         expect(todo_service).not_to receive(:merge_request_build_retried)
+        service.close(commit_status)
+      end
+    end
+
+    context 'when build belongs to a merge request pipeline' do
+      let(:pipeline) do
+        create(:ci_pipeline, source: :merge_request_event,
+                             ref: merge_request.merge_ref_path,
+                             merge_request: merge_request,
+                             merge_requests_as_head_pipeline: [merge_request])
+      end
+
+      let(:commit_status) { create(:ci_build, ref: merge_request.merge_ref_path, pipeline: pipeline) }
+
+      it 'notifies the todo service' do
+        expect(todo_service).to receive(:merge_request_build_retried).with(merge_request)
         service.close(commit_status)
       end
     end

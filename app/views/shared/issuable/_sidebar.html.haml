@@ -105,10 +105,8 @@
             = link_to _('Edit'), '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
         .value.issuable-show-labels.dont-hide.hide-collapsed.qa-labels-block{ class: ("has-labels" if selected_labels.any?) }
           - if selected_labels.any?
-            - selected_labels.each do |label|
-              = link_to sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label[:title]) do
-                %span.badge.color-label.has-tooltip{ style: "background-color: #{label[:color]}; color: #{label[:text_color]}", title: label[:description], data: { container: "body" } }
-                  = label[:title]
+            - selected_labels.each do |label_hash|
+              = render_label(label_from_hash(label_hash), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]))
           - else
             %span.no-value
               = _('None')
@@ -116,7 +114,7 @@
           - selected_labels.each do |label|
             = hidden_field_tag "#{issuable_type}[label_names][]", label[:id], id: nil
           .dropdown
-            %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable_type}[label_names][]", ability_name: issuable_type, show_no: "true", show_any: "true", namespace_path: issuable_sidebar[:namespace_path], project_path: issuable_sidebar[:project_path], issue_update: issuable_sidebar[:issuable_json_path], labels: issuable_sidebar[:project_labels_path], display: 'static' } }
+            %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{ type: "button", data: sidebar_label_dropdown_data(issuable_type, issuable_sidebar) }
               %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?) }
                 = multi_label_name(selected_labels, "Labels")
               = icon('chevron-down', 'aria-hidden': 'true')

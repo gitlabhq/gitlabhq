@@ -117,7 +117,7 @@ describe ProjectAutoDevops do
     context 'when the project is public' do
       let(:project) { create(:project, :repository, :public) }
 
-      it 'should not create a gitlab deploy token' do
+      it 'does not create a gitlab deploy token' do
         expect do
           auto_devops.save
         end.not_to change { DeployToken.count }
@@ -127,7 +127,7 @@ describe ProjectAutoDevops do
     context 'when the project is internal' do
       let(:project) { create(:project, :repository, :internal) }
 
-      it 'should create a gitlab deploy token' do
+      it 'creates a gitlab deploy token' do
         expect do
           auto_devops.save
         end.to change { DeployToken.count }.by(1)
@@ -137,7 +137,7 @@ describe ProjectAutoDevops do
     context 'when the project is private' do
       let(:project) { create(:project, :repository, :private) }
 
-      it 'should create a gitlab deploy token' do
+      it 'creates a gitlab deploy token' do
         expect do
           auto_devops.save
         end.to change { DeployToken.count }.by(1)
@@ -148,7 +148,7 @@ describe ProjectAutoDevops do
       let(:project) { create(:project, :repository, :internal) }
       let(:auto_devops) { build(:project_auto_devops, project: project) }
 
-      it 'should create a deploy token' do
+      it 'creates a deploy token' do
         expect do
           auto_devops.save
         end.to change { DeployToken.count }.by(1)
@@ -159,7 +159,7 @@ describe ProjectAutoDevops do
       let(:project) { create(:project, :repository, :internal) }
       let(:auto_devops) { build(:project_auto_devops, enabled: nil, project: project) }
 
-      it 'should create a deploy token' do
+      it 'creates a deploy token' do
         allow(Gitlab::CurrentSettings).to receive(:auto_devops_enabled?).and_return(true)
 
         expect do
@@ -172,7 +172,7 @@ describe ProjectAutoDevops do
       let(:project) { create(:project, :repository, :internal) }
       let(:auto_devops) { build(:project_auto_devops, :disabled, project: project) }
 
-      it 'should not create a deploy token' do
+      it 'does not create a deploy token' do
         expect do
           auto_devops.save
         end.not_to change { DeployToken.count }
@@ -184,7 +184,7 @@ describe ProjectAutoDevops do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, projects: [project]) }
       let(:auto_devops) { build(:project_auto_devops, project: project) }
 
-      it 'should not create a deploy token' do
+      it 'does not create a deploy token' do
         expect do
           auto_devops.save
         end.not_to change { DeployToken.count }
@@ -196,7 +196,7 @@ describe ProjectAutoDevops do
       let!(:deploy_token) { create(:deploy_token, :gitlab_deploy_token, :expired, projects: [project]) }
       let(:auto_devops) { build(:project_auto_devops, project: project) }
 
-      it 'should not create a deploy token' do
+      it 'does not create a deploy token' do
         expect do
           auto_devops.save
         end.not_to change { DeployToken.count }

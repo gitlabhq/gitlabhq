@@ -77,6 +77,10 @@ describe ProjectsController do
       end
 
       context "user has access to project" do
+        before do
+          expect(::Gitlab::GitalyClient).to receive(:allow_ref_name_caching).and_call_original
+        end
+
         context "and does not have notification setting" do
           it "initializes notification as disabled" do
             get :show, params: { namespace_id: public_project.namespace, id: public_project }

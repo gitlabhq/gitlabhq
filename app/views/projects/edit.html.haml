@@ -40,23 +40,16 @@
           = f.label :tag_list, "Topics", class: 'label-bold'
           = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
           %p.form-text.text-muted Separate topics with commas.
-        %fieldset.features
-          %h5.prepend-top-0= _("Project avatar")
-          .form-group
-            - if @project.avatar?
-              .avatar-container.rect-avatar.s160.append-bottom-15
-                = project_icon(@project, alt: '', class: 'avatar project-avatar s160', width: 160, height: 160)
-            - if @project.avatar_in_git
-              %p.light
-                = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
-            .prepend-top-5.append-bottom-10
-              %button.btn.js-choose-project-avatar-button{ type: 'button' }= _("Choose file...")
-              %span.file_name.prepend-left-default.js-filename= _("No file chosen")
-              = f.file_field :avatar, class: "js-project-avatar-input hidden"
-            .form-text.text-muted= _("The maximum file size allowed is 200KB.")
-            - if @project.avatar?
-              %hr
-              = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
+
+        .form-group.prepend-top-default.append-bottom-20
+          .avatar-container.s90
+            = project_icon(@project, alt: _('Project avatar'), class: 'avatar project-avatar s90')
+          = f.label :avatar, _('Project avatar'), class: 'label-bold d-block'
+          = render 'shared/choose_avatar_button', f: f
+          - if @project.avatar?
+            %hr
+            = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
+
         = f.submit 'Save changes', class: "btn btn-success js-btn-success-general-project-settings"
 
   %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }

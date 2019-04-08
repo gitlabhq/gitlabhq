@@ -21,17 +21,11 @@
         %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-issue-board-sidebar{ type: "button",
           ":data-selected" => "selectedLabels",
           ":data-labels" => "issue.assignableLabelsEndpoint",
-          data: { toggle: "dropdown",
-            field_name: "issue[label_names][]",
-            show_no: "true",
-            show_any: "true",
-            project_id: @project&.try(:id),
-            namespace_path: @namespace_path,
-            project_path: @project.try(:path) } }
+          data: label_dropdown_data(@project, namespace_path: @namespace_path, field_name: "issue[label_names][]") }
           %span.dropdown-toggle-text
             {{ labelDropdownTitle }}
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
           = render partial: "shared/issuable/label_page_default"
           - if can?(current_user, :admin_label, current_board_parent)
-            = render partial: "shared/issuable/label_page_create"
+            = render partial: "shared/issuable/label_page_create", locals: { show_add_list: true }

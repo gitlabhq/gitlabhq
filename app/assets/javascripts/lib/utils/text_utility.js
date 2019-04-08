@@ -1,3 +1,5 @@
+import _ from 'underscore';
+
 /**
  * Adds a , to a string composed by numbers, at every 3 chars.
  *
@@ -160,3 +162,33 @@ export const splitCamelCase = string =>
     .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
     .replace(/([a-z\d])([A-Z])/g, '$1 $2')
     .trim();
+
+/**
+ * Intelligently truncates an item's namespace by doing two things:
+ * 1. Only include group names in path by removing the item name
+ * 2. Only include the first and last group names in the path
+ *    when the namespace includes more than 2 groups
+ *
+ * @param {String} string A string namespace,
+ *      i.e. "My Group / My Subgroup / My Project"
+ */
+export const truncateNamespace = (string = '') => {
+  if (_.isNull(string) || !_.isString(string)) {
+    return '';
+  }
+
+  const namespaceArray = string.split(' / ');
+
+  if (namespaceArray.length === 1) {
+    return string;
+  }
+
+  namespaceArray.splice(-1, 1);
+  let namespace = namespaceArray.join(' / ');
+
+  if (namespaceArray.length > 2) {
+    namespace = `${namespaceArray[0]} / ... / ${namespaceArray.pop()}`;
+  }
+
+  return namespace;
+};

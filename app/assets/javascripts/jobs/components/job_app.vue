@@ -15,6 +15,7 @@ import ErasedBlock from './erased_block.vue';
 import Log from './job_log.vue';
 import LogTopBar from './job_log_controllers.vue';
 import StuckBlock from './stuck_block.vue';
+import UnmetPrerequisitesBlock from './unmet_prerequisites_block.vue';
 import Sidebar from './sidebar.vue';
 import { sprintf } from '~/locale';
 import delayedJobMixin from '../mixins/delayed_job_mixin';
@@ -32,6 +33,7 @@ export default {
     Log,
     LogTopBar,
     StuckBlock,
+    UnmetPrerequisitesBlock,
     Sidebar,
     GlLoadingIcon,
     SharedRunner: () => import('ee_component/jobs/components/shared_runner_limit_block.vue'),
@@ -44,6 +46,11 @@ export default {
       default: null,
     },
     runnerHelpUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    deploymentHelpUrl: {
       type: String,
       required: false,
       default: null,
@@ -82,6 +89,7 @@ export default {
     ]),
     ...mapGetters([
       'headerTime',
+      'hasUnmetPrerequisitesFailure',
       'shouldRenderCalloutMessage',
       'shouldRenderTriggeredLabel',
       'hasEnvironment',
@@ -210,7 +218,10 @@ export default {
             />
           </div>
 
-          <callout v-if="shouldRenderCalloutMessage" :message="job.callout_message" />
+          <callout
+            v-if="shouldRenderCalloutMessage && !hasUnmetPrerequisitesFailure"
+            :message="job.callout_message"
+          />
         </header>
         <!-- EO Header Section -->
 
@@ -221,6 +232,12 @@ export default {
           :has-no-runners-for-project="hasRunnersForProject"
           :tags="job.tags"
           :runners-path="runnerSettingsUrl"
+        />
+
+        <unmet-prerequisites-block
+          v-if="hasUnmetPrerequisitesFailure"
+          class="js-job-failed"
+          :help-path="deploymentHelpUrl"
         />
 
         <shared-runner

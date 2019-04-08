@@ -105,6 +105,7 @@ class User < ApplicationRecord
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
+  has_many :developer_groups, -> { where(members: { access_level: ::Gitlab::Access::DEVELOPER }) }, through: :group_members, source: :group
   has_many :owned_or_maintainers_groups,
            -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
            through: :group_members,
@@ -159,7 +160,7 @@ class User < ApplicationRecord
   # Validations
   #
   # Note: devise :validatable above adds validations for :email and :password
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 128 }
   validates :email, confirmation: true
   validates :notification_email, presence: true
   validates :notification_email, devise_email: true, if: ->(user) { user.notification_email != user.email }
@@ -883,7 +884,12 @@ class User < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def several_namespaces?
-    owned_groups.any? || maintainers_groups.any?
+    union_sql = ::Gitlab::SQL::Union.new(
+      [owned_groups,
+       maintainers_groups,
+       groups_with_developer_maintainer_project_access]).to_sql
+
+    ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
   end
 
   def namespace_id
@@ -1169,12 +1175,24 @@ class User < ApplicationRecord
     @manageable_namespaces ||= [namespace] + manageable_groups
   end
 
-  def manageable_groups
-    Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+  def manageable_groups(include_groups_with_developer_maintainer_access: false)
+    owned_and_maintainer_group_hierarchy = Gitlab::ObjectHierarchy.new(owned_or_maintainers_groups).base_and_descendants
+
+    if include_groups_with_developer_maintainer_access
+      union_sql = ::Gitlab::SQL::Union.new(
+        [owned_and_maintainer_group_hierarchy,
+         groups_with_developer_maintainer_project_access]).to_sql
+
+      ::Group.from("(#{union_sql}) #{::Group.table_name}")
+    else
+      owned_and_maintainer_group_hierarchy
+    end
   end
 
-  def manageable_groups_with_routes
-    manageable_groups.eager_load(:route).order('routes.path')
+  def manageable_groups_with_routes(include_groups_with_developer_maintainer_access: false)
+    manageable_groups(include_groups_with_developer_maintainer_access: include_groups_with_developer_maintainer_access)
+      .eager_load(:route)
+      .order('routes.path')
   end
 
   def namespaces
@@ -1572,5 +1590,17 @@ class User < ApplicationRecord
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+  end
+
+  def groups_with_developer_maintainer_project_access
+    project_creation_levels = [::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS]
+
+    if ::Gitlab::CurrentSettings.default_project_creation == ::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
+      project_creation_levels << nil
+    end
+
+    developer_groups_hierarchy = ::Gitlab::ObjectHierarchy.new(developer_groups).base_and_descendants
+    ::Group.where(id: developer_groups_hierarchy.select(:id),
+                  project_creation_level: project_creation_levels)
   end
 end

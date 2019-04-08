@@ -6,40 +6,29 @@
  *= require cropper.css
 */
 
-/*
- * Welcome to GitLab css!
- * If you need to add or modify UI component that is common for many pages
- * like a table or typography then make changes in the framework/ directory.
- * If you need to add unique style that should affect only one page - use pages/
- * directory.
- */
-
+// Welcome to GitLab css!
+// If you need to add or modify UI component that is common for many pages
+// like a table or typography then make changes in the framework/ directory.
+// If you need to add unique style that should affect only one page - use pages/
+// directory.
 @import "../../../node_modules/at.js/dist/css/jquery.atwho";
 @import "../../../node_modules/pikaday/scss/pikaday";
 @import "../../../node_modules/dropzone/dist/basic";
 @import "../../../node_modules/select2/select2";
 
-/*
- * GitLab UI framework
- */
+// GitLab UI framework
 @import "framework";
 
-/*
- * Font icons
- */
+// Font icons
 @import "font-awesome";
 
-/*
- * Page specific styles (issues, projects etc):
- */
+// Page specific styles (issues, projects etc):
 @import "pages/**/*";
 
-/*
- * Component specific styles, will be moved to gitlab-ui
- */
+// Component specific styles, will be moved to gitlab-ui
 @import "components/**/*";
 
-/*
- * Styles for JS behaviors.
- */
+// Styles for JS behaviors.
 @import "behaviors";
+
+@import "utilities";

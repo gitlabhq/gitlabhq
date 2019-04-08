@@ -23,6 +23,9 @@ future GitLab releases.**
 | `CHAT_INPUT`                            | 10.6   | all    | Additional arguments passed in the [ChatOps](../chatops/README.md) command |
 | `CHAT_CHANNEL`                          | 10.6   | all    | Source chat channel which triggered the [ChatOps](../chatops/README.md) command |
 | `CI`                                    | all    | 0.4    | Mark that job is executed in CI environment |
+| `CI_BUILDS_DIR`                         | all    | 11.10  | Top-level directory where builds are executed. |
+| `CI_CONCURRENT_ID`                      | all    | 11.10  | Unique ID of build execution within a single executor. |
+| `CI_CONCURRENT_PROJECT_ID`              | all    | 11.10  | Unique ID of build execution within a single executor and project. |
 | `CI_COMMIT_BEFORE_SHA`                  | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | `CI_COMMIT_DESCRIPTION`                 | 10.8   | all    | The description of the commit: the message without first line, if the title is shorter than 100 characters; full message in other case. |
 | `CI_COMMIT_MESSAGE`                     | 10.8   | all    | The full commit message. |

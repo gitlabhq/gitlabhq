@@ -1,0 +1,5 @@
+---
+title: Display cluster form validation error messages inline
+merge_request: 26502
+author:
+type: changed

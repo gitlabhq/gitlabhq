@@ -404,6 +404,10 @@ class Group < Namespace
     Feature.enabled?(:group_clusters, root_ancestor, default_enabled: true)
   end
 
+  def project_creation_level
+    super || ::Gitlab::CurrentSettings.default_project_creation
+  end
+
   private
 
   def update_two_factor_requirement

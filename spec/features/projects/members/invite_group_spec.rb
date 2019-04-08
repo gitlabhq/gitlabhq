@@ -159,7 +159,7 @@ describe 'Project > Members > Invite group', :js do
         open_select2 '#link_group_id'
       end
 
-      it 'should infinitely scroll' do
+      it 'infinitely scrolls' do
         expect(find('.select2-drop .select2-results')).to have_selector('.select2-result', count: 1)
 
         scroll_select2_to_bottom('.select2-drop .select2-results:visible')

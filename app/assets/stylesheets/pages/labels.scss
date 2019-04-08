@@ -402,3 +402,39 @@
 .priority-labels-empty-state .svg-content img {
   max-width: $priority-label-empty-state-width;
 }
+
+.scoped-label-tooltip-title {
+  color: $indigo-300;
+}
+
+.scoped-label-wrapper {
+  &.label-link .color-label a {
+    color: inherit;
+  }
+
+  .color-label {
+    padding-right: $gl-padding-24;
+  }
+
+  .scoped-label {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    padding: 0;
+    margin: 0;
+    line-height: $gl-line-height;
+  }
+}
+
+// Label inside title of Delete Label Modal
+.modal-header .page-title {
+  .scoped-label-wrapper {
+    .scoped-label {
+      line-height: 20px;
+    }
+
+    span.color-label {
+      padding-right: $gl-padding-24;
+    }
+  }
+}

@@ -49,6 +49,13 @@ module NamespacesHelper
     end
   end
 
+  def namespaces_options_with_developer_maintainer_access(options = {})
+    selected = options.delete(:selected) || :current_user
+    options[:groups] = current_user.manageable_groups_with_routes(include_groups_with_developer_maintainer_access: true)
+
+    namespaces_options(selected, options)
+  end
+
   private
 
   # Many importers create a temporary Group, so use the real

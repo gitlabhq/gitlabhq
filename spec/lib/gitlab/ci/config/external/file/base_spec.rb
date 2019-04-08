@@ -26,7 +26,7 @@ describe Gitlab::Ci::Config::External::File::Base do
     context 'when a location is present' do
       let(:location) { 'some-location' }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(subject).to be_matching
       end
     end
@@ -34,7 +34,7 @@ describe Gitlab::Ci::Config::External::File::Base do
     context 'with a location is missing' do
       let(:location) { nil }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(subject).not_to be_matching
       end
     end

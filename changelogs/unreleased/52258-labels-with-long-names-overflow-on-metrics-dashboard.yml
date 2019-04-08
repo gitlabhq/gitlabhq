@@ -1,0 +1,5 @@
+---
+title: Fix long label overflow on metrics dashboard
+merge_request: 26775
+author:
+type: fixed

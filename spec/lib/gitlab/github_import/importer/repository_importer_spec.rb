@@ -197,6 +197,11 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
         .to receive(:fetch_as_mirror)
         .with(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true, remote_name: 'github')
 
+      service = double
+      expect(Projects::HousekeepingService)
+        .to receive(:new).with(project, :gc).and_return(service)
+      expect(service).to receive(:execute)
+
       expect(importer.import_repository).to eq(true)
     end
 

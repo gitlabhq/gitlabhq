@@ -2,7 +2,7 @@ import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MockAdapter from 'axios-mock-adapter';
 import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
-import BreakpointInstance from '~/breakpoints';
+import breakpointInstance from '~/breakpoints';
 
 const PIXEL_TOLERANCE = 0.2;
 
@@ -383,7 +383,7 @@ describe('common_utils', () => {
 
   describe('contentTop', () => {
     it('does not add height for fileTitle or compareVersionsHeader if screen is too small', () => {
-      spyOn(BreakpointInstance, 'getBreakpointSize').and.returnValue('sm');
+      spyOn(breakpointInstance, 'isDesktop').and.returnValue(false);
 
       setFixtures(`
         <div class="diff-file file-title-flex-parent">
@@ -398,7 +398,7 @@ describe('common_utils', () => {
     });
 
     it('adds height for fileTitle and compareVersionsHeader screen is large enough', () => {
-      spyOn(BreakpointInstance, 'getBreakpointSize').and.returnValue('lg');
+      spyOn(breakpointInstance, 'isDesktop').and.returnValue(true);
 
       setFixtures(`
         <div class="diff-file file-title-flex-parent">

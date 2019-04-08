@@ -659,7 +659,7 @@ describe Issuable do
     end
 
     context 'adding time' do
-      it 'should update the total time spent' do
+      it 'updates the total time spent' do
         spend_time(1800)
 
         expect(issue.total_time_spent).to eq(1800)
@@ -679,7 +679,7 @@ describe Issuable do
         spend_time(1800)
       end
 
-      it 'should update the total time spent' do
+      it 'updates the total time spent' do
         spend_time(-900)
 
         expect(issue.total_time_spent).to eq(900)

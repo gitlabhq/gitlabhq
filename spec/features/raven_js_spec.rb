@@ -3,13 +3,13 @@ require 'spec_helper'
 describe 'RavenJS' do
   let(:raven_path) { '/raven.chunk.js' }
 
-  it 'should not load raven if sentry is disabled' do
+  it 'does not load raven if sentry is disabled' do
     visit new_user_session_path
 
     expect(has_requested_raven).to eq(false)
   end
 
-  it 'should load raven if sentry is enabled' do
+  it 'loads raven if sentry is enabled' do
     stub_application_setting(clientside_sentry_dsn: 'https://key@domain.com/id', clientside_sentry_enabled: true)
 
     visit new_user_session_path

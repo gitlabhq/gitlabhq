@@ -595,7 +595,6 @@
     color: $gl-text-color;
   }
 
-
   .git-merge-container {
     justify-content: space-between;
     flex: 1;
@@ -737,7 +736,6 @@
   background: $gray-light;
   color: $gl-text-color;
   margin-top: -1px;
-  border-top: 1px solid $border-color;
 
   .mr-version-menus-container {
     display: flex;
@@ -760,6 +758,7 @@
 
   .content-block {
     padding: $gl-padding-top $gl-padding;
+    border-bottom: 0;
   }
 
   .comments-disabled-notif {
@@ -784,16 +783,18 @@
     padding-right: 5px;
   }
 
+  // Shortening button height by 1px to make compare-versions
+  // header 56px and fit into our 8px design grid
+  button {
+    height: 34px;
+  }
+
   @include media-breakpoint-up(md) {
     position: -webkit-sticky;
     position: sticky;
     top: $header-height + $mr-tabs-height;
-    width: 100%;
-
-    &.is-fileTreeOpen {
-      margin-left: -16px;
-      width: calc(100% + 32px);
-    }
+    margin-left: -16px;
+    width: calc(100% + 32px);
 
     .mr-version-menus-container {
       flex-wrap: nowrap;
@@ -805,7 +806,8 @@
   }
 }
 
-.merge-request-tabs-holder {
+.merge-request-tabs-holder,
+.epic-tabs-holder {
   top: $header-height;
   z-index: 250;
   background-color: $white-light;
@@ -823,11 +825,6 @@
     @include media-breakpoint-down(xs) {
       right: 0;
     }
-
-    .merge-request-tabs-container {
-      padding-left: $gl-padding;
-      padding-right: $gl-padding;
-    }
   }
 
   .nav-links {
@@ -835,11 +832,21 @@
   }
 }
 
-.with-performance-bar .merge-request-tabs-holder {
-  top: $header-height + $performance-bar-height;
+.merge-request-tabs-holder.affix .merge-request-tabs-container,
+.epic-tabs-holder.affix .epic-tabs-container {
+  padding-left: $gl-padding;
+  padding-right: $gl-padding;
 }
 
-.merge-request-tabs {
+.with-performance-bar {
+  .merge-request-tabs-holder,
+  .epic-tabs-holder {
+    top: $header-height + $performance-bar-height;
+  }
+}
+
+.merge-request-tabs,
+.epic-tabs {
   display: flex;
   flex-wrap: nowrap;
   margin-bottom: 0;
@@ -847,7 +854,8 @@
 }
 
 .limit-container-width {
-  .merge-request-tabs-container {
+  .merge-request-tabs-container,
+  .epic-tabs-container {
     max-width: $limited-layout-width;
     margin-left: auto;
     margin-right: auto;
@@ -860,7 +868,8 @@
   }
 }
 
-.merge-request-tabs-container {
+.merge-request-tabs-container,
+.epic-tabs-container {
   display: flex;
   justify-content: space-between;
 
@@ -878,10 +887,9 @@
 }
 
 .limit-container-width:not(.container-limited) {
-  .merge-request-tabs-holder:not(.affix) {
-    .merge-request-tabs-container {
-      max-width: $limited-layout-width - ($gl-padding * 2);
-    }
+  .merge-request-tabs-holder:not(.affix) .merge-request-tabs-container,
+  .epic-tabs-holder:not(.affix) .epic-tabs-container {
+    max-width: $limited-layout-width - ($gl-padding * 2);
   }
 }
 

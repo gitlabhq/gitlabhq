@@ -498,6 +498,40 @@ describe API::Internal do
       end
     end
 
+    context "console message" do
+      before do
+        project.add_developer(user)
+      end
+
+      context "git pull" do
+        context "with no console message" do
+          it "has the correct payload" do
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response['gl_console_messages']).to eq([])
+          end
+        end
+
+        context "with a console message" do
+          let(:console_messages) { ['message for the console'] }
+
+          it "has the correct payload" do
+            expect_next_instance_of(Gitlab::GitAccess) do |access|
+              expect(access).to receive(:check_for_console_messages)
+                                  .with('git-upload-pack')
+                                  .and_return(console_messages)
+            end
+
+            pull(key, project)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response['gl_console_messages']).to eq(console_messages)
+          end
+        end
+      end
+    end
+
     context "blocked user" do
       let(:personal_project) { create(:project, namespace: user.namespace) }
 
@@ -606,6 +640,22 @@ describe API::Internal do
         project.destroy
 
         pull(key, project)
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response["status"]).to be_falsey
+      end
+
+      it 'returns a 200 response when using a project path that does not exist' do
+        post(
+          api("/internal/allowed"),
+          params: {
+            key_id: key.id,
+            project: 'project/does-not-exist.git',
+            action: 'git-upload-pack',
+            secret_token: secret_token,
+            protocol: 'ssh'
+          }
+        )
 
         expect(response).to have_gitlab_http_status(404)
         expect(json_response["status"]).to be_falsey

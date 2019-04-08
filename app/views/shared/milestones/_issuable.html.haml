@@ -21,8 +21,7 @@
       %span.issuable-number= issuable.to_reference
 
     - labels.each do |label|
-      = link_to polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }) do
-        - render_colored_label(label)
+      = render_label(label, link: polymorphic_path(issuable_type_args, { milestone_title: @milestone.title, label_name: label.title, state: 'all' }))
 
     %span.assignee-icon
       - assignees.each do |assignee|

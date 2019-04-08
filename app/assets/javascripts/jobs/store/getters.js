@@ -3,6 +3,9 @@ import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 
 export const headerTime = state => (state.job.started ? state.job.started : state.job.created_at);
 
+export const hasUnmetPrerequisitesFailure = state =>
+  state.job && state.job.failure_reason && state.job.failure_reason === 'unmet_prerequisites';
+
 export const shouldRenderCalloutMessage = state =>
   !_.isEmpty(state.job.status) && !_.isEmpty(state.job.callout_message);
 

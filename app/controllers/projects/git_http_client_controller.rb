@@ -98,10 +98,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def repo_type
     parse_repo_path unless defined?(@repo_type)
-    # When there a project did not exist, the parsed repo_type would be empty.
-    # In that case, we want to continue with a regular project repository. As we
-    # could create the project if the user pushing is allowed to do so.
-    @repo_type || Gitlab::GlRepository::PROJECT
+
+    @repo_type
   end
 
   def handle_basic_authentication(login, password)

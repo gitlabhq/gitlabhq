@@ -570,7 +570,7 @@ deployment jobs, immediately before the jobs starts.
 However, sometimes GitLab can not create them. In such instances, your job will fail with the message:
 
 ```text
-The job failed to complete prerequisite tasks
+This job failed because the necessary resources were not successfully created.
 ```
 
 To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#sidekiqlog).

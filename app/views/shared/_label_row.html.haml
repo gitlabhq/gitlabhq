@@ -7,7 +7,7 @@
   - if defined?(@project)
     = link_to_label(label, subject: @project, tooltip: false)
   - else
-    = render_colored_label(label, tooltip: false)
+    = render_label(label, tooltip: false)
 .label-description
   .append-right-default.prepend-left-default
     - if label.description.present?

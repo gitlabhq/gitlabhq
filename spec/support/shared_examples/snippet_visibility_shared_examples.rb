@@ -220,11 +220,11 @@ RSpec.shared_examples 'snippet visibility' do
       end
 
       context "For #{params[:project_type]} project and #{params[:user_type]} users" do
-        it 'should agree with the read_project_snippet policy' do
+        it 'agrees with the read_project_snippet policy' do
           expect(can?(user, :read_project_snippet, snippet)).to eq(outcome)
         end
 
-        it 'should return proper outcome' do
+        it 'returns proper outcome' do
           results = described_class.new(user, project: project).execute
 
           expect(results.include?(snippet)).to eq(outcome)
@@ -232,7 +232,7 @@ RSpec.shared_examples 'snippet visibility' do
       end
 
       context "Without a given project and #{params[:user_type]} users" do
-        it 'should return proper outcome' do
+        it 'returns proper outcome' do
           results = described_class.new(user).execute
           expect(results.include?(snippet)).to eq(outcome)
         end
@@ -283,16 +283,16 @@ RSpec.shared_examples 'snippet visibility' do
       let!(:snippet) { create(:personal_snippet, visibility_level: snippet_visibility, author: author) }
 
       context "For personal and #{params[:snippet_visibility]} snippets with #{params[:user_type]} user" do
-        it 'should agree with read_personal_snippet policy' do
+        it 'agrees with read_personal_snippet policy' do
           expect(can?(user, :read_personal_snippet, snippet)).to eq(outcome)
         end
 
-        it 'should return proper outcome' do
+        it 'returns proper outcome' do
           results = described_class.new(user).execute
           expect(results.include?(snippet)).to eq(outcome)
         end
 
-        it 'should return personal snippets when the user cannot read cross project' do
+        it 'returns personal snippets when the user cannot read cross project' do
           allow(Ability).to receive(:allowed?).and_call_original
           allow(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
 

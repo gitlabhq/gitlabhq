@@ -65,3 +65,61 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     store_frontend_fixture(response, fixture_file_name)
   end
 end
+
+describe API::Issues, '(JavaScript fixtures)', type: :request do
+  include ApiHelpers
+  include JavaScriptFixturesHelpers
+
+  def get_related_merge_requests(project_id, issue_iid, user = nil)
+    get api("/projects/#{project_id}/issues/#{issue_iid}/related_merge_requests", user)
+  end
+
+  def create_referencing_mr(user, project, issue)
+    attributes = {
+      author: user,
+      source_project: project,
+      target_project: project,
+      source_branch: "master",
+      target_branch: "test",
+      assignee: user,
+      description: "See #{issue.to_reference}"
+    }
+    create(:merge_request, attributes).tap do |merge_request|
+      create(:note, :system, project: issue.project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
+    end
+  end
+
+  it 'issues/related_merge_requests.json' do |example|
+    user = create(:user)
+    project = create(:project, :public, creator_id: user.id, namespace: user.namespace)
+    issue_title = 'foo'
+    issue_description = 'closed'
+    milestone = create(:milestone, title: '1.0.0', project: project)
+    issue = create :issue,
+            author: user,
+            assignees: [user],
+            project: project,
+            milestone: milestone,
+            created_at: generate(:past_time),
+            updated_at: 1.hour.ago,
+            title: issue_title,
+            description: issue_description
+
+    project.add_reporter(user)
+    create_referencing_mr(user, project, issue)
+
+    create(:merge_request,
+           :simple,
+           author: user,
+           source_project: project,
+           target_project: project,
+           description: "Some description")
+    project2 = create(:project, :public, creator_id: user.id, namespace: user.namespace)
+    create_referencing_mr(user, project2, issue).update!(head_pipeline: create(:ci_pipeline))
+
+    get_related_merge_requests(project.id, issue.iid, user)
+
+    expect(response).to be_success
+    store_frontend_fixture(response, example.description)
+  end
+end

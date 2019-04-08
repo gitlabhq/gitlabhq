@@ -17,6 +17,7 @@ describe('Job App ', () => {
   const props = {
     endpoint: `${gl.TEST_HOST}jobs/123.json`,
     runnerHelpUrl: 'help/runner',
+    deploymentHelpUrl: 'help/deployment',
     runnerSettingsUrl: 'settings/ci-cd/runners',
     terminalPath: 'jobs/123/terminal',
     pagePath: `${gl.TEST_HOST}jobs/123`,
@@ -248,6 +249,41 @@ describe('Job App ', () => {
         setTimeout(() => {
           expect(vm.$el.querySelector('.js-job-stuck')).toBeNull();
 
+          done();
+        }, 0);
+      });
+    });
+
+    describe('unmet prerequisites block', () => {
+      it('renders unmet prerequisites block when there is an unmet prerequisites failure', done => {
+        mock.onGet(props.endpoint).replyOnce(
+          200,
+          Object.assign({}, job, {
+            status: {
+              group: 'failed',
+              icon: 'status_failed',
+              label: 'failed',
+              text: 'failed',
+              details_path: 'path',
+              illustration: {
+                content: 'Retry this job in order to create the necessary resources.',
+                image: 'path',
+                size: 'svg-430',
+                title: 'Failed to create resources',
+              },
+            },
+            failure_reason: 'unmet_prerequisites',
+            has_trace: false,
+            runners: {
+              available: true,
+            },
+            tags: [],
+          }),
+        );
+        vm = mountComponentWithStore(Component, { props, store });
+
+        setTimeout(() => {
+          expect(vm.$el.querySelector('.js-job-failed')).not.toBeNull();
           done();
         }, 0);
       });

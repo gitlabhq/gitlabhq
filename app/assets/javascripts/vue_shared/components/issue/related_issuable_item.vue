@@ -1,15 +1,17 @@
 <script>
 import { GlTooltipDirective } from '@gitlab/ui';
-import { __, sprintf } from '~/locale';
-import IssueMilestone from '~/vue_shared/components/issue/issue_milestone.vue';
-import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
-import relatedIssuableMixin from '~/vue_shared/mixins/related_issuable_mixin';
+import { sprintf } from '~/locale';
+import IssueMilestone from '../../components/issue/issue_milestone.vue';
+import IssueAssignees from '../../components/issue/issue_assignees.vue';
+import relatedIssuableMixin from '../../mixins/related_issuable_mixin';
+import CiIcon from '../ci_icon.vue';
 
 export default {
   name: 'IssueItem',
   components: {
     IssueMilestone,
     IssueAssignees,
+    CiIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -27,9 +29,9 @@ export default {
       return sprintf(
         '<span class="bold">%{state}</span> %{timeInWords}<br/><span class="text-tertiary">%{timestamp}</span>',
         {
-          state: this.isOpen ? __('Opened') : __('Closed'),
-          timeInWords: this.isOpen ? this.createdAtInWords : this.closedAtInWords,
-          timestamp: this.isOpen ? this.createdAtTimestamp : this.closedAtTimestamp,
+          state: this.stateText,
+          timeInWords: this.stateTimeInWords,
+          timestamp: this.stateTimestamp,
         },
       );
     },
@@ -84,6 +86,11 @@ export default {
           {{ pathIdSeparator }}{{ itemId }}
         </div>
         <div class="item-meta-child d-flex align-items-center">
+          <span v-if="hasPipeline" class="mr-ci-status pr-2">
+            <a :href="pipelineStatus.details_path">
+              <ci-icon v-gl-tooltip :status="pipelineStatus" :title="pipelineStatusTooltip" />
+            </a>
+          </span>
           <issue-milestone
             v-if="hasMilestone"
             :milestone="milestone"
