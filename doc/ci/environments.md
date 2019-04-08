@@ -224,7 +224,7 @@ The `name` and `url` parameters for dynamic environments can use most available 
 including:
 
 - [Predefined environment variables](variables/README.md#predefined-environment-variables)
-- [Project and group variables](variables/README.md#variables)
+- [Project and group variables](variables/README.md#gitlab-cicd-environment-variables)
 - [`.gitlab-ci.yml` variables](yaml/README.md#variables)
 
 However, you cannot use variables defined:

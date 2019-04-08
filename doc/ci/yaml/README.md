@@ -518,7 +518,7 @@ end-to-end:
       - $CI_COMMIT_MESSAGE =~ /skip-end-to-end-tests/
 ```
 
-Learn more about [variables expressions](../variables/README.md#variables-expressions).
+Learn more about [variables expressions](../variables/README.md#environment-variables-expressions).
 
 #### `only:changes`/`except:changes`
 
@@ -2249,7 +2249,7 @@ Runner itself](../variables/README.md#predefined-environment-variables).
 One example would be `CI_COMMIT_REF_NAME` which has the value of
 the branch or tag name for which project is built. Apart from the variables
 you can set in `.gitlab-ci.yml`, there are also the so called
-[Variables](../variables/README.md#variables)
+[Variables](../variables/README.md#gitlab-cicd-environment-variables)
 which can be set in GitLab's UI.
 
 Learn more about [variables and their priority][variables].

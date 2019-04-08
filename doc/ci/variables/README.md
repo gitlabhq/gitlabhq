@@ -3,7 +3,6 @@ table_display_block: true
 ---
 
 # GitLab CI/CD environment variables
-{: #variables}
 
 After a brief overview over the use of environment
 variables, this document teaches you how to use GitLab CI/CD's
@@ -65,7 +64,7 @@ To get started, choose one of the existing
 to be output by the Runner. For example, let's say that you want
 a given job you're running through your script to output the
 stage that job is running for. In your `.gitlab-ci.yml` file,
-call the variable from your script according to the [syntaxes](#syntax-of-variables-in-job-scripts) available. To
+call the variable from your script according to the [syntaxes](#syntax-of-environment-variables-in-job-scripts) available. To
 output the job stage, use the predefined variable `CI_JOB_STAGE`:
 
 ```yaml
@@ -145,7 +144,6 @@ settings](../../user/project/pipelines/settings.md#visibility-of-pipelines).
 Follow the discussion in issue [#13784][ce-13784] for masking the variables.
 
 ### Syntax of environment variables in job scripts
-{: #syntax-of-variables-in-job-scripts}
 
 All variables are set as environment variables in the build environment, and
 they are accessible with normal methods that are used to access such variables.
@@ -278,7 +276,6 @@ script:
 ```
 
 ### Group-level environment variables
-{: #group-level-variables}
 
 > Introduced in GitLab 9.4.
 
@@ -297,19 +294,18 @@ Any variables of [subgroups](../../user/group/subgroups/index.md) will be inheri
 Once you set them, they will be available for all subsequent pipelines.
 
 ## Priority of environment variables
-{: #priority-of-variables}
 
 Variables of different types can take precedence over other
 variables, depending on where they are defined.
 
 The order of precedence for variables is (from highest to lowest):
 
-1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables).
-1. Project-level [variables](#creating-a-custom-environment-variable) or [protected variables](#protected-variables).
-1. Group-level [variables](#group-level-variables) or [protected variables](#protected-variables).
+1. [Trigger variables](../triggers/README.md#making-use-of-trigger-variables) or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#using-variables).
+1. Project-level [variables](#creating-a-custom-environment-variable) or [protected variables](#protected-environment-variables).
+1. Group-level [variables](#group-level-environment-variables) or [protected variables](#protected-environment-variables).
 1. YAML-defined [job-level variables](../yaml/README.md#variables).
 1. YAML-defined [global variables](../yaml/README.md#variables).
-1. [Deployment variables](#deployment-variables).
+1. [Deployment variables](#deployment-environment-variables).
 1. [Predefined environment variables](predefined_variables.md).
 
 For example, if you define:
@@ -329,7 +325,6 @@ about which variables are [not supported](where_variables_can_be_used.md).
 ## Advanced use
 
 ### Protected environment variables
-{: #protected-variables}
 
 > Introduced in GitLab 9.3.
 
@@ -345,7 +340,6 @@ Protected variables can be added by going to your project's
 Once you set them, they will be available for all subsequent pipelines.
 
 ### Deployment environment variables
-{: #deployment-variables}
 
 > Introduced in GitLab 8.15.
 
@@ -382,7 +376,7 @@ limitations with the current Auto DevOps scripting environment.
 [Manually triggered pipelines](../pipelines.md#manually-executing-pipelines) allow you to override the value of a current variable.
 
 For instance, suppose you added a
-[custom variable `$TEST`](#creating-a-custom-variable)
+[custom variable `$TEST`](#creating-a-custom-environment-variable)
 as exemplified above and you want to override it in a manual pipeline.
 Navigate to your project's **CI/CD > Pipelines** and click **Run pipeline**.
 Choose the branch you want to run the pipeline for, then add a new variable
@@ -396,7 +390,6 @@ value you set for this specific pipeline:
 ![Manually overridden variable output](img/override_value_via_manual_pipeline_output.png)
 
 ## Environment variables expressions
-{: #variables-expressions}
 
 > Introduced in GitLab 10.7.
 

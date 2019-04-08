@@ -141,7 +141,7 @@ in any of the following places:
 
 NOTE: **Note**
 The Auto DevOps base domain variable (`KUBE_INGRESS_BASE_DOMAIN`) follows the same order of precedence
-as other environment [variables](../../ci/variables/README.md#priority-of-variables).
+as other environment [variables](../../ci/variables/README.md#priority-of-environment-variables).
 
 A wildcard DNS A record matching the base domain(s) is required, for example,
 given a base domain of `example.com`, you'd need a DNS entry like:
@@ -669,7 +669,7 @@ repo or by specifying a project variable:
   file in it, Auto DevOps will detect the chart and use it instead of the [default
   one](https://gitlab.com/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.
-- **Project variable** - Create a [project variable](../../ci/variables/README.md#variables)
+- **Project variable** - Create a [project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use or create two project variables `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository and `AUTO_DEVOPS_CHART` with the path to the chart.
 
 ### Custom Helm chart per environment **[PREMIUM]**
@@ -770,7 +770,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 
 TIP: **Tip:**
 Set up the replica variables using a
-[project variable](../../ci/variables/README.md#variables)
+[project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
 and scale your application by just redeploying it!
 
 CAUTION: **Caution:**
