@@ -1,170 +1,135 @@
 # Issues
 
-The GitLab Issue Tracker is an advanced and complete tool
-for tracking the evolution of a new idea or the process
-of solving a problem.
+Issues are the fundamental medium for collaborating on ideas and planning work in GitLab.
 
-It allows you, your team, and your collaborators to share
-and discuss proposals before and while implementing them.
+## Overview
 
-GitLab Issues and the GitLab Issue Tracker are available in all
-[GitLab Products](https://about.gitlab.com/pricing/) as
-part of the [GitLab Workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
+The GitLab issue tracker is an advanced tool for collaboratively developing ideas, solving problems, and planning work.
 
-## Use cases
+Issues can allow you, your team, and your collaborators to share and discuss proposals before and during their implementation.
+However, they can be used for a variety of other purposes, customized to your needs and workflow.
 
-Issues can have endless applications. Just to exemplify, these are
-some cases for which creating issues are most used:
+Issues are always associated with a specific project, but if you have multiple projects in a group,
+you can also view all the issues collectively at the group level.
+
+**Common use cases include:**
 
 - Discussing the implementation of a new idea
-- Submitting feature proposals
-- Asking questions
-- Reporting bugs and malfunction
-- Obtaining support
+- Tracking tasks and work status
+- Accepting feature proposals, questions, support requests, or bug reports
 - Elaborating new code implementations
 
 See also the blog post "[Always start a discussion with an issue](https://about.gitlab.com/2016/03/03/start-with-an-issue/)".
 
-### Keep private things private
+## Parts of an issue
 
-For instance, let's assume you have a public project but want to start a discussion on something
-you don't want to be public. With [Confidential Issues](#confidential-issues),
-you can discuss private matters among the project members, and still keep
-your project public, open to collaboration.
+Issues contain a variety of content and metadata, enabling a large range of flexibility in how they are used. Each issue can contain the following attributes, though some items may remain unset.
 
-### Streamline collaboration
+<table class="borderless-table fixed-table">
+<tr>
+    <td>
+        <ul>
+            <li>Content</li>
+            <ul>
+                <li>Title</li>
+                <li>Description and tasks</li>
+                <li>Comments and other activity</li>
+            </ul>
+            <li>People</li>
+            <ul>
+                <li>Author</li>
+                <li>Assignee(s)</li>
+            </ul>
+            <li>State</li>
+            <ul>
+                <li>Status (open/closed)</li>
+                <li>Confidentiality</li>
+                <li>Tasks (completed vs. outstanding)</li>
+            </ul>
+        </ul>
+    </td>
+    <td>
+        <ul>
+            <li>Planning and tracking</li>
+            <ul>
+                <li>Milestone</li>
+                <li>Due date</li>
+                <li>Weight</li>
+                <li>Time tracking</li>
+                <li>Labels</li>
+                <li>Votes</li>
+                <li>Reaction emoji</li>
+                <li>Linked issues</li>
+                <li>Assigned epic</li>
+                <li>Unique issue number and URL</li>
+            </ul>
+       </ul>
+    </td>
+</tr>
+</table>
 
-With [Multiple Assignees for Issues](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html),
-available in [GitLab Starter](https://about.gitlab.com/pricing/)
-you can streamline collaboration and allow shared responsibilities to be clearly displayed.
-All assignees are shown across your workflows and receive notifications (as they
-would as single assignees), simplifying communication and ownership.
+## Viewing and managing issues
 
-### Consistent collaboration
+While you can view and manage the full detail of an issue at its URL, you can also work with multiple issues at a time using the Issues List, Issue Boards, Epics **[ULTIMATE]**, and issue references.
 
-Create [issue templates](#issue-templates) to make collaboration consistent and
-containing all information you need. For example, you can create a template
-for feature proposals and another one for bug reports.
-
-## Issue Tracker
-
-The Issue Tracker is the collection of opened and closed issues created in a project.
-It is available for all projects, from the moment the project is created.
-
-Find the issue tracker by navigating to your **Project's homepage** > **Issues**.
-
-### Issues per project
-
-When you access your project's issues, GitLab will present them in a list,
-and you can use the tabs available to quickly filter by open and closed issues.
-
-![Project issues list view](img/project_issues_list_view.png)
-
-You can also [search and filter](../../search/index.md#issues-and-merge-requests-per-project) the results more deeply with GitLab's search capacities.
-
-### Issues per group
-
-View issues in all projects in the group, including all projects of all descendant subgroups of the group. Navigate to **Group > Issues** to view these issues. This view also has the open and closed issues tabs.
-
-![Group Issues list view](img/group_issues_list_view.png)
-
-## GitLab Issues Functionalities
-
-The image bellow illustrates how an issue looks like:
+### Issue page
 
 ![Issue view](img/issues_main_view.png)
 
-Learn more about it on the [GitLab Issues Functionalities documentation](issues_functionalities.md).
+On an issue’s page, you can view all aspects of the issue, and you can also modify them if you you have the necessary [permissions](../../permissions.md).
 
-## New issue
+For more information, see the [Issue Functionalities](issues_functionalities.md) page.
 
-Read through the [documentation on creating issues](create_new_issue.md).
+### Issues list
 
-## Closing issues
+![Project issues list view](img/project_issues_list_view.png)
 
-Learn distinct ways to [close issues](closing_issues.md) in GitLab.
+On the Issues List, you can view all issues in the current project, or from multiple projects when opening the Issues List from the higher-level group context. Filter the issue list by [any search query](../../search/index.md#issues-and-merge-requests-per-project) and/or specific metadata, such as label(s), assignees(s), status, and more. From this view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
 
-## Moving issues
+For more information, see the [Issue Functioinalities](issues_functionalities.md) page.
 
-Read through the [documentation on moving issues](moving_issues.md).
-
-## Deleting issues
-
-Read through the [documentation on deleting issues](deleting_issues.md)
-
-## Create a merge request from an issue
-
-Learn more about it on the [GitLab Issues Functionalities documentation](issues_functionalities.md#18-new-merge-request).
-
-## Search for an issue
-
-Learn how to [find an issue](../../search/index.md) by searching for and filtering them.
-
-## Advanced features
-
-### Confidential Issues
-
-Whenever you want to keep the discussion presented in a
-issue within your team only, you can make that
-[issue confidential](confidential_issues.md). Even if your project
-is public, that issue will be preserved. The browser will
-respond with a 404 error whenever someone who is not a project
-member with at least [Reporter level](../../permissions.md#project-members-permissions) tries to
-access that issue's URL.
-
-Learn more about them on the [confidential issues documentation](confidential_issues.md).
-
-### Issue templates
-
-Create templates for every new issue. They will be available from
-the dropdown menu **Choose a template** when you create a new issue:
-
-![issue template](img/issue_template.png)
-
-Learn more about them on the [issue templates documentation](../../project/description_templates.md#creating-issue-templates).
-
-### Crosslinking issues
-
-Learn more about [crosslinking](crosslinking_issues.md) issues and merge requests.
-
-### Issue Board
-
-The [GitLab Issue Board](https://about.gitlab.com/features/issueboard/) is a way to
-enhance your workflow by organizing and prioritizing issues in GitLab.
+### Issue boards
 
 ![Issue board](img/issue_board.png)
 
-Find GitLab Issue Boards by navigating to your **Project's Dashboard** > **Issues** > **Board**.
+Issue boards are Kanban boards with columns that display issues based on their labels or their assignees**[PREMIUM]**. They offer the flexibility to manage issues using highly customizable workflows.
 
-Read through the documentation for [Issue Boards](../issue_board.md)
-to find out more about this feature.
+You can reorder issues within a column, or drag an issue card to another column; its associated label or assignee will change to match that of the new column. The entire board can also be filtered to only include issues from a certain milestone or an overarching label.
 
-With [GitLab Starter](https://about.gitlab.com/pricing/), you can also
-create various boards per project with [Multiple Issue Boards](../issue_board.html#multiple-issue-boards-starter).
+For more information, see the [Issue Boards](../issue_board.md) page.
 
-### Import Issues from CSV
+### Epics **[ULTIMATE]**
 
-You can import a CSV file containing issue titles and descriptions to create
-a batch of issues simultaneously.
+Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones.
 
-When you navigate to the Issues list page, an import button is displayed.
+For more information, see the [Epics](https://docs.gitlab.com/ee/user/group/epics/) page.
 
-For further details, see [Importing issues from CSV](csv_import.md)
+### Related issues **[STARTER]**
 
-### External Issue Tracker
+You can mark two issues as related, so that when viewing each one, the other is always listed in its Related Issues section. This can help display important context, such as past work, dependencies, or duplicates.
 
-Alternatively to GitLab's built-in Issue Tracker, you can also use an [external
-tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
-YouTrack, or Bugzilla.
+For more information, see [Related Issues](https://docs.gitlab.com/ee/user/project/issues/related_issues.html).
 
-### Issue API
+### Crosslinking issues
 
-See the [API documentation](../../../api/issues.md).
+When you reference an issue from another issue or merge request by including its URL or ID, the referenced issue displays a message in the Activity stream about the reference, with a link to the other issue or MR.
 
-### Bulk editing issues
+For more information, see [Crosslinking issues](crosslinking_issues.md).
 
-See the [bulk editing issues](../../project/bulk_editing.md) page.
+## Issue actions
 
-### Similar issues
+- [Create an issue](create_new_issue.md)
+- [Create an issue from a template](../../project/description_templates.md#using-the-templates)
+- [Close an issue](closing_issues.md)
+- [Move an issue](moving_issues.md)
+- [Delete an issue](deleting_issues.md)
+- [Create a merge request from an issue](issues_functionalities.md#18-new-merge-request)
 
-See the [similar issues](similar_issues.md) page.
+## Advanced issue management
+
+- [Bulk edit issues](../bulk_editing.md) - From the Issues List, select multiple issues in order to change their status, assignee, milestone, or labels in bulk.
+- [Import issues](csv_import.md)
+- [Export issues](https://docs.gitlab.com/ee/user/project/issues/csv_export.html) **[STARTER]**
+- [Issues API](../../../api/issues.md)
+- Configure an [external issue tracker](../../../integration/external-issue-tracker.md) such as Jira, Redmine,
+or Bugzilla.

@@ -1,8 +1,8 @@
-# GitLab Issues Functionalities
+# Issue Data and Actions
 
 Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
 
-## Issues Functionalities
+## Parts of an Issue
 
 The image below illustrates what an issue looks like:
 
