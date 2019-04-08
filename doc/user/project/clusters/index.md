@@ -314,7 +314,7 @@ install it manually.
 
 ## Installing applications
 
-GitLab provides a one-click install for various applications which can
+GitLab provides **GitLab Managed Apps**, a one-click install for various applications which can
 be added directly to your configured cluster. Those applications are
 needed for [Review Apps](../../../ci/review_apps/index.md) and
 [deployments](../../../ci/environments.md). You can install them after you
