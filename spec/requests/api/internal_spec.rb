@@ -995,6 +995,20 @@ describe API::Internal do
 
         expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my error')
       end
+
+      context 'when the feature is disabled' do
+        it 'does not invoke MergeRequests::PushOptionsHandlerService' do
+          Feature.disable(:mr_push_options)
+
+          expect(MergeRequests::PushOptionsHandlerService).to receive(:new)
+
+          expect do
+            post api('/internal/post_receive'), params: valid_params
+          end.not_to change { MergeRequest.count }
+
+          Feature.enable(:mr_push_options)
+        end
+      end
     end
 
     context 'broadcast message exists' do
