@@ -2,7 +2,7 @@ import Vue from 'vue';
 import applications from '~/clusters/components/applications.vue';
 import { CLUSTER_TYPE } from '~/clusters/constants';
 import eventHub from '~/clusters/event_hub';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 import { APPLICATIONS_MOCK_STATE } from '../services/mock_data';
 
 describe('Applications', () => {
@@ -314,7 +314,7 @@ describe('Applications', () => {
         });
 
         it('emits event when clicking Save changes button', () => {
-          spyOn(eventHub, '$emit');
+          jest.spyOn(eventHub, '$emit');
           vm = mountComponent(Applications, props);
 
           const saveButton = vm.$el.querySelector('.js-knative-save-domain-button');

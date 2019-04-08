@@ -5,19 +5,41 @@ import {
   APPLICATION_STATUS,
   INGRESS_DOMAIN_SUFFIX,
 } from '~/clusters/constants';
-import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
+import { loadHTMLFixture } from 'helpers/fixtures';
+import { setTestTimeout } from 'helpers/timeout';
+import $ from 'jquery';
 
 describe('Clusters', () => {
+  setTestTimeout(500);
+
   let cluster;
-  preloadFixtures('clusters/show_cluster.html');
+  let mock;
+
+  const mockGetClusterStatusRequest = () => {
+    const { statusPath } = document.querySelector('.js-edit-cluster-form').dataset;
+
+    mock = new MockAdapter(axios);
+
+    mock.onGet(statusPath).reply(200);
+  };
 
   beforeEach(() => {
-    loadFixtures('clusters/show_cluster.html');
+    loadHTMLFixture('clusters/show_cluster.html');
+  });
+
+  beforeEach(() => {
+    mockGetClusterStatusRequest();
+  });
+
+  beforeEach(() => {
     cluster = new Clusters();
   });
 
   afterEach(() => {
     cluster.destroy();
+    mock.restore();
   });
 
   describe('toggle', () => {
@@ -29,16 +51,13 @@ describe('Clusters', () => {
         '.js-cluster-enable-toggle-area .js-project-feature-toggle-input',
       );
 
+      $(toggleInput).one('trigger-change', () => {
+        expect(toggleButton.classList).not.toContain('is-checked');
+        expect(toggleInput.getAttribute('value')).toEqual('false');
+        done();
+      });
+
       toggleButton.click();
-
-      getSetTimeoutPromise()
-        .then(() => {
-          expect(toggleButton.classList).not.toContain('is-checked');
-
-          expect(toggleInput.getAttribute('value')).toEqual('false');
-        })
-        .then(done)
-        .catch(done.fail);
     });
   });
 
@@ -197,7 +216,7 @@ describe('Clusters', () => {
 
   describe('installApplication', () => {
     it('tries to install helm', () => {
-      spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
@@ -209,7 +228,7 @@ describe('Clusters', () => {
     });
 
     it('tries to install ingress', () => {
-      spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
       expect(cluster.store.state.applications.ingress.requestStatus).toEqual(null);
 
@@ -221,7 +240,7 @@ describe('Clusters', () => {
     });
 
     it('tries to install runner', () => {
-      spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
       expect(cluster.store.state.applications.runner.requestStatus).toEqual(null);
 
@@ -233,7 +252,7 @@ describe('Clusters', () => {
     });
 
     it('tries to install jupyter', () => {
-      spyOn(cluster.service, 'installApplication').and.returnValue(Promise.resolve());
+      jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
       expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(null);
       cluster.installApplication({
@@ -248,35 +267,32 @@ describe('Clusters', () => {
       });
     });
 
-    it('sets error request status when the request fails', done => {
-      spyOn(cluster.service, 'installApplication').and.returnValue(
-        Promise.reject(new Error('STUBBED ERROR')),
-      );
+    it('sets error request status when the request fails', () => {
+      jest
+        .spyOn(cluster.service, 'installApplication')
+        .mockRejectedValueOnce(new Error('STUBBED ERROR'));
 
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
 
-      cluster.installApplication({ id: 'helm' });
+      const promise = cluster.installApplication({ id: 'helm' });
 
       expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_SUBMITTED);
       expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalled();
 
-      getSetTimeoutPromise()
-        .then(() => {
-          expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_FAILURE);
-          expect(cluster.store.state.applications.helm.requestReason).toBeDefined();
-        })
-        .then(done)
-        .catch(done.fail);
+      return promise.then(() => {
+        expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_FAILURE);
+        expect(cluster.store.state.applications.helm.requestReason).toBeDefined();
+      });
     });
   });
 
   describe('handleSuccess', () => {
     beforeEach(() => {
-      spyOn(cluster.store, 'updateStateFromServer');
-      spyOn(cluster, 'toggleIngressDomainHelpText');
-      spyOn(cluster, 'checkForNewInstalls');
-      spyOn(cluster, 'updateContainer');
+      jest.spyOn(cluster.store, 'updateStateFromServer').mockReturnThis();
+      jest.spyOn(cluster, 'toggleIngressDomainHelpText').mockReturnThis();
+      jest.spyOn(cluster, 'checkForNewInstalls').mockReturnThis();
+      jest.spyOn(cluster, 'updateContainer').mockReturnThis();
 
       cluster.handleSuccess({ data: {} });
     });
