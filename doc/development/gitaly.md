@@ -192,7 +192,7 @@ GITALY_REPO_URL=https://gitlab+deploy-token-1000:token-here@gitlab.com/nick.thom
 
 To use a custom Gitaly repository in CI, for instance if you want your
 GitLab fork to always use your own Gitaly fork, set `GITALY_REPO_URL`
-as a [CI environment variable](../ci/variables/README.md#variables).
+as a [CI environment variable](../ci/variables/README.md#gitlab-cicd-environment-variables).
 
 ---
 

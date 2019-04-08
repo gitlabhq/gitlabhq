@@ -545,7 +545,7 @@ The result will then be:
 ## Deployment variables
 
 The Kubernetes cluster integration exposes the following
-[deployment variables](../../../ci/variables/README.md#deployment-variables) in the
+[deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the
 GitLab CI/CD build environment.
 
 | Variable | Description |

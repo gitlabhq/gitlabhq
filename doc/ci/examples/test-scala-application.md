@@ -69,5 +69,5 @@ in the `.gitlab-ci.yml` file with your application's name.
 ## Heroku API key
 
 You can look up your Heroku API key in your
-[account](https://dashboard.heroku.com/account). Add a [protected variable](../variables/README.md#protected-variables) with
+[account](https://dashboard.heroku.com/account). Add a [protected variable](../variables/README.md#protected-environment-variables) with
 this value in **Project ➔ Variables** with key `HEROKU_API_KEY`.
