@@ -12,3 +12,5 @@ globals:
   loadFixtures: false
   preloadFixtures: false
   setFixtures: false
+rules:
+  jest/no-focused-tests: error
