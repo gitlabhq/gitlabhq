@@ -5,7 +5,7 @@ describe 'GitlabSchema configurations' do
 
   it 'shows an error if complexity is too high' do
     project = create(:project, :repository)
-    query   = graphql_query_for('project', { 'fullPath' => project.full_path }, "id\nname\ndescription")
+    query   = graphql_query_for('project', { 'fullPath' => project.full_path }, %w(id name description))
 
     allow(GitlabSchema).to receive(:max_query_complexity).and_return 1
 
