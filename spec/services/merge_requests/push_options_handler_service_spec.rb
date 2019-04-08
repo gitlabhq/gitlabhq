@@ -3,10 +3,13 @@
 require 'spec_helper'
 
 describe MergeRequests::PushOptionsHandlerService do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
+  let(:forked_project) { fork_project(project, user, repository: true) }
   let(:service) { described_class.new(project, user, changes, push_options) }
-  let(:source_branch) { 'test' }
+  let(:source_branch) { 'fix' }
   let(:target_branch) { 'feature' }
   let(:new_branch_changes) { "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
   let(:existing_branch_changes) { "d14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{source_branch}" }
@@ -38,21 +41,25 @@ describe MergeRequests::PushOptionsHandlerService do
       expect(last_mr.assignee).to eq(user)
     end
 
-    it 'sets the title and description from the first non-merge commit' do
-      commits = project.repository.commits('master', limit: 5)
+    context 'when project has been forked' do
+      let(:forked_project) { fork_project(project, user, repository: true) }
+      let(:service) { described_class.new(forked_project, user, changes, push_options) }
 
-      expect(Gitlab::Git::Commit).to receive(:between).at_least(:once).and_return(commits)
+      before do
+        allow(forked_project).to receive(:empty_repo?).and_return(false)
+      end
 
-      service.execute
+      it 'sets the correct source project' do
+        service.execute
 
-      merge_commit = commits.first
-      non_merge_commit = commits.second
+        expect(last_mr.source_project).to eq(forked_project)
+      end
 
-      expect(merge_commit.merge_commit?).to eq(true)
-      expect(non_merge_commit.merge_commit?).to eq(false)
+      it 'sets the correct target project' do
+        service.execute
 
-      expect(last_mr.title).to eq(non_merge_commit.title)
-      expect(last_mr.description).to eq(non_merge_commit.description)
+        expect(last_mr.target_project).to eq(project)
+      end
     end
   end
 
@@ -271,7 +278,7 @@ describe MergeRequests::PushOptionsHandlerService do
     let(:changes) do
       [
         new_branch_changes,
-        "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/second-branch"
+        "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/feature_conflict"
       ]
     end
 
@@ -287,11 +294,10 @@ describe MergeRequests::PushOptionsHandlerService do
         end
       end
 
-      it 'throws an error' do
-        expect { service.execute }.to raise_error(
-          MergeRequests::PushOptionsHandlerService::Error,
-          "Too many branches pushed (#{limit + 1} were pushed, limit is #{limit})"
-        )
+      it 'records an error' do
+        service.execute
+
+        expect(service.errors).to eq(["Too many branches pushed (#{limit + 1} were pushed, limit is #{limit})"])
       end
     end
   end
@@ -308,11 +314,10 @@ describe MergeRequests::PushOptionsHandlerService do
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 
-    it 'throws an error' do
-      expect { service.execute }.to raise_error(
-        MergeRequests::PushOptionsHandlerService::Error,
-        'User is required'
-      )
+    it 'records an error' do
+      service.execute
+
+      expect(service.errors).to eq(['User is required'])
     end
   end
 
@@ -320,10 +325,12 @@ describe MergeRequests::PushOptionsHandlerService do
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 
-    it 'throws an error' do
+    it 'records an error' do
       Members::DestroyService.new(user).execute(ProjectMember.find_by!(user_id: user.id))
 
-      expect { service.execute }.to raise_error(Gitlab::Access::AccessDeniedError)
+      service.execute
+
+      expect(service.errors).to eq(['User access was denied'])
     end
   end
 
@@ -331,11 +338,10 @@ describe MergeRequests::PushOptionsHandlerService do
     let(:push_options) { { create: true, target: 'my-branch' } }
     let(:changes) { new_branch_changes }
 
-    it 'throws an error' do
-      expect { service.execute }.to raise_error(
-        MergeRequests::PushOptionsHandlerService::Error,
-        'Branch my-branch does not exist'
-      )
+    it 'records an error' do
+      service.execute
+
+      expect(service.errors).to eq(['Branch my-branch does not exist'])
     end
   end
 
@@ -343,13 +349,12 @@ describe MergeRequests::PushOptionsHandlerService do
     let(:push_options) { { create: true } }
     let(:changes) { new_branch_changes }
 
-    it 'throws an error' do
+    it 'records an error' do
       expect(project).to receive(:merge_requests_enabled?).and_return(false)
 
-      expect { service.execute }.to raise_error(
-        MergeRequests::PushOptionsHandlerService::Error,
-        'Merge requests are not enabled for project'
-      )
+      service.execute
+
+      expect(service.errors).to eq(["Merge requests are not enabled for project #{project.full_path}"])
     end
   end
 

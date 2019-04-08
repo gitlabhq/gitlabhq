@@ -888,8 +888,10 @@ describe API::Internal do
       }
     end
 
+    let(:branch_name) { 'feature' }
+
     let(:changes) do
-      "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch"
+      "#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/#{branch_name}"
     end
 
     let(:push_options) do
@@ -924,8 +926,8 @@ describe API::Internal do
       post api('/internal/post_receive'), params: valid_params
 
       expect(json_response['merge_request_urls']).to match [{
-        "branch_name" => "new_branch",
-        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "branch_name" => branch_name,
+        "url" => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=#{branch_name}",
         "new_merge_request" => true
       }]
     end
@@ -955,24 +957,20 @@ describe API::Internal do
         post api('/internal/post_receive'), params: valid_params
       end
 
+      it 'creates a new merge request' do
+        expect do
+          post api('/internal/post_receive'), params: valid_params
+        end.to change { MergeRequest.count }.by(1)
+      end
+
       it 'links to the newly created merge request' do
         post api('/internal/post_receive'), params: valid_params
 
         expect(json_response['merge_request_urls']).to match [{
-          'branch_name' => 'new_branch',
+          'branch_name' => branch_name,
           'url' => "http://#{Gitlab.config.gitlab.host}/#{project.namespace.name}/#{project.path}/merge_requests/1",
           'new_merge_request' => false
         }]
-      end
-
-      it 'adds errors raised from MergeRequests::PushOptionsHandlerService to warnings' do
-        expect(MergeRequests::PushOptionsHandlerService).to receive(:new).and_raise(
-          MergeRequests::PushOptionsHandlerService::Error, 'my warning'
-        )
-
-        post api('/internal/post_receive'), params: valid_params
-
-        expect(json_response['warnings']).to eq('Error encountered with push options \'merge_request.create\': my warning')
       end
 
       it 'adds errors on the service instance to warnings' do

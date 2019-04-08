@@ -2,39 +2,28 @@
 
 module MergeRequests
   class PushOptionsHandlerService
-    Error = Class.new(StandardError)
-
     LIMIT = 10
 
     attr_reader :branches, :changes_by_branch, :current_user, :errors,
-                :project, :push_options
+                :project, :push_options, :target_project
 
     def initialize(project, current_user, changes, push_options)
       @project = project
+      @target_project = @project.default_merge_request_target
       @current_user = current_user
-      @changes_by_branch = parse_changes(changes)
+      @branches = get_branches(changes)
       @push_options = push_options
       @errors = []
-      @branches = @changes_by_branch.keys
-
-      raise Error, 'User is required' if @current_user.nil?
-
-      unless @project.merge_requests_enabled?
-        raise Error, 'Merge requests are not enabled for project'
-      end
-
-      if @branches.size > LIMIT
-        raise Error, "Too many branches pushed (#{@branches.size} were pushed, limit is #{LIMIT})"
-      end
-
-      if @push_options[:target] && !@project.repository.branch_exists?(@push_options[:target])
-        raise Error, "Branch #{@push_options[:target]} does not exist"
-      end
     end
 
     def execute
+      validate_service
+      return self if errors.present?
+
       branches.each do |branch|
         execute_for_branch(branch)
+      rescue Gitlab::Access::AccessDeniedError
+        errors << 'User access was denied'
       end
 
       self
@@ -42,32 +31,47 @@ module MergeRequests
 
     private
 
-    # Parses changes in the push.
-    # Returns a hash of branch => changes_list
-    def parse_changes(raw_changes)
-      Gitlab::ChangesList.new(raw_changes).each_with_object({}) do |change, changes|
-        next unless Gitlab::Git.branch_ref?(change[:ref])
+    def get_branches(raw_changes)
+      Gitlab::ChangesList.new(raw_changes).map do |changes|
+        next unless Gitlab::Git.branch_ref?(changes[:ref])
 
         # Deleted branch
-        next if Gitlab::Git.blank_ref?(change[:newrev])
+        next if Gitlab::Git.blank_ref?(changes[:newrev])
 
         # Default branch
-        branch_name = Gitlab::Git.branch_name(change[:ref])
-        next if branch_name == project.default_branch
+        branch_name = Gitlab::Git.branch_name(changes[:ref])
+        next if branch_name == target_project.default_branch
 
-        changes[branch_name] = change
+        branch_name
+      end.compact.uniq
+    end
+
+    def validate_service
+      errors << 'User is required' if current_user.nil?
+
+      unless target_project.merge_requests_enabled?
+        errors << "Merge requests are not enabled for project #{target_project.full_path}"
+      end
+
+      if branches.size > LIMIT
+        errors << "Too many branches pushed (#{branches.size} were pushed, limit is #{LIMIT})"
+      end
+
+      if push_options[:target] && !target_project.repository.branch_exists?(push_options[:target])
+        errors << "Branch #{push_options[:target]} does not exist"
       end
     end
 
+    # Returns a Hash of branch => MergeRequest
     def merge_requests
-      @merge_requests ||= MergeRequest.from_project(@project)
+      @merge_requests ||= MergeRequest.from_project(target_project)
                                       .opened
-                                      .from_source_branches(@branches)
-                                      .to_a # fetch now
+                                      .from_source_branches(branches)
+                                      .index_by(&:source_branch)
     end
 
     def execute_for_branch(branch)
-      merge_request = merge_requests.find { |mr| mr.source_branch == branch }
+      merge_request = merge_requests[branch]
 
       if merge_request
         update!(merge_request)
@@ -82,18 +86,27 @@ module MergeRequests
         return
       end
 
-      merge_request = ::MergeRequests::CreateService.new(
+      # Use BuildService to assign the standard attributes of a merge request
+      merge_request = ::MergeRequests::BuildService.new(
         project,
         current_user,
         create_params(branch)
       ).execute
+
+      unless merge_request.errors.present?
+        merge_request = ::MergeRequests::CreateService.new(
+          project,
+          current_user,
+          merge_request.attributes
+        ).execute
+      end
 
       collect_errors_from_merge_request(merge_request) unless merge_request.persisted?
     end
 
     def update!(merge_request)
       merge_request = ::MergeRequests::UpdateService.new(
-        project,
+        target_project,
         current_user,
         update_params
       ).execute(merge_request)
@@ -102,18 +115,12 @@ module MergeRequests
     end
 
     def create_params(branch)
-      change = changes_by_branch.fetch(branch)
-
-      commits = project.repository.commits_between(project.default_branch, change[:newrev])
-      commits = CommitCollection.new(project, commits)
-      commit = commits.without_merge_commits.first
-
       params = {
         assignee: current_user,
         source_branch: branch,
-        target_branch: push_options[:target] || project.default_branch,
-        title: commit&.title&.strip || 'New Merge Request',
-        description: commit&.description&.strip
+        source_project: project,
+        target_branch: push_options[:target] || target_project.default_branch,
+        target_project: target_project
       }
 
       if push_options.key?(:merge_when_pipeline_succeeds)
@@ -144,7 +151,9 @@ module MergeRequests
     end
 
     def collect_errors_from_merge_request(merge_request)
-      errors << merge_request.errors.full_messages.to_sentence
+      merge_request.errors.full_messages.each do |error|
+        errors << error
+      end
     end
   end
 end

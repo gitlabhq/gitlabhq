@@ -264,24 +264,8 @@ module API
         PostReceive.perform_async(params[:gl_repository], params[:identifier],
           params[:changes], push_options.as_json)
 
-        if (mr_options = push_options.get(:merge_request))
-          begin
-            service = ::MergeRequests::PushOptionsHandlerService.new(
-              project,
-              user,
-              params[:changes],
-              mr_options
-            ).execute
-
-            if service.errors.present?
-              output[:warnings] = push_options_warning(service.errors.join("\n\n"))
-            end
-          rescue ::MergeRequests::PushOptionsHandlerService::Error => e
-            output[:warnings] = push_options_warning(e.message)
-          rescue Gitlab::Access::AccessDeniedError
-            output[:warnings] = push_options_warning('User access was denied')
-          end
-        end
+        mr_options = push_options.get(:merge_request)
+        output.merge!(process_mr_push_options(mr_options, project, user, params[:changes])) if mr_options.present?
 
         broadcast_message = BroadcastMessage.current&.last&.message
         reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
