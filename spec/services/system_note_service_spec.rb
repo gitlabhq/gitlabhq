@@ -11,6 +11,14 @@ describe SystemNoteService do
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
 
+  shared_examples_for 'a note with overridable created_at' do
+    let(:noteable) { create(:issue, project: project, system_note_timestamp: Time.at(42)) }
+
+    it 'the note has the correct time' do
+      expect(subject.created_at).to eq Time.at(42)
+    end
+  end
+
   shared_examples_for 'a system note' do
     let(:expected_noteable) { noteable }
     let(:commit_count)      { nil }
@@ -137,6 +145,8 @@ describe SystemNoteService do
     end
 
     context 'when assignee added' do
+      it_behaves_like 'a note with overridable created_at'
+
       it 'sets the note text' do
         expect(subject.note).to eq "assigned to @#{assignee.username}"
       end
@@ -144,6 +154,8 @@ describe SystemNoteService do
 
     context 'when assignee removed' do
       let(:assignee) { nil }
+
+      it_behaves_like 'a note with overridable created_at'
 
       it 'sets the note text' do
         expect(subject.note).to eq 'removed assignee'
@@ -167,6 +179,8 @@ describe SystemNoteService do
       issue.assignees = new_assignees
       described_class.change_issue_assignees(issue, project, author, old_assignees).note
     end
+
+    it_behaves_like 'a note with overridable created_at'
 
     it 'builds a correct phrase when an assignee is added to a non-assigned issue' do
       expect(build_note([], [assignee1])).to eq "assigned to @#{assignee1.username}"
@@ -213,6 +227,8 @@ describe SystemNoteService do
 
           expect(subject.note).to eq "changed milestone to #{reference}"
         end
+
+        it_behaves_like 'a note with overridable created_at'
       end
 
       context 'when milestone removed' do
@@ -221,6 +237,8 @@ describe SystemNoteService do
         it 'sets the note text' do
           expect(subject.note).to eq 'removed milestone'
         end
+
+        it_behaves_like 'a note with overridable created_at'
       end
     end
 
@@ -237,6 +255,8 @@ describe SystemNoteService do
         it 'sets the note text to use the milestone name' do
           expect(subject.note).to eq "changed milestone to #{milestone.to_reference(format: :name)}"
         end
+
+        it_behaves_like 'a note with overridable created_at'
       end
 
       context 'when milestone removed' do
@@ -245,6 +265,8 @@ describe SystemNoteService do
         it 'sets the note text' do
           expect(subject.note).to eq 'removed milestone'
         end
+
+        it_behaves_like 'a note with overridable created_at'
       end
     end
   end
@@ -253,6 +275,8 @@ describe SystemNoteService do
     subject { described_class.change_due_date(noteable, project, author, due_date) }
 
     let(:due_date) { Date.today }
+
+    it_behaves_like 'a note with overridable created_at'
 
     it_behaves_like 'a system note' do
       let(:action) { 'due_date' }
@@ -280,6 +304,8 @@ describe SystemNoteService do
       let(:status) { 'reopened' }
       let(:source) { nil }
 
+      it_behaves_like 'a note with overridable created_at'
+
       it_behaves_like 'a system note' do
         let(:action) { 'opened' }
       end
@@ -288,6 +314,8 @@ describe SystemNoteService do
     context 'with a source' do
       let(:status) { 'opened' }
       let(:source) { double('commit', gfm_reference: 'commit 123456') }
+
+      it_behaves_like 'a note with overridable created_at'
 
       it 'sets the note text' do
         expect(subject.note).to eq "#{status} via commit 123456"
@@ -338,6 +366,8 @@ describe SystemNoteService do
         let(:action) { 'title' }
       end
 
+      it_behaves_like 'a note with overridable created_at'
+
       it 'sets the note text' do
         expect(subject.note)
           .to eq "changed title from **{-Old title-}** to **{+Lorem ipsum+}**"
@@ -352,6 +382,8 @@ describe SystemNoteService do
       it_behaves_like 'a system note' do
         let(:action) { 'description' }
       end
+
+      it_behaves_like 'a note with overridable created_at'
 
       it 'sets the note text' do
         expect(subject.note).to eq('changed the description')
@@ -477,6 +509,8 @@ describe SystemNoteService do
       it_behaves_like 'a system note' do
         let(:action) { 'cross_reference' }
       end
+
+      it_behaves_like 'a note with overridable created_at'
 
       describe 'note_body' do
         context 'cross-project' do
