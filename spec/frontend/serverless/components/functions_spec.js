@@ -4,14 +4,21 @@ import axios from '~/lib/utils/axios_utils';
 import functionsComponent from '~/serverless/components/functions.vue';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { createStore } from '~/serverless/store';
+import { TEST_HOST } from 'helpers/test_constants';
 import { mockServerlessFunctions } from '../mock_data';
 
 describe('functionsComponent', () => {
+  const statusPath = `${TEST_HOST}/statusPath`;
+
   let component;
   let store;
   let localVue;
+  let axiosMock;
 
   beforeEach(() => {
+    axiosMock = new AxiosMockAdapter(axios);
+    axiosMock.onGet(statusPath).reply(200);
+
     localVue = createLocalVue();
     localVue.use(Vuex);
 
@@ -20,6 +27,7 @@ describe('functionsComponent', () => {
 
   afterEach(() => {
     component.vm.$destroy();
+    axiosMock.restore();
   });
 
   it('should render empty state when Knative is not installed', () => {
@@ -80,11 +88,7 @@ describe('functionsComponent', () => {
     );
   });
 
-  fit('should render the functions list', () => {
-    const statusPath = 'statusPath';
-    const axiosMock = new AxiosMockAdapter(axios);
-    axiosMock.onGet(statusPath).reply(200);
-
+  it('should render the functions list', () => {
     component = shallowMount(functionsComponent, {
       localVue,
       store,
