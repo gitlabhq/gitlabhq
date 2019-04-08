@@ -114,6 +114,7 @@ function perform_review_app_deployment() {
   install_tiller
   install_external_dns
   time deploy
+  wait_for_review_app_to_be_accessible
   add_license
 }
 
@@ -202,6 +203,7 @@ function download_gitlab_chart() {
 }
 
 function deploy() {
+  set +e
   local track="${1-stable}"
   local name="$CI_ENVIRONMENT_SLUG"
 
@@ -300,6 +302,29 @@ EOF
   echoinfo "${HELM_CMD}"
 
   eval $HELM_CMD
+  set -e
+}
+
+function wait_for_review_app_to_be_accessible() {
+  # In case the Review App isn't completely available yet. Keep trying for 5 minutes.
+  local interval=5
+  local elapsed_seconds=0
+  local max_seconds=5*60
+  while true; do
+    local review_app_http_code=$(curl --silent --output /dev/null --max-time 5 --write-out "%{http_code}" "${CI_ENVIRONMENT_URL}/users/sign_in")
+    ([[ "${review_app_http_code}" != "200" ]] && [[ "${elapsed_seconds}" -lt "${max_seconds}" ]]) || break
+
+    printf "."
+    let "elapsed_seconds+=interval"
+    sleep ${interval}
+  done
+
+  if [[ "${review_app_http_code}" == "200" ]]; then
+    echoinfo "The Review App at ${CI_ENVIRONMENT_URL} is ready!"
+  else
+    echoerr "The Review App at ${CI_ENVIRONMENT_URL} isn't ready after 5 minutes of polling..."
+    exit 1
+  fi
 }
 
 function add_license() {
