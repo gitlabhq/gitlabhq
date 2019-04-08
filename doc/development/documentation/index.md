@@ -48,29 +48,21 @@ as its markdown rendering engine. See the [GitLab Markdown Guide](https://about.
 
 Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
-## Documentation directory structure
+## Documentation types and organization
 
 The documentation is structured based on the GitLab UI structure itself,
 separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
 [`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
 
-In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
-all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
+Organize docs by product area and subject, not type. For example, do not create groupings of similar media types
+(e.g. indexes of all articles, videos, etc.).
 
-The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
-been **deprecated** and the majority their docs have been moved to their correct location
-in small iterations. Please do not create new docs in these folders. Organize docs by product area and subject, not type.
+Similarly, we do not use glossaries or FAQs. Such grouping of content by type makes
+it difficult to browse for the information you need and difficult to maintain up-to-date content.
+Instead, organize content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
 
-### Documentation files
-
-- When you create a new directory, always start with an `index.md` file.
-  Do not use another file name and **do not** create `README.md` files.
-- **Do not** use special chars and spaces, or capital letters in file names,
-  directory names, branch names, and anything that generates a path.
-- Max screenshot size: 100KB.
-- We do not support videos (yet).
-
-### Location and naming documents
+### Location and naming of files
 
 Our goal is to have a clear hierarchical structure with meaningful URLs
 like `docs.gitlab.com/user/project/merge_requests/`. With this pattern,
@@ -78,16 +70,8 @@ you can immediately tell that you are navigating to user-related documentation
 about project features; specifically about merge requests. Our site's paths match
 those of our repository, so the clear structure also makes documentation easier to update.
 
-While the documentation is home to a variety of content types, we do not organize by content type.
-For example, do not create groupings of similar media types (e.g. indexes of all articles, videos, etc.).
-Similarly, we do not use glossaries or FAQs. Such grouping of content by type makes
-it difficult to browse for the information you need and difficult to maintain up-to-date content.
-Instead, organize content by its subject (e.g. everything related to CI goes together)
-and cross-link between any related content.
-
-Do not simply link out to GitLab technical blog posts. There should be an up-to-date
-single source of truth on the topic within the documentation, and the top of the
-blog post should be updated to link to that doc.
+In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
+all docs should be linked at least from its higher-level index page if not also from other relevant locations.
 
 The table below shows what kind of documentation goes where.
 
@@ -102,13 +86,18 @@ The table below shows what kind of documentation goes where.
 | `doc/update/`         | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now.                                                                          |
 | `doc/topics/`         | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs)                                                              |
 
-**General rules & best practices:**
+**Rules and best practices:**
 
+1. When you create a new directory, always start with an `index.md` file.
+  Do not use another file name and **do not** create `README.md` files.
+1. **Do not** use special chars and spaces, or capital letters in file names,
+  directory names, branch names, and anything that generates a path.
 1. When creating a new document and it has more than one word in its name,
    make sure to use underscores instead of spaces or dashes (`-`). For example,
    a proper naming would be `import_projects_from_github.md`. The same rule
    applies to images.
-1. Start a new directory with an `index.md` file.
+1. For image files, do not exceed 100KB.
+1. We do not yet support embedded videos. Please link out.
 1. There are four main directories, `user`, `administration`, `api` and `development`.
 1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
    `profile/`, `dashboard/` and `admin_area/`.
@@ -129,6 +118,9 @@ The table below shows what kind of documentation goes where.
 1. The `doc/topics/` directory holds topic-related technical content. Create
    `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
    General user- and admin- related documentation, should be placed accordingly.
+1. The directories `/workflow/`, `/university/`, and `/articles/` have
+been **deprecated** and the majority their docs have been moved to their correct location
+in small iterations.
 
 If you are unsure where a document or a content addition should live, this should
 not stop you from authoring and contributing. You can use your best judgment and

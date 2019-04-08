@@ -14,9 +14,8 @@ For programmatic help adhering to the guidelines, see [linting](index.md#linting
 
 ## Files
 
-- [Directory structure](index.md#location-and-naming-documents): place the docs
-  in the correct location.
-- [Documentation files](index.md#documentation-files): name the files accordingly.
+See the [Documentation types and organization](index.md#documentation-types-and-organization) section
+on the index page for information on how to structure and name files across the GitLab documentation.
 
 DANGER: **Attention:**
 **Do not** use capital letters, spaces, or special chars in file names,
@@ -54,7 +53,7 @@ Include any media types/sources, if relevant to readers. You can freely include 
 
 ### Structure across documents
 
-- Place files in the correct directory per the [Documentation directory structure](index.md#documentation-directory-structure) guidelines.
+- Place files in the correct directory per the [Documentation directory structure](index.md#documentation-types-and-organization) guidelines.
 - To avoid duplication, do not include the same information in multiple places. Instead, choose one 'single source of truth (SSOT)' location and link from other relevant locations.
 - When referencing other GitLab products and features, link to their respective docs.
 - When referencing third-party products or technologies, link out to their external sites, documentation, and resources.
