@@ -71,29 +71,39 @@ export default class ImageFile {
   // eslint-disable-next-line class-methods-use-this
   initDraggable($el, padding, callback) {
     var dragging = false;
-    var $body = $('body');
-    var $offsetEl = $el.parent();
-
-    $el.off('mousedown').on('mousedown', function() {
+    const $body = $('body');
+    const $offsetEl = $el.parent();
+    const dragStart = function() {
       dragging = true;
       $body.css('user-select', 'none');
-    });
+    };
+    const dragStop = function() {
+      dragging = false;
+      $body.css('user-select', '');
+    };
+    const dragMove = function(e) {
+      const moveX = e.pageX || e.touches[0].pageX;
+      const left = moveX - ($offsetEl.offset().left + padding);
+      if (!dragging) return;
+
+      callback(e, left);
+    };
+
+    $el
+      .off('mousedown')
+      .off('touchstart')
+      .on('mousedown', dragStart)
+      .on('touchstart', dragStart);
 
     $body
       .off('mouseup')
       .off('mousemove')
-      .on('mouseup', function() {
-        dragging = false;
-        $body.css('user-select', '');
-      })
-      .on('mousemove', function(e) {
-        var left;
-        if (!dragging) return;
-
-        left = e.pageX - ($offsetEl.offset().left + padding);
-
-        callback(e, left);
-      });
+      .off('touchend')
+      .off('touchmove')
+      .on('mouseup', dragStop)
+      .on('touchend', dragStop)
+      .on('mousemove', dragMove)
+      .on('touchmove', dragMove);
   }
 
   prepareFrames(view) {
