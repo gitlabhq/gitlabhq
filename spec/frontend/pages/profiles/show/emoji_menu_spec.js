@@ -13,7 +13,7 @@ describe('EmojiMenu', () => {
   let dummyEmojiList;
 
   beforeEach(() => {
-    dummySelectEmojiCallback = jasmine.createSpy('dummySelectEmojiCallback');
+    dummySelectEmojiCallback = jest.fn().mockName('dummySelectEmojiCallback');
     dummyEmojiList = {
       glEmojiTag() {
         return dummyEmojiTag;
