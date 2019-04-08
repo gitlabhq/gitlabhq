@@ -33,7 +33,7 @@ module Users
         end
       end
 
-      user.reload
+      user.reset
     end
 
     private

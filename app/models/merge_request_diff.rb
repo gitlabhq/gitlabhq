@@ -387,7 +387,7 @@ class MergeRequestDiff < ApplicationRecord
       save!
     end
 
-    merge_request_diff_files.reload
+    merge_request_diff_files.reset
   end
 
   private
@@ -541,10 +541,10 @@ class MergeRequestDiff < ApplicationRecord
   def save_commits
     MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse)
 
-    # merge_request_diff_commits.reload is preferred way to reload associated
+    # merge_request_diff_commits.reset is preferred way to reload associated
     # objects but it returns cached result for some reason in this case
     # we can circumvent that by specifying that we need an uncached reload
-    commits = self.class.uncached { merge_request_diff_commits.reload }
+    commits = self.class.uncached { merge_request_diff_commits.reset }
     self.commits_count = commits.size
   end
 

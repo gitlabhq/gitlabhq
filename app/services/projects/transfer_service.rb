@@ -30,7 +30,7 @@ module Projects
 
       true
     rescue Projects::TransferService::TransferError => ex
-      project.reload
+      project.reset
       project.errors.add(:new_namespace, ex.message)
       false
     end
@@ -122,7 +122,7 @@ module Projects
 
     def rollback_side_effects
       rollback_folder_move
-      project.reload
+      project.reset
       update_namespace_and_visibility(@old_namespace)
       update_repository_configuration(@old_path)
     end

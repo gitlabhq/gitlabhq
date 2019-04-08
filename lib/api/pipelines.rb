@@ -137,7 +137,7 @@ module API
         pipeline.cancel_running
 
         status 200
-        present pipeline.reload, with: Entities::Pipeline
+        present pipeline.reset, with: Entities::Pipeline
       end
     end
 

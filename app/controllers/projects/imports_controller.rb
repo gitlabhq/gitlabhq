@@ -14,7 +14,7 @@ class Projects::ImportsController < Projects::ApplicationController
 
   def create
     if @project.update(import_params)
-      @project.import_state.reload.schedule
+      @project.import_state.reset.schedule
     end
 
     redirect_to project_import_path(@project)

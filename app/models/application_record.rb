@@ -3,6 +3,8 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
+  alias_method :reset, :reload
+
   def self.id_in(ids)
     where(id: ids)
   end

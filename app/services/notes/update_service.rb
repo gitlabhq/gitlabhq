@@ -22,7 +22,7 @@ module Notes
 
         # We need to refresh the previous suggestions call cache
         # in order to get the new records.
-        note.reload
+        note.reset
       end
 
       note

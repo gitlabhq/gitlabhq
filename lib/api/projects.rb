@@ -351,7 +351,7 @@ module API
           not_modified!
         else
           current_user.toggle_star(user_project)
-          user_project.reload
+          user_project.reset
 
           present user_project, with: Entities::Project, current_user: current_user
         end
@@ -363,7 +363,7 @@ module API
       post ':id/unstar' do
         if current_user.starred?(user_project)
           current_user.toggle_star(user_project)
-          user_project.reload
+          user_project.reset
 
           present user_project, with: Entities::Project, current_user: current_user
         else
@@ -403,7 +403,7 @@ module API
         result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
 
         if result
-          present user_project.reload, with: Entities::Project, current_user: current_user
+          present user_project.reset, with: Entities::Project, current_user: current_user
         else
           render_api_error!("Project already forked", 409) if user_project.forked?
         end
