@@ -39,7 +39,7 @@ class InstanceConfiguration
   def gitlab_ci
     Settings.gitlab_ci
             .to_h
-            .merge(artifacts_max_size: { value: Settings.artifacts.max_size&.megabytes,
+            .merge(artifacts_max_size: { value: Gitlab::CurrentSettings.max_artifacts_size.megabytes,
                                          default: 100.megabytes })
   end
 
