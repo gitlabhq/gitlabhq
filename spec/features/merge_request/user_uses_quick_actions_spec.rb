@@ -58,52 +58,6 @@ describe 'Merge request > User uses quick actions', :js do
 
     it_behaves_like 'merge quick action'
     it_behaves_like 'target_branch quick action'
-
-    describe 'toggling the WIP prefix in the title from note' do
-      context 'when the current user can toggle the WIP prefix' do
-        before do
-          sign_in(user)
-          visit project_merge_request_path(project, merge_request)
-          wait_for_requests
-        end
-
-        it 'adds the WIP: prefix to the title' do
-          add_note("/wip")
-
-          expect(page).not_to have_content '/wip'
-          expect(page).to have_content 'Commands applied'
-
-          expect(merge_request.reload.work_in_progress?).to eq true
-        end
-
-        it 'removes the WIP: prefix from the title' do
-          merge_request.title = merge_request.wip_title
-          merge_request.save
-          add_note("/wip")
-
-          expect(page).not_to have_content '/wip'
-          expect(page).to have_content 'Commands applied'
-
-          expect(merge_request.reload.work_in_progress?).to eq false
-        end
-      end
-
-      context 'when the current user cannot toggle the WIP prefix' do
-        before do
-          project.add_guest(guest)
-          sign_in(guest)
-          visit project_merge_request_path(project, merge_request)
-        end
-
-        it 'does not change the WIP prefix' do
-          add_note("/wip")
-
-          expect(page).not_to have_content '/wip'
-          expect(page).not_to have_content 'Commands applied'
-
-          expect(merge_request.reload.work_in_progress?).to eq false
-        end
-      end
-    end
+    it_behaves_like 'wip quick action'
   end
 end
