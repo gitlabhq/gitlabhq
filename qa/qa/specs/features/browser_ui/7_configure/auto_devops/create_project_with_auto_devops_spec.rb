@@ -40,7 +40,7 @@ module QA
           Resource::CiVariable.fabricate! do |resource|
             resource.project = @project
             resource.key = 'K8S_SECRET_OPTIONAL_MESSAGE'
-            resource.value = 'You can see this application secret'
+            resource.value = 'you_can_see_this_variable'
           end
 
           # Connect K8s cluster
@@ -99,7 +99,7 @@ module QA
           Page::Project::Operations::Environments::Show.perform do |show|
             show.view_deployment do
               expect(page).to have_content('Hello World!')
-              expect(page).to have_content('You can see this application secret')
+              expect(page).to have_content('you_can_see_this_variable')
             end
           end
         end
