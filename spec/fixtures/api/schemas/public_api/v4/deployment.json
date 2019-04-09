@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "iid",
+    "ref",
+    "sha",
+    "created_at",
+    "user",
+    "deployable"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "ref": { "type": "string" },
+    "sha": { "type": "string" },
+    "created_at": { "type": "string" },
+    "user": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "user/basic.json" }
+      ]
+    },
+    "deployable": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "job.json" }
+      ]
+    }
+  },
+  "additionalProperties": false
+}
