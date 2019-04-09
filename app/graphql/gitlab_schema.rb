@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class GitlabSchema < GraphQL::Schema
-  # Took our current most complicated query in use, issues.graphql,
-  # with a complexity of 19, and added a 20 point buffer to it.
+  # Currently an IntrospectionQuery has a complexity of 179.
   # These values will evolve over time.
-  DEFAULT_MAX_COMPLEXITY   = 40
-  AUTHENTICATED_COMPLEXITY = 50
-  ADMIN_COMPLEXITY         = 60
+  DEFAULT_MAX_COMPLEXITY   = 200
+  AUTHENTICATED_COMPLEXITY = 250
+  ADMIN_COMPLEXITY         = 300
 
   use BatchLoader::GraphQL
   use Gitlab::Graphql::Authorize
