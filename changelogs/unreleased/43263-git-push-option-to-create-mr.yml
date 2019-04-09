@@ -1,0 +1,5 @@
+---
+title: Allow merge requests to be created via git push options
+merge_request: 26752
+author:
+type: added

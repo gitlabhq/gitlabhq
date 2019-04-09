@@ -43,6 +43,28 @@ module API
         ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
       end
 
+      def process_mr_push_options(push_options, project, user, changes)
+        output = {}
+
+        service = ::MergeRequests::PushOptionsHandlerService.new(
+          project,
+          user,
+          changes,
+          push_options
+        ).execute
+
+        if service.errors.present?
+          output[:warnings] = push_options_warning(service.errors.join("\n\n"))
+        end
+
+        output
+      end
+
+      def push_options_warning(warning)
+        options = Array.wrap(params[:push_options]).map { |p| "'#{p}'" }.join(' ')
+        "Error encountered with push options #{options}: #{warning}"
+      end
+
       def redis_ping
         result = Gitlab::Redis::SharedState.with { |redis| redis.ping }
 
