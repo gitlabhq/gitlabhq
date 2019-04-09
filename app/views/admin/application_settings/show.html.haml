@@ -68,7 +68,7 @@
   .settings-content
     = render 'terms'
 
-= render_if_exists 'admin/application_settings/external_authorization_service_form', expanded: expanded_by_default?
+= render 'admin/application_settings/external_authorization_service_form', expanded: expanded_by_default?
 
 %section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded_by_default?) }
   .settings-header

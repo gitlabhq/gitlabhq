@@ -2,9 +2,17 @@
 
 module ApplicationSettings
   class UpdateService < ApplicationSettings::BaseService
+    include ValidatesClassificationLabel
+
     attr_reader :params, :application_setting
 
     def execute
+      validate_classification_label(application_setting, :external_authorization_service_default_label)
+
+      if application_setting.errors.any?
+        return false
+      end
+
       update_terms(@params.delete(:terms))
 
       if params.key?(:performance_bar_allowed_group_path)

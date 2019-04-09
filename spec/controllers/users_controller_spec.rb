@@ -223,6 +223,12 @@ describe UsersController do
         end
       end
 
+      context 'external authorization' do
+        subject { get :calendar_activities, params: { username: user.username } }
+
+        it_behaves_like 'disabled when using an external authorization service'
+      end
+
       def create_push_event
         push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
         EventCreateService.new.push(project, public_user, push_data)
@@ -285,6 +291,12 @@ describe UsersController do
         expect(response).to have_gitlab_http_status(200)
         expect(JSON.parse(response.body)).to have_key('html')
       end
+    end
+
+    context 'external authorization' do
+      subject { get :snippets, params: { username: user.username } }
+
+      it_behaves_like 'disabled when using an external authorization service'
     end
   end
 
