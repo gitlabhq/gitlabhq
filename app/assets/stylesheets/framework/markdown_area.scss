@@ -163,88 +163,6 @@
   }
 }
 
-.atwho-view {
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  .name,
-  small.aliases,
-  small.params {
-    float: left;
-  }
-
-  small.aliases,
-  small.params {
-    padding: 2px 5px;
-  }
-
-  small.description {
-    float: right;
-    padding: 3px 5px;
-  }
-
-  .avatar-inline {
-    margin-bottom: 0;
-  }
-
-  .has-warning {
-    .name,
-    .description {
-      color: $orange-700;
-    }
-  }
-
-  .cur {
-    .avatar {
-      @include disable-all-animation;
-      border: 1px solid $white-light;
-    }
-  }
-
-  ul > li {
-    @include clearfix;
-    white-space: nowrap;
-  }
-
-  // TODO: fallback to global style
-  .atwho-view-ul {
-    padding: 8px 1px;
-
-    li {
-      padding: 8px 16px;
-      border: 0;
-
-      &.cur {
-        background-color: $gray-darker;
-        color: $gl-text-color;
-
-        small {
-          color: inherit;
-        }
-
-        &.has-warning {
-          color: $orange-700;
-          background-color: $orange-100;
-        }
-      }
-
-      div.avatar {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-
-        .center {
-          line-height: 14px;
-        }
-      }
-
-      strong {
-        color: $gl-text-color;
-      }
-    }
-  }
-}
-
 .md-suggestion-diff {
   display: table !important;
   border: 1px solid $border-color !important;
@@ -269,15 +187,6 @@
 }
 
 @include media-breakpoint-down(xs) {
-  .atwho-view-ul {
-    width: 350px;
-  }
-
-  .atwho-view ul li {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
   .referenced-users {
     margin-right: 0;
   }
