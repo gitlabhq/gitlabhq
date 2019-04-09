@@ -28,6 +28,9 @@
 // Component specific styles, will be moved to gitlab-ui
 @import "components/**/*";
 
+// Vendors specific styles
+@import "vendors/**/*";
+
 // Styles for JS behaviors.
 @import "behaviors";
 
