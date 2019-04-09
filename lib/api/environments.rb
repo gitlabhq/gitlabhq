@@ -101,6 +101,21 @@ module API
         status 200
         present environment, with: Entities::Environment, current_user: current_user
       end
+
+      desc 'Get a single environment' do
+        success Entities::Environment
+      end
+      params do
+        requires :environment_id, type: Integer, desc: 'The environment ID'
+      end
+      get ':id/environments/:environment_id' do
+        authorize! :read_environment, user_project
+
+        environment = user_project.environments.find(params[:environment_id])
+        present environment, with: Entities::Environment, current_user: current_user,
+                             except: [:project, { last_deployment: [:environment] }],
+                             last_deployment: true
+      end
     end
   end
 end

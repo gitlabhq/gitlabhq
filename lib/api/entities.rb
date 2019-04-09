@@ -1294,15 +1294,16 @@ module API
       expose :id, :name, :slug, :external_url
     end
 
-    class Environment < EnvironmentBasic
-      expose :project, using: Entities::BasicProjectDetails
-    end
-
     class Deployment < Grape::Entity
       expose :id, :iid, :ref, :sha, :created_at
       expose :user,        using: Entities::UserBasic
       expose :environment, using: Entities::EnvironmentBasic
       expose :deployable,  using: Entities::Job
+    end
+
+    class Environment < EnvironmentBasic
+      expose :project, using: Entities::BasicProjectDetails
+      expose :last_deployment, using: Entities::Deployment, if: { last_deployment: true }
     end
 
     class LicenseBasic < Grape::Entity
