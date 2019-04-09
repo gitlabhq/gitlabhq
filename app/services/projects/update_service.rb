@@ -3,6 +3,7 @@
 module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
+    include ValidatesClassificationLabel
 
     ValidationError = Class.new(StandardError)
 
@@ -13,6 +14,8 @@ module Projects
       ensure_wiki_exists if enabling_wiki?
 
       yield if block_given?
+
+      validate_classification_label(project, :external_authorization_classification_label)
 
       # If the block added errors, don't try to save the project
       return update_failed! if project.errors.any?

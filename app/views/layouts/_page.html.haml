@@ -7,6 +7,7 @@
     .alert-wrapper
       = render "layouts/broadcast"
       = render "layouts/header/read_only_banner"
+      = render "layouts/nav/classification_level_banner"
       = yield :flash_message
       = render "shared/ping_consent"
       - unless @hide_breadcrumbs

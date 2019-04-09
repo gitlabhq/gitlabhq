@@ -226,5 +226,12 @@ describe LabelsFinder do
         expect(finder.execute).to eq [project_label_1]
       end
     end
+
+    context 'external authorization' do
+      it_behaves_like 'a finder with external authorization service' do
+        let!(:subject) { create(:label, project: project) }
+        let(:project_params) { { project_id: project.id } }
+      end
+    end
   end
 end
