@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This monkey patches the HTTParty used in https://github.com/hipchat/hipchat-rb.
 module HipChat
   class Client
