@@ -18,7 +18,7 @@ class ProjectCacheWorker
 
     return unless project && project.repository.exists?
 
-    update_statistics(project, statistics.map(&:to_sym))
+    update_statistics(project, statistics)
 
     project.repository.refresh_method_caches(files.map(&:to_sym))
 
@@ -26,20 +26,28 @@ class ProjectCacheWorker
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # NOTE: triggering both an immediate update and one in 15 minutes if we
+  # successfully obtain the lease. That way, we only need to wait for the
+  # statistics to become accurate if they were already updated once in the
+  # last 15 minutes.
   def update_statistics(project, statistics = [])
     return if Gitlab::Database.read_only?
-    return unless try_obtain_lease_for(project.id, :update_statistics)
+    return unless try_obtain_lease_for(project.id, statistics)
 
-    Rails.logger.info("Updating statistics for project #{project.id}")
+    Projects::UpdateStatisticsService.new(project, nil, statistics: statistics).execute
 
-    project.statistics.refresh!(only: statistics)
+    UpdateProjectStatisticsWorker.perform_in(LEASE_TIMEOUT, project.id, statistics)
   end
 
   private
 
-  def try_obtain_lease_for(project_id, section)
+  def try_obtain_lease_for(project_id, statistics)
     Gitlab::ExclusiveLease
-      .new("project_cache_worker:#{project_id}:#{section}", timeout: LEASE_TIMEOUT)
+      .new(project_cache_worker_key(project_id, statistics), timeout: LEASE_TIMEOUT)
       .try_obtain
+  end
+
+  def project_cache_worker_key(project_id, statistics)
+    ["project_cache_worker", project_id, *statistics.sort].join(":")
   end
 end
