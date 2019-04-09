@@ -130,6 +130,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Cont
 ```
 
 Example response:
+
 ```json
 {
   "id": "ed899a2f4b50b4370feeea94676502b42383c746",
@@ -162,21 +163,21 @@ curl --request POST \
      --form "branch=master" \
      --form "commit_message=some commit message" \
      --form "start_branch=master" \
-     --form "actions[][action]=create" \ 
-     --form "actions[][file_path]=foo/bar" \ 
-     --form "actions[][content]=</path/to/local.file" \ 
-     --form "actions[][action]=delete" \ 
-     --form "actions[][file_path]=foo/bar2" \ 
-     --form "actions[][action]=move" \ 
-     --form "actions[][file_path]=foo/bar3" \ 
-     --form "actions[][previous_path]=foo/bar4" \ 
-     --form "actions[][content]=</path/to/local1.file" \ 
-     --form "actions[][action]=update" \ 
+     --form "actions[][action]=create" \
+     --form "actions[][file_path]=foo/bar" \
+     --form "actions[][content]=</path/to/local.file" \
+     --form "actions[][action]=delete" \
+     --form "actions[][file_path]=foo/bar2" \
+     --form "actions[][action]=move" \
+     --form "actions[][file_path]=foo/bar3" \
+     --form "actions[][previous_path]=foo/bar4" \
+     --form "actions[][content]=</path/to/local1.file" \
+     --form "actions[][action]=update" \
      --form "actions[][file_path]=foo/bar5" \
-     --form "actions[][content]=</path/to/local2.file" \ 
-     --form "actions[][action]=chmod" \ 
+     --form "actions[][content]=</path/to/local2.file" \
+     --form "actions[][action]=chmod" \
      --form "actions[][file_path]=foo/bar5" \
-     --form "actions[][execute_filemode]=true" \ 
+     --form "actions[][execute_filemode]=true" \
      --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/repository/commits"
 ```
