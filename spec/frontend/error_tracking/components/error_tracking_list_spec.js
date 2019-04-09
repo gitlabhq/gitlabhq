@@ -31,7 +31,7 @@ describe('ErrorTrackingList', () => {
     actions = {
       getErrorList: () => {},
       startPolling: () => {},
-      restartPolling: jasmine.createSpy('restartPolling'),
+      restartPolling: jest.fn().mockName('restartPolling'),
     };
 
     const state = {
