@@ -7,9 +7,9 @@ in the table below.
 
 | Field | Description |
 | ----- | ----------- |
-| `title`   | A title for the issue tracker (to differentiate between instances, for example) |
+| `title`   | A title for the issue tracker (to differentiate between instances, for example). |
 | `description`   | A name for the issue tracker (to differentiate between instances, for example) |
-| `project_url`   | Currently unused. Will be changed in a future release. |
+| `project_url`   | The URL to the project in the custom issue tracker. |
 | `issues_url`    | The URL to the issue in the issue tracker project that is linked to this GitLab project. Note that the `issues_url` requires `:id` in the URL. This ID is used by GitLab as a placeholder to replace the issue number. For example, `https://customissuetracker.com/project-name/:id`. |
 | `new_issue_url` | Currently unused. Will be changed in a future release. |
 
