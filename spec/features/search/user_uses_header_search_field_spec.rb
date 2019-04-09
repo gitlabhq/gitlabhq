@@ -36,7 +36,7 @@ describe 'User uses header search field' do
     end
 
     context 'when clicking merge requests' do
-      let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignee: user) }
+      let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignees: [user]) }
 
       it 'shows assigned merge requests' do
         find('.search-input-container .dropdown-menu').click_link('Merge requests assigned to me')
@@ -100,7 +100,7 @@ describe 'User uses header search field' do
       end
 
       context 'when clicking merge requests' do
-        let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignee: user) }
+        let!(:merge_request) { create(:merge_request, source_project: project, author: user, assignees: [user]) }
 
         it 'shows assigned merge requests' do
           find('.dropdown-menu').click_link('Merge requests assigned to me')

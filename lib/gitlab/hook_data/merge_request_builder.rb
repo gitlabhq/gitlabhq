@@ -34,7 +34,6 @@ module Gitlab
       end
 
       SAFE_HOOK_RELATIONS = %i[
-        assignee
         labels
         total_time_spent
       ].freeze
@@ -51,7 +50,9 @@ module Gitlab
           work_in_progress: merge_request.work_in_progress?,
           total_time_spent: merge_request.total_time_spent,
           human_total_time_spent: merge_request.human_total_time_spent,
-          human_time_estimate: merge_request.human_time_estimate
+          human_time_estimate: merge_request.human_time_estimate,
+          assignee_ids: merge_request.assignee_ids,
+          assignee_id: merge_request.assignee_ids.first # This key is deprecated
         }
 
         merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)

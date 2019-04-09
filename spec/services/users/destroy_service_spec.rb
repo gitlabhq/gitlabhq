@@ -78,7 +78,7 @@ describe Users::DestroyService do
       end
 
       context "for an merge request the user was assigned to" do
-        let!(:merge_request) { create(:merge_request, source_project: project, assignee: user) }
+        let!(:merge_request) { create(:merge_request, source_project: project, assignees: [user]) }
 
         before do
           service.execute(user)
@@ -91,7 +91,7 @@ describe Users::DestroyService do
         it 'migrates the merge request so that it is "Unassigned"' do
           migrated_merge_request = MergeRequest.find_by_id(merge_request.id)
 
-          expect(migrated_merge_request.assignee).to be_nil
+          expect(migrated_merge_request.assignees).to be_empty
         end
       end
     end

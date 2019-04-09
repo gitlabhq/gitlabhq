@@ -54,8 +54,7 @@ describe 'Merge requests > User mass updates', :js do
 
     describe 'remove assignee' do
       before do
-        merge_request.assignee = user
-        merge_request.save
+        merge_request.assignees = [user]
         visit project_merge_requests_path(project)
       end
 

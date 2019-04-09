@@ -69,7 +69,7 @@ module SystemNoteService
 
   # Called when the assignees of an Issue is changed or removed
   #
-  # issue - Issue object
+  # issuable - Issuable object (responds to assignees)
   # project  - Project owning noteable
   # author   - User performing the change
   # assignees - Users being assigned, or nil
@@ -85,9 +85,9 @@ module SystemNoteService
   #   "assigned to @user1 and @user2"
   #
   # Returns the created Note object
-  def change_issue_assignees(issue, project, author, old_assignees)
-    unassigned_users = old_assignees - issue.assignees
-    added_users = issue.assignees.to_a - old_assignees
+  def change_issuable_assignees(issuable, project, author, old_assignees)
+    unassigned_users = old_assignees - issuable.assignees
+    added_users = issuable.assignees.to_a - old_assignees
 
     text_parts = []
     text_parts << "assigned to #{added_users.map(&:to_reference).to_sentence}" if added_users.any?
@@ -95,7 +95,7 @@ module SystemNoteService
 
     body = text_parts.join(' and ')
 
-    create_note(NoteSummary.new(issue, project, author, body, action: 'assignee'))
+    create_note(NoteSummary.new(issuable, project, author, body, action: 'assignee'))
   end
 
   # Called when the milestone of a Noteable is changed

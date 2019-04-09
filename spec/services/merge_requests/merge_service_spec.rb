@@ -3,7 +3,7 @@ require 'spec_helper'
 describe MergeRequests::MergeService do
   set(:user) { create(:user) }
   set(:user2) { create(:user) }
-  let(:merge_request) { create(:merge_request, :simple, author: user2, assignee: user2) }
+  let(:merge_request) { create(:merge_request, :simple, author: user2, assignees: [user2]) }
   let(:project) { merge_request.project }
 
   before do
@@ -111,7 +111,7 @@ describe MergeRequests::MergeService do
     end
 
     context 'closes related todos' do
-      let(:merge_request) { create(:merge_request, assignee: user, author: user) }
+      let(:merge_request) { create(:merge_request, assignees: [user], author: user) }
       let(:project) { merge_request.project }
       let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
       let!(:todo) do

@@ -621,3 +621,7 @@ Suggestion:
 - outdated
 - lines_above
 - lines_below
+MergeRequestAssignee:
+- id
+- user_id
+- merge_request_id

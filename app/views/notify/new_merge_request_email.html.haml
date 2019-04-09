@@ -5,9 +5,9 @@
 %p.details
   != merge_path_description(@merge_request, '&rarr;')
 
-- if @merge_request.assignee_id.present?
+- if @merge_request.assignees.any?
   %p
-    Assignee: #{sanitize_name(@merge_request.assignee_name)}
+    = assignees_label(@merge_request)
 
 = render_if_exists 'notify/merge_request_approvers', presenter: @mr_presenter
 

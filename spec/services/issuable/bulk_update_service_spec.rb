@@ -76,14 +76,14 @@ describe Issuable::BulkUpdateService do
   end
 
   describe 'updating merge request assignee' do
-    let(:merge_request) { create(:merge_request, target_project: project, source_project: project, assignee: user) }
+    let(:merge_request) { create(:merge_request, target_project: project, source_project: project, assignees: [user]) }
 
     context 'when the new assignee ID is a valid user' do
       it 'succeeds' do
         new_assignee = create(:user)
         project.add_developer(new_assignee)
 
-        result = bulk_update(merge_request, assignee_id: new_assignee.id)
+        result = bulk_update(merge_request, assignee_ids: [user.id, new_assignee.id])
 
         expect(result[:success]).to be_truthy
         expect(result[:count]).to eq(1)
@@ -93,22 +93,22 @@ describe Issuable::BulkUpdateService do
         assignee = create(:user)
         project.add_developer(assignee)
 
-        expect { bulk_update(merge_request, assignee_id: assignee.id) }
-          .to change { merge_request.reload.assignee }.from(user).to(assignee)
+        expect { bulk_update(merge_request, assignee_ids: [assignee.id]) }
+          .to change { merge_request.reload.assignee_ids }.from([user.id]).to([assignee.id])
       end
     end
 
     context "when the new assignee ID is #{IssuableFinder::NONE}" do
       it 'unassigns the issues' do
-        expect { bulk_update(merge_request, assignee_id: IssuableFinder::NONE) }
-          .to change { merge_request.reload.assignee }.to(nil)
+        expect { bulk_update(merge_request, assignee_ids: [IssuableFinder::NONE]) }
+          .to change { merge_request.reload.assignee_ids }.to([])
       end
     end
 
     context 'when the new assignee ID is not present' do
       it 'does not unassign' do
-        expect { bulk_update(merge_request, assignee_id: nil) }
-          .not_to change { merge_request.reload.assignee }
+        expect { bulk_update(merge_request, assignee_ids: []) }
+          .not_to change { merge_request.reload.assignee_ids }
       end
     end
   end
