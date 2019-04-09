@@ -60,34 +60,7 @@ describe 'Issues > User uses quick actions', :js do
     it_behaves_like 'remove_due_date quick action'
     it_behaves_like 'duplicate quick action'
     it_behaves_like 'create_merge_request quick action'
-
-    describe 'adding a due date from note' do
-      let(:issue) { create(:issue, project: project) }
-
-      it_behaves_like 'due quick action available and date can be added'
-
-      context 'when the current user cannot update the due date' do
-        let(:guest) { create(:user) }
-        before do
-          project.add_guest(guest)
-          gitlab_sign_out
-          sign_in(guest)
-          visit project_issue_path(project, issue)
-        end
-
-        it_behaves_like 'due quick action not available'
-      end
-    end
-
-    describe 'toggling the WIP prefix from the title from note' do
-      let(:issue) { create(:issue, project: project) }
-
-      it 'does not recognize the command nor create a note' do
-        add_note("/wip")
-
-        expect(page).not_to have_content '/wip'
-      end
-    end
+    it_behaves_like 'due quick action'
 
     describe 'move the issue to another project' do
       let(:issue) { create(:issue, project: project) }
