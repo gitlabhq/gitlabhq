@@ -115,6 +115,8 @@ If using a [DNS A record](#dns-a-record), you can place the TXT record directly
 under the domain. If using a [DNS CNAME record](#dns-cname-record), the two record types won't
 co-exist, so you need to place the TXT record in a special subdomain of its own.
 
+If the domain cannot be verified for 7 days, it will be removed from the GitLab project.
+
 #### TL;DR
 
 For root domains (`domain.com`), set a DNS `A` record and verify your
