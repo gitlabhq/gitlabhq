@@ -1785,6 +1785,9 @@ msgstr ""
 msgid "CiStatus|running"
 msgstr ""
 
+msgid "CiVariables|Cannot use Masked Variable with current value"
+msgstr ""
+
 msgid "CiVariables|Input variable key"
 msgstr ""
 
@@ -1792,9 +1795,6 @@ msgid "CiVariables|Input variable value"
 msgstr ""
 
 msgid "CiVariables|Remove variable row"
-msgstr ""
-
-msgid "CiVariables|This variable will not be masked"
 msgstr ""
 
 msgid "CiVariable|* (All environments)"
