@@ -49,7 +49,6 @@ describe Gitlab::LegacyGithubImport::ProjectCreator do
     context 'when GitHub project is public' do
       it 'sets project visibility to namespace visibility level' do
         repo.private = false
-
         project = service.execute
 
         expect(project.visibility_level).to eq(namespace.visibility_level)
@@ -60,7 +59,6 @@ describe Gitlab::LegacyGithubImport::ProjectCreator do
 
         it 'sets project visibility to user namespace visibility level' do
           repo.private = false
-
           project = service.execute
 
           expect(project.visibility_level).to eq(user.namespace.visibility_level)
