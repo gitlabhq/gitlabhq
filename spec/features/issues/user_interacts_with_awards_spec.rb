@@ -14,7 +14,7 @@ describe 'User interacts with awards' do
       visit(project_issue_path(project, issue))
     end
 
-    it 'toggles the thumbsup award emoji' do
+    it 'toggles the thumbsup award emoji', :quarantine do
       page.within('.awards') do
         thumbsup = page.first('.award-control')
         thumbsup.click
