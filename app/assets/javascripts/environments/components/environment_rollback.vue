@@ -72,10 +72,9 @@ export default {
   <gl-button
     v-gl-tooltip
     v-gl-modal.confirm-rollback-modal
-    variant="secondary"
     :disabled="isLoading"
     :title="title"
-    class="d-none d-md-block"
+    class="d-none d-md-block text-secondary"
     @click="onClick"
   >
     <icon v-if="isLastDeployment" name="repeat" /> <icon v-else name="redo" />
