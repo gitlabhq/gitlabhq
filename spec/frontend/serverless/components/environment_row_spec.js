@@ -14,7 +14,7 @@ describe('environment row component', () => {
 
     beforeEach(() => {
       localVue = createLocalVue();
-      vm = createComponent(localVue, translate(mockServerlessFunctions)['*'], '*');
+      vm = createComponent(localVue, translate(mockServerlessFunctions.functions)['*'], '*');
     });
 
     afterEach(() => vm.$destroy());
@@ -48,7 +48,11 @@ describe('environment row component', () => {
 
     beforeEach(() => {
       localVue = createLocalVue();
-      vm = createComponent(localVue, translate(mockServerlessFunctionsDiffEnv).test, 'test');
+      vm = createComponent(
+        localVue,
+        translate(mockServerlessFunctionsDiffEnv.functions).test,
+        'test',
+      );
     });
 
     afterEach(() => vm.$destroy());

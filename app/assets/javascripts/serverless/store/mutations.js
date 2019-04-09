@@ -5,12 +5,23 @@ export default {
     state.isLoading = true;
   },
   [types.RECEIVE_FUNCTIONS_SUCCESS](state, data) {
-    state.functions = data;
+    state.functions = data.functions;
+    state.installed = data.knative_installed;
     state.isLoading = false;
     state.hasFunctionData = true;
   },
-  [types.RECEIVE_FUNCTIONS_NODATA_SUCCESS](state) {
+  [types.RECEIVE_FUNCTIONS_PARTIAL](state, data) {
+    state.functions = data.functions;
+    state.installed = true;
+    state.isLoading = true;
+    state.hasFunctionData = true;
+  },
+  [types.RECEIVE_FUNCTIONS_TIMEOUT](state) {
     state.isLoading = false;
+  },
+  [types.RECEIVE_FUNCTIONS_NODATA_SUCCESS](state, data) {
+    state.isLoading = false;
+    state.installed = data.knative_installed;
     state.hasFunctionData = false;
   },
   [types.RECEIVE_FUNCTIONS_ERROR](state, error) {

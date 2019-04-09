@@ -8,9 +8,8 @@ describe Projects::Serverless::FunctionsController do
 
   let(:user) { create(:user) }
   let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-  let(:knative) { create(:clusters_applications_knative, :installed, cluster: cluster) }
   let(:service) { cluster.platform_kubernetes }
-  let(:project) { cluster.project}
+  let(:project) { cluster.project }
 
   let(:namespace) do
     create(:cluster_kubernetes_namespace,
@@ -30,17 +29,69 @@ describe Projects::Serverless::FunctionsController do
   end
 
   describe 'GET #index' do
-    context 'empty cache' do
-      it 'has no data' do
-        get :index, params: params({ format: :json })
+    let(:expected_json) { { 'knative_installed' => knative_state, 'functions' => functions } }
 
-        expect(response).to have_gitlab_http_status(204)
+    context 'when cache is being read' do
+      let(:knative_state) { 'checking' }
+      let(:functions) { [] }
+
+      before do
+        get :index, params: params({ format: :json })
       end
 
-      it 'renders an html page' do
-        get :index, params: params
+      it 'returns checking' do
+        expect(json_response).to eq expected_json
+      end
 
-        expect(response).to have_gitlab_http_status(200)
+      it { expect(response).to have_gitlab_http_status(200) }
+    end
+
+    context 'when cache is ready' do
+      let(:knative_services_finder) { project.clusters.first.knative_services_finder(project) }
+      let(:knative_state) { true }
+
+      before do
+        allow_any_instance_of(Clusters::Cluster)
+          .to receive(:knative_services_finder)
+          .and_return(knative_services_finder)
+        synchronous_reactive_cache(knative_services_finder)
+        stub_kubeclient_service_pods(
+          kube_response({ "kind" => "PodList", "items" => [] }),
+          namespace: namespace.namespace
+        )
+      end
+
+      context 'when no functions were found' do
+        let(:functions) { [] }
+
+        before do
+          stub_kubeclient_knative_services(
+            namespace: namespace.namespace,
+            response: kube_response({ "kind" => "ServiceList", "items" => [] })
+          )
+          get :index, params: params({ format: :json })
+        end
+
+        it 'returns checking' do
+          expect(json_response).to eq expected_json
+        end
+
+        it { expect(response).to have_gitlab_http_status(200) }
+      end
+
+      context 'when functions were found' do
+        let(:functions) { ["asdf"] }
+
+        before do
+          stub_kubeclient_knative_services(namespace: namespace.namespace)
+          get :index, params: params({ format: :json })
+        end
+
+        it 'returns functions' do
+          expect(json_response["functions"]).not_to be_empty
+        end
+
+        it { expect(response).to have_gitlab_http_status(200) }
       end
     end
   end
@@ -56,11 +107,12 @@ describe Projects::Serverless::FunctionsController do
     context 'valid data', :use_clean_rails_memory_store_caching do
       before do
         stub_kubeclient_service_pods
-        stub_reactive_cache(knative,
+        stub_reactive_cache(cluster.knative_services_finder(project),
           {
             services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
             pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-          })
+          },
+          *cluster.knative_services_finder(project).cache_args)
       end
 
       it 'has a valid function name' do
@@ -88,11 +140,12 @@ describe Projects::Serverless::FunctionsController do
   describe 'GET #index with data', :use_clean_rails_memory_store_caching do
     before do
       stub_kubeclient_service_pods
-      stub_reactive_cache(knative,
+      stub_reactive_cache(cluster.knative_services_finder(project),
         {
           services: kube_knative_services_body(namespace: namespace.namespace, name: cluster.project.name)["items"],
           pods: kube_knative_pods_body(cluster.project.name, namespace.namespace)["items"]
-        })
+        },
+        *cluster.knative_services_finder(project).cache_args)
     end
 
     it 'has data' do
@@ -100,11 +153,16 @@ describe Projects::Serverless::FunctionsController do
 
       expect(response).to have_gitlab_http_status(200)
 
-      expect(json_response).to contain_exactly(
-        a_hash_including(
-          "name" => project.name,
-          "url" => "http://#{project.name}.#{namespace.namespace}.example.com"
-        )
+      expect(json_response).to match(
+        {
+          "knative_installed" => "checking",
+          "functions" => [
+            a_hash_including(
+              "name" => project.name,
+              "url" => "http://#{project.name}.#{namespace.namespace}.example.com"
+            )
+          ]
+        }
       )
     end
 

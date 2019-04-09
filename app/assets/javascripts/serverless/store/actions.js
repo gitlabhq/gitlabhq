@@ -3,13 +3,18 @@ import axios from '~/lib/utils/axios_utils';
 import statusCodes from '~/lib/utils/http_status';
 import { backOff } from '~/lib/utils/common_utils';
 import createFlash from '~/flash';
-import { MAX_REQUESTS } from '../constants';
+import { __ } from '~/locale';
+import { MAX_REQUESTS, CHECKING_INSTALLED, TIMEOUT } from '../constants';
 
 export const requestFunctionsLoading = ({ commit }) => commit(types.REQUEST_FUNCTIONS_LOADING);
 export const receiveFunctionsSuccess = ({ commit }, data) =>
   commit(types.RECEIVE_FUNCTIONS_SUCCESS, data);
-export const receiveFunctionsNoDataSuccess = ({ commit }) =>
-  commit(types.RECEIVE_FUNCTIONS_NODATA_SUCCESS);
+export const receiveFunctionsPartial = ({ commit }, data) =>
+  commit(types.RECEIVE_FUNCTIONS_PARTIAL, data);
+export const receiveFunctionsTimeout = ({ commit }, data) =>
+  commit(types.RECEIVE_FUNCTIONS_TIMEOUT, data);
+export const receiveFunctionsNoDataSuccess = ({ commit }, data) =>
+  commit(types.RECEIVE_FUNCTIONS_NODATA_SUCCESS, data);
 export const receiveFunctionsError = ({ commit }, error) =>
   commit(types.RECEIVE_FUNCTIONS_ERROR, error);
 
@@ -25,18 +30,25 @@ export const receiveMetricsError = ({ commit }, error) =>
 export const fetchFunctions = ({ dispatch }, { functionsPath }) => {
   let retryCount = 0;
 
+  const functionsPartiallyFetched = data => {
+    if (data.functions !== null && data.functions.length) {
+      dispatch('receiveFunctionsPartial', data);
+    }
+  };
+
   dispatch('requestFunctionsLoading');
 
   backOff((next, stop) => {
     axios
       .get(functionsPath)
       .then(response => {
-        if (response.status === statusCodes.NO_CONTENT) {
+        if (response.data.knative_installed === CHECKING_INSTALLED) {
           retryCount += 1;
           if (retryCount < MAX_REQUESTS) {
+            functionsPartiallyFetched(response.data);
             next();
           } else {
-            stop(null);
+            stop(TIMEOUT);
           }
         } else {
           stop(response.data);
@@ -45,10 +57,13 @@ export const fetchFunctions = ({ dispatch }, { functionsPath }) => {
       .catch(stop);
   })
     .then(data => {
-      if (data !== null) {
+      if (data === TIMEOUT) {
+        dispatch('receiveFunctionsTimeout');
+        createFlash(__('Loading functions timed out. Please reload the page to try again.'));
+      } else if (data.functions !== null && data.functions.length) {
         dispatch('receiveFunctionsSuccess', data);
       } else {
-        dispatch('receiveFunctionsNoDataSuccess');
+        dispatch('receiveFunctionsNoDataSuccess', data);
       }
     })
     .catch(error => {
