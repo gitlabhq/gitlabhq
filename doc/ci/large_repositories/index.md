@@ -1,11 +1,11 @@
-# Optimising GitLab for large repositories
+# Optimizing GitLab for large repositories
 
 Large repositories consisting of more than 50k files in a worktree
 often require special consideration because of
 the time required to clone and check out.
 
 GitLab and GitLab Runner handle this scenario well
-but require optimised configuration to efficiently perform its
+but require optimized configuration to efficiently perform its
 set of operations.
 
 The general guidelines for handling big repositories are simple.
@@ -15,7 +15,7 @@ Each guideline is described in more detail in the sections below:
 - Always use shallow clone to reduce data transfer. Be aware that this puts more burden
   on GitLab instance due to higher CPU impact.
 - Control the clone directory if you heavily use a fork-based workflow.
-- Optimise `git clean` flags to ensure that you remove or keep data that might affect or speed-up your build.
+- Optimize `git clean` flags to ensure that you remove or keep data that might affect or speed-up your build.
 
 ## Shallow cloning
 
@@ -76,7 +76,7 @@ done by GitLab, requiring you to do them.
 This can have implications if you heavily use big repositories with fork workflow.
 
 Fork workflow from GitLab Runner's perspective is stored as a separate repository
-with separate worktree. That means that GitLab Runner cannot optimise the usage
+with separate worktree. That means that GitLab Runner cannot optimize the usage
 of worktrees and you might have to instruct GitLab Runner to use that.
 
 In such cases, ideally you want to make the GitLab Runner executor be used only used only
@@ -113,7 +113,7 @@ available parameters are dependent on Git version.
 
 Following the guidelines above, lets imagine that we want to:
 
-- Optimise for a big project (more than 50k files in directory).
+- Optimize for a big project (more than 50k files in directory).
 - Use forks-based workflow for contributing.
 - Reuse existing worktrees. Have preconfigured runners that are pre-cloned with repositories.
 - Runner assigned only to project and all forks.
