@@ -15,6 +15,10 @@ module Releases
       create_release(tag)
     end
 
+    def find_or_build_release
+      release || build_release(existing_tag)
+    end
+
     private
 
     def ensure_tag
@@ -38,7 +42,17 @@ module Releases
     end
 
     def create_release(tag)
-      release = project.releases.create!(
+      release = build_release(tag)
+
+      release.save!
+
+      success(tag: tag, release: release)
+    rescue => e
+      error(e.message, 400)
+    end
+
+    def build_release(tag)
+      project.releases.build(
         name: name,
         description: description,
         author: current_user,
@@ -46,10 +60,6 @@ module Releases
         sha: tag.dereferenced_target.sha,
         links_attributes: params.dig(:assets, 'links') || []
       )
-
-      success(tag: tag, release: release)
-    rescue => e
-      error(e.message, 400)
     end
   end
 end
