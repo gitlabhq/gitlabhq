@@ -391,7 +391,7 @@ describe HipchatService do
   context 'with UrlBlocker' do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
-    let(:hipchat) { described_class.new(project: project) }
+    let(:hipchat) { create(:hipchat_service, project: project, properties: { room: 'test' }) }
     let(:push_sample_data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
 
     describe '#execute' do
