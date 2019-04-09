@@ -1547,9 +1547,11 @@ ActiveRecord::Schema.define(version: 20190326164045) do
     t.datetime_with_timezone "verified_at"
     t.string "verification_code", null: false
     t.datetime_with_timezone "enabled_until"
+    t.datetime_with_timezone "remove_at"
     t.index ["domain"], name: "index_pages_domains_on_domain", unique: true, using: :btree
     t.index ["project_id", "enabled_until"], name: "index_pages_domains_on_project_id_and_enabled_until", using: :btree
     t.index ["project_id"], name: "index_pages_domains_on_project_id", using: :btree
+    t.index ["remove_at"], name: "index_pages_domains_on_remove_at", using: :btree
     t.index ["verified_at", "enabled_until"], name: "index_pages_domains_on_verified_at_and_enabled_until", using: :btree
     t.index ["verified_at"], name: "index_pages_domains_on_verified_at", using: :btree
   end
