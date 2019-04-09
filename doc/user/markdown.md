@@ -578,11 +578,11 @@ Alt-H2
 ------
 ```
 
-### Header IDs and links
+#### Header IDs and links
 
-All Markdown-rendered headers automatically get IDs, except in comments.
+All Markdown-rendered headers automatically get IDs, which can be linked to, except in comments.
 
-On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
+On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to use it somewhere else.
 
 The IDs are generated from the content of the header according to the following rules:
 
@@ -609,8 +609,8 @@ Would generate the following link IDs:
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-a-in-it`
 1. `this-header-has-unicode-in-it-한글`
-1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-spaces-in-it-2`
 1. `this-header-has-3-5-in-it-and-parentheses`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
@@ -715,25 +715,25 @@ Becomes:
 
 There are two ways to create links, inline-style and reference-style.
 
-    [I'm an inline-style link](https://www.google.com)
+```markdown
+[I'm an inline-style link](https://www.google.com)
+[I'm a link to a repository file in the same directory](index.md)
+[I am an absolute reference within the repository](/doc/user/index.md)
+[I'm a relative link to the Milestones page](../README.md)
 
-    [I'm a reference-style link][Arbitrary case-insensitive reference text]
+[I link to a section on a different markdown page, using a header ID](index.md#overview)
+[I link to a different section on the same page, using the header ID](#header-ids-and-links)
 
-    [I'm a relative reference to a repository file](LICENSE)
+[I'm a reference-style link][Arbitrary case-insensitive reference text]
+[You can use numbers for reference-style link definitions][1]
+Or leave it empty and use the [link text itself][]
 
-    [I am an absolute reference within the repository](/doc/user/markdown.md)
+Some text to show that the reference links can follow later.
 
-    [I link to the Milestones page](/../milestones)
-
-    [You can use numbers for reference-style link definitions][1]
-
-    Or leave it empty and use the [link text itself][]
-
-    Some text to show that the reference links can follow later.
-
-    [arbitrary case-insensitive reference text]: https://www.mozilla.org
-    [1]: http://slashdot.org
-    [link text itself]: https://www.reddit.com
+[arbitrary case-insensitive reference text]: https://www.mozilla.org
+[1]: http://slashdot.org
+[link text itself]: https://www.reddit.com
+```
 
 >**Note:**
 Relative links do not allow referencing project files in a wiki page or wiki
