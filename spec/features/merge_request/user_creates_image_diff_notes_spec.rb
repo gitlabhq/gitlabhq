@@ -113,7 +113,7 @@ describe 'Merge request > User creates image diff notes', :js do
           create_image_diff_note
         end
 
-        it 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes' do
+        it 'shows indicator and avatar badges, and allows collapsing/expanding the discussion notes', :quarantine do
           indicator = find('.js-image-badge', match: :first)
           badge = find('.user-avatar-link .badge', match: :first)
 
