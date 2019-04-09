@@ -100,7 +100,7 @@ module MergeRequests
         merge_request = ::MergeRequests::CreateService.new(
           project,
           current_user,
-          merge_request.attributes
+          merge_request.attributes.merge(assignees: merge_request.assignees)
         ).execute
       end
 
@@ -119,7 +119,7 @@ module MergeRequests
 
     def create_params(branch)
       params = {
-        assignee: current_user,
+        assignees: [current_user],
         source_branch: branch,
         source_project: project,
         target_branch: push_options[:target] || target_project.default_branch,

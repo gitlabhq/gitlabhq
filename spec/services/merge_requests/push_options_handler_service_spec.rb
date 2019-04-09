@@ -38,7 +38,7 @@ describe MergeRequests::PushOptionsHandlerService do
     it 'assigns the MR to the user' do
       service.execute
 
-      expect(last_mr.assignee).to eq(user)
+      expect(last_mr.assignees).to contain_exactly(user)
     end
 
     context 'when project has been forked' do
