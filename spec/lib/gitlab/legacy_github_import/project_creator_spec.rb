@@ -54,6 +54,18 @@ describe Gitlab::LegacyGithubImport::ProjectCreator do
 
         expect(project.visibility_level).to eq(namespace.visibility_level)
       end
+
+      context 'when importing into a user namespace' do
+        subject(:service) { described_class.new(repo, repo.name, user.namespace, user, github_access_token: 'asdffg') }
+
+        it 'sets project visibility to user namespace visibility level' do
+          repo.private = false
+
+          project = service.execute
+
+          expect(project.visibility_level).to eq(user.namespace.visibility_level)
+        end
+      end
     end
 
     context 'when visibility level is restricted' do
