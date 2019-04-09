@@ -1996,7 +1996,6 @@ ActiveRecord::Schema.define(version: 20190326164045) do
     t.boolean "confidential_note_events", default: true
     t.index ["project_id"], name: "index_services_on_project_id", using: :btree
     t.index ["template"], name: "index_services_on_template", using: :btree
-    t.index ["type"], name: "index_services_on_type", using: :btree
   end
 
   create_table "shards", force: :cascade do |t|

@@ -223,6 +223,7 @@ project:
 - packagist_service
 - pivotaltracker_service
 - prometheus_service
+- hipchat_service
 - flowdock_service
 - assembla_service
 - asana_service

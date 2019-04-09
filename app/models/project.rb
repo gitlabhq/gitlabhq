@@ -146,6 +146,7 @@ class Project < ApplicationRecord
   has_one :pipelines_email_service
   has_one :irker_service
   has_one :pivotaltracker_service
+  has_one :hipchat_service
   has_one :flowdock_service
   has_one :assembla_service
   has_one :asana_service
