@@ -4,7 +4,12 @@ include:
   - local: /lib/gitlab/ci/templates/Code-Quality.gitlab-ci.yml
 
 .dedicated-runner: &dedicated-runner
-  retry: 1
+  retry:
+    max: 1 # This is confusing but this means "2 runs at max".
+    when:
+      - unknown_failure
+      - api_failure
+      - runner_system_failure
   tags:
     - gitlab-org
 
@@ -1168,4 +1173,3 @@ schedule:review-performance:
   <<: *review-schedules-only
   script:
     - wait_for_job_to_be_done "schedule:review-deploy"
-
