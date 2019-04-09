@@ -62,7 +62,7 @@ into more features:
 | [ChatOps](chatops/README.md)                                                                                              | Trigger CI jobs from chat, with results sent back to the channel.                          |
 | [Interactive web terminals](interactive_web_terminal/index.md)                                                            | Open an interactive web terminal to debug the running jobs.                                |
 | [Review Apps](review_apps/index.md)                                                                                       | Configure GitLab CI/CD to preview code changes in a per-branch basis.                      |
-| [Optimising GitLab for large repositories](large_repositories/index.md) | Useful tips on how to optimise GitLab and GitLab Runner for big repositories. |
+| [Optimizing GitLab for large repositories](large_repositories/index.md)                                                   | Useful tips on how to optimize GitLab and GitLab Runner for big repositories.              |
 | [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html) **[PREMIUM]**                                 | Check the current health and status of each CI/CD environment running on Kubernetes.       |
 | [GitLab CI/CD for external repositories](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/index.html) **[PREMIUM]** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and BitBucket Cloud. |
 
