@@ -222,6 +222,21 @@ describe 'Issue Boards', :js do
     end
   end
 
+  context 'time tracking' do
+    before do
+      issue2.timelogs.create(time_spent: 14400, user: user)
+      issue2.update!(time_estimate: 28800)
+    end
+
+    it 'shows time tracking progress bar' do
+      click_card(card)
+
+      page.within('.time-tracking') do
+        expect(find('.time-tracking-content .compare-meter')['data-original-title']).to eq('Time remaining: 4h')
+      end
+    end
+  end
+
   context 'due date' do
     it 'updates due date' do
       click_card(card)
