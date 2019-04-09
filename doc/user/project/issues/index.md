@@ -78,7 +78,7 @@ While you can view and manage the full detail of an issue at its URL, you can al
 
 On an issue’s page, you can view all aspects of the issue, and you can also modify them if you you have the necessary [permissions](../../permissions.md).
 
-For more information, see the [Issue Functionalities](issues_functionalities.md) page.
+For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page.
 
 ### Issues list
 
@@ -86,7 +86,7 @@ For more information, see the [Issue Functionalities](issues_functionalities.md)
 
 On the Issues List, you can view all issues in the current project, or from multiple projects when opening the Issues List from the higher-level group context. Filter the issue list by [any search query](../../search/index.md#issues-and-merge-requests-per-project) and/or specific metadata, such as label(s), assignees(s), status, and more. From this view, you can also make certain changes [in bulk](../bulk_editing.md) to the displayed issues.
 
-For more information, see the [Issue Functioinalities](issues_functionalities.md) page.
+For more information, see the [Issue Data and Actions](issue_data_and_actions.md) page.
 
 ### Issue boards
 
@@ -123,7 +123,7 @@ For more information, see [Crosslinking issues](crosslinking_issues.md).
 - [Close an issue](closing_issues.md)
 - [Move an issue](moving_issues.md)
 - [Delete an issue](deleting_issues.md)
-- [Create a merge request from an issue](issues_functionalities.md#18-new-merge-request)
+- [Create a merge request from an issue](issue_data_and_actions.md#18-new-merge-request)
 
 ## Advanced issue management
 
