@@ -419,6 +419,17 @@ describe Projects::EnvironmentsController do
         expect(json_response['data']).to eq({})
         expect(json_response['last_update']).to eq(42)
       end
+
+      context 'when time params are provided' do
+        it 'returns a metrics JSON document' do
+          additional_metrics(start: '1554702993.5398998', end: '1554717396.996232')
+
+          expect(response).to be_ok
+          expect(json_response['success']).to be(true)
+          expect(json_response['data']).to eq({})
+          expect(json_response['last_update']).to eq(42)
+        end
+      end
     end
 
     context 'when only one time param is provided' do

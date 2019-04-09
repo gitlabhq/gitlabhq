@@ -193,7 +193,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     return unless Feature.enabled?(:metrics_time_window, project)
     return unless params[:start].present? || params[:end].present?
 
-    params.require([:start, :end]).values_at(:start, :end)
+    params.require([:start, :end])
   end
 
   def search_environment_names
