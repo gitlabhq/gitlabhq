@@ -81,7 +81,7 @@ class ProjectsFinder < UnionFinder
       if private_only?
         current_user.authorized_projects
       else
-        Project.public_or_visible_to_user(current_user, params[:visibility_level])
+        Project.public_or_visible_to_user(current_user)
       end
     end
   end
