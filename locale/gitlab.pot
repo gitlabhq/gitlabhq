@@ -3184,6 +3184,30 @@ msgstr ""
 msgid "Email patch"
 msgstr ""
 
+msgid "EmailError|It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies."
+msgstr ""
+
+msgid "EmailError|The thread you are replying to no longer exists, perhaps it was deleted? If you believe this is in error, contact a staff member."
+msgstr ""
+
+msgid "EmailError|We couldn't figure out what the email is for. Please create your issue or comment through the web interface."
+msgstr ""
+
+msgid "EmailError|We couldn't figure out what the email is in reply to. Please create your comment through the web interface."
+msgstr ""
+
+msgid "EmailError|We couldn't figure out what user corresponds to the email. Please create your comment through the web interface."
+msgstr ""
+
+msgid "EmailError|We couldn't find the project. Please check if there's any typo."
+msgstr ""
+
+msgid "EmailError|You are not allowed to perform this action. If you believe this is in error, contact a staff member."
+msgstr ""
+
+msgid "EmailError|Your account has been blocked. If you believe this is in error, contact a staff member."
+msgstr ""
+
 msgid "Emails"
 msgstr ""
 
@@ -3506,6 +3530,9 @@ msgid "Error uploading file"
 msgstr ""
 
 msgid "Error while loading the merge request. Please try again."
+msgstr ""
+
+msgid "Error while migrating %{upload_id}: %{error_message}"
 msgstr ""
 
 msgid "Error with Akismet. Please check the logs for more info."
@@ -4679,6 +4706,12 @@ msgstr ""
 msgid "Job has been successfully erased!"
 msgstr ""
 
+msgid "Job has wrong arguments format."
+msgstr ""
+
+msgid "Job is missing the `model_type` argument."
+msgstr ""
+
 msgid "Job is stuck. Check runners."
 msgstr ""
 
@@ -5262,6 +5295,12 @@ msgstr ""
 msgid "Metrics|Unexpected metrics data response from prometheus endpoint"
 msgstr ""
 
+msgid "Migrated %{success_count}/%{total_count} files."
+msgstr ""
+
+msgid "Migration successful."
+msgstr ""
+
 msgid "Milestone"
 msgstr ""
 
@@ -5355,10 +5394,19 @@ msgstr ""
 msgid "Most stars"
 msgstr ""
 
+msgid "Mount point %{mounted_as} not found in %{model_class}."
+msgstr ""
+
 msgid "Move"
 msgstr ""
 
 msgid "Move issue"
+msgstr ""
+
+msgid "Multiple model types found: %{model_types}"
+msgstr ""
+
+msgid "Multiple uploaders found: %{uploader_types}"
 msgstr ""
 
 msgid "Name"
@@ -8305,6 +8353,9 @@ msgid "The repository must be accessible over <code>http://</code>, <code>https:
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
+msgstr ""
+
+msgid "The schedule time must be in the future!"
 msgstr ""
 
 msgid "The snippet can be accessed without any authentication."
