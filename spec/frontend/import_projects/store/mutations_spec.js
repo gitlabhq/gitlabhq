@@ -2,7 +2,7 @@ import * as types from '~/import_projects/store/mutation_types';
 import mutations from '~/import_projects/store/mutations';
 
 describe('import_projects store mutations', () => {
-  describe(types.RECEIVE_IMPORT_SUCCESS, () => {
+  describe(`${types.RECEIVE_IMPORT_SUCCESS}`, () => {
     it('removes repoId from reposBeingImported and providerRepos, adds to importedProjects', () => {
       const repoId = 1;
       const state = {
@@ -20,7 +20,7 @@ describe('import_projects store mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_JOBS_SUCCESS, () => {
+  describe(`${types.RECEIVE_JOBS_SUCCESS}`, () => {
     it('updates importStatus of existing importedProjects', () => {
       const repoId = 1;
       const state = { importedProjects: [{ id: repoId, importStatus: 'started' }] };
