@@ -23,7 +23,7 @@ const newLine = {
   type: 'new',
 };
 
-describe(SuggestionDiffRow.name, () => {
+describe('SuggestionDiffRow', () => {
   let wrapper;
 
   const factory = (options = {}) => {
