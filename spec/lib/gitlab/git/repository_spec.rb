@@ -531,6 +531,13 @@ describe Gitlab::Git::Repository, :seed_helper do
     it 'has valid commit ids as keys' do
       expect(subject.keys).to all( match(Commit::COMMIT_SHA_PATTERN) )
     end
+
+    it 'does not error when dereferenced_target is nil' do
+      blob_id = repository.blob_at('master', 'README.md').id
+      repository_rugged.tags.create("refs/tags/blob-tag", blob_id)
+
+      expect { subject }.not_to raise_error
+    end
   end
 
   describe '#fetch_repository_as_mirror' do

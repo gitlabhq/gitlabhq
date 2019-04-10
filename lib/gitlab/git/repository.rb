@@ -466,7 +466,7 @@ module Gitlab
         @refs_hash = Hash.new { |h, k| h[k] = [] }
 
         (tags + branches).each do |ref|
-          next unless ref.target && ref.name
+          next unless ref.target && ref.name && ref.dereferenced_target&.id
 
           @refs_hash[ref.dereferenced_target.id] << ref.name
         end
