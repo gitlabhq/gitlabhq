@@ -1,0 +1,5 @@
+---
+title: Prevent invalid branch for merge request
+merge_request:
+author:
+type: security
