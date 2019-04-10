@@ -17,8 +17,8 @@ module Banzai
     #   :toc - String containing Table of Contents data as a `ul` element with
     #          `li` child elements.
     class TableOfContentsFilter < HTML::Pipeline::Filter
-      PUNCTUATION_REGEXP = /[^\p{Word}\- ]/u
-      LEADING_OR_TRAILING_SPACE_REGEXP = /^\p{Space}|\p{Space}$/
+      PUNCTUATION_REGEXP = /[^\p{Word}\- ]/u.freeze
+      LEADING_OR_TRAILING_SPACE_REGEXP = /^\p{Space}+|\p{Space}+$/.freeze
 
       def call
         return doc if context[:no_header_anchors]
