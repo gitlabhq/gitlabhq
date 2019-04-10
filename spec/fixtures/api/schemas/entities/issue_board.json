@@ -9,6 +9,9 @@
     "project_id": { "type": "integer" },
     "relative_position": { "type": ["integer", "null"] },
     "time_estimate": { "type": "integer" },
+    "total_time_spent": { "type": "integer" },
+    "human_time_estimate": { "type": ["string", "null"] },
+    "human_total_time_spent": { "type": ["string", "null"] },
     "weight": { "type": ["integer", "null"] },
     "project": {
       "type": "object",
