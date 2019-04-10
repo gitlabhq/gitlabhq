@@ -562,7 +562,7 @@ rspec-mysql:
   parallel: 50
 
 .rspec-quarantine: &rspec-quarantine
-  retry: 0
+  <<: *only-schedules-master
   script:
     - export CACHE_CLASSES=true
     - scripts/gitaly-test-spawn
