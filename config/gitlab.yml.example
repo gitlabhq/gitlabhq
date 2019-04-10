@@ -7,7 +7,8 @@
 # * are being moved to ApplicationSetting model!                       #
 # If a setting requires an application restart say so in that screen.  #
 # If you change this file in a Merge Request, please also create       #
-# a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests  #
+# a MR on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests. #
+# For more details see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/0928cfb09f43993fd9454b0b14dbd1924b1407bc/doc/settings/gitlab.yml.md #
 ########################################################################
 #
 #
