@@ -29,7 +29,7 @@ describe 'User creates branch and merge request on issue page', :js do
       end
 
       # In order to improve tests performance, all UI checks are placed in this test.
-      it 'shows elements' do
+      it 'shows elements', :quarantine do
         button_create_merge_request = find('.js-create-merge-request')
         button_toggle_dropdown = find('.create-mr-dropdown-wrap .dropdown-toggle')
 
