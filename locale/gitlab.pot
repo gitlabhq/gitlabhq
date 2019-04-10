@@ -5661,9 +5661,6 @@ msgstr ""
 msgid "Metrics|No deployed environments"
 msgstr ""
 
-msgid "Metrics|Not enough data to display"
-msgstr ""
-
 msgid "Metrics|Show last"
 msgstr ""
 

@@ -1,16 +1,17 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlLink } from '@gitlab/ui';
 import _ from 'underscore';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import '~/vue_shared/mixins/is_ee';
+import { getParameterValues } from '~/lib/utils/url_utility';
 import Flash from '../../flash';
 import MonitoringService from '../services/monitoring_service';
 import MonitorAreaChart from './charts/area.vue';
 import GraphGroup from './graph_group.vue';
 import EmptyState from './empty_state.vue';
 import MonitoringStore from '../stores/monitoring_store';
-import { timeWindows } from '../constants';
+import { timeWindows, timeWindowsKeyNames } from '../constants';
 import { getTimeDiff } from '../utils';
 
 const sidebarAnimationDuration = 150;
@@ -24,6 +25,7 @@ export default {
     Icon,
     GlDropdown,
     GlDropdownItem,
+    GlLink,
   },
 
   props: {
@@ -102,6 +104,7 @@ export default {
       showEmptyState: true,
       elWidth: 0,
       selectedTimeWindow: '',
+      selectedTimeWindowKey: '',
     };
   },
   created() {
@@ -110,9 +113,16 @@ export default {
       deploymentEndpoint: this.deploymentEndpoint,
       environmentsEndpoint: this.environmentsEndpoint,
     });
-
     this.timeWindows = timeWindows;
-    this.selectedTimeWindow = this.timeWindows.eightHours;
+    this.selectedTimeWindowKey =
+      _.escape(getParameterValues('time_window')[0]) || timeWindowsKeyNames.eightHours;
+
+    // Set default time window if the selectedTimeWindowKey is bogus
+    if (!Object.keys(this.timeWindows).includes(this.selectedTimeWindowKey)) {
+      this.selectedTimeWindowKey = timeWindowsKeyNames.eightHours;
+    }
+
+    this.selectedTimeWindow = this.timeWindows[this.selectedTimeWindowKey];
   },
   beforeDestroy() {
     if (sidebarMutationObserver) {
@@ -120,9 +130,10 @@ export default {
     }
   },
   mounted() {
+    const startEndWindow = getTimeDiff(this.timeWindows[this.selectedTimeWindowKey]);
     this.servicePromises = [
       this.service
-        .getGraphsData()
+        .getGraphsData(startEndWindow)
         .then(data => this.store.storeMetrics(data))
         .catch(() => Flash(s__('Metrics|There was an error while retrieving metrics'))),
       this.service
@@ -176,22 +187,6 @@ export default {
           this.state = 'unableToConnect';
         });
     },
-    getGraphsDataWithTime(timeFrame) {
-      this.state = 'loading';
-      this.showEmptyState = true;
-      this.service
-        .getGraphsData(getTimeDiff(this.timeWindows[timeFrame]))
-        .then(data => {
-          this.store.storeMetrics(data);
-          this.selectedTimeWindow = this.timeWindows[timeFrame];
-        })
-        .catch(() => {
-          Flash(s__('Metrics|Not enough data to display'));
-        })
-        .finally(() => {
-          this.showEmptyState = false;
-        });
-    },
     onSidebarMutation() {
       setTimeout(() => {
         this.elWidth = this.$el.clientWidth;
@@ -199,6 +194,9 @@ export default {
     },
     activeTimeWindow(key) {
       return this.timeWindows[key] === this.selectedTimeWindow;
+    },
+    setTimeWindowParameter(key) {
+      return `?time_window=${key}`;
     },
   },
 };
@@ -239,8 +237,7 @@ export default {
             v-for="(value, key) in timeWindows"
             :key="key"
             :active="activeTimeWindow(key)"
-            @click="getGraphsDataWithTime(key)"
-            >{{ value }}</gl-dropdown-item
+            ><gl-link :href="setTimeWindowParameter(key)">{{ value }}</gl-link></gl-dropdown-item
           >
         </gl-dropdown>
       </div>
