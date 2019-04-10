@@ -561,6 +561,11 @@ rspec-mysql:
   <<: *only-schedules-master
   parallel: 50
 
+rspec-fast-spec-helper:
+  <<: *rspec-metadata-pg
+  script:
+    - bundle exec rspec spec/fast_spec_helper.rb
+
 .rspec-quarantine: &rspec-quarantine
   <<: *only-schedules-master
   script:
