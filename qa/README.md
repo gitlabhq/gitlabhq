@@ -39,7 +39,9 @@ following call would login to a local [GDK] instance and run all specs in
 `qa/specs/features`:
 
 ```
-bin/qa Test::Instance::All http://localhost:3000
+# Make sure to install the dependencies first with `bundle install`
+
+bundle exec bin/qa Test::Instance::All http://localhost:3000
 ```
 
 Note: If you want to run tests requiring SSH against GDK, you
@@ -56,14 +58,14 @@ You can also supply specific tests to run as another parameter. For example, to
 run the repository-related specs, you can execute:
 
 ```
-bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/repository
+bundle exec bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/repository
 ```
 
 Since the arguments would be passed to `rspec`, you could use all `rspec`
 options there. For example, passing `--backtrace` and also line number:
 
 ```
-bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb:6 --backtrace
+bundle exec bin/qa Test::Instance::All http://localhost -- qa/specs/features/browser_ui/3_create/merge_request/create_merge_request_spec.rb:6 --backtrace
 ```
 
 Note that the separator `--` is required; all subsequent options will be
@@ -78,7 +80,7 @@ If you need to authenticate as a different user, you can provide the
 `GITLAB_USERNAME` and `GITLAB_PASSWORD` environment variables:
 
 ```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bin/qa Test::Instance::All https://gitlab.example.com
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bundle exec bin/qa Test::Instance::All https://gitlab.example.com
 ```
 
 If your user doesn't have permission to default sandbox group
@@ -86,7 +88,7 @@ If your user doesn't have permission to default sandbox group
 `GITLAB_SANDBOX_NAME`:
 
 ```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance::All https://gitlab.example.com
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bundle exec bin/qa Test::Instance::All https://gitlab.example.com
 ```
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-environment-variables).
@@ -121,7 +123,7 @@ tests that are expected to fail while a fix is in progress (similar to how
  can be used).
 
 ```
-bin/qa Test::Instance::All http://localhost -- --tag quarantine
+bundle exec bin/qa Test::Instance::All http://localhost -- --tag quarantine
 ```
 
 If `quarantine` is used with other tags, tests will only be run if they have at
@@ -140,7 +142,7 @@ option `--enable-feature FEATURE_FLAG`. For example, to enable the feature flag
 that enforces Gitaly request limits, you would use the command:
 
 ```
-bin/qa Test::Instance::All http://localhost --enable-feature gitaly_enforce_requests_limits
+bundle exec bin/qa Test::Instance::All http://localhost --enable-feature gitaly_enforce_requests_limits
 ```
 
 This will instruct the QA framework to enable the `gitaly_enforce_requests_limits`
