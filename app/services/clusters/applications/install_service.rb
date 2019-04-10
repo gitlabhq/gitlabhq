@@ -7,8 +7,10 @@ module Clusters
         return unless app.scheduled?
 
         app.make_installing!
+        log_event(:begin_install)
         helm_api.install(install_command)
 
+        log_event(:schedule_wait_for_installation)
         ClusterWaitForAppInstallationWorker.perform_in(
           ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
       rescue Kubeclient::HttpError => e
