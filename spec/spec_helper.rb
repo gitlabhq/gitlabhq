@@ -100,8 +100,8 @@ RSpec.configure do |config|
   config.include PolicyHelpers, type: :policy
 
   if ENV['CI']
-    # This includes the first try, i.e. tests will be run 2 times before failing.
-    config.default_retry_count = 2
+    # This includes the first try, i.e. tests will be run 4 times before failing.
+    config.default_retry_count = 4
     config.reporter.register_listener(
       RspecFlaky::Listener.new,
       :example_passed,
