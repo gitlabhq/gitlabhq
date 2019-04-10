@@ -109,7 +109,7 @@ function perform_review_app_deployment() {
   ensure_namespace
   install_tiller
   install_external_dns
-  time deploy || true
+  time deploy
   wait_for_review_app_to_be_accessible
   add_license
 }
@@ -270,7 +270,7 @@ EOF
   echoinfo "Deploying with:"
   echoinfo "${HELM_CMD}"
 
-  eval $HELM_CMD
+  eval $HELM_CMD || true
 }
 
 function wait_for_review_app_to_be_accessible() {
