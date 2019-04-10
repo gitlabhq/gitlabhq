@@ -139,7 +139,7 @@ describe 'User creates branch and merge request on issue page', :js do
         visit project_issue_path(project, issue)
       end
 
-      it 'disables the create branch button' do
+      it 'disables the create branch button', :quarantine do
         expect(page).to have_css('.create-mr-dropdown-wrap .unavailable:not(.hidden)')
         expect(page).to have_css('.create-mr-dropdown-wrap .available.hidden', visible: false)
         expect(page).to have_content /Related merge requests/
