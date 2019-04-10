@@ -1,61 +1,11 @@
 import _ from 'underscore';
-import createFlash from '~/flash';
-import { s__ } from '~/locale';
+import emojiMap from 'emojis/digests.json';
 import emojiAliases from 'emojis/aliases.json';
-import axios from '../lib/utils/axios_utils';
-import csrf from '../lib/utils/csrf';
 
-import AccessorUtilities from '../lib/utils/accessor';
-
-let emojiMap = null;
-let validEmojiNames = null;
-
-export const EMOJI_VERSION = '1';
-const EMOJI_VERSION_LOCALSTORAGE = `EMOJIS_${EMOJI_VERSION}`;
-
-const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
-
-export function initEmojiMap() {
-  return new Promise((resolve, reject) => {
-    if (emojiMap) {
-      resolve(emojiMap);
-    } else if (isLocalStorageAvailable && window.localStorage.getItem(EMOJI_VERSION_LOCALSTORAGE)) {
-      emojiMap = JSON.parse(window.localStorage.getItem(EMOJI_VERSION_LOCALSTORAGE));
-      validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
-      resolve(emojiMap);
-    } else {
-      // We load the JSON from server
-      const axiosInstance = axios.create();
-
-      // If the static JSON file is on a CDN we don't want to send the default CSRF token
-      if (gon.asset_host) {
-        delete axiosInstance.defaults.headers.common[csrf.headerKey];
-      }
-
-      axiosInstance
-        .get(`${gon.relative_url_root || ''}/-/emojis/${EMOJI_VERSION}/emojis.json`)
-        .then(({ data }) => {
-          emojiMap = data;
-          validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
-          resolve(emojiMap);
-          if (isLocalStorageAvailable) {
-            window.localStorage.setItem(EMOJI_VERSION_LOCALSTORAGE, JSON.stringify(emojiMap));
-          }
-        })
-        .catch(err => {
-          createFlash(s__('Emojis|Something went wrong while loading emojis.'));
-          reject(err);
-        });
-    }
-  });
-}
+export const validEmojiNames = [...Object.keys(emojiMap), ...Object.keys(emojiAliases)];
 
 export function normalizeEmojiName(name) {
   return Object.prototype.hasOwnProperty.call(emojiAliases, name) ? emojiAliases[name] : name;
-}
-
-export function getValidEmojiNames() {
-  return validEmojiNames;
 }
 
 export function isEmojiNameValid(name) {
@@ -86,8 +36,8 @@ export function getEmojiCategoryMap() {
     };
     Object.keys(emojiMap).forEach(name => {
       const emoji = emojiMap[name];
-      if (emojiCategoryMap[emoji.c]) {
-        emojiCategoryMap[emoji.c].push(name);
+      if (emojiCategoryMap[emoji.category]) {
+        emojiCategoryMap[emoji.category].push(name);
       }
     });
   }
@@ -108,9 +58,8 @@ export function getEmojiInfo(query) {
 }
 
 export function emojiFallbackImageSrc(inputName) {
-  const { name } = getEmojiInfo(inputName);
-  return `${gon.asset_host || ''}${gon.relative_url_root ||
-    ''}/-/emojis/${EMOJI_VERSION}/${name}.png`;
+  const { name, digest } = getEmojiInfo(inputName);
+  return `${gon.asset_host || ''}${gon.relative_url_root || ''}/assets/emoji/${name}-${digest}.png`;
 }
 
 export function emojiImageTag(name, src) {
@@ -119,8 +68,9 @@ export function emojiImageTag(name, src) {
 
 export function glEmojiTag(inputName, options) {
   const opts = { sprite: false, forceFallback: false, ...options };
-  const name = normalizeEmojiName(inputName);
+  const { name, ...emojiInfo } = getEmojiInfo(inputName);
 
+  const fallbackImageSrc = emojiFallbackImageSrc(name);
   const fallbackSpriteClass = `emoji-${name}`;
 
   const classList = [];
@@ -129,19 +79,24 @@ export function glEmojiTag(inputName, options) {
     classList.push(fallbackSpriteClass);
   }
   const classAttribute = classList.length > 0 ? `class="${classList.join(' ')}"` : '';
-
   const fallbackSpriteAttribute = opts.sprite
     ? `data-fallback-sprite-class="${fallbackSpriteClass}"`
     : '';
-  const forceFallbackAttribute = opts.forceFallback ? 'data-force-fallback="true"' : '';
+  let contents = emojiInfo.moji;
+  if (opts.forceFallback && !opts.sprite) {
+    contents = emojiImageTag(name, fallbackImageSrc);
+  }
 
   return `
     <gl-emoji
       ${classAttribute}
       data-name="${name}"
+      data-fallback-src="${fallbackImageSrc}"
       ${fallbackSpriteAttribute}
-      ${forceFallbackAttribute}
+      data-unicode-version="${emojiInfo.unicodeVersion}"
+      title="${emojiInfo.description}"
     >
+      ${contents}
     </gl-emoji>
   `;
 }
