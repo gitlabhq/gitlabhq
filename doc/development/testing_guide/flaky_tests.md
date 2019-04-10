@@ -8,7 +8,7 @@ eventually.
 ## Quarantined tests
 
 When a test frequently fails in `master`,
-[a ~"broken master" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master)
+[a ~"master:broken" issue](https://about.gitlab.com/handbook/engineering/workflow/#broken-master)
 should be created.
 If the test cannot be fixed in a timely fashion, there is an impact on the
 productivity of all the developers, so it should be placed in quarantine by
@@ -21,7 +21,7 @@ bin/rspec --tag quarantine
 ```
 
 **Before putting a test in quarantine, you should make sure that a
-~"broken master" issue exists for it so it won't stay in quarantine forever.**
+~"master:broken" issue exists for it so it won't stay in quarantine forever.**
 
 Once a test is in quarantine, there are 3 choices:
 
