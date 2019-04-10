@@ -13,7 +13,13 @@ const boardsStore = {
   filter: {
     path: '',
   },
-  state: {},
+  state: {
+    currentBoard: {
+      labels: [],
+    },
+    currentPage: '',
+    reload: false,
+  },
   detail: {
     issue: {},
   },
@@ -27,6 +33,10 @@ const boardsStore = {
     this.detail = {
       issue: {},
     };
+  },
+  showPage(page) {
+    this.state.reload = false;
+    this.state.currentPage = page;
   },
   addList(listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
