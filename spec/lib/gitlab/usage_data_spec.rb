@@ -57,6 +57,8 @@ describe Gitlab::UsageData do
         database
         avg_cycle_analytics
         web_ide_commits
+        influxdb_metrics_enabled
+        prometheus_metrics_enabled
       ))
     end
 
