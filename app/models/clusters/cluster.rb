@@ -177,6 +177,10 @@ module Clusters
     end
     alias_method :group, :first_group
 
+    def instance
+      Instance.new if instance_type?
+    end
+
     def kubeclient
       platform_kubernetes.kubeclient if kubernetes?
     end

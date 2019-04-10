@@ -132,5 +132,7 @@ namespace :admin do
     end
   end
 
+  concerns :clusterable
+
   root to: 'dashboard#index'
 end

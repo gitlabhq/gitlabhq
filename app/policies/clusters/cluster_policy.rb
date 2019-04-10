@@ -6,5 +6,6 @@ module Clusters
 
     delegate { cluster.group }
     delegate { cluster.project }
+    delegate { cluster.instance }
   end
 end
