@@ -19,7 +19,7 @@
     "stylelint": "node node_modules/stylelint/bin/stylelint.js app/assets/stylesheets/**/*.*  ee/app/assets/stylesheets/**/*.* !**/vendors/** --custom-formatter node_modules/stylelint-error-string-formatter",
     "stylelint-file": "node node_modules/stylelint/bin/stylelint.js",
     "stylelint-create-utility-map": "node scripts/frontend/stylelint/stylelint-utility-map.js",
-    "test": "yarn jest && yarn karma",
+    "test": "node scripts/frontend/test",
     "webpack": "NODE_OPTIONS=\"--max-old-space-size=3584\" webpack --config config/webpack.config.js",
     "webpack-prod": "NODE_OPTIONS=\"--max-old-space-size=3584\" NODE_ENV=production webpack --config config/webpack.config.js"
   },
