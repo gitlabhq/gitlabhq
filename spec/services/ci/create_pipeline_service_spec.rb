@@ -922,7 +922,7 @@ describe Ci::CreatePipelineService do
             let(:merge_request) do
               create(:merge_request,
                 source_project: project,
-                source_branch: ref_name,
+                source_branch: Gitlab::Git.ref_name(ref_name),
                 target_project: project,
                 target_branch: 'master')
             end
@@ -953,7 +953,7 @@ describe Ci::CreatePipelineService do
             let(:merge_request) do
               create(:merge_request,
                 source_project: project,
-                source_branch: ref_name,
+                source_branch: Gitlab::Git.ref_name(ref_name),
                 target_project: project,
                 target_branch: 'master')
             end
@@ -982,7 +982,7 @@ describe Ci::CreatePipelineService do
             let(:merge_request) do
               create(:merge_request,
                 source_project: project,
-                source_branch: ref_name,
+                source_branch: Gitlab::Git.ref_name(ref_name),
                 target_project: project,
                 target_branch: 'master')
             end
