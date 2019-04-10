@@ -34,7 +34,7 @@
     = render 'banner'
     = render 'form'
 
-  = render_if_exists 'health'
+  = render_if_exists 'projects/clusters/prometheus_graphs' if show_cluster_health_graphs?(@cluster)
 
   .cluster-applications-table#js-cluster-applications
 
