@@ -593,7 +593,7 @@ static-analysis:
       - tmp/rubocop_cache
 
 # Documentation checks:
-# - Check validity of relative links
+# - Check validity of relative links, and anchors
 # - Make sure cURL examples in API docs use the full switches
 docs lint:
   <<: *dedicated-runner
@@ -612,6 +612,8 @@ docs lint:
     - bundle exec nanoc
     # Check the internal links
     - bundle exec nanoc check internal_links
+    # Check the internal anchor links
+    - bundle exec nanoc check internal_anchors
 
 downtime_check:
   <<: *rake-exec
