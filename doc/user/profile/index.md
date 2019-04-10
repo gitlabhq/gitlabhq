@@ -33,6 +33,7 @@ From there, you can:
 - Set a [custom status](#current-status) for your profile
 - Manage your [commit email](#commit-email) for your profile
 - Manage [2FA](account/two_factor_authentication.md)
+- Add details of [external accounts](#add-details-of-external-accounts).
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
   [use GitLab as an OAuth provider](../../integration/oauth_provider.md#introduction-to-oauth)
@@ -91,6 +92,16 @@ To enable private profile:
 
 NOTE: **Note:**
 You and GitLab admins can see your the abovementioned information on your profile even if it is private.
+
+## Add details of external accounts
+
+GitLab allows you to add links to certain other external accounts you might have, like Skype and Twitter. They can help other users connect with you on other platforms.
+
+To add links to other accounts:
+
+1. Navigate to your **User Settings > Profile**.
+1. In the **Main settings** section, locate and fill out fields for links to external accounts like Skype and Twitter.
+1. Click the **Update profile settings** button.
 
 ## Private contributions
 

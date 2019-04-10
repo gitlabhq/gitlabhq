@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe ApplicationSettings::UpdateService do
+  include ExternalAuthorizationServiceHelpers
+
   let(:application_settings) { create(:application_setting) }
   let(:admin) { create(:user, :admin) }
   let(:params) { {} }
@@ -141,6 +143,39 @@ describe ApplicationSettings::UpdateService do
           .to change(application_settings, :performance_bar_allowed_group_id)
           .from(nil).to(group.id)
       end
+    end
+  end
+
+  context 'when external authorization is enabled' do
+    before do
+      enable_external_authorization_service_check
+    end
+
+    it 'does not save the settings with an error if the service denies access' do
+      expect(::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(admin, 'new-label') { false }
+
+      described_class.new(application_settings, admin, { external_authorization_service_default_label: 'new-label' }).execute
+
+      expect(application_settings.errors[:external_authorization_service_default_label]).to be_present
+    end
+
+    it 'saves the setting when the user has access to the label' do
+      expect(::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(admin, 'new-label') { true }
+
+      described_class.new(application_settings, admin, { external_authorization_service_default_label: 'new-label' }).execute
+
+      # Read the attribute directly to avoid the stub from
+      # `enable_external_authorization_service_check`
+      expect(application_settings[:external_authorization_service_default_label]).to eq('new-label')
+    end
+
+    it 'does not validate the label if it was not passed' do
+      expect(::Gitlab::ExternalAuthorization)
+        .not_to receive(:access_allowed?)
+
+      described_class.new(application_settings, admin, { home_page_url: 'http://foo.bar' }).execute
     end
   end
 end

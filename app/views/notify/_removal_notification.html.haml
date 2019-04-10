@@ -1,0 +1,9 @@
+- if @domain.remove_at
+  %p
+    Unless you verify your domain by
+    %strong= @domain.remove_at.strftime('%F %T,')
+    it will be removed from your GitLab project.
+- else
+  %p
+    If you no longer wish to use this domain with GitLab Pages, please remove it
+    from your GitLab project and delete any related DNS records.

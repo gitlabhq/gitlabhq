@@ -192,12 +192,7 @@ module IssuableActions
 
   def bulk_update_params
     permitted_keys_array = permitted_keys.dup
-
-    if resource_name == 'issue'
-      permitted_keys_array << { assignee_ids: [] }
-    else
-      permitted_keys_array.unshift(:assignee_id)
-    end
+    permitted_keys_array << { assignee_ids: [] }
 
     params.require(:update).permit(permitted_keys_array)
   end

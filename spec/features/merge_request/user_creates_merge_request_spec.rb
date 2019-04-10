@@ -68,15 +68,15 @@ describe "User creates a merge request", :js do
         fill_in("Title", with: title)
       end
 
-      click_button("Assignee")
-
       expect(find(".js-assignee-search")["data-project-id"]).to eq(project.id.to_s)
+      find('.js-assignee-search').click
 
       page.within(".dropdown-menu-user") do
         expect(page).to have_content("Unassigned")
                    .and have_content(user.name)
                    .and have_content(project.users.first.name)
       end
+      find('.js-assignee-search').click
 
       click_button("Submit merge request")
 

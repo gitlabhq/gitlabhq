@@ -98,6 +98,10 @@ describe Projects::BoardsController do
       end
     end
 
+    it_behaves_like 'unauthorized when external service denies access' do
+      subject { list_boards }
+    end
+
     def list_boards(format: :html)
       get :index, params: {
                     namespace_id: project.namespace,

@@ -81,6 +81,19 @@ module API
         present pipeline, with: Entities::Pipeline
       end
 
+      desc 'Gets the variables for a given pipeline' do
+        detail 'This feature was introduced in GitLab 11.11'
+        success Entities::Variable
+      end
+      params do
+        requires :pipeline_id, type: Integer, desc: 'The pipeline ID'
+      end
+      get ':id/pipelines/:pipeline_id/variables' do
+        authorize! :read_pipeline_variable, pipeline
+
+        present pipeline.variables, with: Entities::Variable
+      end
+
       desc 'Deletes a pipeline' do
         detail 'This feature was introduced in GitLab 11.6'
         http_codes [[204, 'Pipeline was deleted'], [403, 'Forbidden']]

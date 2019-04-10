@@ -67,13 +67,6 @@ module Issuable
              allow_nil: true,
              prefix: true
 
-    delegate :name,
-             :email,
-             :public_email,
-             to: :assignee,
-             allow_nil: true,
-             prefix: true
-
     validates :author, presence: true
     validates :title, presence: true, length: { maximum: 255 }
     validate :milestone_is_valid
@@ -87,6 +80,19 @@ module Issuable
     scope :opened, -> { with_state(:opened) }
     scope :only_opened, -> { with_state(:opened) }
     scope :closed, -> { with_state(:closed) }
+
+    # rubocop:disable GitlabSecurity/SqlInjection
+    # The `to_ability_name` method is not an user input.
+    scope :assigned, -> do
+      where("EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE #{to_ability_name}_id = #{to_ability_name}s.id)")
+    end
+    scope :unassigned, -> do
+      where("NOT EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE #{to_ability_name}_id = #{to_ability_name}s.id)")
+    end
+    scope :assigned_to, ->(u) do
+      where("EXISTS (SELECT TRUE FROM #{to_ability_name}_assignees WHERE user_id = ? AND #{to_ability_name}_id = #{to_ability_name}s.id)", u.id)
+    end
+    # rubocop:enable GitlabSecurity/SqlInjection
 
     scope :left_joins_milestones,    -> { joins("LEFT OUTER JOIN milestones ON #{table_name}.milestone_id = milestones.id") }
     scope :order_milestone_due_desc, -> { left_joins_milestones.reorder('milestones.due_date IS NULL, milestones.id IS NULL, milestones.due_date DESC') }
@@ -104,6 +110,7 @@ module Issuable
 
     participant :author
     participant :notes_with_associations
+    participant :assignees
 
     strip_attributes :title
 
@@ -270,6 +277,10 @@ module Issuable
     end
   end
 
+  def assignee_or_author?(user)
+    author_id == user.id || assignees.exists?(user.id)
+  end
+
   def today?
     Date.today == created_at.to_date
   end
@@ -314,11 +325,7 @@ module Issuable
       end
 
       if old_assignees != assignees
-        if self.is_a?(Issue)
-          changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
-        else
-          changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
-        end
+        changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
       end
 
       if self.respond_to?(:total_time_spent)
@@ -355,8 +362,16 @@ module Issuable
   def card_attributes
     {
       'Author'   => author.try(:name),
-      'Assignee' => assignee.try(:name)
+      'Assignee' => assignee_list
     }
+  end
+
+  def assignee_list
+    assignees.map(&:name).to_sentence
+  end
+
+  def assignee_username_list
+    assignees.map(&:username).to_sentence
   end
 
   def notes_with_associations

@@ -42,7 +42,7 @@ below.
 ## How it works
 
 The Issue Board builds on GitLab's existing
-[issue tracking functionality](issues/index.md#issue-tracker) and
+[issue tracking functionality](issues/index.md#issues-list) and
 leverages the power of [labels](labels.md) by utilizing them as lists of the scrum board.
 
 With the Issue Board you can have a different view of your issues while

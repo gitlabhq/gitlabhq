@@ -50,7 +50,7 @@ export default {
     },
 
     modalText() {
-      const linkStart = `<a class="commit-sha" href="${_.escape(this.commitUrl)}">`;
+      const linkStart = `<a class="commit-sha mr-0" href="${_.escape(this.commitUrl)}">`;
       const commitId = _.escape(this.commitShortSha);
       const linkEnd = '</a>';
       const name = _.escape(this.name);

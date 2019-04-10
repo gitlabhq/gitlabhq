@@ -127,6 +127,17 @@ describe Projects::IssuesController do
         expect(assigns(:issues).size).to eq(2)
       end
     end
+
+    context 'external authorization' do
+      before do
+        sign_in user
+        project.add_developer(user)
+      end
+
+      it_behaves_like 'unauthorized when external service denies access' do
+        subject { get :index, params: { namespace_id: project.namespace, project_id: project } }
+      end
+    end
   end
 
   describe 'GET #new' do

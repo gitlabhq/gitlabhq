@@ -272,28 +272,6 @@ describe TodoService do
       end
     end
 
-    describe '#reassigned_issue' do
-      it 'creates a pending todo for new assignee' do
-        unassigned_issue.assignees << john_doe
-        service.reassigned_issue(unassigned_issue, author)
-
-        should_create_todo(user: john_doe, target: unassigned_issue, action: Todo::ASSIGNED)
-      end
-
-      it 'does not create a todo if unassigned' do
-        issue.assignees.destroy_all # rubocop: disable DestroyAll
-
-        should_not_create_any_todo { service.reassigned_issue(issue, author) }
-      end
-
-      it 'creates a todo if new assignee is the current user' do
-        unassigned_issue.assignees << john_doe
-        service.reassigned_issue(unassigned_issue, john_doe)
-
-        should_create_todo(user: john_doe, target: unassigned_issue, author: john_doe, action: Todo::ASSIGNED)
-      end
-    end
-
     describe '#mark_pending_todos_as_done' do
       it 'marks related pending todos to the target for the user as done' do
         first_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
@@ -504,10 +482,60 @@ describe TodoService do
     end
   end
 
+  describe '#reassigned_issuable' do
+    shared_examples 'reassigned issuable' do
+      it 'creates a pending todo for new assignee' do
+        issuable_unassigned.assignees = [john_doe]
+        service.reassigned_issuable(issuable_unassigned, author)
+
+        should_create_todo(user: john_doe, target: issuable_unassigned, action: Todo::ASSIGNED)
+      end
+
+      it 'does not create a todo if unassigned' do
+        issuable_assigned.assignees = []
+
+        should_not_create_any_todo { service.reassigned_issuable(issuable_assigned, author) }
+      end
+
+      it 'creates a todo if new assignee is the current user' do
+        issuable_assigned.assignees = [john_doe]
+        service.reassigned_issuable(issuable_assigned, john_doe)
+
+        should_create_todo(user: john_doe, target: issuable_assigned, author: john_doe, action: Todo::ASSIGNED)
+      end
+
+      it 'does not create a todo for guests' do
+        service.reassigned_issuable(issuable_assigned, author)
+        should_not_create_todo(user: guest, target: issuable_assigned, action: Todo::MENTIONED)
+      end
+
+      it 'does not create a directly addressed todo for guests' do
+        service.reassigned_issuable(addressed_issuable_assigned, author)
+        should_not_create_todo(user: guest, target: addressed_issuable_assigned, action: Todo::DIRECTLY_ADDRESSED)
+      end
+    end
+
+    context 'issuable is a merge request' do
+      it_behaves_like 'reassigned issuable' do
+        let(:issuable_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+        let(:addressed_issuable_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+        let(:issuable_unassigned) { create(:merge_request, source_project: project, author: author, assignees: []) }
+      end
+    end
+
+    context 'issuable is an issue' do
+      it_behaves_like 'reassigned issuable' do
+        let(:issuable_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+        let(:addressed_issuable_assigned) { create(:issue, project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+        let(:issuable_unassigned) { create(:issue, project: project, author: author, assignees: []) }
+      end
+    end
+  end
+
   describe 'Merge Requests' do
-    let(:mr_assigned) { create(:merge_request, source_project: project, author: author, assignee: john_doe, description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
-    let(:addressed_mr_assigned) { create(:merge_request, source_project: project, author: author, assignee: john_doe, description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
-    let(:mr_unassigned) { create(:merge_request, source_project: project, author: author, assignee: nil) }
+    let(:mr_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "- [ ] Task 1\n- [ ] Task 2 #{mentions}") }
+    let(:addressed_mr_assigned) { create(:merge_request, source_project: project, author: author, assignees: [john_doe], description: "#{directly_addressed}\n- [ ] Task 1\n- [ ] Task 2") }
+    let(:mr_unassigned) { create(:merge_request, source_project: project, author: author, assignees: []) }
 
     describe '#new_merge_request' do
       it 'creates a pending todo if assigned' do
@@ -656,38 +684,6 @@ describe TodoService do
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
-      end
-    end
-
-    describe '#reassigned_merge_request' do
-      it 'creates a pending todo for new assignee' do
-        mr_unassigned.update_attribute(:assignee, john_doe)
-        service.reassigned_merge_request(mr_unassigned, author)
-
-        should_create_todo(user: john_doe, target: mr_unassigned, action: Todo::ASSIGNED)
-      end
-
-      it 'does not create a todo if unassigned' do
-        mr_assigned.update_attribute(:assignee, nil)
-
-        should_not_create_any_todo { service.reassigned_merge_request(mr_assigned, author) }
-      end
-
-      it 'creates a todo if new assignee is the current user' do
-        mr_assigned.update_attribute(:assignee, john_doe)
-        service.reassigned_merge_request(mr_assigned, john_doe)
-
-        should_create_todo(user: john_doe, target: mr_assigned, author: john_doe, action: Todo::ASSIGNED)
-      end
-
-      it 'does not create a todo for guests' do
-        service.reassigned_merge_request(mr_assigned, author)
-        should_not_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
-      end
-
-      it 'does not create a directly addressed todo for guests' do
-        service.reassigned_merge_request(addressed_mr_assigned, author)
-        should_not_create_todo(user: guest, target: addressed_mr_assigned, action: Todo::DIRECTLY_ADDRESSED)
       end
     end
 

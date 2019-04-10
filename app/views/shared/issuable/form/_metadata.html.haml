@@ -8,11 +8,8 @@
 %hr
 .row
   %div{ class: (has_due_date ? "col-lg-6" : "col-12") }
-    .form-group.row.issue-assignee
-      - if issuable.is_a?(Issue)
-        = render "shared/issuable/form/metadata_issue_assignee", issuable: issuable, form: form, has_due_date: has_due_date
-      - else
-        = render "shared/issuable/form/metadata_merge_request_assignee", issuable: issuable, form: form, has_due_date: has_due_date
+    .form-group.row.merge-request-assignee
+      = render "shared/issuable/form/metadata_issuable_assignee", issuable: issuable, form: form, has_due_date: has_due_date
     .form-group.row.issue-milestone
       = form.label :milestone_id, "Milestone", class: "col-form-label #{has_due_date ? "col-md-2 col-lg-4" : "col-sm-2"}"
       .col-sm-10{ class: ("col-md-8" if has_due_date) }

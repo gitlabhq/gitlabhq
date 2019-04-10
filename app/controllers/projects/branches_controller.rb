@@ -25,7 +25,7 @@ class Projects::BranchesController < Projects::ApplicationController
         @refs_pipelines = @project.ci_pipelines.latest_successful_for_refs(@branches.map(&:name))
         @merged_branch_names = repository.merged_branch_names(@branches.map(&:name))
 
-        # n+1: https://gitlab.com/gitlab-org/gitaly/issues/992
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/48097
         Gitlab::GitalyClient.allow_n_plus_1_calls do
           @max_commits = @branches.reduce(0) do |memo, branch|
             diverging_commit_counts = repository.diverging_commit_counts(branch)

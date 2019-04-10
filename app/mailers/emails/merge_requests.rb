@@ -24,10 +24,12 @@ module Emails
     end
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id, updated_by_user_id, reason = nil)
+    def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_ids, updated_by_user_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      @previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
+      @previous_assignees = []
+      @previous_assignees = User.where(id: previous_assignee_ids) if previous_assignee_ids.any?
+
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id, reason))
     end
     # rubocop: enable CodeReuse/ActiveRecord

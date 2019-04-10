@@ -4,7 +4,12 @@ include:
   - local: /lib/gitlab/ci/templates/Code-Quality.gitlab-ci.yml
 
 .dedicated-runner: &dedicated-runner
-  retry: 1
+  retry:
+    max: 1 # This is confusing but this means "2 runs at max".
+    when:
+      - unknown_failure
+      - api_failure
+      - runner_system_failure
   tags:
     - gitlab-org
 
@@ -557,7 +562,7 @@ rspec-mysql:
   parallel: 50
 
 .rspec-quarantine: &rspec-quarantine
-  retry: 0
+  <<: *only-schedules-master
   script:
     - export CACHE_CLASSES=true
     - scripts/gitaly-test-spawn
@@ -588,7 +593,7 @@ static-analysis:
       - tmp/rubocop_cache
 
 # Documentation checks:
-# - Check validity of relative links
+# - Check validity of relative links, and anchors
 # - Make sure cURL examples in API docs use the full switches
 docs lint:
   <<: *dedicated-runner
@@ -607,6 +612,8 @@ docs lint:
     - bundle exec nanoc
     # Check the internal links
     - bundle exec nanoc check internal_links
+    # Check the internal anchor links
+    - bundle exec nanoc check internal_anchors
 
 downtime_check:
   <<: *rake-exec
@@ -1168,4 +1175,3 @@ schedule:review-performance:
   <<: *review-schedules-only
   script:
     - wait_for_job_to_be_done "schedule:review-deploy"
-

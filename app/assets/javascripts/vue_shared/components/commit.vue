@@ -162,7 +162,7 @@ export default {
     </template>
     <icon name="commit" class="commit-icon js-commit-icon" />
 
-    <gl-link :href="commitUrl" class="commit-sha"> {{ shortSha }} </gl-link>
+    <gl-link :href="commitUrl" class="commit-sha mr-0"> {{ shortSha }} </gl-link>
 
     <div class="commit-title flex-truncate-parent">
       <span v-if="title" class="flex-truncate-child">

@@ -81,9 +81,6 @@ export default {
     const formData = {
       update: {
         state_event: this.form.find('input[name="update[state_event]"]').val(),
-        // For Merge Requests
-        assignee_id: this.form.find('input[name="update[assignee_id]"]').val(),
-        // For Issues
         assignee_ids: [this.form.find('input[name="update[assignee_ids][]"]').val()],
         milestone_id: this.form.find('input[name="update[milestone_id]"]').val(),
         issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),

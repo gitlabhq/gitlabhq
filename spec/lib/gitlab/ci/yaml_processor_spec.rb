@@ -615,7 +615,7 @@ module Gitlab
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config), opts) }
 
         context "when validating a ci config file with no project context" do
-          context "when a single string is provided" do
+          context "when a single string is provided", :quarantine do
             let(:include_content) { "/local.gitlab-ci.yml" }
 
             it "does not return any error" do

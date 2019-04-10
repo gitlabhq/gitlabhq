@@ -20,11 +20,7 @@ module Gitlab
           repository: issuable.project.hook_attrs.slice(:name, :url, :description, :homepage)
         }
 
-        if issuable.is_a?(Issue)
-          hook_data[:assignees] = issuable.assignees.map(&:hook_attrs) if issuable.assignees.any?
-        else
-          hook_data[:assignee] = issuable.assignee.hook_attrs if issuable.assignee
-        end
+        hook_data[:assignees] = issuable.assignees.map(&:hook_attrs) if issuable.assignees.any?
 
         hook_data
       end

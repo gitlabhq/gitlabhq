@@ -195,4 +195,44 @@ describe Gitlab::BackgroundMigration do
       end
     end
   end
+
+  describe '.dead_jobs?' do
+    let(:queue) do
+      [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
+    end
+
+    context 'when there are dead jobs present' do
+      before do
+        allow(Sidekiq::DeadSet).to receive(:new).and_return(queue)
+      end
+
+      it 'returns true if specific job exists' do
+        expect(described_class.dead_jobs?('Foo')).to eq(true)
+      end
+
+      it 'returns false if specific job does not exist' do
+        expect(described_class.dead_jobs?('Bar')).to eq(false)
+      end
+    end
+  end
+
+  describe '.retrying_jobs?' do
+    let(:queue) do
+      [double(args: ['Foo', [10, 20]], queue: described_class.queue)]
+    end
+
+    context 'when there are dead jobs present' do
+      before do
+        allow(Sidekiq::RetrySet).to receive(:new).and_return(queue)
+      end
+
+      it 'returns true if specific job exists' do
+        expect(described_class.retrying_jobs?('Foo')).to eq(true)
+      end
+
+      it 'returns false if specific job does not exist' do
+        expect(described_class.retrying_jobs?('Bar')).to eq(false)
+      end
+    end
+  end
 end

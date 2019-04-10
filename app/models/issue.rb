@@ -49,10 +49,6 @@ class Issue < ApplicationRecord
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }
 
-  scope :assigned, -> { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
-  scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
-  scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}
-
   scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
@@ -74,8 +70,6 @@ class Issue < ApplicationRecord
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
-
-  participant :assignees
 
   state_machine :state, initial: :opened do
     event :close do
@@ -155,22 +149,6 @@ class Issue < ApplicationRecord
     Gitlab::HookData::IssueBuilder.new(self).build
   end
 
-  # Returns a Hash of attributes to be used for Twitter card metadata
-  def card_attributes
-    {
-      'Author'   => author.try(:name),
-      'Assignee' => assignee_list
-    }
-  end
-
-  def assignee_or_author?(user)
-    author_id == user.id || assignees.exists?(user.id)
-  end
-
-  def assignee_list
-    assignees.map(&:name).to_sentence
-  end
-
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
@@ -230,7 +208,13 @@ class Issue < ApplicationRecord
   def visible_to_user?(user = nil)
     return false unless project && project.feature_available?(:issues, user)
 
-    user ? readable_by?(user) : publicly_visible?
+    return publicly_visible? unless user
+
+    return false unless readable_by?(user)
+
+    user.full_private_access? ||
+      ::Gitlab::ExternalAuthorization.access_allowed?(
+        user, project.external_authorization_classification_label)
   end
 
   def check_for_spam?
@@ -298,7 +282,7 @@ class Issue < ApplicationRecord
 
   # Returns `true` if this Issue is visible to everybody.
   def publicly_visible?
-    project.public? && !confidential?
+    project.public? && !confidential? && !::Gitlab::ExternalAuthorization.enabled?
   end
 
   def expire_etag_cache

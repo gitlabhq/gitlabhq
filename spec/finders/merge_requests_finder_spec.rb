@@ -136,21 +136,50 @@ describe MergeRequestsFinder do
         end
       end
 
-      context 'filtering by group milestone' do
-        let(:group_milestone) { create(:milestone, group: group) }
+      context 'assignee filtering' do
+        let(:issuables) { described_class.new(user, params).execute }
 
-        before do
-          project2.update(namespace: group)
-          merge_request2.update(milestone: group_milestone)
-          merge_request3.update(milestone: group_milestone)
+        it_behaves_like 'assignee ID filter' do
+          let(:params) { { assignee_id: user.id } }
+          let(:expected_issuables) { [merge_request1, merge_request2] }
         end
 
-        it 'returns merge requests assigned to that group milestone' do
-          params = { milestone_title: group_milestone.title }
+        it_behaves_like 'assignee username filter' do
+          before do
+            project2.add_developer(user3)
+            merge_request3.assignees = [user2, user3]
+          end
 
-          merge_requests = described_class.new(user, params).execute
+          set(:user3) { create(:user) }
+          let(:params) { { assignee_username: [user2.username, user3.username] } }
+          let(:expected_issuables) { [merge_request3] }
+        end
 
-          expect(merge_requests).to contain_exactly(merge_request2, merge_request3)
+        it_behaves_like 'no assignee filter' do
+          set(:user3) { create(:user) }
+          let(:expected_issuables) { [merge_request4, merge_request5] }
+        end
+
+        it_behaves_like 'any assignee filter' do
+          let(:expected_issuables) { [merge_request1, merge_request2, merge_request3] }
+        end
+
+        context 'filtering by group milestone' do
+          let(:group_milestone) { create(:milestone, group: group) }
+
+          before do
+            project2.update(namespace: group)
+            merge_request2.update(milestone: group_milestone)
+            merge_request3.update(milestone: group_milestone)
+          end
+
+          it 'returns merge requests assigned to that group milestone' do
+            params = { milestone_title: group_milestone.title }
+
+            merge_requests = described_class.new(user, params).execute
+
+            expect(merge_requests).to contain_exactly(merge_request2, merge_request3)
+          end
         end
       end
 
@@ -251,6 +280,13 @@ describe MergeRequestsFinder do
         finder = described_class.new(user, state: 'closed')
 
         expect(finder.row_count).to eq(1)
+      end
+    end
+
+    context 'external authorization' do
+      it_behaves_like 'a finder with external authorization service' do
+        let!(:subject) { create(:merge_request, source_project: project) }
+        let(:project_params) { { project_id: project.id } }
       end
     end
   end

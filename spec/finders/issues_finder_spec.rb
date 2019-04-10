@@ -13,60 +13,32 @@ describe IssuesFinder do
         expect(issues).to contain_exactly(issue1, issue2, issue3, issue4)
       end
 
-      context 'filtering by assignee ID' do
-        let(:params) { { assignee_id: user.id } }
+      context 'assignee filtering' do
+        let(:issuables) { issues }
 
-        it 'returns issues assigned to that user' do
-          expect(issues).to contain_exactly(issue1, issue2)
-        end
-      end
-
-      context 'filtering by assignee usernames' do
-        set(:user3) { create(:user) }
-        let(:params) { { assignee_username: [user2.username, user3.username] } }
-
-        before do
-          project2.add_developer(user3)
-
-          issue3.assignees = [user2, user3]
+        it_behaves_like 'assignee ID filter' do
+          let(:params) { { assignee_id: user.id } }
+          let(:expected_issuables) { [issue1, issue2] }
         end
 
-        it 'returns issues assigned to those users' do
-          expect(issues).to contain_exactly(issue3)
-        end
-      end
+        it_behaves_like 'assignee username filter' do
+          before do
+            project2.add_developer(user3)
+            issue3.assignees = [user2, user3]
+          end
 
-      context 'filtering by no assignee' do
-        let(:params) { { assignee_id: 'None' } }
-
-        it 'returns issues not assigned to any assignee' do
-          expect(issues).to contain_exactly(issue4)
-        end
-
-        it 'returns issues not assigned to any assignee' do
-          params[:assignee_id] = 0
-
-          expect(issues).to contain_exactly(issue4)
+          set(:user3) { create(:user) }
+          let(:params) { { assignee_username: [user2.username, user3.username] } }
+          let(:expected_issuables) { [issue3] }
         end
 
-        it 'returns issues not assigned to any assignee' do
-          params[:assignee_id] = 'none'
-
-          expect(issues).to contain_exactly(issue4)
-        end
-      end
-
-      context 'filtering by any assignee' do
-        let(:params) { { assignee_id: 'Any' } }
-
-        it 'returns issues assigned to any assignee' do
-          expect(issues).to contain_exactly(issue1, issue2, issue3)
+        it_behaves_like 'no assignee filter' do
+          set(:user3) { create(:user) }
+          let(:expected_issuables) { [issue4] }
         end
 
-        it 'returns issues assigned to any assignee' do
-          params[:assignee_id] = 'any'
-
-          expect(issues).to contain_exactly(issue1, issue2, issue3)
+        it_behaves_like 'any assignee filter' do
+          let(:expected_issuables) { [issue1, issue2, issue3] }
         end
       end
 
@@ -557,6 +529,13 @@ describe IssuesFinder do
         end
 
         expect(issues.count).to eq 0
+      end
+    end
+
+    context 'external authorization' do
+      it_behaves_like 'a finder with external authorization service' do
+        let!(:subject) { create(:issue, project: project) }
+        let(:project_params) { { project_id: project.id } }
       end
     end
   end

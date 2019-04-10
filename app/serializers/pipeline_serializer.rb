@@ -7,23 +7,7 @@ class PipelineSerializer < BaseSerializer
   # rubocop: disable CodeReuse/ActiveRecord
   def represent(resource, opts = {})
     if resource.is_a?(ActiveRecord::Relation)
-      resource = resource.preload([
-        :stages,
-        :retryable_builds,
-        :cancelable_statuses,
-        :trigger_requests,
-        :manual_actions,
-        :scheduled_actions,
-        :artifacts,
-        :merge_request,
-        {
-          pending_builds: :project,
-          project: [:route, { namespace: :route }],
-          artifacts: {
-            project: [:route, { namespace: :route }]
-          }
-        }
-      ])
+      resource = resource.preload(preloaded_relations)
     end
 
     if paginated?
@@ -50,5 +34,27 @@ class PipelineSerializer < BaseSerializer
 
     data = represent(resource, { only: [{ details: [:stages] }], preload: true })
     data.dig(:details, :stages) || []
+  end
+
+  private
+
+  def preloaded_relations
+    [
+      :stages,
+      :retryable_builds,
+      :cancelable_statuses,
+      :trigger_requests,
+      :manual_actions,
+      :scheduled_actions,
+      :artifacts,
+      :merge_request,
+      {
+        pending_builds: :project,
+        project: [:route, { namespace: :route }],
+        artifacts: {
+          project: [:route, { namespace: :route }]
+        }
+      }
+    ]
   end
 end

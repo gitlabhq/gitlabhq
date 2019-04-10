@@ -53,19 +53,6 @@ describe 'projects/merge_requests/show.html.haml' do
         expect(rendered).not_to have_css('.cannot-be-merged')
       end
     end
-
-    context 'when assignee is not allowed to merge' do
-      it 'shows a warning icon' do
-        reporter = create(:user)
-        project.add_reporter(reporter)
-        closed_merge_request.update(assignee_id: reporter.id)
-        assign(:issuable_sidebar, serialize_issuable_sidebar(user, project, closed_merge_request))
-
-        render
-
-        expect(rendered).to have_css('.cannot-be-merged')
-      end
-    end
   end
 
   context 'when the merge request is closed' do
