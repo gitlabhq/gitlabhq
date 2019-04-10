@@ -141,7 +141,7 @@ Now that your certificate has been issued, let's add it to your Pages site:
     ```
 
 1. Click **Save changes** to apply them to your website.
-1. Wait a few minutes for DNS propagation.
+1. Wait a few minutes for the configuration changes to take effect.
 1. Visit your website at `https://example.com`.
 
 To force `https` connections on your site, navigate to your
