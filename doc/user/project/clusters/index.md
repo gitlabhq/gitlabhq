@@ -573,7 +573,7 @@ However, sometimes GitLab can not create them. In such instances, your job will 
 This job failed because the necessary resources were not successfully created.
 ```
 
-To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#sidekiqlog).
+To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#kuberneteslog).
 
 Common reasons for failure include:
 
