@@ -16,6 +16,7 @@ module Clusters
           error_code: error.respond_to?(:error_code) ? error.error_code : nil,
           service: self.class.name,
           app_id: app.id,
+          app_name: app.name,
           project_ids: app.cluster.project_ids,
           group_ids: app.cluster.group_ids
         }
@@ -28,6 +29,19 @@ module Clusters
 
         logger.error(logger_meta)
         Gitlab::Sentry.track_acceptable_exception(error, extra: meta)
+      end
+
+      def log_event(event)
+        meta = {
+          service: self.class.name,
+          app_id: app.id,
+          app_name: app.name,
+          project_ids: app.cluster.project_ids,
+          group_ids: app.cluster.group_ids,
+          event: event
+        }
+
+        logger.info(meta)
       end
 
       def logger

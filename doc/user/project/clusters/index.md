@@ -314,7 +314,7 @@ install it manually.
 
 ## Installing applications
 
-GitLab provides a one-click install for various applications which can
+GitLab provides **GitLab Managed Apps**, a one-click install for various applications which can
 be added directly to your configured cluster. Those applications are
 needed for [Review Apps](../../../ci/review_apps/index.md) and
 [deployments](../../../ci/environments.md). You can install them after you
@@ -545,7 +545,7 @@ The result will then be:
 ## Deployment variables
 
 The Kubernetes cluster integration exposes the following
-[deployment variables](../../../ci/variables/README.md#deployment-variables) in the
+[deployment variables](../../../ci/variables/README.md#deployment-environment-variables) in the
 GitLab CI/CD build environment.
 
 | Variable | Description |
@@ -573,7 +573,7 @@ However, sometimes GitLab can not create them. In such instances, your job will 
 This job failed because the necessary resources were not successfully created.
 ```
 
-To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#sidekiqlog).
+To find the cause of this error when creating a namespace and service account, check the [logs](../../../administration/logs.md#kuberneteslog).
 
 Common reasons for failure include:
 

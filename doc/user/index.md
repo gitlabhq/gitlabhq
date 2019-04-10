@@ -38,8 +38,8 @@ GitLab is a Git-based platform that integrates a great number of essential tools
 
 - Hosting code in repositories with version control.
 - Tracking proposals for new implementations, bug reports, and feedback with a
-  fully featured [Issue Tracker](project/issues/index.md#issue-tracker).
-- Organizing and prioritizing with [Issue Boards](project/issues/index.md#issue-board).
+  fully featured [Issue Tracker](project/issues/index.md#issues-list).
+- Organizing and prioritizing with [Issue Boards](project/issues/index.md#issue-boards).
 - Reviewing code in [Merge Requests](project/merge_requests/index.md) with live-preview changes per
   branch with [Review Apps](../ci/review_apps/index.md).
 - Building, testing, and deploying with built-in [Continuous Integration](../ci/README.md).

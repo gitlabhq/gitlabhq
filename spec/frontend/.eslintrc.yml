@@ -12,3 +12,7 @@ globals:
   loadFixtures: false
   preloadFixtures: false
   setFixtures: false
+rules:
+  jest/no-identical-title: error
+  jest/no-focused-tests: error
+  jest/no-jasmine-globals: error

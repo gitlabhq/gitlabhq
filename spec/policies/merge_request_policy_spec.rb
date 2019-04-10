@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequestPolicy do
+  include ExternalAuthorizationServiceHelpers
+
   let(:guest) { create(:user) }
   let(:author) { create(:user) }
   let(:developer) { create(:user) }
@@ -45,6 +47,23 @@ describe MergeRequestPolicy do
 
     it 'prevents guests from reopening merge request' do
       expect(permissions(guest, merge_request_locked)).to be_disallowed(:reopen_merge_request)
+    end
+  end
+
+  context 'with external authorization enabled' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:policies) { described_class.new(user, merge_request) }
+
+    before do
+      enable_external_authorization_service_check
+    end
+
+    it 'can read the issue iid without accessing the external service' do
+      expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+      expect(policies).to be_allowed(:read_merge_request_iid)
     end
   end
 end

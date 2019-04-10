@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Groups::Settings::CiCdController do
+  include ExternalAuthorizationServiceHelpers
+
   let(:group) { create(:group) }
   let(:user) { create(:user) }
 
@@ -31,6 +33,19 @@ describe Groups::Settings::CiCdController do
         get :show, params: { group_id: group }
 
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'external authorization' do
+      before do
+        enable_external_authorization_service_check
+        group.add_owner(user)
+      end
+
+      it 'renders show with 200 status code' do
+        get :show, params: { group_id: group }
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

@@ -19,7 +19,7 @@ describe Notify do
     create(:merge_request, source_project: project,
                            target_project: project,
                            author: current_user,
-                           assignee: assignee,
+                           assignees: [assignee],
                            description: 'Awesome description')
   end
 
@@ -275,7 +275,7 @@ describe Notify do
 
     context 'for merge requests' do
       describe 'that are new' do
-        subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+        subject { described_class.new_merge_request_email(merge_request.assignee_ids.first, merge_request.id) }
 
         it_behaves_like 'an assignee email'
         it_behaves_like 'an email starting a new thread with reply-by-email enabled' do
@@ -300,7 +300,7 @@ describe Notify do
         end
 
         context 'when sent with a reason' do
-          subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id, NotificationReason::ASSIGNED) }
+          subject { described_class.new_merge_request_email(merge_request.assignee_ids.first, merge_request.id, NotificationReason::ASSIGNED) }
 
           it_behaves_like 'appearance header and footer enabled'
           it_behaves_like 'appearance header and footer not enabled'
@@ -324,7 +324,7 @@ describe Notify do
 
       describe 'that are reassigned' do
         let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
-        subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id) }
+        subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id) }
 
         it_behaves_like 'a multiple recipients email'
         it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
@@ -351,7 +351,7 @@ describe Notify do
         end
 
         context 'when sent with a reason' do
-          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, NotificationReason::ASSIGNED) }
+          subject { described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, NotificationReason::ASSIGNED) }
 
           it_behaves_like 'appearance header and footer enabled'
           it_behaves_like 'appearance header and footer not enabled'
@@ -364,11 +364,11 @@ describe Notify do
             text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::ASSIGNED)
             is_expected.to have_body_text(text)
 
-            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, NotificationReason::MENTIONED)
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, NotificationReason::MENTIONED)
             text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(NotificationReason::MENTIONED)
             expect(new_subject).to have_body_text(text)
 
-            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user.id, nil)
+            new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, nil)
             text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(nil)
             expect(new_subject).to have_body_text(text)
           end
@@ -376,7 +376,7 @@ describe Notify do
       end
 
       describe 'that are new with a description' do
-        subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+        subject { described_class.new_merge_request_email(merge_request.assignee_ids.first, merge_request.id) }
 
         it_behaves_like 'it should show Gmail Actions View Merge request link'
         it_behaves_like "an unsubscribeable thread"
@@ -476,7 +476,7 @@ describe Notify do
                  source_project: project,
                  target_project: project,
                  author: current_user,
-                 assignee: assignee,
+                 assignees: [assignee],
                  description: 'Awesome description')
         end
 

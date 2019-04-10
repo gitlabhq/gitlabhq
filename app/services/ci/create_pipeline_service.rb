@@ -37,7 +37,7 @@ module Ci
         variables_attributes: params[:variables_attributes],
         project: project,
         current_user: current_user,
-        push_options: params[:push_options],
+        push_options: params[:push_options] || {},
         chat_data: params[:chat_data],
         **extra_options(options))
 

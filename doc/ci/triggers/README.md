@@ -20,7 +20,7 @@ A unique trigger token can be obtained when [adding a new trigger](#adding-a-new
 DANGER: **Danger:**
 Passing plain text tokens in public projects is a security issue. Potential
 attackers can impersonate the user that exposed their trigger token publicly in
-their `.gitlab-ci.yml` file. Use [variables](../variables/README.md#variables)
+their `.gitlab-ci.yml` file. Use [variables](../variables/README.md#gitlab-cicd-environment-variables)
 to protect trigger tokens.
 
 ## Adding a new trigger

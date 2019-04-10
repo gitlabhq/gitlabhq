@@ -190,15 +190,15 @@ module IssuableCollections
                          end
   end
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def preload_for_collection
+    common_attributes = [:author, :assignees, :labels, :milestone]
     @preload_for_collection ||= case collection_type
                                 when 'Issue'
-                                  [:project, :author, :assignees, :labels, :milestone, project: :namespace]
+                                  common_attributes + [:project, project: :namespace]
                                 when 'MergeRequest'
-                                  [
-                                    :target_project, :author, :assignee, :labels, :milestone,
-                                    source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits
-                                  ]
+                                  common_attributes + [:target_project, source_project: :route, head_pipeline: :project, target_project: :namespace, latest_merge_request_diff: :merge_request_diff_commits]
                                 end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

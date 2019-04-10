@@ -303,20 +303,19 @@ services:
   - docker:dind
 
 variables:
-  CONTAINER_IMAGE: registry.gitlab.com/$CI_PROJECT_PATH
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
   script:
-    - docker pull $CONTAINER_IMAGE:latest || true
-    - docker build --cache-from $CONTAINER_IMAGE:latest --tag $CONTAINER_IMAGE:$CI_COMMIT_SHA --tag $CONTAINER_IMAGE:latest .
-    - docker push $CONTAINER_IMAGE:$CI_COMMIT_SHA
-    - docker push $CONTAINER_IMAGE:latest
+    - docker pull $CI_REGISTRY_IMAGE:latest || true
+    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
 ```
 
 The steps in the `script` section for the `build` stage can be summed up to:
@@ -324,7 +323,7 @@ The steps in the `script` section for the `build` stage can be summed up to:
 1. The first command tries to pull the image from the registry so that it can be
    used as a cache for the `docker build` command.
 1. The second command builds a Docker image using the pulled image as a
-   cache (notice the `--cache-from $CONTAINER_IMAGE:latest` argument) if
+   cache (notice the `--cache-from $CI_REGISTRY_IMAGE:latest` argument) if
    available, and tags it.
 1. The last two commands push the tagged Docker images to the container registry
    so that they may also be used as cache for subsequent builds.
@@ -421,14 +420,14 @@ and depend on the visibility of your project.
 
 For all projects, mostly suitable for public ones:
 
-- **Using the special `gitlab-ci-token` user**: This user is created for you in order to
+- **Using the special `$CI_REGISTRY_USER` variable**: The user specified by this variable is created for you in order to
   push to the Registry connected to your project. Its password is automatically
-  set with the `$CI_JOB_TOKEN` variable. This allows you to automate building and deploying
+  set with the `$CI_REGISTRY_PASSWORD` variable. This allows you to automate building and deploying
   your Docker images and has read/write access to the Registry. This is ephemeral,
   so it's only valid for one job. You can use the following example as-is:
 
     ```sh
-    docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     ```
 
 For private and internal projects:
@@ -436,8 +435,10 @@ For private and internal projects:
 - **Using a personal access token**: You can create and use a
   [personal access token](../../user/profile/personal_access_tokens.md)
   in case your project is private:
-    - For read (pull) access, the scope should be `read_registry`.
-    - For read/write (pull/push) access, use `api`.
+
+  - For read (pull) access, the scope should be `read_registry`.
+  - For read/write (pull/push) access, use `api`.
+
   Replace the `<username>` and `<access_token>` in the following example:
 
     ```sh
@@ -469,9 +470,9 @@ could look like:
      DOCKER_DRIVER: overlay2
    stage: build
    script:
-     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.example.com
-     - docker build -t registry.example.com/group/project/image:latest .
-     - docker push registry.example.com/group/project/image:latest
+     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+     - docker build -t $CI_REGISTRY/group/project/image:latest .
+     - docker push $CI_REGISTRY/group/project/image:latest
 ```
 
 You can also make use of [other variables](../variables/README.md) to avoid hardcoding:
@@ -486,7 +487,7 @@ variables:
   IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build
@@ -526,7 +527,7 @@ variables:
   CONTAINER_RELEASE_IMAGE: $CI_REGISTRY_IMAGE:latest
 
 before_script:
-  - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
 
 build:
   stage: build

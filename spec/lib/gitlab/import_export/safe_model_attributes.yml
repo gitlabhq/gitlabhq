@@ -496,6 +496,7 @@ Project:
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
+- external_authorization_classification_label
 - pages_https_only
 Author:
 - name
@@ -621,3 +622,7 @@ Suggestion:
 - outdated
 - lines_above
 - lines_below
+MergeRequestAssignee:
+- id
+- user_id
+- merge_request_id

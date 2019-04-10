@@ -1,0 +1,5 @@
+---
+title: Improve performance of PR import
+merge_request: 27121
+author:
+type: performance

@@ -32,7 +32,7 @@ describe MergeRequests::CreateService do
         expect(merge_request).to be_valid
         expect(merge_request.work_in_progress?).to be(false)
         expect(merge_request.title).to eq('Awesome merge_request')
-        expect(merge_request.assignee).to be_nil
+        expect(merge_request.assignees).to be_empty
         expect(merge_request.merge_params['force_remove_source_branch']).to eq('1')
       end
 
@@ -73,7 +73,7 @@ describe MergeRequests::CreateService do
               description: "well this is not done yet\n/wip",
               source_branch: 'feature',
               target_branch: 'master',
-              assignee: assignee
+              assignees: [assignee]
             }
           end
 
@@ -89,7 +89,7 @@ describe MergeRequests::CreateService do
               description: "well this is not done yet\n/wip",
               source_branch: 'feature',
               target_branch: 'master',
-              assignee: assignee
+              assignees: [assignee]
             }
           end
 
@@ -106,11 +106,11 @@ describe MergeRequests::CreateService do
             description: 'please fix',
             source_branch: 'feature',
             target_branch: 'master',
-            assignee: assignee
+            assignees: [assignee]
           }
         end
 
-        it { expect(merge_request.assignee).to eq assignee }
+        it { expect(merge_request.assignees).to eq([assignee]) }
 
         it 'creates a todo for new assignee' do
           attributes = {
@@ -301,7 +301,7 @@ describe MergeRequests::CreateService do
 
         let(:opts) do
           {
-            assignee_id: create(:user).id,
+            assignee_ids: create(:user).id,
             milestone_id: 1,
             title: 'Title',
             description: %(/assign @#{assignee.username}\n/milestone %"#{milestone.name}"),
@@ -317,7 +317,7 @@ describe MergeRequests::CreateService do
 
         it 'assigns and sets milestone to issuable from command' do
           expect(merge_request).to be_persisted
-          expect(merge_request.assignee).to eq(assignee)
+          expect(merge_request.assignees).to eq([assignee])
           expect(merge_request.milestone).to eq(milestone)
         end
       end
@@ -332,28 +332,28 @@ describe MergeRequests::CreateService do
         end
 
         it 'removes assignee_id when user id is invalid' do
-          opts = { title: 'Title', description: 'Description', assignee_id: -1 }
+          opts = { title: 'Title', description: 'Description', assignee_ids: [-1] }
 
           merge_request = described_class.new(project, user, opts).execute
 
-          expect(merge_request.assignee_id).to be_nil
+          expect(merge_request.assignee_ids).to be_empty
         end
 
         it 'removes assignee_id when user id is 0' do
-          opts = { title: 'Title', description: 'Description', assignee_id: 0 }
+          opts = { title: 'Title', description: 'Description', assignee_ids: [0] }
 
           merge_request = described_class.new(project, user, opts).execute
 
-          expect(merge_request.assignee_id).to be_nil
+          expect(merge_request.assignee_ids).to be_empty
         end
 
         it 'saves assignee when user id is valid' do
           project.add_maintainer(assignee)
-          opts = { title: 'Title', description: 'Description', assignee_id: assignee.id }
+          opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
 
           merge_request = described_class.new(project, user, opts).execute
 
-          expect(merge_request.assignee).to eq(assignee)
+          expect(merge_request.assignees).to eq([assignee])
         end
 
         context 'when assignee is set' do
@@ -361,7 +361,7 @@ describe MergeRequests::CreateService do
             {
               title: 'Title',
               description: 'Description',
-              assignee_id: assignee.id,
+              assignee_ids: [assignee.id],
               source_branch: 'feature',
               target_branch: 'master'
             }
@@ -387,7 +387,7 @@ describe MergeRequests::CreateService do
           levels.each do |level|
             it "removes not authorized assignee when project is #{Gitlab::VisibilityLevel.level_name(level)}" do
               project.update(visibility_level: level)
-              opts = { title: 'Title', description: 'Description', assignee_id: assignee.id }
+              opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
 
               merge_request = described_class.new(project, user, opts).execute
 

@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Project do
   include ProjectForksHelper
   include GitHelpers
+  include ExternalAuthorizationServiceHelpers
 
   it_behaves_like 'having unique enum values'
 
@@ -2721,7 +2722,7 @@ describe Project do
   end
 
   describe '#any_lfs_file_locks?', :request_store do
-    let!(:project) { create(:project) }
+    set(:project) { create(:project) }
 
     it 'returns false when there are no LFS file locks' do
       expect(project.any_lfs_file_locks?).to be_falsey
@@ -3157,53 +3158,6 @@ describe Project do
         projects = described_class.all.public_or_visible_to_user
 
         expect(projects).to eq([public_project])
-      end
-    end
-
-    context 'with requested visibility levels' do
-      set(:internal_project) { create(:project, :internal, :repository) }
-      set(:private_project_2) { create(:project, :private) }
-
-      context 'with admin user' do
-        set(:admin) { create(:admin) }
-
-        it 'returns all projects' do
-          projects = described_class.all.public_or_visible_to_user(admin, [])
-
-          expect(projects).to match_array([public_project, private_project, private_project_2, internal_project])
-        end
-
-        it 'returns all public and private projects' do
-          projects = described_class.all.public_or_visible_to_user(admin, [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE])
-
-          expect(projects).to match_array([public_project, private_project, private_project_2])
-        end
-
-        it 'returns all private projects' do
-          projects = described_class.all.public_or_visible_to_user(admin, [Gitlab::VisibilityLevel::PRIVATE])
-
-          expect(projects).to match_array([private_project, private_project_2])
-        end
-      end
-
-      context 'with regular user' do
-        it 'returns authorized projects' do
-          projects = described_class.all.public_or_visible_to_user(user, [])
-
-          expect(projects).to match_array([public_project, private_project, internal_project])
-        end
-
-        it "returns user's public and private projects" do
-          projects = described_class.all.public_or_visible_to_user(user, [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE])
-
-          expect(projects).to match_array([public_project, private_project])
-        end
-
-        it 'returns one private project' do
-          projects = described_class.all.public_or_visible_to_user(user, [Gitlab::VisibilityLevel::PRIVATE])
-
-          expect(projects).to eq([private_project])
-        end
       end
     end
   end
@@ -4414,6 +4368,25 @@ describe Project do
             .not_to exceed_query_limit(control).with_threshold(2)
         end
       end
+    end
+  end
+
+  describe '#external_authorization_classification_label' do
+    it 'falls back to the default when none is configured' do
+      enable_external_authorization_service_check
+
+      expect(build(:project).external_authorization_classification_label)
+        .to eq('default_label')
+    end
+
+    it 'returns the classification label if it was configured on the project' do
+      enable_external_authorization_service_check
+
+      project = build(:project,
+                      external_authorization_classification_label: 'hello')
+
+      expect(project.external_authorization_classification_label)
+        .to eq('hello')
     end
   end
 

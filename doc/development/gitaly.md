@@ -6,7 +6,7 @@ Workhorse and GitLab-Shell.
 ## Beginner's guide
 
 Start by reading the gitaly repository's
-[Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md). 
+[Beginner's guide to Gitaly contributions](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/beginners_guide.md).
 It describes how to setup gitaly, the various components of gitaly and what they do, and how to run its test suites.
 
 ## Developing new Git features
@@ -192,7 +192,7 @@ GITALY_REPO_URL=https://gitlab+deploy-token-1000:token-here@gitlab.com/nick.thom
 
 To use a custom Gitaly repository in CI, for instance if you want your
 GitLab fork to always use your own Gitaly fork, set `GITALY_REPO_URL`
-as a [CI environment variable](../ci/variables/README.md#variables).
+as a [CI environment variable](../ci/variables/README.md#gitlab-cicd-environment-variables).
 
 ---
 

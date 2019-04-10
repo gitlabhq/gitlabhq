@@ -21,7 +21,7 @@ Gitlab::Seeder.quiet do
         title: FFaker::Lorem.sentence(6),
         description: FFaker::Lorem.sentences(3).join(" "),
         milestone: project.milestones.sample,
-        assignee: project.team.users.sample,
+        assignees: [project.team.users.sample],
         label_ids: label_ids
       }
 

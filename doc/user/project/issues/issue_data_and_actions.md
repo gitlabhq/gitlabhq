@@ -1,8 +1,8 @@
-# GitLab Issues Functionalities
+# Issue Data and Actions
 
 Please read through the [GitLab Issue Documentation](index.md) for an overview on GitLab Issues.
 
-## Issues Functionalities
+## Parts of an Issue
 
 The image below illustrates what an issue looks like:
 
@@ -77,7 +77,7 @@ can be changed as many times as needed.
 
 Categorize issues by giving them [labels](../labels.md). They help to
 organize workflows, and they enable you to work with the
-[GitLab Issue Board](index.md#issue-board).
+[GitLab Issue Board](index.md#issue-boards).
 
 Group Labels, which allow you to use the same labels for a
 group of projects, can be also given to issues. They work exactly the same,

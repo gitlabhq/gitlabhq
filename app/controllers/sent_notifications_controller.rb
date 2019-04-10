@@ -16,7 +16,7 @@ class SentNotificationsController < ApplicationController
     noteable = @sent_notification.noteable
     noteable.unsubscribe(@sent_notification.recipient, @sent_notification.project)
 
-    flash[:notice] = "You have been unsubscribed from this thread."
+    flash[:notice] = _("You have been unsubscribed from this thread.")
 
     if current_user
       redirect_to noteable_path(noteable)

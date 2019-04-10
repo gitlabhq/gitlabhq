@@ -34,7 +34,7 @@ describe Issuable::DestroyService do
     end
 
     context 'when issuable is a merge request' do
-      let!(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: user, assignee: user) }
+      let!(:merge_request) { create(:merge_request, target_project: project, source_project: project, author: user, assignees: [user]) }
 
       it 'destroys the merge request' do
         expect { service.execute(merge_request) }.to change { project.merge_requests.count }.by(-1)

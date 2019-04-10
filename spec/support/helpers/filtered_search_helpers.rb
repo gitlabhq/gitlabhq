@@ -149,4 +149,10 @@ module FilteredSearchHelpers
       loop until find('.filtered-search').value.strip == text
     end
   end
+
+  def close_dropdown_menu_if_visible
+    find('.dropdown-menu-toggle', visible: :all).tap do |toggle|
+      toggle.click if toggle.visible?
+    end
+  end
 end

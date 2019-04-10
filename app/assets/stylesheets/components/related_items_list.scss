@@ -25,6 +25,18 @@ $item-weight-max-width: 48px;
     flex-grow: 1;
   }
 
+  .issue-token-state-icon-open {
+    color: $green-500;
+  }
+
+  .issue-token-state-icon-closed {
+    color: $blue-500;
+  }
+
+  .merge-request-status.closed {
+    color: $red-500;
+  }
+
   .issue-token-state-icon-open,
   .issue-token-state-icon-closed,
   .confidential-icon,

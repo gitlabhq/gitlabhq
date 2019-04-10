@@ -20,7 +20,7 @@ shared_examples 'logs kubernetes errors' do
   end
 
   it 'logs into kubernetes.log and Sentry' do
-    expect(service.send(:logger)).to receive(:error).with(logger_hash)
+    expect(service.send(:logger)).to receive(:error).with(hash_including(logger_hash))
 
     expect(Gitlab::Sentry).to receive(:track_acceptable_exception).with(
       error,

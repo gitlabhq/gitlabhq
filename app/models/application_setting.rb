@@ -213,6 +213,40 @@ class ApplicationSetting < ApplicationRecord
 
   validate :terms_exist, if: :enforce_terms?
 
+  validates :external_authorization_service_default_label,
+            presence: true,
+            if: :external_authorization_service_enabled
+
+  validates :external_authorization_service_url,
+            url: true, allow_blank: true,
+            if: :external_authorization_service_enabled
+
+  validates :external_authorization_service_timeout,
+            numericality: { greater_than: 0, less_than_or_equal_to: 10 },
+            if: :external_authorization_service_enabled
+
+  validates :external_auth_client_key,
+            presence: true,
+            if: -> (setting) { setting.external_auth_client_cert.present? }
+
+  validates_with X509CertificateCredentialsValidator,
+                 certificate: :external_auth_client_cert,
+                 pkey: :external_auth_client_key,
+                 pass: :external_auth_client_key_pass,
+                 if: -> (setting) { setting.external_auth_client_cert.present? }
+
+  attr_encrypted :external_auth_client_key,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_truncated,
+                 algorithm: 'aes-256-gcm',
+                 encode: true
+
+  attr_encrypted :external_auth_client_key_pass,
+                 mode: :per_attribute_iv,
+                 key: Settings.attr_encrypted_db_key_base_truncated,
+                 algorithm: 'aes-256-gcm',
+                 encode: true
+
   before_validation :ensure_uuid!
   before_validation :strip_sentry_values
 

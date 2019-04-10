@@ -62,5 +62,32 @@ describe Gitlab::Kubernetes::Namespace do
 
       subject.ensure_exists!
     end
+
+    context 'when client errors' do
+      let(:exception) { Kubeclient::HttpError.new(500, 'system failure', nil) }
+
+      before do
+        allow(client).to receive(:get_namespace).with(name).once.and_raise(exception)
+      end
+
+      it 'raises the exception' do
+        expect { subject.ensure_exists! }.to raise_error(exception)
+      end
+
+      it 'logs the error' do
+        expect(subject.send(:logger)).to receive(:error).with(
+          hash_including(
+            exception: 'Kubeclient::HttpError',
+            status_code: 500,
+            namespace: 'a_namespace',
+            class_name: 'Gitlab::Kubernetes::Namespace',
+            event: :failed_to_create_namespace,
+            message: 'system failure'
+          )
+        )
+
+        expect { subject.ensure_exists! }.to raise_error(exception)
+      end
+    end
   end
 end

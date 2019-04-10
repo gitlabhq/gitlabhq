@@ -15,6 +15,7 @@ class Release < ApplicationRecord
   accepts_nested_attributes_for :links, allow_destroy: true
 
   validates :description, :project, :tag, presence: true
+  validates :name, presence: true, on: :create
 
   scope :sorted, -> { order(created_at: :desc) }
 

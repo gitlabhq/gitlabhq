@@ -7,7 +7,7 @@ shared_examples 'discussion comments' do |resource_name|
   let(:close_selector) { "#{form_selector} .btn-comment-and-close" }
   let(:comments_selector) { '.timeline > .note.timeline-entry' }
 
-  it 'clicking "Comment" will post a comment' do
+  it 'clicking "Comment" will post a comment', :quarantine do
     expect(page).to have_selector toggle_selector
 
     find("#{form_selector} .note-textarea").send_keys('a')

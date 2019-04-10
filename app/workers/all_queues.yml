@@ -143,6 +143,7 @@
 - repository_remove_remote
 - system_hook_push
 - update_merge_requests
+- update_project_statistics
 - upload_checksum
 - web_hook
 - repository_update_remote_mirror

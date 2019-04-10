@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Issue do
+  include ExternalAuthorizationServiceHelpers
+
   describe "Associations" do
     it { is_expected.to belong_to(:milestone) }
     it { is_expected.to have_many(:assignees) }
@@ -778,5 +780,48 @@ describe Issue do
 
   it_behaves_like 'throttled touch' do
     subject { create(:issue, updated_at: 1.hour.ago) }
+  end
+
+  context 'when an external authentication service' do
+    before do
+      enable_external_authorization_service_check
+    end
+
+    describe '#visible_to_user?' do
+      it 'is `false` when an external authorization service is enabled' do
+        issue = build(:issue, project: build(:project, :public))
+
+        expect(issue).not_to be_visible_to_user
+      end
+
+      it 'checks the external service to determine if an issue is readable by a user' do
+        project = build(:project, :public,
+                        external_authorization_classification_label: 'a-label')
+        issue = build(:issue, project: project)
+        user = build(:user)
+
+        expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).with(user, 'a-label') { false }
+        expect(issue.visible_to_user?(user)).to be_falsy
+      end
+
+      it 'does not check the external service if a user does not have access to the project' do
+        project = build(:project, :private,
+                        external_authorization_classification_label: 'a-label')
+        issue = build(:issue, project: project)
+        user = build(:user)
+
+        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+        expect(issue.visible_to_user?(user)).to be_falsy
+      end
+
+      it 'does not check the external webservice for admins' do
+        issue = build(:issue)
+        user = build(:admin)
+
+        expect(::Gitlab::ExternalAuthorization).not_to receive(:access_allowed?)
+
+        issue.visible_to_user?(user)
+      end
+    end
   end
 end

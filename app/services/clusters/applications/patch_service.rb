@@ -8,8 +8,10 @@ module Clusters
 
         app.make_updating!
 
+        log_event(:begin_patch)
         helm_api.update(update_command)
 
+        log_event(:schedule_wait_for_patch)
         ClusterWaitForAppInstallationWorker.perform_in(
           ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
       rescue Kubeclient::HttpError => e

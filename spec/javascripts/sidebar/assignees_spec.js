@@ -132,9 +132,94 @@ describe('Assignee component', () => {
         -1,
       );
     });
+
+    it('has correct "cannot merge" tooltip when user cannot merge', () => {
+      const user = Object.assign({}, UsersMock.user, { can_merge: false });
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users: [user],
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('Cannot merge');
+    });
   });
 
   describe('Two or more assignees/users', () => {
+    it('has correct "cannot merge" tooltip when one user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(3);
+      users[0].can_merge = true;
+      users[1].can_merge = false;
+      users[2].can_merge = false;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('1/3 can merge');
+    });
+
+    it('has correct "cannot merge" tooltip when no user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(2);
+      users[0].can_merge = false;
+      users[1].can_merge = false;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('No one can merge');
+    });
+
+    it('has correct "cannot merge" tooltip when more than one user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(3);
+      users[0].can_merge = false;
+      users[1].can_merge = true;
+      users[2].can_merge = true;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual('2/3 can merge');
+    });
+
+    it('has no "cannot merge" tooltip when every user can merge', () => {
+      const users = UsersMockHelper.createNumberRandomUsers(2);
+      users[0].can_merge = true;
+      users[1].can_merge = true;
+
+      component = new AssigneeComponent({
+        propsData: {
+          rootPath: 'http://localhost:3000/',
+          users,
+          editable: true,
+          issuableType: 'merge_request',
+        },
+      }).$mount();
+
+      expect(component.mergeNotAllowedTooltipMessage).toEqual(null);
+    });
+
     it('displays two assignee icons when collapsed', () => {
       const users = UsersMockHelper.createNumberRandomUsers(2);
       component = new AssigneeComponent({

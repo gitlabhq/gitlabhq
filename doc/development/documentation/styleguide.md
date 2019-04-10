@@ -14,9 +14,8 @@ For programmatic help adhering to the guidelines, see [linting](index.md#linting
 
 ## Files
 
-- [Directory structure](index.md#location-and-naming-documents): place the docs
-  in the correct location.
-- [Documentation files](index.md#documentation-files): name the files accordingly.
+See the [Documentation types and organization](index.md#documentation-types-and-organization) section
+on the index page for information on how to structure and name files across the GitLab documentation.
 
 DANGER: **Attention:**
 **Do not** use capital letters, spaces, or special chars in file names,
@@ -28,41 +27,43 @@ a test that will fail if it spots a new `README.md` file.
 
 ### Markdown
 
-The [documentation website](https://docs.gitlab.com) had its markdown engine migrated from [Redcarpet to GitLab Kramdown](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108)
-in October 2018.
+The [documentation website](https://docs.gitlab.com) uses GitLab Kramdown as its Markdown rendering engine [as of October 2018](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108). For a complete Kramdown reference, see the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
 
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
 gem will support all [GFM markup](../../user/markdown.md) in the future. For now,
-use regular markdown markup, following the rules on this style guide. For a complete
-Kramdown reference, check the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
-Use Kramdown markup wisely: do not overuse its specific markup (e.g., `{:.class}`) as it will not render properly in
-[`/help`](index.md#gitlab-help).
+use regular markdown markup, following the rules in the linked style guide. 
+
+Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly in on GitLab instances in [`/help`](index.md#gitlab-help).
 
 ## Content
 
 These guidelines help toward the goal of having every user's search of documentation
 yield a useful result, and ensuring content is helpful and easy to consume.
 
-- What to include:
-  - Any and all helpful information, processes, and tips for implementing,
-  using, and troubleshooting GitLab features. [The documentation is the single source of truth](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot)
-  for this information.
-  - 'Risky' or niche problem-solving steps. There is no reason to withhold these or
-  store them elsewhere; simply include them along with the rest of the docs including all necessary
-  detail, such as specific warnings and caveats about potential ramifications.
-  - Any content types/sources, if relevant to users or admins. You can freely
-  include presentations, videos, etc.; no matter who it was originally written for,
-  if it is helpful to any of our audiences, we can include it. If an outside source
-  that's under copyright, rephrase, or summarize and link out; do not copy and paste.
-  - All applicable subsections as described on the [structure and template](structure.md) page,
-  with files organized in the [correct directory](index.md#documentation-directory-structure).
+### Subject matter
+
+[The documentation is the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot) for any and all helpful information and processes needed to learn about, implement, use, and troubleshoot GitLab features. Note that this includes problem-solving actions that may address rare cases or be considered 'risky', so long as proper context is provided. See the SSOT link for more detail.
+
+### Media types and sources
+
+Include any media types/sources, if relevant to readers. You can freely include or link presentations, diagrams, videos, etc.; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
+
+   - If you use an image that has a separate source file (for example, a vector or diagram format), link the image to the source file so that it may be reused or updated by anyone.
+   - Do not copy and paste content from other sources unless it is a limited quotation with the source cited. Typically it is better to either rephrase relevant information in your own words or link out to the other source.
+
+### Structure across documents
+
+- Place files in the correct directory per the [Documentation directory structure](index.md#documentation-types-and-organization) guidelines.
+- To avoid duplication, do not include the same information in multiple places. Instead, choose one 'single source of truth (SSOT)' location and link from other relevant locations.
+- When referencing other GitLab products and features, link to their respective docs.
+- When referencing third-party products or technologies, link out to their external sites, documentation, and resources.
+
+### Structure within documents
+
+- Include any and all applicable subsections as described on the [structure and template](structure.md) page,
 - To ensure discoverability, link to each doc from its higher-level index page and other related pages.
-- When referencing other GitLab products and features, link to their
-  respective docs; when referencing third-party products or technologies,
-  link out to their external sites, documentation, and resources.
-- Do not duplicate information.
 - Structure content in alphabetical order in tables, lists, etc., unless there is
-  a logical reason not to (for example, when mirroring the UI or an ordered sequence).
+  a logical reason not to (for example, when mirroring the UI or an otherwise ordered sequence).
 
 ## Language
 

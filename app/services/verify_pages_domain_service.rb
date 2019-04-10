@@ -8,6 +8,7 @@ class VerifyPagesDomainService < BaseService
 
   # How long verification lasts for
   VERIFICATION_PERIOD = 7.days
+  REMOVAL_DELAY = 1.week.freeze
 
   attr_reader :domain
 
@@ -36,7 +37,7 @@ class VerifyPagesDomainService < BaseService
     # Prevent any pre-existing grace period from being truncated
     reverify = [domain.enabled_until, VERIFICATION_PERIOD.from_now].compact.max
 
-    domain.assign_attributes(verified_at: Time.now, enabled_until: reverify)
+    domain.assign_attributes(verified_at: Time.now, enabled_until: reverify, remove_at: nil)
     domain.save!(validate: false)
 
     if was_disabled
@@ -49,18 +50,20 @@ class VerifyPagesDomainService < BaseService
   end
 
   def unverify_domain!
-    if domain.verified?
-      domain.assign_attributes(verified_at: nil)
-      domain.save!(validate: false)
+    was_verified = domain.verified?
 
-      notify(:verification_failed)
-    end
+    domain.assign_attributes(verified_at: nil)
+    domain.remove_at ||= REMOVAL_DELAY.from_now unless domain.enabled?
+    domain.save!(validate: false)
+
+    notify(:verification_failed) if was_verified
 
     error("Couldn't verify #{domain.domain}")
   end
 
   def disable_domain!
     domain.assign_attributes(verified_at: nil, enabled_until: nil)
+    domain.remove_at ||= REMOVAL_DELAY.from_now
     domain.save!(validate: false)
 
     notify(:disabled)

@@ -48,14 +48,14 @@ describe 'Dashboard Merge Requests' do
 
     let!(:assigned_merge_request) do
       create(:merge_request,
-        assignee: current_user,
+        assignees: [current_user],
         source_project: project,
         author: create(:user))
     end
 
     let!(:assigned_merge_request_from_fork) do
       create(:merge_request,
-              source_branch: 'markdown', assignee: current_user,
+              source_branch: 'markdown', assignees: [current_user],
               target_project: public_project, source_project: forked_project,
               author: create(:user))
     end

@@ -83,7 +83,7 @@ our newly created VPC.
 ### Internet Gateway
 
 Now still on the same dashboard head over to Internet Gateways and
-create a new one. After its created pres on the `Attach to VPC` button and
+create a new one. After its created press on the `Attach to VPC` button and
 select our VPC.
 
 ![Internet Gateway](img/ig.png)

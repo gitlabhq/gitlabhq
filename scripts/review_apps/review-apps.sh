@@ -38,13 +38,13 @@ function previousDeployFailed() {
   local deploy="${1}"
   echoinfo "Checking for previous deployment of ${deploy}" true
 
-  helm status ${deploy} >/dev/null 2>&1
+  helm status "${deploy}" >/dev/null 2>&1
   local status=$?
 
   # if `status` is `0`, deployment exists, has a status
   if [ $status -eq 0 ]; then
     echoinfo "Previous deployment found, checking status..."
-    deployment_status=$(helm status ${deploy} | grep ^STATUS | cut -d' ' -f2)
+    deployment_status=$(helm status "${deploy}" | grep ^STATUS | cut -d' ' -f2)
     echoinfo "Previous deployment state: ${deployment_status}"
     if [[ "$deployment_status" == "FAILED" || "$deployment_status" == "PENDING_UPGRADE" || "$deployment_status" == "PENDING_INSTALL" ]]; then
       status=0;
@@ -64,12 +64,7 @@ function delete() {
     return
   fi
 
-  local track="${1-stable}"
   local name="$CI_ENVIRONMENT_SLUG"
-
-  if [[ "$track" != "stable" ]]; then
-    name="$name-$track"
-  fi
 
   echoinfo "Deleting release '$name'..." true
 
@@ -97,7 +92,8 @@ function get_pod() {
   echoinfo "Running '${get_pod_cmd}'" true
 
   while true; do
-    local pod_name="$(eval $get_pod_cmd)"
+    local pod_name
+    pod_name="$(eval "${get_pod_cmd}")"
     [[ "${pod_name}" == "" ]] || break
 
     echoinfo "Waiting till '${app_name}' pod is ready";
@@ -113,7 +109,8 @@ function perform_review_app_deployment() {
   ensure_namespace
   install_tiller
   install_external_dns
-  time deploy
+  time deploy || true
+  wait_for_review_app_to_be_accessible
   add_license
 }
 
@@ -156,7 +153,8 @@ function install_tiller() {
 
 function install_external_dns() {
   local release_name="dns-gitlab-review-app"
-  local domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
+  local domain
+  domain=$(echo "${REVIEW_APPS_DOMAIN}" | awk -F. '{printf "%s.%s", $(NF-1), $NF}')
   echoinfo "Installing external DNS for domain ${domain}..." true
 
   if ! deployExists "${KUBE_NAMESPACE}" "${release_name}" || previousDeployFailed "${release_name}" ; then
@@ -182,17 +180,17 @@ function create_secret() {
   echoinfo "Creating the ${CI_ENVIRONMENT_SLUG}-gitlab-initial-root-password secret in the ${KUBE_NAMESPACE} namespace..." true
 
   kubectl create secret generic -n "$KUBE_NAMESPACE" \
-    $CI_ENVIRONMENT_SLUG-gitlab-initial-root-password \
-    --from-literal=password=$REVIEW_APPS_ROOT_PASSWORD \
+    "${CI_ENVIRONMENT_SLUG}-gitlab-initial-root-password" \
+    --from-literal="password=${REVIEW_APPS_ROOT_PASSWORD}" \
     --dry-run -o json | kubectl apply -f -
 }
 
 function download_gitlab_chart() {
   echoinfo "Downloading the GitLab chart..." true
 
-  curl -o gitlab.tar.bz2 https://gitlab.com/charts/gitlab/-/archive/$GITLAB_HELM_CHART_REF/gitlab-$GITLAB_HELM_CHART_REF.tar.bz2
+  curl -o gitlab.tar.bz2 "https://gitlab.com/charts/gitlab/-/archive/${GITLAB_HELM_CHART_REF}/gitlab-${GITLAB_HELM_CHART_REF}.tar.bz2"
   tar -xjf gitlab.tar.bz2
-  cd gitlab-$GITLAB_HELM_CHART_REF
+  cd "gitlab-${GITLAB_HELM_CHART_REF}"
 
   echoinfo "Adding the gitlab repo to Helm..."
   helm repo add gitlab https://charts.gitlab.io
@@ -202,17 +200,8 @@ function download_gitlab_chart() {
 }
 
 function deploy() {
-  local track="${1-stable}"
   local name="$CI_ENVIRONMENT_SLUG"
-
-  if [[ "$track" != "stable" ]]; then
-    name="$name-$track"
-  fi
   echoinfo "Deploying ${name}..." true
-
-  replicas="1"
-  service_enabled="false"
-  postgres_enabled="$POSTGRES_ENABLED"
 
   IMAGE_REPOSITORY="registry.gitlab.com/gitlab-org/build/cng-mirror"
   IMAGE_VERSION="${CI_PROJECT_NAME#gitlab-}"
@@ -223,24 +212,6 @@ function deploy() {
   gitlab_gitaly_image_repository="${IMAGE_REPOSITORY}/gitaly"
   gitlab_shell_image_repository="${IMAGE_REPOSITORY}/gitlab-shell"
   gitlab_workhorse_image_repository="${IMAGE_REPOSITORY}/gitlab-workhorse-${IMAGE_VERSION}"
-
-  # canary uses stable db
-  [[ "$track" == "canary" ]] && postgres_enabled="false"
-
-  env_track=$( echo $track | tr -s  '[:lower:]'  '[:upper:]' )
-  env_slug=$( echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s  '[:lower:]'  '[:upper:]' )
-
-  if [[ "$track" == "stable" ]]; then
-    # for stable track get number of replicas from `PRODUCTION_REPLICAS`
-    eval new_replicas=\$${env_slug}_REPLICAS
-    service_enabled="true"
-  else
-    # for all tracks get number of replicas from `CANARY_PRODUCTION_REPLICAS`
-    eval new_replicas=\$${env_track}_${env_slug}_REPLICAS
-  fi
-  if [[ -n "$new_replicas" ]]; then
-    replicas="$new_replicas"
-  fi
 
   # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
   if [ "$CI_ENVIRONMENT_SLUG" != "production" ] && previousDeployFailed "$CI_ENVIRONMENT_SLUG" ; then
@@ -282,9 +253,9 @@ HELM_CMD=$(cat << EOF
     --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_SLUG" \
     --set gitlab.task-runner.image.repository="$gitlab_task_runner_image_repository" \
     --set gitlab.task-runner.image.tag="$CI_COMMIT_REF_SLUG" \
-    --set gitlab.gitaly.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly" \
+    --set gitlab.gitaly.image.repository="$gitlab_gitaly_image_repository" \
     --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
-    --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
+    --set gitlab.gitlab-shell.image.repository="$gitlab_shell_image_repository" \
     --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
     --set gitlab.unicorn.workhorse.image="$gitlab_workhorse_image_repository" \
     --set gitlab.unicorn.workhorse.tag="$CI_COMMIT_REF_SLUG" \
@@ -302,6 +273,31 @@ EOF
   eval $HELM_CMD
 }
 
+function wait_for_review_app_to_be_accessible() {
+  # In case the Review App isn't completely available yet. Keep trying for 5 minutes.
+  local interval=5
+  local elapsed_seconds=0
+  local max_seconds=$((5 * 60))
+  while true; do
+    local review_app_http_code
+    review_app_http_code=$(curl --silent --output /dev/null --max-time 5 --write-out "%{http_code}" "${CI_ENVIRONMENT_URL}/users/sign_in")
+    if [[ "${review_app_http_code}" -eq "200" ]] || [[ "${elapsed_seconds}" -gt "${max_seconds}" ]]; then
+      break
+    fi
+
+    printf "."
+    let "elapsed_seconds+=interval"
+    sleep ${interval}
+  done
+
+  if [[ "${review_app_http_code}" == "200" ]]; then
+    echoinfo "The Review App at ${CI_ENVIRONMENT_URL} is ready!"
+  else
+    echoerr "The Review App at ${CI_ENVIRONMENT_URL} isn't ready after 5 minutes of polling..."
+    exit 1
+  fi
+}
+
 function add_license() {
   if [ -z "${REVIEW_APPS_EE_LICENSE}" ]; then echo "License not found" && return; fi
 
@@ -311,10 +307,10 @@ function add_license() {
   echoinfo "Installing license..." true
 
   echo "${REVIEW_APPS_EE_LICENSE}" > /tmp/license.gitlab
-  kubectl -n "$KUBE_NAMESPACE" cp /tmp/license.gitlab ${task_runner_pod}:/tmp/license.gitlab
+  kubectl -n "$KUBE_NAMESPACE" cp /tmp/license.gitlab "${task_runner_pod}":/tmp/license.gitlab
   rm /tmp/license.gitlab
 
-  kubectl -n "$KUBE_NAMESPACE" exec -it ${task_runner_pod} -- /srv/gitlab/bin/rails runner -e production \
+  kubectl -n "$KUBE_NAMESPACE" exec -it "${task_runner_pod}" -- /srv/gitlab/bin/rails runner -e production \
     '
     content = File.read("/tmp/license.gitlab").strip;
     FileUtils.rm_f("/tmp/license.gitlab");
@@ -344,7 +340,8 @@ function get_job_id() {
     local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/pipelines/${CI_PIPELINE_ID}/jobs?per_page=100&page=${page}${query_string}"
     echoinfo "GET ${url}"
 
-    local job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq "map(select(.name == \"${job_name}\")) | map(.id) | last")
+    local job_id
+    job_id=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq "map(select(.name == \"${job_name}\")) | map(.id) | last")
     [[ "${job_id}" == "null" && "${page}" -lt "$max_page" ]] || break
 
     let "page++"
@@ -360,20 +357,23 @@ function get_job_id() {
 
 function play_job() {
   local job_name="${1}"
-  local job_id=$(get_job_id "${job_name}" "scope=manual");
+  local job_id
+  job_id=$(get_job_id "${job_name}" "scope=manual");
   if [ -z "${job_id}" ]; then return; fi
 
   local url="https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/jobs/${job_id}/play"
   echoinfo "POST ${url}"
 
-  local job_url=$(curl --silent --show-error --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".web_url")
+  local job_url
+  job_url=$(curl --silent --show-error --request POST --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".web_url")
   echoinfo "Manual job '${job_name}' started at: ${job_url}"
 }
 
 function wait_for_job_to_be_done() {
   local job_name="${1}"
   local query_string="${2}"
-  local job_id=$(get_job_id "${job_name}" "${query_string}");
+  local job_id
+  job_id=$(get_job_id "${job_name}" "${query_string}")
   if [ -z "${job_id}" ]; then return; fi
 
   echoinfo "Waiting for the '${job_name}' job to finish..."
@@ -385,7 +385,8 @@ function wait_for_job_to_be_done() {
   local interval=30
   local elapsed_seconds=0
   while true; do
-    local job_status=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".status" | sed -e s/\"//g)
+    local job_status
+    job_status=$(curl --silent --show-error --header "PRIVATE-TOKEN: ${API_TOKEN}" "${url}" | jq ".status" | sed -e s/\"//g)
     [[ "${job_status}" == "pending" || "${job_status}" == "running" ]] || break
 
     printf "."

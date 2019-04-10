@@ -34,14 +34,20 @@ class IssuableBaseService < BaseService
   end
 
   def filter_assignee(issuable)
-    return unless params[:assignee_id].present?
+    return if params[:assignee_ids].blank?
 
-    assignee_id = params[:assignee_id]
+    unless issuable.allows_multiple_assignees?
+      params[:assignee_ids] = params[:assignee_ids].first(1)
+    end
 
-    if assignee_id.to_s == IssuableFinder::NONE
-      params[:assignee_id] = ""
+    assignee_ids = params[:assignee_ids].select { |assignee_id| assignee_can_read?(issuable, assignee_id) }
+
+    if params[:assignee_ids].map(&:to_s) == [IssuableFinder::NONE]
+      params[:assignee_ids] = []
+    elsif assignee_ids.any?
+      params[:assignee_ids] = assignee_ids
     else
-      params.delete(:assignee_id) unless assignee_can_read?(issuable, assignee_id)
+      params.delete(:assignee_ids)
     end
   end
 
@@ -352,7 +358,7 @@ class IssuableBaseService < BaseService
   end
 
   def has_changes?(issuable, old_labels: [], old_assignees: [])
-    valid_attrs = [:title, :description, :assignee_id, :milestone_id, :target_branch]
+    valid_attrs = [:title, :description, :assignee_ids, :milestone_id, :target_branch]
 
     attrs_changed = valid_attrs.any? do |attr|
       issuable.previous_changes.include?(attr.to_s)
