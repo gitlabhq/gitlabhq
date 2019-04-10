@@ -82,6 +82,13 @@ describe InstanceConfiguration do
         it 'returns the key artifacts_max_size' do
           expect(gitlab_ci.keys).to include(:artifacts_max_size)
         end
+
+        it 'returns the key artifacts_max_size with values' do
+          stub_application_setting(max_artifacts_size: 200)
+
+          expect(gitlab_ci[:artifacts_max_size][:default]).to eq(100.megabytes)
+          expect(gitlab_ci[:artifacts_max_size][:value]).to eq(200.megabytes)
+        end
       end
     end
   end

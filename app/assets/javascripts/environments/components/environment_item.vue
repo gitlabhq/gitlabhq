@@ -504,22 +504,28 @@ export default {
       class="table-section section-10 deployment-column d-none d-sm-none d-md-block"
       role="gridcell"
     >
-      <span v-if="shouldRenderDeploymentID"> {{ deploymentInternalId }} </span>
+      <span v-if="shouldRenderDeploymentID" class="text-break-word">
+        {{ deploymentInternalId }}
+      </span>
 
-      <span v-if="!model.isFolder && deploymentHasUser">
+      <span v-if="!model.isFolder && deploymentHasUser" class="text-break-word">
         by
         <user-avatar-link
           :link-href="deploymentUser.web_url"
           :img-src="deploymentUser.avatar_url"
           :img-alt="userImageAltDescription"
           :tooltip-text="deploymentUser.username"
-          class="js-deploy-user-container"
+          class="js-deploy-user-container float-none"
         />
       </span>
     </div>
 
     <div class="table-section section-15 d-none d-sm-none d-md-block" role="gridcell">
-      <a v-if="shouldRenderBuildName" :href="buildPath" class="build-link flex-truncate-parent">
+      <a
+        v-if="shouldRenderBuildName"
+        :href="buildPath"
+        class="build-link cgray flex-truncate-parent"
+      >
         <span class="flex-truncate-child">{{ buildName }}</span>
       </a>
     </div>

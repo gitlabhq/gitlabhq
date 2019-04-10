@@ -67,6 +67,10 @@
   }
 }
 
+.classification-label {
+  background-color: $red-500;
+}
+
 .toggle-wrapper {
   margin-top: 5px;
 }
@@ -1158,6 +1162,8 @@ pre.light-well {
 .cannot-be-merged:hover {
   color: $red-500;
   margin-top: 2px;
+  position: relative;
+  z-index: 2;
 }
 
 .private-forks-notice .private-fork-icon {

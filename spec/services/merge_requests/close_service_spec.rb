@@ -4,7 +4,7 @@ describe MergeRequests::CloseService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
-  let(:merge_request) { create(:merge_request, assignee: user2, author: create(:user)) }
+  let(:merge_request) { create(:merge_request, assignees: [user2], author: create(:user)) }
   let(:project) { merge_request.project }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 

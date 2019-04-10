@@ -74,8 +74,7 @@ export default {
       }
 
       if (!this.users.length) {
-        const emptyTooltipLabel =
-          this.issuableType === 'issue' ? __('Assignee(s)') : __('Assignee');
+        const emptyTooltipLabel = __('Assignee(s)');
         names.push(emptyTooltipLabel);
       }
 
@@ -89,6 +88,27 @@ export default {
       }
 
       return counter;
+    },
+    mergeNotAllowedTooltipMessage() {
+      const assigneesCount = this.users.length;
+
+      if (this.issuableType !== 'merge_request' || assigneesCount === 0) {
+        return null;
+      }
+
+      const cannotMergeCount = this.users.filter(u => u.can_merge === false).length;
+      const canMergeCount = assigneesCount - cannotMergeCount;
+
+      if (canMergeCount === assigneesCount) {
+        // Everyone can merge
+        return null;
+      } else if (cannotMergeCount === assigneesCount && assigneesCount > 1) {
+        return 'No one can merge';
+      } else if (assigneesCount === 1) {
+        return 'Cannot merge';
+      }
+
+      return `${canMergeCount}/${assigneesCount} can merge`;
     },
   },
   methods: {
@@ -154,6 +174,15 @@ export default {
       </button>
     </div>
     <div class="value hide-collapsed">
+      <span
+        v-if="mergeNotAllowedTooltipMessage"
+        v-tooltip
+        :title="mergeNotAllowedTooltipMessage"
+        data-placement="left"
+        class="float-right cannot-be-merged"
+      >
+        <i aria-hidden="true" data-hidden="true" class="fa fa-exclamation-triangle"></i>
+      </span>
       <template v-if="hasNoUsers">
         <span class="assign-yourself no-value">
           No assignee

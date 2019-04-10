@@ -6,14 +6,14 @@
     "source_branch_exists": { "type": "boolean" },
     "merge_error": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" },
-    "assignee_id": { "type": ["integer", "null"] },
     "allow_collaboration": { "type": "boolean"},
     "allow_maintainer_to_push": { "type": "boolean"},
-    "assignee": {
-      "oneOf": [
-        { "type": "null" },
-        { "$ref": "user.json" }
-      ]
+    "assignees": {
+      "type": ["array"],
+      "items": {
+        "type": "object",
+        "$ref": "../public_api/v4/user/basic.json"
+      }
     },
     "milestone": {
       "type": [ "object", "null" ]

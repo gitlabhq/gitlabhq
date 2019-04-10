@@ -21,7 +21,7 @@ describe 'Labels Hierarchy', :js, :nested_groups do
   end
 
   shared_examples 'assigning labels from sidebar' do
-    it 'can assign all ancestors labels' do
+    it 'can assign all ancestors labels', :quarantine do
       [grandparent_group_label, parent_group_label, project_label_1].each do |label|
         page.within('.block.labels') do
           find('.edit-link').click

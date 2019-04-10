@@ -21,16 +21,20 @@ describe NoteSummary do
 
   describe '#note' do
     it 'returns note hash' do
-      expect(create_note_summary.note).to eq(noteable: noteable, project: project, author: user, note: 'note')
+      Timecop.freeze do
+        expect(create_note_summary.note).to eq(noteable: noteable, project: project, author: user, note: 'note',
+                                               created_at: Time.now)
+      end
     end
 
     context 'when noteable is a commit' do
-      let(:noteable) { build(:commit) }
+      let(:noteable) { build(:commit, system_note_timestamp: Time.at(43)) }
 
       it 'returns note hash specific to commit' do
         expect(create_note_summary.note).to eq(
           noteable: nil, project: project, author: user, note: 'note',
-          noteable_type: 'Commit', commit_id: noteable.id
+          noteable_type: 'Commit', commit_id: noteable.id,
+          created_at: Time.at(43)
         )
       end
     end

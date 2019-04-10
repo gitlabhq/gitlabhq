@@ -38,6 +38,15 @@ class GpgSignature < ApplicationRecord
       .safe_find_or_create_by!(commit_sha: attributes[:commit_sha])
   end
 
+  # Find commits that are lacking a signature in the database at present
+  def self.unsigned_commit_shas(commit_shas)
+    return [] if commit_shas.empty?
+
+    signed = GpgSignature.where(commit_sha: commit_shas).pluck(:commit_sha)
+
+    commit_shas - signed
+  end
+
   def gpg_key=(model)
     case model
     when GpgKey

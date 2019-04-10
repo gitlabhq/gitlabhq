@@ -22,6 +22,13 @@ class BasePolicy < DeclarativePolicy::Base
     Gitlab::CurrentSettings.current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
   end
 
-  # This is prevented in some cases in `gitlab-ee`
+  condition(:external_authorization_enabled, scope: :global, score: 0) do
+    ::Gitlab::ExternalAuthorization.perform_check?
+  end
+
+  rule { external_authorization_enabled & ~full_private_access }.policy do
+    prevent :read_cross_project
+  end
+
   rule { default }.enable :read_cross_project
 end

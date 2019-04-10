@@ -93,6 +93,36 @@ Example of response
 }
 ```
 
+### Get variables of a pipeline
+
+```
+GET /projects/:id/pipelines/:pipeline_id/variables
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `pipeline_id` | integer | yes      | The ID of a pipeline   |
+
+```
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/variables"
+```
+
+Example of response
+
+```json
+[
+  {
+    "key": "RUN_NIGHTLY_BUILD",
+    "value": "true"
+  },
+  {
+    "key": "foo",
+    "value": "bar"
+  }
+]
+```
+
 ## Create a new pipeline
 
 > [Introduced][ce-7209] in GitLab 8.14

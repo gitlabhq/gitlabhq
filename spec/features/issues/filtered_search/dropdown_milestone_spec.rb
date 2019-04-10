@@ -139,7 +139,7 @@ describe 'Dropdown milestone', :js do
       expect_filtered_search_input_empty
     end
 
-    it 'fills in the milestone name when the milestone is partially filled' do
+    it 'fills in the milestone name when the milestone is partially filled', :quarantine do
       filtered_search.send_keys('v')
       click_milestone(milestone.title)
 

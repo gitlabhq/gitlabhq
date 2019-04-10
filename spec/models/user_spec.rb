@@ -2816,9 +2816,9 @@ describe User do
       project = create(:project, :public)
       archived_project = create(:project, :public, :archived)
 
-      create(:merge_request, source_project: project, author: user, assignee: user)
-      create(:merge_request, :closed, source_project: project, author: user, assignee: user)
-      create(:merge_request, source_project: archived_project, author: user, assignee: user)
+      create(:merge_request, source_project: project, author: user, assignees: [user])
+      create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
+      create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
       expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
     end

@@ -11,4 +11,6 @@ class IssuableSidebarExtrasEntity < Grape::Entity
   expose :subscribed do |issuable|
     issuable.subscribed?(request.current_user, issuable.project)
   end
+
+  expose :assignees, using: API::Entities::UserBasic
 end

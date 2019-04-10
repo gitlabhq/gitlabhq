@@ -38,7 +38,7 @@ _For consistency purposes, we recommend you to follow the same structure._
 
 Let's look into each of them:
 
-### A `index.js` file
+### An `index.js` file
 
 This is the index file of your new feature. This is where the root Vue instance
 of the new feature should be.
@@ -46,7 +46,7 @@ of the new feature should be.
 The Store and the Service should be imported and initialized in this file and
 provided as a prop to the main component.
 
-Don't forget to follow [these steps][page_specific_javascript].
+Be sure to read about [page-specific JavaScript][page_specific_javascript].
 
 ### Bootstrapping Gotchas
 #### Providing data from HAML to JavaScript
@@ -240,7 +240,7 @@ One should apply to be a Vue.js expert by opening an MR when the Merge Request's
 [vue-docs]: http://vuejs.org/guide/index.html
 [issue-boards]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/boards
 [environments-table]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/assets/javascripts/environments
-[page_specific_javascript]: https://docs.gitlab.com/ce/development/frontend.html#page-specific-javascript
+[page_specific_javascript]: ./performance.md#page-specific-javascript
 [component-system]: https://vuejs.org/v2/guide/#Composing-with-Components
 [state-management]: https://vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch
 [one-way-data-flow]: https://vuejs.org/v2/guide/components.html#One-Way-Data-Flow

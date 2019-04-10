@@ -21,10 +21,7 @@
         .title
           Assignee
         .filter-item
-          - if type == :issues
-            - field_name = "update[assignee_ids][]"
-          - else
-            - field_name = "update[assignee_id]"
+          - field_name = "update[assignee_ids][]"
           = dropdown_tag("Select assignee", options: { toggle_class: "js-user-search js-update-assignee js-filter-submit js-filter-bulk-update", title: "Assign to", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable",
             placeholder: "Search authors", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: @project.id, field_name: field_name } })
       .block

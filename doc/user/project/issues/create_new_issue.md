@@ -7,7 +7,7 @@ the information illustrated on the image below.
 
 ![New issue from the issues list](img/new_issue.png)
 
-Read through the [issues functionalities documentation](issues_functionalities.md#issues-functionalities)
+Read through the [issue data and actions documentation](issue_data_and_actions.md#parts-of-an-issue)
 to understand these fields one by one.
 
 ## New issue from the Issue Tracker

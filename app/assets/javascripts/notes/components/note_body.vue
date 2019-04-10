@@ -1,6 +1,7 @@
 <script>
 import { mapActions } from 'vuex';
 import $ from 'jquery';
+import getDiscussion from 'ee_else_ce/notes/mixins/get_discussion';
 import noteEditedText from './note_edited_text.vue';
 import noteAwardsList from './note_awards_list.vue';
 import noteAttachment from './note_attachment.vue';
@@ -16,7 +17,7 @@ export default {
     noteForm,
     Suggestions,
   },
-  mixins: [autosave],
+  mixins: [autosave, getDiscussion],
   props: {
     note: {
       type: Object,
@@ -76,8 +77,8 @@ export default {
     renderGFM() {
       $(this.$refs['note-body']).renderGFM();
     },
-    handleFormUpdate(note, parentElement, callback) {
-      this.$emit('handleFormUpdate', note, parentElement, callback);
+    handleFormUpdate(note, parentElement, callback, resolveDiscussion) {
+      this.$emit('handleFormUpdate', note, parentElement, callback, resolveDiscussion);
     },
     formCancelHandler(shouldConfirm, isDirty) {
       this.$emit('cancelForm', shouldConfirm, isDirty);
@@ -111,6 +112,8 @@ export default {
       :line="line"
       :note="note"
       :help-page-path="helpPagePath"
+      :discussion="discussion"
+      :resolve-discussion="note.resolve_discussion"
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />

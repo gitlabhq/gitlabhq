@@ -247,15 +247,15 @@ module NotificationRecipientService
       attr_reader :target
       attr_reader :current_user
       attr_reader :action
-      attr_reader :previous_assignee
+      attr_reader :previous_assignees
       attr_reader :skip_current_user
 
-      def initialize(target, current_user, action:, custom_action: nil, previous_assignee: nil, skip_current_user: true)
+      def initialize(target, current_user, action:, custom_action: nil, previous_assignees: nil, skip_current_user: true)
         @target = target
         @current_user = current_user
         @action = action
         @custom_action = custom_action
-        @previous_assignee = previous_assignee
+        @previous_assignees = previous_assignees
         @skip_current_user = skip_current_user
       end
 
@@ -270,11 +270,7 @@ module NotificationRecipientService
 
         # Re-assign is considered as a mention of the new assignee
         case custom_action
-        when :reassign_merge_request
-          add_recipients(previous_assignee, :mention, nil)
-          add_recipients(target.assignee, :mention, NotificationReason::ASSIGNED)
-        when :reassign_issue
-          previous_assignees = Array(previous_assignee)
+        when :reassign_merge_request, :reassign_issue
           add_recipients(previous_assignees, :mention, nil)
           add_recipients(target.assignees, :mention, NotificationReason::ASSIGNED)
         end
@@ -287,17 +283,11 @@ module NotificationRecipientService
           # receive them, too.
           add_mentions(current_user, target: target)
 
-          # Add the assigned users, if any
-          assignees = case custom_action
-                      when :new_issue
-                        target.assignees
-                      else
-                        target.assignee
-                      end
-
           # We use the `:participating` notification level in order to match existing legacy behavior as captured
           # in existing specs (notification_service_spec.rb ~ line 507)
-          add_recipients(assignees, :participating, NotificationReason::ASSIGNED) if assignees
+          if target.is_a?(Issuable)
+            add_recipients(target.assignees, :participating, NotificationReason::ASSIGNED)
+          end
 
           add_labels_subscribers
         end

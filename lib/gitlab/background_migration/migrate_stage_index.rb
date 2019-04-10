@@ -21,8 +21,8 @@ module Gitlab
                   AND stage_idx IS NOT NULL
                 GROUP BY stage_id, stage_idx
             ), indexes AS (
-              SELECT DISTINCT stage_id, last_value(stage_idx)
-                OVER (PARTITION BY stage_id ORDER BY freq ASC) AS index
+              SELECT DISTINCT stage_id, first_value(stage_idx)
+                OVER (PARTITION BY stage_id ORDER BY freq DESC) AS index
                 FROM freqs
             )
 

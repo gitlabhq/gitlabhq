@@ -277,6 +277,7 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
+      expose :external_authorization_classification_label
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_relation(projects_relation, options = {})
@@ -663,7 +664,11 @@ module API
       expose(:user_notes_count) { |merge_request, options| issuable_metadata(merge_request, options, :user_notes_count) }
       expose(:upvotes)          { |merge_request, options| issuable_metadata(merge_request, options, :upvotes) }
       expose(:downvotes)        { |merge_request, options| issuable_metadata(merge_request, options, :downvotes) }
-      expose :author, :assignee, using: Entities::UserBasic
+      expose :assignee, using: ::API::Entities::UserBasic do |merge_request|
+        merge_request.assignee
+      end
+      expose :author, :assignees, using: Entities::UserBasic
+
       expose :source_project_id, :target_project_id
       expose :labels do |merge_request|
         # Avoids an N+1 query since labels are preloaded
@@ -1116,6 +1121,8 @@ module API
       expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
       expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
 
+      expose(*::ApplicationSettingsHelper.external_authorization_service_attributes)
+
       # support legacy names, can be removed in v5
       expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
       expose :password_authentication_enabled_for_web, as: :signin_enabled
@@ -1294,15 +1301,16 @@ module API
       expose :id, :name, :slug, :external_url
     end
 
-    class Environment < EnvironmentBasic
-      expose :project, using: Entities::BasicProjectDetails
-    end
-
     class Deployment < Grape::Entity
       expose :id, :iid, :ref, :sha, :created_at
       expose :user,        using: Entities::UserBasic
       expose :environment, using: Entities::EnvironmentBasic
       expose :deployable,  using: Entities::Job
+    end
+
+    class Environment < EnvironmentBasic
+      expose :project, using: Entities::BasicProjectDetails
+      expose :last_deployment, using: Entities::Deployment, if: { last_deployment: true }
     end
 
     class LicenseBasic < Grape::Entity

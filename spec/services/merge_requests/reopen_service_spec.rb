@@ -4,7 +4,7 @@ describe MergeRequests::ReopenService do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:guest) { create(:user) }
-  let(:merge_request) { create(:merge_request, :closed, assignee: user2, author: create(:user)) }
+  let(:merge_request) { create(:merge_request, :closed, assignees: [user2], author: create(:user)) }
   let(:project) { merge_request.project }
 
   before do

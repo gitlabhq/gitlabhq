@@ -53,6 +53,8 @@
             - else
               Disabled
 
+        = render_if_exists 'admin/namespace_plan_info', namespace: @user.namespace
+
         %li
           %span.light External User:
           %strong
@@ -134,6 +136,8 @@
             %strong
               = link_to @user.created_by.name, [:admin, @user.created_by]
 
+        = render_if_exists partial: "namespaces/shared_runner_status", locals: { namespace: @user.namespace }
+
   .col-md-6
     - unless @user == current_user
       - unless @user.confirmed?
@@ -146,6 +150,9 @@
             %p This user has an unconfirmed email address#{email}. You may force a confirmation.
             %br
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
+
+      = render_if_exists 'admin/users/user_detail_note'
+
       - if @user.blocked?
         .card.border-info
           .card-header.bg-info.text-white

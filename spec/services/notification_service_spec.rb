@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe NotificationService, :mailer do
   include EmailSpec::Matchers
+  include ExternalAuthorizationServiceHelpers
   include NotificationHelpers
 
   let(:notification) { described_class.new }
@@ -125,11 +126,7 @@ describe NotificationService, :mailer do
 
   shared_examples 'participating by assignee notification' do
     it 'emails the participant' do
-      if issuable.is_a?(Issue)
-        issuable.assignees << participant
-      else
-        issuable.update_attribute(:assignee, participant)
-      end
+      issuable.assignees << participant
 
       notification_trigger
 
@@ -620,13 +617,13 @@ describe NotificationService, :mailer do
     context "merge request diff note" do
       let(:project) { create(:project, :repository) }
       let(:user) { create(:user) }
-      let(:merge_request) { create(:merge_request, source_project: project, assignee: user, author: create(:user)) }
+      let(:merge_request) { create(:merge_request, source_project: project, assignees: [user], author: create(:user)) }
       let(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
 
       before do
         build_team(note.project)
         project.add_maintainer(merge_request.author)
-        project.add_maintainer(merge_request.assignee)
+        merge_request.assignees.each { |assignee| project.add_maintainer(assignee) }
       end
 
       describe '#new_note' do
@@ -637,7 +634,7 @@ describe NotificationService, :mailer do
           notification.new_note(note)
 
           expect(SentNotification.last(3).map(&:recipient).map(&:id))
-            .to contain_exactly(merge_request.assignee.id, merge_request.author.id, @u_watcher.id)
+            .to contain_exactly(*merge_request.assignees.pluck(:id), merge_request.author.id, @u_watcher.id)
           expect(SentNotification.last.in_reply_to_discussion_id).to eq(note.discussion_id)
         end
       end
@@ -1223,11 +1220,12 @@ describe NotificationService, :mailer do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, :repository, namespace: group) }
     let(:another_project) { create(:project, :public, namespace: group) }
-    let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
+    let(:assignee) { create(:user) }
+    let(:merge_request) { create :merge_request, source_project: project, assignees: [assignee], description: 'cc @participant' }
 
     before do
       project.add_maintainer(merge_request.author)
-      project.add_maintainer(merge_request.assignee)
+      merge_request.assignees.each { |assignee| project.add_maintainer(assignee) }
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
@@ -1239,7 +1237,7 @@ describe NotificationService, :mailer do
       it do
         notification.new_merge_request(merge_request, @u_disabled)
 
-        should_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_email(assignee) }
         should_email(@u_watcher)
         should_email(@watcher_and_subscriber)
         should_email(@u_participant_mentioned)
@@ -1254,9 +1252,11 @@ describe NotificationService, :mailer do
       it 'adds "assigned" reason for assignee, if any' do
         notification.new_merge_request(merge_request, @u_disabled)
 
-        email = find_email_for(merge_request.assignee)
+        merge_request.assignees.each do |assignee|
+          email = find_email_for(assignee)
 
-        expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+          expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+        end
       end
 
       it "emails any mentioned users with the mention level" do
@@ -1347,9 +1347,9 @@ describe NotificationService, :mailer do
       end
 
       it do
-        notification.reassigned_merge_request(merge_request, current_user, merge_request.author)
+        notification.reassigned_merge_request(merge_request, current_user, [assignee])
 
-        should_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_email(assignee) }
         should_email(merge_request.author)
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
@@ -1365,17 +1365,19 @@ describe NotificationService, :mailer do
       end
 
       it 'adds "assigned" reason for new assignee' do
-        notification.reassigned_merge_request(merge_request, current_user, merge_request.author)
+        notification.reassigned_merge_request(merge_request, current_user, [assignee])
 
-        email = find_email_for(merge_request.assignee)
+        merge_request.assignees.each do |assignee|
+          email = find_email_for(assignee)
 
-        expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+          expect(email).to have_header('X-GitLab-NotificationReason', NotificationReason::ASSIGNED)
+        end
       end
 
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
-        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, current_user, merge_request.author) }
+        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, current_user, [assignee]) }
       end
     end
 
@@ -1388,7 +1390,7 @@ describe NotificationService, :mailer do
       it do
         notification.push_to_merge_request(merge_request, @u_disabled)
 
-        should_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_email(assignee) }
         should_email(@u_guest_custom)
         should_email(@u_custom_global)
         should_email(@u_participant_mentioned)
@@ -1430,7 +1432,7 @@ describe NotificationService, :mailer do
         should_email(subscriber_1_to_group_label_2)
         should_email(subscriber_2_to_group_label_2)
         should_email(subscriber_to_label_2)
-        should_not_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_not_email(assignee) }
         should_not_email(merge_request.author)
         should_not_email(@u_watcher)
         should_not_email(@u_participant_mentioned)
@@ -1499,7 +1501,7 @@ describe NotificationService, :mailer do
       it do
         notification.close_mr(merge_request, @u_disabled)
 
-        should_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_email(assignee) }
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
@@ -1529,7 +1531,7 @@ describe NotificationService, :mailer do
       it do
         notification.merge_mr(merge_request, @u_disabled)
 
-        should_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_email(assignee) }
         should_email(@u_watcher)
         should_email(@u_guest_watcher)
         should_email(@u_guest_custom)
@@ -1581,7 +1583,7 @@ describe NotificationService, :mailer do
       it do
         notification.reopen_mr(merge_request, @u_disabled)
 
-        should_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_email(assignee) }
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
@@ -1606,7 +1608,7 @@ describe NotificationService, :mailer do
       it do
         notification.resolve_all_discussions(merge_request, @u_disabled)
 
-        should_email(merge_request.assignee)
+        merge_request.assignees.each { |assignee| should_email(assignee) }
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
@@ -1850,8 +1852,8 @@ describe NotificationService, :mailer do
     let(:guest) { create(:user) }
     let(:developer) { create(:user) }
     let(:assignee) { create(:user) }
-    let(:merge_request) { create(:merge_request, source_project: private_project, assignee: assignee) }
-    let(:merge_request1) { create(:merge_request, source_project: private_project, assignee: assignee, description: "cc @#{guest.username}") }
+    let(:merge_request) { create(:merge_request, source_project: private_project, assignees: [assignee]) }
+    let(:merge_request1) { create(:merge_request, source_project: private_project, assignees: [assignee], description: "cc @#{guest.username}") }
     let(:note) { create(:note, noteable: merge_request, project: private_project) }
 
     before do
@@ -2213,6 +2215,46 @@ describe NotificationService, :mailer do
         notification.remote_mirror_update_failed(remote_mirror)
 
         should_only_email(u_maintainer1, u_maintainer2, u_owner)
+      end
+    end
+  end
+
+  context 'with external authorization service' do
+    let(:issue) { create(:issue) }
+    let(:project) { issue.project }
+    let(:note) { create(:note, noteable: issue, project: project) }
+    let(:member) { create(:user) }
+
+    subject { NotificationService.new }
+
+    before do
+      project.add_maintainer(member)
+      member.global_notification_setting.update!(level: :watch)
+    end
+
+    it 'sends email when the service is not enabled' do
+      expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
+
+      subject.new_issue(issue, member)
+    end
+
+    context 'when the service is enabled' do
+      before do
+        enable_external_authorization_service_check
+      end
+
+      it 'does not send an email' do
+        expect(Notify).not_to receive(:new_issue_email)
+
+        subject.new_issue(issue, member)
+      end
+
+      it 'still delivers email to admins' do
+        member.update!(admin: true)
+
+        expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
+
+        subject.new_issue(issue, member)
       end
     end
   end

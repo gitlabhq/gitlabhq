@@ -84,10 +84,7 @@ export default {
         </div>
       </div>
       <div>
-        <div
-          v-if="isFetchingMergeRequests"
-          class="related-related-merge-requests-icon qa-related-merge-requests-loading-icon"
-        >
+        <div v-if="isFetchingMergeRequests" class="qa-related-merge-requests-loading-icon">
           <gl-loading-icon label="Fetching related merge requests" class="py-2" />
         </div>
         <ul v-else class="content-list related-items-list">

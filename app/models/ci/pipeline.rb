@@ -750,6 +750,10 @@ module Ci
       self.sha == sha || self.source_sha == sha
     end
 
+    def triggered_by?(current_user)
+      user == current_user
+    end
+
     private
 
     def ci_yaml_from_repo

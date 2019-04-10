@@ -63,8 +63,12 @@ describe PostReceive do
         let(:changes) { "123456 789012 refs/heads/tést" }
 
         it "calls Git::BranchPushService" do
-          expect_any_instance_of(Git::BranchPushService).to receive(:execute).and_return(true)
-          expect_any_instance_of(Git::TagPushService).not_to receive(:execute)
+          expect_next_instance_of(Git::BranchPushService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
+          expect(Git::TagPushService).not_to receive(:new)
+
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
@@ -73,8 +77,12 @@ describe PostReceive do
         let(:changes) { "123456 789012 refs/tags/tag" }
 
         it "calls Git::TagPushService" do
-          expect_any_instance_of(Git::BranchPushService).not_to receive(:execute)
-          expect_any_instance_of(Git::TagPushService).to receive(:execute).and_return(true)
+          expect(Git::BranchPushService).not_to receive(:execute)
+
+          expect_next_instance_of(Git::TagPushService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
@@ -83,8 +91,9 @@ describe PostReceive do
         let(:changes) { "123456 789012 refs/merge-requests/123" }
 
         it "does not call any of the services" do
-          expect_any_instance_of(Git::BranchPushService).not_to receive(:execute)
-          expect_any_instance_of(Git::TagPushService).not_to receive(:execute)
+          expect(Git::BranchPushService).not_to receive(:new)
+          expect(Git::TagPushService).not_to receive(:new)
+
           described_class.new.perform(gl_repository, key_id, base64_changes)
         end
       end
@@ -127,7 +136,9 @@ describe PostReceive do
           allow_any_instance_of(Gitlab::DataBuilder::Repository).to receive(:update).and_return(fake_hook_data)
           # silence hooks so we can isolate
           allow_any_instance_of(Key).to receive(:post_create_hook).and_return(true)
-          allow_any_instance_of(Git::BranchPushService).to receive(:execute).and_return(true)
+          expect_next_instance_of(Git::BranchPushService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
         end
 
         it 'calls SystemHooksService' do

@@ -116,6 +116,39 @@ describe API::Settings, 'Settings' do
       expect(json_response['performance_bar_allowed_group_id']).to be_nil
     end
 
+    context 'external policy classification settings' do
+      let(:settings) do
+        {
+          external_authorization_service_enabled: true,
+          external_authorization_service_url: 'https://custom.service/',
+          external_authorization_service_default_label: 'default',
+          external_authorization_service_timeout: 9.99,
+          external_auth_client_cert: File.read('spec/fixtures/passphrase_x509_certificate.crt'),
+          external_auth_client_key: File.read('spec/fixtures/passphrase_x509_certificate_pk.key'),
+          external_auth_client_key_pass: "5iveL!fe"
+        }
+      end
+      let(:attribute_names) { settings.keys.map(&:to_s) }
+
+      it 'includes the attributes in the API' do
+        get api("/application/settings", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        attribute_names.each do |attribute|
+          expect(json_response.keys).to include(attribute)
+        end
+      end
+
+      it 'allows updating the settings' do
+        put api("/application/settings", admin), params: settings
+
+        expect(response).to have_gitlab_http_status(200)
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+    end
+
     context "missing plantuml_url value when plantuml_enabled is true" do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), params: { plantuml_enabled: true }

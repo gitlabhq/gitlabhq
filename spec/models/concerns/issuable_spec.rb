@@ -502,8 +502,8 @@ describe Issuable do
       let(:user2) { create(:user) }
 
       before do
-        merge_request.update(assignee: user)
-        merge_request.update(assignee: user2)
+        merge_request.update(assignees: [user])
+        merge_request.update(assignees: [user, user2])
         expect(Gitlab::HookData::IssuableBuilder)
           .to receive(:new).with(merge_request).and_return(builder)
       end
@@ -512,8 +512,7 @@ describe Issuable do
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
-            'assignee_id' => [user.id, user2.id],
-            'assignee' => [user.hook_attrs, user2.hook_attrs]
+            'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
 
         merge_request.to_hook_data(user, old_associations: { assignees: [user] })

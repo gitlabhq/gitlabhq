@@ -146,7 +146,10 @@ describe MergeRequests::RefreshService do
         stub_ci_pipeline_yaml_file(YAML.dump(config))
       end
 
-      subject { service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master') }
+      subject { service.new(project, @user).execute(@oldrev, @newrev, ref) }
+
+      let(:ref) { 'refs/heads/master' }
+      let(:project) { @project }
 
       context "when .gitlab-ci.yml has merge_requests keywords" do
         let(:config) do
@@ -162,12 +165,15 @@ describe MergeRequests::RefreshService do
         it 'create detached merge request pipeline with commits' do
           expect { subject }
             .to change { @merge_request.merge_request_pipelines.count }.by(1)
-            .and change { @fork_merge_request.merge_request_pipelines.count }.by(1)
             .and change { @another_merge_request.merge_request_pipelines.count }.by(0)
 
           expect(@merge_request.has_commits?).to be_truthy
-          expect(@fork_merge_request.has_commits?).to be_truthy
           expect(@another_merge_request.has_commits?).to be_falsy
+        end
+
+        it 'does not create detached merge request pipeline for forked project' do
+          expect { subject }
+            .not_to change { @fork_merge_request.merge_request_pipelines.count }
         end
 
         it 'create detached merge request pipeline for non-fork merge request' do
@@ -177,11 +183,25 @@ describe MergeRequests::RefreshService do
             .to be_detached_merge_request_pipeline
         end
 
-        it 'create legacy detached merge request pipeline for fork merge request' do
-          subject
+        context 'when service is hooked by target branch' do
+          let(:ref) { 'refs/heads/feature' }
 
-          expect(@fork_merge_request.merge_request_pipelines.first)
-            .to be_legacy_detached_merge_request_pipeline
+          it 'does not create detached merge request pipeline' do
+            expect { subject }
+              .not_to change { @merge_request.merge_request_pipelines.count }
+          end
+        end
+
+        context 'when service runs on forked project' do
+          let(:project) { @fork_project }
+
+          it 'creates legacy detached merge request pipeline for fork merge request' do
+            expect { subject }
+              .to change { @fork_merge_request.merge_request_pipelines.count }.by(1)
+
+            expect(@fork_merge_request.merge_request_pipelines.first)
+              .to be_legacy_detached_merge_request_pipeline
+          end
         end
 
         context 'when ci_use_merge_request_ref feature flag is false' do

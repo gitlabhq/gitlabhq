@@ -8,7 +8,7 @@ describe('Multi-file editor library disposable class', () => {
     instance = new Disposable();
 
     disposableClass = {
-      dispose: jasmine.createSpy('dispose'),
+      dispose: jest.fn().mockName('dispose'),
     };
   });
 

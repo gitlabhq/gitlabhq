@@ -118,7 +118,7 @@ describe MergeRequests::CreateFromIssueService do
 
       result = service.execute
 
-      expect(result[:merge_request].assignee).to eq(user)
+      expect(result[:merge_request].assignees).to eq([user])
     end
 
     context 'when ref branch is set' do

@@ -17,8 +17,8 @@ module FormHelper
     end
   end
 
-  def issue_assignees_dropdown_options
-    {
+  def assignees_dropdown_options(issuable_type)
+    dropdown_data = {
       toggle_class: 'js-user-search js-assignee-search js-multiselect js-save-user-data',
       title: 'Select assignee',
       filter: true,
@@ -28,8 +28,8 @@ module FormHelper
         first_user: current_user&.username,
         null_user: true,
         current_user: true,
-        project_id: @project&.id,
-        field_name: 'issue[assignee_ids][]',
+        project_id: (@target_project || @project)&.id,
+        field_name: "#{issuable_type}[assignee_ids][]",
         default_label: 'Unassigned',
         'max-select': 1,
         'dropdown-header': 'Assignee',
@@ -39,5 +39,36 @@ module FormHelper
         current_user_info: UserSerializer.new.represent(current_user)
       }
     }
+
+    type = issuable_type.to_s
+
+    if type == 'issue' && issue_supports_multiple_assignees? ||
+        type == 'merge_request' && merge_request_supports_multiple_assignees?
+      dropdown_data = multiple_assignees_dropdown_options(dropdown_data)
+    end
+
+    dropdown_data
+  end
+
+  # Overwritten
+  def issue_supports_multiple_assignees?
+    false
+  end
+
+  # Overwritten
+  def merge_request_supports_multiple_assignees?
+    false
+  end
+
+  private
+
+  def multiple_assignees_dropdown_options(options)
+    new_options = options.dup
+
+    new_options[:title] = 'Select assignee(s)'
+    new_options[:data][:'dropdown-header'] = 'Assignee(s)'
+    new_options[:data].delete(:'max-select')
+
+    new_options
   end
 end

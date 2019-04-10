@@ -1,10 +1,1 @@
-%p
-  Assignee changed
-  - if @previous_assignee
-    from
-    %strong= sanitize_name(@previous_assignee.name)
-  to
-  - if @merge_request.assignee_id
-    %strong= sanitize_name(@merge_request.assignee_name)
-  - else
-    %strong Unassigned
+= render 'reassigned_issuable_email', issuable: @merge_request, previous_assignees: @previous_assignees

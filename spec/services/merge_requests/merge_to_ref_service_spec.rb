@@ -149,7 +149,7 @@ describe MergeRequests::MergeToRefService do
     end
 
     context 'does not close related todos' do
-      let(:merge_request) { create(:merge_request, assignee: user, author: user) }
+      let(:merge_request) { create(:merge_request, assignees: [user], author: user) }
       let(:project) { merge_request.project }
       let!(:todo) do
         create(:todo, :assigned,
