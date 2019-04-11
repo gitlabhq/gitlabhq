@@ -12,6 +12,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :expire_etag_cache, only: [:index]
   before_action only: [:metrics, :additional_metrics] do
     push_frontend_feature_flag(:metrics_time_window)
+    push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
+    push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
   end
 
   def index
@@ -152,6 +154,18 @@ class Projects::EnvironmentsController < Projects::ApplicationController
         additional_metrics = environment.additional_metrics(*metrics_params) || {}
 
         render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
+      end
+    end
+  end
+
+  def metrics_dashboard
+    access_denied! unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, project)
+
+    respond_to do |format|
+      format.json do
+        dashboard = MetricsDashboardService.new(@project).find(params[:dashboard])
+
+        render json: dashboard, status: :ok
       end
     end
   end
