@@ -6641,6 +6641,9 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
+msgid "Password (optional)"
+msgstr ""
+
 msgid "Password authentication is unavailable."
 msgstr ""
 
@@ -10572,6 +10575,9 @@ msgid "UserProfile|You haven't created any snippets."
 msgstr ""
 
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
+msgstr ""
+
+msgid "Username and Password"
 msgstr ""
 
 msgid "Users"

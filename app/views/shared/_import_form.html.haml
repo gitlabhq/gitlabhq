@@ -1,11 +1,32 @@
 - ci_cd_only = local_assigns.fetch(:ci_cd_only, false)
+- import_url = Gitlab::UrlSanitizer.new(f.object.import_url)
 
 .form-group.import-url-data
-  = f.label :import_url, class: 'label-bold' do
-    %span
-      = _('Git repository URL')
+  .form-group
+    = f.label :import_url, class: 'label-bold' do
+      %span
+        = _('Git repository URL')
+    = f.text_field :import_url, value: import_url.sanitized_url,
+        autocomplete: 'off', class: 'form-control', placeholder: 'https://gitlab.company.com/group/project.git', required: true
 
-  = f.text_field :import_url, autocomplete: 'off', class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git', required: true
+  .form-group#import_url_auth_method
+    = label :import_url_auth_method, class: 'label-bold' do
+      %span
+        = _('Authentication method')
+    = select_tag :import_url_auth_method, options_for_select([[_('None'), 'none'], [_('Username and Password'), 'username-and-password']]), class: 'form-control'
+
+  .div#import_url_auth_group{ style: 'display: none' }
+    .form-group
+      = f.label :import_url_user, class: 'label-bold' do
+        %span
+          = _('Username (optional)')
+      = f.text_field :import_url_user, value: import_url.user, class: 'form-control', required: false, autocomplete: 'new-password'
+
+    .form-group
+      = f.label :import_url_password, class: 'label-bold' do
+        %span
+          = _('Git repository password')
+      = f.password_field :import_url_password, class: 'form-control', required: false, autocomplete: 'new-password', placeholder: 'Basic Auth Password'
 
   .info-well.prepend-top-20
     .well-segment
