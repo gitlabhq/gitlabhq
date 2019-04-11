@@ -59,7 +59,7 @@ describe Banzai::Filter::TableOfContentsFilter do
       end
 
       it 'removes any leading or trailing spaces' do
-        doc = filter(header(1, " \r\n \t Title with spaces \r\n\t "))
+        doc = filter(header(1, " \r\n\tTitle with spaces\r\n\t "))
         expect(doc.css('h1 a').first.attr('href')).to eq '#title-with-spaces'
       end
 
