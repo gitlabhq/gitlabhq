@@ -163,7 +163,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        dashboard = MetricsDashboardService.new(@project).find(params[:dashboard])
+        dashboard = MetricsDashboardService.new.get_dashboard
 
         render json: dashboard, status: :ok
       end
