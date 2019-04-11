@@ -214,6 +214,23 @@ describe Gitlab::Database::MigrationHelpers do
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
 
+        it 'allows the use of a custom key name' do
+          expect(model).to receive(:add_foreign_key).with(
+            :projects,
+            :users,
+            column: :user_id,
+            on_delete: :cascade,
+            name: :foo
+          )
+
+          model.add_concurrent_foreign_key(
+            :projects,
+            :users,
+            column: :user_id,
+            name: :foo
+          )
+        end
+
         it 'does not create a foreign key if it exists already' do
           expect(model).to receive(:foreign_key_exists?).with(:projects, :users, column: :user_id).and_return(true)
           expect(model).not_to receive(:add_foreign_key)
@@ -256,6 +273,16 @@ describe Gitlab::Database::MigrationHelpers do
           expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
+        end
+
+        it 'allows the use of a custom key name' do
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
+          expect(model).to receive(:execute).ordered.with(/NOT VALID/)
+          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT.+foo/)
+          expect(model).to receive(:execute).with(/RESET ALL/)
+
+          model.add_concurrent_foreign_key(:projects, :users, column: :user_id, name: :foo)
         end
       end
     end
