@@ -167,7 +167,7 @@ Here's a list of what you can't do with subgroups:
 - [GitLab Pages](../../project/pages/index.md) supports projects hosted under
   a subgroup, but not subgroup websites.
   That means that only the highest-level group supports
-  [group websites](../../project/pages/introduction.html#user-or-group-pages),
+  [group websites](../../project/pages/getting_started_part_one.md#gitlab-pages-domain-names),
   although you can have project websites under a subgroup.
 - It is not possible to share a project with a group that's an ancestor of
   the group the project is in. That means you can only share as you walk down

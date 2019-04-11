@@ -177,9 +177,6 @@ Note that [DNS propagation may take some time (up to 24h)](http://www.inmotionho
 although it's usually a matter of minutes to complete. Until it does, verification
 will fail and attempts to visit your domain will respond with a 404.
 
-Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
-custom domains to GitLab Pages sites.
-
 ### Redirecting `www.domain.com` to `domain.com` with Cloudflare
 
 If you use Cloudflare, you can redirect `www` to `domain.com` without the need of adding both
