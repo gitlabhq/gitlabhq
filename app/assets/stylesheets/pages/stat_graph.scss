@@ -18,10 +18,6 @@
     @include make-col-ready();
     @include make-col(12);
   }
-
-  svg {
-    width: 100%;
-  }
 }
 
 #contributors {
@@ -31,10 +27,6 @@
     margin: 0 0 10px;
     list-style: none;
     padding: 0;
-
-    svg {
-      width: 100%;
-    }
   }
 
   .person {
