@@ -299,10 +299,6 @@ module ProjectsHelper
     }.to_json
   end
 
-  def directory?
-    @path.present?
-  end
-
   def external_classification_label_help_message
     default_label = ::Gitlab::CurrentSettings.current_application_settings
                       .external_authorization_service_default_label

@@ -152,14 +152,13 @@ describe Gitlab::Git::Repository, :seed_helper do
     let(:append_sha) { true }
     let(:ref) { 'master' }
     let(:format) { nil }
-    let(:path) { nil }
 
     let(:expected_extension) { 'tar.gz' }
     let(:expected_filename) { "#{expected_prefix}.#{expected_extension}" }
     let(:expected_path) { File.join(storage_path, cache_key, expected_filename) }
     let(:expected_prefix) { "gitlab-git-test-#{ref}-#{SeedRepo::LastCommit::ID}" }
 
-    subject(:metadata) { repository.archive_metadata(ref, storage_path, 'gitlab-git-test', format, append_sha: append_sha, path: path) }
+    subject(:metadata) { repository.archive_metadata(ref, storage_path, 'gitlab-git-test', format, append_sha: append_sha) }
 
     it 'sets CommitId to the commit SHA' do
       expect(metadata['CommitId']).to eq(SeedRepo::LastCommit::ID)
@@ -175,14 +174,6 @@ describe Gitlab::Git::Repository, :seed_helper do
       expect(expected_path).to include(File.join(repository.gl_repository, SeedRepo::LastCommit::ID))
 
       expect(metadata['ArchivePath']).to eq(expected_path)
-    end
-
-    context 'path is set' do
-      let(:path) { 'foo/bar' }
-
-      it 'appends the path to the prefix' do
-        expect(metadata['ArchivePrefix']).to eq("#{expected_prefix}-foo-bar")
-      end
     end
 
     context 'append_sha varies archive path and filename' do
