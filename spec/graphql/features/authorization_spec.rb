@@ -177,6 +177,7 @@ describe 'Gitlab::Graphql::Authorization' do
 
   describe 'type authorizations when applied to a relay connection' do
     let(:query_string) { '{ object() { edges { node { name } } } }' }
+    let(:second_test_object) { double(name: 'Second thing') }
 
     let(:type) do
       type_factory do |type|
@@ -186,21 +187,40 @@ describe 'Gitlab::Graphql::Authorization' do
 
     let(:query_type) do
       query_factory do |query|
-        query.field :object, type.connection_type, null: true, resolve: ->(obj, args, ctx) { [test_object] }
+        query.field :object, type.connection_type, null: true, resolve: ->(obj, args, ctx) { [test_object, second_test_object] }
       end
     end
 
     subject { result.dig('object', 'edges') }
 
-    it 'returns the protected field when user has permission' do
+    it 'returns only the elements visible to the user' do
       permit(permission_single)
 
-      expect(subject).not_to be_empty
+      expect(subject.size).to eq 1
       expect(subject.first['node']).to eq('name' => test_object.name)
     end
 
     it 'returns nil when user is not authorized' do
       expect(subject).to be_empty
+    end
+
+    describe 'limiting connections with multiple objects' do
+      let(:query_type) do
+        query_factory do |query|
+          query.field :object, type.connection_type, null: true, resolve: ->(obj, args, ctx) do
+            [test_object, second_test_object]
+          end
+        end
+      end
+
+      let(:query_string) { '{ object(first: 1) { edges { node { name } } } }' }
+
+      it 'only checks permissions for the first object' do
+        expect(Ability).to receive(:allowed?).with(user, permission_single, test_object) { true }
+        expect(Ability).not_to receive(:allowed?).with(user, permission_single, second_test_object)
+
+        expect(subject.size).to eq(1)
+      end
     end
   end
 
@@ -222,28 +242,53 @@ describe 'Gitlab::Graphql::Authorization' do
     include_examples 'authorization with a single permission'
   end
 
-  describe 'when connections do not follow the correct specification' do
-    let(:query_string) { '{ object() { edges { node { name }} } }' }
+  describe 'Authorizations on active record relations' do
+    let!(:visible_project) { create(:project, :private) }
+    let!(:other_project) { create(:project, :private) }
+    let!(:visible_issues) { create_list(:issue, 2, project: visible_project) }
+    let!(:other_issues) { create_list(:issue, 2, project: other_project) }
+    let!(:user) { visible_project.owner }
 
-    let(:type) do
-      bad_node = type_factory do |type|
-        type.graphql_name 'BadNode'
-        type.field :bad_node, GraphQL::STRING_TYPE, null: true
-      end
-
+    let(:issue_type) do
       type_factory do |type|
-        type.field :edges, [bad_node], null: true
+        type.graphql_name 'FakeIssueType'
+        type.authorize :read_issue
+        type.field :id, GraphQL::ID_TYPE, null: false
       end
     end
-
+    let(:project_type) do |type|
+      type_factory do |type|
+        type.graphql_name 'FakeProjectType'
+        type.field :test_issues, issue_type.connection_type, null: false, resolve: -> (_, _, _) { Issue.where(project: [visible_project, other_project]) }
+      end
+    end
     let(:query_type) do
       query_factory do |query|
-        query.field :object, type, null: true
+        query.field :test_project, project_type, null: false, resolve: -> (_, _, _) { visible_project }
       end
     end
+    let(:query_string) do
+      <<~QRY
+        { testProject { testIssues(first: 3) { edges { node { id } } } } }
+      QRY
+    end
 
-    it 'throws an error' do
-      expect { result }.to raise_error(Gitlab::Graphql::Errors::ConnectionDefinitionError)
+    before do
+      allow(Ability).to receive(:allowed?).and_call_original
+    end
+
+    it 'renders the issues the user has access to' do
+      issue_edges = result['testProject']['testIssues']['edges']
+      issue_ids = issue_edges.map { |issue_edge| issue_edge['node']&.fetch('id') }
+
+      expect(issue_edges.size).to eq(visible_issues.size)
+      expect(issue_ids).to eq(visible_issues.map { |i| i.id.to_s })
+    end
+
+    it 'does not check access on fields that will not be rendered' do
+      expect(Ability).not_to receive(:allowed?).with(user, :read_issue, other_issues.last)
+
+      result
     end
   end
 
@@ -276,6 +321,8 @@ describe 'Gitlab::Graphql::Authorization' do
   def execute_query(query_type)
     schema = Class.new(GraphQL::Schema) do
       use Gitlab::Graphql::Authorize
+      use Gitlab::Graphql::Connections
+
       query(query_type)
     end
 

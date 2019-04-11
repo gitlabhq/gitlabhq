@@ -7,8 +7,8 @@ describe 'getting an issue list for a project' do
   let(:current_user) { create(:user) }
   let(:issues_data) { graphql_data['project']['issues']['edges'] }
   let!(:issues) do
-    create(:issue, project: project, discussion_locked: true)
-    create(:issue, project: project)
+    [create(:issue, project: project, discussion_locked: true),
+     create(:issue, project: project)]
   end
   let(:fields) do
     <<~QUERY
@@ -45,6 +45,30 @@ describe 'getting an issue list for a project' do
 
     expect(issues_data[0]['node']['discussionLocked']).to eq false
     expect(issues_data[1]['node']['discussionLocked']).to eq true
+  end
+
+  context 'when limiting the number of results' do
+    let(:query) do
+      graphql_query_for(
+        'project',
+        { 'fullPath' => project.full_path },
+        "issues(first: 1) { #{fields} }"
+      )
+    end
+
+    it_behaves_like 'a working graphql query' do
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+    end
+
+    it "is expected to check permissions on the first issue only" do
+      allow(Ability).to receive(:allowed?).and_call_original
+      # Newest first, we only want to see the newest checked
+      expect(Ability).not_to receive(:allowed?).with(current_user, :read_issue, issues.first)
+
+      post_graphql(query, current_user: current_user)
+    end
   end
 
   context 'when the user does not have access to the issue' do

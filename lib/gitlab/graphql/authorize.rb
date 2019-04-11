@@ -8,7 +8,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       def self.use(schema_definition)
-        schema_definition.instrument(:field, Instrumentation.new)
+        schema_definition.instrument(:field, Instrumentation.new, after_built_ins: true)
       end
     end
   end
