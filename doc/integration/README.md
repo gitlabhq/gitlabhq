@@ -29,8 +29,8 @@ See the documentation below for details on how to configure these services.
 
 ## Project services
 
-Integration with services such as Campfire, Flowdock, Pivotal Tracker, and Slack
-are available in the form of a [Project Service][].
+Integration with services such as Campfire, Flowdock, HipChat,
+Pivotal Tracker, and Slack are available in the form of a [Project Service][].
 
 [Project Service]: ../user/project/integrations/project_services.md
 
