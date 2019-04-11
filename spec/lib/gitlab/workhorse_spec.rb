@@ -39,7 +39,7 @@ describe Gitlab::Workhorse do
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
         'ArchivePath' => metadata['ArchivePath'],
-        'GetArchiveRequest' => Base64.urlsafe_encode64(
+        'GetArchiveRequest' => Base64.encode64(
           Gitaly::GetArchiveRequest.new(
             repository: repository.gitaly_repository,
             commit_id: metadata['CommitId'],
