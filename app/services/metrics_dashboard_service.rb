@@ -3,7 +3,11 @@
 # Fetches the metrics dashboard layout and supplemented the output with DB info.
 class MetricsDashboardService
   SYSTEM_DASHBOARD_NAME = 'system_dashboard'
-  SYSTEM_DASHBOARD_PATH = Rails.root.join("config/prometheus", "#{SYSTEM_DASHBOARD_NAME}.yml")
+  SYSTEM_DASHBOARD_PATH = Rails.root.join('config', 'prometheus', "#{SYSTEM_DASHBOARD_NAME}.yml")
+
+  def initialize(project)
+    @project = project
+  end
 
   # Returns a DB-supplemented json representation of a dashboard config file.
   def get_dashboard
@@ -26,6 +30,6 @@ class MetricsDashboardService
   # TODO: "Processing" the dashboard needs to include several steps such as
   # inserting metric ids and alert information.
   def process_dashboard(dashboard)
-    dashboard.to_json
+    MetricsDashboardProcessingService.new(dashboard, @project).process
   end
 end
