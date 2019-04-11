@@ -30,7 +30,7 @@ module Users
 
       return if @user.last_activity_on == today
 
-      lease = Gitlab::ExclusiveLease.new("acitvity_service:#{@user.id}",
+      lease = Gitlab::ExclusiveLease.new("activity_service:#{@user.id}",
                                          timeout: LEASE_TIMEOUT)
       return unless lease.try_obtain
 
