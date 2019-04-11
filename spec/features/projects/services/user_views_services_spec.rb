@@ -14,6 +14,7 @@ describe 'User views services' do
   it 'shows the list of available services' do
     expect(page).to have_content('Project services')
     expect(page).to have_content('Campfire')
+    expect(page).to have_content('HipChat')
     expect(page).to have_content('Assembla')
     expect(page).to have_content('Pushover')
     expect(page).to have_content('Atlassian Bamboo')
@@ -21,7 +22,5 @@ describe 'User views services' do
     expect(page).to have_content('Asana')
     expect(page).to have_content('Irker (IRC gateway)')
     expect(page).to have_content('Packagist')
-    expect(page).to have_content('Mattermost')
-    expect(page).to have_content('Slack')
   end
 end
