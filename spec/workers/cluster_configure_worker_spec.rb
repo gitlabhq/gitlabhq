@@ -4,11 +4,6 @@ require 'spec_helper'
 
 describe ClusterConfigureWorker, '#perform' do
   let(:worker) { described_class.new }
-  let(:ci_preparing_state_enabled) { false }
-
-  before do
-    stub_feature_flags(ci_preparing_state: ci_preparing_state_enabled)
-  end
 
   shared_examples 'configured cluster' do
     it 'creates a namespace' do
@@ -33,26 +28,14 @@ describe ClusterConfigureWorker, '#perform' do
     context 'when group has a project' do
       let!(:project) { create(:project, group: group) }
 
-      it_behaves_like 'configured cluster'
-
-      context 'ci_preparing_state feature is enabled' do
-        let(:ci_preparing_state_enabled) { true }
-
-        it_behaves_like 'unconfigured cluster'
-      end
+      it_behaves_like 'unconfigured cluster'
     end
 
     context 'when group has project in a sub-group' do
       let!(:subgroup) { create(:group, parent: group) }
       let!(:project) { create(:project, group: subgroup) }
 
-      it_behaves_like 'configured cluster'
-
-      context 'ci_preparing_state feature is enabled' do
-        let(:ci_preparing_state_enabled) { true }
-
-        it_behaves_like 'unconfigured cluster'
-      end
+      it_behaves_like 'unconfigured cluster'
     end
   end
 

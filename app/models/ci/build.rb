@@ -378,8 +378,6 @@ module Ci
     end
 
     def any_unmet_prerequisites?
-      return false unless Feature.enabled?(:ci_preparing_state, default_enabled: true)
-
       prerequisites.present?
     end
 
