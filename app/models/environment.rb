@@ -35,7 +35,7 @@ class Environment < ApplicationRecord
   validates :external_url,
             length: { maximum: 255 },
             allow_nil: true,
-            url: true
+            addressable_url: true
 
   delegate :stop_action, :manual_actions, to: :last_deployment, allow_nil: true
 
