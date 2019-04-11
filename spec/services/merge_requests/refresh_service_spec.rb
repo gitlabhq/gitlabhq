@@ -269,13 +269,11 @@ describe MergeRequests::RefreshService do
       end
     end
 
-    context 'push to origin repo source branch when an MR was reopened' do
+    context 'push to origin repo source branch' do
       let(:refresh_service) { service.new(@project, @user) }
       let(:notification_service) { spy('notification_service') }
 
       before do
-        @merge_request.update(state: :reopened)
-
         allow(refresh_service).to receive(:execute_hooks)
         allow(NotificationService).to receive(:new) { notification_service }
         refresh_service.execute(@oldrev, @newrev, 'refs/heads/master')
