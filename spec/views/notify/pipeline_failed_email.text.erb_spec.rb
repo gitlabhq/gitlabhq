@@ -4,7 +4,7 @@ require 'spec_helper'
 describe 'notify/pipeline_failed_email.text.erb' do
   include Devise::Test::ControllerHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, developer_projects: [project]) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
 

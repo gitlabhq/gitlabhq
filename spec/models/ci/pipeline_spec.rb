@@ -2736,7 +2736,7 @@ describe Ci::Pipeline, :mailer do
       create(:ci_pipeline,
              project: project,
              sha: project.commit('master').sha,
-             user: create(:user))
+             user: project.owner)
     end
 
     before do

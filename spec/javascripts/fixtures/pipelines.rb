@@ -8,7 +8,7 @@ describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controll
   let(:project) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
   let(:commit) { create(:commit, project: project) }
   let(:commit_without_author) { RepoHelpers.another_sample_commit }
-  let!(:user) { create(:user, email: commit.author_email) }
+  let!(:user) { create(:user, developer_projects: [project], email: commit.author_email) }
   let!(:pipeline) { create(:ci_pipeline, project: project, sha: commit.id, user: user) }
   let!(:pipeline_without_author) { create(:ci_pipeline, project: project, sha: commit_without_author.id) }
   let!(:pipeline_without_commit) { create(:ci_pipeline, project: project, sha: '0000') }

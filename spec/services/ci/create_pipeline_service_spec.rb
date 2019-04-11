@@ -1132,5 +1132,17 @@ describe Ci::CreatePipelineService do
           .with_message('Insufficient permissions to create a new pipeline')
       end
     end
+
+    context 'when a user with permissions has been blocked' do
+      before do
+        user.block!
+      end
+
+      it 'raises an error' do
+        expect { subject }
+          .to raise_error(described_class::CreateError)
+          .with_message('Insufficient permissions to create a new pipeline')
+      end
+    end
   end
 end

@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
 class GlobalPolicy < BasePolicy
-  desc "User is blocked"
-  with_options scope: :user, score: 0
-  condition(:blocked) { @user&.blocked? }
-
   desc "User is an internal user"
   with_options scope: :user, score: 0
   condition(:internal) { @user&.internal? }

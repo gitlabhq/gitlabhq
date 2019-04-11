@@ -469,7 +469,7 @@ describe 'Pipelines', :js do
             visit_project_pipelines
           end
 
-          it 'has artifats' do
+          it 'has artifacts' do
             expect(page).to have_selector('.build-artifacts')
           end
 

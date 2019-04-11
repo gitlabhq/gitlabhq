@@ -2217,10 +2217,12 @@ describe NotificationService, :mailer do
       let(:pipeline) { create(:ci_pipeline, :failed, project: project, user: pipeline_user) }
 
       it 'emails project owner and user that triggered the pipeline' do
+        project.add_developer(pipeline_user)
+
         notification.autodevops_disabled(pipeline, [owner.email, pipeline_user.email])
 
-        should_email(owner)
-        should_email(pipeline_user)
+        should_email(owner, times: 1)         # Once for the disable pipeline.
+        should_email(pipeline_user, times: 2) # Once for the new permission, once for the disable.
       end
     end
   end
