@@ -6795,6 +6795,28 @@
       "wiki_page_events": true
     },
     {
+      "id": 93,
+      "title": "HipChat",
+      "project_id": 5,
+      "created_at": "2016-06-14T15:01:51.219Z",
+      "updated_at": "2016-06-14T15:01:51.219Z",
+      "active": false,
+      "properties": {
+        "notify_only_broken_pipelines": true
+      },
+      "template": false,
+      "push_events": true,
+      "issues_events": true,
+      "merge_requests_events": true,
+      "tag_push_events": true,
+      "note_events": true,
+      "pipeline_events": true,
+      "type": "HipchatService",
+      "category": "common",
+      "default": false,
+      "wiki_page_events": true
+    },
+    {
       "id": 91,
       "title": "Flowdock",
       "project_id": 5,
