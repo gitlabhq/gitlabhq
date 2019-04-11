@@ -1,4 +1,3 @@
-# coding: utf-8
 # frozen_string_literal: true
 module API
   class Services < Grape::API
@@ -372,44 +371,6 @@ module API
         },
         CHAT_NOTIFICATION_EVENTS
       ].flatten,
-      'hipchat' => [
-        {
-          required: true,
-          name: :token,
-          type: String,
-          desc: 'The room token'
-        },
-        {
-          required: false,
-          name: :room,
-          type: String,
-          desc: 'The room name or ID'
-        },
-        {
-          required: false,
-          name: :color,
-          type: String,
-          desc: 'The room color'
-        },
-        {
-          required: false,
-          name: :notify,
-          type: Boolean,
-          desc: 'Enable notifications'
-        },
-        {
-          required: false,
-          name: :api_version,
-          type: String,
-          desc: 'Leave blank for default (v2)'
-        },
-        {
-          required: false,
-          name: :server,
-          type: String,
-          desc: 'Leave blank for default. https://hipchat.example.com'
-        }
-      ],
       'irker' => [
         {
           required: true,
@@ -713,7 +674,6 @@ module API
       ExternalWikiService,
       FlowdockService,
       HangoutsChatService,
-      HipchatService,
       IrkerService,
       JiraService,
       KubernetesService,

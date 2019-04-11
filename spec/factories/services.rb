@@ -62,10 +62,4 @@ FactoryBot.define do
       project_key: 'jira-key'
     )
   end
-
-  factory :hipchat_service do
-    project
-    type 'HipchatService'
-    token 'test_token'
-  end
 end
