@@ -7,6 +7,8 @@ export default {
     });
   },
   [types.SET_MERGE_REQUEST](state, { projectPath, mergeRequestId, mergeRequest }) {
+    const existingMergeRequest = state.projects[projectPath].mergeRequests[mergeRequestId] || {};
+
     Object.assign(state.projects[projectPath], {
       mergeRequests: {
         [mergeRequestId]: {
@@ -15,6 +17,7 @@ export default {
           changes: [],
           versions: [],
           baseCommitSha: null,
+          ...existingMergeRequest,
         },
       },
     });
