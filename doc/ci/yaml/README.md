@@ -2701,6 +2701,15 @@ Not to be confused with [`trigger`](#trigger-premium).
 
 [Read more in the triggers documentation.](../triggers/README.md)
 
+## Processing Git pushes
+
+GitLab will create at most 4 branch and tags pipelines when
+doing pushing multiple changes in single `git push` invocation.
+
+This limitation does not affect any of the updated Merge Request pipelines,
+all updated Merge Requests will have a pipeline created when using
+[pipelines for merge requests](../merge_request_pipelines/index.md).
+
 ## Skipping jobs
 
 If your commit message contains `[ci skip]` or `[skip ci]`, using any
