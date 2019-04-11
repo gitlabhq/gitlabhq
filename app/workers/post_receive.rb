@@ -3,7 +3,7 @@
 class PostReceive
   include ApplicationWorker
 
-  def perform(gl_repository, identifier, changes, push_options = [])
+  def perform(gl_repository, identifier, changes, push_options = {})
     project, repo_type = Gitlab::GlRepository.parse(gl_repository)
 
     if project.nil?

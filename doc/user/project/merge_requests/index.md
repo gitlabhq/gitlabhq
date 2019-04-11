@@ -219,6 +219,64 @@ apply the patches. The target branch can be specified using the
 [`/target_branch` quick action](../quick_actions.md). If the source
 branch already exists, the patches will be applied on top of it.
 
+## Git push options
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/26752) in GitLab 11.10.
+
+NOTE: **Note:**
+Git push options are only available with Git 2.10 or newer.
+
+GitLab supports using
+[Git push options](https://git-scm.com/docs/git-push#Documentation/git-push.txt--oltoptiongt)
+to perform the following actions against merge requests at the same time
+as pushing changes:
+
+- Create a new merge request for the pushed branch.
+- Set the target of the merge request to a particular branch.
+- Set the merge request to merge when its pipeline succeeds.
+
+### Create a new merge request using git push options
+
+To create a new merge request for a branch, use the
+`merge_request.create` push option:
+
+```sh
+git push -o merge_request.create
+```
+
+### Set the target branch of a merge request using git push options
+
+To update an existing merge request's target branch, use the
+`merge_request.target=<branch_name>` push option:
+
+```sh
+git push -o merge_request.target=branch_name
+```
+
+You can also create a merge request and set its target branch at the
+same time using a `-o` flag per push option:
+
+```sh
+git push -o merge_request.create -o merge_request.target=branch_name
+```
+
+### Set merge when pipeline succeeds using git push options
+
+To set an existing merge request to
+[merge when its pipeline succeeds](merge_when_pipeline_succeeds.md), use
+the `merge_request.merge_when_pipeline_succeeds` push option:
+
+```sh
+git push -o merge_request.merge_when_pipeline_succeeds
+```
+
+You can also create a merge request and set it to merge when its
+pipeline succeeds at the same time using a `-o` flag per push option:
+
+```sh
+git push -o merge_request.create -o merge_request.merge_when_pipeline_succeeds
+```
+
 ## Find the merge request that introduced a change
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2383) in GitLab 10.5.
