@@ -5,6 +5,7 @@
 
 import Vue from 'vue';
 import '~/vue_shared/models/label';
+import { isEE } from '~/lib/utils/common_utils';
 import IssueProject from './project';
 import boardsStore from '../stores/boards_store';
 
@@ -28,7 +29,6 @@ class ListIssue {
     this.referencePath = obj.reference_path;
     this.path = obj.real_path;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
-    this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
     this.timeEstimate = obj.time_estimate;
     this.assignableLabelsEndpoint = obj.assignable_labels_endpoint;
@@ -39,6 +39,7 @@ class ListIssue {
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
+      this.milestone_id = obj.milestone.id;
     }
 
     obj.labels.forEach(label => {
@@ -86,6 +87,19 @@ class ListIssue {
 
   removeAllAssignees() {
     this.assignees = [];
+  }
+
+  addMilestone(milestone) {
+    const miletoneId = this.milestone ? this.milestone.id : null;
+    if (isEE && milestone.id !== miletoneId) {
+      this.milestone = new ListMilestone(milestone);
+    }
+  }
+
+  removeMilestone(removeMilestone) {
+    if (isEE && removeMilestone && removeMilestone.id === this.milestone.id) {
+      this.milestone = {};
+    }
   }
 
   getLists() {
