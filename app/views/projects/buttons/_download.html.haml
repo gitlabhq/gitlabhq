@@ -11,7 +11,7 @@
       %li.dropdown-bold-header= _('Download source code')
       %li.dropdown-menu-content
         = render 'projects/buttons/download_links', project: project, ref: ref, archive_prefix: archive_prefix, path: nil
-      - if directory?
+      - if directory? && Feature.enabled?(:git_archive_path, default_enabled: true)
         %li.separator
         %li.dropdown-bold-header= _('Download this directory')
         %li.dropdown-menu-content

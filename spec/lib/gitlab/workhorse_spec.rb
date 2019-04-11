@@ -16,7 +16,7 @@ describe Gitlab::Workhorse do
     let(:ref) { 'master' }
     let(:format) { 'zip' }
     let(:storage_path) { Gitlab.config.gitlab.repository_downloads_path }
-    let(:path) { 'some/path' }
+    let(:path) { 'some/path' if Feature.enabled?(:git_archive_path, default_enabled: true) }
     let(:metadata) { repository.archive_metadata(ref, storage_path, format, append_sha: nil, path: path) }
     let(:cache_disabled) { false }
 
@@ -28,35 +28,68 @@ describe Gitlab::Workhorse do
       allow(described_class).to receive(:git_archive_cache_disabled?).and_return(cache_disabled)
     end
 
-    it 'sets the header correctly' do
-      key, command, params = decode_workhorse_header(subject)
+    context 'feature flag disabled' do
+      before do
+        stub_feature_flags(git_archive_path: false)
+      end
 
-      expect(key).to eq('Gitlab-Workhorse-Send-Data')
-      expect(command).to eq('git-archive')
-      expect(params).to eq({
-        'GitalyServer' => {
-          address: Gitlab::GitalyClient.address(project.repository_storage),
-          token: Gitlab::GitalyClient.token(project.repository_storage)
-        },
-        'ArchivePath' => metadata['ArchivePath'],
-        'GetArchiveRequest' => Base64.encode64(
-          Gitaly::GetArchiveRequest.new(
-            repository: repository.gitaly_repository,
-            commit_id: metadata['CommitId'],
-            prefix: metadata['ArchivePrefix'],
-            format: Gitaly::GetArchiveRequest::Format::ZIP,
-            path: path
-          ).to_proto
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
+
+        expected_params = metadata.merge(
+          'GitalyRepository' => repository.gitaly_repository.to_h,
+          'GitalyServer' => {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          }
         )
-      }.deep_stringify_keys)
+
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-archive')
+        expect(params).to eq(expected_params.deep_stringify_keys)
+      end
+
+      context 'when archive caching is disabled' do
+        let(:cache_disabled) { true }
+
+        it 'tells workhorse not to use the cache' do
+          _, _, params = decode_workhorse_header(subject)
+          expect(params).to include({ 'DisableCache' => true })
+        end
+      end
     end
 
-    context 'when archive caching is disabled' do
-      let(:cache_disabled) { true }
+    context 'feature flag enabled' do
+      it 'sets the header correctly' do
+        key, command, params = decode_workhorse_header(subject)
 
-      it 'tells workhorse not to use the cache' do
-        _, _, params = decode_workhorse_header(subject)
-        expect(params).to include({ 'DisableCache' => true })
+        expect(key).to eq('Gitlab-Workhorse-Send-Data')
+        expect(command).to eq('git-archive')
+        expect(params).to eq({
+          'GitalyServer' => {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          },
+          'ArchivePath' => metadata['ArchivePath'],
+          'GetArchiveRequest' => Base64.encode64(
+            Gitaly::GetArchiveRequest.new(
+              repository: repository.gitaly_repository,
+              commit_id: metadata['CommitId'],
+              prefix: metadata['ArchivePrefix'],
+              format: Gitaly::GetArchiveRequest::Format::ZIP,
+              path: path
+            ).to_proto
+          )
+        }.deep_stringify_keys)
+      end
+
+      context 'when archive caching is disabled' do
+        let(:cache_disabled) { true }
+
+        it 'tells workhorse not to use the cache' do
+          _, _, params = decode_workhorse_header(subject)
+          expect(params).to include({ 'DisableCache' => true })
+        end
       end
     end
 
