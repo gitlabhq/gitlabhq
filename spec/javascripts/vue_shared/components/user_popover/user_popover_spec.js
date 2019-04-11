@@ -61,6 +61,12 @@ describe('User Popover Component', () => {
       expect(vm.$el.textContent).toContain(DEFAULT_PROPS.user.username);
       expect(vm.$el.textContent).toContain(DEFAULT_PROPS.user.location);
     });
+
+    it('shows icon for location', () => {
+      const iconEl = vm.$el.querySelector('.js-location svg');
+
+      expect(iconEl.querySelector('use').getAttribute('xlink:href')).toContain('location');
+    });
   });
 
   describe('job data', () => {
@@ -116,6 +122,18 @@ describe('User Popover Component', () => {
       expect(vm.$el.querySelector('.js-organization').textContent).toContain(
         'Me & my <funky> Company',
       );
+    });
+
+    it('shows icon for bio', () => {
+      const iconEl = vm.$el.querySelector('.js-bio svg');
+
+      expect(iconEl.querySelector('use').getAttribute('xlink:href')).toContain('profile');
+    });
+
+    it('shows icon for organization', () => {
+      const iconEl = vm.$el.querySelector('.js-organization svg');
+
+      expect(iconEl.querySelector('use').getAttribute('xlink:href')).toContain('work');
     });
   });
 
