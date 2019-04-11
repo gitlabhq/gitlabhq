@@ -437,10 +437,6 @@ Feature.enable(:allow_unsafe_ruby_regexp)
 
 ### `only`/`except` (advanced)
 
-> - `refs` and `kubernetes` policies introduced in GitLab 10.0.
-> - `variables` policy introduced in GitLab 10.7.
-> - `changes` policy [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/19232) in GitLab 11.4.
-
 CAUTION: **Warning:**
 This an _alpha_ feature, and it is subject to change at any time without
 prior notice!
@@ -461,6 +457,8 @@ If you use multiple keys under `only` or `except`, they act as an AND. The logic
 
 #### `only:refs`/`except:refs`
 
+> `refs` policy introduced in GitLab 10.0.
+
 The `refs` strategy can take the same values as the
 [simplified only/except configuration](#onlyexcept-basic).
 
@@ -477,6 +475,8 @@ deploy:
 
 #### `only:kubernetes`/`except:kubernetes`
 
+> `kubernetes` policy introduced in GitLab 10.0.
+
 The `kubernetes` strategy accepts only the `active` keyword.
 
 In the example below, the `deploy` job is going to be created only when the
@@ -489,6 +489,8 @@ deploy:
 ```
 
 #### `only:variables`/`except:variables`
+
+> `variables` policy introduced in GitLab 10.7.
 
 The `variables` keyword is used to define variables expressions. In other words,
 you can use predefined variables / project / group or
@@ -521,6 +523,8 @@ end-to-end:
 Learn more about [variables expressions](../variables/README.md#environment-variables-expressions).
 
 #### `only:changes`/`except:changes`
+
+> `changes` policy [introduced][ce-19232] in GitLab 11.4.
 
 Using the `changes` keyword with `only` or `except` makes it possible to define if
 a job should be created based on files modified by a git push event.
@@ -2714,6 +2718,7 @@ git push -o ci.skip
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
+[ce-19232]: https://gitlab.com/gitlab-org/gitlab-ce/issues/19232
 [environment]: ../environments.md "CI/CD environments"
 [schedules]: ../../user/project/pipelines/schedules.md "Pipelines schedules"
 [variables]: ../variables/README.md "CI/CD variables"
