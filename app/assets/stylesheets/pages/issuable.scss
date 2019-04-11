@@ -1,8 +1,3 @@
-// Limit MR description for side-by-side diff view
-.fixed-width-container {
-  @include fixed-width-container;
-}
-
 .issuable-warning-icon {
   background-color: $orange-100;
   border-radius: $border-radius-default;
@@ -27,7 +22,7 @@
   .files-changed-inner,
   .limited-header-width,
   .limited-width-notes {
-    @extend .fixed-width-container;
+    @include fixed-width-container;
   }
 
   .issuable-details {
@@ -35,13 +30,13 @@
     .mr-source-target,
     .mr-state-widget,
     .merge-manually {
-      @extend .fixed-width-container;
+      @include fixed-width-container;
     }
   }
 
   .merge-request-details {
     .emoji-list-container {
-      @extend .fixed-width-container;
+      @include fixed-width-container;
     }
   }
 }
