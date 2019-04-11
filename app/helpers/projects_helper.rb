@@ -299,10 +299,6 @@ module ProjectsHelper
     }.to_json
   end
 
-  def directory?
-    @path.present?
-  end
-
   private
 
   def get_project_nav_tabs(project, current_user)
