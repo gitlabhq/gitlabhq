@@ -115,6 +115,40 @@ describe Gitlab::UrlSanitizer do
     end
   end
 
+  describe '#user' do
+    context 'credentials in hash' do
+      it 'overrides URL-provided user' do
+        sanitizer = described_class.new('http://a:b@example.com', credentials: { user: 'c', password: 'd' })
+
+        expect(sanitizer.user).to eq('c')
+      end
+    end
+
+    context 'credentials in URL' do
+      where(:url, :user) do
+        'http://foo:bar@example.com' | 'foo'
+        'http://foo:bar:baz@example.com' | 'foo'
+        'http://:bar@example.com'    | nil
+        'http://foo:@example.com'    | 'foo'
+        'http://foo@example.com'     | 'foo'
+        'http://:@example.com'       | nil
+        'http://@example.com'        | nil
+        'http://example.com'         | nil
+
+        # Other invalid URLs
+        nil  | nil
+        ''   | nil
+        'no' | nil
+      end
+
+      with_them do
+        subject { described_class.new(url).user }
+
+        it { is_expected.to eq(user) }
+      end
+    end
+  end
+
   describe '#full_url' do
     context 'credentials in hash' do
       where(:credentials, :userinfo) do

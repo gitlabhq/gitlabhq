@@ -4584,6 +4584,9 @@ msgstr ""
 msgid "Git repository URL"
 msgstr ""
 
+msgid "Git repository password"
+msgstr ""
+
 msgid "Git revision"
 msgstr ""
 
@@ -10787,6 +10790,12 @@ msgid "UserProfile|You haven't created any snippets."
 msgstr ""
 
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
+msgstr ""
+
+msgid "Username (optional)"
+msgstr ""
+
+msgid "Username and Password"
 msgstr ""
 
 msgid "Username is already taken."
