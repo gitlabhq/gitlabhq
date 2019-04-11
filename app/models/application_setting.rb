@@ -48,17 +48,17 @@ class ApplicationSetting < ApplicationRecord
 
   validates :home_page_url,
             allow_blank: true,
-            url: true,
+            addressable_url: true,
             if: :home_page_url_column_exists?
 
   validates :help_page_support_url,
             allow_blank: true,
-            url: true,
+            addressable_url: true,
             if: :help_page_support_url_column_exists?
 
   validates :after_sign_out_path,
             allow_blank: true,
-            url: true
+            addressable_url: true
 
   validates :admin_notification_email,
             devise_email: true,
@@ -218,7 +218,7 @@ class ApplicationSetting < ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_url,
-            url: true, allow_blank: true,
+            addressable_url: true, allow_blank: true,
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_timeout,

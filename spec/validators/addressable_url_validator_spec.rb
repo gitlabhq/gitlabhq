@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe UrlValidator do
+describe AddressableUrlValidator do
   let!(:badge) { build(:badge, link_url: 'http://www.example.com') }
-  subject { validator.validate_each(badge, :link_url, badge.link_url) }
+  subject { validator.validate(badge) }
 
-  include_examples 'url validator examples', described_class::DEFAULT_PROTOCOLS
+  include_examples 'url validator examples', described_class::DEFAULT_OPTIONS[:schemes]
 
   describe 'validations' do
     include_context 'invalid urls'
@@ -14,13 +14,13 @@ describe UrlValidator do
     let(:validator) { described_class.new(attributes: [:link_url]) }
 
     it 'returns error when url is nil' do
-      expect(validator.validate_each(badge, :link_url, nil)).to be_nil
-      expect(badge.errors.first[1]).to eq 'must be a valid URL'
+      expect(validator.validate_each(badge, :link_url, nil)).to be_falsey
+      expect(badge.errors.first[1]).to eq validator.options.fetch(:message)
     end
 
     it 'returns error when url is empty' do
-      expect(validator.validate_each(badge, :link_url, '')).to be_nil
-      expect(badge.errors.first[1]).to eq 'must be a valid URL'
+      expect(validator.validate_each(badge, :link_url, '')).to be_falsey
+      expect(badge.errors.first[1]).to eq validator.options.fetch(:message)
     end
 
     it 'does not allow urls with CR or LF characters' do
@@ -29,6 +29,17 @@ describe UrlValidator do
           expect(validator.validate_each(badge, :link_url, url)[0]).to eq 'is blocked: URI is invalid'
         end
       end
+    end
+
+    it 'provides all arguments to UrlBlock validate' do
+      expect(Gitlab::UrlBlocker)
+          .to receive(:validate!)
+                  .with(badge.link_url, described_class::BLOCKER_VALIDATE_OPTIONS)
+                  .and_return(true)
+
+      subject
+
+      expect(badge.errors).to be_empty
     end
   end
 
@@ -40,7 +51,7 @@ describe UrlValidator do
 
       subject
 
-      expect(badge.errors.empty?).to be true
+      expect(badge.errors).to be_empty
     end
 
     it 'does not block urls pointing to the local network' do
@@ -48,7 +59,23 @@ describe UrlValidator do
 
       subject
 
-      expect(badge.errors.empty?).to be true
+      expect(badge.errors).to be_empty
+    end
+
+    it 'does block nil urls' do
+      badge.link_url = nil
+
+      subject
+
+      expect(badge.errors).to be_present
+    end
+
+    it 'does block blank urls' do
+      badge.link_url = '\n\r \n'
+
+      subject
+
+      expect(badge.errors).to be_present
     end
 
     it 'strips urls' do
@@ -67,6 +94,40 @@ describe UrlValidator do
     end
   end
 
+  context 'when message is set' do
+    let(:message) { 'is blocked: test message' }
+    let(:validator) { described_class.new(attributes: [:link_url], allow_nil: false, message: message) }
+
+    it 'does block nil url with provided error message' do
+      expect(validator.validate_each(badge, :link_url, nil)).to be_falsey
+      expect(badge.errors.first[1]).to eq message
+    end
+  end
+
+  context 'when allow_nil is set to true' do
+    let(:validator) { described_class.new(attributes: [:link_url], allow_nil: true) }
+
+    it 'does not block nil urls' do
+      badge.link_url = nil
+
+      subject
+
+      expect(badge.errors).to be_empty
+    end
+  end
+
+  context 'when allow_blank is set to true' do
+    let(:validator) { described_class.new(attributes: [:link_url], allow_blank: true) }
+
+    it 'does not block blank urls' do
+      badge.link_url = "\n\r \n"
+
+      subject
+
+      expect(badge.errors).to be_empty
+    end
+  end
+
   context 'when allow_localhost is set to false' do
     let(:validator) { described_class.new(attributes: [:link_url], allow_localhost: false) }
 
@@ -75,7 +136,21 @@ describe UrlValidator do
 
       subject
 
-      expect(badge.errors.empty?).to be false
+      expect(badge.errors).to be_present
+    end
+
+    context 'when allow_setting_local_requests is set to true' do
+      it 'does not block urls pointing to localhost' do
+        expect(described_class)
+          .to receive(:allow_setting_local_requests?)
+            .and_return(true)
+
+        badge.link_url = 'https://127.0.0.1'
+
+        subject
+
+        expect(badge.errors).to be_empty
+      end
     end
   end
 
@@ -87,7 +162,21 @@ describe UrlValidator do
 
       subject
 
-      expect(badge.errors.empty?).to be false
+      expect(badge.errors).to be_present
+    end
+
+    context 'when allow_setting_local_requests is set to true' do
+      it 'does not block urls pointing to local network' do
+        expect(described_class)
+          .to receive(:allow_setting_local_requests?)
+            .and_return(true)
+
+        badge.link_url = 'https://192.168.1.1'
+
+        subject
+
+        expect(badge.errors).to be_empty
+      end
     end
   end
 
@@ -100,7 +189,7 @@ describe UrlValidator do
       it 'does not block any port' do
         subject
 
-        expect(badge.errors.empty?).to be true
+        expect(badge.errors).to be_empty
       end
     end
 
@@ -110,7 +199,7 @@ describe UrlValidator do
       it 'blocks urls with a different port' do
         subject
 
-        expect(badge.errors.empty?).to be false
+        expect(badge.errors).to be_present
       end
     end
   end
@@ -127,7 +216,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be false
+        expect(badge.errors).to be_present
       end
     end
 
@@ -139,7 +228,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be true
+        expect(badge.errors).to be_empty
       end
     end
   end
@@ -156,7 +245,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be false
+        expect(badge.errors).to be_present
       end
     end
 
@@ -168,7 +257,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be true
+        expect(badge.errors).to be_empty
       end
     end
   end
@@ -191,7 +280,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be false
+        expect(badge.errors).to be_present
       end
 
       it 'prevents unsafe internal urls' do
@@ -199,7 +288,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be false
+        expect(badge.errors).to be_present
       end
 
       it 'allows safe urls' do
@@ -207,7 +296,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be true
+        expect(badge.errors).to be_empty
       end
     end
 
@@ -219,7 +308,7 @@ describe UrlValidator do
 
         subject
 
-        expect(badge.errors.empty?).to be true
+        expect(badge.errors).to be_empty
       end
     end
   end

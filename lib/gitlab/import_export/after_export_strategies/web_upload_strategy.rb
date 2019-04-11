@@ -8,7 +8,7 @@ module Gitlab
         POST_METHOD = 'POST'.freeze
         INVALID_HTTP_METHOD = 'invalid. Only PUT and POST methods allowed.'.freeze
 
-        validates :url, url: true
+        validates :url, addressable_url: true
 
         validate do
           unless [PUT_METHOD, POST_METHOD].include?(http_method.upcase)

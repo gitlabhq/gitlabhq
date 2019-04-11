@@ -23,10 +23,10 @@ describe Gitlab::UrlBlocker do
       expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git', ports: ports)).to be true
     end
 
-    it 'returns true for bad protocol' do
-      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['https'])).to be false
+    it 'returns true for bad scheme' do
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['https'])).to be false
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git')).to be false
-      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', protocols: ['http'])).to be true
+      expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git', schemes: ['http'])).to be true
     end
 
     it 'returns true for bad protocol on configured web/SSH host and ports' do
