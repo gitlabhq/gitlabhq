@@ -287,7 +287,7 @@
     list-style: none;
     padding: 0 1px;
 
-    a,
+    a:not(.btn),
     button,
     .menu-item {
       @include dropdown-link;
@@ -350,6 +350,10 @@
   .badge.badge-pill + span:not(.badge.badge-pill) {
     // Expects up to 3 digits on the badge
     margin-right: 40px;
+  }
+
+  .dropdown-menu-content {
+    padding: $dropdown-item-padding-y $dropdown-item-padding-x;
   }
 }
 

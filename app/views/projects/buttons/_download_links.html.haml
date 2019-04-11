@@ -1,0 +1,9 @@
+%ul
+  %li.d-inline-block.m-0.p-0
+    = link_to 'zip', project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: 'zip'), rel: 'nofollow', download: '', class: 'btn btn-primary btn-xs'
+  %li.d-inline-block.m-0.p-0
+    = link_to 'tar.gz', project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: 'tar.gz'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+  %li.d-inline-block.m-0.p-0
+    = link_to 'tar.bz2', project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: 'tar.bz2'), rel: 'nofollow', download: '', class: 'btn btn-xs'
+  %li.d-inline-block.m-0.p-0
+    = link_to 'tar', project_archive_path(project, id: tree_join(ref, archive_prefix), path: path, format: 'tar'), rel: 'nofollow', download: '', class: 'btn btn-xs'
