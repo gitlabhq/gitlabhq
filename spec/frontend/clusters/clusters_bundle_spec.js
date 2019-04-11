@@ -12,7 +12,7 @@ import { setTestTimeout } from 'helpers/timeout';
 import $ from 'jquery';
 
 describe('Clusters', () => {
-  setTestTimeout(500);
+  setTestTimeout(1000);
 
   let cluster;
   let mock;
