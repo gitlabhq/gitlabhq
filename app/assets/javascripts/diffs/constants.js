@@ -49,4 +49,4 @@ export const TYPE_KEY = 'type';
 export const LEFT_LINE_KEY = 'left';
 
 export const CENTERED_LIMITED_CONTAINER_CLASSES =
-  'container-limited limit-container-width mx-auto px-3';
+  'container-limited limit-container-width mx-lg-auto px-3';
