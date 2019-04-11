@@ -241,9 +241,7 @@ module MarkupHelper
       node.remove if node.name == 'a' && node.content.blank?
     end
 
-    # Use `Loofah` directly instead of `sanitize`
-    # as we still use the `rails-deprecated_sanitizer` gem
-    Loofah.fragment(text).scrub!(scrubber).to_s
+    sanitize text, scrubber: scrubber
   end
 
   def markdown_toolbar_button(options = {})

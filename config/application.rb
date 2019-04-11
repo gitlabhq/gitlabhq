@@ -164,8 +164,6 @@ module Gitlab
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.action_view.sanitized_allowed_protocols = %w(smb)
-
     # Can be removed once upgraded to Rails 5.1 or higher
     config.action_controller.raise_on_unfiltered_parameters = true
 
