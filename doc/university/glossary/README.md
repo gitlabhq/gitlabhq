@@ -41,7 +41,7 @@ Objects (usually binary and large) created by a build process. These can include
 
 ### Atlassian
 
-A [company](https://www.atlassian.com) that develops software products for developers and project managers including Bitbucket, Jira, Confluence, Bamboo.
+A [company](https://www.atlassian.com) that develops software products for developers and project managers including Bitbucket, Jira, Hipchat, Confluence, Bamboo.
 
 ### Audit Log
 
