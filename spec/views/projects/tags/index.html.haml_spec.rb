@@ -7,9 +7,6 @@ describe 'projects/tags/index' do
   let(:release)  { create(:release, project: project, sha: git_tag.target_commit.sha) }
   let(:pipeline) { create(:ci_pipeline, :success, project: project, ref: git_tag.name, sha: release.sha) }
 
-  let(:artifacts_download_header_regex)  { %r(<li class="dropdown-bold-header">Download artifacts<\/li>) }
-  let(:artifacts_download_link_selector) { 'a[href="' + latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test') + '"]' }
-
   before do
     assign(:project, project)
     assign(:repository, project.repository)
@@ -31,12 +28,12 @@ describe 'projects/tags/index' do
 
     it 'renders the Artifacts section in the download list' do
       render
-      expect(rendered).to match(artifacts_download_header_regex)
+      expect(rendered).to have_selector('li', text: 'Artifacts')
     end
 
     it 'renders artifact download links' do
       render
-      expect(rendered).to have_selector(artifacts_download_link_selector)
+      expect(rendered).to have_link(href: latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test'))
     end
   end
 
@@ -45,12 +42,12 @@ describe 'projects/tags/index' do
 
     it 'does not render the Artifacts section in the download list' do
       render
-      expect(rendered).not_to match(artifacts_download_header_regex)
+      expect(rendered).not_to have_selector('li', text: 'Artifacts')
     end
 
-    it 'renders artifact download links' do
+    it 'does not render artifact download links' do
       render
-      expect(rendered).not_to have_selector(artifacts_download_link_selector)
+      expect(rendered).not_to have_link(href: latest_succeeded_project_artifacts_path(project, "#{pipeline.ref}/download", job: 'test'))
     end
   end
 end
