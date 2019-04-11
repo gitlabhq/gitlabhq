@@ -20,6 +20,10 @@ module API
       def provider
         :github
       end
+
+      def provider_unauthorized
+        error!("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.", 401)
+      end
     end
 
     desc 'Import a GitHub project' do
