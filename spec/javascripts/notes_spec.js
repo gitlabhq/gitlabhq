@@ -670,7 +670,7 @@ describe('Notes', function() {
           done();
         })
         .catch(done.fail);
-    });
+    }, 2000);
   });
 
   describe('postComment with Slash commands', () => {
