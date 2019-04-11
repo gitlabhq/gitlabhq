@@ -46,10 +46,6 @@
 }
 
 .build-page {
-  .build-trace-container {
-    position: relative;
-  }
-
   .build-trace {
     @include build-trace();
   }
@@ -104,18 +100,6 @@
       top: 0;
     }
 
-    .truncated-info {
-      .truncated-info-size {
-        margin: 0 5px;
-      }
-
-      .raw-link {
-        color: $gl-text-color;
-        margin-left: 5px;
-        text-decoration: underline;
-      }
-    }
-
     .controllers {
       @include build-controllers(15px, center, false, 0, inline, 0);
     }
@@ -139,12 +123,6 @@
     @include build-loader-animation;
     float: left;
     padding-left: $gl-padding-8;
-  }
-}
-
-.with-performance-bar .build-page {
-  .top-bar.affix {
-    top: $header-height + $performance-bar-height;
   }
 }
 
@@ -233,7 +211,6 @@
   }
 
   .trigger-variables-btn-container {
-    @extend .d-flex;
     justify-content: space-between;
     align-items: center;
 
@@ -276,12 +253,6 @@
 
   .retry-link {
     display: block;
-
-    .btn {
-      i {
-        margin-left: 5px;
-      }
-    }
 
     .btn-inverted-secondary {
       color: $blue-500;
@@ -329,16 +300,12 @@
       }
     }
 
+    .icon-arrow-right {
+      left: 15px;
+      top: 20px;
+    }
+
     .build-job {
-      position: relative;
-
-      .icon-arrow-right {
-        position: absolute;
-        left: 15px;
-        top: 20px;
-        display: block;
-      }
-
       &.active {
         font-weight: $gl-font-weight-bold;
       }
@@ -349,10 +316,6 @@
 
       &:hover {
         background-color: $gray-darker;
-      }
-
-      .icon-retry {
-        margin-left: 3px;
       }
     }
   }
