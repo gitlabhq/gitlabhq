@@ -32,6 +32,24 @@ describe('IDE store merge request mutations', () => {
       expect(newMr.title).toBe('mr');
       expect(newMr.active).toBeTruthy();
     });
+
+    it('keeps original data', () => {
+      const versions = ['change'];
+      const mergeRequest = localState.projects.abcproject.mergeRequests[1];
+
+      mergeRequest.versions = versions;
+
+      mutations.SET_MERGE_REQUEST(localState, {
+        projectPath: 'abcproject',
+        mergeRequestId: 1,
+        mergeRequest: {
+          title: ['change'],
+        },
+      });
+
+      expect(mergeRequest.title).toBe('mr');
+      expect(mergeRequest.versions).toEqual(versions);
+    });
   });
 
   describe('SET_MERGE_REQUEST_CHANGES', () => {
