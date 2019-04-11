@@ -2613,13 +2613,20 @@ describe MergeRequest do
   end
 
   describe '#has_commits?' do
-    before do
+    it 'returns true when merge request diff has commits' do
       allow(subject.merge_request_diff).to receive(:commits_count)
         .and_return(2)
+
+      expect(subject.has_commits?).to be_truthy
     end
 
-    it 'returns true when merge request diff has commits' do
-      expect(subject.has_commits?).to be_truthy
+    context 'when commits_count is nil' do
+      it 'returns false' do
+        allow(subject.merge_request_diff).to receive(:commits_count)
+        .and_return(nil)
+
+        expect(subject.has_commits?).to be_falsey
+      end
     end
   end
 
