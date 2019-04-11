@@ -1,0 +1,42 @@
+= form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project js-general-settings-form" }, authenticity_token: true do |f|
+  %input{ name: 'update_section', type: 'hidden', value: 'js-general-settings' }
+  = form_errors(@project)
+
+  %fieldset
+    .row
+      .form-group.col-md-5
+        = f.label :name, class: 'label-bold', for: 'project_name_edit' do
+          = _('Project name')
+        = f.text_field :name, class: 'form-control qa-project-name-field', id: "project_name_edit"
+
+      .form-group.col-md-7
+        = f.label :id, class: 'label-bold' do
+          = _('Project ID')
+        = f.text_field :id, class: 'form-control w-auto', readonly: true
+
+    .row
+      .form-group.col-md-9
+        = f.label :tag_list, _('Topics'), class: 'label-bold'
+        = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
+        %p.form-text.text-muted= _('Separate topics with commas.')
+
+    .row
+      .form-group.col-md-9
+        = f.label :description, _('Project description (optional)'), class: 'label-bold'
+        = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250
+
+  .row= render_if_exists 'projects/classification_policy_settings', f: f
+
+  .row= render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
+
+  .form-group.prepend-top-default.append-bottom-20
+    .avatar-container.s90
+      = project_icon(@project, alt: _('Project avatar'), class: 'avatar project-avatar s90')
+    = f.label :avatar, _('Project avatar'), class: 'label-bold d-block'
+    = render 'shared/choose_avatar_button', f: f
+    - if @project.avatar?
+      %hr
+      = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
+
+
+  = f.submit _('Save changes'), class: "btn btn-success mt-4 qa-save-naming-topics-avatar-button"
