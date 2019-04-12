@@ -13,7 +13,7 @@ module TokenAuthenticatableStrategies
       elsif migrating?
         find_by_plaintext_token(token, unscoped)
       else
-        raise ArgumentError, "Unknown encryption strategy: #{encrypted_strategy}!"
+        raise ArgumentError, _("Unknown encryption strategy: %{encrypted_strategy}!") % { encrypted_strategy: encrypted_strategy }
       end
     end
 
@@ -32,7 +32,7 @@ module TokenAuthenticatableStrategies
       return super if instance.has_attribute?(encrypted_field)
 
       if required?
-        raise ArgumentError, 'Using required encryption strategy when encrypted field is missing!'
+        raise ArgumentError, _('Using required encryption strategy when encrypted field is missing!')
       else
         insecure_strategy.ensure_token(instance)
       end
@@ -74,7 +74,7 @@ module TokenAuthenticatableStrategies
       value = value.call if value.is_a?(Proc)
 
       unless value.in?([:required, :optional, :migrating])
-        raise ArgumentError, 'encrypted: needs to be a :required, :optional or :migrating!'
+        raise ArgumentError, _('encrypted: needs to be a :required, :optional or :migrating!')
       end
 
       value
