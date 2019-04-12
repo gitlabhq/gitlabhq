@@ -30,7 +30,7 @@ RUN wget -q https://download.docker.com/linux/static/stable/x86_64/docker-17.09.
 #
 RUN curl -sS -L https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
 RUN echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google.list
-RUN apt-get update -q && apt-get install -y --allow-unauthenticated google-chrome-stable && apt-get clean
+RUN apt-get update -q && apt-get install -y google-chrome-stable && apt-get clean
 
 ##
 # Install chromedriver to make it work with Selenium
