@@ -1223,6 +1223,15 @@ ActiveRecord::Schema.define(version: 20190426180107) do
     t.index ["user_id"], name: "index_merge_request_assignees_on_user_id", using: :btree
   end
 
+  create_table "merge_request_blocks", force: :cascade do |t|
+    t.integer "blocking_merge_request_id", null: false
+    t.integer "blocked_merge_request_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.index ["blocked_merge_request_id"], name: "index_merge_request_blocks_on_blocked_merge_request_id", using: :btree
+    t.index ["blocking_merge_request_id", "blocked_merge_request_id"], name: "index_mr_blocks_on_blocking_and_blocked_mr_ids", unique: true, using: :btree
+  end
+
   create_table "merge_request_diff_commits", id: false, force: :cascade do |t|
     t.datetime_with_timezone "authored_date"
     t.datetime_with_timezone "committed_date"
@@ -2496,6 +2505,8 @@ ActiveRecord::Schema.define(version: 20190426180107) do
   add_foreign_key "members", "users", name: "fk_2e88fb7ce9", on_delete: :cascade
   add_foreign_key "merge_request_assignees", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_request_assignees", "users", on_delete: :cascade
+  add_foreign_key "merge_request_blocks", "merge_requests", column: "blocked_merge_request_id", on_delete: :cascade
+  add_foreign_key "merge_request_blocks", "merge_requests", column: "blocking_merge_request_id", on_delete: :cascade
   add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
