@@ -1,6 +1,6 @@
 - has_label = local_assigns[:has_label] ? local_assigns[:has_label] : false
 - if current_user
-  .dropdown
+  .dropdown.js-project-filter-dropdown-wrap
     %button.dropdown-menu-toggle{ href: '#', "data-toggle" => "dropdown", 'data-display' => 'static' }
       - if !has_label
         = icon('globe', class: 'mt-1')

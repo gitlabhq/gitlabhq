@@ -3,29 +3,28 @@
 - is_explore_trending = local_assigns.fetch(:is_explore_trending, false)
 - without_tabs = local_assigns.fetch(:without_tabs, false)
 .filtered-search-block.row-content-block
-  .filtered-search-wrapper.d-flex.mt-2.mt-lg-0
+  .filtered-search-wrapper.d-flex
     - unless without_tabs
       .filtered-search-nav
         = render 'dashboard/projects/nav', is_explore: is_explore, is_explore_trending: is_explore_trending
-    .filtered-search.field-with-icon
+    .filtered-search{ class: without_tabs ? "extended-filtered-search-box" : "" }
       .btn-group{ role: "group" }
         .btn-group{ role: "group" }
-          .filtered-search-box{ class: without_tabs ? "extended-filtered-search-box" : "" }
+          .filtered-search-box
             .filtered-search-box-input-container.pl-2
               = render 'shared/projects/search_form', admin_view: false, search_form_placeholder: _("Search projects...")
         -# TODO: since we are no longer triggering search when we type
-        -#       we might be able to remove the `js-projects-list-filter` 
+        -#       we might be able to safely remove app/assets/javascripts/projects_list.js
         %button.btn.btn-secondary{ type: 'submit', form: 'project-filter-form' }
           = sprite_icon('search', size: 16, css_class: 'search-icon ')
     .filtered-search-dropdown
       .filtered-search-dropdown-label
         %span
           = _("Visibility")
-      .dropdown.js-project-filter-dropdown-wrap.inline-md
-        = render 'explore/projects/filter', has_label: true
+      = render 'explore/projects/filter', has_label: true
     .filtered-search-dropdown
       .filtered-search-dropdown-label
         %span
           = _("Sort by")
-      = render 'shared/projects/dropdown'
+      = render 'shared/projects/sort_dropdown'
 

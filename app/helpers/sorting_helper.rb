@@ -29,30 +29,40 @@ module SortingHelper
     }
   end
 
-  # TODO: stars_asc doesnt seem to work
   def projects_sort_options_hash
+    is_admin = current_controller?('admin/projects')
+
     options = {
       sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_name             => sort_title_name,
+      sort_value_oldest_activity  => sort_title_oldest_activity,
+      sort_value_oldest_created   => sort_title_oldest_created,
       sort_value_recently_created => sort_title_recently_created,
+      sort_value_most_stars       => sort_title_most_stars
+    }
+
+    if is_admin
+      options[sort_value_largest_repo] = sort_title_largest_repo
+    end
+
+    search_bar_options = {
+      sort_value_latest_activity  => sort_title_latest_activity,
+      sort_value_recently_created => sort_title_created_date,
       sort_value_name             => sort_title_name,
       sort_value_most_stars       => sort_title_stars
     }
 
-    if current_controller?('admin/projects')
-      options[sort_value_largest_repo] = sort_title_largest_repo
-    end
-
-    options
+    Feature.enabled?(:project_list_filter_bar) && !is_admin ? search_bar_options : options
   end
 
   def projects_sort_option_titles
     {
       sort_value_latest_activity  => sort_title_latest_activity,
-      sort_value_recently_created => sort_title_recently_created,
+      sort_value_recently_created => sort_title_created_date,
       sort_value_name             => sort_title_name,
       sort_value_most_stars       => sort_title_stars,
       sort_value_oldest_activity  => sort_title_latest_activity,
-      sort_value_oldest_created   => sort_title_recently_created,
+      sort_value_oldest_created   => sort_title_created_date,
       sort_value_name_desc        => sort_title_name,
       sort_value_most_stars_asc   => sort_title_stars
     }
