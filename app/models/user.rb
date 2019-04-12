@@ -537,20 +537,16 @@ class User < ApplicationRecord
     username
   end
 
-  def self.internal_attributes
-    [:ghost]
-  end
-
   def internal?
-    self.class.internal_attributes.any? { |a| self[a] }
+    ghost?
   end
 
   def self.internal
-    where(Hash[internal_attributes.zip([true] * internal_attributes.size)])
+    where(ghost: true)
   end
 
   def self.non_internal
-    where(internal_attributes.map { |attr| "#{attr} IS NOT TRUE" }.join(" AND "))
+    where('ghost IS NOT TRUE')
   end
 
   #
