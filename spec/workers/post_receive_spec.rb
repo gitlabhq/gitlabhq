@@ -97,6 +97,7 @@ describe PostReceive do
             123456 789012 refs/heads/feature2
             123458 789013 refs/heads/feature3
             123459 789015 refs/heads/feature4
+            654321 210987 refs/tags/tag2
           EOF
         end
 

@@ -142,7 +142,11 @@ module Git
         .perform_async(project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
       EventCreateService.new.push(project, current_user, build_push_data)
-      Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(:push, pipeline_options)
+
+      if params.fetch(:create_pipelines, true)
+        Ci::CreatePipelineService.new(project, current_user, build_push_data)
+          .execute(:push, pipeline_options)
+      end
 
       project.execute_hooks(build_push_data.dup, :push_hooks)
       project.execute_services(build_push_data.dup, :push_hooks)
