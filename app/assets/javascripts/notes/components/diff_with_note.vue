@@ -105,7 +105,7 @@ export default {
           </td>
         </tr>
         <tr class="notes_holder">
-          <td class="notes_content" colspan="3"><slot></slot></td>
+          <td class="notes-content" colspan="3"><slot></slot></td>
         </tr>
       </table>
     </div>
