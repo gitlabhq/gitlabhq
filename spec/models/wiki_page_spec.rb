@@ -22,6 +22,7 @@ describe WikiPage do
         create_page('dir_1/dir_1_1/page_3', 'content')
         create_page('page_1', 'content')
         create_page('dir_1/page_2', 'content')
+        create_page('dir_2', 'page with dir name')
         create_page('dir_2/page_5', 'content')
         create_page('page_6', 'content')
         create_page('dir_2/page_4', 'content')
@@ -29,6 +30,7 @@ describe WikiPage do
 
       let(:page_1) { wiki.find_page('page_1') }
       let(:page_6) { wiki.find_page('page_6') }
+      let(:page_dir_2) { wiki.find_page('dir_2') }
 
       let(:dir_1) do
         WikiDirectory.new('dir_1', [wiki.find_page('dir_1/page_2')])
@@ -44,7 +46,7 @@ describe WikiPage do
 
       context 'sort by title' do
         let(:grouped_entries) { described_class.group_by_directory(wiki.pages) }
-        let(:expected_grouped_entries) { [dir_1_1, dir_1, dir_2, page_1, page_6] }
+        let(:expected_grouped_entries) { [dir_1_1, dir_1, page_dir_2, dir_2, page_1, page_6] }
 
         it 'returns an array with pages and directories' do
           grouped_entries.each_with_index do |page_or_dir, i|
@@ -59,7 +61,7 @@ describe WikiPage do
 
       context 'sort by created_at' do
         let(:grouped_entries) { described_class.group_by_directory(wiki.pages(sort: 'created_at')) }
-        let(:expected_grouped_entries) { [dir_1_1, page_1, dir_1, dir_2, page_6] }
+        let(:expected_grouped_entries) { [dir_1_1, page_1, dir_1, page_dir_2, dir_2, page_6] }
 
         it 'returns an array with pages and directories' do
           grouped_entries.each_with_index do |page_or_dir, i|
@@ -73,7 +75,7 @@ describe WikiPage do
       end
 
       it 'returns an array with retained order with directories at the top' do
-        expected_order = ['dir_1/dir_1_1/page_3', 'dir_1/page_2', 'dir_2/page_4', 'dir_2/page_5', 'page_1', 'page_6']
+        expected_order = ['dir_1/dir_1_1/page_3', 'dir_1/page_2', 'dir_2', 'dir_2/page_4', 'dir_2/page_5', 'page_1', 'page_6']
 
         grouped_entries = described_class.group_by_directory(wiki.pages)
 
