@@ -36,8 +36,8 @@ describe('MergeRequestStore', () => {
         expect(store.isPipelinePassing).toBe(true);
       });
 
-      it('is true when the CI status is `success_with_warnings`', () => {
-        store.setData({ ...mockData, ci_status: 'success_with_warnings' });
+      it('is true when the CI status is `success-with-warnings`', () => {
+        store.setData({ ...mockData, ci_status: 'success-with-warnings' });
 
         expect(store.isPipelinePassing).toBe(true);
       });

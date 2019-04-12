@@ -112,7 +112,7 @@ export default class MergeRequestStore {
     this.ciStatus = data.ci_status;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
     this.isPipelinePassing =
-      this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+      this.ciStatus === 'success' || this.ciStatus === 'success-with-warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;

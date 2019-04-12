@@ -13,7 +13,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   def ci_status
     if pipeline
       status = pipeline.status
-      status = "success_with_warnings" if pipeline.success? && pipeline.has_warnings?
+      status = "success-with-warnings" if pipeline.success? && pipeline.has_warnings?
 
       status || "preparing"
     else

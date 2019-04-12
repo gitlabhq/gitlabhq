@@ -20,8 +20,8 @@
 }
 
 .ci-status-icon-pending,
-.ci-status-icon-failed_with_warnings,
-.ci-status-icon-success_with_warnings {
+.ci-status-icon-failed-with-warnings,
+.ci-status-icon-success-with-warnings {
   svg {
     fill: $orange-500;
   }
