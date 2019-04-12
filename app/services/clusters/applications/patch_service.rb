@@ -8,6 +8,12 @@ module Clusters
 
         app.make_updating!
 
+        patch
+      end
+
+      private
+
+      def patch
         log_event(:begin_patch)
         helm_api.update(update_command)
 
@@ -16,10 +22,10 @@ module Clusters
           ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
       rescue Kubeclient::HttpError => e
         log_error(e)
-        app.make_update_errored!("Kubernetes error: #{e.error_code}")
+        app.make_errored!("Kubernetes error: #{e.error_code}")
       rescue StandardError => e
         log_error(e)
-        app.make_update_errored!("Can't start update process.")
+        app.make_errored!('Failed to update.')
       end
     end
   end
