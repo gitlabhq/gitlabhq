@@ -1,5 +1,11 @@
 # Pipelines for merge requests
 
+NOTE: **Note**:
+As of GitLab 11.10, pipelines for merge requests require GitLab Runner 11.9
+or higher due to the [recent refspecs
+changes](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/25504).
+Anything lower will cause the pipeline to fail.
+
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/15310) in GitLab 11.6.
 
 Usually, when you create a new merge request, a pipeline runs with the
@@ -68,7 +74,7 @@ when a merge request was created or updated. For example:
 It's possible for your source and target branches to diverge, which can result
 in the scenario that source branch's pipeline was green, the target's pipeline was green,
 but the combined output fails. By having your merge request pipeline automatically
-create a new ref that contains the merge result of the source and target branch 
+create a new ref that contains the merge result of the source and target branch
 (then running a pipeline on that ref), we can better test that the combined result
 is also valid.
 
