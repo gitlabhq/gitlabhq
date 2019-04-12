@@ -31,7 +31,9 @@ class WikiPage
     pages.each_with_object([]) do |page, grouped_pages|
       next grouped_pages << page unless page.directory.present?
 
-      directory = grouped_pages.find { |dir| dir.slug == page.directory }
+      directory = grouped_pages.find do |obj|
+        obj.is_a?(WikiDirectory) && obj.slug == page.directory
+      end
 
       next directory.pages << page if directory
 
