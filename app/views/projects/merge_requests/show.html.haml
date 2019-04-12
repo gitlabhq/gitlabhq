@@ -82,7 +82,8 @@
         help_page_path: suggest_changes_help_path,
         current_user_data: UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestUserEntity).to_json,
         project_path: project_path(@merge_request.project),
-        changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg') } }
+        changes_empty_state_illustration: image_path('illustrations/merge_request_changes_empty.svg'),
+        is_fluid_layout: fluid_layout.to_s } }
 
     .mr-loading-status
       = spinner
