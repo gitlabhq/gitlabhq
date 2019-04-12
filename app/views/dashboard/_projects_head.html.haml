@@ -1,7 +1,7 @@
 = content_for :flash_message do
   = render 'shared/project_limit'
 
-.page-title-holder
+.page-title-holder.d-flex.align-items-center
   %h1.page-title= _('Projects')
 
   - if current_user.can_create_project?
