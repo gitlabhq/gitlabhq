@@ -4,11 +4,11 @@ require "discordrb/webhooks"
 
 class DiscordService < ChatNotificationService
   def title
-    "Discord Notifications"
+    s_("DiscordService|Discord Notifications")
   end
 
   def description
-    "Receive event notifications in Discord"
+    s_("DiscordService|Receive event notifications in Discord")
   end
 
   def self.to_param

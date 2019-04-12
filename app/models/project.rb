@@ -313,7 +313,7 @@ class Project < ApplicationRecord
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
     format: { without: %r{(\.{2}|\A/)},
-              message: 'cannot include leading slash or directory traversal.' },
+              message: _('cannot include leading slash or directory traversal.') },
     length: { maximum: 255 },
     allow_blank: true
   validates :name,
@@ -420,13 +420,13 @@ class Project < ApplicationRecord
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
   chronic_duration_attr :build_timeout_human_readable, :build_timeout,
-    default: 3600, error_message: 'Maximum job timeout has a value which could not be accepted'
+    default: 3600, error_message: _('Maximum job timeout has a value which could not be accepted')
 
   validates :build_timeout, allow_nil: true,
                             numericality: { greater_than_or_equal_to: 10.minutes,
                                             less_than: 1.month,
                                             only_integer: true,
-                                            message: 'needs to be beetween 10 minutes and 1 month' }
+                                            message: _('needs to be beetween 10 minutes and 1 month') }
 
   # Used by Projects::CleanupService to hold a map of rewritten object IDs
   mount_uploader :bfg_object_map, AttachmentUploader
@@ -850,7 +850,7 @@ class Project < ApplicationRecord
   def mark_stuck_remote_mirrors_as_failed!
     remote_mirrors.stuck.update_all(
       update_status: :failed,
-      last_error: 'The remote mirror took to long to complete.',
+      last_error: _('The remote mirror took to long to complete.'),
       last_update_at: Time.now
     )
   end
@@ -887,14 +887,14 @@ class Project < ApplicationRecord
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
     group_level_name = Gitlab::VisibilityLevel.level_name(self.group.visibility_level).downcase
-    self.errors.add(:visibility_level, "#{level_name} is not allowed in a #{group_level_name} group.")
+    self.errors.add(:visibility_level, _("%{level_name} is not allowed in a %{group_level_name} group.") % { level_name: level_name, group_level_name: group_level_name })
   end
 
   def visibility_level_allowed_as_fork
     return if visibility_level_allowed_as_fork?
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
-    self.errors.add(:visibility_level, "#{level_name} is not allowed since the fork source project has lower visibility.")
+    self.errors.add(:visibility_level, _("%{level_name} is not allowed since the fork source project has lower visibility.") % { level_name: level_name })
   end
 
   def check_wiki_path_conflict
@@ -903,7 +903,7 @@ class Project < ApplicationRecord
     path_to_check = path.ends_with?('.wiki') ? path.chomp('.wiki') : "#{path}.wiki"
 
     if Project.where(namespace_id: namespace_id, path: path_to_check).exists?
-      errors.add(:name, 'has already been taken')
+      errors.add(:name, _('has already been taken'))
     end
   end
 
@@ -923,7 +923,7 @@ class Project < ApplicationRecord
     return unless pages_https_only?
 
     unless pages_domains.all?(&:https?)
-      errors.add(:pages_https_only, "cannot be enabled unless all domains have TLS certificates")
+      errors.add(:pages_https_only, _("cannot be enabled unless all domains have TLS certificates"))
     end
   end
 
@@ -1203,7 +1203,7 @@ class Project < ApplicationRecord
   def valid_repo?
     repository.exists?
   rescue
-    errors.add(:path, 'Invalid repository path')
+    errors.add(:path, _('Invalid repository path'))
     false
   end
 
@@ -1294,7 +1294,7 @@ class Project < ApplicationRecord
     # Check if repository with same path already exists on disk we can
     # skip this for the hashed storage because the path does not change
     if legacy_storage? && repository_with_same_path_already_exists?
-      errors.add(:base, 'There is already a repository with that name on disk')
+      errors.add(:base, _('There is already a repository with that name on disk'))
       return false
     end
 
@@ -1316,7 +1316,7 @@ class Project < ApplicationRecord
       repository.after_create
       true
     else
-      errors.add(:base, 'Failed to create repository via gitlab-shell')
+      errors.add(:base, _('Failed to create repository via gitlab-shell'))
       false
     end
   end
@@ -1392,7 +1392,7 @@ class Project < ApplicationRecord
       ProjectCacheWorker.perform_async(self.id, [], [:commit_count])
       reload_default_branch
     else
-      errors.add(:base, "Could not change HEAD: branch '#{branch}' does not exist")
+      errors.add(:base, _("Could not change HEAD: branch '%{branch}' does not exist") % { branch: branch })
       false
     end
   end
@@ -1444,7 +1444,7 @@ class Project < ApplicationRecord
     ProjectWiki.new(self, self.owner).wiki
     true
   rescue ProjectWiki::CouldNotCreateWikiError
-    errors.add(:base, 'Failed create wiki')
+    errors.add(:base, _('Failed create wiki'))
     false
   end
 
@@ -1933,7 +1933,7 @@ class Project < ApplicationRecord
   #
   # @param [Symbol] feature that needs to be rolled out for the project (:repository, :attachments)
   def hashed_storage?(feature)
-    raise ArgumentError, "Invalid feature" unless HASHED_STORAGE_FEATURES.include?(feature)
+    raise ArgumentError, _("Invalid feature") unless HASHED_STORAGE_FEATURES.include?(feature)
 
     self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
   end
@@ -2165,7 +2165,7 @@ class Project < ApplicationRecord
     return if skip_disk_validation
 
     if repository_storage.blank? || repository_with_same_path_already_exists?
-      errors.add(:base, 'There is already a repository with that name on disk')
+      errors.add(:base, _('There is already a repository with that name on disk'))
       throw :abort
     end
   end
@@ -2211,7 +2211,7 @@ class Project < ApplicationRecord
       errors.delete(error)
     end
 
-    errors.add(:base, "The project is still being deleted. Please try again later.")
+    errors.add(:base, _("The project is still being deleted. Please try again later."))
   end
 
   def pending_delete_twin

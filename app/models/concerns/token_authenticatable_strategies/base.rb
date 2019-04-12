@@ -41,7 +41,7 @@ module TokenAuthenticatableStrategies
 
     def self.fabricate(model, field, options)
       if options[:digest] && options[:encrypted]
-        raise ArgumentError, 'Incompatible options set!'
+        raise ArgumentError, _('Incompatible options set!')
       end
 
       if options[:digest]

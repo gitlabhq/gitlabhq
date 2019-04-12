@@ -132,6 +132,12 @@ msgstr ""
 msgid "%{label_for_message} unavailable"
 msgstr ""
 
+msgid "%{level_name} is not allowed in a %{group_level_name} group."
+msgstr ""
+
+msgid "%{level_name} is not allowed since the fork source project has lower visibility."
+msgstr ""
+
 msgid "%{level_name} visibility has been restricted by the administrator."
 msgstr ""
 
@@ -201,6 +207,12 @@ msgid "%{usage_ping_link_start}Learn more%{usage_ping_link_end} about what infor
 msgstr ""
 
 msgid "%{user_name} profile page"
+msgstr ""
+
+msgid "'%{level}' is not a valid visibility level"
+msgstr ""
+
+msgid "'%{source}' is not a import source"
 msgstr ""
 
 msgid "(external source)"
@@ -978,6 +990,18 @@ msgstr ""
 msgid "Artifacts"
 msgstr ""
 
+msgid "AsanaService|%{user} pushed to branch %{branch} of %{project_name} ( %{commit_url} ):"
+msgstr ""
+
+msgid "AsanaService|Asana - Teamwork without email"
+msgstr ""
+
+msgid "AsanaService|Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches."
+msgstr ""
+
+msgid "AsanaService|User Personal Access Token. User must have access to task, all comments will be attributed to this user."
+msgstr ""
+
 msgid "Ask your group maintainer to set up a group Runner."
 msgstr ""
 
@@ -1219,6 +1243,24 @@ msgid "Badges|Your badges"
 msgstr ""
 
 msgid "Badges|e.g. %{exampleUrl}"
+msgstr ""
+
+msgid "BambooService|A continuous integration and build server"
+msgstr ""
+
+msgid "BambooService|A user with API access, if applicable"
+msgstr ""
+
+msgid "BambooService|Atlassian Bamboo CI"
+msgstr ""
+
+msgid "BambooService|Bamboo build plan key like KEY"
+msgstr ""
+
+msgid "BambooService|Bamboo root URL like https://bamboo.example.com"
+msgstr ""
+
+msgid "BambooService|You must set up automatic revision labeling and a repository trigger in Bamboo."
 msgstr ""
 
 msgid "Be careful. Changing the project's namespace can have unintended side effects."
@@ -1513,6 +1555,9 @@ msgid "Cannot create the abuse report. This user has been blocked."
 msgstr ""
 
 msgid "Cannot modify managed Kubernetes cluster"
+msgstr ""
+
+msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
 msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
@@ -2600,6 +2645,9 @@ msgstr ""
 msgid "Could not authorize chat nickname. Try again!"
 msgstr ""
 
+msgid "Could not change HEAD: branch '%{branch}' does not exist"
+msgstr ""
+
 msgid "Could not connect to FogBugz, check your URL"
 msgstr ""
 
@@ -3109,6 +3157,12 @@ msgstr ""
 msgid "Discard draft"
 msgstr ""
 
+msgid "DiscordService|Discord Notifications"
+msgstr ""
+
+msgid "DiscordService|Receive event notifications in Discord"
+msgstr ""
+
 msgid "Discover projects, groups and snippets. Share your projects with others"
 msgstr ""
 
@@ -3235,6 +3289,9 @@ msgstr ""
 msgid "Email patch"
 msgstr ""
 
+msgid "Email the pipelines status to a list of recipients."
+msgstr ""
+
 msgid "EmailError|It appears that the email is blank. Make sure your reply is at the top of the email, we can't process inline replies."
 msgstr ""
 
@@ -3260,6 +3317,30 @@ msgid "EmailError|Your account has been blocked. If you believe this is in error
 msgstr ""
 
 msgid "Emails"
+msgstr ""
+
+msgid "Emails separated by comma"
+msgstr ""
+
+msgid "EmailsOnPushService|Disable code diffs"
+msgstr ""
+
+msgid "EmailsOnPushService|Don't include possibly sensitive code diffs in notification body."
+msgstr ""
+
+msgid "EmailsOnPushService|Email the commits and diff of each push to a list of recipients."
+msgstr ""
+
+msgid "EmailsOnPushService|Emails on push"
+msgstr ""
+
+msgid "EmailsOnPushService|Emails separated by whitespace"
+msgstr ""
+
+msgid "EmailsOnPushService|Send from committer"
+msgstr ""
+
+msgid "EmailsOnPushService|Send notifications from the committer's email address if the domain is part of the domain GitLab is running on (e.g. %{domains})."
 msgstr ""
 
 msgid "Embed"
@@ -3751,6 +3832,15 @@ msgstr ""
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
+msgid "ExternalWikiService|External Wiki"
+msgstr ""
+
+msgid "ExternalWikiService|Replaces the link to the internal wiki with a link to an external wiki."
+msgstr ""
+
+msgid "ExternalWikiService|The URL of the external Wiki"
+msgstr ""
+
 msgid "Facebook"
 msgstr ""
 
@@ -3760,10 +3850,16 @@ msgstr ""
 msgid "Failed Jobs"
 msgstr ""
 
+msgid "Failed create wiki"
+msgstr ""
+
 msgid "Failed to change the owner"
 msgstr ""
 
 msgid "Failed to check related branches."
+msgstr ""
+
+msgid "Failed to create repository via gitlab-shell"
 msgstr ""
 
 msgid "Failed to create resources"
@@ -3919,6 +4015,12 @@ msgid "FirstPushedBy|First"
 msgstr ""
 
 msgid "FirstPushedBy|pushed by"
+msgstr ""
+
+msgid "FlowdockService|Flowdock Git source token"
+msgstr ""
+
+msgid "FlowdockService|Flowdock is a collaboration web app for technical teams."
 msgstr ""
 
 msgid "FogBugz Email"
@@ -4607,6 +4709,9 @@ msgstr ""
 msgid "Incompatible Project"
 msgstr ""
 
+msgid "Incompatible options set!"
+msgstr ""
+
 msgid "Indicates whether this runner can pick jobs without tags"
 msgstr ""
 
@@ -4682,6 +4787,9 @@ msgstr ""
 msgid "Invalid Login or password"
 msgstr ""
 
+msgid "Invalid feature"
+msgstr ""
+
 msgid "Invalid file."
 msgstr ""
 
@@ -4689,6 +4797,9 @@ msgid "Invalid input, please avoid emojis"
 msgstr ""
 
 msgid "Invalid pin code"
+msgstr ""
+
+msgid "Invalid repository path"
 msgstr ""
 
 msgid "Invalid two-factor code."
@@ -4749,6 +4860,48 @@ msgid "Jan"
 msgstr ""
 
 msgid "January"
+msgstr ""
+
+msgid "JiraService|Events for %{noteable_model_name} are disabled."
+msgstr ""
+
+msgid "JiraService|If different from Web URL"
+msgstr ""
+
+msgid "JiraService|JIRA API URL"
+msgstr ""
+
+msgid "JiraService|JIRA comments will be created when an issue gets referenced in a commit."
+msgstr ""
+
+msgid "JiraService|JIRA comments will be created when an issue gets referenced in a merge request."
+msgstr ""
+
+msgid "JiraService|Jira issue tracker"
+msgstr ""
+
+msgid "JiraService|Password or API token"
+msgstr ""
+
+msgid "JiraService|Transition ID(s)"
+msgstr ""
+
+msgid "JiraService|Use , or ; to separate multiple transition IDs"
+msgstr ""
+
+msgid "JiraService|Use a password for server version and an API token for cloud version"
+msgstr ""
+
+msgid "JiraService|Use a username for server version and an email for cloud version"
+msgstr ""
+
+msgid "JiraService|Username or Email"
+msgstr ""
+
+msgid "JiraService|Web URL"
+msgstr ""
+
+msgid "JiraService|transition ids can have only numbers which can be split with , or ;"
 msgstr ""
 
 msgid "Job"
@@ -5185,6 +5338,9 @@ msgid "Maximum attachment size (MB)"
 msgstr ""
 
 msgid "Maximum job timeout"
+msgstr ""
+
+msgid "Maximum job timeout has a value which could not be accepted"
 msgstr ""
 
 msgid "Maximum push size (MB)"
@@ -6133,6 +6289,9 @@ msgstr ""
 msgid "Pipelines charts"
 msgstr ""
 
+msgid "Pipelines emails"
+msgstr ""
+
 msgid "Pipelines for last month"
 msgstr ""
 
@@ -6254,6 +6413,15 @@ msgid "Pipeline|with stage"
 msgstr ""
 
 msgid "Pipeline|with stages"
+msgstr ""
+
+msgid "PivotalTrackerService|Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches."
+msgstr ""
+
+msgid "PivotalTrackerService|Pivotal Tracker API token."
+msgstr ""
+
+msgid "PivotalTrackerService|Project Management Software (Source Commits Endpoint)"
 msgstr ""
 
 msgid "Plain diff"
@@ -6667,6 +6835,9 @@ msgstr ""
 msgid "Project avatar"
 msgstr ""
 
+msgid "Project cannot be shared with the group it is in or one of its ancestors."
+msgstr ""
+
 msgid "Project configuration, including services"
 msgstr ""
 
@@ -6928,6 +7099,45 @@ msgstr ""
 msgid "Push to create a project"
 msgstr ""
 
+msgid "PushoverService|%{user_name} deleted branch \"%{ref}\"."
+msgstr ""
+
+msgid "PushoverService|%{user_name} push to branch \"%{ref}\"."
+msgstr ""
+
+msgid "PushoverService|%{user_name} pushed new branch \"%{ref}\"."
+msgstr ""
+
+msgid "PushoverService|High Priority"
+msgstr ""
+
+msgid "PushoverService|Leave blank for all active devices"
+msgstr ""
+
+msgid "PushoverService|Low Priority"
+msgstr ""
+
+msgid "PushoverService|Lowest Priority"
+msgstr ""
+
+msgid "PushoverService|Normal Priority"
+msgstr ""
+
+msgid "PushoverService|Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop."
+msgstr ""
+
+msgid "PushoverService|See project %{project_full_name}"
+msgstr ""
+
+msgid "PushoverService|Total commits count: %{total_commits_count}"
+msgstr ""
+
+msgid "PushoverService|Your application key"
+msgstr ""
+
+msgid "PushoverService|Your user key"
+msgstr ""
+
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
@@ -7012,6 +7222,9 @@ msgid "Releases mark specific points in a project's development history, communi
 msgstr ""
 
 msgid "Remind later"
+msgstr ""
+
+msgid "Remote object has no absolute path."
 msgstr ""
 
 msgid "Remove"
@@ -8427,6 +8640,9 @@ msgstr ""
 msgid "The name %{entryName} is already taken in this directory."
 msgstr ""
 
+msgid "The number of times an upload record could not find its file"
+msgstr ""
+
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr ""
 
@@ -8454,10 +8670,16 @@ msgstr ""
 msgid "The project can be accessed without any authentication."
 msgstr ""
 
+msgid "The project is still being deleted. Please try again later."
+msgstr ""
+
 msgid "The project was successfully forked."
 msgstr ""
 
 msgid "The project was successfully imported."
+msgstr ""
+
+msgid "The remote mirror took to long to complete."
 msgstr ""
 
 msgid "The remote repository is being updated..."
@@ -8559,6 +8781,9 @@ msgstr ""
 msgid "There are no unstaged changes"
 msgstr ""
 
+msgid "There is already a repository with that name on disk"
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -8653,6 +8878,9 @@ msgid "This group"
 msgstr ""
 
 msgid "This group does not provide any group Runners yet."
+msgstr ""
+
+msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
 
 msgid "This is a confidential issue."
@@ -9196,6 +9424,12 @@ msgstr ""
 msgid "Unfortunately, your email message to GitLab could not be processed."
 msgstr ""
 
+msgid "Unknown encryption strategy: %{encrypted_strategy}!"
+msgstr ""
+
+msgid "Unknown format"
+msgstr ""
+
 msgid "Unlock"
 msgstr ""
 
@@ -9290,6 +9524,9 @@ msgid "Upload a private key for your certificate"
 msgstr ""
 
 msgid "Upload file"
+msgstr ""
+
+msgid "Upload file does not exist"
 msgstr ""
 
 msgid "Upload object map"
@@ -9455,6 +9692,9 @@ msgid "Users requesting access to"
 msgstr ""
 
 msgid "Users were successfully added."
+msgstr ""
+
+msgid "Using required encryption strategy when encrypted field is missing!"
 msgstr ""
 
 msgid "Validate"
@@ -10038,6 +10278,9 @@ msgstr ""
 msgid "Your Todos"
 msgstr ""
 
+msgid "Your U2F device did not send a valid JSON response."
+msgstr ""
+
 msgid "Your U2F device needs to be set up. Plug it in (if not already) and click the button on the left."
 msgstr ""
 
@@ -10119,6 +10362,12 @@ msgstr ""
 msgid "allowed to fail"
 msgstr ""
 
+msgid "already being used for another group or project milestone."
+msgstr ""
+
+msgid "already shared with this group"
+msgstr ""
+
 msgid "among other things"
 msgstr ""
 
@@ -10129,6 +10378,15 @@ msgid "authored"
 msgstr ""
 
 msgid "branch name"
+msgstr ""
+
+msgid "cannot be changed if a personal project has container registry tags."
+msgstr ""
+
+msgid "cannot be enabled unless all domains have TLS certificates"
+msgstr ""
+
+msgid "cannot include leading slash or directory traversal."
 msgstr ""
 
 msgid "commented on %{link_to_project}"
@@ -10174,7 +10432,13 @@ msgstr[1] ""
 msgid "done"
 msgstr ""
 
+msgid "element is not a hierarchy"
+msgstr ""
+
 msgid "enabled"
+msgstr ""
+
+msgid "encrypted: needs to be a :required, :optional or :migrating!"
 msgstr ""
 
 msgid "error"
@@ -10210,6 +10474,9 @@ msgstr ""
 msgid "group"
 msgstr ""
 
+msgid "has already been taken"
+msgstr ""
+
 msgid "here"
 msgstr ""
 
@@ -10235,6 +10502,9 @@ msgid "index"
 msgstr ""
 
 msgid "is not a valid X509 certificate."
+msgstr ""
+
+msgid "is not an email you own"
 msgstr ""
 
 msgid "issue boards"
@@ -10268,6 +10538,9 @@ msgid "merge request"
 msgid_plural "merge requests"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "milestone should belong either to a project or a group."
+msgstr ""
 
 msgid "missing"
 msgstr ""
@@ -10476,7 +10749,13 @@ msgstr ""
 msgid "mrWidget|to be merged automatically when the pipeline succeeds"
 msgstr ""
 
+msgid "must be greater than start date"
+msgstr ""
+
 msgid "n/a"
+msgstr ""
+
+msgid "needs to be beetween 10 minutes and 1 month"
 msgstr ""
 
 msgid "new merge request"
@@ -10564,6 +10843,9 @@ msgid "source"
 msgstr ""
 
 msgid "source diff"
+msgstr ""
+
+msgid "specified top is not part of the tree"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
