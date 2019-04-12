@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.9.8 (2019-04-11)
+
+### Deprecated (1 change)
+
+- Allow to use untrusted Regexp via feature flag. !26905
+
+### Performance (2 changes)
+
+- Improve performance of PR import. !27121
+- Disable method instrumentation for diffs. !27235
+
+### Other (1 change)
+
+- Restore HipChat project service. !27172
+
+
 ## 11.9.7 (2019-04-09)
 
 - No changes.

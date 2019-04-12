@@ -159,8 +159,8 @@ module Projects
       log_message << " Project ID: #{@project.id}" if @project&.id
       Rails.logger.error(log_message)
 
-      if @project
-        @project.import_state.mark_as_failed(message) if @project.persisted? && @project.import?
+      if @project && @project.persisted? && @project.import_state
+        @project.import_state.mark_as_failed(message)
       end
 
       @project

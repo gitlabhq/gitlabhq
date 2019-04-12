@@ -2,7 +2,7 @@ import mutations from '~/vuex_shared/modules/modal/mutations';
 import * as types from '~/vuex_shared/modules/modal/mutation_types';
 
 describe('Vuex ModalModule mutations', () => {
-  describe(types.SHOW, () => {
+  describe(`${types.SHOW}`, () => {
     it('sets isVisible to true', () => {
       const state = {
         isVisible: false,
@@ -16,7 +16,7 @@ describe('Vuex ModalModule mutations', () => {
     });
   });
 
-  describe(types.HIDE, () => {
+  describe(`${types.HIDE}`, () => {
     it('sets isVisible to false', () => {
       const state = {
         isVisible: true,
@@ -30,7 +30,7 @@ describe('Vuex ModalModule mutations', () => {
     });
   });
 
-  describe(types.OPEN, () => {
+  describe(`${types.OPEN}`, () => {
     it('sets data and sets isVisible to true', () => {
       const data = { id: 7 };
       const state = {

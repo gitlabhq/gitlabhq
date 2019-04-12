@@ -5,6 +5,11 @@ last_updated: 2019-03-05
 
 # GitLab Pages
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/80) in GitLab Enterprise Edition 8.3.
+> - Custom CNAMEs with TLS support were [introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/173) in GitLab Enterprise Edition 8.5.
+> - [Ported](https://gitlab.com/gitlab-org/gitlab-ce/issues/14605) to GitLab Community Edition in GitLab 8.17.
+> Support for subgroup project's websites was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/30548) in GitLab 11.8.
+
 **GitLab Pages is a feature that allows you to publish static websites
 directly from a repository in GitLab.**
 
@@ -83,7 +88,7 @@ that will build your site and publish it to the GitLab Pages server. The sequenc
 scripts that GitLab CI/CD runs to accomplish this task is created from a file named
 `.gitlab-ci.yml`, which you can [create and modify](getting_started_part_four.md) at will.
 
-You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-domain),
+You can either use GitLab's [default domain for GitLab Pages websites](getting_started_part_one.md#gitlab-pages-domain-names),
 `*.gitlab.io`, or your own domain (`example.com`). In that case, you'll
 need admin access to your domain's registrar (or control panel) to set it up with Pages.
 
@@ -128,7 +133,7 @@ To learn more about GitLab Pages, read the following tutorials:
 - [Projects for GitLab Pages and URL structure](getting_started_part_two.md): Forking projects and creating new ones from scratch, understanding URLs structure and baseurls
 - [GitLab Pages custom domains and SSL/TLS Certificates](getting_started_part_three.md): How to add custom domains and subdomains to your website, configure DNS records and SSL/TLS certificates
 - [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md): Understand how to create your own `.gitlab-ci.yml` for your site
-- [Technical aspects, custom 404 pages, limitations](introduction.md)
+- [Exploring GitLab Pages](introduction.md): Technical aspects, specific configuration options, custom 404 pages, limitations
 
 ### GitLab Pages with Static Site Generators (SSGs)
 

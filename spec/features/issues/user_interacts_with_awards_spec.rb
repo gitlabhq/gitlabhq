@@ -75,7 +75,7 @@ describe 'User interacts with awards' do
       end
     end
 
-    it 'shows the list of award emoji categories' do
+    it 'shows the list of award emoji categories', :quarantine do
       page.within('.awards') do
         page.find('.js-add-award').click
       end

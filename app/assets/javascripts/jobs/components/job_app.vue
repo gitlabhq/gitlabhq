@@ -275,7 +275,7 @@ export default {
         <!-- job log -->
         <div
           v-if="hasTrace"
-          class="build-trace-container"
+          class="build-trace-container position-relative"
           :class="{ 'prepend-top-default': !job.archived }"
         >
           <log-top-bar

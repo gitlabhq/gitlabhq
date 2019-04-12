@@ -65,9 +65,7 @@ With GitLab Enterprise Edition, you can also:
 - View the current health and status of each CI environment running on Kubernetes with [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html).
 - Leverage continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html).
 
-You can also [integrate](project/integrations/project_services.md) GitLab with
-numerous third-party applications, such as Mattermost, Microsoft Teams, Trello,
-Slack, Bamboo CI, JIRA, and a lot more.
+You can also [integrate](project/integrations/project_services.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, HipChat, Trello, Slack, Bamboo CI, JIRA, and a lot more.
 
 ## Projects
 

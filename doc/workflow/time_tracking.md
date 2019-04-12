@@ -75,6 +75,6 @@ Default conversion rates are 1mo = 4w, 1w = 5d and 1d = 8h.
 
 Other interesting links:
 
-- [Time Tracking landing page on about.gitlab.com](https://about.gitlab.com/features/time-tracking)
+- [Time Tracking landing page on about.gitlab.com](https://about.gitlab.com/solutions/time-tracking/)
 
 [quick actions]: ../user/project/quick_actions.md

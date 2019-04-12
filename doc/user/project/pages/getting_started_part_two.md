@@ -104,8 +104,8 @@ from the Pages group into a **user/group** website, you'll need to:
 ### Create a project from scratch
 
 1. From your **Project**'s **[Dashboard](https://gitlab.com/dashboard/projects)**,
-   click **New project**, and name it considering the
-   [practical examples](getting_started_part_one.md#practical-examples).
+   click **New project**, and name it according to the
+   [Pages domain names](getting_started_part_one.md#gitlab-pages-domain-names).
 1. Clone it to your local computer, add your website
    files to your project, add, commit and push to GitLab.
 1. From the your **Project**'s page, click **Set up CI/CD**:

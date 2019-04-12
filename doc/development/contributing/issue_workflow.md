@@ -62,10 +62,12 @@ The current team labels are:
 
 - ~Configure
 - ~Create
+- ~Defend
 - ~Distribution
 - ~Documentation
 - ~Geo
 - ~Gitaly
+- ~Growth
 - ~Manage
 - ~Monitor
 - ~Plan
@@ -99,6 +101,8 @@ The current stage labels are:
 - ~"devops:configure"
 - ~"devops:monitor"
 - ~"devops:secure"
+- ~"devops:defend"
+- ~"devops:enablement"
 
 These labels should be mutually exclusive. If an issue belongs to multiple
 stages, the most relevant should be used.

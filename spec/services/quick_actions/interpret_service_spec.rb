@@ -529,7 +529,7 @@ describe QuickActions::InterpretService do
         let(:issuable) { issue }
       end
 
-      it_behaves_like 'assign command' do
+      it_behaves_like 'assign command', :quarantine do
         let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
         let(:issuable) { merge_request }
       end

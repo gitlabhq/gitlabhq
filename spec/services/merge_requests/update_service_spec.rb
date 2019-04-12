@@ -405,7 +405,7 @@ describe MergeRequests::UpdateService, :mailer do
       end
     end
 
-    context 'when the issue is relabeled' do
+    context 'when the merge request is relabeled' do
       let!(:non_subscriber) { create(:user) }
       let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
 
