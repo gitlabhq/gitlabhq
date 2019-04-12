@@ -31,7 +31,7 @@ module Autocomplete
         # Include current user if available to filter by "Me"
         items.unshift(current_user) if prepend_current_user?
 
-        if prepend_author? && (author = User.find_by_id(author_id))
+        if (prepend_author? && author = User.find_by_id(author_id)) && author.active?
           items.unshift(author)
         end
       end

@@ -1,0 +1,5 @@
+---
+title: Only show in autocomplete when author active
+merge_request: 27292
+author:
+type: fixed
