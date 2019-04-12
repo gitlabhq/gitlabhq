@@ -174,6 +174,10 @@ behavior:
 
 1. [Reconfigure GitLab][reconfigure].
 
+NOTE: **Note:**
+`inplace_chroot` option might not work with the other features, such as [Pages Access Control](#access-control).
+The [GitLab Pages README](https://gitlab.com/gitlab-org/gitlab-pages#caveats) has more information about caveats and workarounds.
+
 ## Advanced configuration
 
 In addition to the wildcard domains, you can also have the option to configure
