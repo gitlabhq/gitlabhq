@@ -192,16 +192,6 @@ shared_examples 'cluster application status specs' do |application_name|
         expect(subject).to be_uninstalling
       end
     end
-
-    describe '#make_uninstalled' do
-      subject { create(application_name, :uninstalling) }
-
-      it 'is uninstalled' do
-        subject.make_uninstalled!
-
-        expect(subject).to be_uninstalled
-      end
-    end
   end
 
   describe '#available?' do
@@ -219,7 +209,6 @@ shared_examples 'cluster application status specs' do |application_name|
       :update_errored    | false
       :uninstalling      | false
       :uninstall_errored | false
-      :uninstalled       | false
       :timeouted         | false
     end
 

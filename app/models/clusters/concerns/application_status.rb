@@ -27,7 +27,6 @@ module Clusters
           state :update_errored, value: 6
           state :uninstalling, value: 7
           state :uninstall_errored, value: 8
-          state :uninstalled, value: 9
 
           event :make_scheduled do
             transition [:installable, :errored, :installed, :updated, :update_errored, :uninstall_errored] => :scheduled
@@ -58,10 +57,6 @@ module Clusters
 
           event :make_uninstalling do
             transition [:scheduled] => :uninstalling
-          end
-
-          event :make_uninstalled do
-            transition [:uninstalling] => :uninstalled
           end
 
           before_transition any => [:scheduled] do |app_status, _|

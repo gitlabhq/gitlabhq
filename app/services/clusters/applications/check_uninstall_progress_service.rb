@@ -23,7 +23,9 @@ module Clusters
       private
 
       def on_success
-        app.make_uninstalled!
+        app.destroy!
+      rescue StandardError => e
+        app.make_errored!("Application uninstalled but failed to destroy: #{e.message}")
       ensure
         remove_installation_pod
       end
