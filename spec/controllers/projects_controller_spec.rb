@@ -1,6 +1,7 @@
 require('spec_helper')
 
 describe ProjectsController do
+  include ExternalAuthorizationServiceHelpers
   include ProjectForksHelper
 
   let(:project) { create(:project) }
@@ -410,6 +411,37 @@ describe ProjectsController do
       let(:project) { create(:project, :repository, :legacy_storage) }
 
       it_behaves_like 'updating a project'
+    end
+
+    context 'as maintainer' do
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      it_behaves_like 'unauthorized when external service denies access' do
+        subject do
+          put :update,
+              params: {
+                namespace_id: project.namespace,
+                id: project,
+                project: { description: 'Hello world' }
+              }
+          project.reload
+        end
+
+        it 'updates when the service allows access' do
+          external_service_allow_access(user, project)
+
+          expect { subject }.to change(project, :description)
+        end
+
+        it 'does not update when the service rejects access' do
+          external_service_deny_access(user, project)
+
+          expect { subject }.not_to change(project, :description)
+        end
+      end
     end
   end
 

@@ -80,6 +80,12 @@ describe Groups::MilestonesController do
         expect(response.content_type).to eq 'application/json'
       end
     end
+
+    context 'external authorization' do
+      subject { get :index, params: { group_id: group.to_param } }
+
+      it_behaves_like 'disabled when using an external authorization service'
+    end
   end
 
   describe '#show' do

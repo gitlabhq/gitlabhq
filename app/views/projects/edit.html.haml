@@ -32,7 +32,7 @@
               %span.light (optional)
             = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
 
-          = render_if_exists 'projects/classification_policy_settings', f: f
+          = render 'projects/classification_policy_settings', f: f
 
         = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 

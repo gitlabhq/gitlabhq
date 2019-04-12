@@ -105,6 +105,12 @@ describe Dashboard::TodosController do
         end
       end
     end
+
+    context 'external authorization' do
+      subject { get :index }
+
+      it_behaves_like 'disabled when using an external authorization service'
+    end
   end
 
   describe 'PATCH #restore' do
