@@ -88,6 +88,17 @@ describe Groups::CreateService, '#execute' do
     end
   end
 
+  describe "when visibility level is passed as a string" do
+    let(:service) { described_class.new(user, group_params) }
+    let(:group_params) { { path: 'group_path', visibility: 'public' } }
+
+    it "assigns the correct visibility level" do
+      group = service.execute
+
+      expect(group.visibility_level).to eq(Gitlab::VisibilityLevel::PUBLIC)
+    end
+  end
+
   describe 'creating a mattermost team' do
     let!(:params) { group_params.merge(create_chat_team: "true") }
     let!(:service) { described_class.new(user, params) }
