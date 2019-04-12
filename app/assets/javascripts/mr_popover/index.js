@@ -54,9 +54,13 @@ export default elements => {
     const apolloProvider = new VueApollo({
       defaultClient: createDefaultClient(),
     });
+    const listenerAddedAttr = 'data-mr-listener-added';
 
     mrLinks.forEach(el => {
-      el.addEventListener('mouseenter', handleMRPopoverMount(apolloProvider));
+      if (!el.getAttribute(listenerAddedAttr)) {
+        el.addEventListener('mouseenter', handleMRPopoverMount(apolloProvider));
+        el.setAttribute(listenerAddedAttr, true);
+      }
     });
   }
 };
