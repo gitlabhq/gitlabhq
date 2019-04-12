@@ -1,30 +1,33 @@
 - form = local_assigns.fetch(:form)
 
 .form-group
-  = label_tag :merge_method_merge, class: 'label-bold' do
-    = _('Merge method')
-  .form-check
+  %b= s_('ProjectSettings|Merge method')
+  %p.text-secondary= s_('ProjectSettings|This will dictate the commit history when you merge a merge request')
+  .form-check.mb-2
     = form.radio_button :merge_method, :merge, class: "js-merge-method-radio form-check-input"
     = label_tag :project_merge_method_merge, class: 'form-check-label' do
-      .mb-3
-        = _('Merge commit')
-        .text-secondary
-          = _('A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.')
+      = s_('ProjectSettings|Merge commit')
+      .descr.text-secondary
+        = s_('ProjectSettings|Every merge creates a merge commit')
 
-.form-check
-  = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio form-check-input"
-  = label_tag :project_merge_method_rebase_merge, class: 'form-check-label' do
-    .mb-3
-      = _('Merge commit with semi-linear history')
-      .text-secondary
-        = _('A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible. This way you could make sure that if this merge request would build, after merging to target branch it would also build.')
-      .text-secondary
-        = _('When fast-forward merge is not possible, the user is given the option to rebase.')
+  .form-check.mb-2
+    = form.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio form-check-input"
+    = label_tag :project_merge_method_rebase_merge, class: 'form-check-label' do
+      = s_('ProjectSettings|Merge commit with semi-linear history')
+      .descr.text-secondary
+        = s_('ProjectSettings|Every merge creates a merge commit')
+        %br
+        = s_('ProjectSettings|Fast-forward merges only')
+        %br
+        = s_('ProjectSettings|When conflicts arise the user is given the option to rebase')
 
-.form-check
-  = form.radio_button :merge_method, :ff, class: "js-merge-method-radio qa-radio-button-merge-ff form-check-input"
-  = label_tag :project_merge_method_ff, class: 'form-check-label' do
-    .mb-3
-      = _('Fast-forward merge')
-      .text-secondary
-        = _('No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded. When fast-forward merge is not possible, the user is given the option to rebase.')
+  .form-check.mb-2
+    = form.radio_button :merge_method, :ff, class: "js-merge-method-radio qa-radio-button-merge-ff form-check-input"
+    = label_tag :project_merge_method_ff, class: 'form-check-label' do
+      = s_('ProjectSettings|Fast-forward merge')
+      .descr.text-secondary
+        = s_('ProjectSettings|No merge commits are created')
+        %br
+        = s_('ProjectSettings|Fast-forward merges only')
+        %br
+        = s_('ProjectSettings|When conflicts arise the user is given the option to rebase')
