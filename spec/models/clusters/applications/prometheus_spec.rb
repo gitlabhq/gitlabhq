@@ -142,6 +142,34 @@ describe Clusters::Applications::Prometheus do
     end
   end
 
+  describe '#uninstall_command' do
+    let(:prometheus) { create(:clusters_applications_prometheus) }
+
+    subject { prometheus.uninstall_command }
+
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::DeleteCommand) }
+
+    it 'has the application name' do
+      expect(subject.name).to eq('prometheus')
+    end
+
+    it 'has files' do
+      expect(subject.files).to eq(prometheus.files)
+    end
+
+    it 'is rbac' do
+      expect(subject).to be_rbac
+    end
+
+    context 'on a non rbac enabled cluster' do
+      before do
+        prometheus.cluster.platform_kubernetes.abac!
+      end
+
+      it { is_expected.not_to be_rbac }
+    end
+  end
+
   describe '#upgrade_command' do
     let(:prometheus) { build(:clusters_applications_prometheus) }
     let(:values) { prometheus.values }
