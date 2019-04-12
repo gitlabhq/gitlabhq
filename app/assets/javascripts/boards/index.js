@@ -24,7 +24,11 @@ import BoardSidebar from './components/board_sidebar';
 import initNewListDropdown from './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor';
-import { NavigationType, parseBoolean } from '~/lib/utils/common_utils';
+import {
+  NavigationType,
+  convertObjectPropsToCamelCase,
+  parseBoolean,
+} from '~/lib/utils/common_utils';
 
 let issueBoardsApp;
 
@@ -133,9 +137,25 @@ export default () => {
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.data)
             .then(data => {
+              const {
+                subscribed,
+                totalTimeSpent,
+                timeEstimate,
+                humanTimeEstimate,
+                humanTotalTimeSpent,
+                weight,
+                epic,
+              } = convertObjectPropsToCamelCase(data);
+
               newIssue.setFetchingState('subscriptions', false);
               newIssue.updateData({
-                subscribed: data.subscribed,
+                humanTimeSpent: humanTotalTimeSpent,
+                timeSpent: totalTimeSpent,
+                humanTimeEstimate,
+                timeEstimate,
+                subscribed,
+                weight,
+                epic,
               });
             })
             .catch(() => {

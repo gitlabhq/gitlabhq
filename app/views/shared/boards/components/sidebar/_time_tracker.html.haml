@@ -1,0 +1,6 @@
+.block.time-tracking
+  %time-tracker{ ":time-estimate" => "issue.timeEstimate || 0",
+    ":time-spent" => "issue.timeSpent || 0",
+    ":human-time-estimate" => "issue.humanTimeEstimate",
+    ":human-time-spent" => "issue.humanTimeSpent",
+    "root-path" => "#{root_url}" }
