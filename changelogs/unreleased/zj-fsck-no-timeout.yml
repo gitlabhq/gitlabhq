@@ -1,0 +1,5 @@
+---
+title: Remove deadline for Git fsck
+merge_request: 27299
+author:
+type: fixed

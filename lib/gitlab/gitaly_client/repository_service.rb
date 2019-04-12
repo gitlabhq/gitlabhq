@@ -190,7 +190,7 @@ module Gitlab
 
       def fsck
         request = Gitaly::FsckRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :fsck, request)
+        response = GitalyClient.call(@storage, :repository_service, :fsck, request, timeout: GitalyClient.no_timeout)
 
         if response.error.empty?
           return "", 0
