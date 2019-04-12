@@ -66,16 +66,14 @@ describe Clusters::Applications::PatchService do
       end
 
       before do
-        expect(application).to receive(:make_updating!).once.and_raise(error)
+        expect(helm_client).to receive(:update).with(update_command).and_raise(error)
       end
 
       it 'make the application errored' do
-        expect(helm_client).not_to receive(:update)
-
         service.execute
 
         expect(application).to be_update_errored
-        expect(application.status_reason).to eq("Can't start update process.")
+        expect(application.status_reason).to eq('Failed to update.')
       end
     end
   end
