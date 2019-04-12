@@ -1448,10 +1448,6 @@ pre.light-well {
 }
 
 .project-filters {
-  .row-content-block {
-    border-top: 0;
-  }
-
   .btn svg {
     color: $gl-gray-700;
   }
@@ -1470,51 +1466,37 @@ pre.light-well {
     }
   }
 
-  .filtered-search-wrapper {
-    flex-wrap: nowrap;
-    flex-direction: row;
-  }
-
-  .filtered-search-dropdown {
-    width: auto;
-    flex-direction: row;
-    align-items: center;
-  }
-
-  .filtered-search,
-  .filtered-search-nav,
-  .filtered-search-dropdown {
-    display: flex;
-    min-width: auto;
-    margin: 0;
-  }
-
   .filtered-search-dropdown-label {
-    padding: 0 0 0 16px;
-    font-weight: bold;
     min-width: 68px;
+
+    @include media-breakpoint-down(xs) {
+      min-width: 60px;
+    }
   }
 
   .filtered-search {
-    margin: 0 0 0 16px;
     min-width: 30%;
-    width: 100%;
     flex: 1 1 0;
 
     .project-filter-form .project-filter-form-field {
       padding-right: 8px;
     }
+
+    @include media-breakpoint-down(lg) {
+      min-width: 15%;
+
+      .project-filter-form-field {
+        min-width: 150px;
+      }
+    }
+
+    @include media-breakpoint-down(md) {
+      min-width: 30%;
+    }
   }
 
-  .filtered-search,
-  .filtered-search-dropdown {
-    .btn-group {
-      width: 100%;
-    }
-
-    .qa-reverse-sort {
-      max-width: 38px;
-    }
+  .qa-reverse-sort {
+    max-width: 38px;
   }
 
   .filtered-search-box {
@@ -1525,39 +1507,9 @@ pre.light-well {
     margin-left: 8px;
   }
 
-  @include media-breakpoint-down(lg) {
-    .filtered-search {
-      min-width: 15%;
-
-      .project-filter-form-field {
-        min-width: 150px;
-      }
-    }
-
-    .extended-filtered-search-box {
-      margin: 0;
-      min-width: 45%;
-    }
-  }
-
   @include media-breakpoint-down(md) {
-    .filtered-search:not(.extended-filtered-search-box) {
-      margin: 0 0 8px 16px;
-      min-width: 30%;
-    }
-
     .extended-filtered-search-box {
-      margin: 0 0 8px;
       min-width: 55%;
-    }
-
-    .filtered-search-nav {
-      margin: 0 0 8px;
-    }
-
-
-    .filtered-search-wrapper {
-      flex-wrap: wrap;
     }
 
     .filtered-search-dropdown {
@@ -1579,43 +1531,11 @@ pre.light-well {
       width: 100%;
     }
 
-    .filtered-search-wrapper {
-      display: flex;
-      flex-flow: column nowrap;
-    }
-
     .filtered-search,
     .filtered-search-nav,
     .filtered-search-dropdown {
       flex: 1 1 0;
       width: 100%;
     }
-
-    .filtered-search:not(.extended-filtered-search-box),
-    .filtered-search {
-      margin-left: 0;
-    }
-
-    .filtered-search-box {
-      margin: 0;
-    }
-
-    .filtered-search-nav .nav-block {
-      width: 100%;
-    }
-
-    .filtered-search-dropdown {
-      margin: 0 0 8px;
-
-      &:last-of-type {
-        margin: 0;
-      }
-    }
-
-    .filtered-search-dropdown-label {
-      padding: 0;
-      min-width: 60px;
-    }
   }
 }
-

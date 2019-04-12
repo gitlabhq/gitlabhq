@@ -1,4 +1,4 @@
-- form_field_classes = local_assigns[:admin_view] ? 'input-short' : ''
+- form_field_classes = local_assigns[:admin_view] || !Feature.enabled?(:project_list_filter_bar) ? 'input-short js-projects-list-filter' : ''
 - placeholder = local_assigns[:search_form_placeholder] ? search_form_placeholder : 'Filter by name...'
 
 = form_tag filter_projects_path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|

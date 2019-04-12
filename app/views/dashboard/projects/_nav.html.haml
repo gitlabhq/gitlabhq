@@ -3,7 +3,7 @@
 - inactive_class = 'btn p-2'
 - active_class = 'btn p-2 active'
 - is_explore_trending = local_assigns.fetch(:is_explore_trending, false)
-.nav-block
+.nav-block{ class: Feature.enabled?(:project_list_filter_bar) ? "w-100" : "" }
   - if !Feature.enabled?(:project_list_filter_bar)
     %ul.nav-links.mobile-separator.nav.nav-tabs
       = nav_link(html_options: { class: ("active" unless params[:personal].present?) }) do
@@ -11,8 +11,7 @@
       = nav_link(html_options: { class: ("active" if params[:personal].present?) }) do
         = link_to s_('DashboardProjects|Personal'), filter_projects_path(personal: true)
   - else
-    -# %ul.btn-group.button-filter-group.d-flex.m-0.p-0
-    %div.btn-group.button-filter-group.d-flex.m-0.p-0
+    .btn-group.button-filter-group.d-flex.m-0.p-0
       - if is_explore
         = link_to s_('DashboardProjects|Trending'), trending_explore_projects_path, class: is_explore_trending ? active_class : inactive_class
         = link_to s_('DashboardProjects|All'), explore_projects_path, class: is_explore_trending ? inactive_class : active_class

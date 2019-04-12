@@ -1,6 +1,6 @@
 - @sort ||= sort_value_latest_activity
-.btn-group{ role: "group" }
-  .btn-group.dropdown.js-project-filter-dropdown-wrap{ role: "group" }
+.btn-group.w-100{ role: "group" }
+  .btn-group.w-100.dropdown.js-project-filter-dropdown-wrap{ role: "group" }
     - toggle_text = projects_sort_option_titles[@sort]
     %button.dropdown-menu-toggle{ id: 'sort-projects-dropdown', type: 'button', data: { toggle: 'dropdown', display: 'static' }, class: 'btn btn-default' }
       = toggle_text
