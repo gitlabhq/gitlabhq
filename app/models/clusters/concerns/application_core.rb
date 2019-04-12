@@ -18,6 +18,16 @@ module Clusters
           self.status = 'installable' if cluster&.application_helm_available?
         end
 
+        def can_uninstall?
+          allowed_to_uninstall?
+        end
+
+        # All new applications should uninstall by default
+        # Override if there's dependencies that needs to be uninstalled first
+        def allowed_to_uninstall?
+          true
+        end
+
         def self.application_name
           self.to_s.demodulize.underscore
         end

@@ -29,6 +29,14 @@ describe Clusters::Applications::Prometheus do
     end
   end
 
+  describe '#can_uninstall?' do
+    let(:prometheus) { create(:clusters_applications_prometheus) }
+
+    subject { prometheus.can_uninstall? }
+
+    it { is_expected.to be_truthy }
+  end
+
   describe '#prometheus_client' do
     context 'cluster is nil' do
       it 'returns nil' do

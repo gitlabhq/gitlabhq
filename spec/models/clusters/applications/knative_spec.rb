@@ -39,6 +39,12 @@ describe Clusters::Applications::Knative do
     end
   end
 
+  describe '#can_uninstall?' do
+    subject { knative.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#schedule_status_update with external_ip' do
     let(:application) { create(:clusters_applications_knative, :installed) }
 

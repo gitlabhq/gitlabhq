@@ -10,6 +10,12 @@ describe Clusters::Applications::CertManager do
   include_examples 'cluster application version specs', :clusters_applications_cert_managers
   include_examples 'cluster application initial status specs'
 
+  describe '#can_uninstall?' do
+    subject { cert_manager.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#install_command' do
     let(:cert_email) { 'admin@example.com' }
 

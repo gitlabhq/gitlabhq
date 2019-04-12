@@ -10,6 +10,15 @@ describe Clusters::Applications::Jupyter do
 
   it { is_expected.to belong_to(:oauth_application) }
 
+  describe '#can_uninstall?' do
+    let(:ingress) { create(:clusters_applications_ingress, :installed, external_hostname: 'localhost.localdomain') }
+    let(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }
+
+    subject { jupyter.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#set_initial_status' do
     before do
       jupyter.set_initial_status
