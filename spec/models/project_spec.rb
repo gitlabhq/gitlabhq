@@ -5,6 +5,7 @@ require 'spec_helper'
 describe Project do
   include ProjectForksHelper
   include GitHelpers
+  include ExternalAuthorizationServiceHelpers
 
   it_behaves_like 'having unique enum values'
 
@@ -4368,6 +4369,25 @@ describe Project do
             .not_to exceed_query_limit(control).with_threshold(2)
         end
       end
+    end
+  end
+
+  describe '#external_authorization_classification_label' do
+    it 'falls back to the default when none is configured' do
+      enable_external_authorization_service_check
+
+      expect(build(:project).external_authorization_classification_label)
+        .to eq('default_label')
+    end
+
+    it 'returns the classification label if it was configured on the project' do
+      enable_external_authorization_service_check
+
+      project = build(:project,
+                      external_authorization_classification_label: 'hello')
+
+      expect(project.external_authorization_classification_label)
+        .to eq('hello')
     end
   end
 
