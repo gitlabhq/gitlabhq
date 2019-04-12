@@ -41,7 +41,7 @@ export default {
       return {
         data: this.namespaceSelectOptions,
         containerCssClass:
-          'import-namespace-select js-namespace-select qa-project-namespace-select',
+          'import-namespace-select js-namespace-select qa-project-namespace-select w-auto',
       };
     },
 

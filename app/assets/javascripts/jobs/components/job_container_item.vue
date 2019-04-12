@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div
-    class="build-job"
+    class="build-job position-relative"
     :class="{
       retried: job.retried,
       active: isActive,
@@ -56,7 +56,11 @@ export default {
       data-boundary="viewport"
       class="js-job-link"
     >
-      <icon v-if="isActive" name="arrow-right" class="js-arrow-right icon-arrow-right" />
+      <icon
+        v-if="isActive"
+        name="arrow-right"
+        class="js-arrow-right icon-arrow-right position-absolute d-block"
+      />
 
       <ci-icon :status="job.status" />
 

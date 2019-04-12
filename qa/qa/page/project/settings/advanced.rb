@@ -4,27 +4,21 @@ module QA
       module Settings
         class Advanced < Page::Base
           view 'app/views/projects/edit.html.haml' do
-            element :project_path_field, 'text_field :path' # rubocop:disable QA/ElementWithPattern
-            element :project_name_field, 'text_field :name' # rubocop:disable QA/ElementWithPattern
-            element :rename_project_button, "submit 'Rename project'" # rubocop:disable QA/ElementWithPattern
+            element :project_path_field
+            element :change_path_button
           end
 
-          def rename_to(path)
-            fill_project_name(path)
+          def update_project_path_to(path)
             fill_project_path(path)
-            rename_project!
+            click_change_path_button
           end
 
           def fill_project_path(path)
-            fill_in :project_path, with: path
+            fill_element :project_path_field, path
           end
 
-          def fill_project_name(name)
-            fill_in :project_name, with: name
-          end
-
-          def rename_project!
-            click_on 'Rename project'
+          def click_change_path_button
+            click_element :change_path_button
           end
         end
       end

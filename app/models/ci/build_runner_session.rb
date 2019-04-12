@@ -13,7 +13,7 @@ module Ci
     belongs_to :build, class_name: 'Ci::Build', inverse_of: :runner_session
 
     validates :build, presence: true
-    validates :url, url: { protocols: %w(https) }
+    validates :url, addressable_url: { schemes: %w(https) }
 
     def terminal_specification
       wss_url = Gitlab::UrlHelpers.as_wss(self.url)

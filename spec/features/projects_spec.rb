@@ -373,6 +373,21 @@ describe 'Project' do
     end
   end
 
+  describe 'edit' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:path) { edit_project_path(project) }
+
+    before do
+      project.add_maintainer(user)
+      sign_in(user)
+      visit path
+    end
+
+    it_behaves_like 'dirty submit form', [{ form: '.js-general-settings-form', input: 'input[name="project[name]"]' },
+                                          { form: '.qa-merge-request-settings', input: '#project_printing_merge_request_link_enabled' }]
+  end
+
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with

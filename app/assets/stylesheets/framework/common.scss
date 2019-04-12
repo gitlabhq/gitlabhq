@@ -436,6 +436,12 @@ img.emoji {
 
 .h-3 { width: #{3 * $grid-size}; }
 
+.svg-w-100 {
+  svg {
+    width: 100%;
+  }
+}
+
 /** COMMON SPACING CLASSES **/
 .gl-pl-0 { padding-left: 0; }
 .gl-pl-1 { padding-left: #{0.5 * $grid-size}; }

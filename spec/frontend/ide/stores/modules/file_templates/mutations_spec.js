@@ -9,7 +9,7 @@ describe('IDE file templates mutations', () => {
     state = createState();
   });
 
-  describe(types.REQUEST_TEMPLATE_TYPES, () => {
+  describe(`${types.REQUEST_TEMPLATE_TYPES}`, () => {
     it('sets isLoading', () => {
       mutations[types.REQUEST_TEMPLATE_TYPES](state);
 
@@ -17,7 +17,7 @@ describe('IDE file templates mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_TEMPLATE_TYPES_ERROR, () => {
+  describe(`${types.RECEIVE_TEMPLATE_TYPES_ERROR}`, () => {
     it('sets isLoading', () => {
       state.isLoading = true;
 
@@ -27,7 +27,7 @@ describe('IDE file templates mutations', () => {
     });
   });
 
-  describe(types.RECEIVE_TEMPLATE_TYPES_SUCCESS, () => {
+  describe(`${types.RECEIVE_TEMPLATE_TYPES_SUCCESS}`, () => {
     it('sets isLoading to false', () => {
       state.isLoading = true;
 
@@ -43,7 +43,7 @@ describe('IDE file templates mutations', () => {
     });
   });
 
-  describe(types.SET_SELECTED_TEMPLATE_TYPE, () => {
+  describe(`${types.SET_SELECTED_TEMPLATE_TYPE}`, () => {
     it('sets selectedTemplateType', () => {
       mutations[types.SET_SELECTED_TEMPLATE_TYPE](state, 'type');
 
@@ -59,7 +59,7 @@ describe('IDE file templates mutations', () => {
     });
   });
 
-  describe(types.SET_UPDATE_SUCCESS, () => {
+  describe(`${types.SET_UPDATE_SUCCESS}`, () => {
     it('sets updateSuccess', () => {
       mutations[types.SET_UPDATE_SUCCESS](state, true);
 

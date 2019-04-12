@@ -73,3 +73,6 @@ module StubObjectStorage
       EOS
   end
 end
+
+require_relative '../../../ee/spec/support/helpers/ee/stub_object_storage' if
+  Dir.exist?("#{__dir__}/../../../ee")

@@ -48,17 +48,17 @@ class ApplicationSetting < ApplicationRecord
 
   validates :home_page_url,
             allow_blank: true,
-            url: true,
+            addressable_url: true,
             if: :home_page_url_column_exists?
 
   validates :help_page_support_url,
             allow_blank: true,
-            url: true,
+            addressable_url: true,
             if: :help_page_support_url_column_exists?
 
   validates :after_sign_out_path,
             allow_blank: true,
-            url: true
+            addressable_url: true
 
   validates :admin_notification_email,
             devise_email: true,
@@ -218,7 +218,7 @@ class ApplicationSetting < ApplicationRecord
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_url,
-            url: true, allow_blank: true,
+            addressable_url: true, allow_blank: true,
             if: :external_authorization_service_enabled
 
   validates :external_authorization_service_timeout,
@@ -259,7 +259,9 @@ class ApplicationSetting < ApplicationRecord
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
 
   def self.create_from_defaults
-    super
+    transaction(requires_new: true) do
+      super
+    end
   rescue ActiveRecord::RecordNotUnique
     # We already have an ApplicationSetting record, so just return it.
     current_without_cache

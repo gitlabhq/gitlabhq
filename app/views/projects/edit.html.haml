@@ -3,210 +3,155 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = Rails.env.test?
 
-.project-edit-container
-  %section.settings.general-settings.no-animate#js-general-project-settings{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, tags, avatar')
-      %button.btn.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-      %p= _('Update your project name, tags, description and avatar.')
+%section.settings.general-settings.no-animate.expanded#js-general-settings
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= _('Collapse')
+    %p= _('Update your project name, topics, description and avatar.')
+  .settings-content= render 'projects/settings/general'
 
-    .settings-content
-      .project-edit-errors
-      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
-        %input{ name: 'update_section', type: 'hidden', value: 'js-general-project-settings' }
-        %fieldset
-          .row
-            .form-group.col-md-9
-              = f.label :name, class: 'label-bold', for: 'project_name_edit' do
-                Project name
-              = f.text_field :name, class: "form-control", id: "project_name_edit"
+%section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    %p= _('Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions.')
 
-            .form-group.col-md-3
-              = f.label :id, class: 'label-bold' do
-                Project ID
-              = f.text_field :id, class: 'form-control', readonly: true
+  .settings-content
+    = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+      %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
+      %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
+      .js-project-permissions-form
+      = f.submit _('Save changes'), class: "btn btn-success"
 
-          .form-group
-            = f.label :description, class: 'label-bold' do
-              Project description
-              %span.light (optional)
-            = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
+%section.qa-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Merge requests')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    %p= _('Choose your merge method, set up a default merge request description template.')
 
-          = render 'projects/classification_policy_settings', f: f
+  .settings-content
+    = render_if_exists 'shared/promotions/promote_mr_features'
 
-        = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
+    = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form js-mr-settings-form" }, authenticity_token: true do |f|
+      %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
+      = render 'projects/merge_request_settings', form: f
+      = f.submit _('Save changes'), class: "btn btn-success qa-save-merge-request-changes"
 
-        .form-group
-          = f.label :tag_list, "Topics", class: 'label-bold'
-          = f.text_field :tag_list, value: @project.tag_list.join(', '), maxlength: 2000, class: "form-control"
-          %p.form-text.text-muted Separate topics with commas.
-
-        .form-group.prepend-top-default.append-bottom-20
-          .avatar-container.s90
-            = project_icon(@project, alt: _('Project avatar'), class: 'avatar project-avatar s90')
-          = f.label :avatar, _('Project avatar'), class: 'label-bold d-block'
-          = render 'shared/choose_avatar_button', f: f
-          - if @project.avatar?
-            %hr
-            = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _('Avatar will be removed. Are you sure?')}, method: :delete, class: 'btn btn-link'
-
-        = f.submit 'Save changes', class: "btn btn-success js-btn-success-general-project-settings"
-
-  %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
-      %button.btn.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-      %p= _('Choose visibility level, enable/disable project features (issues, repository, wiki, snippets) and set permissions.')
-
-    .settings-content
-      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
-        %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
-        -# haml-lint:disable InlineJavaScript
-        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
-        .js-project-permissions-form
-        = f.submit 'Save changes', class: "btn btn-success"
-
-  = render_if_exists 'projects/issues_settings'
-
-  %section.qa-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Merge requests')
-      %button.btn.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-      %p= _('Choose your merge method, set up a default merge request description template.')
-
-    .settings-content
-      = render_if_exists 'shared/promotions/promote_mr_features'
-
-      = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
-        %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
-        = render 'projects/merge_request_settings', form: f
-        = f.submit 'Save changes', class: "btn btn-success qa-save-merge-request-changes"
-
-  = render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
+= render_if_exists 'projects/merge_request_approvals_settings', expanded: expanded
 
 
-  %section.settings.no-animate{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = s_('ProjectSettings|Badges')
-      %button.btn.js-settings-toggle{ type: 'button' }
-        = expanded ? 'Collapse' : 'Expand'
-      %p
-        = s_('ProjectSettings|Customize your project badges.')
-        = link_to s_('ProjectSettings|Learn more about badges.'), help_page_path('user/project/badges')
-    .settings-content
-      = render 'shared/badges/badge_settings'
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('ProjectSettings|Badges')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = s_('ProjectSettings|Customize your project badges.')
+      = link_to s_('ProjectSettings|Learn more about badges.'), help_page_path('user/project/badges')
+  .settings-content
+    = render 'shared/badges/badge_settings'
 
-  = render_if_exists 'projects/service_desk_settings'
-  = render 'export', project: @project
+= render_if_exists 'projects/settings/default_issue_template'
 
-  %section.qa-advanced-settings.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
-      %button.btn.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-      %p= _('Housekeeping, export, path, transfer, remove, archive.')
+= render_if_exists 'projects/service_desk_settings'
 
-    .settings-content
+%section.qa-advanced-settings.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
+    %p= _('Housekeeping, export, path, transfer, remove, archive.')
+
+  .settings-content
+    .sub-section
+      %h4= _('Housekeeping')
+      %p= _('Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.')
+      = link_to _('Run housekeeping'), housekeeping_project_path(@project),
+        method: :post, class: "btn btn-default"
+
+    = render 'export', project: @project
+
+    - if can? current_user, :archive_project, @project
       .sub-section
-        %h4 Housekeeping
-        %p
-          Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects.
-        = link_to 'Run housekeeping', housekeeping_project_path(@project),
-            method: :post, class: "btn btn-default"
-      - if can? current_user, :archive_project, @project
-        .sub-section
-          %h4.warning-title
-            - if @project.archived?
-              Unarchive project
-            - else
-              Archive project
-          - if @project.archived?
-            %p
-              Unarchiving the project will restore people's ability to make changes to it.
-              The repository can be committed to, and issues, comments and other entities can be created.
-              %strong Once active this project shows up in the search and on the dashboard.
-            = link_to 'Unarchive project', unarchive_project_path(@project),
-                data: { confirm: "Are you sure that you want to unarchive this project?" },
-                method: :post, class: "btn btn-success"
-          - else
-            %p
-              Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches.
-              %strong The repository cannot be committed to, and no issues, comments or other entities can be created.
-            = link_to 'Archive project', archive_project_path(@project),
-                data: { confirm: "Are you sure that you want to archive this project?" },
-                method: :post, class: "btn btn-warning"
-      .sub-section.rename-repository
         %h4.warning-title
-          Rename repository
-        = render 'projects/errors'
-        = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
-          .form-group.project_name_holder
-            = f.label :name, class: 'label-bold' do
-              Project name
-            .form-group
-              = f.text_field :name, class: "form-control"
+          - if @project.archived?
+            = _('Unarchive project')
+          - else
+            = _('Archive project')
+        - if @project.archived?
+          %p= _("Unarchiving the project will restore people's ability to make changes to it. The repository can be committed to, and issues, comments and other entities can be created. <strong>Once active this project shows up in the search and on the dashboard.</strong>").html_safe
+          = link_to _('Unarchive project'), unarchive_project_path(@project),
+              data: { confirm: _("Are you sure that you want to unarchive this project?") },
+              method: :post, class: "btn btn-success"
+        - else
+          %p= _("Archiving the project will make it entirely read-only. It is hidden from the dashboard and doesn't show up in searches. <strong>The repository cannot be committed to, and no issues, comments or other entities can be created.</strong>").html_safe
+          = link_to _('Archive project'), archive_project_path(@project),
+              data: { confirm: _("Are you sure that you want to archive this project?") },
+              method: :post, class: "btn btn-warning"
+    .sub-section.rename-repository
+      %h4.warning-title= _('Change path')
+      = render 'projects/errors'
+      = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
+        .form-group
+          = f.label :path, _('Path'), class: 'label-bold'
           .form-group
-            = f.label :path, class: 'label-bold' do
-              %span Path
+            .input-group
+              .input-group-prepend
+                .input-group-text
+                  #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
+              = f.text_field :path, class: 'form-control qa-project-path-field h-auto'
+          %ul
+            %li= _("Be careful. Renaming a project's repository can have unintended side effects.")
+            %li= _('You will need to update your local repositories to point to the new location.')
+            - if @project.deployment_platform.present?
+              %li= _('Your deployment services will be broken, you will need to manually fix the services after renaming.')
+        = f.submit _('Change path'), class: "btn btn-warning qa-change-path-button"
+
+    - if can?(current_user, :change_namespace, @project)
+      .sub-section
+        %h4.danger-title= _('Transfer project')
+        = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
+          .form-group
+            = label_tag :new_namespace_id, nil, class: 'label-bold' do
+              %span= _('Select a new namespace')
             .form-group
-              .input-group
-                .input-group-prepend
-                  .input-group-text
-                    #{Gitlab::Utils.append_path(root_url, @project.namespace.full_path)}/
-                = f.text_field :path, class: 'form-control'
+              = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'
             %ul
-              %li Be careful. Renaming a project's repository can have unintended side effects.
-              %li You will need to update your local repositories to point to the new location.
-              - if @project.deployment_platform.present?
-                %li Your deployment services will be broken, you will need to manually fix the services after renaming.
-          = f.submit 'Rename project', class: "btn btn-warning"
-      - if can?(current_user, :change_namespace, @project)
-        .sub-section
-          %h4.danger-title
-            Transfer project
-          = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
-            .form-group
-              = label_tag :new_namespace_id, nil, class: 'label-bold' do
-                %span  Select a new namespace
-              .form-group
-                = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'
-              %ul
-                %li Be careful. Changing the project's namespace can have unintended side effects.
-                %li You can only transfer the project to namespaces you manage.
-                %li You will need to update your local repositories to point to the new location.
-                %li Project visibility level will be changed to match namespace rules when transferring to a group.
-            = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
-      - if @project.forked? && can?(current_user, :remove_fork_project, @project)
-        .sub-section
-          %h4.danger-title
-            Remove fork relationship
+              %li= _("Be careful. Changing the project's namespace can have unintended side effects.")
+              %li= _('You can only transfer the project to namespaces you manage.')
+              %li= _('You will need to update your local repositories to point to the new location.')
+              %li= _('Project visibility level will be changed to match namespace rules when transferring to a group.')
+          = f.submit 'Transfer project', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+
+    - if @project.forked? && can?(current_user, :remove_fork_project, @project)
+      .sub-section
+        %h4.danger-title= _('Remove fork relationship')
+        %p
+          = _('This will remove the fork relationship to source project')
+          = succeed "." do
+            - if @project.fork_source
+              = link_to(fork_source_name(@project), project_path(@project.fork_source))
+            - else
+              = fork_source_name(@project)
+        = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
           %p
-            This will remove the fork relationship to source project
-            = succeed "." do
-              - if @project.fork_source
-                = link_to(fork_source_name(@project), project_path(@project.fork_source))
-              - else
-                = fork_source_name(@project)
-          = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
-            %p
-              %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.
-            = button_to 'Remove fork relationship', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
-      - if can?(current_user, :remove_project, @project)
-        .sub-section
-          %h4.danger-title
-            Remove project
+            %strong= _('Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.')
+          = button_to _('Remove fork relationship'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_fork_project_message(@project) }
+
+    - if can?(current_user, :remove_project, @project)
+      .sub-section
+        %h4.danger-title= _('Remove project')
+        %p= _('Removing the project will delete its repository and all related resources including issues, merge requests etc.')
+        = form_tag(project_path(@project), method: :delete) do
           %p
-            Removing the project will delete its repository and all related resources including issues, merge requests etc.
-          = form_tag(project_path(@project), method: :delete) do
-            %p
-              %strong Removed projects cannot be restored!
-            = button_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+            %strong= _('Removed projects cannot be restored!')
+          = button_to _('Remove project'), '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
 
 .save-project-loader.hide
   .center
     %h2
       %i.fa.fa-spinner.fa-spin
-      Saving project.
-    %p Please wait a moment, this page will automatically refresh when ready.
+      = _('Saving project.')
+    %p= _('Please wait a moment, this page will automatically refresh when ready.')
 
 = render 'shared/confirm_modal', phrase: @project.path

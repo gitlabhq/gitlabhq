@@ -8,6 +8,12 @@ description: 'Learn how to install a GitLab instance on Google Cloud Platform.'
 
 Getting started with GitLab on a [Google Cloud Platform (GCP)][gcp] instance is quick and easy.
 
+NOTE: **Note:**
+Google provides a whitepaper for [deploying production-ready GitLab on
+Google Kubernetes Engine](https://cloud.google.com/solutions/deploying-production-ready-gitlab-on-gke),
+including all steps and external resource configuration. These are an alternative to using a GCP VM, and use
+the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts).
+
 ## Prerequisites
 
 There are only two prerequisites in order to install GitLab on GCP:

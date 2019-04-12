@@ -9,24 +9,33 @@ describe 'Projects > Settings > User renames a project' do
     visit edit_project_path(project)
   end
 
-  def rename_project(project, name: nil, path: nil)
-    fill_in('project_name', with: name) if name
-    fill_in('Path', with: path) if path
-    click_button('Rename project')
-    wait_for_edit_project_page_reload
+  def change_path(project, path)
+    within('.advanced-settings') do
+      fill_in('Path', with: path)
+      click_button('Change path')
+    end
     project.reload
+    wait_for_edit_project_page_reload
+  end
+
+  def change_name(project, name)
+    within('.general-settings') do
+      fill_in('Project name', with: name)
+      click_button('Save changes')
+    end
+    project.reload
+    wait_for_edit_project_page_reload
   end
 
   def wait_for_edit_project_page_reload
-    expect(find('.project-edit-container')).to have_content('Rename repository')
+    expect(find('.advanced-settings')).to have_content('Change path')
   end
 
   context 'with invalid characters' do
-    it 'shows errors for invalid project path/name' do
-      rename_project(project, name: 'foo&bar', path: 'foo&bar')
-      expect(page).to have_field 'Project name', with: 'foo&bar'
+    it 'shows errors for invalid project path' do
+      change_path(project, 'foo&bar')
+
       expect(page).to have_field 'Path', with: 'foo&bar'
-      expect(page).to have_content "Name can contain only letters, digits, emojis, '_', '.', dash, space. It must start with letter, digit, emoji or '_'."
       expect(page).to have_content "Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'"
     end
   end
@@ -42,13 +51,13 @@ describe 'Projects > Settings > User renames a project' do
 
   context 'when changing project name' do
     it 'renames the repository' do
-      rename_project(project, name: 'bar')
+      change_name(project, 'bar')
       expect(find('.breadcrumbs')).to have_content(project.name)
     end
 
     context 'with emojis' do
       it 'shows error for invalid project name' do
-        rename_project(project, name: '🚀 foo bar ☁️')
+        change_name(project, '🚀 foo bar ☁️')
         expect(page).to have_field 'Project name', with: '🚀 foo bar ☁️'
         expect(page).not_to have_content "Name can contain only letters, digits, emojis '_', '.', dash and space. It must start with letter, digit, emoji or '_'."
       end
@@ -67,7 +76,7 @@ describe 'Projects > Settings > User renames a project' do
     end
 
     it 'the project is accessible via the new path' do
-      rename_project(project, path: 'bar')
+      change_path(project, 'bar')
       new_path = namespace_project_path(project.namespace, 'bar')
       visit new_path
 
@@ -77,7 +86,7 @@ describe 'Projects > Settings > User renames a project' do
 
     it 'the project is accessible via a redirect from the old path' do
       old_path = project_path(project)
-      rename_project(project, path: 'bar')
+      change_path(project, 'bar')
       new_path = namespace_project_path(project.namespace, 'bar')
       visit old_path
 
@@ -88,7 +97,7 @@ describe 'Projects > Settings > User renames a project' do
     context 'and a new project is added with the same path' do
       it 'overrides the redirect' do
         old_path = project_path(project)
-        rename_project(project, path: 'bar')
+        change_path(project, 'bar')
         new_project = create(:project, namespace: user.namespace, path: 'gitlabhq', name: 'quz')
         visit old_path
 

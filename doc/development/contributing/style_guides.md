@@ -10,7 +10,7 @@
 1. [Testing][testing]
 1. [JavaScript styleguide][js-styleguide]
 1. [SCSS styleguide][scss-styleguide]
-1. [Shell commands](../shell_commands.md) created by GitLab
+1. [Shell commands (Ruby)](../shell_commands.md) created by GitLab
    contributors to enhance security
 1. [Database Migrations](../migration_style_guide.md)
 1. [Markdown](http://www.cirosantilli.com/markdown-styleguide)

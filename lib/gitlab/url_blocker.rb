@@ -8,7 +8,7 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
 
     class << self
-      def validate!(url, ports: [], protocols: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false, enforce_sanitization: false)
+      def validate!(url, ports: [], schemes: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false, enforce_sanitization: false)
         return true if url.nil?
 
         # Param url can be a string, URI or Addressable::URI
@@ -20,7 +20,7 @@ module Gitlab
         return true if internal?(uri)
 
         port = get_port(uri)
-        validate_protocol!(uri.scheme, protocols)
+        validate_scheme!(uri.scheme, schemes)
         validate_port!(port, ports) if ports.any?
         validate_user!(uri.user) if enforce_user
         validate_hostname!(uri.hostname)
@@ -85,9 +85,9 @@ module Gitlab
         raise BlockedUrlError, "Only allowed ports are #{ports.join(', ')}, and any over 1024"
       end
 
-      def validate_protocol!(protocol, protocols)
-        if protocol.blank? || (protocols.any? && !protocols.include?(protocol))
-          raise BlockedUrlError, "Only allowed protocols are #{protocols.join(', ')}"
+      def validate_scheme!(scheme, schemes)
+        if scheme.blank? || (schemes.any? && !schemes.include?(scheme))
+          raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end
       end
 

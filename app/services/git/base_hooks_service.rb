@@ -51,6 +51,8 @@ module Git
     end
 
     def create_pipelines
+      return unless params.fetch(:create_pipelines, true)
+
       Ci::CreatePipelineService
         .new(project, current_user, push_data)
         .execute(:push, pipeline_options)
