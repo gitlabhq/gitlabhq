@@ -3,7 +3,7 @@
 module ProjectImportOptions
   extend ActiveSupport::Concern
 
-  IMPORT_RETRY_COUNT = 0
+  IMPORT_RETRY_COUNT = 5
 
   included do
     sidekiq_options retry: IMPORT_RETRY_COUNT, status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION

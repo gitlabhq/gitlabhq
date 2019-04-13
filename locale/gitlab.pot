@@ -4941,7 +4941,7 @@ msgstr ""
 msgid "If this was a mistake you can leave the %{source_type}."
 msgstr ""
 
-msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgid "If your HTTP repository is not publicly accessible, add your credentials."
 msgstr ""
 
 msgid "ImageDiffViewer|2-up"
@@ -10577,7 +10577,7 @@ msgstr ""
 msgid "UserProfile|Your projects can be available publicly, internally, or privately, at your choice."
 msgstr ""
 
-msgid "Username and Password"
+msgid "Username (optional)"
 msgstr ""
 
 msgid "Users"
