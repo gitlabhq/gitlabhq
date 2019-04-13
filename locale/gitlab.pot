@@ -4584,9 +4584,6 @@ msgstr ""
 msgid "Git repository URL"
 msgstr ""
 
-msgid "Git repository password"
-msgstr ""
-
 msgid "Git revision"
 msgstr ""
 
@@ -5036,7 +5033,7 @@ msgstr ""
 msgid "If this was a mistake you can leave the %{source_type}."
 msgstr ""
 
-msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
+msgid "If your HTTP repository is not publicly accessible, add your credentials."
 msgstr ""
 
 msgid "ImageDiffViewer|2-up"
@@ -6770,6 +6767,9 @@ msgid "Part of merge request changes"
 msgstr ""
 
 msgid "Password"
+msgstr ""
+
+msgid "Password (optional)"
 msgstr ""
 
 msgid "Password authentication is unavailable."
@@ -10793,9 +10793,6 @@ msgid "UserProfile|Your projects can be available publicly, internally, or priva
 msgstr ""
 
 msgid "Username (optional)"
-msgstr ""
-
-msgid "Username and Password"
 msgstr ""
 
 msgid "Username is already taken."
