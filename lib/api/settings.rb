@@ -168,7 +168,9 @@ module API
         optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       end
 
-      optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id
+      optional_attributes = [*::ApplicationSettingsHelper.visible_attributes,
+                             *::ApplicationSettingsHelper.external_authorization_service_attributes,
+                             :performance_bar_allowed_group_id]
 
       if Gitlab.ee?
         optional_attributes += EE::ApplicationSettingsHelper.possible_licensed_attributes

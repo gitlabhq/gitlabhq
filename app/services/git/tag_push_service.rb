@@ -11,7 +11,11 @@ module Git
       @push_data = build_push_data
 
       EventCreateService.new.push(project, current_user, push_data)
-      Ci::CreatePipelineService.new(project, current_user, push_data).execute(:push, pipeline_options)
+
+      if params.fetch(:create_pipelines, true)
+        Ci::CreatePipelineService.new(project, current_user, push_data)
+          .execute(:push, pipeline_options)
+      end
 
       project.execute_hooks(push_data.dup, :tag_push_hooks)
       project.execute_services(push_data.dup, :tag_push_hooks)

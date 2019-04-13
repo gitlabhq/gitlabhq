@@ -75,6 +75,14 @@ describe('diffs/components/app', () => {
     expect(wrapper.contains('.container-limited.limit-container-width')).toBe(false);
   });
 
+  it('does not add container-limiting classes when isFluidLayout', () => {
+    createComponent({ isFluidLayout: true }, ({ state }) => {
+      state.diffs.isParallelView = false;
+    });
+
+    expect(wrapper.contains('.container-limited.limit-container-width')).toBe(false);
+  });
+
   it('displays loading icon on loading', () => {
     createComponent({}, ({ state }) => {
       state.diffs.isLoading = true;

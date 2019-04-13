@@ -92,6 +92,28 @@ describe Admin::ApplicationSettingsController do
       expect(response).to redirect_to(admin_application_settings_path)
       expect(ApplicationSetting.current.default_project_creation).to eq(::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
     end
+
+    context 'external policy classification settings' do
+      let(:settings) do
+        {
+          external_authorization_service_enabled: true,
+          external_authorization_service_url: 'https://custom.service/',
+          external_authorization_service_default_label: 'default',
+          external_authorization_service_timeout: 3,
+          external_auth_client_cert: File.read('spec/fixtures/passphrase_x509_certificate.crt'),
+          external_auth_client_key: File.read('spec/fixtures/passphrase_x509_certificate_pk.key'),
+          external_auth_client_key_pass: "5iveL!fe"
+        }
+      end
+
+      it 'updates settings when the feature is available' do
+        put :update, params: { application_setting: settings }
+
+        settings.each do |attribute, value|
+          expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
+        end
+      end
+    end
   end
 
   describe 'PUT #reset_registration_token' do

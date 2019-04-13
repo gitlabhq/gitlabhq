@@ -146,6 +146,7 @@ class Project < ApplicationRecord
   has_one :pipelines_email_service
   has_one :irker_service
   has_one :pivotaltracker_service
+  has_one :hipchat_service
   has_one :flowdock_service
   has_one :assembla_service
   has_one :asana_service
@@ -2033,6 +2034,11 @@ class Project < ApplicationRecord
 
   def branch_allows_collaboration?(user, branch_name)
     fetch_branch_allows_collaboration(user, branch_name)
+  end
+
+  def external_authorization_classification_label
+    super || ::Gitlab::CurrentSettings.current_application_settings
+               .external_authorization_service_default_label
   end
 
   def licensed_features

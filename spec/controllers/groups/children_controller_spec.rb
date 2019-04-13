@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Groups::ChildrenController do
+  include ExternalAuthorizationServiceHelpers
+
   let(:group) { create(:group, :public) }
   let(:user) { create(:user) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
@@ -315,6 +317,16 @@ describe Groups::ChildrenController do
             expect(response).to have_gitlab_http_status(200)
           end
         end
+      end
+    end
+
+    context 'external authorization' do
+      it 'works when external authorization service is enabled' do
+        enable_external_authorization_service_check
+
+        get :index, params: { group_id: group }, format: :json
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

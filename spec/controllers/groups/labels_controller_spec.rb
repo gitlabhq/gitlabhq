@@ -37,6 +37,12 @@ describe Groups::LabelsController do
         expect(label_ids).to match_array([group_label_1.title, subgroup_label_1.title])
       end
     end
+
+    context 'external authorization' do
+      subject { get :index, params: { group_id: group.to_param } }
+
+      it_behaves_like 'disabled when using an external authorization service'
+    end
   end
 
   describe 'POST #toggle_subscription' do
