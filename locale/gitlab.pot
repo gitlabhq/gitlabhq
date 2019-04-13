@@ -9559,6 +9559,9 @@ msgstr ""
 msgid "Toggle Sidebar"
 msgstr ""
 
+msgid "Toggle backtrace"
+msgstr ""
+
 msgid "Toggle comments for this file"
 msgstr ""
 

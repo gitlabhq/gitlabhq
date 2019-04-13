@@ -165,7 +165,10 @@ module Gitlab
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
 
-      add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc)
+      if peek_enabled?
+        add_call_details(feature: "#{service}##{rpc}", duration: duration, request: request_hash, rpc: rpc,
+                         backtrace: Gitlab::Profiler.clean_backtrace(caller))
+      end
     end
 
     def self.query_time
@@ -350,15 +353,17 @@ module Gitlab
       Gitlab::SafeRequestStore["gitaly_call_permitted"] = 0
     end
 
-    def self.add_call_details(details)
-      return unless Gitlab::SafeRequestStore[:peek_enabled]
+    def self.peek_enabled?
+      Gitlab::SafeRequestStore[:peek_enabled]
+    end
 
+    def self.add_call_details(details)
       Gitlab::SafeRequestStore['gitaly_call_details'] ||= []
       Gitlab::SafeRequestStore['gitaly_call_details'] << details
     end
 
     def self.list_call_details
-      return [] unless Gitlab::SafeRequestStore[:peek_enabled]
+      return [] unless peek_enabled?
 
       Gitlab::SafeRequestStore['gitaly_call_details'] || []
     end
