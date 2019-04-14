@@ -1977,7 +1977,7 @@ describe Gitlab::Git::Repository, :seed_helper do
         expect(compare.commits.count).to be > 0
       end
 
-      it 'returns nil when source ref does not exist' do
+      it 'returns empty commits when source ref does not exist' do
         compare = repository.compare_source_branch('master', repository, 'non-existent-branch', straight: false)
 
         expect(compare.commits).to be_empty

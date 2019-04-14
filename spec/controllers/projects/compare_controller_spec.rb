@@ -82,7 +82,7 @@ describe Projects::CompareController do
         show_request
 
         expect(response).to be_success
-        expect(assigns(:diffs).diff_files.to_a).to eq([])
+        expect(assigns(:diffs)).to eq([])
         expect(assigns(:commits)).to eq([])
       end
     end
