@@ -733,8 +733,6 @@ module Gitlab
 
       def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
         if source_repository == self
-          return unless commit(source_branch_name).present?
-
           return Gitlab::Git::Compare.new(self, target_branch_name, source_branch_name, straight: straight)
         end
 

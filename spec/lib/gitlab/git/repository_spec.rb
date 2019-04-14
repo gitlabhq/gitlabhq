@@ -1980,7 +1980,7 @@ describe Gitlab::Git::Repository, :seed_helper do
       it 'returns nil when source ref does not exist' do
         compare = repository.compare_source_branch('master', repository, 'non-existent-branch', straight: false)
 
-        expect(compare).to be_nil
+        expect(compare.commits).to be_empty
       end
     end
 
