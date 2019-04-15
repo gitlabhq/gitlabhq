@@ -5069,6 +5069,9 @@ msgstr ""
 msgid "LabelSelect|%{labelsString}, and %{remainingLabelCount} more"
 msgstr ""
 
+msgid "LabelSelect|Labels"
+msgstr ""
+
 msgid "Labels"
 msgstr ""
 
