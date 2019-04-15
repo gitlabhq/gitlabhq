@@ -20,7 +20,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
       let!(:deployment) { create(:deployment, deployable: build) }
 
       context 'and a cluster to deploy to' do
-        let(:cluster) { create(:cluster, projects: [build.project]) }
+        let(:cluster) { create(:cluster, :group) }
 
         before do
           allow(build.deployment).to receive(:cluster).and_return(cluster)
@@ -30,6 +30,12 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
 
         context 'and a namespace is already created for this project' do
           let!(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, project: build.project) }
+
+          it { is_expected.to be_falsey }
+        end
+
+        context 'and cluster is project type' do
+          let(:cluster) { create(:cluster, :project) }
 
           it { is_expected.to be_falsey }
         end
@@ -52,7 +58,7 @@ describe Gitlab::Ci::Build::Prerequisite::KubernetesNamespace do
     subject { described_class.new(build).complete! }
 
     context 'completion is required' do
-      let(:cluster) { create(:cluster, projects: [build.project]) }
+      let(:cluster) { create(:cluster, :group) }
 
       before do
         allow(build.deployment).to receive(:cluster).and_return(cluster)
