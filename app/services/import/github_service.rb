@@ -7,7 +7,7 @@ module Import
 
     def execute(access_params, provider)
       unless authorized?
-        return error('This namespace has already been taken! Please choose another one.', :unprocessable_entity)
+        return error(_('This namespace has already been taken! Please choose another one.'), :unprocessable_entity)
       end
 
       project = Gitlab::LegacyGithubImport::ProjectCreator
