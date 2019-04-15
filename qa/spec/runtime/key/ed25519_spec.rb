@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Runtime::Key::ED25519 do
   describe '#public_key' do
     subject { described_class.new.public_key }

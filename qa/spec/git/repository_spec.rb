@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Git::Repository do
   include Helpers::StubENV
 

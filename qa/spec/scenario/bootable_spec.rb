@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Scenario::Bootable do
   subject do
     Class.new(QA::Scenario::Template)
