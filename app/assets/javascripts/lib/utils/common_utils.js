@@ -724,6 +724,18 @@ export const NavigationType = {
  */
 export const isEE = () => window.gon && window.gon.ee;
 
+/**
+ * Checks if the given Label has a special syntax `::` in
+ * it's title.
+ *
+ * Expected Label to be an Object with `title` as a key:
+ *   { title: 'LabelTitle', ...otherProperties };
+ *
+ * @param {Object} label
+ * @returns Boolean
+ */
+export const isScopedLabel = ({ title = '' }) => title.indexOf('::') !== -1;
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),

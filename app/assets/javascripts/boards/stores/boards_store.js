@@ -9,6 +9,10 @@ import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
 
 const boardsStore = {
   disabled: false,
+  scopedLabels: {
+    helpLink: '',
+    enabled: false,
+  },
   filter: {
     path: '',
   },
