@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe Projects::JobsController, :clean_gitlab_redis_shared_state do
