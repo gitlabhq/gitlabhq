@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Clusters::Applications::CheckUninstallProgressService do
   RESCHEDULE_PHASES = Gitlab::Kubernetes::Pod::PHASES - [Gitlab::Kubernetes::Pod::SUCCEEDED, Gitlab::Kubernetes::Pod::FAILED].freeze
 
-  let(:application) { create(:clusters_applications_helm, :uninstalling) }
+  let(:application) { create(:clusters_applications_prometheus, :uninstalling) }
   let(:service) { described_class.new(application) }
   let(:phase) { Gitlab::Kubernetes::Pod::UNKNOWN }
   let(:errors) { nil }
@@ -95,12 +95,12 @@ describe Clusters::Applications::CheckUninstallProgressService do
         service.execute
 
         expect(application).to be_uninstall_errored
-        expect(application.status_reason).to eq('Operation failed. Check pod logs for uninstall-helm for more details.')
+        expect(application.status_reason).to eq('Operation failed. Check pod logs for uninstall-prometheus for more details.')
       end
     end
 
     context 'when timed out' do
-      let(:application) { create(:clusters_applications_helm, :timeouted, :uninstalling) }
+      let(:application) { create(:clusters_applications_prometheus, :timeouted, :uninstalling) }
 
       before do
         expect(service).to receive(:installation_phase).once.and_return(phase)
@@ -112,7 +112,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
         service.execute
 
         expect(application).to be_uninstall_errored
-        expect(application.status_reason).to eq('Operation timed out. Check pod logs for uninstall-helm for more details.')
+        expect(application.status_reason).to eq('Operation timed out. Check pod logs for uninstall-prometheus for more details.')
       end
     end
 
