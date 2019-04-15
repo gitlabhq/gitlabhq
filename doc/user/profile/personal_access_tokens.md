@@ -40,10 +40,11 @@ the following table.
 | Scope | Description |
 | ----- | ----------- |
 |`read_user` | Allows access to the read-only endpoints under `/users`. Essentially, any of the `GET` requests in the [Users API][users] are allowed ([introduced][ce-5951] in GitLab 8.15). |
-| `api` | Grants complete access to the API and Container Registry (read/write) ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951) in GitLab 8.15). Required for accessing Git repositories over HTTP when 2FA is enabled. |
+| `api` | Grants complete access to the API and Container Registry (read/write) ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5951) in GitLab 8.15). |
 | `read_registry` | Allows to read (pull) [container registry] images if a project is private and authorization is required ([introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845) in GitLab 9.3). |
 | `sudo` | Allows performing API actions as any user in the system (if the authenticated user is an admin) ([introduced][ce-14838] in GitLab 10.2). |
-| `read_repository` | Allows read-access (pull) to the repository through git clone. |
+| `read_repository` | Allows read-only access (pull) to the repository through git clone. |
+| `write_repository` | Allows read-write access (pull, push) to the repository through git clone. Required for accessing Git repositories over HTTP when 2FA is enabled. |
 
 [2fa]: ../account/two_factor_authentication.md
 [api]: ../../api/README.md
