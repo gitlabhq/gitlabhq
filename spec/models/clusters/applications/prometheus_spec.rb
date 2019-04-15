@@ -11,6 +11,23 @@ describe Clusters::Applications::Prometheus do
   include_examples 'cluster application helm specs', :clusters_applications_prometheus
   include_examples 'cluster application initial status specs'
 
+  describe 'after_destroy' do
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+    let!(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+    let!(:prometheus_service) { project.create_prometheus_service(active: true) }
+
+    it 'deactivates prometheus_service after destroy' do
+      expect do
+        application.destroy
+
+        prometheus_service.reload
+      end.to change(prometheus_service, :active)
+
+      expect(prometheus_service).not_to be_active
+    end
+  end
+
   describe 'transition to installed' do
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
