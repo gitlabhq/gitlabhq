@@ -74,6 +74,26 @@ describe Projects::TreeController do
     end
   end
 
+  describe 'GET show with whitespace in ref' do
+    render_views
+
+    let(:id) { "this ref/api/responses" }
+
+    it 'does not call make a Gitaly request' do
+      allow(::Gitlab::GitalyClient).to receive(:call).and_call_original
+      expect(::Gitlab::GitalyClient).not_to receive(:call).with(anything, :commit_service, :find_commit, anything, anything)
+
+      get(:show,
+          params: {
+            namespace_id: project.namespace.to_param,
+            project_id: project,
+            id: id
+          })
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
   describe 'GET show with blob path' do
     render_views
 
