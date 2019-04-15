@@ -11,9 +11,11 @@ module Ci
     def execute
       prerequisites.each(&:complete!)
 
-      unless build.enqueue
-        build.drop!(:unmet_prerequisites)
-      end
+      build.enqueue!
+    rescue => e
+      Gitlab::Sentry.track_acceptable_exception(e, extra: { build_id: build.id })
+
+      build.drop(:unmet_prerequisites)
     end
 
     private
