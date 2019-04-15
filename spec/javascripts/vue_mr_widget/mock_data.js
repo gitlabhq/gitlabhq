@@ -233,6 +233,7 @@ export default {
   merge_commit_path:
     'http://localhost:3000/root/acets-app/commit/53027d060246c8f47e4a9310fb332aa52f221775',
   troubleshooting_docs_path: 'help',
+  merge_request_pipelines_docs_path: '/help/ci/merge_request_pipelines/index.md',
   squash: true,
 };
 

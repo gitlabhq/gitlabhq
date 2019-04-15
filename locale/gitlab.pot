@@ -9755,6 +9755,9 @@ msgstr ""
 msgid "mrWidget|Fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
 
+msgid "mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result"
+msgstr ""
+
 msgid "mrWidget|If the %{branch} branch exists in your local repository, you can merge this merge request manually using the"
 msgstr ""
 
@@ -9846,6 +9849,9 @@ msgid "mrWidget|The source branch will be deleted"
 msgstr ""
 
 msgid "mrWidget|The source branch will not be deleted"
+msgstr ""
+
+msgid "mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging"
 msgstr ""
 
 msgid "mrWidget|There are merge conflicts"
