@@ -1596,6 +1596,32 @@ describe API::MergeRequests do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_iid" do
+    context 'updates force_remove_source_branch properly' do
+      it 'sets to false' do
+        merge_request.update(merge_params: { 'force_remove_source_branch' => true } )
+
+        expect(merge_request.force_remove_source_branch?).to be_truthy
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: "close", remove_source_branch: false }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['state']).to eq('closed')
+        expect(json_response['force_remove_source_branch']).to be_falsey
+      end
+
+      it 'sets to true' do
+        merge_request.update(merge_params: { 'force_remove_source_branch' => false } )
+
+        expect(merge_request.force_remove_source_branch?).to be_falsey
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: "close", remove_source_branch: true }
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['state']).to eq('closed')
+        expect(json_response['force_remove_source_branch']).to be_truthy
+      end
+    end
+
     context "to close a MR" do
       it "returns merge_request" do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), params: { state_event: "close" }
