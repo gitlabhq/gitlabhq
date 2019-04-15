@@ -10,10 +10,10 @@ module MergeRequests
       end
 
       if merge_request.squash_in_progress?
-        return error('Squash task canceled: another squash is already in progress.')
+        return error(s_('MergeRequests|Squash task canceled: another squash is already in progress.'))
       end
 
-      squash! || error('Failed to squash. Should be done manually.')
+      squash! || error(s_('MergeRequests|Failed to squash. Should be done manually.'))
     end
 
     private

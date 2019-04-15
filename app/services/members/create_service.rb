@@ -5,11 +5,11 @@ module Members
     DEFAULT_LIMIT = 100
 
     def execute(source)
-      return error('No users specified.') if params[:user_ids].blank?
+      return error(s_('AddMember|No users specified.')) if params[:user_ids].blank?
 
       user_ids = params[:user_ids].split(',').uniq
 
-      return error("Too many users specified (limit is #{user_limit})") if
+      return error(s_("AddMember|Too many users specified (limit is %{user_limit})") % { user_limit: user_limit }) if
         user_limit && user_ids.size > user_limit
 
       members = source.add_users(

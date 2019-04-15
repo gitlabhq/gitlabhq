@@ -247,12 +247,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 closed issue"
-msgid_plural "%d closed issues"
+msgid_plural "%{issues} closed issues"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 closed merge request"
-msgid_plural "%d closed merge requests"
+msgid_plural "%{merge_requests} closed merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -260,17 +260,17 @@ msgid "1 day"
 msgstr ""
 
 msgid "1 merged merge request"
-msgid_plural "%d merged merge requests"
+msgid_plural "%{merge_requests} merged merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 open issue"
-msgid_plural "%d open issues"
+msgid_plural "%{issues} open issues"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 open merge request"
-msgid_plural "%d open merge requests"
+msgid_plural "%{merge_requests} open merge requests"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -523,6 +523,12 @@ msgid "Add user(s) to the group:"
 msgstr ""
 
 msgid "Add users to group"
+msgstr ""
+
+msgid "AddMember|No users specified."
+msgstr ""
+
+msgid "AddMember|Too many users specified (limit is %{user_limit})"
 msgstr ""
 
 msgid "Added at"
@@ -2753,6 +2759,12 @@ msgstr ""
 msgid "Create your first page"
 msgstr ""
 
+msgid "CreateGroup|You don’t have permission to create a subgroup in this group."
+msgstr ""
+
+msgid "CreateGroup|You don’t have permission to create groups."
+msgstr ""
+
 msgid "CreateTag|Tag"
 msgstr ""
 
@@ -2934,6 +2946,21 @@ msgid "Delete source branch"
 msgstr ""
 
 msgid "Delete this attachment"
+msgstr ""
+
+msgid "DeleteProject|Failed to remove project repository. Please try again or contact administrator."
+msgstr ""
+
+msgid "DeleteProject|Failed to remove some tags in project container registry. Please try again or contact administrator."
+msgstr ""
+
+msgid "DeleteProject|Failed to remove wiki repository. Please try again or contact administrator."
+msgstr ""
+
+msgid "DeleteProject|Failed to restore project repository. Please contact the administrator."
+msgstr ""
+
+msgid "DeleteProject|Failed to restore wiki repository. Please contact the administrator."
 msgstr ""
 
 msgid "Deleted"
@@ -4664,6 +4691,12 @@ msgstr ""
 msgid "Import/Export illustration"
 msgstr ""
 
+msgid "ImportProjects|Blocked import URL: %{message}"
+msgstr ""
+
+msgid "ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}"
+msgstr ""
+
 msgid "ImportProjects|Importing the project failed"
 msgstr ""
 
@@ -4671,6 +4704,12 @@ msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr ""
 
 msgid "ImportProjects|Select the projects you want to import"
+msgstr ""
+
+msgid "ImportProjects|The remote data could not be imported."
+msgstr ""
+
+msgid "ImportProjects|The repository could not be created."
 msgstr ""
 
 msgid "ImportProjects|Updating the imported projects failed"
@@ -5406,6 +5445,9 @@ msgstr ""
 msgid "MergeRequests|Add a reply"
 msgstr ""
 
+msgid "MergeRequests|Failed to squash. Should be done manually."
+msgstr ""
+
 msgid "MergeRequests|Jump to next unresolved discussion"
 msgstr ""
 
@@ -5416,6 +5458,9 @@ msgid "MergeRequests|Resolve this discussion in a new issue"
 msgstr ""
 
 msgid "MergeRequests|Saving the comment failed"
+msgstr ""
+
+msgid "MergeRequests|Squash task canceled: another squash is already in progress."
 msgstr ""
 
 msgid "MergeRequests|Toggle comments for this file"
@@ -5623,6 +5668,12 @@ msgid "Move"
 msgstr ""
 
 msgid "Move issue"
+msgstr ""
+
+msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
+msgstr ""
+
+msgid "MoveIssue|Cannot move issue to project it originates from!"
 msgstr ""
 
 msgid "Multiple model types found: %{model_types}"
@@ -7049,6 +7100,15 @@ msgid "Promote to Group Milestone"
 msgstr ""
 
 msgid "Promote to group label"
+msgstr ""
+
+msgid "PromoteMilestone|Only project milestones can be promoted."
+msgstr ""
+
+msgid "PromoteMilestone|Project does not belong to a group."
+msgstr ""
+
+msgid "PromoteMilestone|Promotion failed - %{message}"
 msgstr ""
 
 msgid "Prompt users to upload SSH keys"
@@ -8533,6 +8593,30 @@ msgstr ""
 msgid "Test failed."
 msgstr ""
 
+msgid "TestHooks|Ensure one of your projects has merge requests."
+msgstr ""
+
+msgid "TestHooks|Ensure the project has CI jobs."
+msgstr ""
+
+msgid "TestHooks|Ensure the project has CI pipelines."
+msgstr ""
+
+msgid "TestHooks|Ensure the project has at least one commit."
+msgstr ""
+
+msgid "TestHooks|Ensure the project has issues."
+msgstr ""
+
+msgid "TestHooks|Ensure the project has merge requests."
+msgstr ""
+
+msgid "TestHooks|Ensure the project has notes."
+msgstr ""
+
+msgid "TestHooks|Ensure the wiki is enabled and has pages."
+msgstr ""
+
 msgid "Thank you for your report. A GitLab administrator will look into it shortly."
 msgstr ""
 
@@ -9349,6 +9433,39 @@ msgstr ""
 msgid "Transfer project"
 msgstr ""
 
+msgid "TransferGroup|Database is not supported."
+msgstr ""
+
+msgid "TransferGroup|Group is already a root group."
+msgstr ""
+
+msgid "TransferGroup|Group is already associated to the parent group."
+msgstr ""
+
+msgid "TransferGroup|The parent group already has a subgroup with the same path."
+msgstr ""
+
+msgid "TransferGroup|Transfer failed: %{error_message}"
+msgstr ""
+
+msgid "TransferGroup|You don't have enough permissions."
+msgstr ""
+
+msgid "TransferProject|Cannot move project"
+msgstr ""
+
+msgid "TransferProject|Please select a new namespace for your project."
+msgstr ""
+
+msgid "TransferProject|Project cannot be transferred, because tags are present in its container registry"
+msgstr ""
+
+msgid "TransferProject|Project with same name or path in target namespace already exists"
+msgstr ""
+
+msgid "TransferProject|Transfer failed, please contact an admin."
+msgstr ""
+
 msgid "Tree view"
 msgstr ""
 
@@ -9503,6 +9620,18 @@ msgid "Update your group name, description, avatar, and visibility."
 msgstr ""
 
 msgid "Update your project name, topics, description and avatar."
+msgstr ""
+
+msgid "UpdateProject|Cannot rename project because it contains container registry tags!"
+msgstr ""
+
+msgid "UpdateProject|Could not set the default branch"
+msgstr ""
+
+msgid "UpdateProject|New visibility level not allowed!"
+msgstr ""
+
+msgid "UpdateProject|Project could not be updated!"
 msgstr ""
 
 msgid "Updating"
@@ -10050,6 +10179,9 @@ msgstr ""
 msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
 msgstr ""
 
+msgid "You are attempting to delete a file that has been previously updated."
+msgstr ""
+
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
@@ -10450,6 +10582,12 @@ msgstr ""
 msgid "estimateCommand|%{slash_command} will update the estimated time with the latest command."
 msgstr ""
 
+msgid "expired on %{milestone_due_date}"
+msgstr ""
+
+msgid "expires on %{milestone_due_date}"
+msgstr ""
+
 msgid "failed"
 msgstr ""
 
@@ -10499,6 +10637,9 @@ msgid "in project %{link_to_project}"
 msgstr ""
 
 msgid "index"
+msgstr ""
+
+msgid "invalid milestone state `%{state}`"
 msgstr ""
 
 msgid "is not a valid X509 certificate."
@@ -10852,6 +10993,12 @@ msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr ""
 
 msgid "started"
+msgstr ""
+
+msgid "started on %{milestone_start_date}"
+msgstr ""
+
+msgid "starts on %{milestone_start_date}"
 msgstr ""
 
 msgid "stuck"

@@ -61,11 +61,11 @@ module Projects
       flush_caches(@project)
 
       unless rollback_repository(removal_path(repo_path), repo_path)
-        raise_error('Failed to restore project repository. Please contact the administrator.')
+        raise_error(s_('DeleteProject|Failed to restore project repository. Please contact the administrator.'))
       end
 
       unless rollback_repository(removal_path(wiki_path), wiki_path)
-        raise_error('Failed to restore wiki repository. Please contact the administrator.')
+        raise_error(s_('DeleteProject|Failed to restore wiki repository. Please contact the administrator.'))
       end
     end
 
@@ -81,11 +81,11 @@ module Projects
 
     def trash_repositories!
       unless remove_repository(repo_path)
-        raise_error('Failed to remove project repository. Please try again or contact administrator.')
+        raise_error(s_('DeleteProject|Failed to remove project repository. Please try again or contact administrator.'))
       end
 
       unless remove_repository(wiki_path)
-        raise_error('Failed to remove wiki repository. Please try again or contact administrator.')
+        raise_error(s_('DeleteProject|Failed to remove wiki repository. Please try again or contact administrator.'))
       end
     end
 
@@ -148,7 +148,7 @@ module Projects
 
     def attempt_destroy_transaction(project)
       unless remove_registry_tags
-        raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
+        raise_error(s_('DeleteProject|Failed to remove some tags in project container registry. Please try again or contact administrator.'))
       end
 
       project.leave_pool_repository
