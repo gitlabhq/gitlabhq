@@ -424,6 +424,12 @@
     margin: 0;
     line-height: $gl-line-height;
   }
+
+  &.board-label {
+    .scoped-label {
+      top: 1px;
+    }
+  }
 }
 
 // Label inside title of Delete Label Modal

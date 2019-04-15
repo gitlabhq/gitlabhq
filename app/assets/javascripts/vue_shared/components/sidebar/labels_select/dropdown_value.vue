@@ -1,6 +1,7 @@
 <script>
 import DropdownValueScopedLabel from './dropdown_value_scoped_label.vue';
 import DropdownValueRegularLabel from './dropdown_value_regular_label.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
   components: {
@@ -45,8 +46,8 @@ export default {
     scopedLabelsDescription({ description = '' }) {
       return `<span class="font-weight-bold scoped-label-tooltip-title">Scoped label</span><br />${description}`;
     },
-    showScopedLabels({ title = '' }) {
-      return this.enableScopedLabels && title.indexOf('::') !== -1;
+    showScopedLabels(label) {
+      return this.enableScopedLabels && isScopedLabel(label);
     },
   },
 };

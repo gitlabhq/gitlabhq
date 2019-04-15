@@ -9,6 +9,8 @@ import eventHub from '../eventhub';
 import IssueDueDate from './issue_due_date.vue';
 import IssueTimeEstimate from './issue_time_estimate.vue';
 import boardsStore from '../stores/boards_store';
+import IssueCardInnerScopedLabel from './issue_card_inner_scoped_label.vue';
+import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
   components: {
@@ -17,6 +19,7 @@ export default {
     TooltipOnTruncate,
     IssueDueDate,
     IssueTimeEstimate,
+    IssueCardInnerScopedLabel,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -96,6 +99,9 @@ export default {
     orderedLabels() {
       return _.sortBy(this.issue.labels, 'title');
     },
+    helpLink() {
+      return boardsStore.scopedLabels.helpLink;
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -159,6 +165,9 @@ export default {
         color: label.textColor,
       };
     },
+    showScopedLabel(label) {
+      return boardsStore.scopedLabels.enabled && isScopedLabel(label);
+    },
   },
 };
 </script>
@@ -179,19 +188,29 @@ export default {
       </h4>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels prepend-top-4 d-flex flex-wrap">
-      <button
-        v-for="label in orderedLabels"
-        v-if="showLabel(label)"
-        :key="label.id"
-        v-gl-tooltip
-        :style="labelStyle(label)"
-        :title="label.description"
-        class="badge color-label append-right-4 prepend-top-4"
-        type="button"
-        @click="filterByLabel(label)"
-      >
-        {{ label.title }}
-      </button>
+      <template v-for="label in orderedLabels" v-if="showLabel(label)">
+        <issue-card-inner-scoped-label
+          v-if="showScopedLabel(label)"
+          :key="label.id"
+          :label="label"
+          :label-style="labelStyle(label)"
+          :scoped-labels-documentation-link="helpLink"
+          @scoped-label-click="filterByLabel($event)"
+        />
+
+        <button
+          v-else
+          :key="label.id"
+          v-gl-tooltip
+          :style="labelStyle(label)"
+          :title="label.description"
+          class="badge color-label append-right-4 prepend-top-4"
+          type="button"
+          @click="filterByLabel(label)"
+        >
+          {{ label.title }}
+        </button>
+      </template>
     </div>
     <div class="board-card-footer d-flex justify-content-between align-items-end">
       <div

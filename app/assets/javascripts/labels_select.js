@@ -11,7 +11,7 @@ import CreateLabelDropdown from './create_label';
 import flash from './flash';
 import ModalStore from './boards/stores/modal_store';
 import boardsStore from './boards/stores/boards_store';
-import { isEE } from '~/lib/utils/common_utils';
+import { isEE, isScopedLabel } from '~/lib/utils/common_utils';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -545,8 +545,6 @@ export default class LabelsSelect {
         '<% } %>',
       ].join(''),
     );
-
-    const isScopedLabel = label => label.title.indexOf('::') !== -1;
 
     const tpl = _.template(
       [
