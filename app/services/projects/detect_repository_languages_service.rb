@@ -29,7 +29,7 @@ module Projects
         set_detected_repository_languages
       end
 
-      project.repository_languages.reload
+      project.repository_languages.reset
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
