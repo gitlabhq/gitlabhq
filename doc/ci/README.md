@@ -38,30 +38,27 @@ implementing CI/CD. Auto DevOps:
 
 For complete control, you can manually configure GitLab CI/CD.
 
-### Usage
+### Configuration and Usage
 
-With basic knowledge of how GitLab CI/CD works, the following documentation extends your knowledge
-into more features:
+The following topics contain configuration and usage information for all features of GitLab CI/CD:
 
 | Topic                                                                                                                     | Description                                                                                |
 |:--------------------------------------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------|
 | [Creating and using CI/CD pipelines](pipelines.md)                                                                        | Understand, visualize, create, and use CI/CD pipelines.                                    |
-| [CI/CD Variables](variables/README.md)                                                                                    | How environment variables can be configured and made available in pipelines.               |
-| [Where variables can be used](variables/where_variables_can_be_used.md)                                                   | A deeper look into where and how CI/CD variables can be used.                              |
-| [User](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions      | Learn about the access levels a user can have for performing certain CI actions.           |
-| [Configuring GitLab Runners](runners/README.md)                                                                           | Documentation for configuring [GitLab Runner](https://docs.gitlab.com/runner/).            |
+| [CI/CD Variables](variables/README.md)                                                                                    | Configuring and using environment variables in pipelines.                                  |
+| [Where variables can be used](variables/where_variables_can_be_used.md)                                                   | Where and how CI/CD variables can be used.                                                 |
+| [User](../user/permissions.md#gitlab-cicd-permissions) and [job](../user/permissions.md#job-permissions) permissions      | User access levels for performing certain CI actions.                                      |
+| [Configuring GitLab Runners](runners/README.md)                                                                           | Configuring [GitLab Runner](https://docs.gitlab.com/runner/).                              |
 | [Environments and deployments](environments.md)                                                                           | Deploy the output of jobs into environments for reviewing, staging, and production.        |
-| [Job artifacts](../user/project/pipelines/job_artifacts.md)                                                               | Learn about the output of jobs.                                                            |
-| [Cache dependencies in GitLab CI/CD](caching/index.md)                                                                    | Discover how to speed up pipelines using caching.                                          |
+| [Review Apps](review_apps/index.md)                                                                                       | Configure GitLab CI/CD to preview code changes.                                            |
+| [Job artifacts](../user/project/pipelines/job_artifacts.md)                                                               | Using the output of jobs.                                                                  |
+| [Cache dependencies in GitLab CI/CD](caching/index.md)                                                                    | Speed up pipelines using caching.                                                          |
 | [Using Git submodules with GitLab CI](git_submodules.md)                                                                  | How to run your CI jobs when using Git submodules.                                         |
-| [Pipelines for merge requests](merge_request_pipelines/index.md)                                                          | Create pipelines specifically for merge requests.                                          |
 | [Using SSH keys with GitLab CI/CD](ssh_keys/README.md)                                                                    | Use SSH keys in your build environment.                                                    |
 | [Triggering pipelines through the API](triggers/README.md)                                                                | Use the GitLab API to trigger a pipeline.                                                  |
-| [Pipeline schedules](../user/project/pipelines/schedules.md)                                                              | Trigger pipelines on a schedule.                                                           |
 | [Connecting GitLab with a Kubernetes cluster](../user/project/clusters/index.md)                                          | Integrate one or more Kubernetes clusters to your project.                                 |
 | [ChatOps](chatops/README.md)                                                                                              | Trigger CI jobs from chat, with results sent back to the channel.                          |
 | [Interactive web terminals](interactive_web_terminal/index.md)                                                            | Open an interactive web terminal to debug the running jobs.                                |
-| [Review Apps](review_apps/index.md)                                                                                       | Configure GitLab CI/CD to preview code changes in a per-branch basis.                      |
 | [Optimizing GitLab for large repositories](large_repositories/index.md)                                                   | Useful tips on how to optimize GitLab and GitLab Runner for big repositories.              |
 | [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html) **[PREMIUM]**                                 | Check the current health and status of each CI/CD environment running on Kubernetes.       |
 | [GitLab CI/CD for external repositories](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/index.html) **[PREMIUM]** | Get the benefits of GitLab CI/CD combined with repositories in GitHub and BitBucket Cloud. |
