@@ -78,13 +78,15 @@ stages:
 
 .use-pg: &use-pg
   services:
-    - postgres:9.6
-    - redis:alpine
+    - name: postgres:9.6
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
 
 .use-pg-10: &use-pg-10
   services:
-    - postgres:10.0
-    - redis:alpine
+    - name: postgres:10.0
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
 
 .use-mysql: &use-mysql
   services:
