@@ -1,0 +1,60 @@
+include:
+  - local: /lib/gitlab/ci/templates/Code-Quality.gitlab-ci.yml
+
+code_quality:
+  extends: .dedicated-runner
+  # gitlab-org runners set `privileged: false` but we need to have it set to true
+  # since we're using Docker in Docker
+  tags: []
+  before_script: []
+  cache: {}
+  dependencies: []
+  variables:
+    SETUP_DB: "false"
+
+sast:
+  extends: .dedicated-runner
+  image: docker:stable
+  variables:
+    SAST_CONFIDENCE_LEVEL: 2
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  tags: []
+  before_script: []
+  cache: {}
+  dependencies: []
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
+  artifacts:
+    reports:
+      sast: gl-sast-report.json
+
+dependency_scanning:
+  extends: .dedicated-runner
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  tags: []
+  before_script: []
+  cache: {}
+  dependencies: []
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}"
+        --volume "$PWD:/code"
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
+  artifacts:
+    reports:
+      dependency_scanning: gl-dependency-scanning-report.json

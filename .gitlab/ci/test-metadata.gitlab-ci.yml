@@ -1,0 +1,82 @@
+.tests-metadata-state: &tests-metadata-state
+  extends: .dedicated-runner
+  variables:
+    TESTS_METADATA_S3_BUCKET: "gitlab-ce-cache"
+  before_script:
+    - source scripts/utils.sh
+  artifacts:
+    expire_in: 31d
+    paths:
+      - knapsack/
+      - rspec_flaky/
+      - rspec_profiling/
+
+retrieve-tests-metadata:
+  <<: *tests-metadata-state
+  stage: prepare
+  cache:
+    key: tests_metadata
+    policy: pull
+  script:
+    - mkdir -p knapsack/${CI_PROJECT_NAME}/
+    - wget -O $KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $KNAPSACK_RSPEC_SUITE_REPORT_PATH
+    - '[[ -f $KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
+    - mkdir -p rspec_flaky/
+    - mkdir -p rspec_profiling/
+    - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
+    - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
+  except:
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
+
+update-tests-metadata:
+  <<: *tests-metadata-state
+  stage: post-test
+  cache:
+    key: tests_metadata
+    paths:
+      - knapsack/
+      - rspec_flaky/
+    policy: push
+  script:
+    - retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document
+    - scripts/merge-reports ${KNAPSACK_RSPEC_SUITE_REPORT_PATH} knapsack/${CI_PROJECT_NAME}/rspec-pg_node_*.json
+    - scripts/merge-reports ${FLAKY_RSPEC_SUITE_REPORT_PATH} rspec_flaky/all_*_*.json
+    - FLAKY_RSPEC_GENERATE_REPORT=1 scripts/prune-old-flaky-specs ${FLAKY_RSPEC_SUITE_REPORT_PATH}
+    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $KNAPSACK_RSPEC_SUITE_REPORT_PATH'
+    - '[[ -z ${TESTS_METADATA_S3_BUCKET} ]] || scripts/sync-reports put $TESTS_METADATA_S3_BUCKET $FLAKY_RSPEC_SUITE_REPORT_PATH'
+    - rm -f knapsack/${CI_PROJECT_NAME}/*_node_*.json
+    - rm -f rspec_flaky/all_*.json rspec_flaky/new_*.json
+    - scripts/insert-rspec-profiling-data
+  only:
+    - master@gitlab-org/gitlab-ce
+    - master@gitlab-org/gitlab-ee
+    - master@gitlab/gitlabhq
+    - master@gitlab/gitlab-ee
+
+flaky-examples-check:
+  extends: .dedicated-runner
+  image: ruby:2.5-alpine
+  services: []
+  before_script: []
+  variables:
+    SETUP_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
+    NEW_FLAKY_SPECS_REPORT: rspec_flaky/report-new.json
+  stage: post-test
+  allow_failure: true
+  retry: 0
+  only:
+    - branches
+  except:
+    - master
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
+  artifacts:
+    expire_in: 30d
+    paths:
+      - rspec_flaky/
+  script:
+    - '[[ -f $NEW_FLAKY_SPECS_REPORT ]] || echo "{}" > ${NEW_FLAKY_SPECS_REPORT}'
+    - scripts/merge-reports ${NEW_FLAKY_SPECS_REPORT} rspec_flaky/new_*_*.json
+    - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT

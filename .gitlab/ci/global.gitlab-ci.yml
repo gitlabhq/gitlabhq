@@ -1,0 +1,62 @@
+.dedicated-runner:
+  retry:
+    max: 1 # This is confusing but this means "2 runs at max".
+    when:
+      - unknown_failure
+      - api_failure
+      - runner_system_failure
+  tags:
+    - gitlab-org
+
+.default-cache: &default-cache
+  key: "debian-stretch-ruby-2.5.3-node-10.x"
+  paths:
+    - vendor/ruby
+    - .yarn-cache/
+    - vendor/gitaly-ruby
+
+.dedicated-runner-default-cache:
+  extends: .dedicated-runner
+  cache:
+    <<: *default-cache
+
+# Jobs that only need to pull cache
+.dedicated-pull-cache-job:
+  extends: .dedicated-runner
+  cache:
+    <<: *default-cache
+    policy: pull
+  stage: test
+
+.dedicated-no-docs-pull-cache-job:
+  extends: .dedicated-pull-cache-job
+  except:
+    - /(^docs[\/-].*|.*-docs$)/
+
+.dedicated-no-docs-and-no-qa-pull-cache-job:
+  extends: .dedicated-pull-cache-job
+  except:
+    - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
+
+# Jobs that do not need a DB
+.dedicated-no-docs-no-db-pull-cache-job:
+  extends: .dedicated-no-docs-pull-cache-job
+  variables:
+    SETUP_DB: "false"
+
+.single-script-job-dedicated-runner:
+  extends: .dedicated-runner
+  image: ruby:2.5-alpine
+  stage: test
+  cache: {}
+  dependencies: []
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    # We don't clone the repo by using GIT_STRATEGY: none and only download the
+    # single script we need here so it's much faster than cloning.
+    - export SCRIPT_NAME="${SCRIPT_NAME:-$CI_JOB_NAME}"
+    - apk add --update openssl
+    - wget $CI_PROJECT_URL/raw/$CI_COMMIT_SHA/scripts/$SCRIPT_NAME
+    - chmod 755 $(basename $SCRIPT_NAME)

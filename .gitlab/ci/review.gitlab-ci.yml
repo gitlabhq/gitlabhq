@@ -1,0 +1,232 @@
+.review-only: &review-only
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+    kubernetes: active
+  except:
+    refs:
+      - master
+      - /(^docs[\/-].*|.*-docs$)/
+
+.review-schedules-only: &review-schedules-only
+  only:
+    refs:
+      - schedules@gitlab-org/gitlab-ce
+      - schedules@gitlab-org/gitlab-ee
+    kubernetes: active
+    variables:
+      - $REVIEW_APP_CLEANUP
+  except:
+    refs:
+      - tags
+      - /(^docs[\/-].*|.*-docs$)/
+
+.review-base: &review-base
+  extends: .dedicated-runner
+  <<: *review-only
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  stage: test
+  cache: {}
+  dependencies: []
+  environment: &review-environment
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+  before_script: []
+
+.review-docker: &review-docker
+  <<: *review-base
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine
+  services:
+    - docker:stable-dind
+  tags:
+    - gitlab-org
+    - docker
+  variables: &review-docker-variables
+    GIT_DEPTH: "1"
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+    LATEST_QA_IMAGE: "gitlab/${CI_PROJECT_NAME}-qa:nightly"
+    QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/${CI_PROJECT_NAME}-qa:${CI_COMMIT_REF_SLUG}"
+
+build-qa-image:
+  <<: *review-docker
+  variables:
+    <<: *review-docker-variables
+    GIT_DEPTH: "20"
+  stage: prepare
+  script:
+    - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} ./qa/
+    - echo "${CI_JOB_TOKEN}" | docker login --username gitlab-ci-token --password-stdin ${CI_REGISTRY}
+    - time docker push ${QA_IMAGE}
+
+.review-build-cng-base: &review-build-cng-base
+  image: ruby:2.5-alpine
+  stage: test
+  before_script: []
+  dependencies: []
+  cache: {}
+  variables:
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+  script:
+    - apk add --update openssl curl jq
+    - gem install gitlab --no-document
+    - source ./scripts/review_apps/review-apps.sh
+    - wait_for_job_to_be_done "gitlab:assets:compile"
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
+
+review-build-cng:
+  <<: *review-only
+  <<: *review-build-cng-base
+
+schedule:review-build-cng:
+  <<: *review-schedules-only
+  <<: *review-build-cng-base
+
+
+.review-deploy-base: &review-deploy-base
+  <<: *review-base
+  allow_failure: true
+  variables:
+    HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
+    DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
+    GITLAB_HELM_CHART_REF: "master"
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+  environment:
+    <<: *review-environment
+    on_stop: review-stop
+  before_script:
+    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
+    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+    - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
+    - apk update && apk add jq
+    - gem install gitlab --no-document
+    - source ./scripts/review_apps/review-apps.sh
+  script:
+    - wait_for_job_to_be_done "review-build-cng"
+    - perform_review_app_deployment
+
+review-deploy:
+  <<: *review-deploy-base
+
+schedule:review-deploy:
+  <<: *review-deploy-base
+  <<: *review-schedules-only
+  script:
+    - wait_for_job_to_be_done "schedule:review-build-cng"
+    - perform_review_app_deployment
+
+.review-qa-base: &review-qa-base
+  <<: *review-docker
+  allow_failure: true
+  variables:
+    <<: *review-docker-variables
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+    QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
+    QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
+    GITLAB_USERNAME: "root"
+    GITLAB_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+    GITLAB_ADMIN_USERNAME: "root"
+    GITLAB_ADMIN_PASSWORD: "${REVIEW_APPS_ROOT_PASSWORD}"
+    GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
+    EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
+    QA_DEBUG: "true"
+  artifacts:
+    paths:
+      - ./qa/gitlab-qa-run-*
+    expire_in: 7 days
+    when: always
+  before_script:
+    - echo "${QA_IMAGE}"
+    - echo "${CI_ENVIRONMENT_URL}"
+    - apk update && apk add curl jq
+    - source ./scripts/review_apps/review-apps.sh
+    - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
+
+review-qa-smoke:
+  <<: *review-qa-base
+  script:
+    - wait_for_job_to_be_done "review-deploy"
+    - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+
+review-qa-all:
+  <<: *review-qa-base
+  script:
+    - wait_for_job_to_be_done "review-deploy"
+    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
+  when: manual
+
+.review-performance-base: &review-performance-base
+  <<: *review-qa-base
+  script:
+    - wait_for_job_to_be_done "review-deploy"
+    - mkdir -p gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir sitespeed-results
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
+    - mv sitespeed-results/data/performance.json performance.json
+  artifacts:
+    paths:
+      - sitespeed-results/
+    reports:
+      performance: performance.json
+
+review-performance:
+  <<: *review-performance-base
+
+review-stop:
+  extends: .single-script-job-dedicated-runner
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
+  allow_failure: true
+  variables:
+    SCRIPT_NAME: "review_apps/review-apps.sh"
+  when: manual
+  environment:
+    <<: *review-environment
+    action: stop
+  script:
+    - source $(basename "${SCRIPT_NAME}")
+    - delete
+    - cleanup
+
+schedule:review-cleanup:
+  <<: *review-base
+  <<: *review-schedules-only
+  stage: build
+  allow_failure: true
+  variables:
+    GIT_DEPTH: "1"
+  environment:
+    name: review/auto-cleanup
+  before_script:
+    - gem install gitlab --no-document
+  script:
+    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+
+schedule:review-performance:
+  <<: *review-performance-base
+  <<: *review-schedules-only
+  script:
+    - wait_for_job_to_be_done "schedule:review-deploy"
+
+danger-review:
+  extends: .dedicated-pull-cache-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
+  stage: test
+  dependencies: []
+  before_script: []
+  only:
+    variables:
+      - $DANGER_GITLAB_API_TOKEN
+  except:
+    refs:
+      - master
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
+      - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
+  script:
+    - git version
+    - node --version
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - danger --fail-on-errors=true
+
