@@ -8,9 +8,9 @@ module Gitlab
 
       included do
         # Issue only quick actions definition
-        desc 'Set due date'
+        desc _('Set due date')
         explanation do |due_date|
-          "Sets the due date to #{due_date.to_s(:medium)}." if due_date
+          _("Sets the due date to %{due_date}.") % { due_date: due_date.strftime('%b %-d, %Y') } if due_date
         end
         params '<in 2 days | this Friday | December 31st>'
         types Issue
@@ -25,8 +25,8 @@ module Gitlab
           @updates[:due_date] = due_date if due_date
         end
 
-        desc 'Remove due date'
-        explanation 'Removes the due date.'
+        desc _('Remove due date')
+        explanation _('Removes the due date.')
         types Issue
         condition do
           quick_action_target.persisted? &&
@@ -38,10 +38,10 @@ module Gitlab
           @updates[:due_date] = nil
         end
 
-        desc 'Move issue from one column of the board to another'
+        desc _('Move issue from one column of the board to another')
         explanation do |target_list_name|
           label = find_label_references(target_list_name).first
-          "Moves issue to #{label} column in the board." if label
+          _("Moves issue to %{label} column in the board.") % { label: label } if label
         end
         params '~"Target column"'
         types Issue
@@ -66,9 +66,9 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Mark this issue as a duplicate of another issue'
+        desc _('Mark this issue as a duplicate of another issue')
         explanation do |duplicate_reference|
-          "Marks this issue as a duplicate of #{duplicate_reference}."
+          _("Marks this issue as a duplicate of %{duplicate_reference}.") % { duplicate_reference: duplicate_reference }
         end
         params '#issue'
         types Issue
@@ -84,9 +84,9 @@ module Gitlab
           end
         end
 
-        desc 'Move this issue to another project.'
+        desc _('Move this issue to another project.')
         explanation do |path_to_project|
-          "Moves this issue to #{path_to_project}."
+          _("Moves this issue to %{path_to_project}.") % { path_to_project: path_to_project }
         end
         params 'path/to/project'
         types Issue
@@ -102,9 +102,9 @@ module Gitlab
           end
         end
 
-        desc 'Make issue confidential.'
+        desc _('Make issue confidential.')
         explanation do
-          'Makes this issue confidential'
+          _('Makes this issue confidential')
         end
         types Issue
         condition do
@@ -114,10 +114,13 @@ module Gitlab
           @updates[:confidential] = true
         end
 
-        desc 'Create a merge request.'
+        desc _('Create a merge request.')
         explanation do |branch_name = nil|
-          branch_text = branch_name ? "branch '#{branch_name}'" : 'a branch'
-          "Creates #{branch_text} and a merge request to resolve this issue"
+          if branch_name
+            _("Creates branch '%{branch_name}' and a merge request to resolve this issue") % { branch_name: branch_name }
+          else
+            "Creates a branch and a merge request to resolve this issue"
+          end
         end
         params "<branch name>"
         types Issue
