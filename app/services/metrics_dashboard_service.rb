@@ -2,7 +2,7 @@
 
 # Fetches the metrics dashboard layout and supplemented the output with DB info.
 class MetricsDashboardService
-  SYSTEM_DASHBOARD_NAME = 'system_dashboard'
+  SYSTEM_DASHBOARD_NAME = 'common_metrics'
   SYSTEM_DASHBOARD_PATH = Rails.root.join('config', 'prometheus', "#{SYSTEM_DASHBOARD_NAME}.yml")
 
   def initialize(project)

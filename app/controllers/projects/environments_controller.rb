@@ -13,7 +13,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action only: [:metrics, :additional_metrics] do
     push_frontend_feature_flag(:metrics_time_window)
     push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
-    push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
   end
 
   def index
