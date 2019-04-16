@@ -114,6 +114,12 @@ msgid_plural "%{count} participants"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{edit_in_new_fork_notice} Try to cherry-pick this commit again."
+msgstr ""
+
+msgid "%{edit_in_new_fork_notice} Try to revert this commit again."
+msgstr ""
+
 msgid "%{filePath} deleted"
 msgstr ""
 
@@ -1054,6 +1060,12 @@ msgid "Assign some issues to this milestone."
 msgstr ""
 
 msgid "Assign to"
+msgstr ""
+
+msgid "Assign yourself to these issues"
+msgstr ""
+
+msgid "Assign yourself to this issue"
 msgstr ""
 
 msgid "Assigned Issues"
@@ -3940,6 +3952,9 @@ msgstr ""
 msgid "Failed to deploy to"
 msgstr ""
 
+msgid "Failed to install."
+msgstr ""
+
 msgid "Failed to load emoji list."
 msgstr ""
 
@@ -3974,6 +3989,12 @@ msgid "Failed to save preferences."
 msgstr ""
 
 msgid "Failed to update issues, please try again."
+msgstr ""
+
+msgid "Failed to update."
+msgstr ""
+
+msgid "Failed to upgrade."
 msgstr ""
 
 msgid "Failed to upload object map file"
@@ -4498,6 +4519,9 @@ msgid "GroupsTree|No groups or projects matched your search"
 msgstr ""
 
 msgid "GroupsTree|Search by name"
+msgstr ""
+
+msgid "HTTP Basic: Access denied\\nYou must use a personal access token with 'api' scope for Git over HTTP.\\nYou can generate one at %{profile_personal_access_tokens_url}"
 msgstr ""
 
 msgid "Header logo was successfully removed."
@@ -5115,6 +5139,9 @@ msgid "Kubernetes cluster was successfully updated."
 msgstr ""
 
 msgid "Kubernetes configured"
+msgstr ""
+
+msgid "Kubernetes error: %{error_code}"
 msgstr ""
 
 msgid "Kubernetes service integration has been deprecated. %{deprecated_message_content} your Kubernetes clusters using the new <a href=\"%{url}\"/>Kubernetes Clusters</a> page"
@@ -10339,6 +10366,9 @@ msgid "You are an admin, which means granting access to <strong>%{client_name}</
 msgstr ""
 
 msgid "You are attempting to delete a file that has been previously updated."
+msgstr ""
+
+msgid "You are attempting to update a file that has changed since you started editing it."
 msgstr ""
 
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
