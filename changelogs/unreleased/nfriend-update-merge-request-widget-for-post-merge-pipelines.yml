@@ -1,0 +1,5 @@
+---
+title: Add two new warning messages to the MR widget about merge request pipelines
+merge_request: 25983
+author:
+type: added

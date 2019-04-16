@@ -209,6 +209,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     help_page_path('user/project/merge_requests/resolve_conflicts.md')
   end
 
+  def merge_request_pipelines_docs_path
+    help_page_path('ci/merge_request_pipelines/index.md')
+  end
+
   private
 
   def cached_can_be_reverted?
