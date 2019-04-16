@@ -200,17 +200,25 @@ li.note {
   }
 }
 
-.warning_message {
-  border-left: 4px solid $orange-200;
-  color: $orange-700;
+@mixin message($background-color, $border-color, $text-color) {
+  border-left: 4px solid $border-color;
+  color: $text-color;
   padding: 10px;
   margin-bottom: 10px;
-  background: $orange-100;
+  background: $background-color;
   padding-left: 20px;
 
   &.centered {
     text-align: center;
   }
+}
+
+.warning_message {
+  @include message($orange-100, $orange-200, $orange-700);
+}
+
+.danger_message {
+  @include message($red-100, $red-200, $red-900);
 }
 
 .gitlab-promo {
