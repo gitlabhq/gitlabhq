@@ -426,6 +426,26 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.with_reports' do
+    subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+
+    context 'when pipeline has a test report' do
+      let!(:pipeline_with_report) { create(:ci_pipeline, :with_test_reports) }
+
+      it 'selects the pipeline' do
+        is_expected.to eq([pipeline_with_report])
+      end
+    end
+
+    context 'when pipeline does not have metrics reports' do
+      let!(:pipeline_without_report) { create(:ci_empty_pipeline) }
+
+      it 'does not select the pipeline' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.merge_request_event' do
     subject { described_class.merge_request_event }
 
@@ -2729,8 +2749,8 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#has_test_reports?' do
-    subject { pipeline.has_test_reports? }
+  describe '#has_reports?' do
+    subject { pipeline.has_reports?(Ci::JobArtifact.test_reports) }
 
     context 'when pipeline has builds with test reports' do
       before do
