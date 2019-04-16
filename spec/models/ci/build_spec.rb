@@ -166,8 +166,8 @@ describe Ci::Build do
     end
   end
 
-  describe '.with_test_reports' do
-    subject { described_class.with_test_reports }
+  describe '.with_reports' do
+    subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
 
     context 'when build has a test report' do
       let!(:build) { create(:ci_build, :success, :test_reports) }
