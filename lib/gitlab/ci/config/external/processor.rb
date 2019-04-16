@@ -11,7 +11,8 @@ module Gitlab
             @values = values
             @external_files = External::Mapper.new(values, project: project, sha: sha, user: user, expandset: expandset).process
             @content = {}
-          rescue External::Mapper::Error => e
+          rescue External::Mapper::Error,
+                 OpenSSL::SSL::SSLError => e
             raise IncludeError, e.message
           end
 
