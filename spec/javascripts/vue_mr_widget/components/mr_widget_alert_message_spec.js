@@ -11,6 +11,7 @@ describe('MrWidgetAlertMessage', () => {
     wrapper = shallowMount(localVue.extend(MrWidgetAlertMessage), {
       propsData: {},
       localVue,
+      sync: false,
     });
   });
 
@@ -19,45 +20,58 @@ describe('MrWidgetAlertMessage', () => {
   });
 
   describe('when type is not provided', () => {
-    it('should render a red message', () => {
-      expect(wrapper.classes()).toContain('danger_message');
-      expect(wrapper.classes()).not.toContain('warning_message');
+    it('should render a red message', done => {
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.classes()).toContain('danger_message');
+        expect(wrapper.classes()).not.toContain('warning_message');
+        done();
+      });
     });
   });
 
   describe('when type === "danger"', () => {
-    it('should render a red message', () => {
+    it('should render a red message', done => {
       wrapper.setProps({ type: 'danger' });
-
-      expect(wrapper.classes()).toContain('danger_message');
-      expect(wrapper.classes()).not.toContain('warning_message');
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.classes()).toContain('danger_message');
+        expect(wrapper.classes()).not.toContain('warning_message');
+        done();
+      });
     });
   });
 
   describe('when type === "warning"', () => {
-    it('should render a red message', () => {
+    it('should render a red message', done => {
       wrapper.setProps({ type: 'warning' });
-
-      expect(wrapper.classes()).toContain('warning_message');
-      expect(wrapper.classes()).not.toContain('danger_message');
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.classes()).toContain('warning_message');
+        expect(wrapper.classes()).not.toContain('danger_message');
+        done();
+      });
     });
   });
 
   describe('when helpPath is not provided', () => {
-    it('should not render a help icon/link', () => {
-      const link = wrapper.find(GlLink);
+    it('should not render a help icon/link', done => {
+      wrapper.vm.$nextTick(() => {
+        const link = wrapper.find(GlLink);
 
-      expect(link.exists()).toBe(false);
+        expect(link.exists()).toBe(false);
+        done();
+      });
     });
   });
 
   describe('when helpPath is provided', () => {
-    it('should render a help icon/link', () => {
+    it('should render a help icon/link', done => {
       wrapper.setProps({ helpPath: '/path/to/help/docs' });
-      const link = wrapper.find(GlLink);
+      wrapper.vm.$nextTick(() => {
+        const link = wrapper.find(GlLink);
 
-      expect(link.exists()).toBe(true);
-      expect(link.attributes().href).toBe('/path/to/help/docs');
+        expect(link.exists()).toBe(true);
+        expect(link.attributes().href).toBe('/path/to/help/docs');
+        done();
+      });
     });
   });
 });
