@@ -2,6 +2,13 @@
 
 Notes are comments on snippets, issues or merge requests.
 
+## Notes pagination
+
+By default, `GET` requests return 20 results at a time because the API results
+are paginated.
+
+Read more on [pagination](README.md#pagination).
+
 ## Issues
 
 ### List project issue notes

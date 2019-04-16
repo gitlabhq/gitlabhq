@@ -2,6 +2,13 @@
 
 Discussions are set of related notes on snippets, issues, merge requests or commits.
 
+## Discussions pagination
+
+By default, `GET` requests return 20 results at a time because the API results
+are paginated.
+
+Read more on [pagination](README.md#pagination).
+
 ## Issues
 
 ### List project issue discussions
