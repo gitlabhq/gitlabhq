@@ -4,64 +4,147 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 # Documentation Style Guide
 
-The documentation style guide defines the markup structure used in
-GitLab documentation. Check the
-[documentation guidelines](index.md) for general development instructions.
+This document defines the standards for GitLab's documentation content and files.
 
-See the GitLab handbook for the [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
+For broader information about the documentation, see the [Documentation guidelines](index.md). 
 
 For programmatic help adhering to the guidelines, see [linting](index.md#linting).
 
-## Files
-
-See the [Documentation types and organization](index.md#documentation-types-and-organization) section
-on the index page for information on how to structure and name files across the GitLab documentation.
-
-DANGER: **Attention:**
-**Do not** use capital letters, spaces, or special chars in file names,
-branch names, directory names, headings, or in anything that generates a path.
-
-NOTE: **Note:**
-**Do not** create new `README.md` files, name them `index.md` instead. There's
-a test that will fail if it spots a new `README.md` file.
-
-### Markdown
-
-The [documentation website](https://docs.gitlab.com) uses GitLab Kramdown as its Markdown rendering engine [as of October 2018](https://gitlab.com/gitlab-com/gitlab-docs/merge_requests/108). For a complete Kramdown reference, see the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
-
-The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
-gem will support all [GFM markup](../../user/markdown.md) in the future. For now,
-use regular markdown markup, following the rules in the linked style guide. 
-
-Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly in on GitLab instances in [`/help`](index.md#gitlab-help).
+See the GitLab handbook for further [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
+that apply to all GitLab content, not just documentation.
 
 ## Content
 
 These guidelines help toward the goal of having every user's search of documentation
-yield a useful result, and ensuring content is helpful and easy to consume.
+yield a useful result, and ensuring content is consistent, helpful, and easy to consume.
 
-### Subject matter
+### Single source of truth (SSOT) on the GitLab product
 
-[The documentation is the single source of truth (SSOT)](https://about.gitlab.com/handbook/documentation/#documentation-as-single-source-of-truth-ssot) for any and all helpful information and processes needed to learn about, implement, use, and troubleshoot GitLab features. Note that this includes problem-solving actions that may address rare cases or be considered 'risky', so long as proper context is provided. See the SSOT link for more detail.
+The documentation is the SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features. It evolves continually, in keeping with new products and features, and with improvements for clarity, accuracy, and completeness.
 
-### Media types and sources
+This policy prevents information silos, ensuring that it remains easy to find information about GitLab products.
 
-Include any media types/sources, if relevant to readers. You can freely include or link presentations, diagrams, videos, etc.; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
+It also informs decisions about the kinds of content we include in our documentation.
+
+### All helpful information
+
+Include problem-solving actions that may address rare cases or be considered 'risky', so long as proper context is provided in the form of fully detailed warnings and caveats. This kind of content should be included as it could be helpful to others and, when properly explained, its benefits outweigh the risks. If you think you have found an exception to this rule, contact the Technical Writing team.
+
+### All helpful media types and sources
+
+Include any media types/sources if the content is relevant to readers. You can freely include or link presentations, diagrams, videos, etc.; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
 
    - If you use an image that has a separate source file (for example, a vector or diagram format), link the image to the source file so that it may be reused or updated by anyone.
    - Do not copy and paste content from other sources unless it is a limited quotation with the source cited. Typically it is better to either rephrase relevant information in your own words or link out to the other source.
 
-### Structure across documents
+### Markdown
 
-- Place files in the correct directory per the [Documentation directory structure](index.md#documentation-types-and-organization) guidelines.
-- To avoid duplication, do not include the same information in multiple places. Instead, choose one 'single source of truth (SSOT)' location and link from other relevant locations.
-- When referencing other GitLab products and features, link to their respective docs.
-- When referencing third-party products or technologies, link out to their external sites, documentation, and resources.
+All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
+
+The [documentation website](https://docs.gitlab.com) uses GitLab Kramdown as its Markdown rendering engine. For a complete Kramdown reference, see the [GitLab Markdown Kramdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/).
+
+The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
+Ruby gem will support all [GFM markup](../../user/markdown.md) in the future. That is,
+all markup that is supported for display in the GitLab application itself. For now,
+use regular Markdown markup, following the rules in the linked style guide. 
+
+Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
+
+## Structure
+
+### Organize by topic, not by type
+
+Beyond top-level audience-type folders (e.g. `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
+
+For example, do not create groupings of similar media types (e.g. glossaries, FAQs, or sets of all articles or videos).
+
+Such grouping of content by type makes
+it difficult to browse for the information you need and difficult to maintain up-to-date content.
+Instead, organize content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
+
+### Folder structure overview
+
+The documentation is separated by top-level audience folders [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
+[`administration`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`development`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development) (contributing) folders.
+
+Beyond that, we primarily follow the structure of the GitLab user interface or API.
+
+Our goal is to have a clear hierarchical structure with meaningful URLs
+like `docs.gitlab.com/user/project/merge_requests/`. With this pattern,
+you can immediately tell that you are navigating to user-related documentation
+about Project features; specifically about Merge Requests. Our site's paths match
+those of our repository, so the clear structure also makes documentation easier to update.
+
+The table below shows what kind of documentation goes where.
+
+| Directory             | What belongs here      |
+|:----------------------|:---------------------------------------------------------------------------------------------------------------------------------|
+| `doc/user/`           | User related documentation. Anything that can be done within the GitLab UI goes here, including usage of the `/admin` interface. |
+| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface exist under `doc/user/admin_area/`. |
+| `doc/api/`            | API related documentation. |
+| `doc/development/`    | Documentation related to the development of GitLab, whether contributing code or docs. Related process and style guides should go here. |
+| `doc/legal/`          | Legal documents about contributing to GitLab. |
+| `doc/install/`        | Contains instructions for installing GitLab. |
+| `doc/update/`         | Contains instructions for updating GitLab. |
+| `doc/topics/`         | Indexes per topic (`doc/topics/topic-name/index.md`): all resources for that topic. |
+
+### Working with directories and files
+
+1. When you create a new directory, always start with an `index.md` file.
+  Do not use another file name and **do not** create `README.md` files.
+1. **Do not** use special characters and spaces, or capital letters in file names,
+  directory names, branch names, and anything that generates a path.
+1. When creating a new document and it has more than one word in its name,
+   make sure to use underscores instead of spaces or dashes (`-`). For example,
+   a proper naming would be `import_projects_from_github.md`. The same rule
+   applies to images.
+1. For image files, do not exceed 100KB.
+1. We do not yet support embedded videos. Please link out.
+1. There are four main directories, `user`, `administration`, `api` and `development`.
+1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
+   `profile/`, `dashboard/` and `admin_area/`.
+   1. `doc/user/project/` should contain all project related documentation.
+   1. `doc/user/group/` should contain all group related documentation.
+   1. `doc/user/profile/` should contain all profile related documentation.
+      Every page you would navigate under `/profile` should have its own document,
+      i.e. `account.md`, `applications.md`, `emails.md`, etc.
+   1. `doc/user/dashboard/` should contain all dashboard related documentation.
+   1. `doc/user/admin_area/` should contain all admin related documentation
+      describing what can be achieved by accessing GitLab's admin interface
+      (_not to be confused with `doc/administration` where server access is
+      required_).
+      1. Every category under `/admin/application_settings` should have its
+         own document located at `doc/user/admin_area/settings/`. For example,
+         the **Visibility and Access Controls** category should have a document
+         located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+1. The `doc/topics/` directory holds topic-related technical content. Create
+   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
+   General user- and admin- related documentation, should be placed accordingly.
+1. The directories `/workflow/`, `/university/`, and `/articles/` have
+been **deprecated** and the majority their docs have been moved to their correct location
+in small iterations.
+
+If you are unsure where a document or a content addition should live, this should
+not stop you from authoring and contributing. You can use your best judgment and
+then ask the reviewer of your MR to confirm your decision, and/or ask a technical writer
+at any stage in the process. The techncial writing team will review all documentation
+changes, regardless, and can move content if there is a better place for it.
+
+### Avoid duplication
+
+Do not include the same information in multiple places. Instead, choose one single-source-of-truth location and link from other relevant locations.
+
+### References across documents
+
+- Give each folder an index.md page that introduces the topic, introduces the pages within, and links to the pages within (including to the index pages of any next-level subpaths).
+- To ensure discoverability, ensure each new or renamed doc is linked from its higher-level index page and other related pages.
+- When making reference to other GitLab products and features, link to their respective docs, at least on first mention.
+- When making reference to third-party products or technologies, link out to their external sites, documentation, and resources.
 
 ### Structure within documents
 
-- Include any and all applicable subsections as described on the [structure and template](structure.md) page,
-- To ensure discoverability, link to each doc from its higher-level index page and other related pages.
+- Include any and all applicable subsections as described on the [structure and template](structure.md) page.
 - Structure content in alphabetical order in tables, lists, etc., unless there is
   a logical reason not to (for example, when mirroring the UI or an otherwise ordered sequence).
 
@@ -95,7 +178,7 @@ Include any media types/sources, if relevant to readers. You can freely include 
     - List item 2
     ```
 
-### Tables overlapping the ToC
+### Tables overlapping the TOC
 
 By default, all tables have a width of 100% on docs.gitlab.com.
 In a few cases, the table will overlap the table of contents (ToC).

@@ -16,13 +16,13 @@ In addition to this page, the following resources to help craft and contribute d
 - [Markdown Guide](https://about.gitlab.com/handbook/product/technical-writing/markdown-guide/) - A reference for the markdown implementation used by GitLab's documentation site and about.gitlab.com.
 - [Site architecture](site_architecture/index.md) - How docs.gitlab.com is built.
 
-## Source and rendered locations
+## Source files and rendered web locations
 
 Documentation for GitLab Community Edition (CE) and Enterprise Edition (EE), along with GitLab Runner and Omnibus, is published to [docs.gitlab.com](https://docs.gitlab.com). The documentation for CE and EE is also published within the application at `/help` on the domain of the GitLab instance.
 
 At `/help`, only content for your current edition and version is included, whereas multiple versions' content is available at docs.gitlab.com.
 
-The source of the documentation is maintained in the following repository locations:
+The source of the documentation exists within the codebase of each GitLab application in the following repository locations:
 
 | Project | Path |
 | --- | --- |
@@ -48,87 +48,13 @@ as its markdown rendering engine. See the [GitLab Markdown Guide](https://about.
 
 Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is missing, you are welcome to suggest one via a merge request.
 
-## Documentation types and organization
+## Folder structure and files
 
-The documentation is structured based on the GitLab UI structure itself,
-separated by [`user`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/user),
-[`administrator`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/administration), and [`contributor`](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/development).
+Beyond the top-level directories under /doc, which mainly pertain to audiences (`user`, `administration`, `development`), we organize by product area and subject, not type.
 
-Organize docs by product area and subject, not type. For example, do not create groupings of similar media types
-(e.g. indexes of all articles, videos, etc.).
+For complete details, see the [Content](styleguide.md#content) section of the [Documentation Style Guide](styleguide.md).
 
-Similarly, we do not use glossaries or FAQs. Such grouping of content by type makes
-it difficult to browse for the information you need and difficult to maintain up-to-date content.
-Instead, organize content by its subject (e.g. everything related to CI goes together)
-and cross-link between any related content.
-
-### Location and naming of files
-
-Our goal is to have a clear hierarchical structure with meaningful URLs
-like `docs.gitlab.com/user/project/merge_requests/`. With this pattern,
-you can immediately tell that you are navigating to user-related documentation
-about project features; specifically about merge requests. Our site's paths match
-those of our repository, so the clear structure also makes documentation easier to update.
-
-In order to have a [solid site structure](https://searchengineland.com/seo-benefits-developing-solid-site-structure-277456) for our documentation,
-all docs should be linked at least from its higher-level index page if not also from other relevant locations.
-
-The table below shows what kind of documentation goes where.
-
-| Directory             | What belongs here                                                                                                                                                                                              |
-|:----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `doc/user/`           | User related documentation. Anything that can be done within the GitLab UI goes here including `/admin`.                                                                                                       |
-| `doc/administration/` | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface go under `doc/user/admin_area/`.                   |
-| `doc/api/`            | API related documentation.                                                                                                                                                                                     |
-| `doc/development/`    | Documentation related to the development of GitLab. Related process and style guides should go here.                                                                                                                            |
-| `doc/legal/`          | Legal documents about contributing to GitLab.                                                                                                                                                                  |
-| `doc/install/`        | Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
-| `doc/update/`         | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now.                                                                          |
-| `doc/topics/`         | Indexes per Topic (`doc/topics/topic-name/index.md`): all resources for that topic (user and admin documentation, articles, and third-party docs)                                                              |
-
-**Rules and best practices:**
-
-1. When you create a new directory, always start with an `index.md` file.
-  Do not use another file name and **do not** create `README.md` files.
-1. **Do not** use special chars and spaces, or capital letters in file names,
-  directory names, branch names, and anything that generates a path.
-1. When creating a new document and it has more than one word in its name,
-   make sure to use underscores instead of spaces or dashes (`-`). For example,
-   a proper naming would be `import_projects_from_github.md`. The same rule
-   applies to images.
-1. For image files, do not exceed 100KB.
-1. We do not yet support embedded videos. Please link out.
-1. There are four main directories, `user`, `administration`, `api` and `development`.
-1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
-   `profile/`, `dashboard/` and `admin_area/`.
-   1. `doc/user/project/` should contain all project related documentation.
-   1. `doc/user/group/` should contain all group related documentation.
-   1. `doc/user/profile/` should contain all profile related documentation.
-      Every page you would navigate under `/profile` should have its own document,
-      i.e. `account.md`, `applications.md`, `emails.md`, etc.
-   1. `doc/user/dashboard/` should contain all dashboard related documentation.
-   1. `doc/user/admin_area/` should contain all admin related documentation
-      describing what can be achieved by accessing GitLab's admin interface
-      (_not to be confused with `doc/administration` where server access is
-      required_).
-      1. Every category under `/admin/application_settings` should have its
-         own document located at `doc/user/admin_area/settings/`. For example,
-         the **Visibility and Access Controls** category should have a document
-         located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
-1. The `doc/topics/` directory holds topic-related technical content. Create
-   `doc/topics/topic-name/subtopic-name/index.md` when subtopics become necessary.
-   General user- and admin- related documentation, should be placed accordingly.
-1. The directories `/workflow/`, `/university/`, and `/articles/` have
-been **deprecated** and the majority their docs have been moved to their correct location
-in small iterations.
-
-If you are unsure where a document or a content addition should live, this should
-not stop you from authoring and contributing. You can use your best judgment and
-then ask the reviewer of your MR to confirm your decision, and/or ask a technical writer
-at any stage in the process. The techncial writing team will review all documentation
-changes, regardless, and can move content if there is a better place for it.
-
-### Changing document location
+## Changing document location
 
 Changing a document's location requires specific steps to be followed to ensure that
 users can seamlessly access the new doc page, whether they are accesing content
@@ -186,7 +112,7 @@ Things to note:
   built-in help page, that's why we omit it in `git grep`.
 - Use the checklist on the "Change documentation location" MR description template.
 
-#### Alternative redirection method
+### Alternative redirection method
 
 Alternatively to the method described above, you can simply replace the content
 of the old file with a frontmatter containing a redirect link:
@@ -204,7 +130,7 @@ This redirection method will not provide a redirect fallback on GitLab `/help`. 
 it, make sure to add a link to the new page on the doc, otherwise it's a dead end for users that
 land on the doc via `/help`.
 
-#### Redirections for pages with Disqus comments
+### Redirections for pages with Disqus comments
 
 If the documentation page being relocated already has any Disqus comments,
 we need to preserve the Disqus thread.
@@ -389,7 +315,7 @@ to merge changes that will break `master` from a merge request with a successful
 ## Docs site architecture
 
 See the [Docs site architecture](site_architecture/index.md) page to learn
-how we build and deploy the site at [docs.gitlab.com](https://docs.gitlab.com), and
+how we build and deploy the site at [docs.gitlab.com](https://docs.gitlab.com) and
 to review all the assets and libraries in use.
 
 ### Global navigation
