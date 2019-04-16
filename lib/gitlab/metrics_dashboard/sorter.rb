@@ -9,6 +9,8 @@ module Gitlab
           sort_panels!(dashboard)
         end
 
+        private
+
         # Sorts the groups in the dashboard by the :priority key
         def sort_groups!(dashboard)
           dashboard[:panel_groups] = dashboard[:panel_groups].sort_by { |group| group[:priority] }

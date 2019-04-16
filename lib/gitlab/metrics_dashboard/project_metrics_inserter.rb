@@ -10,25 +10,54 @@ module Gitlab
         # If there are no project-specific metrics, this will have no effect.
         def transform!(dashboard, project)
           project.prometheus_metrics.each do |project_metric|
-            group = find_or_create(:panel_group, dashboard[:panel_groups], project_metric)
-            panel = find_or_create(:panel, group[:panels], project_metric)
-            find_or_create(:metric, panel[:metrics], project_metric)
+            group = find_or_create_panel_group(dashboard[:panel_groups], project_metric)
+            panel = find_or_create_panel(group[:panels], project_metric)
+            find_or_create_metric(panel[:metrics], project_metric)
           end
         end
 
-        # Looks for an instance of the named resource corresponding to the provided
-        # metric object. If unavailable, inserts one.
-        # @param name [Symbol, String] One of :panel_group, :panel, or :metric
-        # @param existing_resources [Array<Hash>]
+        private
+
+        # Looks for a panel corresponding to the provided metric object.
+        # If unavailable, inserts one.
+        # @param panels [Array<Hash>]
         # @param metric [PrometheusMetric]
-        def find_or_create(name, existing_resources, metric)
-          target = self.send("find_#{name}", existing_resources, metric)
-          return target if target
+        def find_or_create_panel(panels, metric)
+          panel = find_panel(panels, metric)
+          return panel if panel
 
-          target = self.send("new_#{name}", metric)
-          existing_resources << target
+          panel = new_panel(metric)
+          panels << panel
 
-          target
+          panel
+        end
+
+        # Looks for a panel_group corresponding to the provided metric object.
+        # If unavailable, inserts one.
+        # @param panel_groups [Array<Hash>]
+        # @param metric [PrometheusMetric]
+        def find_or_create_panel_group(panel_groups, metric)
+          panel_group = find_panel_group(panel_groups, metric)
+          return panel_group if panel_group
+
+          panel_group = new_panel_group(metric)
+          panel_groups << panel_group
+
+          panel_group
+        end
+
+        # Looks for a metric corresponding to the provided metric object.
+        # If unavailable, inserts one.
+        # @param metrics [Array<Hash>]
+        # @param metric [PrometheusMetric]
+        def find_or_create_metric(metrics, metric)
+          target_metric = find_metric(metrics, metric)
+          return target_metric if target_metric
+
+          target_metric = new_metric(metric)
+          metrics << target_metric
+
+          target_metric
         end
 
         def find_panel_group(panel_groups, metric)
@@ -37,7 +66,7 @@ module Gitlab
 
         def find_panel(panels, metric)
           panel_identifiers = [DEFAULT_PANEL_TYPE, metric.title, metric.y_label]
-          target_panel = panels.find { |panel| panel.values_at(:type, :title, :y_label) == panel_identifiers }
+          panels.find { |panel| panel.values_at(:type, :title, :y_label) == panel_identifiers }
         end
 
         def find_metric(metrics, metric)
