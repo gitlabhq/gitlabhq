@@ -3,7 +3,7 @@
     #{link_to @merge_request.author_name, user_url(@merge_request.author)} created a merge request:
 
 %p.details
-  != merge_path_description(@merge_request, '&rarr;')
+  = merge_path_description(@merge_request, '→')
 
 - if @merge_request.assignees.any?
   %p
