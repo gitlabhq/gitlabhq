@@ -301,7 +301,7 @@ export default {
           class="view-file js-view-file-button"
           :title="viewFileButtonText"
         >
-          <icon name="external-link" />
+          <icon name="doc-text" />
         </gl-button>
 
         <a
