@@ -2123,7 +2123,7 @@ describe MergeRequest do
     end
 
     context 'when merges are not restricted to green builds' do
-      subject { build(:merge_request, target_project: build(:project, only_allow_merge_if_pipeline_succeeds: false)) }
+      subject { build(:merge_request, target_project: create(:project, only_allow_merge_if_pipeline_succeeds: false)) }
 
       context 'and a failed pipeline is associated' do
         before do
