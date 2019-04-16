@@ -91,7 +91,7 @@ describe 'Issues' do
         click_button 'Save changes'
 
         page.within('.assignee') do
-          expect(page).to have_content 'No assignee - assign yourself'
+          expect(page).to have_content 'None - assign yourself'
         end
 
         expect(issue.reload.assignees).to be_empty
@@ -465,7 +465,7 @@ describe 'Issues' do
             click_link 'Edit'
             click_link 'Unassigned'
             first('.title').click
-            expect(page).to have_content 'No assignee'
+            expect(page).to have_content 'None'
           end
 
           # wait_for_requests does not work with vue-resource at the moment
@@ -479,7 +479,7 @@ describe 'Issues' do
           visit project_issue_path(project, issue2)
 
           page.within('.assignee') do
-            expect(page).to have_content "No assignee"
+            expect(page).to have_content "None"
           end
 
           page.within '.assignee' do
@@ -522,7 +522,7 @@ describe 'Issues' do
             close_dropdown_menu_if_visible
 
             page.within '.value .assign-yourself' do
-              expect(page).to have_content "No assignee"
+              expect(page).to have_content "None"
             end
           end
         end

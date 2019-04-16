@@ -24,12 +24,12 @@ describe('Assignee component', () => {
       const collapsed = component.$el.querySelector('.sidebar-collapsed-icon');
 
       expect(collapsed.childElementCount).toEqual(1);
-      expect(collapsed.children[0].getAttribute('aria-label')).toEqual('No Assignee');
+      expect(collapsed.children[0].getAttribute('aria-label')).toEqual('None');
       expect(collapsed.children[0].classList.contains('fa')).toEqual(true);
       expect(collapsed.children[0].classList.contains('fa-user')).toEqual(true);
     });
 
-    it('displays only "No assignee" when no users are assigned and the issue is read-only', () => {
+    it('displays only "None" when no users are assigned and the issue is read-only', () => {
       component = new AssigneeComponent({
         propsData: {
           rootPath: 'http://localhost:3000',
@@ -39,11 +39,11 @@ describe('Assignee component', () => {
       }).$mount();
       const componentTextNoUsers = component.$el.querySelector('.assign-yourself').innerText.trim();
 
-      expect(componentTextNoUsers).toBe('No assignee');
+      expect(componentTextNoUsers).toBe('None');
       expect(componentTextNoUsers.indexOf('assign yourself')).toEqual(-1);
     });
 
-    it('displays only "No assignee" when no users are assigned and the issue can be edited', () => {
+    it('displays only "None" when no users are assigned and the issue can be edited', () => {
       component = new AssigneeComponent({
         propsData: {
           rootPath: 'http://localhost:3000',
@@ -53,7 +53,7 @@ describe('Assignee component', () => {
       }).$mount();
       const componentTextNoUsers = component.$el.querySelector('.assign-yourself').innerText.trim();
 
-      expect(componentTextNoUsers.indexOf('No assignee')).toEqual(0);
+      expect(componentTextNoUsers.indexOf('None')).toEqual(0);
       expect(componentTextNoUsers.indexOf('assign yourself')).toBeGreaterThan(0);
     });
 
