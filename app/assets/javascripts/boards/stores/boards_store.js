@@ -5,6 +5,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
 
 const boardsStore = {
@@ -16,7 +17,13 @@ const boardsStore = {
   filter: {
     path: '',
   },
-  state: {},
+  state: {
+    currentBoard: {
+      labels: [],
+    },
+    currentPage: '',
+    reload: false,
+  },
   detail: {
     issue: {},
   },
@@ -30,6 +37,10 @@ const boardsStore = {
     this.detail = {
       issue: {},
     };
+  },
+  showPage(page) {
+    this.state.reload = false;
+    this.state.currentPage = page;
   },
   addList(listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);
@@ -177,6 +188,8 @@ const boardsStore = {
     window.history.pushState(null, null, `?${this.filter.path}`);
   },
 };
+
+BoardsStoreEE.initEESpecific(boardsStore);
 
 // hacks added in order to allow milestone_select to function properly
 // TODO: remove these
