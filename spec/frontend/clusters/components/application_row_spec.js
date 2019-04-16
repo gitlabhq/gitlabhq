@@ -114,21 +114,11 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has disabled "Installed" when APPLICATION_STATUS.INSTALLED', () => {
+    it('has disabled "Installed" when application is installed', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.INSTALLED,
-      });
-
-      expect(vm.installButtonLabel).toEqual('Installed');
-      expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(true);
-    });
-
-    it('has disabled "Installed" when APPLICATION_STATUS.UPDATING', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.UPDATING,
+        installed: true,
       });
 
       expect(vm.installButtonLabel).toEqual('Installed');

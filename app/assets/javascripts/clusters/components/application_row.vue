@@ -63,6 +63,11 @@ export default {
       type: String,
       required: false,
     },
+    installed: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
     version: {
       type: String,
       required: false,
@@ -92,15 +97,7 @@ export default {
       return (
         this.status === APPLICATION_STATUS.SCHEDULED ||
         this.status === APPLICATION_STATUS.INSTALLING ||
-        (this.requestStatus === REQUEST_SUBMITTED && !this.statusReason && !this.isInstalled)
-      );
-    },
-    isInstalled() {
-      return (
-        this.status === APPLICATION_STATUS.INSTALLED ||
-        this.status === APPLICATION_STATUS.UPDATED ||
-        this.status === APPLICATION_STATUS.UPDATING ||
-        this.status === APPLICATION_STATUS.UPDATE_ERRORED
+        (this.requestStatus === REQUEST_SUBMITTED && !this.statusReason && !this.installed)
       );
     },
     canInstall() {
@@ -145,7 +142,7 @@ export default {
         label = s__('ClusterIntegration|Install');
       } else if (this.isInstalling) {
         label = s__('ClusterIntegration|Installing');
-      } else if (this.isInstalled) {
+      } else if (this.installed) {
         label = s__('ClusterIntegration|Installed');
       }
 
@@ -257,7 +254,7 @@ export default {
   <div
     :class="[
       rowJsClass,
-      isInstalled && 'cluster-application-installed',
+      installed && 'cluster-application-installed',
       disabled && 'cluster-application-disabled',
     ]"
     class="cluster-application-row gl-responsive-table-row gl-responsive-table-row-col-span"
