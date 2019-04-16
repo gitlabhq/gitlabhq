@@ -104,8 +104,8 @@ module Ci
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
     end
 
-    scope :with_test_reports, ->() do
-      with_existing_job_artifacts(Ci::JobArtifact.test_reports)
+    scope :with_reports, ->(reports_scope) do
+      with_existing_job_artifacts(reports_scope)
         .eager_load_job_artifacts
     end
 

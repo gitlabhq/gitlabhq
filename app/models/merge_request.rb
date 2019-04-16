@@ -1152,7 +1152,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_test_reports?
-    actual_head_pipeline&.has_test_reports?
+    actual_head_pipeline&.has_reports?(Ci::JobArtifact.test_reports)
   end
 
   def predefined_variables
