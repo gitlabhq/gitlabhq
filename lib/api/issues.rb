@@ -192,6 +192,7 @@ module API
         params.delete(:iid) unless current_user.can?(:set_issue_iid, user_project)
 
         issue_params = declared_params(include_missing: false)
+        issue_params[:system_note_timestamp] = params[:created_at]
 
         issue_params = convert_parameters_from_legacy_format(issue_params)
 

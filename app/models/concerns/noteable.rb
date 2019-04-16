@@ -13,7 +13,7 @@ module Noteable
     end
   end
 
-  # The timestamp of the note (e.g. the :updated_at attribute if provided via
+  # The timestamp of the note (e.g. the :created_at or :updated_at attribute if provided via
   # API call)
   def system_note_timestamp
     @system_note_timestamp || Time.now # rubocop:disable Gitlab/ModuleWithInstanceVariables
