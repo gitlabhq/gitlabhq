@@ -74,7 +74,7 @@ export default {
     <gl-loading-icon
       v-if="isLoadingRepos"
       class="js-loading-button-icon import-projects-loading-icon"
-      :size="4"
+      size="md"
     />
     <div v-else-if="hasProviderRepos || hasImportedProjects" class="table-responsive">
       <table class="table import-table">

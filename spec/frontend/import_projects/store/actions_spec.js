@@ -27,8 +27,8 @@ import {
   stopJobsPolling,
 } from '~/import_projects/store/actions';
 import state from '~/import_projects/store/state';
-import testAction from 'spec/helpers/vuex_action_helper';
-import { TEST_HOST } from 'spec/test_constants';
+import testAction from 'helpers/vuex_action_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 
 describe('import_projects store actions', () => {
   let localState;
