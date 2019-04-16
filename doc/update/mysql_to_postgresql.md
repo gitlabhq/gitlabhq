@@ -41,7 +41,7 @@ Debian/Ubuntu:
    sudo apt-get install pgloader
    ```
 
-For other distributions, follow the instructions in PostrgreSQL's
+For other distributions, follow the instructions in PostgreSQL's
 [download page](https://www.postgresql.org/download/) to add their repository
 and then install `pgloader`.
 
