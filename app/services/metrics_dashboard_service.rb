@@ -27,8 +27,6 @@ class MetricsDashboardService
     "metrics_dashboard_#{SYSTEM_DASHBOARD_NAME}"
   end
 
-  # TODO: "Processing" the dashboard needs to include several steps such as
-  # inserting metric ids and alert information.
   def process_dashboard(dashboard)
     MetricsDashboardProcessingService.new(dashboard, @project).process
   end
