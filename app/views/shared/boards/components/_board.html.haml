@@ -1,8 +1,8 @@
-.board{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded, "board-type-assignee": list.type === "assignee" }',
+.board.d-inline-block.h-100.px-2.align-top.ws-normal{ ":class" => '{ "is-draggable": !list.preset, "is-expandable": list.isExpandable, "is-collapsed": !list.isExpanded, "board-type-assignee": list.type === "assignee" }',
   ":data-id" => "list.id" }
-  .board-inner.d-flex.flex-column
-    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
-      %h3.board-title.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset) }' }
+  .board-inner.d-flex.flex-column.position-relative.h-100.rounded
+    %header.board-header{ ":class" => '{ "has-border": list.label && list.label.color, "position-relative": list.isExpanded, "position-absolute position-top-0 position-left-0 w-100 h-100": !list.isExpanded }', ":style" => "{ borderTopColor: (list.label && list.label.color ? list.label.color : null) }", "@click" => "toggleExpanded($event)" }
+      %h3.board-title.m-0.d-flex.align-items-center.py-2.px-3.js-board-handle{ ":class" => '{ "user-can-drag": (!disabled && !list.preset), "p-0 border-bottom-0 justify-content-center": !list.isExpanded }' }
         %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
           ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded }",
           "aria-hidden": "true" }
@@ -31,9 +31,9 @@
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
-            %button.board-delete.has-tooltip.float-right{ type: "button", title: _("Delete list"), "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+            %button.board-delete.p-0.border-0.has-tooltip.float-right{ type: "button", title: _("Delete list"), ":class": "{ 'd-none': !list.isExpanded }", "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
-        .issue-count-badge.text-secondary{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"', ":title": "counterTooltip", "v-tooltip": true, data: { placement: "top" } }
+        .issue-count-badge.text-secondary{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"', ":title": "counterTooltip", ":class": "{ 'd-none': !list.isExpanded }", "v-tooltip": true, data: { placement: "top" } }
           %span.issue-count-badge-count
             %icon.mr-1{ name: "issues" }
             {{ list.issuesSize }}
@@ -42,6 +42,7 @@
         %button.issue-count-badge-add-button.btn.btn-sm.btn-default.ml-1.has-tooltip.js-no-trigger-collapse{ type: "button",
           "@click" => "showNewIssueForm",
           "v-if" => "isNewIssueShown",
+          ":class": "{ 'd-none': !list.isExpanded }",
           "aria-label" => _("New issue"),
           "title" => _("New issue"),
           data: { placement: "top", container: "body" } }
