@@ -95,7 +95,7 @@ Make sure you have the right version of Git installed:
 # Install Git
 sudo apt-get install -y git-core
 
-# Make sure Git is version 2.18.0 or higher
+# Make sure Git is version 2.21.0 or higher
 git --version
 ```
 
@@ -110,9 +110,9 @@ sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libs
 
 # Download and compile from source
 cd /tmp
-curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.18.0.tar.gz
-echo '94faf2c0b02a7920b0b46f4961d8e9cad08e81418614102898a55f980fa3e7e4  git-2.18.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.18.0.tar.gz
-cd git-2.18.0/
+curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.21.0.tar.gz
+echo '85eca51c7404da75e353eba587f87fea9481ba41e162206a6f70ad8118147bee'  git-2.21.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.21.0.tar.gz
+cd git-2.21.0/
 ./configure
 make prefix=/usr/local all
 
