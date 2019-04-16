@@ -1,9 +1,12 @@
 <script>
+import $ from 'jquery';
 import lockedWarning from './locked_warning.vue';
 import titleField from './fields/title.vue';
 import descriptionField from './fields/description.vue';
 import editActions from './edit_actions.vue';
 import descriptionTemplate from './fields/description_template.vue';
+import Autosave from '~/autosave';
+import eventHub from '../event_hub';
 
 export default {
   components: {
@@ -68,6 +71,47 @@ export default {
       return this.issuableTemplates.length;
     },
   },
+  created() {
+    eventHub.$on('delete.issuable', this.resetAutosave);
+    eventHub.$on('update.issuable', this.resetAutosave);
+    eventHub.$on('close.form', this.resetAutosave);
+  },
+  mounted() {
+    this.initAutosave();
+  },
+  beforeDestroy() {
+    eventHub.$off('delete.issuable', this.resetAutosave);
+    eventHub.$off('update.issuable', this.resetAutosave);
+    eventHub.$off('close.form', this.resetAutosave);
+  },
+  methods: {
+    initAutosave() {
+      const {
+        description: {
+          $refs: { textarea },
+        },
+        title: {
+          $refs: { input },
+        },
+      } = this.$refs;
+
+      this.autosaveDescription = new Autosave($(textarea), [
+        document.location.pathname,
+        document.location.search,
+        'description',
+      ]);
+
+      this.autosaveTitle = new Autosave($(input), [
+        document.location.pathname,
+        document.location.search,
+        'title',
+      ]);
+    },
+    resetAutosave() {
+      this.autosaveDescription.reset();
+      this.autosaveTitle.reset();
+    },
+  },
 };
 </script>
 
@@ -89,10 +133,11 @@ export default {
           'col-12': !hasIssuableTemplates,
         }"
       >
-        <title-field :form-state="formState" :issuable-templates="issuableTemplates" />
+        <title-field ref="title" :form-state="formState" :issuable-templates="issuableTemplates" />
       </div>
     </div>
     <description-field
+      ref="description"
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"

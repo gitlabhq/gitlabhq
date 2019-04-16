@@ -1,10 +1,17 @@
 import Vue from 'vue';
 import formComponent from '~/issue_show/components/form.vue';
+import eventHub from '~/issue_show/event_hub';
 
 describe('Inline edit form component', () => {
   let vm;
+  let autosave;
+  let autosaveObj;
 
   beforeEach(done => {
+    autosaveObj = { reset: jasmine.createSpy() };
+
+    autosave = spyOnDependency(formComponent, 'Autosave').and.returnValue(autosaveObj);
+
     const Component = Vue.extend(formComponent);
 
     vm = new Component({
@@ -52,5 +59,23 @@ describe('Inline edit form component', () => {
 
       done();
     });
+  });
+
+  it('initialized Autosave on mount', () => {
+    expect(autosave).toHaveBeenCalledTimes(2);
+  });
+
+  it('calls reset on autosave when eventHub emits appropriate events', () => {
+    eventHub.$emit('close.form');
+
+    expect(autosaveObj.reset).toHaveBeenCalledTimes(2);
+
+    eventHub.$emit('delete.issuable');
+
+    expect(autosaveObj.reset).toHaveBeenCalledTimes(4);
+
+    eventHub.$emit('update.issuable');
+
+    expect(autosaveObj.reset).toHaveBeenCalledTimes(6);
   });
 });
