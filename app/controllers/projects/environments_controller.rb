@@ -158,7 +158,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def metrics_dashboard
-    render_403 and return unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, project)
+    render_403 && return unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, project)
 
     respond_to do |format|
       format.json do

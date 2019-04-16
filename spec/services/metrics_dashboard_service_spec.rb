@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MetricsDashboardService, :use_clean_rails_memory_store_caching do
-  let(:project)  { build(:project) }
+  let(:project) { build(:project) }
 
   describe 'get_dashboard' do
     it 'returns a json representation of the environment dashboard' do
