@@ -922,7 +922,7 @@ import mixin from 'ee_else_ce/path/mixin';
     mixins: [mixin]
 }
 ```
-  
+
 - Computed Properties/methods and getters only used in the child import still need a counterpart in CE
 
 - For store modules, we will need a CE counterpart too.
@@ -933,47 +933,27 @@ import mixin from 'ee_else_ce/path/mixin';
   - Since we are using the async loading to check which component to load, we'd still use the component's name, check [this example](#child-component-only-used-in-ee).
 
 * **EE extra HTML**
-  - For the templates that have extra HTML in EE we will use the `ifEE` mixin with the `v-if` directive.
-  - You can either use the `template` tag as a wrapper or directly in the element, if there is only one element to be rendered in EE:
-
-```html
-  <template v-if="ifEE">
-    <p>Several</p>
-    <p>non wrapper</p>
-    <p>elements</p>
-    <p>that are rendered</p>
-    <p>in EE only</p>
-  </template>
-```
-
-
-```html
-  <ul v-if="ifEE">
-    <li>One wrapped</li>
-    <li>element</li>
-    <li>that is rendered</li>
-    <li>in EE only</li>
-  </template>
-```
+  - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
 
 ### Non Vue Files
 For regular JS files, the approach is similar.
 
 1. We will keep using the [`ee_else_ce`](https://docs.gitlab.com/ee/development/ee_features.html#javascript-code-in-assetsjavascripts) helper, this means that EE only code should be inside the `ee/` folder.
   1. An EE file should be created with the EE only code, and it should extend the CE counterpart.
-1. For code inside functions that can't be extended, we will use an `if` statement with the `ifEE` helper
+  1. For code inside functions that can't be extended, the code should be moved into a new file and we should use `ee_else_ce` helper:
 
 ##### Example:
 
 ```javascript
-import { ifEE } from '~/lib/utils/common_utils'
-if (ifEE) {
-  $('.js-import-git-toggle-button').on('click', () => {
-    const $projectMirror = $('#project_mirror');
+  import eeCode from 'ee_else_ce/ee_code';
 
-    $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
-  });
-}
+  function test() {
+    const test = 'a';
+
+    eeCode();
+
+    return test;
+  }
 ```
 
 ## SCSS code in `assets/stylesheets`
