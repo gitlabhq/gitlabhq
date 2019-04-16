@@ -117,7 +117,7 @@ export default {
 };
 </script>
 <template>
-  <section ref="list" class="add-issues-list add-issues-list-columns">
+  <section ref="list" class="add-issues-list add-issues-list-columns d-flex h-100">
     <div
       v-if="issuesCount > 0 && issues.length === 0"
       class="empty-state add-issues-empty-state-filter text-center"
@@ -129,7 +129,7 @@ export default {
       <div v-for="issue in group" v-if="showIssue(issue)" :key="issue.id" class="board-card-parent">
         <div
           :class="{ 'is-active': issue.selected }"
-          class="board-card"
+          class="board-card position-relative p-3 rounded"
           @click="toggleIssue($event, issue)"
         >
           <issue-card-inner :issue="issue" :issue-link-base="issueLinkBase" :root-path="rootPath" />
