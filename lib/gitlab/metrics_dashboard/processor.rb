@@ -3,7 +3,7 @@
 module Gitlab
   module MetricsDashboard
     class Processor
-      STAGES = [CommonMetricsInserter, Sorter, ProjectMetricsInserter].freeze
+      STAGES = [CommonMetricsInserter, ProjectMetricsInserter, Sorter].freeze
 
       def initialize(dashboard, project)
         @dashboard = dashboard.deep_transform_keys(&:to_sym)

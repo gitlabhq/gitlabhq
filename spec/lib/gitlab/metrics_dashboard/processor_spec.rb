@@ -18,38 +18,39 @@ describe Gitlab::MetricsDashboard::Processor do
     end
 
     context 'when the project has associated metrics' do
-      let!(:project_metric) { create(:prometheus_metric, project: project) }
+      let!(:project_response_metric) { create(:prometheus_metric, project: project, group: :response) }
+      let!(:project_system_metric) { create(:prometheus_metric, project: project, group: :system) }
+      let!(:project_business_metric) { create(:prometheus_metric, project: project, group: :business) }
 
       it 'includes project-specific metrics' do
-        project_metric_details = {
-          query_range: project_metric.query,
-          unit: project_metric.unit,
-          label: project_metric.legend,
-          metric_id: project_metric.id
-        }
-
-        expect(all_metrics).to include project_metric_details
+        expect(all_metrics).to include get_metric_details(project_system_metric)
+        expect(all_metrics).to include get_metric_details(project_response_metric)
+        expect(all_metrics).to include get_metric_details(project_business_metric)
       end
 
-      it 'includes project metrics at the end of the config' do
-        expected_metrics_order = ['metric_b', 'metric_a2', 'metric_a1', nil]
-        actual_metrics_order = all_metrics.map { |m| m[:id] }
+      it 'orders groups by priority and panels by weight' do
+        expected_metrics_order = ['metric_a2', 'metric_a1', 'metric_b', project_business_metric.id, project_response_metric.id, project_system_metric.id]
+        actual_metrics_order = all_metrics.map { |m| m[:id] || m[:metric_id] }
 
         expect(actual_metrics_order).to eq expected_metrics_order
       end
     end
-
-    it 'orders groups by priority and panels by weight' do
-      expected_metrics_order = %w(metric_b metric_a2 metric_a1)
-      actual_metrics_order = all_metrics.map { |m| m[:id] }
-
-      expect(actual_metrics_order).to eq expected_metrics_order
-    end
   end
+
+  private
 
   def all_metrics
     dashboard[:panel_groups].map do |group|
       group[:panels].map { |panel| panel[:metrics] }
     end.flatten
+  end
+
+  def get_metric_details(metric)
+    {
+      query_range: metric.query,
+      unit: metric.unit,
+      label: metric.legend,
+      metric_id: metric.id
+    }
   end
 end

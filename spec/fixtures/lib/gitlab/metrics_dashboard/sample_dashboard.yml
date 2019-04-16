@@ -7,7 +7,7 @@ panel_groups:
   - title: "Super Chart A1"
     type: "area-chart"
     y_label: "y_label"
-    weight: 2
+    weight: 1
     metrics:
     - id: metric_a1
       query_range: 'query'
@@ -16,7 +16,7 @@ panel_groups:
   - title: "Super Chart A2"
     type: "area-chart"
     y_label: "y_label"
-    weight: 1
+    weight: 2
     metrics:
     - id: metric_a2
       query_range: 'query'
