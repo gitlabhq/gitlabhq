@@ -24,10 +24,10 @@ module Clusters
           ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
       rescue Kubeclient::HttpError => e
         log_error(e)
-        app.make_errored!("Kubernetes error: #{e.error_code}")
+        app.make_errored!(_('Kubernetes error: %{error_code}') % { error_code: e.error_code })
       rescue StandardError => e
         log_error(e)
-        app.make_errored!('Failed to upgrade.')
+        app.make_errored!(_('Failed to upgrade.'))
       end
     end
   end
