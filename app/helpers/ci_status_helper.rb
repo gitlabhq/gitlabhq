@@ -16,7 +16,7 @@ module CiStatusHelper
     label = case status
             when 'success'
               'passed'
-            when 'success_with_warnings'
+            when 'success-with-warnings'
               'passed with warnings'
             when 'manual'
               'waiting for manual action'
@@ -37,7 +37,7 @@ module CiStatusHelper
     case status
     when 'success'
       s_('CiStatusText|passed')
-    when 'success_with_warnings'
+    when 'success-with-warnings'
       s_('CiStatusText|passed')
     when 'manual'
       s_('CiStatusText|blocked')
@@ -71,7 +71,7 @@ module CiStatusHelper
       case status
       when 'success'
         'status_success'
-      when 'success_with_warnings'
+      when 'success-with-warnings'
         'status_warning'
       when 'failed'
         'status_failed'
