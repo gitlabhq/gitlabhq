@@ -73,6 +73,10 @@ How we use UI components.
 
 How we use Snowplow to track custom events.
 
+## Frontend FAQ
+
+Read the [frontend's FAQ](frontend_faq.md) for common small pieces of helpful information.
+
 ---
 
 ## Style Guides
