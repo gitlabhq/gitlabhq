@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::MetricsDashboard::Processor do
   let(:project) { build(:project) }
-  let(:dashboard_yml) { YAML.load_file('spec/fixtures/services/metrics_dashboard_processing_service.yml') }
+  let(:dashboard_yml) { YAML.load_file('spec/fixtures/lib/gitlab/metrics_dashboard/sample_dashboard.yml') }
 
   describe 'process' do
     let(:dashboard) { JSON.parse(described_class.new(dashboard_yml, project).process, symbolize_names: true) }
