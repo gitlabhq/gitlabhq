@@ -226,7 +226,10 @@ A turnaround time of two working days is usually acceptable, since engineers
 will typically have other things to work on while they're waiting for review,
 but don't hesitate to ask the author if it's unclear what time frame would be
 acceptable, how urgent the review is, or how significant the blockage. Authors
-are also encouraged to provide this information up-front to reviewers.
+are also encouraged to provide this information up-front to reviewers, but are
+expected to be mindful of the [guidelines on when to ask for review on MRs that
+are intended to go in before the feature freeze](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md#between-the-1st-and-the-7th),
+and realistic in their expectations if these were not followed.
 
 If you don't think you'll be able to review a merge request within a reasonable
 time frame, let the author know as soon as possible and try to help them find
