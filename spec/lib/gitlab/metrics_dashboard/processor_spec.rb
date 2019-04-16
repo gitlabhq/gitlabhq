@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MetricsDashboardProcessingService do
+describe Gitlab::MetricsDashboard::Processor do
   let(:project) { build(:project) }
   let(:dashboard_yml) { YAML.load_file('spec/fixtures/services/metrics_dashboard_processing_service.yml') }
 
@@ -40,7 +40,7 @@ describe MetricsDashboardProcessingService do
     end
 
     it 'orders groups by priority and panels by weight' do
-      expected_metrics_order = %w('metric_b metric_a2 metric_a1')
+      expected_metrics_order = %w(metric_b metric_a2 metric_a1)
       actual_metrics_order = all_metrics.map { |m| m[:id] }
 
       expect(actual_metrics_order).to eq expected_metrics_order

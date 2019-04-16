@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MetricsDashboardService, :use_clean_rails_memory_store_caching do
+describe Gitlab::MetricsDashboard::Service, :use_clean_rails_memory_store_caching do
   let(:project) { build(:project) }
 
   describe 'get_dashboard' do

@@ -162,7 +162,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        dashboard = MetricsDashboardService.new(@project).get_dashboard
+        dashboard = Gitlab::MetricsDashboard::Service.new(@project).get_dashboard
 
         render json: dashboard, status: :ok
       end
