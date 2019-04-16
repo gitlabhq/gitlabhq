@@ -209,6 +209,9 @@ msgstr ""
 msgid "%{user_name} profile page"
 msgstr ""
 
+msgid "%{verb} %{time_spent_value} spent time."
+msgstr ""
+
 msgid "'%{level}' is not a valid visibility level"
 msgstr ""
 
@@ -486,6 +489,9 @@ msgstr ""
 msgid "Add a task list"
 msgstr ""
 
+msgid "Add a todo"
+msgstr ""
+
 msgid "Add bold text"
 msgstr ""
 
@@ -498,6 +504,9 @@ msgstr ""
 msgid "Add italic text"
 msgstr ""
 
+msgid "Add label(s)"
+msgstr ""
+
 msgid "Add license"
 msgstr ""
 
@@ -508,6 +517,9 @@ msgid "Add new application"
 msgstr ""
 
 msgid "Add new directory"
+msgstr ""
+
+msgid "Add or subtract spent time"
 msgstr ""
 
 msgid "Add reaction"
@@ -535,6 +547,12 @@ msgid "Added at"
 msgstr ""
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
+msgstr ""
+
+msgid "Adds"
+msgstr ""
+
+msgid "Adds a todo."
 msgstr ""
 
 msgid "Admin Area"
@@ -897,6 +915,12 @@ msgstr ""
 msgid "Appearance was successfully updated."
 msgstr ""
 
+msgid "Append the comment with %{TABLEFLIP}"
+msgstr ""
+
+msgid "Append the comment with %{shrug}"
+msgstr ""
+
 msgid "Application"
 msgstr ""
 
@@ -1012,6 +1036,9 @@ msgid "Ask your group maintainer to set up a group Runner."
 msgstr ""
 
 msgid "Assets"
+msgstr ""
+
+msgid "Assign"
 msgstr ""
 
 msgid "Assign custom color like #FF0000"
@@ -1590,6 +1617,9 @@ msgstr ""
 msgid "Change this value to influence how frequently the GitLab UI polls for updates."
 msgstr ""
 
+msgid "Change title"
+msgstr ""
+
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr ""
 
@@ -1612,6 +1642,9 @@ msgid "Changes are shown as if the <b>source</b> revision was being merged into 
 msgstr ""
 
 msgid "Changes suppressed. Click to show."
+msgstr ""
+
+msgid "Changes the title to \"%{title_param}\"."
 msgstr ""
 
 msgid "Charts"
@@ -2633,6 +2666,12 @@ msgstr ""
 msgid "Copy file path to clipboard"
 msgstr ""
 
+msgid "Copy labels and milestone from %{source_issuable_reference}."
+msgstr ""
+
+msgid "Copy labels and milestone from other issue or merge request"
+msgstr ""
+
 msgid "Copy link"
 msgstr ""
 
@@ -2688,6 +2727,9 @@ msgid "Create New Domain"
 msgstr ""
 
 msgid "Create a GitLab account first, and then connect it to your %{label} account."
+msgstr ""
+
+msgid "Create a merge request."
 msgstr ""
 
 msgid "Create a new branch"
@@ -2784,6 +2826,9 @@ msgid "Created on"
 msgstr ""
 
 msgid "Created on:"
+msgstr ""
+
+msgid "Creates branch '%{branch_name}' and a merge request to resolve this issue"
 msgstr ""
 
 msgid "Cron Timezone"
@@ -5271,6 +5316,9 @@ msgstr ""
 msgid "Lock not found"
 msgstr ""
 
+msgid "Lock the discussion"
+msgstr ""
+
 msgid "Lock this %{issuableDisplayName}? Only <strong>project members</strong> will be able to comment."
 msgstr ""
 
@@ -5281,6 +5329,9 @@ msgid "Locked"
 msgstr ""
 
 msgid "Locked to current projects"
+msgstr ""
+
+msgid "Locks the discussion"
 msgstr ""
 
 msgid "Logo was successfully removed."
@@ -5295,7 +5346,13 @@ msgstr ""
 msgid "MRDiff|Show full file"
 msgstr ""
 
+msgid "Make issue confidential."
+msgstr ""
+
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
+msgstr ""
+
+msgid "Makes this issue confidential"
 msgstr ""
 
 msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
@@ -5355,6 +5412,9 @@ msgstr ""
 msgid "March"
 msgstr ""
 
+msgid "Mark this issue as a duplicate of another issue"
+msgstr ""
+
 msgid "Mark todo as done"
 msgstr ""
 
@@ -5365,6 +5425,12 @@ msgid "Markdown Help"
 msgstr ""
 
 msgid "Markdown enabled"
+msgstr ""
+
+msgid "Marks this issue as a duplicate of %{duplicate_reference}."
+msgstr ""
+
+msgid "Marks todo as done."
 msgstr ""
 
 msgid "Max access level"
@@ -5670,10 +5736,22 @@ msgstr ""
 msgid "Move issue"
 msgstr ""
 
+msgid "Move issue from one column of the board to another"
+msgstr ""
+
+msgid "Move this issue to another project."
+msgstr ""
+
 msgid "MoveIssue|Cannot move issue due to insufficient permissions!"
 msgstr ""
 
 msgid "MoveIssue|Cannot move issue to project it originates from!"
+msgstr ""
+
+msgid "Moves issue to %{label} column in the board."
+msgstr ""
+
+msgid "Moves this issue to %{path_to_project}."
 msgstr ""
 
 msgid "Multiple model types found: %{model_types}"
@@ -7293,7 +7371,19 @@ msgstr ""
 msgid "Remove Runner"
 msgstr ""
 
+msgid "Remove all or specific assignee(s)"
+msgstr ""
+
+msgid "Remove all or specific label(s)"
+msgstr ""
+
+msgid "Remove assignee"
+msgstr ""
+
 msgid "Remove avatar"
+msgstr ""
+
+msgid "Remove due date"
 msgstr ""
 
 msgid "Remove fork relationship"
@@ -7302,10 +7392,16 @@ msgstr ""
 msgid "Remove group"
 msgstr ""
 
+msgid "Remove milestone"
+msgstr ""
+
 msgid "Remove priority"
 msgstr ""
 
 msgid "Remove project"
+msgstr ""
+
+msgid "Remove spent time"
 msgstr ""
 
 msgid "Remove this label? Are you sure?"
@@ -7314,10 +7410,28 @@ msgstr ""
 msgid "Remove this label? This will affect all projects within the group. Are you sure?"
 msgstr ""
 
+msgid "Remove time estimate"
+msgstr ""
+
 msgid "Removed group can not be restored!"
 msgstr ""
 
 msgid "Removed projects cannot be restored!"
+msgstr ""
+
+msgid "Removes %{milestone_reference} milestone."
+msgstr ""
+
+msgid "Removes all labels."
+msgstr ""
+
+msgid "Removes spent time."
+msgstr ""
+
+msgid "Removes the due date."
+msgstr ""
+
+msgid "Removes time estimate."
 msgstr ""
 
 msgid "Removing group will cause all child projects and resources to be removed."
@@ -7339,6 +7453,9 @@ msgid "Reopen milestone"
 msgstr ""
 
 msgid "Replace"
+msgstr ""
+
+msgid "Replace all label(s)"
 msgstr ""
 
 msgid "Reply to comment"
@@ -7880,7 +7997,13 @@ msgstr ""
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
 msgstr ""
 
+msgid "Set due date"
+msgstr ""
+
 msgid "Set max session time for web terminal."
+msgstr ""
+
+msgid "Set milestone"
 msgstr ""
 
 msgid "Set new password"
@@ -7899,6 +8022,9 @@ msgid "Set the duration for which the jobs will be considered as old and expired
 msgstr ""
 
 msgid "Set the maximum file size for each job's artifacts"
+msgstr ""
+
+msgid "Set time estimate"
 msgstr ""
 
 msgid "Set up CI/CD"
@@ -7944,6 +8070,15 @@ msgid "SetStatusModal|Sorry, we weren't able to set your status. Please try agai
 msgstr ""
 
 msgid "SetStatusModal|What's your status?"
+msgstr ""
+
+msgid "Sets the due date to %{due_date}."
+msgstr ""
+
+msgid "Sets the milestone to %{milestone_reference}."
+msgstr ""
+
+msgid "Sets time estimate to %{time_estimate}."
 msgstr ""
 
 msgid "Settings"
@@ -8419,6 +8554,9 @@ msgstr ""
 msgid "Subscribed"
 msgstr ""
 
+msgid "Subtracts"
+msgstr ""
+
 msgid "Successfully blocked"
 msgstr ""
 
@@ -8485,10 +8623,19 @@ msgstr ""
 msgid "Tag list:"
 msgstr ""
 
+msgid "Tag this commit."
+msgstr ""
+
 msgid "Tags"
 msgstr ""
 
 msgid "Tags feed"
+msgstr ""
+
+msgid "Tags this commit to %{tag_name} with \"%{message}\"."
+msgstr ""
+
+msgid "Tags this commit to %{tag_name}."
 msgstr ""
 
 msgid "Tags:"
@@ -9397,6 +9544,9 @@ msgstr ""
 msgid "Toggle discussion"
 msgstr ""
 
+msgid "Toggle emoji award"
+msgstr ""
+
 msgid "Toggle navigation"
 msgstr ""
 
@@ -9404,6 +9554,9 @@ msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
 msgid "ToggleButton|Toggle Status: ON"
+msgstr ""
+
+msgid "Toggles :%{name}: emoji award."
 msgstr ""
 
 msgid "Token"
@@ -9550,10 +9703,16 @@ msgstr ""
 msgid "Unlock"
 msgstr ""
 
+msgid "Unlock the discussion"
+msgstr ""
+
 msgid "Unlock this %{issuableDisplayName}? <strong>Everyone</strong> will be able to comment."
 msgstr ""
 
 msgid "Unlocked"
+msgstr ""
+
+msgid "Unlocks the discussion"
 msgstr ""
 
 msgid "Unresolve discussion"
