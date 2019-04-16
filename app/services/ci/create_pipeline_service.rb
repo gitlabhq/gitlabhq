@@ -55,6 +55,10 @@ module Ci
         end
       end
 
+      # If pipeline is not persisted, try to recover IID
+      pipeline.reset_project_iid unless pipeline.persisted? ||
+          Feature.disabled?(:ci_pipeline_rewind_iid, project, default_enabled: true)
+
       pipeline
     end
 

@@ -25,7 +25,8 @@ describe Ci::CreatePipelineService do
       merge_request: nil,
       push_options: nil,
       source_sha: nil,
-      target_sha: nil)
+      target_sha: nil,
+      save_on_errors: true)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
@@ -36,7 +37,7 @@ describe Ci::CreatePipelineService do
                  target_sha: target_sha }
 
       described_class.new(project, user, params).execute(
-        source, trigger_request: trigger_request, merge_request: merge_request)
+        source, save_on_errors: save_on_errors, trigger_request: trigger_request, merge_request: merge_request)
     end
     # rubocop:enable Metrics/ParameterLists
 
@@ -57,6 +58,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline).to eq(project.ci_pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
+        expect(pipeline.iid).not_to be_nil
         expect(pipeline.repository_source?).to be true
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
       end
@@ -445,6 +447,43 @@ describe Ci::CreatePipelineService do
         expect(result).not_to be_persisted
         expect(Ci::Build.all).to be_empty
         expect(Ci::Pipeline.count).to eq(0)
+      end
+
+      describe '#iid' do
+        let(:internal_id) do
+          InternalId.find_by(project_id: project.id, usage: :ci_pipelines)
+        end
+
+        before do
+          expect_any_instance_of(Ci::Pipeline).to receive(:ensure_project_iid!)
+            .and_call_original
+        end
+
+        context 'when ci_pipeline_rewind_iid is enabled' do
+          before do
+            stub_feature_flags(ci_pipeline_rewind_iid: true)
+          end
+
+          it 'rewinds iid' do
+            result = execute_service
+
+            expect(result).not_to be_persisted
+            expect(internal_id.last_value).to eq(0)
+          end
+        end
+
+        context 'when ci_pipeline_rewind_iid is disabled' do
+          before do
+            stub_feature_flags(ci_pipeline_rewind_iid: false)
+          end
+
+          it 'does not rewind iid' do
+            result = execute_service
+
+            expect(result).not_to be_persisted
+            expect(internal_id.last_value).to eq(1)
+          end
+        end
       end
     end
 

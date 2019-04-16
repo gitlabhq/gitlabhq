@@ -52,20 +52,20 @@ shared_examples_for 'AtomicInternalId' do |validate_presence: true|
 
         expect(InternalId).to receive(:generate_next).with(instance, scope_attrs, usage, any_args).and_return(iid)
         subject
-        expect(instance.public_send(internal_id_attribute)).to eq(iid)
+        expect(read_internal_id).to eq(iid)
       end
 
       it 'does not overwrite an existing internal id' do
-        instance.public_send("#{internal_id_attribute}=", 4711)
+        write_internal_id(4711)
 
-        expect { subject }.not_to change { instance.public_send(internal_id_attribute) }
+        expect { subject }.not_to change { read_internal_id }
       end
 
       context 'when the instance has an internal ID set' do
         let(:internal_id) { 9001 }
 
         it 'calls InternalId.update_last_value and sets the `last_value` to that of the instance' do
-          instance.send("#{internal_id_attribute}=", internal_id)
+          write_internal_id(internal_id)
 
           expect(InternalId)
             .to receive(:track_greatest)
@@ -74,6 +74,40 @@ shared_examples_for 'AtomicInternalId' do |validate_presence: true|
           subject
         end
       end
+    end
+
+    describe "#reset_scope_internal_id_attribute" do
+      it 'rewinds the allocated IID' do
+        expect { ensure_scope_attribute! }.not_to raise_error
+        expect(read_internal_id).not_to be_nil
+
+        expect(reset_scope_attribute).to be_nil
+        expect(read_internal_id).to be_nil
+      end
+
+      it 'allocates the same IID' do
+        internal_id = ensure_scope_attribute!
+        reset_scope_attribute
+        expect(read_internal_id).to be_nil
+
+        expect(ensure_scope_attribute!).to eq(internal_id)
+      end
+    end
+
+    def ensure_scope_attribute!
+      instance.public_send(:"ensure_#{scope}_#{internal_id_attribute}!")
+    end
+
+    def reset_scope_attribute
+      instance.public_send(:"reset_#{scope}_#{internal_id_attribute}")
+    end
+
+    def read_internal_id
+      instance.public_send(internal_id_attribute)
+    end
+
+    def write_internal_id(value)
+      instance.public_send(:"#{internal_id_attribute}=", value)
     end
   end
 end

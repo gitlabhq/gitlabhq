@@ -53,6 +53,20 @@ module AtomicInternalId
 
         value
       end
+
+      define_method("reset_#{scope}_#{column}") do
+        if value = read_attribute(column)
+          scope_value = association(scope).reader
+          scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
+          usage = self.class.table_name.to_sym
+
+          if InternalId.reset(self, scope_attrs, usage, value)
+            write_attribute(column, nil)
+          end
+        end
+
+        read_attribute(column)
+      end
     end
   end
 end
