@@ -133,7 +133,7 @@ describe 'Issue Boards', :js do
         close_dropdown_menu_if_visible
         wait_for_requests
 
-        expect(page).to have_content('No assignee')
+        expect(page).to have_content('None')
       end
 
       expect(card_two).not_to have_selector('.avatar')
@@ -143,7 +143,7 @@ describe 'Issue Boards', :js do
       click_card(card)
 
       page.within(find('.assignee')) do
-        expect(page).to have_content('No assignee')
+        expect(page).to have_content('None')
 
         click_button 'assign yourself'
 
