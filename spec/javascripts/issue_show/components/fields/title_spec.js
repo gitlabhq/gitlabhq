@@ -41,4 +41,8 @@ describe('Title field component', () => {
 
     expect(eventHub.$emit).toHaveBeenCalled();
   });
+
+  it('has a ref named `input`', () => {
+    expect(vm.$refs.input).not.toBeNull();
+  });
 });
