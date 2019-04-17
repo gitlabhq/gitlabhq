@@ -217,6 +217,12 @@ const bindEvents = () => {
 
   $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl));
 
+  $('.js-import-git-toggle-button').on('click', () => {
+    const $projectMirror = $('#project_mirror');
+
+    $projectMirror.attr('disabled', !$projectMirror.attr('disabled'));
+  });
+
   $projectName.on('keyup change', () => {
     onProjectNameChange($projectName, $projectPath);
     hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
