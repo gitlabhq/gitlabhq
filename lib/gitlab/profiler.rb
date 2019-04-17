@@ -16,7 +16,11 @@ module Gitlab
       ee/lib/gitlab/middleware/
       lib/gitlab/performance_bar/
       lib/gitlab/request_profiler/
+      lib/gitlab/query_limiting/
+      lib/gitlab/tracing/
       lib/gitlab/profiler.rb
+      lib/gitlab/correlation_id.rb
+      lib/gitlab/webpack/dev_server_middleware.rb
     ].freeze
 
     # Takes a URL to profile (can be a fully-qualified URL, or an absolute path)

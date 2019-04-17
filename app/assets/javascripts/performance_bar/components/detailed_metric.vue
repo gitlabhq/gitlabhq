@@ -1,9 +1,11 @@
 <script>
 import GlModal from '~/vue_shared/components/gl_modal.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
 export default {
   components: {
     GlModal,
+    Icon,
   },
   props: {
     currentRequest: {
@@ -61,9 +63,31 @@ export default {
         <template v-if="detailsList.length">
           <tr v-for="(item, index) in detailsList" :key="index">
             <td>
-              <strong>{{ item.duration }}ms</strong>
+              <span>{{ item.duration }}ms</span>
             </td>
-            <td v-for="key in keys" :key="key" class="break-word">{{ item[key] }}</td>
+            <td>
+              <div class="js-toggle-container">
+                <div
+                  v-for="(key, keyIndex) in keys"
+                  :key="key"
+                  class="break-word"
+                  :class="{ 'mb-3 bold': keyIndex == 0 }"
+                >
+                  {{ item[key] }}
+                  <button
+                    v-if="keyIndex == 0 && item.backtrace"
+                    class="text-expander js-toggle-button"
+                    type="button"
+                    :aria-label="__('Toggle backtrace')"
+                  >
+                    <icon :size="12" name="ellipsis_h" />
+                  </button>
+                </div>
+                <pre v-if="item.backtrace" class="backtrace-row js-toggle-content mt-2">{{
+                  item.backtrace
+                }}</pre>
+              </div>
+            </td>
           </tr>
         </template>
         <template v-else>
