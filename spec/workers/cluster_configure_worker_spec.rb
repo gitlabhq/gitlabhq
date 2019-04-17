@@ -10,25 +10,35 @@ describe ClusterConfigureWorker, '#perform' do
     stub_feature_flags(ci_preparing_state: ci_preparing_state_enabled)
   end
 
-  context 'when group cluster' do
+  shared_examples 'configured cluster' do
+    it 'creates a namespace' do
+      expect(Clusters::RefreshService).to receive(:create_or_update_namespaces_for_cluster).with(cluster).once
+
+      worker.perform(cluster.id)
+    end
+  end
+
+  shared_examples 'unconfigured cluster' do
+    it 'does not create a namespace' do
+      expect(Clusters::RefreshService).not_to receive(:create_or_update_namespaces_for_cluster)
+
+      worker.perform(cluster.id)
+    end
+  end
+
+  context 'group cluster' do
     let(:cluster) { create(:cluster, :group, :provided_by_gcp) }
     let(:group) { cluster.group }
-
-    context 'when group has no projects' do
-      it 'does not create a namespace' do
-        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:execute)
-
-        worker.perform(cluster.id)
-      end
-    end
 
     context 'when group has a project' do
       let!(:project) { create(:project, group: group) }
 
-      it 'creates a namespace for the project' do
-        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute).once
+      it_behaves_like 'configured cluster'
 
-        worker.perform(cluster.id)
+      context 'ci_preparing_state feature is enabled' do
+        let(:ci_preparing_state_enabled) { true }
+
+        it_behaves_like 'unconfigured cluster'
       end
     end
 
@@ -36,32 +46,26 @@ describe ClusterConfigureWorker, '#perform' do
       let!(:subgroup) { create(:group, parent: group) }
       let!(:project) { create(:project, group: subgroup) }
 
-      it 'creates a namespace for the project' do
-        expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute).once
+      it_behaves_like 'configured cluster'
 
-        worker.perform(cluster.id)
+      context 'ci_preparing_state feature is enabled' do
+        let(:ci_preparing_state_enabled) { true }
+
+        it_behaves_like 'unconfigured cluster'
       end
     end
   end
 
   context 'when provider type is gcp' do
-    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
 
-    it 'configures kubernetes platform' do
-      expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute)
-
-      described_class.new.perform(cluster.id)
-    end
+    it_behaves_like 'configured cluster'
   end
 
   context 'when provider type is user' do
-    let(:cluster) { create(:cluster, :project, :provided_by_user) }
+    let!(:cluster) { create(:cluster, :project, :provided_by_user) }
 
-    it 'configures kubernetes platform' do
-      expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).to receive(:execute)
-
-      described_class.new.perform(cluster.id)
-    end
+    it_behaves_like 'configured cluster'
   end
 
   context 'when cluster does not exist' do
@@ -69,17 +73,6 @@ describe ClusterConfigureWorker, '#perform' do
       expect_any_instance_of(Clusters::Gcp::Kubernetes::CreateOrUpdateNamespaceService).not_to receive(:execute)
 
       described_class.new.perform(123)
-    end
-  end
-
-  context 'ci_preparing_state feature is enabled' do
-    let(:cluster) { create(:cluster) }
-    let(:ci_preparing_state_enabled) { true }
-
-    it 'does not configure the cluster' do
-      expect(Clusters::RefreshService).not_to receive(:create_or_update_namespaces_for_cluster)
-
-      described_class.new.perform(cluster.id)
     end
   end
 end
