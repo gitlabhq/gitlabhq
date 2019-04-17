@@ -21,10 +21,30 @@ module Gitlab
             nil
           end
 
+          # This needs to return an array of Gitlab::Git:Commit objects
+          # instead of Rugged::Commit objects to ensure upstream models
+          # operate on a consistent interface. Unlike
+          # Gitlab::Git::Commit.find, Gitlab::Git::Commit.batch_by_oid
+          # doesn't attempt to decorate the result.
+          def rugged_batch_by_oid(repo, oids)
+            oids.map { |oid| rugged_find(repo, oid) }
+              .compact
+              .map { |commit| decorate(repo, commit) }
+          end
+
           override :find_commit
           def find_commit(repo, commit_id)
             if Feature.enabled?(:rugged_find_commit)
               rugged_find(repo, commit_id)
+            else
+              super
+            end
+          end
+
+          override :batch_by_oid
+          def batch_by_oid(repo, oids)
+            if Feature.enabled?(:rugged_list_commits_by_oid)
+              rugged_batch_by_oid(repo, oids)
             else
               super
             end
