@@ -18,20 +18,6 @@ module Gitlab
 
         private
 
-        # Looks for a panel corresponding to the provided metric object.
-        # If unavailable, inserts one.
-        # @param panels [Array<Hash>]
-        # @param metric [PrometheusMetric]
-        def find_or_create_panel(panels, metric)
-          panel = find_panel(panels, metric)
-          return panel if panel
-
-          panel = new_panel(metric)
-          panels << panel
-
-          panel
-        end
-
         # Looks for a panel_group corresponding to the provided metric object.
         # If unavailable, inserts one.
         # @param panel_groups [Array<Hash>]
@@ -44,6 +30,20 @@ module Gitlab
           panel_groups << panel_group
 
           panel_group
+        end
+
+        # Looks for a panel corresponding to the provided metric object.
+        # If unavailable, inserts one.
+        # @param panels [Array<Hash>]
+        # @param metric [PrometheusMetric]
+        def find_or_create_panel(panels, metric)
+          panel = find_panel(panels, metric)
+          return panel if panel
+
+          panel = new_panel(metric)
+          panels << panel
+
+          panel
         end
 
         # Looks for a metric corresponding to the provided metric object.

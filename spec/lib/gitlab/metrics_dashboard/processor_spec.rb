@@ -31,7 +31,14 @@ describe Gitlab::MetricsDashboard::Processor do
       end
 
       it 'orders groups by priority and panels by weight' do
-        expected_metrics_order = ['metric_a2', 'metric_a1', 'metric_b', project_business_metric.id, project_response_metric.id, project_system_metric.id]
+        expected_metrics_order = [
+          'metric_a2', # group priority 10, panel weight 2
+          'metric_a1', # group priority 10, panel weight 1
+          'metric_b', # group priority 1, panel weight 1
+          project_business_metric.id, # group priority 0, panel weight nil (0)
+          project_response_metric.id, # group priority -5, panel weight nil (0)
+          project_system_metric.id, # group priority -10, panel weight nil (0)
+        ]
         actual_metrics_order = all_metrics.map { |m| m[:id] || m[:metric_id] }
 
         expect(actual_metrics_order).to eq expected_metrics_order
