@@ -12,6 +12,22 @@ The `setup` task is an alias for `gitlab:setup`.
 This tasks calls `db:reset` to create the database, calls `add_limits_mysql` that adds limits to the database schema in case of a MySQL database and finally it calls `db:seed_fu` to seed the database.
 Note: `db:setup` calls `db:seed` but this does nothing.
 
+### Seeding issues for all or a given project
+
+You can seed issues for all or a given project with the `gitlab:seed:issues`
+task:
+
+```shell
+# All projects
+bin/rake gitlab:seed:issues
+
+# A specific project
+bin/rake "gitlab:seed:issues[group-path/project-path]"
+```
+
+By default, this seeds an average of 2 issues per week for the last 5 weeks per
+project.
+
 ### Automation
 
 If you're very sure that you want to **wipe the current database** and refill
