@@ -4,8 +4,9 @@ module Gitlab
   module MetricsDashboard
     module Stages
       class ProjectMetricsInserter < BaseStage
-        # Inserts project-specific metrics into the dashboard config.
-        # If there are no project-specific metrics, this will have no effect.
+        # Inserts project-specific metrics into the dashboard
+        # config. If there are no project-specific metrics,
+        # this will have no effect.
         def transform!
           project.prometheus_metrics.each do |project_metric|
             group = find_or_create_panel_group(dashboard[:panel_groups], project_metric)
@@ -16,8 +17,8 @@ module Gitlab
 
         private
 
-        # Looks for a panel_group corresponding to the provided metric object.
-        # If unavailable, inserts one.
+        # Looks for a panel_group corresponding to the
+        # provided metric object. If unavailable, inserts one.
         # @param panel_groups [Array<Hash>]
         # @param metric [PrometheusMetric]
         def find_or_create_panel_group(panel_groups, metric)
@@ -30,8 +31,8 @@ module Gitlab
           panel_group
         end
 
-        # Looks for a panel corresponding to the provided metric object.
-        # If unavailable, inserts one.
+        # Looks for a panel corresponding to the provided
+        # metric object. If unavailable, inserts one.
         # @param panels [Array<Hash>]
         # @param metric [PrometheusMetric]
         def find_or_create_panel(panels, metric)
@@ -44,8 +45,8 @@ module Gitlab
           panel
         end
 
-        # Looks for a metric corresponding to the provided metric object.
-        # If unavailable, inserts one.
+        # Looks for a metric corresponding to the provided
+        # metric object. If unavailable, inserts one.
         # @param metrics [Array<Hash>]
         # @param metric [PrometheusMetric]
         def find_or_create_metric(metrics, metric)

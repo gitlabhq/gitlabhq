@@ -18,7 +18,8 @@ module Gitlab
       end
 
       def process
-        stages.each { |stage| stage.new(@dashboard, @project, @environment).transform! }
+        stage_params = [@dashboard, @project, @environment]
+        stages.each { |stage| stage.new(*stage_params).transform! }
 
         @dashboard
       end
