@@ -13,7 +13,7 @@ For programmatic help adhering to the guidelines, see [linting](index.md#linting
 See the GitLab handbook for further [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 that apply to all GitLab content, not just documentation.
 
-## Documentation is the Single source of truth (SSOT)
+## Documentation is the single source of truth (SSOT)
 
 ### Why a single source of truth
 
