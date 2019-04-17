@@ -2,7 +2,7 @@
   "type": "object",
   "required": [
     "dashboard",
-    "order",
+    "priority",
     "panel_groups"
   ],
   "properties": {

@@ -1,5 +1,5 @@
 dashboard: 'Test Dashboard'
-order: 1
+priority: 1
 panel_groups:
 - group: Group A
   priority: 10
