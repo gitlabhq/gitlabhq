@@ -173,7 +173,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="d-flex board-card-header">
+    <div class="board-card-header">
       <h4 class="board-card-title append-bottom-0 prepend-top-0">
         <icon
           v-if="issue.confidential"
@@ -214,11 +214,11 @@ export default {
     </div>
     <div class="board-card-footer d-flex justify-content-between align-items-end">
       <div
-        class="d-flex align-items-start flex-wrap-reverse board-card-number-container overflow-hidden js-board-card-number-container"
+        class="d-flex align-items-start flex-wrap-reverse board-card-number-container js-board-card-number-container"
       >
         <span
           v-if="issue.referencePath"
-          class="board-card-number overflow-hidden d-flex append-right-8 prepend-top-8"
+          class="board-card-number d-flex append-right-8 prepend-top-8"
         >
           <tooltip-on-truncate
             v-if="issueReferencePath"
@@ -235,7 +235,7 @@ export default {
           />
         </span>
       </div>
-      <div class="board-card-assignee d-flex">
+      <div class="board-card-assignee">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
           v-if="shouldRenderAssignee(index)"
