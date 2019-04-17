@@ -73,7 +73,7 @@
                 %span.bold= issuable_sidebar[:due_date].to_s(:medium)
               - else
                 %span.no-value
-                  = _('No due date')
+                  = _('None')
             - if can_edit_issuable
               %span.no-value.js-remove-due-date-holder{ class: ("hidden" if issuable_sidebar[:due_date].nil?) }
                 \-

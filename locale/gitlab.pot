@@ -5966,9 +5966,6 @@ msgstr ""
 msgid "No details available"
 msgstr ""
 
-msgid "No due date"
-msgstr ""
-
 msgid "No errors to display."
 msgstr ""
 

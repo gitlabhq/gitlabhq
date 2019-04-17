@@ -775,10 +775,10 @@ describe 'Issues' do
 
             wait_for_requests
 
-            expect(page).to have_no_content 'No due date'
+            expect(page).to have_no_content 'None'
 
             click_link 'remove due date'
-            expect(page).to have_content 'No due date'
+            expect(page).to have_content 'None'
           end
         end
       end
