@@ -2,7 +2,7 @@ include:
   - local: /lib/gitlab/ci/templates/Code-Quality.gitlab-ci.yml
 
 code_quality:
-  extends: .dedicated-runner
+  extends: .dedicated-no-docs-no-db-pull-cache-job
   # gitlab-org runners set `privileged: false` but we need to have it set to true
   # since we're using Docker in Docker
   tags: []
@@ -13,7 +13,7 @@ code_quality:
     SETUP_DB: "false"
 
 sast:
-  extends: .dedicated-runner
+  extends: .dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
   variables:
     SAST_CONFIDENCE_LEVEL: 2
@@ -37,7 +37,7 @@ sast:
       sast: gl-sast-report.json
 
 dependency_scanning:
-  extends: .dedicated-runner
+  extends: .dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
