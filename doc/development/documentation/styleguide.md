@@ -79,7 +79,7 @@ We employ a **docs-first methodology** to help ensure that the docs remain a com
 * If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
 * When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information. 
 
-New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#documentation-template-for-new-docs), if present.
+New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
 
 The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
 
@@ -104,7 +104,7 @@ Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly 
 
 ### Organize by topic, not by type
 
-Because we want documentation to be a SSOT, we should [organize by topic, not by type](#organize-by-topic-not-by-typee).
+Because we want documentation to be a SSOT, we should [organize by topic, not by type](#organize-by-topic-not-by-type).
 
 ### Folder structure overview
 
