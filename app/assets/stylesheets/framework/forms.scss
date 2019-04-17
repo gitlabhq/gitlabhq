@@ -206,6 +206,7 @@ label {
 .form-text.text-muted {
   margin-bottom: 0;
   margin-top: #{$grid-size / 2};
+  font-size: $gl-font-size;
 }
 
 .gl-field-error,
