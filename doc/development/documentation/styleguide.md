@@ -29,8 +29,8 @@ The documentation is a continually evolving SSOT for all information related to 
 
 Include problem-solving actions that may address rare cases or be considered 'risky', so long as proper context is provided in the form of fully detailed warnings and caveats. This kind of content should be included as it could be helpful to others and, when properly explained, its benefits outweigh the risks. If you think you have found an exception to this rule, contact the Technical Writing team.
 
-We will add all troubleshooting information to the documentation, no matter how unlikely a user is to incounter a situation.
-For the troubleshooting sections people in GitLab support can merge additions themselves.
+We will add all troubleshooting information to the documentation, no matter how unlikely a user is to encounter a situation.
+For the Troubleshooting sections, people in GitLab Support can merge additions themselves.
 
 ### All media types
 
@@ -41,22 +41,25 @@ Include any media types/sources if the content is relevant to readers. You can f
  
 ### No special types
 
-It is a best practise to organize information in different types, [for example Divio has](https://www.divio.com/blog/documentation/):
+In the software industry, it is a best practice to organize documentatioin in different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
 
 1. Tutorials
 2. How-to guides
 3. Explanation
-4. Reference (for example a glossary)
+4. Reference (for example, a glossary)
 
-At GitLab we have so much product changes that we can't afford to have different types of information.
-If we have multiple types the information will become outdated.
-We will not disting between the different types.
+At GitLab, we have so many product changes in our monthly releases that we can't afford to continually update multiple types of information.
+If we have multiple types, the information will become outdated. Therefore, we have a [single template](structure.md) for documentation.
+
+We currently do not distinguish specific document types, although we are open to reconsidering this policy
+once the documentation has reached a future stage of maturity and quality. If you are reading this, then despite our
+continual improvement efforts, that point hasn't been reached.
 
 ### Link instead of summarize
 
 There is a temptation to summarize the information on another page.
 This will cause the information to live in two places.
-Instead link to the SSOT and explain why it is important to consume the information.
+Instead, link to the SSOT and explain why it is important to consume the information.
 
 ### Organize by topic, not by type
 
@@ -76,13 +79,13 @@ We employ a **docs-first methodology** to help ensure that the docs remain a com
 * If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
 * When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information. 
 
-New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](https://docs.gitlab.com/ee/development/documentation/structure.html#documentation-template-for-new-docs), if present
+New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#documentation-template-for-new-docs), if present.
 
 The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
 
-If you have questions when considering, authoring, or editing docs, ask the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages). Otherwise, forge ahead with your best effort. It does not need to be perfect; the team is happy to review and improve upon your content. Please review the [documentation process](https://docs.gitlab.com/ee/development/documentation/) before you begin your first documentation MR.
+If you have questions when considering, authoring, or editing docs, ask the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages). Otherwise, forge ahead with your best effort. It does not need to be perfect; the team is happy to review and improve upon your content. Please review the [Documentation guidelines](index.md) before you begin your first documentation MR.
 
-Having a knowledge base is any form that is separate from the documentation would be against the doc-first methodology because the content would overlap with the documentation
+Having a knowledge base is any form that is separate from the documentation would be against the docs-first methodology because the content would overlap with the documentation.
 
 ## Markdown
 
@@ -101,7 +104,7 @@ Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly 
 
 ### Organize by topic, not by type
 
-Because we want documentation to be a [SSOT we should organize by topic, not by type]().
+Because we want documentation to be a SSOT, we should [organize by topic, not by type](#organize-by-topic-not-by-typee).
 
 ### Folder structure overview
 
@@ -128,8 +131,6 @@ The table below shows what kind of documentation goes where.
 | `doc/install/`        | Contains instructions for installing GitLab. |
 | `doc/update/`         | Contains instructions for updating GitLab. |
 | `doc/topics/`         | Indexes per topic (`doc/topics/topic-name/index.md`): all resources for that topic. |
-
-TODO !!!!!!! Prevent duplication with https://docs.gitlab.com/ee/development/documentation/#folder-structure-and-files
 
 ### Working with directories and files
 
