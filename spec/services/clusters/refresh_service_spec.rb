@@ -93,14 +93,32 @@ describe Clusters::RefreshService do
       let(:group) { cluster.group }
       let(:project) { create(:project, group: group) }
 
-      include_examples 'creates a kubernetes namespace'
+      context 'when ci_preparing_state feature flag is enabled' do
+        include_examples 'does not create a kubernetes namespace'
 
-      context 'when project already has kubernetes namespace' do
+        context 'when project already has kubernetes namespace' do
+          before do
+            create(:cluster_kubernetes_namespace, project: project, cluster: cluster)
+          end
+
+          include_examples 'does not create a kubernetes namespace'
+        end
+      end
+
+      context 'when ci_preparing_state feature flag is disabled' do
         before do
-          create(:cluster_kubernetes_namespace, project: project, cluster: cluster)
+          stub_feature_flags(ci_preparing_state: false)
         end
 
-        include_examples 'does not create a kubernetes namespace'
+        include_examples 'creates a kubernetes namespace'
+
+        context 'when project already has kubernetes namespace' do
+          before do
+            create(:cluster_kubernetes_namespace, project: project, cluster: cluster)
+          end
+
+          include_examples 'does not create a kubernetes namespace'
+        end
       end
     end
   end

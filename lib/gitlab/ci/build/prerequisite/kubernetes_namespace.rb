@@ -6,7 +6,9 @@ module Gitlab
       module Prerequisite
         class KubernetesNamespace < Base
           def unmet?
-            deployment_cluster.present? && kubernetes_namespace.new_record?
+            deployment_cluster.present? &&
+              !deployment_cluster.project_type? &&
+              kubernetes_namespace.new_record?
           end
 
           def complete!

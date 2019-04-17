@@ -1,0 +1,5 @@
+---
+title: Disable just-in-time Kubernetes resource creation for project level clusters
+merge_request: 27352
+author:
+type: changed

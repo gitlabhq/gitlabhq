@@ -21,7 +21,11 @@ module Clusters
     private_class_method :projects_with_missing_kubernetes_namespaces_for_cluster
 
     def self.clusters_with_missing_kubernetes_namespaces_for_project(project)
-      project.all_clusters.missing_kubernetes_namespace(project.kubernetes_namespaces)
+      if Feature.enabled?(:ci_preparing_state, default_enabled: true)
+        project.clusters.missing_kubernetes_namespace(project.kubernetes_namespaces)
+      else
+        project.all_clusters.missing_kubernetes_namespace(project.kubernetes_namespaces)
+      end
     end
 
     private_class_method :clusters_with_missing_kubernetes_namespaces_for_project
