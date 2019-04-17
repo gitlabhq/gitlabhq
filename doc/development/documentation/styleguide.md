@@ -176,7 +176,7 @@ changes, regardless, and can move content if there is a better place for it.
 
 ### Avoid duplication
 
-Do not include the same information in multiple places. Instead, choose one single-source-of-truth location and link from other relevant locations.
+Do not include the same information in multiple places. [Link to a SSOT instead.](#link-instead-of-summarize)
 
 ### References across documents
 
