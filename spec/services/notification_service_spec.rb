@@ -643,6 +643,64 @@ describe NotificationService, :mailer do
     end
   end
 
+  describe 'Participating project notification settings have priority over group and global settings if available' do
+    let!(:group) { create(:group) }
+    let!(:maintainer) { group.add_owner(create(:user, username: 'maintainer')).user }
+    let!(:user1) { group.add_developer(create(:user, username: 'user_with_project_and_custom_setting')).user }
+
+    let(:project) { create(:project, :public, namespace: group) }
+    let(:issue) { create :issue, project: project, assignees: [assignee], description: '' }
+
+    before do
+      reset_delivered_emails!
+
+      create_notification_setting(user1, project, :participating)
+    end
+
+    context 'custom on group' do
+      [nil, true].each do |new_issue_value|
+        value_caption = new_issue_value || 'nil'
+        it "does not send an email to user1 when a new issue is created and new_issue is set to #{value_caption}" do
+          update_custom_notification(:new_issue, user1, resource: group, value: new_issue_value)
+
+          notification.new_issue(issue, maintainer)
+          should_not_email(user1)
+        end
+      end
+    end
+
+    context 'watch on group' do
+      it 'does not send an email' do
+        user1.notification_settings_for(group).update!(level: :watch)
+
+        notification.new_issue(issue, maintainer)
+        should_not_email(user1)
+      end
+    end
+
+    context 'custom on global, global on group' do
+      it 'does not send an email' do
+        user1.notification_settings_for(nil).update!(level: :custom)
+
+        user1.notification_settings_for(group).update!(level: :global)
+
+        notification.new_issue(issue, maintainer)
+        should_not_email(user1)
+      end
+    end
+
+    context 'watch on global, global on group' do
+      it 'does not send an email' do
+        user1.notification_settings_for(nil).update!(level: :watch)
+
+        user1.notification_settings_for(group).update!(level: :global)
+
+        notification.new_issue(issue, maintainer)
+        should_not_email(user1)
+      end
+    end
+  end
+
   describe 'Issues' do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, namespace: group) }
@@ -660,7 +718,7 @@ describe NotificationService, :mailer do
     end
 
     describe '#new_issue' do
-      it do
+      it 'notifies the expected users' do
         notification.new_issue(issue, @u_disabled)
 
         should_email(assignee)
@@ -1639,7 +1697,7 @@ describe NotificationService, :mailer do
     end
 
     describe '#project_was_moved' do
-      it do
+      it 'notifies the expected users' do
         notification.project_was_moved(project, "gitlab/gitlab")
 
         should_email(@u_watcher)
