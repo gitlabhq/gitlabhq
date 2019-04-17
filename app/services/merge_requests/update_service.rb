@@ -16,7 +16,7 @@ module MergeRequests
         params.delete(:force_remove_source_branch)
       end
 
-      if params[:force_remove_source_branch].present?
+      if params.has_key?(:force_remove_source_branch)
         merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
       end
 

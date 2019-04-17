@@ -12,6 +12,7 @@ import WidgetMergeHelp from './components/mr_widget_merge_help.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import Deployment from './components/deployment.vue';
 import WidgetRelatedLinks from './components/mr_widget_related_links.vue';
+import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MergedState from './components/states/mr_widget_merged.vue';
 import ClosedState from './components/states/mr_widget_closed.vue';
 import MergingState from './components/states/mr_widget_merging.vue';
@@ -46,6 +47,7 @@ export default {
     MrWidgetPipelineContainer,
     Deployment,
     'mr-widget-related-links': WidgetRelatedLinks,
+    MrWidgetAlertMessage,
     'mr-widget-merged': MergedState,
     'mr-widget-closed': ClosedState,
     'mr-widget-merging': MergingState,
@@ -109,6 +111,18 @@ export default {
     },
     shouldRenderMergedPipeline() {
       return this.mr.state === 'merged' && !_.isEmpty(this.mr.mergePipeline);
+    },
+    showMergePipelineForkWarning() {
+      return Boolean(
+        this.mr.mergePipelinesEnabled && this.mr.sourceProjectId !== this.mr.targetProjectId,
+      );
+    },
+    showTargetBranchAdvancedError() {
+      return Boolean(
+        this.mr.pipeline &&
+          this.mr.pipeline.target_sha &&
+          this.mr.pipeline.target_sha !== this.mr.targetBranchSha,
+      );
     },
   },
   watch: {
@@ -327,6 +341,30 @@ export default {
           :state="mr.state"
           :related-links="mr.relatedLinks"
         />
+
+        <mr-widget-alert-message
+          v-if="showMergePipelineForkWarning"
+          type="warning"
+          :help-path="mr.mergeRequestPipelinesHelpPath"
+        >
+          {{
+            s__(
+              'mrWidget|Fork merge requests do not create merge request pipelines which validate a post merge result',
+            )
+          }}
+        </mr-widget-alert-message>
+
+        <mr-widget-alert-message
+          v-if="showTargetBranchAdvancedError"
+          type="danger"
+          :help-path="mr.mergeRequestPipelinesHelpPath"
+        >
+          {{
+            s__(
+              'mrWidget|The target branch has advanced, which invalidates the merge request pipeline. Please update the source branch and retry merging',
+            )
+          }}
+        </mr-widget-alert-message>
 
         <source-branch-removal-status v-if="shouldRenderSourceBranchRemovalStatus" />
       </div>

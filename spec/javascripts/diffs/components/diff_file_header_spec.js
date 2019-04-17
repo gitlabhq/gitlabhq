@@ -611,6 +611,9 @@ describe('diff_file_header', () => {
           vm = mountComponentWithStore(Component, { props, store });
 
           expect(viewFileButton().getAttribute('href')).toBe('view-path');
+          expect(viewFileButton().getAttribute('data-original-title')).toEqual(
+            `View file @ ${props.diffFile.content_sha.substr(0, 8)}`,
+          );
         });
 
         it('should not render external url view link if diff file has no external url', () => {

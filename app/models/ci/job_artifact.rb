@@ -21,7 +21,8 @@ module Ci
       container_scanning: 'gl-container-scanning-report.json',
       dast: 'gl-dast-report.json',
       license_management: 'gl-license-management-report.json',
-      performance: 'performance.json'
+      performance: 'performance.json',
+      metrics: 'metrics.txt'
     }.freeze
 
     TYPE_AND_FORMAT_PAIRS = {
@@ -29,6 +30,7 @@ module Ci
       metadata: :gzip,
       trace: :raw,
       junit: :gzip,
+      metrics: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -88,7 +90,8 @@ module Ci
       dast: 8, ## EE-specific
       codequality: 9, ## EE-specific
       license_management: 10, ## EE-specific
-      performance: 11 ## EE-specific
+      performance: 11, ## EE-specific
+      metrics: 12 ## EE-specific
     }
 
     enum file_format: {
