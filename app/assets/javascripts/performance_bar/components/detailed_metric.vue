@@ -38,7 +38,11 @@ export default {
 };
 </script>
 <template>
-  <div v-if="currentRequest.details" :id="`peek-view-${metric}`" class="view">
+  <div
+    v-if="currentRequest.details"
+    :id="`peek-view-${metric}`"
+    class="view qa-performance-bar-detailed-metric"
+  >
     <button
       :data-target="`#modal-peek-${metric}-details`"
       class="btn-blank btn-link bold"

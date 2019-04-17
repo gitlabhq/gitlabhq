@@ -232,7 +232,7 @@
                 %span
                   = _('Reporting')
             = nav_link(path: 'application_settings#metrics_and_profiling') do
-              = link_to metrics_and_profiling_admin_application_settings_path, title: _('Metrics and profiling') do
+              = link_to metrics_and_profiling_admin_application_settings_path, title: _('Metrics and profiling'), class: 'qa-admin-settings-metrics-and-profiling-item' do
                 %span
                   = _('Metrics and profiling')
             = nav_link(path: 'application_settings#network') do
