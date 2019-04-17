@@ -4,6 +4,10 @@
     "unit",
     "label"
   ],
+  "oneOf": [
+    { "required": ["query"] },
+    { "required": ["query_range"] }
+  ],
   "properties": {
     "id": { "type": "string" },
     "query_range": { "type": "string" },
