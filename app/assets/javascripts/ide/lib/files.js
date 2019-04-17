@@ -22,6 +22,8 @@ export const decorateFiles = ({
   tempFile = false,
   content = '',
   base64 = false,
+  binary = false,
+  rawPath = '',
 }) => {
   const treeList = [];
   const entries = {};
@@ -90,6 +92,8 @@ export const decorateFiles = ({
         changed: tempFile,
         content,
         base64,
+        binary,
+        rawPath,
         previewMode: viewerInformationForPath(name),
         parentPath,
       });
