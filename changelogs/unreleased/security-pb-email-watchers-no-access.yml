@@ -1,0 +1,5 @@
+---
+title: Stop sending emails to users who can't read commit
+merge_request:
+author:
+type: security
