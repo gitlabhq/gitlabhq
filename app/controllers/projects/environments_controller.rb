@@ -162,9 +162,19 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        dashboard = Gitlab::MetricsDashboard::Service.new(@project).get_dashboard
+        result = Gitlab::MetricsDashboard::Service.new(@project).get_dashboard
 
-        render json: dashboard, status: :ok
+        if result[:status] == :success
+          render status: :ok, json: {
+            status: :success,
+            dashboard: result[:dashboard]
+          }
+        else
+          render status: result[:http_status] || :bad_request, json: {
+            message: result[:message],
+            status: result[:status]
+          }
+        end
       end
     end
   end

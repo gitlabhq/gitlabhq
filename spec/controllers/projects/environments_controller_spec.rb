@@ -479,8 +479,8 @@ describe Projects::EnvironmentsController do
         get :metrics_dashboard, params: environment_params(format: :json)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to include('dashboard', 'order', 'panel_groups')
-        expect(json_response['panel_groups']).to all( include('group', 'priority', 'panels') )
+        expect(json_response.keys).to contain_exactly('dashboard', 'status')
+        expect(json_response['dashboard']).to be_an_instance_of(Hash)
       end
     end
   end

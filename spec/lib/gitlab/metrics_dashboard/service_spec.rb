@@ -7,11 +7,13 @@ describe Gitlab::MetricsDashboard::Service, :use_clean_rails_memory_store_cachin
 
   describe 'get_dashboard' do
     it 'returns a json representation of the environment dashboard' do
-      dashboard = described_class.new(project).get_dashboard
-      json = JSON.parse(dashboard, symbolize_names: true)
+      result = described_class.new(project).get_dashboard
 
-      expect(json).to include(:dashboard, :order, :panel_groups)
-      expect(json[:panel_groups]).to all( include(:group, :priority, :panels) )
+      expect(result.keys).to contain_exactly(:dashboard, :status)
+      expect(result[:status]).to eq(:success)
+
+      expect(result[:dashboard]).to include('dashboard', 'order', 'panel_groups')
+      expect(result[:dashboard]['panel_groups']).to all( include('group', 'priority', 'panels') )
     end
 
     it 'caches the dashboard for subsequent calls' do
