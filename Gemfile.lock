@@ -551,10 +551,26 @@ GEM
     omniauth-twitter (1.4.0)
       omniauth-oauth (~> 1.1)
       rack
+    omniauth-ultraauth (0.0.1)
+      omniauth_openid_connect (~> 0.2.4)
     omniauth_crowd (2.2.3)
       activesupport
       nokogiri (>= 1.4.4)
       omniauth (~> 1.0)
+    omniauth_openid_connect (0.2.4)
+      addressable (~> 2.5)
+      omniauth (~> 1.3)
+      openid_connect (~> 1.1)
+    openid_connect (1.1.6)
+      activemodel
+      attr_required (>= 1.0.0)
+      json-jwt (>= 1.5.0)
+      rack-oauth2 (>= 1.6.1)
+      swd (>= 1.0.0)
+      tzinfo
+      validate_email
+      validate_url
+      webfinger (>= 1.0.1)
     opentracing (0.4.3)
     optimist (3.0.0)
     org-ruby (0.9.12)
@@ -865,6 +881,10 @@ GEM
     state_machines-activerecord (0.5.1)
       activerecord (>= 4.1, < 6.0)
       state_machines-activemodel (>= 0.5.0)
+    swd (1.1.2)
+      activesupport (>= 3)
+      attr_required (>= 0.0.5)
+      httpclient (>= 2.4)
     sys-filesystem (1.1.6)
       ffi
     sysexits (1.2.0)
@@ -914,6 +934,12 @@ GEM
       equalizer (~> 0.0.9)
       parser (>= 2.3.1.2, < 2.6)
       procto (~> 0.0.2)
+    validate_email (0.1.6)
+      activemodel (>= 3.0)
+      mail (>= 2.2.5)
+    validate_url (1.0.8)
+      activemodel (>= 3.0.0)
+      public_suffix
     validates_hostname (1.0.6)
       activerecord (>= 3.0)
       activesupport (>= 3.0)
@@ -926,6 +952,9 @@ GEM
     vmstat (2.3.0)
     warden (1.2.7)
       rack (>= 1.0)
+    webfinger (1.1.0)
+      activesupport
+      httpclient (>= 2.4)
     webmock (3.5.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -1086,6 +1115,7 @@ DEPENDENCIES
   omniauth-saml (~> 1.10)
   omniauth-shibboleth (~> 1.3.0)
   omniauth-twitter (~> 1.4)
+  omniauth-ultraauth (~> 0.0.1)
   omniauth_crowd (~> 2.2.0)
   opentracing (~> 0.4.3)
   org-ruby (~> 0.9.12)
