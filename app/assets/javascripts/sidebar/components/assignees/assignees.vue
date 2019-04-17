@@ -184,7 +184,7 @@ export default {
         <i aria-hidden="true" data-hidden="true" class="fa fa-exclamation-triangle"></i>
       </span>
       <template v-if="hasNoUsers">
-        <span class="assign-yourself no-value">
+        <span class="assign-yourself no-value qa-assign-yourself">
           None
           <template v-if="editable">
             - <button type="button" class="btn-link" @click="assignSelf">assign yourself</button>
