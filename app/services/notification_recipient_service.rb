@@ -135,7 +135,7 @@ module NotificationRecipientService
         global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
         user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
 
-        add_recipients(user_scope.where(id: user_ids), :watch, nil)
+        add_recipients(user_scope.where(id: user_ids), :custom, nil)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -391,7 +391,7 @@ module NotificationRecipientService
       def build!
         return [] unless project
 
-        add_recipients(project.team.maintainers, :watch, nil)
+        add_recipients(project.team.maintainers, :mention, nil)
       end
 
       def acting_user
