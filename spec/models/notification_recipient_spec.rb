@@ -9,11 +9,43 @@ describe NotificationRecipient do
 
   subject(:recipient) { described_class.new(user, :watch, target: target, project: project) }
 
-  it 'denies access to a target when cross project access is denied' do
-    allow(Ability).to receive(:allowed?).and_call_original
-    expect(Ability).to receive(:allowed?).with(user, :read_cross_project, :global).and_return(false)
+  describe '#has_access?' do
+    before do
+      allow(user).to receive(:can?).and_call_original
+    end
 
-    expect(recipient.has_access?).to be_falsy
+    context 'user cannot read cross project' do
+      it 'returns false' do
+        expect(user).to receive(:can?).with(:read_cross_project).and_return(false)
+        expect(recipient.has_access?).to eq false
+      end
+    end
+
+    context 'user cannot read build' do
+      let(:target) { build(:ci_pipeline) }
+
+      it 'returns false' do
+        expect(user).to receive(:can?).with(:read_build, target).and_return(false)
+        expect(recipient.has_access?).to eq false
+      end
+    end
+
+    context 'user cannot read commit' do
+      let(:target) { build(:commit) }
+
+      it 'returns false' do
+        expect(user).to receive(:can?).with(:read_commit, target).and_return(false)
+        expect(recipient.has_access?).to eq false
+      end
+    end
+
+    context 'target has no policy' do
+      let(:target) { double.as_null_object }
+
+      it 'returns true' do
+        expect(recipient.has_access?).to eq true
+      end
+    end
   end
 
   context '#notification_setting' do
