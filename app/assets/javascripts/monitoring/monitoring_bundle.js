@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import Dashboard from './components/dashboard.vue';
 
-export default () => {
+export default (props = {}) => {
   const el = document.getElementById('prometheus-graphs');
 
   if (el && el.dataset) {
@@ -15,6 +15,7 @@ export default () => {
             ...el.dataset,
             hasMetrics: parseBoolean(el.dataset.hasMetrics),
             showTimeWindowDropdown: gon.features.metricsTimeWindow,
+            ...props,
           },
         });
       },
