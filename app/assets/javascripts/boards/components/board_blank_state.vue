@@ -60,15 +60,11 @@ export default {
 </script>
 
 <template>
-  <div class="board-blank-state p-3">
+  <div class="board-blank-state">
     <p>Add the following default lists to your Issue Board with one click:</p>
-    <ul class="list-unstyled board-blank-state-list">
+    <ul class="board-blank-state-list">
       <li v-for="(label, index) in predefinedLabels" :key="index">
-        <span
-          :style="{ backgroundColor: label.color }"
-          class="label-color position-relative d-inline-block rounded"
-        >
-        </span>
+        <span :style="{ backgroundColor: label.color }" class="label-color"> </span>
         {{ label.title }}
       </li>
     </ul>

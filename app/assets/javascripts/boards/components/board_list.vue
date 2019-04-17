@@ -221,10 +221,7 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="{ 'd-none': !list.isExpanded, 'd-flex flex-column': list.isExpanded }"
-    class="board-list-component position-relative h-100"
-  >
+  <div class="board-list-component">
     <div v-if="loading" class="board-list-loading text-center" aria-label="Loading issues">
       <gl-loading-icon />
     </div>
@@ -239,7 +236,7 @@ export default {
       :data-board="list.id"
       :data-board-type="list.type"
       :class="{ 'is-smaller': showIssueForm }"
-      class="board-list w-100 h-100 list-unstyled mb-0 p-1 js-board-list"
+      class="board-list js-board-list"
     >
       <board-card
         v-for="(issue, index) in issues"
