@@ -1914,6 +1914,9 @@ msgstr ""
 msgid "ClusterIntegration|%{title} upgraded successfully."
 msgstr ""
 
+msgid "ClusterIntegration|A service token scoped to %{code}kube-system%{end_code} with %{code}cluster-admin%{end_code} privileges."
+msgstr ""
+
 msgid "ClusterIntegration|API URL"
 msgstr ""
 
@@ -2296,6 +2299,12 @@ msgid "ClusterIntegration|Something went wrong while installing %{title}"
 msgstr ""
 
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
+msgstr ""
+
+msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster."
+msgstr ""
+
+msgid "ClusterIntegration|The URL used to access the Kubernetes API."
 msgstr ""
 
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
