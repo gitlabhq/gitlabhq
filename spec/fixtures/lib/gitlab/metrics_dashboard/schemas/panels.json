@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "required": [
+    "title",
+    "y_label",
+    "weight",
+    "metrics"
+  ],
+  "properties": {
+    "title": { "type": "string" },
+    "type": { "type": "string" },
+    "y_label": { "type": "string" },
+    "weight": { "type": "number" },
+    "metrics": {
+      "type": "array",
+      "items": { "$ref": "metrics.json" }
+    }
+  },
+  "additionalProperties": false
+}
