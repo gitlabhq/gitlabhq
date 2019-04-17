@@ -2472,18 +2472,18 @@ Use [`stage`](#stage) instead.
 
 ## Custom build directories
 
-> [Introduced][https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1267] in Gitlab Runner 11.10
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/1267) in Gitlab Runner 11.10
 
 NOTE: **Note:**
 This can only be used when `custom_build_dir` is enabled in the [Runner's
 configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runnerscustom_build_dir-section).
 This is the default configuration for `docker` and `kubernetes` executor.
 
-By default, GitLab Runner clones the repository in a unique subpath of the `$CI_BUILDS_DIR` directory.
-However, sometimes your project might require the code in a specific directory,
-but sometimes your project might require to have the code in a specific directory,
-like Go projects, for example. In that case, you can specify the `GIT_CLONE_PATH` variable
-to tell the Runner in which directory to clone the repository:
+By default, GitLab Runner clones the repository in a unique subpath of the 
+`$CI_BUILDS_DIR` directory. However, your project might require the code in a 
+specific directory (Go projects, for example). In that case, you can specify 
+the `GIT_CLONE_PATH` variable to tell the Runner in which directory to clone the
+repository:
 
 ```yml
 variables:
