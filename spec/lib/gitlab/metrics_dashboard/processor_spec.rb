@@ -4,10 +4,12 @@ require 'spec_helper'
 
 describe Gitlab::MetricsDashboard::Processor do
   let(:project) { build(:project) }
+  let(:environment) { build(:environment) }
   let(:dashboard_yml) { YAML.load_file('spec/fixtures/lib/gitlab/metrics_dashboard/sample_dashboard.yml') }
 
   describe 'process' do
-    let(:dashboard) { JSON.parse(described_class.new(dashboard_yml, project).process, symbolize_names: true) }
+    let(:process_params) { [dashboard_yml, project, environment] }
+    let(:dashboard) { described_class.new(*process_params).process }
 
     context 'when dashboard config corresponds to common metrics' do
       let!(:common_metric) { create(:prometheus_metric, :common, identifier: 'metric_a1') }
@@ -16,6 +18,7 @@ describe Gitlab::MetricsDashboard::Processor do
         target_metric = all_metrics.find { |metric| metric[:id] == 'metric_a1' }
 
         expect(target_metric).to include(:metric_id)
+        expect(target_metric[:metric_id]).to eq(common_metric.id)
       end
     end
 

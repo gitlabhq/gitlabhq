@@ -3,17 +3,24 @@
 module Gitlab
   module MetricsDashboard
     class Processor
-      STAGES = [CommonMetricsInserter, ProjectMetricsInserter, Sorter].freeze
-
-      def initialize(dashboard, project)
+      def initialize(dashboard, project, environment)
         @dashboard = dashboard.deep_transform_keys(&:to_sym)
         @project = project
+        @environment = environment
+      end
+
+      def stages
+        @stages ||= [
+          Stages::CommonMetricsInserter,
+          Stages::ProjectMetricsInserter,
+          Stages::Sorter
+        ].freeze
       end
 
       def process
-        STAGES.each { |stage| stage.transform!(@dashboard, @project) }
+        stages.each { |stage| stage.new(@dashboard, @project, @environment).transform! }
 
-        @dashboard.to_json
+        @dashboard
       end
     end
   end

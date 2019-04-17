@@ -2,22 +2,22 @@
 
 module Gitlab
   module MetricsDashboard
-    class Sorter
-      class << self
-        def transform!(dashboard, _project)
-          sort_groups!(dashboard)
-          sort_panels!(dashboard)
+    module Stages
+      class Sorter < BaseStage
+        def transform!
+          sort_groups!
+          sort_panels!
         end
 
         private
 
         # Sorts the groups in the dashboard by the :priority key
-        def sort_groups!(dashboard)
+        def sort_groups!
           dashboard[:panel_groups] = dashboard[:panel_groups].sort_by { |group| -group[:priority].to_i }
         end
 
         # Sorts the panels in the dashboard by the :weight key
-        def sort_panels!(dashboard)
+        def sort_panels!
           dashboard[:panel_groups].each do |group|
             group[:panels] = group[:panels].sort_by { |panel| -panel[:weight].to_i }
           end

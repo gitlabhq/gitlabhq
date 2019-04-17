@@ -11,7 +11,7 @@ module Gitlab
       def get_dashboard
         dashboard_string = Rails.cache.fetch(cache_key) { system_dashboard }
 
-        dashboard = JSON.parse(process_dashboard(dashboard_string))
+        dashboard = process_dashboard(dashboard_string)
 
         success(dashboard: dashboard)
       end
@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def process_dashboard(dashboard)
-        Processor.new(dashboard, @project).process
+        Processor.new(dashboard, project, params[:environment]).process
       end
     end
   end
