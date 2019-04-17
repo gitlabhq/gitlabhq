@@ -145,6 +145,7 @@ schedule:review-deploy:
 
 review-qa-smoke:
   <<: *review-qa-base
+  retry: 2
   script:
     - wait_for_job_to_be_done "review-deploy"
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
@@ -229,4 +230,3 @@ danger-review:
     - node --version
     - yarn install --frozen-lockfile --cache-folder .yarn-cache
     - danger --fail-on-errors=true
-
