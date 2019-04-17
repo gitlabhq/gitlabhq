@@ -1,5 +1,5 @@
 dashboard: 'Environment metrics'
-order: 1
+priority: 1
 panel_groups:
 # NGINX Ingress metrics for pre-0.16.0 versions
 - group: Response metrics (NGINX Ingress VTS)
