@@ -132,14 +132,6 @@ If a developer who happens to also be a maintainer was involved in a merge reque
 as a domain expert and/or reviewer, it is recommended that they are not also picked
 as the maintainer to ultimately approve and merge it.
 
-Try to review in a timely manner; doing so allows everyone involved in the merge
-request to iterate faster as the context is fresh in memory. Further, this
-improves contributors' experiences significantly. Reviewers should aim to review
-within two working days from the date they were assigned the merge request. If
-you don't think you'll be able to review a merge request within that time, let
-the author know as soon as possible. When the author of the merge request has not
-heard anything after two days, a new reviewer should be assigned.
-
 Maintainers should check before merging if the merge request is approved by the
 required approvers.
 
@@ -219,6 +211,37 @@ It is responsibility of the author of a merge request that the merge request is 
 ### List of merge requests ready for review
 
 Developers who have capacity can regularly check the list of [merge requests to review](https://gitlab.com/groups/gitlab-org/-/merge_requests?scope=all&utf8=%E2%9C%93&state=opened&label_name%5B%5D=ready%20for%20review) and assign any merge request they want to review.
+
+### Review turnaround time
+
+Since [unblocking others is always a top priority](https://about.gitlab.com/handbook/values/#global-optimization),
+reviewers are expected to review assigned merge requests in a timely manner,
+even when this may negatively impact their other tasks and priorities.
+Doing so allows everyone involved in the merge request to iterate faster as the
+context is fresh in memory, improves contributors' experiences significantly,
+and gives authors more time to address feedback and iterate on their work before
+the [feature freeze](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md#feature-freeze-on-the-7th-for-the-release-on-the-22nd).
+
+A turnaround time of two working days is usually acceptable, since engineers
+will typically have other things to work on while they're waiting for review,
+but don't hesitate to ask the author if it's unclear what time frame would be
+acceptable, how urgent the review is, or how significant the blockage. Authors
+are also encouraged to provide this information up-front to reviewers, but are
+expected to be mindful of the [guidelines on when to ask for review on MRs that
+are intended to go in before the feature freeze](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md#between-the-1st-and-the-7th),
+and realistic in their expectations if these were not followed.
+
+If you don't think you'll be able to review a merge request within a reasonable
+time frame, let the author know as soon as possible and try to help them find
+another reviewer or maintainer who will be able to, so that they can be unblocked
+and get on with their work quickly. Of course, if you are out of office and have
+[communicated](https://about.gitlab.com/handbook/paid-time-off/#communicating-your-time-off)
+this through your GitLab.com Status, authors are expected to realize this and
+find a different reviewer themselves.
+
+When a merge request author feels like they have been blocked for longer than
+is reasonable, they are free to remind the reviewer through Slack or assign
+another reviewer.
 
 ### Reviewing code
 
