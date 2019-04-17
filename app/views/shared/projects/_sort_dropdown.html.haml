@@ -1,38 +1,38 @@
 - @sort ||= sort_value_latest_activity
+- toggle_text = projects_sort_option_titles[@sort]
 .btn-group.w-100{ role: "group" }
   .btn-group.w-100.dropdown.js-project-filter-dropdown-wrap{ role: "group" }
-    - toggle_text = projects_sort_option_titles[@sort]
     %button.dropdown-menu-toggle{ id: 'sort-projects-dropdown', type: 'button', data: { toggle: 'dropdown', display: 'static' }, class: 'btn btn-default' }
       = toggle_text
       = icon('chevron-down')
     %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
       %li.dropdown-header
-        Sort by
+        = _("Sort by")
       - projects_sort_options_hash.each do |value, title|
         %li
-          = link_to filter_projects_path(sort: value), class: ("is-active" if projects_sort_option_titles[@sort] == title) do
+          = link_to filter_projects_path(sort: value), class: ("is-active" if toggle_text == title) do
             = title
 
       %li.divider
       %li
         = link_to filter_projects_path(archived: nil), class: ("is-active" unless params[:archived].present?) do
-          Hide archived projects
+          = _("Hide archived projects")
       %li
         = link_to filter_projects_path(archived: true), class: ("is-active" if Gitlab::Utils.to_boolean(params[:archived])) do
-          Show archived projects
+          = _("Show archived projects")
       %li
         = link_to filter_projects_path(archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
-          Show archived projects only
+          = _("Show archived projects only")
       - if current_user && @group && @group.shared_projects.present?
         %li.divider
         %li
           = link_to filter_projects_path(shared: nil), class: ("is-active" unless params[:shared].present?) do
-            All projects
+            = _("All projects")
         %li
           = link_to filter_projects_path(shared: 0), class: ("is-active" if params[:shared] == '0') do
-            Hide shared projects
+            = _("Hide shared projects")
         %li
           = link_to filter_projects_path(shared: 1), class: ("is-active" if params[:shared] == '1') do
-            Hide group projects
+            = _("Hide group projects")
 
   = project_sort_direction_button(@sort)

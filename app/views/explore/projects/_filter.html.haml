@@ -1,4 +1,4 @@
-- has_label = local_assigns[:has_label] ? local_assigns[:has_label] : false
+- has_label = local_assigns.fetch(:has_label, false)
 - if current_user
   .dropdown.js-project-filter-dropdown-wrap
     %button.dropdown-menu-toggle{ href: '#', "data-toggle" => "dropdown", 'data-display' => 'static' }

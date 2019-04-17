@@ -11,10 +11,8 @@
         = _('All')
 
   .nav-controls
-    -# TODO: filters are currently only shown when logged out, I assume we want to show them all the time?
     - unless current_user
       = render 'shared/projects/search_form'
       = render 'shared/projects/dropdown'
-    - unless Feature.enabled?(:project_list_filter_bar)
-      = render 'filter'
+    = render 'filter'
 

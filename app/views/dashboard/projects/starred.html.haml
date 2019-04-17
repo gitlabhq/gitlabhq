@@ -3,13 +3,12 @@
 - breadcrumb_title _("Projects")
 - page_title _("Starred Projects")
 - header_title _("Projects"), dashboard_projects_path
-- without_tabs = true
 
 = render_dashboard_gold_trial(current_user)
 
 %div{ class: container_class }
   = render "projects/last_push"
-  = render 'dashboard/projects_head', without_tabs: without_tabs
+  = render 'dashboard/projects_head', project_tab_filter: :starred
 
   - if params[:filter_projects] || any_projects?(@projects)
     = render 'projects'

@@ -1,6 +1,4 @@
-- is_explore = local_assigns.fetch(:is_explore, false)
-- is_explore_trending = local_assigns.fetch(:is_explore_trending, false)
-- without_tabs = local_assigns.fetch(:without_tabs, false)
+- project_tab_filter = local_assigns.fetch(:project_tab_filter, "")
 - feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
 = content_for :flash_message do
   = render 'shared/project_limit'
@@ -33,4 +31,4 @@
       = render 'shared/projects/dropdown'
 - if feature_project_list_filter_bar
   .project-filters
-    = render 'shared/projects/search_bar', is_explore: is_explore, is_explore_trending: is_explore_trending, without_tabs: without_tabs
+    = render 'shared/projects/search_bar', project_tab_filter: project_tab_filter

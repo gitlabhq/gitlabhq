@@ -30,8 +30,10 @@ module SortingHelper
   end
 
   def projects_sort_options_hash
-    is_admin = current_controller?('admin/projects')
+    Feature.enabled?(:project_list_filter_bar) && !current_controller?('admin/projects') ? projects_sort_common_options_hash : projects_sort_admin_options_hash
+  end
 
+  def projects_sort_admin_options_hash
     options = {
       sort_value_latest_activity  => sort_title_latest_activity,
       sort_value_name             => sort_title_name,
@@ -41,18 +43,20 @@ module SortingHelper
       sort_value_most_stars       => sort_title_most_stars
     }
 
-    if is_admin
+    if current_controller?('admin/projects')
       options[sort_value_largest_repo] = sort_title_largest_repo
     end
 
-    search_bar_options = {
+    options
+  end
+
+  def projects_sort_common_options_hash
+    {
       sort_value_latest_activity  => sort_title_latest_activity,
       sort_value_recently_created => sort_title_created_date,
       sort_value_name             => sort_title_name,
       sort_value_most_stars       => sort_title_stars
     }
-
-    Feature.enabled?(:project_list_filter_bar) && !is_admin ? search_bar_options : options
   end
 
   def projects_sort_option_titles
@@ -222,7 +226,7 @@ module SortingHelper
       link_class += ' disabled'
     end
 
-    link_to(reverse_url, type: 'button', class: link_class, title: 'Sort direction') do
+    link_to(reverse_url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
       sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
     end
   end
@@ -238,7 +242,7 @@ module SortingHelper
       link_class += ' disabled'
     end
 
-    link_to(reverse_url, type: 'button', class: link_class, title: 'Sort direction') do
+    link_to(reverse_url, type: 'button', class: link_class, title: s_('SortOptions|Sort direction')) do
       sprite_icon("sort-#{issuable_sort_icon_suffix(sort_value)}", size: 16)
     end
   end
@@ -525,7 +529,6 @@ module SortingHelper
     'stars_desc'
   end
 
-  # TODO: currently not implemented AFAIK
   def sort_value_most_stars_asc
     'stars_asc'
   end

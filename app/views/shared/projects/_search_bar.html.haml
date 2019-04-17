@@ -1,20 +1,16 @@
 - @sort ||= sort_value_latest_activity
-- is_explore = local_assigns.fetch(:is_explore, false)
-- is_explore_trending = local_assigns.fetch(:is_explore_trending, false)
-- without_tabs = local_assigns.fetch(:without_tabs, false)
+- project_tab_filter = local_assigns.fetch(:project_tab_filter, "")
 .filtered-search-block.row-content-block.bt-0
   .filtered-search-wrapper.d-flex.flex-nowrap.flex-column.flex-sm-wrap.flex-sm-row.flex-xl-nowrap
-    - unless without_tabs
+    - unless project_tab_filter == :starred
       .filtered-search-nav.d-flex.mb-2.mb-lg-0
-        = render 'dashboard/projects/nav', is_explore: is_explore, is_explore_trending: is_explore_trending
-    .filtered-search.d-flex.w-100.mb-2.mb-lg-0{ class: without_tabs ? "extended-filtered-search-box ml-0 mb-2 mb-lg-0" : "ml-0 ml-sm-3" }
+        = render 'dashboard/projects/nav', project_tab_filter: project_tab_filter
+    .filtered-search.d-flex.w-100.mb-2.mb-lg-0{ class: project_tab_filter == :starred ? "extended-filtered-search-box ml-0 mb-2 mb-lg-0" : "ml-0 ml-sm-3" }
       .btn-group.w-100{ role: "group" }
         .btn-group.w-100{ role: "group" }
           .filtered-search-box.m-0
             .filtered-search-box-input-container.pl-2
               = render 'shared/projects/search_form', admin_view: false, search_form_placeholder: _("Search projects...")
-        -# TODO: since we are no longer triggering search when we type
-        -#       we might be able to remove app/assets/javascripts/projects_list.js
         %button.btn.btn-secondary{ type: 'submit', form: 'project-filter-form' }
           = sprite_icon('search', size: 16, css_class: 'search-icon ')
     .filtered-search-dropdown.d-flex.flex-row.align-items-center.mb-2.m-sm-0#filtered-search-visibility-dropdown
