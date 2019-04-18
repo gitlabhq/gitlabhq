@@ -8,11 +8,15 @@ describe ClusterAncestorsFinder, '#execute' do
   let(:user) { create(:user) }
 
   let!(:project_cluster) do
-    create(:cluster, :provided_by_user, cluster_type: :project_type, projects: [project])
+    create(:cluster, :provided_by_user, :project, projects: [project])
   end
 
   let!(:group_cluster) do
-    create(:cluster, :provided_by_user, cluster_type: :group_type, groups: [group])
+    create(:cluster, :provided_by_user, :group, groups: [group])
+  end
+
+  let!(:instance_cluster) do
+    create(:cluster, :provided_by_user, :instance)
   end
 
   subject { described_class.new(clusterable, user).execute }
@@ -25,7 +29,7 @@ describe ClusterAncestorsFinder, '#execute' do
     end
 
     it 'returns the project clusters followed by group clusters' do
-      is_expected.to eq([project_cluster, group_cluster])
+      is_expected.to eq([project_cluster, group_cluster, instance_cluster])
     end
 
     context 'nested groups', :nested_groups do
@@ -33,11 +37,11 @@ describe ClusterAncestorsFinder, '#execute' do
       let(:parent_group) { create(:group) }
 
       let!(:parent_group_cluster) do
-        create(:cluster, :provided_by_user, cluster_type: :group_type, groups: [parent_group])
+        create(:cluster, :provided_by_user, :group, groups: [parent_group])
       end
 
       it 'returns the project clusters followed by group clusters ordered ascending the hierarchy' do
-        is_expected.to eq([project_cluster, group_cluster, parent_group_cluster])
+        is_expected.to eq([project_cluster, group_cluster, parent_group_cluster, instance_cluster])
       end
     end
   end
@@ -58,7 +62,7 @@ describe ClusterAncestorsFinder, '#execute' do
     end
 
     it 'returns the list of group clusters' do
-      is_expected.to eq([group_cluster])
+      is_expected.to eq([group_cluster, instance_cluster])
     end
 
     context 'nested groups', :nested_groups do
@@ -66,12 +70,21 @@ describe ClusterAncestorsFinder, '#execute' do
       let(:parent_group) { create(:group) }
 
       let!(:parent_group_cluster) do
-        create(:cluster, :provided_by_user, cluster_type: :group_type, groups: [parent_group])
+        create(:cluster, :provided_by_user, :group, groups: [parent_group])
       end
 
       it 'returns the list of group clusters ordered ascending the hierarchy' do
-        is_expected.to eq([group_cluster, parent_group_cluster])
+        is_expected.to eq([group_cluster, parent_group_cluster, instance_cluster])
       end
+    end
+  end
+
+  context 'for an instance' do
+    let(:clusterable) { Clusters::Instance.new }
+    let(:user) { create(:admin) }
+
+    it 'returns the list of instance clusters' do
+      is_expected.to eq([instance_cluster])
     end
   end
 end
