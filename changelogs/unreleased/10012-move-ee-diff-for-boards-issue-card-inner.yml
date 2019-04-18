@@ -1,0 +1,5 @@
+---
+title: Move ee-specific code from boards/components/issue_card_inner.vue
+merge_request: 27394
+author: Roman Rodionov
+type: other
