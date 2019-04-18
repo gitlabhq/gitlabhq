@@ -5936,6 +5936,9 @@ msgstr ""
 msgid "Newly registered users will by default be external"
 msgstr ""
 
+msgid "Next"
+msgstr ""
+
 msgid "No"
 msgstr ""
 
@@ -8669,6 +8672,9 @@ msgid "Support page URL"
 msgstr ""
 
 msgid "Switch branch/tag"
+msgstr ""
+
+msgid "Switch to GitLab Next"
 msgstr ""
 
 msgid "System Hooks"
