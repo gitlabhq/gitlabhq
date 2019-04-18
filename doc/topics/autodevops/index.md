@@ -460,7 +460,7 @@ for example after the merge request is merged, the Review App will automatically
 be deleted.
 
 Review apps are deployed using the
-[auto-deploy-app](https://gitlab.com/charts/auto-deploy-app) chart with
+[auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
 Helm. The app will be deployed into the [Kubernetes
 namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
@@ -528,7 +528,7 @@ You can make use of [environment variables](#environment-variables) to automatic
 scale your pod replicas.
 
 Apps are deployed using the
-[auto-deploy-app](https://gitlab.com/charts/auto-deploy-app) chart with
+[auto-deploy-app](https://gitlab.com/gitlab-org/charts/auto-deploy-app) chart with
 Helm. The app will be deployed into the [Kubernetes
 namespace](../../user/project/clusters/index.md#deployment-variables)
 for the environment.
@@ -667,7 +667,7 @@ repo or by specifying a project variable:
 
 - **Bundled chart** - If your project has a `./chart` directory with a `Chart.yaml`
   file in it, Auto DevOps will detect the chart and use it instead of the [default
-  one](https://gitlab.com/charts/auto-deploy-app).
+  one](https://gitlab.com/gitlab-org/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#gitlab-cicd-environment-variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use or create two project variables `AUTO_DEVOPS_CHART_REPOSITORY` with the URL of a custom chart repository and `AUTO_DEVOPS_CHART` with the path to the chart.
@@ -735,7 +735,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | **Variable**                 | **Description**                                                                                                                                                                                                               |
 | ------------                 | ---------------                                                                                                                                                                                                               |
 | `AUTO_DEVOPS_DOMAIN`         | The [Auto DevOps domain](#auto-devops-base-domain). By default, set automatically by the [Auto DevOps setting](#enablingdisabling-auto-devops). This variable is deprecated and [is scheduled to be removed](https://gitlab.com/gitlab-org/gitlab-ce/issues/56959). Use `KUBE_INGRESS_BASE_DOMAIN` instead. |
-| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/charts/auto-deploy-app).                                                             |
+| `AUTO_DEVOPS_CHART`          | The Helm Chart used to deploy your apps; defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/charts/auto-deploy-app).                                                             |
 | `AUTO_DEVOPS_CHART_REPOSITORY` | The Helm Chart repository used to search for charts; defaults to `https://charts.gitlab.io`. |
 | `REPLICAS`                   | The number of replicas to deploy; defaults to 1.                                                                                                                                                                              |
 | `PRODUCTION_REPLICAS`        | The number of replicas to deploy in the production environment. This takes precedence over `REPLICAS`; defaults to 1.                                                                                                         |

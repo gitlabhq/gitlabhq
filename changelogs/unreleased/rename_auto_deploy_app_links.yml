@@ -1,0 +1,5 @@
+---
+title: Move location of charts/auto-deploy-app -> gitlab-org/charts/auto-deploy-app
+merge_request: 27477
+author:
+type: changed
