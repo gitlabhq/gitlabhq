@@ -38,6 +38,10 @@ gitlab:assets:compile:
     - bundle exec rake gitlab:assets:compile
     - time scripts/build_assets_image
     - scripts/clean-old-cached-assets
+    # Play dependent manual jobs
+    - install_api_client_dependencies_with_apt
+    - play_job "review-build-cng" || true # this job might not exist so ignore the failure if it cannot be played
+    - play_job "schedule:review-build-cng" || true # this job might not exist so ignore the failure if it cannot be played
   artifacts:
     name: webpack-report
     expire_in: 31d
