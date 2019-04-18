@@ -45,7 +45,7 @@ module Gitlab
         context # Make sure we've set everything we know in the context
 
         tags = {
-          Gitlab::CorrelationId::LOG_KEY.to_sym => Gitlab::CorrelationId.current_id
+          Labkit::Correlation::CorrelationId::LOG_KEY.to_sym => Labkit::Correlation::CorrelationId.current_id
         }
 
         Raven.capture_exception(exception, tags: tags, extra: extra)

@@ -23,7 +23,7 @@ describe Gitlab::SidekiqMiddleware::CorrelationLogger do
     expect_any_instance_of(described_class).to receive(:call).and_call_original
 
     expect_any_instance_of(TestWorker).to receive(:perform).with(1234) do
-      expect(Gitlab::CorrelationId.current_id).to eq('new-correlation-id')
+      expect(Labkit::Correlation::CorrelationId.current_id).to eq('new-correlation-id')
     end
 
     Sidekiq::Client.push(
