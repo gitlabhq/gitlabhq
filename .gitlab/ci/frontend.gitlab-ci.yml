@@ -104,6 +104,7 @@ gitlab:ui:visual:
   artifacts:
     paths:
       - tests/__image_snapshots__/
+    when: always
 
 karma:
   extends: .dedicated-no-docs-pull-cache-job
