@@ -45,14 +45,13 @@ function removeTimeSeriesNoData(queries) {
 //          ]
 function groupQueriesByChartInfo(metrics) {
   const metricsByChart = metrics.reduce((accumulator, metric) => {
-    const { id, queries, ...chart } = metric;
+    const { queries, ...chart } = metric;
+    const metricId = chart.id ? chart.id.toString() : null;
 
     const chartKey = `${chart.title}|${chart.y_label}`;
     accumulator[chartKey] = accumulator[chartKey] || { ...chart, queries: [] };
 
-    queries.forEach(queryAttrs =>
-      accumulator[chartKey].queries.push({ metricId: id.toString(), ...queryAttrs }),
-    );
+    queries.forEach(queryAttrs => accumulator[chartKey].queries.push({ metricId, ...queryAttrs }));
 
     return accumulator;
   }, {});
