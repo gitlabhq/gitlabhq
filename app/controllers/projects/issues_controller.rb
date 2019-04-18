@@ -10,11 +10,11 @@ class Projects::IssuesController < Projects::ApplicationController
   include SpammableActions
   include RecordUserLastActivity
 
-  def self.issue_except_actions
+  def issue_except_actions
     %i[index calendar new create bulk_update import_csv]
   end
 
-  def self.set_issuables_index_only_actions
+  def set_issuables_index_only_actions
     %i[index calendar]
   end
 
@@ -25,9 +25,9 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :whitelist_query_limiting, only: [:create, :create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
-  before_action :issue, except: issue_except_actions
+  before_action :issue, unless: ->(c) { c.issue_except_actions.include?(c.action_name.to_sym) }
 
-  before_action :set_issuables_index, only: set_issuables_index_only_actions
+  before_action :set_issuables_index, if: ->(c) { c.set_issuables_index_only_actions.include?(c.action_name.to_sym) }
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
