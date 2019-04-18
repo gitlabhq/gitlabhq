@@ -15,8 +15,23 @@ export const APPLICATION_STATUS = {
   UPDATING: 'updating',
   UPDATED: 'updated',
   UPDATE_ERRORED: 'update_errored',
+  UNINSTALLING: 'uninstalling',
+  UNINSTALL_ERRORED: 'uninstall_errored',
   ERROR: 'errored',
 };
+
+/*
+ * The application cannot be in any of the following states without
+ * not being installed.
+ */
+export const APPLICATION_INSTALLED_STATUSES = [
+  APPLICATION_STATUS.INSTALLED,
+  APPLICATION_STATUS.UPDATING,
+  APPLICATION_STATUS.UPDATED,
+  APPLICATION_STATUS.UPDATE_ERRORED,
+  APPLICATION_STATUS.UNINSTALLING,
+  APPLICATION_STATUS.UNINSTALL_ERRORED,
+];
 
 // These are only used client-side
 export const REQUEST_SUBMITTED = 'request-submitted';

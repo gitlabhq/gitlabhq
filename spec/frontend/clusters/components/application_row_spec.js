@@ -114,10 +114,12 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has disabled "Installed" when APPLICATION_STATUS.INSTALLED', () => {
+    it('has disabled "Installed" when application is installed and not uninstallable', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_STATUS.INSTALLED,
+        installed: true,
+        uninstallable: false,
       });
 
       expect(vm.installButtonLabel).toEqual('Installed');
@@ -125,15 +127,16 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has disabled "Installed" when APPLICATION_STATUS.UPDATING', () => {
+    it('hides when application is installed and uninstallable', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.UPDATING,
+        status: APPLICATION_STATUS.INSTALLED,
+        installed: true,
+        uninstallable: true,
       });
+      const installBtn = vm.$el.querySelector('.js-cluster-application-install-button');
 
-      expect(vm.installButtonLabel).toEqual('Installed');
-      expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(true);
+      expect(installBtn).toBe(null);
     });
 
     it('has enabled "Install" when APPLICATION_STATUS.ERROR', () => {
@@ -205,6 +208,19 @@ describe('Application Row', () => {
       installButton.click();
 
       expect(eventHub.$emit).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Uninstall button', () => {
+    it('displays button when app is installed and uninstallable', () => {
+      vm = mountComponent(ApplicationRow, {
+        ...DEFAULT_APPLICATION_STATE,
+        installed: true,
+        uninstallable: true,
+      });
+      const uninstallButton = vm.$el.querySelector('.js-cluster-application-uninstall-button');
+
+      expect(uninstallButton).toBeTruthy();
     });
   });
 

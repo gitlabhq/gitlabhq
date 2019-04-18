@@ -1,5 +1,5 @@
 import ClustersStore from '~/clusters/stores/clusters_store';
-import { APPLICATION_STATUS } from '~/clusters/constants';
+import { APPLICATION_INSTALLED_STATUSES, APPLICATION_STATUS, RUNNER } from '~/clusters/constants';
 import { CLUSTERS_MOCK_DATA } from '../services/mock_data';
 
 describe('Clusters Store', () => {
@@ -70,6 +70,7 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[0].status_reason,
             requestStatus: null,
             requestReason: null,
+            installed: false,
           },
           ingress: {
             title: 'Ingress',
@@ -79,6 +80,7 @@ describe('Clusters Store', () => {
             requestReason: null,
             externalIp: null,
             externalHostname: null,
+            installed: false,
           },
           runner: {
             title: 'GitLab Runner',
@@ -89,6 +91,7 @@ describe('Clusters Store', () => {
             version: mockResponseData.applications[2].version,
             upgradeAvailable: mockResponseData.applications[2].update_available,
             chartRepo: 'https://gitlab.com/charts/gitlab-runner',
+            installed: false,
           },
           prometheus: {
             title: 'Prometheus',
@@ -96,6 +99,7 @@ describe('Clusters Store', () => {
             statusReason: mockResponseData.applications[3].status_reason,
             requestStatus: null,
             requestReason: null,
+            installed: false,
           },
           jupyter: {
             title: 'JupyterHub',
@@ -104,6 +108,7 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
             hostname: '',
+            installed: false,
           },
           knative: {
             title: 'Knative',
@@ -115,6 +120,7 @@ describe('Clusters Store', () => {
             isEditingHostName: false,
             externalIp: null,
             externalHostname: null,
+            installed: false,
           },
           cert_manager: {
             title: 'Cert-Manager',
@@ -123,8 +129,23 @@ describe('Clusters Store', () => {
             requestStatus: null,
             requestReason: null,
             email: mockResponseData.applications[6].email,
+            installed: false,
           },
         },
+      });
+    });
+
+    describe.each(APPLICATION_INSTALLED_STATUSES)('given the current app status is %s', () => {
+      it('marks application as installed', () => {
+        const mockResponseData =
+          CLUSTERS_MOCK_DATA.GET['/gitlab-org/gitlab-shell/clusters/2/status.json'].data;
+        const runnerAppIndex = 2;
+
+        mockResponseData.applications[runnerAppIndex].status = APPLICATION_STATUS.INSTALLED;
+
+        store.updateStateFromServer(mockResponseData);
+
+        expect(store.state.applications[RUNNER].installed).toBe(true);
       });
     });
 
