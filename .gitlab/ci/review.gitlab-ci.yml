@@ -83,7 +83,6 @@ schedule:review-build-cng:
   <<: *review-schedules-only
   <<: *review-build-cng-base
 
-
 .review-deploy-base: &review-deploy-base
   <<: *review-base
   allow_failure: true
@@ -176,6 +175,7 @@ review-performance:
   <<: *review-performance-base
 
 review-stop:
+  <<: *review-base
   extends: .single-script-job-dedicated-runner
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   allow_failure: true
