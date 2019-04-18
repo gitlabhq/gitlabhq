@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
 # build_select only selects the required fields if the model has ignored_columns.
