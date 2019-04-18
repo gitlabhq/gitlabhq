@@ -164,10 +164,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       format.json do
         result = Gitlab::MetricsDashboard::Service.new(@project, @current_user, environment: environment).get_dashboard
 
-        ok_status = :ok if result[:status] == :success
-        status = ok_status || result[:http_status] || :bad_request
-
-        render status: status, json: result
+        render_metrics_dashboard_response(result)
       end
     end
   end
@@ -210,6 +207,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     return unless params[:start].present? || params[:end].present?
 
     params.require([:start, :end])
+  end
+
+  def render_metrics_dashboard_response(result)
+    ok_status = :ok if result[:status] == :success
+    status = ok_status || result[:http_status] || :bad_request
+
+    render status: status, json: result
   end
 
   def search_environment_names
