@@ -45,10 +45,10 @@ export default {
       'issuable-info-container': !canReorder,
       'card-body': canReorder,
     }"
-    class="item-body"
+    class="item-body d-flex align-items-center p-2 p-lg-3 p-xl-2 pl-xl-3"
   >
-    <div class="item-contents">
-      <div class="item-title d-flex align-items-center">
+    <div class="item-contents d-flex align-items-center flex-wrap flex-grow-1 flex-xl-nowrap">
+      <div class="item-title d-flex align-items-center mb-1 mb-xl-0">
         <icon
           v-if="hasState"
           v-tooltip
@@ -65,13 +65,15 @@ export default {
           name="eye-slash"
           :size="16"
           :title="__('Confidential')"
-          class="confidential-icon append-right-4"
+          class="confidential-icon append-right-4 align-self-baseline align-self-md-auto mt-xl-0"
           :aria-label="__('Confidential')"
         />
         <a :href="computedPath" class="sortable-link">{{ title }}</a>
       </div>
-      <div class="item-meta">
-        <div class="d-flex align-items-center item-path-id">
+      <div class="item-meta d-flex flex-wrap mt-xl-0 justify-content-xl-end flex-xl-nowrap">
+        <div
+          class="d-flex align-items-center item-path-id order-md-0 mt-md-0 mt-1 ml-xl-2 mr-xl-auto"
+        >
           <icon
             v-if="hasState"
             v-tooltip
@@ -88,7 +90,9 @@ export default {
           }}</span>
           {{ pathIdSeparator }}{{ itemId }}
         </div>
-        <div class="item-meta-child d-flex align-items-center">
+        <div
+          class="item-meta-child d-flex align-items-center order-0 flex-wrap mr-md-1 ml-md-auto ml-xl-2 flex-xl-nowrap"
+        >
           <span v-if="hasPipeline" class="mr-ci-status pr-2">
             <a :href="pipelineStatus.details_path">
               <ci-icon v-gl-tooltip :status="pipelineStatus" :title="pipelineStatusTooltip" />
@@ -105,7 +109,7 @@ export default {
         <issue-assignees
           v-if="assignees.length"
           :assignees="assignees"
-          class="item-assignees d-inline-flex"
+          class="item-assignees d-inline-flex align-items-center align-self-end ml-auto ml-md-0 mb-md-0 order-2 flex-xl-grow-0 mt-xl-0 mr-xl-1"
         />
       </div>
     </div>
@@ -115,7 +119,7 @@ export default {
       v-tooltip
       :disabled="removeDisabled"
       type="button"
-      class="btn btn-default btn-svg btn-item-remove js-issue-item-remove-button qa-remove-issue-button"
+      class="btn btn-default btn-svg btn-item-remove js-issue-item-remove-button qa-remove-issue-button mr-xl-0 align-self-xl-center"
       title="Remove"
       aria-label="Remove"
       @click="onRemoveRequest"
