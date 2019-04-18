@@ -4,6 +4,7 @@ import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+import issueCardInner from 'ee_else_ce/boards/mixins/issue_card_inner';
 import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import eventHub from '../eventhub';
 import IssueDueDate from './issue_due_date.vue';
@@ -19,11 +20,13 @@ export default {
     TooltipOnTruncate,
     IssueDueDate,
     IssueTimeEstimate,
+    IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     IssueCardInnerScopedLabel,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [issueCardInner],
   props: {
     issue: {
       type: Object,
@@ -135,14 +138,6 @@ export default {
 
       this.applyFilter(filter);
     },
-    filterByWeight(weight) {
-      if (!this.updateFilters) return;
-
-      const issueWeight = encodeURIComponent(weight);
-      const filter = `weight=${issueWeight}`;
-
-      this.applyFilter(filter);
-    },
     applyFilter(filter) {
       const filterPath = boardsStore.filter.path.split('&');
       const filterIndex = filterPath.indexOf(filter);
@@ -232,6 +227,10 @@ export default {
           <issue-due-date v-if="issue.dueDate" :date="issue.dueDate" /><issue-time-estimate
             v-if="issue.timeEstimate"
             :estimate="issue.timeEstimate"
+          /><issue-card-weight
+            v-if="issue.weight"
+            :weight="issue.weight"
+            @click="filterByWeight(issue.weight)"
           />
         </span>
       </div>

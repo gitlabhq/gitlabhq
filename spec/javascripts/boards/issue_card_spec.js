@@ -285,4 +285,10 @@ describe('Issue card component', () => {
         .catch(done.fail);
     });
   });
+
+  describe('weights', () => {
+    it('not shows weight component', () => {
+      expect(component.$el.querySelector('.board-card-weight')).toBeNull();
+    });
+  });
 });
