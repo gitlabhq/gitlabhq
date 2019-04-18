@@ -348,19 +348,23 @@ Custom commit messages will be introduced by
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/53310) in GitLab 11.10.
 
-Reviewers can also suggest changes to
-multiple lines with a single suggestion within Merge Request diff discussions.
+Reviewers can also suggest changes to multiple lines with a single suggestion
+within Merge Request diff discussions by adjusting the range offsets. The
+offsets are relative to the position of the diff discussion, and specify the
+range to be replaced by the suggestion when it is applied.
 
 ![Multi-line suggestion syntax](img/multi-line-suggestion-syntax.png)
 
-In the example above, the suggestion covers three lines above and four lines below the commented diff line.
-It'd change from 3 lines _above_ to 4 lines _below_ the commented Diff line.
+In the example above, the suggestion covers three lines above and four lines
+below the commented line. When applied, it would replace from 3 lines _above_
+to 4 lines _below_ the commented line, with the suggested change.
 
 ![Multi-line suggestion preview](img/multi-line-suggestion-preview.png)
 
 NOTE: **Note:**
-Suggestions covering multiple lines are limited to 100 lines _above_ and 100 lines _below_ 
-the commented diff line, allowing up to 200 changed lines per suggestion.
+Suggestions covering multiple lines are limited to 100 lines _above_ and 100
+lines _below_ the commented diff line, allowing up to 200 changed lines per
+suggestion.
 
 ## Start a discussion by replying to a standard comment
 
