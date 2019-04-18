@@ -23,12 +23,26 @@ module Gitlab
         def self.file_descriptor_count
           Dir.glob('/proc/self/fd/*').length
         end
+
+        def self.max_open_file_descriptors
+          match = File.read('/proc/self/limits').match(/Max open files\s*(\d+)/)
+
+          if match && match[1]
+            max_fds = match[1].to_i
+          end
+
+          max_fds
+        end
       else
         def self.memory_usage
           0.0
         end
 
         def self.file_descriptor_count
+          0
+        end
+
+        def self.max_open_file_descriptors
           0
         end
       end
@@ -46,6 +60,17 @@ module Gitlab
         end
       end
 
+      # CLOCK_BOOTTIME is not supported on OS X
+      if Process.const_defined?(:CLOCK_BOOTTIME)
+        def self.process_start_time
+          Process
+            .clock_gettime(Process::CLOCK_BOOTTIME, :float_second)
+        end
+      else
+        def self.process_start_time
+          0.0
+        end
+      end
       # Returns the current real time in a given precision.
       #
       # Returns the time as a Float for precision = :float_second.

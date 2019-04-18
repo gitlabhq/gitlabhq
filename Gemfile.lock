@@ -867,6 +867,8 @@ GEM
       state_machines-activemodel (>= 0.5.0)
     sys-filesystem (1.1.6)
       ffi
+    sys-proctable (1.2.1)
+      ffi
     sysexits (1.2.0)
     temple (0.8.0)
     test-prof (0.2.5)
@@ -1160,6 +1162,7 @@ DEPENDENCIES
   stackprof (~> 0.2.10)
   state_machines-activerecord (~> 0.5.1)
   sys-filesystem (~> 1.1.6)
+  sys-proctable (~> 1.2)
   test-prof (~> 0.2.5)
   thin (~> 1.7.0)
   timecop (~> 0.8.0)

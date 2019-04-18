@@ -13,6 +13,12 @@ describe Gitlab::Metrics::System do
         expect(described_class.file_descriptor_count).to be > 0
       end
     end
+
+    describe '.max_open_file_descriptors' do
+      it 'returns the max allowed open file descriptors' do
+        expect(described_class.max_open_file_descriptors).to be > 0
+      end
+    end
   else
     describe '.memory_usage' do
       it 'returns 0.0' do
@@ -23,6 +29,12 @@ describe Gitlab::Metrics::System do
     describe '.file_descriptor_count' do
       it 'returns 0' do
         expect(described_class.file_descriptor_count).to eq(0)
+      end
+    end
+
+    describe '.max_open_file_descriptors' do
+      it 'returns 0' do
+        expect(described_class.max_open_file_descriptors).to eq(0)
       end
     end
   end
@@ -42,6 +54,12 @@ describe Gitlab::Metrics::System do
   describe '.monotonic_time' do
     it 'returns a Float' do
       expect(described_class.monotonic_time).to be_an(Float)
+    end
+  end
+
+  describe '.process_start_time' do
+    it 'returns a Float' do
+      expect(described_class.process_start_time).to be_an(Float)
     end
   end
 end
