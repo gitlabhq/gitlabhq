@@ -5260,6 +5260,9 @@ msgstr ""
 msgid "Lead"
 msgstr ""
 
+msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
+msgstr ""
+
 msgid "Learn more"
 msgstr ""
 
