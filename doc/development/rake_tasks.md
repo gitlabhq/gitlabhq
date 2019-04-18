@@ -108,11 +108,13 @@ To make sure that indices still fit. You could find great details in:
 
 In order to run the test you can use the following commands:
 
-- `rake spec` to run the rspec suite
-- `rake karma` to run the karma test suite
-- `rake gitlab:test` to run all the tests
+- `bin/rake spec` to run the rspec suite
+- `bin/rake spec:unit` to run the only the unit tests
+- `bin/rake spec:integration` to run the only the integration tests
+- `bin/rake spec:system` to run the only the system tests
+- `bin/rake karma` to run the karma test suite
 
-Note: `rake spec` takes significant time to pass.
+Note: `bin/rake spec` takes significant time to pass.
 Instead of running full test suite locally you can save a lot of time by running
 a single test or directory related to your changes. After you submit merge request
 CI will run full test suite for you. Green CI status in the merge request means
@@ -120,6 +122,9 @@ full test suite is passed.
 
 Note: You can't run `rspec .` since this will try to run all the `_spec.rb`
 files it can find, also the ones in `/tmp`
+
+Note: You can pass RSpec command line options to the `spec:unit`,
+`spec:integration`, and `spec:system` tasks, e.g. `bin/rake "spec:unit[--tag ~geo --dry-run]"`.
 
 To run a single test file you can use:
 
