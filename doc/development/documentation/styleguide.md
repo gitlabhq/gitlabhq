@@ -13,12 +13,9 @@ For programmatic help adhering to the guidelines, see [linting](index.md#linting
 See the GitLab handbook for further [writing style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 that apply to all GitLab content, not just documentation.
 
-## Content
+## Documentation is the single source of truth (SSOT)
 
-These guidelines help toward the goal of having every user's search of documentation
-yield a useful result, and ensuring content is consistent, helpful, and easy to consume.
-
-### Single source of truth (SSOT) on the GitLab product
+### Why a single source of truth
 
 The documentation is the SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features. It evolves continually, in keeping with new products and features, and with improvements for clarity, accuracy, and completeness.
 
@@ -26,18 +23,71 @@ This policy prevents information silos, ensuring that it remains easy to find in
 
 It also informs decisions about the kinds of content we include in our documentation.
 
-### All helpful information
+The documentation is a continually evolving SSOT for all information related to the implementation, usage, and troubleshooting of GitLab products and features.
+
+### All information
 
 Include problem-solving actions that may address rare cases or be considered 'risky', so long as proper context is provided in the form of fully detailed warnings and caveats. This kind of content should be included as it could be helpful to others and, when properly explained, its benefits outweigh the risks. If you think you have found an exception to this rule, contact the Technical Writing team.
 
-### All helpful media types and sources
+We will add all troubleshooting information to the documentation, no matter how unlikely a user is to encounter a situation.
+For the Troubleshooting sections, people in GitLab Support can merge additions themselves.
+
+### All media types
 
 Include any media types/sources if the content is relevant to readers. You can freely include or link presentations, diagrams, videos, etc.; no matter who it was originally composed for, if it is helpful to any of our audiences, we can include it.
 
    - If you use an image that has a separate source file (for example, a vector or diagram format), link the image to the source file so that it may be reused or updated by anyone.
    - Do not copy and paste content from other sources unless it is a limited quotation with the source cited. Typically it is better to either rephrase relevant information in your own words or link out to the other source.
+ 
+### No special types
 
-### Markdown
+In the software industry, it is a best practice to organize documentatioin in different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
+
+1. Tutorials
+2. How-to guides
+3. Explanation
+4. Reference (for example, a glossary)
+
+At GitLab, we have so many product changes in our monthly releases that we can't afford to continually update multiple types of information.
+If we have multiple types, the information will become outdated. Therefore, we have a [single template](structure.md) for documentation.
+
+We currently do not distinguish specific document types, although we are open to reconsidering this policy
+once the documentation has reached a future stage of maturity and quality. If you are reading this, then despite our
+continual improvement efforts, that point hasn't been reached.
+
+### Link instead of summarize
+
+There is a temptation to summarize the information on another page.
+This will cause the information to live in two places.
+Instead, link to the SSOT and explain why it is important to consume the information.
+
+### Organize by topic, not by type
+
+Beyond top-level audience-type folders (e.g. `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
+
+For example, do not create groupings of similar media types (e.g. glossaries, FAQs, or sets of all articles or videos).
+
+Such grouping of content by type makes
+it difficult to browse for the information you need and difficult to maintain up-to-date content.
+Instead, organize content by its subject (e.g. everything related to CI goes together)
+and cross-link between any related content.
+
+### Docs-first methodology
+
+We employ a **docs-first methodology** to help ensure that the docs remain a complete and trusted resource, and to make communicating about the use of GitLab more efficient.
+
+* If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
+* When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information. 
+
+New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
+
+The more we reflexively add useful information to the docs, the more (and more successfully) the docs will be used to efficiently accomplish tasks and solve problems.
+
+If you have questions when considering, authoring, or editing docs, ask the Technical Writing team on Slack in `#docs` or in GitLab by mentioning the writer for the applicable [DevOps stage](https://about.gitlab.com/handbook/product/categories/#devops-stages). Otherwise, forge ahead with your best effort. It does not need to be perfect; the team is happy to review and improve upon your content. Please review the [Documentation guidelines](index.md) before you begin your first documentation MR.
+
+Having a knowledge base is any form that is separate from the documentation would be against the docs-first methodology because the content would overlap with the documentation.
+
+## Markdown
 
 All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
 
@@ -54,14 +104,7 @@ Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly 
 
 ### Organize by topic, not by type
 
-Beyond top-level audience-type folders (e.g. `administration`), we organize content by topic, not by type, so that it can be located as easily as possible within the single-source-of-truth (SSOT) section for the subject matter.
-
-For example, do not create groupings of similar media types (e.g. glossaries, FAQs, or sets of all articles or videos).
-
-Such grouping of content by type makes
-it difficult to browse for the information you need and difficult to maintain up-to-date content.
-Instead, organize content by its subject (e.g. everything related to CI goes together)
-and cross-link between any related content.
+Because we want documentation to be a SSOT, we should [organize by topic, not by type](#organize-by-topic-not-by-type).
 
 ### Folder structure overview
 
@@ -133,7 +176,7 @@ changes, regardless, and can move content if there is a better place for it.
 
 ### Avoid duplication
 
-Do not include the same information in multiple places. Instead, choose one single-source-of-truth location and link from other relevant locations.
+Do not include the same information in multiple places. [Link to a SSOT instead.](#link-instead-of-summarize)
 
 ### References across documents
 

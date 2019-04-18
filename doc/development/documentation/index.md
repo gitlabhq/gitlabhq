@@ -50,9 +50,7 @@ Adhere to the [Documentation Style Guide](styleguide.md). If a style standard is
 
 ## Folder structure and files
 
-Beyond the top-level directories under /doc, which mainly pertain to audiences (`user`, `administration`, `development`), we organize by product area and subject, not type.
-
-For complete details, see the [Content](styleguide.md#content) section of the [Documentation Style Guide](styleguide.md).
+See the [Structure](styleguide.md#structure) section of the [Documentation Style Guide](styleguide.md).
 
 ## Changing document location
 
