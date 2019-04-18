@@ -2,16 +2,16 @@
   %transition{ name: "boards-sidebar-slide" }
     %aside.right-sidebar.right-sidebar-expanded.issue-boards-sidebar{ "v-show" => "showSidebar" }
       .issuable-sidebar
-        .block.issuable-sidebar-header
+        .block.issuable-sidebar-header.position-relative
           %span.issuable-header-text.hide-collapsed.float-left
-            %strong
+            %strong.bold
               {{ issue.title }}
             %br/
             %span
               = render_if_exists "shared/boards/components/sidebar/issue_project_path"
               = precede "#" do
                 {{ issue.iid }}
-          %a.gutter-toggle.float-right{ role: "button",
+          %a.gutter-toggle.position-absolute.position-top-0.position-right-0{ role: "button",
             href: "#",
             "@click.prevent" => "closeSidebar",
             "aria-label" => "Toggle sidebar" }

@@ -82,7 +82,11 @@ export default {
 <template>
   <span>
     <span ref="issueDueDate" :class="cssClass" class="board-card-info card-number">
-      <icon :class="{ 'text-danger': isPastDue, 'board-card-info-icon': true }" name="calendar" />
+      <icon
+        :class="{ 'text-danger': isPastDue }"
+        class="board-card-info-icon align-top"
+        name="calendar"
+      />
       <time :class="{ 'text-danger': isPastDue }" datetime="date" class="board-card-info-text">{{
         body
       }}</time>
