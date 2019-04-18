@@ -8,10 +8,6 @@
     &-warning {
       background-color: $orange-100;
     }
-
-    &-failed {
-      background-color: $red-100;
-    }
   }
 
   &-body {
@@ -36,10 +32,6 @@
     border-radius: $gl-padding;
     height: $gl-padding-32;
 
-    &-failed {
-      background-color: $red-100;
-    }
-
     &-arrow {
       color: $gray-300;
     }
@@ -53,6 +45,13 @@
       font-size: 10px;
       line-height: $gl-line-height;
       width: $gl-padding;
+    }
+  }
+
+  &-header,
+  &-footer {
+    &-failed {
+      background-color: $red-100;
     }
   }
 
