@@ -85,6 +85,7 @@ schedule:review-build-cng:
 
 .review-deploy-base: &review-deploy-base
   <<: *review-base
+  retry: 2
   allow_failure: true
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
