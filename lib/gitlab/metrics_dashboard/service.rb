@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def process_dashboard(dashboard)
-        Processor.new(dashboard, project, params[:environment]).process
+        Processor.new(project, params[:environment]).process(dashboard)
       end
     end
   end

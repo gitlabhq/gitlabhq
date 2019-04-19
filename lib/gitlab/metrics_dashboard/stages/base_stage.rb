@@ -6,10 +6,9 @@ module Gitlab
       class BaseStage
         DEFAULT_PANEL_TYPE = 'area-chart'
 
-        attr_reader :dashboard, :project, :environment
+        attr_reader :project, :environment
 
-        def initialize(dashboard, project, environment)
-          @dashboard = dashboard
+        def initialize(project, environment)
           @project = project
           @environment = environment
         end
@@ -18,13 +17,13 @@ module Gitlab
         # @param dashboard [Hash]
         # @param project [Project]
         # @param environment [Environment]
-        def transform!
+        def transform!(_dashboard)
           raise NotImplementedError
         end
 
         protected
 
-        def for_metrics
+        def for_metrics(dashboard)
           dashboard[:panel_groups].each do |panel_group|
             panel_group[:panels].each do |panel|
               panel[:metrics].each do |metric|
