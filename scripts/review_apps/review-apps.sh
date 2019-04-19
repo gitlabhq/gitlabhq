@@ -68,7 +68,7 @@ function delete() {
 
   echoinfo "Deleting release '$name'..." true
 
-  helm delete --purge "$name" || true
+  helm delete --purge "$name"
 }
 
 function cleanup() {
@@ -81,8 +81,8 @@ function cleanup() {
 
   kubectl -n "$KUBE_NAMESPACE" delete \
     ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa \
-    -l release="$CI_ENVIRONMENT_SLUG" \
-    || true
+    --now --ignore-not-found --include-uninitialized \
+    -l release="$CI_ENVIRONMENT_SLUG"
 }
 
 function get_pod() {

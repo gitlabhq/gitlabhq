@@ -32,7 +32,6 @@
   environment: &review-environment
     name: review/${CI_COMMIT_REF_NAME}
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
-  before_script: []
 
 .review-docker: &review-docker
   <<: *review-base
@@ -48,6 +47,7 @@
     DOCKER_HOST: tcp://docker:2375
     LATEST_QA_IMAGE: "gitlab/${CI_PROJECT_NAME}-qa:nightly"
     QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/${CI_PROJECT_NAME}-qa:${CI_COMMIT_REF_SLUG}"
+  before_script: []
 
 build-qa-image:
   <<: *review-docker
@@ -85,6 +85,7 @@ schedule:review-build-cng:
 
 .review-deploy-base: &review-deploy-base
   <<: *review-base
+  retry: 2
   allow_failure: true
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
