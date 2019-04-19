@@ -431,9 +431,9 @@ table.code {
     &.diff-line-num {
       user-select: none;
       margin: 0;
-      border: 0;
       padding: 0 10px 0 5px;
-      border-right: 1px solid;
+      border-right-width: 1px;
+      border-right-style: solid;
       text-align: right;
       width: 50px;
       position: relative;
