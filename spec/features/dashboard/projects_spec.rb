@@ -145,6 +145,7 @@ describe 'Dashboard Projects' do
 
     it 'does not show tabs to filter by all projects or personal' do
       visit(starred_dashboard_projects_path)
+
       expect(page).not_to have_content '.filtered-search-nav'
     end
   end

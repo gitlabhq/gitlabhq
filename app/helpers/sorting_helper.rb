@@ -30,17 +30,20 @@ module SortingHelper
   end
 
   def projects_sort_options_hash
-    Feature.enabled?(:project_list_filter_bar) && !current_controller?('admin/projects') ? projects_sort_common_options_hash : projects_sort_admin_options_hash
+    Feature.enabled?(:project_list_filter_bar) && !current_controller?('admin/projects') ? projects_sort_common_options_hash : old_projects_sort_options_hash
   end
 
-  def projects_sort_admin_options_hash
+  # TODO: Simplify these sorting options
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/60798
+  # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/11209#note_162234858
+  def old_projects_sort_options_hash
     options = {
       sort_value_latest_activity  => sort_title_latest_activity,
       sort_value_name             => sort_title_name,
       sort_value_oldest_activity  => sort_title_oldest_activity,
       sort_value_oldest_created   => sort_title_oldest_created,
       sort_value_recently_created => sort_title_recently_created,
-      sort_value_most_stars       => sort_title_most_stars
+      sort_value_stars_desc       => sort_title_most_stars
     }
 
     if current_controller?('admin/projects')
@@ -55,7 +58,7 @@ module SortingHelper
       sort_value_latest_activity  => sort_title_latest_activity,
       sort_value_recently_created => sort_title_created_date,
       sort_value_name             => sort_title_name,
-      sort_value_most_stars       => sort_title_stars
+      sort_value_stars_desc       => sort_title_stars
     }
   end
 
@@ -64,11 +67,11 @@ module SortingHelper
       sort_value_latest_activity  => sort_title_latest_activity,
       sort_value_recently_created => sort_title_created_date,
       sort_value_name             => sort_title_name,
-      sort_value_most_stars       => sort_title_stars,
+      sort_value_stars_desc       => sort_title_stars,
       sort_value_oldest_activity  => sort_title_latest_activity,
       sort_value_oldest_created   => sort_title_created_date,
       sort_value_name_desc        => sort_title_name,
-      sort_value_most_stars_asc   => sort_title_stars
+      sort_value_stars_asc        => sort_title_stars
     }
   end
 
@@ -77,11 +80,11 @@ module SortingHelper
       sort_value_latest_activity  => sort_value_oldest_activity,
       sort_value_recently_created => sort_value_oldest_created,
       sort_value_name             => sort_value_name_desc,
-      sort_value_most_stars       => sort_value_most_stars_asc,
+      sort_value_stars_desc       => sort_value_stars_asc,
       sort_value_oldest_activity  => sort_value_latest_activity,
       sort_value_oldest_created   => sort_value_recently_created,
       sort_value_name_desc        => sort_value_name,
-      sort_value_most_stars_asc   => sort_value_most_stars
+      sort_value_stars_asc        => sort_value_stars_desc
     }
   end
 
@@ -98,7 +101,7 @@ module SortingHelper
 
   def subgroups_sort_options_hash
     groups_sort_options_hash.merge(
-      sort_value_most_stars => sort_title_most_stars
+      sort_value_stars_desc => sort_title_most_stars
     )
   end
 
@@ -215,6 +218,8 @@ module SortingHelper
     end
   end
 
+  # TODO: dedupicate issuable and project sort direction
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/60798
   def issuable_sort_direction_button(sort_value)
     link_class = 'btn btn-default has-tooltip reverse-sort-btn qa-reverse-sort'
     reverse_sort = issuable_reverse_sort_order_hash[sort_value]
@@ -525,11 +530,11 @@ module SortingHelper
     'contacted_asc'
   end
 
-  def sort_value_most_stars
+  def sort_value_stars_desc
     'stars_desc'
   end
 
-  def sort_value_most_stars_asc
+  def sort_value_stars_asc
     'stars_asc'
   end
 

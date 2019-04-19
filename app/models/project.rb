@@ -357,7 +357,7 @@ class Project < ApplicationRecord
 
   # last_activity_at is throttled every minute, but last_repository_updated_at is updated with every push
   scope :sorted_by_activity, -> { reorder("GREATEST(COALESCE(last_activity_at, '1970-01-01'), COALESCE(last_repository_updated_at, '1970-01-01')) DESC") }
-  scope :sorted_by_stars, -> { reorder(star_count: :desc) }
+  scope :sorted_by_stars_desc, -> { reorder(star_count: :desc) }
   scope :sorted_by_stars_asc, -> { reorder(star_count: :asc) }
 
   scope :in_namespace, ->(namespace_ids) { where(namespace_id: namespace_ids) }
@@ -545,7 +545,7 @@ class Project < ApplicationRecord
       when 'latest_activity_asc'
         reorder(last_activity_at: :asc)
       when 'stars_desc'
-        sorted_by_stars
+        sorted_by_stars_desc
       when 'stars_asc'
         sorted_by_stars_asc
       else

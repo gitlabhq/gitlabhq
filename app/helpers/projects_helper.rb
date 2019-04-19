@@ -239,8 +239,10 @@ module ProjectsHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
+  # TODO: Remove this method when removing the feature flag
+  # https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/11209#note_162234863
   def show_projects?(projects, params)
-    !!(params[:personal] || params[:name] || any_projects?(projects))
+    Feature.enabled?(:project_list_filter_bar) || !!(params[:personal] || params[:name] || any_projects?(projects))
   end
 
   def push_to_create_project_command(user = current_user)

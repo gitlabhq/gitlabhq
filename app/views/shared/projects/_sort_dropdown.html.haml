@@ -1,5 +1,6 @@
 - @sort ||= sort_value_latest_activity
 - toggle_text = projects_sort_option_titles[@sort]
+
 .btn-group.w-100{ role: "group" }
   .btn-group.w-100.dropdown.js-project-filter-dropdown-wrap{ role: "group" }
     %button.dropdown-menu-toggle{ id: 'sort-projects-dropdown', type: 'button', data: { toggle: 'dropdown', display: 'static' }, class: 'btn btn-default' }
@@ -10,8 +11,7 @@
         = _("Sort by")
       - projects_sort_options_hash.each do |value, title|
         %li
-          = link_to filter_projects_path(sort: value), class: ("is-active" if toggle_text == title) do
-            = title
+          = link_to title, filter_projects_path(sort: value), class: ("is-active" if toggle_text == title)
 
       %li.divider
       %li
@@ -23,6 +23,7 @@
       %li
         = link_to filter_projects_path(archived: 'only'), class: ("is-active" if params[:archived] == 'only') do
           = _("Show archived projects only")
+
       - if current_user && @group && @group.shared_projects.present?
         %li.divider
         %li
