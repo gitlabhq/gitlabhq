@@ -124,26 +124,26 @@ To add an existing Kubernetes cluster to your project:
 
       1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
-          ```yaml
-          apiVersion: v1
-          kind: ServiceAccount
-          metadata:
-            name: gitlab-admin
-            namespace: kube-system
-          ---
-          apiVersion: rbac.authorization.k8s.io/v1beta1
-          kind: ClusterRoleBinding
-          metadata:
-            name: gitlab-admin
-          roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: cluster-admin
-          subjects:
-          - kind: ServiceAccount
-            name: gitlab-admin
-            namespace: kube-system
-          ```
+         ```yaml
+         apiVersion: v1
+         kind: ServiceAccount
+         metadata:
+           name: gitlab-admin
+           namespace: kube-system
+         ---
+         apiVersion: rbac.authorization.k8s.io/v1beta1
+         kind: ClusterRoleBinding
+         metadata:
+           name: gitlab-admin
+         roleRef:
+           apiGroup: rbac.authorization.k8s.io
+           kind: ClusterRole
+           name: cluster-admin
+         subjects:
+         - kind: ServiceAccount
+           name: gitlab-admin
+           namespace: kube-system
+         ```
 
       1. Apply the service account and cluster role binding to your cluster:
 
