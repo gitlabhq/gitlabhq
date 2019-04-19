@@ -1047,7 +1047,6 @@ describe API::Projects do
         expect(json_response['http_url_to_repo']).to be_present
         expect(json_response['web_url']).to be_present
         expect(json_response['owner']).to be_a Hash
-        expect(json_response['owner']).to be_a Hash
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to be_present
         expect(json_response['issues_enabled']).to be_present
@@ -1135,7 +1134,9 @@ describe API::Projects do
           'path' => user.namespace.path,
           'kind' => user.namespace.kind,
           'full_path' => user.namespace.full_path,
-          'parent_id' => nil
+          'parent_id' => nil,
+          'avatar_url' => user.avatar_url,
+          'web_url' => Gitlab::Routing.url_helpers.user_url(user)
         })
       end
 
@@ -1335,6 +1336,37 @@ describe API::Projects do
               .to eq(Gitlab::Access::OWNER)
             end
           end
+        end
+      end
+
+      context 'when project belongs to a group namespace' do
+        let(:group) { create(:group, :with_avatar) }
+        let(:project) { create(:project, namespace: group) }
+        let!(:project_member) { create(:project_member, :developer, user: user, project: project) }
+
+        it 'returns group web_url and avatar_url' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+
+          group_data = json_response['namespace']
+          expect(group_data['web_url']).to eq(group.web_url)
+          expect(group_data['avatar_url']).to eq(group.avatar_url)
+        end
+      end
+
+      context 'when project belongs to a user namespace' do
+        let(:user) { create(:user) }
+        let(:project) { create(:project, namespace: user.namespace) }
+
+        it 'returns user web_url and avatar_url' do
+          get api("/projects/#{project.id}", user)
+
+          expect(response).to have_gitlab_http_status(200)
+
+          user_data = json_response['namespace']
+          expect(user_data['web_url']).to eq("http://localhost/#{user.username}")
+          expect(user_data['avatar_url']).to eq(user.avatar_url)
         end
       end
     end
