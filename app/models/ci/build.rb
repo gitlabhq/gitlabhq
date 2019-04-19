@@ -15,6 +15,7 @@ module Ci
     include Gitlab::Utils::StrongMemoize
     include Deployable
     include HasRef
+    include UpdateProjectStatistics
 
     BuildArchivedError = Class.new(StandardError)
 
@@ -157,8 +158,7 @@ module Ci
       run_after_commit { BuildHooksWorker.perform_async(build.id) }
     end
 
-    after_save :update_project_statistics_after_save, if: :artifacts_size_changed?
-    after_destroy :update_project_statistics_after_destroy, unless: :project_destroyed?
+    update_project_statistics stat: :build_artifacts_size, attribute: :artifacts_size
 
     class << self
       # This is needed for url_for to work,
@@ -846,22 +846,6 @@ module Ci
       return {} unless pipeline.config_processor
 
       pipeline.config_processor.build_attributes(name)
-    end
-
-    def update_project_statistics_after_save
-      update_project_statistics(read_attribute(:artifacts_size).to_i - artifacts_size_was.to_i)
-    end
-
-    def update_project_statistics_after_destroy
-      update_project_statistics(-artifacts_size)
-    end
-
-    def update_project_statistics(difference)
-      ProjectStatistics.increment_statistic(project_id, :build_artifacts_size, difference)
-    end
-
-    def project_destroyed?
-      project.pending_delete?
     end
   end
 end

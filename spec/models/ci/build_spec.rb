@@ -31,6 +31,10 @@ describe Ci::Build do
 
   it { is_expected.to be_a(ArtifactMigratable) }
 
+  it_behaves_like 'UpdateProjectStatistics' do
+    subject { FactoryBot.build(:ci_build, pipeline: pipeline, artifacts_size: 23) }
+  end
+
   describe 'associations' do
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
@@ -2115,54 +2119,6 @@ describe Ci::Build do
 
       it 'does not have expiring artifacts' do
         expect(build).not_to have_expiring_artifacts
-      end
-    end
-  end
-
-  context 'when updating the build' do
-    let(:build) { create(:ci_build, artifacts_size: 23) }
-
-    it 'updates project statistics' do
-      build.artifacts_size = 42
-
-      expect(build).to receive(:update_project_statistics_after_save).and_call_original
-
-      expect { build.save! }
-        .to change { build.project.statistics.reload.build_artifacts_size }
-        .by(19)
-    end
-
-    context 'when the artifact size stays the same' do
-      it 'does not update project statistics' do
-        build.name = 'changed'
-
-        expect(build).not_to receive(:update_project_statistics_after_save)
-
-        build.save!
-      end
-    end
-  end
-
-  context 'when destroying the build' do
-    let!(:build) { create(:ci_build, artifacts_size: 23) }
-
-    it 'updates project statistics' do
-      expect(ProjectStatistics)
-        .to receive(:increment_statistic)
-        .and_call_original
-
-      expect { build.destroy! }
-        .to change { build.project.statistics.reload.build_artifacts_size }
-        .by(-23)
-    end
-
-    context 'when the build is destroyed due to the project being destroyed' do
-      it 'does not update the project statistics' do
-        expect(ProjectStatistics)
-          .not_to receive(:increment_statistic)
-
-        build.project.update(pending_delete: true)
-        build.project.destroy!
       end
     end
   end
