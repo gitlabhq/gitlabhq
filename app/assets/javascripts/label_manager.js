@@ -14,13 +14,16 @@ export default class LabelManager {
     this.errorMessage = 'Unable to update label prioritization at this time';
     this.emptyState = document.querySelector('#js-priority-labels-empty-state');
     this.$badgeItemTemplate = $('#js-badge-item-template');
-    this.sortable = Sortable.create(this.prioritizedLabels.get(0), {
-      filter: '.empty-message',
-      forceFallback: true,
-      fallbackClass: 'is-dragging',
-      dataIdAttr: 'data-id',
-      onUpdate: this.onPrioritySortUpdate.bind(this),
-    });
+
+    if ('sortable' in this.prioritizedLabels.data()) {
+      Sortable.create(this.prioritizedLabels.get(0), {
+        filter: '.empty-message',
+        forceFallback: true,
+        fallbackClass: 'is-dragging',
+        dataIdAttr: 'data-id',
+        onUpdate: this.onPrioritySortUpdate.bind(this),
+      });
+    }
     this.bindEvents();
   }
 
