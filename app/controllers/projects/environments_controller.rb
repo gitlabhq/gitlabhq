@@ -163,7 +163,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
     respond_to do |format|
       if result[:status] == :success
-        format.json { render status: :ok, json: result  }
+        format.json { render status: :ok, json: result }
       else
         format.json { render status: result[:http_status], json: result }
       end
