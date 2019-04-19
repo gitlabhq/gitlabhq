@@ -434,8 +434,9 @@ Below you can find supported syntax reference:
 1. Equality matching using a string
 
     > Example: `$VARIABLE == "some value"`
+    > Example: `$VARIABLE != "some value"` _(added in 11.11)_
 
-    You can use equality operator `==` to compare a variable content to a
+    You can use equality operator `==` or `!=` to compare a variable content to a
     string. We support both, double quotes and single quotes to define a string
     value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
     are supported. `"some value" == $VARIABLE` is correct too.
@@ -443,22 +444,26 @@ Below you can find supported syntax reference:
 1. Checking for an undefined value
 
     > Example: `$VARIABLE == null`
+    > Example: `$VARIABLE != null` _(added in 11.11)_
 
     It sometimes happens that you want to check whether a variable is defined
     or not. To do that, you can compare a variable to `null` keyword, like
     `$VARIABLE == null`. This expression is going to evaluate to truth if
-    variable is not defined.
+    variable is not defined when `==` is used, or to falsey if `!=` is used.
 
 1. Checking for an empty variable
 
     > Example: `$VARIABLE == ""`
+    > Example: `$VARIABLE != ""` _(added in 11.11)_
 
     If you want to check whether a variable is defined, but is empty, you can
-    simply compare it against an empty string, like `$VAR == ''`.
+    simply compare it against an empty string, like `$VAR == ''` or non-empty
+    string `$VARIABLE != ""`.
 
 1. Comparing two variables
 
     > Example: `$VARIABLE_1 == $VARIABLE_2`
+    > Example: `$VARIABLE_1 != $VARIABLE_2` _(added in 11.11)_
 
     It is possible to compare two variables. This is going to compare values
     of these variables.
@@ -477,9 +482,11 @@ Below you can find supported syntax reference:
 1. Pattern matching  _(added in 11.0)_
 
     > Example: `$VARIABLE =~ /^content.*/`
+    > Example: `$VARIABLE_1 !~ /^content.*/` _(added in 11.11)_
 
     It is possible perform pattern matching against a variable and regular
-    expression. Expression like this evaluates to truth if matches are found.
+    expression. Expression like this evaluates to truth if matches are found
+    when using `=~`. It evaluates to truth if matches are not found when `!~` is used.
 
     Pattern matching is case-sensitive by default. Use `i` flag modifier, like
     `/pattern/i` to make a pattern case-insensitive.
