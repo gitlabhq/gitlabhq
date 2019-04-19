@@ -936,8 +936,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
         find('.js-cancel-job').click
       end
 
-      it 'loads the page and shows all needed controls' do
-        expect(page).to have_content 'Retry'
+      it 'loads the page and shows no controls' do
+        expect(page).not_to have_content 'Retry'
       end
     end
   end
@@ -946,7 +946,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
     context "Job from project", :js do
       before do
         job.run!
-        job.cancel!
+        job.drop!(:script_failure)
         visit project_job_path(project, job)
         wait_for_requests
 
