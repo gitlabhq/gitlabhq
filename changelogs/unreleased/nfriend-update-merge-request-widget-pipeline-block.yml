@@ -1,6 +1,0 @@
----
-title: Update pipeline block on merge request page to accommodate post-merge pipeline
-  information
-merge_request: 25745
-author:
-type: added

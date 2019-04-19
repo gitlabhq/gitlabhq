@@ -1,5 +1,0 @@
----
-title: Fix removing remote mirror failure which leaves unnecessary refs behind
-merge_request: 26213
-author:
-type: fixed

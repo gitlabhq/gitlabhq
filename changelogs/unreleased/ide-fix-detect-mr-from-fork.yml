@@ -1,5 +1,0 @@
----
-title: Fix IDE detection of MR from fork with same branch name
-merge_request: 26986
-author:
-type: fixed

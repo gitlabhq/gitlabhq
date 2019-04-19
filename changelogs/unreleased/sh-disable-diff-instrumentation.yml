@@ -1,5 +1,0 @@
----
-title: Disable method instrumentation for diffs
-merge_request: 27235
-author:
-type: performance

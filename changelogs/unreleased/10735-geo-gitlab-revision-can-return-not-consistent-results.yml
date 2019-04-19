@@ -1,5 +1,0 @@
----
-title: Use a fixed git abbrev parameter when we fetch a git revision
-merge_request: 26707
-author:
-type: fixed

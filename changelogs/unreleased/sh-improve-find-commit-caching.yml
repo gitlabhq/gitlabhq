@@ -1,5 +1,0 @@
----
-title: Expand FindCommit caching to blob and refs
-merge_request: 27084
-author:
-type: performance

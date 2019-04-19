@@ -1,5 +1,0 @@
----
-title: Releases will now be automatically deleted when deleting corresponding tag
-merge_request: 26530
-author:
-type: fixed

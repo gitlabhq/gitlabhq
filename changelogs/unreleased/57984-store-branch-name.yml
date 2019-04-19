@@ -1,5 +1,0 @@
----
-title: Resolves Branch name is lost if I change commit mode in Web IDE
-merge_request: 26180
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Handle missing keys in sentry api response
-merge_request: 26264
-author:
-type: fixed

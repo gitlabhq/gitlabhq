@@ -1,5 +1,0 @@
----
-title: Do not display Ingress IP help text when there isn’t an Ingress IP assigned
-merge_request: 27057
-author:
-type: fixed

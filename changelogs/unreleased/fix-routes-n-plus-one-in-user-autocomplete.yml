@@ -1,5 +1,0 @@
----
-title: Fix some N+1s in loading routes and counting members for groups in @-autocomplete
-merge_request: 26491
-author:
-type: performance

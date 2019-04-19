@@ -1,5 +1,0 @@
----
-title: Fix multiple series queries on metrics dashboard
-merge_request: 26514
-author:
-type: fixed

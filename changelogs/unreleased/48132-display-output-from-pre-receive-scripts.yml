@@ -1,5 +1,0 @@
----
-title: "Allow failed custom hook script errors to safely appear in GitLab UI by filtering error messages by the prefix GL-HOOK-ERR:"
-merge_request: 25625
-author:
-type: changed

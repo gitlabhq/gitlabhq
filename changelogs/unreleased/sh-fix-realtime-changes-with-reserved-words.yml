@@ -1,5 +1,0 @@
----
-title: Fix real-time updates for projects that contain a reserved word
-merge_request: 27060
-author:
-type: fixed

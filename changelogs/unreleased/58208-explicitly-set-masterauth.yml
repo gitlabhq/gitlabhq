@@ -1,6 +1,0 @@
----
-title: Explicitly set master_auth setting to enable basic auth and client certificate
-  for new GKE clusters
-merge_request: 26018
-author:
-type: other

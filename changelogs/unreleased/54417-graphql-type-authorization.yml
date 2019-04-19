@@ -1,5 +1,0 @@
----
-title: GraphQL Types can be made to always authorize access to resources of that Type
-merge_request: 25724
-author:
-type: added

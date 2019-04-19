@@ -1,5 +1,0 @@
----
-title: Only execute system hooks once when pushing tags
-merge_request: 26888
-author:
-type: fixed
