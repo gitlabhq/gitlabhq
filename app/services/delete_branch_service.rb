@@ -6,27 +6,25 @@ class DeleteBranchService < BaseService
     branch = repository.find_branch(branch_name)
 
     unless current_user.can?(:push_code, project)
-      return error('You dont have push access to repo', 405)
+      return ServiceResponse.error(
+        message: 'You dont have push access to repo',
+        http_status: 405)
     end
 
     unless branch
-      return error('No such branch', 404)
+      return ServiceResponse.error(
+        message: 'No such branch',
+        http_status: 404)
     end
 
     if repository.rm_branch(current_user, branch_name)
-      success('Branch was deleted')
+      ServiceResponse.success(message: 'Branch was deleted')
     else
-      error('Failed to remove branch')
+      ServiceResponse.error(
+        message: 'Failed to remove branch',
+        http_status: 400)
     end
   rescue Gitlab::Git::PreReceiveError => ex
-    error(ex.message)
-  end
-
-  def error(message, return_code = 400)
-    super(message).merge(return_code: return_code)
-  end
-
-  def success(message)
-    super().merge(message: message)
+    ServiceResponse.error(message: ex.message, http_status: 400)
   end
 end

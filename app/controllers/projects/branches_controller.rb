@@ -100,14 +100,14 @@ class Projects::BranchesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        flash_type = result[:status] == :error ? :alert : :notice
-        flash[flash_type] = result[:message]
+        flash_type = result.error? ? :alert : :notice
+        flash[flash_type] = result.message
 
         redirect_to project_branches_path(@project), status: :see_other
       end
 
-      format.js { head result[:return_code] }
-      format.json { render json: { message: result[:message] }, status: result[:return_code] }
+      format.js { head result.http_status }
+      format.json { render json: { message: result.message }, status: result.http_status }
     end
   end
 
