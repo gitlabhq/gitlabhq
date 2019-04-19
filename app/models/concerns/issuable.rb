@@ -128,10 +128,6 @@ module Issuable
       assignees.count > 1
     end
 
-    def milestone_available?
-      project_id == milestone&.project_id || project.ancestors_upto.compact.include?(milestone&.group)
-    end
-
     private
 
     def milestone_is_valid
@@ -275,6 +271,10 @@ module Issuable
     def parent_class
       ::Project
     end
+  end
+
+  def milestone_available?
+    project_id == milestone&.project_id || project.ancestors_upto.compact.include?(milestone&.group)
   end
 
   def assignee_or_author?(user)
