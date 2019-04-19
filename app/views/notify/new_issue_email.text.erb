@@ -1,7 +1,9 @@
-New Issue was created.
+<%= sanitize_name(@issue.author_name) %> <%= 'created an issue:' %>
 
-Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
-Author:    <%= sanitize_name(@issue.author_name) %>
-<%= assignees_label(@issue) %>
+<% if @issue.assignees.any? -%>
+  <%= assignees_label(@issue) %>
+<% end %>
 
-<%= @issue.description %>
+<% if @issue.description -%>
+  <%= @issue.description %>
+<% end %>

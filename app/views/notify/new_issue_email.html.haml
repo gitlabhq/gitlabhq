@@ -1,6 +1,5 @@
-- if Gitlab::CurrentSettings.email_author_in_body
-  %p.details
-    #{link_to @issue.author_name, user_url(@issue.author)} created an issue:
+%p.details
+  #{link_to @issue.author_name, user_url(@issue.author)} created an issue:
 
 - if @issue.assignees.any?
   %p

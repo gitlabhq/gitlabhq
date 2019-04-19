@@ -99,15 +99,9 @@ describe Notify do
           end
         end
 
-        context 'when enabled email_author_in_body' do
-          before do
-            stub_application_setting(email_author_in_body: true)
-          end
-
-          it 'contains a link to note author' do
-            is_expected.to have_body_text(issue.author_name)
-            is_expected.to have_body_text 'created an issue:'
-          end
+        it 'contains a link to issue author' do
+          is_expected.to have_body_text(issue.author_name)
+          is_expected.to have_body_text 'created an issue:'
         end
       end
 
@@ -314,15 +308,9 @@ describe Notify do
           end
         end
 
-        context 'when enabled email_author_in_body' do
-          before do
-            stub_application_setting(email_author_in_body: true)
-          end
-
-          it 'contains a link to note author' do
-            is_expected.to have_body_text merge_request.author_name
-            is_expected.to have_body_text 'created a merge request:'
-          end
+        it 'contains a link to merge request author' do
+          is_expected.to have_body_text merge_request.author_name
+          is_expected.to have_body_text 'created a merge request:'
         end
       end
 
@@ -907,7 +895,9 @@ describe Notify do
         end
 
         it 'contains an introduction' do
-          is_expected.to have_body_text 'started a new discussion'
+          issuable_url = "project_#{note.noteable_type.underscore}_url"
+
+          is_expected.to have_body_text "started a new <a href=\"#{public_send(issuable_url, project, note.noteable, anchor: "note_#{note.id}")}\">discussion</a>"
         end
 
         context 'when a comment on an existing discussion' do
