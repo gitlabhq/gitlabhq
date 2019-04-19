@@ -82,7 +82,7 @@ module API
 
     resource :issues do
       desc "Get currently authenticated user's issues" do
-        success Entities::IssueBasic
+        success Entities::Issue
       end
       params do
         use :issues_params
@@ -94,7 +94,7 @@ module API
         issues = paginate(find_issues)
 
         options = {
-          with: Entities::IssueBasic,
+          with: Entities::Issue,
           with_labels_data: declared_params[:with_labels_data],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
@@ -109,7 +109,7 @@ module API
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a list of group issues' do
-        success Entities::IssueBasic
+        success Entities::Issue
       end
       params do
         use :issues_params
@@ -120,7 +120,7 @@ module API
         issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
 
         options = {
-          with: Entities::IssueBasic,
+          with: Entities::Issue,
           with_labels_data: declared_params[:with_labels_data],
           current_user: current_user,
           issuable_metadata: issuable_meta_data(issues, 'Issue')
@@ -149,7 +149,7 @@ module API
       include TimeTrackingEndpoints
 
       desc 'Get a list of project issues' do
-        success Entities::IssueBasic
+        success Entities::Issue
       end
       params do
         use :issues_params
@@ -160,7 +160,7 @@ module API
         issues = paginate(find_issues(project_id: project.id))
 
         options = {
-          with: Entities::IssueBasic,
+          with: Entities::Issue,
           with_labels_data: declared_params[:with_labels_data],
           current_user: current_user,
           project: user_project,

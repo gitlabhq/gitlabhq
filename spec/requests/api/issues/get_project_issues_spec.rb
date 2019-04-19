@@ -160,11 +160,11 @@ describe API::Issues do
     it 'avoids N+1 queries' do
       get api("/projects/#{project.id}/issues", user)
 
+      create_list(:issue, 3, project: project)
+
       control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
       end.count
-
-      create_list(:issue, 3, project: project)
 
       expect do
         get api("/projects/#{project.id}/issues", user)

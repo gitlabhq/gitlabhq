@@ -542,13 +542,9 @@ module API
     class IssueBasic < ProjectEntity
       expose :closed_at
       expose :closed_by, using: Entities::UserBasic
-      expose :labels do |issue, options|
+      expose :labels do |issue|
         # Avoids an N+1 query since labels are preloaded
-        if options[:with_labels_data]
-          ::API::Entities::LabelBasic.represent(issue.labels.sort_by(&:title))
-        else
-          issue.labels.map(&:title).sort
-        end
+        issue.labels.map(&:title).sort
       end
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
@@ -564,8 +560,6 @@ module API
       expose :due_date
       expose :confidential
       expose :discussion_locked
-      expose(:has_tasks) {|issue, _| !issue.task_list_items.empty? }
-      expose :task_status, if: -> (issue, _) { !issue.task_list_items.empty? }
 
       expose :web_url do |issue|
         Gitlab::UrlBuilder.build(issue)
@@ -578,6 +572,23 @@ module API
 
     class Issue < IssueBasic
       include ::API::Helpers::RelatedResourcesHelpers
+
+      expose :labels do |issue, options|
+        # Avoids an N+1 query since labels are preloaded
+        if options[:with_labels_data]
+          ::API::Entities::LabelBasic.represent(issue.labels.sort_by(&:title))
+        else
+          issue.labels.map(&:title).sort
+        end
+      end
+
+      expose(:has_tasks) do |issue, _|
+        !issue.task_list_items.empty?
+      end
+
+      expose :task_status, if: -> (issue, _) do
+        !issue.task_list_items.empty?
+      end
 
       expose :_links do
         expose :self do |issue|

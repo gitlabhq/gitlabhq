@@ -37,6 +37,7 @@ module API
         issues = finder.execute.with_api_entity_associations
         order_by = declared_params[:sort].present? && %w(asc desc).include?(declared_params[:sort].downcase)
         issues = issues.reorder(order_options_with_tie_breaker) if order_by
+
         issues
         # rubocop: enable CodeReuse/ActiveRecord
       end

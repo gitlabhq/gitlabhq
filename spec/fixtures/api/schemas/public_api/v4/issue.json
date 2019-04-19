@@ -14,7 +14,7 @@
     "labels": {
       "type": "array",
       "items": {
-        "$ref": "../../entities/label.json"
+        "type": "string"
       }
     },
     "milestone": {
@@ -79,8 +79,6 @@
     "due_date": { "type": ["date", "null"] },
     "confidential": { "type": "boolean" },
     "web_url": { "type": "uri" },
-    "has_tasks": {"type":  "boolean"},
-    "task_status": {"type":  "string"},
     "time_stats": {
       "time_estimate": { "type": "integer" },
       "total_time_spent": { "type": "integer" },
@@ -93,6 +91,6 @@
     "state", "created_at", "updated_at", "labels",
     "milestone", "assignees", "author", "user_notes_count",
     "upvotes", "downvotes", "due_date", "confidential",
-    "has_tasks", "web_url"
+    "web_url"
   ]
 }
