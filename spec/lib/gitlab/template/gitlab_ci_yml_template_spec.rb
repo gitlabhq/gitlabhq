@@ -15,6 +15,13 @@ describe Gitlab::Template::GitlabCiYmlTemplate do
       expect(all).to include('Docker')
       expect(all).to include('Ruby')
     end
+
+    it 'ensure that the template name is used exactly once' do
+      all = subject.all.group_by(&:name)
+      duplicates = all.select { |_, templates| templates.length > 1 }
+
+      expect(duplicates).to be_empty
+    end
   end
 
   describe '.find' do
