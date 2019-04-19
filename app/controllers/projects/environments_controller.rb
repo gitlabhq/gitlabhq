@@ -159,12 +159,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def metrics_dashboard
     render_403 && return unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, @project)
+    result = Gitlab::MetricsDashboard::Service.new(@project, @current_user, environment: environment).get_dashboard
 
     respond_to do |format|
-      format.json do
-        result = Gitlab::MetricsDashboard::Service.new(@project, @current_user, environment: environment).get_dashboard
-
-        render_metrics_dashboard_response(result)
+      if result[:status] == :success
+        format.json { render status: :ok, json: result  }
+      else
+        format.json { render status: result[:http_status], json: result }
       end
     end
   end
@@ -207,13 +208,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     return unless params[:start].present? || params[:end].present?
 
     params.require([:start, :end])
-  end
-
-  def render_metrics_dashboard_response(result)
-    ok_status = :ok if result[:status] == :success
-    status = ok_status || result[:http_status] || :bad_request
-
-    render status: status, json: result
   end
 
   def search_environment_names
