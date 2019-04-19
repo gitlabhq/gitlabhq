@@ -1,5 +1,0 @@
----
-title: Cache Repository#root_ref within a request
-merge_request: 25903
-author:
-type: performance

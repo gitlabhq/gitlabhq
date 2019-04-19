@@ -1,5 +1,0 @@
----
-title: Speed up generation of avatar URLs when using object storage
-merge_request:
-author:
-type: performance

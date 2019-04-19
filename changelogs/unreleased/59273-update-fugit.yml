@@ -1,5 +1,0 @@
----
-title: Update fugit which fixes a potential infinite loop
-merge_request: 26579
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Always return the deployment in the UpdateDeploymentService#execute method
-merge_request: 27322
-author:
-type: fixed

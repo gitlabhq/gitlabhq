@@ -1,5 +1,0 @@
----
-title: Fix MWPS does not work for merge request pipelines
-merge_request: 26906
-author:
-type: fixed

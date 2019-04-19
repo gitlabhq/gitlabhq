@@ -1,5 +1,0 @@
----
-title: Fix Auto DevOps missing domain error handling
-merge_request: 26627
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Avoid loading pipeline status in project search
-merge_request: 26342
-author:
-type: performance

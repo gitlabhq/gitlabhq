@@ -1,5 +1,0 @@
----
-title: Fix continuous bitbucket import loading spinner
-merge_request: 26175
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Guard against nil dereferenced_target
-merge_request: 27192
-author:
-type: fixed

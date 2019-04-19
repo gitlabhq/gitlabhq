@@ -1,6 +1,0 @@
----
-title: Allow merge requests to be set to merge when pipeline succeeds via git push
-  options
-merge_request: 26842
-author:
-type: added

@@ -1,5 +1,0 @@
----
-title: Allow ref name caching CommitService#find_commit
-merge_request: 26248
-author:
-type: performance

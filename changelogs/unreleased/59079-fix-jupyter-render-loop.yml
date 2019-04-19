@@ -1,5 +1,0 @@
----
-title: Fix jupyter rendering bug that ended in an infinite loop
-merge_request: 26656
-author: ROSPARS Benoit
-type: fixed

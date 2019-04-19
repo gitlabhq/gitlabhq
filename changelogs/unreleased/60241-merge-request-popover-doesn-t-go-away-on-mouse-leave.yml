@@ -1,5 +1,0 @@
----
-title: Fix bug where MR popover doesn't go away on mouse leave
-merge_request:
-author:
-type: fixed

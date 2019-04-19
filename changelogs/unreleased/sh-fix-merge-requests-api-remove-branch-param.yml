@@ -1,5 +1,0 @@
----
-title: Fix remove_source_branch merge request API handling
-merge_request: 27392
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Handle possible HTTP exception for Sentry client
-merge_request: 27080
-author:
-type: fixed

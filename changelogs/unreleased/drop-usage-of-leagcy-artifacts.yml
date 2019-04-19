@@ -1,5 +1,0 @@
----
-title: Drop legacy artifacts usage as there are no leftovers
-merge_request: 24294
-author:
-type: performance

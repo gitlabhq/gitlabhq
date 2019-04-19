@@ -1,5 +1,0 @@
----
-title: Update deploy boards to additionally select on "app.gitlab.com" annotations
-merge_request: 25623
-author:
-type: changed

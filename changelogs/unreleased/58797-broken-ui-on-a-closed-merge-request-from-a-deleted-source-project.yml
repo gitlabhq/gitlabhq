@@ -1,5 +1,0 @@
----
-title: Fix UI for closed MR when source project is removed
-merge_request: 25967
-author: Takuya Noguchi
-type: fixed

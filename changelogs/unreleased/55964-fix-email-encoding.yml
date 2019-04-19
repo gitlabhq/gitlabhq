@@ -1,5 +1,0 @@
----
-title: Fix notfication emails having wrong encoding
-merge_request: 26931
-author:
-type: fixed

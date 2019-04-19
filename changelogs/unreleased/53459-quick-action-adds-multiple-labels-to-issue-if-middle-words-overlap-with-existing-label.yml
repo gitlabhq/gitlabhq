@@ -1,5 +1,0 @@
----
-title: Fix quick actions add label name middle word overlaps
-merge_request: 26602
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

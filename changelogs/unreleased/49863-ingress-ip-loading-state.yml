@@ -1,5 +1,0 @@
----
-title: Show loading spinner while Ingress/Knative IP is being assigned
-merge_request: 25912
-author:
-type: changed
