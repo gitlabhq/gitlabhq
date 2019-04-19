@@ -5,92 +5,104 @@ require 'spec_helper'
 # Also see spec/graphql/features/authorization_spec.rb for
 # integration tests of AuthorizeFieldService
 describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
-  describe '#build_checker' do
-    let(:current_user) { double(:current_user) }
-    let(:abilities) { [double(:first_ability), double(:last_ability)] }
+  def type(type_authorizations = [])
+    Class.new(Types::BaseObject) do
+      graphql_name "TestType"
 
-    context 'when authorizing against the object' do
-      let(:checker) do
-        service = described_class.new(double(resolve_proc: proc {}))
-        allow(service).to receive(:authorizations).and_return(abilities)
-        service.__send__(:build_checker, current_user, nil)
-      end
+      authorize type_authorizations
+    end
+  end
 
-      it 'returns a checker which checks for a single object' do
-        object = double(:object)
+  def type_with_field(field_type, field_authorizations = [], resolved_value = "Resolved value")
+    Class.new(Types::BaseObject) do
+      graphql_name "TestTypeWithField"
+      field :test_field, field_type, null: true, authorize: field_authorizations, resolve: -> (_, _, _) { resolved_value}
+    end
+  end
 
-        abilities.each do |ability|
-          spy_ability_check_for(ability, object, passed: true)
-        end
+  let(:current_user) { double(:current_user) }
+  subject(:service) { described_class.new(field) }
 
-        expect(checker.call(object)).to eq(object)
-      end
+  describe "#authorized_resolve" do
+    let(:presented_object) { double("presented object") }
+    let(:presented_type) { double("parent type", object: presented_object) }
+    subject(:resolved) { service.authorized_resolve.call(presented_type, {}, { current_user: current_user }) }
 
-      it 'returns a checker which checks for all objects' do
-        objects = [double(:first), double(:last)]
-
-        abilities.each do |ability|
-          objects.each do |object|
-            spy_ability_check_for(ability, object, passed: true)
-          end
-        end
-
-        expect(checker.call(objects)).to eq(objects)
-      end
-
-      context 'when some objects would not pass the check' do
-        it 'returns nil when it is single object' do
-          disallowed = double(:object)
-
-          spy_ability_check_for(abilities.first, disallowed, passed: false)
-
-          expect(checker.call(disallowed)).to be_nil
-        end
-
-        it 'returns only objects which passed when there are more than one' do
-          allowed = double(:allowed)
-          disallowed = double(:disallowed)
-
-          spy_ability_check_for(abilities.first, disallowed, passed: false)
-
-          abilities.each do |ability|
-            spy_ability_check_for(ability, allowed, passed: true)
+    context "scalar types" do
+      shared_examples "checking permissions on the presented object" do
+        it "checks the abilities on the object being presented and returns the value" do
+          expected_permissions.each do |permission|
+            spy_ability_check_for(permission, presented_object, passed: true)
           end
 
-          expect(checker.call([disallowed, allowed])).to contain_exactly(allowed)
+          expect(resolved).to eq("Resolved value")
         end
+
+        it "returns nil if the value wasn't authorized" do
+          allow(Ability).to receive(:allowed?).and_return false
+
+          expect(resolved).to be_nil
+        end
+      end
+
+      context "when the field is a scalar type" do
+        let(:field) { type_with_field(GraphQL::STRING_TYPE, :read_field).fields["testField"].to_graphql }
+        let(:expected_permissions) { [:read_field] }
+
+        it_behaves_like "checking permissions on the presented object"
+      end
+
+      context "when the field is a list of scalar types" do
+        let(:field) { type_with_field([GraphQL::STRING_TYPE], :read_field).fields["testField"].to_graphql }
+        let(:expected_permissions) { [:read_field] }
+
+        it_behaves_like "checking permissions on the presented object"
       end
     end
 
-    context 'when authorizing against another object' do
-      let(:authorizing_obj) { double(:object) }
+    context "when the field is a specific type" do
+      let(:custom_type) { type(:read_type) }
+      let(:object_in_field) { double("presented in field") }
+      let(:field) { type_with_field(custom_type, :read_field, object_in_field).fields["testField"].to_graphql }
 
-      let(:checker) do
-        service = described_class.new(double(resolve_proc: proc {}))
-        allow(service).to receive(:authorizations).and_return(abilities)
-        service.__send__(:build_checker, current_user, authorizing_obj)
+      it "checks both field & type permissions" do
+        spy_ability_check_for(:read_field, object_in_field, passed: true)
+        spy_ability_check_for(:read_type, object_in_field, passed: true)
+
+        expect(resolved).to eq(object_in_field)
       end
 
-      it 'returns a checker which checks for a single object' do
-        object = double(:object)
+      it "returns nil if viewing was not allowed" do
+        spy_ability_check_for(:read_field, object_in_field, passed: false)
+        spy_ability_check_for(:read_type, object_in_field, passed: true)
 
-        abilities.each do |ability|
-          spy_ability_check_for(ability, authorizing_obj, passed: true)
-        end
-
-        expect(checker.call(object)).to eq(object)
+        expect(resolved).to be_nil
       end
 
-      it 'returns a checker which checks for all objects' do
-        objects = [double(:first), double(:last)]
+      context "when the field is a list" do
+        let(:object_1) { double("presented in field 1") }
+        let(:object_2) { double("presented in field 2") }
+        let(:presented_types) { [double(object: object_1), double(object: object_2)] }
+        let(:field) { type_with_field([custom_type], :read_field, presented_types).fields["testField"].to_graphql }
 
-        abilities.each do |ability|
-          objects.each do |object|
-            spy_ability_check_for(ability, authorizing_obj, passed: true)
-          end
+        it "checks all permissions" do
+          allow(Ability).to receive(:allowed?) { true }
+
+          spy_ability_check_for(:read_field, object_1, passed: true)
+          spy_ability_check_for(:read_type, object_1, passed: true)
+          spy_ability_check_for(:read_field, object_2, passed: true)
+          spy_ability_check_for(:read_type, object_2, passed: true)
+
+          expect(resolved).to eq(presented_types)
         end
 
-        expect(checker.call(objects)).to eq(objects)
+        it "filters out objects that the user cannot see" do
+          allow(Ability).to receive(:allowed?) { true }
+
+          spy_ability_check_for(:read_type, object_1, passed: false)
+
+          expect(resolved.map(&:object)).to contain_exactly(object_2)
+        end
       end
     end
   end
