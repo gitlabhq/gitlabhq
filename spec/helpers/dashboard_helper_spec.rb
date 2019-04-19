@@ -22,6 +22,43 @@ describe DashboardHelper do
     end
   end
 
+  describe '#feature_entry' do
+    context 'when implicitly enabled' do
+      it 'considers feature enabled by default' do
+        entry = feature_entry('Demo', href: 'demo.link')
+
+        expect(entry).to include('<p aria-label="Demo: status on">')
+        expect(entry).to include('<a href="demo.link">Demo</a>')
+      end
+    end
+
+    context 'when explicitly enabled' do
+      it 'returns a link' do
+        entry = feature_entry('Demo', href: 'demo.link', enabled: true)
+
+        expect(entry).to include('<p aria-label="Demo: status on">')
+        expect(entry).to include('<a href="demo.link">Demo</a>')
+      end
+
+      it 'returns text if href is not provided' do
+        entry = feature_entry('Demo', enabled: true)
+
+        expect(entry).to include('<p aria-label="Demo: status on">')
+        expect(entry).not_to match(/<a[^>]+>/)
+      end
+    end
+
+    context 'when disabled' do
+      it 'returns text without link' do
+        entry = feature_entry('Demo', href: 'demo.link', enabled: false)
+
+        expect(entry).to include('<p aria-label="Demo: status off">')
+        expect(entry).not_to match(/<a[^>]+>/)
+        expect(entry).to include('Demo')
+      end
+    end
+  end
+
   describe '.has_start_trial?' do
     subject { helper.has_start_trial? }
 

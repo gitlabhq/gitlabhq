@@ -76,51 +76,17 @@
         .info-well
           .well-segment.admin-well.admin-well-features
             %h4 Features
-            - sign_up = "Sign up"
-            %p{ "aria-label" => "#{sign_up}: status " + (allow_signup? ? "on" : "off") }
-              = sign_up
-              %span.light.float-right
-                = boolean_to_icon allow_signup?
-            - ldap = "LDAP"
-            %p{ "aria-label" => "#{ldap}: status " + (Gitlab.config.ldap.enabled ? "on" : "off") }
-              = ldap
-              %span.light.float-right
-                = boolean_to_icon Gitlab.config.ldap.enabled
-            - gravatar = "Gravatar"
-            %p{ "aria-label" => "#{gravatar}: status " + (gravatar_enabled? ? "on" : "off") }
-              = gravatar
-              %span.light.float-right
-                = boolean_to_icon gravatar_enabled?
-            - omniauth = "OmniAuth"
-            %p{ "aria-label" => "#{omniauth}: status " + (Gitlab::Auth.omniauth_enabled? ? "on" : "off") }
-              = omniauth
-              %span.light.float-right
-                = boolean_to_icon Gitlab::Auth.omniauth_enabled?
-            - reply_email = "Reply by email"
-            %p{ "aria-label" => "#{reply_email}: status " + (Gitlab::IncomingEmail.enabled? ? "on" : "off") }
-              = reply_email
-              %span.light.float-right
-                = boolean_to_icon Gitlab::IncomingEmail.enabled?
+            = feature_entry(_('Sign up'), href: admin_application_settings_path(anchor: 'js-signup-settings'))
+            = feature_entry(_('LDAP'), enabled: Gitlab.config.ldap.enabled)
+            = feature_entry(_('Gravatar'), href: admin_application_settings_path(anchor: 'js-account-settings'), enabled: gravatar_enabled?)
+            = feature_entry(_('OmniAuth'), href: admin_application_settings_path(anchor: 'js-signin-settings'), enabled: Gitlab::Auth.omniauth_enabled?)
+            = feature_entry(_('Reply by email'), enabled: Gitlab::IncomingEmail.enabled?)
 
             = render_if_exists 'admin/dashboard/elastic_and_geo'
 
-            - container_reg = "Container Registry"
-            %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
-              = container_reg
-              %span.light.float-right
-                = boolean_to_icon Gitlab.config.registry.enabled
-            - gitlab_pages = 'GitLab Pages'
-            - gitlab_pages_enabled = Gitlab.config.pages.enabled
-            %p{ "aria-label" => "#{gitlab_pages}: status " + (gitlab_pages_enabled ? "on" : "off") }
-              = gitlab_pages
-              %span.light.float-right
-                = boolean_to_icon gitlab_pages_enabled
-            - gitlab_shared_runners = 'Shared Runners'
-            - gitlab_shared_runners_enabled = Gitlab.config.gitlab_ci.shared_runners_enabled
-            %p{ "aria-label" => "#{gitlab_shared_runners}: status " + (gitlab_shared_runners_enabled ? "on" : "off") }
-              = gitlab_shared_runners
-              %span.light.float-right
-                = boolean_to_icon gitlab_shared_runners_enabled
+            = feature_entry(_('Container Registry'), href: ci_cd_admin_application_settings_path(anchor: 'js-registry-settings'), enabled: Gitlab.config.registry.enabled)
+            = feature_entry(_('Gitlab Pages'), href: help_instance_configuration_url, enabled: Gitlab.config.pages.enabled)
+            = feature_entry(_('Shared Runners'), href: admin_runners_path, enabled: Gitlab.config.gitlab_ci.shared_runners_enabled)
       .col-md-4
         .info-well
           .well-segment.admin-well
@@ -130,7 +96,8 @@
                 .float-right
                   = version_status_badge
             %p
-              GitLab
+              %a{ href: admin_application_settings_path }
+                GitLab
               %span.float-right
                 = Gitlab::VERSION
                 = "(#{Gitlab.revision})"
