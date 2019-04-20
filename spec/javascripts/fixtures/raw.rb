@@ -9,6 +9,7 @@ describe 'Raw files', '(JavaScript fixtures)' do
 
   before(:all) do
     clean_frontend_fixtures('blob/notebook/')
+    clean_frontend_fixtures('blob/pdf/')
   end
 
   after do
@@ -29,6 +30,12 @@ describe 'Raw files', '(JavaScript fixtures)' do
 
   it 'blob/notebook/math.json' do |example|
     @blob = project.repository.blob_at('93ee732', 'files/ipython/math.ipynb')
+
+    store_frontend_fixture(response, example.description)
+  end
+
+  it 'blob/pdf/test.pdf' do |example|
+    @blob = project.repository.blob_at('e774ebd33', 'files/pdf/test.pdf')
 
     store_frontend_fixture(response, example.description)
   end
