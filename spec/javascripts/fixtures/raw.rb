@@ -1,10 +1,11 @@
 require 'spec_helper'
 
-describe 'Raw files', '(JavaScript fixtures)', type: :controller do
+describe 'Raw files', '(JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace, path: 'raw-project') }
+  let(:response) { @blob.data.force_encoding('UTF-8') }
 
   before(:all) do
     clean_frontend_fixtures('blob/notebook/')
@@ -15,20 +16,20 @@ describe 'Raw files', '(JavaScript fixtures)', type: :controller do
   end
 
   it 'blob/notebook/basic.json' do |example|
-    blob = project.repository.blob_at('6d85bb69', 'files/ipython/basic.ipynb')
+    @blob = project.repository.blob_at('6d85bb69', 'files/ipython/basic.ipynb')
 
-    store_frontend_fixture(blob.data, example.description)
+    store_frontend_fixture(response, example.description)
   end
 
   it 'blob/notebook/worksheets.json' do |example|
-    blob = project.repository.blob_at('6d85bb69', 'files/ipython/worksheets.ipynb')
+    @blob = project.repository.blob_at('6d85bb69', 'files/ipython/worksheets.ipynb')
 
-    store_frontend_fixture(blob.data, example.description)
+    store_frontend_fixture(response, example.description)
   end
 
   it 'blob/notebook/math.json' do |example|
-    blob = project.repository.blob_at('93ee732', 'files/ipython/math.ipynb')
+    @blob = project.repository.blob_at('93ee732', 'files/ipython/math.ipynb')
 
-    store_frontend_fixture(blob.data, example.description)
+    store_frontend_fixture(response, example.description)
   end
 end
