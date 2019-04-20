@@ -2131,13 +2131,11 @@ class Project < ApplicationRecord
   end
 
   def create_new_pool_repository
-    pool = begin
-             create_pool_repository!(shard: Shard.by_name(repository_storage), source_project: self)
-           rescue ActiveRecord::RecordNotUnique
-             pool_repository(true)
-           end
+    pool = PoolRepository.safe_find_or_create_by!(shard: Shard.by_name(repository_storage), source_project: self)
+    update!(pool_repository: pool)
 
     pool.schedule unless pool.scheduled?
+
     pool
   end
 

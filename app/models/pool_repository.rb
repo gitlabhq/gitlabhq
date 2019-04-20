@@ -7,7 +7,7 @@ class PoolRepository < ApplicationRecord
   include Shardable
   include AfterCommitQueue
 
-  has_one :source_project, class_name: 'Project'
+  belongs_to :source_project, class_name: 'Project'
   validates :source_project, presence: true
 
   has_many :member_projects, class_name: 'Project'
@@ -99,7 +99,8 @@ class PoolRepository < ApplicationRecord
   end
 
   def inspect
-    "#<#{self.class.name} id:#{id} state:#{state} disk_path:#{disk_path} source_project: #{source_project.full_path}>"
+    source = source_project ? source_project.full_path : 'nil'
+    "#<#{self.class.name} id:#{id} state:#{state} disk_path:#{disk_path} source_project: #{source}>"
   end
 
   private
