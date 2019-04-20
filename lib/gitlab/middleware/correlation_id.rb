@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def call(env)
-        ::Gitlab::CorrelationId.use_id(correlation_id(env)) do
+        ::Labkit::Correlation::CorrelationId.use_id(correlation_id(env)) do
           @app.call(env)
         end
       end

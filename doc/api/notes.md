@@ -2,6 +2,15 @@
 
 Notes are comments on snippets, issues or merge requests.
 
+This includes system notes, which are notes about changes to the object (for example, when a milestone changes, there will be a corresponding system note). Label notes are not part of this API, but recorded as separate events in [resource label events](resource_label_events.md).
+
+## Notes pagination
+
+By default, `GET` requests return 20 results at a time because the API results
+are paginated.
+
+Read more on [pagination](README.md#pagination).
+
 ## Issues
 
 ### List project issue notes

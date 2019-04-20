@@ -1,5 +1,0 @@
----
-title: Fix merge commits being used as default squash commit messages
-merge_request: 26445
-author:
-type: fixed

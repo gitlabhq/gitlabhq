@@ -1,5 +1,0 @@
----
-title: Resolve "Hide Kubernetes cluster warning if project has cluster related"
-merge_request: 26749
-author:
-type: fixed

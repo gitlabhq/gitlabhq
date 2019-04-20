@@ -40,8 +40,8 @@ describe MergeRequestPresenter do
           allow(pipeline).to receive(:has_warnings?) { true }
         end
 
-        it 'returns "success_with_warnings"' do
-          is_expected.to eq('success_with_warnings')
+        it 'returns "success-with-warnings"' do
+          is_expected.to eq('success-with-warnings')
         end
       end
 

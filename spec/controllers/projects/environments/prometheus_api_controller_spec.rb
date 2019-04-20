@@ -14,6 +14,7 @@ describe Projects::Environments::PrometheusApiController do
 
   describe 'GET #proxy' do
     let(:prometheus_proxy_service) { instance_double(Prometheus::ProxyService) }
+
     let(:expected_params) do
       ActionController::Parameters.new(
         environment_params(
@@ -46,6 +47,38 @@ describe Projects::Environments::PrometheusApiController do
             .with(environment, 'GET', 'query', expected_params)
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to eq(prometheus_json_body)
+        end
+
+        context 'with format string' do
+          before do
+            expected_params[:query] = %{up{environment="#{environment.slug}"}}
+          end
+
+          it 'replaces variables with values' do
+            get :proxy, params: environment_params.merge(query: 'up{environment="%{ci_environment_slug}"}')
+
+            expect(Prometheus::ProxyService).to have_received(:new)
+              .with(environment, 'GET', 'query', expected_params)
+          end
+
+          context 'with nil query' do
+            let(:params_without_query) do
+              params = environment_params
+              params.delete(:query)
+              params
+            end
+
+            before do
+              expected_params.delete(:query)
+            end
+
+            it 'does not raise error' do
+              get :proxy, params: params_without_query
+
+              expect(Prometheus::ProxyService).to have_received(:new)
+                .with(environment, 'GET', 'query', expected_params)
+            end
+          end
         end
       end
 

@@ -27,7 +27,7 @@ describe Gitlab::Sentry do
     context 'when exceptions should not be raised' do
       before do
         allow(described_class).to receive(:should_raise_for_dev?).and_return(false)
-        allow(Gitlab::CorrelationId).to receive(:current_id).and_return('cid')
+        allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
       end
 
       it 'logs the exception with all attributes passed' do
@@ -65,7 +65,7 @@ describe Gitlab::Sentry do
 
     before do
       allow(described_class).to receive(:enabled?).and_return(true)
-      allow(Gitlab::CorrelationId).to receive(:current_id).and_return('cid')
+      allow(Labkit::Correlation::CorrelationId).to receive(:current_id).and_return('cid')
     end
 
     it 'calls Raven.capture_exception' do

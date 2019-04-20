@@ -7,10 +7,17 @@
   .value.issuable-show-labels.dont-hide
     %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
       = _("None")
-    %a{ href: "#",
-      "v-for" => "label in issue.labels" }
-      .badge.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
-        {{ label.title }}
+    %span{ "v-for" => "label in issue.labels" }
+      %span.d-inline-block.position-relative.scoped-label-wrapper{ "v-if" => "showScopedLabels(label)" }
+        %a{ href: '#' }
+          %span.badge.color-label.label{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+            {{ label.title }}
+        %a.label.scoped-label{ ":href" => "helpLink()" }
+          %i.fa.fa-question-circle{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+      %a{ href: "#", "v-else" => true }
+        .badge.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+          {{ label.title }}
+
   - if can_admin_issue?
     .selectbox
       %input{ type: "hidden",

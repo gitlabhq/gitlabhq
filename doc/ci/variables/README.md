@@ -136,12 +136,21 @@ The output will be:
 
 ![Output custom variable](img/custom_variable_output.png)
 
-CAUTION: **Important:**
-Be aware that variables are not masked, and their values can be shown
-in the job logs if explicitly asked to do so. If your project is public or
-internal, you can set the pipelines private from your [project's Pipelines
-settings](../../user/project/pipelines/settings.md#visibility-of-pipelines).
-Follow the discussion in issue [#13784][ce-13784] for masking the variables.
+### Masked Variables
+
+By default, variables will be created as masked variables.
+This means that the value of the variable will be hidden in job logs,
+though it must match certain requirements to do so:
+
+- The value must be a single line.
+- The value must not have escape characters.
+- The value must not use variables.
+- The value must not have any whitespace.
+- The value must be at least 8 characters long.
+
+If the value does not meet the requirements above, then the CI variable will fail to save.
+In order to save, either alter the value to meet the masking requirements
+or disable `Masked` for the variable.
 
 ### Syntax of environment variables in job scripts
 

@@ -74,6 +74,6 @@ describe GitlabSchema do
   end
 
   def field_instrumenters
-    described_class.instrumenters[:field]
+    described_class.instrumenters[:field] + described_class.instrumenters[:field_after_built_ins]
   end
 end

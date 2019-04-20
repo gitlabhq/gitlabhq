@@ -69,7 +69,7 @@ describe QA::Specs::Runner do
 
       subject { described_class.new }
 
-      it 'it includes default args and excludes the skip_signup_disabled tag' do
+      it 'includes default args and excludes the skip_signup_disabled tag' do
         expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~skip_signup_disabled', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform
@@ -83,7 +83,7 @@ describe QA::Specs::Runner do
 
       subject { described_class.new }
 
-      it 'it includes default args and excludes the requires_git_protocol_v2 tag' do
+      it 'includes default args and excludes the requires_git_protocol_v2 tag' do
         expect_rspec_runner_arguments(['--tag', '~orchestrated', '--tag', '~requires_git_protocol_v2', *described_class::DEFAULT_TEST_PATH_ARGS])
 
         subject.perform

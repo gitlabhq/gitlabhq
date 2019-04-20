@@ -14,7 +14,6 @@ import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
 import noteableNote from './noteable_note.vue';
 import noteHeader from './note_header.vue';
-import resolveDiscussionButton from './discussion_resolve_button.vue';
 import toggleRepliesWidget from './toggle_replies_widget.vue';
 import noteSignedOutWidget from './note_signed_out_widget.vue';
 import noteEditedText from './note_edited_text.vue';
@@ -25,10 +24,8 @@ import placeholderSystemNote from '../../vue_shared/components/notes/placeholder
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
 import discussionNavigation from '../mixins/discussion_navigation';
-import ReplyPlaceholder from './discussion_reply_placeholder.vue';
-import ResolveWithIssueButton from './discussion_resolve_with_issue_button.vue';
-import jumpToNextDiscussionButton from './discussion_jump_to_next_button.vue';
 import eventHub from '../event_hub';
+import DiscussionActions from './discussion_actions.vue';
 
 export default {
   name: 'NoteableDiscussion',
@@ -40,16 +37,13 @@ export default {
     noteSignedOutWidget,
     noteEditedText,
     noteForm,
-    resolveDiscussionButton,
-    jumpToNextDiscussionButton,
     toggleRepliesWidget,
-    ReplyPlaceholder,
     placeholderNote,
     placeholderSystemNote,
-    ResolveWithIssueButton,
     systemNote,
     DraftNote: () => import('ee_component/batch_comments/components/draft_note.vue'),
     TimelineEntryItem,
+    DiscussionActions,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -465,31 +459,17 @@ Please check your network connection and try again.`;
                 :class="{ 'is-replying': isReplying }"
                 class="discussion-reply-holder"
               >
-                <template v-if="!isReplying && canReply">
-                  <div class="discussion-with-resolve-btn">
-                    <reply-placeholder class="qa-discussion-reply" @onClick="showReplyForm" />
-                    <resolve-discussion-button
-                      v-if="discussion.resolvable"
-                      :is-resolving="isResolving"
-                      :button-title="resolveButtonTitle"
-                      @onClick="resolveHandler"
-                    />
-                    <div
-                      v-if="discussion.resolvable"
-                      class="btn-group discussion-actions ml-sm-2"
-                      role="group"
-                    >
-                      <resolve-with-issue-button
-                        v-if="resolveWithIssuePath"
-                        :url="resolveWithIssuePath"
-                      />
-                      <jump-to-next-discussion-button
-                        v-if="shouldShowJumpToNextDiscussion"
-                        @onClick="jumpToNextDiscussion"
-                      />
-                    </div>
-                  </div>
-                </template>
+                <discussion-actions
+                  v-if="!isReplying && canReply"
+                  :discussion="discussion"
+                  :is-resolving="isResolving"
+                  :resolve-button-title="resolveButtonTitle"
+                  :resolve-with-issue-path="resolveWithIssuePath"
+                  :should-show-jump-to-next-discussion="shouldShowJumpToNextDiscussion"
+                  @showReplyForm="showReplyForm"
+                  @resolve="resolveHandler"
+                  @jumpToNextDiscussion="jumpToNextDiscussion"
+                />
                 <note-form
                   v-if="isReplying"
                   ref="noteForm"

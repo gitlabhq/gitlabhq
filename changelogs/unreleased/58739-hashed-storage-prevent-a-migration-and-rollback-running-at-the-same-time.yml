@@ -1,5 +1,0 @@
----
-title: 'Hashed Storage: Prevent a migration and rollback running at the same time'
-merge_request: 25976
-author:
-type: changed

@@ -1,5 +1,0 @@
----
-title: Process at most 4 pipelines during push
-merge_request: 27205
-author:
-type: performance

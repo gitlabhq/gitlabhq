@@ -83,7 +83,8 @@ module GraphqlHelpers
   end
 
   def wrap_fields(fields)
-    return unless fields.strip.present?
+    fields = Array.wrap(fields).join("\n")
+    return unless fields.present?
 
     <<~FIELDS
     {

@@ -11,7 +11,7 @@ shared_examples 'remove_due_date quick action' do
       visit project_issue_path(project, issue)
 
       page.within '.due_date' do
-        expect(page).to have_content 'No due date'
+        expect(page).to have_content 'None'
       end
     end
   end

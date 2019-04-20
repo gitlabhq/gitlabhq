@@ -1,5 +1,0 @@
----
-title: "Fix unwanted character replacement on project members page caused by usage of sanitize function"
-merge_request: 25946
-author: Elias Werberich
-type: fixed

@@ -22,8 +22,17 @@ module Gitlab
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def paged_nodes
+          # These are the nodes that will be loaded into memory for rendering
+          # So we're ok loading them into memory here as that's bound to happen
+          # anyway. Having them ready means we can modify the result while
+          # rendering the fields.
+          @paged_nodes ||= load_paged_nodes.to_a
+        end
+
+        private
+
+        def load_paged_nodes
           if first && last
             raise Gitlab::Graphql::Errors::ArgumentError.new("Can only provide either `first` or `last`, not both")
           end
@@ -31,12 +40,9 @@ module Gitlab
           if last
             sliced_nodes.last(limit_value)
           else
-            sliced_nodes.limit(limit_value)
+            sliced_nodes.limit(limit_value) # rubocop: disable CodeReuse/ActiveRecord
           end
         end
-        # rubocop: enable CodeReuse/ActiveRecord
-
-        private
 
         def before_slice
           if sort_direction == :asc

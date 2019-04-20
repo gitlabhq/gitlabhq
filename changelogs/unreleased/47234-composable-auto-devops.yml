@@ -1,5 +1,0 @@
----
-title: Split Auto-DevOps.gitlab-ci.yml into reusable templates
-merge_request: 26520
-author:
-type: changed

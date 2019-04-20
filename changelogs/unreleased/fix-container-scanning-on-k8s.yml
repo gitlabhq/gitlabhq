@@ -1,5 +1,0 @@
----
-title: Fix Container Scanning in Kubernetes Runners
-merge_request: 26793
-author:
-type: changed

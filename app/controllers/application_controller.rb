@@ -128,7 +128,7 @@ class ApplicationController < ActionController::Base
 
     payload[:ua] = request.env["HTTP_USER_AGENT"]
     payload[:remote_ip] = request.remote_ip
-    payload[Gitlab::CorrelationId::LOG_KEY] = Gitlab::CorrelationId.current_id
+    payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
 
     logged_user = auth_user
 

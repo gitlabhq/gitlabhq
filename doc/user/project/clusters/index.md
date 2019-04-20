@@ -124,26 +124,26 @@ To add an existing Kubernetes cluster to your project:
 
       1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
-          ```yaml
-          apiVersion: v1
-          kind: ServiceAccount
-          metadata:
-            name: gitlab-admin
-            namespace: kube-system
-          ---
-          apiVersion: rbac.authorization.k8s.io/v1beta1
-          kind: ClusterRoleBinding
-          metadata:
-            name: gitlab-admin
-          roleRef:
-            apiGroup: rbac.authorization.k8s.io
-            kind: ClusterRole
-            name: cluster-admin
-          subjects:
-          - kind: ServiceAccount
-            name: gitlab-admin
-            namespace: kube-system
-          ```
+         ```yaml
+         apiVersion: v1
+         kind: ServiceAccount
+         metadata:
+           name: gitlab-admin
+           namespace: kube-system
+         ---
+         apiVersion: rbac.authorization.k8s.io/v1beta1
+         kind: ClusterRoleBinding
+         metadata:
+           name: gitlab-admin
+         roleRef:
+           apiGroup: rbac.authorization.k8s.io
+           kind: ClusterRole
+           name: cluster-admin
+         subjects:
+         - kind: ServiceAccount
+           name: gitlab-admin
+           namespace: kube-system
+         ```
 
       1. Apply the service account and cluster role binding to your cluster:
 
@@ -565,7 +565,9 @@ service account of the cluster integration.
 ### Troubleshooting failed deployment jobs
 
 GitLab will create a namespace and service account specifically for your
-deployment jobs, immediately before the jobs starts.
+deployment jobs. On project level clusters, this happens when the cluster
+is created. On group level clusters, resources are created immediately
+before the deployment job starts.
 
 However, sometimes GitLab can not create them. In such instances, your job will fail with the message:
 

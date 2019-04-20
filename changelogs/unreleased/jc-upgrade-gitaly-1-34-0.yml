@@ -1,0 +1,5 @@
+---
+title: Upgrade Gitaly to 1.34.0
+merge_request: 27494
+author:
+type: fixed

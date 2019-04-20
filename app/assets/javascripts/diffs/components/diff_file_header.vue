@@ -112,9 +112,7 @@ export default {
       const truncatedContentSha = _.escape(truncateSha(this.diffFile.content_sha));
       return sprintf(
         s__('MergeRequests|View file @ %{commitId}'),
-        {
-          commitId: `<span class="commit-sha">${truncatedContentSha}</span>`,
-        },
+        { commitId: truncatedContentSha },
         false,
       );
     },
@@ -303,7 +301,7 @@ export default {
           class="view-file js-view-file-button"
           :title="viewFileButtonText"
         >
-          <icon name="external-link" />
+          <icon name="doc-text" />
         </gl-button>
 
         <a

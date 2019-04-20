@@ -138,7 +138,7 @@ describe "User adds a comment on a commit", :js do
         click_button("Comment")
       end
 
-      page.within(".diff-file:nth-of-type(1) .notes_content.parallel.old") do
+      page.within(".diff-file:nth-of-type(1) .notes-content.parallel.old") do
         expect(page).to have_content(old_comment)
       end
 
@@ -152,7 +152,7 @@ describe "User adds a comment on a commit", :js do
 
       wait_for_requests
 
-      expect(all(".diff-file:nth-of-type(1) .notes_content.parallel.new")[1].text).to have_content(new_comment)
+      expect(all(".diff-file:nth-of-type(1) .notes-content.parallel.new")[1].text).to have_content(new_comment)
     end
   end
 

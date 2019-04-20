@@ -27,7 +27,7 @@
   .settings-header
     %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Merge requests')
     %button.btn.btn-default.js-settings-toggle{ type: 'button' }= expanded ? _('Collapse') : _('Expand')
-    %p= _('Choose your merge method, set up a default merge request description template.')
+    %p= _('Choose your merge method, options, checks, and set up a default merge request description template.')
 
   .settings-content
     = render_if_exists 'shared/promotions/promote_mr_features'

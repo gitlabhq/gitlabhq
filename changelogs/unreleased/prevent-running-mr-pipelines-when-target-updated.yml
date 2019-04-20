@@ -1,5 +1,0 @@
----
-title: Create pipelines for merge requests only when source branch is updated
-merge_request: 26921
-author:
-type: fixed

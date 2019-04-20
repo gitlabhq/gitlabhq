@@ -1,4 +1,6 @@
 # rubocop:disable Naming/FileName
+# frozen_string_literal: true
+
 module QA
   module Runtime
     module Key

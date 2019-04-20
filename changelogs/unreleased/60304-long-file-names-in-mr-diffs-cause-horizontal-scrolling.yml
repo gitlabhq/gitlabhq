@@ -1,5 +1,0 @@
----
-title: Fix long file header names bug in diffs
-merge_request: 27233
-author:
-type: fixed

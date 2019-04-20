@@ -470,4 +470,51 @@ describe('Issuable output', () => {
         .catch(done.fail);
     });
   });
+
+  describe('issueChanged', () => {
+    beforeEach(() => {
+      vm.store.formState.title = '';
+      vm.store.formState.description = '';
+      vm.initialDescriptionText = '';
+      vm.initialTitleText = '';
+    });
+
+    it('returns true when title is changed', () => {
+      vm.store.formState.title = 'RandomText';
+
+      expect(vm.issueChanged).toBe(true);
+    });
+
+    it('returns false when title is empty null', () => {
+      vm.store.formState.title = null;
+
+      expect(vm.issueChanged).toBe(false);
+    });
+
+    it('returns false when `initialTitleText` is null and `formState.title` is empty string', () => {
+      vm.store.formState.title = '';
+      vm.initialTitleText = null;
+
+      expect(vm.issueChanged).toBe(false);
+    });
+
+    it('returns true when description is changed', () => {
+      vm.store.formState.description = 'RandomText';
+
+      expect(vm.issueChanged).toBe(true);
+    });
+
+    it('returns false when description is empty null', () => {
+      vm.store.formState.title = null;
+
+      expect(vm.issueChanged).toBe(false);
+    });
+
+    it('returns false when `initialDescriptionText` is null and `formState.description` is empty string', () => {
+      vm.store.formState.description = '';
+      vm.initialDescriptionText = null;
+
+      expect(vm.issueChanged).toBe(false);
+    });
+  });
 });

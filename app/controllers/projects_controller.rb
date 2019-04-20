@@ -237,7 +237,7 @@ class ProjectsController < Projects::ApplicationController
 
   def toggle_star
     current_user.toggle_star(@project)
-    @project.reload
+    @project.reset
 
     render json: {
       star_count: @project.star_count

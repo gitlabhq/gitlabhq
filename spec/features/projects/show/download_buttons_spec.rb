@@ -35,11 +35,10 @@ describe 'Projects > Show > Download buttons' do
       it 'shows download artifacts button' do
         href = latest_succeeded_project_artifacts_path(project, "#{project.default_branch}/download", job: 'build')
 
-        expect(page).to have_link "Download '#{build.name}'", href: href
+        expect(page).to have_link build.name, href: href
       end
 
       it 'download links have download attribute' do
-        expect(page).to have_selector('a', text: 'Download')
         page.all('a', text: 'Download').each do |link|
           expect(link[:download]).to eq ''
         end

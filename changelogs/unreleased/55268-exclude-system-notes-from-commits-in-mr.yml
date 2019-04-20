@@ -1,5 +1,0 @@
----
-title: Exclude system notes from commits in merge request discussions
-merge_request: 26396
-author:
-type: fixed

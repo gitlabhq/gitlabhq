@@ -37,7 +37,12 @@ export default {
 <template>
   <div id="peek-request-selector">
     <select v-model="currentRequestId">
-      <option v-for="request in requests" :key="request.id" :value="request.id">
+      <option
+        v-for="request in requests"
+        :key="request.id"
+        :value="request.id"
+        class="qa-performance-bar-request"
+      >
         {{ truncatedUrl(request.url) }}
       </option>
     </select>

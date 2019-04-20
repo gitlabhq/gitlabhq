@@ -19,7 +19,7 @@ class U2fRegistration < ApplicationRecord
                           user: user,
                           name: params[:name])
     rescue JSON::ParserError, NoMethodError, ArgumentError
-      registration.errors.add(:base, 'Your U2F device did not send a valid JSON response.')
+      registration.errors.add(:base, _('Your U2F device did not send a valid JSON response.'))
     rescue U2F::Error => e
       registration.errors.add(:base, e.message)
     end

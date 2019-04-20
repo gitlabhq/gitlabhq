@@ -1,5 +1,0 @@
----
-title: Update gitlab-markup to 1.7.0 which requies python3
-merge_request: 26246
-author:
-type: changed

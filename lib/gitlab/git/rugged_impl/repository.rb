@@ -12,7 +12,7 @@ module Gitlab
       module Repository
         extend ::Gitlab::Utils::Override
 
-        FEATURE_FLAGS = %i(rugged_find_commit rugged_tree_entries rugged_tree_entry rugged_commit_is_ancestor rugged_commit_tree_entry).freeze
+        FEATURE_FLAGS = %i(rugged_find_commit rugged_tree_entries rugged_tree_entry rugged_commit_is_ancestor rugged_commit_tree_entry rugged_list_commits_by_oid).freeze
 
         def alternate_object_directories
           relative_object_directories.map { |d| File.join(path, d) }

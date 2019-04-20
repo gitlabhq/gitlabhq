@@ -71,6 +71,7 @@ export default function initDiffsApp(store) {
         helpPagePath: dataset.helpPagePath,
         currentUser: JSON.parse(dataset.currentUserData) || {},
         changesEmptyStateIllustration: dataset.changesEmptyStateIllustration,
+        isFluidLayout: parseBoolean(dataset.isFluidLayout),
       };
     },
     computed: {
@@ -97,6 +98,7 @@ export default function initDiffsApp(store) {
           helpPagePath: this.helpPagePath,
           shouldShow: this.activeTab === 'diffs',
           changesEmptyStateIllustration: this.changesEmptyStateIllustration,
+          isFluidLayout: this.isFluidLayout,
         },
       });
     },

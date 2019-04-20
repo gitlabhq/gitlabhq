@@ -107,6 +107,10 @@
   }
 
   .scoped-label-wrapper {
+    > a {
+      max-width: 100%;
+    }
+
     .color-label {
       padding-right: $gl-padding-24;
     }

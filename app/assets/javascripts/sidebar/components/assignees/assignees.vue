@@ -153,7 +153,7 @@ export default {
       data-placement="left"
       data-boundary="viewport"
     >
-      <i v-if="hasNoUsers" aria-label="No Assignee" class="fa fa-user"> </i>
+      <i v-if="hasNoUsers" aria-label="None" class="fa fa-user"> </i>
       <button
         v-for="(user, index) in users"
         v-if="shouldRenderCollapsedAssignee(index)"
@@ -184,8 +184,8 @@ export default {
         <i aria-hidden="true" data-hidden="true" class="fa fa-exclamation-triangle"></i>
       </span>
       <template v-if="hasNoUsers">
-        <span class="assign-yourself no-value">
-          No assignee
+        <span class="assign-yourself no-value qa-assign-yourself">
+          None
           <template v-if="editable">
             - <button type="button" class="btn-link" @click="assignSelf">assign yourself</button>
           </template>

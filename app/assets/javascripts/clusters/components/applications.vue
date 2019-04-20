@@ -238,6 +238,7 @@ export default {
         :status-reason="applications.helm.statusReason"
         :request-status="applications.helm.requestStatus"
         :request-reason="applications.helm.requestReason"
+        :installed="applications.helm.installed"
         class="rounded-top"
         title-link="https://docs.helm.sh/"
       >
@@ -265,6 +266,7 @@ export default {
         :status-reason="applications.ingress.statusReason"
         :request-status="applications.ingress.requestStatus"
         :request-reason="applications.ingress.requestReason"
+        :installed="applications.ingress.installed"
         :disabled="!helmInstalled"
         title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
       >
@@ -341,6 +343,7 @@ export default {
         :status-reason="applications.cert_manager.statusReason"
         :request-status="applications.cert_manager.requestStatus"
         :request-reason="applications.cert_manager.requestReason"
+        :installed="applications.cert_manager.installed"
         :install-application-request-params="{ email: applications.cert_manager.email }"
         :disabled="!helmInstalled"
         title-link="https://cert-manager.readthedocs.io/en/latest/#"
@@ -387,6 +390,7 @@ export default {
         :status-reason="applications.prometheus.statusReason"
         :request-status="applications.prometheus.requestStatus"
         :request-reason="applications.prometheus.requestReason"
+        :installed="applications.prometheus.installed"
         :disabled="!helmInstalled"
         title-link="https://prometheus.io/docs/introduction/overview/"
       >
@@ -403,6 +407,7 @@ export default {
         :version="applications.runner.version"
         :chart-repo="applications.runner.chartRepo"
         :upgrade-available="applications.runner.upgradeAvailable"
+        :installed="applications.runner.installed"
         :disabled="!helmInstalled"
         title-link="https://docs.gitlab.com/runner/"
       >
@@ -424,6 +429,7 @@ export default {
         :status-reason="applications.jupyter.statusReason"
         :request-status="applications.jupyter.requestStatus"
         :request-reason="applications.jupyter.requestReason"
+        :installed="applications.jupyter.installed"
         :install-application-request-params="{ hostname: applications.jupyter.hostname }"
         :disabled="!helmInstalled"
         title-link="https://jupyterhub.readthedocs.io/en/stable/"
@@ -483,6 +489,7 @@ export default {
         :status-reason="applications.knative.statusReason"
         :request-status="applications.knative.requestStatus"
         :request-reason="applications.knative.requestReason"
+        :installed="applications.knative.installed"
         :install-application-request-params="{ hostname: applications.knative.hostname }"
         :disabled="!helmInstalled"
         title-link="https://github.com/knative/docs"

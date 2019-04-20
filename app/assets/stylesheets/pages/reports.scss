@@ -52,11 +52,6 @@
   .report-block-list-icon .loading-container {
     position: relative;
     left: -2px;
-    // needed to make the next element align with the
-    // elements below that have a svg with 16px width
-    .fa-spinner {
-      width: 16px;
-    }
   }
 }
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Inspired by https://github.com/ljkbennett/stub_env/blob/master/lib/stub_env/helpers.rb
 module Helpers
   module StubENV

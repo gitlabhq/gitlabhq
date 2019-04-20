@@ -1,0 +1,238 @@
+.assets-compile-cache: &assets-compile-cache
+  cache:
+    key: "assets-compile:vendor_ruby:.yarn-cache:tmp_cache_assets_sprockets:v5"
+    paths:
+      - vendor/ruby/
+      - .yarn-cache/
+      - tmp/cache/assets/sprockets
+    policy: pull-push
+
+.use-pg: &use-pg
+  services:
+    - name: postgres:9.6
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:alpine
+
+gitlab:assets:compile:
+  <<: *assets-compile-cache
+  extends: .dedicated-no-docs-pull-cache-job
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.21-chrome-71.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
+  dependencies:
+    - setup-test-env
+  services:
+    - docker:stable-dind
+  variables:
+    NODE_ENV: "production"
+    RAILS_ENV: "production"
+    SETUP_DB: "false"
+    SKIP_STORAGE_VALIDATION: "true"
+    WEBPACK_REPORT: "true"
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
+    DOCKER_DRIVER: overlay2
+    DOCKER_HOST: tcp://docker:2375
+  script:
+    - node --version
+    - yarn install --frozen-lockfile --production --cache-folder .yarn-cache
+    - free -m
+    - bundle exec rake gitlab:assets:compile
+    - time scripts/build_assets_image
+    - scripts/clean-old-cached-assets
+  artifacts:
+    name: webpack-report
+    expire_in: 31d
+    paths:
+      - webpack-report/
+      - public/assets/
+  only:
+    - /.+/@gitlab-org/gitlab-ce
+    - /.+/@gitlab-org/gitlab-ee
+    - /.+/@gitlab/gitlabhq
+    - /.+/@gitlab/gitlab-ee
+  tags:
+    - docker
+    - gitlab-org
+
+compile-assets:
+  extends: .dedicated-runner
+  <<: *use-pg
+  <<: *assets-compile-cache
+  stage: prepare
+  script:
+    - node --version
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - free -m
+    - bundle exec rake gitlab:assets:compile
+    - scripts/clean-old-cached-assets
+  variables:
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
+  artifacts:
+    expire_in: 7d
+    paths:
+      - node_modules
+      - public/assets
+  except:
+    refs:
+      - /(^docs[\/-].*|.*-docs$)/
+
+gitlab:ui:visual:
+  extends: .dedicated-runner
+  before_script: []
+  allow_failure: true
+  dependencies:
+    - compile-assets
+  script:
+    # Remove node modules from GitLab that may conflict with gitlab-ui
+    - rm -r node_modules
+    - git clone https://gitlab.com/gitlab-org/gitlab-ui.git
+    - cp public/assets/application-*.css gitlab-ui/styles/application.css
+    - cd gitlab-ui
+    - yarn install
+    - CSS_URL=./application.css yarn test
+  only:
+    changes:
+      - app/assets/stylesheets/*.scss
+      - app/assets/stylesheets/**/*.scss
+      - app/assets/stylesheets/**/**/*.scss
+  except:
+    refs:
+      - /(^docs[\/-].*|.*-docs$)/
+      - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[skip visual\]/i
+  artifacts:
+    paths:
+      - tests/__image_snapshots__/
+    when: always
+
+karma:
+  extends: .dedicated-no-docs-pull-cache-job
+  <<: *use-pg
+  dependencies:
+    - compile-assets
+    - setup-test-env
+  variables:
+    # we override the max_old_space_size to prevent OOM errors
+    NODE_OPTIONS: --max_old_space_size=3584
+  script:
+    - export BABEL_ENV=coverage CHROME_LOG_FILE=chrome_debug.log
+    - date
+    - scripts/gitaly-test-spawn
+    - date
+    - bundle exec rake karma
+  coverage: '/^Statements *: (\d+\.\d+%)/'
+  artifacts:
+    name: coverage-javascript
+    expire_in: 31d
+    when: always
+    paths:
+      - chrome_debug.log
+      - coverage-javascript/
+    reports:
+      junit: junit_karma.xml
+
+jest:
+  extends: .dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *use-pg
+  dependencies:
+  - compile-assets
+  - setup-test-env
+  script:
+    - scripts/gitaly-test-spawn
+    - date
+    - bundle exec rake karma:fixtures
+    - date
+    - yarn jest --ci --coverage
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+    - coverage-frontend/
+    - junit_jest.xml
+    reports:
+      junit: junit_jest.xml
+  cache:
+    key: jest
+    paths:
+      - tmp/jest/jest/
+    policy: pull-push
+
+qa:internal:
+  extends: .dedicated-no-docs-no-db-pull-cache-job
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec rspec
+  dependencies:
+    - setup-test-env
+
+qa:selectors:
+  extends: .dedicated-no-docs-no-db-pull-cache-job
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec bin/qa Test::Sanity::Selectors
+  dependencies:
+    - setup-test-env
+
+.qa-frontend-node: &qa-frontend-node
+  extends: .dedicated-no-docs-no-db-pull-cache-job
+  stage: test
+  cache:
+    key: "$CI_JOB_NAME"
+    paths:
+      - .yarn-cache/
+    policy: pull-push
+  dependencies: []
+  before_script: []
+  script:
+    - date
+    - yarn install --frozen-lockfile --cache-folder .yarn-cache
+    - date
+    - yarn run webpack-prod
+
+qa-frontend-node:8:
+  <<: *qa-frontend-node
+  image: node:8-alpine
+
+qa-frontend-node:10:
+  <<: *qa-frontend-node
+  image: node:10-alpine
+
+qa-frontend-node:latest:
+  <<: *qa-frontend-node
+  image: node:alpine
+  allow_failure: true
+
+lint:javascript:report:
+  extends: .dedicated-no-docs-no-db-pull-cache-job
+  stage: post-test
+  dependencies: []
+  before_script: []
+  script:
+    - date
+    - yarn run eslint-report || true # ignore exit code
+  artifacts:
+    name: eslint-report
+    expire_in: 31d
+    paths:
+      - eslint-report.html
+
+jsdoc:
+  extends: .dedicated-no-docs-no-db-pull-cache-job
+  stage: post-test
+  dependencies:
+    - compile-assets
+  before_script: []
+  script:
+    - date
+    - yarn run jsdoc || true # ignore exit code
+  artifacts:
+    name: jsdoc
+    expire_in: 31d
+    paths:
+      - jsdoc/

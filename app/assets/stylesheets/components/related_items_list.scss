@@ -11,19 +11,16 @@ $item-weight-max-width: 48px;
   }
 }
 
+.sortable-link {
+  max-width: 85%;
+}
+
 .item-body {
   display: flex;
   position: relative;
   align-items: center;
   padding: $gl-padding-8;
   line-height: $gl-line-height;
-
-  .item-contents {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    flex-grow: 1;
-  }
 
   .issue-token-state-icon-open {
     color: $green-500;
@@ -66,143 +63,136 @@ $item-weight-max-width: 48px;
       font-weight: $gl-font-weight-bold;
     }
 
-    .sortable-link {
-      max-width: 85%;
-    }
-
     .issue-token-state-icon-open,
     .issue-token-state-icon-closed {
       display: none;
     }
   }
 
-  .item-meta {
+  .item-path-id .path-id-text,
+  .item-milestone .milestone-title,
+  .item-due-date,
+  .item-weight .board-card-info-text {
+    color: $gl-text-color-secondary;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+}
+
+.item-contents {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+
+.item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 100%;
+  font-size: $gl-font-size-small;
+  color: $gl-text-color-secondary;
+
+  .item-meta-child {
+    order: 0;
     display: flex;
     flex-wrap: wrap;
     flex-basis: 100%;
-    font-size: $gl-font-size-small;
-    color: $gl-text-color-secondary;
+  }
 
-    .item-meta-child {
-      order: 0;
-      display: flex;
-      flex-wrap: wrap;
-      flex-basis: 100%;
+  .item-milestone,
+  .item-weight {
+    cursor: help;
+  }
 
-      .item-due-date,
-      .item-weight {
-        margin-left: $gl-padding-8;
-      }
+  .item-milestone {
+    text-decoration: none;
+    max-width: $item-milestone-max-width;
 
-      .item-milestone,
-      .item-weight {
-        cursor: help;
-      }
-
-      .item-milestone {
-        text-decoration: none;
-        max-width: $item-milestone-max-width;
-      }
-
-      .item-due-date {
-        margin-right: 0;
-      }
-
-      .item-weight {
-        margin-right: 0;
-        max-width: $item-weight-max-width;
-      }
-    }
-
-    .item-path-id .path-id-text,
-    .item-milestone .milestone-title,
-    .item-due-date,
-    .item-weight .board-card-info-text {
-      color: $gl-text-color-secondary;
-      display: inline-block;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-
-    .item-path-id {
-      margin-top: $gl-padding-4;
-      font-size: $gl-font-size-xs;
-      white-space: nowrap;
-
-      .path-id-text {
-        font-weight: $gl-font-weight-bold;
-        max-width: $item-path-max-width;
-      }
-
-      .issue-token-state-icon-open,
-      .issue-token-state-icon-closed {
-        display: block;
-      }
-
-      &:not(.mr-item-path) {
-        order: 1;
-      }
-    }
-
-    .item-milestone .ic-clock {
+    .ic-clock {
       color: $gl-text-color-tertiary;
       margin-right: $gl-padding-4;
     }
-
-    .item-assignees {
-      order: 2;
-      align-self: flex-end;
-      align-items: center;
-      margin-left: auto;
-
-      .user-avatar-link {
-        margin-right: -$gl-padding-4;
-
-        &:nth-of-type(1) {
-          z-index: 2;
-        }
-
-        &:nth-of-type(2) {
-          z-index: 1;
-        }
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-
-      .avatar {
-        height: $gl-padding;
-        width: $gl-padding;
-        margin-right: 0;
-        vertical-align: bottom;
-      }
-
-      .avatar-counter {
-        height: $gl-padding;
-        border: 1px solid transparent;
-        background-color: $gl-text-color-tertiary;
-        font-weight: $gl-font-weight-bold;
-        padding: 0 $gl-padding-4;
-        line-height: $gl-padding;
-      }
-    }
   }
 
-  .btn-item-remove {
-    position: absolute;
-    right: 0;
-    top: $gl-padding-4 / 2;
-    padding: $gl-padding-4;
-    margin-right: $gl-padding-4 / 2;
-    line-height: 0;
-    border-color: transparent;
-    color: $gl-text-color-secondary;
+  .item-weight {
+    margin-right: 0;
+    max-width: $item-weight-max-width;
+  }
 
-    &:hover {
-      color: $gl-text-color;
+  .item-assignees {
+    order: 2;
+    align-self: flex-end;
+    align-items: center;
+    margin-left: auto;
+
+    .user-avatar-link {
+      margin-right: -$gl-padding-4;
+
+      &:nth-of-type(1) {
+        z-index: 2;
+      }
+
+      &:nth-of-type(2) {
+        z-index: 1;
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
     }
+
+    .avatar {
+      height: $gl-padding;
+      width: $gl-padding;
+      margin-right: 0;
+      vertical-align: bottom;
+    }
+
+    .avatar-counter {
+      height: $gl-padding;
+      border: 1px solid transparent;
+      background-color: $gl-text-color-tertiary;
+      font-weight: $gl-font-weight-bold;
+      padding: 0 $gl-padding-4;
+      line-height: $gl-padding;
+    }
+  }
+}
+
+.item-path-id {
+  margin-top: $gl-padding-4;
+  font-size: $gl-font-size-xs;
+  white-space: nowrap;
+
+  .path-id-text {
+    font-weight: $gl-font-weight-bold;
+    max-width: $item-path-max-width;
+  }
+
+  .issue-token-state-icon-open,
+  .issue-token-state-icon-closed {
+    display: block;
+  }
+
+  &:not(.mr-item-path) {
+    order: 1;
+  }
+}
+
+.btn-item-remove {
+  position: absolute;
+  right: 0;
+  top: $gl-padding-4 / 2;
+  padding: $gl-padding-4;
+  margin-right: $gl-padding-4 / 2;
+  line-height: 0;
+  border-color: transparent;
+  color: $gl-text-color-secondary;
+
+  &:hover {
+    color: $gl-text-color;
   }
 }
 
@@ -212,18 +202,20 @@ $item-weight-max-width: 48px;
 }
 
 @include media-breakpoint-up(sm) {
-  .item-body {
-    .item-contents .item-title {
-      .mr-title-link,
-      .sortable-link {
-        max-width: 90%;
-      }
-    }
+  .sortable-link {
+    max-width: 90%;
   }
 }
 
 /* Small devices (landscape phones, 768px and up) */
 @include media-breakpoint-up(md) {
+  .sortable-link {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
   .item-body {
     .item-contents {
       min-width: 0;
@@ -235,42 +227,34 @@ $item-weight-max-width: 48px;
         // positioned absolutely
         width: 95%;
         margin-bottom: $gl-padding-4;
-
-        .mr-title-link,
-        .sortable-link {
-          text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: nowrap;
-          max-width: 100%;
-        }
-      }
-
-      .item-meta {
-        .item-path-id {
-          order: 0;
-          margin-top: 0;
-        }
-
-        .item-meta-child {
-          flex-basis: unset;
-          margin-left: auto;
-          margin-right: $gl-padding-4;
-
-          ~ .item-assignees {
-            margin-left: $gl-padding-4;
-          }
-        }
-
-        .item-assignees {
-          margin-bottom: 0;
-          margin-left: 0;
-          order: 2;
-        }
       }
     }
 
     .btn-item-remove {
       order: 1;
+    }
+  }
+
+  .item-meta {
+    .item-path-id {
+      order: 0;
+      margin-top: 0;
+    }
+
+    .item-meta-child {
+      flex-basis: unset;
+      margin-left: auto;
+      margin-right: $gl-padding-4;
+
+      ~ .item-assignees {
+        margin-left: $gl-padding-4;
+      }
+    }
+
+    .item-assignees {
+      margin-bottom: 0;
+      margin-left: 0;
+      order: 2;
     }
   }
 }
@@ -287,11 +271,6 @@ $item-weight-max-width: 48px;
     .item-meta .item-path-id {
       font-size: inherit; // Base size given to `item-meta` is `$gl-font-size-small`
     }
-
-    .issue-token-state-icon-open,
-    .issue-token-state-icon-closed {
-      margin-right: $gl-padding-4;
-    }
   }
 }
 
@@ -301,93 +280,87 @@ $item-weight-max-width: 48px;
     padding: $gl-padding-8;
     padding-left: $gl-padding;
 
-    .item-contents {
-      flex-wrap: nowrap;
-      overflow: hidden;
+    .item-title {
+      display: flex;
+      margin-bottom: 0;
+      min-width: 0;
+      width: auto;
+      flex-basis: unset;
+      font-weight: $gl-font-weight-normal;
 
-      .item-title {
-        display: flex;
-        margin-bottom: 0;
-        min-width: 0;
-        width: auto;
-        flex-basis: unset;
-        font-weight: $gl-font-weight-normal;
-
-        .mr-title-link,
-        .sortable-link {
-          display: block;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          overflow: hidden;
-          line-height: 1.3;
-        }
-
-        .issue-token-state-icon-open,
-        .issue-token-state-icon-closed {
-          display: block;
-          margin-right: $gl-padding-8;
-        }
-
-        .confidential-icon {
-          align-self: auto;
-          margin-top: 0;
-        }
+      .issue-token-state-icon-open,
+      .issue-token-state-icon-closed {
+        display: block;
+        margin-right: $gl-padding-8;
       }
 
-      .item-meta {
+      .confidential-icon {
+        align-self: auto;
         margin-top: 0;
-        justify-content: flex-end;
-        flex: 1;
-        flex-wrap: nowrap;
-
-        .item-path-id {
-          order: 0;
-          margin-top: 0;
-          margin-left: $gl-padding-8;
-          margin-right: auto;
-
-          .issue-token-state-icon-open,
-          .issue-token-state-icon-closed {
-            display: none;
-          }
-        }
-
-        .item-meta-child {
-          margin-left: $gl-padding-8;
-          flex-wrap: nowrap;
-        }
-
-        .item-assignees {
-          flex-grow: 0;
-          margin-top: 0;
-          margin-right: $gl-padding-4;
-
-          .avatar {
-            height: $gl-padding-24;
-            width: $gl-padding-24;
-          }
-
-          .avatar-counter {
-            height: $gl-padding-24;
-            min-width: $gl-padding-24;
-            line-height: $gl-padding-24;
-            border-radius: $gl-padding-24;
-          }
-        }
       }
     }
+  }
 
-    .btn-item-remove {
-      position: relative;
-      align-self: center;
-      top: initial;
-      right: 0;
-      margin-right: 0;
-      padding: $btn-sm-side-margin;
+  .item-contents {
+    flex-wrap: nowrap;
+    overflow: hidden;
+  }
 
-      &:hover {
-        border-color: $border-color;
-      }
+  .item-meta {
+    margin-top: 0;
+    justify-content: flex-end;
+    flex: 1;
+    flex-wrap: nowrap;
+
+    .item-meta-child {
+      margin-left: $gl-padding-8;
+      flex-wrap: nowrap;
     }
+  }
+
+  .item-path-id {
+    order: 0;
+    margin-top: 0;
+    margin-left: $gl-padding-8;
+    margin-right: auto;
+  }
+
+  .item-assignees {
+    flex-grow: 0;
+    margin-top: 0;
+    margin-right: $gl-padding-4;
+
+    .avatar {
+      height: $gl-padding-24;
+      width: $gl-padding-24;
+    }
+
+    .avatar-counter {
+      height: $gl-padding-24;
+      min-width: $gl-padding-24;
+      line-height: $gl-padding-24;
+      border-radius: $gl-padding-24;
+    }
+  }
+
+  .btn-item-remove {
+    position: relative;
+    align-self: center;
+    top: initial;
+    right: 0;
+    margin-right: 0;
+    padding: $btn-sm-side-margin;
+
+    &:hover {
+      border-color: $border-color;
+    }
+  }
+
+  .sortable-link {
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: 1.3;
   }
 }

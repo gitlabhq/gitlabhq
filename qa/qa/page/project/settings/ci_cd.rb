@@ -1,4 +1,7 @@
-module QA # rubocop:disable Naming/FileName
+# rubocop:disable Naming/FileName
+# frozen_string_literal: true
+
+module QA
   module Page
     module Project
       module Settings

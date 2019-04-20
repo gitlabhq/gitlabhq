@@ -198,7 +198,7 @@ class ApplicationSetting < ApplicationRecord
   validates_each :restricted_visibility_levels do |record, attr, value|
     value&.each do |level|
       unless Gitlab::VisibilityLevel.options.value?(level)
-        record.errors.add(attr, "'#{level}' is not a valid visibility level")
+        record.errors.add(attr, _("'%{level}' is not a valid visibility level") % { level: level })
       end
     end
   end
@@ -206,7 +206,7 @@ class ApplicationSetting < ApplicationRecord
   validates_each :import_sources do |record, attr, value|
     value&.each do |source|
       unless Gitlab::ImportSources.options.value?(source)
-        record.errors.add(attr, "'#{source}' is not a import source")
+        record.errors.add(attr, _("'%{source}' is not a import source") % { source: source })
       end
     end
   end

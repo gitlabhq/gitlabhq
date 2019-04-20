@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Runtime::Scenario do
   subject do
     Module.new.extend(described_class)

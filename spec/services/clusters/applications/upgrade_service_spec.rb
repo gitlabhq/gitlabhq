@@ -60,7 +60,7 @@ describe Clusters::Applications::UpgradeService do
       let(:error) { StandardError.new('something bad happened') }
 
       before do
-        expect(application).to receive(:make_updating!).once.and_raise(error)
+        expect(helm_client).to receive(:update).with(install_command).and_raise(error)
       end
 
       include_examples 'logs kubernetes errors' do
@@ -70,12 +70,10 @@ describe Clusters::Applications::UpgradeService do
       end
 
       it 'make the application errored' do
-        expect(helm_client).not_to receive(:update)
-
         service.execute
 
         expect(application).to be_update_errored
-        expect(application.status_reason).to eq("Can't start upgrade process.")
+        expect(application.status_reason).to eq('Failed to upgrade.')
       end
     end
   end

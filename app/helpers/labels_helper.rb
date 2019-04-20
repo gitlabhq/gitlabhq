@@ -89,7 +89,7 @@ module LabelsHelper
 
   def render_colored_label(label, label_suffix: '', tooltip: true, title: nil)
     text_color = text_color_for_bg(label.color)
-    title ||= tooltip ? label_tooltip_title(label) : ''
+    title ||= tooltip ? label_tooltip_title(label) : label.name
 
     # Intentionally not using content_tag here so that this method can be called
     # by LabelReferenceFilter

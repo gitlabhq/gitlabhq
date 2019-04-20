@@ -615,19 +615,19 @@ module Gitlab
         subject { Gitlab::Ci::YamlProcessor.new(YAML.dump(config), opts) }
 
         context "when validating a ci config file with no project context" do
-          context "when a single string is provided", :quarantine do
+          context "when a single string is provided" do
             let(:include_content) { "/local.gitlab-ci.yml" }
 
-            it "does not return any error" do
-              expect { subject }.not_to raise_error
+            it "returns a validation error" do
+              expect { subject }.to raise_error /does not have project/
             end
           end
 
           context "when an array is provided" do
             let(:include_content) { ["/local.gitlab-ci.yml"] }
 
-            it "does not return any error" do
-              expect { subject }.not_to raise_error
+            it "returns a validation error" do
+              expect { subject }.to raise_error(Gitlab::Ci::YamlProcessor::ValidationError, /does not have project/)
             end
           end
 
@@ -643,9 +643,16 @@ module Gitlab
             let(:include_content) do
               [
                 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml',
-                '/templates/.after-script-template.yml',
                 { template: 'Auto-DevOps.gitlab-ci.yml' }
               ]
+            end
+
+            before do
+              WebMock.stub_request(:get, 'https://gitlab.com/awesome-project/raw/master/.before-script-template.yml')
+                .to_return(
+                  status: 200,
+                  headers: { 'Content-Type' => 'application/json' },
+                  body: 'prepare: { script: ls -al }')
             end
 
             it "does not return any error" do

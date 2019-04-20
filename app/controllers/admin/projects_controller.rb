@@ -40,7 +40,7 @@ class Admin::ProjectsController < Admin::ApplicationController
     namespace = Namespace.find_by(id: params[:new_namespace_id])
     ::Projects::TransferService.new(@project, current_user, params.dup).execute(namespace)
 
-    @project.reload
+    @project.reset
     redirect_to admin_project_path(@project)
   end
   # rubocop: enable CodeReuse/ActiveRecord

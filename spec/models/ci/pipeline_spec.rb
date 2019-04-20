@@ -426,6 +426,26 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '.with_reports' do
+    subject { described_class.with_reports(Ci::JobArtifact.test_reports) }
+
+    context 'when pipeline has a test report' do
+      let!(:pipeline_with_report) { create(:ci_pipeline, :with_test_reports) }
+
+      it 'selects the pipeline' do
+        is_expected.to eq([pipeline_with_report])
+      end
+    end
+
+    context 'when pipeline does not have metrics reports' do
+      let!(:pipeline_without_report) { create(:ci_empty_pipeline) }
+
+      it 'does not select the pipeline' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.merge_request_event' do
     subject { described_class.merge_request_event }
 
@@ -2705,18 +2725,19 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#latest_builds_with_artifacts' do
-    let!(:pipeline) { create(:ci_pipeline, :success) }
-
-    let!(:build) do
-      create(:ci_build, :success, :artifacts, pipeline: pipeline)
-    end
+    let!(:fresh_build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+    let!(:stale_build) { create(:ci_build, :success, :expired, :artifacts, pipeline: pipeline) }
 
     it 'returns an Array' do
       expect(pipeline.latest_builds_with_artifacts).to be_an_instance_of(Array)
     end
 
-    it 'returns the latest builds' do
-      expect(pipeline.latest_builds_with_artifacts).to eq([build])
+    it 'returns the latest builds with non-expired artifacts' do
+      expect(pipeline.latest_builds_with_artifacts).to contain_exactly(fresh_build)
+    end
+
+    it 'does not return builds with expired artifacts' do
+      expect(pipeline.latest_builds_with_artifacts).not_to include(stale_build)
     end
 
     it 'memoizes the returned relation' do
@@ -2728,8 +2749,8 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
-  describe '#has_test_reports?' do
-    subject { pipeline.has_test_reports? }
+  describe '#has_reports?' do
+    subject { pipeline.has_reports?(Ci::JobArtifact.test_reports) }
 
     context 'when pipeline has builds with test reports' do
       before do

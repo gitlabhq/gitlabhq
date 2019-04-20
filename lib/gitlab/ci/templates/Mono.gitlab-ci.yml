@@ -15,6 +15,7 @@
 image: mono:latest
 
 stages:
+  - build
   - test
   - deploy
 

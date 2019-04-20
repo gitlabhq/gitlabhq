@@ -1,6 +1,0 @@
----
-title: Resolve Code in other column of side-by-side diff is highlighted when selecting
-  code on one side
-merge_request: 26423
-author:
-type: fixed

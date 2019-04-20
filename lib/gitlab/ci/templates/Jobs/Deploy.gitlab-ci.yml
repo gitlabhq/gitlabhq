@@ -394,6 +394,7 @@ rollout 100%:
         --set postgresql.postgresDatabase="$POSTGRES_DB" \
         --set postgresql.imageTag="$POSTGRES_VERSION" \
         --set application.initializeCommand="$DB_INITIALIZE" \
+        $HELM_UPGRADE_EXTRA_ARGS \
         --namespace="$KUBE_NAMESPACE" \
         "$name" \
         chart/
@@ -403,6 +404,7 @@ rollout 100%:
         --wait \
         --set application.initializeCommand="" \
         --set application.migrateCommand="$DB_MIGRATE" \
+        $HELM_UPGRADE_EXTRA_ARGS \
         --namespace="$KUBE_NAMESPACE" \
         "$name" \
         chart/
@@ -432,6 +434,7 @@ rollout 100%:
         --set postgresql.postgresPassword="$POSTGRES_PASSWORD" \
         --set postgresql.postgresDatabase="$POSTGRES_DB" \
         --set application.migrateCommand="$DB_MIGRATE" \
+        $HELM_UPGRADE_EXTRA_ARGS \
         --namespace="$KUBE_NAMESPACE" \
         "$name" \
         chart/

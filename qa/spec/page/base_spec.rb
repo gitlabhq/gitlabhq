@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Page::Base do
   describe 'page helpers' do
     it 'exposes helpful page helpers' do

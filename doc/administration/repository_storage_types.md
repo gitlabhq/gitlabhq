@@ -110,7 +110,7 @@ enabled for all new projects.
 
 To start a migration, enable Hashed Storage for new projects:
  
-1. Go to **Admin > Settings** and expand the **Repository Storage** section.
+1. Go to **Admin > Settings > Repository** and expand the **Repository Storage** section.
 2. Select the **Use hashed storage paths for newly created and renamed projects** checkbox.
 
 Check if the change breaks any existing integration you may have that
@@ -138,7 +138,7 @@ source-based installation.
 Similar to the migration, to disable Hashed Storage for new
 projects:
 
-1. Go to **Admin > Settings** and expand the **Repository Storage** section.
+1. Go to **Admin > Settings > Repository** and expand the **Repository Storage** section.
 2. Uncheck the **Use hashed storage paths for newly created and renamed projects** checkbox.
 
 To schedule a complete rollback, see the 

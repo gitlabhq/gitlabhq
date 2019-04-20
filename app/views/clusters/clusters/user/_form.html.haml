@@ -1,39 +1,48 @@
+- more_info_link = link_to _('More information'), help_page_path('user/project/clusters/index.md',
+  anchor: 'adding-an-existing-kubernetes-cluster'), target: '_blank'
+- rbac_help_link = link_to _('More information'), help_page_path('user/project/clusters/index.md',
+  anchor: 'role-based-access-control-rbac-core-only'), target: '_blank'
+
+- api_url_help_text = s_('ClusterIntegration|The URL used to access the Kubernetes API.')
+- ca_cert_help_text = s_('ClusterIntegration|The Kubernetes certificate used to authenticate to the cluster.')
+- token_help_text = s_('ClusterIntegration|A service token scoped to %{code}kube-system%{end_code} with %{code}cluster-admin%{end_code} privileges.').html_safe % { code: '<code>'.html_safe, end_code: '</code>'.html_safe }
+- rbac_help_text = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).') + ' '
+- rbac_help_text << s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
+
 = bootstrap_form_for @user_cluster, html: { class: 'gl-show-field-errors' },
   url: clusterable.create_user_clusters_path, as: :cluster do |field|
   = field.text_field :name, required: true, title: s_('ClusterIntegration|Cluster name is required.'),
     label: s_('ClusterIntegration|Kubernetes cluster name'), label_class: 'label-bold'
   - if has_multiple_clusters?
-    = field.form_group :environment_scope, label: { text: s_('ClusterIntegration|Environment scope'),
-      class: 'label-bold' } do
-      = field.text_field :environment_scope, required: true,
-        title: 'Environment scope is required.', wrapper: false
-      .form-text.text-muted
-        = s_("ClusterIntegration|Choose which of your environments will use this cluster.")
+    = field.text_field :environment_scope, required: true, title: 'Environment scope is required.',
+      label: s_('ClusterIntegration|Environment scope'), label_class: 'label-bold',
+      help: s_("ClusterIntegration|Choose which of your environments will use this cluster.")
 
   = field.fields_for :platform_kubernetes, @user_cluster.platform_kubernetes do |platform_kubernetes_field|
     = platform_kubernetes_field.url_field :api_url, required: true,
       title: s_('ClusterIntegration|API URL should be a valid http/https url.'),
-      label: s_('ClusterIntegration|API URL'), label_class: 'label-bold'
+      label: s_('ClusterIntegration|API URL'), label_class: 'label-bold',
+      help: '%{help_text} %{help_link}'.html_safe % { help_text: api_url_help_text, help_link: more_info_link }
+
     = platform_kubernetes_field.text_area :ca_cert,
       placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'),
-      label: s_('ClusterIntegration|CA Certificate'), label_class: 'label-bold'
+      label: s_('ClusterIntegration|CA Certificate'), label_class: 'label-bold',
+      help: '%{help_text} %{help_link}'.html_safe % { help_text: ca_cert_help_text, help_link: more_info_link }
+
     = platform_kubernetes_field.text_field :token, required: true,
       title: s_('ClusterIntegration|Service token is required.'), label: s_('ClusterIntegration|Service Token'),
-      autocomplete: 'off', label_class: 'label-bold'
+      autocomplete: 'off', label_class: 'label-bold',
+      help: '%{help_text} %{help_link}'.html_safe % { help_text: token_help_text, help_link: more_info_link }
 
     - if @user_cluster.allow_user_defined_namespace?
       = platform_kubernetes_field.text_field :namespace,
         label: s_('ClusterIntegration|Project namespace (optional, unique)'), label_class: 'label-bold'
 
-    = platform_kubernetes_field.form_group :authorization_type do
+    = platform_kubernetes_field.form_group :authorization_type,
+      { help: '%{help_text} %{help_link}'.html_safe % { help_text: rbac_help_text, help_link: rbac_help_link } } do
       = platform_kubernetes_field.check_box :authorization_type,
         { class: 'qa-rbac-checkbox', label: s_('ClusterIntegration|RBAC-enabled cluster'),
         label_class: 'label-bold', inline: true }, 'rbac', 'abac'
-      .form-text.text-muted
-        = s_('ClusterIntegration|Enable this setting if using role-based access control (RBAC).')
-        = s_('ClusterIntegration|This option will allow you to install applications on RBAC clusters.')
-        = link_to _('More information'), help_page_path('user/project/clusters/index.md',
-          anchor: 'role-based-access-control-rbac-core-only'), target: '_blank'
 
     .form-group
       = field.submit s_('ClusterIntegration|Add Kubernetes cluster'), class: 'btn btn-success'

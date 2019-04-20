@@ -44,18 +44,18 @@ export const pluralize = (str, count) => str + (count > 1 || count === 0 ? 's' :
 export const dasherize = str => str.replace(/[_\s]+/g, '-');
 
 /**
- * Removes accents and converts to lower case
- * @param {String} str
- * @returns {String}
- */
-export const slugify = str => str.trim().toLowerCase();
-
-/**
  * Replaces whitespaces with hyphens and converts to lower case
  * @param {String} str
  * @returns {String}
  */
 export const slugifyWithHyphens = str => str.toLowerCase().replace(/\s+/g, '-');
+
+/**
+ * Replaces whitespaces with underscore and converts to lower case
+ * @param {String} str
+ * @returns {String}
+ */
+export const slugifyWithUnderscore = str => str.toLowerCase().replace(/\s+/g, '_');
 
 /**
  * Truncates given text

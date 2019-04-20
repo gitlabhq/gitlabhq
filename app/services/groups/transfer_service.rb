@@ -3,11 +3,11 @@
 module Groups
   class TransferService < Groups::BaseService
     ERROR_MESSAGES = {
-      database_not_supported: 'Database is not supported.',
-      namespace_with_same_path: 'The parent group already has a subgroup with the same path.',
-      group_is_already_root: 'Group is already a root group.',
-      same_parent_as_current: 'Group is already associated to the parent group.',
-      invalid_policies: "You don't have enough permissions."
+      database_not_supported: s_('TransferGroup|Database is not supported.'),
+      namespace_with_same_path: s_('TransferGroup|The parent group already has a subgroup with the same path.'),
+      group_is_already_root: s_('TransferGroup|Group is already a root group.'),
+      same_parent_as_current: s_('TransferGroup|Group is already associated to the parent group.'),
+      invalid_policies: s_("TransferGroup|You don't have enough permissions.")
     }.freeze
 
     TransferError = Class.new(StandardError)
@@ -26,7 +26,7 @@ module Groups
 
     rescue TransferError, ActiveRecord::RecordInvalid, Gitlab::UpdatePathError => e
       @group.errors.clear
-      @error = "Transfer failed: " + e.message
+      @error = s_("TransferGroup|Transfer failed: %{error_message}") % { error_message: e.message }
       false
     end
 

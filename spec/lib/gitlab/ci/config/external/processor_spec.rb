@@ -270,5 +270,27 @@ describe Gitlab::Ci::Config::External::Processor do
         end
       end
     end
+
+    context 'when config includes an external configuration file via SSL web request' do
+      before do
+        stub_request(:get, 'https://sha256.badssl.com/fake.yml').to_return(body: 'image: ruby:2.6', status: 200)
+        stub_request(:get, 'https://self-signed.badssl.com/fake.yml')
+          .to_raise(OpenSSL::SSL::SSLError.new('SSL_connect returned=1 errno=0 state=error: certificate verify failed (self signed certificate)'))
+      end
+
+      context 'with an acceptable certificate' do
+        let(:values) { { include: 'https://sha256.badssl.com/fake.yml' } }
+
+        it { is_expected.to include(image: 'ruby:2.6') }
+      end
+
+      context 'with a self-signed certificate' do
+        let(:values) { { include: 'https://self-signed.badssl.com/fake.yml' } }
+
+        it 'returns a reportable configuration error' do
+          expect { subject }.to raise_error(described_class::IncludeError, /certificate verify failed/)
+        end
+      end
+    end
   end
 end

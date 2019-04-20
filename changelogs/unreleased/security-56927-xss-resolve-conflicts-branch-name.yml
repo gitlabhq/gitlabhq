@@ -1,5 +1,0 @@
----
-title: Fix XSS in resolve conflicts form
-merge_request:
-author:
-type: security

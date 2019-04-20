@@ -486,6 +486,7 @@ POST /runners
 | `locked`     | boolean| no       | Whether the Runner should be locked for current project |
 | `run_untagged` | boolean | no | Whether the Runner should handle untagged jobs |
 | `tag_list` | Array[String] | no | List of Runner's tags |
+| `access_level`    | string   | no       | The access_level of the runner; `not_protected` or `ref_protected` |
 | `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
 
 ```

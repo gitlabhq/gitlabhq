@@ -1,5 +1,0 @@
----
-title: Enable Gitaly FindCommit caching for TreeController
-merge_request: 27100
-author:
-type: performance

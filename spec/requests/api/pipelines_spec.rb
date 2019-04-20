@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe API::Pipelines do
@@ -493,7 +495,7 @@ describe API::Pipelines do
       context 'pipeline created is not created by the developer user' do
         let(:api_user) { create(:user) }
 
-        it 'should not return pipeline variables' do
+        it 'does not return pipeline variables' do
           subject
 
           expect(response).to have_gitlab_http_status(403)
@@ -502,7 +504,7 @@ describe API::Pipelines do
     end
 
     context 'user is not a project member' do
-      it 'should not return pipeline variables' do
+      it 'does not return pipeline variables' do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}/variables", non_member)
 
         expect(response).to have_gitlab_http_status(404)

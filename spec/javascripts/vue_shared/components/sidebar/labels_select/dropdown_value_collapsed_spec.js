@@ -27,10 +27,10 @@ describe('DropdownValueCollapsedComponent', () => {
 
   describe('computed', () => {
     describe('labelsList', () => {
-      it('returns empty text when `labels` prop is empty array', () => {
+      it('returns default text when `labels` prop is empty array', () => {
         const vmEmptyLabels = createComponent([]);
 
-        expect(vmEmptyLabels.labelsList).toBe('');
+        expect(vmEmptyLabels.labelsList).toBe('Labels');
         vmEmptyLabels.$destroy();
       });
 

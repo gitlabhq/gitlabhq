@@ -1,5 +1,0 @@
----
-title: Log Gitaly RPC duration to api_json.log and production_json.log
-merge_request: 26652
-author:
-type: other

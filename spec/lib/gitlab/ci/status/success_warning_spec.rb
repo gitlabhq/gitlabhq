@@ -20,7 +20,7 @@ describe Gitlab::Ci::Status::SuccessWarning do
   end
 
   describe '#group' do
-    it { expect(subject.group).to eq 'success_with_warnings' }
+    it { expect(subject.group).to eq 'success-with-warnings' }
   end
 
   describe '.matches?' do

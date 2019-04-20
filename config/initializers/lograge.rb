@@ -35,7 +35,7 @@ unless Sidekiq.server?
       end
 
       payload[:response] = event.payload[:response] if event.payload[:response]
-      payload[Gitlab::CorrelationId::LOG_KEY] = Gitlab::CorrelationId.current_id
+      payload[Labkit::Correlation::CorrelationId::LOG_KEY] = Labkit::Correlation::CorrelationId.current_id
 
       payload
     end

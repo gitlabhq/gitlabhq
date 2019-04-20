@@ -1,0 +1,14 @@
+- form = local_assigns.fetch(:form)
+
+.form-group
+  %b= s_('ProjectSettings|Merge options')
+  %p.text-secondary= s_('ProjectSettings|Additional merge request capabilities that influence how and when merges will be performed')
+  = render_if_exists 'projects/merge_pipelines_settings', form: form
+  .form-check.mb-2
+    = form.check_box :resolve_outdated_diff_discussions, class: 'form-check-input'
+    = form.label :resolve_outdated_diff_discussions, class: 'form-check-label' do
+      = s_('ProjectSettings|Automatically resolve merge request diff discussions when they become outdated')
+  .form-check.mb-2
+    = form.check_box :printing_merge_request_link_enabled, class: 'form-check-input'
+    = form.label :printing_merge_request_link_enabled, class: 'form-check-label' do
+      = s_('ProjectSettings|Show link to create/view merge request when pushing from the command line')

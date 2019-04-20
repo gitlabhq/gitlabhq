@@ -117,9 +117,11 @@ module Gitlab
           container_registry_enabled: Gitlab.config.registry.enabled,
           gitlab_shared_runners_enabled: Gitlab.config.gitlab_ci.shared_runners_enabled,
           gravatar_enabled: Gitlab::CurrentSettings.gravatar_enabled?,
+          influxdb_metrics_enabled: Gitlab::Metrics.influx_metrics_enabled?,
           ldap_enabled: Gitlab.config.ldap.enabled,
           mattermost_enabled: Gitlab.config.mattermost.enabled,
           omniauth_enabled: Gitlab::Auth.omniauth_enabled?,
+          prometheus_metrics_enabled: Gitlab::Metrics.prometheus_metrics_enabled?,
           reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
           signup_enabled: Gitlab::CurrentSettings.allow_signup?
         }
