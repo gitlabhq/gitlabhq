@@ -4702,6 +4702,8 @@ describe Project do
       it 'returns that pool repository' do
         expect(subject).not_to be_empty
         expect(subject[:pool_repository]).to be_persisted
+
+        expect(project.reload.pool_repository).to eq(subject[:pool_repository])
       end
     end
   end
