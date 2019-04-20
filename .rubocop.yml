@@ -204,3 +204,9 @@ Style/ReturnNil:
 # nil values on the left hand side
 Performance/RegexpMatch:
   Enabled: false
+
+ActiveRecordAssociationReload:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'ee/spec/**/*'

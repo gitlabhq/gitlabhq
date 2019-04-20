@@ -104,7 +104,7 @@ class DueDateSelect {
       const dateObj = new Date(dateArray[0], dateArray[1] - 1, dateArray[2]);
       this.displayedDate = dateFormat(dateObj, 'mmm d, yyyy');
     } else {
-      this.displayedDate = 'No due date';
+      this.displayedDate = __('None');
     }
   }
 
@@ -132,7 +132,7 @@ class DueDateSelect {
 
   submitSelectedDate(isDropdown) {
     const selectedDateValue = this.datePayload[this.abilityName].due_date;
-    const hasDueDate = this.displayedDate !== 'No due date';
+    const hasDueDate = this.displayedDate !== __('None');
     const displayedDateStyle = hasDueDate ? 'bold' : 'no-value';
 
     this.$loading.removeClass('hidden').fadeIn();

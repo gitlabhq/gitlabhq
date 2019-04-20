@@ -1,5 +1,0 @@
----
-title: Fix Error 500 when user commits Wiki page with no commit message
-merge_request: 26247
-author:
-type: fixed

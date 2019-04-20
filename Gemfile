@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails', '5.0.7.2'
-gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Improves copy-on-write performance for MRI
 gem 'nakayoshi_fork', '~> 0.0.4'
@@ -43,6 +42,7 @@ gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.3'
 gem 'rack-oauth2', '~> 1.9.3'
+gem "omniauth-ultraauth", '~> 0.0.1'
 gem 'jwt', '~> 2.1.0'
 
 # Spam and anti-bot protection
@@ -274,6 +274,9 @@ gem 'sentry-raven', '~> 2.7'
 
 gem 'premailer-rails', '~> 1.9.7'
 
+# LabKit: Tracing and Correlation
+gem 'gitlab-labkit', '~> 0.1.2'
+
 # I18n
 gem 'ruby_parser', '~> 3.8', require: false
 gem 'rails-i18n', '~> 5.1'
@@ -299,12 +302,6 @@ group :metrics do
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
-end
-
-group :tracing do
-  # OpenTracing
-  gem 'opentracing', '~> 0.4.3'
-  gem 'jaeger-client', '~> 0.10.0'
 end
 
 group :development do
@@ -345,14 +342,14 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.10'
 
-  gem 'capybara', '~> 2.16.1'
-  gem 'capybara-screenshot', '~> 1.0.18'
-  gem 'selenium-webdriver', '~> 3.12'
+  gem 'capybara', '~> 2.18.0'
+  gem 'capybara-screenshot', '~> 1.0.22'
+  gem 'selenium-webdriver', '~> 3.141'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 2.4', require: false
+  gem 'gitlab-styles', '~> 2.5', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines
   gem 'rubocop', '~> 0.54.0'
   gem 'rubocop-rspec', '~> 1.22.1'

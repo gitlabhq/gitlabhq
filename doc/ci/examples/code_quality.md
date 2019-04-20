@@ -1,7 +1,7 @@
 # Analyze your project's Code Quality
 
 CAUTION: **Caution:**
-The job definition shown below is supported on GitLab 11.5 and later versions.
+The job definition shown below is supported on GitLab 11.11 and later versions.
 It also requires the GitLab Runner 11.5 or later.
 For earlier versions, use the [previous job definitions](#previous-job-definitions).
 
@@ -11,27 +11,11 @@ and Docker.
 First, you need GitLab Runner with
 [docker-in-docker executor](../docker/using_docker_build.md#use-docker-in-docker-executor).
 
-Once you set up the Runner, add a new job to `.gitlab-ci.yml` that
-generates the expected report:
+Once you set up the Runner, include the CodeQuality template in your CI config:
 
 ```yaml
-code_quality:
-  image: docker:stable
-  variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
-  services:
-    - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
-  artifacts:
-    reports:
-      codequality: gl-code-quality-report.json
+include:
+  - template: Code-Quality.gitlab-ci.yml
 ```
 
 The above example will create a `code_quality` job in your CI/CD pipeline which
@@ -53,6 +37,28 @@ to automatically extract report data and show it in the merge request widget.
 While these old job definitions are still maintained they have been deprecated
 and may be removed in next major release, GitLab 12.0.
 You are advised to update your current `.gitlab-ci.yml` configuration to reflect that change.
+
+For GitLab 11.5 and earlier, the job should look like:
+
+```yaml
+code_quality:
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+    - docker run
+        --env SOURCE_CODE="$PWD"
+        --volume "$PWD":/code
+        --volume /var/run/docker.sock:/var/run/docker.sock
+        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report.json
+```
 
 For GitLab 11.4 and earlier, the job should look like:
 

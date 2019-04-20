@@ -549,14 +549,14 @@ describe 'Git HTTP requests' do
                   it 'rejects pulls with personal access token error message' do
                     download(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
                     end
                   end
 
                   it 'rejects the push attempt with personal access token error message' do
                     upload(path, user: user.username, password: user.password) do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                      expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
                     end
                   end
                 end
@@ -566,6 +566,47 @@ describe 'Git HTTP requests' do
 
                   it_behaves_like 'pulls are allowed'
                   it_behaves_like 'pushes are allowed'
+
+                  it 'rejects the push attempt for read_repository scope' do
+                    read_access_token = create(:personal_access_token, user: user, scopes: [:read_repository])
+
+                    upload(path, user: user.username, password: read_access_token.token) do |response|
+                      expect(response).to have_gitlab_http_status(:forbidden)
+                      expect(response.body).to include('You are not allowed to upload code')
+                    end
+                  end
+
+                  it 'accepts the push attempt for write_repository scope' do
+                    write_access_token = create(:personal_access_token, user: user, scopes: [:write_repository])
+
+                    upload(path, user: user.username, password: write_access_token.token) do |response|
+                      expect(response).to have_gitlab_http_status(:ok)
+                    end
+                  end
+
+                  it 'accepts the pull attempt for read_repository scope' do
+                    read_access_token = create(:personal_access_token, user: user, scopes: [:read_repository])
+
+                    download(path, user: user.username, password: read_access_token.token) do |response|
+                      expect(response).to have_gitlab_http_status(:ok)
+                    end
+                  end
+
+                  it 'accepts the pull attempt for api scope' do
+                    read_access_token = create(:personal_access_token, user: user, scopes: [:api])
+
+                    download(path, user: user.username, password: read_access_token.token) do |response|
+                      expect(response).to have_gitlab_http_status(:ok)
+                    end
+                  end
+
+                  it 'accepts the push attempt for api scope' do
+                    write_access_token = create(:personal_access_token, user: user, scopes: [:api])
+
+                    upload(path, user: user.username, password: write_access_token.token) do |response|
+                      expect(response).to have_gitlab_http_status(:ok)
+                    end
+                  end
                 end
               end
 
@@ -577,14 +618,14 @@ describe 'Git HTTP requests' do
                 it 'rejects pulls with personal access token error message' do
                   download(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
                   end
                 end
 
                 it 'rejects pushes with personal access token error message' do
                   upload(path, user: 'foo', password: 'bar') do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
-                    expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                    expect(response.body).to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
                   end
                 end
 
@@ -598,7 +639,7 @@ describe 'Git HTTP requests' do
                   it 'does not display the personal access token error message' do
                     upload(path, user: 'foo', password: 'bar') do |response|
                       expect(response).to have_gitlab_http_status(:unauthorized)
-                      expect(response.body).not_to include('You must use a personal access token with \'api\' scope for Git over HTTP')
+                      expect(response.body).not_to include('You must use a personal access token with \'read_repository\' or \'write_repository\' scope for Git over HTTP')
                     end
                   end
                 end

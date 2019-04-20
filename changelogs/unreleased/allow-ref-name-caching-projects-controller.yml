@@ -1,5 +1,0 @@
----
-title: Enable FindCommit caching for project and commits pages
-merge_request: 27048
-author:
-type: performance

@@ -1,6 +1,0 @@
----
-title: Scroll to diff file content when clicking on file header name and it is not
-  a link to other page
-merge_request: !26422
-author:
-type: fixed

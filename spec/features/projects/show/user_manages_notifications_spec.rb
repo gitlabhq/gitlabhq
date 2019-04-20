@@ -20,6 +20,16 @@ describe 'Projects > Show > User manages notifications', :js do
 
     click_notifications_button
     expect(find('.update-notification.is-active')).to have_content('On mention')
+    expect(find('.notifications-icon use')[:'xlink:href']).to end_with('#notifications')
+  end
+
+  it 'changes the notification setting to disabled' do
+    click_notifications_button
+    click_link 'Disabled'
+
+    wait_for_requests
+
+    expect(find('.notifications-icon use')[:'xlink:href']).to end_with('#notifications-off')
   end
 
   context 'custom notification settings' do

@@ -156,7 +156,7 @@ There are two different ways to add a new project to a group:
 Group owners or administrators can allow users with the
 Developer role to create projects under groups.
 
-By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under agroup, but this can be changed either within the group settings for a group, or
+By default, [Developers and Maintainers](../permissions.md#group-members-permissions) can create projects under a group, but this can be changed either within the group settings for a group, or
 be set globally by a GitLab administrator in the Admin area
 at **Settings > General > Visibility and access controls**.
 

@@ -125,6 +125,7 @@
     "test_reports_path": { "type": ["string", "null"] },
     "can_receive_suggestion": { "type": "boolean" },
     "source_branch_protected": { "type": "boolean" },
-    "conflicts_docs_path": { "type": ["string", "null"] }
+    "conflicts_docs_path": { "type": ["string", "null"] },
+    "merge_request_pipelines_docs_path": { "type": ["string", "null"] }
   }
 }

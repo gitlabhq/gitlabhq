@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Git::Location do
   describe '.new' do
     context 'when URI starts with ssh://' do

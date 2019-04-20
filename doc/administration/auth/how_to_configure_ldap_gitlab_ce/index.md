@@ -145,7 +145,7 @@ Securing LDAP (enabling LDAPS) on Windows Server 2012 involves installing a vali
 
 > By default a LDAP service listens for connections on TCP and UDP port 389. LDAPS (LDAP over SSL) listens on port 636
 
-### Testing you AD server
+### Testing your AD server
 
 #### Using **AdFind** (Windows)
 

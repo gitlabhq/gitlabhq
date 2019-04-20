@@ -1,0 +1,5 @@
+---
+title: Added write_repository scope for personal access token
+merge_request: 26021
+author: Horatiu Eugen Vlad
+type: added

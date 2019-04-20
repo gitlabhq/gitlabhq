@@ -7,9 +7,9 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
   def proxy
     result = Prometheus::ProxyService.new(
       environment,
-      request.method,
-      params[:proxy_path],
-      params.permit!
+      proxy_method,
+      proxy_path,
+      proxy_params
     ).execute
 
     if result.nil?
@@ -31,7 +31,30 @@ class Projects::Environments::PrometheusApiController < Projects::ApplicationCon
 
   private
 
+  def query_context
+    Gitlab::Prometheus::QueryVariables.call(environment)
+  end
+
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def proxy_method
+    request.method
+  end
+
+  def proxy_path
+    params[:proxy_path]
+  end
+
+  def proxy_params
+    substitute_query_variables(params).permit!
+  end
+
+  def substitute_query_variables(params)
+    query = params[:query]
+    return params unless query
+
+    params.merge(query: query % query_context)
   end
 end

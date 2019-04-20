@@ -1,5 +1,0 @@
----
-title: Fix and expand Gitaly FindCommit caching
-merge_request: 27018
-author:
-type: performance

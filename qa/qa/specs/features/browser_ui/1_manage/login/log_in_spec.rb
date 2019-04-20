@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA
   context 'Manage', :smoke do
     describe 'basic user login' do

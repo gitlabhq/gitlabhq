@@ -133,7 +133,7 @@ describe 'Issue Boards', :js do
         close_dropdown_menu_if_visible
         wait_for_requests
 
-        expect(page).to have_content('No assignee')
+        expect(page).to have_content('None')
       end
 
       expect(card_two).not_to have_selector('.avatar')
@@ -143,7 +143,7 @@ describe 'Issue Boards', :js do
       click_card(card)
 
       page.within(find('.assignee')) do
-        expect(page).to have_content('No assignee')
+        expect(page).to have_content('None')
 
         click_button 'assign yourself'
 
@@ -218,6 +218,21 @@ describe 'Issue Boards', :js do
         page.within('.value') do
           expect(page).not_to have_content(milestone.title)
         end
+      end
+    end
+  end
+
+  context 'time tracking' do
+    before do
+      issue2.timelogs.create(time_spent: 14400, user: user)
+      issue2.update!(time_estimate: 28800)
+    end
+
+    it 'shows time tracking progress bar' do
+      click_card(card)
+
+      page.within('.time-tracking') do
+        expect(find('.time-tracking-content .compare-meter')['data-original-title']).to eq('Time remaining: 4h')
       end
     end
   end

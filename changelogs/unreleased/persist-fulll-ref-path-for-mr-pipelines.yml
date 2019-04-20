@@ -1,5 +1,0 @@
----
-title: Create MR pipelines with `refs/merge-requests/:iid/head`
-merge_request: 25504
-author:
-type: changed

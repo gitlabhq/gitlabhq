@@ -11,6 +11,7 @@ import {
   capitalizeFirstCharacter,
   convertToCamelCase,
   splitCamelCase,
+  slugifyWithUnderscore,
 } from '../../lib/utils/text_utility';
 import * as constants from '../constants';
 import eventHub from '../event_hub';
@@ -128,6 +129,9 @@ export default {
       return this.noteableType === constants.MERGE_REQUEST_NOTEABLE_TYPE
         ? 'merge request'
         : 'issue';
+    },
+    trackingLabel() {
+      return slugifyWithUnderscore(`${this.commentButtonTitle} button`);
     },
   },
   watch: {
@@ -370,6 +374,8 @@ append-right-10 comment-type-dropdown js-comment-type-dropdown droplab-dropdown"
                   class="btn btn-success js-comment-button js-comment-submit-button
                     qa-comment-button"
                   type="submit"
+                  :data-track-label="trackingLabel"
+                  data-track-event="click_button"
                   @click.prevent="handleSave()"
                 >
                   {{ __(commentButtonTitle) }}

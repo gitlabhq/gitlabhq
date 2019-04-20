@@ -1,5 +1,0 @@
----
-title: Show error backtrace when logging errors to kubernetes.log
-merge_request: 25726
-author:
-type: other

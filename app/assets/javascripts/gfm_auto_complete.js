@@ -461,7 +461,10 @@ class GfmAutoComplete {
         // We can ignore this for quick actions because they are processed
         // before Markdown.
         if (!this.setting.skipMarkdownCharacterTest) {
-          withoutAt = withoutAt.replace(/([~\-_*`])/g, '\\$&');
+          withoutAt = withoutAt
+            .replace(/(~~|`|\*)/g, '\\$1')
+            .replace(/(\b)(_+)/g, '$1\\$2') // only escape underscores at the start
+            .replace(/(_+)(\b)/g, '\\$1$2'); // or end of words
         }
 
         return `${at}${withoutAt}`;

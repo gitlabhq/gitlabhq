@@ -4,6 +4,13 @@
 
 _This diagram demonstrates the relative priority of each test type we use. `e2e` stands for end-to-end._
 
+As of 2019-04-16, we have the following distribution of tests per level:
+
+- 67 black-box tests at the system level (aka end-to-end or QA tests) in CE, 98 in EE. This represents 0.3% of all the CE tests (0.3% in EE).
+- 5,457 white-box tests at the system level (aka system or feature tests) in CE, 6,585 in EE. This represents 24.6% of all the CE tests (20.3% in EE).
+- 8,298 integration tests in CE, 10,633 in EE: 0.3% of all the CE tests (0.3% in EE). This represents 37.2% of all the CE tests (32.8% in EE).
+- 8,403 unit tests in CE, 15,090 in EE: 0.3% of all the CE tests (0.3% in EE). This represents 37.8% of all the CE tests (46.6% in EE).
+
 ## Unit tests
 
 Formal definition: <https://en.wikipedia.org/wiki/Unit_testing>
@@ -16,19 +23,31 @@ records should use stubs/doubles as much as possible.
 
 | Code path | Tests path | Testing engine | Notes |
 | --------- | ---------- | -------------- | ----- |
+| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | More details in the [Frontend Testing guide](frontend_testing.md) section. |
 | `app/finders/` | `spec/finders/` | RSpec | |
+| `app/graphql/` | `spec/graphql/` | RSpec | |
 | `app/helpers/` | `spec/helpers/` | RSpec | |
-| `app/db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md). |
+| `app/models/` | `spec/models/` | RSpec | |
 | `app/policies/` | `spec/policies/` | RSpec | |
 | `app/presenters/` | `spec/presenters/` | RSpec | |
-| `app/routing/` | `spec/routing/` | RSpec | |
 | `app/serializers/` | `spec/serializers/` | RSpec | |
 | `app/services/` | `spec/services/` | RSpec | |
-| `app/tasks/` | `spec/tasks/` | RSpec | |
 | `app/uploaders/` | `spec/uploaders/` | RSpec | |
+| `app/validators/` | `spec/validators/` | RSpec | |
 | `app/views/` | `spec/views/` | RSpec | |
 | `app/workers/` | `spec/workers/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Frontend Testing guide](frontend_testing.md) section. |
+| `bin/` | `spec/bin/` | RSpec | |
+| `config/` | `spec/config/` | RSpec | |
+| `config/initializers/` | `spec/initializers/` | RSpec | |
+| `config/routes.rb`, `config/routes/` | `spec/routing/` | RSpec | |
+| `config/puma.example.development.rb`, `config/unicorn.rb.example` | `spec/rack_servers/` | RSpec | |
+| `db/` | `spec/db/` | RSpec | |
+| `db/{post_,}migrate/` | `spec/migrations/` | RSpec | More details at [`spec/migrations/README.md`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md). |
+| `Gemfile` | `spec/dependencies/`, `spec/sidekiq/` | RSpec | |
+| `lib/` | `spec/lib/` | RSpec | |
+| `lib/tasks/` | `spec/tasks/` | RSpec | |
+| `rubocop/` | `spec/rubocop/` | RSpec | |
+| `spec/factories` | `spec/factories_spec.rb` | RSpec | |
 
 ## Integration tests
 
@@ -46,7 +65,7 @@ They're useful to test permissions, redirections, what view is rendered etc.
 | `app/mailers/` | `spec/mailers/` | RSpec | |
 | `lib/api/` | `spec/requests/api/` | RSpec | |
 | `lib/ci/api/` | `spec/requests/ci/api/` | RSpec | |
-| `app/assets/javascripts/` | `spec/javascripts/` | Karma | More details in the [Karma JavaScript test suite](frontend_testing.md#karma-test-suite) section. |
+| `app/assets/javascripts/` | `spec/javascripts/`, `spec/frontend/` | Karma & Jest | More details in the [Frontend Testing guide](frontend_testing.md) section. |
 
 ### About controller tests
 

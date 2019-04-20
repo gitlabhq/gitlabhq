@@ -59,7 +59,7 @@ describe('CI Badge Link Component', () => {
     success_warining: {
       text: 'passed',
       label: 'passed',
-      group: 'success_with_warnings',
+      group: 'success-with-warnings',
       icon: 'status_warning',
       details_path: 'status/warning',
     },

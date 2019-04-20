@@ -1,7 +1,3 @@
-[v-cloak] {
-  display: none;
-}
-
 .user-can-drag {
   cursor: grab;
 }
@@ -40,35 +36,15 @@
   margin: 0 8px 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid $dropdown-divider-bg;
-
-  > p {
-    margin: 0;
-    font-size: 14px;
-  }
 }
 
 .issue-boards-page {
   .content-wrapper {
     padding-bottom: 0;
   }
-
-  .issues-details-filters {
-    display: flex;
-  }
-
-  .filter-form {
-    width: 100%;
-  }
-}
-
-.board-extra-actions {
-  font-size: 0;
-  white-space: nowrap;
 }
 
 .boards-app {
-  position: relative;
-
   @include media-breakpoint-up(sm) {
     transition: width $sidebar-transition-duration;
     width: 100%;
@@ -79,17 +55,9 @@
   }
 }
 
-.boards-app-loading {
-  width: 100%;
-  font-size: 34px;
-}
-
 .boards-list {
   height: calc(100vh - #{$issue-board-list-difference-xs});
-  width: 100%;
-  padding: $gl-padding ($gl-padding / 2);
   overflow-x: scroll;
-  white-space: nowrap;
   min-height: 200px;
 
   @include media-breakpoint-only(sm) {
@@ -114,13 +82,7 @@
 }
 
 .board {
-  display: inline-block;
   width: calc(85vw - 15px);
-  height: 100%;
-  padding-right: ($gl-padding / 2);
-  padding-left: ($gl-padding / 2);
-  white-space: normal;
-  vertical-align: top;
 
   @include media-breakpoint-up(sm) {
     width: 400px;
@@ -135,23 +97,7 @@
   &.is-collapsed {
     width: 50px;
 
-    .board-header {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-
-      button {
-        display: none;
-      }
-    }
-
     .board-title {
-      padding: 0;
-      border-bottom: 0;
-      justify-content: center;
-
       > span {
         width: 100%;
         margin-top: -12px;
@@ -167,34 +113,16 @@
       left: 50%;
       margin-left: -10px;
     }
-
-    .board-list-component,
-    .issue-count-badge {
-      display: none;
-    }
-  }
-
-  &:not(.is-collapsed) {
-    .board-list-component {
-      display: flex;
-      flex-direction: column;
-    }
   }
 }
 
 .board-inner {
-  position: relative;
-  height: 100%;
   font-size: $issue-boards-font-size;
   background: $gray-light;
   border: 1px solid $border-color;
-  border-radius: $border-radius-default;
-  flex: 1;
 }
 
 .board-header {
-  position: relative;
-
   &.has-border::before {
     border-top: 3px solid;
     border-color: inherit;
@@ -219,18 +147,9 @@
   }
 }
 
-.board-inner-container {
-  border-bottom: 1px solid $border-color;
-  padding: $gl-padding;
-}
-
 .board-title {
-  margin: 0;
-  padding: $gl-padding-8 $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
-  display: flex;
-  align-items: center;
 }
 
 .board-title-text {
@@ -239,10 +158,8 @@
 
 .board-delete {
   margin-right: 10px;
-  padding: 0;
   color: $gray-darkest;
   background-color: transparent;
-  border: 0;
   outline: 0;
 
   &:hover {
@@ -252,7 +169,6 @@
 
 .board-blank-state,
 .board-promotion-state {
-  padding: $gl-padding;
   background-color: $white-light;
   flex: 1;
   overflow-y: auto;
@@ -260,35 +176,23 @@
 }
 
 .board-blank-state-list {
-  list-style: none;
-
   > li:not(:last-child) {
     margin-bottom: 8px;
   }
 
   .label-color {
-    position: relative;
     top: 2px;
-    display: inline-block;
     width: 16px;
     height: 16px;
     margin-right: 3px;
-    border-radius: $border-radius-default;
   }
 }
 
 .board-list-component {
-  position: relative;
-  flex: 1;
   min-height: 0; // firefox fix
 }
 
 .board-list {
-  height: 100%;
-  width: 100%;
-  margin-bottom: 0;
-  padding: $gl-padding-4;
-  list-style: none;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -299,13 +203,9 @@
 }
 
 .board-card {
-  position: relative;
-  padding: $gl-padding;
   background: $white-light;
-  border-radius: $border-radius-default;
   border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
-  list-style: none;
   line-height: $gl-padding;
 
   &:not(:last-child) {
@@ -333,10 +233,6 @@
     }
   }
 
-  svg {
-    vertical-align: top;
-  }
-
   .confidential-icon {
     color: $orange-600;
     cursor: help;
@@ -360,12 +256,7 @@
   }
 }
 
-.board-card-header {
-  display: flex;
-}
-
 .board-card-assignee {
-  display: flex;
   margin-top: -$gl-padding-4;
   margin-bottom: -$gl-padding-4;
 
@@ -425,23 +316,9 @@
 .board-card-number {
   font-size: $gl-font-size-xs;
   color: $gl-text-color-secondary;
-  overflow: hidden;
 
   @include media-breakpoint-up(md) {
     font-size: $label-font-size;
-  }
-}
-
-.board-card-number-container {
-  overflow: hidden;
-}
-
-.issue-boards-search {
-  width: 395px;
-
-  .form-control {
-    display: inline-block;
-    width: 210px;
   }
 }
 
@@ -449,10 +326,6 @@
   padding: 10px 0;
   color: $gl-text-color-secondary;
   font-size: 13px;
-
-  > .fa {
-    margin-right: 5px;
-  }
 }
 
 .board-new-issue-form {
@@ -460,16 +333,9 @@
   margin: 5px;
 }
 
-.page-with-contextual-sidebar.layout-page .issue-boards-sidebar {
-  .issuable-sidebar-header {
-    position: relative;
-  }
-
+.issue-boards-sidebar {
   .gutter-toggle {
-    position: absolute;
-    top: 0;
     bottom: 15px;
-    right: 0;
     width: 22px;
     color: $gray-darkest;
 
@@ -489,10 +355,6 @@
   .issuable-header-text {
     @include overflow-break-word();
     padding-right: 35px;
-
-    > strong {
-      font-weight: $gl-font-weight-bold;
-    }
   }
 }
 
@@ -511,42 +373,23 @@
 }
 
 .add-issues-modal {
-  display: flex;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
   background-color: rgba($black, 0.3);
   z-index: 9999;
 }
 
 .add-issues-container {
-  display: flex;
-  flex-direction: column;
   width: 90vw;
   height: 85vh;
   max-width: 1100px;
   min-height: 500px;
-  margin: auto;
   padding: 25px 15px 0;
   background-color: $white-light;
-  border-radius: $border-radius-default;
   box-shadow: 0 2px 12px rgba($black, 0.5);
 
   .empty-state {
-    display: flex;
-    flex: 1;
-    margin-top: 0;
-
     &.add-issues-empty-state-filter {
       flex-direction: column;
       justify-content: center;
-    }
-
-    > .row {
-      width: 100%;
-      margin: auto 0;
     }
 
     .svg-content {
@@ -557,22 +400,12 @@
 
 .add-issues-header {
   margin: -25px -15px -5px;
-  border-top: 0;
   border-bottom: 1px solid $border-color;
   border-top-right-radius: $border-radius-default;
   border-top-left-radius: $border-radius-default;
 
   > h2 {
-    margin: 0;
     font-size: 18px;
-  }
-}
-
-.add-issues-search {
-  display: flex;
-
-  .issues-filters {
-    flex: 1;
   }
 }
 
@@ -589,8 +422,6 @@
 }
 
 .add-issues-list {
-  display: flex;
-  flex: 1;
   padding-top: 3px;
   margin-left: -$gl-vert-padding;
   margin-right: -$gl-vert-padding;
@@ -605,14 +436,6 @@
     box-shadow: 0 1px 2px rgba($issue-boards-card-shadow, 0.3);
     cursor: pointer;
   }
-}
-
-.add-issues-list-loading {
-  align-self: center;
-  width: 100%;
-  padding-left: $gl-vert-padding;
-  padding-right: $gl-vert-padding;
-  font-size: 35px;
 }
 
 .add-issues-footer {
@@ -640,27 +463,6 @@
   font-size: 9px;
   line-height: 15px;
   border-radius: 50%;
-}
-
-.modal-filters {
-  display: flex;
-
-  > .dropdown {
-    display: none;
-    margin-right: 10px;
-
-    @include media-breakpoint-up(sm) {
-      display: block;
-    }
-  }
-
-  .dropdown-menu-toggle {
-    width: 100px;
-
-    @include media-breakpoint-up(md) {
-      width: 140px;
-    }
-  }
 }
 
 .board-card-info {

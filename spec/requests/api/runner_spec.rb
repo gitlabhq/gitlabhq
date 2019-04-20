@@ -168,6 +168,32 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         end
       end
 
+      context 'when access_level is provided for Runner' do
+        context 'when access_level is set to ref_protected' do
+          it 'creates runner' do
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    access_level: 'ref_protected'
+                                  }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.ref_protected?).to be true
+          end
+        end
+
+        context 'when access_level is set to not_protected' do
+          it 'creates runner' do
+            post api('/runners'), params: {
+                                    token: registration_token,
+                                    access_level: 'not_protected'
+                                  }
+
+            expect(response).to have_gitlab_http_status 201
+            expect(Ci::Runner.first.ref_protected?).to be false
+          end
+        end
+      end
+
       context 'when maximum job timeout is specified' do
         it 'creates runner' do
           post api('/runners'), params: {

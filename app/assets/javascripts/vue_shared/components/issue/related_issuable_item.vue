@@ -81,8 +81,11 @@ export default {
             :title="stateTitle"
             :aria-label="state"
             data-html="true"
+            class="d-xl-none"
           />
-          <span v-tooltip :title="itemPath" class="path-id-text">{{ itemPath }}</span>
+          <span v-tooltip :title="itemPath" class="path-id-text d-inline-block">{{
+            itemPath
+          }}</span>
           {{ pathIdSeparator }}{{ itemId }}
         </div>
         <div class="item-meta-child d-flex align-items-center">

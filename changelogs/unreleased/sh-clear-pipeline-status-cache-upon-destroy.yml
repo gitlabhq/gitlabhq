@@ -1,5 +1,0 @@
----
-title: Clear pipeline status cache after destruction of pipeline
-merge_request: 26575
-author:
-type: fixed

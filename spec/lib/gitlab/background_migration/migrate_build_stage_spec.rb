@@ -51,7 +51,7 @@ describe Gitlab::BackgroundMigration::MigrateBuildStage, :migration, schema: 201
                                                       statuses[:pending]]
   end
 
-  it 'recovers from unique constraint violation only twice' do
+  it 'recovers from unique constraint violation only twice', :quarantine do
     allow(described_class::Migratable::Stage)
       .to receive(:find_by).and_return(nil)
 

@@ -10,5 +10,5 @@
           - actions.each do |action|
             - next unless can?(current_user, :update_build, action)
             %li
-              = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow', class: 'btn' do
+              = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
                 %span= action.name

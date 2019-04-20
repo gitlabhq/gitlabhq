@@ -83,7 +83,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def render_missing_personal_access_token
     render plain: "HTTP Basic: Access denied\n" \
-                  "You must use a personal access token with 'api' scope for Git over HTTP.\n" \
+                  "You must use a personal access token with 'read_repository' or 'write_repository' scope for Git over HTTP.\n" \
                   "You can generate one at #{profile_personal_access_tokens_url}",
            status: :unauthorized
   end

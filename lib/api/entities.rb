@@ -922,7 +922,15 @@ module API
     end
 
     class NamespaceBasic < Grape::Entity
-      expose :id, :name, :path, :kind, :full_path, :parent_id
+      expose :id, :name, :path, :kind, :full_path, :parent_id, :avatar_url
+
+      expose :web_url do |namespace|
+        if namespace.user?
+          Gitlab::Routing.url_helpers.user_url(namespace.owner)
+        else
+          namespace.web_url
+        end
+      end
     end
 
     class Namespace < NamespaceBasic

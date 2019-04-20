@@ -517,7 +517,7 @@ class User < ApplicationRecord
     def ghost
       email = 'ghost%s@example.com'
       unique_internal(where(ghost: true), 'ghost', email) do |u|
-        u.bio = 'This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.'
+        u.bio = _('This is a "Ghost User", created to hold all issues authored by users that have since been deleted. This user cannot be removed.')
         u.name = 'Ghost User'
       end
     end
@@ -537,20 +537,16 @@ class User < ApplicationRecord
     username
   end
 
-  def self.internal_attributes
-    [:ghost]
-  end
-
   def internal?
-    self.class.internal_attributes.any? { |a| self[a] }
+    ghost?
   end
 
   def self.internal
-    where(Hash[internal_attributes.zip([true] * internal_attributes.size)])
+    where(ghost: true)
   end
 
   def self.non_internal
-    where(internal_attributes.map { |attr| "#{attr} IS NOT TRUE" }.join(" AND "))
+    where('ghost IS NOT TRUE')
   end
 
   #
@@ -626,32 +622,32 @@ class User < ApplicationRecord
 
   def namespace_move_dir_allowed
     if namespace&.any_project_has_container_registry_tags?
-      errors.add(:username, 'cannot be changed if a personal project has container registry tags.')
+      errors.add(:username, _('cannot be changed if a personal project has container registry tags.'))
     end
   end
 
   def unique_email
     if !emails.exists?(email: email) && Email.exists?(email: email)
-      errors.add(:email, 'has already been taken')
+      errors.add(:email, _('has already been taken'))
     end
   end
 
   def owns_notification_email
     return if temp_oauth_email?
 
-    errors.add(:notification_email, "is not an email you own") unless all_emails.include?(notification_email)
+    errors.add(:notification_email, _("is not an email you own")) unless all_emails.include?(notification_email)
   end
 
   def owns_public_email
     return if public_email.blank?
 
-    errors.add(:public_email, "is not an email you own") unless all_emails.include?(public_email)
+    errors.add(:public_email, _("is not an email you own")) unless all_emails.include?(public_email)
   end
 
   def owns_commit_email
     return if read_attribute(:commit_email).blank?
 
-    errors.add(:commit_email, "is not an email you own") unless verified_emails.include?(commit_email)
+    errors.add(:commit_email, _("is not an email you own")) unless verified_emails.include?(commit_email)
   end
 
   # Define commit_email-related attribute methods explicitly instead of relying

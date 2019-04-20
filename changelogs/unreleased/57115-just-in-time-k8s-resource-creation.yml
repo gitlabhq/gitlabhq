@@ -1,5 +1,0 @@
----
-title: Create Kubernetes resources for projects when their deployment jobs run.
-merge_request: 25586
-author:
-type: changed

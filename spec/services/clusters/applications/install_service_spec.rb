@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Clusters::Applications::InstallService do
@@ -58,7 +60,7 @@ describe Clusters::Applications::InstallService do
       let(:error) { StandardError.new('something bad happened') }
 
       before do
-        expect(application).to receive(:make_installing!).once.and_raise(error)
+        expect(helm_client).to receive(:install).with(install_command).and_raise(error)
       end
 
       include_examples 'logs kubernetes errors' do
@@ -68,12 +70,10 @@ describe Clusters::Applications::InstallService do
       end
 
       it 'make the application errored' do
-        expect(helm_client).not_to receive(:install)
-
         service.execute
 
         expect(application).to be_errored
-        expect(application.status_reason).to eq("Can't start installation process.")
+        expect(application.status_reason).to eq('Failed to install.')
       end
     end
   end

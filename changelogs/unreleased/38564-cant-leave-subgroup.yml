@@ -1,5 +1,0 @@
----
-title: Allow removing last owner from subgroup if parent group has owners
-merge_request: 26718
-author:
-type: changed

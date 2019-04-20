@@ -64,6 +64,11 @@ export default {
       required: false,
       default: '',
     },
+    isFluidLayout: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     const treeWidth =
@@ -116,7 +121,7 @@ export default {
       return this.treeWidth <= TREE_HIDE_STATS_WIDTH;
     },
     isLimitedContainer() {
-      return !this.showTreeList && !this.isParallelView;
+      return !this.showTreeList && !this.isParallelView && !this.isFluidLayout;
     },
   },
   watch: {

@@ -291,22 +291,22 @@ class Milestone < ApplicationRecord
     end
 
     title_exists = relation.find_by_title(title)
-    errors.add(:title, "already being used for another group or project milestone.") if title_exists
+    errors.add(:title, _("already being used for another group or project milestone.")) if title_exists
   end
 
   # Milestone should be either a project milestone or a group milestone
   def milestone_type_check
     if group_id && project_id
       field = project_id_changed? ? :project_id : :group_id
-      errors.add(field, "milestone should belong either to a project or a group.")
+      errors.add(field, _("milestone should belong either to a project or a group."))
     end
   end
 
   def milestone_format_reference(format = :iid)
-    raise ArgumentError, 'Unknown format' unless [:iid, :name].include?(format)
+    raise ArgumentError, _('Unknown format') unless [:iid, :name].include?(format)
 
     if group_milestone? && format == :iid
-      raise ArgumentError, 'Cannot refer to a group milestone by an internal id!'
+      raise ArgumentError, _('Cannot refer to a group milestone by an internal id!')
     end
 
     if format == :name && !name.include?('"')
@@ -322,7 +322,7 @@ class Milestone < ApplicationRecord
 
   def start_date_should_be_less_than_due_date
     if due_date <= start_date
-      errors.add(:due_date, "must be greater than start date")
+      errors.add(:due_date, _("must be greater than start date"))
     end
   end
 

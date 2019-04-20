@@ -26,9 +26,17 @@ describe Autocomplete::UsersFinder do
       it { is_expected.to match_array([project.owner]) }
 
       context 'when author_id passed' do
-        let(:params) { { author_id: user2.id } }
+        context 'and author is active' do
+          let(:params) { { author_id: user1.id } }
 
-        it { is_expected.to match_array([project.owner, user2]) }
+          it { is_expected.to match_array([project.owner, user1]) }
+        end
+
+        context 'and author is blocked' do
+          let(:params) { { author_id: user2.id } }
+
+          it { is_expected.to match_array([project.owner]) }
+        end
       end
     end
 
@@ -104,9 +112,9 @@ describe Autocomplete::UsersFinder do
     end
 
     context 'when filtered by author_id' do
-      let(:params) { { author_id: user2.id } }
+      let(:params) { { author_id: user1.id } }
 
-      it { is_expected.to match_array([user2, user1, external_user, omniauth_user, current_user]) }
+      it { is_expected.to match_array([user1, external_user, omniauth_user, current_user]) }
     end
   end
 end

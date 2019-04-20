@@ -1,0 +1,5 @@
+---
+title: Validate refs used in controllers don't have spaces
+merge_request: 24037
+author:
+type: other

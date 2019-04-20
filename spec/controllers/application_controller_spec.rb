@@ -1,4 +1,5 @@
 # coding: utf-8
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe ApplicationController do
@@ -461,7 +462,7 @@ describe ApplicationController do
     end
 
     it 'does log correlation id' do
-      Gitlab::CorrelationId.use_id('new-id') do
+      Labkit::Correlation::CorrelationId.use_id('new-id') do
         get :index
       end
 

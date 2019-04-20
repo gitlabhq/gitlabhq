@@ -1,0 +1,6 @@
+---
+title: Fix some label links not appearing on group labels page and label title being
+  a link on project labels page
+merge_request: 24060
+author: Tanya Pazitny
+type: fixed

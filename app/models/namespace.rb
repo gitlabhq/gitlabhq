@@ -51,6 +51,7 @@ class Namespace < ApplicationRecord
   validate :nesting_level_allowed
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
+  delegate :avatar_url, to: :owner, allow_nil: true
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
@@ -147,6 +148,10 @@ class Namespace < ApplicationRecord
 
   def kind
     type == 'Group' ? 'group' : 'user'
+  end
+
+  def user?
+    kind == 'user'
   end
 
   def find_fork_of(project)

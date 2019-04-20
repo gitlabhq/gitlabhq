@@ -18,7 +18,7 @@ module TestHooks
 
     def merge_requests_events_data
       merge_request = MergeRequest.of_projects(current_user.projects.select(:id)).first
-      throw(:validation_error, 'Ensure one of your projects has merge requests.') unless merge_request.present?
+      throw(:validation_error, s_('TestHooks|Ensure one of your projects has merge requests.')) unless merge_request.present?
 
       merge_request.to_hook_data(current_user)
     end

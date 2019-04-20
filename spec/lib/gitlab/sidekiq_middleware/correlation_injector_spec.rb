@@ -30,7 +30,7 @@ describe Gitlab::SidekiqMiddleware::CorrelationInjector do
   it 'injects into payload the correlation id' do
     expect_any_instance_of(described_class).to receive(:call).and_call_original
 
-    Gitlab::CorrelationId.use_id('new-correlation-id') do
+    Labkit::Correlation::CorrelationId.use_id('new-correlation-id') do
       TestWorker.perform_async(1234)
     end
 

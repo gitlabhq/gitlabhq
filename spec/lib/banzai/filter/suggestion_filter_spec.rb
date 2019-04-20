@@ -28,30 +28,11 @@ describe Banzai::Filter::SuggestionFilter do
     let(:data_attr) { Banzai::Filter::SyntaxHighlightFilter::LANG_PARAMS_ATTR }
     let(:input) { %(<pre class="code highlight js-syntax-highlight suggestion" #{data_attr}="-3+2"><code>foo\n</code></pre>) }
 
-    context 'feature disabled' do
-      before do
-        stub_feature_flags(multi_line_suggestions: false)
-      end
+    it 'element has correct data-lang-params' do
+      doc = filter(input, default_context)
+      pre = doc.css('pre').first
 
-      it 'removes data-lang-params if it matches a multi-line suggestion param' do
-        doc = filter(input, default_context)
-        pre = doc.css('pre').first
-
-        expect(pre[data_attr]).to be_nil
-      end
-    end
-
-    context 'feature enabled' do
-      before do
-        stub_feature_flags(multi_line_suggestions: true)
-      end
-
-      it 'keeps data-lang-params' do
-        doc = filter(input, default_context)
-        pre = doc.css('pre').first
-
-        expect(pre[data_attr]).to eq('-3+2')
-      end
+      expect(pre[data_attr]).to eq('-3+2')
     end
   end
 end

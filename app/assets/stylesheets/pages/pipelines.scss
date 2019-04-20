@@ -785,7 +785,7 @@
   }
 
   &.ci-status-icon-pending,
-  &.ci-status-icon-success_with_warnings {
+  &.ci-status-icon-success-with-warnings {
     @include mini-pipeline-graph-color($white, $orange-100, $orange-200, $orange-500, $orange-600, $orange-700);
   }
 

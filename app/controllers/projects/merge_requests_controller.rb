@@ -98,20 +98,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def test_reports
-    result = @merge_request.compare_test_reports
-
-    case result[:status]
-    when :parsing
-      Gitlab::PollingInterval.set_header(response, interval: 3000)
-
-      render json: '', status: :no_content
-    when :parsed
-      render json: result[:data].to_json, status: :ok
-    when :error
-      render json: { status_reason: result[:status_reason] }, status: :bad_request
-    else
-      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
-    end
+    reports_response(@merge_request.compare_test_reports)
   end
 
   def edit
@@ -352,5 +339,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42441
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42438')
+  end
+
+  def reports_response(report_comparison)
+    case report_comparison[:status]
+    when :parsing
+      ::Gitlab::PollingInterval.set_header(response, interval: 3000)
+
+      render json: '', status: :no_content
+    when :parsed
+      render json: report_comparison[:data].to_json, status: :ok
+    when :error
+      render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
+    else
+      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
+    end
   end
 end

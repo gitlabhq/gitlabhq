@@ -14,9 +14,11 @@ variables:
   KITCHEN_LOCAL_YAML: ".kitchen.dokken.yml"
 
 stages:
+  - build
   - lint
-  - unit
+  - test
   - functional
+  - deploy
 
 foodcritic:
   stage: lint
@@ -29,7 +31,7 @@ cookstyle:
   - chef exec cookstyle .
 
 chefspec:
-  stage: unit
+  stage: test
   script:
   - chef exec rspec spec
 

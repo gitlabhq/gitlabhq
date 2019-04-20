@@ -1,5 +1,0 @@
----
-title: Prevent namespace dropdown in new project form from exceeding container
-merge_request: 26343
-author:
-type: fixed

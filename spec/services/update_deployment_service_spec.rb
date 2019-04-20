@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe UpdateDeploymentService do
   let(:user) { create(:user) }
+  let(:project) { create(:project, :repository) }
   let(:options) { { name: 'production' } }
 
   let(:job) do
@@ -13,24 +16,22 @@ describe UpdateDeploymentService do
       project: project)
   end
 
-  let(:project) { create(:project, :repository) }
-  let(:environment) { deployment.environment }
   let(:deployment) { job.deployment }
-  let(:service) { described_class.new(deployment) }
+  let(:environment) { deployment.environment }
+
+  subject(:service) { described_class.new(deployment) }
 
   before do
     job.success! # Create/Succeed deployment
   end
 
   describe '#execute' do
-    subject { service.execute }
-
     let(:store) { Gitlab::EtagCaching::Store.new }
 
     it 'invalidates the environment etag cache' do
       old_value = store.get(environment.etag_cache_key)
 
-      subject
+      service.execute
 
       expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
     end
@@ -40,14 +41,30 @@ describe UpdateDeploymentService do
         .to receive(:create_ref)
         .with(deployment.ref, deployment.send(:ref_path))
 
-      subject
+      service.execute
     end
 
     it 'updates merge request metrics' do
       expect_any_instance_of(Deployment)
         .to receive(:update_merge_request_metrics!)
 
-      subject
+      service.execute
+    end
+
+    it 'returns the deployment' do
+      expect(subject.execute).to eq(deployment)
+    end
+
+    it 'returns the deployment when could not save the environment' do
+      allow(environment).to receive(:save).and_return(false)
+
+      expect(subject.execute).to eq(deployment)
+    end
+
+    it 'returns the deployment when environment is stopped' do
+      allow(environment).to receive(:stopped?).and_return(true)
+
+      expect(subject.execute).to eq(deployment)
     end
 
     context 'when start action is defined' do
@@ -59,7 +76,7 @@ describe UpdateDeploymentService do
         end
 
         it 'makes environment available' do
-          subject
+          service.execute
 
           expect(environment.reload).to be_available
         end
@@ -78,11 +95,11 @@ describe UpdateDeploymentService do
       end
 
       it 'does not create a new environment' do
-        expect { subject }.not_to change { Environment.count }
+        expect { subject.execute }.not_to change { Environment.count }
       end
 
       it 'updates external url' do
-        subject
+        subject.execute
 
         expect(subject.environment.name).to eq('review-apps/master')
         expect(subject.environment.external_url).to eq('http://master.review-apps.gitlab.com')

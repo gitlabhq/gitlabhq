@@ -5,9 +5,9 @@ module Ci
     def execute(pipeline)
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, :destroy_pipeline, pipeline)
 
-      pipeline.destroy!
+      Ci::ExpirePipelineCacheService.new.execute(pipeline, delete: true)
 
-      Gitlab::Cache::Ci::ProjectPipelineStatus.new(pipeline.project).delete_from_cache
+      pipeline.destroy!
     end
   end
 end

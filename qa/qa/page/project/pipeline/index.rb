@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module QA::Page
   module Project::Pipeline
     class Index < QA::Page::Base

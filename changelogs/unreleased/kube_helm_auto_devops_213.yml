@@ -1,5 +1,0 @@
----
-title: Bump kubectl to 1.11.9 and Helm to 2.13.1 in Auto-DevOps.gitlab-ci.yml
-merge_request: 26534
-author:
-type: other

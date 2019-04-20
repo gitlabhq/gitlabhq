@@ -43,9 +43,9 @@ module Gitlab
           @updates[:state_event] = 'reopen'
         end
 
-        desc 'Change title'
+        desc _('Change title')
         explanation do |title_param|
-          "Changes the title to \"#{title_param}\"."
+          _("Changes the title to \"%{title_param}\".") % { title_param: title_param }
         end
         params '<New title>'
         types Issuable
@@ -57,7 +57,7 @@ module Gitlab
           @updates[:title] = title_param
         end
 
-        desc 'Add label(s)'
+        desc _('Add label(s)')
         explanation do |labels_param|
           labels = find_label_references(labels_param)
 
@@ -81,13 +81,13 @@ module Gitlab
           end
         end
 
-        desc 'Remove all or specific label(s)'
+        desc _('Remove all or specific label(s)')
         explanation do |labels_param = nil|
           if labels_param.present?
             labels = find_label_references(labels_param)
             "Removes #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
           else
-            'Removes all labels.'
+            _('Removes all labels.')
           end
         end
         params '~label1 ~"label 2"'
@@ -112,7 +112,7 @@ module Gitlab
           end
         end
 
-        desc 'Replace all label(s)'
+        desc _('Replace all label(s)')
         explanation do |labels_param|
           labels = find_label_references(labels_param)
           "Replaces all labels with #{labels.join(' ')} #{'label'.pluralize(labels.count)}." if labels.any?
@@ -135,8 +135,8 @@ module Gitlab
           end
         end
 
-        desc 'Add a todo'
-        explanation 'Adds a todo.'
+        desc _('Add a todo')
+        explanation _('Adds a todo.')
         types Issuable
         condition do
           quick_action_target.persisted? &&
@@ -146,8 +146,8 @@ module Gitlab
           @updates[:todo_event] = 'add'
         end
 
-        desc 'Mark todo as done'
-        explanation 'Marks todo as done.'
+        desc _('Mark todo as done')
+        explanation _('Marks todo as done.')
         types Issuable
         condition do
           quick_action_target.persisted? &&
@@ -157,7 +157,7 @@ module Gitlab
           @updates[:todo_event] = 'done'
         end
 
-        desc 'Subscribe'
+        desc _('Subscribe')
         explanation do
           "Subscribes to this #{quick_action_target.to_ability_name.humanize(capitalize: false)}."
         end
@@ -170,7 +170,7 @@ module Gitlab
           @updates[:subscription_event] = 'subscribe'
         end
 
-        desc 'Unsubscribe'
+        desc _('Unsubscribe')
         explanation do
           "Unsubscribes from this #{quick_action_target.to_ability_name.humanize(capitalize: false)}."
         end
@@ -183,9 +183,9 @@ module Gitlab
           @updates[:subscription_event] = 'unsubscribe'
         end
 
-        desc 'Toggle emoji award'
+        desc _('Toggle emoji award')
         explanation do |name|
-          "Toggles :#{name}: emoji award." if name
+          _("Toggles :%{name}: emoji award.") % { name: name } if name
         end
         params ':emoji:'
         types Issuable
@@ -202,14 +202,14 @@ module Gitlab
           end
         end
 
-        desc "Append the comment with #{SHRUG}"
+        desc _("Append the comment with %{shrug}") % { shrug: SHRUG }
         params '<Comment>'
         types Issuable
         substitution :shrug do |comment|
           "#{comment} #{SHRUG}"
         end
 
-        desc "Append the comment with #{TABLEFLIP}"
+        desc _("Append the comment with %{TABLEFLIP}") % { tableflip: TABLEFLIP }
         params '<Comment>'
         types Issuable
         substitution :tableflip do |comment|

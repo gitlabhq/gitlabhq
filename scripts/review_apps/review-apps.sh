@@ -68,7 +68,7 @@ function delete() {
 
   echoinfo "Deleting release '$name'..." true
 
-  helm delete --purge "$name" || true
+  helm delete --purge "$name"
 }
 
 function cleanup() {
@@ -81,8 +81,8 @@ function cleanup() {
 
   kubectl -n "$KUBE_NAMESPACE" delete \
     ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa \
-    -l release="$CI_ENVIRONMENT_SLUG" \
-    || true
+    --now --ignore-not-found --include-uninitialized \
+    -l release="$CI_ENVIRONMENT_SLUG"
 }
 
 function get_pod() {
@@ -109,7 +109,7 @@ function perform_review_app_deployment() {
   ensure_namespace
   install_tiller
   install_external_dns
-  time deploy || true
+  time deploy
   wait_for_review_app_to_be_accessible
   add_license
 }
@@ -270,7 +270,7 @@ EOF
   echoinfo "Deploying with:"
   echoinfo "${HELM_CMD}"
 
-  eval $HELM_CMD
+  eval $HELM_CMD || true
 }
 
 function wait_for_review_app_to_be_accessible() {

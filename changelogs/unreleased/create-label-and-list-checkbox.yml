@@ -1,5 +1,0 @@
----
-title: 'Added "Add List" checkbox to create label dropdown to make creation of list optional'
-merge_request: 25716
-author: Tucker Chapman
-type: fixed

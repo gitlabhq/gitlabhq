@@ -1480,11 +1480,19 @@ describe API::Issues do
       let(:params) { { title: 'new issue', labels: 'label, label2', created_at: creation_time } }
 
       context 'by an admin' do
-        it 'sets the creation time on the new issue' do
+        before do
           post api("/projects/#{project.id}/issues", admin), params: params
+        end
 
+        it 'sets the creation time on the new issue' do
           expect(response).to have_gitlab_http_status(201)
           expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        end
+
+        it 'sets the system notes timestamp based on creation time' do
+          issue = Issue.find(json_response['id'])
+
+          expect(issue.resource_label_events.last.created_at).to be_like_time(creation_time)
         end
       end
 

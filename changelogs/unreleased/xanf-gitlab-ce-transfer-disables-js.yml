@@ -1,5 +1,0 @@
----
-title: Group transfer now properly redirects to edit on failure
-merge_request: 26837
-author:
-type: fixed

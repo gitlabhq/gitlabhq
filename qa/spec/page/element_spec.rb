@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe QA::Page::Element do
   describe '#selector' do
     it 'transforms element name into QA-specific selector' do

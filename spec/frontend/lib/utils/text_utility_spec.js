@@ -49,12 +49,6 @@ describe('text_utility', () => {
     });
   });
 
-  describe('slugify', () => {
-    it('should remove accents and convert to lower case', () => {
-      expect(textUtils.slugify('João')).toEqual('joão');
-    });
-  });
-
   describe('capitalizeFirstCharacter', () => {
     it('returns string with first letter capitalized', () => {
       expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
@@ -147,6 +141,12 @@ describe('text_utility', () => {
       expect(textUtils.truncatePathMiddleToLength('app/test/merge_request/diff', 13)).toEqual(
         'app/…/…/diff',
       );
+    });
+  });
+
+  describe('slugifyWithUnderscore', () => {
+    it('should replaces whitespaces with underscore and convert to lower case', () => {
+      expect(textUtils.slugifyWithUnderscore('My Input String')).toEqual('my_input_string');
     });
   });
 

@@ -45,7 +45,7 @@ class Upload < ApplicationRecord
   end
 
   def absolute_path
-    raise ObjectStorage::RemoteStoreError, "Remote object has no absolute path." unless local?
+    raise ObjectStorage::RemoteStoreError, _("Remote object has no absolute path.") unless local?
     return path unless relative_path?
 
     uploader_class.absolute_path(self)
@@ -71,10 +71,10 @@ class Upload < ApplicationRecord
     # Help sysadmins find missing upload files
     if persisted? && !exist
       if Gitlab::Sentry.enabled?
-        Raven.capture_message("Upload file does not exist", extra: self.attributes)
+        Raven.capture_message(_("Upload file does not exist"), extra: self.attributes)
       end
 
-      Gitlab::Metrics.counter(:upload_file_does_not_exist_total, 'The number of times an upload record could not find its file').increment
+      Gitlab::Metrics.counter(:upload_file_does_not_exist_total, _('The number of times an upload record could not find its file')).increment
     end
 
     exist

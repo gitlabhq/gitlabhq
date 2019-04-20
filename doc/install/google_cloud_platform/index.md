@@ -12,7 +12,7 @@ NOTE: **Note:**
 Google provides a whitepaper for [deploying production-ready GitLab on
 Google Kubernetes Engine](https://cloud.google.com/solutions/deploying-production-ready-gitlab-on-gke),
 including all steps and external resource configuration. These are an alternative to using a GCP VM, and use
-the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts).
+the [Cloud native GitLab Helm chart](https://docs.gitlab.com/charts/).
 
 ## Prerequisites
 

@@ -44,6 +44,36 @@ describe ExtractsPath do
       end
     end
 
+    context 'ref contains trailing space' do
+      let(:ref) { 'master ' }
+
+      it 'strips surrounding space' do
+        assign_ref_vars
+
+        expect(@ref).to eq('master')
+      end
+    end
+
+    context 'ref contains leading space' do
+      let(:ref) { ' master ' }
+
+      it 'strips surrounding space' do
+        assign_ref_vars
+
+        expect(@ref).to eq('master')
+      end
+    end
+
+    context 'ref contains space in the middle' do
+      let(:ref) { 'master plan ' }
+
+      it 'returns 404' do
+        expect(self).to receive(:render_404)
+
+        assign_ref_vars
+      end
+    end
+
     context 'path contains space' do
       let(:params) { { path: 'with space', ref: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' } }
 

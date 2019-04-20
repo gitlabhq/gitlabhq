@@ -1,5 +1,0 @@
----
-title: collapse file tree by default if the merge request changes only one file
-merge_request:
-author: Riccardo Padovani <riccardo@rpadovani.com>
-type: changed

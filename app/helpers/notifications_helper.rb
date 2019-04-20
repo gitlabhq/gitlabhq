@@ -93,4 +93,11 @@ module NotificationsHelper
       s_(event.to_s.humanize)
     end
   end
+
+  def notification_setting_icon(notification_setting)
+    sprite_icon(
+      notification_setting.disabled? ? "notifications-off" : "notifications",
+      css_class: "icon notifications-icon js-notifications-icon"
+    )
+  end
 end

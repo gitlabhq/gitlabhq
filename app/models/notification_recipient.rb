@@ -47,14 +47,14 @@ class NotificationRecipient
 
   def suitable_notification_level?
     case notification_level
-    when :disabled, nil
-      false
-    when :custom
-      custom_enabled? || %i[participating mention].include?(@type)
-    when :watch, :participating
-      !action_excluded?
     when :mention
       @type == :mention
+    when :participating
+      !excluded_participating_action? && %i[participating mention watch].include?(@type)
+    when :custom
+      custom_enabled? || %i[participating mention].include?(@type)
+    when :watch
+      !excluded_watcher_action?
     else
       false
     end
@@ -100,18 +100,14 @@ class NotificationRecipient
     end
   end
 
-  def action_excluded?
-    excluded_watcher_action? || excluded_participating_action?
-  end
-
   def excluded_watcher_action?
-    return false unless @custom_action && notification_level == :watch
+    return false unless @custom_action
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
   end
 
   def excluded_participating_action?
-    return false unless @custom_action && notification_level == :participating
+    return false unless @custom_action
 
     NotificationSetting::EXCLUDED_PARTICIPATING_EVENTS.include?(@custom_action)
   end

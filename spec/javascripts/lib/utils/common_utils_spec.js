@@ -894,4 +894,14 @@ describe('common_utils', () => {
       expect(commonUtils.isInViewport(el)).toBe(false);
     });
   });
+
+  describe('isScopedLabel', () => {
+    it('returns true when `::` is present in title', () => {
+      expect(commonUtils.isScopedLabel({ title: 'foo::bar' })).toBe(true);
+    });
+
+    it('returns false when `::` is not present', () => {
+      expect(commonUtils.isScopedLabel({ title: 'foobar' })).toBe(false);
+    });
+  });
 });

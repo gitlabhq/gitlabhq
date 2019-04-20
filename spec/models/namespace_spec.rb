@@ -63,6 +63,11 @@ describe Namespace do
     end
   end
 
+  describe 'delegate' do
+    it { is_expected.to delegate_method(:name).to(:owner).with_prefix.with_arguments(allow_nil: true) }
+    it { is_expected.to delegate_method(:avatar_url).to(:owner).with_arguments(allow_nil: true) }
+  end
+
   describe "Respond to" do
     it { is_expected.to respond_to(:human_name) }
     it { is_expected.to respond_to(:to_param) }
@@ -799,6 +804,23 @@ describe Namespace do
 
         it { is_expected.to eq(false) }
       end
+    end
+  end
+
+  describe '#user?' do
+    subject { namespace.user? }
+
+    context 'when type is a user' do
+      let(:user) { create(:user) }
+      let(:namespace) { user.namespace }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when type is a group' do
+      let(:namespace) { create(:group) }
+
+      it { is_expected.to be_falsy }
     end
   end
 end

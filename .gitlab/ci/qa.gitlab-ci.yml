@@ -1,0 +1,20 @@
+package-and-qa:
+  image: ruby:2.5-alpine
+  stage: test
+  before_script: []
+  dependencies: []
+  cache: {}
+  variables:
+    GIT_DEPTH: "1"
+    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
+  retry: 0
+  script:
+    - apk add --update openssl curl jq
+    - gem install gitlab --no-document
+    - source ./scripts/review_apps/review-apps.sh
+    - wait_for_job_to_be_done "gitlab:assets:compile"
+    - ./scripts/trigger-build omnibus
+  when: manual
+  only:
+    - /.+/@gitlab-org/gitlab-ce
+    - /.+/@gitlab-org/gitlab-ee

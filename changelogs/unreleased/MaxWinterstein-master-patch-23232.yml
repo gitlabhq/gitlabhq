@@ -1,5 +1,0 @@
----
-title: Unify behaviour of 'Copy commit SHA to clipboard' to use full commit SHA.
-merge_request: 25829
-author: Max Winterstein
-type: changed

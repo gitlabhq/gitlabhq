@@ -37,7 +37,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       autodevops_anchor_data(show_auto_devops_callout: show_auto_devops_callout),
       kubernetes_cluster_anchor_data,
       gitlab_ci_anchor_data
-    ].compact.reject(&:is_link)
+    ].compact.reject(&:is_link).sort_by.with_index { |item, idx| [item.class_modifier ? 0 : 1, idx] }
   end
 
   def empty_repo_statistics_anchors
@@ -259,7 +259,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
       if auto_devops_enabled?
         AnchorData.new(false,
-                       statistic_icon('doc-text') + _('Auto DevOps enabled'),
+                       statistic_icon('settings') + _('Auto DevOps enabled'),
                        project_settings_ci_cd_path(project, anchor: 'autodevops-settings'),
                        'default')
       else

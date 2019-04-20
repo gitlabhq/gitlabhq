@@ -42,7 +42,7 @@ class Profiles::PersonalAccessTokensController < Profiles::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def set_index_vars
-    @scopes = Gitlab::Auth.available_scopes(current_user)
+    @scopes = Gitlab::Auth.available_scopes_for(current_user)
 
     @inactive_personal_access_tokens = finder(state: 'inactive').execute
     @active_personal_access_tokens = finder(state: 'active').execute.order(:expires_at)

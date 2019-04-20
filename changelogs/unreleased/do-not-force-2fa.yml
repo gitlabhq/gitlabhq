@@ -1,6 +1,0 @@
----
-title: Add link on two-factor authorization settings page to leave group that enforces
-  two-factor authorization
-merge_request: 25731
-author:
-type: changed

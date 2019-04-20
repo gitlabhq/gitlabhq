@@ -4,6 +4,7 @@ module Ci
   class JobArtifact < ApplicationRecord
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
+    include UpdateProjectStatistics
     extend Gitlab::Ci::Model
 
     NotSupportedAdapterError = Class.new(StandardError)
@@ -21,7 +22,8 @@ module Ci
       container_scanning: 'gl-container-scanning-report.json',
       dast: 'gl-dast-report.json',
       license_management: 'gl-license-management-report.json',
-      performance: 'performance.json'
+      performance: 'performance.json',
+      metrics: 'metrics.txt'
     }.freeze
 
     TYPE_AND_FORMAT_PAIRS = {
@@ -29,6 +31,7 @@ module Ci
       metadata: :gzip,
       trace: :raw,
       junit: :gzip,
+      metrics: :gzip,
 
       # All these file formats use `raw` as we need to store them uncompressed
       # for Frontend to fetch the files and do analysis
@@ -50,8 +53,8 @@ module Ci
     validates :file_format, presence: true, unless: :trace?, on: :create
     validate :valid_file_format?, unless: :trace?, on: :create
     before_save :set_size, if: :file_changed?
-    after_save :update_project_statistics_after_save, if: :size_changed?
-    after_destroy :update_project_statistics_after_destroy, unless: :project_destroyed?
+
+    update_project_statistics stat: :build_artifacts_size
 
     after_save :update_file_store, if: :file_changed?
 
@@ -88,7 +91,8 @@ module Ci
       dast: 8, ## EE-specific
       codequality: 9, ## EE-specific
       license_management: 10, ## EE-specific
-      performance: 11 ## EE-specific
+      performance: 11, ## EE-specific
+      metrics: 12 ## EE-specific
     }
 
     enum file_format: {
@@ -171,18 +175,6 @@ module Ci
 
     def set_size
       self.size = file.size
-    end
-
-    def update_project_statistics_after_save
-      update_project_statistics(size.to_i - size_was.to_i)
-    end
-
-    def update_project_statistics_after_destroy
-      update_project_statistics(-self.size.to_i)
-    end
-
-    def update_project_statistics(difference)
-      ProjectStatistics.increment_statistic(project_id, :build_artifacts_size, difference)
     end
 
     def project_destroyed?
