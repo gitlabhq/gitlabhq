@@ -11,6 +11,10 @@ module JavaScriptFixturesHelpers
     base.around do |example|
       # pick an arbitrary date from the past, so tests are not time dependent
       Timecop.freeze(Time.utc(2015, 7, 3, 10)) { example.run }
+
+      raise NoMethodError.new('You need to set `response` for the fixture generator! This will automatically happen with `type: :controller` or `type: :request`.', 'response') unless respond_to?(:response)
+
+      store_frontend_fixture(response, example.description)
     end
   end
 
@@ -29,7 +33,13 @@ module JavaScriptFixturesHelpers
     end
   end
 
-  # Public: Store a response object as fixture file
+  def remove_repository(project)
+    Gitlab::Shell.new.remove_repository(project.repository_storage, project.disk_path)
+  end
+
+  private
+
+  # Private: Store a response object as fixture file
   #
   # response - string or response object to store
   # fixture_file_name - file name to store the fixture in (relative to .fixture_root_path)
@@ -41,12 +51,6 @@ module JavaScriptFixturesHelpers
     FileUtils.mkdir_p(File.dirname(full_fixture_path))
     File.write(full_fixture_path, fixture)
   end
-
-  def remove_repository(project)
-    Gitlab::Shell.new.remove_repository(project.repository_storage, project.disk_path)
-  end
-
-  private
 
   # Private: Prepare a response object for use as a frontend fixture
   #
