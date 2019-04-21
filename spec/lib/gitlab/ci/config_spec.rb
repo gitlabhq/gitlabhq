@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config do
+  include StubRequests
+
   set(:user) { create(:user) }
 
   let(:config) do
@@ -216,8 +218,7 @@ describe Gitlab::Ci::Config do
     end
 
     before do
-      WebMock.stub_request(:get, remote_location)
-        .to_return(body: remote_file_content)
+      stub_full_request(remote_location).to_return(body: remote_file_content)
 
       allow(project.repository)
         .to receive(:blob_data_at).and_return(local_file_content)

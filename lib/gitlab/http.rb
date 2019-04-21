@@ -11,7 +11,7 @@ module Gitlab
 
     include HTTParty # rubocop:disable Gitlab/HTTParty
 
-    connection_adapter ProxyHTTPConnectionAdapter
+    connection_adapter HTTPConnectionAdapter
 
     def self.perform_request(http_method, path, options, &block)
       super
