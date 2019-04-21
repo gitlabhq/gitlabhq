@@ -39,6 +39,5 @@ describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :control
     }, format: :json
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

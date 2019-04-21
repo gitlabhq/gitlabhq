@@ -49,7 +49,6 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 
   private
@@ -62,7 +61,6 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, fixture_file_name)
   end
 end
 
@@ -120,6 +118,5 @@ describe API::Issues, '(JavaScript fixtures)', type: :request do
     get_related_merge_requests(project.id, issue.iid, user)
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

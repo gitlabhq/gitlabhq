@@ -30,6 +30,5 @@ describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controll
     }, format: :json
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

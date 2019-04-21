@@ -20,30 +20,25 @@ describe 'Raw files', '(JavaScript fixtures)' do
   it 'blob/balsamiq/test.bmpr' do |example|
     @blob = project.repository.blob_at('b89b56d79', 'files/images/balsamiq.bmpr')
 
-    store_frontend_fixture(response, example.description)
   end
 
   it 'blob/notebook/basic.json' do |example|
     @blob = project.repository.blob_at('6d85bb69', 'files/ipython/basic.ipynb')
 
-    store_frontend_fixture(response, example.description)
   end
 
   it 'blob/notebook/worksheets.json' do |example|
     @blob = project.repository.blob_at('6d85bb69', 'files/ipython/worksheets.ipynb')
 
-    store_frontend_fixture(response, example.description)
   end
 
   it 'blob/notebook/math.json' do |example|
     @blob = project.repository.blob_at('93ee732', 'files/ipython/math.ipynb')
 
-    store_frontend_fixture(response, example.description)
   end
 
   it 'blob/pdf/test.pdf' do |example|
     @blob = project.repository.blob_at('e774ebd33', 'files/pdf/test.pdf')
 
-    store_frontend_fixture(response, example.description)
   end
 end

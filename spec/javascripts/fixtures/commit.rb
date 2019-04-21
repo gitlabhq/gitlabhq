@@ -29,6 +29,5 @@ describe Projects::CommitController, '(JavaScript fixtures)', type: :controller 
     get :show, params: params
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

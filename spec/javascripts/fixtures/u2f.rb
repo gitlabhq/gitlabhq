@@ -24,7 +24,6 @@ context 'U2F' do
       post :create, params: { user: { login: user.username, password: user.password } }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
@@ -40,7 +39,6 @@ context 'U2F' do
       get :show
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

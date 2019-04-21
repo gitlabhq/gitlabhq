@@ -40,7 +40,6 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 
   it 'jobs/delayed.json' do |example|
@@ -51,6 +50,5 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
     }, format: :json
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

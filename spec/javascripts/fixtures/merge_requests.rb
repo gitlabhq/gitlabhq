@@ -121,7 +121,6 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
       id: merge_request.to_param
     }, format: :json
 
-    store_frontend_fixture(response, fixture_file_name)
   end
 
   def render_merge_request(fixture_file_name, merge_request)
@@ -132,6 +131,5 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     }, format: :html
 
     expect(response).to be_success
-    store_frontend_fixture(response, fixture_file_name)
   end
 end

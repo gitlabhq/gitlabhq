@@ -30,6 +30,5 @@ describe Projects::BlobController, '(JavaScript fixtures)', type: :controller do
     })
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

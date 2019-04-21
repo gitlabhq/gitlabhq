@@ -36,7 +36,6 @@ describe 'Labels (JavaScript fixtures)' do
       }, format: 'json'
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
@@ -54,7 +53,6 @@ describe 'Labels (JavaScript fixtures)' do
       }, format: 'json'
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

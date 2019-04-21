@@ -29,7 +29,6 @@ describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 
   it 'pipeline_schedules/edit_with_variables.html' do |example|
@@ -40,6 +39,5 @@ describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :
     }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

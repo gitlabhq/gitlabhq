@@ -24,6 +24,5 @@ describe Admin::UsersController, '(JavaScript fixtures)', type: :controller do
     get :new
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

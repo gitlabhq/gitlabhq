@@ -22,7 +22,6 @@ describe 'Groups (JavaScript fixtures)', type: :controller do
       get :edit, params: { id: group }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
@@ -31,7 +30,6 @@ describe 'Groups (JavaScript fixtures)', type: :controller do
       get :show, params: { group_id: group }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

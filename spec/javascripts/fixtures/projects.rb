@@ -35,7 +35,6 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
 
     it 'projects/overview.html' do |example|
@@ -45,7 +44,6 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
 
     it 'projects/edit.html' do |example|
@@ -55,7 +53,6 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
@@ -67,7 +64,6 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
 
     it 'projects/ci_cd_settings_with_variables.html' do |example|
@@ -80,7 +76,6 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
       }
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

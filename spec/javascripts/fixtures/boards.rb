@@ -24,6 +24,5 @@ describe Projects::BoardsController, '(JavaScript fixtures)', type: :controller 
     })
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

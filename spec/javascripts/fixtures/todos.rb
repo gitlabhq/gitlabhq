@@ -30,7 +30,6 @@ describe 'Todos (JavaScript fixtures)' do
       get :index
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 
@@ -50,7 +49,6 @@ describe 'Todos (JavaScript fixtures)' do
       }, format: 'json'
 
       expect(response).to be_success
-      store_frontend_fixture(response, example.description)
     end
   end
 end

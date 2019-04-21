@@ -35,6 +35,5 @@ describe Projects::AutocompleteSourcesController, '(JavaScript fixtures)', type:
         }
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

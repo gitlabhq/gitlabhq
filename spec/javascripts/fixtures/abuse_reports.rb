@@ -22,6 +22,5 @@ describe Admin::AbuseReportsController, '(JavaScript fixtures)', type: :controll
     get :index
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

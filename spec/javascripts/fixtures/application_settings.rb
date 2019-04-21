@@ -29,6 +29,5 @@ describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', type: :c
     get :show
 
     expect(response).to be_success
-    store_frontend_fixture(response, example.description)
   end
 end

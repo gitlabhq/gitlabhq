@@ -66,6 +66,5 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     }, format: :json
 
     expect(response).to be_success
-    store_frontend_fixture(response, fixture_file_name)
   end
 end
