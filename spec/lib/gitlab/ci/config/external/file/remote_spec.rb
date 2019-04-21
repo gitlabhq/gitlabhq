@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::External::File::Remote do
+  include StubRequests
+
   let(:context) { described_class::Context.new(nil, '12345', nil, Set.new) }
   let(:params) { { remote: location } }
   let(:remote_file) { described_class.new(params, context) }
@@ -46,7 +48,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
   describe "#valid?" do
     context 'when is a valid remote url' do
       before do
-        WebMock.stub_request(:get, location).to_return(body: remote_file_content)
+        stub_full_request(location).to_return(body: remote_file_content)
       end
 
       it 'returns true' do
@@ -92,7 +94,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
   describe "#content" do
     context 'with a valid remote file' do
       before do
-        WebMock.stub_request(:get, location).to_return(body: remote_file_content)
+        stub_full_request(location).to_return(body: remote_file_content)
       end
 
       it 'returns the content of the file' do
@@ -114,7 +116,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
       let(:location) { 'https://asdasdasdaj48ggerexample.com' }
 
       before do
-        WebMock.stub_request(:get, location).to_raise(SocketError.new('Some HTTP error'))
+        stub_full_request(location).to_raise(SocketError.new('Some HTTP error'))
       end
 
       it 'is nil' do
@@ -144,7 +146,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
 
     context 'when timeout error has been raised' do
       before do
-        WebMock.stub_request(:get, location).to_timeout
+        stub_full_request(location).to_timeout
       end
 
       it 'returns error message about a timeout' do
@@ -154,7 +156,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
 
     context 'when HTTP error has been raised' do
       before do
-        WebMock.stub_request(:get, location).to_raise(Gitlab::HTTP::Error)
+        stub_full_request(location).to_raise(Gitlab::HTTP::Error)
       end
 
       it 'returns error message about a HTTP error' do
@@ -164,7 +166,7 @@ describe Gitlab::Ci::Config::External::File::Remote do
 
     context 'when response has 404 status' do
       before do
-        WebMock.stub_request(:get, location).to_return(body: remote_file_content, status: 404)
+        stub_full_request(location).to_return(body: remote_file_content, status: 404)
       end
 
       it 'returns error message about a timeout' do

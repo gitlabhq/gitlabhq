@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::Ci::LintsController do
+  include StubRequests
+
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
@@ -68,7 +70,7 @@ describe Projects::Ci::LintsController do
 
     context 'with a valid gitlab-ci.yml' do
       before do
-        WebMock.stub_request(:get, remote_file_path).to_return(body: remote_file_content)
+        stub_full_request(remote_file_path).to_return(body: remote_file_content)
         project.add_developer(user)
 
         post :create, params: { namespace_id: project.namespace, project_id: project, content: content }
