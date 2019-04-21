@@ -8,38 +8,52 @@ module Gitlab
     BlockedUrlError = Class.new(StandardError)
 
     class << self
-      def validate!(url, ports: [], schemes: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false, enforce_sanitization: false)
-        return true if url.nil?
+      # Validates the given url according to the constraints specified by arguments.
+      #
+      # ports - Raises error if the given URL port does is not between given ports.
+      # allow_localhost - Raises error if URL resolves to a localhost IP address and argument is true.
+      # allow_local_network - Raises error if URL resolves to a link-local address and argument is true.
+      # ascii_only - Raises error if URL has unicode characters and argument is true.
+      # enforce_user - Raises error if URL user doesn't start with alphanumeric characters and argument is true.
+      # enforce_sanitization - Raises error if URL includes any HTML/CSS/JS tags and argument is true.
+      #
+      # Returns an array with [<uri>, <original-hostname>].
+      def validate!(url, ports: [], schemes: [], allow_localhost: false, allow_local_network: true, ascii_only: false, enforce_user: false, enforce_sanitization: false) # rubocop:disable Metrics/CyclomaticComplexity
+        return [nil, nil] if url.nil?
 
         # Param url can be a string, URI or Addressable::URI
         uri = parse_url(url)
 
         validate_html_tags!(uri) if enforce_sanitization
 
-        # Allow imports from the GitLab instance itself but only from the configured ports
-        return true if internal?(uri)
-
+        hostname = uri.hostname
         port = get_port(uri)
-        validate_scheme!(uri.scheme, schemes)
-        validate_port!(port, ports) if ports.any?
-        validate_user!(uri.user) if enforce_user
-        validate_hostname!(uri.hostname)
-        validate_unicode_restriction!(uri) if ascii_only
+
+        unless internal?(uri)
+          validate_scheme!(uri.scheme, schemes)
+          validate_port!(port, ports) if ports.any?
+          validate_user!(uri.user) if enforce_user
+          validate_hostname!(hostname)
+          validate_unicode_restriction!(uri) if ascii_only
+        end
 
         begin
-          addrs_info = Addrinfo.getaddrinfo(uri.hostname, port, nil, :STREAM).map do |addr|
+          addrs_info = Addrinfo.getaddrinfo(hostname, port, nil, :STREAM).map do |addr|
             addr.ipv6_v4mapped? ? addr.ipv6_to_ipv4 : addr
           end
         rescue SocketError
-          return true
+          return [uri, nil]
         end
+
+        # Allow url from the GitLab instance itself but only for the configured hostname and ports
+        return enforce_uri_hostname(addrs_info, uri, hostname) if internal?(uri)
 
         validate_localhost!(addrs_info) unless allow_localhost
         validate_loopback!(addrs_info) unless allow_localhost
         validate_local_network!(addrs_info) unless allow_local_network
         validate_link_local!(addrs_info) unless allow_local_network
 
-        true
+        enforce_uri_hostname(addrs_info, uri, hostname)
       end
 
       def blocked_url?(*args)
@@ -51,6 +65,27 @@ module Gitlab
       end
 
       private
+
+      # Returns the given URI with IP address as hostname and the original hostname respectively
+      # in an Array.
+      #
+      # It checks whether the resolved IP address matches with the hostname. If not, it changes
+      # the hostname to the resolved IP address.
+      #
+      # The original hostname is used to validate the SSL, given in that scenario
+      # we'll be making the request to the IP address, instead of using the hostname.
+      def enforce_uri_hostname(addrs_info, uri, hostname)
+        address = addrs_info.first
+        ip_address = address&.ip_address
+
+        if ip_address && ip_address != hostname
+          uri = uri.dup
+          uri.hostname = ip_address
+          return [uri, hostname]
+        end
+
+        [uri, nil]
+      end
 
       def get_port(uri)
         uri.port || uri.default_port
