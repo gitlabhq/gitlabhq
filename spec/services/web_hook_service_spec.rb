@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe WebHookService do
+  include StubRequests
+
   let(:project) { create(:project) }
   let(:project_hook) { create(:project_hook) }
   let(:headers) do
@@ -65,11 +67,11 @@ describe WebHookService do
       let(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
 
       it 'uses the credentials' do
-        WebMock.stub_request(:post, url)
+        stub_full_request(url, method: :post)
 
         service_instance.execute
 
-        expect(WebMock).to have_requested(:post, url).with(
+        expect(WebMock).to have_requested(:post, stubbed_hostname(url)).with(
           headers: headers.merge('Authorization' => 'Basic ZGVtbzpkZW1v')
         ).once
       end
@@ -80,11 +82,11 @@ describe WebHookService do
       let(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
 
       it 'uses the credentials anyways' do
-        WebMock.stub_request(:post, url)
+        stub_full_request(url, method: :post)
 
         service_instance.execute
 
-        expect(WebMock).to have_requested(:post, url).with(
+        expect(WebMock).to have_requested(:post, stubbed_hostname(url)).with(
           headers: headers.merge('Authorization' => 'Basic ZGVtbzo=')
         ).once
       end
