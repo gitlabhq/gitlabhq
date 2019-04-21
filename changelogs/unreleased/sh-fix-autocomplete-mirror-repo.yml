@@ -1,0 +1,5 @@
+---
+title: Disable password autocomplete in mirror repository form
+merge_request: 27542
+author:
+type: fixed

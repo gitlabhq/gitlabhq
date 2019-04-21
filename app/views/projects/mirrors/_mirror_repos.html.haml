@@ -11,7 +11,7 @@
       = link_to _('Read more'), help_page_path('workflow/repository_mirroring'), target: '_blank'
 
   .settings-content
-    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: mirrors_form_data_attributes } do |f|
+    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'new-password', data: mirrors_form_data_attributes } do |f|
       .panel.panel-default
         .panel-heading
           %h3.panel-title= _('Mirror a repository')
@@ -20,7 +20,7 @@
 
           .form-group.has-feedback
             = label_tag :url, _('Git repository URL'), class: 'label-light'
-            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url qa-mirror-repository-url-input', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+"
+            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url qa-mirror-repository-url-input', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password'
 
           = render 'projects/mirrors/instructions'
 
