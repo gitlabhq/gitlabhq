@@ -21,7 +21,7 @@ describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :
     sign_in(admin)
   end
 
-  it 'pipeline_schedules/edit.html' do |example|
+  it 'pipeline_schedules/edit.html' do
     get :edit, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
@@ -31,7 +31,7 @@ describe Projects::PipelineSchedulesController, '(JavaScript fixtures)', type: :
     expect(response).to be_success
   end
 
-  it 'pipeline_schedules/edit_with_variables.html' do |example|
+  it 'pipeline_schedules/edit_with_variables.html' do
     get :edit, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,

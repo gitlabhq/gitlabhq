@@ -30,7 +30,7 @@ describe 'Labels (JavaScript fixtures)' do
       sign_in(admin)
     end
 
-    it 'labels/group_labels.json' do |example|
+    it 'labels/group_labels.json' do
       get :index, params: {
         group_id: group
       }, format: 'json'
@@ -46,7 +46,7 @@ describe 'Labels (JavaScript fixtures)' do
       sign_in(admin)
     end
 
-    it 'labels/project_labels.json' do |example|
+    it 'labels/project_labels.json' do
       get :index, params: {
         namespace_id: group,
         project_id: project

@@ -34,7 +34,7 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     remove_repository(project)
   end
 
-  it 'merge_request_diffs/with_commit.json' do |example|
+  it 'merge_request_diffs/with_commit.json' do
     # Create a user that matches the selected commit author
     # This is so that the "author" information will be populated
     create(:user, email: selected_commit.author_email, name: selected_commit.author_name)
@@ -42,13 +42,13 @@ describe Projects::MergeRequests::DiffsController, '(JavaScript fixtures)', type
     render_merge_request(example.description, merge_request, commit_id: selected_commit.sha)
   end
 
-  it 'merge_request_diffs/inline_changes_tab_with_comments.json' do |example|
+  it 'merge_request_diffs/inline_changes_tab_with_comments.json' do
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
     render_merge_request(example.description, merge_request)
   end
 
-  it 'merge_request_diffs/parallel_changes_tab_with_comments.json' do |example|
+  it 'merge_request_diffs/parallel_changes_tab_with_comments.json' do
     create(:diff_note_on_merge_request, project: project, author: admin, position: position, noteable: merge_request)
     create(:note_on_merge_request, author: admin, project: project, noteable: merge_request)
     render_merge_request(example.description, merge_request, view: 'parallel')

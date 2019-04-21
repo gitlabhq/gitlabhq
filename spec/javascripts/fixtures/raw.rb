@@ -17,27 +17,27 @@ describe 'Raw files', '(JavaScript fixtures)' do
     remove_repository(project)
   end
 
-  it 'blob/balsamiq/test.bmpr' do |example|
+  it 'blob/balsamiq/test.bmpr' do
     @blob = project.repository.blob_at('b89b56d79', 'files/images/balsamiq.bmpr')
 
   end
 
-  it 'blob/notebook/basic.json' do |example|
+  it 'blob/notebook/basic.json' do
     @blob = project.repository.blob_at('6d85bb69', 'files/ipython/basic.ipynb')
 
   end
 
-  it 'blob/notebook/worksheets.json' do |example|
+  it 'blob/notebook/worksheets.json' do
     @blob = project.repository.blob_at('6d85bb69', 'files/ipython/worksheets.ipynb')
 
   end
 
-  it 'blob/notebook/math.json' do |example|
+  it 'blob/notebook/math.json' do
     @blob = project.repository.blob_at('93ee732', 'files/ipython/math.ipynb')
 
   end
 
-  it 'blob/pdf/test.pdf' do |example|
+  it 'blob/pdf/test.pdf' do
     @blob = project.repository.blob_at('e774ebd33', 'files/pdf/test.pdf')
 
   end

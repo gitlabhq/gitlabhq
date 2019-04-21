@@ -32,7 +32,7 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
     remove_repository(project)
   end
 
-  it 'builds/build-with-artifacts.html' do |example|
+  it 'builds/build-with-artifacts.html' do
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
@@ -42,7 +42,7 @@ describe Projects::JobsController, '(JavaScript fixtures)', type: :controller do
     expect(response).to be_success
   end
 
-  it 'jobs/delayed.json' do |example|
+  it 'jobs/delayed.json' do
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
