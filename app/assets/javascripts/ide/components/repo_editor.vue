@@ -35,7 +35,7 @@ export default {
     ]),
     ...mapGetters('fileTemplates', ['showFileTemplatesBar']),
     shouldHideEditor() {
-      return this.file && this.file.binary && !this.file.content;
+      return this.file && this.file.binary;
     },
     showContentViewer() {
       return (
