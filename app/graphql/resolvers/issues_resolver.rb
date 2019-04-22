@@ -44,6 +44,12 @@ module Resolvers
     alias_method :project, :object
 
     def resolve(**args)
+      # The project could have been loaded in batch by `BatchLoader`.
+      # At this point we need the `id` of the project to query for issues, so
+      # make sure it's loaded and not `nil` before continueing.
+      project.sync if project.respond_to?(:sync)
+      return Issue.none if project.nil?
+
       # Will need to be be made group & namespace aware with
       # https://gitlab.com/gitlab-org/gitlab-ce/issues/54520
       args[:project_id] = project.id

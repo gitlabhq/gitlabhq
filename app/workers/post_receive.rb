@@ -21,8 +21,10 @@ class PostReceive
 
     if repo_type.wiki?
       process_wiki_changes(post_received)
-    else
+    elsif repo_type.project?
       process_project_changes(post_received)
+    else
+      # Other repos don't have hooks for now
     end
   end
 

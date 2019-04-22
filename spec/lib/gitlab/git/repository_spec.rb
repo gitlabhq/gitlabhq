@@ -95,6 +95,12 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#create_repository' do
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :create_repository do
+      subject { repository.create_repository }
+    end
+  end
+
   describe '#branch_names' do
     subject { repository.branch_names }
 
