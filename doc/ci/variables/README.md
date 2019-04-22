@@ -142,7 +142,7 @@ By default, variables will be created as masked variables.
 This means that the value of the variable will be hidden in job logs,
 though it must match certain requirements to do so:
 
-- The value must be a single line.
+- The value must be in a single line.
 - The value must not have escape characters.
 - The value must not use variables.
 - The value must not have any whitespace.
