@@ -87,12 +87,16 @@ class InternalId < ApplicationRecord
     end
 
     def available?
-      @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION # rubocop:disable Gitlab/PredicateMemoization
+      return true unless Rails.env.test?
+
+      Gitlab::SafeRequestStore.fetch(:internal_ids_available_flag) do
+        ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION
+      end
     end
 
     # Flushes cached information about schema
     def reset_column_information
-      @available_flag = nil
+      Gitlab::SafeRequestStore[:internal_ids_available_flag] = nil
       super
     end
   end

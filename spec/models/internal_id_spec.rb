@@ -93,7 +93,7 @@ describe InternalId do
       before do
         described_class.reset_column_information
         # Project factory will also call the current_version
-        expect(ActiveRecord::Migrator).to receive(:current_version).twice.and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
+        expect(ActiveRecord::Migrator).to receive(:current_version).at_least(:once).and_return(InternalId::REQUIRED_SCHEMA_VERSION - 1)
       end
 
       let(:init) { double('block') }
@@ -103,6 +103,15 @@ describe InternalId do
 
         expect(init).to receive(:call).with(issue).and_return(val)
         expect(subject).to eq(val + 1)
+      end
+
+      it 'always attempts to generate internal IDs in production mode' do
+        allow(Rails.env).to receive(:test?).and_return(false)
+        val = rand(1..100)
+        generator = double(generate: val)
+        expect(InternalId::InternalIdGenerator).to receive(:new).and_return(generator)
+
+        expect(subject).to eq(val)
       end
     end
   end
