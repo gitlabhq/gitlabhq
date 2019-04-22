@@ -47,6 +47,32 @@ describe Gitlab::MetricsDashboard::Processor do
         expect(actual_metrics_order).to eq expected_metrics_order
       end
     end
+
+    shared_examples_for 'errors with message' do |expected_message|
+      it 'raises a DashboardLayoutError' do
+        error_class = Gitlab::MetricsDashboard::Stages::BaseStage::DashboardLayoutError
+
+        expect { dashboard }.to raise_error(error_class, expected_message)
+      end
+    end
+
+    context 'when the dashboard is missing panel_groups' do
+      let(:dashboard_yml) { {} }
+
+      it_behaves_like 'errors with message', 'Top-level key :panel_groups must be an array'
+    end
+
+    context 'when the dashboard contains a panel_group which is missing panels' do
+      let(:dashboard_yml) { { panel_groups: [{}] } }
+
+      it_behaves_like 'errors with message', 'Each "panel_group" must define an array :panels'
+    end
+
+    context 'when the dashboard contains a panel which is missing metrics' do
+      let(:dashboard_yml) { { panel_groups: [{ panels: [{}] }] } }
+
+      it_behaves_like 'errors with message', 'Each "panel" must define an array :metrics'
+    end
   end
 
   private

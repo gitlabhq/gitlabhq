@@ -24,5 +24,21 @@ describe Gitlab::MetricsDashboard::Service, :use_clean_rails_memory_store_cachin
       described_class.new(project, environment).get_dashboard
       described_class.new(project, environment).get_dashboard
     end
+
+    context 'when the dashboard is configured incorrectly' do
+      let(:bad_dashboard) { {} }
+
+      before do
+        allow(described_class).to receive(:system_dashboard).and_return(bad_dashboard)
+      end
+
+      it 'returns an appropriate message and status code' do
+        result = described_class.new(project, environment).get_dashboard
+
+        expect(result.keys).to contain_exactly(:message, :http_status, :status)
+        expect(result[:status]).to eq(:error)
+        expect(result[:status]).to eq(:unprocessable_entity)
+      end
+    end
   end
 end

@@ -14,6 +14,8 @@ module Gitlab
         dashboard = process_dashboard(dashboard_string)
 
         success(dashboard: dashboard)
+      rescue Gitlab::MetricsDashboard::Stages::BaseStage::DashboardLayoutError => e
+        error(e.message, :unprocessable_entity)
       end
 
       private
@@ -27,6 +29,7 @@ module Gitlab
         "metrics_dashboard_#{SYSTEM_DASHBOARD_NAME}"
       end
 
+      # Returns a new dashboard Hash, supplemented with DB info
       def process_dashboard(dashboard)
         Processor.new(project, params[:environment]).process(dashboard)
       end

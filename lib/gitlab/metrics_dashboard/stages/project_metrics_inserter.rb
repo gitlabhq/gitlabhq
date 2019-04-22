@@ -60,15 +60,21 @@ module Gitlab
         end
 
         def find_panel_group(panel_groups, metric)
+          return unless panel_groups
+
           panel_groups.find { |group| group[:group] == metric.group_title }
         end
 
         def find_panel(panels, metric)
+          return unless panels
+
           panel_identifiers = [DEFAULT_PANEL_TYPE, metric.title, metric.y_label]
           panels.find { |panel| panel.values_at(:type, :title, :y_label) == panel_identifiers }
         end
 
         def find_metric(metrics, metric)
+          return unless metrics
+
           metrics.find { |m| m[:id] == metric.identifier }
         end
 
