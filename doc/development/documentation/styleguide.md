@@ -651,6 +651,11 @@ keyword "only":
 - For GitLab Premium: `**[PREMIUM ONLY]**`.
 - For GitLab Ultimate: `**[ULTIMATE ONLY]**`.
 
+For GitLab.com only tiers (when the feature is not available for self-hosted instances):
+- For GitLab Bronze and higher tiers: `**[BRONZE ONLY]**`.
+- For GitLab Silver and higher tiers: `**[SILVER ONLY]**`.
+- For GitLab Gold: `**[GOLD ONLY]**`.
+
 The tier should be ideally added to headers, so that the full badge will be displayed.
 However, it can be also mentioned from paragraphs, list items, and table cells. For these cases,
 the tier mention will be represented by an orange question mark that will show the tiers on hover.
@@ -659,6 +664,7 @@ For example:
 
 - `**[STARTER]**` renders as **[STARTER]**
 - `**[STARTER ONLY]**` renders as **[STARTER ONLY]**
+- `**[SILVER ONLY]**` renders as **[SILVER ONLY]**
 
 The absence of tiers' mentions mean that the feature is available in GitLab Core,
 GitLab.com Free, and all higher tiers.
