@@ -13,14 +13,17 @@ are very appreciative of the work done by translators and proofreaders!
   - Lyubomir Vasilev - [Crowdin](https://crowdin.com/profile/lyubomirv)
 - Catalan
   - David Planella - [GitLab](https://gitlab.com/dplanella), [Crowdin](https://crowdin.com/profile/dplanella)
-- Chinese Simplified
+- Chinese Simplified 简体中文
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
-- Chinese Traditional
+  - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
+- Chinese Traditional 繁體中文
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
   - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)
-- Chinese Traditional, Hong Kong
+  - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
+- Chinese Traditional, Hong Kong 繁體中文 (香港)
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+  - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
 - Czech
   - Proofreaders needed.
 - Danish
