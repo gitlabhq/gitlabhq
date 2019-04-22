@@ -213,7 +213,7 @@ export default {
       ? `${slashedParentPath}${oldEntry.name}`
       : `${slashedParentPath}${name}`;
 
-    state.entries[newPath] = {
+    Vue.set(state.entries, newPath, {
       ...oldEntry,
       id: newPath,
       key: `${newPath}-${oldEntry.type}-${oldEntry.id}`,
@@ -225,7 +225,7 @@ export default {
       tree: [],
       parentPath,
       raw: '',
-    };
+    });
 
     oldEntry.moved = true;
     oldEntry.movedPath = newPath;

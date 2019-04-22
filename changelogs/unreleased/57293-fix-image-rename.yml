@@ -1,0 +1,5 @@
+---
+title: Resolve Renaming an image via Web IDE corrupts it
+merge_request: 27486
+author:
+type: fixed
