@@ -104,11 +104,5 @@ module Storage
         end
       end
     end
-
-    def remove_legacy_exports!
-      legacy_export_path = File.join(Gitlab::ImportExport.storage_path, full_path_was)
-
-      FileUtils.rm_rf(legacy_export_path)
-    end
   end
 end
