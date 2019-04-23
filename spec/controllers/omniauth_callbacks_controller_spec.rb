@@ -9,8 +9,12 @@ describe OmniauthCallbacksController, type: :controller do
     let(:user) { create(:omniauth_user, extern_uid: extern_uid, provider: provider) }
 
     before do
-      mock_auth_hash(provider.to_s, +extern_uid, user.email)
+      @original_env_config_omniauth_auth = mock_auth_hash(provider.to_s, +extern_uid, user.email)
       stub_omniauth_provider(provider, context: request)
+    end
+
+    after do
+      Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
     context 'when the user is on the last sign in attempt' do
