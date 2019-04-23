@@ -69,18 +69,16 @@ describe('IDE file templates actions', () => {
 
   describe('fetchTemplateTypes', () => {
     describe('success', () => {
-      let nextPage;
+      const pages = [[{ name: 'MIT' }], [{ name: 'Apache' }], [{ name: 'CC' }]];
 
       beforeEach(() => {
-        mock.onGet(/api\/(.*)\/templates\/licenses/).replyOnce(() => [
-          200,
-          [
-            {
-              name: 'MIT',
-            },
-          ],
-          { 'X-NEXT-PAGE': nextPage },
-        ]);
+        mock.onGet(/api\/(.*)\/templates\/licenses/).reply(({ params }) => {
+          const pageNum = params.page;
+          const page = pages[pageNum - 1];
+          const hasNextPage = pageNum < pages.length;
+
+          return [200, page, hasNextPage ? { 'X-NEXT-PAGE': pageNum + 1 } : {}];
+        });
       });
 
       it('rejects if selectedTemplateType is empty', done => {
@@ -112,43 +110,15 @@ describe('IDE file templates actions', () => {
             },
             {
               type: 'receiveTemplateTypesSuccess',
-              payload: [
-                {
-                  name: 'MIT',
-                },
-              ],
-            },
-          ],
-          done,
-        );
-      });
-
-      it('dispatches actions for next page', done => {
-        nextPage = '2';
-        state.selectedTemplateType = {
-          key: 'licenses',
-        };
-
-        testAction(
-          actions.fetchTemplateTypes,
-          null,
-          state,
-          [],
-          [
-            {
-              type: 'requestTemplateTypes',
+              payload: pages[0],
             },
             {
               type: 'receiveTemplateTypesSuccess',
-              payload: [
-                {
-                  name: 'MIT',
-                },
-              ],
+              payload: pages[0].concat(pages[1]),
             },
             {
-              type: 'fetchTemplateTypes',
-              payload: 2,
+              type: 'receiveTemplateTypesSuccess',
+              payload: pages[0].concat(pages[1]).concat(pages[2]),
             },
           ],
           done,
