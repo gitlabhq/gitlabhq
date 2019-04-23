@@ -1,0 +1,5 @@
+---
+title: Bring back Rugged implementation of CommitIsAncestor
+merge_request: 25702
+author:
+type: other

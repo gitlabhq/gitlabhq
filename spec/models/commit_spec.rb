@@ -542,7 +542,7 @@ eos
     end
   end
 
-  describe '#uri_type' do
+  shared_examples '#uri_type' do
     it 'returns the URI type at the given path' do
       expect(commit.uri_type('files/html')).to be(:tree)
       expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
@@ -559,6 +559,20 @@ eos
       expect(commit.uri_type(nil)).to be_nil
       expect(commit.uri_type("")).to be_nil
     end
+  end
+
+  describe '#uri_type with Gitaly enabled' do
+    it_behaves_like "#uri_type"
+  end
+
+  describe '#uri_type with Rugged enabled', :enable_rugged do
+    it 'calls out to the Rugged implementation' do
+      allow_any_instance_of(Rugged::Tree).to receive(:path).with('files/html').and_call_original
+
+      commit.uri_type('files/html')
+    end
+
+    it_behaves_like '#uri_type'
   end
 
   describe '.from_hash' do
