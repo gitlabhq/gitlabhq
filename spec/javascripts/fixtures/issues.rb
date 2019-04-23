@@ -22,22 +22,22 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
   end
 
   it 'issues/open-issue.html' do
-    render_issue(example.description, create(:issue, project: project))
+    render_issue(create(:issue, project: project))
   end
 
   it 'issues/closed-issue.html' do
-    render_issue(example.description, create(:closed_issue, project: project))
+    render_issue(create(:closed_issue, project: project))
   end
 
   it 'issues/issue-with-task-list.html' do
     issue = create(:issue, project: project, description: '- [ ] Task List Item')
-    render_issue(example.description, issue)
+    render_issue(issue)
   end
 
   it 'issues/issue_with_comment.html' do
     issue = create(:issue, project: project)
     create(:note, project: project, noteable: issue, note: '- [ ] Task List Item').save
-    render_issue(example.description, issue)
+    render_issue(issue)
   end
 
   it 'issues/issue_list.html' do
@@ -53,7 +53,7 @@ describe Projects::IssuesController, '(JavaScript fixtures)', type: :controller 
 
   private
 
-  def render_issue(fixture_file_name, issue)
+  def render_issue(issue)
     get :show, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
