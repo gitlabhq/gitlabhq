@@ -210,6 +210,8 @@ describe Users::DestroyService do
 
     describe "calls the before/after callbacks" do
       it 'of project_members' do
+        expect_any_instance_of(ProjectMember).to receive(:run_callbacks).with(:find).once
+        expect_any_instance_of(ProjectMember).to receive(:run_callbacks).with(:initialize).once
         expect_any_instance_of(ProjectMember).to receive(:run_callbacks).with(:destroy).once
 
         service.execute(user)
@@ -219,6 +221,8 @@ describe Users::DestroyService do
         group_member = create(:group_member)
         group_member.group.group_members.create(user: user, access_level: 40)
 
+        expect_any_instance_of(GroupMember).to receive(:run_callbacks).with(:find).once
+        expect_any_instance_of(GroupMember).to receive(:run_callbacks).with(:initialize).once
         expect_any_instance_of(GroupMember).to receive(:run_callbacks).with(:destroy).once
 
         service.execute(user)

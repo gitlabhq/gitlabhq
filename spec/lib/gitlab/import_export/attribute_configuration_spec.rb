@@ -29,7 +29,7 @@ describe 'Import/Export attribute configuration' do
   it 'has no new columns' do
     relation_names.each do |relation_name|
       relation_class = relation_class_for_name(relation_name)
-      relation_attributes = relation_class.new.attributes.keys
+      relation_attributes = relation_class.new.attributes.keys - relation_class.encrypted_attributes.keys.map(&:to_s)
 
       current_attributes = parsed_attributes(relation_name, relation_attributes)
       safe_attributes = safe_model_attributes[relation_class.to_s].dup || []

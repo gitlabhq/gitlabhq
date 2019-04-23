@@ -45,7 +45,7 @@ shared_examples "migrating a deleted user's associated records to the ghost user
     context "race conditions" do
       context "when #{record_class_name} migration fails and is rolled back" do
         before do
-          expect_any_instance_of(record_class::ActiveRecord_Associations_CollectionProxy)
+          expect_any_instance_of(ActiveRecord::Associations::CollectionProxy)
             .to receive(:update_all).and_raise(ActiveRecord::Rollback)
         end
 
@@ -66,7 +66,7 @@ shared_examples "migrating a deleted user's associated records to the ghost user
 
       context "when #{record_class_name} migration fails with a non-rollback exception" do
         before do
-          expect_any_instance_of(record_class::ActiveRecord_Associations_CollectionProxy)
+          expect_any_instance_of(ActiveRecord::Associations::CollectionProxy)
             .to receive(:update_all).and_raise(ArgumentError)
         end
 

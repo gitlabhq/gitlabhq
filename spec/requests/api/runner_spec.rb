@@ -68,7 +68,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             post api('/runners'), params: { token: group.runners_token }
 
             expect(response).to have_http_status 201
-            expect(group.runners.size).to eq(1)
+            expect(group.runners.reload.size).to eq(1)
             runner = Ci::Runner.first
             expect(runner.token).not_to eq(registration_token)
             expect(runner.token).not_to eq(group.runners_token)

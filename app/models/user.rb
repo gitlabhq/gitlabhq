@@ -194,7 +194,7 @@ class User < ApplicationRecord
   before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
   after_validation :set_username_errors
-  after_update :username_changed_hook, if: :username_changed?
+  after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
   after_commit(on: :update) do

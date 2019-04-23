@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
   enable_extension "plpgsql"
   enable_extension "pg_trgm"
 
-  create_table "abuse_reports", force: :cascade do |t|
+  create_table "abuse_reports", id: :serial, force: :cascade do |t|
     t.integer "reporter_id"
     t.integer "user_id"
     t.text "message"
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.integer "cached_markdown_version"
   end
 
-  create_table "appearances", force: :cascade do |t|
+  create_table "appearances", id: :serial, force: :cascade do |t|
     t.string "title", null: false
     t.text "description", null: false
     t.string "header_logo"
@@ -47,13 +47,13 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.boolean "email_header_and_footer_enabled", default: false, null: false
   end
 
-  create_table "application_setting_terms", force: :cascade do |t|
+  create_table "application_setting_terms", id: :serial, force: :cascade do |t|
     t.integer "cached_markdown_version"
     t.text "terms", null: false
     t.text "terms_html"
   end
 
-  create_table "application_settings", force: :cascade do |t|
+  create_table "application_settings", id: :serial, force: :cascade do |t|
     t.integer "default_projects_limit"
     t.boolean "signup_enabled"
     t.boolean "gravatar_enabled"
@@ -190,7 +190,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
-  create_table "audit_events", force: :cascade do |t|
+  create_table "audit_events", id: :serial, force: :cascade do |t|
     t.integer "author_id", null: false
     t.string "type", null: false
     t.integer "entity_id", null: false
@@ -201,7 +201,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   end
 
-  create_table "award_emoji", force: :cascade do |t|
+  create_table "award_emoji", id: :serial, force: :cascade do |t|
     t.string "name"
     t.integer "user_id"
     t.integer "awardable_id"
@@ -212,7 +212,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
   end
 
-  create_table "badges", force: :cascade do |t|
+  create_table "badges", id: :serial, force: :cascade do |t|
     t.string "link_url", null: false
     t.string "image_url", null: false
     t.integer "project_id"
@@ -224,7 +224,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_badges_on_project_id", using: :btree
   end
 
-  create_table "board_group_recent_visits", id: :bigserial, force: :cascade do |t|
+  create_table "board_group_recent_visits", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id"
@@ -236,7 +236,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_board_group_recent_visits_on_user_id", using: :btree
   end
 
-  create_table "board_project_recent_visits", id: :bigserial, force: :cascade do |t|
+  create_table "board_project_recent_visits", force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id"
@@ -248,7 +248,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_board_project_recent_visits_on_user_id", using: :btree
   end
 
-  create_table "boards", force: :cascade do |t|
+  create_table "boards", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -257,7 +257,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_boards_on_project_id", using: :btree
   end
 
-  create_table "broadcast_messages", force: :cascade do |t|
+  create_table "broadcast_messages", id: :serial, force: :cascade do |t|
     t.text "message", null: false
     t.datetime "starts_at", null: false
     t.datetime "ends_at", null: false
@@ -270,7 +270,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["starts_at", "ends_at", "id"], name: "index_broadcast_messages_on_starts_at_and_ends_at_and_id", using: :btree
   end
 
-  create_table "chat_names", force: :cascade do |t|
+  create_table "chat_names", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "service_id", null: false
     t.string "team_id", null: false
@@ -284,7 +284,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id", "service_id"], name: "index_chat_names_on_user_id_and_service_id", unique: true, using: :btree
   end
 
-  create_table "chat_teams", force: :cascade do |t|
+  create_table "chat_teams", id: :serial, force: :cascade do |t|
     t.integer "namespace_id", null: false
     t.string "team_id"
     t.string "name"
@@ -293,7 +293,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["namespace_id"], name: "index_chat_teams_on_namespace_id", unique: true, using: :btree
   end
 
-  create_table "ci_build_trace_chunks", id: :bigserial, force: :cascade do |t|
+  create_table "ci_build_trace_chunks", force: :cascade do |t|
     t.integer "build_id", null: false
     t.integer "chunk_index", null: false
     t.integer "data_store", null: false
@@ -301,13 +301,13 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["build_id", "chunk_index"], name: "index_ci_build_trace_chunks_on_build_id_and_chunk_index", unique: true, using: :btree
   end
 
-  create_table "ci_build_trace_section_names", force: :cascade do |t|
+  create_table "ci_build_trace_section_names", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
     t.index ["project_id", "name"], name: "index_ci_build_trace_section_names_on_project_id_and_name", unique: true, using: :btree
   end
 
-  create_table "ci_build_trace_sections", force: :cascade do |t|
+  create_table "ci_build_trace_sections", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime_with_timezone "date_start", null: false
     t.datetime_with_timezone "date_end", null: false
@@ -320,7 +320,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["section_name_id"], name: "index_ci_build_trace_sections_on_section_name_id", using: :btree
   end
 
-  create_table "ci_builds", force: :cascade do |t|
+  create_table "ci_builds", id: :serial, force: :cascade do |t|
     t.string "status"
     t.datetime "finished_at"
     t.text "trace"
@@ -387,7 +387,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
   end
 
-  create_table "ci_builds_metadata", force: :cascade do |t|
+  create_table "ci_builds_metadata", id: :serial, force: :cascade do |t|
     t.integer "build_id", null: false
     t.integer "project_id", null: false
     t.integer "timeout"
@@ -398,7 +398,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
   end
 
-  create_table "ci_builds_runner_session", id: :bigserial, force: :cascade do |t|
+  create_table "ci_builds_runner_session", force: :cascade do |t|
     t.integer "build_id", null: false
     t.string "url", null: false
     t.string "certificate"
@@ -406,7 +406,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["build_id"], name: "index_ci_builds_runner_session_on_build_id", unique: true, using: :btree
   end
 
-  create_table "ci_group_variables", force: :cascade do |t|
+  create_table "ci_group_variables", id: :serial, force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
     t.text "encrypted_value"
@@ -420,7 +420,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
   end
 
-  create_table "ci_job_artifacts", force: :cascade do |t|
+  create_table "ci_job_artifacts", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
@@ -439,7 +439,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
   end
 
-  create_table "ci_pipeline_chat_data", id: :bigserial, force: :cascade do |t|
+  create_table "ci_pipeline_chat_data", force: :cascade do |t|
     t.integer "pipeline_id", null: false
     t.integer "chat_name_id", null: false
     t.text "response_url", null: false
@@ -459,7 +459,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["pipeline_schedule_id", "key"], name: "index_ci_pipeline_schedule_variables_on_schedule_id_and_key", unique: true, using: :btree
   end
 
-  create_table "ci_pipeline_schedules", force: :cascade do |t|
+  create_table "ci_pipeline_schedules", id: :serial, force: :cascade do |t|
     t.string "description"
     t.string "ref"
     t.string "cron"
@@ -475,7 +475,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
   end
 
-  create_table "ci_pipeline_variables", force: :cascade do |t|
+  create_table "ci_pipeline_variables", id: :serial, force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
     t.text "encrypted_value"
@@ -485,7 +485,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["pipeline_id", "key"], name: "index_ci_pipeline_variables_on_pipeline_id_and_key", unique: true, using: :btree
   end
 
-  create_table "ci_pipelines", force: :cascade do |t|
+  create_table "ci_pipelines", id: :serial, force: :cascade do |t|
     t.string "ref"
     t.string "sha"
     t.string "before_sha"
@@ -525,14 +525,14 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_ci_pipelines_on_user_id", using: :btree
   end
 
-  create_table "ci_runner_namespaces", force: :cascade do |t|
+  create_table "ci_runner_namespaces", id: :serial, force: :cascade do |t|
     t.integer "runner_id"
     t.integer "namespace_id"
     t.index ["namespace_id"], name: "index_ci_runner_namespaces_on_namespace_id", using: :btree
     t.index ["runner_id", "namespace_id"], name: "index_ci_runner_namespaces_on_runner_id_and_namespace_id", unique: true, using: :btree
   end
 
-  create_table "ci_runner_projects", force: :cascade do |t|
+  create_table "ci_runner_projects", id: :serial, force: :cascade do |t|
     t.integer "runner_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -541,7 +541,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["runner_id"], name: "index_ci_runner_projects_on_runner_id", using: :btree
   end
 
-  create_table "ci_runners", force: :cascade do |t|
+  create_table "ci_runners", id: :serial, force: :cascade do |t|
     t.string "token"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -569,7 +569,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["token_encrypted"], name: "index_ci_runners_on_token_encrypted", using: :btree
   end
 
-  create_table "ci_stages", force: :cascade do |t|
+  create_table "ci_stages", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "pipeline_id"
     t.datetime "created_at"
@@ -584,7 +584,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_ci_stages_on_project_id", using: :btree
   end
 
-  create_table "ci_trigger_requests", force: :cascade do |t|
+  create_table "ci_trigger_requests", id: :serial, force: :cascade do |t|
     t.integer "trigger_id", null: false
     t.text "variables"
     t.datetime "created_at"
@@ -594,7 +594,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["trigger_id"], name: "index_ci_trigger_requests_on_trigger_id", using: :btree
   end
 
-  create_table "ci_triggers", force: :cascade do |t|
+  create_table "ci_triggers", id: :serial, force: :cascade do |t|
     t.string "token"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -606,7 +606,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_ci_triggers_on_project_id", using: :btree
   end
 
-  create_table "ci_variables", force: :cascade do |t|
+  create_table "ci_variables", id: :serial, force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
     t.text "encrypted_value"
@@ -619,14 +619,14 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "key", "environment_scope"], name: "index_ci_variables_on_project_id_and_key_and_environment_scope", unique: true, using: :btree
   end
 
-  create_table "cluster_groups", force: :cascade do |t|
+  create_table "cluster_groups", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "group_id", null: false
     t.index ["cluster_id", "group_id"], name: "index_cluster_groups_on_cluster_id_and_group_id", unique: true, using: :btree
     t.index ["group_id"], name: "index_cluster_groups_on_group_id", using: :btree
   end
 
-  create_table "cluster_platforms_kubernetes", force: :cascade do |t|
+  create_table "cluster_platforms_kubernetes", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -642,7 +642,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["cluster_id"], name: "index_cluster_platforms_kubernetes_on_cluster_id", unique: true, using: :btree
   end
 
-  create_table "cluster_projects", force: :cascade do |t|
+  create_table "cluster_projects", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -651,7 +651,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_cluster_projects_on_project_id", using: :btree
   end
 
-  create_table "cluster_providers_gcp", force: :cascade do |t|
+  create_table "cluster_providers_gcp", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status"
     t.integer "num_nodes", null: false
@@ -669,7 +669,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true, using: :btree
   end
 
-  create_table "clusters", force: :cascade do |t|
+  create_table "clusters", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "provider_type"
     t.integer "platform_type"
@@ -685,7 +685,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_clusters_on_user_id", using: :btree
   end
 
-  create_table "clusters_applications_cert_managers", force: :cascade do |t|
+  create_table "clusters_applications_cert_managers", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status", null: false
     t.string "version", null: false
@@ -696,7 +696,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["cluster_id"], name: "index_clusters_applications_cert_managers_on_cluster_id", unique: true, using: :btree
   end
 
-  create_table "clusters_applications_helm", force: :cascade do |t|
+  create_table "clusters_applications_helm", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -709,7 +709,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["cluster_id"], name: "index_clusters_applications_helm_on_cluster_id", unique: true, using: :btree
   end
 
-  create_table "clusters_applications_ingress", force: :cascade do |t|
+  create_table "clusters_applications_ingress", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -723,7 +723,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["cluster_id"], name: "index_clusters_applications_ingress_on_cluster_id", unique: true, using: :btree
   end
 
-  create_table "clusters_applications_jupyter", force: :cascade do |t|
+  create_table "clusters_applications_jupyter", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "oauth_application_id"
     t.integer "status", null: false
@@ -736,7 +736,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["oauth_application_id"], name: "index_clusters_applications_jupyter_on_oauth_application_id", using: :btree
   end
 
-  create_table "clusters_applications_knative", force: :cascade do |t|
+  create_table "clusters_applications_knative", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -749,7 +749,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["cluster_id"], name: "index_clusters_applications_knative_on_cluster_id", unique: true, using: :btree
   end
 
-  create_table "clusters_applications_prometheus", force: :cascade do |t|
+  create_table "clusters_applications_prometheus", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status", null: false
     t.string "version", null: false
@@ -759,7 +759,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["cluster_id"], name: "index_clusters_applications_prometheus_on_cluster_id", unique: true, using: :btree
   end
 
-  create_table "clusters_applications_runners", force: :cascade do |t|
+  create_table "clusters_applications_runners", id: :serial, force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "runner_id"
     t.integer "status", null: false
@@ -772,7 +772,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["runner_id"], name: "index_clusters_applications_runners_on_runner_id", using: :btree
   end
 
-  create_table "clusters_kubernetes_namespaces", id: :bigserial, force: :cascade do |t|
+  create_table "clusters_kubernetes_namespaces", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "project_id"
     t.integer "cluster_project_id"
@@ -788,7 +788,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_clusters_kubernetes_namespaces_on_project_id", using: :btree
   end
 
-  create_table "container_repositories", force: :cascade do |t|
+  create_table "container_repositories", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -797,7 +797,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_container_repositories_on_project_id", using: :btree
   end
 
-  create_table "conversational_development_index_metrics", force: :cascade do |t|
+  create_table "conversational_development_index_metrics", id: :serial, force: :cascade do |t|
     t.float "leader_issues", null: false
     t.float "instance_issues", null: false
     t.float "leader_notes", null: false
@@ -832,7 +832,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.float "percentage_service_desk_issues", default: 0.0, null: false
   end
 
-  create_table "deploy_keys_projects", force: :cascade do |t|
+  create_table "deploy_keys_projects", id: :serial, force: :cascade do |t|
     t.integer "deploy_key_id", null: false
     t.integer "project_id", null: false
     t.datetime "created_at"
@@ -841,7 +841,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
   end
 
-  create_table "deploy_tokens", force: :cascade do |t|
+  create_table "deploy_tokens", id: :serial, force: :cascade do |t|
     t.boolean "revoked", default: false
     t.boolean "read_repository", default: false, null: false
     t.boolean "read_registry", default: false, null: false
@@ -853,7 +853,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["token"], name: "index_deploy_tokens_on_token", unique: true, using: :btree
   end
 
-  create_table "deployments", force: :cascade do |t|
+  create_table "deployments", id: :serial, force: :cascade do |t|
     t.integer "iid", null: false
     t.integer "project_id", null: false
     t.integer "environment_id", null: false
@@ -879,7 +879,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "status"], name: "index_deployments_on_project_id_and_status", using: :btree
   end
 
-  create_table "emails", force: :cascade do |t|
+  create_table "emails", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "email", null: false
     t.datetime "created_at"
@@ -892,7 +892,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_emails_on_user_id", using: :btree
   end
 
-  create_table "environments", force: :cascade do |t|
+  create_table "environments", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
     t.datetime "created_at"
@@ -905,7 +905,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "events", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "author_id", null: false
     t.integer "target_id"
@@ -920,7 +920,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["target_type", "target_id"], name: "index_events_on_target_type_and_target_id", using: :btree
   end
 
-  create_table "feature_gates", force: :cascade do |t|
+  create_table "feature_gates", id: :serial, force: :cascade do |t|
     t.string "feature_key", null: false
     t.string "key", null: false
     t.string "value"
@@ -929,14 +929,14 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["feature_key", "key", "value"], name: "index_feature_gates_on_feature_key_and_key_and_value", unique: true, using: :btree
   end
 
-  create_table "features", force: :cascade do |t|
+  create_table "features", id: :serial, force: :cascade do |t|
     t.string "key", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_features_on_key", unique: true, using: :btree
   end
 
-  create_table "fork_network_members", force: :cascade do |t|
+  create_table "fork_network_members", id: :serial, force: :cascade do |t|
     t.integer "fork_network_id", null: false
     t.integer "project_id", null: false
     t.integer "forked_from_project_id"
@@ -945,13 +945,13 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_fork_network_members_on_project_id", unique: true, using: :btree
   end
 
-  create_table "fork_networks", force: :cascade do |t|
+  create_table "fork_networks", id: :serial, force: :cascade do |t|
     t.integer "root_project_id"
     t.string "deleted_root_project_name"
     t.index ["root_project_id"], name: "index_fork_networks_on_root_project_id", unique: true, using: :btree
   end
 
-  create_table "forked_project_links", force: :cascade do |t|
+  create_table "forked_project_links", id: :serial, force: :cascade do |t|
     t.integer "forked_to_project_id", null: false
     t.integer "forked_from_project_id", null: false
     t.datetime "created_at"
@@ -959,7 +959,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
   end
 
-  create_table "gpg_key_subkeys", force: :cascade do |t|
+  create_table "gpg_key_subkeys", id: :serial, force: :cascade do |t|
     t.integer "gpg_key_id", null: false
     t.binary "keyid"
     t.binary "fingerprint"
@@ -968,7 +968,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["keyid"], name: "index_gpg_key_subkeys_on_keyid", unique: true, using: :btree
   end
 
-  create_table "gpg_keys", force: :cascade do |t|
+  create_table "gpg_keys", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id"
@@ -980,7 +980,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_gpg_keys_on_user_id", using: :btree
   end
 
-  create_table "gpg_signatures", force: :cascade do |t|
+  create_table "gpg_signatures", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id"
@@ -998,7 +998,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
   end
 
-  create_table "group_custom_attributes", force: :cascade do |t|
+  create_table "group_custom_attributes", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "group_id", null: false
@@ -1008,7 +1008,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["key", "value"], name: "index_group_custom_attributes_on_key_and_value", using: :btree
   end
 
-  create_table "identities", force: :cascade do |t|
+  create_table "identities", id: :serial, force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
     t.integer "user_id"
@@ -1017,7 +1017,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_identities_on_user_id", using: :btree
   end
 
-  create_table "import_export_uploads", force: :cascade do |t|
+  create_table "import_export_uploads", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id"
     t.text "import_file"
@@ -1026,7 +1026,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["updated_at"], name: "index_import_export_uploads_on_updated_at", using: :btree
   end
 
-  create_table "internal_ids", id: :bigserial, force: :cascade do |t|
+  create_table "internal_ids", force: :cascade do |t|
     t.integer "project_id"
     t.integer "usage", null: false
     t.integer "last_value", null: false
@@ -1044,7 +1044,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_issue_assignees_on_user_id", using: :btree
   end
 
-  create_table "issue_metrics", force: :cascade do |t|
+  create_table "issue_metrics", id: :serial, force: :cascade do |t|
     t.integer "issue_id", null: false
     t.datetime "first_mentioned_in_commit_at"
     t.datetime "first_associated_with_milestone_at"
@@ -1054,7 +1054,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["issue_id"], name: "index_issue_metrics", using: :btree
   end
 
-  create_table "issues", force: :cascade do |t|
+  create_table "issues", id: :serial, force: :cascade do |t|
     t.string "title"
     t.integer "author_id"
     t.integer "project_id"
@@ -1097,7 +1097,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["updated_by_id"], name: "index_issues_on_updated_by_id", where: "(updated_by_id IS NOT NULL)", using: :btree
   end
 
-  create_table "keys", force: :cascade do |t|
+  create_table "keys", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1111,7 +1111,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_keys_on_user_id", using: :btree
   end
 
-  create_table "label_links", force: :cascade do |t|
+  create_table "label_links", id: :serial, force: :cascade do |t|
     t.integer "label_id"
     t.integer "target_id"
     t.string "target_type"
@@ -1121,7 +1121,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["target_id", "target_type"], name: "index_label_links_on_target_id_and_target_type", using: :btree
   end
 
-  create_table "label_priorities", force: :cascade do |t|
+  create_table "label_priorities", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "label_id", null: false
     t.integer "priority", null: false
@@ -1132,7 +1132,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "label_id"], name: "index_label_priorities_on_project_id_and_label_id", unique: true, using: :btree
   end
 
-  create_table "labels", force: :cascade do |t|
+  create_table "labels", id: :serial, force: :cascade do |t|
     t.string "title"
     t.string "color"
     t.integer "project_id"
@@ -1151,7 +1151,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["type", "project_id"], name: "index_labels_on_type_and_project_id", using: :btree
   end
 
-  create_table "lfs_file_locks", force: :cascade do |t|
+  create_table "lfs_file_locks", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "user_id", null: false
     t.datetime "created_at", null: false
@@ -1160,7 +1160,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_lfs_file_locks_on_user_id", using: :btree
   end
 
-  create_table "lfs_objects", force: :cascade do |t|
+  create_table "lfs_objects", id: :serial, force: :cascade do |t|
     t.string "oid", null: false
     t.bigint "size", null: false
     t.datetime "created_at"
@@ -1171,7 +1171,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["oid"], name: "index_lfs_objects_on_oid", unique: true, using: :btree
   end
 
-  create_table "lfs_objects_projects", force: :cascade do |t|
+  create_table "lfs_objects_projects", id: :serial, force: :cascade do |t|
     t.integer "lfs_object_id", null: false
     t.integer "project_id", null: false
     t.datetime "created_at"
@@ -1179,7 +1179,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
   end
 
-  create_table "lists", force: :cascade do |t|
+  create_table "lists", id: :serial, force: :cascade do |t|
     t.integer "board_id", null: false
     t.integer "label_id"
     t.integer "list_type", default: 1, null: false
@@ -1191,7 +1191,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["list_type"], name: "index_lists_on_list_type", using: :btree
   end
 
-  create_table "members", force: :cascade do |t|
+  create_table "members", id: :serial, force: :cascade do |t|
     t.integer "access_level", null: false
     t.integer "source_id", null: false
     t.string "source_type", null: false
@@ -1254,7 +1254,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["merge_request_diff_id", "relative_order"], name: "index_merge_request_diff_files_on_mr_diff_id_and_order", unique: true, using: :btree
   end
 
-  create_table "merge_request_diffs", force: :cascade do |t|
+  create_table "merge_request_diffs", id: :serial, force: :cascade do |t|
     t.string "state"
     t.integer "merge_request_id", null: false
     t.datetime "created_at"
@@ -1271,7 +1271,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id_partial", where: "((NOT stored_externally) OR (stored_externally IS NULL))", using: :btree
   end
 
-  create_table "merge_request_metrics", force: :cascade do |t|
+  create_table "merge_request_metrics", id: :serial, force: :cascade do |t|
     t.integer "merge_request_id", null: false
     t.datetime "latest_build_started_at"
     t.datetime "latest_build_finished_at"
@@ -1292,7 +1292,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["pipeline_id"], name: "index_merge_request_metrics_on_pipeline_id", using: :btree
   end
 
-  create_table "merge_requests", force: :cascade do |t|
+  create_table "merge_requests", id: :serial, force: :cascade do |t|
     t.string "target_branch", null: false
     t.string "source_branch", null: false
     t.integer "source_project_id"
@@ -1350,7 +1350,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["updated_by_id"], name: "index_merge_requests_on_updated_by_id", where: "(updated_by_id IS NOT NULL)", using: :btree
   end
 
-  create_table "merge_requests_closing_issues", force: :cascade do |t|
+  create_table "merge_requests_closing_issues", id: :serial, force: :cascade do |t|
     t.integer "merge_request_id", null: false
     t.integer "issue_id", null: false
     t.datetime "created_at", null: false
@@ -1359,7 +1359,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["merge_request_id"], name: "index_merge_requests_closing_issues_on_merge_request_id", using: :btree
   end
 
-  create_table "milestones", force: :cascade do |t|
+  create_table "milestones", id: :serial, force: :cascade do |t|
     t.string "title", null: false
     t.integer "project_id"
     t.text "description"
@@ -1381,7 +1381,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
   end
 
-  create_table "namespaces", force: :cascade do |t|
+  create_table "namespaces", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "path", null: false
     t.integer "owner_id"
@@ -1416,7 +1416,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["type"], name: "index_namespaces_on_type", using: :btree
   end
 
-  create_table "note_diff_files", force: :cascade do |t|
+  create_table "note_diff_files", id: :serial, force: :cascade do |t|
     t.integer "diff_note_id", null: false
     t.text "diff", null: false
     t.boolean "new_file", null: false
@@ -1429,7 +1429,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["diff_note_id"], name: "index_note_diff_files_on_diff_note_id", unique: true, using: :btree
   end
 
-  create_table "notes", force: :cascade do |t|
+  create_table "notes", id: :serial, force: :cascade do |t|
     t.text "note"
     t.string "noteable_type"
     t.integer "author_id"
@@ -1464,7 +1464,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
   end
 
-  create_table "notification_settings", force: :cascade do |t|
+  create_table "notification_settings", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "source_id"
     t.string "source_type"
@@ -1490,7 +1490,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_notification_settings_on_user_id", using: :btree
   end
 
-  create_table "oauth_access_grants", force: :cascade do |t|
+  create_table "oauth_access_grants", id: :serial, force: :cascade do |t|
     t.integer "resource_owner_id", null: false
     t.integer "application_id", null: false
     t.string "token", null: false
@@ -1502,7 +1502,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["token"], name: "index_oauth_access_grants_on_token", unique: true, using: :btree
   end
 
-  create_table "oauth_access_tokens", force: :cascade do |t|
+  create_table "oauth_access_tokens", id: :serial, force: :cascade do |t|
     t.integer "resource_owner_id"
     t.integer "application_id"
     t.string "token", null: false
@@ -1516,7 +1516,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["token"], name: "index_oauth_access_tokens_on_token", unique: true, using: :btree
   end
 
-  create_table "oauth_applications", force: :cascade do |t|
+  create_table "oauth_applications", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "uid", null: false
     t.string "secret", null: false
@@ -1531,13 +1531,13 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true, using: :btree
   end
 
-  create_table "oauth_openid_requests", force: :cascade do |t|
+  create_table "oauth_openid_requests", id: :serial, force: :cascade do |t|
     t.integer "access_grant_id", null: false
     t.string "nonce", null: false
     t.index ["access_grant_id"], name: "index_oauth_openid_requests_on_access_grant_id", using: :btree
   end
 
-  create_table "pages_domains", force: :cascade do |t|
+  create_table "pages_domains", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.text "certificate"
     t.text "encrypted_key"
@@ -1557,7 +1557,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["verified_at"], name: "index_pages_domains_on_verified_at", using: :btree
   end
 
-  create_table "personal_access_tokens", force: :cascade do |t|
+  create_table "personal_access_tokens", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
     t.boolean "revoked", default: false
@@ -1571,7 +1571,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
   end
 
-  create_table "pool_repositories", id: :bigserial, force: :cascade do |t|
+  create_table "pool_repositories", force: :cascade do |t|
     t.integer "shard_id", null: false
     t.string "disk_path"
     t.string "state"
@@ -1581,7 +1581,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["source_project_id"], name: "index_pool_repositories_on_source_project_id", unique: true, using: :btree
   end
 
-  create_table "programming_languages", force: :cascade do |t|
+  create_table "programming_languages", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.string "color", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -1596,7 +1596,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id", "project_id", "access_level"], name: "index_project_authorizations_on_user_id_project_id_access_level", unique: true, using: :btree
   end
 
-  create_table "project_auto_devops", force: :cascade do |t|
+  create_table "project_auto_devops", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -1606,14 +1606,14 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
   end
 
-  create_table "project_ci_cd_settings", force: :cascade do |t|
+  create_table "project_ci_cd_settings", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.boolean "group_runners_enabled", default: true, null: false
     t.boolean "merge_pipelines_enabled"
     t.index ["project_id"], name: "index_project_ci_cd_settings_on_project_id", unique: true, using: :btree
   end
 
-  create_table "project_custom_attributes", force: :cascade do |t|
+  create_table "project_custom_attributes", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id", null: false
@@ -1623,14 +1623,14 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "key"], name: "index_project_custom_attributes_on_project_id_and_key", unique: true, using: :btree
   end
 
-  create_table "project_daily_statistics", id: :bigserial, force: :cascade do |t|
+  create_table "project_daily_statistics", force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "fetch_count", null: false
     t.date "date"
     t.index ["project_id", "date"], name: "index_project_daily_statistics_on_project_id_and_date", unique: true, order: { date: :desc }, using: :btree
   end
 
-  create_table "project_deploy_tokens", force: :cascade do |t|
+  create_table "project_deploy_tokens", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "deploy_token_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -1638,7 +1638,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "deploy_token_id"], name: "index_project_deploy_tokens_on_project_id_and_deploy_token_id", unique: true, using: :btree
   end
 
-  create_table "project_error_tracking_settings", primary_key: "project_id", id: :integer, force: :cascade do |t|
+  create_table "project_error_tracking_settings", primary_key: "project_id", id: :integer, default: nil, force: :cascade do |t|
     t.boolean "enabled", default: false, null: false
     t.string "api_url"
     t.string "encrypted_token"
@@ -1647,7 +1647,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.string "organization_name"
   end
 
-  create_table "project_features", force: :cascade do |t|
+  create_table "project_features", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "merge_requests_access_level"
     t.integer "issues_access_level"
@@ -1661,7 +1661,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_project_features_on_project_id", unique: true, using: :btree
   end
 
-  create_table "project_group_links", force: :cascade do |t|
+  create_table "project_group_links", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "group_id", null: false
     t.datetime "created_at"
@@ -1672,7 +1672,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_project_group_links_on_project_id", using: :btree
   end
 
-  create_table "project_import_data", force: :cascade do |t|
+  create_table "project_import_data", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.text "data"
     t.text "encrypted_credentials"
@@ -1681,7 +1681,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
   end
 
-  create_table "project_mirror_data", force: :cascade do |t|
+  create_table "project_mirror_data", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "status"
     t.string "jid"
@@ -1691,7 +1691,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["status"], name: "index_project_mirror_data_on_status", using: :btree
   end
 
-  create_table "project_repositories", id: :bigserial, force: :cascade do |t|
+  create_table "project_repositories", force: :cascade do |t|
     t.integer "shard_id", null: false
     t.string "disk_path", null: false
     t.integer "project_id", null: false
@@ -1700,7 +1700,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["shard_id"], name: "index_project_repositories_on_shard_id", using: :btree
   end
 
-  create_table "project_statistics", force: :cascade do |t|
+  create_table "project_statistics", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "namespace_id", null: false
     t.bigint "commit_count", default: 0, null: false
@@ -1712,7 +1712,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_project_statistics_on_project_id", unique: true, using: :btree
   end
 
-  create_table "projects", force: :cascade do |t|
+  create_table "projects", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "path"
     t.text "description"
@@ -1792,7 +1792,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
   end
 
-  create_table "prometheus_metrics", force: :cascade do |t|
+  create_table "prometheus_metrics", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.string "title", null: false
     t.string "query", null: false
@@ -1810,7 +1810,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_prometheus_metrics_on_project_id", using: :btree
   end
 
-  create_table "protected_branch_merge_access_levels", force: :cascade do |t|
+  create_table "protected_branch_merge_access_levels", id: :serial, force: :cascade do |t|
     t.integer "protected_branch_id", null: false
     t.integer "access_level", default: 40, null: false
     t.datetime "created_at", null: false
@@ -1818,7 +1818,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["protected_branch_id"], name: "index_protected_branch_merge_access", using: :btree
   end
 
-  create_table "protected_branch_push_access_levels", force: :cascade do |t|
+  create_table "protected_branch_push_access_levels", id: :serial, force: :cascade do |t|
     t.integer "protected_branch_id", null: false
     t.integer "access_level", default: 40, null: false
     t.datetime "created_at", null: false
@@ -1826,7 +1826,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["protected_branch_id"], name: "index_protected_branch_push_access", using: :btree
   end
 
-  create_table "protected_branches", force: :cascade do |t|
+  create_table "protected_branches", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
     t.datetime "created_at"
@@ -1834,7 +1834,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
   end
 
-  create_table "protected_tag_create_access_levels", force: :cascade do |t|
+  create_table "protected_tag_create_access_levels", id: :serial, force: :cascade do |t|
     t.integer "protected_tag_id", null: false
     t.integer "access_level", default: 40
     t.integer "user_id"
@@ -1846,7 +1846,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_protected_tag_create_access_levels_on_user_id", using: :btree
   end
 
-  create_table "protected_tags", force: :cascade do |t|
+  create_table "protected_tags", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
     t.datetime "created_at", null: false
@@ -1867,7 +1867,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["event_id"], name: "index_push_event_payloads_on_event_id", unique: true, using: :btree
   end
 
-  create_table "redirect_routes", force: :cascade do |t|
+  create_table "redirect_routes", id: :serial, force: :cascade do |t|
     t.integer "source_id", null: false
     t.string "source_type", null: false
     t.string "path", null: false
@@ -1877,7 +1877,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
   end
 
-  create_table "release_links", id: :bigserial, force: :cascade do |t|
+  create_table "release_links", force: :cascade do |t|
     t.integer "release_id", null: false
     t.string "url", null: false
     t.string "name", null: false
@@ -1887,7 +1887,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["release_id", "url"], name: "index_release_links_on_release_id_and_url", unique: true, using: :btree
   end
 
-  create_table "releases", force: :cascade do |t|
+  create_table "releases", id: :serial, force: :cascade do |t|
     t.string "tag"
     t.text "description"
     t.integer "project_id"
@@ -1903,7 +1903,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_releases_on_project_id", using: :btree
   end
 
-  create_table "remote_mirrors", force: :cascade do |t|
+  create_table "remote_mirrors", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.string "url"
     t.boolean "enabled", default: false
@@ -1931,7 +1931,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id", "programming_language_id"], name: "index_repository_languages_on_project_and_languages_id", unique: true, using: :btree
   end
 
-  create_table "resource_label_events", id: :bigserial, force: :cascade do |t|
+  create_table "resource_label_events", force: :cascade do |t|
     t.integer "action", null: false
     t.integer "issue_id"
     t.integer "merge_request_id"
@@ -1947,7 +1947,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_resource_label_events_on_user_id", using: :btree
   end
 
-  create_table "routes", force: :cascade do |t|
+  create_table "routes", id: :serial, force: :cascade do |t|
     t.integer "source_id", null: false
     t.string "source_type", null: false
     t.string "path", null: false
@@ -1959,7 +1959,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["source_type", "source_id"], name: "index_routes_on_source_type_and_source_id", unique: true, using: :btree
   end
 
-  create_table "sent_notifications", force: :cascade do |t|
+  create_table "sent_notifications", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "noteable_id"
     t.string "noteable_type"
@@ -1973,7 +1973,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree
   end
 
-  create_table "services", force: :cascade do |t|
+  create_table "services", id: :serial, force: :cascade do |t|
     t.string "type"
     t.string "title"
     t.integer "project_id"
@@ -2000,12 +2000,12 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["type"], name: "index_services_on_type", using: :btree
   end
 
-  create_table "shards", force: :cascade do |t|
+  create_table "shards", id: :serial, force: :cascade do |t|
     t.string "name", null: false
     t.index ["name"], name: "index_shards_on_name", unique: true, using: :btree
   end
 
-  create_table "snippets", force: :cascade do |t|
+  create_table "snippets", id: :serial, force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.integer "author_id", null: false
@@ -2028,7 +2028,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
   end
 
-  create_table "spam_logs", force: :cascade do |t|
+  create_table "spam_logs", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.string "source_ip"
     t.string "user_agent"
@@ -2042,7 +2042,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.boolean "recaptcha_verified", default: false, null: false
   end
 
-  create_table "subscriptions", force: :cascade do |t|
+  create_table "subscriptions", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.integer "subscribable_id"
     t.string "subscribable_type"
@@ -2054,7 +2054,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["subscribable_id", "subscribable_type", "user_id", "project_id"], name: "index_subscriptions_on_subscribable_and_user_id_and_project_id", unique: true, using: :btree
   end
 
-  create_table "suggestions", id: :bigserial, force: :cascade do |t|
+  create_table "suggestions", force: :cascade do |t|
     t.integer "note_id", null: false
     t.integer "relative_order", limit: 2, null: false
     t.boolean "applied", default: false, null: false
@@ -2067,7 +2067,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["note_id", "relative_order"], name: "index_suggestions_on_note_id_and_relative_order", unique: true, using: :btree
   end
 
-  create_table "system_note_metadata", force: :cascade do |t|
+  create_table "system_note_metadata", id: :serial, force: :cascade do |t|
     t.integer "note_id", null: false
     t.integer "commit_count"
     t.string "action"
@@ -2076,7 +2076,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["note_id"], name: "index_system_note_metadata_on_note_id", unique: true, using: :btree
   end
 
-  create_table "taggings", force: :cascade do |t|
+  create_table "taggings", id: :serial, force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
     t.string "taggable_type"
@@ -2090,14 +2090,14 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["taggable_id", "taggable_type"], name: "index_taggings_on_taggable_id_and_taggable_type", using: :btree
   end
 
-  create_table "tags", force: :cascade do |t|
+  create_table "tags", id: :serial, force: :cascade do |t|
     t.string "name"
     t.integer "taggings_count", default: 0
     t.index ["name"], name: "index_tags_on_name", unique: true, using: :btree
     t.index ["name"], name: "index_tags_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   end
 
-  create_table "term_agreements", force: :cascade do |t|
+  create_table "term_agreements", id: :serial, force: :cascade do |t|
     t.integer "term_id", null: false
     t.integer "user_id", null: false
     t.boolean "accepted", default: false, null: false
@@ -2108,7 +2108,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_term_agreements_on_user_id", using: :btree
   end
 
-  create_table "timelogs", force: :cascade do |t|
+  create_table "timelogs", id: :serial, force: :cascade do |t|
     t.integer "time_spent", null: false
     t.integer "user_id"
     t.datetime "created_at", null: false
@@ -2121,7 +2121,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_timelogs_on_user_id", using: :btree
   end
 
-  create_table "todos", force: :cascade do |t|
+  create_table "todos", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id"
     t.integer "target_id"
@@ -2145,12 +2145,12 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_todos_on_user_id", using: :btree
   end
 
-  create_table "trending_projects", force: :cascade do |t|
+  create_table "trending_projects", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.index ["project_id"], name: "index_trending_projects_on_project_id", unique: true, using: :btree
   end
 
-  create_table "u2f_registrations", force: :cascade do |t|
+  create_table "u2f_registrations", id: :serial, force: :cascade do |t|
     t.text "certificate"
     t.string "key_handle"
     t.string "public_key"
@@ -2163,7 +2163,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
   end
 
-  create_table "uploads", force: :cascade do |t|
+  create_table "uploads", id: :serial, force: :cascade do |t|
     t.bigint "size", null: false
     t.string "path", limit: 511, null: false
     t.string "checksum", limit: 64
@@ -2180,7 +2180,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["uploader", "path"], name: "index_uploads_on_uploader_and_path", using: :btree
   end
 
-  create_table "user_agent_details", force: :cascade do |t|
+  create_table "user_agent_details", id: :serial, force: :cascade do |t|
     t.string "user_agent", null: false
     t.string "ip_address", null: false
     t.integer "subject_id", null: false
@@ -2191,14 +2191,14 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
   end
 
-  create_table "user_callouts", force: :cascade do |t|
+  create_table "user_callouts", id: :serial, force: :cascade do |t|
     t.integer "feature_name", null: false
     t.integer "user_id", null: false
     t.index ["user_id", "feature_name"], name: "index_user_callouts_on_user_id_and_feature_name", unique: true, using: :btree
     t.index ["user_id"], name: "index_user_callouts_on_user_id", using: :btree
   end
 
-  create_table "user_custom_attributes", force: :cascade do |t|
+  create_table "user_custom_attributes", id: :serial, force: :cascade do |t|
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id", null: false
@@ -2215,7 +2215,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_user_interacted_projects_on_user_id", using: :btree
   end
 
-  create_table "user_preferences", force: :cascade do |t|
+  create_table "user_preferences", id: :serial, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "issue_notes_filter", limit: 2, default: 0, null: false
     t.integer "merge_request_notes_filter", limit: 2, default: 0, null: false
@@ -2227,7 +2227,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_user_preferences_on_user_id", unique: true, using: :btree
   end
 
-  create_table "user_statuses", primary_key: "user_id", force: :cascade do |t|
+  create_table "user_statuses", primary_key: "user_id", id: :serial, force: :cascade do |t|
     t.integer "cached_markdown_version"
     t.string "emoji", default: "speech_balloon", null: false
     t.string "message", limit: 100
@@ -2235,7 +2235,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_user_statuses_on_user_id", using: :btree
   end
 
-  create_table "user_synced_attributes_metadata", force: :cascade do |t|
+  create_table "user_synced_attributes_metadata", id: :serial, force: :cascade do |t|
     t.boolean "name_synced", default: false
     t.boolean "email_synced", default: false
     t.boolean "location_synced", default: false
@@ -2244,7 +2244,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id"], name: "index_user_synced_attributes_metadata_on_user_id", unique: true, using: :btree
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :serial, force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -2330,7 +2330,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["username"], name: "index_users_on_username_trigram", using: :gin, opclasses: {"username"=>"gin_trgm_ops"}
   end
 
-  create_table "users_star_projects", force: :cascade do |t|
+  create_table "users_star_projects", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.integer "user_id", null: false
     t.datetime "created_at"
@@ -2339,7 +2339,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
   end
 
-  create_table "web_hook_logs", force: :cascade do |t|
+  create_table "web_hook_logs", id: :serial, force: :cascade do |t|
     t.integer "web_hook_id", null: false
     t.string "trigger"
     t.string "url"
@@ -2356,7 +2356,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
   end
 
-  create_table "web_hooks", force: :cascade do |t|
+  create_table "web_hooks", id: :serial, force: :cascade do |t|
     t.integer "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"

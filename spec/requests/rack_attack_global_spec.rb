@@ -251,8 +251,8 @@ describe 'Rack Attack global throttles' do
     let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
 
     context 'with the token in the query string' do
-      let(:get_args) { [rss_url(user), nil] }
-      let(:other_user_get_args) { [rss_url(other_user), nil] }
+      let(:get_args) { [rss_url(user), params: nil] }
+      let(:other_user_get_args) { [rss_url(other_user), params: nil] }
 
       it_behaves_like 'rate-limited token-authenticated requests'
     end
