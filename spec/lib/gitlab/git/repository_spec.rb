@@ -1966,6 +1966,70 @@ describe Gitlab::Git::Repository, :seed_helper do
     end
   end
 
+  describe '#compare_source_branch' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_GITATTRIBUTES_REPO_PATH, '', 'group/project') }
+
+    context 'within same repository' do
+      it 'does not create a temp ref' do
+        expect(repository).not_to receive(:fetch_source_branch!)
+        expect(repository).not_to receive(:delete_refs)
+
+        compare = repository.compare_source_branch('master', repository, 'feature', straight: false)
+        expect(compare).to be_a(Gitlab::Git::Compare)
+        expect(compare.commits.count).to be > 0
+      end
+
+      it 'returns empty commits when source ref does not exist' do
+        compare = repository.compare_source_branch('master', repository, 'non-existent-branch', straight: false)
+
+        expect(compare.commits).to be_empty
+      end
+    end
+
+    context 'with different repositories' do
+      context 'when ref is known by source repo, but not by target' do
+        before do
+          mutable_repository.write_ref('another-branch', 'feature')
+        end
+
+        it 'creates temp ref' do
+          expect(repository).not_to receive(:fetch_source_branch!)
+          expect(repository).not_to receive(:delete_refs)
+
+          compare = repository.compare_source_branch('master', mutable_repository, 'another-branch', straight: false)
+          expect(compare).to be_a(Gitlab::Git::Compare)
+          expect(compare.commits.count).to be > 0
+        end
+      end
+
+      context 'when ref is known by source and target repos' do
+        before do
+          mutable_repository.write_ref('another-branch', 'feature')
+          repository.write_ref('another-branch', 'feature')
+        end
+
+        it 'does not create a temp ref' do
+          expect(repository).not_to receive(:fetch_source_branch!)
+          expect(repository).not_to receive(:delete_refs)
+
+          compare = repository.compare_source_branch('master', mutable_repository, 'another-branch', straight: false)
+          expect(compare).to be_a(Gitlab::Git::Compare)
+          expect(compare.commits.count).to be > 0
+        end
+      end
+
+      context 'when ref is unknown by source repo' do
+        it 'returns nil when source ref does not exist' do
+          expect(repository).to receive(:fetch_source_branch!).and_call_original
+          expect(repository).to receive(:delete_refs).and_call_original
+
+          compare = repository.compare_source_branch('master', mutable_repository, 'non-existent-branch', straight: false)
+          expect(compare).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#checksum' do
     it 'calculates the checksum for non-empty repo' do
       expect(repository.checksum).to eq '51d0a9662681f93e1fee547a6b7ba2bcaf716059'
