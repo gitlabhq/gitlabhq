@@ -2061,7 +2061,7 @@ from another project:
 ```yaml
 include:
   - template: Bash.gitlab-ci.yml
-  - project: /group/my-project
+  - project: group/my-project
     file: /templates/docker-workflow.yml
 ```
 
