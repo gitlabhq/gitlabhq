@@ -4,6 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import contentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { GREEN_BOX_IMAGE_URL } from 'spec/test_constants';
+import '~/behaviors/markdown/render_gfm';
 
 describe('ContentViewer', () => {
   let vm;
@@ -29,6 +30,7 @@ describe('ContentViewer', () => {
       path: 'test.md',
       content: '*  Test',
       projectPath: 'testproject',
+      type: 'markdown',
     });
 
     const previewContainer = vm.$el.querySelector('.md-previewer');
@@ -44,6 +46,7 @@ describe('ContentViewer', () => {
     createComponent({
       path: GREEN_BOX_IMAGE_URL,
       fileSize: 1024,
+      type: 'image',
     });
 
     setTimeout(() => {
