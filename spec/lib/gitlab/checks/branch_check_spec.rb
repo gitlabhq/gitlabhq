@@ -77,117 +77,85 @@ describe Gitlab::Checks::BranchCheck do
         let(:oldrev) { '0000000000000000000000000000000000000000' }
         let(:ref) { 'refs/heads/feature' }
 
-        context 'protected branch creation feature is disabled' do
+        context 'user can push to branch' do
           before do
-            stub_feature_flags(protected_branch_creation: false)
+            allow(user_access)
+              .to receive(:can_push_to_branch?)
+              .with('feature')
+              .and_return(true)
           end
 
-          context 'user is not allowed to push to protected branch' do
+          it 'does not raise an error' do
+            expect { subject.validate! }.not_to raise_error
+          end
+        end
+
+        context 'user cannot push to branch' do
+          before do
+            allow(user_access)
+              .to receive(:can_push_to_branch?)
+              .with('feature')
+              .and_return(false)
+          end
+
+          context 'user cannot merge to branch' do
             before do
               allow(user_access)
-                .to receive(:can_push_to_branch?)
+                .to receive(:can_merge_to_branch?)
+                .with('feature')
                 .and_return(false)
             end
 
             it 'raises an error' do
-              expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to protected branches on this project.')
+              expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to create protected branches on this project.')
             end
           end
 
-          context 'user is allowed to push to protected branch' do
+          context 'user can merge to branch' do
             before do
               allow(user_access)
-                .to receive(:can_push_to_branch?)
-                .and_return(true)
-            end
-
-            it 'does not raise an error' do
-              expect { subject.validate! }.not_to raise_error
-            end
-          end
-        end
-
-        context 'protected branch creation feature is enabled' do
-          context 'user can push to branch' do
-            before do
-              allow(user_access)
-                .to receive(:can_push_to_branch?)
+                .to receive(:can_merge_to_branch?)
                 .with('feature')
                 .and_return(true)
+
+              allow(project.repository)
+                .to receive(:branch_names_contains_sha)
+                .with(newrev)
+                .and_return(['branch'])
             end
 
-            it 'does not raise an error' do
-              expect { subject.validate! }.not_to raise_error
-            end
-          end
-
-          context 'user cannot push to branch' do
-            before do
-              allow(user_access)
-                .to receive(:can_push_to_branch?)
-                .with('feature')
-                .and_return(false)
-            end
-
-            context 'user cannot merge to branch' do
+            context "newrev isn't in any protected branches" do
               before do
-                allow(user_access)
-                  .to receive(:can_merge_to_branch?)
-                  .with('feature')
+                allow(ProtectedBranch)
+                  .to receive(:any_protected?)
+                  .with(project, ['branch'])
                   .and_return(false)
               end
 
               it 'raises an error' do
-                expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to create protected branches on this project.')
+                expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only use an existing protected branch ref as the basis of a new protected branch.')
               end
             end
 
-            context 'user can merge to branch' do
+            context 'newrev is included in a protected branch' do
               before do
-                allow(user_access)
-                  .to receive(:can_merge_to_branch?)
-                  .with('feature')
+                allow(ProtectedBranch)
+                  .to receive(:any_protected?)
+                  .with(project, ['branch'])
                   .and_return(true)
-
-                allow(project.repository)
-                  .to receive(:branch_names_contains_sha)
-                  .with(newrev)
-                  .and_return(['branch'])
               end
 
-              context "newrev isn't in any protected branches" do
-                before do
-                  allow(ProtectedBranch)
-                    .to receive(:any_protected?)
-                    .with(project, ['branch'])
-                    .and_return(false)
-                end
+              context 'via web interface' do
+                let(:protocol) { 'web' }
 
+                it 'allows branch creation' do
+                  expect { subject.validate! }.not_to raise_error
+                end
+              end
+
+              context 'via SSH' do
                 it 'raises an error' do
-                  expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only use an existing protected branch ref as the basis of a new protected branch.')
-                end
-              end
-
-              context 'newrev is included in a protected branch' do
-                before do
-                  allow(ProtectedBranch)
-                    .to receive(:any_protected?)
-                    .with(project, ['branch'])
-                    .and_return(true)
-                end
-
-                context 'via web interface' do
-                  let(:protocol) { 'web' }
-
-                  it 'allows branch creation' do
-                    expect { subject.validate! }.not_to raise_error
-                  end
-                end
-
-                context 'via SSH' do
-                  it 'raises an error' do
-                    expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only create protected branches using the web interface and API.')
-                  end
+                  expect { subject.validate! }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only create protected branches using the web interface and API.')
                 end
               end
             end
