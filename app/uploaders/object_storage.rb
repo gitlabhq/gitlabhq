@@ -117,7 +117,7 @@ module ObjectStorage
 
         next unless uploader
         next unless uploader.exists?
-        next unless send(:"#{mounted_as}_changed?") # rubocop:disable GitlabSecurity/PublicSend
+        next unless send(:"saved_change_to_#{mounted_as}?") # rubocop:disable GitlabSecurity/PublicSend
 
         mount
       end.keys

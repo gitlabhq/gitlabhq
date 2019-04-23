@@ -1912,8 +1912,8 @@ class Project < ApplicationRecord
     false
   end
 
-  def full_path_was
-    File.join(namespace.full_path, previous_changes['path'].first)
+  def full_path_before_last_save
+    File.join(namespace.full_path, path_before_last_save)
   end
 
   alias_method :name_with_namespace, :full_name

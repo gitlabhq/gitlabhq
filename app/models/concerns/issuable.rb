@@ -117,7 +117,7 @@ module Issuable
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
-      title_changed? || description_changed?
+      will_save_change_to_title? || will_save_change_to_description?
     end
 
     def allows_multiple_assignees?

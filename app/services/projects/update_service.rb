@@ -79,10 +79,7 @@ module Projects
     end
 
     def after_rename_service(project)
-      # The path slug the project was using, before the rename took place.
-      path_before = project.previous_changes['path'].first
-
-      AfterRenameService.new(project, path_before: path_before, full_path_before: project.full_path_was)
+      AfterRenameService.new(project, path_before: project.path_before_last_save, full_path_before: project.full_path_before_last_save)
     end
 
     def changing_pages_related_config?
