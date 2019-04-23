@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class GlobalLabel
+  include Presentable
+
   attr_accessor :title, :labels
   alias_attribute :name, :title
 
@@ -22,5 +24,9 @@ class GlobalLabel
     @title = title
     @labels = labels
     @first_label = labels.find { |lbl| lbl.description.present? } || labels.first
+  end
+
+  def present(attributes)
+    super(attributes.merge(presenter_class: ::LabelPresenter))
   end
 end

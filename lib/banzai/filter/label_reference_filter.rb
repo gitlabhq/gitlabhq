@@ -82,16 +82,18 @@ module Banzai
 
       def object_link_text(object, matches)
         label_suffix = ''
+        parent = project || group
 
         if project || full_path_ref?(matches)
           project_path    = full_project_path(matches[:namespace], matches[:project])
           parent_from_ref = from_ref_cached(project_path)
-          reference       = parent_from_ref.to_human_reference(project || group)
+          reference       = parent_from_ref.to_human_reference(parent)
 
           label_suffix = " <i>in #{reference}</i>" if reference.present?
         end
 
-        LabelsHelper.render_colored_label(object, label_suffix: label_suffix, title: tooltip_title(object))
+        presenter = object.present(issuable_subject: parent)
+        LabelsHelper.render_colored_label(presenter, label_suffix: label_suffix, title: tooltip_title(presenter))
       end
 
       def tooltip_title(label)

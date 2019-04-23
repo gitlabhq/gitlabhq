@@ -13,9 +13,7 @@ module LabelsHelper
 
   # Link to a Label
   #
-  # label   - Label object to link to
-  # subject - Project/Group object which will be used as the context for the
-  #           label's link. If omitted, defaults to the label's own group/project.
+  # label   - LabelPresenter object to link to
   # type    - The type of item the link will point to (:issue or
   #           :merge_request). If omitted, defaults to :issue.
   # block   - An optional block that will be passed to `link_to`, forming the
@@ -40,41 +38,13 @@ module LabelsHelper
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, subject: nil, type: :issue, tooltip: true, css_class: nil, &block)
-    link = label_filter_path(subject || label.subject, label, type: type)
+  def link_to_label(label, type: :issue, tooltip: true, css_class: nil, &block)
+    link = label.filter_path(type: type)
 
     if block_given?
       link_to link, class: css_class, &block
     else
       render_label(label, tooltip: tooltip, link: link, css: css_class)
-    end
-  end
-
-  def label_filter_path(subject, label, type: :issue)
-    case subject
-    when Group
-      send("#{type.to_s.pluralize}_group_path", # rubocop:disable GitlabSecurity/PublicSend
-                  subject,
-                  label_name: [label.name])
-    when Project
-      send("namespace_project_#{type.to_s.pluralize}_path", # rubocop:disable GitlabSecurity/PublicSend
-                  subject.namespace,
-                  subject,
-                  label_name: [label.name])
-    end
-  end
-
-  def edit_label_path(label)
-    case label
-    when GroupLabel then edit_group_label_path(label.group, label)
-    when ProjectLabel then edit_project_label_path(label.project, label)
-    end
-  end
-
-  def destroy_label_path(label)
-    case label
-    when GroupLabel then group_label_path(label.group, label)
-    when ProjectLabel then project_label_path(label.project, label)
     end
   end
 
@@ -168,10 +138,6 @@ module LabelsHelper
     end
   end
 
-  def can_subscribe_to_label_in_different_levels?(label)
-    defined?(@project) && label.is_a?(GroupLabel)
-  end
-
   def label_subscription_status(label, project)
     return 'group-level' if label.subscribed?(current_user)
     return 'project-level' if label.subscribed?(current_user, project)
@@ -241,8 +207,8 @@ module LabelsHelper
     "#{action} at #{level} level"
   end
 
-  def labels_sorted_by_title(labels)
-    labels.sort_by(&:title)
+  def presented_labels_sorted_by_title(labels, subject)
+    labels.sort_by(&:title).map { |label| label.present(issuable_subject: subject) }
   end
 
   def label_dropdown_data(project, opts = {})
