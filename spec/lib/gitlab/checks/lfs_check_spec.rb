@@ -27,6 +27,18 @@ describe Gitlab::Checks::LfsCheck do
         allow(project).to receive(:lfs_enabled?).and_return(true)
       end
 
+      context 'with lfs_check feature disabled' do
+        before do
+          stub_feature_flags(lfs_check: false)
+        end
+
+        it 'skips integrity check' do
+          expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
+
+          subject.validate!
+        end
+      end
+
       context 'deletion' do
         let(:changes) { { oldrev: oldrev, ref: ref } }
 
