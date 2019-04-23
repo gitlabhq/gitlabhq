@@ -1,0 +1,5 @@
+---
+title: "Fix misaligned image diff swipe view"
+merge_request: 26969
+author: ftab
+type: fixed
