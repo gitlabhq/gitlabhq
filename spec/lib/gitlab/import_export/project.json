@@ -158,6 +158,8 @@
         {
           "id": 351,
           "note": "Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi.",
+          "note_html": "<p>dodgy html</p>",
+          "cached_markdown_version": 434343,
           "noteable_type": "Issue",
           "author_id": 26,
           "created_at": "2016-06-14T15:02:47.770Z",
@@ -182,6 +184,8 @@
           "note": "Est reprehenderit quas aut aspernatur autem recusandae voluptatem.",
           "noteable_type": "Issue",
           "author_id": 25,
+          "note_html": "<p>dodgy html</p>",
+          "cached_markdown_version": 121212,
           "created_at": "2016-06-14T15:02:47.795Z",
           "updated_at": "2016-06-14T15:02:47.795Z",
           "project_id": 5,

@@ -141,6 +141,9 @@ excluded_attributes:
     - :external_diff_size
   issues:
     - :milestone_id
+  notes:
+    - :note_html
+    - :cached_markdown_version
   merge_requests:
     - :milestone_id
     - :ref_fetched
