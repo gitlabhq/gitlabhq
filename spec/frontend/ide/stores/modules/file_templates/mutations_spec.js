@@ -2,6 +2,9 @@ import createState from '~/ide/stores/modules/file_templates/state';
 import * as types from '~/ide/stores/modules/file_templates/mutation_types';
 import mutations from '~/ide/stores/modules/file_templates/mutations';
 
+const mockFileTemplates = [['MIT'], ['CC']];
+const mockTemplateType = 'test';
+
 describe('IDE file templates mutations', () => {
   let state;
 
@@ -10,10 +13,20 @@ describe('IDE file templates mutations', () => {
   });
 
   describe(`${types.REQUEST_TEMPLATE_TYPES}`, () => {
-    it('sets isLoading', () => {
+    it('sets loading to true', () => {
+      state.isLoading = false;
+
       mutations[types.REQUEST_TEMPLATE_TYPES](state);
 
       expect(state.isLoading).toBe(true);
+    });
+
+    it('sets templates to an empty array', () => {
+      state.templates = mockFileTemplates;
+
+      mutations[types.REQUEST_TEMPLATE_TYPES](state);
+
+      expect(state.templates).toEqual([]);
     });
   });
 
@@ -31,29 +44,33 @@ describe('IDE file templates mutations', () => {
     it('sets isLoading to false', () => {
       state.isLoading = true;
 
-      mutations[types.RECEIVE_TEMPLATE_TYPES_SUCCESS](state, []);
+      mutations[types.RECEIVE_TEMPLATE_TYPES_SUCCESS](state, mockFileTemplates);
 
       expect(state.isLoading).toBe(false);
     });
 
-    it('sets templates', () => {
-      mutations[types.RECEIVE_TEMPLATE_TYPES_SUCCESS](state, ['test']);
+    it('sets templates to payload', () => {
+      state.templates = ['test'];
 
-      expect(state.templates).toEqual(['test']);
+      mutations[types.RECEIVE_TEMPLATE_TYPES_SUCCESS](state, mockFileTemplates);
+
+      expect(state.templates).toEqual(mockFileTemplates);
     });
   });
 
   describe(`${types.SET_SELECTED_TEMPLATE_TYPE}`, () => {
-    it('sets selectedTemplateType', () => {
-      mutations[types.SET_SELECTED_TEMPLATE_TYPE](state, 'type');
+    it('sets templates type to selected type', () => {
+      state.selectedTemplateType = '';
 
-      expect(state.selectedTemplateType).toBe('type');
+      mutations[types.SET_SELECTED_TEMPLATE_TYPE](state, mockTemplateType);
+
+      expect(state.selectedTemplateType).toBe(mockTemplateType);
     });
 
-    it('clears templates', () => {
-      state.templates = ['test'];
+    it('sets templates to empty array', () => {
+      state.templates = mockFileTemplates;
 
-      mutations[types.SET_SELECTED_TEMPLATE_TYPE](state, 'type');
+      mutations[types.SET_SELECTED_TEMPLATE_TYPE](state, mockTemplateType);
 
       expect(state.templates).toEqual([]);
     });
@@ -61,6 +78,8 @@ describe('IDE file templates mutations', () => {
 
   describe(`${types.SET_UPDATE_SUCCESS}`, () => {
     it('sets updateSuccess', () => {
+      state.updateSuccess = false;
+
       mutations[types.SET_UPDATE_SUCCESS](state, true);
 
       expect(state.updateSuccess).toBe(true);
