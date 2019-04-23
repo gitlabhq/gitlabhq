@@ -584,6 +584,28 @@ entry.
 - Removes EE differences for jobs/getters.js.
 
 
+## 11.8.8 (2019-04-23)
+
+### Fixed (5 changes)
+
+- Bring back Rugged implementation of find_commit. !25477
+- Fix bug in BitBucket imports with SHA shorter than 40 chars. !26050
+- Fix health checks not working behind load balancers. !26055
+- Fix error creating a merge request when diff includes a null byte. !26190
+- Avoid excessive recursive calls with Rugged TreeEntries. !26813
+
+### Performance (1 change)
+
+- Bring back Rugged implementation of ListCommitsByOid. !27441
+
+### Other (4 changes)
+
+- Bring back Rugged implementation of GetTreeEntries. !25674
+- Bring back Rugged implementation of CommitIsAncestor. !25702
+- Bring back Rugged implementation of TreeEntry. !25706
+- Bring back Rugged implementation of commit_tree_entry. !25896
+
+
 ## 11.8.3 (2019-03-19)
 
 ### Security (1 change)
