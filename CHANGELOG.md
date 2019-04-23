@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.9.9 (2019-04-23)
+
+### Performance (1 change)
+
+- Bring back Rugged implementation of ListCommitsByOid. !27441
+
+
 ## 11.9.8 (2019-04-11)
 
 ### Deprecated (1 change)
