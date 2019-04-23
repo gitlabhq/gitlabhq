@@ -69,7 +69,7 @@ when a merge request was created or updated. For example:
 
 ## Combined ref pipelines **[PREMIUM]**
 
-> [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
 It's possible for your source and target branches to diverge, which can result
 in the scenario that source branch's pipeline was green, the target's pipeline was green,

@@ -15,15 +15,10 @@ module Gitlab
 
         def authorized_resolve
           proc do |parent_typed_object, args, ctx|
-            resolved_obj = @old_resolve_proc.call(parent_typed_object, args, ctx)
-            authorizing_obj = authorize_against(parent_typed_object)
-            checker = build_checker(ctx[:current_user], authorizing_obj)
+            resolved_type = @old_resolve_proc.call(parent_typed_object, args, ctx)
+            authorizing_object = authorize_against(parent_typed_object, resolved_type)
 
-            if resolved_obj.respond_to?(:then)
-              resolved_obj.then(&checker)
-            else
-              checker.call(resolved_obj)
-            end
+            filter_allowed(ctx[:current_user], resolved_type, authorizing_object)
           end
         end
 
@@ -38,7 +33,7 @@ module Gitlab
           type = @field.type
 
           # When the return type of @field is a collection, find the singular type
-          if type.get_field('edges')
+          if @field.connection?
             type = node_type_for_relay_connection(type)
           elsif type.list?
             type = node_type_for_basic_connection(type)
@@ -52,43 +47,60 @@ module Gitlab
           Array.wrap(@field.metadata[:authorize])
         end
 
-        # If it's a built-in/scalar type, authorize using its parent object.
-        # nil means authorize using the resolved object
-        def authorize_against(parent_typed_object)
-          parent_typed_object.object if built_in_type? && parent_typed_object.respond_to?(:object)
+        def authorize_against(parent_typed_object, resolved_type)
+          if built_in_type?
+            # The field is a built-in/scalar type, or a list of scalars
+            # authorize using the parent's object
+            parent_typed_object.object
+          elsif resolved_type.respond_to?(:object)
+            # The field is a type representing a single object, we'll authorize
+            # against the object directly
+            resolved_type.object
+          elsif @field.connection? || resolved_type.is_a?(Array)
+            # The field is a connection or a list of non-built-in types, we'll
+            # authorize each element when rendering
+            nil
+          else
+            # Resolved type is a single object that might not be loaded yet by
+            # the batchloader, we'll authorize that
+            resolved_type
+          end
         end
 
-        def build_checker(current_user, authorizing_obj)
-          lambda do |resolved_obj|
-            # Load the elements if they were not loaded by BatchLoader yet
-            resolved_obj = resolved_obj.sync if resolved_obj.respond_to?(:sync)
-
-            check = lambda do |object|
-              authorizations.all? do |ability|
-                Ability.allowed?(current_user, ability, authorizing_obj || object)
-              end
+        def filter_allowed(current_user, resolved_type, authorizing_object)
+          if authorizing_object
+            # Authorizing fields representing scalars, or a simple field with an object
+            resolved_type if allowed_access?(current_user, authorizing_object)
+          elsif @field.connection?
+            # A connection with pagination, modify the visible nodes in on the
+            # connection type in place
+            resolved_type.edge_nodes.to_a.keep_if { |node| allowed_access?(current_user, node) }
+            resolved_type
+          elsif resolved_type.is_a? Array
+            # A simple list of rendered types  each object being an object to authorize
+            resolved_type.select do |single_object_type|
+              allowed_access?(current_user, single_object_type.object)
             end
+          elsif resolved_type.nil?
+            # We're not rendering anything, for example when a record was not found
+            # no need to do anything
+          else
+            raise "Can't authorize #{@field}"
+          end
+        end
 
-            case resolved_obj
-            when Array, ActiveRecord::Relation
-              resolved_obj.select(&check)
-            else
-              resolved_obj if check.call(resolved_obj)
-            end
+        def allowed_access?(current_user, object)
+          object = object.sync if object.respond_to?(:sync)
+
+          authorizations.all? do |ability|
+            Ability.allowed?(current_user, ability, object)
           end
         end
 
         # Returns the singular type for relay connections.
         # This will be the type class of edges.node
         def node_type_for_relay_connection(type)
-          type = type.get_field('edges').type.unwrap.get_field('node')&.type
-
-          if type.nil?
-            raise Gitlab::Graphql::Errors::ConnectionDefinitionError,
-              'Connection Type must conform to the Relay Cursor Connections Specification'
-          end
-
-          type
+          type.unwrap.get_field('edges').type.unwrap.get_field('node').type
         end
 
         # Returns the singular type for basic connections, for example `[Types::ProjectType]`
