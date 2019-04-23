@@ -1,9 +1,13 @@
+inherits_from:
+  - .haml-lint_todo.yml
 # Whether to ignore frontmatter at the beginning of HAML documents for
 # frameworks such as Jekyll/Middleman
 skip_frontmatter: false
 exclude:
   - 'vendor/**/*'
   - 'spec/**/*'
+require:
+  - './lib/haml_lint/linter/no_plain_nodes.rb'
 
 linters:
   AltText:
