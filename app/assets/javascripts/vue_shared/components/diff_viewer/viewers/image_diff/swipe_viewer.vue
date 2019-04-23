@@ -58,12 +58,11 @@ export default {
 
       const moveX = e.pageX || e.touches[0].pageX;
       let leftValue = moveX - this.$refs.swipeFrame.getBoundingClientRect().left;
-      const spaceLeft = 20;
       const { clientWidth } = this.$refs.swipeFrame;
       if (leftValue <= 0) {
         leftValue = 0;
-      } else if (leftValue > clientWidth - spaceLeft) {
-        leftValue = clientWidth - spaceLeft;
+      } else if (leftValue > clientWidth) {
+        leftValue = clientWidth;
       }
 
       this.swipeWrapWidth = (leftValue / clientWidth) * 100;
@@ -80,7 +79,7 @@ export default {
       document.body.removeEventListener('touchmove', this.dragMove);
     },
     prepareSwipe() {
-      if (this.swipeOldImgInfo && this.swipeNewImgInfo) {
+      if (this.swipeOldImgInfo && this.swipeNewImgInfo && this.swipeOldImgInfo.renderedWidth > 0) {
         // Add 2 for border width
         this.swipeMaxWidth =
           Math.max(this.swipeOldImgInfo.renderedWidth, this.swipeNewImgInfo.renderedWidth) + 2;
@@ -101,6 +100,8 @@ export default {
     },
     resize: _.throttle(function throttledResize() {
       this.swipeBarPos = 0;
+      this.swipeWrapWidth = 0;
+      this.prepareSwipe();
     }, 400),
   },
 };
@@ -111,6 +112,8 @@ export default {
     <div
       ref="swipeFrame"
       :style="{
+        width: swipeMaxPixelWidth,
+        height: swipeMaxPixelHeight,
         'user-select': dragging ? 'none' : null,
       }"
       class="swipe-frame"
