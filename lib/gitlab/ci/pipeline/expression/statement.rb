@@ -8,13 +8,24 @@ module Gitlab
           StatementError = Class.new(Expression::ExpressionError)
 
           GRAMMAR = [
+            # presence matchers
             %w[variable],
+
+            # positive matchers
             %w[variable equals string],
             %w[variable equals variable],
             %w[variable equals null],
             %w[string equals variable],
             %w[null equals variable],
-            %w[variable matches pattern]
+            %w[variable matches pattern],
+
+            # negative matchers
+            %w[variable notequals string],
+            %w[variable notequals variable],
+            %w[variable notequals null],
+            %w[string notequals variable],
+            %w[null notequals variable],
+            %w[variable notmatches pattern]
           ].freeze
 
           def initialize(statement, variables = {})
