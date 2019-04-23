@@ -1,5 +1,0 @@
----
-title: Bring back Rugged implementation of ListCommitsByOid
-merge_request: 27441
-author:
-type: performance
