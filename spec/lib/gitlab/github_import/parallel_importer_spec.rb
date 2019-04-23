@@ -25,18 +25,9 @@ describe Gitlab::GithubImport::ParallelImporter do
     end
 
     it 'sets the JID in Redis' do
-      expect(Gitlab::SidekiqStatus)
-        .to receive(:set)
-        .with("github-importer/#{project.id}", StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
-        .and_call_original
+      expect(Gitlab::Import::SetAsyncJid).to receive(:set_jid).with(project).and_call_original
 
       importer.execute
-    end
-
-    it 'updates the import JID of the project' do
-      importer.execute
-
-      expect(project.import_state.reload.jid).to eq("github-importer/#{project.id}")
     end
   end
 end

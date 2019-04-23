@@ -451,6 +451,9 @@ msgstr ""
 msgid "API Help"
 msgstr ""
 
+msgid "API Token"
+msgstr ""
+
 msgid "About GitLab"
 msgstr ""
 
@@ -3808,6 +3811,9 @@ msgstr ""
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
+msgid "Enter in your Phabricator Server URL and personal access token below"
+msgstr ""
+
 msgid "Enter the issue description"
 msgstr ""
 
@@ -5171,6 +5177,12 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
+msgid "Import tasks"
+msgstr ""
+
+msgid "Import tasks from Phabricator into issues"
+msgstr ""
+
 msgid "Import timed out. Import took longer than %{import_jobs_expiration} seconds"
 msgstr ""
 
@@ -5319,6 +5331,9 @@ msgid "Invalid field"
 msgstr ""
 
 msgid "Invalid file."
+msgstr ""
+
+msgid "Invalid import params"
 msgstr ""
 
 msgid "Invalid input, please avoid emojis"
@@ -6905,6 +6920,15 @@ msgid "Personal Access Token"
 msgstr ""
 
 msgid "Personal project creation is not allowed. Please contact your administrator with questions"
+msgstr ""
+
+msgid "Phabricator Server Import"
+msgstr ""
+
+msgid "Phabricator Server URL"
+msgstr ""
+
+msgid "Phabricator Tasks"
 msgstr ""
 
 msgid "Pick a name"

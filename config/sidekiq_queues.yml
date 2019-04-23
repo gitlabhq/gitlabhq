@@ -91,3 +91,4 @@
   - [chat_notification, 2]
   - [migrate_external_diffs, 1]
   - [update_project_statistics, 1]
+  - [phabricator_import_import_tasks, 1]

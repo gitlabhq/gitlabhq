@@ -63,6 +63,13 @@
           = link_to new_import_manifest_path, class: 'btn import_manifest', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "manifest_file" } do
             = icon('file-text-o', text: 'Manifest file')
 
+      - if phabricator_import_enabled?
+        %div
+          = link_to new_import_phabricator_path, class: 'btn import_phabricator', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "phabricator" } do
+            = custom_icon('issues')
+            = _("Phabricator Tasks")
+
+
   .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
     = form_for @project, html: { class: 'new_project' } do |f|
       %hr
