@@ -112,7 +112,7 @@ describe Gitlab::Git::Commit, :seed_helper do
   end
 
   context 'Class methods' do
-    describe '.find' do
+    shared_examples '.find' do
       it "should return first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
           rugged_repo.head.target.oid
@@ -152,6 +152,20 @@ describe Gitlab::Git::Commit, :seed_helper do
           expect(described_class.find(repository, SeedRepo::Commit::ID)).to be_nil
         end
       end
+    end
+
+    describe '.find with Gitaly enabled' do
+      it_should_behave_like '.find'
+    end
+
+    describe '.find with Rugged enabled', :enable_rugged do
+      it 'calls out to the Rugged implementation' do
+        allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+
+        described_class.find(repository, SeedRepo::Commit::ID)
+      end
+
+      it_should_behave_like '.find'
     end
 
     describe '.last_for_path' do
@@ -366,13 +380,48 @@ describe Gitlab::Git::Commit, :seed_helper do
       end
     end
 
-    describe '#batch_by_oid' do
+    shared_examples '.batch_by_oid' do
+      context 'with multiple OIDs' do
+        let(:oids) { [SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID] }
+
+        it 'returns multiple commits' do
+          commits = described_class.batch_by_oid(repository, oids)
+
+          expect(commits.count).to eq(2)
+          expect(commits).to all( be_a(Gitlab::Git::Commit) )
+          expect(commits.first.sha).to eq(SeedRepo::Commit::ID)
+          expect(commits.second.sha).to eq(SeedRepo::FirstCommit::ID)
+        end
+      end
+
+      context 'when oids is empty' do
+        it 'returns empty commits' do
+          commits = described_class.batch_by_oid(repository, [])
+
+          expect(commits.count).to eq(0)
+        end
+      end
+    end
+
+    describe '.batch_by_oid with Gitaly enabled' do
+      it_should_behave_like '.batch_by_oid'
+
       context 'when oids is empty' do
         it 'makes no Gitaly request' do
           expect(Gitlab::GitalyClient).not_to receive(:call)
 
           described_class.batch_by_oid(repository, [])
         end
+      end
+    end
+
+    describe '.batch_by_oid with Rugged enabled', :enable_rugged do
+      it_should_behave_like '.batch_by_oid'
+
+      it 'calls out to the Rugged implementation' do
+        allow_any_instance_of(Rugged).to receive(:rev_parse).with(SeedRepo::Commit::ID).and_call_original
+
+        described_class.batch_by_oid(repository, [SeedRepo::Commit::ID])
       end
     end
 

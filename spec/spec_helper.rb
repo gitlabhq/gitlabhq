@@ -115,9 +115,16 @@ RSpec.configure do |config|
     TestEnv.clean_test_path
   end
 
-  config.before do
+  config.before do |example|
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
+
+    enabled = example.metadata[:enable_rugged].present?
+
+    # Disable Rugged features by default
+    Gitlab::Git::RuggedImpl::Repository::FEATURE_FLAGS.each do |flag|
+      allow(Feature).to receive(:enabled?).with(flag).and_return(enabled)
+    end
 
     # The following can be removed when we remove the staged rollout strategy
     # and we can just enable it using instance wide settings
