@@ -233,6 +233,13 @@ entry.
 - Removes EE differences for environment_item.vue.
 
 
+## 11.9.9 (2019-04-23)
+
+### Performance (1 change)
+
+- Bring back Rugged implementation of ListCommitsByOid. !27441
+
+
 ## 11.9.8 (2019-04-11)
 
 ### Deprecated (1 change)
