@@ -7,6 +7,7 @@ module Gitlab
       ERROR_MESSAGE = 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'.freeze
 
       def validate!
+        return unless Feature.enabled?(:lfs_check, default_enabled: true)
         return unless project.lfs_enabled?
         return if skip_lfs_integrity_check
 
