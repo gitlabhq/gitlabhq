@@ -1,7 +1,7 @@
 /* eslint no-param-reassign: "off" */
 
 import $ from 'jquery';
-import GfmAutoComplete from '~/gfm_auto_complete';
+import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 
 import 'jquery.caret';
 import 'at.js';
