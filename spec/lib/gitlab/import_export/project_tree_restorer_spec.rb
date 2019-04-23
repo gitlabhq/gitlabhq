@@ -24,12 +24,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         allow_any_instance_of(Project).to receive(:latest_cached_markdown_version).and_return(434343)
         allow_any_instance_of(Note).to receive(:latest_cached_markdown_version).and_return(434343)
 
-        project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
+        @project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
 
         expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: ['whatever'])).and_call_original.at_least(:once)
-        allow(project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
+        allow(@project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
 
-        @restored_project_json = project_tree_restorer.restore
+        @restored_project_json = @project_tree_restorer.restore
       end
     end
 
@@ -61,6 +61,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       context 'when importing a project with cached_markdown_version and note_html' do
+        before do
+          expect(Gitlab::ImportExport::RelationFactory).not_to receive(:create).with(hash_including(excluded_keys: ['whatever']))
+          expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: %w(note_html, cached_markdown_version))).and_call_original.at_least(:once)
+          allow(@project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(%w(note_html, cached_markdown_version))
+        end
+
         let!(:issue) { Issue.find_by(description: 'Aliquam enim illo et possimus.') }
         let(:note1) { issue.notes.select {|n| n.note.match(/Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi/)}.first }
         let(:note2) { issue.notes.select {|n| n.note.match(/Est reprehenderit quas aut aspernatur autem recusandae voluptatem/)}.first }
