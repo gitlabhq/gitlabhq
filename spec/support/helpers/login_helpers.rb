@@ -118,7 +118,10 @@ module LoginHelpers
         response_object: response_object
       }
     })
+    original_env_config_omniauth_auth = Rails.application.env_config['omniauth.auth']
     Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[provider.to_sym]
+
+    original_env_config_omniauth_auth
   end
 
   def saml_xml(raw_saml_response)
