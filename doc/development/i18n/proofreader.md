@@ -24,6 +24,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Chinese Traditional, Hong Kong 繁體中文 (香港)
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
+  - Ivan Ip - [GitLab](https://gitlab.com/lifehome), [Crowdin](https://crowdin.com/profile/lifehome)
 - Czech
   - Proofreaders needed.
 - Danish
