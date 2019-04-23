@@ -45,6 +45,7 @@ describe('List model', () => {
         id: _.random(10000),
         title: 'test',
         color: 'red',
+        text_color: 'white',
       },
     });
     list.save();
@@ -53,6 +54,8 @@ describe('List model', () => {
       expect(list.id).toBe(listObj.id);
       expect(list.type).toBe('label');
       expect(list.position).toBe(0);
+      expect(list.label.color).toBe('red');
+      expect(list.label.textColor).toBe('white');
       done();
     }, 0);
   });

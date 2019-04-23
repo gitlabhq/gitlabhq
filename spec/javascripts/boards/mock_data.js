@@ -16,6 +16,7 @@ export const listObj = {
     title: 'Testing',
     color: 'red',
     description: 'testing;',
+    textColor: 'white',
   },
 };
 

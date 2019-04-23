@@ -90,6 +90,7 @@ class List {
         this.id = data.id;
         this.type = data.list_type;
         this.position = data.position;
+        this.label = data.label;
 
         return this.getIssues();
       });
