@@ -1,0 +1,5 @@
+---
+title: Fix filtering of labels from system note link
+merge_request: 27507
+author:
+type: fixed
