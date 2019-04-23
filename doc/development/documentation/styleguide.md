@@ -6,7 +6,7 @@ description: 'Writing styles, markup, formatting, and other standards for GitLab
 
 This document defines the standards for GitLab's documentation content and files.
 
-For broader information about the documentation, see the [Documentation guidelines](index.md). 
+For broader information about the documentation, see the [Documentation guidelines](index.md).
 
 For programmatic help adhering to the guidelines, see [linting](index.md#linting).
 
@@ -38,7 +38,7 @@ Include any media types/sources if the content is relevant to readers. You can f
 
    - If you use an image that has a separate source file (for example, a vector or diagram format), link the image to the source file so that it may be reused or updated by anyone.
    - Do not copy and paste content from other sources unless it is a limited quotation with the source cited. Typically it is better to either rephrase relevant information in your own words or link out to the other source.
- 
+
 ### No special types
 
 In the software industry, it is a best practice to organize documentatioin in different types. For example, [Divio recommends](https://www.divio.com/blog/documentation/):
@@ -77,7 +77,7 @@ and cross-link between any related content.
 We employ a **docs-first methodology** to help ensure that the docs remain a complete and trusted resource, and to make communicating about the use of GitLab more efficient.
 
 * If the answer to a question exists in documentation, share the link to the docs instead of rephrasing the information.
-* When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information. 
+* When you encounter new information not available in GitLab’s documentation (for example, when working on a support case or testing a feature), your first step should be to create a merge request to add this information to the docs. You can then share the MR in order to communicate this information.
 
 New information that would be useful toward the future usage or troubleshooting of GitLab should not be written directly in a forum or other messaging system, but added to a docs MR and then referenced, as described above. Note that among any other doc changes, you can always add a Troubleshooting section to a doc if none exists, or un-comment and use the placeholder Troubleshooting section included as part of our [doc template](structure.md#template-for-new-docs), if present.
 
@@ -96,7 +96,7 @@ The [documentation website](https://docs.gitlab.com) uses GitLab Kramdown as its
 The [`gitlab-kramdown`](https://gitlab.com/gitlab-org/gitlab_kramdown)
 Ruby gem will support all [GFM markup](../../user/markdown.md) in the future. That is,
 all markup that is supported for display in the GitLab application itself. For now,
-use regular Markdown markup, following the rules in the linked style guide. 
+use regular Markdown markup, following the rules in the linked style guide.
 
 Note that Kramdown-specific markup (e.g., `{:.class}`) will not render properly on GitLab instances under [`/help`](index.md#gitlab-help).
 
@@ -652,6 +652,7 @@ keyword "only":
 - For GitLab Ultimate: `**[ULTIMATE ONLY]**`.
 
 For GitLab.com only tiers (when the feature is not available for self-hosted instances):
+
 - For GitLab Bronze and higher tiers: `**[BRONZE ONLY]**`.
 - For GitLab Silver and higher tiers: `**[SILVER ONLY]**`.
 - For GitLab Gold: `**[GOLD ONLY]**`.
