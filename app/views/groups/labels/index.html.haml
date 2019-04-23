@@ -18,7 +18,7 @@
         .other-labels
           %h5= _('Labels')
           %ul.content-list.manage-labels-list.js-other-labels
-            = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: false }
+            = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
             = paginate @labels, theme: 'gitlab'
       - elsif search.present?
         .nothing-here-block

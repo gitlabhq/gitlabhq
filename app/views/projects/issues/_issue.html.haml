@@ -36,8 +36,8 @@
               = issue.due_date.to_s(:medium)
           - if issue.labels.any?
             &nbsp;
-            - labels_sorted_by_title(issue.labels).each do |label|
-              = link_to_label(label, subject: issue.project, css_class: 'label-link')
+            - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
+              = link_to_label(label, css_class: 'label-link')
 
       .issuable-meta
         %ul.controls
