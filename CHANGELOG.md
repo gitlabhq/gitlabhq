@@ -1499,6 +1499,25 @@ entry.
 - Enable Rubocop on lib/gitlab. (gfyoung)
 
 
+## 11.5.11 (2019-04-23)
+
+### Fixed (2 changes)
+
+- Bring back Rugged implementation of find_commit. !25477
+- Avoid excessive recursive calls with Rugged TreeEntries. !26813
+
+### Performance (1 change)
+
+- Bring back Rugged implementation of ListCommitsByOid. !27441
+
+### Other (4 changes)
+
+- Bring back Rugged implementation of GetTreeEntries. !25674
+- Bring back Rugged implementation of CommitIsAncestor. !25702
+- Bring back Rugged implementation of TreeEntry. !25706
+- Bring back Rugged implementation of commit_tree_entry. !25896
+
+
 ## 11.5.8 (2019-01-28)
 
 ### Security (21 changes)
