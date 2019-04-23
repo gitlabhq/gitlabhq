@@ -1,0 +1,5 @@
+---
+title: Loosen regex for exception sanitization
+merge_request: 3077
+author:
+type: security
