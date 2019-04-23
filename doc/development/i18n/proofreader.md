@@ -16,6 +16,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Chinese Simplified 简体中文
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
+  - Xiaogang Wen - [GitLab](https://gitlab.com/xiaogang_gitlab), [Crowdin](https://crowdin.com/profile/xiaogang_gitlab)
 - Chinese Traditional 繁體中文
   - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
   - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)
