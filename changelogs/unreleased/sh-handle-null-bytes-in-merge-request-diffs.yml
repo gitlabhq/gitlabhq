@@ -1,5 +1,0 @@
----
-title: Fix error creating a merge request when diff includes a null byte
-merge_request: 26190
-author:
-type: fixed
