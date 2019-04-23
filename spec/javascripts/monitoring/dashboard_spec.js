@@ -175,7 +175,7 @@ describe('Dashboard', () => {
 
       setTimeout(() => {
         const dropdownItems = component.$el.querySelectorAll(
-          '.js-environments-dropdown .dropdown-item[active="true"]',
+          '.js-environments-dropdown .dropdown-item.is-active',
         );
 
         expect(dropdownItems.length).toEqual(1);

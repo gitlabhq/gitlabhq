@@ -221,6 +221,7 @@ export default {
           <gl-dropdown-item
             v-for="environment in store.environmentsData"
             :key="environment.id"
+            :href="environment.metrics_path"
             :active="environment.name === currentEnvironmentName"
             active-class="is-active"
             >{{ environment.name }}</gl-dropdown-item
