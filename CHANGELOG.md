@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.6.11 (2019-04-23)
+
+### Security (2 changes)
+
+- Fixed ability to see private groups by users not belonging to given group.
+- Fix XSS in resolve conflicts form.
+
+### Fixed (2 changes)
+
+- Bring back Rugged implementation of find_commit. !25477
+- Avoid excessive recursive calls with Rugged TreeEntries. !26813
+
+### Performance (1 change)
+
+- Bring back Rugged implementation of ListCommitsByOid. !27441
+
+### Other (4 changes)
+
+- Bring back Rugged implementation of GetTreeEntries. !25674
+- Bring back Rugged implementation of CommitIsAncestor. !25702
+- Bring back Rugged implementation of TreeEntry. !25706
+- Bring back Rugged implementation of commit_tree_entry. !25896
+
+
 ## 11.6.10 (2019-02-28)
 
 ### Security (21 changes)
