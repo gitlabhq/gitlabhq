@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.10.1 (2019-04-23)
+
+### Fixed (2 changes)
+
+- Upgrade Gitaly to 1.34.0. !27494
+- Fix filtering of labels from system note link. !27507
+
+### Changed (1 change)
+
+- Disable just-in-time Kubernetes resource creation for project level clusters. !27352
+
+### Performance (1 change)
+
+- Bring back Rugged implementation of ListCommitsByOid. !27441
+
+### Other (1 change)
+
+- Bump required Ruby version check to 2.5.3. !27495
+
+
 ## 11.10.0 (2019-04-22)
 
 ### Security (9 changes)
