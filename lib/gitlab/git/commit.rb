@@ -3,6 +3,7 @@ module Gitlab
   module Git
     class Commit
       include Gitlab::EncodingHelper
+      prepend Gitlab::Git::RuggedImpl::Commit
       extend Gitlab::Git::WrapsGitalyErrors
 
       attr_accessor :raw_commit, :head
@@ -60,13 +61,17 @@ module Gitlab
           # This saves us an RPC round trip.
           return nil if commit_id.include?(':')
 
-          commit = wrapped_gitaly_errors do
-            repo.gitaly_commit_client.find_commit(commit_id)
-          end
+          commit = find_commit(repo, commit_id)
 
           decorate(repo, commit) if commit
         rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository, ArgumentError
           nil
+        end
+
+        def find_commit(repo, commit_id)
+          wrapped_gitaly_errors do
+            repo.gitaly_commit_client.find_commit(commit_id)
+          end
         end
 
         # Get last commit for HEAD
@@ -199,6 +204,10 @@ module Gitlab
         @repository = repository
         @head = head
 
+        init_commit(raw_commit)
+      end
+
+      def init_commit(raw_commit)
         case raw_commit
         when Hash
           init_from_hash(raw_commit)
@@ -319,11 +328,16 @@ module Gitlab
       def tree_entry(path)
         return unless path.present?
 
+        commit_tree_entry(path)
+      end
+
+      def commit_tree_entry(path)
         # We're only interested in metadata, so limit actual data to 1 byte
         # since Gitaly doesn't support "send no data" option.
         entry = @repository.gitaly_commit_client.tree_entry(id, path, 1)
         return unless entry
 
+        # To be compatible with the rugged format
         entry = entry.to_h
         entry.delete(:data)
         entry[:name] = File.basename(path)
@@ -414,3 +428,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Git::Commit.singleton_class.prepend Gitlab::Git::RuggedImpl::Commit::ClassMethods

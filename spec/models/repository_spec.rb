@@ -2247,38 +2247,42 @@ describe Repository do
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
-  describe '#ancestor?' do
+  shared_examples '#ancestor?' do
     let(:commit) { repository.commit }
     let(:ancestor) { commit.parents.first }
 
-    shared_examples '#ancestor?' do
-      it 'it is an ancestor' do
-        expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
-      end
-
-      it 'it is not an ancestor' do
-        expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
-      end
-
-      it 'returns false on nil-values' do
-        expect(repository.ancestor?(nil, commit.id)).to eq(false)
-        expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
-        expect(repository.ancestor?(nil, nil)).to eq(false)
-      end
-
-      it 'returns false for invalid commit IDs' do
-        expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
-        expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
-      end
+    it 'it is an ancestor' do
+      expect(repository.ancestor?(ancestor.id, commit.id)).to eq(true)
     end
 
-    context 'with Gitaly enabled' do
-      it_behaves_like('#ancestor?')
+    it 'it is not an ancestor' do
+      expect(repository.ancestor?(commit.id, ancestor.id)).to eq(false)
     end
 
-    context 'with Gitaly disabled', :skip_gitaly_mock do
-      it_behaves_like('#ancestor?')
+    it 'returns false on nil-values' do
+      expect(repository.ancestor?(nil, commit.id)).to eq(false)
+      expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
+      expect(repository.ancestor?(nil, nil)).to eq(false)
     end
+
+    it 'returns false for invalid commit IDs' do
+      expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
+      expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
+    end
+  end
+
+  describe '#ancestor? with Gitaly enabled' do
+    it_behaves_like "#ancestor?"
+  end
+
+  describe '#ancestor? with Rugged enabled', :enable_rugged do
+    it 'calls out to the Rugged implementation' do
+      allow_any_instance_of(Rugged).to receive(:merge_base).with(repository.commit.id, Gitlab::Git::BLANK_SHA).and_call_original
+
+      repository.ancestor?(repository.commit.id, Gitlab::Git::BLANK_SHA)
+    end
+
+    it_behaves_like '#ancestor?'
   end
 
   describe '#archive_metadata' do
