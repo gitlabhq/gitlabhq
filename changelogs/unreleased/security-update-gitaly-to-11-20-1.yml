@@ -1,0 +1,5 @@
+---
+title: Improve credentials sanitization on repository mirror integration
+merge_request: 3078
+author:
+type: security
