@@ -1,0 +1,5 @@
+---
+title: Avoid excessive recursive calls with Rugged TreeEntries
+merge_request: 26813
+author:
+type: fixed
