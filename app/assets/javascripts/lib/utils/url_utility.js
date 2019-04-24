@@ -120,3 +120,5 @@ export function webIDEUrl(route = undefined) {
   }
   return returnUrl;
 }
+
+export { join as joinPaths } from 'path';
