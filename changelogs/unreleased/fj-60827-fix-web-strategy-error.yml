@@ -1,0 +1,5 @@
+---
+title: Fix bug when project export to remote url fails
+merge_request: 27614
+author:
+type: fixed
