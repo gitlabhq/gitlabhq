@@ -619,10 +619,32 @@ describe API::Issues do
         let!(:issue2) { create(:issue, author: user2, project: group_project, created_at: 2.days.ago) }
         let!(:issue3) { create(:issue, author: user2, assignees: [assignee, another_assignee], project: group_project, created_at: 1.day.ago) }
 
-        it 'returns issues with multiple assignees' do
-          get api("/groups/#{group.id}/issues", user), params: { assignee_username: [assignee.username, another_assignee.username] }
+        it 'returns issues with by assignee_username' do
+          get api(base_url, user), params: { assignee_username: [assignee.username], scope: 'all' }
 
+          expect(issue3.reload.assignees.pluck(:id)).to match_array([assignee.id, another_assignee.id])
           expect_paginated_array_response([issue3.id, group_confidential_issue.id])
+        end
+
+        it 'returns issues by assignee_username as string' do
+          get api(base_url, user), params: { assignee_username: assignee.username, scope: 'all' }
+
+          expect(issue3.reload.assignees.pluck(:id)).to match_array([assignee.id, another_assignee.id])
+          expect_paginated_array_response([issue3.id, group_confidential_issue.id])
+        end
+
+        it 'returns error when multiple assignees are passed' do
+          get api(base_url, user), params: { assignee_username: [assignee.username, another_assignee.username], scope: 'all' }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response["error"]).to include("allows one value, but found 2")
+        end
+
+        it 'returns error when assignee_username and assignee_id are passed together' do
+          get api(base_url, user), params: { assignee_username: [assignee.username], assignee_id: another_assignee.id, scope: 'all' }
+
+          expect(response).to have_gitlab_http_status(400)
+          expect(json_response["error"]).to include("mutually exclusive")
         end
       end
     end

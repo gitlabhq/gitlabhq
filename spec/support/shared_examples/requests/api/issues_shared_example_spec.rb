@@ -28,19 +28,7 @@ shared_examples 'labeled issues with labels and label_name params' do
     it_behaves_like 'returns label names'
   end
 
-  context 'array of labeled issues when all labels match the label_name param' do
-    let(:params) { { label_name: "#{label.title},#{label_b.title},#{label_c.title}" } }
-
-    it_behaves_like 'returns label names'
-  end
-
-  context 'array of labeled issues when all labels match with label_name param as array' do
-    let(:params) { { label_name: [label.title, label_b.title, label_c.title] } }
-
-    it_behaves_like 'returns label names'
-  end
-
-  context 'with labels data' do
+  context 'when with_labels_data provided' do
     context 'array of labeled issues when all labels match' do
       let(:params) { { labels: "#{label.title},#{label_b.title},#{label_c.title}", with_labels_data: true } }
 
@@ -49,18 +37,6 @@ shared_examples 'labeled issues with labels and label_name params' do
 
     context 'array of labeled issues when all labels match with labels param as array' do
       let(:params) { { labels: [label.title, label_b.title, label_c.title], with_labels_data: true } }
-
-      it_behaves_like 'returns basic label entity'
-    end
-
-    context 'array of labeled issues when all labels match the label_name param' do
-      let(:params) { { label_name: "#{label.title},#{label_b.title},#{label_c.title}", with_labels_data: true } }
-
-      it_behaves_like 'returns basic label entity'
-    end
-
-    context 'array of labeled issues when all labels match with label_name param as array' do
-      let(:params) { { label_name: [label.title, label_b.title, label_c.title], with_labels_data: true } }
 
       it_behaves_like 'returns basic label entity'
     end

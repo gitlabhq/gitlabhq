@@ -24,7 +24,6 @@ module API
 
         args.delete(:id)
         args[:milestone_title] ||= args.delete(:milestone)
-        args[:milestone_title] ||= args.delete(:milestone_title)
         args[:label_name] ||= args.delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
 
@@ -35,10 +34,8 @@ module API
         # rubocop: disable CodeReuse/ActiveRecord
         finder = issue_finder(args)
         issues = finder.execute.with_api_entity_associations
-        order_by = declared_params[:sort].present? && %w(asc desc).include?(declared_params[:sort].downcase)
-        issues = issues.reorder(order_options_with_tie_breaker) if order_by
 
-        issues
+        issues.reorder(order_options_with_tie_breaker)
         # rubocop: enable CodeReuse/ActiveRecord
       end
 

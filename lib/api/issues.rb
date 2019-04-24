@@ -19,15 +19,10 @@ module API
         end
       end
 
-      params :issues_params do
-        optional :labels, :label_name, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
-        optional :with_labels_data, type: Boolean, desc: 'Return more label data than just lable title', default: false
+      params :issues_stats_params do
+        optional :labels, type: Array[String], coerce_with: Validations::Types::LabelsList.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
-        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
-                            desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
-        optional :sort, type: String, default: 'desc',
-                        desc: 'Return issues sorted in `asc` or `desc` order.'
-        optional :milestone, :milestone_title, type: String, desc: 'Return issues for a specific milestone'
+        optional :milestone, type: String, desc: 'Return issues for a specific milestone'
         optional :iids, type: Array[Integer], desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
@@ -35,21 +30,37 @@ module API
         optional :created_before, type: DateTime, desc: 'Return issues created before the specified time'
         optional :updated_after, type: DateTime, desc: 'Return issues updated after the specified time'
         optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
+
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :author_username, type: String, desc: 'Return issues which are authored by the user with the given username'
+        mutually_exclusive :author_id, :author_username
+
         optional :assignee_id, types: [Integer, String], integer_none_any: true,
                                desc: 'Return issues which are assigned to the user with the given ID'
-        optional :assignee_username, type: Array[String],
+        optional :assignee_username, type: Array[String], check_assignees_count: true,
+                                     coerce_with: Validations::CheckAssigneesCount.coerce,
                                      desc: 'Return issues which are assigned to the user with the given username'
+        mutually_exclusive :assignee_id, :assignee_username
+
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
                          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :confidential, type: Boolean, desc: 'Filter confidential or public issues'
-        optional :state, type: String, values: %w[opened closed all], default: 'all',
-                         desc: 'Return opened, closed, or all issues'
-        use :pagination
 
         use :issues_params_ee if Gitlab.ee?
+      end
+
+      params :issues_params do
+        optional :with_labels_data, type: Boolean, desc: 'Return more label data than just lable title', default: false
+        optional :state, type: String, values: %w[opened closed all], default: 'all',
+                 desc: 'Return opened, closed, or all issues'
+        optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
+                 desc: 'Return issues ordered by `created_at` or `updated_at` fields.'
+        optional :sort, type: String, values: %w[asc desc], default: 'desc',
+                 desc: 'Return issues sorted in `asc` or `desc` order.'
+
+        use :issues_stats_params
+        use :pagination
       end
 
       params :issue_params do
@@ -68,7 +79,7 @@ module API
 
     desc "Get currently authenticated user's issues statistics"
     params do
-      use :issues_params
+      use :issues_stats_params
       optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
                        desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
     end
@@ -131,7 +142,7 @@ module API
 
       desc 'Get statistics for the list of group issues'
       params do
-        use :issues_params
+        use :issues_stats_params
       end
       get ":id/issues_statistics" do
         group = find_group!(params[:id])
@@ -172,7 +183,7 @@ module API
 
       desc 'Get statistics for the list of project issues'
       params do
-        use :issues_params
+        use :issues_stats_params
       end
       get ":id/issues_statistics" do
         project = find_project!(params[:id])
