@@ -10,6 +10,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           create(:user, username: 'bernard_willms'),
           create(:user, username: 'saul_will')
       ]
+      @markdown_classes = [AbuseReport, Appearance, ApplicationSetting, BroadcastMessage, Issue, Label, MergeRequest, Milestone, Namespace, Project, Release, ResourceLabelEvent, Snippet, UserStatus]
 
       RSpec::Mocks.with_temporary_scope do
         @project = create(:project, :builds_enabled, :issues_disabled, name: 'project', path: 'project')
@@ -21,8 +22,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
-        allow_any_instance_of(Project).to receive(:latest_cached_markdown_version).and_return(434343)
-        allow_any_instance_of(Note).to receive(:latest_cached_markdown_version).and_return(434343)
+        @markdown_classes.each {|klass| allow_any_instance_of(klass).to receive(:latest_cached_markdown_version).and_return(434343)}
 
         @project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
 
@@ -61,18 +61,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       context 'when importing a project with cached_markdown_version and note_html' do
-        before do
-          expect(Gitlab::ImportExport::RelationFactory).not_to receive(:create).with(hash_including(excluded_keys: ['whatever']))
-          expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: %w(note_html, cached_markdown_version))).and_call_original.at_least(:once)
-          allow(@project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(%w(note_html, cached_markdown_version))
-        end
-
         let!(:issue) { Issue.find_by(description: 'Aliquam enim illo et possimus.') }
         let(:note1) { issue.notes.select {|n| n.note.match(/Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi/)}.first }
         let(:note2) { issue.notes.select {|n| n.note.match(/Est reprehenderit quas aut aspernatur autem recusandae voluptatem/)}.first }
 
         it 'does not import the note_html' do
-          expect(note1.note_html).to match(/Et hic est id similique et non nesciunt voluptate/)
+          expect(note1.note_html).to match(/Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi/)
         end
 
         it 'does not set the old cached_markdown_version' do
