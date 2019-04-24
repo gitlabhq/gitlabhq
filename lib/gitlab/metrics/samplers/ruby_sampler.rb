@@ -24,13 +24,13 @@ module Gitlab
 
         def init_metrics
           metrics = {
-            file_descriptors:           ::Gitlab::Metrics.gauge(with_prefix(:file, :descriptors), 'File descriptors used', labels, :livesum),
-            memory_usage:               ::Gitlab::Metrics.gauge(with_prefix(:memory, :bytes), 'Memory used', labels, :livesum),
-            process_cpu_seconds_total:  ::Gitlab::Metrics.gauge(:process_cpu_seconds_total, 'Process CPU seconds total'),
-            process_max_fds:            ::Gitlab::Metrics.gauge(:process_max_fds, 'Process max fds'),
-            process_start_time_seconds: ::Gitlab::Metrics.gauge(:process_start_time_seconds, 'Process start time seconds'),
-            sampler_duration:           ::Gitlab::Metrics.counter(with_prefix(:sampler, :duration_seconds_total), 'Sampler time', labels),
-            total_time:                 ::Gitlab::Metrics.counter(with_prefix(:gc, :duration_seconds_total), 'Total GC time', labels)
+            file_descriptors:               ::Gitlab::Metrics.gauge(with_prefix(:file, :descriptors), 'File descriptors used', labels, :livesum),
+            process_cpu_seconds_total:      ::Gitlab::Metrics.gauge(with_prefix(:process, :cpu_seconds_total), 'Process CPU seconds total'),
+            process_max_fds:                ::Gitlab::Metrics.gauge(with_prefix(:process, :max_fds), 'Process max fds'),
+            process_resident_memory_bytes:  ::Gitlab::Metrics.gauge(with_prefix(:process, :resident_memory_bytes), 'Memory used', labels, :livesum),
+            process_start_time_seconds:     ::Gitlab::Metrics.gauge(with_prefix(:process, :start_time_seconds), 'Process start time seconds'),
+            sampler_duration:               ::Gitlab::Metrics.counter(with_prefix(:sampler, :duration_seconds_total), 'Sampler time', labels),
+            total_time:                     ::Gitlab::Metrics.counter(with_prefix(:gc, :duration_seconds_total), 'Total GC time', labels)
           }
 
           GC.stat.keys.each do |key|
@@ -44,10 +44,10 @@ module Gitlab
           start_time = System.monotonic_time
 
           metrics[:file_descriptors].set(labels.merge(worker_label), System.file_descriptor_count)
-          metrics[:memory_usage].set(labels.merge(worker_label), System.memory_usage)
           metrics[:process_cpu_seconds_total].set(labels.merge(worker_label), ::Gitlab::Metrics::System.cpu_time)
-          metrics[:process_start_time_seconds].set(labels.merge(worker_label), ::Gitlab::Metrics::System.process_start_time)
           metrics[:process_max_fds].set(labels.merge(worker_label), ::Gitlab::Metrics::System.max_open_file_descriptors)
+          metrics[:process_resident_memory_bytes].set(labels.merge(worker_label), System.memory_usage)
+          metrics[:process_start_time_seconds].set(labels.merge(worker_label), ::Gitlab::Metrics::System.process_start_time)
           sample_gc
 
           metrics[:sampler_duration].increment(labels, System.monotonic_time - start_time)

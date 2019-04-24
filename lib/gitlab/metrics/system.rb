@@ -33,6 +33,13 @@ module Gitlab
 
           max_fds
         end
+
+        def self.process_start_time
+          start_time_in_jiffies = Sys::ProcTable.ps(pid: Process.pid).starttime
+          return 0 unless start_time_in_jiffies
+
+          start_time_in_jiffies / 100
+        end
       else
         def self.memory_usage
           0.0
@@ -43,6 +50,10 @@ module Gitlab
         end
 
         def self.max_open_file_descriptors
+          0
+        end
+
+        def self.process_start_time
           0
         end
       end
@@ -60,17 +71,6 @@ module Gitlab
         end
       end
 
-      # CLOCK_BOOTTIME is not supported on OS X
-      if Process.const_defined?(:CLOCK_BOOTTIME)
-        def self.process_start_time
-          Process
-            .clock_gettime(Process::CLOCK_BOOTTIME, :float_second)
-        end
-      else
-        def self.process_start_time
-          0.0
-        end
-      end
       # Returns the current real time in a given precision.
       #
       # Returns the time as a Float for precision = :float_second.

@@ -20,10 +20,10 @@ describe Gitlab::Metrics::Samplers::RubySampler do
       sampler.sample
     end
 
-    it 'adds a metric containing the memory usage' do
+    it 'adds a metric containing the process resident memory bytes' do
       expect(Gitlab::Metrics::System).to receive(:memory_usage).and_return(9000)
 
-      expect(sampler.metrics[:memory_usage]).to receive(:set).with({}, 9000)
+      expect(sampler.metrics[:process_resident_memory_bytes]).to receive(:set).with({}, 9000)
 
       sampler.sample
     end
@@ -37,7 +37,7 @@ describe Gitlab::Metrics::Samplers::RubySampler do
       sampler.sample
     end
 
-    it 'adds a metric containing the processes total cpu time' do
+    it 'adds a metric containing the process total cpu time' do
       expect(Gitlab::Metrics::System).to receive(:cpu_time).and_return(0.51)
       expect(sampler.metrics[:process_cpu_seconds_total]).to receive(:set).with({}, 0.51)
 
