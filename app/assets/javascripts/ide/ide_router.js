@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import { join as joinPath } from 'path';
+import { joinPaths } from '~/lib/utils/url_utility';
 import flash from '~/flash';
 import store from './stores';
 
@@ -34,7 +34,7 @@ const EmptyRouterComponent = {
 
 const router = new VueRouter({
   mode: 'history',
-  base: `${gon.relative_url_root}/-/ide/`,
+  base: joinPaths(gon.relative_url_root || '', '/-/ide/'),
   routes: [
     {
       path: '/project/:namespace+/:project',
@@ -46,11 +46,11 @@ const router = new VueRouter({
         },
         {
           path: ':targetmode(edit|tree|blob)/:branchid+/',
-          redirect: to => joinPath(to.path, '/-/'),
+          redirect: to => joinPaths(to.path, '/-/'),
         },
         {
           path: ':targetmode(edit|tree|blob)',
-          redirect: to => joinPath(to.path, '/master/-/'),
+          redirect: to => joinPaths(to.path, '/master/-/'),
         },
         {
           path: 'merge_requests/:mrid',
@@ -58,7 +58,7 @@ const router = new VueRouter({
         },
         {
           path: '',
-          redirect: to => joinPath(to.path, '/edit/master/-/'),
+          redirect: to => joinPaths(to.path, '/edit/master/-/'),
         },
       ],
     },
