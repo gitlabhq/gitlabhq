@@ -50,7 +50,7 @@
       - if gitea_import_enabled?
         %div
           = link_to new_import_gitea_path, class: 'btn import_gitea', data: { track_label: "#{track_label}", track_event: "click_button", track_property: "gitea" } do
-            = custom_icon('go_logo')
+            = custom_icon('gitea_logo')
             Gitea
 
       - if git_import_enabled?
