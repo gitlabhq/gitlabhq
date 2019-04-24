@@ -1,0 +1,56 @@
+# frozen_string_literal: true
+require 'cgi'
+
+def get_vue_files_with_ce_and_ee_versions(files)
+  files.select do |file|
+    if file.end_with?('.vue')
+      counterpart_path = if file.start_with?('ee/')
+                           file.delete_prefix('ee/')
+                         else
+                           "ee/#{file}"
+                         end
+
+      escaped_path = CGI.escape(counterpart_path)
+      api_endpoint = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab-ee/repository/files/#{escaped_path}?ref=master"
+      response = HTTParty.get(api_endpoint) # rubocop:disable Gitlab/HTTParty
+      response.code != 404
+    else
+      false
+    end
+  end
+end
+
+vue_candidates = get_vue_files_with_ce_and_ee_versions(helper.all_changed_files)
+
+return if vue_candidates.empty?
+
+message 'This merge request includes changes to Vue files that have both CE and EE versions.'
+
+markdown(<<~MARKDOWN)
+  ## Vue `<template>` in CE and EE
+
+  Some Vue files in CE have a counterpart in EE.
+  (For example, `path/to/file.vue` and `ee/path/to/file.vue`.)
+
+  When run in the context of CE, the `<template>` of the CE Vue file is used.
+  When run in the context of EE, the `<template>` of the EE Vue file is used.
+
+  It's easy to accidentally make a change to a CE `<template>` that _should_
+  appear in both CE and EE without making the change in both places.
+  When this happens, the change only takes effect in CE.
+
+  The following Vue files were changed as part of this merge request that
+  include both a CE and EE version of the file:
+
+  * #{vue_candidates.map { |path| "`#{path}`" }.join("\n* ")}
+
+  If you made a change to the `<template>` of any of these Vue files that
+  should be visible in both CE and EE, please ensure you have made your
+  change to both versions of the file.
+
+  ### A better alternative
+
+  An even _better_ alternative is to refactor this component to only use
+  a single template for both CE and EE.  More info on this approach here:
+  https://docs.gitlab.com/ee/development/ee_features.html#template-tag
+MARKDOWN
