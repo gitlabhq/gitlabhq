@@ -11,6 +11,57 @@ describe Projects::Settings::OperationsController do
     project.add_maintainer(user)
   end
 
+  shared_context 'PATCHable' do
+    let(:operations_update_service) { instance_double(::Projects::Operations::UpdateService) }
+    let(:operations_url) { project_settings_operations_url(project) }
+
+    let(:permitted_params) do
+      ActionController::Parameters.new(params).permit!
+    end
+
+    context 'format json' do
+      context 'when update succeeds' do
+        it 'returns success status' do
+          stub_operations_update_service_returning(status: :success)
+
+          patch :update,
+            params: project_params(project, params),
+            format: :json
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to eq('status' => 'success')
+          expect(flash[:notice]).to eq('Your changes have been saved')
+        end
+      end
+
+      context 'when update fails' do
+        it 'returns error' do
+          stub_operations_update_service_returning(
+            status: :error,
+            message: 'error message'
+          )
+
+          patch :update,
+            params: project_params(project, params),
+            format: :json
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('error message')
+        end
+      end
+    end
+
+    private
+
+    def stub_operations_update_service_returning(return_value = {})
+      expect(::Projects::Operations::UpdateService)
+        .to receive(:new).with(project, user, permitted_params)
+        .and_return(operations_update_service)
+      expect(operations_update_service).to receive(:execute)
+        .and_return(return_value)
+    end
+  end
+
   describe 'GET #show' do
     it 'renders show template' do
       get :show, params: project_params(project)
@@ -70,57 +121,6 @@ describe Projects::Settings::OperationsController do
     end
   end
 
-  shared_context 'PATCH #update' do
-    let(:operations_update_service) { instance_double(::Projects::Operations::UpdateService) }
-    let(:operations_url) { project_settings_operations_url(project) }
-
-    let(:permitted_params) do
-      ActionController::Parameters.new(params).permit!
-    end
-
-    context 'format json' do
-      context 'when update succeeds' do
-        before do
-          stub_operations_update_service_returning(status: :success)
-        end
-
-        it 'returns success status' do
-          patch :update,
-            params: project_params(project, params),
-            format: :json
-
-          expect(::Projects::Operations::UpdateService)
-            .to have_received(:new).with(project, user, permitted_params)
-          expect(operations_update_service).to have_received(:execute)
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response).to eq('status' => 'success')
-          expect(flash[:notice]).to eq('Your changes have been saved')
-        end
-      end
-
-      context 'when update fails' do
-        before do
-          stub_operations_update_service_returning(
-            status: :error,
-            message: 'error message'
-          )
-        end
-
-        it 'returns error' do
-          patch :update,
-            params: project_params(project, params),
-            format: :json
-
-          expect(::Projects::Operations::UpdateService)
-            .to have_received(:new).with(project, user, permitted_params)
-          expect(operations_update_service).to have_received(:execute)
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response['message']).not_to be_nil
-        end
-      end
-    end
-  end
-
   context 'error tracking' do
     describe 'GET #show' do
       context 'with existing setting' do
@@ -162,7 +162,7 @@ describe Projects::Settings::OperationsController do
         }
       end
 
-      it_behaves_like 'PATCH #update'
+      it_behaves_like 'PATCHable'
     end
   end
 
@@ -174,13 +174,5 @@ describe Projects::Settings::OperationsController do
       project_id: project,
       project: params
     }
-  end
-
-  def stub_operations_update_service_returning(return_value = {})
-    allow(::Projects::Operations::UpdateService)
-      .to receive(:new).with(project, user, permitted_params)
-      .and_return(operations_update_service)
-    allow(operations_update_service).to receive(:execute)
-      .and_return(return_value)
   end
 end
