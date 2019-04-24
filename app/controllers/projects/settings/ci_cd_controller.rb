@@ -19,7 +19,7 @@ module Projects
 
             redirect_to project_settings_ci_cd_path(@project)
           else
-            render 'show'
+            redirect_to project_settings_ci_cd_path(@project), alert: result[:message]
           end
         end
       end
