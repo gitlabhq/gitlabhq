@@ -24,7 +24,19 @@ module Gitlab
       private
 
       def prohibited_key?(key)
-        key.end_with?('_id') && !ALLOWED_REFERENCES.include?(key)
+        return false if allowed_reference?(key)
+
+        return true if 'cached_markdown_version'.equal?(key)
+
+        prohibited_suffices = %w(_id _html)
+        prohibited_suffices.each do |suffix|
+          return true if key.end_with?(suffix)
+        end
+        false
+      end
+
+      def allowed_reference?(key)
+        ALLOWED_REFERENCES.include?(key)
       end
 
       def excluded_key?(key)
