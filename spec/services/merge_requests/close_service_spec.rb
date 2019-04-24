@@ -74,6 +74,14 @@ describe MergeRequests::CloseService do
         .to change { project.open_merge_requests_count }.from(1).to(0)
     end
 
+    it 'clean up environments for the merge request' do
+      expect_next_instance_of(Ci::StopEnvironmentsService) do |service|
+        expect(service).to receive(:execute_for_merge_request).with(merge_request)
+      end
+
+      described_class.new(project, user).execute(merge_request)
+    end
+
     context 'current user is not authorized to close merge request' do
       before do
         perform_enqueued_jobs do
