@@ -17,6 +17,26 @@ describe 'Dashboard Todos' do
     end
   end
 
+  context 'when the todo references a merge request' do
+    let(:referenced_mr) { create(:merge_request, source_project: project) }
+    let(:note) { create(:note, project: project, note: "Check out #{referenced_mr.to_reference}") }
+    let!(:todo) { create(:todo, :mentioned, user: user, project: project, author: author, note: note) }
+
+    before do
+      sign_in(user)
+      visit dashboard_todos_path
+    end
+
+    it 'renders the mr link with the extra attributes' do
+      link = page.find_link(referenced_mr.to_reference)
+
+      expect(link).not_to be_nil
+      expect(link['data-iid']).to eq(referenced_mr.iid.to_s)
+      expect(link['data-project-path']).to eq(referenced_mr.project.full_path)
+      expect(link['data-mr-title']).to eq(referenced_mr.title)
+    end
+  end
+
   context 'User has a todo', :js do
     before do
       create(:todo, :mentioned, user: user, project: project, target: issue, author: author)
