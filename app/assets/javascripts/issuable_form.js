@@ -1,8 +1,8 @@
 import $ from 'jquery';
 import Pikaday from 'pikaday';
+import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import Autosave from './autosave';
 import UsersSelect from './users_select';
-import GfmAutoComplete from './gfm_auto_complete';
 import ZenMode from './zen_mode';
 import AutoWidthDropdownSelect from './issuable/auto_width_dropdown_select';
 import { parsePikadayDate, pikadayToString } from './lib/utils/datetime_utility';
