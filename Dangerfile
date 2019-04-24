@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 danger.import_plugin('danger/plugins/helper.rb')
 
 unless helper.release_automation?
@@ -16,4 +17,5 @@ unless helper.release_automation?
   danger.import_dangerfile(path: 'danger/roulette')
   danger.import_dangerfile(path: 'danger/single_codebase')
   danger.import_dangerfile(path: 'danger/gitlab_ui_wg')
+  danger.import_dangerfile(path: 'danger/ce_ee_vue_templates')
 end
