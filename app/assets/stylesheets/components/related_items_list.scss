@@ -16,10 +16,7 @@ $item-weight-max-width: 48px;
 }
 
 .item-body {
-  display: flex;
   position: relative;
-  align-items: center;
-  padding: $gl-padding-8;
   line-height: $gl-line-height;
 
   .issue-token-state-icon-open {
@@ -49,14 +46,11 @@ $item-weight-max-width: 48px;
   }
 
   .confidential-icon {
-    align-self: baseline;
     color: $orange-600;
-    margin-right: $gl-padding-4;
   }
 
   .item-title {
     flex-basis: 100%;
-    margin-bottom: $gl-padding-8;
     font-size: $gl-font-size-small;
 
     &.mr-title {
@@ -80,24 +74,12 @@ $item-weight-max-width: 48px;
   }
 }
 
-.item-contents {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  flex-grow: 1;
-}
-
 .item-meta {
-  display: flex;
-  flex-wrap: wrap;
   flex-basis: 100%;
   font-size: $gl-font-size-small;
   color: $gl-text-color-secondary;
 
   .item-meta-child {
-    order: 0;
-    display: flex;
-    flex-wrap: wrap;
     flex-basis: 100%;
   }
 
@@ -117,16 +99,10 @@ $item-weight-max-width: 48px;
   }
 
   .item-weight {
-    margin-right: 0;
     max-width: $item-weight-max-width;
   }
 
   .item-assignees {
-    order: 2;
-    align-self: flex-end;
-    align-items: center;
-    margin-left: auto;
-
     .user-avatar-link {
       margin-right: -$gl-padding-4;
 
@@ -162,7 +138,6 @@ $item-weight-max-width: 48px;
 }
 
 .item-path-id {
-  margin-top: $gl-padding-4;
   font-size: $gl-font-size-xs;
   white-space: nowrap;
 
@@ -176,8 +151,10 @@ $item-weight-max-width: 48px;
     display: block;
   }
 
-  &:not(.mr-item-path) {
-    order: 1;
+  @include media-breakpoint-down(sm) {
+    &:not(.mr-item-path) {
+      order: 1;
+    }
   }
 }
 
@@ -219,15 +196,14 @@ $item-weight-max-width: 48px;
   .item-body {
     .item-contents {
       min-width: 0;
+    }
 
-      .item-title {
-        flex-basis: unset;
-        // 95% because we compensate
-        // for remove button which is
-        // positioned absolutely
-        width: 95%;
-        margin-bottom: $gl-padding-4;
-      }
+    .item-title {
+      flex-basis: unset;
+      // 95% because we compensate
+      // for remove button which is
+      // positioned absolutely
+      width: 95%;
     }
 
     .btn-item-remove {
@@ -236,25 +212,12 @@ $item-weight-max-width: 48px;
   }
 
   .item-meta {
-    .item-path-id {
-      order: 0;
-      margin-top: 0;
-    }
-
     .item-meta-child {
       flex-basis: unset;
-      margin-left: auto;
-      margin-right: $gl-padding-4;
 
       ~ .item-assignees {
         margin-left: $gl-padding-4;
       }
-    }
-
-    .item-assignees {
-      margin-bottom: 0;
-      margin-left: 0;
-      order: 2;
     }
   }
 }
@@ -262,8 +225,6 @@ $item-weight-max-width: 48px;
 /* Medium devices (desktops, 992px and up) */
 @include media-breakpoint-up(lg) {
   .item-body {
-    padding: $gl-padding;
-
     .item-title {
       font-size: $gl-font-size;
     }
@@ -277,12 +238,7 @@ $item-weight-max-width: 48px;
 /* Large devices (large desktops, 1200px and up) */
 @include media-breakpoint-up(xl) {
   .item-body {
-    padding: $gl-padding-8;
-    padding-left: $gl-padding;
-
     .item-title {
-      display: flex;
-      margin-bottom: 0;
       min-width: 0;
       width: auto;
       flex-basis: unset;
@@ -293,43 +249,18 @@ $item-weight-max-width: 48px;
         display: block;
         margin-right: $gl-padding-8;
       }
-
-      .confidential-icon {
-        align-self: auto;
-        margin-top: 0;
-      }
     }
   }
 
   .item-contents {
-    flex-wrap: nowrap;
     overflow: hidden;
   }
 
   .item-meta {
-    margin-top: 0;
-    justify-content: flex-end;
     flex: 1;
-    flex-wrap: nowrap;
-
-    .item-meta-child {
-      margin-left: $gl-padding-8;
-      flex-wrap: nowrap;
-    }
-  }
-
-  .item-path-id {
-    order: 0;
-    margin-top: 0;
-    margin-left: $gl-padding-8;
-    margin-right: auto;
   }
 
   .item-assignees {
-    flex-grow: 0;
-    margin-top: 0;
-    margin-right: $gl-padding-4;
-
     .avatar {
       height: $gl-padding-24;
       width: $gl-padding-24;
@@ -345,10 +276,8 @@ $item-weight-max-width: 48px;
 
   .btn-item-remove {
     position: relative;
-    align-self: center;
     top: initial;
     right: 0;
-    margin-right: 0;
     padding: $btn-sm-side-margin;
 
     &:hover {
@@ -357,10 +286,6 @@ $item-weight-max-width: 48px;
   }
 
   .sortable-link {
-    display: block;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
     line-height: 1.3;
   }
 }
