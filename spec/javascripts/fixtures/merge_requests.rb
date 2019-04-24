@@ -120,7 +120,6 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
       project_id: project,
       id: merge_request.to_param
     }, format: :json
-
   end
 
   def render_merge_request(merge_request)
