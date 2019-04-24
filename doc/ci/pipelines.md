@@ -266,6 +266,11 @@ Clicking on an individual job will show you its job trace, and allow you to:
 - Retry the job.
 - Erase the job trace.
 
+>**Note:**
+Once a job has been canceled, it cannot be retried in isolation.
+This prevents jobs from being bypassed or run out of order.
+To retry a canceled job, retry the pipeline it belongs to.
+
 ### Seeing the failure reason for jobs
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17782) in GitLab 10.7.
