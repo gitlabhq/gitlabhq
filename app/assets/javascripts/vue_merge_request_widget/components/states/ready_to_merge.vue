@@ -3,6 +3,7 @@ import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __ } from '~/locale';
+import readyToMergeMixin from 'ee_else_ce/vue_merge_request_widget/mixins/ready_to_merge';
 import MergeRequest from '../../../merge_request';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon.vue';
@@ -21,6 +22,7 @@ export default {
     CommitEdit,
     CommitMessageDropdown,
   },
+  mixins: [readyToMergeMixin],
   props: {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
@@ -93,15 +95,6 @@ export default {
     },
     shouldShowMergeOptionsDropdown() {
       return this.mr.isPipelineActive && !this.mr.onlyAllowMergeIfPipelineSucceeds;
-    },
-    isMergeButtonDisabled() {
-      const { commitMessage } = this;
-      return Boolean(
-        !commitMessage.length ||
-          !this.shouldShowMergeControls ||
-          this.isMakingRequest ||
-          this.mr.preventMerge,
-      );
     },
     isRemoveSourceBranchButtonDisabled() {
       return this.isMergeButtonDisabled;
