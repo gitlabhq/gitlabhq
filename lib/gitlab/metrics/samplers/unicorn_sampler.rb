@@ -16,10 +16,7 @@ module Gitlab
           {
             unicorn_active_connections: ::Gitlab::Metrics.gauge(:unicorn_active_connections, 'Unicorn active connections', {}, :max),
             unicorn_queued_connections: ::Gitlab::Metrics.gauge(:unicorn_queued_connections, 'Unicorn queued connections', {}, :max),
-            unicorn_workers:            ::Gitlab::Metrics.gauge(:unicorn_workers, 'Unicorn workers'),
-            process_cpu_seconds_total:  ::Gitlab::Metrics.gauge(:process_cpu_seconds_total, 'Process CPU seconds total'),
-            process_max_fds:            ::Gitlab::Metrics.gauge(:process_max_fds, 'Process max fds'),
-            process_start_time_seconds: ::Gitlab::Metrics.gauge(:process_start_time_seconds, 'Process start time seconds')
+            unicorn_workers:            ::Gitlab::Metrics.gauge(:unicorn_workers, 'Unicorn workers')
           }
         end
 
@@ -39,9 +36,6 @@ module Gitlab
             metrics[:unicorn_queued_connections].set({ socket_type: 'unix', socket_address: addr }, stats.queued)
           end
 
-          metrics[:process_cpu_seconds_total].set({ pid: nil }, ::Gitlab::Metrics::System.cpu_time)
-          metrics[:process_start_time_seconds].set({ pid: nil }, ::Gitlab::Metrics::System.process_start_time)
-          metrics[:process_max_fds].set({ pid: nil }, ::Gitlab::Metrics::System.max_open_file_descriptors)
           metrics[:unicorn_workers].set({}, unicorn_workers_count)
         end
 
