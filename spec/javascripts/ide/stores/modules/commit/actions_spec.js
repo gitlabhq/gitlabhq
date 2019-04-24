@@ -4,6 +4,7 @@ import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
 import consts from '~/ide/stores/modules/commit/constants';
+import { commitActionTypes } from '~/ide/constants';
 import { resetStore, file } from 'spec/ide/helpers';
 
 describe('IDE commit module actions', () => {
@@ -294,7 +295,7 @@ describe('IDE commit module actions', () => {
               commit_message: 'testing 123',
               actions: [
                 {
-                  action: 'update',
+                  action: commitActionTypes.update,
                   file_path: jasmine.anything(),
                   content: undefined,
                   encoding: jasmine.anything(),
@@ -321,7 +322,7 @@ describe('IDE commit module actions', () => {
               commit_message: 'testing 123',
               actions: [
                 {
-                  action: 'update',
+                  action: commitActionTypes.update,
                   file_path: jasmine.anything(),
                   content: undefined,
                   encoding: jasmine.anything(),

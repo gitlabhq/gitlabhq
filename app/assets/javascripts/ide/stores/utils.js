@@ -1,3 +1,5 @@
+import { commitActionTypes } from '../constants';
+
 export const dataStructure = () => ({
   id: '',
   // Key will contain a mixture of ID and path
@@ -114,14 +116,14 @@ export const setPageTitle = title => {
 
 export const commitActionForFile = file => {
   if (file.prevPath) {
-    return 'move';
+    return commitActionTypes.move;
   } else if (file.deleted) {
-    return 'delete';
+    return commitActionTypes.delete;
   } else if (file.tempFile) {
-    return 'create';
+    return commitActionTypes.create;
   }
 
-  return 'update';
+  return commitActionTypes.update;
 };
 
 export const getCommitFiles = stagedFiles =>

@@ -72,4 +72,11 @@ export const modalTypes = {
   tree: 'tree',
 };
 
+export const commitActionTypes = {
+  move: 'move',
+  delete: 'delete',
+  create: 'create',
+  update: 'update',
+};
+
 export const packageJsonPath = 'package.json';
