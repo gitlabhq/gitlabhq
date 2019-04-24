@@ -32,5 +32,17 @@ describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
 
       strategy.execute(user, project)
     end
+
+    context 'when upload fails' do
+      it 'stores the export error' do
+        stub_request(:post, example_url).to_return(status: [404, 'Page not found'])
+
+        strategy.execute(user, project)
+
+        errors = project.import_export_shared.errors
+        expect(errors).not_to be_empty
+        expect(errors.first).to eq "Error uploading the project. Code 404: Page not found"
+      end
+    end
   end
 end
