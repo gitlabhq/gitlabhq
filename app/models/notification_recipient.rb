@@ -119,15 +119,19 @@ class NotificationRecipient
     return @read_ability if instance_variable_defined?(:@read_ability)
 
     @read_ability =
-      case @target
-      when Issuable
-        :"read_#{@target.to_ability_name}"
-      when Ci::Pipeline
+      if @target.is_a?(Ci::Pipeline)
         :read_build # We have build trace in pipeline emails
-      when ActiveRecord::Base
-        :"read_#{@target.class.model_name.name.underscore}"
-      else
-        nil
+      elsif default_ability_for_target
+        :"read_#{default_ability_for_target}"
+      end
+  end
+
+  def default_ability_for_target
+    @default_ability_for_target ||=
+      if @target.respond_to?(:to_ability_name)
+        @target.to_ability_name
+      elsif @target.class.respond_to?(:model_name)
+        @target.class.model_name.name.underscore
       end
   end
 
