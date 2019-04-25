@@ -11,7 +11,7 @@ describe Projects::Settings::OperationsController do
     project.add_maintainer(user)
   end
 
-  shared_context 'PATCHable' do
+  shared_examples 'PATCHable' do
     let(:operations_update_service) { instance_double(::Projects::Operations::UpdateService) }
     let(:operations_url) { project_settings_operations_url(project) }
 
