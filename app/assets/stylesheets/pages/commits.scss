@@ -58,14 +58,6 @@
     display: inline-block;
     vertical-align: middle;
 
-    .stage-cell .stage-container {
-      margin: 0 3px 3px 0;
-    }
-
-    .stage-container:last-child {
-      margin-right: 0;
-    }
-
     .dropdown-menu {
       margin-top: 11px;
     }
@@ -128,17 +120,8 @@
 }
 
 .commit-row-title {
-  .notes_count {
-    float: right;
-    margin-right: 10px;
-  }
-
   .str-truncated {
     max-width: 70%;
-  }
-
-  .commit-row-message {
-    color: $gl-text-color;
   }
 }
 
@@ -185,7 +168,7 @@
   flex-grow: 1;
   min-width: 0;
 
-  .project_namespace {
+  .project-namespace {
     color: $gl-text-color-secondary;
   }
 }
@@ -206,10 +189,6 @@
     .fa-spinner {
       font-size: 12px;
     }
-  }
-
-  .ci-status-link {
-    display: inline-flex;
   }
 
   .ci-status-icon svg {
@@ -239,7 +218,6 @@
   }
 
   .label-monospace {
-    @extend .monospace;
     user-select: text;
     color: $gl-text-color;
     background-color: $gray-light;
@@ -266,7 +244,7 @@
 }
 
 .commit,
-.generic_commit_status {
+.generic-commit-status {
   a,
   button {
     vertical-align: baseline;
@@ -278,37 +256,22 @@
     &.autodevops-badge {
       color: $white-light;
     }
-
-    &.autodevops-link {
-      color: $blue-600;
-    }
   }
 
   .commit-row-description {
     @extend %commit-description-base;
     display: none;
     flex: 1;
-
-    a {
-      color: $gl-text-color;
-    }
   }
 
   &.inline-commit {
     .commit-row-title {
       font-size: 13px;
     }
-
-    .committed_ago {
-      @extend .cgray;
-      float: right;
-    }
   }
 }
 
 .branch-commit {
-  color: $gl-text-color;
-
   .commit-icon {
     text-align: center;
     display: inline-block;
@@ -320,13 +283,14 @@
       fill: $gl-text-color-secondary;
     }
   }
+}
 
+.commit,
+.generic-commit-status,
+.branch-commit {
+  .autodevops-link,
   .commit-sha {
     color: $blue-600;
-  }
-
-  .commit-row-message {
-    color: $gl-text-color;
   }
 }
 

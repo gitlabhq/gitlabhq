@@ -12,7 +12,7 @@
   %td.status
     = render "ci/status/badge", status: job.detailed_status(current_user), title: job.status_title
 
-  %td.branch-commit
+  %td.branch-commit.cgray
     - if can?(current_user, :read_build, job)
       = link_to project_job_path(job.project, job) do
         %span.build-link ##{job.id}
