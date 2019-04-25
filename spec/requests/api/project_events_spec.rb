@@ -124,8 +124,8 @@ describe API::ProjectEvents do
     end
 
     context 'when exists some events' do
-      let(:merge_request1) { create(:merge_request, :closed, author: user, assignees: [user], source_project: private_project, title: 'Test') }
-      let(:merge_request2) { create(:merge_request, :closed, author: user, assignees: [user], source_project: private_project, title: 'Test') }
+      let(:merge_request1) { create(:merge_request, :closed, author: user, assignee: user, source_project: private_project, title: 'Test') }
+      let(:merge_request2) { create(:merge_request, :closed, author: user, assignee: user, source_project: private_project, title: 'Test') }
 
       before do
         create_event(merge_request1)
