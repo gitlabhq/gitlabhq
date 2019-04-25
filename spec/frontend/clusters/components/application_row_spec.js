@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import eventHub from '~/clusters/event_hub';
-import { APPLICATION_STATUS, REQUEST_SUBMITTED, REQUEST_FAILURE } from '~/clusters/constants';
+import {
+  APPLICATION_STATUS,
+  REQUEST_SUBMITTED,
+  REQUEST_FAILURE,
+  UPGRADE_REQUESTED,
+} from '~/clusters/constants';
 import applicationRow from '~/clusters/components/application_row.vue';
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
@@ -313,6 +318,22 @@ describe('Application Row', () => {
       expect(failureMessage.innerHTML).toContain(
         'Update failed. Please check the logs and try again.',
       );
+    });
+
+    it('displays a success toast message if application upgrade was successful', () => {
+      vm = mountComponent(ApplicationRow, {
+        ...DEFAULT_APPLICATION_STATE,
+        title: 'GitLab Runner',
+        requestStatus: UPGRADE_REQUESTED,
+        status: APPLICATION_STATUS.UPDATE_ERRORED,
+      });
+
+      vm.$toast = { show: jest.fn() };
+      vm.status = APPLICATION_STATUS.UPDATED;
+
+      vm.$nextTick(() => {
+        expect(vm.$toast.show).toHaveBeenCalledWith('GitLab Runner upgraded successfully.');
+      });
     });
   });
 
