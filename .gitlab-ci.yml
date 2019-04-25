@@ -28,6 +28,8 @@ stages:
   - prepare
   - merge
   - test
+  - review
+  - qa
   - post-test
   - pages
   - post-cleanup
