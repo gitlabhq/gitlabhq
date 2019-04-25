@@ -53,7 +53,7 @@ export const setResizingStatus = ({ commit }, resizing) => {
 
 export const createTempEntry = (
   { state, commit, dispatch },
-  { name, type, content = '', base64 = false },
+  { name, type, content = '', base64 = false, binary = false, rawPath = '' },
 ) =>
   new Promise(resolve => {
     const fullName = name.slice(-1) !== '/' && type === 'tree' ? `${name}/` : name;
@@ -79,8 +79,10 @@ export const createTempEntry = (
       branchId: state.currentBranchId,
       type,
       tempFile: true,
-      base64,
       content,
+      base64,
+      binary,
+      rawPath,
     });
     const { file, parentPath } = data;
 

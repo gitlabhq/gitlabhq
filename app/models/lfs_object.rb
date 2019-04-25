@@ -13,7 +13,7 @@ class LfsObject < ApplicationRecord
 
   mount_uploader :file, LfsObjectUploader
 
-  after_save :update_file_store, if: :file_changed?
+  after_save :update_file_store, if: :saved_change_to_file?
 
   def update_file_store
     # The file.object_store is set during `uploader.store!`

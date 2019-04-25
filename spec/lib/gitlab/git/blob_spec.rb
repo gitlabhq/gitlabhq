@@ -341,7 +341,7 @@ describe Gitlab::Git::Blob, :seed_helper do
       it { expect(blob.mode).to eq("100755") }
     end
 
-    context 'file with Chinese text' do
+    context 'file with Japanese text' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, "encoding/テスト.txt") }
 
       it { expect(blob.name).to eq("テスト.txt") }

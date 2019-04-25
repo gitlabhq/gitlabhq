@@ -8,13 +8,6 @@
 module AuthenticatesWithTwoFactor
   extend ActiveSupport::Concern
 
-  included do
-    # This action comes from DeviseController, but because we call `sign_in`
-    # manually, not skipping this action would cause a "You are already signed
-    # in." error message to be shown upon successful login.
-    skip_before_action :require_no_authentication, only: [:create], raise: false
-  end
-
   # Store the user's ID in the session for later retrieval and render the
   # two factor code prompt
   #

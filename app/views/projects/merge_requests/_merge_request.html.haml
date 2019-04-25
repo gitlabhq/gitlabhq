@@ -34,8 +34,8 @@
               = merge_request.target_branch
         - if merge_request.labels.any?
           &nbsp;
-          - labels_sorted_by_title(merge_request.labels).each do |label|
-            = link_to_label(label, subject: merge_request.project, type: :merge_request, css_class: 'label-link')
+          - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
+            = link_to_label(label, type: :merge_request, css_class: 'label-link')
 
     .issuable-meta
       %ul.controls

@@ -8,6 +8,8 @@ class SessionsController < Devise::SessionsController
   include Recaptcha::Verify
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
+  # replaced with :require_no_authentication_without_flash
+  skip_before_action :require_no_authentication, only: [:new, :create]
 
   prepend_before_action :check_initial_setup, only: [:new]
   prepend_before_action :authenticate_with_two_factor,
@@ -15,6 +17,8 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :check_captcha, only: [:create]
   prepend_before_action :store_redirect_uri, only: [:new]
   prepend_before_action :ldap_servers, only: [:new, :create]
+  prepend_before_action :require_no_authentication_without_flash, only: [:new, :create]
+
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -53,6 +57,14 @@ class SessionsController < Devise::SessionsController
   end
 
   private
+
+  def require_no_authentication_without_flash
+    require_no_authentication
+
+    if flash[:alert] == I18n.t('devise.failure.already_authenticated')
+      flash[:alert] = nil
+    end
+  end
 
   def captcha_enabled?
     request.headers[CAPTCHA_HEADER] && Gitlab::Recaptcha.enabled?

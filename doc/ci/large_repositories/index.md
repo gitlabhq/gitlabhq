@@ -72,8 +72,9 @@ done by GitLab, requiring you to do them.
 
 > Introduced in GitLab Runner 11.10.
 
-`GIT_CLONE_PATH` allows you to control where you clone your sources.
-This can have implications if you heavily use big repositories with fork workflow.
+[`GIT_CLONE_PATH`](../yaml/README.md#custom-build-directories) allows you to
+control where you clone your sources. This can have implications if you
+heavily use big repositories with fork workflow.
 
 Fork workflow from GitLab Runner's perspective is stored as a separate repository
 with separate worktree. That means that GitLab Runner cannot optimize the usage
@@ -83,29 +84,31 @@ In such cases, ideally you want to make the GitLab Runner executor be used only 
 for the given project and not shared across different projects to make this
 process more efficient.
 
-The `GIT_CLONE_PATH` has to be within the `$CI_BUILDS_DIR`. Currently,
-it is impossible to pick any path from disk.
+The [`GIT_CLONE_PATH`](../yaml/README.md#custom-build-directories) has to be
+within the `$CI_BUILDS_DIR`. Currently, it is impossible to pick any path
+from disk.
 
 ## Git clean flags
 
 > Introduced in GitLab Runner 11.10.
 
-`GIT_CLEAN_FLAGS` allows you to control whether or not you require
-the `git clean` command to be executed for each CI job.
-By default, GitLab ensures that you have your worktree on the given SHA,
+[`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags) allows you to control
+whether or not you require the `git clean` command to be executed for each CI
+job. By default, GitLab ensures that you have your worktree on the given SHA,
 and that your repository is clean.
 
-`GIT_CLEAN_FLAGS` is disabled when set to `none`. On very big repositories, this
-might be desired because `git clean` is disk I/O intensive. Controlling that
-with `GIT_CLEAN_FLAGS: -ffdx -e .build/`, for example, allows you to control and
-disable removal of some directories within the worktree between subsequent runs,
-which can speed-up the incremental builds. This has the biggest effect
-if you re-use existing machines, and have an existing worktree that you can re-use
-for builds.
+[`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags) is disabled when set
+to `none`. On very big repositories, this might be desired because `git
+clean` is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx
+-e .build/`, for example, allows you to control and disable removal of some
+directories within the worktree between subsequent runs, which can speed-up
+the incremental builds. This has the biggest effect if you re-use existing
+machines, and have an existing worktree that you can re-use for builds.
 
-For exact parameters accepted by `GIT_CLEAN_FLAGS`, see the documentation
-for [git clean](https://git-scm.com/docs/git-clean). The
-available parameters are dependent on Git version.
+For exact parameters accepted by
+[`GIT_CLEAN_FLAGS`](../yaml/README.md#git-clean-flags), see the documentation
+for [git clean](https://git-scm.com/docs/git-clean). The available parameters
+are dependent on Git version.
 
 ## Fork-based workflow
 

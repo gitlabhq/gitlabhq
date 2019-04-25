@@ -61,7 +61,7 @@ class Group < Namespace
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
-  after_update :path_changed_hook, if: :path_changed?
+  after_update :path_changed_hook, if: :saved_change_to_path?
 
   class << self
     def sort_by_attribute(method)
@@ -411,7 +411,7 @@ class Group < Namespace
   private
 
   def update_two_factor_requirement
-    return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
+    return unless saved_change_to_require_two_factor_authentication? || saved_change_to_two_factor_grace_period?
 
     users.find_each(&:update_two_factor_requirement)
   end

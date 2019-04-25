@@ -1,0 +1,5 @@
+---
+title: Fix 500 in general pipeline settings when passing an invalid build timeout.
+merge_request: 27416
+author:
+type: fixed

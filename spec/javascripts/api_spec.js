@@ -4,7 +4,7 @@ import Api from '~/api';
 
 describe('Api', () => {
   const dummyApiVersion = 'v3000';
-  const dummyUrlRoot = 'http://host.invalid';
+  const dummyUrlRoot = '/gitlab';
   const dummyGon = {
     api_version: dummyApiVersion,
     relative_url_root: dummyUrlRoot,
@@ -31,6 +31,18 @@ describe('Api', () => {
       const builtUrl = Api.buildUrl(input);
 
       expect(builtUrl).toEqual(expectedOutput);
+    });
+
+    [null, '', '/'].forEach(root => {
+      it(`works when relative_url_root is ${root}`, () => {
+        window.gon.relative_url_root = root;
+        const input = '/api/:version/foo/bar';
+        const expectedOutput = `/api/${dummyApiVersion}/foo/bar`;
+
+        const builtUrl = Api.buildUrl(input);
+
+        expect(builtUrl).toEqual(expectedOutput);
+      });
     });
   });
 

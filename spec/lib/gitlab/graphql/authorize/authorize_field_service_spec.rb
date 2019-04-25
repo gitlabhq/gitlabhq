@@ -45,7 +45,7 @@ describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
         end
       end
 
-      context "when the field is a scalar type" do
+      context "when the field is a built-in scalar type" do
         let(:field) { type_with_field(GraphQL::STRING_TYPE, :read_field).fields["testField"].to_graphql }
         let(:expected_permissions) { [:read_field] }
 
@@ -54,6 +54,20 @@ describe Gitlab::Graphql::Authorize::AuthorizeFieldService do
 
       context "when the field is a list of scalar types" do
         let(:field) { type_with_field([GraphQL::STRING_TYPE], :read_field).fields["testField"].to_graphql }
+        let(:expected_permissions) { [:read_field] }
+
+        it_behaves_like "checking permissions on the presented object"
+      end
+
+      context "when the field is sub-classed scalar type" do
+        let(:field) { type_with_field(Types::TimeType, :read_field).fields["testField"].to_graphql }
+        let(:expected_permissions) { [:read_field] }
+
+        it_behaves_like "checking permissions on the presented object"
+      end
+
+      context "when the field is a list of sub-classed scalar types" do
+        let(:field) { type_with_field([Types::TimeType], :read_field).fields["testField"].to_graphql }
         let(:expected_permissions) { [:read_field] }
 
         it_behaves_like "checking permissions on the presented object"

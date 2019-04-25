@@ -106,7 +106,7 @@
         .value.issuable-show-labels.dont-hide.hide-collapsed.qa-labels-block{ class: ("has-labels" if selected_labels.any?) }
           - if selected_labels.any?
             - selected_labels.each do |label_hash|
-              = render_label(label_from_hash(label_hash), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]))
+              = render_label(label_from_hash(label_hash).present(issuable_subject: nil), link: sidebar_label_filter_path(issuable_sidebar[:project_issuables_path], label_hash[:title]))
           - else
             %span.no-value
               = _('None')

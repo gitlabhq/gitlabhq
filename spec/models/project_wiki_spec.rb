@@ -109,8 +109,7 @@ describe ProjectWiki do
         subject { super().empty? }
         it { is_expected.to be_falsey }
 
-        # Re-enable this when https://gitlab.com/gitlab-org/gitaly/issues/1204 is fixed
-        xit 'only instantiates a Wiki page once' do
+        it 'only instantiates a Wiki page once' do
           expect(WikiPage).to receive(:new).once.and_call_original
 
           subject
@@ -119,22 +118,65 @@ describe ProjectWiki do
     end
   end
 
-  describe "#pages" do
+  describe "#list_pages" do
+    let(:wiki_pages) { subject.list_pages }
+
     before do
-      create_page("index", "This is an awesome new Gollum Wiki")
-      @pages = subject.pages
+      create_page("index", "This is an index")
+      create_page("index2", "This is an index2")
+      create_page("an index3", "This is an index3")
     end
 
     after do
-      destroy_page(@pages.first.page)
+      wiki_pages.each do |wiki_page|
+        destroy_page(wiki_page.page)
+      end
     end
 
     it "returns an array of WikiPage instances" do
-      expect(@pages.first).to be_a WikiPage
+      expect(wiki_pages.first).to be_a WikiPage
     end
 
-    it "returns the correct number of pages" do
-      expect(@pages.count).to eq(1)
+    it 'does not load WikiPage content by default' do
+      wiki_pages.each do |page|
+        expect(page.content).to be_empty
+      end
+    end
+
+    it 'returns all pages by default' do
+      expect(wiki_pages.count).to eq(3)
+    end
+
+    context "with limit option" do
+      it 'returns limited set of pages' do
+        expect(subject.list_pages(limit: 1).count).to eq(1)
+      end
+    end
+
+    context "with sorting options" do
+      it 'returns pages sorted by title by default' do
+        pages = ['an index3', 'index', 'index2']
+
+        expect(subject.list_pages.map(&:title)).to eq(pages)
+        expect(subject.list_pages(direction: "desc").map(&:title)).to eq(pages.reverse)
+      end
+
+      it 'returns pages sorted by created_at' do
+        pages = ['index', 'index2', 'an index3']
+
+        expect(subject.list_pages(sort: 'created_at').map(&:title)).to eq(pages)
+        expect(subject.list_pages(sort: 'created_at', direction: "desc").map(&:title)).to eq(pages.reverse)
+      end
+    end
+
+    context "with load_content option" do
+      let(:pages) { subject.list_pages(load_content: true) }
+
+      it 'loads WikiPage content' do
+        expect(pages.first.content).to eq("This is an index3")
+        expect(pages.second.content).to eq("This is an index")
+        expect(pages.third.content).to eq("This is an index2")
+      end
     end
   end
 
@@ -144,7 +186,7 @@ describe ProjectWiki do
     end
 
     after do
-      subject.pages.each { |page| destroy_page(page.page) }
+      subject.list_pages.each { |page| destroy_page(page.page) }
     end
 
     it "returns the latest version of the page if it exists" do
@@ -195,7 +237,7 @@ describe ProjectWiki do
     end
 
     after do
-      subject.pages.each { |page| destroy_page(page.page) }
+      subject.list_pages.each { |page| destroy_page(page.page) }
     end
 
     it 'finds the page defined as _sidebar' do
@@ -242,12 +284,12 @@ describe ProjectWiki do
 
   describe "#create_page" do
     after do
-      destroy_page(subject.pages.first.page)
+      destroy_page(subject.list_pages.first.page)
     end
 
     it "creates a new wiki page" do
       expect(subject.create_page("test page", "this is content")).not_to eq(false)
-      expect(subject.pages.count).to eq(1)
+      expect(subject.list_pages.count).to eq(1)
     end
 
     it "returns false when a duplicate page exists" do
@@ -262,7 +304,7 @@ describe ProjectWiki do
 
     it "sets the correct commit message" do
       subject.create_page("test page", "some content", :markdown, "commit message")
-      expect(subject.pages.first.page.version.message).to eq("commit message")
+      expect(subject.list_pages.first.page.version.message).to eq("commit message")
     end
 
     it 'sets the correct commit email' do
@@ -293,7 +335,7 @@ describe ProjectWiki do
         format: :markdown,
         message: "updated page"
       )
-      @page = subject.pages.first.page
+      @page = subject.list_pages(load_content: true).first.page
     end
 
     after do
@@ -337,7 +379,7 @@ describe ProjectWiki do
 
     it "deletes the page" do
       subject.delete_page(@page)
-      expect(subject.pages.count).to eq(0)
+      expect(subject.list_pages.count).to eq(0)
     end
 
     it 'sets the correct commit email' do

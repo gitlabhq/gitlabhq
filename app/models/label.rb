@@ -8,6 +8,7 @@ class Label < ApplicationRecord
   include OptionallySearch
   include Sortable
   include FromUnion
+  include Presentable
 
   cache_markdown_field :description, pipeline: :single_line
 
@@ -231,6 +232,10 @@ class Label < ApplicationRecord
 
   def hook_attrs
     attributes
+  end
+
+  def present(attributes)
+    super(attributes.merge(presenter_class: ::LabelPresenter))
   end
 
   private

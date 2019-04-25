@@ -191,29 +191,119 @@ describe 'Merge request > User creates image diff notes', :js do
     end
   end
 
-  describe 'image view modes' do
-    before do
-      visit project_commit_path(project, '2f63565e7aac07bcdadb654e253078b727143ec4')
+  shared_examples 'swipe view' do
+    it 'moves the swipe handle' do
+      # Simulate dragging swipe view slider
+      expect { drag_and_drop_by(find('.swipe-bar'), 20, 0) }
+        .to change { find('.swipe-bar')['style'] }
+        .from(a_string_matching('left: 1px'))
     end
 
-    it 'resizes image in onion skin view mode' do
-      find('.view-modes-menu .onion-skin').click
+    it 'shows both images at the same position' do
+      drag_and_drop_by(find('.swipe-bar'), 40, 0)
 
-      expect(find('.onion-skin-frame')['style']).to match('width: 228px; height: 240px;')
+      expect(left_position('.frame.added img'))
+        .to eq(left_position('.frame.deleted img'))
     end
+  end
 
-    it 'resets onion skin view mode opacity when toggling between view modes' do
-      find('.view-modes-menu .onion-skin').click
-
+  shared_examples 'onion skin' do
+    it 'resets opacity when toggling between view modes' do
       # Simulate dragging onion-skin slider
       drag_and_drop_by(find('.dragger'), -30, 0)
 
       expect(find('.onion-skin-frame .frame.added', visible: false)['style']).not_to match('opacity: 1;')
 
-      find('.view-modes-menu .swipe').click
-      find('.view-modes-menu .onion-skin').click
+      switch_to_swipe_view
+      switch_to_onion_skin
 
       expect(find('.onion-skin-frame .frame.added', visible: false)['style']).to match('opacity: 1;')
+    end
+  end
+
+  describe 'changes tab image diff' do
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project, target_branch: 'master', source_branch: 'deleted-image-test', author: user) }
+
+    before do
+      visit diffs_project_merge_request_path(project, merge_request)
+      click_link "Changes"
+    end
+
+    def set_image_diff_sources
+      # set path of added and deleted images to something the spec can view
+      page.execute_script("document.querySelector('.frame.added img').src = '/apple-touch-icon.png';")
+      page.execute_script("document.querySelector('.frame.deleted img').src = '/favicon.png';")
+
+      wait_for_requests
+
+      expect(find('.frame.added img', visible: false)['src']).to match('/apple-touch-icon.png')
+      expect(find('.frame.deleted img', visible: false)['src']).to match('/favicon.png')
+    end
+
+    def switch_to_swipe_view
+      # it isn't given the .swipe class in the merge request diff
+      find('.view-modes-menu li:nth-child(2)').click
+      expect(find('.view-modes-menu li.active')).to have_content('Swipe')
+
+      set_image_diff_sources
+    end
+
+    def switch_to_onion_skin
+      # it isn't given the .onion-skin class in the merge request diff
+      find('.view-modes-menu li:nth-child(3)').click
+      expect(find('.view-modes-menu li.active')).to have_content('Onion skin')
+
+      set_image_diff_sources
+    end
+
+    describe 'onion skin' do
+      before do
+        switch_to_onion_skin
+      end
+
+      it_behaves_like 'onion skin'
+    end
+
+    describe 'swipe view' do
+      before do
+        switch_to_swipe_view
+      end
+
+      it_behaves_like 'swipe view'
+    end
+  end
+
+  describe 'image view modes' do
+    before do
+      visit project_commit_path(project, '2f63565e7aac07bcdadb654e253078b727143ec4')
+    end
+
+    def switch_to_swipe_view
+      find('.view-modes-menu .swipe').click
+    end
+
+    def switch_to_onion_skin
+      find('.view-modes-menu .onion-skin').click
+    end
+
+    describe 'onion skin' do
+      before do
+        switch_to_onion_skin
+      end
+
+      it 'resizes image' do
+        expect(find('.onion-skin-frame')['style']).to match('width: 228px; height: 240px;')
+      end
+
+      it_behaves_like 'onion skin'
+    end
+
+    describe 'swipe view' do
+      before do
+        switch_to_swipe_view
+      end
+
+      it_behaves_like 'swipe view'
     end
   end
 
@@ -231,5 +321,9 @@ describe 'Merge request > User creates image diff notes', :js do
     find('.diff-content .note-textarea').native.send_keys('image diff test comment')
     click_button 'Comment'
     wait_for_requests
+  end
+
+  def left_position(element)
+    page.evaluate_script("document.querySelectorAll('#{element}')[0].getBoundingClientRect().left;")
   end
 end

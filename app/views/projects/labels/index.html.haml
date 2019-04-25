@@ -25,7 +25,7 @@
           #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
             = render 'shared/empty_states/priority_labels'
           - if @prioritized_labels.present?
-            = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label, locals: { force_priority: true }
+            = render partial: 'shared/label', collection: @prioritized_labels, as: :label, locals: { force_priority: true, subject: @project }
           - elsif search.present?
             .nothing-here-block
               = _('No prioritised labels with such name or description')
@@ -34,7 +34,7 @@
         .other-labels
           %h5{ class: ('hide' if hide) }= _('Other Labels')
           .content-list.manage-labels-list.js-other-labels
-            = render partial: 'shared/label', subject: @project, collection: @labels, as: :label
+            = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }
             = paginate @labels, theme: 'gitlab'
       - elsif search.present?
         .other-labels

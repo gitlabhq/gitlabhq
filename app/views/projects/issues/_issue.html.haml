@@ -6,7 +6,7 @@
     .issuable-info-container
       .issuable-main-info
         .issue-title.title
-          %span.issue-title-text
+          %span.issue-title-text{ dir: "auto" }
             - if issue.confidential?
               %span.has-tooltip{ title: _('Confidential') }
                 = confidential_icon(issue)
@@ -36,8 +36,8 @@
               = issue.due_date.to_s(:medium)
           - if issue.labels.any?
             &nbsp;
-            - labels_sorted_by_title(issue.labels).each do |label|
-              = link_to_label(label, subject: issue.project, css_class: 'label-link')
+            - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
+              = link_to_label(label, css_class: 'label-link')
 
       .issuable-meta
         %ul.controls

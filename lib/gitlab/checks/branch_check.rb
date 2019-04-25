@@ -48,7 +48,7 @@ module Gitlab
 
         if project.empty_repo?
           protected_branch_push_checks
-        elsif creation? && protected_branch_creation_enabled?
+        elsif creation?
           protected_branch_creation_checks
         elsif deletion?
           protected_branch_deletion_checks
@@ -122,10 +122,6 @@ module Gitlab
 
       def project_members_url
         Gitlab::Routing.url_helpers.project_project_members_url(project)
-      end
-
-      def protected_branch_creation_enabled?
-        Feature.enabled?(:protected_branch_creation, project, default_enabled: true)
       end
 
       def matching_merge_request?

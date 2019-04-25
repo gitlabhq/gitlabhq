@@ -147,20 +147,20 @@ class PagesDomain < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def pages_config_changed?
-    project_id_changed? ||
-      domain_changed? ||
-      certificate_changed? ||
-      key_changed? ||
+    saved_change_to_project_id? ||
+      saved_change_to_domain? ||
+      saved_change_to_certificate? ||
+      saved_change_to_key? ||
       became_enabled? ||
       became_disabled?
   end
 
   def became_enabled?
-    enabled_until.present? && !enabled_until_was.present?
+    enabled_until.present? && !enabled_until_before_last_save.present?
   end
 
   def became_disabled?
-    !enabled_until.present? && enabled_until_was.present?
+    !enabled_until.present? && enabled_until_before_last_save.present?
   end
 
   def validate_matching_key

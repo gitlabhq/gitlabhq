@@ -55,7 +55,8 @@ For more examples on artifacts, follow the [artifacts reference in
 > **Note:**
 > With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
 > directly in a new tab without the need to download them when
-> [GitLab Pages](../../../administration/pages/index.md) is enabled
+> [GitLab Pages](../../../administration/pages/index.md) is enabled.
+> The same holds for textual formats (currently supported extensions: `.txt`, `.json`, and `.log`).
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas

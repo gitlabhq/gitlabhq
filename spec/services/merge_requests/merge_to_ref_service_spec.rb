@@ -104,7 +104,7 @@ describe MergeRequests::MergeToRefService do
         it_behaves_like 'MergeService for target ref'
       end
 
-      context 'when merge commit with squash' do
+      context 'when merge commit with squash', :quarantine do
         before do
           merge_request.update!(squash: true, source_branch: 'master', target_branch: 'feature')
         end

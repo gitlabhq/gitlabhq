@@ -149,6 +149,7 @@ export default {
       v-model="descriptionText"
       :data-update-url="updateUrl"
       class="hidden js-task-list-field"
+      dir="auto"
     >
     </textarea>
 

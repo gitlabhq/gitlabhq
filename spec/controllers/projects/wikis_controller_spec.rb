@@ -19,6 +19,18 @@ describe Projects::WikisController do
     destroy_page(wiki_title)
   end
 
+  describe 'GET #pages' do
+    subject { get :pages, params: { namespace_id: project.namespace, project_id: project, id: wiki_title } }
+
+    it 'does not load the pages content' do
+      expect(controller).to receive(:load_wiki).and_return(project_wiki)
+
+      expect(project_wiki).to receive(:list_pages).twice.and_call_original
+
+      subject
+    end
+  end
+
   describe 'GET #show' do
     render_views
 
@@ -28,9 +40,9 @@ describe Projects::WikisController do
       expect(controller).to receive(:load_wiki).and_return(project_wiki)
 
       # empty? call
-      expect(project_wiki).to receive(:pages).with(limit: 1).and_call_original
+      expect(project_wiki).to receive(:list_pages).with(limit: 1).and_call_original
       # Sidebar entries
-      expect(project_wiki).to receive(:pages).with(limit: 15).and_call_original
+      expect(project_wiki).to receive(:list_pages).with(limit: 15).and_call_original
 
       subject
 
@@ -104,7 +116,7 @@ describe Projects::WikisController do
 
         subject
 
-        expect(response).to redirect_to(project_wiki_path(project, project_wiki.pages.first))
+        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
       end
     end
 
@@ -138,7 +150,7 @@ describe Projects::WikisController do
         allow(controller).to receive(:valid_encoding?).and_return(false)
 
         subject
-        expect(response).to redirect_to(project_wiki_path(project, project_wiki.pages.first))
+        expect(response).to redirect_to(project_wiki_path(project, project_wiki.list_pages.first))
       end
     end
 
@@ -148,7 +160,7 @@ describe Projects::WikisController do
       it 'updates the page' do
         subject
 
-        wiki_page = project_wiki.pages.first
+        wiki_page = project_wiki.list_pages(load_content: true).first
 
         expect(wiki_page.title).to eq new_title
         expect(wiki_page.content).to eq new_content

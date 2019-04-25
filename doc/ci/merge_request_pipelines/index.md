@@ -67,7 +67,7 @@ when a merge request was created or updated. For example:
 
 ![Merge request page](img/merge_request.png)
 
-## Combined ref pipelines **[PREMIUM]**
+## Pipelines for Merged Results **[PREMIUM]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/7380) in [GitLab Premium](https://about.gitlab.com/pricing/) 11.10.
 
@@ -93,7 +93,7 @@ The detached state serves to warn you that you are working in a situation
 subjected to merge problems, and helps to highlight that you should
 get out of WIP status or resolve merge conflicts as soon as possible.
 
-### Enabling combined ref pipelines
+### Enabling Pipelines for Merged Results
 
 This feature disabled by default until we resolve issues with [contention handling](https://gitlab.com/gitlab-org/gitlab-ee/issues/9186). It can be enabled at the project level:
 
@@ -103,7 +103,7 @@ This feature disabled by default until we resolve issues with [contention handli
 
 ![Merge request pipeline config](img/merge_request_pipeline_config.png)
 
-### Combined ref pipeline's limitations
+### Pipelines for Merged Result's limitations
 
 - This feature requires [GitLab Runner](https://gitlab.com/gitlab-org/gitlab-runner) 11.9 or newer.
 - This feature requires [Gitaly](https://gitlab.com/gitlab-org/gitaly) 1.21.0 or newer.

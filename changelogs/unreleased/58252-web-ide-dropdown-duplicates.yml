@@ -1,0 +1,5 @@
+---
+title: Resolve Web IDE template dropdown showing duplicates
+merge_request: 27237
+author:
+type: fixed

@@ -80,7 +80,7 @@ module Projects
             value = value.is_a?(Hash) ? value.to_json : value
 
             service_hash[ActiveRecord::Base.connection.quote_column_name(key)] =
-              ActiveRecord::Base.sanitize(value)
+              ActiveRecord::Base.connection.quote(value)
           end
         end
     end
