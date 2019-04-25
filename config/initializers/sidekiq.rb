@@ -1,5 +1,17 @@
 require 'sidekiq/web'
 
+def enable_reliable_fetch?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, default_enabled: true)
+end
+
+def enable_semi_reliable_fetch_mode?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+end
+
 # Disable the Sidekiq Rack session since GitLab already has its own session store.
 # CSRF protection still works (https://github.com/mperham/sidekiq/commit/315504e766c4fd88a29b7772169060afc4c40329).
 Sidekiq::Web.set :sessions, false
@@ -88,16 +100,4 @@ Sidekiq.configure_client do |config|
     chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
   end
-end
-
-def enable_reliable_fetch?
-  return true unless Feature::FlipperFeature.table_exists?
-
-  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, default_enabled: true)
-end
-
-def enable_semi_reliable_fetch_mode?
-  return true unless Feature::FlipperFeature.table_exists?
-
-  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
 end
