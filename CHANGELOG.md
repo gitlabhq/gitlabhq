@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.10.2 (2019-04-25)
+
+### Security (4 changes)
+
+- Loosen regex for exception sanitization. !3076
+- Resolve: moving an issue to private repo leaks namespace and project name.
+- Escape path in new merge request mail.
+- Stop sending emails to users who can't read commit.
+
+
 ## 11.10.1 (2019-04-23)
 
 ### Fixed (2 changes)
