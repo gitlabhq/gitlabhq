@@ -21,13 +21,13 @@ describe Gitlab::Git::Wiki do
     end
 
     it 'returns all the pages' do
-      expect(subject.pages.count).to eq(2)
-      expect(subject.pages.first.title).to eq 'page1'
-      expect(subject.pages.last.title).to eq 'page2'
+      expect(subject.list_pages.count).to eq(2)
+      expect(subject.list_pages.first.title).to eq 'page1'
+      expect(subject.list_pages.last.title).to eq 'page2'
     end
 
     it 'returns only one page' do
-      pages = subject.pages(limit: 1)
+      pages = subject.list_pages(limit: 1)
 
       expect(pages.count).to eq(1)
       expect(pages.first.title).to eq 'page1'
@@ -62,8 +62,8 @@ describe Gitlab::Git::Wiki do
 
       subject.delete_page('*', commit_details('whatever'))
 
-      expect(subject.pages.count).to eq 1
-      expect(subject.pages.first.title).to eq 'page1'
+      expect(subject.list_pages.count).to eq 1
+      expect(subject.list_pages.first.title).to eq 'page1'
     end
   end
 
@@ -87,7 +87,7 @@ describe Gitlab::Git::Wiki do
     with_them do
       subject { wiki.preview_slug(title, format) }
 
-      let(:gitaly_slug) { wiki.pages.first }
+      let(:gitaly_slug) { wiki.list_pages.first }
 
       it { is_expected.to eq(expected_slug) }
 
@@ -96,7 +96,7 @@ describe Gitlab::Git::Wiki do
 
         create_page(title, 'content', format: format)
 
-        gitaly_slug = wiki.pages.first.url_path
+        gitaly_slug = wiki.list_pages.first.url_path
 
         is_expected.to eq(gitaly_slug)
       end

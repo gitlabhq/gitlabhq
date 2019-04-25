@@ -56,7 +56,7 @@ module TestHooks
     end
 
     def wiki_page_events_data
-      page = project.wiki.pages.first
+      page = project.wiki.list_pages(limit: 1).first
       if !project.wiki_enabled? || page.blank?
         throw(:validation_error, s_('TestHooks|Ensure the wiki is enabled and has pages.'))
       end
