@@ -80,6 +80,8 @@
           - deleted_message = s_('ForkedFromProjectPath|Forked from %{project_name} (deleted)')
           = deleted_message % { project_name: fork_source_name(@project) }
 
+    = render_if_exists "projects/home_mirror"
+
   - if @project.badges.present?
     .project-badges.mb-2
       - @project.badges.each do |badge|
