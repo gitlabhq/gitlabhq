@@ -38,8 +38,9 @@ if (BABEL_ENV === 'karma' || BABEL_ENV === 'coverage') {
   plugins.push('babel-plugin-rewire');
 }
 
-// Jest is running in node environment
-if (BABEL_ENV === 'jest') {
+// Jest is running in node environment, so we need additional plugins
+const isJest = !!process.env.JEST_WORKER_ID;
+if (isJest) {
   plugins.push('@babel/plugin-transform-modules-commonjs');
   /*
   without the following, babel-plugin-istanbul throws an error:
