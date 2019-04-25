@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-describe Gitlab::MetricsDashboard::Processor do
+describe Gitlab::Metrics::Dashboard::Processor do
   let(:project) { build(:project) }
   let(:environment) { build(:environment) }
-  let(:dashboard_yml) { YAML.load_file('spec/fixtures/lib/gitlab/metrics_dashboard/sample_dashboard.yml') }
+  let(:dashboard_yml) { YAML.load_file('spec/fixtures/lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
 
   describe 'process' do
     let(:process_params) { [project, environment] }
@@ -50,7 +50,7 @@ describe Gitlab::MetricsDashboard::Processor do
 
     shared_examples_for 'errors with message' do |expected_message|
       it 'raises a DashboardLayoutError' do
-        error_class = Gitlab::MetricsDashboard::Stages::BaseStage::DashboardLayoutError
+        error_class = Gitlab::Metrics::Dashboard::Stages::BaseStage::DashboardLayoutError
 
         expect { dashboard }.to raise_error(error_class, expected_message)
       end
