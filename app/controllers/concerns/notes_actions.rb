@@ -78,7 +78,7 @@ module NotesActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
-    @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
+    @note = Notes::UpdateService.new(project, current_user, update_note_params).execute(note)
     prepare_notes_for_rendering([@note])
 
     respond_to do |format|
@@ -214,6 +214,10 @@ module NotesActions
       # DiffNote
       :position
     )
+  end
+
+  def update_note_params
+    params.require(:note).permit(:note)
   end
 
   def set_polling_interval_header

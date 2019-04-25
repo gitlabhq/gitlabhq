@@ -431,28 +431,77 @@ describe Projects::NotesController do
   end
 
   describe 'PUT update' do
-    context "should update the note with a valid issue" do
-      let(:request_params) do
-        {
-          namespace_id: project.namespace,
-          project_id: project,
-          id: note,
-          format: :json,
-          note: {
-            note: "New comment"
+    context "updates the note" do
+      context 'with a valid issue' do
+        let(:request_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: note,
+            format: :json,
+            note: {
+              note: "New comment"
+            }
           }
-        }
+        end
+
+        before do
+          sign_in(note.author)
+          project.add_developer(note.author)
+        end
+
+        it "updates the note content" do
+          expect { put :update, params: request_params }.to change { note.reload.note }
+        end
       end
 
-      before do
-        sign_in(note.author)
-        project.add_developer(note.author)
-      end
+      context "when the note is edited and a different issue is targeted" do
+        ##
+        # We are editing a note originally in a public issue of a public project,
+        # but the edit can be intercepted to change the target to a different, even confidential, issue
+        # see https://gitlab.com/gitlab-org/gitlab-ce/issues/57153
+        ##
 
-      it "updates the note" do
-        expect { put :update, params: request_params }.to change { note.reload.note }
+        let!(:confidential_issue) { create(:issue, :confidential, project: project) }
+        let(:new_content) { "splendiferous new content" }
+        let(:request_params) do
+          {
+            namespace_id: project.namespace,
+            project_id: project,
+            id: note,
+            format: :json,
+            note: {
+              note: new_content,
+              noteable_id: confidential_issue.id
+            }
+          }
+        end
+
+        before do
+          sign_in(note.author)
+          project.add_developer(note.author)
+
+          put :update, params: request_params
+        end
+
+        it 'returns success' do
+          expect(response.status).to eq 200
+        end
+
+        it 'edits the note content' do
+          expect(note.reload.note).to eq new_content
+        end
+
+        it 'does not create a note in the confidential issue' do
+          expect(confidential_issue.reload.notes).to be_empty
+        end
+
+        it "does not modify the note's issue" do
+          expect(note.noteable_id).to match note.reload.noteable_id
+        end
       end
     end
+
     context "doesnt update the note" do
       let(:issue)   { create(:issue, :confidential, project: project) }
       let(:note)    { create(:note, noteable: issue, project: project) }
