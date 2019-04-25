@@ -3271,6 +3271,9 @@ msgstr ""
 msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
 
+msgid "Dockerfile"
+msgstr ""
+
 msgid "Domain"
 msgstr ""
 
@@ -3737,6 +3740,9 @@ msgid "Error uploading file"
 msgstr ""
 
 msgid "Error while loading the merge request. Please try again."
+msgstr ""
+
+msgid "Error while loading the project data. Please try again."
 msgstr ""
 
 msgid "Error while migrating %{upload_id}: %{error_message}"
@@ -5163,6 +5169,9 @@ msgid "LFSStatus|Disabled"
 msgstr ""
 
 msgid "LFSStatus|Enabled"
+msgstr ""
+
+msgid "LICENSE"
 msgstr ""
 
 msgid "Label"
