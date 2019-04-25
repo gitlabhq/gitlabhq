@@ -1,7 +1,11 @@
 import Vue from 'vue';
+import { formatDate } from '~/lib/utils/datetime_utility';
 import { mount, createLocalVue } from '@vue/test-utils';
 import RelatedIssuableItem from '~/vue_shared/components/issue/related_issuable_item.vue';
-import { defaultMilestone, defaultAssignees } from './related_issuable_mock_data';
+import {
+  defaultAssignees,
+  defaultMilestone,
+} from '../../../../javascripts/vue_shared/components/issue/related_issuable_mock_data';
 
 describe('RelatedIssuableItem', () => {
   let wrapper;
@@ -85,11 +89,11 @@ describe('RelatedIssuableItem', () => {
 
     it('renders state title', () => {
       const stateTitle = tokenState.attributes('data-original-title');
+      const formatedCreateDate = formatDate(props.createdAt);
 
       expect(stateTitle).toContain('<span class="bold">Opened</span>');
-      expect(stateTitle).toContain(
-        '<span class="text-tertiary">Dec 1, 2018 12:00am GMT+0000</span>',
-      );
+
+      expect(stateTitle).toContain(`<span class="text-tertiary">${formatedCreateDate}</span>`);
     });
 
     it('renders aria label', () => {

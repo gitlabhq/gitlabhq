@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import issueWarning from '~/vue_shared/components/issue/issue_warning.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 
 const IssueWarning = Vue.extend(issueWarning);
 
@@ -19,7 +19,9 @@ describe('Issue Warning Component', () => {
         isLocked: true,
       });
 
-      expect(vm.$el.querySelector('.icon use').href.baseVal).toMatch(/lock$/);
+      expect(
+        vm.$el.querySelector('.icon use').getAttributeNS('http://www.w3.org/1999/xlink', 'href'),
+      ).toMatch(/lock$/);
       expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual(
         'This issue is locked. Only project members can comment.',
       );
@@ -32,7 +34,9 @@ describe('Issue Warning Component', () => {
         isConfidential: true,
       });
 
-      expect(vm.$el.querySelector('.icon use').href.baseVal).toMatch(/eye-slash$/);
+      expect(
+        vm.$el.querySelector('.icon use').getAttributeNS('http://www.w3.org/1999/xlink', 'href'),
+      ).toMatch(/eye-slash$/);
       expect(formatWarning(vm.$el.querySelector('span').textContent)).toEqual(
         'This is a confidential issue. Your comment will not be visible to the public.',
       );
