@@ -72,6 +72,7 @@ export default {
         'issue-realtime-trigger-pulse': pulseAnimation,
       }"
       class="title"
+      dir="auto"
       v-html="titleHtml"
     ></h2>
     <button

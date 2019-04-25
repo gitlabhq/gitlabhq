@@ -137,7 +137,7 @@ describe 'Login' do
 
         enter_code(user.current_otp)
 
-        expect(page).not_to have_content('You are already signed in.')
+        expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
       end
 
       context 'using one-time code' do
@@ -317,7 +317,17 @@ describe 'Login' do
         gitlab_sign_in(user)
 
         expect(current_path).to eq root_path
-        expect(page).not_to have_content('You are already signed in.')
+        expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
+      end
+
+      it 'does not show already signed in message when opening sign in page after login' do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+
+        gitlab_sign_in(user)
+        visit new_user_session_path
+
+        expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
       end
     end
 
@@ -579,7 +589,7 @@ describe 'Login' do
       click_button 'Accept terms'
 
       expect(current_path).to eq(root_path)
-      expect(page).not_to have_content('You are already signed in.')
+      expect(page).not_to have_content(I18n.t('devise.failure.already_authenticated'))
     end
 
     it 'does not ask for terms when the user already accepted them' do

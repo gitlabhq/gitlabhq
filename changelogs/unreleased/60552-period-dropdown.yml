@@ -1,0 +1,5 @@
+---
+title: Fix autocomplete dropdown for usernames starting with period
+merge_request: 27533
+author: Jan Beckmann
+type: fixed

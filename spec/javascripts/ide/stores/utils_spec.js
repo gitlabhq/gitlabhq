@@ -1,4 +1,5 @@
 import * as utils from '~/ide/stores/utils';
+import { commitActionTypes } from '~/ide/constants';
 import { file } from '../helpers';
 
 describe('Multi-file store utils', () => {
@@ -107,7 +108,7 @@ describe('Multi-file store utils', () => {
         commit_message: 'commit message',
         actions: [
           {
-            action: 'update',
+            action: commitActionTypes.update,
             file_path: 'staged',
             content: 'updated file content',
             encoding: 'text',
@@ -115,7 +116,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
           {
-            action: 'create',
+            action: commitActionTypes.create,
             file_path: 'added',
             content: 'new file content',
             encoding: 'base64',
@@ -123,7 +124,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
           {
-            action: 'delete',
+            action: commitActionTypes.delete,
             file_path: 'deletedFile',
             content: undefined,
             encoding: 'text',
@@ -170,7 +171,7 @@ describe('Multi-file store utils', () => {
         commit_message: 'prebuilt test commit message',
         actions: [
           {
-            action: 'update',
+            action: commitActionTypes.update,
             file_path: 'staged',
             content: 'updated file content',
             encoding: 'text',
@@ -178,7 +179,7 @@ describe('Multi-file store utils', () => {
             previous_path: undefined,
           },
           {
-            action: 'create',
+            action: commitActionTypes.create,
             file_path: 'added',
             content: 'new file content',
             encoding: 'base64',
@@ -193,19 +194,19 @@ describe('Multi-file store utils', () => {
 
   describe('commitActionForFile', () => {
     it('returns deleted for deleted file', () => {
-      expect(utils.commitActionForFile({ deleted: true })).toBe('delete');
+      expect(utils.commitActionForFile({ deleted: true })).toBe(commitActionTypes.delete);
     });
 
     it('returns create for tempFile', () => {
-      expect(utils.commitActionForFile({ tempFile: true })).toBe('create');
+      expect(utils.commitActionForFile({ tempFile: true })).toBe(commitActionTypes.create);
     });
 
     it('returns move for moved file', () => {
-      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe('move');
+      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe(commitActionTypes.move);
     });
 
     it('returns update by default', () => {
-      expect(utils.commitActionForFile({})).toBe('update');
+      expect(utils.commitActionForFile({})).toBe(commitActionTypes.update);
     });
   });
 

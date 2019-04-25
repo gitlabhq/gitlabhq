@@ -138,22 +138,6 @@ describe('ImageDiffViewer', () => {
         done();
       });
     });
-
-    it('drag handler is working', done => {
-      vm.$el.querySelector('.view-modes-menu li:nth-child(2)').click();
-
-      vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.swipe-bar').style.left).toBe('1px');
-        expect(vm.$el.querySelector('.top-handle')).not.toBeNull();
-
-        dragSlider(vm.$el.querySelector('.swipe-bar'), 40);
-
-        vm.$nextTick(() => {
-          expect(vm.$el.querySelector('.swipe-bar').style.left).toBe('-20px');
-          done();
-        });
-      });
-    });
   });
 
   describe('onionSkin', () => {

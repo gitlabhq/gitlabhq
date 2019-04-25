@@ -101,6 +101,18 @@ describe Gitlab::Ci::Pipeline::Expression::Statement do
       "$EMPTY_VARIABLE =~ /var.*/"         | false
       "$UNDEFINED_VARIABLE =~ /var.*/"     | false
       "$PRESENT_VARIABLE =~ /VAR.*/i"      | true
+      '$PRESENT_VARIABLE != "my variable"' | false
+      '"my variable" != $PRESENT_VARIABLE' | false
+      '$PRESENT_VARIABLE != null'          | true
+      '$EMPTY_VARIABLE != null'            | true
+      '"" != $EMPTY_VARIABLE'              | false
+      '$UNDEFINED_VARIABLE != null'        | false
+      'null != $UNDEFINED_VARIABLE'        | false
+      "$PRESENT_VARIABLE !~ /var.*e$/"     | false
+      "$PRESENT_VARIABLE !~ /^var.*/"      | true
+      "$EMPTY_VARIABLE !~ /var.*/"         | true
+      "$UNDEFINED_VARIABLE !~ /var.*/"     | true
+      "$PRESENT_VARIABLE !~ /VAR.*/i"      | false
     end
 
     with_them do

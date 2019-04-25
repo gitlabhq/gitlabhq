@@ -86,9 +86,14 @@ module Gitlab
         end
       end
 
-      def pages(limit: 0, sort: nil, direction_desc: false)
+      def list_pages(limit: 0, sort: nil, direction_desc: false, load_content: false)
         wrapped_gitaly_errors do
-          gitaly_get_all_pages(limit: limit, sort: sort, direction_desc: direction_desc)
+          gitaly_list_pages(
+            limit: limit,
+            sort: sort,
+            direction_desc: direction_desc,
+            load_content: load_content
+          )
         end
       end
 
@@ -168,10 +173,17 @@ module Gitlab
         Gitlab::Git::WikiFile.new(wiki_file)
       end
 
-      def gitaly_get_all_pages(limit: 0, sort: nil, direction_desc: false)
-        gitaly_wiki_client.get_all_pages(
-          limit: limit, sort: sort, direction_desc: direction_desc
-        ).map do |wiki_page, version|
+      def gitaly_list_pages(limit: 0, sort: nil, direction_desc: false, load_content: false)
+        params = { limit: limit, sort: sort, direction_desc: direction_desc }
+
+        gitaly_pages =
+          if load_content
+            gitaly_wiki_client.load_all_pages(params)
+          else
+            gitaly_wiki_client.list_all_pages(params)
+          end
+
+        gitaly_pages.map do |wiki_page, version|
           Gitlab::Git::WikiPage.new(wiki_page, version)
         end
       end

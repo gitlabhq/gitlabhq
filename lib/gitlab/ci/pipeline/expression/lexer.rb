@@ -15,7 +15,9 @@ module Gitlab
             Expression::Lexeme::Pattern,
             Expression::Lexeme::Null,
             Expression::Lexeme::Equals,
-            Expression::Lexeme::Matches
+            Expression::Lexeme::Matches,
+            Expression::Lexeme::NotEquals,
+            Expression::Lexeme::NotMatches
           ].freeze
 
           MAX_TOKENS = 100

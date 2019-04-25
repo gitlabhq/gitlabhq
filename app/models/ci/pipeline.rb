@@ -642,6 +642,7 @@ module Ci
         variables.append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
         variables.append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
         variables.append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
+        variables.append(key: 'CI_COMMIT_REF_PROTECTED', value: (!!protected_ref?).to_s)
 
         if merge_request_event? && merge_request
           variables.append(key: 'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA', value: source_sha.to_s)

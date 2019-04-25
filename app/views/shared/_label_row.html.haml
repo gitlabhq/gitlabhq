@@ -1,4 +1,3 @@
-- subject = local_assigns[:subject]
 - force_priority = local_assigns.fetch(:force_priority, false)
 - subject_or_group_defined = defined?(@project) || defined?(@group)
 - show_label_issues_link = subject_or_group_defined && show_label_issuables_link?(label, :issues, project: @project)
@@ -14,11 +13,11 @@
     %ul.label-links
       - if show_label_issues_link
         %li.label-link-item.inline
-          = link_to_label(label, subject: subject) { 'Issues' }
+          = link_to_label(label) { 'Issues' }
       - if show_label_merge_requests_link
         &middot;
         %li.label-link-item.inline
-          = link_to_label(label, subject: subject, type: :merge_request) { _('Merge requests') }
+          = link_to_label(label, type: :merge_request) { _('Merge requests') }
       - if force_priority
         &middot;
         %li.label-link-item.priority-badge.js-priority-badge.inline.prepend-left-10

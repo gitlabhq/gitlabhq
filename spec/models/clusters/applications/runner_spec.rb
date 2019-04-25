@@ -24,7 +24,7 @@ describe Clusters::Applications::Runner do
     it 'is initialized with 4 arguments' do
       expect(subject.name).to eq('runner')
       expect(subject.chart).to eq('runner/gitlab-runner')
-      expect(subject.version).to eq('0.3.0')
+      expect(subject.version).to eq('0.4.0')
       expect(subject).to be_rbac
       expect(subject.repository).to eq('https://charts.gitlab.io')
       expect(subject.files).to eq(gitlab_runner.files)
@@ -42,7 +42,7 @@ describe Clusters::Applications::Runner do
       let(:gitlab_runner) { create(:clusters_applications_runner, :errored, runner: ci_runner, version: '0.1.13') }
 
       it 'is initialized with the locked version' do
-        expect(subject.version).to eq('0.3.0')
+        expect(subject.version).to eq('0.4.0')
       end
     end
   end

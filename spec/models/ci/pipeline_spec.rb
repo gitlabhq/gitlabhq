@@ -690,7 +690,8 @@ describe Ci::Pipeline, :mailer do
                             CI_PIPELINE_SOURCE
                             CI_COMMIT_MESSAGE
                             CI_COMMIT_TITLE
-                            CI_COMMIT_DESCRIPTION]
+                            CI_COMMIT_DESCRIPTION
+                            CI_COMMIT_REF_PROTECTED]
     end
 
     context 'when source is merge request' do

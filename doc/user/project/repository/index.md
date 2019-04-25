@@ -97,7 +97,7 @@ Some things to note about precedence:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
 
-[Jupyter][jupyter] Notebook (previously IPython Notebook) files are used for
+[Jupyter](https://jupyter.org) Notebook (previously IPython Notebook) files are used for
 interactive computing in many fields and contain a complete record of the
 user's sessions and include code, narrative text, equations and rich output.
 
@@ -220,14 +220,10 @@ Select branches to compare using the [branch filter search box](branches/index.m
 
 Find it under your project's **Repository > Compare**.
 
-## Locked files
+## Locked files **[PREMIUM]**
 
-> Available in [GitLab Premium](https://about.gitlab.com/pricing/).
-
-Lock your files to prevent any conflicting changes.
-
-[File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/pricing/).
+Use [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) to
+lock your files to prevent any conflicting changes.
 
 ## Repository's API
 
@@ -243,22 +239,19 @@ used for cloning your project. The button is only shown on macOS.
 
 ## Download Source Code
 
-Source code stored in the repository can be downloaded.
+> Support for directory download was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/24704) in GitLab 11.11.
 
+The source code stored in a repository can be downloaded from the UI.
 By clicking the download icon, a dropdown will open with links to download the following:
 
 ![Download source code](img/download_source_code.png)
 
-- **Source Code:**
-  This allows users to download the source code on branch they're currently
-  viewing. Available zip, tar, tar.gz and tar.bz2.
+- **Source code:**
+  allows users to download the source code on branch they're currently
+  viewing. Available extensions: `zip`, `tar`, `tar.gz`, and `tar.bz2`.
 - **Directory:**
-  > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/24704) in GitLab 11.10
-
-  Only shows up when viewing a sub-directory. This allows users to download
-  the specific directory they're currently viewing. Also available in zip, tar,
-  tar.gz and tar.bz2.
+  only shows up when viewing a sub-directory. This allows users to download
+  the specific directory they're currently viewing. Also available in `zip`,
+  `tar`, `tar.gz`, and `tar.bz2`.
 - **Artifacts:**
-  This allows users to download the artifacts of the latest CI build.
-
-[jupyter]: https://jupyter.org
+  allows users to download the artifacts of the latest CI build.

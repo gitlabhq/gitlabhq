@@ -217,6 +217,25 @@ describe Repository do
 
       expect(result.size).to eq(0)
     end
+
+    context 'with a commit with invalid UTF-8 path' do
+      def create_commit_with_invalid_utf8_path
+        rugged = rugged_repo(repository)
+        blob_id = Rugged::Blob.from_buffer(rugged, "some contents")
+        tree_builder = Rugged::Tree::Builder.new(rugged)
+        tree_builder.insert({ oid: blob_id, name: "hello\x80world", filemode: 0100644 })
+        tree_id = tree_builder.write
+        user = { email: "jcai@gitlab.com", time: Time.now, name: "John Cai" }
+
+        Rugged::Commit.create(rugged, message: 'some commit message', parents: [rugged.head.target.oid], tree: tree_id, committer: user, author: user)
+      end
+
+      it 'does not raise an error' do
+        commit = create_commit_with_invalid_utf8_path
+
+        expect { repository.list_last_commits_for_tree(commit, '.', offset: 0) }.not_to raise_error
+      end
+    end
   end
 
   describe '#last_commit_for_path' do

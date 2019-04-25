@@ -34,14 +34,11 @@ describe "Admin::Users" do
       expect(page).to have_button('Delete user and contributions')
     end
 
-    describe "view extra user information", :js do
-      it 'does not have the user popover open' do
+    describe "view extra user information" do
+      it 'shows the user popover on hover', :js, :quarantine do
         expect(page).not_to have_selector('#__BV_popover_1__')
-      end
 
-      it 'shows the user popover on hover' do
         first_user_link = page.first('.js-user-link')
-
         first_user_link.hover
 
         expect(page).to have_selector('#__BV_popover_1__')

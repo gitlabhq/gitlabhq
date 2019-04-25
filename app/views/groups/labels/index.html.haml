@@ -1,7 +1,6 @@
 - @no_container = true
-- page_title "Labels"
+- page_title 'Labels'
 - can_admin_label = can?(current_user, :admin_label, @group)
-- issuables = ['issues', 'merge requests']
 - search = params[:search]
 - subscribed = params[:subscribed]
 - labels_or_filters = @labels.exists? || search.present? || subscribed.present?
@@ -14,11 +13,11 @@
     .labels-container.prepend-top-5
       - if @labels.any?
         .text-muted
-          = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuables.to_sentence }
+          = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuable_types.to_sentence }
         .other-labels
           %h5= _('Labels')
           %ul.content-list.manage-labels-list.js-other-labels
-            = render partial: 'shared/label', subject: @group, collection: @labels, as: :label, locals: { use_label_priority: false }
+            = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
             = paginate @labels, theme: 'gitlab'
       - elsif search.present?
         .nothing-here-block

@@ -48,7 +48,7 @@ module Gitlab
         end
 
         def authorize_against(parent_typed_object, resolved_type)
-          if built_in_type?
+          if scalar_type?
             # The field is a built-in/scalar type, or a list of scalars
             # authorize using the parent's object
             parent_typed_object.object
@@ -108,8 +108,8 @@ module Gitlab
           type.unwrap
         end
 
-        def built_in_type?
-          GraphQL::Schema::BUILT_IN_TYPES.has_value?(node_type_for_basic_connection(@field.type))
+        def scalar_type?
+          node_type_for_basic_connection(@field.type).kind.scalar?
         end
       end
     end

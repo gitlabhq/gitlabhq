@@ -164,9 +164,6 @@ module Gitlab
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    # Can be removed once upgraded to Rails 5.1 or higher
-    config.action_controller.raise_on_unfiltered_parameters = true
-
     # Nokogiri is significantly faster and uses less memory than REXML
     ActiveSupport::XmlMini.backend = 'Nokogiri'
 

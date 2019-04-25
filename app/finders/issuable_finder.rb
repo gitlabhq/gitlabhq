@@ -53,6 +53,7 @@ class IssuableFinder
       assignee_username
       author_id
       author_username
+      label_name
       milestone_title
       my_reaction_emoji
       search

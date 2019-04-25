@@ -26,12 +26,10 @@
   extends: .dedicated-runner
   <<: *review-only
   image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  stage: test
   cache: {}
   dependencies: []
-  environment: &review-environment
-    name: review/${CI_COMMIT_REF_NAME}
-    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
+  before_script:
+    - source scripts/utils.sh
 
 .review-docker: &review-docker
   <<: *review-base
@@ -42,18 +40,13 @@
     - gitlab-org
     - docker
   variables: &review-docker-variables
-    GIT_DEPTH: "1"
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
     LATEST_QA_IMAGE: "gitlab/${CI_PROJECT_NAME}-qa:nightly"
     QA_IMAGE: "${CI_REGISTRY}/${CI_PROJECT_PATH}/gitlab/${CI_PROJECT_NAME}-qa:${CI_COMMIT_REF_SLUG}"
-  before_script: []
 
 build-qa-image:
   <<: *review-docker
-  variables:
-    <<: *review-docker-variables
-    GIT_DEPTH: "20"
   stage: prepare
   script:
     - time docker build --cache-from ${LATEST_QA_IMAGE} --tag ${QA_IMAGE} ./qa/
@@ -63,16 +56,14 @@ build-qa-image:
 .review-build-cng-base: &review-build-cng-base
   image: ruby:2.5-alpine
   stage: test
-  before_script: []
+  when: manual
+  before_script:
+    - source scripts/utils.sh
+    - install_api_client_dependencies_with_apk
+    - install_gitlab_gem
   dependencies: []
   cache: {}
-  variables:
-    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
   script:
-    - apk add --update openssl curl jq
-    - gem install gitlab --no-document
-    - source ./scripts/review_apps/review-apps.sh
-    - wait_for_job_to_be_done "gitlab:assets:compile"
     - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
 
 review-build-cng:
@@ -85,26 +76,32 @@ schedule:review-build-cng:
 
 .review-deploy-base: &review-deploy-base
   <<: *review-base
+  stage: review
   retry: 2
   allow_failure: true
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
     GITLAB_HELM_CHART_REF: "master"
-    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
-  environment:
-    <<: *review-environment
+  environment: &review-environment
+    name: review/${CI_COMMIT_REF_NAME}
+    url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
     - export GITLAB_WORKHORSE_VERSION=$(<GITLAB_WORKHORSE_VERSION)
-    - apk update && apk add jq
-    - gem install gitlab --no-document
-    - source ./scripts/review_apps/review-apps.sh
+    - echo "${CI_ENVIRONMENT_URL}" > review_app_url.txt
+    - source scripts/utils.sh
+    - install_api_client_dependencies_with_apk
+    - source scripts/review_apps/review-apps.sh
   script:
-    - wait_for_job_to_be_done "review-build-cng"
     - perform_review_app_deployment
+  artifacts:
+    paths:
+      - review_app_url.txt
+    expire_in: 2 days
+    when: always
 
 review-deploy:
   <<: *review-deploy-base
@@ -113,15 +110,29 @@ schedule:review-deploy:
   <<: *review-deploy-base
   <<: *review-schedules-only
   script:
-    - wait_for_job_to_be_done "schedule:review-build-cng"
     - perform_review_app_deployment
+
+review-stop:
+  <<: *review-base
+  stage: review
+  when: manual
+  allow_failure: true
+  variables:
+    GIT_DEPTH: "1"
+  environment:
+    <<: *review-environment
+    action: stop
+  script:
+    - source scripts/review_apps/review-apps.sh
+    - delete
+    - cleanup
 
 .review-qa-base: &review-qa-base
   <<: *review-docker
+  stage: qa
   allow_failure: true
   variables:
     <<: *review-docker-variables
-    API_TOKEN: "${GITLAB_BOT_MULTI_PROJECT_PIPELINE_POLLING_TOKEN}"
     QA_ARTIFACTS_DIR: "${CI_PROJECT_DIR}/qa"
     QA_CAN_TEST_GIT_PROTOCOL_V2: "false"
     GITLAB_USERNAME: "root"
@@ -131,40 +142,45 @@ schedule:review-deploy:
     GITHUB_ACCESS_TOKEN: "${REVIEW_APPS_QA_GITHUB_ACCESS_TOKEN}"
     EE_LICENSE: "${REVIEW_APPS_EE_LICENSE}"
     QA_DEBUG: "true"
+  dependencies:
+    - review-deploy
   artifacts:
     paths:
       - ./qa/gitlab-qa-run-*
     expire_in: 7 days
     when: always
   before_script:
-    - echo "${QA_IMAGE}"
+    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
     - echo "${CI_ENVIRONMENT_URL}"
-    - apk update && apk add curl jq
-    - source ./scripts/review_apps/review-apps.sh
+    - echo "${QA_IMAGE}"
+    - source scripts/utils.sh
+    - install_api_client_dependencies_with_apk
     - gem install gitlab-qa --no-document ${GITLAB_QA_VERSION:+ --version ${GITLAB_QA_VERSION}}
 
 review-qa-smoke:
   <<: *review-qa-base
   retry: 2
   script:
-    - wait_for_job_to_be_done "review-deploy"
     - gitlab-qa Test::Instance::Smoke "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 review-qa-all:
   <<: *review-qa-base
-  script:
-    - wait_for_job_to_be_done "review-deploy"
-    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
   when: manual
+  script:
+    - gitlab-qa Test::Instance::Any "${QA_IMAGE}" "${CI_ENVIRONMENT_URL}"
 
 .review-performance-base: &review-performance-base
   <<: *review-qa-base
-  script:
-    - wait_for_job_to_be_done "review-deploy"
+  stage: qa
+  before_script:
+    - export CI_ENVIRONMENT_URL="$(cat review_app_url.txt)"
+    - echo "${CI_ENVIRONMENT_URL}"
     - mkdir -p gitlab-exporter
     - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "$CI_ENVIRONMENT_URL"
+    - mkdir -p sitespeed-results
+  script:
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results "${CI_ENVIRONMENT_URL}"
+  after_script:
     - mv sitespeed-results/data/performance.json performance.json
   artifacts:
     paths:
@@ -175,41 +191,26 @@ review-qa-all:
 review-performance:
   <<: *review-performance-base
 
-review-stop:
-  <<: *review-base
-  extends: .single-script-job-dedicated-runner
-  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
-  allow_failure: true
-  variables:
-    SCRIPT_NAME: "review_apps/review-apps.sh"
-  when: manual
-  environment:
-    <<: *review-environment
-    action: stop
-  script:
-    - source $(basename "${SCRIPT_NAME}")
-    - delete
-    - cleanup
+schedule:review-performance:
+  <<: *review-performance-base
+  <<: *review-schedules-only
+  dependencies:
+    - schedule:review-deploy
 
 schedule:review-cleanup:
   <<: *review-base
   <<: *review-schedules-only
-  stage: build
+  stage: review
   allow_failure: true
   variables:
     GIT_DEPTH: "1"
   environment:
     name: review/auto-cleanup
   before_script:
-    - gem install gitlab --no-document
+    - source scripts/utils.sh
+    - install_gitlab_gem
   script:
     - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
-
-schedule:review-performance:
-  <<: *review-performance-base
-  <<: *review-schedules-only
-  script:
-    - wait_for_job_to_be_done "schedule:review-deploy"
 
 danger-review:
   extends: .dedicated-pull-cache-job

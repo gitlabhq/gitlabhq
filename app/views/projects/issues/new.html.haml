@@ -1,9 +1,8 @@
-- add_to_breadcrumbs "Issues", project_issues_path(@project)
-- breadcrumb_title "New"
-- page_title "New Issue"
+- add_to_breadcrumbs _("Issues"), project_issues_path(@project)
+- breadcrumb_title _("New")
+- page_title _("New Issue")
 
-%h3.page-title
-  New Issue
+%h3.page-title= _("New Issue")
 %hr
 
 = render "form"

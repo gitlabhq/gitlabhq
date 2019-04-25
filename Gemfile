@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '5.0.7.2'
+gem 'rails', '5.1.7'
 
 # Improves copy-on-write performance for MRI
 gem 'nakayoshi_fork', '~> 0.0.4'
@@ -18,7 +18,7 @@ gem 'mysql2', '~> 0.4.10', group: :mysql
 gem 'pg', '~> 1.1', group: :postgres
 
 gem 'rugged', '~> 0.28'
-gem 'grape-path-helpers', '~> 1.0'
+gem 'grape-path-helpers', '~> 1.1'
 
 gem 'faraday', '~> 0.12'
 
@@ -129,7 +129,7 @@ gem 'asciidoctor-plantuml', '0.0.8'
 gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.11'
 gem 'bootstrap_form', '~> 4.2.0'
-gem 'nokogiri', '~> 1.10.1'
+gem 'nokogiri', '~> 1.10.3'
 gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
@@ -158,7 +158,7 @@ gem 'state_machines-activerecord', '~> 0.5.1'
 gem 'acts-as-taggable-on', '~> 6.0'
 
 # Background jobs
-gem 'sidekiq', '~> 5.2.1'
+gem 'sidekiq', '~> 5.2.7'
 gem 'sidekiq-cron', '~> 1.0'
 gem 'redis-namespace', '~> 1.6.0'
 gem 'gitlab-sidekiq-fetcher', '~> 0.4.0', require: 'sidekiq-reliable-fetch'
@@ -416,11 +416,11 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 1.19.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 1.22.0', require: 'gitaly'
 
-gem 'grpc', '~> 1.15.0'
+gem 'grpc', '~> 1.19.0'
 
-gem 'google-protobuf', '~> 3.6'
+gem 'google-protobuf', '~> 3.7.1'
 
 gem 'toml-rb', '~> 1.0.0', require: false
 

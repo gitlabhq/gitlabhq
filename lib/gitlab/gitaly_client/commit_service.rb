@@ -174,7 +174,7 @@ module Gitlab
 
         response.each_with_object({}) do |gitaly_response, hsh|
           gitaly_response.commits.each do |commit_for_tree|
-            hsh[commit_for_tree.path] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
+            hsh[commit_for_tree.path_bytes] = Gitlab::Git::Commit.new(@repository, commit_for_tree.commit)
           end
         end
       end

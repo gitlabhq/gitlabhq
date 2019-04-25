@@ -248,7 +248,7 @@ class RemoteMirror < ApplicationRecord
 
     # Before adding a new remote we have to delete the data from
     # the previous remote name
-    prev_remote_name = remote_name_was || fallback_remote_name
+    prev_remote_name = remote_name_before_last_save || fallback_remote_name
     run_after_commit do
       project.repository.async_remove_remote(prev_remote_name)
     end

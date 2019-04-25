@@ -1,7 +1,7 @@
 /* eslint no-param-reassign: "off" */
 
 import $ from 'jquery';
-import GfmAutoComplete from '~/gfm_auto_complete';
+import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 
 import 'jquery.caret';
 import 'at.js';
@@ -206,6 +206,38 @@ describe('GfmAutoComplete', () => {
           });
         });
       });
+    });
+  });
+
+  describe('DefaultOptions.highlighter', () => {
+    beforeEach(() => {
+      atwhoInstance = { setting: {} };
+    });
+
+    it('should return li if no query is given', () => {
+      const liTag = '<li></li>';
+
+      const highlightedTag = gfmAutoCompleteCallbacks.highlighter.call(atwhoInstance, liTag);
+
+      expect(highlightedTag).toEqual(liTag);
+    });
+
+    it('should highlight search query in li element', () => {
+      const liTag = '<li><img src="" />string</li>';
+      const query = 's';
+
+      const highlightedTag = gfmAutoCompleteCallbacks.highlighter.call(atwhoInstance, liTag, query);
+
+      expect(highlightedTag).toEqual('<li><img src="" /> <strong>s</strong>tring </li>');
+    });
+
+    it('should highlight search query with special char in li element', () => {
+      const liTag = '<li><img src="" />te.st</li>';
+      const query = '.';
+
+      const highlightedTag = gfmAutoCompleteCallbacks.highlighter.call(atwhoInstance, liTag, query);
+
+      expect(highlightedTag).toEqual('<li><img src="" /> te<strong>.</strong>st </li>');
     });
   });
 

@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import axios from './lib/utils/axios_utils';
+import { joinPaths } from './lib/utils/url_utility';
 
 const Api = {
   groupsPath: '/api/:version/groups.json',
@@ -339,11 +340,7 @@ const Api = {
   },
 
   buildUrl(url) {
-    let urlRoot = '';
-    if (gon.relative_url_root != null) {
-      urlRoot = gon.relative_url_root;
-    }
-    return urlRoot + url.replace(':version', gon.api_version);
+    return joinPaths(gon.relative_url_root || '', url.replace(':version', gon.api_version));
   },
 };
 

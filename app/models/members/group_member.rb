@@ -55,7 +55,7 @@ class GroupMember < Member
   end
 
   def post_update_hook
-    if access_level_changed?
+    if saved_change_to_access_level?
       run_after_commit { notification_service.update_group_member(self) }
     end
 

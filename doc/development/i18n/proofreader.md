@@ -13,14 +13,17 @@ are very appreciative of the work done by translators and proofreaders!
   - Lyubomir Vasilev - [Crowdin](https://crowdin.com/profile/lyubomirv)
 - Catalan
   - David Planella - [GitLab](https://gitlab.com/dplanella), [Crowdin](https://crowdin.com/profile/dplanella)
-- Chinese Simplified
+- Chinese Simplified 简体中文
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
-- Chinese Traditional
-  - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+  - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
+  - Xiaogang Wen - [GitLab](https://gitlab.com/xiaogang_gitlab), [Crowdin](https://crowdin.com/profile/xiaogang_gitlab)
+- Chinese Traditional 繁體中文
   - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
   - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)
-- Chinese Traditional, Hong Kong
-  - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+  - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
+- Chinese Traditional, Hong Kong 繁體中文 (香港)
+  - Victor Wu - [GitLab](https://gitlab.com/victorwuky), [Crowdin](https://crowdin.com/profile/victorwu)
+  - Ivan Ip - [GitLab](https://gitlab.com/lifehome), [Crowdin](https://crowdin.com/profile/lifehome)
 - Czech
   - Proofreaders needed.
 - Danish
@@ -56,7 +59,6 @@ are very appreciative of the work done by translators and proofreaders!
   - Hiroyuki Sato - [GitLab](https://gitlab.com/hiroponz), [Crowdin](https://crowdin.com/profile/hiroponz)
 - Korean
   - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
-  - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
   - Ji Hun Oh - [GitLab](https://gitlab.com/Baw-Appie), [Crowdin](https://crowdin.com/profile/BawAppie)
   - Jeongwhan Choi - [GitLab](https://gitlab.com/jeongwhanchoi), [Crowdin](https://crowdin.com/profile/jeongwhanchoi)
 - Mongolian

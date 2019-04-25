@@ -454,8 +454,13 @@ Please check your network connection and try again.`;
                   </component>
                 </template>
               </ul>
+              <draft-note
+                v-if="showDraft(discussion.reply_id)"
+                :key="`draft_${discussion.id}`"
+                :draft="draftForDiscussion(discussion.reply_id)"
+              />
               <div
-                v-if="isExpanded || !hasReplies"
+                v-else-if="isExpanded || !hasReplies"
                 :class="{ 'is-replying': isReplying }"
                 class="discussion-reply-holder"
               >

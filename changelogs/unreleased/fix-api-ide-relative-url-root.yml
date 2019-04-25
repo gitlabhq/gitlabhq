@@ -1,0 +1,5 @@
+---
+title: Fix FE API and IDE handling of '/' relative_url_root
+merge_request: 27635
+author:
+type: fixed

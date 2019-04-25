@@ -39,12 +39,12 @@ module UpdateProjectStatistics
     end
 
     def update_project_statistics_attribute_changed?
-      attribute_changed?(self.class.statistic_attribute)
+      saved_change_to_attribute?(self.class.statistic_attribute)
     end
 
     def update_project_statistics_after_save
       attr = self.class.statistic_attribute
-      delta = read_attribute(attr).to_i - attribute_was(attr).to_i
+      delta = read_attribute(attr).to_i - attribute_before_last_save(attr).to_i
 
       update_project_statistics(delta)
     end

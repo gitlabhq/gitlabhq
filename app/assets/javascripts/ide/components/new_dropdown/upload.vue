@@ -57,6 +57,8 @@ export default {
         type: 'blob',
         content: result,
         base64: !isText,
+        binary: !isText,
+        rawPath: !isText ? target.result : '',
       });
     },
     readFile(file) {
