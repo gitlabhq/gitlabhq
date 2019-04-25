@@ -485,7 +485,7 @@ describe Projects::EnvironmentsController do
 
       context 'when the dashboard could not be provided' do
         before do
-          allow(YAML).to receive(:load_file).and_return({})
+          allow(YAML).to receive(:safe_load).and_return({})
         end
 
         it 'returns an error response' do

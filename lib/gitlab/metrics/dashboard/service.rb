@@ -23,7 +23,7 @@ module Gitlab
 
         # Returns the base metrics shipped with every GitLab service.
         def system_dashboard
-          YAML.load_file(SYSTEM_DASHBOARD_PATH)
+          YAML.safe_load(File.read(SYSTEM_DASHBOARD_PATH))
         end
 
         def cache_key
@@ -32,7 +32,7 @@ module Gitlab
 
         # Returns a new dashboard Hash, supplemented with DB info
         def process_dashboard(dashboard)
-          Processor.new(project, params[:environment]).process(dashboard)
+          Gitlab::Metrics::Dashboard::Processor.new(project, params[:environment]).process(dashboard)
         end
       end
     end

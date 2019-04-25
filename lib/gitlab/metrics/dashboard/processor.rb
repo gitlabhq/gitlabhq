@@ -21,13 +21,12 @@ module Gitlab
 
         # Returns a new dashboard hash with the results of
         # running transforms on the dashboard.
-        def process(dashboard)
-          dashboard = dashboard.deep_symbolize_keys
-
-          stage_params = [@project, @environment]
-          sequence.each { |stage| stage.new(*stage_params).transform!(dashboard) }
-
-          dashboard
+        def process(raw_dashboard)
+          raw_dashboard.deep_symbolize_keys.tap do |dashboard|
+            sequence.each do |stage|
+              stage.new(@project, @environment).transform!(dashboard)
+            end
+          end
         end
 
         private

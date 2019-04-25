@@ -19,7 +19,7 @@ describe Gitlab::Metrics::Dashboard::Service, :use_clean_rails_memory_store_cach
     end
 
     it 'caches the dashboard for subsequent calls' do
-      expect(YAML).to receive(:load_file).once.and_call_original
+      expect(YAML).to receive(:safe_load).once.and_call_original
 
       described_class.new(project, environment).get_dashboard
       described_class.new(project, environment).get_dashboard
@@ -27,7 +27,7 @@ describe Gitlab::Metrics::Dashboard::Service, :use_clean_rails_memory_store_cach
 
     context 'when the dashboard is configured incorrectly' do
       before do
-        allow(YAML).to receive(:load_file).and_return({})
+        allow(YAML).to receive(:safe_load).and_return({})
       end
 
       it 'returns an appropriate message and status code' do
