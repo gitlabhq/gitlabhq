@@ -1890,6 +1890,9 @@ msgstr ""
 msgid "Close milestone"
 msgstr ""
 
+msgid "Close sidebar"
+msgstr ""
+
 msgid "Closed"
 msgstr ""
 
