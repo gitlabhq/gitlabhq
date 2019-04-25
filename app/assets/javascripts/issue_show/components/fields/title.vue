@@ -20,6 +20,7 @@ export default {
       ref="input"
       v-model="formState.title"
       class="form-control qa-title-input"
+      dir="auto"
       type="text"
       placeholder="Title"
       aria-label="Title"
