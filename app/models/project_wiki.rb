@@ -82,17 +82,25 @@ class ProjectWiki
   end
 
   def empty?
-    pages(limit: 1).empty?
+    list_pages(limit: 1).empty?
   end
 
+  # Lists wiki pages of the repository.
+  #
+  # limit - max number of pages returned by the method.
+  # sort - criterion by which the pages are sorted.
+  # direction - order of the sorted pages.
+  # load_content - option, which specifies whether the content inside the page
+  #                will be loaded.
+  #
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def pages(limit: 0, sort: nil, direction: DIRECTION_ASC)
-    sort ||= TITLE_ORDER
-    direction_desc = direction == DIRECTION_DESC
-
-    wiki.pages(
-      limit: limit, sort: sort, direction_desc: direction_desc
+  def list_pages(limit: 0, sort: nil, direction: DIRECTION_ASC, load_content: false)
+    wiki.list_pages(
+      limit: limit,
+      sort: sort,
+      direction_desc: direction == DIRECTION_DESC,
+      load_content: load_content
     ).map do |page|
       WikiPage.new(self, page, true)
     end
