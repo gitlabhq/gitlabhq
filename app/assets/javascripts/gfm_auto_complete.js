@@ -477,6 +477,16 @@ class GfmAutoComplete {
         }
         return null;
       },
+      highlighter(li, query) {
+        // override default behaviour to escape dot character
+        // see https://github.com/ichord/At.js/pull/576
+        if (!query) {
+          return li;
+        }
+        const escapedQuery = query.replace(/[.+]/, '\\$&');
+        const regexp = new RegExp(`>\\s*([^<]*?)(${escapedQuery})([^<]*)\\s*<`, 'ig');
+        return li.replace(regexp, (str, $1, $2, $3) => `> ${$1}<strong>${$2}</strong>${$3} <`);
+      },
     };
   }
 
