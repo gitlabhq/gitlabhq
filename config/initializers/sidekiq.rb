@@ -45,9 +45,8 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.clear_all_connections!
   end
 
-  if Feature::FlipperFeature.table_exists? && Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
-    # By default we're going to use Semi Reliable Fetch
-    config.options[:semi_reliable_fetch] = Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+  if enable_reliable_fetch?
+    config.options[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
 
@@ -89,4 +88,16 @@ Sidekiq.configure_client do |config|
     chain.add Gitlab::SidekiqMiddleware::CorrelationInjector
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
   end
+end
+
+def enable_reliable_fetch?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, default_enabled: true)
+end
+
+def enable_semi_reliable_fetch_mode?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
 end
