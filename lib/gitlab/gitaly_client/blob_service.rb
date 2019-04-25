@@ -55,13 +55,13 @@ module Gitlab
       def get_blobs(revision_paths, limit = -1)
         return [] if revision_paths.empty?
 
-        revision_paths.map! do |rev, path|
+        request_revision_paths = revision_paths.map do |rev, path|
           Gitaly::GetBlobsRequest::RevisionPath.new(revision: rev, path: encode_binary(path))
         end
 
         request = Gitaly::GetBlobsRequest.new(
           repository: @gitaly_repo,
-          revision_paths: revision_paths,
+          revision_paths: request_revision_paths,
           limit: limit
         )
 
