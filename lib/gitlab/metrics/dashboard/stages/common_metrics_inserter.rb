@@ -8,7 +8,7 @@ module Gitlab
           # For each metric in the dashboard config, attempts to
           # find a corresponding database record. If found,
           # includes the record's id in the dashboard config.
-          def transform!(dashboard)
+          def transform!
             common_metrics = ::PrometheusMetric.common
 
             for_metrics(dashboard) do |metric|

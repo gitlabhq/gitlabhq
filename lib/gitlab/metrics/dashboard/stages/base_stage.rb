@@ -9,18 +9,16 @@ module Gitlab
 
           DEFAULT_PANEL_TYPE = 'area-chart'
 
-          attr_reader :project, :environment
+          attr_reader :project, :environment, :dashboard
 
-          def initialize(project, environment)
+          def initialize(project, environment, dashboard)
             @project = project
             @environment = environment
+            @dashboard = dashboard
           end
 
           # Entry-point to the stage
-          # @param dashboard [Hash]
-          # @param project [Project]
-          # @param environment [Environment]
-          def transform!(_dashboard)
+          def transform!
             raise NotImplementedError
           end
 

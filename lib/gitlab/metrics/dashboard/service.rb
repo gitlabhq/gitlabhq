@@ -32,7 +32,7 @@ module Gitlab
 
         # Returns a new dashboard Hash, supplemented with DB info
         def process_dashboard(dashboard)
-          Gitlab::Metrics::Dashboard::Processor.new(project, params[:environment]).process(dashboard)
+          Gitlab::Metrics::Dashboard::Processor.new(project, params[:environment], dashboard).process
         end
       end
     end

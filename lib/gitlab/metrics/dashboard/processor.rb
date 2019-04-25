@@ -14,17 +14,18 @@ module Gitlab
           Stages::Sorter
         ].freeze
 
-        def initialize(project, environment)
+        def initialize(project, environment, dashboard)
           @project = project
           @environment = environment
+          @dashboard = dashboard
         end
 
         # Returns a new dashboard hash with the results of
         # running transforms on the dashboard.
-        def process(raw_dashboard)
-          raw_dashboard.deep_symbolize_keys.tap do |dashboard|
+        def process
+          @dashboard.deep_symbolize_keys.tap do |dashboard|
             sequence.each do |stage|
-              stage.new(@project, @environment).transform!(dashboard)
+              stage.new(@project, @environment, dashboard).transform!
             end
           end
         end
