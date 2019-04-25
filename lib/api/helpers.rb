@@ -67,10 +67,6 @@ module API
       initial_current_user != current_user
     end
 
-    def user_namespace
-      @user_namespace ||= find_namespace!(params[:id])
-    end
-
     def user_group
       @group ||= find_group!(params[:id])
     end

@@ -137,18 +137,6 @@ describe API::Helpers do
     it_behaves_like 'user namespace finder'
   end
 
-  describe '#user_namespace' do
-    let(:namespace_finder) do
-      subject.user_namespace
-    end
-
-    before do
-      allow(subject).to receive(:params).and_return({ id: namespace.id })
-    end
-
-    it_behaves_like 'user namespace finder'
-  end
-
   describe '#send_git_blob' do
     let(:repository) { double }
     let(:blob) { double(name: 'foobar') }
