@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.8.9 (2019-04-25)
+
+### Security (5 changes)
+
+- Improve credentials sanitization on repository mirror integration. !3078
+- Stop sending emails to users who can't read commit.
+- Escape path in new merge request mail.
+- Only allow modification of content when note is edited.
+- Upgrade Rails to 5.0.7.2.
+
+
 ## 11.8.8 (2019-04-23)
 
 ### Fixed (5 changes)
