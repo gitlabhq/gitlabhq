@@ -53,6 +53,7 @@ RSpec.configure do |config|
   config.display_try_failure_messages = true
 
   config.infer_spec_type_from_file_location!
+  config.full_backtrace = true
 
   config.define_derived_metadata(file_path: %r{/spec/}) do |metadata|
     location = metadata[:location]
