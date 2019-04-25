@@ -8,8 +8,8 @@ import { trimText } from 'spec/helpers/vue_component_helper';
 describe('ProjectSelector component', () => {
   let wrapper;
   let vm;
-  loadJSONFixtures('projects.json');
-  const allProjects = getJSONFixture('projects.json');
+  loadJSONFixtures('static/projects.json');
+  const allProjects = getJSONFixture('static/projects.json');
   const searchResults = allProjects.slice(0, 5);
   let selected = [];
   selected = selected.concat(allProjects.slice(0, 3)).concat(allProjects.slice(5, 8));
