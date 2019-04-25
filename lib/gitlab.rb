@@ -59,7 +59,11 @@ module Gitlab
   end
 
   def self.ee?
-    Object.const_defined?(:License)
+    if ENV['IS_GITLAB_EE'].present?
+      Gitlab::Utils.to_boolean(ENV['IS_GITLAB_EE'])
+    else
+      Object.const_defined?(:License)
+    end
   end
 
   def self.process_name
