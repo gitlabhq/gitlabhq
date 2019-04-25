@@ -200,12 +200,11 @@ schedule:review-performance:
 schedule:review-cleanup:
   <<: *review-base
   <<: *review-schedules-only
-  stage: review
+  stage: build
   allow_failure: true
-  variables:
-    GIT_DEPTH: "1"
   environment:
     name: review/auto-cleanup
+    action: stop
   before_script:
     - source scripts/utils.sh
     - install_gitlab_gem
