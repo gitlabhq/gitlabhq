@@ -29,10 +29,9 @@ module Gitlab
         return true if 'cached_markdown_version'.equal?(key)
 
         prohibited_suffixes = %w(_id _html)
-        prohibited_suffixes.each do |suffix|
-          return true if key.end_with?(suffix)
+        prohibited_suffixes.any? do |suffix|
+          true if key.end_with?(suffix)
         end
-        false
       end
 
       def allowed_reference?(key)
