@@ -1,5 +1,7 @@
 import renderPDF from '~/blob/pdf';
-import testPDF from '../../fixtures/blob/pdf/test.pdf';
+import { FIXTURES_PATH } from 'spec/test_constants';
+
+const testPDF = `${FIXTURES_PATH}/blob/pdf/test.pdf`;
 
 describe('PDF renderer', () => {
   let viewer;
