@@ -1,5 +1,6 @@
 import Visibility from 'visibilityjs';
 import Vue from 'vue';
+import { GlToast } from '@gitlab/ui';
 import PersistentUserCallout from '../persistent_user_callout';
 import { s__, sprintf } from '../locale';
 import Flash from '../flash';
@@ -19,6 +20,8 @@ import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
 import setupToggleButtons from '../toggle_buttons';
+
+Vue.use(GlToast);
 
 /**
  * Cluster page has 2 separate parts:
@@ -135,7 +138,6 @@ export default class Clusters {
     eventHub.$on('installApplication', this.installApplication);
     eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
     eventHub.$on('upgradeFailed', appId => this.upgradeFailed(appId));
-    eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
     eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
   }
@@ -145,7 +147,6 @@ export default class Clusters {
     eventHub.$off('installApplication', this.installApplication);
     eventHub.$off('upgradeApplication', this.upgradeApplication);
     eventHub.$off('upgradeFailed', this.upgradeFailed);
-    eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
     eventHub.$off('saveKnativeDomain');
     eventHub.$off('setKnativeHostname');
   }
@@ -281,10 +282,6 @@ export default class Clusters {
 
   upgradeFailed(appId) {
     this.store.updateAppProperty(appId, 'requestStatus', UPGRADE_REQUEST_FAILURE);
-  }
-
-  dismissUpgradeSuccess(appId) {
-    this.store.updateAppProperty(appId, 'requestStatus', null);
   }
 
   toggleIngressDomainHelpText(ingressPreviousState, ingressNewState) {

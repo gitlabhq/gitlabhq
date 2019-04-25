@@ -241,6 +241,8 @@ export default {
     status() {
       if (this.status === APPLICATION_STATUS.UPDATE_ERRORED) {
         eventHub.$emit('upgradeFailed', this.id);
+      } else if (this.upgradeRequested && this.upgradeSuccessful) {
+        this.$toast.show(this.upgradeSuccessDescription);
       }
     },
   },
@@ -256,9 +258,6 @@ export default {
         id: this.id,
         params: this.installApplicationRequestParams,
       });
-    },
-    dismissUpgradeSuccess() {
-      eventHub.$emit('dismissUpgradeSuccess', this.id);
     },
   },
 };
@@ -335,17 +334,6 @@ export default {
         >
           {{ upgradeFailureDescription }}
         </div>
-
-        <div
-          v-if="upgradeRequested && upgradeSuccessful"
-          class="bs-callout bs-callout-success cluster-application-banner mt-2 mb-0 p-0 pl-3"
-        >
-          {{ upgradeSuccessDescription }}
-          <button class="close cluster-application-banner-close" @click="dismissUpgradeSuccess">
-            &times;
-          </button>
-        </div>
-
         <loading-button
           v-if="upgradeAvailable || upgradeFailed || isUpgrading"
           class="btn btn-primary js-cluster-application-upgrade-button mt-2"
