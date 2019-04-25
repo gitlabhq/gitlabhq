@@ -6,7 +6,7 @@
     .issuable-info-container
       .issuable-main-info
         .issue-title.title
-          %span.issue-title-text
+          %span.issue-title-text{ dir: "auto" }
             - if issue.confidential?
               %span.has-tooltip{ title: _('Confidential') }
                 = confidential_icon(issue)

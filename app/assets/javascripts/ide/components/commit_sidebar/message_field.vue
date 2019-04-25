@@ -108,6 +108,7 @@ export default {
           :placeholder="placeholder"
           :value="text"
           class="note-textarea ide-commit-message-textarea"
+          dir="auto"
           name="commit-message"
           @scroll="handleScroll"
           @input="onInput"

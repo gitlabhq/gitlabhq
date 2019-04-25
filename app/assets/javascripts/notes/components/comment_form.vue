@@ -351,6 +351,7 @@ Please check your network connection and try again.`;
                 ref="textarea"
                 slot="textarea"
                 v-model="note"
+                dir="auto"
                 :disabled="isSubmitting"
                 name="note[note]"
                 class="note-textarea js-vue-comment-form js-note-text

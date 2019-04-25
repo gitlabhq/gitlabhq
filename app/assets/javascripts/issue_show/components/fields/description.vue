@@ -53,6 +53,7 @@ export default {
         v-model="formState.description"
         class="note-textarea js-gfm-input js-autosize markdown-area
         qa-description-textarea"
+        dir="auto"
         data-supports-quick-actions="false"
         aria-label="Description"
         placeholder="Write a comment or drag your files here…"
