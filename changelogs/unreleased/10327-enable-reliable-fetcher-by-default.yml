@@ -1,0 +1,5 @@
+---
+title: Enable Sidekiq Reliable Fetcher for background jobs by default
+merge_request: 27530
+author:
+type: added
