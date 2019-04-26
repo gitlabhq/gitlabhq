@@ -40,7 +40,7 @@ describe Clusters::Applications::Prometheus do
     end
 
     it 'ensures Prometheus service is activated' do
-      expect(prometheus_service).to receive(:update).with(active: true)
+      expect(prometheus_service).to receive(:update!).with(active: true)
 
       subject.make_installed
     end
