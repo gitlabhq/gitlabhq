@@ -27,7 +27,7 @@ shared_examples 'shrug quick action' do |issuable_type|
 
       expect(issuable.description).to eq "bug description\noops ¯\\＿(ツ)＿/¯"
       expect(page).to have_content 'bug 345'
-      expect(page).to have_content "bug description\noops ¯\\＿(ツ)＿/¯"
+      expect(page).to have_content "bug description oops ¯\\＿(ツ)＿/¯"
     end
   end
 

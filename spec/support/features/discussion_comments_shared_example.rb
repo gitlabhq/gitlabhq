@@ -84,7 +84,7 @@ shared_examples 'discussion comments' do |resource_name|
       #
       # if dropdown menu is not toggled (and also not present),
       # it's "issue-type" dropdown
-      if first(menu_selector).nil?
+      if first(menu_selector, minimum: 0).nil?
         expect(find(dropdown_selector)).to have_content 'Comment'
 
         find(toggle_selector).click

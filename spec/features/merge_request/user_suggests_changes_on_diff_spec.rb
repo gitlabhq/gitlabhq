@@ -7,8 +7,8 @@ describe 'User comments on a diff', :js do
   include RepoHelpers
 
   def expect_suggestion_has_content(element, expected_changing_content, expected_suggested_content)
-    changing_content = element.all(:css, '.line_holder.old').map(&:text)
-    suggested_content = element.all(:css, '.line_holder.new').map(&:text)
+    changing_content = element.all(:css, '.line_holder.old').map { |el| el.text(normalize_ws: true) }
+    suggested_content = element.all(:css, '.line_holder.new').map { |el| el.text(normalize_ws: true) }
 
     expect(changing_content).to eq(expected_changing_content)
     expect(suggested_content).to eq(expected_suggested_content)

@@ -29,6 +29,6 @@ describe 'Multi-file editor upload file', :js do
     attach_file('file-upload', txt_file)
 
     expect(page).to have_selector('.multi-file-tab', text: 'doc_sample.txt')
-    expect(find('.blob-editor-container .lines-content')['innerText']).to have_content(File.open(txt_file, &:readline))
+    expect(find('.blob-editor-container .lines-content')['innerText']).to have_content(File.open(txt_file, &:readline).gsub!(/\s+/, ' '))
   end
 end

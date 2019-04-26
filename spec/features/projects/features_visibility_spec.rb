@@ -68,7 +68,8 @@ describe 'Edit Project Settings' do
       end
 
       it "hides builds when disabled" do
-        allow(Ability).to receive(:allowed?).with(member, :read_builds, project).and_return(false)
+        allow(Ability).to receive(:allowed?).and_return(true)
+        allow(Ability).to receive(:allowed?).with(member, :read_build, project).and_return(false)
 
         visit project_pipelines_path(project)
 

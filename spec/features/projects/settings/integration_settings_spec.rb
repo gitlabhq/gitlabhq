@@ -41,7 +41,7 @@ describe 'Projects > Settings > Integration settings' do
         expect(page).to have_content('Issues events')
         expect(page).to have_content('Confidential issues events')
         expect(page).to have_content('Note events')
-        expect(page).to have_content('Merge requests  events')
+        expect(page).to have_content('Merge requests events')
         expect(page).to have_content('Pipeline events')
         expect(page).to have_content('Wiki page events')
       end

@@ -41,7 +41,7 @@ describe "User removes labels" do
 
     it "removes all labels" do
       loop do
-        li = page.first(".label-list-item")
+        li = page.first(".label-list-item", minimum: 0)
         break unless li
 
         li.find('.js-label-options-dropdown').click

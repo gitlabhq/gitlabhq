@@ -15,8 +15,7 @@ describe 'User accepts a merge request', :js do
 
     click_button('Merge')
 
-    expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with \
-                                 #{merge_request.short_merge_commit_sha}")
+    expect(page).to have_content("The changes were merged into #{merge_request.target_branch} with #{merge_request.short_merge_commit_sha}")
   end
 
   context 'with removing the source branch' do
