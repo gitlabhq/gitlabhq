@@ -64,7 +64,7 @@
       "number-leading-zero":"always",
       "number-no-trailing-zeros":true,
       "property-no-unknown":true,
-      "property-no-vendor-prefix":true,
+      "property-no-vendor-prefix": [true, { "ignoreProperties": ["user-select"] }],
       "rule-empty-line-before":[
          "always-multi-line",
          {
