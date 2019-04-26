@@ -5,8 +5,10 @@ import createStore from '~/notes/stores';
 describe('system note component', () => {
   let vm;
   let props;
+  let initMRPopoversSpy;
 
   beforeEach(() => {
+    initMRPopoversSpy = spyOnDependency(issueSystemNote, 'initMRPopovers');
     props = {
       note: {
         id: '1424',
@@ -55,5 +57,9 @@ describe('system note component', () => {
   // https://gitlab.com/gitlab-org/gitlab-ce/uploads/b07a10670919254f0220d3ff5c1aa110/jqzI.png
   it('removes wrapping paragraph from note HTML', () => {
     expect(vm.$el.querySelector('.system-note-message').innerHTML).toEqual('<span>closed</span>');
+  });
+
+  it('should initMRPopovers onMount', () => {
+    expect(initMRPopoversSpy).toHaveBeenCalled();
   });
 });
