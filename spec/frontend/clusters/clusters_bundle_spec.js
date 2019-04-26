@@ -1,15 +1,12 @@
 import Clusters from '~/clusters/clusters_bundle';
-import {
-  REQUEST_SUBMITTED,
-  REQUEST_FAILURE,
-  APPLICATION_STATUS,
-  INGRESS_DOMAIN_SUFFIX,
-} from '~/clusters/constants';
+import { APPLICATION_STATUS, INGRESS_DOMAIN_SUFFIX } from '~/clusters/constants';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import { loadHTMLFixture } from 'helpers/fixtures';
 import { setTestTimeout } from 'helpers/timeout';
 import $ from 'jquery';
+
+const { INSTALLING, INSTALLABLE, INSTALLED, NOT_INSTALLABLE } = APPLICATION_STATUS;
 
 describe('Clusters', () => {
   setTestTimeout(1000);
@@ -93,7 +90,7 @@ describe('Clusters', () => {
     it('does not show alert when things transition from initial null state to something', () => {
       cluster.checkForNewInstalls(INITIAL_APP_MAP, {
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Helm Tiller' },
+        helm: { status: INSTALLABLE, title: 'Helm Tiller' },
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
@@ -105,11 +102,11 @@ describe('Clusters', () => {
       cluster.checkForNewInstalls(
         {
           ...INITIAL_APP_MAP,
-          helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
+          helm: { status: INSTALLING, title: 'Helm Tiller' },
         },
         {
           ...INITIAL_APP_MAP,
-          helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
+          helm: { status: INSTALLED, title: 'Helm Tiller' },
         },
       );
 
@@ -125,13 +122,13 @@ describe('Clusters', () => {
       cluster.checkForNewInstalls(
         {
           ...INITIAL_APP_MAP,
-          helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
-          ingress: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Ingress' },
+          helm: { status: INSTALLING, title: 'Helm Tiller' },
+          ingress: { status: INSTALLABLE, title: 'Ingress' },
         },
         {
           ...INITIAL_APP_MAP,
-          helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
-          ingress: { status: APPLICATION_STATUS.INSTALLED, title: 'Ingress' },
+          helm: { status: INSTALLED, title: 'Helm Tiller' },
+          ingress: { status: INSTALLED, title: 'Ingress' },
         },
       );
 
@@ -218,11 +215,11 @@ describe('Clusters', () => {
     it('tries to install helm', () => {
       jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
-      expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
+      cluster.store.state.applications.helm.status = INSTALLABLE;
 
       cluster.installApplication({ id: 'helm' });
 
-      expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_SUBMITTED);
+      expect(cluster.store.state.applications.helm.status).toEqual(INSTALLING);
       expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('helm', undefined);
     });
@@ -230,11 +227,11 @@ describe('Clusters', () => {
     it('tries to install ingress', () => {
       jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
-      expect(cluster.store.state.applications.ingress.requestStatus).toEqual(null);
+      cluster.store.state.applications.ingress.status = INSTALLABLE;
 
       cluster.installApplication({ id: 'ingress' });
 
-      expect(cluster.store.state.applications.ingress.requestStatus).toEqual(REQUEST_SUBMITTED);
+      expect(cluster.store.state.applications.ingress.status).toEqual(INSTALLING);
       expect(cluster.store.state.applications.ingress.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('ingress', undefined);
     });
@@ -242,11 +239,11 @@ describe('Clusters', () => {
     it('tries to install runner', () => {
       jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
-      expect(cluster.store.state.applications.runner.requestStatus).toEqual(null);
+      cluster.store.state.applications.runner.status = INSTALLABLE;
 
       cluster.installApplication({ id: 'runner' });
 
-      expect(cluster.store.state.applications.runner.requestStatus).toEqual(REQUEST_SUBMITTED);
+      expect(cluster.store.state.applications.runner.status).toEqual(INSTALLING);
       expect(cluster.store.state.applications.runner.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('runner', undefined);
     });
@@ -254,13 +251,12 @@ describe('Clusters', () => {
     it('tries to install jupyter', () => {
       jest.spyOn(cluster.service, 'installApplication').mockResolvedValueOnce();
 
-      expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(null);
       cluster.installApplication({
         id: 'jupyter',
         params: { hostname: cluster.store.state.applications.jupyter.hostname },
       });
 
-      expect(cluster.store.state.applications.jupyter.requestStatus).toEqual(REQUEST_SUBMITTED);
+      cluster.store.state.applications.jupyter.status = INSTALLABLE;
       expect(cluster.store.state.applications.jupyter.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalledWith('jupyter', {
         hostname: cluster.store.state.applications.jupyter.hostname,
@@ -272,16 +268,18 @@ describe('Clusters', () => {
         .spyOn(cluster.service, 'installApplication')
         .mockRejectedValueOnce(new Error('STUBBED ERROR'));
 
-      expect(cluster.store.state.applications.helm.requestStatus).toEqual(null);
+      cluster.store.state.applications.helm.status = INSTALLABLE;
 
       const promise = cluster.installApplication({ id: 'helm' });
 
-      expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_SUBMITTED);
+      expect(cluster.store.state.applications.helm.status).toEqual(INSTALLING);
       expect(cluster.store.state.applications.helm.requestReason).toEqual(null);
       expect(cluster.service.installApplication).toHaveBeenCalled();
 
       return promise.then(() => {
-        expect(cluster.store.state.applications.helm.requestStatus).toEqual(REQUEST_FAILURE);
+        expect(cluster.store.state.applications.helm.status).toEqual(INSTALLABLE);
+        expect(cluster.store.state.applications.helm.installFailed).toBe(true);
+
         expect(cluster.store.state.applications.helm.requestReason).toBeDefined();
       });
     });
@@ -315,7 +313,6 @@ describe('Clusters', () => {
   });
 
   describe('toggleIngressDomainHelpText', () => {
-    const { INSTALLED, INSTALLABLE, NOT_INSTALLABLE } = APPLICATION_STATUS;
     let ingressPreviousState;
     let ingressNewState;
 
