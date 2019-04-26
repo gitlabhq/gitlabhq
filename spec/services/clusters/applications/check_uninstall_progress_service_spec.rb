@@ -11,6 +11,11 @@ describe Clusters::Applications::CheckUninstallProgressService do
   let(:errors) { nil }
   let(:worker_class) { Clusters::Applications::WaitForUninstallAppWorker }
 
+  before do
+    allow(service).to receive(:installation_errors).and_return(errors)
+    allow(service).to receive(:remove_installation_pod)
+  end
+
   shared_examples 'a not yet terminated installation' do |a_phase|
     let(:phase) { a_phase }
 
@@ -34,11 +39,6 @@ describe Clusters::Applications::CheckUninstallProgressService do
         end
       end
     end
-  end
-
-  before do
-    allow(service).to receive(:installation_errors).and_return(errors)
-    allow(service).to receive(:remove_installation_pod).and_return(nil)
   end
 
   context 'when application is installing' do
