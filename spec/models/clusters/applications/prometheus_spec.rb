@@ -19,12 +19,10 @@ describe Clusters::Applications::Prometheus do
 
     it 'deactivates prometheus_service after destroy' do
       expect do
-        application.destroy
+        application.destroy!
 
         prometheus_service.reload
-      end.to change(prometheus_service, :active)
-
-      expect(prometheus_service).not_to be_active
+      end.to change(prometheus_service, :active).from(true).to(false)
     end
   end
 
