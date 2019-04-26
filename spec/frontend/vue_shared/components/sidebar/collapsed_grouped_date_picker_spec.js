@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import collapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 
 describe('collapsedGroupedDatePicker', () => {
   let vm;
@@ -13,7 +13,7 @@ describe('collapsedGroupedDatePicker', () => {
 
   describe('toggleCollapse events', () => {
     beforeEach(done => {
-      spyOn(vm, 'toggleSidebar');
+      jest.spyOn(vm, 'toggleSidebar').mockImplementation(() => {});
       vm.minDate = new Date('07/17/2016');
       Vue.nextTick(done);
     });

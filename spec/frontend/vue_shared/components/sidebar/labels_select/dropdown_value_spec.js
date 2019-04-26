@@ -3,9 +3,11 @@ import $ from 'jquery';
 
 import dropdownValueComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_value.vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-
-import { mockConfig, mockLabels } from './mock_data';
+import mountComponent from 'helpers/vue_mount_component_helper';
+import {
+  mockConfig,
+  mockLabels,
+} from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
 
 const createComponent = (
   labels = mockLabels,
