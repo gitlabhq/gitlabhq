@@ -17,10 +17,10 @@ export default {
 
 <template>
   <tr class="line_holder" :class="lineType">
-    <td class="diff-line-num old_line" :class="lineType">
+    <td class="diff-line-num old_line border-top-0 border-bottom-0" :class="lineType">
       {{ line.old_line }}
     </td>
-    <td class="diff-line-num new_line" :class="lineType">
+    <td class="diff-line-num new_line border-top-0 border-bottom-0" :class="lineType">
       {{ line.new_line }}
     </td>
     <td class="line_content" :class="lineType">
