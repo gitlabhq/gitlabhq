@@ -856,6 +856,10 @@ describe Ci::Build do
     let(:deployment) { build.deployment }
     let(:environment) { deployment.environment }
 
+    before do
+      allow(Deployments::FinishedWorker).to receive(:perform_async)
+    end
+
     it 'has deployments record with created status' do
       expect(deployment).to be_created
       expect(environment.name).to eq('review/master')

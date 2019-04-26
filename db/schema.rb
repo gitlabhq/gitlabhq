@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190422082247) do
+ActiveRecord::Schema.define(version: 20190426180107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1999,6 +1999,7 @@ ActiveRecord::Schema.define(version: 20190422082247) do
     t.boolean "commit_events", default: true, null: false
     t.boolean "job_events", default: false, null: false
     t.boolean "confidential_note_events", default: true
+    t.boolean "deployment_events", default: false, null: false
     t.index ["project_id"], name: "index_services_on_project_id", using: :btree
     t.index ["template"], name: "index_services_on_template", using: :btree
     t.index ["type"], name: "index_services_on_type", using: :btree

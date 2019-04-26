@@ -33,7 +33,7 @@ class ChatNotificationService < Service
 
   def self.supported_events
     %w[push issue confidential_issue merge_request note confidential_note tag_push
-       pipeline wiki_page]
+       pipeline wiki_page deployment]
   end
 
   def fields
@@ -122,6 +122,8 @@ class ChatNotificationService < Service
       ChatMessage::PipelineMessage.new(data) if should_pipeline_be_notified?(data)
     when "wiki_page"
       ChatMessage::WikiPageMessage.new(data)
+    when "deployment"
+      ChatMessage::DeploymentMessage.new(data)
     end
   end
 
