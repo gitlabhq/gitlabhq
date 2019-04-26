@@ -46,19 +46,18 @@ stages:
 # With global cache rule, cached dependencies will be downloaded before every job
 # and then unpacked to the paths as specified below.
 cache:
-# Per-stage and per-branch caching.
+ # Per-stage and per-branch caching.
  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_SLUG" 
  paths:
- # Specify three paths that should be cached:
- #
- # 1) Main JSON file holding information about package dependency tree, packages versions,
- # frameworks etc. It also holds information where to the dependencies were restored.
-   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/project.assets.json'  
- # 2) Other NuGet and MSBuild related files. Also needed.
-   - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/*.csproj.nuget.*'    
- # 3) Path to the directory where restored dependencies are kept.
-   - '$NUGET_PACKAGES_DIRECTORY'   
- #      
+  # Specify three paths that should be cached:
+  #
+  # 1) Main JSON file holding information about package dependency tree, packages versions,
+  # frameworks etc. It also holds information where to the dependencies were restored.
+  - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/project.assets.json'  
+  # 2) Other NuGet and MSBuild related files. Also needed.
+  - '$SOURCE_CODE_PATH$OBJECTS_DIRECTORY/*.csproj.nuget.*'    
+  # 3) Path to the directory where restored dependencies are kept.
+  - '$NUGET_PACKAGES_DIRECTORY'   
  # 'pull-push' policy means that latest cache will be downloaded (if exists) 
  # before executing the job, and a newer version will be uploaded afterwards. 
  # Such setting saves time when there are no changes in referenced third-party 
