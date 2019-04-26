@@ -1,5 +1,6 @@
-import Vue from 'vue';
+import Vuex from 'vuex';
 import createStore from '~/import_projects/store';
+import { createLocalVue, mount } from '@vue/test-utils';
 import importedProjectTableRow from '~/import_projects/components/imported_project_table_row.vue';
 import STATUS_MAP from '~/import_projects/constants';
 
@@ -13,27 +14,33 @@ describe('ImportedProjectTableRow', () => {
     importSource: 'importSource',
   };
 
-  function createComponent() {
-    const ImportedProjectTableRow = Vue.extend(importedProjectTableRow);
+  function mountComponent() {
+    const localVue = createLocalVue();
+    localVue.use(Vuex);
 
-    const store = createStore();
-    return new ImportedProjectTableRow({
-      store,
+    const component = mount(importedProjectTableRow, {
+      localVue,
+      store: createStore(),
       propsData: {
         project: {
           ...project,
         },
       },
-    }).$mount();
+      sync: false,
+    });
+
+    return component.vm;
   }
+
+  beforeEach(() => {
+    vm = mountComponent();
+  });
 
   afterEach(() => {
     vm.$destroy();
   });
 
   it('renders an imported project table row', () => {
-    vm = createComponent();
-
     const providerLink = vm.$el.querySelector('.js-provider-link');
     const statusObject = STATUS_MAP[project.importStatus];
 

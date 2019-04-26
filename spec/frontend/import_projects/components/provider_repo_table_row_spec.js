@@ -1,14 +1,15 @@
-import Vue from 'vue';
-import MockAdapter from 'axios-mock-adapter';
-import axios from '~/lib/utils/axios_utils';
-import createStore from '~/import_projects/store';
+import Vuex from 'vuex';
+import { createLocalVue, mount } from '@vue/test-utils';
+import { state, actions, getters, mutations } from '~/import_projects/store';
 import providerRepoTableRow from '~/import_projects/components/provider_repo_table_row.vue';
 import STATUS_MAP, { STATUSES } from '~/import_projects/constants';
-import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 describe('ProviderRepoTableRow', () => {
-  let store;
   let vm;
+  const fetchImport = jest.fn((context, data) => actions.requestImport(context, data));
+  const importPath = '/import-path';
+  const defaultTargetNamespace = 'user';
+  const ciCdOnly = true;
   const repo = {
     id: 10,
     sanitizedName: 'sanitizedName',
@@ -16,21 +17,42 @@ describe('ProviderRepoTableRow', () => {
     providerLink: 'providerLink',
   };
 
-  function createComponent() {
-    const ProviderRepoTableRow = Vue.extend(providerRepoTableRow);
+  function initStore() {
+    const stubbedActions = Object.assign({}, actions, {
+      fetchImport,
+    });
 
-    return new ProviderRepoTableRow({
+    const store = new Vuex.Store({
+      state: state(),
+      actions: stubbedActions,
+      mutations,
+      getters,
+    });
+
+    return store;
+  }
+
+  function mountComponent() {
+    const localVue = createLocalVue();
+    localVue.use(Vuex);
+
+    const store = initStore();
+    store.dispatch('setInitialData', { importPath, defaultTargetNamespace, ciCdOnly });
+
+    const component = mount(providerRepoTableRow, {
+      localVue,
       store,
       propsData: {
-        repo: {
-          ...repo,
-        },
+        repo,
       },
-    }).$mount();
+      sync: false,
+    });
+
+    return component.vm;
   }
 
   beforeEach(() => {
-    store = createStore();
+    vm = mountComponent();
   });
 
   afterEach(() => {
@@ -38,8 +60,6 @@ describe('ProviderRepoTableRow', () => {
   });
 
   it('renders a provider repo table row', () => {
-    vm = createComponent();
-
     const providerLink = vm.$el.querySelector('.js-provider-link');
     const statusObject = STATUS_MAP[STATUSES.NONE];
 
@@ -55,8 +75,6 @@ describe('ProviderRepoTableRow', () => {
   });
 
   it('renders a select2 namespace select', () => {
-    vm = createComponent();
-
     const dropdownTrigger = vm.$el.querySelector('.js-namespace-select');
 
     expect(dropdownTrigger).not.toBeNull();
@@ -67,30 +85,20 @@ describe('ProviderRepoTableRow', () => {
     expect(vm.$el.querySelector('.select2-drop')).not.toBeNull();
   });
 
-  it('imports repo when clicking import button', done => {
-    const importPath = '/import-path';
-    const defaultTargetNamespace = 'user';
-    const ciCdOnly = true;
-    const mock = new MockAdapter(axios);
-
-    store.dispatch('setInitialData', { importPath, defaultTargetNamespace, ciCdOnly });
-    mock.onPost(importPath).replyOnce(200);
-    spyOn(store, 'dispatch').and.returnValue(new Promise(() => {}));
-
-    vm = createComponent();
-
+  it('imports repo when clicking import button', () => {
     vm.$el.querySelector('.js-import-button').click();
 
-    setTimeoutPromise()
-      .then(() => {
-        expect(store.dispatch).toHaveBeenCalledWith('fetchImport', {
-          repo,
-          newName: repo.sanitizedName,
-          targetNamespace: defaultTargetNamespace,
-        });
-      })
-      .then(() => mock.restore())
-      .then(done)
-      .catch(done.fail);
+    return vm.$nextTick().then(() => {
+      const { calls } = fetchImport.mock;
+
+      // Not using .toBeCalledWith because it expects
+      // an unmatchable and undefined 3rd argument.
+      expect(calls.length).toBe(1);
+      expect(calls[0][1]).toEqual({
+        repo,
+        newName: repo.sanitizedName,
+        targetNamespace: defaultTargetNamespace,
+      });
+    });
   });
 });
