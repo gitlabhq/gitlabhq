@@ -78,20 +78,17 @@ module FilteredSearchHelpers
   # .tokens-container to make sure the correct names and values are rendered
   def expect_tokens(tokens)
     page.within '.filtered-search-box .tokens-container' do
-      page.all(:css, '.tokens-container li .selectable').each_with_index do |el, index|
-        token_name = tokens[index][:name]
-        token_value = tokens[index][:value]
-        token_emoji = tokens[index][:emoji_name]
+      token_elements = page.all(:css, 'li.filtered-search-token')
 
-        expect(el.find('.name')).to have_content(token_name)
+      tokens.each_with_index do |token, index|
+        el = token_elements[index]
 
-        if token_value
-          expect(el.find('.value')).to have_content(token_value)
-        end
+        expect(el.find('.name')).to have_content(token[:name])
+        expect(el.find('.value')).to have_content(token[:value]) if token[:value].present?
 
         # gl-emoji content is blank when the emoji unicode is not supported
-        if token_emoji
-          selector = %(gl-emoji[data-name="#{token_emoji}"])
+        if token[:emoji_name].present?
+          selector = %(gl-emoji[data-name="#{token[:emoji_name]}"])
           expect(el.find('.value')).to have_css(selector)
         end
       end
