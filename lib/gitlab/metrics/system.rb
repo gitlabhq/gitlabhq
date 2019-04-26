@@ -27,11 +27,9 @@ module Gitlab
         def self.max_open_file_descriptors
           match = File.read('/proc/self/limits').match(/Max open files\s*(\d+)/)
 
-          if match && match[1]
-            max_fds = match[1].to_i
-          end
+          return unless match && match[1]
 
-          max_fds
+          match[1].to_i
         end
 
         def self.process_start_time
