@@ -82,16 +82,8 @@ class Notify < BaseMailer
     group_notification_email = nil
 
     if notification_group
-      # Get notification group's and ancestors' notification settings
-      group_ids = notification_group.self_and_ancestors_ids
-      notification_settings = notification_group.notification_settings.where(user: @current_user) # rubocop: disable CodeReuse/ActiveRecord
-
-      # Exploit notification_group.self_and_ancestors_ids being ordered from
-      # most nested to least nested to iterate through group ancestors
-      group_ids.each do |group_id|
-        group_notification_email = notification_settings.find { |ns| ns.source_id == group_id }&.notification_email
-        break if group_notification_email.present?
-      end
+      notification_settings = notification_group.notification_settings(hierarchy_order: :asc).where(user: @current_user) # rubocop: disable CodeReuse/ActiveRecord
+      group_notification_email = notification_settings.find { |n| n.notification_email.present? }&.notification_email
     end
 
     # Return group-specific email address if present, otherwise return global
