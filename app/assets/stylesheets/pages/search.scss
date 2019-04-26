@@ -84,6 +84,9 @@ input[type='checkbox']:hover {
 
     .search-icon {
       transition: color $default-transition-duration;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
       user-select: none;
     }
 
