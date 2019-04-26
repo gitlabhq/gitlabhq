@@ -107,7 +107,7 @@ gitlab:ui:visual:
       - $CI_COMMIT_MESSAGE =~ /\[skip visual\]/i
   artifacts:
     paths:
-      - tests/__image_snapshots__/
+      - gitlab-ui/tests/__image_snapshots__/
     when: always
 
 karma:
