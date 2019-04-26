@@ -490,6 +490,7 @@ Below you can find supported syntax reference:
 1. Equality matching using a string
 
     > Example: `$VARIABLE == "some value"`
+
     > Example: `$VARIABLE != "some value"` _(added in 11.11)_
 
     You can use equality operator `==` or `!=` to compare a variable content to a
@@ -500,6 +501,7 @@ Below you can find supported syntax reference:
 1. Checking for an undefined value
 
     > Example: `$VARIABLE == null`
+
     > Example: `$VARIABLE != null` _(added in 11.11)_
 
     It sometimes happens that you want to check whether a variable is defined
@@ -510,6 +512,7 @@ Below you can find supported syntax reference:
 1. Checking for an empty variable
 
     > Example: `$VARIABLE == ""`
+
     > Example: `$VARIABLE != ""` _(added in 11.11)_
 
     If you want to check whether a variable is defined, but is empty, you can
@@ -519,6 +522,7 @@ Below you can find supported syntax reference:
 1. Comparing two variables
 
     > Example: `$VARIABLE_1 == $VARIABLE_2`
+
     > Example: `$VARIABLE_1 != $VARIABLE_2` _(added in 11.11)_
 
     It is possible to compare two variables. This is going to compare values
@@ -538,6 +542,7 @@ Below you can find supported syntax reference:
 1. Pattern matching  _(added in 11.0)_
 
     > Example: `$VARIABLE =~ /^content.*/`
+
     > Example: `$VARIABLE_1 !~ /^content.*/` _(added in 11.11)_
 
     It is possible perform pattern matching against a variable and regular
@@ -546,6 +551,19 @@ Below you can find supported syntax reference:
 
     Pattern matching is case-sensitive by default. Use `i` flag modifier, like
     `/pattern/i` to make a pattern case-insensitive.
+
+1. Conjunction / Disjunction
+
+    > Example: `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 == "something"`
+
+    > Example: `$VARIABLE1 =~ /^content.*/ && $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+
+    > Example: `$VARIABLE1 =~ /^content.*/ || $VARIABLE2 =~ /thing$/ && $VARIABLE3`
+
+    It is possible to join multiple conditions using `&&` or `||`. Any of the otherwise
+    supported syntax may be used in a conjunctive or disjunctive statement.
+    Precedence of operators follows standard Ruby 2.5 operation
+    [precedence](https://ruby-doc.org/core-2.5.0/doc/syntax/precedence_rdoc.html).
 
 ## Debug tracing
 

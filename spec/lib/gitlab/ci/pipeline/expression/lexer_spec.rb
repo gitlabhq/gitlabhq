@@ -58,6 +58,56 @@ describe Gitlab::Ci::Pipeline::Expression::Lexer do
       expect { lexer.tokens }
         .to raise_error described_class::SyntaxError
     end
+
+    context 'with complex expressions' do
+      using RSpec::Parameterized::TableSyntax
+
+      subject { described_class.new(expression).tokens.map(&:value) }
+
+      where(:expression, :tokens) do
+        '$PRESENT_VARIABLE =~ /my var/ && $EMPTY_VARIABLE =~ /nope/' | ['$PRESENT_VARIABLE', '=~', '/my var/', '&&', '$EMPTY_VARIABLE', '=~', '/nope/']
+        '$EMPTY_VARIABLE == "" && $PRESENT_VARIABLE'                 | ['$EMPTY_VARIABLE', '==', '""', '&&', '$PRESENT_VARIABLE']
+        '$EMPTY_VARIABLE == "" && $PRESENT_VARIABLE != "nope"'       | ['$EMPTY_VARIABLE', '==', '""', '&&', '$PRESENT_VARIABLE', '!=', '"nope"']
+        '$PRESENT_VARIABLE && $EMPTY_VARIABLE'                       | ['$PRESENT_VARIABLE', '&&', '$EMPTY_VARIABLE']
+        '$PRESENT_VARIABLE =~ /my var/ || $EMPTY_VARIABLE =~ /nope/' | ['$PRESENT_VARIABLE', '=~', '/my var/', '||', '$EMPTY_VARIABLE', '=~', '/nope/']
+        '$EMPTY_VARIABLE == "" || $PRESENT_VARIABLE'                 | ['$EMPTY_VARIABLE', '==', '""', '||', '$PRESENT_VARIABLE']
+        '$EMPTY_VARIABLE == "" || $PRESENT_VARIABLE != "nope"'       | ['$EMPTY_VARIABLE', '==', '""', '||', '$PRESENT_VARIABLE', '!=', '"nope"']
+        '$PRESENT_VARIABLE || $EMPTY_VARIABLE'                       | ['$PRESENT_VARIABLE', '||', '$EMPTY_VARIABLE']
+        '$PRESENT_VARIABLE && null || $EMPTY_VARIABLE == ""'         | ['$PRESENT_VARIABLE', '&&', 'null', '||', '$EMPTY_VARIABLE', '==', '""']
+      end
+
+      with_them do
+        it { is_expected.to eq(tokens) }
+      end
+    end
+
+    context 'with the ci_variables_complex_expressions feature flag turned off' do
+      before do
+        stub_feature_flags(ci_variables_complex_expressions: false)
+      end
+
+      it 'incorrectly tokenizes conjunctive match statements as one match statement' do
+        tokens = described_class.new('$PRESENT_VARIABLE =~ /my var/ && $EMPTY_VARIABLE =~ /nope/').tokens
+
+        expect(tokens.map(&:value)).to eq(['$PRESENT_VARIABLE', '=~', '/my var/ && $EMPTY_VARIABLE =~ /nope/'])
+      end
+
+      it 'incorrectly tokenizes disjunctive match statements as one statement' do
+        tokens = described_class.new('$PRESENT_VARIABLE =~ /my var/ || $EMPTY_VARIABLE =~ /nope/').tokens
+
+        expect(tokens.map(&:value)).to eq(['$PRESENT_VARIABLE', '=~', '/my var/ || $EMPTY_VARIABLE =~ /nope/'])
+      end
+
+      it 'raises an error about && operators' do
+        expect { described_class.new('$EMPTY_VARIABLE == "" && $PRESENT_VARIABLE').tokens }
+          .to raise_error(Gitlab::Ci::Pipeline::Expression::Lexer::SyntaxError).with_message('Unknown lexeme found!')
+      end
+
+      it 'raises an error about || operators' do
+        expect { described_class.new('$EMPTY_VARIABLE == "" || $PRESENT_VARIABLE').tokens }
+          .to raise_error(Gitlab::Ci::Pipeline::Expression::Lexer::SyntaxError).with_message('Unknown lexeme found!')
+      end
+    end
   end
 
   describe '#lexemes' do

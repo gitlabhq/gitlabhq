@@ -1,0 +1,5 @@
+---
+title: Add support for && and || to CI Pipeline Expressions. Change CI variable expression matching for Lexeme::Pattern to eagerly return tokens.
+merge_request: 27925
+author: Martin Manelli
+type: added

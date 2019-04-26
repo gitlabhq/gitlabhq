@@ -1,4 +1,4 @@
-require 'fast_spec_helper'
+require 'spec_helper'
 
 describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
   describe '.build' do
@@ -30,16 +30,6 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
         .to eq Gitlab::UntrustedRegexp.new('pattern')
     end
 
-    it 'is a greedy scanner for regexp boundaries' do
-      scanner = StringScanner.new('/some .* / pattern/')
-
-      token = described_class.scan(scanner)
-
-      expect(token).not_to be_nil
-      expect(token.build.evaluate)
-        .to eq Gitlab::UntrustedRegexp.new('some .* / pattern')
-    end
-
     it 'does not allow to use an empty pattern' do
       scanner = StringScanner.new(%(//))
 
@@ -68,12 +58,90 @@ describe Gitlab::Ci::Pipeline::Expression::Lexeme::Pattern do
         .to eq Gitlab::UntrustedRegexp.new('(?im)pattern')
     end
 
-    it 'does not support arbitrary flags' do
+    it 'ignores unsupported flags' do
       scanner = StringScanner.new('/pattern/x')
 
       token = described_class.scan(scanner)
 
-      expect(token).to be_nil
+      expect(token).not_to be_nil
+      expect(token.build.evaluate)
+        .to eq Gitlab::UntrustedRegexp.new('pattern')
+    end
+
+    it 'is a eager scanner for regexp boundaries' do
+      scanner = StringScanner.new('/some .* / pattern/')
+
+      token = described_class.scan(scanner)
+
+      expect(token).not_to be_nil
+      expect(token.build.evaluate)
+        .to eq Gitlab::UntrustedRegexp.new('some .* ')
+    end
+
+    it 'does not match on escaped regexp boundaries' do
+      scanner = StringScanner.new('/some .* \/ pattern/')
+
+      token = described_class.scan(scanner)
+
+      expect(token).not_to be_nil
+      expect(token.build.evaluate)
+        .to eq Gitlab::UntrustedRegexp.new('some .* / pattern')
+    end
+
+    it 'recognizes \ as an escape character for /' do
+      scanner = StringScanner.new('/some numeric \/$ pattern/')
+
+      token = described_class.scan(scanner)
+
+      expect(token).not_to be_nil
+      expect(token.build.evaluate)
+        .to eq Gitlab::UntrustedRegexp.new('some numeric /$ pattern')
+    end
+
+    it 'does not recognize \ as an escape character for $' do
+      scanner = StringScanner.new('/some numeric \$ pattern/')
+
+      token = described_class.scan(scanner)
+
+      expect(token).not_to be_nil
+      expect(token.build.evaluate)
+        .to eq Gitlab::UntrustedRegexp.new('some numeric \$ pattern')
+    end
+
+    context 'with the ci_variables_complex_expressions feature flag disabled' do
+      before do
+        stub_feature_flags(ci_variables_complex_expressions: false)
+      end
+
+      it 'is a greedy scanner for regexp boundaries' do
+        scanner = StringScanner.new('/some .* / pattern/')
+
+        token = described_class.scan(scanner)
+
+        expect(token).not_to be_nil
+        expect(token.build.evaluate)
+          .to eq Gitlab::UntrustedRegexp.new('some .* / pattern')
+      end
+
+      it 'does not recognize the \ escape character for /' do
+        scanner = StringScanner.new('/some .* \/ pattern/')
+
+        token = described_class.scan(scanner)
+
+        expect(token).not_to be_nil
+        expect(token.build.evaluate)
+          .to eq Gitlab::UntrustedRegexp.new('some .* \/ pattern')
+      end
+
+      it 'does not recognize the \ escape character for $' do
+        scanner = StringScanner.new('/some numeric \$ pattern/')
+
+        token = described_class.scan(scanner)
+
+        expect(token).not_to be_nil
+        expect(token.build.evaluate)
+          .to eq Gitlab::UntrustedRegexp.new('some numeric \$ pattern')
+      end
     end
   end
 
