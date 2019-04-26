@@ -230,6 +230,13 @@ describe 'Admin updates settings' do
       expect(find_field('Username').value).to eq 'test_user'
       expect(find('#service_push_channel').value).to eq '#test_channel'
     end
+
+    it 'defaults Deployment events to false for chat notification template settings' do
+      first(:link, 'Service Templates').click
+      click_link 'Slack notifications'
+
+      expect(find_field('Deployment')).not_to be_checked
+    end
   end
 
   context 'CI/CD page' do
@@ -373,10 +380,14 @@ describe 'Admin updates settings' do
   def check_all_events
     page.check('Active')
     page.check('Push')
-    page.check('Tag push')
-    page.check('Note')
     page.check('Issue')
+    page.check('Confidential issue')
     page.check('Merge request')
+    page.check('Note')
+    page.check('Confidential note')
+    page.check('Tag push')
     page.check('Pipeline')
+    page.check('Wiki page')
+    page.check('Deployment')
   end
 end

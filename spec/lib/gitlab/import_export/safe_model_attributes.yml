@@ -423,6 +423,7 @@ Service:
 - wiki_page_events
 - confidential_issues_events
 - confidential_note_events
+- deployment_events
 ProjectHook:
 - id
 - url
