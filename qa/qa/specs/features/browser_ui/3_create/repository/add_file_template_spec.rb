@@ -2,7 +2,8 @@
 
 module QA
   context 'Create' do
-    describe 'File templates' do
+    # Issue: https://gitlab.com/gitlab-org/quality/nightly/issues/97
+    describe 'File templates', :quarantine do
       include Runtime::Fixtures
 
       def login
