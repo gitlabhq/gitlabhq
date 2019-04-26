@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190408163745) do
+ActiveRecord::Schema.define(version: 20190422082247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1681,6 +1681,10 @@ ActiveRecord::Schema.define(version: 20190408163745) do
     t.index ["project_id"], name: "index_project_import_data_on_project_id", using: :btree
   end
 
+  create_table "project_metrics_settings", primary_key: "project_id", id: :integer, default: nil, force: :cascade do |t|
+    t.string "external_dashboard_url", null: false
+  end
+
   create_table "project_mirror_data", id: :serial, force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "status"
@@ -2529,6 +2533,7 @@ ActiveRecord::Schema.define(version: 20190408163745) do
   add_foreign_key "project_features", "projects", name: "fk_18513d9b92", on_delete: :cascade
   add_foreign_key "project_group_links", "projects", name: "fk_daa8cee94c", on_delete: :cascade
   add_foreign_key "project_import_data", "projects", name: "fk_ffb9ee3a10", on_delete: :cascade
+  add_foreign_key "project_metrics_settings", "projects", on_delete: :cascade
   add_foreign_key "project_mirror_data", "projects", on_delete: :cascade
   add_foreign_key "project_repositories", "projects", on_delete: :cascade
   add_foreign_key "project_repositories", "shards", on_delete: :restrict
