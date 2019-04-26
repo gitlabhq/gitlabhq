@@ -2,8 +2,8 @@ import Vue from 'vue';
 
 import IssueAssignees from '~/vue_shared/components/issue/issue_assignees.vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockAssigneesList } from 'spec/boards/mock_data';
+import mountComponent from 'helpers/vue_mount_component_helper';
+import { mockAssigneesList } from '../../../../javascripts/boards/mock_data';
 
 const createComponent = (assignees = mockAssigneesList, cssClass = '') => {
   const Component = Vue.extend(IssueAssignees);
