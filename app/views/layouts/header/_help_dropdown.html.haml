@@ -7,3 +7,6 @@
     = link_to _("Submit feedback"), "https://about.gitlab.com/submit-feedback"
   - if current_user_menu?(:help) || current_user_menu?(:settings) || current_user_menu?(:profile)
     = render 'shared/user_dropdown_contributing_link'
+  - if Gitlab.com?
+    %li.js-canary-link
+      = link_to _("Switch to GitLab Next"), "https://next.gitlab.com/"

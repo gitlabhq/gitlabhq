@@ -447,30 +447,29 @@
   }
 }
 
+.title-container,
 .navbar-nav {
-  li {
-    .badge.badge-pill {
-      position: inherit;
-      font-weight: $gl-font-weight-normal;
-      margin-left: -6px;
-      font-size: 11px;
-      color: $white-light;
-      padding: 0 5px;
-      line-height: 12px;
-      border-radius: 7px;
-      box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
+  .badge.badge-pill {
+    position: inherit;
+    font-weight: $gl-font-weight-normal;
+    margin-left: -6px;
+    font-size: 11px;
+    color: $white-light;
+    padding: 0 5px;
+    line-height: 12px;
+    border-radius: 7px;
+    box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
 
-      &.issues-count {
-        background-color: $green-500;
-      }
+    &.green-badge {
+      background-color: $green-500;
+    }
 
-      &.merge-requests-count {
-        background-color: $orange-600;
-      }
+    &.merge-requests-count {
+      background-color: $orange-600;
+    }
 
-      &.todos-count {
-        background-color: $blue-500;
-      }
+    &.todos-count {
+      background-color: $blue-500;
     }
   }
 }
