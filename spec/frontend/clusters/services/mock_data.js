@@ -113,7 +113,6 @@ const DEFAULT_APPLICATION_STATE = {
   description: 'Some description about this interesting application!',
   status: null,
   statusReason: null,
-  requestStatus: null,
   requestReason: null,
 };
 

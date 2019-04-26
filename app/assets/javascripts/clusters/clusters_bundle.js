@@ -7,15 +7,7 @@ import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
-import {
-  APPLICATION_STATUS,
-  REQUEST_SUBMITTED,
-  REQUEST_FAILURE,
-  UPGRADE_REQUESTED,
-  UPGRADE_REQUEST_FAILURE,
-  INGRESS,
-  INGRESS_DOMAIN_SUFFIX,
-} from './constants';
+import { APPLICATION_STATUS, INGRESS, INGRESS_DOMAIN_SUFFIX } from './constants';
 import ClustersService from './services/clusters_service';
 import ClustersStore from './stores/clusters_store';
 import Applications from './components/applications.vue';
@@ -137,7 +129,7 @@ export default class Clusters {
     if (this.showTokenButton) this.showTokenButton.addEventListener('click', this.showToken);
     eventHub.$on('installApplication', this.installApplication);
     eventHub.$on('upgradeApplication', data => this.upgradeApplication(data));
-    eventHub.$on('upgradeFailed', appId => this.upgradeFailed(appId));
+    eventHub.$on('dismissUpgradeSuccess', appId => this.dismissUpgradeSuccess(appId));
     eventHub.$on('saveKnativeDomain', data => this.saveKnativeDomain(data));
     eventHub.$on('setKnativeHostname', data => this.setKnativeHostname(data));
   }
@@ -146,7 +138,7 @@ export default class Clusters {
     if (this.showTokenButton) this.showTokenButton.removeEventListener('click', this.showToken);
     eventHub.$off('installApplication', this.installApplication);
     eventHub.$off('upgradeApplication', this.upgradeApplication);
-    eventHub.$off('upgradeFailed', this.upgradeFailed);
+    eventHub.$off('dismissUpgradeSuccess', this.dismissUpgradeSuccess);
     eventHub.$off('saveKnativeDomain');
     eventHub.$off('setKnativeHostname');
   }
@@ -259,12 +251,13 @@ export default class Clusters {
 
   installApplication(data) {
     const appId = data.id;
-    this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUBMITTED);
     this.store.updateAppProperty(appId, 'requestReason', null);
     this.store.updateAppProperty(appId, 'statusReason', null);
 
+    this.store.installApplication(appId);
+
     return this.service.installApplication(appId, data.params).catch(() => {
-      this.store.updateAppProperty(appId, 'requestStatus', REQUEST_FAILURE);
+      this.store.notifyInstallFailure(appId);
       this.store.updateAppProperty(
         appId,
         'requestReason',
@@ -275,13 +268,15 @@ export default class Clusters {
 
   upgradeApplication(data) {
     const appId = data.id;
-    this.store.updateAppProperty(appId, 'requestStatus', UPGRADE_REQUESTED);
-    this.store.updateAppProperty(appId, 'status', APPLICATION_STATUS.UPDATING);
-    this.service.installApplication(appId, data.params).catch(() => this.upgradeFailed(appId));
+
+    this.store.updateApplication(appId);
+    this.service.installApplication(appId, data.params).catch(() => {
+      this.store.notifyUpdateFailure(appId);
+    });
   }
 
-  upgradeFailed(appId) {
-    this.store.updateAppProperty(appId, 'requestStatus', UPGRADE_REQUEST_FAILURE);
+  dismissUpgradeSuccess(appId) {
+    this.store.acknowledgeSuccessfulUpdate(appId);
   }
 
   toggleIngressDomainHelpText(ingressPreviousState, ingressNewState) {
