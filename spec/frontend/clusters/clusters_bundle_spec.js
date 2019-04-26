@@ -6,7 +6,7 @@ import { loadHTMLFixture } from 'helpers/fixtures';
 import { setTestTimeout } from 'helpers/timeout';
 import $ from 'jquery';
 
-const { INSTALLING, INSTALLABLE, INSTALLED, NOT_INSTALLABLE } = APPLICATION_STATUS;
+const { INSTALLING, INSTALLABLE, INSTALLED } = APPLICATION_STATUS;
 
 describe('Clusters', () => {
   setTestTimeout(1000);
@@ -317,13 +317,12 @@ describe('Clusters', () => {
     let ingressNewState;
 
     beforeEach(() => {
-      ingressPreviousState = { status: INSTALLABLE };
-      ingressNewState = { status: INSTALLED, externalIp: '127.0.0.1' };
+      ingressPreviousState = { externalIp: null };
+      ingressNewState = { externalIp: '127.0.0.1' };
     });
 
-    describe(`when ingress application new status is ${INSTALLED}`, () => {
+    describe(`when ingress have an external ip assigned`, () => {
       beforeEach(() => {
-        ingressNewState.status = INSTALLED;
         cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
       });
 
@@ -338,31 +337,11 @@ describe('Clusters', () => {
       });
     });
 
-    describe(`when ingress application new status is different from ${INSTALLED}`, () => {
+    describe(`when ingress does not have an external ip assigned`, () => {
       it('hides custom domain help text', () => {
-        ingressNewState.status = NOT_INSTALLABLE;
-        cluster.ingressDomainHelpText.classList.remove('hide');
-
-        cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
-
-        expect(cluster.ingressDomainHelpText.classList.contains('hide')).toEqual(true);
-      });
-    });
-
-    describe('when ingress application new status and old status are the same', () => {
-      it('does not display custom domain help text', () => {
-        ingressPreviousState.status = INSTALLED;
-        ingressNewState.status = ingressPreviousState.status;
-
-        cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
-
-        expect(cluster.ingressDomainHelpText.classList.contains('hide')).toEqual(true);
-      });
-    });
-
-    describe(`when ingress new status is ${INSTALLED} and there isn’t an ip assigned`, () => {
-      it('does not display custom domain help text', () => {
+        ingressPreviousState.externalIp = '127.0.0.1';
         ingressNewState.externalIp = null;
+        cluster.ingressDomainHelpText.classList.remove('hide');
 
         cluster.toggleIngressDomainHelpText(ingressPreviousState, ingressNewState);
 
