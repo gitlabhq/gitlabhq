@@ -56,6 +56,8 @@ module Projects
       # overridden in EE
       def permitted_project_params
         {
+          metrics_setting_attributes: [:external_dashboard_url],
+
           error_tracking_setting_attributes: [
             :enabled,
             :api_host,
