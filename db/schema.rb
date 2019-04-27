@@ -187,6 +187,8 @@ ActiveRecord::Schema.define(version: 20190426180107) do
     t.string "encrypted_external_auth_client_key_iv"
     t.string "encrypted_external_auth_client_key_pass"
     t.string "encrypted_external_auth_client_key_pass_iv"
+    t.string "lets_encrypt_notification_email"
+    t.boolean "lets_encrypt_terms_of_service_accepted", default: false, null: false
     t.index ["usage_stats_set_by_user_id"], name: "index_application_settings_on_usage_stats_set_by_user_id", using: :btree
   end
 
