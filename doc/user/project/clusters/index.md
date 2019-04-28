@@ -257,11 +257,11 @@ GitLab will create the necessary service accounts and privileges in order to ins
   NOTE: **Note:**
   Restricted service account for deployment was [introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/51716) in GitLab 11.5.
 
-- When you install Helm Tiller into your cluster, the `tiller` service account
+- When you install Helm into your cluster, the `tiller` service account
   will be created with `cluster-admin` privileges in the `gitlab-managed-apps`
   namespace. This service account will be added to the installed Helm Tiller and will
   be used by Helm to install and run [GitLab managed applications](#installing-applications).
-  Helm Tiller will also create additional service accounts and other resources for each
+  Helm will also create additional service accounts and other resources for each
   installed application. Consult the documentation of the Helm charts for each application
   for details.
 
@@ -315,25 +315,29 @@ install it manually.
 ## Installing applications
 
 GitLab provides **GitLab Managed Apps**, a one-click install for various applications which can
-be added directly to your configured cluster. Those applications are
+be added directly to your configured cluster. These applications are
 needed for [Review Apps](../../../ci/review_apps/index.md) and
-[deployments](../../../ci/environments.md). You can install them after you
+[deployments](../../../ci/environments.md) when using [Auto DevOps](../../../topics/autodevops/index.md).
+You can install them after you
 [create a cluster](#adding-and-creating-a-new-gke-cluster-via-gitlab).
+
+Applications managed by GitLab will be installed onto the `gitlab-managed-apps` namespace. This differrent
+from the namespace used for project deployments. It is only created once and its name is not configurable.
 
 To see a list of available applications to install:
 
 1. Navigate to your project's **Operations > Kubernetes**.
 1. Select your cluster.
 
-Install Helm Tiller first because it's used to install other applications.
+Install Helm first as it's used to install other applications.
 
 NOTE: **Note:**
-As of GitLab 11.6, Helm Tiller will be upgraded to the latest version supported
+As of GitLab 11.6, Helm will be upgraded to the latest version supported
 by GitLab before installing any of the applications.
 
 | Application | GitLab version | Description | Helm Chart |
 | ----------- | :------------: | ----------- | --------------- |
-| [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
+| [Helm](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. | n/a |
 | [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination, and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps] or deploy your own web apps. | [stable/nginx-ingress](https://github.com/helm/charts/tree/master/stable/nginx-ingress) |
 | [Cert-Manager](https://docs.cert-manager.io/en/latest/) | 11.6+ | Cert-Manager is a native Kubernetes certificate management controller that helps with issuing certificates. Installing Cert-Manager on your cluster will issue a certificate by [Let's Encrypt](https://letsencrypt.org/) and ensure that certificates are valid and up-to-date. | [stable/cert-manager](https://github.com/helm/charts/tree/master/stable/cert-manager) |
 | [Prometheus](https://prometheus.io/docs/introduction/overview/) | 10.4+ | Prometheus is an open-source monitoring and alerting system useful to supervise your deployed applications. | [stable/prometheus](https://github.com/helm/charts/tree/master/stable/prometheus) |
@@ -345,9 +349,9 @@ With the exception of Knative, the applications will be installed in a dedicated
 namespace called `gitlab-managed-apps`.
 
 CAUTION: **Caution:**
-If you have an existing Kubernetes cluster with Tiller already installed,
+If you have an existing Kubernetes cluster with Helm already installed,
 you should be careful as GitLab cannot detect it. In this case, installing
-Tiller via the applications will result in the cluster having it twice, which
+Helm via the applications will result in the cluster having it twice, which
 can lead to confusion during deployments.
 
 ### Upgrading applications
@@ -384,7 +388,7 @@ To avoid installation errors:
 
 - Before starting the installation of applications, make sure that time is synchronized
   between your GitLab server and your Kubernetes cluster.
-- Ensure certificates are not out of sync.  When installing applications, GitLab expects a new cluster with no previous installation of Tiller.
+- Ensure certificates are not out of sync.  When installing applications, GitLab expects a new cluster with no previous installation of Helm.
 
   You can confirm that the certificates match via `kubectl`:
 
