@@ -33,7 +33,7 @@ GET /users
 ]
 ```
 
-You can also search for users by email or username with: `/users?search=John`
+You can also search for users by name or primary email using `?search=`. For example. `/users?search=John`.
 
 In addition, you can lookup users by username:
 
