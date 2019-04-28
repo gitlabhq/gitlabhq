@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "required": [
+    "unit",
+    "label"
+  ],
+  "oneOf": [
+    { "required": ["query"] },
+    { "required": ["query_range"] }
+  ],
+  "properties": {
+    "id": { "type": "string" },
+    "query_range": { "type": "string" },
+    "query": { "type": "string" },
+    "unit": { "type": "string" },
+    "label": { "type": "string" },
+    "track": { "type": "string" }
+  },
+  "additionalProperties": false
+}

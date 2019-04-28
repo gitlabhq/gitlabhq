@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "required": ["dashboard", "priority", "panel_groups"],
+  "properties": {
+    "dashboard": { "type": "string" },
+    "priority": { "type": "number" },
+    "panel_groups": {
+      "type": "array",
+      "items": { "$ref": "spec/fixtures/lib/gitlab/metrics/dashboard/schemas/panel_groups.json" }
+    }
+  },
+  "additionalProperties": false
+}
