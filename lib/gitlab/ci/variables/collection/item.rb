@@ -27,13 +27,9 @@ module Gitlab
           # don't expose `file` attribute at all (stems from what the runner
           # expects).
           #
-          # If the `variable_masking` feature is enabled we expose the `masked`
-          # attribute, otherwise it's not exposed.
-          #
           def to_runner_variable
             @variable.reject do |hash_key, hash_value|
-              (hash_key == :file && hash_value == false) ||
-                (hash_key == :masked && !Feature.enabled?(:variable_masking))
+              hash_key == :file && hash_value == false
             end
           end
 
