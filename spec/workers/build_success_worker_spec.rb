@@ -15,6 +15,7 @@ describe BuildSuccessWorker do
         let!(:build) { create(:ci_build, :deploy_to_production) }
 
         before do
+          allow(Deployments::FinishedWorker).to receive(:perform_async)
           Deployment.delete_all
           build.reload
         end

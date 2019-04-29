@@ -31,6 +31,20 @@ describe ApplicationSetting do
     it { is_expected.to allow_value("dev.gitlab.com").for(:commit_email_hostname) }
     it { is_expected.not_to allow_value("@dev.gitlab").for(:commit_email_hostname) }
 
+    it { is_expected.to allow_value("myemail@gitlab.com").for(:lets_encrypt_notification_email) }
+    it { is_expected.to allow_value(nil).for(:lets_encrypt_notification_email) }
+    it { is_expected.not_to allow_value("notanemail").for(:lets_encrypt_notification_email) }
+    it { is_expected.not_to allow_value("myemail@example.com").for(:lets_encrypt_notification_email) }
+    it { is_expected.to allow_value("myemail@test.example.com").for(:lets_encrypt_notification_email) }
+
+    context "when user accepted let's encrypt terms of service" do
+      before do
+        setting.update(lets_encrypt_terms_of_service_accepted: true)
+      end
+
+      it { is_expected.not_to allow_value(nil).for(:lets_encrypt_notification_email) }
+    end
+
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
         setting.update(default_artifacts_expire_in: 'a')

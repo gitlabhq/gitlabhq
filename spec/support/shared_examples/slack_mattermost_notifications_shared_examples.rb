@@ -106,6 +106,14 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
+    it "calls Slack/Mattermost API for deployment events" do
+      deployment_event_data = { object_kind: 'deployment' }
+
+      chat_service.execute(deployment_event_data)
+
+      expect(WebMock).to have_requested(:post, webhook_url).once
+    end
+
     it 'uses the username as an option for slack when configured' do
       allow(chat_service).to receive(:username).and_return(username)
 

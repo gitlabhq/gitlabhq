@@ -1,5 +1,17 @@
 require 'sidekiq/web'
 
+def enable_reliable_fetch?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_reliable_fetcher, default_enabled: true)
+end
+
+def enable_semi_reliable_fetch_mode?
+  return true unless Feature::FlipperFeature.table_exists?
+
+  Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+end
+
 # Disable the Sidekiq Rack session since GitLab already has its own session store.
 # CSRF protection still works (https://github.com/mperham/sidekiq/commit/315504e766c4fd88a29b7772169060afc4c40329).
 Sidekiq::Web.set :sessions, false
@@ -45,9 +57,8 @@ Sidekiq.configure_server do |config|
     ActiveRecord::Base.clear_all_connections!
   end
 
-  if Feature::FlipperFeature.table_exists? && Feature.enabled?(:gitlab_sidekiq_reliable_fetcher)
-    # By default we're going to use Semi Reliable Fetch
-    config.options[:semi_reliable_fetch] = Feature.enabled?(:gitlab_sidekiq_enable_semi_reliable_fetcher, default_enabled: true)
+  if enable_reliable_fetch?
+    config.options[:semi_reliable_fetch] = enable_semi_reliable_fetch_mode?
     Sidekiq::ReliableFetch.setup_reliable_fetch!(config)
   end
 

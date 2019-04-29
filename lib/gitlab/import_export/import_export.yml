@@ -75,6 +75,7 @@ project_tree:
   - :project_badges
   - :ci_cd_settings
   - :error_tracking_setting
+  - :metrics_setting
 
 # Only include the following attributes for the models specified.
 included_attributes:

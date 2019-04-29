@@ -27,13 +27,13 @@ describe Gitlab::Profiler do
     it 'sends a POST request when data is passed' do
       post_data = '{"a":1}'
 
-      expect(app).to receive(:post).with(anything, post_data, anything)
+      expect(app).to receive(:post).with(anything, params: post_data, headers: anything)
 
       described_class.profile('/', post_data: post_data)
     end
 
     it 'uses the private_token for auth if given' do
-      expect(app).to receive(:get).with('/', nil, 'Private-Token' => private_token)
+      expect(app).to receive(:get).with('/', params: nil, headers: { 'Private-Token' => private_token })
       expect(app).to receive(:get).with('/api/v4/users')
 
       described_class.profile('/', private_token: private_token)
@@ -51,7 +51,7 @@ describe Gitlab::Profiler do
       user = double(:user)
 
       expect(described_class).to receive(:with_user).with(nil).and_call_original
-      expect(app).to receive(:get).with('/', nil, 'Private-Token' => private_token)
+      expect(app).to receive(:get).with('/', params: nil, headers: { 'Private-Token' => private_token })
       expect(app).to receive(:get).with('/api/v4/users')
 
       described_class.profile('/', user: user, private_token: private_token)

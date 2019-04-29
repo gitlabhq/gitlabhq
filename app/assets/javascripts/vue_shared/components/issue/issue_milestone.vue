@@ -17,15 +17,13 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      milestoneDue: this.milestone.due_date ? parsePikadayDate(this.milestone.due_date) : null,
-      milestoneStart: this.milestone.start_date
-        ? parsePikadayDate(this.milestone.start_date)
-        : null,
-    };
-  },
   computed: {
+    milestoneDue() {
+      return this.milestone.due_date ? parsePikadayDate(this.milestone.due_date) : null;
+    },
+    milestoneStart() {
+      return this.milestone.start_date ? parsePikadayDate(this.milestone.start_date) : null;
+    },
     isMilestoneStarted() {
       if (!this.milestoneStart) {
         return false;

@@ -229,6 +229,16 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             if: -> (setting) { setting.external_auth_client_cert.present? }
 
+  validates :lets_encrypt_notification_email,
+            devise_email: true,
+            format: { without: /@example\.(com|org|net)\z/,
+                      message: N_("Let's Encrypt does not accept emails on example.com") },
+            allow_blank: true
+
+  validates :lets_encrypt_notification_email,
+            presence: true,
+            if: :lets_encrypt_terms_of_service_accepted?
+
   validates_with X509CertificateCredentialsValidator,
                  certificate: :external_auth_client_cert,
                  pkey: :external_auth_client_key,

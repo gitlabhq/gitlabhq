@@ -423,6 +423,7 @@ Service:
 - wiki_page_events
 - confidential_issues_events
 - confidential_note_events
+- deployment_events
 ProjectHook:
 - id
 - url
@@ -606,7 +607,6 @@ ResourceLabelEvent:
 - user_id
 - created_at
 ErrorTracking::ProjectErrorTrackingSetting:
-- id
 - api_url
 - project_id
 - project_name
@@ -626,3 +626,8 @@ MergeRequestAssignee:
 - id
 - user_id
 - merge_request_id
+ProjectMetricsSetting:
+- project_id
+- external_dashboard_url
+- created_at
+- updated_at

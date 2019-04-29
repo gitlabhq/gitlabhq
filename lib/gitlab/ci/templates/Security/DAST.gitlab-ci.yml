@@ -30,6 +30,7 @@ dast:
     - |
       function dast_run() {
         docker run \
+        --env DAST_FULL_SCAN_ENABLED \
         --env DAST_TARGET_AVAILABILITY_TIMEOUT \
         --volume "$PWD:/output" \
         --volume /var/run/docker.sock:/var/run/docker.sock \
@@ -46,7 +47,8 @@ dast:
           --auth-username $DAST_USERNAME \
           --auth-password $DAST_PASSWORD \
           --auth-username-field $DAST_USERNAME_FIELD \
-          --auth-password-field $DAST_PASSWORD_FIELD
+          --auth-password-field $DAST_PASSWORD_FIELD \
+          --auth-exclude-urls $DAST_AUTH_EXCLUDE_URLS
       else
         dast_run
       fi

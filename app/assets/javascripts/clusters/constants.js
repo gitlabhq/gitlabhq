@@ -7,6 +7,7 @@ export const CLUSTER_TYPE = {
 
 // These need to match what is returned from the server
 export const APPLICATION_STATUS = {
+  NO_STATUS: null,
   NOT_INSTALLABLE: 'not_installable',
   INSTALLABLE: 'installable',
   SCHEDULED: 'scheduled',
@@ -27,17 +28,13 @@ export const APPLICATION_STATUS = {
 export const APPLICATION_INSTALLED_STATUSES = [
   APPLICATION_STATUS.INSTALLED,
   APPLICATION_STATUS.UPDATING,
-  APPLICATION_STATUS.UPDATED,
-  APPLICATION_STATUS.UPDATE_ERRORED,
-  APPLICATION_STATUS.UNINSTALLING,
-  APPLICATION_STATUS.UNINSTALL_ERRORED,
 ];
 
 // These are only used client-side
-export const REQUEST_SUBMITTED = 'request-submitted';
-export const REQUEST_FAILURE = 'request-failure';
-export const UPGRADE_REQUESTED = 'upgrade-requested';
-export const UPGRADE_REQUEST_FAILURE = 'upgrade-request-failure';
+
+export const UPDATE_EVENT = 'update';
+export const INSTALL_EVENT = 'install';
+
 export const INGRESS = 'ingress';
 export const JUPYTER = 'jupyter';
 export const KNATIVE = 'knative';
