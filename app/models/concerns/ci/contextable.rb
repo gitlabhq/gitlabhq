@@ -70,8 +70,8 @@ module Ci
         variables.append(key: 'CI_COMMIT_SHA', value: sha)
         variables.append(key: 'CI_COMMIT_SHORT_SHA', value: short_sha)
         variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
-        variables.append(key: 'CI_COMMIT_REF_NAME', value: ref)
-        variables.append(key: 'CI_COMMIT_REF_SLUG', value: ref_slug)
+        variables.append(key: 'CI_COMMIT_REF_NAME', value: source_ref)
+        variables.append(key: 'CI_COMMIT_REF_SLUG', value: source_ref_slug)
         variables.append(key: "CI_COMMIT_TAG", value: ref) if tag?
         variables.append(key: "CI_PIPELINE_TRIGGERED", value: 'true') if trigger_request
         variables.append(key: "CI_JOB_MANUAL", value: 'true') if action?
@@ -85,8 +85,8 @@ module Ci
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.append(key: 'CI_BUILD_REF', value: sha)
         variables.append(key: 'CI_BUILD_BEFORE_SHA', value: before_sha)
-        variables.append(key: 'CI_BUILD_REF_NAME', value: ref)
-        variables.append(key: 'CI_BUILD_REF_SLUG', value: ref_slug)
+        variables.append(key: 'CI_BUILD_REF_NAME', value: source_ref)
+        variables.append(key: 'CI_BUILD_REF_SLUG', value: source_ref_slug)
         variables.append(key: 'CI_BUILD_NAME', value: name)
         variables.append(key: 'CI_BUILD_STAGE', value: stage)
         variables.append(key: "CI_BUILD_TAG", value: ref) if tag?

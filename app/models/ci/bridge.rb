@@ -4,6 +4,7 @@ module Ci
   class Bridge < CommitStatus
     include Ci::Processable
     include Ci::Contextable
+    include Ci::PipelineDelegator
     include Importable
     include AfterCommitQueue
     include HasRef
@@ -12,8 +13,6 @@ module Ci
     belongs_to :project
     belongs_to :trigger_request
     validates :ref, presence: true
-
-    delegate :merge_request_event?, to: :pipeline
 
     def self.retry(bridge, current_user)
       raise NotImplementedError
