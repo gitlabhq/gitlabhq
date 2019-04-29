@@ -12,6 +12,7 @@ import stageStagingComponent from './components/stage_staging_component.vue';
 import stageTestComponent from './components/stage_test_component.vue';
 import CycleAnalyticsService from './cycle_analytics_service';
 import CycleAnalyticsStore from './cycle_analytics_store';
+import { __ } from '~/locale';
 
 Vue.use(Translate);
 
@@ -61,7 +62,7 @@ export default () => {
     methods: {
       handleError() {
         this.store.setErrorState(true);
-        return new Flash('There was an error while fetching cycle analytics data.');
+        return new Flash(__('There was an error while fetching cycle analytics data.'));
       },
       initDropdown() {
         const $dropdown = $('.js-ca-dropdown');
