@@ -2,7 +2,7 @@
 - page_title _("CI / CD Settings")
 - page_title _("CI / CD")
 
-- expanded = Rails.env.test?
+- expanded = expanded_by_default?
 - general_expanded = @project.errors.empty? ? expanded : true
 
 %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
