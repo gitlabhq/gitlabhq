@@ -79,7 +79,11 @@ class Deployment < ApplicationRecord
   end
 
   def cluster
-    project.deployment_platform(environment: environment.name)&.cluster
+    platform = project.deployment_platform(environment: environment.name)
+
+    if platform.present? && platform.respond_to?(:cluster)
+      platform.cluster
+    end
   end
 
   def last?

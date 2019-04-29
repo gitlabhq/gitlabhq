@@ -1,0 +1,5 @@
+---
+title: Fix Kubernetes service template deployment jobs broken as of 11.10.0
+merge_request: 27687
+author:
+type: fixed
