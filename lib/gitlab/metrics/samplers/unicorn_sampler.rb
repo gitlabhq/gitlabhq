@@ -27,13 +27,10 @@ module Gitlab
 
         def sample
           Raindrops::Linux.tcp_listener_stats(tcp_listeners).each do |addr, stats|
-            metrics[:unicorn_active_connections].set({ socket_type: 'tcp', socket_address: addr }, stats.active)
-            metrics[:unicorn_queued_connections].set({ socket_type: 'tcp', socket_address: addr }, stats.queued)
+            set_unicorn_connection_metrics('tcp', addr, stats)
           end
-
           Raindrops::Linux.unix_listener_stats(unix_listeners).each do |addr, stats|
-            metrics[:unicorn_active_connections].set({ socket_type: 'unix', socket_address: addr }, stats.active)
-            metrics[:unicorn_queued_connections].set({ socket_type: 'unix', socket_address: addr }, stats.queued)
+            set_unicorn_connection_metrics('unix', addr, stats)
           end
 
           metrics[:unicorn_workers].set({}, unicorn_workers_count)
@@ -45,8 +42,11 @@ module Gitlab
           @tcp_listeners ||= Unicorn.listener_names.grep(%r{\A[^/]+:\d+\z})
         end
 
-        def pid
-          @pid ||= Process.pid
+        def set_unicorn_connection_metrics(type, addr, stats)
+          labels = { socket_type: type, socket_address: addr }
+
+          metrics[:unicorn_active_connections].set(labels, stats.active)
+          metrics[:unicorn_queued_connections].set(labels, stats.queued)
         end
 
         def unix_listeners
@@ -58,7 +58,7 @@ module Gitlab
         end
 
         def unicorn_workers_count
-          Sys::ProcTable.ps.select {|p| p.cmdline.match(/unicorn_rails worker/)}.count
+          Sys::ProcTable.ps.select {|p| p.cmdline.match(/unicorn_rails worker.+ #{Rails.root.to_s}/)}.count
         end
       end
     end
