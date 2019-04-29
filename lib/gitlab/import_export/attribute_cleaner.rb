@@ -18,13 +18,15 @@ module Gitlab
 
       def clean
         @relation_hash.reject do |key, _value|
-          (prohibited_key?(key) && !permitted_key?(key)) || !@relation_class.attribute_method?(key) || excluded_key?(key)
+          prohibited_key?(key) || !@relation_class.attribute_method?(key) || excluded_key?(key)
         end.except('id')
       end
 
       private
 
       def prohibited_key?(key)
+        return false if permitted_key?(key)
+
         'cached_markdown_version' == key || PROHIBITED_SUFFIXES.any? {|suffix| key.end_with?(suffix)}
       end
 
