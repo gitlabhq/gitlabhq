@@ -24,7 +24,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
     end
 
     context "when phase is #{a_phase}" do
-      context 'when not timeouted' do
+      context 'when not timed_out' do
         it 'reschedule a new check' do
           expect(worker_class).to receive(:perform_in).once
           expect(service).not_to receive(:remove_installation_pod)
@@ -100,7 +100,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
     end
 
     context 'when timed out' do
-      let(:application) { create(:clusters_applications_prometheus, :timeouted, :uninstalling) }
+      let(:application) { create(:clusters_applications_prometheus, :timed_out, :uninstalling) }
 
       before do
         expect(service).to receive(:installation_phase).once.and_return(phase)

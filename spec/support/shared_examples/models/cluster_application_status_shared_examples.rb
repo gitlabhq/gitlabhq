@@ -209,7 +209,7 @@ shared_examples 'cluster application status specs' do |application_name|
       :update_errored    | false
       :uninstalling      | false
       :uninstall_errored | false
-      :timeouted         | false
+      :timed_out         | false
     end
 
     with_them do

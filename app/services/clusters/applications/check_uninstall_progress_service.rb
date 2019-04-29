@@ -35,7 +35,7 @@ module Clusters
       end
 
       def check_timeout
-        if timeouted?
+        if timed_out?
           app.make_errored!("Operation timed out. Check pod logs for #{pod_name} for more details.")
         else
           WaitForUninstallAppWorker.perform_in(WaitForUninstallAppWorker::INTERVAL, app.name, app.id)
@@ -46,7 +46,7 @@ module Clusters
         app.uninstall_command.pod_name
       end
 
-      def timeouted?
+      def timed_out?
         Time.now.utc - app.updated_at.to_time.utc > WaitForUninstallAppWorker::TIMEOUT
       end
 
