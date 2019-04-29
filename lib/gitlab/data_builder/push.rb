@@ -58,7 +58,10 @@ module Gitlab
       # }
       #
       # rubocop:disable Metrics/ParameterLists
-      def build(project, user, oldrev, newrev, ref, commits = [], message = nil, commits_count: nil, push_options: {})
+      def build(
+          project:, user:, ref:, oldrev: nil, newrev: nil,
+          commits: [], commits_count: nil, message: nil, push_options: {})
+
         commits = Array(commits)
 
         # Total commits count
@@ -113,7 +116,12 @@ module Gitlab
         ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{project.default_branch}"
         commits = project.repository.commits(project.default_branch.to_s, limit: 3)
 
-        build(project, user, commits.last&.id, commits.first&.id, ref, commits)
+        build(project: project,
+              user: user,
+              oldrev: commits.last&.id,
+              newrev: commits.first&.id,
+              ref: ref,
+              commits: commits)
       end
 
       def sample_data
