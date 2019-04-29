@@ -4,6 +4,7 @@ module Gitlab
   module ImportExport
     class AttributeCleaner
       ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES + ['group_id']
+      PROHIBITED_SUFFIXES = %w(_id _html).freeze
 
       def self.clean(*args)
         new(*args).clean
@@ -17,24 +18,17 @@ module Gitlab
 
       def clean
         @relation_hash.reject do |key, _value|
-          prohibited_key?(key) || !@relation_class.attribute_method?(key) || excluded_key?(key)
+          (prohibited_key?(key) && !permitted_key?(key)) || !@relation_class.attribute_method?(key) || excluded_key?(key)
         end.except('id')
       end
 
       private
 
       def prohibited_key?(key)
-        return false if allowed_reference?(key)
-
-        return true if 'cached_markdown_version'.equal?(key)
-
-        prohibited_suffixes = %w(_id _html)
-        prohibited_suffixes.any? do |suffix|
-          true if key.end_with?(suffix)
-        end
+        'cached_markdown_version' == key || PROHIBITED_SUFFIXES.any? {|suffix| key.end_with?(suffix)}
       end
 
-      def allowed_reference?(key)
+      def permitted_key?(key)
         ALLOWED_REFERENCES.include?(key)
       end
 
