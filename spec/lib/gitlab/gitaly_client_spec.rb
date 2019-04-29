@@ -142,6 +142,48 @@ describe Gitlab::GitalyClient do
     end
   end
 
+  describe '.request_kwargs' do
+    context 'when catfile-cache feature is enabled' do
+      before do
+        stub_feature_flags('gitaly_catfile-cache': true)
+      end
+
+      it 'sets the gitaly-session-id in the metadata' do
+        results = described_class.request_kwargs('default', nil)
+        expect(results[:metadata]).to include('gitaly-session-id')
+      end
+
+      context 'when RequestStore is not enabled' do
+        it 'sets a different gitaly-session-id per request' do
+          gitaly_session_id = described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']
+
+          expect(described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']).not_to eq(gitaly_session_id)
+        end
+      end
+
+      context 'when RequestStore is enabled', :request_store do
+        it 'sets the same gitaly-session-id on every outgoing request metadata' do
+          gitaly_session_id = described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']
+
+          3.times do
+            expect(described_class.request_kwargs('default', nil)[:metadata]['gitaly-session-id']).to eq(gitaly_session_id)
+          end
+        end
+      end
+    end
+
+    context 'when catfile-cache feature is disabled' do
+      before do
+        stub_feature_flags({ 'gitaly_catfile-cache': false })
+      end
+
+      it 'does not set the gitaly-session-id in the metadata' do
+        results = described_class.request_kwargs('default', nil)
+        expect(results[:metadata]).not_to include('gitaly-session-id')
+      end
+    end
+  end
+
   describe 'enforce_gitaly_request_limits?' do
     def call_gitaly(count = 1)
       (1..count).each do
