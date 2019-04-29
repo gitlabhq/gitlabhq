@@ -6688,6 +6688,9 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
+msgid "Preview Markdown"
+msgstr ""
+
 msgid "Preview changes"
 msgstr ""
 

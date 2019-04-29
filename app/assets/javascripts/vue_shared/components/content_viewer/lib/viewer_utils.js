@@ -1,10 +1,12 @@
+import { __ } from '~/locale';
+
 const viewers = {
   image: {
     id: 'image',
   },
   markdown: {
     id: 'markdown',
-    previewTitle: 'Preview Markdown',
+    previewTitle: __('Preview Markdown'),
   },
 };
 
