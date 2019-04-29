@@ -1,7 +1,7 @@
 - breadcrumb_title "CI / CD Settings"
 - page_title "CI / CD"
 
-- expanded = Rails.env.test?
+- expanded = expanded_by_default?
 
 %section.settings#ci-variables.no-animate{ class: ('expanded' if expanded) }
   .settings-header
