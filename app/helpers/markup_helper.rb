@@ -4,7 +4,7 @@ require 'nokogiri'
 
 module MarkupHelper
   include ActionView::Helpers::TagHelper
-  include ActionView::Context
+  include ::Gitlab::ActionViewOutput::Context
 
   def plain?(filename)
     Gitlab::MarkupHelper.plain?(filename)
