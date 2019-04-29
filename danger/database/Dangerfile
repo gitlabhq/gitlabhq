@@ -13,7 +13,6 @@ DB_FILES = [
   'lib/gitlab/github_import/',
   'lib/gitlab/sql/',
   'rubocop/cop/migration',
-  'ee/db/',
   'ee/lib/gitlab/database/'
 ].freeze
 

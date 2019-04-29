@@ -5,8 +5,7 @@ require 'spec_helper'
 
 describe ActiveRecord::Schema do
   let(:latest_migration_timestamp) do
-    migrations_paths = %w[db ee/db]
-      .product(%w[migrate post_migrate])
+    migrations_paths = %w[db/migrate db/post_migrate]
       .map { |path| Rails.root.join(*path, '*') }
 
     migrations = Dir[*migrations_paths]
