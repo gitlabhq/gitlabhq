@@ -27,11 +27,9 @@ module QA
             finished_loading?
           end
 
-          def has_branch_title?(branch_title)
+          def has_no_branch?(branch_name)
             within_element(:all_branches) do
-              within(".item-title") do
-                has_text?(branch_title)
-              end
+              has_no_css?(".js-branch-#{branch_name}")
             end
           end
 
@@ -49,13 +47,12 @@ module QA
             end
           end
 
-          def wait_for_texts_not_to_be_visible(texts)
-            text_not_visible = wait do
-              texts.all? do |text|
-                has_no_text?(text)
-              end
+          def wait_for_branch_not_present(branch_name)
+            branch_not_present = wait(reload: false) do
+              has_no_branch?(branch_name)
             end
-            raise "Expected text(s) #{texts} not to be visible" unless text_not_visible
+
+            raise "Expected branch `#{branch_name}` not to be present" unless branch_not_present
           end
         end
       end
