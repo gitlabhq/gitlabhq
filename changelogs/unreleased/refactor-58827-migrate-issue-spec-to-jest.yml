@@ -1,0 +1,5 @@
+---
+title: 'refactor(issue): Refactored issue tests from Karma to Jest'
+merge_request: 27673
+author: Martin Hobert
+type: other

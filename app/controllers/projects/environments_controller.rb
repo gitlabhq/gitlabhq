@@ -10,8 +10,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index]
-  before_action only: [:metrics, :additional_metrics] do
+  before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
     push_frontend_feature_flag(:metrics_time_window)
+    push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
   end
 
   def index
@@ -152,6 +153,20 @@ class Projects::EnvironmentsController < Projects::ApplicationController
         additional_metrics = environment.additional_metrics(*metrics_params) || {}
 
         render json: additional_metrics, status: additional_metrics.any? ? :ok : :no_content
+      end
+    end
+  end
+
+  def metrics_dashboard
+    return render_403 unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, @project)
+
+    result = Gitlab::Metrics::Dashboard::Service.new(@project, @current_user, environment: environment).get_dashboard
+
+    respond_to do |format|
+      if result[:status] == :success
+        format.json { render status: :ok, json: result }
+      else
+        format.json { render status: result[:http_status], json: result }
       end
     end
   end

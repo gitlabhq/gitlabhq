@@ -1,0 +1,5 @@
+---
+title: 'Refactored notes tests from Karma to Jest'
+merge_request: 27648
+author: Martin Hobert
+type: other

@@ -143,14 +143,16 @@ This means that the value of the variable will be hidden in job logs,
 though it must match certain requirements to do so:
 
 - The value must be in a single line.
-- The value must not have escape characters.
+- The value must contain only letters, numbers, or underscores.
+- The value must not have escape characters, such as `\"`
 - The value must not use variables.
 - The value must not have any whitespace.
 - The value must be at least 8 characters long.
 
-If the value does not meet the requirements above, then the CI variable will fail to save.
-In order to save, either alter the value to meet the masking requirements
-or disable `Masked` for the variable.
+The above rules are validated using the regex `/\A\w{8,}\z/`. If the value
+does not meet the requirements above, then the CI variable will fail to save.
+In order to save, either alter the value to meet the masking requirements or
+disable `Masked` for the variable.
 
 ### Syntax of environment variables in job scripts
 

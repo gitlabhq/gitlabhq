@@ -461,6 +461,43 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe 'metrics_dashboard' do
+    context 'when prometheus endpoint is disabled' do
+      before do
+        stub_feature_flags(environment_metrics_use_prometheus_endpoint: false)
+      end
+
+      it 'responds with status code 403' do
+        get :metrics_dashboard, params: environment_params(format: :json)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when prometheus endpoint is enabled' do
+      it 'returns a json representation of the environment dashboard' do
+        get :metrics_dashboard, params: environment_params(format: :json)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.keys).to contain_exactly('dashboard', 'status')
+        expect(json_response['dashboard']).to be_an_instance_of(Hash)
+      end
+
+      context 'when the dashboard could not be provided' do
+        before do
+          allow(YAML).to receive(:safe_load).and_return({})
+        end
+
+        it 'returns an error response' do
+          get :metrics_dashboard, params: environment_params(format: :json)
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response.keys).to contain_exactly('message', 'status', 'http_status')
+        end
+      end
+    end
+  end
+
   describe 'GET #search' do
     before do
       create(:environment, name: 'staging', project: project)

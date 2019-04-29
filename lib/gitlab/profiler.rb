@@ -73,7 +73,7 @@ module Gitlab
 
       result = with_custom_logger(logger) do
         with_user(user) do
-          RubyProf.profile { app.public_send(verb, url, post_data, headers) } # rubocop:disable GitlabSecurity/PublicSend
+          RubyProf.profile { app.public_send(verb, url, params: post_data, headers: headers) } # rubocop:disable GitlabSecurity/PublicSend
         end
       end
 

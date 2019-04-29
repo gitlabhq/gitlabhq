@@ -83,6 +83,7 @@
 - pipeline_processing:ci_build_schedule
 
 - deployment:deployments_success
+- deployment:deployments_finished
 
 - repository_check:repository_check_clear
 - repository_check:repository_check_batch

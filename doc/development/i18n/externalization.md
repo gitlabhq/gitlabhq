@@ -300,7 +300,7 @@ file in. Once the changes are on master, they will be picked up by
 [Crowdin](http://translate.gitlab.com) and be presented for translation.
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file
-and regenerate it using the same command. Confirm that you are not deleting any strings accidentally by looking over the diff.
+and regenerate it using the same command.
 
 ### Validating PO files
 
