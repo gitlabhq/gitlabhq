@@ -75,6 +75,13 @@ describe Todos::Destroy::EntityLeaveService do
           project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
         end
 
+        it 'enqueues the PrivateFeaturesWorker' do
+          expect(TodosDestroyer::PrivateFeaturesWorker)
+            .to receive(:perform_async).with(project.id, user.id)
+
+          subject
+        end
+
         context 'confidential issues' do
           context 'when a user is not an author of confidential issue' do
             it 'removes only confidential issues todos' do
@@ -244,6 +251,13 @@ describe Todos::Destroy::EntityLeaveService do
         before do
           group.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
           project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        end
+
+        it 'enqueues the PrivateFeaturesWorker' do
+          expect(TodosDestroyer::PrivateFeaturesWorker)
+            .to receive(:perform_async).with(project.id, user.id)
+
+          subject
         end
 
         context 'when user is not member' do

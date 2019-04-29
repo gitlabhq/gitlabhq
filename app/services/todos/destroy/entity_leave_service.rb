@@ -37,8 +37,8 @@ module Todos
       private
 
       def enqueue_private_features_worker
-        project_ids.each do |project_id|
-          TodosDestroyer::PrivateFeaturesWorker.perform_async(project_id, user.id)
+        projects.each do |project|
+          TodosDestroyer::PrivateFeaturesWorker.perform_async(project.id, user.id)
         end
       end
 
@@ -62,9 +62,8 @@ module Todos
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      override :project_ids
       # rubocop: disable CodeReuse/ActiveRecord
-      def project_ids
+      def projects
         condition = case entity
                     when Project
                       { id: entity.id }
@@ -72,13 +71,13 @@ module Todos
                       { namespace_id: non_member_groups }
                     end
 
-        Project.where(condition).select(:id)
+        Project.where(condition)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
       # rubocop: disable CodeReuse/ActiveRecord
       def non_authorized_projects
-        project_ids.where('id NOT IN (?)', user.authorized_projects.select(:id))
+        projects.where('id NOT IN (?)', user.authorized_projects.select(:id))
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -110,7 +109,7 @@ module Todos
         authorized_reporter_projects = user
           .authorized_projects(Gitlab::Access::REPORTER).select(:id)
 
-        Issue.where(project_id: project_ids, confidential: true)
+        Issue.where(project_id: projects, confidential: true)
           .where('project_id NOT IN(?)', authorized_reporter_projects)
           .where('author_id != ?', user.id)
           .where('id NOT IN (?)', assigned_ids)
