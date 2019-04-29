@@ -1,7 +1,7 @@
 import axios from '../../lib/utils/axios_utils';
 import statusCodes from '../../lib/utils/http_status';
 import { backOff } from '../../lib/utils/common_utils';
-import { s__ } from '../../locale';
+import { s__, __ } from '../../locale';
 
 const MAX_REQUESTS = 3;
 
@@ -15,7 +15,7 @@ function backOffRequest(makeRequestCallback) {
           if (requestCounter < MAX_REQUESTS) {
             next();
           } else {
-            stop(new Error('Failed to connect to the prometheus server'));
+            stop(new Error(__('Failed to connect to the prometheus server')));
           }
         } else {
           stop(resp);
