@@ -2487,4 +2487,69 @@ describe Repository do
       repository.merge_base('master', 'fix')
     end
   end
+
+  describe '#create_if_not_exists' do
+    let(:project) { create(:project) }
+    let(:repository) { project.repository }
+
+    it 'creates the repository if it did not exist' do
+      expect { repository.create_if_not_exists }.to change { repository.exists? }.from(false).to(true)
+    end
+
+    it 'calls out to the repository client to create a repo' do
+      expect(repository.raw.gitaly_repository_client).to receive(:create_repository)
+
+      repository.create_if_not_exists
+    end
+
+    context 'it does nothing if the repository already existed' do
+      let(:project) { create(:project, :repository) }
+
+      it 'does nothing if the repository already existed' do
+        expect(repository.raw.gitaly_repository_client).not_to receive(:create_repository)
+
+        repository.create_if_not_exists
+      end
+    end
+
+    context 'when the repository exists but the cache is not up to date' do
+      let(:project) { create(:project, :repository) }
+
+      it 'does not raise errors' do
+        allow(repository).to receive(:exists?).and_return(false)
+        expect(repository.raw).to receive(:create_repository).and_call_original
+
+        expect { repository.create_if_not_exists }.not_to raise_error
+      end
+    end
+  end
+
+  describe "#blobs_metadata" do
+    set(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
+
+    def expect_metadata_blob(thing)
+      expect(thing).to be_a(Blob)
+      expect(thing.data).to be_empty
+    end
+
+    it "returns blob metadata in batch for HEAD" do
+      result = repository.blobs_metadata(["bar/branch-test.txt", "README.md", "does/not/exist"])
+
+      expect_metadata_blob(result.first)
+      expect_metadata_blob(result.second)
+      expect(result.size).to eq(2)
+    end
+
+    it "returns blob metadata for a specified ref" do
+      result = repository.blobs_metadata(["files/ruby/feature.rb"], "feature")
+
+      expect_metadata_blob(result.first)
+    end
+
+    it "performs a single gitaly call", :request_store do
+      expect { repository.blobs_metadata(["bar/branch-test.txt", "readme.txt", "does/not/exist"]) }
+        .to change { Gitlab::GitalyClient.get_request_count }.by(1)
+    end
+  end
 end

@@ -16,7 +16,7 @@
 gitlab:assets:compile:
   <<: *assets-compile-cache
   extends: .dedicated-no-docs-pull-cache-job
-  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.21-chrome-71.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
+  image: dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.5.3-git-2.21-chrome-73.0-node-8.x-yarn-1.12-graphicsmagick-1.3.29-docker-18.06.1
   dependencies:
     - setup-test-env
   services:
@@ -38,6 +38,10 @@ gitlab:assets:compile:
     - bundle exec rake gitlab:assets:compile
     - time scripts/build_assets_image
     - scripts/clean-old-cached-assets
+    # Play dependent manual jobs
+    - install_api_client_dependencies_with_apt
+    - play_job "review-build-cng" || true # this job might not exist so ignore the failure if it cannot be played
+    - play_job "schedule:review-build-cng" || true # this job might not exist so ignore the failure if it cannot be played
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -103,7 +107,7 @@ gitlab:ui:visual:
       - $CI_COMMIT_MESSAGE =~ /\[skip visual\]/i
   artifacts:
     paths:
-      - tests/__image_snapshots__/
+      - gitlab-ui/tests/__image_snapshots__/
     when: always
 
 karma:

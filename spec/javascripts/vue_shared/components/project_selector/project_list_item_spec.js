@@ -9,8 +9,8 @@ describe('ProjectListItem component', () => {
   let wrapper;
   let vm;
   let options;
-  loadJSONFixtures('projects.json');
-  const project = getJSONFixture('projects.json')[0];
+  loadJSONFixtures('static/projects.json');
+  const project = getJSONFixture('static/projects.json')[0];
 
   beforeEach(() => {
     options = {

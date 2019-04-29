@@ -11,7 +11,7 @@
   }
 
   &-body {
-    height: 120px;
+    min-height: 120px;
 
     &-warning {
       background-color: $orange-50;
@@ -22,10 +22,8 @@
     }
   }
 
-  &-time-ago {
-    &-icon {
-      color: $gray-500;
-    }
+  &-icon {
+    color: $gray-500;
   }
 
   &-footer {

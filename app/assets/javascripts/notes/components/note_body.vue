@@ -122,6 +122,7 @@ export default {
       v-model="note.note"
       :data-update-url="note.path"
       class="hidden js-task-list-field"
+      dir="auto"
     ></textarea>
     <note-edited-text
       v-if="note.last_edited_at"

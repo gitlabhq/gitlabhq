@@ -12,7 +12,16 @@ module Projects
       private
 
       def project_update_params
-        error_tracking_params
+        error_tracking_params.merge(metrics_setting_params)
+      end
+
+      def metrics_setting_params
+        attribs = params[:metrics_setting_attributes]
+        return {} unless attribs
+
+        destroy = attribs[:external_dashboard_url].blank?
+
+        { metrics_setting_attributes: attribs.merge(_destroy: destroy) }
       end
 
       def error_tracking_params

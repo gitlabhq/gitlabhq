@@ -79,6 +79,7 @@ gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 # GraphQL API
 gem 'graphql', '~> 1.8.0'
 gem 'graphiql-rails', '~> 1.4.10'
+gem 'apollo_upload_server', '~> 2.0.0.beta3'
 
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'

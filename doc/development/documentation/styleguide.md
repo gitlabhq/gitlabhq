@@ -362,16 +362,23 @@ For other punctuation rules, please refer to the
   E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
 
-### Links to confidential issues
+### Links requiring permissions
 
-Don't link directly to [confidential issues](../../user/project/issues/confidential_issues.md). These will fail for:
+Don't link directly to:
+
+- [Confidential issues](../../user/project/issues/confidential_issues.md).
+- Project features that require [special permissions](../../user/permissions.md) to view.
+
+These will fail for:
 
 - Those without sufficient permissions.
 - Automated link checkers.
 
 Instead:
 
-- Mention in the text that the information is contained in a confidential issue. This will reduce confusion.
+- To reduce confusion, mention in the text that the information is either:
+  - Contained in a confidential issue.
+  - Requires special permission to a project to view.
 - Provide a link in back ticks (`` ` ``) so that those with access to the issue can easily navigate to it.
 
 Example:

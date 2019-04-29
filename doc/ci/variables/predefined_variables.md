@@ -112,3 +112,7 @@ future GitLab releases.**
 | `GITLAB_USER_NAME`                      | 10.0   | all    | The real name of the user who started the job |
 | `RESTORE_CACHE_ATTEMPTS`                | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
 | `GITLAB_FEATURES`                       | 10.6   | all    | The comma separated list of licensed features available for your instance and plan |
+
+[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
+[registry]: ../../user/project/container_registry.md
+[dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories

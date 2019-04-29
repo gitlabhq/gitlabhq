@@ -7,7 +7,11 @@ import {
   CERT_MANAGER,
   RUNNER,
   APPLICATION_INSTALLED_STATUSES,
+  APPLICATION_STATUS,
+  INSTALL_EVENT,
+  UPDATE_EVENT,
 } from '../constants';
+import transitionApplicationState from '../services/application_state_machine';
 
 const isApplicationInstalled = appStatus => APPLICATION_INSTALLED_STATUSES.includes(appStatus);
 
@@ -15,8 +19,8 @@ const applicationInitialState = {
   status: null,
   statusReason: null,
   requestReason: null,
-  requestStatus: null,
   installed: false,
+  installFailed: false,
 };
 
 export default class ClusterStore {
@@ -49,6 +53,9 @@ export default class ClusterStore {
           version: null,
           chartRepo: 'https://gitlab.com/charts/gitlab-runner',
           upgradeAvailable: null,
+          updateAcknowledged: true,
+          updateSuccessful: false,
+          updateFailed: false,
         },
         prometheus: {
           ...applicationInitialState,
@@ -93,6 +100,32 @@ export default class ClusterStore {
     this.state.statusReason = reason;
   }
 
+  installApplication(appId) {
+    this.handleApplicationEvent(appId, INSTALL_EVENT);
+  }
+
+  notifyInstallFailure(appId) {
+    this.handleApplicationEvent(appId, APPLICATION_STATUS.ERROR);
+  }
+
+  updateApplication(appId) {
+    this.handleApplicationEvent(appId, UPDATE_EVENT);
+  }
+
+  notifyUpdateFailure(appId) {
+    this.handleApplicationEvent(appId, APPLICATION_STATUS.UPDATE_ERRORED);
+  }
+
+  handleApplicationEvent(appId, event) {
+    const currentAppState = this.state.applications[appId];
+
+    this.state.applications[appId] = transitionApplicationState(currentAppState, event);
+  }
+
+  acknowledgeSuccessfulUpdate(appId) {
+    this.state.applications[appId].updateAcknowledged = true;
+  }
+
   updateAppProperty(appId, prop, value) {
     this.state.applications[appId][prop] = value;
   }
@@ -109,12 +142,16 @@ export default class ClusterStore {
         version,
         update_available: upgradeAvailable,
       } = serverAppEntry;
+      const currentApplicationState = this.state.applications[appId] || {};
+      const nextApplicationState = transitionApplicationState(currentApplicationState, status);
 
       this.state.applications[appId] = {
-        ...(this.state.applications[appId] || {}),
-        status,
+        ...currentApplicationState,
+        ...nextApplicationState,
         statusReason,
-        installed: isApplicationInstalled(status),
+        installed: isApplicationInstalled(nextApplicationState.status),
+        // Make sure uninstallable is always false until this feature is unflagged
+        uninstallable: false,
       };
 
       if (appId === INGRESS) {

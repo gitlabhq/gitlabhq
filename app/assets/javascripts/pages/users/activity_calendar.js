@@ -65,18 +65,18 @@ export default class ActivityCalendar {
     this.daySize = 15;
     this.daySizeWithSpace = this.daySize + this.daySpace * 2;
     this.monthNames = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+      __('Jan'),
+      __('Feb'),
+      __('Mar'),
+      __('Apr'),
+      __('May'),
+      __('Jun'),
+      __('Jul'),
+      __('Aug'),
+      __('Sep'),
+      __('Oct'),
+      __('Nov'),
+      __('Dec'),
     ];
     this.months = [];
     this.firstDayOfWeek = firstDayOfWeek;

@@ -39,7 +39,14 @@ options:
 
 ### Improving NFS performance with GitLab
 
-NOTE: **Note:** This is only available with GitLab 11.9 and up.
+NOTE: **Note:**
+This is only available starting in certain versions of GitLab:
+
+  * 11.5.11
+  * 11.6.11
+  * 11.7.12
+  * 11.8.8
+  * 11.9.0 and up (e.g. 11.10, 11.11, etc.)
 
 If you are using NFS to share Git data, we recommend that you enable a
 number of feature flags that will allow GitLab application processes to

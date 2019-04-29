@@ -7,6 +7,9 @@
   opacity: 1 !important;
 
   * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     // !important to make sure no style can override this when dragging
     cursor: grabbing !important;
@@ -254,6 +257,10 @@
   @include media-breakpoint-down(md) {
     font-size: $label-font-size;
   }
+}
+
+.board-card-header {
+  text-align: initial;
 }
 
 .board-card-assignee {

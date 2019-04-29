@@ -1,4 +1,5 @@
 <script>
+import '~/commons/bootstrap';
 import { GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import IssueMilestone from '../../components/issue/issue_milestone.vue';

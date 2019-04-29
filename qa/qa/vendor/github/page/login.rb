@@ -12,9 +12,7 @@ module QA
             fill_in 'password', with: QA::Runtime::Env.github_password
             click_on 'Sign in'
 
-            unless has_no_text?("Authorize GitLab-OAuth")
-              click_on 'Authorize gitlab-qa' if has_button?('Authorize gitlab-qa')
-            end
+            click_on 'Authorize gitlab-qa' if has_button?('Authorize gitlab-qa')
           end
         end
       end

@@ -268,6 +268,7 @@ export default {
           :data-supports-quick-actions="!isEditing"
           name="note[note]"
           class="note-textarea js-gfm-input js-note-text js-autosize markdown-area js-vue-issue-note-form js-vue-textarea qa-reply-input"
+          dir="auto"
           aria-label="Description"
           placeholder="Write a comment or drag your files here…"
           @keydown.meta.enter="handleKeySubmit()"

@@ -75,6 +75,8 @@ input[type='checkbox']:hover {
   }
 
   .search-input-wrap {
+    width: 100%;
+
     .search-icon,
     .clear-icon {
       position: absolute;
@@ -84,6 +86,9 @@ input[type='checkbox']:hover {
 
     .search-icon {
       transition: color $default-transition-duration;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
       user-select: none;
     }
 

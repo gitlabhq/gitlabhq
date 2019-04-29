@@ -9,7 +9,7 @@ cloud-native-image:
   cache: {}
   when: manual
   script:
-    - gem install gitlab --no-document
+    - install_gitlab_gem
     - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce

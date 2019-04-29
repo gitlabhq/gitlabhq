@@ -342,11 +342,9 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when environment has no metrics' do
-      before do
-        expect(environment).to receive(:metrics).and_return(nil)
-      end
-
       it 'returns a metrics page' do
+        expect(environment).not_to receive(:metrics)
+
         get :metrics, params: environment_params
 
         expect(response).to be_ok
@@ -354,6 +352,8 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting metrics as JSON' do
         it 'returns a metrics JSON document' do
+          expect(environment).to receive(:metrics).and_return(nil)
+
           get :metrics, params: environment_params(format: :json)
 
           expect(response).to have_gitlab_http_status(204)
@@ -457,6 +457,43 @@ describe Projects::EnvironmentsController do
       it 'raises an error when end is missing' do
         expect { additional_metrics(start: '1552647300.651094') }
           .to raise_error(ActionController::ParameterMissing)
+      end
+    end
+  end
+
+  describe 'metrics_dashboard' do
+    context 'when prometheus endpoint is disabled' do
+      before do
+        stub_feature_flags(environment_metrics_use_prometheus_endpoint: false)
+      end
+
+      it 'responds with status code 403' do
+        get :metrics_dashboard, params: environment_params(format: :json)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when prometheus endpoint is enabled' do
+      it 'returns a json representation of the environment dashboard' do
+        get :metrics_dashboard, params: environment_params(format: :json)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.keys).to contain_exactly('dashboard', 'status')
+        expect(json_response['dashboard']).to be_an_instance_of(Hash)
+      end
+
+      context 'when the dashboard could not be provided' do
+        before do
+          allow(YAML).to receive(:safe_load).and_return({})
+        end
+
+        it 'returns an error response' do
+          get :metrics_dashboard, params: environment_params(format: :json)
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response.keys).to contain_exactly('message', 'status', 'http_status')
+        end
       end
     end
   end

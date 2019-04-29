@@ -102,6 +102,13 @@ describe Deployment do
 
         deployment.succeed!
       end
+
+      it 'executes Deployments::FinishedWorker asynchronously' do
+        expect(Deployments::FinishedWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.succeed!
+      end
     end
 
     context 'when deployment failed' do
@@ -115,6 +122,13 @@ describe Deployment do
           expect(deployment.finished_at).to be_like_time(Time.now)
         end
       end
+
+      it 'executes Deployments::FinishedWorker asynchronously' do
+        expect(Deployments::FinishedWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.drop!
+      end
     end
 
     context 'when deployment was canceled' do
@@ -127,6 +141,13 @@ describe Deployment do
           expect(deployment).to be_canceled
           expect(deployment.finished_at).to be_like_time(Time.now)
         end
+      end
+
+      it 'executes Deployments::FinishedWorker asynchronously' do
+        expect(Deployments::FinishedWorker)
+          .to receive(:perform_async).with(deployment.id)
+
+        deployment.cancel!
       end
     end
   end
@@ -375,6 +396,12 @@ describe Deployment do
       before do
         expect(project.clusters).to be_empty
       end
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'project uses the kubernetes service for deployments' do
+      let!(:service) { create(:kubernetes_service, project: project) }
 
       it { is_expected.to be_nil }
     end

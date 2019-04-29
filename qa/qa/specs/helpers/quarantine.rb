@@ -20,6 +20,14 @@ module QA::Specs::Helpers
       end
     end
 
+    # Skip the entire context if a context is quarantined. This avoids running
+    # before blocks unnecessarily.
+    def skip_or_run_quarantined_contexts(filters, example)
+      return unless example.metadata.key?(:quarantine)
+
+      skip_or_run_quarantined_tests_or_contexts(filters, example)
+    end
+
     # Skip tests in quarantine unless we explicitly focus on them.
     def skip_or_run_quarantined_tests_or_contexts(filters, example)
       if filters.key?(:quarantine)
@@ -37,14 +45,6 @@ module QA::Specs::Helpers
       else
         skip('In quarantine') if example.metadata.key?(:quarantine)
       end
-    end
-
-    # Skip the entire context if a context is quarantined. This avoids running
-    # before blocks unnecessarily.
-    def skip_or_run_quarantined_contexts(filters, example)
-      return unless example.metadata.key?(:quarantine)
-
-      skip_or_run_quarantined_tests_or_contexts(filters, example)
     end
 
     def filters_other_than_quarantine(filter)
