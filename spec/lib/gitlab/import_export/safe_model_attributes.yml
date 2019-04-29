@@ -24,6 +24,7 @@ Issue:
 - weight
 - time_estimate
 - relative_position
+- service_desk_reply_to
 - last_edited_at
 - last_edited_by_id
 - discussion_locked
@@ -68,6 +69,7 @@ Note:
 - resolved_by_push
 - discussion_id
 - original_discussion_id
+- review_id
 LabelLink:
 - id
 - label_id
@@ -144,6 +146,8 @@ ProjectMember:
 - invite_accepted_at
 - requested_at
 - expires_at
+- ldap
+- override
 User:
 - id
 - username
@@ -316,6 +320,7 @@ CommitStatus:
 - protected
 - failure_reason
 - scheduled_at
+- upstream_pipeline_id
 Ci::Variable:
 - id
 - project_id
@@ -491,6 +496,17 @@ Project:
 - printing_merge_request_link_enabled
 - resolve_outdated_diff_discussions
 - build_allow_git_fetch
+- merge_requests_template
+- merge_requests_rebase_enabled
+- approvals_before_merge
+- merge_requests_author_approval
+- reset_approvals_on_push
+- disable_overriding_approvers_per_merge_request
+- merge_requests_ff_only_enabled
+- issues_template
+- repository_size_limit
+- sync_time
+- service_desk_enabled
 - last_repository_updated_at
 - ci_config_path
 - delete_error
@@ -498,7 +514,13 @@ Project:
 - merge_requests_rebase_enabled
 - jobs_cache_index
 - external_authorization_classification_label
+- external_webhook_token
 - pages_https_only
+- merge_requests_disable_committers_approval
+- merge_requests_require_code_owner_approval
+- require_password_to_approve
+ProjectTracingSetting:
+- external_url
 Author:
 - name
 ProjectFeature:
@@ -519,12 +541,24 @@ ProtectedBranch::MergeAccessLevel:
 - access_level
 - created_at
 - updated_at
+- user_id
+- group_id
 ProtectedBranch::PushAccessLevel:
 - id
 - protected_branch_id
 - access_level
 - created_at
 - updated_at
+- user_id
+- group_id
+ProtectedBranch::UnprotectAccessLevel:
+- id
+- protected_branch_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
 ProtectedTag::CreateAccessLevel:
 - id
 - protected_tag_id
@@ -587,6 +621,12 @@ PrometheusMetric:
 - group
 - common
 - identifier
+PrometheusAlert:
+- threshold
+- operator
+- environment_id
+- project_id
+- prometheus_metric_id
 Badge:
 - id
 - link_url
@@ -598,6 +638,20 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
+ProtectedEnvironment:
+- id
+- project_id
+- name
+- created_at
+- updated_at
+ProtectedEnvironment::DeployAccessLevel:
+- id
+- protected_environment_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id
 ResourceLabelEvent:
 - id
 - action

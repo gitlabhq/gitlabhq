@@ -20,6 +20,9 @@ issues:
 - timelogs
 - issue_assignees
 - closed_by
+- epic_issue
+- epic
+- designs
 events:
 - author
 - project
@@ -38,6 +41,7 @@ notes:
 - system_note_metadata
 - note_diff_file
 - suggestions
+- review
 label_links:
 - target
 - label
@@ -57,6 +61,7 @@ milestone:
 - merge_requests
 - participants
 - events
+- boards
 snippets:
 - author
 - project
@@ -103,6 +108,19 @@ merge_requests:
 - merge_request_assignees
 - suggestions
 - assignees
+- reviews
+- approval_rules
+- approvals
+- approvers
+- approver_users
+- approver_groups
+- approved_by_users
+- draft_notes
+- merge_train
+- blocks_as_blocker
+- blocks_as_blockee
+- blocking_merge_requests
+- blocked_merge_requests
 merge_request_diff:
 - merge_request
 - merge_request_diff_commits
@@ -135,6 +153,16 @@ ci_pipelines:
 - deployments
 - environments
 - chat_data
+- source_pipeline
+- source_bridge
+- source_job
+- sourced_pipelines
+- triggered_by_pipeline
+- triggered_pipelines
+- downstream_bridges
+- job_artifacts
+- vulnerabilities_occurrence_pipelines
+- vulnerabilities
 pipeline_variables:
 - pipeline
 stages:
@@ -182,13 +210,18 @@ protected_branches:
 - project
 - merge_access_levels
 - push_access_levels
+- unprotect_access_levels
 protected_tags:
 - project
 - create_access_levels
 merge_access_levels:
 - protected_branch
+- user
+- group
 push_access_levels:
 - protected_branch
+- user
+- group
 create_access_levels:
 - user
 - protected_tag
@@ -323,6 +356,45 @@ project:
 - kubernetes_namespaces
 - error_tracking_setting
 - metrics_setting
+- gitlab_slack_application_service
+- github_service
+- protected_environments
+- mirror_user
+- push_rule
+- jenkins_service
+- jenkins_deprecated_service
+- index_status
+- feature_usage
+- approval_rules
+- approvers
+- approver_users
+- pages_domains
+- audit_events
+- path_locks
+- approver_groups
+- repository_state
+- source_pipelines
+- sourced_pipelines
+- prometheus_metrics
+- vulnerabilities
+- vulnerability_feedback
+- vulnerability_identifiers
+- vulnerability_scanners
+- operations_feature_flags
+- operations_feature_flags_client
+- prometheus_alerts
+- prometheus_alert_events
+- software_license_policies
+- project_registry
+- packages
+- package_files
+- tracing_setting
+- alerting_setting
+- webide_pipelines
+- reviews
+- incident_management_setting
+- merge_trains
+- designs
 award_emoji:
 - awardable
 - user
@@ -330,6 +402,7 @@ priorities:
 - label
 prometheus_metrics:
 - project
+- prometheus_alerts
 timelogs:
 - issue
 - merge_request
@@ -363,3 +436,34 @@ suggestions:
 - note
 metrics_setting:
 - project
+protected_environments:
+- project
+- deploy_access_levels
+deploy_access_levels:
+- protected_environment
+- user
+- group
+unprotect_access_levels:
+- user
+- protected_branch
+- group
+prometheus_alerts:
+- project
+- prometheus_alert_events
+prometheus_alert_events:
+- project
+epic_issues:
+- issue
+- epic
+tracing_setting:
+- project
+reviews:
+- project
+- merge_request
+- author
+- notes
+incident_management_setting:
+- project
+merge_trains:
+- project
+- merge_request

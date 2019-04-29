@@ -29,6 +29,6 @@ class CreateRemoteMirrors < ActiveRecord::Migration[4.2]
   end
 
   def down
-    drop_table(:remote_mirrors) if table_exists?(:remote_mirrors)
+    # ee/db/migrate/20160321161032_create_remote_mirrors_ee.rb will remove the table
   end
 end
