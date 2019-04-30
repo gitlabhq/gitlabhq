@@ -17,7 +17,7 @@ module Clusters
       rescue Kubeclient::HttpError => e
         log_error(e)
 
-        app.make_errored!("Kubernetes error: #{e.error_code}")
+        app.make_errored!(_('Kubernetes error: %{error_code}') % { error_code: e.error_code })
       end
 
       private
@@ -25,18 +25,18 @@ module Clusters
       def on_success
         app.destroy!
       rescue StandardError => e
-        app.make_errored!("Application uninstalled but failed to destroy: #{e.message}")
+        app.make_errored!(_('Application uninstalled but failed to destroy: %{error_message}') % { error_message: e.message })
       ensure
         remove_installation_pod
       end
 
       def on_failed
-        app.make_errored!("Operation failed. Check pod logs for #{pod_name} for more details.")
+        app.make_errored!(_('Operation failed. Check pod logs for %{pod_name} for more details.') % { pod_name: pod_name })
       end
 
       def check_timeout
         if timed_out?
-          app.make_errored!("Operation timed out. Check pod logs for #{pod_name} for more details.")
+          app.make_errored!(_('Operation timed out. Check pod logs for %{pod_name} for more details.') % { pod_name: pod_name })
         else
           WaitForUninstallAppWorker.perform_in(WaitForUninstallAppWorker::INTERVAL, app.name, app.id)
         end
