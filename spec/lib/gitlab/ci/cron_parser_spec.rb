@@ -174,6 +174,13 @@ describe Gitlab::Ci::CronParser do
 
       it { expect(subject).to be_nil }
     end
+
+    context 'when cron is scheduled to a non existent day' do
+      let(:cron) { '0 12 31 2 *' }
+      let(:cron_timezone) { 'UTC' }
+
+      it { expect(subject).to be_nil }
+    end
   end
 
   describe '#cron_valid?' do
