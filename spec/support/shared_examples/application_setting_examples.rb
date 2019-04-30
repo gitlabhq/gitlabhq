@@ -249,43 +249,4 @@ RSpec.shared_examples 'application settings examples' do
 
     expect(setting.password_authentication_enabled_for_web?).to be_falsey
   end
-
-  describe 'sentry settings' do
-    context 'when the sentry settings are not set in gitlab.yml' do
-      it 'fallbacks to the settings in the database' do
-        setting.sentry_enabled = true
-        setting.sentry_dsn = 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/40'
-        setting.clientside_sentry_enabled = true
-        setting.clientside_sentry_dsn = 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/41'
-
-        allow(Gitlab.config.sentry).to receive(:enabled).and_return(false)
-        allow(Gitlab.config.sentry).to receive(:dsn).and_return(nil)
-        allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return(nil)
-
-        expect(setting.sentry_enabled).to eq true
-        expect(setting.sentry_dsn).to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/40'
-        expect(setting.clientside_sentry_enabled).to eq true
-        expect(setting.clientside_sentry_dsn). to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/41'
-      end
-    end
-
-    context 'when the sentry settings are set in gitlab.yml' do
-      it 'does not fallback to the settings in the database' do
-        setting.sentry_enabled = false
-        setting.sentry_dsn = 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/40'
-        setting.clientside_sentry_enabled = false
-        setting.clientside_sentry_dsn = 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/41'
-
-        allow(Gitlab.config.sentry).to receive(:enabled).and_return(true)
-        allow(Gitlab.config.sentry).to receive(:dsn).and_return('https://b44a0828b72421a6d8e99efd68d44fa8@example.com/42')
-        allow(Gitlab.config.sentry).to receive(:clientside_dsn).and_return('https://b44a0828b72421a6d8e99efd68d44fa8@example.com/43')
-
-        expect(setting).not_to receive(:read_attribute)
-        expect(setting.sentry_enabled).to eq true
-        expect(setting.sentry_dsn).to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/42'
-        expect(setting.clientside_sentry_enabled).to eq true
-        expect(setting.clientside_sentry_dsn). to eq 'https://b44a0828b72421a6d8e99efd68d44fa8@example.com/43'
-      end
-    end
-  end
 end

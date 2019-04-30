@@ -30,6 +30,10 @@ class ApplicationSetting < ApplicationRecord
   ignore_column :circuitbreaker_check_interval
   ignore_column :koding_url
   ignore_column :koding_enabled
+  ignore_column :sentry_enabled
+  ignore_column :sentry_dsn
+  ignore_column :clientside_sentry_enabled
+  ignore_column :clientside_sentry_dsn
 
   cache_markdown_field :sign_in_text
   cache_markdown_field :help_page_text
@@ -74,14 +78,6 @@ class ApplicationSetting < ApplicationRecord
   validates :recaptcha_private_key,
             presence: true,
             if: :recaptcha_enabled
-
-  validates :sentry_dsn,
-            presence: true,
-            if: :sentry_enabled
-
-  validates :clientside_sentry_dsn,
-            presence: true,
-            if: :clientside_sentry_enabled
 
   validates :akismet_api_key,
             presence: true,
@@ -264,7 +260,6 @@ class ApplicationSetting < ApplicationRecord
                  encode: true
 
   before_validation :ensure_uuid!
-  before_validation :strip_sentry_values
 
   before_save :ensure_runners_registration_token
   before_save :ensure_health_check_access_token

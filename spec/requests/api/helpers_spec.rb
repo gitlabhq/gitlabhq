@@ -226,10 +226,8 @@ describe API::Helpers do
       allow_any_instance_of(self.class).to receive(:rack_response)
       allow(Gitlab::Sentry).to receive(:enabled?).and_return(true)
 
-      stub_application_setting(
-        sentry_enabled: true,
-        sentry_dsn: "dummy://12345:67890@sentry.localdomain/sentry/42"
-      )
+      stub_sentry_settings
+
       configure_sentry
       Raven.client.configuration.encoding = 'json'
     end

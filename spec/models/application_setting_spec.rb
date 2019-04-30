@@ -354,36 +354,6 @@ describe ApplicationSetting do
     end
   end
 
-  describe 'setting Sentry DSNs' do
-    context 'server DSN' do
-      it 'strips leading and trailing whitespace' do
-        subject.update(sentry_dsn: ' http://test ')
-
-        expect(subject.sentry_dsn).to eq('http://test')
-      end
-
-      it 'handles nil values' do
-        subject.update(sentry_dsn: nil)
-
-        expect(subject.sentry_dsn).to be_nil
-      end
-    end
-
-    context 'client-side DSN' do
-      it 'strips leading and trailing whitespace' do
-        subject.update(clientside_sentry_dsn: ' http://test ')
-
-        expect(subject.clientside_sentry_dsn).to eq('http://test')
-      end
-
-      it 'handles nil values' do
-        subject.update(clientside_sentry_dsn: nil)
-
-        expect(subject.clientside_sentry_dsn).to be_nil
-      end
-    end
-  end
-
   describe '#disabled_oauth_sign_in_sources=' do
     before do
       allow(Devise).to receive(:omniauth_providers).and_return([:github])

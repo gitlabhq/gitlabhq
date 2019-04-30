@@ -23,14 +23,3 @@
       = _('Set notification email for abuse reports.')
   .settings-content
     = render 'abuse'
-
-%section.settings.as-logging.no-animate#js-logging-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4
-      = _('Error Reporting and Logging')
-    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p
-      = _('Enable Sentry for error reporting and logging.')
-  .settings-content
-    = render 'logging'
