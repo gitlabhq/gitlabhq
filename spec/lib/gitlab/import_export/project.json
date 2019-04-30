@@ -158,8 +158,8 @@
         {
           "id": 351,
           "note": "Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi.",
-          "note_html": "<p>dodgy html</p>",
-          "cached_markdown_version": 434343,
+          "note_html": "<p>something else entirely</p>",
+          "cached_markdown_version": 917504,
           "noteable_type": "Issue",
           "author_id": 26,
           "created_at": "2016-06-14T15:02:47.770Z",
@@ -2367,6 +2367,8 @@
         {
           "id": 671,
           "note": "Sit voluptatibus eveniet architecto quidem.",
+          "note_html": "<p>something else entirely</p>",
+          "cached_markdown_version": 917504,
           "noteable_type": "MergeRequest",
           "author_id": 26,
           "created_at": "2016-06-14T15:02:56.632Z",
