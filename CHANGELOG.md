@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.9.11 (2019-04-30)
+
+### Security (1 change)
+
+- Allow to see project events only with api scope token.
+
+
 ## 11.9.10 (2019-04-26)
 
 ### Security (5 changes)
