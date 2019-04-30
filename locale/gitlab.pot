@@ -4036,6 +4036,9 @@ msgstr ""
 msgid "Failed to update issues, please try again."
 msgstr ""
 
+msgid "Failed to update tag!"
+msgstr ""
+
 msgid "Failed to update."
 msgstr ""
 
@@ -7400,6 +7403,9 @@ msgid "Prompt users to upload SSH keys"
 msgstr ""
 
 msgid "Protected"
+msgstr ""
+
+msgid "Protected Tag"
 msgstr ""
 
 msgid "Protip:"
