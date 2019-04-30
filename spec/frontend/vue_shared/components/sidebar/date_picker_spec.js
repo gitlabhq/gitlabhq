@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import sidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 
 describe('sidebarDatePicker', () => {
   let vm;
@@ -13,7 +13,7 @@ describe('sidebarDatePicker', () => {
   });
 
   it('should emit toggleCollapse when collapsed toggle sidebar is clicked', () => {
-    const toggleCollapse = jasmine.createSpy();
+    const toggleCollapse = jest.fn();
     vm.$on('toggleCollapse', toggleCollapse);
 
     vm.$el.querySelector('.issuable-sidebar-header .gutter-toggle').click();
@@ -90,7 +90,7 @@ describe('sidebarDatePicker', () => {
     });
 
     it('should emit saveDate when remove button is clicked', () => {
-      const saveDate = jasmine.createSpy();
+      const saveDate = jest.fn();
       vm.$on('saveDate', saveDate);
 
       vm.$el.querySelector('.value-content .btn-blank').click();
@@ -110,7 +110,7 @@ describe('sidebarDatePicker', () => {
     });
 
     it('should emit toggleCollapse when toggle sidebar is clicked', () => {
-      const toggleCollapse = jasmine.createSpy();
+      const toggleCollapse = jest.fn();
       vm.$on('toggleCollapse', toggleCollapse);
 
       vm.$el.querySelector('.title .gutter-toggle').click();

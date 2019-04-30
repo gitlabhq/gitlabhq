@@ -39,6 +39,8 @@
             - presented_labels_sorted_by_title(issue.labels, issue.project).each do |label|
               = link_to_label(label, css_class: 'label-link')
 
+          = render_if_exists "projects/issues/issue_weight", issue: issue
+
       .issuable-meta
         %ul.controls
           - if issue.closed?

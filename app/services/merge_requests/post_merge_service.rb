@@ -18,6 +18,7 @@ module MergeRequests
       invalidate_cache_counts(merge_request, users: merge_request.assignees)
       merge_request.update_project_counter_caches
       delete_non_latest_diffs(merge_request)
+      cleanup_environments(merge_request)
     end
 
     private

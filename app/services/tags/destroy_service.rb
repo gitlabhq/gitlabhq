@@ -41,12 +41,11 @@ module Tags
 
     def build_push_data(tag)
       Gitlab::DataBuilder::Push.build(
-        project,
-        current_user,
-        tag.dereferenced_target.sha,
-        Gitlab::Git::BLANK_SHA,
-        "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}",
-        [])
+        project: project,
+        user: current_user,
+        oldrev: tag.dereferenced_target.sha,
+        newrev: Gitlab::Git::BLANK_SHA,
+        ref: "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}")
     end
   end
 end

@@ -183,6 +183,22 @@ module ApplicationSettingImplementation
     clientside_sentry_dsn.strip! if clientside_sentry_dsn.present?
   end
 
+  def sentry_enabled
+    Gitlab.config.sentry.enabled || read_attribute(:sentry_enabled)
+  end
+
+  def sentry_dsn
+    Gitlab.config.sentry.dsn || read_attribute(:sentry_dsn)
+  end
+
+  def clientside_sentry_enabled
+    Gitlab.config.sentry.enabled || read_attribute(:clientside_sentry_enabled)
+  end
+
+  def clientside_sentry_dsn
+    Gitlab.config.sentry.dsn || read_attribute(:clientside_sentry_dsn)
+  end
+
   def performance_bar_allowed_group
     Group.find_by_id(performance_bar_allowed_group_id)
   end

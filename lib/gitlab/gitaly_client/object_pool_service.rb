@@ -33,6 +33,15 @@ module Gitlab
         GitalyClient.call(storage, :object_pool_service, :link_repository_to_object_pool,
                           request, timeout: GitalyClient.fast_timeout)
       end
+
+      def fetch(repository)
+        request = Gitaly::FetchIntoObjectPoolRequest.new(
+          object_pool: object_pool,
+          origin: repository.gitaly_repository
+        )
+
+        GitalyClient.call(storage, :object_pool_service, :fetch_into_object_pool, request)
+      end
     end
   end
 end

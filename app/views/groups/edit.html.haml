@@ -1,6 +1,6 @@
 - breadcrumb_title "General Settings"
 - @content_class = "limit-container-width" unless fluid_layout
-- expanded = Rails.env.test?
+- expanded = expanded_by_default?
 
 
 %section.settings.gs-general.no-animate#js-general-settings{ class: ('expanded') }

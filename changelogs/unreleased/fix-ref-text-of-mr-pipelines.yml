@@ -1,0 +1,6 @@
+---
+title: Fix pipelines for merge requests does not show pipeline page when source branch
+  is removed
+merge_request: 27803
+author:
+type: fixed

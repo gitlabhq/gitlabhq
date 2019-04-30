@@ -5,6 +5,7 @@ import Dropzone from 'dropzone';
 import { visitUrl } from '../lib/utils/url_utility';
 import { HIDDEN_CLASS } from '../lib/utils/constants';
 import csrf from '../lib/utils/csrf';
+import { sprintf, __ } from '~/locale';
 
 Dropzone.autoDiscover = false;
 
@@ -73,7 +74,7 @@ export default class BlobFileDropzone {
           .html(errorMessage)
           .text();
         $('.dropzone-alerts')
-          .html(`Error uploading file: "${stripped}"`)
+          .html(sprintf(__('Error uploading file: %{stripped}'), { stripped }))
           .show();
         this.removeFile(file);
       },
@@ -84,7 +85,7 @@ export default class BlobFileDropzone {
       e.stopPropagation();
       if (dropzone[0].dropzone.getQueuedFiles().length === 0) {
         // eslint-disable-next-line no-alert
-        alert('Please select a file');
+        alert(__('Please select a file'));
         return false;
       }
       toggleLoading(submitButton, submitButtonLoadingIcon, true);

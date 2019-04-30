@@ -22,6 +22,13 @@ module Gitlab
 
         alias_method :update, :install
 
+        def uninstall(command)
+          namespace.ensure_exists!
+
+          delete_pod!(command.pod_name)
+          kubeclient.create_pod(command.pod_resource)
+        end
+
         ##
         # Returns Pod phase
         #

@@ -1,0 +1,5 @@
+---
+title: "`on_stop` is not automatically triggered with pipelines for merge requests"
+merge_request: 27618
+author:
+type: fixed

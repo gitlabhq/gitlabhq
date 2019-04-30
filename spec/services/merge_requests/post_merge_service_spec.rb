@@ -62,5 +62,13 @@ describe MergeRequests::PostMergeService do
 
       expect(merge_request.reload).to be_merged
     end
+
+    it 'clean up environments for the merge request' do
+      expect_next_instance_of(Ci::StopEnvironmentsService) do |service|
+        expect(service).to receive(:execute_for_merge_request).with(merge_request)
+      end
+
+      described_class.new(project, user).execute(merge_request)
+    end
   end
 end

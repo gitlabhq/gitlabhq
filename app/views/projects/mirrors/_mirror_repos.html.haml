@@ -1,4 +1,4 @@
-- expanded = Rails.env.test?
+- expanded = expanded_by_default?
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 
 %section.settings.project-mirror-settings.js-mirror-settings.no-animate.qa-mirroring-repositories-settings#js-push-remote-settings{ class: ('expanded' if expanded) }

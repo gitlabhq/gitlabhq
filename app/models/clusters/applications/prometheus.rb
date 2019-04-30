@@ -16,10 +16,12 @@ module Clusters
 
       default_value_for :version, VERSION
 
+      after_destroy :disable_prometheus_integration
+
       state_machine :status do
         after_transition any => [:installed] do |application|
           application.cluster.projects.each do |project|
-            project.find_or_initialize_service('prometheus').update(active: true)
+            project.find_or_initialize_service('prometheus').update!(active: true)
           end
         end
       end
@@ -44,6 +46,14 @@ module Clusters
           chart: chart,
           files: files,
           postinstall: install_knative_metrics
+        )
+      end
+
+      def uninstall_command
+        Gitlab::Kubernetes::Helm::DeleteCommand.new(
+          name: name,
+          rbac: cluster.platform_kubernetes_rbac?,
+          files: files
         )
       end
 
@@ -81,6 +91,12 @@ module Clusters
       end
 
       private
+
+      def disable_prometheus_integration
+        cluster.projects.each do |project|
+          project.prometheus_service&.update!(active: false)
+        end
+      end
 
       def kube_client
         cluster&.kubeclient&.core_client

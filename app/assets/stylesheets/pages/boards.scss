@@ -210,6 +210,7 @@
   border: 1px solid $gray-200;
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   line-height: $gl-padding;
+  list-style: none;
 
   &:not(:last-child) {
     margin-bottom: $gl-padding-8;

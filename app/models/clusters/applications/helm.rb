@@ -29,6 +29,13 @@ module Clusters
         self.status = 'installable' if cluster&.platform_kubernetes_active?
       end
 
+      # We will implement this in future MRs.
+      # Basically we need to check all other applications are not installed
+      # first.
+      def allowed_to_uninstall?
+        false
+      end
+
       def install_command
         Gitlab::Kubernetes::Helm::InitCommand.new(
           name: name,

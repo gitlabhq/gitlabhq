@@ -132,18 +132,6 @@ class Projects::IssuesController < Projects::ApplicationController
     render_conflict_response
   end
 
-  def referenced_merge_requests
-    @merge_requests, @closed_by_merge_requests = ::Issues::ReferencedMergeRequestsService.new(project, current_user).execute(issue)
-
-    respond_to do |format|
-      format.json do
-        render json: {
-          html: view_to_html_string('projects/issues/_merge_requests')
-        }
-      end
-    end
-  end
-
   def related_branches
     @related_branches = Issues::RelatedBranchesService.new(project, current_user).execute(issue)
 

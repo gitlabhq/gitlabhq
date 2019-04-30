@@ -279,14 +279,10 @@ export default class Clusters {
     this.store.acknowledgeSuccessfulUpdate(appId);
   }
 
-  toggleIngressDomainHelpText(ingressPreviousState, ingressNewState) {
-    const { externalIp, status } = ingressNewState;
-    const helpTextHidden = status !== APPLICATION_STATUS.INSTALLED || !externalIp;
-    const domainSnippetText = `${externalIp}${INGRESS_DOMAIN_SUFFIX}`;
-
-    if (ingressPreviousState.status !== status) {
-      this.ingressDomainHelpText.classList.toggle('hide', helpTextHidden);
-      this.ingressDomainSnippet.textContent = domainSnippetText;
+  toggleIngressDomainHelpText({ externalIp }, { externalIp: newExternalIp }) {
+    if (externalIp !== newExternalIp) {
+      this.ingressDomainHelpText.classList.toggle('hide', !newExternalIp);
+      this.ingressDomainSnippet.textContent = `${newExternalIp}${INGRESS_DOMAIN_SUFFIX}`;
     }
   }
 

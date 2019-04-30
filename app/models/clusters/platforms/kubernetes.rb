@@ -76,6 +76,10 @@ module Clusters
         end
       end
 
+      def namespace_for(project)
+        cluster.find_or_initialize_kubernetes_namespace_for_project(project).namespace
+      end
+
       def predefined_variables(project:)
         Gitlab::Ci::Variables::Collection.new.tap do |variables|
           variables.append(key: 'KUBE_URL', value: api_url)

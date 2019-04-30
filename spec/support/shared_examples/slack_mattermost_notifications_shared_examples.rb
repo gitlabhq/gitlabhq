@@ -275,7 +275,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
         it 'does not notify push events if they are not for the default branch' do
           ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
-          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+          push_sample_data = Gitlab::DataBuilder::Push.build(project: project, user: user, ref: ref)
 
           chat_service.execute(push_sample_data)
 
@@ -292,7 +292,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
         it 'still notifies about pushed tags' do
           ref = "#{Gitlab::Git::TAG_REF_PREFIX}test"
-          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+          push_sample_data = Gitlab::DataBuilder::Push.build(project: project, user: user, ref: ref)
 
           chat_service.execute(push_sample_data)
 
@@ -307,7 +307,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
         it 'notifies about all push events' do
           ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
-          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+          push_sample_data = Gitlab::DataBuilder::Push.build(project: project, user: user, ref: ref)
 
           chat_service.execute(push_sample_data)
 

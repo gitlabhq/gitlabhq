@@ -21,6 +21,10 @@ describe ClusterApplicationEntity do
       expect(subject[:status_reason]).to be_nil
     end
 
+    it 'has can_uninstall' do
+      expect(subject[:can_uninstall]).to be_falsey
+    end
+
     context 'non-helm application' do
       let(:application) { build(:clusters_applications_runner, version: '0.0.0') }
 

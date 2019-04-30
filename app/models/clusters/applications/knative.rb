@@ -51,6 +51,12 @@ module Clusters
         { "domain" => hostname }.to_yaml
       end
 
+      # Handled in a new issue:
+      # https://gitlab.com/gitlab-org/gitlab-ce/issues/59369
+      def allowed_to_uninstall?
+        false
+      end
+
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,

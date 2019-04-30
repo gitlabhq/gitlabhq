@@ -28,6 +28,7 @@ describe Ci::Build do
   it { is_expected.to delegate_method(:merge_request_event?).to(:pipeline) }
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
+  it { is_expected.to include_module(Ci::PipelineDelegator) }
 
   it { is_expected.to be_a(ArtifactMigratable) }
 
@@ -2273,6 +2274,19 @@ describe Ci::Build do
       it { user_variables.each { |v| is_expected.to include(v) } }
     end
 
+    context 'when build belongs to a pipeline for merge request' do
+      let(:merge_request) { create(:merge_request, :with_detached_merge_request_pipeline, source_branch: 'improve/awesome') }
+      let(:pipeline) { merge_request.all_pipelines.first }
+      let(:build) { create(:ci_build, ref: pipeline.ref, pipeline: pipeline) }
+
+      it 'returns values based on source ref' do
+        is_expected.to include(
+          { key: 'CI_COMMIT_REF_NAME', value: 'improve/awesome', public: true, masked: false },
+          { key: 'CI_COMMIT_REF_SLUG', value: 'improve-awesome', public: true, masked: false }
+        )
+      end
+    end
+
     context 'when build has an environment' do
       let(:environment_variables) do
         [
@@ -2664,6 +2678,8 @@ describe Ci::Build do
         )
       end
 
+      let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
+
       it 'returns static predefined variables' do
         expect(build.variables.size).to be >= 28
         expect(build.variables)
@@ -2712,6 +2728,8 @@ describe Ci::Build do
           pipeline: pipeline
         )
       end
+
+      let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
 
       it 'does not persist the build' do
         expect(build).to be_valid

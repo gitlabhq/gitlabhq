@@ -70,7 +70,7 @@ shared_examples_for "chat service" do |service_name|
 
       context "with not default branch" do
         let(:sample_data) do
-          Gitlab::DataBuilder::Push.build(project, user, nil, nil, "not-the-default-branch")
+          Gitlab::DataBuilder::Push.build(project: project, user: user, ref: "not-the-default-branch")
         end
 
         context "when notify_only_default_branch enabled" do

@@ -1,8 +1,9 @@
 import Flash from '../flash';
 import BalsamiqViewer from './balsamiq/balsamiq_viewer';
+import { __ } from '~/locale';
 
 function onError() {
-  const flash = new Flash('Balsamiq file could not be loaded.');
+  const flash = new Flash(__('Balsamiq file could not be loaded.'));
 
   return flash;
 }

@@ -113,7 +113,6 @@ describe('Issue', function() {
         mock = new MockAdapter(axios);
 
         mock.onGet(/(.*)\/related_branches$/).reply(200, {});
-        mock.onGet(/(.*)\/referenced_merge_requests$/).reply(200, {});
 
         findElements(isIssueInitiallyOpen);
         this.issue = new Issue();
