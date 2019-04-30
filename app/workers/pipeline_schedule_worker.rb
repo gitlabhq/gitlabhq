@@ -3,20 +3,26 @@
 class PipelineScheduleWorker
   include ApplicationWorker
   include CronjobQueue
+  include ::Gitlab::ExclusiveLeaseHelpers
+
+  EXCLUSIVE_LOCK_KEY = 'pipeline_schedules:run:lock'
+  LOCK_TIMEOUT = 50.minutes
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform
-    Ci::PipelineSchedule.active.where("next_run_at < ?", Time.now)
-      .preload(:owner, :project).find_each do |schedule|
+    in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
+      Ci::PipelineSchedule.active.where("next_run_at < ?", Time.now)
+        .preload(:owner, :project).find_each do |schedule|
 
-      Ci::CreatePipelineService.new(schedule.project,
-                                    schedule.owner,
-                                    ref: schedule.ref)
-        .execute!(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: schedule)
-    rescue => e
-      error(schedule, e)
-    ensure
-      schedule.schedule_next_run!
+        schedule.schedule_next_run!
+
+        Ci::CreatePipelineService.new(schedule.project,
+                                      schedule.owner,
+                                      ref: schedule.ref)
+          .execute!(:schedule, ignore_skip_ci: true, save_on_errors: true, schedule: schedule)
+      rescue => e
+        error(schedule, e)
+      end
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

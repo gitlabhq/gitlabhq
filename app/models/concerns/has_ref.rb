@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+##
+# We will disable `ref` and `sha` attributes in `Ci::Build` in the future
+# and remove this module in favor of Ci::PipelineDelegator.
 module HasRef
   extend ActiveSupport::Concern
 

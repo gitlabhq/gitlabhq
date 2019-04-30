@@ -1,0 +1,5 @@
+---
+title: Make `CI_COMMIT_REF_NAME` and `SLUG` variable idempotent
+merge_request: 27663
+author:
+type: fixed

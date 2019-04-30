@@ -4,7 +4,7 @@ require 'nokogiri'
 
 module MarkupHelper
   include ActionView::Helpers::TagHelper
-  include ActionView::Context
+  include ::Gitlab::ActionViewOutput::Context
 
   def plain?(filename)
     Gitlab::MarkupHelper.plain?(filename)
@@ -83,7 +83,8 @@ module MarkupHelper
     text = sanitize(
       text,
       tags: tags,
-      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
+      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes +
+          %w(style data-src data-name data-unicode-version data-iid data-project-path data-mr-title)
     )
 
     # since <img> tags are stripped, this can leave empty <a> tags hanging around
