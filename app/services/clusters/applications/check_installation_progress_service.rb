@@ -52,7 +52,7 @@ module Clusters
       end
 
       def timed_out?
-        Time.now.utc - app.updated_at.to_time.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
+        Time.now.utc - app.updated_at.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
       end
 
       def remove_installation_pod
