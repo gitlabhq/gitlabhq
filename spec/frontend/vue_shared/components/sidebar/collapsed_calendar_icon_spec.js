@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import collapsedCalendarIcon from '~/vue_shared/components/sidebar/collapsed_calendar_icon.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 
 describe('collapsedCalendarIcon', () => {
   let vm;
@@ -26,7 +26,7 @@ describe('collapsedCalendarIcon', () => {
   });
 
   it('should emit click event when container is clicked', () => {
-    const click = jasmine.createSpy();
+    const click = jest.fn();
     vm.$on('click', click);
 
     vm.$el.click();

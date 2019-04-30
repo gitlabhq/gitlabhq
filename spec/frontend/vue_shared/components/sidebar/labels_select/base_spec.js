@@ -3,25 +3,35 @@ import Vue from 'vue';
 import LabelsSelect from '~/labels_select';
 import baseComponent from '~/vue_shared/components/sidebar/labels_select/base.vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-
-import { mockConfig, mockLabels } from './mock_data';
+import { mount } from '@vue/test-utils';
+import {
+  mockConfig,
+  mockLabels,
+} from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
 
 const createComponent = (config = mockConfig) => {
   const Component = Vue.extend(baseComponent);
 
-  return mountComponent(Component, config);
+  return mount(Component, {
+    propsData: config,
+    sync: false,
+  });
 };
 
 describe('BaseComponent', () => {
+  let wrapper;
   let vm;
 
-  beforeEach(() => {
-    vm = createComponent();
+  beforeEach(done => {
+    wrapper = createComponent();
+
+    ({ vm } = wrapper);
+
+    Vue.nextTick(done);
   });
 
   afterEach(() => {
-    vm.$destroy();
+    wrapper.destroy();
   });
 
   describe('computed', () => {
@@ -31,11 +41,9 @@ describe('BaseComponent', () => {
       });
 
       it('returns correct string when showCreate prop is `false`', () => {
-        const mockConfigNonEditable = Object.assign({}, mockConfig, { showCreate: false });
-        const vmNonEditable = createComponent(mockConfigNonEditable);
+        wrapper.setProps({ showCreate: false });
 
-        expect(vmNonEditable.hiddenInputName).toBe('label_id[]');
-        vmNonEditable.$destroy();
+        expect(vm.hiddenInputName).toBe('label_id[]');
       });
     });
 
@@ -45,11 +53,9 @@ describe('BaseComponent', () => {
       });
 
       it('return `Create group label` when `isProject` prop is false', () => {
-        const mockConfigGroup = Object.assign({}, mockConfig, { isProject: false });
-        const vmGroup = createComponent(mockConfigGroup);
+        wrapper.setProps({ isProject: false });
 
-        expect(vmGroup.createLabelTitle).toBe('Create group label');
-        vmGroup.$destroy();
+        expect(vm.createLabelTitle).toBe('Create group label');
       });
     });
 
@@ -59,11 +65,9 @@ describe('BaseComponent', () => {
       });
 
       it('return `Manage group labels` when `isProject` prop is false', () => {
-        const mockConfigGroup = Object.assign({}, mockConfig, { isProject: false });
-        const vmGroup = createComponent(mockConfigGroup);
+        wrapper.setProps({ isProject: false });
 
-        expect(vmGroup.manageLabelsTitle).toBe('Manage group labels');
-        vmGroup.$destroy();
+        expect(vm.manageLabelsTitle).toBe('Manage group labels');
       });
     });
   });
@@ -71,7 +75,7 @@ describe('BaseComponent', () => {
   describe('methods', () => {
     describe('handleClick', () => {
       it('emits onLabelClick event with label and list of labels as params', () => {
-        spyOn(vm, '$emit');
+        jest.spyOn(vm, '$emit').mockImplementation(() => {});
         vm.handleClick(mockLabels[0]);
 
         expect(vm.$emit).toHaveBeenCalledWith('onLabelClick', mockLabels[0]);
@@ -80,7 +84,7 @@ describe('BaseComponent', () => {
 
     describe('handleCollapsedValueClick', () => {
       it('emits toggleCollapse event on component', () => {
-        spyOn(vm, '$emit');
+        jest.spyOn(vm, '$emit').mockImplementation(() => {});
         vm.handleCollapsedValueClick();
 
         expect(vm.$emit).toHaveBeenCalledWith('toggleCollapse');
@@ -89,7 +93,7 @@ describe('BaseComponent', () => {
 
     describe('handleDropdownHidden', () => {
       it('emits onDropdownClose event on component', () => {
-        spyOn(vm, '$emit');
+        jest.spyOn(vm, '$emit').mockImplementation(() => {});
         vm.handleDropdownHidden();
 
         expect(vm.$emit).toHaveBeenCalledWith('onDropdownClose');

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import toggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent from 'helpers/vue_mount_component_helper';
 
 describe('toggleSidebar', () => {
   let vm;
@@ -23,7 +23,7 @@ describe('toggleSidebar', () => {
   });
 
   it('should emit toggle event when button clicked', () => {
-    const toggle = jasmine.createSpy();
+    const toggle = jest.fn();
     vm.$on('toggle', toggle);
     vm.$el.click();
 

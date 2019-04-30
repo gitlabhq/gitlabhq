@@ -2,9 +2,8 @@ import Vue from 'vue';
 
 import dropdownValueCollapsedComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_value_collapsed.vue';
 
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
-
-import { mockLabels } from './mock_data';
+import mountComponent from 'helpers/vue_mount_component_helper';
+import { mockLabels } from '../../../../../javascripts/vue_shared/components/sidebar/labels_select/mock_data';
 
 const createComponent = (labels = mockLabels) => {
   const Component = Vue.extend(dropdownValueCollapsedComponent);
@@ -72,7 +71,7 @@ describe('DropdownValueCollapsedComponent', () => {
   describe('methods', () => {
     describe('handleClick', () => {
       it('emits onValueClick event on component', () => {
-        spyOn(vm, '$emit');
+        jest.spyOn(vm, '$emit').mockImplementation(() => {});
         vm.handleClick();
 
         expect(vm.$emit).toHaveBeenCalledWith('onValueClick');
