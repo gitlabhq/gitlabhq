@@ -1,3 +1,5 @@
+import { joinPaths } from '~/lib/utils/url_utility';
+
 // tell webpack to load assets from origin so that web workers don't break
 // eslint-disable-next-line import/prefer-default-export
 export function resetServiceWorkersPublicPath() {
@@ -5,7 +7,7 @@ export function resetServiceWorkersPublicPath() {
   // the webpack publicPath setting at runtime.
   // see: https://webpack.js.org/guides/public-path/
   const relativeRootPath = (gon && gon.relative_url_root) || '';
-  const webpackAssetPath = `${relativeRootPath}/assets/webpack/`;
+  const webpackAssetPath = joinPaths(relativeRootPath, '/assets/webpack/');
   __webpack_public_path__ = webpackAssetPath; // eslint-disable-line camelcase
 
   // monaco-editor-webpack-plugin currently (incorrectly) references the
