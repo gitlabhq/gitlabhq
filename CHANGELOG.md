@@ -632,6 +632,13 @@ entry.
 - Removes EE differences for jobs/getters.js.
 
 
+## 11.8.10 (2019-04-30)
+
+### Security (1 change)
+
+- Allow to see project events only with api scope token.
+
+
 ## 11.8.8 (2019-04-23)
 
 ### Fixed (5 changes)
