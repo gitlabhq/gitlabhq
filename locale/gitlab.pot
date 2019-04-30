@@ -9231,6 +9231,9 @@ msgstr ""
 msgid "There is already a repository with that name on disk"
 msgstr ""
 
+msgid "There was a problem communicating with your device."
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -9307,6 +9310,12 @@ msgid "This commit was signed with an <strong>unverified</strong> signature."
 msgstr ""
 
 msgid "This container registry has been scheduled for deletion."
+msgstr ""
+
+msgid "This device has already been registered with us."
+msgstr ""
+
+msgid "This device has not been registered with us."
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -9893,6 +9902,9 @@ msgid "Two-factor authentication"
 msgstr ""
 
 msgid "Type"
+msgstr ""
+
+msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
 msgid "Unable to connect to server: %{error}"
