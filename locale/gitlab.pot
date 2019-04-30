@@ -7931,6 +7931,9 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
+msgid "Save anyway"
+msgstr ""
+
 msgid "Save application"
 msgstr ""
 
@@ -8960,6 +8963,9 @@ msgid "Test coverage parsing"
 msgstr ""
 
 msgid "Test failed."
+msgstr ""
+
+msgid "Test settings and save changes"
 msgstr ""
 
 msgid "TestHooks|Ensure one of your projects has merge requests."
