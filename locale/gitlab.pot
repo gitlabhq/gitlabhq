@@ -4036,6 +4036,9 @@ msgstr ""
 msgid "Failed to update issues, please try again."
 msgstr ""
 
+msgid "Failed to update tag!"
+msgstr ""
+
 msgid "Failed to update."
 msgstr ""
 
@@ -7402,6 +7405,9 @@ msgstr ""
 msgid "Protected"
 msgstr ""
 
+msgid "Protected Tag"
+msgstr ""
+
 msgid "Protip:"
 msgstr ""
 
@@ -7923,6 +7929,9 @@ msgid "Save"
 msgstr ""
 
 msgid "Save Changes"
+msgstr ""
+
+msgid "Save anyway"
 msgstr ""
 
 msgid "Save application"
@@ -8954,6 +8963,9 @@ msgid "Test coverage parsing"
 msgstr ""
 
 msgid "Test failed."
+msgstr ""
+
+msgid "Test settings and save changes"
 msgstr ""
 
 msgid "TestHooks|Ensure one of your projects has merge requests."
