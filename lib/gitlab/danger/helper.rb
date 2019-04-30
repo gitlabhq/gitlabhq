@@ -99,15 +99,15 @@ module Gitlab
       end
 
       CATEGORY_LABELS = {
-        docs: "~Documentation",
+        docs: "~Documentation", # Docs are reviewed along DevOps stages, so don't need roulette for now.
         none: "",
         qa: "~QA"
       }.freeze
 
       # rubocop:disable Style/RegexpLiteral
       CATEGORIES = {
-        %r{\Adoc/} => :docs,
-        %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
+        %r{\Adoc/} => :none, # To reinstate roulette for documentation, set to `:docs`.
+        %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
 
         %r{\A(ee/)?app/(assets|views)/} => :frontend,
         %r{\A(ee/)?public/} => :frontend,
@@ -148,7 +148,7 @@ module Gitlab
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,
-        %r{\.(md|txt)\z} => :docs,
+        %r{\.(md|txt)\z} => :none, # To reinstate roulette for documentation, set to `:docs`.
         %r{\.js\z} => :frontend
       }.freeze
       # rubocop:enable Style/RegexpLiteral
