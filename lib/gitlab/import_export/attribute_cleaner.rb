@@ -4,7 +4,7 @@ module Gitlab
   module ImportExport
     class AttributeCleaner
       ALLOWED_REFERENCES = RelationFactory::PROJECT_REFERENCES + RelationFactory::USER_REFERENCES + ['group_id']
-      PROHIBITED_SUFFIXES = %w(_id _html).freeze
+      PROHIBITED_SUFFIXES = %w[_id _html].freeze
 
       def self.clean(*args)
         new(*args).clean
