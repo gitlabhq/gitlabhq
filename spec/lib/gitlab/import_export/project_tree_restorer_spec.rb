@@ -63,6 +63,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           it 'does not import note_html' do
             note_content = 'Quo reprehenderit aliquam qui dicta impedit cupiditate eligendi'
             issue_note = Issue.find_by(description: 'Aliquam enim illo et possimus.').notes.select { |n| n.note.match(/#{note_content}/)}.first
+
             expect(issue_note.note_html).to match(/#{note_content}/)
           end
         end
@@ -71,11 +72,11 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           it 'does not import note_html' do
             note_content = 'Sit voluptatibus eveniet architecto quidem'
             merge_request_note = MergeRequest.find_by(title: 'MR1').notes.select { |n| n.note.match(/#{note_content}/)}.first
+
             expect(merge_request_note.note_html).to match(/#{note_content}/)
           end
         end
       end
-
 
       it 'creates a valid pipeline note' do
         expect(Ci::Pipeline.find_by_sha('sha-notes').notes).not_to be_empty
