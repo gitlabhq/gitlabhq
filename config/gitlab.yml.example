@@ -315,6 +315,13 @@ production: &base
     # path: shared/registry
     # issuer: gitlab-issuer
 
+
+  ## Error Reporting and Logging with Sentry
+  sentry:
+    # enabled: false
+    # dsn: https://<key>@sentry.io/<project>
+    # environment: 'production' # e.g. development, staging, production
+
   #
   # 2. GitLab CI settings
   # ==========================
