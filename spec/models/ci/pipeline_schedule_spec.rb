@@ -35,6 +35,15 @@ describe Ci::PipelineSchedule do
         expect(pipeline_schedule).not_to be_valid
       end
     end
+
+    context 'when cron contains trailing whitespaces' do
+      it 'strips the attribute' do
+        pipeline_schedule = build(:ci_pipeline_schedule, cron: ' 0 0 * * *   ')
+
+        expect(pipeline_schedule).to be_valid
+        expect(pipeline_schedule.cron).to eq('0 0 * * *')
+      end
+    end
   end
 
   describe '#set_next_run_at' do
