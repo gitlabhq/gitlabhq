@@ -5,7 +5,7 @@ describe GitlabSchema.types['Query'] do
     expect(described_class.graphql_name).to eq('Query')
   end
 
-  it { is_expected.to have_graphql_fields(:project, :echo, :metadata) }
+  it { is_expected.to have_graphql_fields(:project, :group, :echo, :metadata) }
 
   describe 'project field' do
     subject { described_class.fields['project'] }
