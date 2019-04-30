@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module GlRepository
+  class GlRepository
+    include Singleton
+
     PROJECT = RepoType.new(
       name: :project,
       access_checker_class: Gitlab::GitAccess,
@@ -19,7 +21,7 @@ module Gitlab
     }.freeze
 
     def self.types
-      TYPES
+      instance.types
     end
 
     def self.parse(gl_repository)
@@ -39,5 +41,11 @@ module Gitlab
     def self.default_type
       PROJECT
     end
+
+    def types
+      TYPES
+    end
+
+    private_class_method :instance
   end
 end
