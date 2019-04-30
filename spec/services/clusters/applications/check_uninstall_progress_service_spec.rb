@@ -60,6 +60,7 @@ describe Clusters::Applications::CheckUninstallProgressService do
         expect(worker_class).not_to receive(:perform_in)
 
         service.execute
+
         expect(application).to be_destroyed
       end
 
