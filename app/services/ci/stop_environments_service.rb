@@ -9,12 +9,11 @@ module Ci
 
       return unless @ref.present?
 
-      environments.each do |environment|
-        next unless environment.stop_action_available?
-        next unless can?(current_user, :stop_environment, environment)
+      environments.each { |environment| stop(environment) }
+    end
 
-        environment.stop_with_action!(current_user)
-      end
+    def execute_for_merge_request(merge_request)
+      merge_request.environments.each { |environment| stop(environment) }
     end
 
     private
@@ -23,6 +22,13 @@ module Ci
       @environments ||= EnvironmentsFinder
         .new(project, current_user, ref: @ref, recently_updated: true)
         .execute
+    end
+
+    def stop(environment)
+      return unless environment.stop_action_available?
+      return unless can?(current_user, :stop_environment, environment)
+
+      environment.stop_with_action!(current_user)
     end
   end
 end
