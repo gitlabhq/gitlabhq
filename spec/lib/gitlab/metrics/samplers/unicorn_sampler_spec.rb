@@ -79,12 +79,11 @@ describe Gitlab::Metrics::Samplers::UnicornSampler do
     end
 
     context 'additional metrics' do
-      let(:cpu_time) { 3.14 }
       let(:unicorn_workers) { 2 }
 
       before do
         allow(unicorn).to receive(:listener_names).and_return([""])
-        allow(::Gitlab::Metrics::System).to receive(:cpu_time).and_return(cpu_time)
+        allow(::Gitlab::Metrics::System).to receive(:cpu_time).and_return(3.14)
         allow(subject).to receive(:unicorn_workers_count).and_return(unicorn_workers)
       end
 
