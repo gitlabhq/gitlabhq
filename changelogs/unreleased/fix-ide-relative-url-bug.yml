@@ -1,0 +1,5 @@
+---
+title: Fix IDE get file data with '/' as relative root
+merge_request: 27911
+author:
+type: fixed
