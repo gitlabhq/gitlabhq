@@ -91,7 +91,8 @@ module Avatarable
   private
 
   def retrieve_upload_from_batch(identifier)
-    BatchLoader.for(identifier: identifier, model: self).batch(key: self.class) do |upload_params, loader, args|
+    BatchLoader.for(identifier: identifier, model: self)
+               .batch(key: self.class, cache: true, replace_methods: false) do |upload_params, loader, args|
       model_class = args[:key]
       paths = upload_params.flat_map do |params|
         params[:model].upload_paths(params[:identifier])
