@@ -57,10 +57,12 @@ def spin_for_person(people, random:)
   people.size.times do
     person = people.sample(random: random)
 
-    return person unless out_of_office?(person)
+    break person unless out_of_office?(person)
 
     people -= [person]
   end
+
+  person
 end
 
 def out_of_office?(person)
