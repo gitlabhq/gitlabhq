@@ -6,6 +6,7 @@
 - cronjob:gitlab_usage_ping
 - cronjob:import_export_project_cleanup
 - cronjob:pages_domain_verification_cron
+- cronjob:pages_domain_removal_cron
 - cronjob:pipeline_schedule
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links

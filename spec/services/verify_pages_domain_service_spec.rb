@@ -57,12 +57,12 @@ describe VerifyPagesDomainService do
           expect(domain).not_to be_verified
         end
 
-        it 'disables domain and shedules it for removal' do
-          Timecop.freeze do
-            service.execute
-            expect(domain).not_to be_enabled
-            expect(domain.remove_at).to be_within(1.second).of(1.week.from_now)
-          end
+        it 'disables domain and shedules it for removal in 1 week' do
+          service.execute
+
+          expect(domain).not_to be_enabled
+
+          expect(domain.remove_at).to be_like_time(7.days.from_now)
         end
       end
 

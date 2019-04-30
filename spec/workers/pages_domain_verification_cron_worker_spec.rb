@@ -6,11 +6,11 @@ describe PagesDomainVerificationCronWorker do
   subject(:worker) { described_class.new }
 
   describe '#perform' do
-    it 'enqueues a PagesDomainVerificationWorker for domains needing verification' do
-      verified = create(:pages_domain)
-      reverify = create(:pages_domain, :reverify)
-      disabled = create(:pages_domain, :disabled)
+    let!(:verified) { create(:pages_domain) }
+    let!(:reverify) { create(:pages_domain, :reverify) }
+    let!(:disabled) { create(:pages_domain, :disabled) }
 
+    it 'enqueues a PagesDomainVerificationWorker for domains needing verification' do
       [reverify, disabled].each do |domain|
         expect(PagesDomainVerificationWorker).to receive(:perform_async).with(domain.id)
       end
