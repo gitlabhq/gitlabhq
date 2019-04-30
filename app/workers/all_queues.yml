@@ -32,6 +32,8 @@
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 - gcp_cluster:cluster_configure
 - gcp_cluster:cluster_project_configure
+- gcp_cluster:clusters_applications_wait_for_uninstall_app
+- gcp_cluster:clusters_applications_uninstall
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note

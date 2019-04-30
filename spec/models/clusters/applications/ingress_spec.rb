@@ -18,6 +18,12 @@ describe Clusters::Applications::Ingress do
     allow(ClusterWaitForIngressIpAddressWorker).to receive(:perform_async)
   end
 
+  describe '#can_uninstall?' do
+    subject { ingress.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#make_installed!' do
     before do
       application.make_installed!
