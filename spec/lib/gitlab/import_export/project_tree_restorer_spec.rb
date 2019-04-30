@@ -7,8 +7,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       # Using an admin for import, so we can check assignment of existing members
       @user = create(:admin)
       @existing_members = [
-          create(:user, username: 'bernard_willms'),
-          create(:user, username: 'saul_will')
+        create(:user, username: 'bernard_willms'),
+        create(:user, username: 'saul_will')
       ]
 
       RSpec::Mocks.with_temporary_scope do
@@ -22,12 +22,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
 
-        @project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
+        project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
 
         expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: ['whatever'])).and_call_original.at_least(:once)
-        allow(@project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
+        allow(project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
 
-        @restored_project_json = @project_tree_restorer.restore
+        @restored_project_json = project_tree_restorer.restore
       end
     end
 
@@ -75,6 +75,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           end
         end
       end
+
 
       it 'creates a valid pipeline note' do
         expect(Ci::Pipeline.find_by_sha('sha-notes').notes).not_to be_empty
