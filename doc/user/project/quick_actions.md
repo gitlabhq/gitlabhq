@@ -26,9 +26,10 @@ discussions, and descriptions:
 | `/award :emoji:`           | Toggle emoji award             | ✓     | ✓             |
 | `/assign me`               | Assign yourself                | ✓     | ✓             |
 | `/assign @user`            | Assign one user                | ✓     | ✓             |
-| `/assign @user1 @user2`    | Assign multiple users **[STARTER]** | ✓ |              |
-| `/unassign`                | Remove assignee(s)             | ✓     | ✓             |
-| `/reassign @user1 @user2`  | Change assignee                | ✓     | ✓             |
+| `/assign @user1 @user2`    | Assign multiple users **[STARTER]** | ✓ | ✓            |
+| `/unassign @user1 @user2`  | Remove assignee(s) **[STARTER]** | ✓     | ✓             |
+| `/reassign @user1 @user2`  | Change assignee **[STARTER]**  | ✓     | ✓             |
+| `/unassign`                | Remove current assignee        | ✓     | ✓             |
 | `/milestone %milestone`    | Set milestone                  | ✓     | ✓             |
 | `/remove_milestone`        | Remove milestone               | ✓     | ✓             |
 | `/label ~label1 ~label2`   | Add label(s). Label names can also start without ~ but mixed syntax is not supported.                   | ✓     | ✓             |
