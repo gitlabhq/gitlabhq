@@ -22,12 +22,9 @@ const handleUserPopoverMouseOut = ({ target }) => {
  * Adds a MergeRequestPopover component to the body, hands over as much data as the target element has in data attributes.
  * loads based on data-project-path and data-iid more data about an MR from the API and sets it on the popover
  */
-const handleMRPopoverMount = apolloProvider => ({ target }) => {
+const handleMRPopoverMount = ({ apolloProvider, projectPath, mrTitle, iid }) => ({ target }) => {
   // Add listener to actually remove it again
   target.addEventListener('mouseleave', handleUserPopoverMouseOut);
-
-  const { projectPath, mrTitle, iid } = target.dataset;
-  const mergeRequest = {};
 
   renderFn = setTimeout(() => {
     const MRPopoverComponent = Vue.extend(MRPopover);
@@ -36,7 +33,6 @@ const handleMRPopoverMount = apolloProvider => ({ target }) => {
         target,
         projectPath,
         mergeRequestIID: iid,
-        mergeRequest,
         mergeRequestTitle: mrTitle,
       },
       apolloProvider,
@@ -57,8 +53,13 @@ export default elements => {
     const listenerAddedAttr = 'data-mr-listener-added';
 
     mrLinks.forEach(el => {
-      if (!el.getAttribute(listenerAddedAttr)) {
-        el.addEventListener('mouseenter', handleMRPopoverMount(apolloProvider));
+      const { projectPath, mrTitle, iid } = el.dataset;
+
+      if (!el.getAttribute(listenerAddedAttr) && projectPath && mrTitle && iid) {
+        el.addEventListener(
+          'mouseenter',
+          handleMRPopoverMount({ apolloProvider, projectPath, mrTitle, iid }),
+        );
         el.setAttribute(listenerAddedAttr, true);
       }
     });

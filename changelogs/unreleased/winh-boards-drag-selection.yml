@@ -1,0 +1,5 @@
+---
+title: Prevent text selection when dragging in issue boards
+merge_request: 27724
+author:
+type: fixed

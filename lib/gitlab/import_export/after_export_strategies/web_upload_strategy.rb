@@ -30,10 +30,7 @@ module Gitlab
 
         def handle_response_error(response)
           unless response.success?
-            error_code = response.dig('Error', 'Code') || response.code
-            error_message = response.dig('Error', 'Message') || response.message
-
-            raise StrategyError.new("Error uploading the project. Code #{error_code}: #{error_message}")
+            raise StrategyError.new("Error uploading the project. Code #{response.code}: #{response.message}")
           end
         end
 

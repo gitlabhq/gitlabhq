@@ -137,19 +137,5 @@ describe Gitlab::Ci::Variables::Collection::Item do
           .to eq(key: 'VAR', value: 'value', public: true, file: true, masked: false)
       end
     end
-
-    context 'when variable masking is disabled' do
-      before do
-        stub_feature_flags(variable_masking: false)
-      end
-
-      it 'does not expose the masked field to the runner' do
-        runner_variable = described_class
-          .new(key: 'VAR', value: 'value', masked: true)
-          .to_runner_variable
-
-        expect(runner_variable).to eq(key: 'VAR', value: 'value', public: true)
-      end
-    end
   end
 end
