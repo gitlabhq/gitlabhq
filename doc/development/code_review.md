@@ -23,11 +23,6 @@ one of the [Merge request coaches][team].
 If you need assistance with security scans or comments, feel free to include the
 Security Team (`@gitlab-com/gl-security`) in the review.
 
-The `danger-review` CI job will randomly pick a reviewer and a maintainer for
-each area of the codebase that your merge request seems to touch. It only makes
-recommendations - feel free to override it if you think someone else is a better
-fit!
-
 Depending on the areas your merge request touches, it must be **approved** by one
 or more [maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer):
 
@@ -36,6 +31,26 @@ widget. Reviewers can add their approval by [approving additionally](https://doc
 
 Getting your merge request **merged** also requires a maintainer. If it requires
 more than one approval, the last maintainer to review and approve it will also merge it.
+
+### Reviewer roulette
+
+The `danger-review` CI job will randomly pick a reviewer and a maintainer for
+each area of the codebase that your merge request seems to touch. It only makes
+recommendations - feel free to override it if you think someone else is a better
+fit!
+
+It picks reviewers and maintainers from the list at the
+[engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
+page, with these behaviours:
+
+1. It will not pick people whose [GitLab status](../user/profile/#current-status)
+   contains the string 'OOO'.
+2. [Trainee maintainers](https://about.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer)
+   are three times as likely to be picked as other reviewers.
+3. It always picks the same reviewers and maintainers for the same
+   branch name (unless their OOO status changes, as in point 1). It
+   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
+   that it can be stable for backport branches.
 
 ### Approval guidelines
 
