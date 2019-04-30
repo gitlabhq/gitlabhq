@@ -3784,6 +3784,9 @@ msgstr ""
 msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
+msgid "Error while loading the project data. Please try again."
+msgstr ""
+
 msgid "Error while migrating %{upload_id}: %{error_message}"
 msgstr ""
 
@@ -5214,6 +5217,9 @@ msgid "LFSStatus|Disabled"
 msgstr ""
 
 msgid "LFSStatus|Enabled"
+msgstr ""
+
+msgid "LICENSE"
 msgstr ""
 
 msgid "Label"

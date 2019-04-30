@@ -1,4 +1,5 @@
 import { activityBarViews } from '../../../constants';
+import { __ } from '~/locale';
 
 export const templateTypes = () => [
   {
@@ -10,11 +11,11 @@ export const templateTypes = () => [
     key: 'gitignores',
   },
   {
-    name: 'LICENSE',
+    name: __('LICENSE'),
     key: 'licenses',
   },
   {
-    name: 'Dockerfile',
+    name: __('Dockerfile'),
     key: 'dockerfiles',
   },
 ];
