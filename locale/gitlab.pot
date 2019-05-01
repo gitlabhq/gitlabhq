@@ -1593,6 +1593,9 @@ msgstr ""
 msgid "Can't find HEAD commit for this branch"
 msgstr ""
 
+msgid "Can't find variable: ZiteReader"
+msgstr ""
+
 msgid "Cancel"
 msgstr ""
 
@@ -2407,6 +2410,9 @@ msgid "Collapse"
 msgstr ""
 
 msgid "Collapse sidebar"
+msgstr ""
+
+msgid "ComboSearch is not defined"
 msgstr ""
 
 msgid "Command line instructions"
@@ -9952,6 +9958,9 @@ msgstr ""
 msgid "Unknown format"
 msgstr ""
 
+msgid "Unknown response text"
+msgstr ""
+
 msgid "Unlock"
 msgstr ""
 
@@ -11078,6 +11087,9 @@ msgid "it is stored in LFS"
 msgstr ""
 
 msgid "it is too large"
+msgstr ""
+
+msgid "jigsaw is not defined"
 msgstr ""
 
 msgid "latest"
