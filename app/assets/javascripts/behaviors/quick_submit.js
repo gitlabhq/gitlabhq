@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import '../commons/bootstrap';
 import { isInIssuePage } from '../lib/utils/common_utils';
+import { __ } from '~/locale';
 
 // Quick Submit behavior
 //
@@ -65,7 +66,9 @@ $(document).on(
     }
 
     const $this = $(this);
-    const title = isMac() ? 'You can also press &#8984;-Enter' : 'You can also press Ctrl-Enter';
+    const title = isMac()
+      ? __('You can also press &#8984;-Enter')
+      : __('You can also press Ctrl-Enter');
 
     $this.tooltip({
       container: 'body',
