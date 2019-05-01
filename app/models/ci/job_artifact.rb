@@ -66,6 +66,10 @@ module Ci
       where(file_type: types)
     end
 
+    scope :with_all_reports, -> do
+      where(file_type: self.file_types.values.drop(3))
+    end
+
     scope :test_reports, -> do
       with_file_types(TEST_REPORT_FILE_TYPES)
     end
