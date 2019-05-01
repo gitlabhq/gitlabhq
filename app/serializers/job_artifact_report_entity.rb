@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class JobArtifactEntity < Grape::Entity
+class JobArtifactReportEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :file_type

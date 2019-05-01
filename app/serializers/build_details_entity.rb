@@ -42,7 +42,7 @@ class BuildDetailsEntity < JobEntity
     end
   end
 
-  expose :reports, if: -> (*) { can?(current_user, :read_build, build) }, using: JobArtifactEntity do |build|
+  expose :reports, if: -> (*) { can?(current_user, :read_build, build) }, using: JobArtifactReportEntity do |build|
     build.job_artifacts.merge(Ci::JobArtifact.with_all_reports)
   end
 
