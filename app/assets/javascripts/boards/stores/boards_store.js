@@ -7,6 +7,7 @@ import Vue from 'vue';
 import Cookies from 'js-cookie';
 import BoardsStoreEE from 'ee_else_ce/boards/stores/boards_store_ee';
 import { getUrlParamsArray, parseBoolean } from '~/lib/utils/common_utils';
+import { __ } from '~/locale';
 
 const boardsStore = {
   disabled: false,
@@ -78,7 +79,7 @@ const boardsStore = {
     this.addList({
       id: 'blank',
       list_type: 'blank',
-      title: 'Welcome to your Issue Board!',
+      title: __('Welcome to your Issue Board!'),
       position: 0,
     });
 
