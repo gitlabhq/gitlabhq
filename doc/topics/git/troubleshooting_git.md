@@ -78,6 +78,33 @@ git push
 In case you're running an older version of Git (< 2.9), consider upgrading
 to >= 2.9 (see [Broken pipe when pushing to Git repository][Broken-Pipe]).
 
+## `ssh_exchange_identification` error
+
+Users may experience the following error when attempting to push or pull
+using Git over SSH:
+
+```
+Please make sure you have the correct access rights 
+and the repository exists. 
+...
+ssh_exchange_identification: read: Connection reset by peer 
+fatal: Could not read from remote repository. 
+```
+
+This error usually indicates that SSH daemon's `MaxStartups` value is throttling
+SSH connections. This setting specifies the maximum number of unauthenticated 
+connections to the SSH daemon. This affects users with proper authentication
+credentials (SSH keys) because every connection is 'unauthenticated' in the
+beginning. The default value is `10`. 
+
+Increase `MaxStartups` by adding or modifying the value in `/etc/ssh/sshd_config`:
+
+```
+MaxStartups 100
+```
+
+Restart SSHD for the change to take effect. 
+
 ## Timeout during git push/pull
 
 If pulling/pushing from/to your repository ends up taking more than 50 seconds,
