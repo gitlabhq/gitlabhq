@@ -1,4 +1,5 @@
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
+import { __ } from '~/locale';
 
 export const tokenKeys = [
   {
@@ -60,52 +61,52 @@ export const conditions = [
   {
     url: 'assignee_id=None',
     tokenKey: 'assignee',
-    value: 'None',
+    value: __('None'),
   },
   {
     url: 'assignee_id=Any',
     tokenKey: 'assignee',
-    value: 'Any',
+    value: __('Any'),
   },
   {
     url: 'milestone_title=None',
     tokenKey: 'milestone',
-    value: 'None',
+    value: __('None'),
   },
   {
     url: 'milestone_title=Any',
     tokenKey: 'milestone',
-    value: 'Any',
+    value: __('Any'),
   },
   {
     url: 'milestone_title=%23upcoming',
     tokenKey: 'milestone',
-    value: 'Upcoming',
+    value: __('Upcoming'),
   },
   {
     url: 'milestone_title=%23started',
     tokenKey: 'milestone',
-    value: 'Started',
+    value: __('Started'),
   },
   {
     url: 'label_name[]=None',
     tokenKey: 'label',
-    value: 'None',
+    value: __('None'),
   },
   {
     url: 'label_name[]=Any',
     tokenKey: 'label',
-    value: 'Any',
+    value: __('Any'),
   },
   {
     url: 'my_reaction_emoji=None',
     tokenKey: 'my-reaction',
-    value: 'None',
+    value: __('None'),
   },
   {
     url: 'my_reaction_emoji=Any',
     tokenKey: 'my-reaction',
-    value: 'Any',
+    value: __('Any'),
   },
 ];
 
