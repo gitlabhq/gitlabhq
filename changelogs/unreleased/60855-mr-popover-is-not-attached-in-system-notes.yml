@@ -1,5 +1,0 @@
----
-title: Fix bug where system note MR has no popover
-merge_request: 27589
-author:
-type: fixed
