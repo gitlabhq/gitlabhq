@@ -71,11 +71,11 @@ merge request widget.
 
 NOTE: **Note:**
 If you also want the ability to browse JUnit output files, include the
-[`artifacts:paths`](yaml/README.md#artifactspaths) keyword.
+[`artifacts:paths`](yaml/README.md#artifactspaths) keyword. An example of this is shown in the Ruby example below.
 
 ### Ruby example
 
-Use the following job in `.gitlab-ci.yml`:
+Use the following job in `.gitlab-ci.yml`. This includes the `artifacts:paths` keyword to provide a link to the JUnit output file.
 
 ```yaml
 ## Use https://github.com/sj26/rspec_junit_formatter to generate a JUnit report with rspec
@@ -85,6 +85,8 @@ ruby:
   - bundle install
   - rspec spec/lib/ --format RspecJunitFormatter --out rspec.xml
   artifacts:
+    paths:
+      - rspec.xml
     reports:
       junit: rspec.xml
 ```
