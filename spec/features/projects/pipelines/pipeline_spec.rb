@@ -331,11 +331,9 @@ describe 'Pipeline', :js do
         merge_request.all_pipelines.last
       end
 
-      before do
-        visit_pipeline
-      end
-
       it 'shows the pipeline information' do
+        visit_pipeline
+
         within '.pipeline-info' do
           expect(page).to have_content("#{pipeline.statuses.count} jobs " \
                                        "for !#{merge_request.iid} " \
@@ -344,6 +342,21 @@ describe 'Pipeline', :js do
             href: project_merge_request_path(project, merge_request))
           expect(page).to have_link(merge_request.source_branch,
             href: project_commits_path(merge_request.source_project, merge_request.source_branch))
+        end
+      end
+
+      context 'when source branch does not exist' do
+        before do
+          project.repository.rm_branch(user, merge_request.source_branch)
+        end
+
+        it 'does not link to the source branch commit path' do
+          visit_pipeline
+
+          within '.pipeline-info' do
+            expect(page).not_to have_link(merge_request.source_branch)
+            expect(page).to have_content(merge_request.source_branch)
+          end
         end
       end
 
@@ -386,11 +399,11 @@ describe 'Pipeline', :js do
 
       before do
         pipeline.update(user: user)
-
-        visit_pipeline
       end
 
       it 'shows the pipeline information' do
+        visit_pipeline
+
         within '.pipeline-info' do
           expect(page).to have_content("#{pipeline.statuses.count} jobs " \
                                        "for !#{merge_request.iid} " \
@@ -402,6 +415,21 @@ describe 'Pipeline', :js do
             href: project_commits_path(merge_request.source_project, merge_request.source_branch))
           expect(page).to have_link(merge_request.target_branch,
             href: project_commits_path(merge_request.target_project, merge_request.target_branch))
+        end
+      end
+
+      context 'when target branch does not exist' do
+        before do
+          project.repository.rm_branch(user, merge_request.target_branch)
+        end
+
+        it 'does not link to the target branch commit path' do
+          visit_pipeline
+
+          within '.pipeline-info' do
+            expect(page).not_to have_link(merge_request.target_branch)
+            expect(page).to have_content(merge_request.target_branch)
+          end
         end
       end
 
