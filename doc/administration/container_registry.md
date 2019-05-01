@@ -388,6 +388,9 @@ desired.
 
 **Omnibus GitLab installations**
 
+> **Note:**
+`regionendpoint` is only required when configuring an S3 compatible service such as Minio, by entering a URL such as http://127.0.0.1:9000
+
 To configure the storage driver in Omnibus:
 
 1. Edit `/etc/gitlab/gitlab.rb`:
@@ -398,7 +401,8 @@ To configure the storage driver in Omnibus:
         'accesskey' => 's3-access-key',
         'secretkey' => 's3-secret-key-for-access-key',
         'bucket' => 'your-s3-bucket',
-        'region' => 'your-s3-region'
+        'region' => 'your-s3-region',
+        'regionendpoint' => 'your-s3-regionendpoint'
       }
     }
     ```
@@ -421,6 +425,7 @@ storage:
     secretkey: 'secret123'
     bucket: 'gitlab-registry-bucket-AKIAKIAKI'
     region: 'your-s3-region'
+    regionendpoint: 'your-s3-regionendpoint'
   cache:
     blobdescriptor: inmemory
   delete:
