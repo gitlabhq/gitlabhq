@@ -266,10 +266,8 @@ Clicking on an individual job will show you its job trace, and allow you to:
 - Retry the job.
 - Erase the job trace.
 
->**Note:**
-Once a job has been canceled, it cannot be retried in isolation.
-This prevents jobs from being bypassed or run out of order.
-To retry a canceled job, retry the pipeline it belongs to.
+NOTE: **Note:**
+To prevent jobs from being bypassed or run out of order, canceled jobs can only be retried when the whole pipeline they belong to is retried.
 
 ### Seeing the failure reason for jobs
 
