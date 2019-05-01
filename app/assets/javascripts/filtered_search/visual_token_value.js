@@ -5,6 +5,7 @@ import AjaxCache from '~/lib/utils/ajax_cache';
 import DropdownUtils from '~/filtered_search/dropdown_utils';
 import Flash from '~/flash';
 import UsersCache from '~/lib/utils/users_cache';
+import { __ } from '~/locale';
 
 export default class VisualTokenValue {
   constructor(tokenValue, tokenType) {
@@ -77,7 +78,7 @@ export default class VisualTokenValue {
           matchingLabel.text_color,
         );
       })
-      .catch(() => new Flash('An error occurred while fetching label colors.'));
+      .catch(() => new Flash(__('An error occurred while fetching label colors.')));
   }
 
   static setTokenStyle(tokenValueContainer, backgroundColor, textColor) {
