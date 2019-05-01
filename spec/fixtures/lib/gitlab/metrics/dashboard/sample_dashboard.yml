@@ -2,7 +2,7 @@ dashboard: 'Test Dashboard'
 priority: 1
 panel_groups:
 - group: Group A
-  priority: 10
+  priority: 1
   panels:
   - title: "Super Chart A1"
     type: "area-chart"
@@ -23,7 +23,7 @@ panel_groups:
       label: Legend Label
       unit: unit
 - group: Group B
-  priority: 1
+  priority: 10
   panels:
   - title: "Super Chart B"
     type: "area-chart"
