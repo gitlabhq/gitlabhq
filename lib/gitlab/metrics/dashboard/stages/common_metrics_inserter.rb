@@ -11,7 +11,7 @@ module Gitlab
           def transform!
             common_metrics = ::PrometheusMetric.common
 
-            for_metrics(dashboard) do |metric|
+            for_metrics do |metric|
               metric_record = common_metrics.find { |m| m.identifier == metric[:id] }
               metric[:metric_id] = metric_record.id if metric_record
             end

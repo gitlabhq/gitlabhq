@@ -39,7 +39,8 @@ class Repository
                       changelog license_blob license_key gitignore
                       gitlab_ci_yml branch_names tag_names branch_count
                       tag_count avatar exists? root_ref has_visible_content?
-                      issue_template_names merge_request_template_names xcode_project?).freeze
+                      issue_template_names merge_request_template_names
+                      metrics_dashboard_paths xcode_project?).freeze
 
   # Methods that use cache_method but only memoize the value
   MEMOIZED_CACHED_METHODS = %i(license).freeze
@@ -57,6 +58,7 @@ class Repository
     avatar: :avatar,
     issue_template: :issue_template_names,
     merge_request_template: :merge_request_template_names,
+    metrics_dashboard: :metrics_dashboard_paths,
     xcode_config: :xcode_project?
   }.freeze
 
@@ -601,6 +603,11 @@ class Repository
     Gitlab::Template::MergeRequestTemplate.dropdown_names(project)
   end
   cache_method :merge_request_template_names, fallback: []
+
+  def metrics_dashboard_paths
+    Gitlab::Metrics::Dashboard::Finder.find_all_paths_from_source(project)
+  end
+  cache_method :metrics_dashboard_paths
 
   def readme
     head_tree&.readme

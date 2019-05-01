@@ -36,7 +36,7 @@ module Gitlab
             raise DashboardLayoutError.new('Each "panel" must define an array :metrics')
           end
 
-          def for_metrics(dashboard)
+          def for_metrics
             missing_panel_groups! unless dashboard[:panel_groups].is_a?(Array)
 
             dashboard[:panel_groups].each do |panel_group|
