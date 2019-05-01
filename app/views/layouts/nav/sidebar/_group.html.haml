@@ -46,6 +46,7 @@
                     = _('Contribution Analytics')
 
             = render_if_exists 'layouts/nav/group_insights_link'
+            = render_if_exists 'groups/sidebar/dependency_proxy' # EE-specific
 
       = render_if_exists "layouts/nav/ee/epic_link", group: @group
 
