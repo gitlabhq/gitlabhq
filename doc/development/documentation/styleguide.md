@@ -621,8 +621,8 @@ a helpful link back to how the feature was developed.
     > Introduced in GitLab 11.3.
     ```
 
-- Whenever possible, version text should have a link to the issue, merge request, or epic
-  (in order or preference) that introduced the feature. For example:
+- Whenever possible, version text should have a link to the issue, merge request, or epic that introduced the feature.
+  An issue is preferred over a merge request, and a merge request is preferred over an epic. For example:
 
     ```md
     > [Introduced](<link-to-issue>) in GitLab 11.3.
@@ -639,7 +639,7 @@ a helpful link back to how the feature was developed.
 ### Removing version text
 
 Over time, version text will reference a progressively older version of GitLab. In cases where version text
-refers to versions of GitLab more than four major versions back, consider removing the text.
+refers to versions of GitLab four or more major versions back, consider removing the text.
 
 For example, if the current major version is 11.x, version text referencing versions of GitLab 7.x
 and older are candidates for removal.
