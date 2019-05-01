@@ -9,6 +9,11 @@ module Types
           resolver: Resolvers::ProjectResolver,
           description: "Find a project"
 
+    field :group, Types::GroupType,
+          null: true,
+          resolver: Resolvers::GroupResolver,
+          description: "Find a group"
+
     field :metadata, Types::MetadataType,
           null: true,
           resolver: Resolvers::MetadataResolver,

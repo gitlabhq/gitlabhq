@@ -21,9 +21,9 @@ module Projects
       # This method accepts two parameters:
       # - oids: hash of oids to query. The structure is { lfs_file_oid => lfs_file_size }
       #
-      # Returns a hash with the structure { lfs_file_oids => download_link }
+      # Returns an array of LfsDownloadObject
       def execute(oids)
-        return {} unless project&.lfs_enabled? && remote_uri && oids.present?
+        return [] unless project&.lfs_enabled? && remote_uri && oids.present?
 
         get_download_links(oids)
       end

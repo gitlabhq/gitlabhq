@@ -36,7 +36,8 @@
         "external_hostname": { "type": ["string", "null"] },
         "hostname": { "type": ["string", "null"] },
         "email": { "type": ["string", "null"] },
-        "update_available": { "type": ["boolean", "null"] }
+        "update_available": { "type": ["boolean", "null"] },
+        "can_uninstall": { "type": "boolean" }
       },
       "required" : [ "name", "status" ]
     }

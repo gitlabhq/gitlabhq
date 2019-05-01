@@ -14,6 +14,7 @@ def configure_sentry
     Raven.configure do |config|
       config.dsn = Gitlab::CurrentSettings.current_application_settings.sentry_dsn
       config.release = Gitlab.revision
+      config.current_environment = Gitlab.config.sentry.environment.presence
 
       # Sanitize fields based on those sanitized from Rails.
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)

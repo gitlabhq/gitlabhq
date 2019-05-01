@@ -1,3 +1,5 @@
+import { __ } from '~/locale';
+
 export default class U2FError {
   constructor(errorCode, u2fFlowType) {
     this.errorCode = errorCode;
@@ -8,15 +10,17 @@ export default class U2FError {
 
   message() {
     if (this.errorCode === window.u2f.ErrorCodes.BAD_REQUEST && this.httpsDisabled) {
-      return 'U2F only works with HTTPS-enabled websites. Contact your administrator for more details.';
+      return __(
+        'U2F only works with HTTPS-enabled websites. Contact your administrator for more details.',
+      );
     } else if (this.errorCode === window.u2f.ErrorCodes.DEVICE_INELIGIBLE) {
       if (this.u2fFlowType === 'authenticate') {
-        return 'This device has not been registered with us.';
+        return __('This device has not been registered with us.');
       }
       if (this.u2fFlowType === 'register') {
-        return 'This device has already been registered with us.';
+        return __('This device has already been registered with us.');
       }
     }
-    return 'There was a problem communicating with your device.';
+    return __('There was a problem communicating with your device.');
   }
 }

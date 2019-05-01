@@ -61,7 +61,7 @@ const RavenConfig = {
       release: this.options.release,
       tags: this.options.tags,
       whitelistUrls: this.options.whitelistUrls,
-      environment: this.options.isProduction ? 'production' : 'development',
+      environment: this.options.environment,
       ignoreErrors: this.IGNORE_ERRORS,
       ignoreUrls: this.IGNORE_URLS,
       shouldSendCallback: this.shouldSendSample.bind(this),

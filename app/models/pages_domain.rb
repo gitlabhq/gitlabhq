@@ -38,6 +38,8 @@ class PagesDomain < ApplicationRecord
     where(verified_at.eq(nil).or(enabled_until.eq(nil).or(enabled_until.lt(threshold))))
   end
 
+  scope :for_removal, -> { where("remove_at < ?", Time.now) }
+
   def verified?
     !!verified_at
   end

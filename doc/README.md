@@ -218,12 +218,12 @@ scales to run your tests faster.
 
 The following documentation relates to the DevOps **Verify** stage:
 
-| Verify Topics                                      | Description                                                                  |
-|:---------------------------------------------------|:-----------------------------------------------------------------------------|
-| [GitLab CI/CD](ci/README.md)                       | Explore the features and capabilities of Continuous Integration with GitLab. |
-| [JUnit test reports](ci/junit_test_reports.md)     | Display JUnit test reports on merge requests.                                |
-| [Pipeline Graphs](ci/pipelines.md#visualizing-pipelines) | Visualize builds.                                                      |
-| [Review Apps](ci/review_apps/index.md)             | Preview changes to your application right from a merge request.              |
+| Verify Topics                                            | Description                                                                  |
+|:---------------------------------------------------------|:-----------------------------------------------------------------------------|
+| [GitLab CI/CD](ci/README.md)                             | Explore the features and capabilities of Continuous Integration with GitLab. |
+| [JUnit test reports](ci/junit_test_reports.md)           | Display JUnit test reports on merge requests.                                |
+| [Pipeline Graphs](ci/pipelines.md#visualizing-pipelines) | Visualize builds.                                                            |
+| [Review Apps](ci/review_apps/index.md)                   | Preview changes to your application right from a merge request.              |
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#overview">
@@ -288,7 +288,7 @@ The following documentation relates to the DevOps **Configure** stage:
 | [GitLab ChatOps](ci/chatops/README.md)                                                                                             | Interact with CI/CD jobs through chat services.                           |
 | [Installing Applications](user/project/clusters/index.md#installing-applications)                                                  | Deploy Helm, Ingress, and Prometheus on Kubernetes.                       |
 | [Mattermost slash commands](user/project/integrations/mattermost_slash_commands.md)                                                | Enable and use slash commands from within Mattermost.                     |
-| [Protected variables](ci/variables/README.md#protected-environment-variables)                                                                  | Restrict variables to protected branches and tags.                        |
+| [Protected variables](ci/variables/README.md#protected-environment-variables)                                                      | Restrict variables to protected branches and tags.                        |
 | [Serverless](user/project/clusters/serverless/index.md)                                                                            | Run serverless workloads on Kubernetes.                                   |
 | [Slack slash commands](user/project/integrations/slack_slash_commands.md)                                                          | Enable and use slash commands from within Slack.                          |
 
@@ -418,7 +418,7 @@ We have the following documentation to rapidly uplift your GitLab knowledge:
 
 | Topic                                                                                                                  | Description                                                    |
 |:-----------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------------------|
-| [GitLab Basics](gitlab-basics/README.md)                                                                               | Start working on the command line and with GitLab.             |
+| [GitLab basics guides](gitlab-basics/README.md)                                                                        | Start working on the command line and with GitLab.             |
 | [GitLab Workflow](workflow/README.md) and [overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/) | Enhance your workflow with the best of GitLab Workflow.        |
 | [Get started with GitLab CI/CD](ci/quick_start/README.md)                                                              | Quickly implement GitLab CI/CD.                                |
 | [Auto DevOps](topics/autodevops/index.md)                                                                              | Learn more about GitLab's Auto DevOps.                         |

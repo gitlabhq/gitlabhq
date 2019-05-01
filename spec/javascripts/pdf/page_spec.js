@@ -4,7 +4,9 @@ import workerSrc from 'vendor/pdf.worker.min';
 
 import PageComponent from '~/pdf/page/index.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import testPDF from 'spec/fixtures/blob/pdf/test.pdf';
+import { FIXTURES_PATH } from 'spec/test_constants';
+
+const testPDF = `${FIXTURES_PATH}/blob/pdf/test.pdf`;
 
 describe('Page component', () => {
   const Component = Vue.extend(PageComponent);

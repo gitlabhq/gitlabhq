@@ -94,16 +94,13 @@ module Projects
 
       return unless project.lfs_enabled?
 
-      lfs_objects_to_download = Projects::LfsPointers::LfsImportService.new(project).execute
+      result = Projects::LfsPointers::LfsImportService.new(project).execute
 
-      lfs_objects_to_download.each do |lfs_download_object|
-        Projects::LfsPointers::LfsDownloadService.new(project, lfs_download_object)
-                                                 .execute
+      if result[:status] == :error
+        # To avoid aborting the importing process, we silently fail
+        # if any exception raises.
+        Gitlab::AppLogger.error("The Lfs import process failed. #{result[:message]}")
       end
-    rescue => e
-      # Right now, to avoid aborting the importing process, we silently fail
-      # if any exception raises.
-      Rails.logger.error("The Lfs import process failed. #{e.message}")
     end
 
     def import_data

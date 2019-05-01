@@ -759,6 +759,18 @@ module Ci
       user == current_user
     end
 
+    def source_ref
+      if triggered_by_merge_request?
+        merge_request.source_branch
+      else
+        ref
+      end
+    end
+
+    def source_ref_slug
+      Gitlab::Utils.slugify(source_ref.to_s)
+    end
+
     private
 
     def ci_yaml_from_repo

@@ -4,7 +4,7 @@
 - page_title _('Kubernetes Cluster')
 - manage_prometheus_path = edit_project_service_path(@cluster.project, 'prometheus') if @project
 
-- expanded = Rails.env.test?
+- expanded = expanded_by_default?
 
 - status_path = clusterable.cluster_status_cluster_path(@cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,

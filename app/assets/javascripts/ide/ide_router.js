@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import { joinPaths } from '~/lib/utils/url_utility';
 import flash from '~/flash';
 import store from './stores';
+import { __ } from '~/locale';
 
 Vue.use(VueRouter);
 
@@ -94,7 +95,7 @@ router.beforeEach((to, from, next) => {
       })
       .catch(e => {
         flash(
-          'Error while loading the project data. Please try again.',
+          __('Error while loading the project data. Please try again.'),
           'alert',
           document,
           null,

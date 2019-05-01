@@ -94,6 +94,10 @@ class KubernetesService < DeploymentService
     end
   end
 
+  def namespace_for(project)
+    actual_namespace
+  end
+
   # Check we can connect to the Kubernetes API
   def test(*args)
     kubeclient = build_kube_client!

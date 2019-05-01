@@ -344,4 +344,32 @@ describe PagesDomain do
       end
     end
   end
+
+  describe '.for_removal' do
+    subject { described_class.for_removal }
+
+    context 'when domain is not schedule for removal' do
+      let!(:domain) { create :pages_domain }
+
+      it 'does not return domain' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when domain is scheduled for removal yesterday' do
+      let!(:domain) { create :pages_domain, remove_at: 1.day.ago }
+
+      it 'returns domain' do
+        is_expected.to eq([domain])
+      end
+    end
+
+    context 'when domain is scheduled for removal tomorrow' do
+      let!(:domain) { create :pages_domain, remove_at: 1.day.from_now }
+
+      it 'does not return domain' do
+        is_expected.to be_empty
+      end
+    end
+  end
 end

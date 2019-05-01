@@ -18,6 +18,14 @@ describe Clusters::Applications::Helm do
     it { is_expected.to contain_exactly(installed_cluster, updated_cluster) }
   end
 
+  describe '#can_uninstall?' do
+    let(:helm) { create(:clusters_applications_helm) }
+
+    subject { helm.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#issue_client_cert' do
     let(:application) { create(:clusters_applications_helm) }
     subject { application.issue_client_cert }

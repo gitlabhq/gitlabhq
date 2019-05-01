@@ -103,6 +103,7 @@ Rails.application.routes.draw do
         scope :applications do
           post '/:application', to: 'clusters/applications#create', as: :install_applications
           patch '/:application', to: 'clusters/applications#update', as: :update_applications
+          delete '/:application', to: 'clusters/applications#destroy', as: :uninstall_applications
         end
 
         get :cluster_status, format: :json

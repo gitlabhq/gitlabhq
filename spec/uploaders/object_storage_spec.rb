@@ -771,6 +771,14 @@ describe ObjectStorage do
           expect { avatars }.not_to exceed_query_limit(1)
         end
 
+        it 'does not attempt to replace methods' do
+          models.each do |model|
+            expect(model.avatar.upload).to receive(:method_missing).and_call_original
+
+            model.avatar.upload.path
+          end
+        end
+
         it 'fetches a unique upload for each model' do
           expect(avatars.map(&:url).uniq).to eq(avatars.map(&:url))
           expect(avatars.map(&:upload).uniq).to eq(avatars.map(&:upload))

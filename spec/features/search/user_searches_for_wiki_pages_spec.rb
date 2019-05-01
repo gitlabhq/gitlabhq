@@ -14,22 +14,36 @@ describe 'User searches for wiki pages', :js do
 
   include_examples 'top right search form'
 
-  it 'finds a page' do
-    find('.js-search-project-dropdown').click
+  shared_examples 'search wiki blobs' do
+    it 'finds a page' do
+      find('.js-search-project-dropdown').click
 
-    page.within('.project-filter') do
-      click_link(project.full_name)
+      page.within('.project-filter') do
+        click_link(project.full_name)
+      end
+
+      fill_in('dashboard_search', with: 'content')
+      find('.btn-search').click
+
+      page.within('.search-filter') do
+        click_link('Wiki')
+      end
+
+      page.within('.results') do
+        expect(find(:css, '.search-results')).to have_link(wiki_page.title, href: project_wiki_path(project, wiki_page.slug))
+      end
     end
+  end
 
-    fill_in('dashboard_search', with: 'content')
-    find('.btn-search').click
-
-    page.within('.search-filter') do
-      click_link('Wiki')
+  context 'when searching by content' do
+    it_behaves_like 'search wiki blobs' do
+      let(:search_term) { 'content' }
     end
+  end
 
-    page.within('.results') do
-      expect(find(:css, '.search-results')).to have_link(wiki_page.title)
+  context 'when searching by title' do
+    it_behaves_like 'search wiki blobs' do
+      let(:search_term) { 'test_wiki' }
     end
   end
 end

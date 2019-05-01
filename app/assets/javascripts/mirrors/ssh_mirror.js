@@ -290,7 +290,7 @@ export default class SSHMirror {
         this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
       })
       .catch(() => {
-        Flash(_('Unable to regenerate public ssh key.'));
+        Flash(__('Unable to regenerate public ssh key.'));
       });
   }
 

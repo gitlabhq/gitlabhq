@@ -1054,6 +1054,16 @@ class MergeRequest < ApplicationRecord
     @environments[current_user]
   end
 
+  ##
+  # This method is for looking for active environments which created via pipelines for merge requests.
+  # Since deployments run on a merge request ref (e.g. `refs/merge-requests/:iid/head`),
+  # we cannot look up environments with source branch name.
+  def environments
+    return Environment.none unless actual_head_pipeline&.triggered_by_merge_request?
+
+    actual_head_pipeline.environments
+  end
+
   def state_human_name
     if merged?
       "Merged"

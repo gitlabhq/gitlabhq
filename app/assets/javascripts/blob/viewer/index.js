@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Flash from '../../flash';
 import { handleLocationHash } from '../../lib/utils/common_utils';
 import axios from '../../lib/utils/axios_utils';
+import { __ } from '~/locale';
 
 export default class BlobViewer {
   constructor() {
@@ -26,7 +27,7 @@ export default class BlobViewer {
       promise
         .then(module => module.default(viewer))
         .catch(error => {
-          Flash('Error loading file viewer.');
+          Flash(__('Error loading file viewer.'));
           throw error;
         });
 
@@ -106,16 +107,19 @@ export default class BlobViewer {
     if (!this.copySourceBtn) return;
 
     if (this.simpleViewer.getAttribute('data-loaded')) {
-      this.copySourceBtn.setAttribute('title', 'Copy source to clipboard');
+      this.copySourceBtn.setAttribute('title', __('Copy source to clipboard'));
       this.copySourceBtn.classList.remove('disabled');
     } else if (this.activeViewer === this.simpleViewer) {
       this.copySourceBtn.setAttribute(
         'title',
-        'Wait for the source to load to copy it to the clipboard',
+        __('Wait for the source to load to copy it to the clipboard'),
       );
       this.copySourceBtn.classList.add('disabled');
     } else {
-      this.copySourceBtn.setAttribute('title', 'Switch to the source to copy it to the clipboard');
+      this.copySourceBtn.setAttribute(
+        'title',
+        __('Switch to the source to copy it to the clipboard'),
+      );
       this.copySourceBtn.classList.add('disabled');
     }
 
@@ -158,7 +162,7 @@ export default class BlobViewer {
 
         this.toggleCopyButtonState();
       })
-      .catch(() => new Flash('Error loading viewer'));
+      .catch(() => new Flash(__('Error loading viewer')));
   }
 
   static loadViewer(viewerParam) {
