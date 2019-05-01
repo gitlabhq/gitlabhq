@@ -29,10 +29,19 @@ describe('UninstallApplicationConfirmationModal', () => {
     expect(wrapper.find(GlModal).attributes('ok-title')).toEqual(`Uninstall ${appTitle}`);
   });
 
-  it('triggers confirm event when ok button is clicked', () => {
-    wrapper.find(GlModal).vm.$emit('ok');
+  describe('when ok button is clicked', () => {
+    beforeEach(() => {
+      jest.spyOn(wrapper.vm, 'trackUninstallButtonClick');
+      wrapper.find(GlModal).vm.$emit('ok');
+    });
 
-    expect(wrapper.emitted('confirm')).toBeTruthy();
+    it('emits confirm event', () => {
+      expect(wrapper.emitted('confirm')).toBeTruthy();
+    });
+
+    it('calls track uninstall button click mixin', () => {
+      expect(wrapper.vm.trackUninstallButtonClick).toHaveBeenCalledWith(INGRESS);
+    });
   });
 
   it('displays a warning text indicating the app will be uninstalled', () => {
