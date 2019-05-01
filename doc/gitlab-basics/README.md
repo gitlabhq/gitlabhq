@@ -27,9 +27,11 @@ The following are guides to basic GitLab functionality:
 
 ## Git basics
 
-If you're unfamiliar with the command line, these resources will help:
+If you're familiar with Git on the command line, you can interact with your GitLab projects just as you would with any other Git repository.
 
-- [Command line basics](command-line-commands.md), for those unfamiliar with the command line interface.
+These resources will help get further acclimated to working on the command line.
+
 - [Start using Git on the command line](start-using-git.md), for some simple Git commands.
+- [Command line basics](command-line-commands.md), to create and edit files using the command line.
 
 More Git resources are available at GitLab's [Git documentation](../topics/git/index.md).
