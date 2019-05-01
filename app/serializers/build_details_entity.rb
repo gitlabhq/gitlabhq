@@ -42,6 +42,10 @@ class BuildDetailsEntity < JobEntity
     end
   end
 
+  expose :reports, if: -> (*) { can?(current_user, :read_build, build) }, using: JobArtifactEntity do |build|
+    build.job_artifacts.merge(Ci::JobArtifact.with_all_reports)
+  end
+
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
   expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
     erase_project_job_path(project, build)

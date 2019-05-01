@@ -146,5 +146,13 @@ describe BuildDetailsEntity do
         end
       end
     end
+
+    context 'when the build has reports' do
+      let!(:report) { create(:ci_job_artifact, :codequality, job: build) }
+
+      it 'exposes the report artifacts' do
+        expect(subject[:reports]).not_to be_empty
+      end
+    end
   end
 end
