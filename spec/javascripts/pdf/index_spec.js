@@ -3,7 +3,9 @@ import { GlobalWorkerOptions } from 'vendor/pdf';
 import workerSrc from 'vendor/pdf.worker.min';
 
 import PDFLab from '~/pdf/index.vue';
-import pdf from '../fixtures/blob/pdf/test.pdf';
+import { FIXTURES_PATH } from 'spec/test_constants';
+
+const pdf = `${FIXTURES_PATH}/blob/pdf/test.pdf`;
 
 GlobalWorkerOptions.workerSrc = workerSrc;
 const Component = Vue.extend(PDFLab);
