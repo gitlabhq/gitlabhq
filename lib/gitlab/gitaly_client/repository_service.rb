@@ -331,6 +331,14 @@ module Gitlab
         search_results_from_response(response)
       end
 
+      def disconnect_alternates
+        request = Gitaly::DisconnectGitAlternatesRequest.new(
+          repository: @gitaly_repo
+        )
+
+        GitalyClient.call(@storage, :object_pool_service, :disconnect_git_alternates, request)
+      end
+
       private
 
       def search_results_from_response(gitaly_response)
