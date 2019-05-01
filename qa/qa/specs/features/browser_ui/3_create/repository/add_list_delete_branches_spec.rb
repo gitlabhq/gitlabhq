@@ -72,7 +72,7 @@ module QA
 
         Page::Project::Branches::Show.perform do |branches_view|
           branches_view.delete_branch(third_branch)
-          branches_view.wait_for_branch_not_present(third_branch)
+          expect(branches_view).to have_no_branch(third_branch)
         end
 
         Page::Project::Branches::Show.perform(&:delete_merged_branches)
@@ -83,7 +83,7 @@ module QA
 
         page.refresh
         Page::Project::Branches::Show.perform do |branches_view|
-          branches_view.wait_for_branch_not_present(second_branch)
+          expect(branches_view).to have_no_branch(second_branch)
         end
       end
     end

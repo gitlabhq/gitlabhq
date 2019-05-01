@@ -29,7 +29,7 @@ module QA
 
           def has_no_branch?(branch_name)
             within_element(:all_branches) do
-              has_no_css?(".js-branch-#{branch_name}")
+              has_no_css?(".js-branch-#{branch_name}", wait: Support::Waiter::DEFAULT_MAX_WAIT_TIME)
             end
           end
 
@@ -45,14 +45,6 @@ module QA
             accept_alert do
               click_element(:delete_merged_branches)
             end
-          end
-
-          def wait_for_branch_not_present(branch_name)
-            branch_not_present = wait(reload: false) do
-              has_no_branch?(branch_name)
-            end
-
-            raise "Expected branch `#{branch_name}` not to be present" unless branch_not_present
           end
         end
       end
