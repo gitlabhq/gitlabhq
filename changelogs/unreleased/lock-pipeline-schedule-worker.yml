@@ -1,5 +1,0 @@
----
-title: Prevent concurrent execution of PipelineScheduleWorker
-merge_request: 27781
-author:
-type: performance
