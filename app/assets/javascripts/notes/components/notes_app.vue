@@ -67,6 +67,7 @@ export default {
       'isLoading',
       'commentsDisabled',
       'getNoteableData',
+      'userCanReply',
     ]),
     noteableType() {
       return this.noteableData.noteableType;
@@ -83,7 +84,7 @@ export default {
       return this.discussions;
     },
     canReply() {
-      return this.getNoteableData.current_user.can_create_note && !this.commentsDisabled;
+      return this.userCanReply && !this.commentsDisabled;
     },
   },
   watch: {

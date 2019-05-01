@@ -130,29 +130,6 @@ describe('noteable_discussion component', () => {
     });
   });
 
-  describe('componentData', () => {
-    it('should return first note object for placeholder note', () => {
-      const data = {
-        isPlaceholderNote: true,
-        notes: [{ body: 'hello world!' }],
-      };
-
-      const note = wrapper.vm.componentData(data);
-
-      expect(note).toEqual(data.notes[0]);
-    });
-
-    it('should return given note for nonplaceholder notes', () => {
-      const data = {
-        notes: [{ id: 12 }],
-      };
-
-      const note = wrapper.vm.componentData(data);
-
-      expect(note).toEqual(data);
-    });
-  });
-
   describe('action text', () => {
     const commitId = 'razupaltuff';
     const truncatedCommitId = commitId.substr(0, 8);
