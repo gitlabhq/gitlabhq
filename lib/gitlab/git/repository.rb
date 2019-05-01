@@ -118,6 +118,12 @@ module Gitlab
         gitaly_repository_client.exists?
       end
 
+      def create_repository
+        wrapped_gitaly_errors do
+          gitaly_repository_client.create_repository
+        end
+      end
+
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names

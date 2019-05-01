@@ -105,6 +105,82 @@ describe Ci::StopEnvironmentsService do
     end
   end
 
+  describe '#execute_for_merge_request' do
+    subject { service.execute_for_merge_request(merge_request) }
+
+    let(:merge_request) { create(:merge_request, source_branch: 'feature', target_branch: 'master') }
+    let(:project) { merge_request.project }
+    let(:user) { create(:user) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+        source: :merge_request_event,
+        merge_request: merge_request,
+        project: project,
+        sha: merge_request.diff_head_sha,
+        merge_requests_as_head_pipeline: [merge_request])
+    end
+
+    let!(:review_job) { create(:ci_build, :start_review_app, pipeline: pipeline, project: project) }
+    let!(:stop_review_job) { create(:ci_build, :stop_review_app, :manual, pipeline: pipeline, project: project) }
+
+    before do
+      review_job.deployment.success!
+    end
+
+    it 'has active environment at first' do
+      expect(pipeline.environments.first).to be_available
+    end
+
+    context 'when user is a developer' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'stops the active environment' do
+        subject
+
+        expect(pipeline.environments.first).to be_stopped
+      end
+    end
+
+    context 'when user is a reporter' do
+      before do
+        project.add_reporter(user)
+      end
+
+      it 'does not stop the active environment' do
+        subject
+
+        expect(pipeline.environments.first).to be_available
+      end
+    end
+
+    context 'when pipeline is not associated with environments' do
+      let!(:job) { create(:ci_build, pipeline: pipeline, project: project) }
+
+      it 'does not raise exception' do
+        expect { subject }.not_to raise_exception
+      end
+    end
+
+    context 'when pipeline is not a pipeline for merge request' do
+      let(:pipeline) do
+        create(:ci_pipeline,
+          project: project,
+          ref: 'feature',
+          sha: merge_request.diff_head_sha,
+          merge_requests_as_head_pipeline: [merge_request])
+      end
+
+      it 'does not stop the active environment' do
+        subject
+
+        expect(pipeline.environments.first).to be_available
+      end
+    end
+  end
+
   def expect_environment_stopped_on(branch)
     expect_any_instance_of(Environment)
       .to receive(:stop!)

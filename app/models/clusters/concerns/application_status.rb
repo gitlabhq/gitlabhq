@@ -25,9 +25,11 @@ module Clusters
           state :updating, value: 4
           state :updated, value: 5
           state :update_errored, value: 6
+          state :uninstalling, value: 7
+          state :uninstall_errored, value: 8
 
           event :make_scheduled do
-            transition [:installable, :errored, :installed, :updated, :update_errored] => :scheduled
+            transition [:installable, :errored, :installed, :updated, :update_errored, :uninstall_errored] => :scheduled
           end
 
           event :make_installing do
@@ -40,8 +42,9 @@ module Clusters
           end
 
           event :make_errored do
-            transition any - [:updating] => :errored
+            transition any - [:updating, :uninstalling] => :errored
             transition [:updating] => :update_errored
+            transition [:uninstalling] => :uninstall_errored
           end
 
           event :make_updating do
@@ -50,6 +53,10 @@ module Clusters
 
           event :make_update_errored do
             transition any => :update_errored
+          end
+
+          event :make_uninstalling do
+            transition [:scheduled] => :uninstalling
           end
 
           before_transition any => [:scheduled] do |app_status, _|
@@ -65,7 +72,7 @@ module Clusters
             app_status.status_reason = nil
           end
 
-          before_transition any => [:update_errored] do |app_status, transition|
+          before_transition any => [:update_errored, :uninstall_errored] do |app_status, transition|
             status_reason = transition.args.first
             app_status.status_reason = status_reason if status_reason
           end

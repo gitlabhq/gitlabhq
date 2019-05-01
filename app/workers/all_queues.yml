@@ -6,6 +6,7 @@
 - cronjob:gitlab_usage_ping
 - cronjob:import_export_project_cleanup
 - cronjob:pages_domain_verification_cron
+- cronjob:pages_domain_removal_cron
 - cronjob:pipeline_schedule
 - cronjob:prune_old_events
 - cronjob:remove_expired_group_links
@@ -32,6 +33,8 @@
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 - gcp_cluster:cluster_configure
 - gcp_cluster:cluster_project_configure
+- gcp_cluster:clusters_applications_wait_for_uninstall_app
+- gcp_cluster:clusters_applications_uninstall
 
 - github_import_advance_stage
 - github_importer:github_import_import_diff_note

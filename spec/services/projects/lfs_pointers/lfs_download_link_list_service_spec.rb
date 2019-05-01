@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'spec_helper'
 
 describe Projects::LfsPointers::LfsDownloadLinkListService do
@@ -85,7 +84,7 @@ describe Projects::LfsPointers::LfsDownloadLinkListService do
   end
 
   describe '#get_download_links' do
-    it 'raise errorif request fails' do
+    it 'raise error if request fails' do
       allow(Gitlab::HTTP).to receive(:post).and_return(Struct.new(:success?, :message).new(false, 'Failed request'))
 
       expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)

@@ -169,6 +169,28 @@ can easily apply them to the codebase directly from the UI. Read
 through the documentation on [Suggest changes](../../discussions/index.md#suggest-changes)
 to learn more.
 
+## Multiple assignees **[STARTER]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/2004)
+in [GitLab Starter 11.11](https://about.gitlab.com/pricing).
+
+Multiple people often review merge requests at the same time. GitLab allows you to have multiple assignees for merge requests to indicate everyone that is reviewing or accountable for it.
+
+![multiple assignees for merge requests sidebar](img/multiple_assignees_for_merge_requests_sidebar.png)
+
+To assign multiple assignees to a merge request:
+
+1. From a merge request, expand the right sidebar and locate the **Assignees** section.
+1. Click on **Edit** and from the dropdown menu, select as many users as you want
+to assign the merge request to.
+
+Similarly, assignees are removed by deselecting them from the same dropdown menu.
+
+It's also possible to manage multiple assignees:
+
+- When creating a merge request.
+- Using [quick actions](../quick_actions.md#quick-actions-for-issues-and-merge-requests).
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve

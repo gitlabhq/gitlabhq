@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 import CreateItemDropdown from '../create_item_dropdown';
+import { __ } from '~/locale';
 
 export default class ProtectedTagCreate {
   constructor() {
@@ -27,7 +28,7 @@ export default class ProtectedTagCreate {
     // Protected tag dropdown
     this.createItemDropdown = new CreateItemDropdown({
       $dropdown: this.$form.find('.js-protected-tag-select'),
-      defaultToggleLabel: 'Protected Tag',
+      defaultToggleLabel: __('Protected Tag'),
       fieldName: 'protected_tag[name]',
       onSelect: this.onSelectCallback,
       getData: ProtectedTagCreate.getProtectedTags,

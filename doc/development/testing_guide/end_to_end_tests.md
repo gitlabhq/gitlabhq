@@ -99,13 +99,13 @@ subgraph gitlab-qa pipeline
 
 1. When packages are ready, and available in the registry, a final step in the
    [Omnibus GitLab][omnibus-gitlab] pipeline, triggers a new
-   [GitLab QA pipeline][gitlab-qa-pipelines]. It also waits for a resulting status.
+   GitLab QA pipeline (those with access can view them at `https://gitlab.com/gitlab-org/gitlab-qa/pipelines`). It also waits for a resulting status.
 
 1. GitLab QA pulls images from the registry, spins-up containers and runs tests
    against a test environment that has been just orchestrated by the `gitlab-qa`
    tool.
 
-1. The result of the [GitLab QA pipeline][gitlab-qa-pipelines] is being
+1. The result of the GitLab QA pipeline is being
    propagated upstream, through Omnibus, back to the CE / EE merge request.
 
 #### Using the `review-qa-all` jobs
@@ -146,7 +146,6 @@ you can find an issue you would like to work on in
 
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa
-[gitlab-qa-pipelines]: https://gitlab.com/gitlab-org/gitlab-qa/pipelines
 [gitlab-qa-readme]: https://gitlab.com/gitlab-org/gitlab-qa/tree/master/README.md
 [quality-nightly-pipelines]: https://gitlab.com/gitlab-org/quality/nightly/pipelines
 [quality-staging-pipelines]: https://gitlab.com/gitlab-org/quality/staging/pipelines

@@ -13,6 +13,14 @@ describe Clusters::Applications::Runner do
 
   it { is_expected.to belong_to(:runner) }
 
+  describe '#can_uninstall?' do
+    let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
+
+    subject { gitlab_runner.can_uninstall? }
+
+    it { is_expected.to be_falsey }
+  end
+
   describe '#install_command' do
     let(:kubeclient) { double('kubernetes client') }
     let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }

@@ -1065,6 +1065,19 @@ class Repository
     blob.data
   end
 
+  def create_if_not_exists
+    return if exists?
+
+    raw.create_repository
+    after_create
+  end
+
+  def blobs_metadata(paths, ref = 'HEAD')
+    references = Array.wrap(paths).map { |path| [ref, path] }
+
+    Gitlab::Git::Blob.batch_metadata(raw, references).map { |raw_blob| Blob.decorate(raw_blob) }
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid

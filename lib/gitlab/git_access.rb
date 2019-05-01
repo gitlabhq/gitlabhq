@@ -85,7 +85,7 @@ module Gitlab
         check_push_access!
       end
 
-      ::Gitlab::GitAccessResult::Success.new(console_messages: check_for_console_messages(cmd))
+      success_result(cmd)
     end
 
     def guest_can_download_code?
@@ -364,6 +364,10 @@ module Gitlab
     end
 
     protected
+
+    def success_result(cmd)
+      ::Gitlab::GitAccessResult::Success.new(console_messages: check_for_console_messages(cmd))
+    end
 
     def changes_list
       @changes_list ||= Gitlab::ChangesList.new(changes == ANY ? [] : changes)

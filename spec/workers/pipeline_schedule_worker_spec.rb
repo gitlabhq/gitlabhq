@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe PipelineScheduleWorker do
+  include ExclusiveLeaseHelpers
+
   subject { described_class.new.perform }
 
   set(:project) { create(:project, :repository) }
@@ -38,6 +40,16 @@ describe PipelineScheduleWorker do
       end
 
       it_behaves_like 'successful scheduling'
+
+      context 'when exclusive lease has already been taken by the other instance' do
+        before do
+          stub_exclusive_lease_taken(described_class::EXCLUSIVE_LOCK_KEY, timeout: described_class::LOCK_TIMEOUT)
+        end
+
+        it 'raises an error and does not start creating pipelines' do
+          expect { subject }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+        end
+      end
 
       context 'when the latest commit contains [ci skip]' do
         before do

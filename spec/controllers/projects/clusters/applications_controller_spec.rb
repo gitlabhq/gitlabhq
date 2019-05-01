@@ -145,4 +145,66 @@ describe Projects::Clusters::ApplicationsController do
       it_behaves_like 'a secure endpoint'
     end
   end
+
+  describe 'DELETE destroy' do
+    subject do
+      delete :destroy, params: params.merge(namespace_id: project.namespace, project_id: project)
+    end
+
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:project) { cluster.project }
+    let!(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
+    let(:application_name) { application.name }
+    let(:params) { { application: application_name, id: cluster.id } }
+    let(:worker_class) { Clusters::Applications::UninstallWorker }
+
+    describe 'functionality' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      context "when cluster and app exists" do
+        it "schedules an application update" do
+          expect(worker_class).to receive(:perform_async).with(application.name, application.id).once
+
+          is_expected.to have_http_status(:no_content)
+
+          expect(cluster.application_prometheus).to be_scheduled
+        end
+      end
+
+      context 'when cluster do not exists' do
+        before do
+          cluster.destroy!
+        end
+
+        it { is_expected.to have_http_status(:not_found) }
+      end
+
+      context 'when application is unknown' do
+        let(:application_name) { 'unkwnown-app' }
+
+        it { is_expected.to have_http_status(:not_found) }
+      end
+
+      context 'when application is already scheduled' do
+        before do
+          application.make_scheduled!
+        end
+
+        it { is_expected.to have_http_status(:bad_request) }
+      end
+    end
+
+    describe 'security' do
+      before do
+        allow(worker_class).to receive(:perform_async)
+      end
+
+      it_behaves_like 'a secure endpoint'
+    end
+  end
 end

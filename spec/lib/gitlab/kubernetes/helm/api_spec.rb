@@ -33,6 +33,28 @@ describe Gitlab::Kubernetes::Helm::Api do
     end
   end
 
+  describe '#uninstall' do
+    before do
+      allow(client).to receive(:create_pod).and_return(nil)
+      allow(client).to receive(:delete_pod).and_return(nil)
+      allow(namespace).to receive(:ensure_exists!).once
+    end
+
+    it 'ensures the namespace exists before creating the POD' do
+      expect(namespace).to receive(:ensure_exists!).once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.uninstall(command)
+    end
+
+    it 'removes an existing pod before installing' do
+      expect(client).to receive(:delete_pod).with('install-app-name', 'gitlab-managed-apps').once.ordered
+      expect(client).to receive(:create_pod).once.ordered
+
+      subject.uninstall(command)
+    end
+  end
+
   describe '#install' do
     before do
       allow(client).to receive(:create_pod).and_return(nil)

@@ -942,6 +942,9 @@ msgstr ""
 msgid "Application settings saved successfully"
 msgstr ""
 
+msgid "Application uninstalled but failed to destroy: %{error_message}"
+msgstr ""
+
 msgid "Application was successfully destroyed."
 msgstr ""
 
@@ -1293,6 +1296,9 @@ msgstr ""
 msgid "Badges|e.g. %{exampleUrl}"
 msgstr ""
 
+msgid "Balsamiq file could not be loaded."
+msgstr ""
+
 msgid "BambooService|A continuous integration and build server"
 msgstr ""
 
@@ -1609,6 +1615,9 @@ msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
 msgid "Cannot render the image. Maximum character count (%{charLimit}) has been exceeded."
+msgstr ""
+
+msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
 msgstr ""
 
 msgid "Cannot skip two factor authentication setup"
@@ -2711,6 +2720,9 @@ msgstr ""
 msgid "Copy secret to clipboard"
 msgstr ""
 
+msgid "Copy source to clipboard"
+msgstr ""
+
 msgid "Copy to clipboard"
 msgstr ""
 
@@ -3289,6 +3301,9 @@ msgstr ""
 msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
 
+msgid "Dockerfile"
+msgstr ""
+
 msgid "Domain"
 msgstr ""
 
@@ -3706,6 +3721,9 @@ msgstr ""
 msgid "Error loading branches."
 msgstr ""
 
+msgid "Error loading file viewer."
+msgstr ""
+
 msgid "Error loading last commit."
 msgstr ""
 
@@ -3722,6 +3740,9 @@ msgid "Error loading template types."
 msgstr ""
 
 msgid "Error loading template."
+msgstr ""
+
+msgid "Error loading viewer"
 msgstr ""
 
 msgid "Error occurred when toggling the notification subscription"
@@ -3757,7 +3778,13 @@ msgstr ""
 msgid "Error uploading file"
 msgstr ""
 
+msgid "Error uploading file: %{stripped}"
+msgstr ""
+
 msgid "Error while loading the merge request. Please try again."
+msgstr ""
+
+msgid "Error while loading the project data. Please try again."
 msgstr ""
 
 msgid "Error while migrating %{upload_id}: %{error_message}"
@@ -3958,6 +3985,9 @@ msgstr ""
 msgid "Failed to check related branches."
 msgstr ""
 
+msgid "Failed to connect to the prometheus server"
+msgstr ""
+
 msgid "Failed to create repository via gitlab-shell"
 msgstr ""
 
@@ -4004,6 +4034,9 @@ msgid "Failed to save preferences."
 msgstr ""
 
 msgid "Failed to update issues, please try again."
+msgstr ""
+
+msgid "Failed to update tag!"
 msgstr ""
 
 msgid "Failed to update."
@@ -5189,6 +5222,9 @@ msgstr ""
 msgid "LFSStatus|Enabled"
 msgstr ""
 
+msgid "LICENSE"
+msgstr ""
+
 msgid "Label"
 msgstr ""
 
@@ -6038,6 +6074,9 @@ msgstr ""
 msgid "No other labels with such name or description"
 msgstr ""
 
+msgid "No parent group"
+msgstr ""
+
 msgid "No preview for this file type"
 msgstr ""
 
@@ -6266,6 +6305,12 @@ msgid "OpenedNDaysAgo|Opened"
 msgstr ""
 
 msgid "Opens in a new window"
+msgstr ""
+
+msgid "Operation failed. Check pod logs for %{pod_name} for more details."
+msgstr ""
+
+msgid "Operation timed out. Check pod logs for %{pod_name} for more details."
 msgstr ""
 
 msgid "Operations"
@@ -6643,6 +6688,9 @@ msgstr ""
 msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
 msgstr ""
 
+msgid "Please select a file"
+msgstr ""
+
 msgid "Please select a group."
 msgstr ""
 
@@ -6683,6 +6731,9 @@ msgid "Press Enter or click to search"
 msgstr ""
 
 msgid "Preview"
+msgstr ""
+
+msgid "Preview Markdown"
 msgstr ""
 
 msgid "Preview changes"
@@ -7180,6 +7231,57 @@ msgstr ""
 msgid "ProjectSettings|When conflicts arise the user is given the option to rebase"
 msgstr ""
 
+msgid "ProjectTemplates|.NET Core"
+msgstr ""
+
+msgid "ProjectTemplates|Android"
+msgstr ""
+
+msgid "ProjectTemplates|Go Micro"
+msgstr ""
+
+msgid "ProjectTemplates|Netlify/GitBook"
+msgstr ""
+
+msgid "ProjectTemplates|Netlify/Hexo"
+msgstr ""
+
+msgid "ProjectTemplates|Netlify/Hugo"
+msgstr ""
+
+msgid "ProjectTemplates|Netlify/Jekyll"
+msgstr ""
+
+msgid "ProjectTemplates|Netlify/Plain HTML"
+msgstr ""
+
+msgid "ProjectTemplates|NodeJS Express"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/GitBook"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Hexo"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Hugo"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Jekyll"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Plain HTML"
+msgstr ""
+
+msgid "ProjectTemplates|Ruby on Rails"
+msgstr ""
+
+msgid "ProjectTemplates|Spring"
+msgstr ""
+
+msgid "ProjectTemplates|iOS (Swift)"
+msgstr ""
+
 msgid "Projects"
 msgstr ""
 
@@ -7301,6 +7403,9 @@ msgid "Prompt users to upload SSH keys"
 msgstr ""
 
 msgid "Protected"
+msgstr ""
+
+msgid "Protected Tag"
 msgstr ""
 
 msgid "Protip:"
@@ -7824,6 +7929,9 @@ msgid "Save"
 msgstr ""
 
 msgid "Save Changes"
+msgstr ""
+
+msgid "Save anyway"
 msgstr ""
 
 msgid "Save application"
@@ -8707,6 +8815,9 @@ msgstr ""
 msgid "Switch to GitLab Next"
 msgstr ""
 
+msgid "Switch to the source to copy it to the clipboard"
+msgstr ""
+
 msgid "System Hooks"
 msgstr ""
 
@@ -8852,6 +8963,9 @@ msgid "Test coverage parsing"
 msgstr ""
 
 msgid "Test failed."
+msgstr ""
+
+msgid "Test settings and save changes"
 msgstr ""
 
 msgid "TestHooks|Ensure one of your projects has merge requests."
@@ -9129,6 +9243,9 @@ msgstr ""
 msgid "There is already a repository with that name on disk"
 msgstr ""
 
+msgid "There was a problem communicating with your device."
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -9151,6 +9268,9 @@ msgid "There was an error when subscribing to this label."
 msgstr ""
 
 msgid "There was an error when unsubscribing from this label."
+msgstr ""
+
+msgid "There was an error while fetching cycle analytics data."
 msgstr ""
 
 msgid "There was an error with the reCAPTCHA. Please solve the reCAPTCHA again."
@@ -9202,6 +9322,12 @@ msgid "This commit was signed with an <strong>unverified</strong> signature."
 msgstr ""
 
 msgid "This container registry has been scheduled for deletion."
+msgstr ""
+
+msgid "This device has already been registered with us."
+msgstr ""
+
+msgid "This device has not been registered with us."
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -9790,10 +9916,16 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+msgid "U2F only works with HTTPS-enabled websites. Contact your administrator for more details."
+msgstr ""
+
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"
+msgstr ""
+
+msgid "Unable to regenerate public ssh key."
 msgstr ""
 
 msgid "Unable to schedule a pipeline to run immediately"
@@ -10214,6 +10346,9 @@ msgid "VisibilityLevel|Public"
 msgstr ""
 
 msgid "VisibilityLevel|Unknown"
+msgstr ""
+
+msgid "Wait for the source to load to copy it to the clipboard"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."

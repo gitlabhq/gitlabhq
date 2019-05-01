@@ -1,5 +1,7 @@
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
-import bmprPath from '../../fixtures/blob/balsamiq/test.bmpr';
+import { FIXTURES_PATH } from 'spec/test_constants';
+
+const bmprPath = `${FIXTURES_PATH}/blob/balsamiq/test.bmpr`;
 
 describe('Balsamiq integration spec', () => {
   let container;

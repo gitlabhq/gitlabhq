@@ -24,6 +24,11 @@ module MergeRequests
       end
     end
 
+    def cleanup_environments(merge_request)
+      Ci::StopEnvironmentsService.new(merge_request.source_project, current_user)
+                                 .execute_for_merge_request(merge_request)
+    end
+
     private
 
     def handle_wip_event(merge_request)

@@ -342,11 +342,9 @@ describe Projects::EnvironmentsController do
     end
 
     context 'when environment has no metrics' do
-      before do
-        expect(environment).to receive(:metrics).and_return(nil)
-      end
-
       it 'returns a metrics page' do
+        expect(environment).not_to receive(:metrics)
+
         get :metrics, params: environment_params
 
         expect(response).to be_ok
@@ -354,6 +352,8 @@ describe Projects::EnvironmentsController do
 
       context 'when requesting metrics as JSON' do
         it 'returns a metrics JSON document' do
+          expect(environment).to receive(:metrics).and_return(nil)
+
           get :metrics, params: environment_params(format: :json)
 
           expect(response).to have_gitlab_http_status(204)

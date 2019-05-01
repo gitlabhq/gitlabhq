@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.10.3 (2019-04-30)
+
+### Security (1 change)
+
+- Allow to see project events only with api scope token.
+
+
+## 11.10.2 (2019-04-25)
+
+### Security (4 changes)
+
+- Loosen regex for exception sanitization. !3076
+- Resolve: moving an issue to private repo leaks namespace and project name.
+- Escape path in new merge request mail.
+- Stop sending emails to users who can't read commit.
+
+
 ## 11.10.1 (2019-04-23)
 
 ### Fixed (2 changes)
@@ -251,6 +268,17 @@ entry.
 - Externalize admin deploy keys strings.
 - Removes EE differences for environments_table.vue.
 - Removes EE differences for environment_item.vue.
+
+
+## 11.9.10 (2019-04-26)
+
+### Security (5 changes)
+
+- Loosen regex for exception sanitization. !3077
+- Resolve: moving an issue to private repo leaks namespace and project name.
+- Escape path in new merge request mail.
+- Stop sending emails to users who can't read commit.
+- Upgrade Rails to 5.0.7.2.
 
 
 ## 11.9.9 (2019-04-23)
@@ -609,6 +637,13 @@ entry.
 - Update GitLab Shell to v8.7.1. !25801
 - Bring back Rugged implementation of commit_tree_entry. !25896
 - Removes EE differences for jobs/getters.js.
+
+
+## 11.8.10 (2019-04-30)
+
+### Security (1 change)
+
+- Allow to see project events only with api scope token.
 
 
 ## 11.8.8 (2019-04-23)

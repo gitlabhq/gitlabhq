@@ -17,6 +17,19 @@ class ApplicationRecord < ActiveRecord::Base
     where(nil).pluck(self.primary_key)
   end
 
+  def self.safe_ensure_unique(retries: 0)
+    transaction(requires_new: true) do
+      yield
+    end
+  rescue ActiveRecord::RecordNotUnique
+    if retries > 0
+      retries -= 1
+      retry
+    end
+
+    false
+  end
+
   def self.safe_find_or_create_by!(*args)
     safe_find_or_create_by(*args).tap do |record|
       record.validate! unless record.persisted?
@@ -24,10 +37,8 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def self.safe_find_or_create_by(*args)
-    transaction(requires_new: true) do
+    safe_ensure_unique(retries: 1) do
       find_or_create_by(*args)
     end
-  rescue ActiveRecord::RecordNotUnique
-    retry
   end
 end

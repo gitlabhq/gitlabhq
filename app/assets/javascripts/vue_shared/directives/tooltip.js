@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import '~/commons/bootstrap';
 
 export default {
   bind(el) {

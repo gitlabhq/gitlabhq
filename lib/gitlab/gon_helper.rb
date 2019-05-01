@@ -15,7 +15,12 @@ module Gitlab
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
       gon.shortcuts_path         = Gitlab::Routing.url_helpers.help_page_path('shortcuts')
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
-      gon.sentry_dsn             = Gitlab::CurrentSettings.clientside_sentry_dsn if Gitlab::CurrentSettings.clientside_sentry_enabled
+
+      if Gitlab::CurrentSettings.clientside_sentry_enabled
+        gon.sentry_dsn           = Gitlab::CurrentSettings.clientside_sentry_dsn
+        gon.sentry_environment   = Gitlab.config.sentry.environment
+      end
+
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.revision               = Gitlab.revision
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')

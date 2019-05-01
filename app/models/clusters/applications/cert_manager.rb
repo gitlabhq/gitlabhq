@@ -24,6 +24,12 @@ module Clusters
         'stable/cert-manager'
       end
 
+      # We will implement this in future MRs.
+      # Need to reverse postinstall step
+      def allowed_to_uninstall?
+        false
+      end
+
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: 'certmanager',

@@ -5,19 +5,19 @@ describe('RavenConfig options', () => {
   const sentryDsn = 'sentryDsn';
   const currentUserId = 'currentUserId';
   const gitlabUrl = 'gitlabUrl';
-  const isProduction = 'isProduction';
+  const environment = 'test';
   const revision = 'revision';
   let indexReturnValue;
 
   beforeEach(() => {
     window.gon = {
       sentry_dsn: sentryDsn,
+      sentry_environment: environment,
       current_user_id: currentUserId,
       gitlab_url: gitlabUrl,
       revision,
     };
 
-    process.env.NODE_ENV = isProduction;
     process.env.HEAD_COMMIT_SHA = revision;
 
     spyOn(RavenConfig, 'init');
@@ -25,12 +25,12 @@ describe('RavenConfig options', () => {
     indexReturnValue = index();
   });
 
-  it('should init with .sentryDsn, .currentUserId, .whitelistUrls and .isProduction', () => {
+  it('should init with .sentryDsn, .currentUserId, .whitelistUrls and environment', () => {
     expect(RavenConfig.init).toHaveBeenCalledWith({
       sentryDsn,
       currentUserId,
-      whitelistUrls: [gitlabUrl],
-      isProduction,
+      whitelistUrls: [gitlabUrl, 'webpack-internal://'],
+      environment,
       release: revision,
       tags: {
         revision,

@@ -66,6 +66,9 @@ module Types
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::BOOLEAN_TYPE, null: true
     field :printing_merge_request_link_enabled, GraphQL::BOOLEAN_TYPE, null: true
 
+    field :namespace, Types::NamespaceType, null: false
+    field :group, Types::GroupType, null: true
+
     field :merge_requests,
           Types::MergeRequestType.connection_type,
           null: true,

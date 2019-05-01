@@ -311,7 +311,7 @@ the guide here.
 sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
 
 # Disable Redis listening on TCP by setting 'port' to 0
-sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+sudo sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
 
 # Enable Redis socket for default Debian / Ubuntu path
 echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
@@ -320,9 +320,9 @@ echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
 echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
 
 # Create the directory which contains the socket
-mkdir /var/run/redis
-chown redis:redis /var/run/redis
-chmod 755 /var/run/redis
+sudo mkdir -p /var/run/redis
+sudo chown redis:redis /var/run/redis
+sudo chmod 755 /var/run/redis
 
 # Persist the directory which contains the socket, if applicable
 if [ -d /etc/tmpfiles.d ]; then
@@ -384,7 +384,7 @@ sudo chmod -R u+rwX tmp/pids/
 sudo chmod -R u+rwX tmp/sockets/
 
 # Create the public/uploads/ directory
-sudo -u git -H mkdir public/uploads/
+sudo -u git -H mkdir -p public/uploads/
 
 # Make sure only the GitLab user has access to the public/uploads/ directory
 # now that files in public/uploads are served by gitlab-workhorse
@@ -540,6 +540,7 @@ sudo -u git -H make
 
 ```sh
 # Fetch Gitaly source with Git and compile with Go
+cd /home/git/gitlab
 sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,/home/git/repositories]" RAILS_ENV=production
 ```
 
@@ -567,6 +568,7 @@ For more information about configuring Gitaly see
 ### Initialize Database and Activate Advanced Features
 
 ```sh
+cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 # Type 'yes' to create the database tables.
 

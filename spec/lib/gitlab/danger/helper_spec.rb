@@ -191,9 +191,8 @@ describe Gitlab::Danger::Helper do
       expect(helper.changes_by_category).to eq(
         backend: %w[foo.rb],
         database: %w[db/foo],
-        docs: %w[foo.md],
         frontend: %w[foo.js],
-        none: %w[ee/changelogs/foo.yml],
+        none: %w[ee/changelogs/foo.yml foo.md],
         qa: %w[qa/foo],
         unknown: %w[foo]
       )
@@ -202,13 +201,13 @@ describe Gitlab::Danger::Helper do
 
   describe '#category_for_file' do
     where(:path, :expected_category) do
-      'doc/foo'         | :docs
-      'CONTRIBUTING.md' | :docs
-      'LICENSE'         | :docs
-      'MAINTENANCE.md'  | :docs
-      'PHILOSOPHY.md'   | :docs
-      'PROCESS.md'      | :docs
-      'README.md'       | :docs
+      'doc/foo'         | :none
+      'CONTRIBUTING.md' | :none
+      'LICENSE'         | :none
+      'MAINTENANCE.md'  | :none
+      'PHILOSOPHY.md'   | :none
+      'PROCESS.md'      | :none
+      'README.md'       | :none
 
       'ee/doc/foo'      | :unknown
       'ee/README'       | :unknown
@@ -272,8 +271,8 @@ describe Gitlab::Danger::Helper do
 
       'foo/bar.rb'  | :backend
       'foo/bar.js'  | :frontend
-      'foo/bar.txt' | :docs
-      'foo/bar.md'  | :docs
+      'foo/bar.txt' | :none
+      'foo/bar.md'  | :none
     end
 
     with_them do

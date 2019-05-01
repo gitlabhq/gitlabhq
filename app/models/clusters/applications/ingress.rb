@@ -35,6 +35,13 @@ module Clusters
         'stable/nginx-ingress'
       end
 
+      # We will implement this in future MRs.
+      # Basically we need to check all dependent applications are not installed
+      # first.
+      def allowed_to_uninstall?
+        false
+      end
+
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name: name,

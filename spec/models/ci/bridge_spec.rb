@@ -10,6 +10,8 @@ describe Ci::Bridge do
     create(:ci_bridge, pipeline: pipeline)
   end
 
+  it { is_expected.to include_module(Ci::PipelineDelegator) }
+
   describe '#tags' do
     it 'only has a bridge tag' do
       expect(bridge.tags).to eq [:bridge]

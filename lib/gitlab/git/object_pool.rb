@@ -40,6 +40,10 @@ module Gitlab
         @repository ||= Gitlab::Git::Repository.new(storage, relative_path, GL_REPOSITORY, gl_project_path)
       end
 
+      def fetch
+        object_pool_service.fetch(source_repository)
+      end
+
       private
 
       def object_pool_service
