@@ -196,7 +196,7 @@ module ApplicationSettingImplementation
   end
 
   def clientside_sentry_dsn
-    Gitlab.config.sentry.dsn || read_attribute(:clientside_sentry_dsn)
+    Gitlab.config.sentry.clientside_dsn || read_attribute(:clientside_sentry_dsn)
   end
 
   def performance_bar_allowed_group
