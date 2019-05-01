@@ -972,6 +972,15 @@ msgstr ""
 msgid "Apply suggestion"
 msgstr ""
 
+msgid "Applying command"
+msgstr ""
+
+msgid "Applying command to %{commandDescription}"
+msgstr ""
+
+msgid "Applying multiple commands"
+msgstr ""
+
 msgid "Apr"
 msgstr ""
 
@@ -1195,6 +1204,9 @@ msgid "Automatically marked as default internal user"
 msgstr ""
 
 msgid "Automatically resolved"
+msgstr ""
+
+msgid "Autosave|Note"
 msgstr ""
 
 msgid "Available"
@@ -2428,6 +2440,9 @@ msgid "ComboSearch is not defined"
 msgstr ""
 
 msgid "Command line instructions"
+msgstr ""
+
+msgid "Commands applied"
 msgstr ""
 
 msgid "Comment"
@@ -8473,6 +8488,9 @@ msgstr ""
 msgid "Something went wrong when toggling the button"
 msgstr ""
 
+msgid "Something went wrong while adding your award. Please try again."
+msgstr ""
+
 msgid "Something went wrong while applying the suggestion. Please try again."
 msgstr ""
 
@@ -8483,6 +8501,9 @@ msgid "Something went wrong while deleting the source branch. Please try again."
 msgstr ""
 
 msgid "Something went wrong while fetching comments. Please try again."
+msgstr ""
+
+msgid "Something went wrong while fetching latest comments."
 msgstr ""
 
 msgid "Something went wrong while fetching related merge requests."
