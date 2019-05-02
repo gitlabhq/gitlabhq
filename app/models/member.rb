@@ -446,10 +446,10 @@ class Member < ApplicationRecord
   end
 
   def higher_access_level_than_group
-    if highest_group_member && highest_group_member.access_level >= access_level
+    if highest_group_member && highest_group_member.access_level > access_level
       error_parameters = { access: highest_group_member.human_access, group_name: highest_group_member.group.name }
 
-      errors.add(:access_level, s_("should be higher than %{access} inherited membership from group %{group_name}") % error_parameters)
+      errors.add(:access_level, s_("should be greater than or equal to %{access} inherited membership from group %{group_name}") % error_parameters)
     end
   end
 end
