@@ -3,6 +3,7 @@
 /* global ResolveService */
 
 import Vue from 'vue';
+import { __ } from '~/locale';
 
 const ResolveDiscussionBtn = Vue.extend({
   props: {
@@ -41,9 +42,9 @@ const ResolveDiscussionBtn = Vue.extend({
     },
     buttonText: function() {
       if (this.isDiscussionResolved) {
-        return 'Unresolve discussion';
+        return __('Unresolve discussion');
       } else {
-        return 'Resolve discussion';
+        return __('Resolve discussion');
       }
     },
     loading: function() {
