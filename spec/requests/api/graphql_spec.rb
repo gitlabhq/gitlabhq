@@ -16,6 +16,17 @@ describe 'GraphQL' do
     end
   end
 
+  context 'logging' do
+    it 'logs the query' do
+      expected = { query_string: query, variables: {}, duration: anything }
+
+      expect(Gitlab::GraphqlLogger).to receive(:info).with(expected)
+
+      post_graphql(query)
+    end
+
+  end
+
   context 'invalid variables' do
     it 'returns an error' do
       post_graphql(query, variables: "This is not JSON")
