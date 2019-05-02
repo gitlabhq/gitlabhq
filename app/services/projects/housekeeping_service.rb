@@ -11,6 +11,7 @@ module Projects
   class HousekeepingService < BaseService
     # Timeout set to 24h
     LEASE_TIMEOUT = 86400
+    PACK_REFS_PERIOD = 6
 
     class LeaseTaken < StandardError
       def to_s
@@ -76,13 +77,15 @@ module Projects
         :gc
       elsif pushes_since_gc % full_repack_period == 0
         :full_repack
-      else
+      elsif pushes_since_gc % repack_period == 0
         :incremental_repack
+      else
+        :pack_refs
       end
     end
 
     def period_match?
-      [gc_period, full_repack_period, repack_period].any? { |period| pushes_since_gc % period == 0 }
+      [gc_period, full_repack_period, repack_period, PACK_REFS_PERIOD].any? { |period| pushes_since_gc % period == 0 }
     end
 
     def housekeeping_enabled?
