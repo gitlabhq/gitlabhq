@@ -3,3 +3,5 @@
 = _("View details: %{details_url}") % { details_url: admin_projects_url(last_repository_check_failed: 1) }
 
 = _("You are receiving this message because you are a GitLab administrator for %{url}.") % { url: Gitlab.config.gitlab.url }
+
+= render_if_exists 'repository_check_mailer/email_additional_text'
