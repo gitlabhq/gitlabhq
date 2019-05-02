@@ -44,6 +44,11 @@ msgstr[1] ""
 msgid "%d commits"
 msgstr ""
 
+msgid "%d contribution"
+msgid_plural "%d contributions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d exporter"
 msgid_plural "%d exporters"
 msgstr[0] ""
@@ -297,7 +302,16 @@ msgstr[1] ""
 msgid "1 week"
 msgstr ""
 
+msgid "1-9 contributions"
+msgstr ""
+
+msgid "10-19 contributions"
+msgstr ""
+
 msgid "1st contribution!"
+msgstr ""
+
+msgid "20-29 contributions"
 msgstr ""
 
 msgid "2FA"
@@ -313,6 +327,9 @@ msgid "3 hours"
 msgstr ""
 
 msgid "30 minutes"
+msgstr ""
+
+msgid "30+ contributions"
 msgstr ""
 
 msgid "403|Please contact your GitLab administrator to get permission."
@@ -3002,6 +3019,18 @@ msgstr ""
 msgid "Date picker"
 msgstr ""
 
+msgid "DayTitle|F"
+msgstr ""
+
+msgid "DayTitle|M"
+msgstr ""
+
+msgid "DayTitle|S"
+msgstr ""
+
+msgid "DayTitle|W"
+msgstr ""
+
 msgid "Debug"
 msgstr ""
 
@@ -3749,6 +3778,9 @@ msgid "Error fetching labels."
 msgstr ""
 
 msgid "Error fetching network graph."
+msgstr ""
+
+msgid "Error fetching projects"
 msgstr ""
 
 msgid "Error fetching refs"
@@ -5006,6 +5038,9 @@ msgstr ""
 msgid "Invalid feature"
 msgstr ""
 
+msgid "Invalid field"
+msgstr ""
+
 msgid "Invalid file."
 msgstr ""
 
@@ -6102,6 +6137,9 @@ msgid "No connection could be made to a Gitaly Server, please check your logs!"
 msgstr ""
 
 msgid "No container images stored for this project. Add one by following the instructions above."
+msgstr ""
+
+msgid "No contributions"
 msgstr ""
 
 msgid "No contributions were found"
@@ -9219,7 +9257,16 @@ msgstr ""
 msgid "The project can be accessed by any logged in user."
 msgstr ""
 
+msgid "The project can be accessed by any user who is logged in."
+msgstr ""
+
+msgid "The project can be accessed by anyone, regardless of authentication."
+msgstr ""
+
 msgid "The project can be accessed without any authentication."
+msgstr ""
+
+msgid "The project is accessible only by members of the project. Access must be granted explicitly to each user."
 msgstr ""
 
 msgid "The project is still being deleted. Please try again later."
@@ -10992,6 +11039,9 @@ msgstr ""
 msgid "Your issues will be imported in the background. Once finished, you'll get a confirmation email."
 msgstr ""
 
+msgid "Your message here"
+msgstr ""
+
 msgid "Your name"
 msgstr ""
 
@@ -11437,6 +11487,9 @@ msgid "needs to be beetween 10 minutes and 1 month"
 msgstr ""
 
 msgid "new merge request"
+msgstr ""
+
+msgid "no contributions"
 msgstr ""
 
 msgid "none"

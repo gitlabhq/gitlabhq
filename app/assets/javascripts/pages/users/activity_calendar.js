@@ -6,7 +6,7 @@ import dateFormat from 'dateformat';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
-import { __ } from '~/locale';
+import { n__, s__, __ } from '~/locale';
 
 const d3 = { select, scaleLinear, scaleThreshold };
 
@@ -35,9 +35,9 @@ function formatTooltipText({ date, count }) {
   const dateDayName = getDayName(dateObject);
   const dateText = dateFormat(dateObject, 'mmm d, yyyy');
 
-  let contribText = 'No contributions';
+  let contribText = __('No contributions');
   if (count > 0) {
-    contribText = `${count} contribution${count > 1 ? 's' : ''}`;
+    contribText = n__('%d contribution', '%d contributions', count);
   }
   return `${contribText}<br />${dateDayName} ${dateText}`;
 }
@@ -199,27 +199,27 @@ export default class ActivityCalendar {
   renderDayTitles() {
     const days = [
       {
-        text: 'M',
+        text: s__('DayTitle|M'),
         y: 29 + this.dayYPos(1),
       },
       {
-        text: 'W',
+        text: s__('DayTitle|W'),
         y: 29 + this.dayYPos(3),
       },
       {
-        text: 'F',
+        text: s__('DayTitle|F'),
         y: 29 + this.dayYPos(5),
       },
     ];
 
     if (this.firstDayOfWeek === firstDayOfWeekChoices.monday) {
       days.push({
-        text: 'S',
+        text: s__('DayTitle|S'),
         y: 29 + this.dayYPos(7),
       });
     } else if (this.firstDayOfWeek === firstDayOfWeekChoices.saturday) {
       days.push({
-        text: 'S',
+        text: s__('DayTitle|S'),
         y: 29 + this.dayYPos(6),
       });
     }
@@ -253,11 +253,11 @@ export default class ActivityCalendar {
 
   renderKey() {
     const keyValues = [
-      'no contributions',
-      '1-9 contributions',
-      '10-19 contributions',
-      '20-29 contributions',
-      '30+ contributions',
+      __('no contributions'),
+      __('1-9 contributions'),
+      __('10-19 contributions'),
+      __('20-29 contributions'),
+      __('30+ contributions'),
     ];
     const keyColors = [
       '#ededed',

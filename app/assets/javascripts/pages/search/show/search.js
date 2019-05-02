@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import Flash from '~/flash';
 import Api from '~/api';
+import { __ } from '~/locale';
 
 export default class Search {
   constructor() {
@@ -24,7 +25,7 @@ export default class Search {
       data(term, callback) {
         return Api.groups(term, {}, data => {
           data.unshift({
-            full_name: 'Any',
+            full_name: __('Any'),
           });
           data.splice(1, 0, 'divider');
           return callback(data);
@@ -54,14 +55,14 @@ export default class Search {
         this.getProjectsData(term)
           .then(data => {
             data.unshift({
-              name_with_namespace: 'Any',
+              name_with_namespace: __('Any'),
             });
             data.splice(1, 0, 'divider');
 
             return data;
           })
           .then(data => callback(data))
-          .catch(() => new Flash('Error fetching projects'));
+          .catch(() => new Flash(__('Error fetching projects')));
       },
       id(obj) {
         return obj.id;
