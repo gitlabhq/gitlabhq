@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { __ } from './locale';
 
 export default function issueStatusSelect() {
   $('.js-issue-status').each((i, el) => {
@@ -7,7 +8,7 @@ export default function issueStatusSelect() {
       selectable: true,
       fieldName,
       toggleLabel(selected, element, instance) {
-        let label = 'Author';
+        let label = __('Author');
         const $item = instance.dropdown.find('.is-active');
         if ($item.length) {
           label = $item.text();
