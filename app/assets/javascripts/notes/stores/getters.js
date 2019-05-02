@@ -20,6 +20,8 @@ export const getNoteableData = state => state.noteableData;
 
 export const getNoteableDataByProp = state => prop => state.noteableData[prop];
 
+export const userCanReply = state => !!state.noteableData.current_user.can_create_note;
+
 export const openState = state => state.noteableData.state;
 
 export const getUserData = state => state.userData || {};

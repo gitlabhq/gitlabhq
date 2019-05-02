@@ -7,4 +7,8 @@ module MirrorHelper
       project_mirror_endpoint: project_mirror_path(@project, :json)
     }
   end
+
+  def mirror_lfs_sync_message
+    _('The Git LFS objects will <strong>not</strong> be synced.').html_safe
+  end
 end

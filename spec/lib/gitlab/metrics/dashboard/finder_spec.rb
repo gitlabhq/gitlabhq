@@ -1,0 +1,62 @@
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store_caching do
+  include MetricsDashboardHelpers
+
+  set(:project) { build(:project) }
+  set(:environment) { build(:environment, project: project) }
+  let(:system_dashboard_path) { Gitlab::Metrics::Dashboard::SystemDashboardService::SYSTEM_DASHBOARD_PATH}
+
+  describe '.find' do
+    let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
+    let(:service_call) { described_class.find(project, nil, environment, dashboard_path) }
+
+    it_behaves_like 'misconfigured dashboard service response', :not_found
+
+    context 'when the dashboard exists' do
+      let(:project) { project_with_dashboard(dashboard_path) }
+
+      it_behaves_like 'valid dashboard service response'
+    end
+
+    context 'when the dashboard is configured incorrectly' do
+      let(:project) { project_with_dashboard(dashboard_path, {}) }
+
+      it_behaves_like 'misconfigured dashboard service response', :unprocessable_entity
+    end
+
+    context 'when the system dashboard is specified' do
+      let(:dashboard_path) { system_dashboard_path }
+
+      it_behaves_like 'valid dashboard service response'
+    end
+
+    context 'when no dashboard is specified' do
+      let(:service_call) { described_class.find(project, nil, environment) }
+
+      it_behaves_like 'valid dashboard service response'
+    end
+  end
+
+  describe '.find_all_paths' do
+    let(:all_dashboard_paths) { described_class.find_all_paths(project) }
+    let(:system_dashboard) { { path: system_dashboard_path, default: true } }
+
+    it 'includes only the system dashboard by default' do
+      expect(all_dashboard_paths).to eq([system_dashboard])
+    end
+
+    context 'when the project contains dashboards' do
+      let(:dashboard_path) { '.gitlab/dashboards/test.yml' }
+      let(:project) { project_with_dashboard(dashboard_path) }
+
+      it 'includes system and project dashboards' do
+        project_dashboard = { path: dashboard_path, default: false }
+
+        expect(all_dashboard_paths).to contain_exactly(system_dashboard, project_dashboard)
+      end
+    end
+  end
+end

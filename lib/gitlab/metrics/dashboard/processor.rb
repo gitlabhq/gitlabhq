@@ -8,9 +8,14 @@ module Gitlab
       # the UI. These includes shared metric info, custom metrics
       # info, and alerts (only in EE).
       class Processor
-        SEQUENCE = [
+        SYSTEM_SEQUENCE = [
           Stages::CommonMetricsInserter,
           Stages::ProjectMetricsInserter,
+          Stages::Sorter
+        ].freeze
+
+        PROJECT_SEQUENCE = [
+          Stages::CommonMetricsInserter,
           Stages::Sorter
         ].freeze
 
@@ -22,9 +27,9 @@ module Gitlab
 
         # Returns a new dashboard hash with the results of
         # running transforms on the dashboard.
-        def process
+        def process(insert_project_metrics:)
           @dashboard.deep_symbolize_keys.tap do |dashboard|
-            sequence.each do |stage|
+            sequence(insert_project_metrics).each do |stage|
               stage.new(@project, @environment, dashboard).transform!
             end
           end
@@ -32,8 +37,8 @@ module Gitlab
 
         private
 
-        def sequence
-          SEQUENCE
+        def sequence(insert_project_metrics)
+          insert_project_metrics ? SYSTEM_SEQUENCE : PROJECT_SEQUENCE
         end
       end
     end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Gitlab
-  module GlRepository
+  class GlRepository
     class RepoType
       attr_reader :name,
                   :access_checker_class,

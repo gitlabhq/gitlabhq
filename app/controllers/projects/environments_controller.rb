@@ -13,6 +13,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
     push_frontend_feature_flag(:metrics_time_window)
     push_frontend_feature_flag(:environment_metrics_use_prometheus_endpoint)
+    push_frontend_feature_flag(:environment_metrics_show_multiple_dashboards)
   end
 
   def index
@@ -158,15 +159,28 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def metrics_dashboard
-    return render_403 unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, @project)
+    return render_403 unless Feature.enabled?(:environment_metrics_use_prometheus_endpoint, project)
 
-    result = Gitlab::Metrics::Dashboard::Service.new(@project, @current_user, environment: environment).get_dashboard
+    if Feature.enabled?(:environment_metrics_show_multiple_dashboards, project)
+      result = dashboard_finder.find(project, current_user, environment, params[:dashboard])
+
+      result[:all_dashboards] = project.repository.metrics_dashboard_paths
+    else
+      result = dashboard_finder.find(project, current_user, environment)
+    end
 
     respond_to do |format|
       if result[:status] == :success
-        format.json { render status: :ok, json: result }
+        format.json do
+          render status: :ok, json: result.slice(:all_dashboards, :dashboard, :status)
+        end
       else
-        format.json { render status: result[:http_status], json: result }
+        format.json do
+          render(
+            status: result[:http_status],
+            json: result.slice(:all_dashboards, :message, :status)
+          )
+        end
       end
     end
   end
@@ -209,6 +223,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     return unless params[:start].present? || params[:end].present?
 
     params.require([:start, :end])
+  end
+
+  def dashboard_finder
+    Gitlab::Metrics::Dashboard::Finder
   end
 
   def search_environment_names

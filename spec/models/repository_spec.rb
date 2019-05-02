@@ -1637,6 +1637,7 @@ describe Repository do
         :has_visible_content?,
         :issue_template_names,
         :merge_request_template_names,
+        :metrics_dashboard_paths,
         :xcode_project?
       ])
 

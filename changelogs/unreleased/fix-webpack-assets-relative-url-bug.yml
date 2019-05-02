@@ -1,0 +1,5 @@
+---
+title: Fix webpack assets handling when relative url root is '/'
+merge_request: 27909
+author:
+type: fixed

@@ -474,25 +474,102 @@ describe Projects::EnvironmentsController do
       end
     end
 
-    context 'when prometheus endpoint is enabled' do
+    shared_examples_for '200 response' do |contains_all_dashboards: false|
+      let(:expected_keys) { %w(dashboard status) }
+
+      before do
+        expected_keys << 'all_dashboards' if contains_all_dashboards
+      end
+
       it 'returns a json representation of the environment dashboard' do
-        get :metrics_dashboard, params: environment_params(format: :json)
+        get :metrics_dashboard, params: environment_params(dashboard_params)
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response.keys).to contain_exactly('dashboard', 'status')
+        expect(json_response.keys).to contain_exactly(*expected_keys)
         expect(json_response['dashboard']).to be_an_instance_of(Hash)
       end
+    end
+
+    shared_examples_for 'error response' do |status_code, contains_all_dashboards: false|
+      let(:expected_keys) { %w(message status) }
+
+      before do
+        expected_keys << 'all_dashboards' if contains_all_dashboards
+      end
+
+      it 'returns an error response' do
+        get :metrics_dashboard, params: environment_params(dashboard_params)
+
+        expect(response).to have_gitlab_http_status(status_code)
+        expect(json_response.keys).to contain_exactly(*expected_keys)
+      end
+    end
+
+    shared_examples_for 'has all dashboards' do
+      it 'includes an index of all available dashboards' do
+        get :metrics_dashboard, params: environment_params(dashboard_params)
+
+        expect(json_response.keys).to include('all_dashboards')
+        expect(json_response['all_dashboards']).to be_an_instance_of(Array)
+        expect(json_response['all_dashboards']).to all( include('path', 'default') )
+      end
+    end
+
+    context 'when multiple dashboards is disabled' do
+      before do
+        stub_feature_flags(environment_metrics_show_multiple_dashboards: false)
+      end
+
+      let(:dashboard_params) { { format: :json } }
+
+      it_behaves_like '200 response'
 
       context 'when the dashboard could not be provided' do
         before do
           allow(YAML).to receive(:safe_load).and_return({})
         end
 
-        it 'returns an error response' do
-          get :metrics_dashboard, params: environment_params(format: :json)
+        it_behaves_like 'error response', :unprocessable_entity
+      end
 
-          expect(response).to have_gitlab_http_status(:unprocessable_entity)
-          expect(json_response.keys).to contain_exactly('message', 'status', 'http_status')
+      context 'when a dashboard param is specified' do
+        let(:dashboard_params) { { format: :json, dashboard: '.gitlab/dashboards/not_there_dashboard.yml' } }
+
+        it_behaves_like '200 response'
+      end
+    end
+
+    context 'when multiple dashboards is enabled' do
+      let(:dashboard_params) { { format: :json } }
+
+      it_behaves_like '200 response', contains_all_dashboards: true
+      it_behaves_like 'has all dashboards'
+
+      context 'when a dashboard could not be provided' do
+        before do
+          allow(YAML).to receive(:safe_load).and_return({})
+        end
+
+        it_behaves_like 'error response', :unprocessable_entity, contains_all_dashboards: true
+        it_behaves_like 'has all dashboards'
+      end
+
+      context 'when a dashboard param is specified' do
+        let(:dashboard_params) { { format: :json, dashboard: '.gitlab/dashboards/test.yml' } }
+
+        context 'when the dashboard is available' do
+          let(:dashboard_yml) { fixture_file('lib/gitlab/metrics/dashboard/sample_dashboard.yml') }
+          let(:dashboard_file) { { '.gitlab/dashboards/test.yml' => dashboard_yml } }
+          let(:project) { create(:project, :custom_repo, files: dashboard_file) }
+          let(:environment) { create(:environment, name: 'production', project: project) }
+
+          it_behaves_like '200 response', contains_all_dashboards: true
+          it_behaves_like 'has all dashboards'
+        end
+
+        context 'when the dashboard does not exist' do
+          it_behaves_like 'error response', :not_found, contains_all_dashboards: true
+          it_behaves_like 'has all dashboards'
         end
       end
     end
