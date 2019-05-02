@@ -13,7 +13,7 @@ describe Admin::ClustersController do
   end
 
   describe 'GET index' do
-    def go(params = {})
+    def get_index(params = {})
       get :index, params: params
     end
 
@@ -23,7 +23,7 @@ describe Admin::ClustersController do
       end
 
       it 'renders 404' do
-        go
+        get_index
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -45,7 +45,7 @@ describe Admin::ClustersController do
           end
 
           it 'lists available clusters' do
-            go
+            get_index
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template(:index)
@@ -61,7 +61,7 @@ describe Admin::ClustersController do
             end
 
             it 'redirects to the page' do
-              go(page: last_page)
+              get_index(page: last_page)
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(assigns(:clusters).current_page).to eq(last_page)
@@ -71,7 +71,7 @@ describe Admin::ClustersController do
 
         context 'when instance does not have a cluster' do
           it 'returns an empty state page' do
-            go
+            get_index
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template(:index, partial: :empty_state)
@@ -84,14 +84,14 @@ describe Admin::ClustersController do
     describe 'security' do
       let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { get_index }.to be_allowed_for(:admin) }
+      it { expect { get_index }.to be_denied_for(:user) }
+      it { expect { get_index }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET new' do
-    def go
+    def get_new
       get :new
     end
 
@@ -107,7 +107,7 @@ describe Admin::ClustersController do
         end
 
         it 'has authorize_url' do
-          go
+          get_new
 
           expect(assigns(:authorize_url)).to include(key)
           expect(session[session_key_for_redirect_uri]).to eq(new_admin_cluster_path)
@@ -120,7 +120,7 @@ describe Admin::ClustersController do
         end
 
         it 'does not have authorize_url' do
-          go
+          get_new
 
           expect(assigns(:authorize_url)).to be_nil
         end
@@ -132,7 +132,7 @@ describe Admin::ClustersController do
         end
 
         it 'has new object' do
-          go
+          get_new
 
           expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
         end
@@ -153,16 +153,16 @@ describe Admin::ClustersController do
 
     describe 'functionality for existing cluster' do
       it 'has new object' do
-        go
+        get_new
 
         expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::ClusterPresenter)
       end
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { get_new }.to be_allowed_for(:admin) }
+      it { expect { get_new }.to be_denied_for(:user) }
+      it { expect { get_new }.to be_denied_for(:external) }
     end
   end
 
@@ -180,7 +180,7 @@ describe Admin::ClustersController do
       }
     end
 
-    def go
+    def post_create_gcp
       post :create_gcp, params: params
     end
 
@@ -192,7 +192,7 @@ describe Admin::ClustersController do
 
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
-          expect { go }.to change { Clusters::Cluster.count }
+          expect { post_create_gcp }.to change { Clusters::Cluster.count }
             .and change { Clusters::Providers::Gcp.count }
 
           cluster = Clusters::Cluster.instance_type.first
@@ -208,7 +208,7 @@ describe Admin::ClustersController do
 
           it 'creates a new cluster with legacy_abac_disabled' do
             expect(ClusterProvisionWorker).to receive(:perform_async)
-            expect { go }.to change { Clusters::Cluster.count }
+            expect { post_create_gcp }.to change { Clusters::Cluster.count }
               .and change { Clusters::Providers::Gcp.count }
             expect(Clusters::Cluster.instance_type.first.provider_gcp).not_to be_legacy_abac
           end
@@ -245,9 +245,9 @@ describe Admin::ClustersController do
         allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
       end
 
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { post_create_gcp }.to be_allowed_for(:admin) }
+      it { expect { post_create_gcp }.to be_denied_for(:user) }
+      it { expect { post_create_gcp }.to be_denied_for(:external) }
     end
   end
 
@@ -264,7 +264,7 @@ describe Admin::ClustersController do
       }
     end
 
-    def go
+    def post_create_user
       post :create_user, params: params
     end
 
@@ -273,7 +273,7 @@ describe Admin::ClustersController do
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
 
-          expect { go }.to change { Clusters::Cluster.count }
+          expect { post_create_user }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
           cluster = Clusters::Cluster.instance_type.first
@@ -301,7 +301,7 @@ describe Admin::ClustersController do
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)
 
-          expect { go }.to change { Clusters::Cluster.count }
+          expect { post_create_user }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
 
           cluster = Clusters::Cluster.instance_type.first
@@ -315,16 +315,16 @@ describe Admin::ClustersController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { post_create_user }.to be_allowed_for(:admin) }
+      it { expect { post_create_user }.to be_denied_for(:user) }
+      it { expect { post_create_user }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET cluster_status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, :instance) }
 
-    def go
+    def get_cluster_status
       get :cluster_status,
         params: {
           id: cluster
@@ -334,7 +334,7 @@ describe Admin::ClustersController do
 
     describe 'functionality' do
       it 'responds with matching schema' do
-        go
+        get_cluster_status
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('cluster_status')
@@ -343,21 +343,21 @@ describe Admin::ClustersController do
       it 'invokes schedule_status_update on each application' do
         expect_any_instance_of(Clusters::Applications::Ingress).to receive(:schedule_status_update)
 
-        go
+        get_cluster_status
       end
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { get_cluster_status }.to be_allowed_for(:admin) }
+      it { expect { get_cluster_status }.to be_denied_for(:user) }
+      it { expect { get_cluster_status }.to be_denied_for(:external) }
     end
   end
 
   describe 'GET show' do
     let(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
-    def go
+    def get_show
       get :show,
         params: {
           id: cluster
@@ -366,7 +366,7 @@ describe Admin::ClustersController do
 
     describe 'functionality' do
       it 'renders view' do
-        go
+        get_show
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(assigns(:cluster)).to eq(cluster)
@@ -374,14 +374,14 @@ describe Admin::ClustersController do
     end
 
     describe 'security' do
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { get_show }.to be_allowed_for(:admin) }
+      it { expect { get_show }.to be_denied_for(:user) }
+      it { expect { get_show }.to be_denied_for(:external) }
     end
   end
 
   describe 'PUT update' do
-    def go(format: :html)
+    def put_update(format: :html)
       put :update, params: params.merge(
         id: cluster,
         format: format
@@ -402,7 +402,7 @@ describe Admin::ClustersController do
     end
 
     it 'updates and redirects back to show page' do
-      go
+      put_update
 
       cluster.reload
       expect(response).to redirect_to(admin_cluster_path(cluster))
@@ -416,7 +416,7 @@ describe Admin::ClustersController do
       let(:domain) { 'http://not-a-valid-domain' }
 
       it 'does not update cluster attributes' do
-        go
+        put_update
 
         cluster.reload
         expect(response).to render_template(:show)
@@ -439,7 +439,7 @@ describe Admin::ClustersController do
           end
 
           it 'updates and redirects back to show page' do
-            go(format: :json)
+            put_update(format: :json)
 
             cluster.reload
             expect(response).to have_http_status(:no_content)
@@ -459,7 +459,7 @@ describe Admin::ClustersController do
           end
 
           it 'rejects changes' do
-            go(format: :json)
+            put_update(format: :json)
 
             expect(response).to have_http_status(:bad_request)
           end
@@ -470,16 +470,16 @@ describe Admin::ClustersController do
     describe 'security' do
       set(:cluster) { create(:cluster, :provided_by_gcp, :instance) }
 
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { put_update }.to be_allowed_for(:admin) }
+      it { expect { put_update }.to be_denied_for(:user) }
+      it { expect { put_update }.to be_denied_for(:external) }
     end
   end
 
   describe 'DELETE destroy' do
     let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance) }
 
-    def go
+    def delete_destroy
       delete :destroy,
         params: {
           id: cluster
@@ -490,7 +490,7 @@ describe Admin::ClustersController do
       context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
           it 'destroys and redirects back to clusters list' do
-            expect { go }
+            expect { delete_destroy }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
@@ -504,7 +504,7 @@ describe Admin::ClustersController do
           let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, :instance) }
 
           it 'destroys and redirects back to clusters list' do
-            expect { go }
+            expect { delete_destroy }
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
@@ -518,7 +518,7 @@ describe Admin::ClustersController do
         let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, :instance) }
 
         it 'destroys and redirects back to clusters list' do
-          expect { go }
+          expect { delete_destroy }
             .to change { Clusters::Cluster.count }.by(-1)
             .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
             .and change { Clusters::Providers::Gcp.count }.by(0)
@@ -532,9 +532,9 @@ describe Admin::ClustersController do
     describe 'security' do
       set(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, :instance) }
 
-      it { expect { go }.to be_allowed_for(:admin) }
-      it { expect { go }.to be_denied_for(:user) }
-      it { expect { go }.to be_denied_for(:external) }
+      it { expect { delete_destroy }.to be_allowed_for(:admin) }
+      it { expect { delete_destroy }.to be_denied_for(:user) }
+      it { expect { delete_destroy }.to be_denied_for(:external) }
     end
   end
 end
