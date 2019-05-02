@@ -22,7 +22,7 @@ export default () => {
     _.debounce(function onMessageInput() {
       const message = $(this).val();
       if (message === '') {
-        $('.js-broadcast-message-preview').text('Your message here');
+        $('.js-broadcast-message-preview').text(__('Your message here'));
       } else {
         axios
           .post(previewPath, {
