@@ -1,7 +1,10 @@
 import Vue from 'vue';
+import { shallowMount } from '@vue/test-utils';
 import eventHub from '~/clusters/event_hub';
 import { APPLICATION_STATUS } from '~/clusters/constants';
 import applicationRow from '~/clusters/components/application_row.vue';
+import UninstallApplicationConfirmationModal from '~/clusters/components/uninstall_application_confirmation_modal.vue';
+
 import mountComponent from 'helpers/vue_mount_component_helper';
 import { DEFAULT_APPLICATION_STATE } from '../services/mock_data';
 
@@ -194,10 +197,51 @@ describe('Application Row', () => {
         ...DEFAULT_APPLICATION_STATE,
         installed: true,
         uninstallable: true,
+        status: APPLICATION_STATUS.NOT_INSTALLABLE,
       });
       const uninstallButton = vm.$el.querySelector('.js-cluster-application-uninstall-button');
 
       expect(uninstallButton).toBeTruthy();
+    });
+
+    it('displays a success toast message if application uninstall was successful', () => {
+      vm = mountComponent(ApplicationRow, {
+        ...DEFAULT_APPLICATION_STATE,
+        title: 'GitLab Runner',
+        uninstallSuccessful: false,
+      });
+
+      vm.$toast = { show: jest.fn() };
+      vm.uninstallSuccessful = true;
+
+      return vm.$nextTick(() => {
+        expect(vm.$toast.show).toHaveBeenCalledWith('GitLab Runner uninstalled successfully.');
+      });
+    });
+  });
+
+  describe('when confirmation modal triggers confirm event', () => {
+    let wrapper;
+
+    beforeEach(() => {
+      wrapper = shallowMount(ApplicationRow, {
+        propsData: {
+          ...DEFAULT_APPLICATION_STATE,
+        },
+      });
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('triggers uninstallApplication event', () => {
+      jest.spyOn(eventHub, '$emit');
+      wrapper.find(UninstallApplicationConfirmationModal).vm.$emit('confirm');
+
+      expect(eventHub.$emit).toHaveBeenCalledWith('uninstallApplication', {
+        id: DEFAULT_APPLICATION_STATE.id,
+      });
     });
   });
 
@@ -304,7 +348,7 @@ describe('Application Row', () => {
       vm.$toast = { show: jest.fn() };
       vm.updateSuccessful = true;
 
-      vm.$nextTick(() => {
+      return vm.$nextTick(() => {
         expect(vm.$toast.show).toHaveBeenCalledWith('GitLab Runner upgraded successfully.');
       });
     });
@@ -360,60 +404,88 @@ describe('Application Row', () => {
   });
 
   describe('Error block', () => {
-    it('does not show error block when there is no error', () => {
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: null,
-      });
-      const generalErrorMessage = vm.$el.querySelector(
-        '.js-cluster-application-general-error-message',
-      );
+    describe('when nothing fails', () => {
+      it('does not show error block', () => {
+        vm = mountComponent(ApplicationRow, {
+          ...DEFAULT_APPLICATION_STATE,
+        });
+        const generalErrorMessage = vm.$el.querySelector(
+          '.js-cluster-application-general-error-message',
+        );
 
-      expect(generalErrorMessage).toBeNull();
+        expect(generalErrorMessage).toBeNull();
+      });
     });
 
-    it('shows status reason when install fails', () => {
+    describe('when install or uninstall fails', () => {
       const statusReason = 'We broke it 0.0';
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.ERROR,
-        statusReason,
-        installFailed: true,
+      const requestReason = 'We broke the request 0.0';
+
+      beforeEach(() => {
+        vm = mountComponent(ApplicationRow, {
+          ...DEFAULT_APPLICATION_STATE,
+          status: APPLICATION_STATUS.ERROR,
+          statusReason,
+          requestReason,
+          installFailed: true,
+        });
       });
-      const generalErrorMessage = vm.$el.querySelector(
-        '.js-cluster-application-general-error-message',
-      );
-      const statusErrorMessage = vm.$el.querySelector(
-        '.js-cluster-application-status-error-message',
-      );
 
-      expect(generalErrorMessage.textContent.trim()).toEqual(
-        `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
-      );
+      it('shows status reason if it is available', () => {
+        const statusErrorMessage = vm.$el.querySelector(
+          '.js-cluster-application-status-error-message',
+        );
 
-      expect(statusErrorMessage.textContent.trim()).toEqual(statusReason);
+        expect(statusErrorMessage.textContent.trim()).toEqual(statusReason);
+      });
+
+      it('shows request reason if it is available', () => {
+        const requestErrorMessage = vm.$el.querySelector(
+          '.js-cluster-application-request-error-message',
+        );
+
+        expect(requestErrorMessage.textContent.trim()).toEqual(requestReason);
+      });
     });
 
-    it('shows request reason when REQUEST_FAILURE', () => {
-      const requestReason = 'We broke thre request 0.0';
-      vm = mountComponent(ApplicationRow, {
-        ...DEFAULT_APPLICATION_STATE,
-        status: APPLICATION_STATUS.INSTALLABLE,
-        installFailed: true,
-        requestReason,
+    describe('when install fails', () => {
+      beforeEach(() => {
+        vm = mountComponent(ApplicationRow, {
+          ...DEFAULT_APPLICATION_STATE,
+          status: APPLICATION_STATUS.ERROR,
+          installFailed: true,
+        });
       });
-      const generalErrorMessage = vm.$el.querySelector(
-        '.js-cluster-application-general-error-message',
-      );
-      const requestErrorMessage = vm.$el.querySelector(
-        '.js-cluster-application-request-error-message',
-      );
 
-      expect(generalErrorMessage.textContent.trim()).toEqual(
-        `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
-      );
+      it('shows a general message indicating the installation failed', () => {
+        const generalErrorMessage = vm.$el.querySelector(
+          '.js-cluster-application-general-error-message',
+        );
 
-      expect(requestErrorMessage.textContent.trim()).toEqual(requestReason);
+        expect(generalErrorMessage.textContent.trim()).toEqual(
+          `Something went wrong while installing ${DEFAULT_APPLICATION_STATE.title}`,
+        );
+      });
+    });
+
+    describe('when uninstall fails', () => {
+      beforeEach(() => {
+        vm = mountComponent(ApplicationRow, {
+          ...DEFAULT_APPLICATION_STATE,
+          status: APPLICATION_STATUS.ERROR,
+          uninstallFailed: true,
+        });
+      });
+
+      it('shows a general message indicating the uninstalling failed', () => {
+        const generalErrorMessage = vm.$el.querySelector(
+          '.js-cluster-application-general-error-message',
+        );
+
+        expect(generalErrorMessage.textContent.trim()).toEqual(
+          `Something went wrong while uninstalling ${DEFAULT_APPLICATION_STATE.title}`,
+        );
+      });
     });
   });
 });

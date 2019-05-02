@@ -1984,6 +1984,9 @@ msgstr ""
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|%{title} uninstalled successfully."
+msgstr ""
+
 msgid "ClusterIntegration|%{title} upgraded successfully."
 msgstr ""
 
@@ -2011,6 +2014,9 @@ msgstr ""
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
+msgid "ClusterIntegration|All data will be deleted and cannot be restored."
+msgstr ""
+
 msgid "ClusterIntegration|Alternatively"
 msgstr ""
 
@@ -2024,6 +2030,9 @@ msgid "ClusterIntegration|An error occurred while trying to fetch your projects:
 msgstr ""
 
 msgid "ClusterIntegration|An error occurred while trying to fetch zone machine types: %{error}"
+msgstr ""
+
+msgid "ClusterIntegration|Any running pipelines will be canceled."
 msgstr ""
 
 msgid "ClusterIntegration|Applications"
@@ -2317,6 +2326,9 @@ msgstr ""
 msgid "ClusterIntegration|Request to begin installing failed"
 msgstr ""
 
+msgid "ClusterIntegration|Request to begin uninstalling failed"
+msgstr ""
+
 msgid "ClusterIntegration|Retry update"
 msgstr ""
 
@@ -2371,6 +2383,9 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
 msgstr ""
 
+msgid "ClusterIntegration|Something went wrong while uninstalling %{title}"
+msgstr ""
+
 msgid "ClusterIntegration|Specifying a domain will allow you to use Auto Review Apps and Auto Deploy stages for %{auto_devops_start}Auto DevOps%{auto_devops_end}. The domain should have a wildcard DNS configured matching the domain."
 msgstr ""
 
@@ -2378,6 +2393,15 @@ msgid "ClusterIntegration|The Kubernetes certificate used to authenticate to the
 msgstr ""
 
 msgid "ClusterIntegration|The URL used to access the Kubernetes API."
+msgstr ""
+
+msgid "ClusterIntegration|The associated IP will be deleted and cannot be restored."
+msgstr ""
+
+msgid "ClusterIntegration|The associated certifcate will be deleted and cannot be restored."
+msgstr ""
+
+msgid "ClusterIntegration|The associated load balancer and IP will be deleted and cannot be restored."
 msgstr ""
 
 msgid "ClusterIntegration|The endpoint is in the process of being assigned. Please check your Kubernetes cluster or Quotas on Google Kubernetes Engine if it takes a long time."
@@ -2393,6 +2417,9 @@ msgid "ClusterIntegration|To access your application after deployment, point a w
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Uninstall %{appTitle}"
 msgstr ""
 
 msgid "ClusterIntegration|Update failed. Please check the logs and try again."
@@ -2420,6 +2447,9 @@ msgid "ClusterIntegration|We could not verify that one of your projects on GCP h
 msgstr ""
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
+msgstr ""
+
+msgid "ClusterIntegration|You are about to uninstall %{appTitle} from your cluster."
 msgstr ""
 
 msgid "ClusterIntegration|You must first install Helm Tiller before installing the applications below"
