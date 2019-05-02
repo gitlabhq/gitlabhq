@@ -44,12 +44,10 @@
 
         %li
           %span.light= _('Storage:')
-          - counter_storage = storage_counter(@group.storage_size)
-          - counter_repositories = storage_counter(@group.repository_size)
-          - counter_build_artifacts = storage_counter(@group.build_artifacts_size)
-          - counter_lfs_objects = storage_counter(@group.lfs_objects_size)
-          %strong
-            = _("%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)") % { counter_storage: counter_storage, counter_repositories: counter_repositories, counter_build_artifacts: counter_build_artifacts, counter_lfs_objects: counter_lfs_objects }
+          %strong= storage_counter(@group.storage_size)
+          (
+          = storage_counters_details(@group)
+          )
 
         %li
           %span.light= _('Group Git LFS status:')
