@@ -81,6 +81,9 @@ describe Projects::HousekeepingService do
         # At push 10, 20, ... (except those above)
         expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid)
           .exactly(16).times
+        # At push 6, 12, 18, ... (except those above)
+        expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :pack_refs, :the_lease_key, :the_uuid)
+          .exactly(27).times
 
         201.times do
           subject.increment!
