@@ -66,5 +66,16 @@ describe('pipeline graph action component', () => {
         done();
       }, 0);
     });
+
+    it('renders a loading icon while waiting for request', done => {
+      component.$el.click();
+
+      component.$nextTick(() => {
+        expect(component.$el.querySelector('.js-action-icon-loading')).not.toBeNull();
+        setTimeout(() => {
+          done();
+        });
+      });
+    });
   });
 });
